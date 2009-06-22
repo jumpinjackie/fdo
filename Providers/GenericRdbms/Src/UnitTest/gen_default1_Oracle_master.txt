@@ -81,7 +81,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:complexType>
 <xs:sequence>
-<xs:element name="TABLE1_ID">
+<xs:element name="TABLE1_ID012345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -96,7 +96,7 @@ geographic</gml:derivedCRSType>
 </xs:complexType>
 <xs:keyref name="AutoGen_RTABLE1_FK_RTABLE1_TABLE1" refer="AutoGen:TABLE1_RTABLE1AKey">
 <xs:selector xpath=".//RTABLE1"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:keyref>
 </xs:element>
 <xs:element name="ID">
@@ -120,7 +120,7 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="TABLE1_ID">
+<xs:element name="TABLE1_ID012345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -169,7 +169,7 @@ geographic</gml:derivedCRSType>
 </xs:complexType>
 <xs:keyref name="AutoGen_RTABLE2_FK_RTABLE2_TABLE1" refer="AutoGen:TABLE1_RTABLE2AKey">
 <xs:selector xpath=".//RTABLE2"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:keyref>
 </xs:element>
 <xs:element name="FK_RTABLE2_TABLE3" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
@@ -371,7 +371,7 @@ geographic</gml:derivedCRSType>
 </xs:key>
 <xs:unique name="RTABLE7Key_0">
 <xs:selector xpath=".//RTABLE7"/>
-<xs:field xpath="TABLE7_ID"/>
+<xs:field xpath="TABLE7_ID12345678901234567890"/>
 </xs:unique>
 </xs:element>
 <xs:complexType name="RTABLE7Type" abstract="false">
@@ -387,7 +387,7 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 <xs:complexType>
 <xs:sequence>
-<xs:element name="TABLE7_ID">
+<xs:element name="TABLE7_ID12345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -426,7 +426,7 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="TABLE7_ID">
+<xs:element name="TABLE7_ID12345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -444,15 +444,15 @@ geographic</gml:derivedCRSType>
 <xs:element name="TABLE1" type="AutoGen:TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="TABLE1Key">
 <xs:selector xpath=".//TABLE1"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:key>
 <xs:key name="TABLE1_RTABLE1AKey">
 <xs:selector xpath=".//AutoGen"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:key>
 <xs:key name="TABLE1_RTABLE2AKey">
 <xs:selector xpath=".//AutoGen"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:key>
 </xs:element>
 <xs:complexType name="TABLE1Type" abstract="false" fdo:hasGeometry="false">
@@ -550,7 +550,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="ID">
+<xs:element name="ID3456789012345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -571,7 +571,7 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="INT16_COLUMN" minOccurs="0">
+<xs:element name="INT16_COLUMN345678901234567890" minOccurs="0">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -2451,7 +2451,7 @@ geographic</gml:derivedCRSType>
 <xs:element name="VIEW1" type="AutoGen:VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="VIEW1Key">
 <xs:selector xpath=".//VIEW1"/>
-<xs:field xpath="ID"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
 </xs:key>
 </xs:element>
 <xs:complexType name="VIEW1Type" abstract="false">
@@ -2483,7 +2483,7 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="ID">
+<xs:element name="ID3456789012345678901234567890">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
