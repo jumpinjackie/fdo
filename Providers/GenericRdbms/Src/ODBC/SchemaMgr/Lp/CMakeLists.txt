@@ -1,18 +1,8 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../GenericRdbms/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDOUTILITIES)/Common/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDOUTILITIES)/SchemaMgr/Inc/Sm/Lp
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDOUTILITIES)/SchemaMgr/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Inc
+	BEFORE
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Inc/Rdbi
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Inc
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/Other
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/Capability
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/Connection
@@ -23,17 +13,16 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/Lt
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/Schema
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../../Src/Fdo/SpatialContext
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDO)/Unmanaged/Src/Geometry
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDOUTILITIES)/SchemaMgr/Inc
-	${CMAKE_CURRENT_SOURCE_DIR}/$(FDOUTILITIES)/Common/Inc
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../Gdbi
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../LongTransactionManager
 	${CMAKE_CURRENT_SOURCE_DIR}/../../../LockManager
+	${UTILITIES_COMMON_INCLUDE_DIR}
+	${UTILITIES_SCHEMAMGR_INCLUDE_DIR}
+	${UTILITIES_SCHEMAMGR_INCLUDE_DIR}/Sm/Lp
+	${UNMANAGED_INCLUDE_DIR}
+	${UNMANAGED_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
-
-add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX )
 
 set( FdoRdbmsODBC_SchemaMgr_Lp_STAT_SRCS
    Class.cpp
@@ -46,86 +35,3 @@ set( FdoRdbmsODBC_SchemaMgr_Lp_STAT_SRCS
 )
 
 add_library( FdoRdbmsODBC_SchemaMgr_Lp STATIC ${FdoRdbmsODBC_SchemaMgr_Lp_STAT_SRCS} )
-
-
-
-
-#original Makefile.am contents follow:
-
-###
-### Copyright (C) 2004-2006  Autodesk, Inc.
-### 
-### This library is free software; you can redistribute it and/or
-### modify it under the terms of version 2.1 of the GNU Lesser
-### General Public License as published by the Free Software Foundation.
-### 
-### This library is distributed in the hope that it will be useful,
-### but WITHOUT ANY WARRANTY; without even the implied warranty of
-### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-### Lesser General Public License for more details.
-### 
-### You should have received a copy of the GNU Lesser General Public
-### License along with this library; if not, write to the Free Software
-### Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-###
-#
-#AUTOMAKE_OPTIONS = foreign
-#
-#noinst_LTLIBRARIES = libFdoRdbmsODBC_SchemaMgr_Lp.la
-#
-#libFdoRdbmsODBC_SchemaMgr_Lp_la_SOURCES = \
-#Class.cpp \
-#ClassDefinition.cpp \
-#DataPropertyDefinition.cpp \
-#FeatureClass.cpp \
-#GeometricPropertyDefinition.cpp \
-#SchemaCollection.cpp \
-#Schema.cpp
-#
-#noinst_HEADERS = $(libFdoRdbmsODBC_SchemaMgr_Lp_la_SOURCES) \
-#  Class.h \
-#  ClassDefinition.h \
-#  DataPropertyDefinition.h \
-#  FeatureClass.h \
-#  GeometricPropertyDefinition.h \
-#  Schema.h \
-#  SchemaCollection.h
-#
-#INCLUDES = \
-#  -I../../ \
-#  -I$(FDO)/Unmanaged/Inc \
-#  -I$(FDO)/Unmanaged \
-#  -I../../../../../GenericRdbms/Inc \
-#  -I$(FDOUTILITIES)/Common/Inc \
-#  -I$(FDOUTILITIES)/SchemaMgr/Inc/Sm/Lp \
-#  -I$(FDOUTILITIES)/SchemaMgr/Inc \
-#  -I../../../../Inc \
-#  -I../../../../Inc/Rdbi \
-#  -I../../../ \
-#  -I../../../../ \
-#  -I../../../../Inc \
-#  -I../../../../Src/Fdo/Other \
-#  -I../../../../Src/Fdo/Capability \
-#  -I../../../../Src/Fdo/Connection \
-#  -I../../../../Src/Fdo/Custom \
-#  -I../../../../Src/Fdo/FeatureCommands \
-#  -I../../../../Src/Fdo/Filter \
-#  -I../../../../Src/Fdo/Lock \
-#  -I../../../../Src/Fdo/Lt \
-#  -I../../../../Src/Fdo/Schema \
-#  -I../../../../Src/Fdo/SpatialContext \
-#  -I$(FDO)/Unmanaged \
-#  -I$(FDO)/Unmanaged/Inc \
-#  -I$(FDO)/Unmanaged/Src/Geometry \
-#  -I$(FDOUTILITIES)/SchemaMgr/Inc \
-#  -I$(FDOUTILITIES)/Common/Inc \
-#  -I../../../Gdbi \
-#  -I../../../LongTransactionManager  \
-#  -I../../../LockManager 
-#
-#libFdoRdbmsODBC_SchemaMgr_Lp_la_LDFLAGS =
-#
-#CXXFLAGS = @CXXFLAGS@ -DFULLPROTO -D__USE_GNU -DLINUX
-#
-#
-#
