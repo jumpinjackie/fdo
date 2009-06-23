@@ -90,12 +90,17 @@ int local_odbcdr_sql(
 	char				*cursor_coc
 	)
 {
-	odbcdr_cursor_def	*c;
+	odbcdr_cursor_def	*c = 0;
 	odbcdr_connData_def *connData;
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
 	int					num_bind_vars = 0; 
 	int					i = 0;
 	SQLRETURN			rc;
+    int					copy_string = false;
+    const char			*autogen_str = "";
+    const wchar_t		*autogen_strW = L"";
+    const char			*ccString = sql->ccString;
+    const wchar_t		*cwString = sql->cwString;
 
 #ifdef _DEBUG
     if (context->odbcdr_UseUnicode)
@@ -123,10 +128,10 @@ int local_odbcdr_sql(
     c->is_sqlserver_insert = (verb && (ODBCDriverType_SQLServer == connData->driver_type)) ? 
                     (strcmp(verb, INSERT_STRING) == 0) : false;
 
-#ifdef _DEBUG
-    int copy_string = true;
+#ifndef _DEBUG
+    copy_string = true;
 #else
-    int copy_string = c->is_sqlserver_insert;
+    copy_string = c->is_sqlserver_insert;
 #endif
 
     // When an insert is performed against a SQL Server database, 
@@ -144,11 +149,8 @@ int local_odbcdr_sql(
     // only way I could find to do this was to batch both the insert and select
     // statements on the same cursor. 
 
-    const char* autogen_str = c->is_sqlserver_insert ? "; select SCOPE_IDENTITY() as fdo_ident24356" : "";
-    const wchar_t* autogen_strW = c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"";
-
-    const char* ccString = sql->ccString;
-    const wchar_t* cwString = sql->cwString;
+	autogen_str = c->is_sqlserver_insert ? "; select SCOPE_IDENTITY() as fdo_ident24356" : "";
+    autogen_strW = c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"";
 
     if ( copy_string ) {
         if( sql->ccString ) {
@@ -158,7 +160,8 @@ int local_odbcdr_sql(
 		    }
             if (context->odbcdr_UseUnicode)
             {
-                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen(autogen_strW) + 1)*sizeof(wchar_t) ); 
+                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) 
+							+ wcslen( c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"" ) + 1)*sizeof(wchar_t) ); 
                 if( c->sqlstringW == (wchar_t *)NULL ) {
 			        rdbi_status = RDBI_MALLOC_FAILED;
 			        goto the_exit;
@@ -383,7 +386,7 @@ int num_define_vars(const char *sql) {
 	}
 
 	// the number of define vars is 1 + the number of commas found
-	// ex: select a,b, fn1(c,d,e) col_alias, e from table tab1
+	// ex.: select a,b, fn1(c,d,e) col_alias, e from table tab1
 	// There are 3 commas outside functions between the select and from
 	// There are 4 define vars in the statement.
 	return commas_found + 1;
