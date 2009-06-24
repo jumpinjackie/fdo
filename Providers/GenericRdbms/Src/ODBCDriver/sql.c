@@ -90,7 +90,7 @@ int local_odbcdr_sql(
 	char				*cursor_coc
 	)
 {
-	odbcdr_cursor_def	*c = 0;
+	odbcdr_cursor_def	*c = (odbcdr_cursor_def *)NULL;
 	odbcdr_connData_def *connData;
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
 	int					num_bind_vars = 0; 
@@ -160,7 +160,7 @@ int local_odbcdr_sql(
 		    }
             if (context->odbcdr_UseUnicode)
             {
-				c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen(autogen_strW) + 1)*sizeof(wchar_t) );
+                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen(autogen_strW) + 1)*sizeof(wchar_t) ); 
                 if( c->sqlstringW == (wchar_t *)NULL ) {
 			        rdbi_status = RDBI_MALLOC_FAILED;
 			        goto the_exit;
