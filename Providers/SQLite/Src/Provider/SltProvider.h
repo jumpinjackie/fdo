@@ -180,8 +180,8 @@ public:
                                                 FdoFilter*                 filter,
                                                 FdoIdentifierCollection*   grouping);
 
-    FdoInt32            ExecuteNonQuery        (FdoString* sql);
-    FdoISQLDataReader*  ExecuteReader          (FdoString* sql);
+    FdoInt32            ExecuteNonQuery        (FdoString* sql, FdoParameterValueCollection *parms);
+    FdoISQLDataReader*  ExecuteReader          (FdoString* sql, FdoParameterValueCollection *parms);
 
     FdoInt32            Update                 (FdoIdentifier*              fcname, 
                                                 FdoFilter*                  filter, 
@@ -239,4 +239,6 @@ private :
     bool                                    m_bUseFdoMetadata;
     bool                                    m_bHasFdoMetadata;
     char                                    m_cSupportsDetGeomType;
+
+    
 };
