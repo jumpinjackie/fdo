@@ -808,6 +808,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SQLCmdTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SQLCmdTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\stdafx.cpp"
 			>
 			<FileConfiguration

@@ -895,7 +895,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 }
 
 
-FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
+FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql, FdoParameterValueCollection *parms)
 {
     StringBuffer sb(wcslen(sql)+1);
     sb.Append(sql);
@@ -905,7 +905,12 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
     int count = 0;
     int rc;
 
-    while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW) count++;
+    if( parms != NULL && parms->GetCount() != 0 )
+        BindPropVals(parms, pStmt );  
+
+    while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
+    if( rc == SQLITE_DONE )
+        count = sqlite3_changes(m_dbRead);
 
     ReleaseParsedStatement(sb.Data(), pStmt);
 
@@ -915,10 +920,22 @@ FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql)
         throw FdoCommandException::Create(L"Failed to execute sql command.");
 }
 
-FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql)
+FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql, FdoParameterValueCollection *parms)
 {
-    std::string mbsql = W2A_SLOW(sql);
-    return new SltReader(this, mbsql.c_str());
+    StringBuffer sb(wcslen(sql)+1);
+    sb.Append(sql);
+
+    if( parms != NULL && parms->GetCount() != 0 )
+    {
+        sqlite3_stmt* pStmt = GetCachedParsedStatement(sb.Data());
+        BindPropVals(parms, pStmt );  
+
+        return new SltReader(this, pStmt);
+    }
+    else
+    {
+        return new SltReader(this, sb.Data());
+    }
 }
 
 

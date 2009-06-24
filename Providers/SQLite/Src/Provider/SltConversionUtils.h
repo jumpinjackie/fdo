@@ -36,7 +36,8 @@ SLT_API FdoDateTime DateFromString(const char* val);
 SLT_API void DateToString(FdoDateTime* dt, char* str, int nBytes);
 
 SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt);
-
+SLT_API void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt);
+SLT_API void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv);
 
 #endif
 

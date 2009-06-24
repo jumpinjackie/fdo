@@ -117,7 +117,7 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
         //Assume it is a literal value : this seems like
         //a reasonable assumption
         FdoLiteralValue* lv = (FdoLiteralValue*) ve.p;
-        int rc;
+
 
         //not sure if this is allowed by the API, but let's
         //handle it anyway -- it's pretty obvious what to do.
@@ -126,124 +126,144 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
             sqlite3_bind_null(stmt, i);
             continue;
         }
-        
-        if (lv->GetLiteralValueType() == FdoLiteralValueType_Data)
+        BindPropValue(stmt, i, lv );
+    }
+}
+
+void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt)
+{
+    for(int i=1; i<=props->GetCount(); i++)
+    {
+        FdoPtr<FdoParameterValue> fdoParm = props->GetItem(i-1);
+        FdoPtr<FdoLiteralValue> parmValue = fdoParm->GetValue();
+        if (parmValue.p == NULL)
         {
-            FdoDataValue* dv = (FdoDataValue*)lv;
-            FdoDataType dt = dv->GetDataType();
-
-            if (dv->IsNull())
-            {
-                sqlite3_bind_null(stmt, i);
-                continue;
-            }
-
-            switch (dt)
-            {
-                case FdoDataType_BLOB:
-                    {
-                        FdoLOBValue* v = (FdoLOBValue*)dv;
-                        FdoPtr<FdoByteArray> ba = v->GetData();
-                        rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
-                    }
-                    break;
-                case FdoDataType_Boolean:
-                    {
-                        FdoBooleanValue* v = (FdoBooleanValue*)dv;
-                        bool b = v->GetBoolean();
-                        int val = b ? 1 : 0;
-                        rc = sqlite3_bind_int(stmt, i, val);
-                    }
-                    break;
-                case FdoDataType_Byte:
-                    {
-                        FdoByteValue* v = (FdoByteValue*)dv;
-                        int b = v->GetByte();
-                        rc = sqlite3_bind_int(stmt, i, b);
-                    }
-                    break;
-                case FdoDataType_CLOB:
-                    printf ("CLOB not implemented!\n");
-                    throw;
-                    break;
-                case FdoDataType_DateTime:
-                    {
-                        FdoDateTimeValue* v = (FdoDateTimeValue*)dv;
-                        FdoDateTime dtm = v->GetDateTime();
-                        char s[64];
-
-                        DateToString(&dtm, s, 64);
-                        
-                        rc = sqlite3_bind_text(stmt, i, s, -1, SQLITE_TRANSIENT);
-                    }
-                    break;
-                case FdoDataType_Decimal:
-                    {
-                        FdoDoubleValue* v = (FdoDoubleValue*)dv;
-                        double d = v->GetDouble();
-                        rc = sqlite3_bind_int(stmt, i, (int)d);
-                    }
-                case FdoDataType_Double:
-                    {
-                        FdoDoubleValue* v = (FdoDoubleValue*)dv;
-                        double d = v->GetDouble();
-                        rc = sqlite3_bind_double(stmt, i, d);
-                    }
-                    break;
-                case FdoDataType_Int16:
-                    {
-                        FdoInt16Value* v = (FdoInt16Value*)dv;
-                        int val = v->GetInt16();
-                        rc = sqlite3_bind_int(stmt, i, val);
-                    }
-                    break;
-                case FdoDataType_Int32:
-                    {
-                        FdoInt32Value* v = (FdoInt32Value*)dv;
-                        int val = v->GetInt32();
-                        rc = sqlite3_bind_int(stmt, i, val);
-                    }
-                    break;
-                case FdoDataType_Int64:
-                    {
-                        FdoInt64Value* v = (FdoInt64Value*)dv;
-                        sqlite3_int64 val = v->GetInt64();
-                        rc = sqlite3_bind_int64(stmt, i, val);
-                    }
-                    break;
-                case FdoDataType_Single:
-                    {
-                        FdoSingleValue* v = (FdoSingleValue*)dv;
-                        double d = v->GetSingle();
-                        rc = sqlite3_bind_double(stmt, i, d);
-                    }
-                    break;
-                case FdoDataType_String:
-                    {
-                        FdoStringValue* v = (FdoStringValue*)dv;
-                        FdoString* s = v->GetString();
-                        size_t wlen = wcslen(s);
-                        size_t clen = wlen*4+1;
-                        char* mbs = (char*)alloca(clen);
-                        W2A_FAST(mbs, clen, s, wlen);
-                        rc = sqlite3_bind_text(stmt, i, mbs, -1, SQLITE_TRANSIENT);
-                    }
-                    break;
-            }
+            sqlite3_bind_null(stmt, i);
+            continue;
         }
-        else
+        BindPropValue(stmt, i, parmValue );
+    }
+}
+
+void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
+{
+    int rc;
+    if (lv->GetLiteralValueType() == FdoLiteralValueType_Data)
+    {
+        FdoDataValue* dv = (FdoDataValue*)lv;
+        FdoDataType dt = dv->GetDataType();
+
+        if (dv->IsNull())
         {
-            FdoGeometryValue* gv = (FdoGeometryValue*)lv;
-
-            if (gv->IsNull())
-            {
-                sqlite3_bind_null(stmt, i);
-                continue;
-            }
-
-            FdoPtr<FdoByteArray> ba = gv->GetGeometry();
-            rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
+            sqlite3_bind_null(stmt, i);
+            return;
         }
+
+        switch (dt)
+        {
+            case FdoDataType_BLOB:
+                {
+                    FdoLOBValue* v = (FdoLOBValue*)dv;
+                    FdoPtr<FdoByteArray> ba = v->GetData();
+                    rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
+                }
+                break;
+            case FdoDataType_Boolean:
+                {
+                    FdoBooleanValue* v = (FdoBooleanValue*)dv;
+                    bool b = v->GetBoolean();
+                    int val = b ? 1 : 0;
+                    rc = sqlite3_bind_int(stmt, i, val);
+                }
+                break;
+            case FdoDataType_Byte:
+                {
+                    FdoByteValue* v = (FdoByteValue*)dv;
+                    int b = v->GetByte();
+                    rc = sqlite3_bind_int(stmt, i, b);
+                }
+                break;
+            case FdoDataType_CLOB:
+                printf ("CLOB not implemented!\n");
+                throw;
+                break;
+            case FdoDataType_DateTime:
+                {
+                    FdoDateTimeValue* v = (FdoDateTimeValue*)dv;
+                    FdoDateTime dtm = v->GetDateTime();
+                    char s[64];
+
+                    DateToString(&dtm, s, 64);
+                    
+                    rc = sqlite3_bind_text(stmt, i, s, -1, SQLITE_TRANSIENT);
+                }
+                break;
+            case FdoDataType_Decimal:
+                {
+                    FdoDoubleValue* v = (FdoDoubleValue*)dv;
+                    double d = v->GetDouble();
+                    rc = sqlite3_bind_int(stmt, i, (int)d);
+                }
+            case FdoDataType_Double:
+                {
+                    FdoDoubleValue* v = (FdoDoubleValue*)dv;
+                    double d = v->GetDouble();
+                    rc = sqlite3_bind_double(stmt, i, d);
+                }
+                break;
+            case FdoDataType_Int16:
+                {
+                    FdoInt16Value* v = (FdoInt16Value*)dv;
+                    int val = v->GetInt16();
+                    rc = sqlite3_bind_int(stmt, i, val);
+                }
+                break;
+            case FdoDataType_Int32:
+                {
+                    FdoInt32Value* v = (FdoInt32Value*)dv;
+                    int val = v->GetInt32();
+                    rc = sqlite3_bind_int(stmt, i, val);
+                }
+                break;
+            case FdoDataType_Int64:
+                {
+                    FdoInt64Value* v = (FdoInt64Value*)dv;
+                    sqlite3_int64 val = v->GetInt64();
+                    rc = sqlite3_bind_int64(stmt, i, val);
+                }
+                break;
+            case FdoDataType_Single:
+                {
+                    FdoSingleValue* v = (FdoSingleValue*)dv;
+                    double d = v->GetSingle();
+                    rc = sqlite3_bind_double(stmt, i, d);
+                }
+                break;
+            case FdoDataType_String:
+                {
+                    FdoStringValue* v = (FdoStringValue*)dv;
+                    FdoString* s = v->GetString();
+                    size_t wlen = wcslen(s);
+                    size_t clen = wlen*4+1;
+                    char* mbs = (char*)alloca(clen);
+                    W2A_FAST(mbs, clen, s, wlen);
+                    rc = sqlite3_bind_text(stmt, i, mbs, -1, SQLITE_TRANSIENT);
+                }
+                break;
+        }
+    }
+    else
+    {
+        FdoGeometryValue* gv = (FdoGeometryValue*)lv;
+
+        if (gv->IsNull())
+        {
+            sqlite3_bind_null(stmt, i);
+            return;
+        }
+
+        FdoPtr<FdoByteArray> ba = gv->GetGeometry();
+        rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
     }
 }
 

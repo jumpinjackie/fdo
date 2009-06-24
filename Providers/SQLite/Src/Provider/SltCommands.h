@@ -660,15 +660,27 @@ class SltSql : public SltCommand<FdoISQLCommand>
         virtual void SetSQLStatement(FdoString* value)          { m_sql = value ? value : L""; }
         virtual FdoInt32 ExecuteNonQuery()
         {
-            return m_connection->ExecuteNonQuery(m_sql.c_str());
+            return m_connection->ExecuteNonQuery(m_sql.c_str(), m_pSqlParmeterValues );
         }
         virtual FdoISQLDataReader* ExecuteReader()
         {
-            return m_connection->ExecuteReader(m_sql.c_str());
+            return m_connection->ExecuteReader(m_sql.c_str(), m_pSqlParmeterValues);
         }
+
+        virtual FdoParameterValueCollection* GetParameterValues()
+        { 
+            if( m_pSqlParmeterValues == NULL )
+            m_pSqlParmeterValues = FdoParameterValueCollection::Create();
+
+            FDO_SAFE_ADDREF(m_pSqlParmeterValues.p);
+
+            return m_pSqlParmeterValues;
+        }
+
 
     private:
         std::wstring m_sql;
+        FdoPtr<FdoParameterValueCollection>            m_pSqlParmeterValues;
 };
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/

@@ -29,12 +29,14 @@ UnitTest_SOURCES = \
   FdoMultiThreadTest.cpp \
   InsertTest.cpp \
   SpatialContextTest.cpp \
+  SQLCmdTest.cpp \
   UnitTestUtil.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoMultiThreadTest.h \
   InsertTest.h \
   SpatialContextTest.h \
+  SQLCmdTest.h \
   UnitTestUtil.h \
   tester-linux.h
 
