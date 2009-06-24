@@ -1,9 +1,7 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
+include_directories( 
+	BEFORE
 	${MYSQL_INCLUDE_DIR}
-	${UTILITIES_INCLUDE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
 set( mysqldr_STAT_SRCS
@@ -37,4 +35,7 @@ set( mysqldr_STAT_SRCS
    Geometry.c
 )
 
+set_source_files_properties( ${mysqldr_STAT_SRCS} PROPERTIES LANGUAGE CXX )
+
 add_library( mysqldr STATIC ${mysqldr_STAT_SRCS} )
+

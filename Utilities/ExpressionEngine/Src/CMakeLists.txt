@@ -1,4 +1,5 @@
-include_directories(
+include_directories( 
+	BEFORE	
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${UTILITIES_EXPRESSION_INCLUDE_DIR}
     ${UNMANAGED_INCLUDE_DIR}

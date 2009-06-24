@@ -37,7 +37,14 @@
 #include <windows.h>
 #endif
 
+#ifdef _WIN32
 #include <cstring>
+#endif
+
+#ifdef __cplusplus
+#include <cstring>
+#endif
+
 #include <Inc/rdbi.h>
 #include <stdio.h>
 #include <string.h>

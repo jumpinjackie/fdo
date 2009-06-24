@@ -1,8 +1,9 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
+include_directories( 
+	BEFORE
 	${UNMANAGED_INCLUDE_DIR}
-	${FDO}/Unmanaged
+	${UNMANAGED_DIR}
 	${UTILITIES_COMMON_INCLUDE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
 add_subdirectory( Ov )
@@ -19,7 +20,7 @@ set( SchemaMgr_SRCS
 )
 
 add_library( SchemaMgr SHARED ${SchemaMgr_SRCS} )
-set_target_properties( SchemaMgr PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+
 target_link_libraries( SchemaMgr
 	ProvidersCommon
 	FDO )
@@ -49,5 +50,5 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 
-
+set_target_properties( SchemaMgr PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 install( TARGETS SchemaMgr DESTINATION ${LIB_INSTALL_DIR} )

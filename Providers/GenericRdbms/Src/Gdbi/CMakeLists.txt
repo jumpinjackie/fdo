@@ -1,10 +1,4 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UNMANAGED_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	)
+include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
 set( Gdbi_STAT_SRCS
    GdbiCommands.cpp
