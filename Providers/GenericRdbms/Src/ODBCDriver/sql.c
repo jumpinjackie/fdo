@@ -160,7 +160,7 @@ int local_odbcdr_sql(
 		    }
             if (context->odbcdr_UseUnicode)
             {
-                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen( c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"" ) + 1)*sizeof(wchar_t) ); 
+				c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen(autogen_strW) + 1)*sizeof(wchar_t) );
                 if( c->sqlstringW == (wchar_t *)NULL ) {
 			        rdbi_status = RDBI_MALLOC_FAILED;
 			        goto the_exit;
