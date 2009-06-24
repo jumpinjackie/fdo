@@ -36,6 +36,7 @@
 #define RDBI_VNDR_INFO_DEFINED
 #include "Inc/rdbi.h"
 
+#include <wchar.h>
 
 //
 // Defines used to initialize the dbversion field of the rdbi_vndr_info_def structure.
