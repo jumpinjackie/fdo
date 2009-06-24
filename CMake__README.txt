@@ -49,6 +49,8 @@ II. Usage
 	- cmake <FDO_SOURCEDIR> -DINTERNAL_CPPUNIT=TRUE
 	- make
 
+	You can pass any definition to compiler through this method.
+
 III. Using internal provided Thirdparty libraries
 	Since fdo main source has a Thirdparty internal  dependencies source provided, if you desire
 	compile and use internal dependencies, add the follow definitions in the cmake command line call:
@@ -67,14 +69,20 @@ IV. Compiling Providers
 	are doing in source build
 	
 	If you desire compile some provider(s), add the follow definitions in the cmake command line call:
-	-DWITH_PROVIDERS="<provider1>;<provider2>"
-	Where <provider> is the name of provider you want to compile ( case sensitive matching subdirectory name ).
-	The comma and ; are required. Currently PostGIS provider is ported, to compile line would be:
-	-DWITH_PROVIDERS="PostGIS"
+	-DWITH_<provider>
+	Where <provider> is the name of provider you want to compile, be case sensitive, all upper case or all lower case.
 
-	With more providers:
-	-DWITH_PROVIDERS="PostGIS;GDAL;OGR"
+	All OpenSource providers are available already.Usage example:
+	-DWITH_POSTGIS=1 or -DWITH_PostGIS=1 or -DWITH_postgis=1
 
+	With some providers:
+	-DWITH_POSTGIS=1 -DWITH_GDAL=1 -DWITH_WMS=1
+
+	If you desire to build all available providers, use this definition ( case sensitive )
+	-DWITH_ALLPROVIDERS=1
+
+	There's no automatic provider compilation unless explicit defined.
+	The compilation order is same as providers defined in command line.
 
 Help and reports to Helio Castro <helio@kde.org>
 

@@ -1,41 +1,76 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../../Inc/Rdbi
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Connection
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Other
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/FeatureCommands
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Custom
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Schema
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Lt
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/Lock
-	${CMAKE_CURRENT_SOURCE_DIR}/../Fdo/SpatialContext
-	${UNMANAGED_DIR}
-	${UTILITIES_SCHEMAMGR_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../Gdbi
-	${CMAKE_CURRENT_SOURCE_DIR}/../LongTransactionManager
-	${CMAKE_CURRENT_SOURCE_DIR}/../LockManager
-	${MYSQL_INCLUDE_DIR}
-	)
+include_directories( BEFORE ${CMAKE_CURRENT_SOURCE_DIR} )
 
 add_subdirectory( Driver )
 add_subdirectory( Fdo )
 add_subdirectory( SchemaMgr )
 
-add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX )
-
-set( FdoRdbmsMySQL_STAT_SRCS
+set( FdoMySQL_LIB_SRCS
    MySql.cpp
    stdafx.cpp
 )
 
-add_library( FdoRdbmsMySQL STATIC ${FdoRdbmsMySQL_STAT_SRCS} )
+add_library( FdoMySQL SHARED ${FdoMySQL_LIB_SRCS} )
 
-target_link_libraries( FdoRdbmsMySQL 
-	FdoRdbmsMySQL_SchemaMgr
-	FdoRdbmsMySQL_SchemaMgr_Lp
-	FdoRdbmsMySQL_SchemaMgr_Ov
-	FdoRdbmsMySQL_SchemaMgr_Ph
+if( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( FdoMySQL
+		-Wl,-whole-archive
+		FdoRdbms
+		rdbi
+		mysqldr
+		Gdbi
+		LTManager
+		LockManager
+		genericrdbms_util
+		FdoRdbmsMySQL_Fdo
+		FdoRdbmsMySQL_SchemaMgr
+		FdoRdbmsMySQL_SchemaMgr_Lp
+		FdoRdbmsMySQL_SchemaMgr_Ov
+		FdoRdbmsMySQL_SchemaMgr_Ph
+		geometry_fgf
+		SmLpGrd
+		SmGrd
+		SmPhCfgGrd
+		SmPhGrd
+		SmPhRdGrd
+		-Wl,-no-whole-archive
+ 	)
+else( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( FdoMySQL
+		FdoRdbms
+		rdbi
+		mysqldr
+		Gdbi
+		LTManager
+		LockManager
+		genericrdbms_util
+		FdoRdbmsMySQL_Fdo
+		FdoRdbmsMySQL_SchemaMgr
+		FdoRdbmsMySQL_SchemaMgr_Lp
+		FdoRdbmsMySQL_SchemaMgr_Ov
+		FdoRdbmsMySQL_SchemaMgr_Ph
+		geometry_fgf
+		SmLpGrd
+		SmGrd
+		SmPhCfgGrd
+		SmPhGrd
+		SmPhRdGrd
+ 	)
+endif( CMAKE_COMPILER_IS_GNUCXX )
+
+target_link_libraries( FdoMySQL
+	xalan-c
+	xalanMsg
+	xerces-c
+	${MYSQL_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	FDO
+	ExpressionEngine
+	ProvidersCommon
+	SchemaMgr_OV
+	SchemaMgr
 	)
+
+set_target_properties( FdoMySQL PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
+
+install( TARGETS FdoMySQL DESTINATION ${LIB_INSTALL_DIR} )
+

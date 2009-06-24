@@ -1,11 +1,6 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	)
+include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
-add_definitions( -pthread )
-
-set( util_STAT_SRCS
+set( genericrdbms_util_STAT_SRCS
    da_.c
    dtoa.c
    dtoa_p.c
@@ -14,4 +9,6 @@ set( util_STAT_SRCS
    trace.c
 )
 
-add_library( rdbmsutil STATIC ${util_STAT_SRCS} )
+set_source_files_properties( ${genericrdbms_util_STAT_SRCS} PROPERTIES LANGUAGE CXX )
+
+add_library( genericrdbms_util STATIC ${genericrdbms_util_STAT_SRCS} )

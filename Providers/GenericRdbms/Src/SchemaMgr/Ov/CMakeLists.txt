@@ -1,11 +1,6 @@
-include_directories(
-	BEFORE
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UTILITIES_SCHEMAMGR_INCLUDE_DIR}
-	)
+include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
-set( SchemaMgr_OV_STAT_SRCS
+set( SchemaMgr_OV_LIB_SRCS
    RdbmsOvAssociationPropertyDefinition.cpp
    RdbmsOvClassCollection.cpp
    RdbmsOvClassDefinition.cpp
@@ -27,6 +22,25 @@ set( SchemaMgr_OV_STAT_SRCS
    stdafx.cpp
 )
 
-add_library( RdbmsSchemaMgr_OV STATIC ${SchemaMgr_OV_STAT_SRCS} )
+add_library( SchemaMgr_OV SHARED ${SchemaMgr_OV_LIB_SRCS} )
 
-target_link_libraries( RdbmsSchemaMgr_OV FDO )
+target_link_libraries( SchemaMgr_OV 
+	FDO 
+	)
+
+if( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SchemaMgr_OV
+		-Wl,-whole-archive
+		SmOverrides
+		-Wl,-no-whole-archive
+		)
+else( CMAKE_COMPILER_IS_GNUCXX )
+	target_link_libraries( SchemaMgr_OV
+		-Wl,-whole-archive
+		SmOverrides
+		)
+endif( CMAKE_COMPILER_IS_GNUCXX )
+
+set_target_properties( SchemaMgr_OV PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR}  )
+install( TARGETS SchemaMgr_OV DESTINATION ${LIB_INSTALL_DIR} )
+

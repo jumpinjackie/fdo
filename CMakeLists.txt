@@ -36,6 +36,10 @@ if (CMAKE_SYSTEM_NAME MATCHES Linux)
 	add_definitions( -DLINUX -DLINUX_IA32 -pthread )
 endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 
+if( CMAKE_COMPILER_IS_GNUCXX )
+	add_definitions( -D__USE_GNU -Wno-deprecated )
+endif( CMAKE_COMPILER_IS_GNUCXX )
+
 find_package( FDOThirdparty REQUIRED )
 find_package( FDOInternal REQUIRED )
 
@@ -48,10 +52,9 @@ add_subdirectory( Utilities )
 
 # Providers compiled internally are optional and is not added if
 # Providers directory not exists
-# Correct syntax is: -DWITH_PROVIDERS="<provider1>;<provider2>;.." ( comma required )
-# Ex. -DWITH_PROVIDERS="PostGIS;GDAL"
+# Correct syntax is: -DWITH_<provider>
+# Ex. -DWITH_POSTGIS -DWITH_GDAL
 macro_optional_add_subdirectory( Providers )
-
 
 install(FILES providers.xml DESTINATION ${LIB_INSTALL_DIR} )
 configure_file( cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY )

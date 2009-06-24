@@ -1,9 +1,4 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${FDO}/Unmanaged
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	)
+include_directories( BEFORE ${CMAKE_CURRENT_SOURCE_DIR}	)
 
 add_subdirectory( Cfg )
 add_subdirectory( Mt )
