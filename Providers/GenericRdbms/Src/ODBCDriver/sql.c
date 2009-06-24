@@ -128,7 +128,7 @@ int local_odbcdr_sql(
     c->is_sqlserver_insert = (verb && (ODBCDriverType_SQLServer == connData->driver_type)) ? 
                     (strcmp(verb, INSERT_STRING) == 0) : false;
 
-#ifndef _DEBUG
+#ifdef _DEBUG
     copy_string = true;
 #else
     copy_string = c->is_sqlserver_insert;
@@ -160,8 +160,7 @@ int local_odbcdr_sql(
 		    }
             if (context->odbcdr_UseUnicode)
             {
-                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) 
-							+ wcslen( c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"" ) + 1)*sizeof(wchar_t) ); 
+                c->sqlstringW = (wchar_t*)ut_vm_malloc( "odbcdr_sql: sql string", (wcslen( sql->cwString ) + wcslen( c->is_sqlserver_insert ? L"; select SCOPE_IDENTITY() as fdo_ident24356" : L"" ) + 1)*sizeof(wchar_t) ); 
                 if( c->sqlstringW == (wchar_t *)NULL ) {
 			        rdbi_status = RDBI_MALLOC_FAILED;
 			        goto the_exit;
