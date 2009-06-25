@@ -1,13 +1,7 @@
-include_directories(
+include_directories( 
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${CMAKE_SOURCE_DIR}/../../Inc
-	${CMAKE_SOURCE_DIR}/../..
-	${CMAKE_SOURCE_DIR}/$(FDOODBC)/include
-	${CMAKE_SOURCE_DIR}/$(FDO)/Unmanaged/Inc
+	${ODBC_INCLUDE_DIR}
 	)
-
-add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX )
 
 set( FdoODBCDriver_STAT_SRCS
 	autocommit_.c

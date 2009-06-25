@@ -1,7 +1,4 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${UTILITIES_EXPRESSION_INCLUDE_DIR}
-	)
+include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
 set( FdoRdbmsODBC_Fdo_STAT_SRCS
    FdoRdbmsOdbcCommandCapabilities.cpp

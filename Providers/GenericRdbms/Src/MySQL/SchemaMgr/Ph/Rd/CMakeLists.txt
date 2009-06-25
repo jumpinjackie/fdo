@@ -1,9 +1,4 @@
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	)
-
-add_definitions( -DFULLPROTO -D__USE_GNU -DLINUX )
+include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
 set( FdoRdbmsMySQL_SchemaMgr_Ph_Rd_STAT_SRCS
    CharacterSetReader.cpp

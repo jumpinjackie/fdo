@@ -62,9 +62,8 @@ target_link_libraries( FdoODBC
 	xalan-c
 	xalanMsg
 	xerces-c
-	odbc
-	odbcinst
-	odbcpsql
+	${ODBC_LIBRARY}
+	${ODBCINST_LIBRARY}
 	FDO
 	ExpressionEngine
 	ProvidersCommon
