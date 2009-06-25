@@ -30,6 +30,7 @@ UnitTest_SOURCES = \
   InsertTest.cpp \
   SpatialContextTest.cpp \
   SQLCmdTest.cpp \
+  TransactionTest.cpp \
   UnitTestUtil.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
@@ -38,6 +39,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   SpatialContextTest.h \
   SQLCmdTest.h \
   UnitTestUtil.h \
+  TransactionTest.h \
   tester-linux.h
 
 INCLUDES = \

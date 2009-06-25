@@ -52,6 +52,7 @@ noinst_HEADERS = $(libSQLiteProviderSrc_la_SOURCES) \
    stdafx.h \
    SQLiteProvider.h \
    StringUtil.h \
+   SltTransaction.h \
    SQLiteSchemaMergeContext.h
 
 libSQLiteProviderSrc_la_LDFLAGS = 

@@ -26,6 +26,13 @@ class SltExtendedSelect;
 struct NameOrderingPair;
 class StringBuffer;
 
+// on read connection only the provider can open (internal) transactions
+enum SQLiteActiveTransactionType
+{
+    SQLiteActiveTransactionType_None = 0,     // no transaction started
+    SQLiteActiveTransactionType_Internal = 1, // internal transaction started on write connection
+    SQLiteActiveTransactionType_User = 2      // user transaction started on write connection
+};
 
 struct string_less
 {	// functor for operator<
@@ -108,7 +115,7 @@ public:
 
     virtual FdoInt32 GetConnectionTimeout()                     { return 0; }
     virtual void SetConnectionTimeout(FdoInt32 value)           { }
-    virtual FdoITransaction* BeginTransaction()                 { return NULL; }
+    virtual FdoITransaction* BeginTransaction();
     virtual FdoPhysicalSchemaMapping* CreateSchemaMapping()     { return NULL; }
     virtual void SetConfiguration(FdoIoStream* stream)          { }
     virtual void Flush()                                        { }
@@ -134,7 +141,6 @@ public:
             fsc->Add((*m_mProps)[PROP_NAME_FILENAME].c_str());
             return fsc; 
         }
-
 
 //-------------------------------------------------------
 // FdoIConnectionPropertyDictionary declaration
@@ -180,9 +186,6 @@ public:
                                                 FdoFilter*                 filter,
                                                 FdoIdentifierCollection*   grouping);
 
-    FdoInt32            ExecuteNonQuery        (FdoString* sql, FdoParameterValueCollection *parms);
-    FdoISQLDataReader*  ExecuteReader          (FdoString* sql, FdoParameterValueCollection *parms);
-
     FdoInt32            Update                 (FdoIdentifier*              fcname, 
                                                 FdoFilter*                  filter, 
                                                 FdoPropertyValueCollection* propvals);
@@ -201,12 +204,17 @@ public:
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
     int             GetFeatureCount(const char* table);
     
-    sqlite3_stmt*   GetCachedParsedStatement(const char* sql);
+    sqlite3_stmt*   GetCachedParsedStatement(const char* sql, sqlite3* db = NULL);
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
     void UpdateClassesWithInvalidSC();
     bool SupportsDetailedGeomType();
+    
+    int StartTransaction(bool isUserTrans = false); 
+    int CommitTransaction(bool isUserTrans = false);
+    int RollbackTransaction(bool isUserTrans = false);
+    bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
 
 private :
 
@@ -239,6 +247,5 @@ private :
     bool                                    m_bUseFdoMetadata;
     bool                                    m_bHasFdoMetadata;
     char                                    m_cSupportsDetGeomType;
-
-    
+    SQLiteActiveTransactionType             m_transactionState;
 };

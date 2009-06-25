@@ -63,7 +63,8 @@ class SltReader :   public FdoIScrollableFeatureReader,
                     const char*                 sql);
 
         SltReader(  SltConnection*              connection, 
-                    sqlite3_stmt*               stmt);
+                    sqlite3_stmt*               stmt,
+                    bool closeDB);
 
 		SltReader(  SltConnection*              connection, 
                     FdoIdentifierCollection*    props, 
@@ -206,7 +207,6 @@ protected:
         SpatialIterator*    m_si;
         int                 m_siEnd;
         sqlite3_int64       m_curfid;
-        bool                m_bUseTransaction;
 
         //stuff related to scrollable readers
         RowidIterator*      m_ri;

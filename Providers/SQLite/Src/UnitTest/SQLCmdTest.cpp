@@ -262,9 +262,7 @@ void SQLCmdTest::TestComplexBind ()
 
 	    int numbProp = 1;
 
-        FdoPtr<FdoISQLCommand> sql2Cmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
-        sql2Cmd->SetSQLStatement(L"BEGIN;");
-        sql2Cmd->ExecuteNonQuery();
+        FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
 
 	    while( shpReader->ReadNext() )
 	    {
@@ -308,8 +306,7 @@ void SQLCmdTest::TestComplexBind ()
                 printf(tmp);
             }
         }
-        sql2Cmd->SetSQLStatement(L"COMMIT;");
-        sql2Cmd->ExecuteNonQuery();
+        trans->Commit();
 
         for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
 		sprintf(tmp,"Count = %d",numbProp);
