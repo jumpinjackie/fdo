@@ -33,6 +33,7 @@
 #include "SltQueryTranslator.h"
 #include "FdoCommonSchemaUtil.h"
 #include "SQLiteSchemaMergeContext.h"
+#include "SltTransaction.h"
 
 #ifndef _MSC_VER
 #include "SpatialIndex.h"
@@ -96,6 +97,7 @@ SltConnection::SltConnection() : m_refCount(1)
 
     m_bUseFdoMetadata = false;
     m_bHasFdoMetadata = false;
+    m_transactionState = SQLiteActiveTransactionType_None;
     m_cSupportsDetGeomType = -1;
 }
 
@@ -323,10 +325,6 @@ FdoConnectionState SltConnection::Open()
 
         sqlite3_finalize(pstmt);
     }
-    FdoPtr<SltReader> rdr = new SltReader(this, "pragma table_info('DaKlass');");
-    FdoPtr<FdoClassDefinition> fc = rdr->GetClassDefinition();
-    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-    FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(L"Name");
 
     m_connState = FdoConnectionState_Open;
     return m_connState;
@@ -894,51 +892,6 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     return sqlite3_changes(m_dbWrite);
 }
 
-
-FdoInt32 SltConnection::ExecuteNonQuery(FdoString* sql, FdoParameterValueCollection *parms)
-{
-    StringBuffer sb(wcslen(sql)+1);
-    sb.Append(sql);
-
-    sqlite3_stmt* pStmt = GetCachedParsedStatement(sb.Data());
-
-    int count = 0;
-    int rc;
-
-    if( parms != NULL && parms->GetCount() != 0 )
-        BindPropVals(parms, pStmt );  
-
-    while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
-    if( rc == SQLITE_DONE )
-        count = sqlite3_changes(m_dbRead);
-
-    ReleaseParsedStatement(sb.Data(), pStmt);
-
-    if (rc == SQLITE_DONE)
-        return count;
-    else 
-        throw FdoCommandException::Create(L"Failed to execute sql command.");
-}
-
-FdoISQLDataReader* SltConnection::ExecuteReader(FdoString* sql, FdoParameterValueCollection *parms)
-{
-    StringBuffer sb(wcslen(sql)+1);
-    sb.Append(sql);
-
-    if( parms != NULL && parms->GetCount() != 0 )
-    {
-        sqlite3_stmt* pStmt = GetCachedParsedStatement(sb.Data());
-        BindPropVals(parms, pStmt );  
-
-        return new SltReader(this, pStmt);
-    }
-    else
-    {
-        return new SltReader(this, sb.Data());
-    }
-}
-
-
 SltMetadata* SltConnection::GetMetadata(const char* table)
 {
     SltMetadata* ret = NULL;
@@ -1341,7 +1294,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
 
     FdoPtr<FdoClassCollection> classes = mergedSchema->GetClasses();
 
-    int rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+    int rc = StartTransaction();
 
     try
     {
@@ -1411,14 +1364,14 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
     }
     catch(...)
     {
-        sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+        RollbackTransaction();
         // The cached FDO schema will need to be refreshed
         FDO_SAFE_RELEASE(m_pSchema);
         m_pSchema = NULL;
         throw;
     }
 
-    rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+    rc = CommitTransaction();
     if (rc == SQLITE_OK)
     {
         schema->AcceptChanges();
@@ -1428,7 +1381,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
         UpdateClassesWithInvalidSC();
     }
     else // not sure we need to do that yet
-        sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+        RollbackTransaction();
 
     // The cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
@@ -1757,7 +1710,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     rc = sqlite3_prepare_v2(db, "SELECT * FROM SpatialExtentsResult;", -1, &stmt, &tail);
 
     if (rc == SQLITE_OK)
-        return new SltReader(this, stmt);        
+        return new SltReader(this, stmt, true);        
     else
         throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.");
 }
@@ -1790,15 +1743,15 @@ int SltConnection::GetFeatureCount(const char* table)
 // Do not use it in other functions than GetCachedParsedStatement
 // Statement is not cached -- make one, and also add an entry for it
 // into the cache table
-#define SQL_PREPARE_CACHEPARSEDSTM {                                       \
-    const char* tail = NULL;                                            \
-    int rc = sqlite3_prepare_v2(m_dbRead, sql, -1, &ret, &tail);        \
-    if (rc != SQLITE_OK || ret == NULL)                                 \
-        throw FdoException::Create(L"Failed to parse SQL statement");   \
-}                                                                       \
+#define SQL_PREPARE_CACHEPARSEDSTM(db) {                                          \
+    const char* tail = NULL;                                                      \
+    int rc = sqlite3_prepare_v2(((NULL==db)?m_dbRead:db), sql, -1, &ret, &tail);  \
+    if (rc != SQLITE_OK || ret == NULL)                                           \
+        throw FdoException::Create(L"Failed to parse SQL statement");             \
+}                                                                                 \
 
 
-sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
+sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql, sqlite3* db)
 {
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
@@ -1823,22 +1776,25 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
             QueryCacheRec& rec = lst[i];
             if (!rec.inUse)
             {
-                rec.inUse = true;
-                ret = rec.stmt;
-                break;
+                if (db == NULL || (db == sqlite3_db_handle(rec.stmt)))
+                {
+                    rec.inUse = true;
+                    ret = rec.stmt;
+                    break;
+                }
             }
         }
         if (ret == NULL)
         {
             // to avoid a m_mCachedQueries.find() we will clone this small part
-            SQL_PREPARE_CACHEPARSEDSTM;
+            SQL_PREPARE_CACHEPARSEDSTM(db);
             lst.push_back(QueryCacheRec(ret));
         }
     }
     else
     {
         // to avoid a m_mCachedQueries.find() we will clone this small part
-        SQL_PREPARE_CACHEPARSEDSTM;
+        SQL_PREPARE_CACHEPARSEDSTM(db);
         m_mCachedQueries[_strdup(sql)].push_back(QueryCacheRec(ret));
     }
     if (ret == NULL)
@@ -1948,4 +1904,100 @@ bool SltConnection::SupportsDetailedGeomType()
         }
     }
     return (m_cSupportsDetGeomType != 0);
+}
+
+FdoITransaction* SltConnection::BeginTransaction()
+{
+    StartTransaction(true);
+    return new SltTransaction(this);
+}
+
+int SltConnection::StartTransaction(bool isUserTrans)
+{
+    int rc = SQLITE_OK;
+    if (!isUserTrans)
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_None)
+        {
+            rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+            if (rc == SQLITE_OK) // do we need it!?
+                m_transactionState = SQLiteActiveTransactionType_Internal;
+        }
+    }
+    else
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_User)
+        {
+            // transaction already started exception
+            throw FdoException::Create(L"Transactions is already started");
+        }
+        else if (m_transactionState == SQLiteActiveTransactionType_Internal)
+        {
+            // commit internal transaction and open an user transaction
+            rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+            m_transactionState = SQLiteActiveTransactionType_None;
+        }
+
+        rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+        if (rc == SQLITE_OK)
+            m_transactionState = SQLiteActiveTransactionType_User;
+        else
+            throw FdoException::Create(L"SQLite begin transaction failed!");
+    }
+    return rc;
+}
+
+int SltConnection::CommitTransaction(bool isUserTrans)
+{
+    int rc = SQLITE_OK;
+    if (!isUserTrans)
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_Internal)
+        {
+            rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+            if (rc == SQLITE_OK)
+                m_transactionState = SQLiteActiveTransactionType_None;
+            // else we need to handle this internally
+        }
+    }
+    else
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_User)
+        {
+            // commit internal transaction and open an user transaction
+            rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+            if (rc == SQLITE_OK)
+                m_transactionState = SQLiteActiveTransactionType_None;
+            else
+                throw FdoException::Create(L"SQLite commit transaction failed!");
+        }
+        else
+            throw FdoException::Create(L"No active transaction to commit");
+    }
+    return rc;
+}
+
+int SltConnection::RollbackTransaction(bool isUserTrans)
+{
+    int rc = SQLITE_OK;
+    if (!isUserTrans)
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_Internal)
+        {
+            rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+            m_transactionState = SQLiteActiveTransactionType_None;
+        }
+    }
+    else
+    {
+        if (m_transactionState == SQLiteActiveTransactionType_User)
+        {
+            // commit internal transaction and open an user transaction
+            rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+            m_transactionState = SQLiteActiveTransactionType_None;
+        }
+        else
+            throw FdoException::Create(L"No active transaction to rollback");
+    }
+    return rc;
 }

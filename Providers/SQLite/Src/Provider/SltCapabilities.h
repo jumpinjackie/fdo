@@ -45,7 +45,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsLocking()                                  { return false; }
     virtual FdoLockType* GetLockTypes(FdoInt32& size)               { size=0; return NULL; }
     virtual bool SupportsTimeout()                                  { return false; }
-    virtual bool SupportsTransactions()                             { return false; }
+    virtual bool SupportsTransactions()                             { return true; }
     virtual bool SupportsLongTransactions()                         { return false; }
     virtual bool SupportsSQL()                                      { return true;  }
     virtual bool SupportsConfiguration()                            { return false; }

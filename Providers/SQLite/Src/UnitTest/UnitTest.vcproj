@@ -868,6 +868,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\TransactionTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TransactionTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\UnitTestUtil.cpp"
 			>
 			<FileConfiguration

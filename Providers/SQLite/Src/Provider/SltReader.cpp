@@ -77,7 +77,6 @@ m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
-m_bUseTransaction(true),
 m_useFastStepping(false),
 m_ri(NULL),
 m_aPropNames(NULL),
@@ -87,9 +86,6 @@ m_fromwhere()
 
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
 
-    //start the transaction we'll use for this reader
-    int rc = sqlite3_exec(sqlite3_db_handle(m_pStmt), "BEGIN;", NULL, NULL, NULL);
-
 	InitPropIndex(m_pStmt);
 }
 
@@ -97,7 +93,7 @@ m_fromwhere()
 //Same as above, but this one takes a sqlite3 statement pointer rather than
 //a string. This means that it is a statement based on an ephemeral database
 //which this reader will close once it is done being read.
-SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt)
+SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB)
 : m_refCount(1),
 m_sql(""),
 m_class(NULL),
@@ -108,8 +104,7 @@ m_nMaxProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
-m_closeDB(true),
-m_bUseTransaction(true),
+m_closeDB(closeDB),
 m_useFastStepping(false),
 m_ri(NULL),
 m_aPropNames(NULL),
@@ -118,10 +113,6 @@ m_fromwhere()
 	m_connection = FDO_SAFE_ADDREF(connection);
 
     m_pStmt = stmt;
-
-    //start the transaction we'll use for this reader
-    int rc = sqlite3_exec(sqlite3_db_handle(m_pStmt), "BEGIN;", NULL, NULL, NULL);
-
 	InitPropIndex(m_pStmt);
 }
 
@@ -142,7 +133,6 @@ m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
-m_bUseTransaction(false),
 m_useFastStepping(useFastStepping),
 m_ri(ri),
 m_aPropNames(NULL),
@@ -170,7 +160,6 @@ m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
 m_closeDB(false),
-m_bUseTransaction(false),
 m_useFastStepping(true),
 m_aPropNames(NULL),
 m_fromwhere()
@@ -249,9 +238,6 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 
     m_eGeomFormat = md->GetGeomFormat();
-
-    if (m_bUseTransaction)
-        rc = sqlite3_exec(m_connection->GetDbRead(), "BEGIN;", NULL, NULL, NULL);
 
 	//if there were properties passed in the identifier collection, assume 
 	//the caller knows what they want and we will use the exact query
@@ -726,10 +712,6 @@ void SltReader::Close()
     }
     else //otherwise just release the cached statement we were using
         m_connection->ReleaseParsedStatement(m_sql.Data(), m_pStmt);
-
-    int rc;
-    if (m_bUseTransaction)
-        rc = sqlite3_exec(db, "COMMIT;", NULL, NULL, NULL);
 
     //Close the database as well, if it was an ephemeral database
     //used to return computed data

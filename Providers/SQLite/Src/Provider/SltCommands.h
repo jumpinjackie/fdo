@@ -296,7 +296,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
             char* err = NULL;
 
             if (m_bInTransaction)
-                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                m_connection->CommitTransaction();
 
             FDO_SAFE_RELEASE(m_properties);
         }
@@ -309,14 +309,12 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
         virtual FdoPropertyValueCollection* GetPropertyValues() { return FDO_SAFE_ADDREF(m_properties); }
         virtual FdoInt32 Execute()
         {
-            char* err = NULL;
-
             //Commit a bulk update if we reached the limit
             if (m_updateCount == BULK_OP_SIZE)
             {
                 if (m_bInTransaction)
                 {
-                    int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                    m_connection->CommitTransaction();
                     m_bInTransaction = false;
                 }
 
@@ -326,8 +324,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
             //Begin a bulk update transaction
             if (m_updateCount == 0)
             {
-                int rc2 = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
-                if (rc2 == SQLITE_OK)
+                if (m_connection->StartTransaction() == SQLITE_OK)
                     m_bInTransaction = true;                    
             }
 
@@ -474,6 +471,10 @@ class SltInsert : public SltCommand<FdoIInsert>
                 }
             }
 
+            // in case active transaction was closed by the user reopen it
+            if (!m_connection->IsTransactionStarted())
+                m_connection->StartTransaction();
+
             sqlite3_reset(m_pCompiledSQL);
 
             BindPropVals(m_properties, m_pCompiledSQL);
@@ -486,28 +487,21 @@ class SltInsert : public SltCommand<FdoIInsert>
                 //What should we do?
                 sqlite3_finalize(m_pCompiledSQL);
                 //commit the transaction we had started
-                //TODO: it makes more sense to commit than rollback
+                //it makes more sense to commit than rollback
                 //since we probably want to keep all the inserts that we
                 //did using this command before it failed.
-                char* err = NULL;
-                sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
+                if (m_connection->CommitTransaction() != SQLITE_OK)
+                    m_connection->RollbackTransaction();
                 m_pCompiledSQL = NULL;
                 throw FdoCommandException::Create(L"SQLite insert failed!");
             }
 
             if (++m_execCount == BULK_OP_SIZE)
             {
-                char* err = NULL;
-               
-                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, &err);
-
-                if (rc == SQLITE_OK)
-                {    
-                    int rc2 = sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
-
-                    if (rc2 != SQLITE_OK)
-                        throw FdoCommandException::Create(L"SQLite begin transaction failed!");
-                }
+                rc = m_connection->CommitTransaction();
+                
+                if (rc == SQLITE_OK && m_connection->StartTransaction() != SQLITE_OK)
+                    throw FdoCommandException::Create(L"SQLite begin transaction failed!");
 
                 //We will accept commit failures at this point, since they are
                 //not critical. It is important that the last COMMIT completes,
@@ -541,7 +535,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         {
             if (m_pCompiledSQL)
             {
-                int rc = sqlite3_exec(m_db, "COMMIT;", NULL, NULL, NULL);
+                int rc = m_connection->CommitTransaction();
                 int rc2 = sqlite3_finalize(m_pCompiledSQL);
 
                 if ((rc != SQLITE_OK && rc != SQLITE_BUSY) || rc2 != SQLITE_OK)
@@ -581,8 +575,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             sb.Append(");");
 
             //begin the insert transaction
-            char* err = NULL;
-            sqlite3_exec(m_db, "BEGIN;", NULL, NULL, &err);
+            m_connection->StartTransaction();
 
             //parse the SQL statement
             const char* tail = NULL;
@@ -646,41 +639,124 @@ class SltGetSpatialContexts : public SltCommand<FdoIGetSpatialContexts>
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+// since this command can delete/update/insert rows we need to make it in sync with the 
+// transaction
+// user transactions can be started only on write connection so we need to be sure this SQL
+// will be executed against write connection, otherwise in case user calls rollback
+// changes made will not be discarded
 class SltSql : public SltCommand<FdoISQLCommand>
 {
     public:
         SltSql(SltConnection* connection) 
             : SltCommand<FdoISQLCommand>(connection) 
-                                                                { }
+        {
+            m_pCompiledSQL = NULL;
+            m_pSqlParmeterValues = NULL;
+            m_db = m_connection->GetDbWrite();
+        }
 
     protected:
 
-        virtual ~SltSql()                                       { }
-        virtual FdoString* GetSQLStatement()                    { return m_sql.c_str(); }
-        virtual void SetSQLStatement(FdoString* value)          { m_sql = value ? value : L""; }
+        virtual ~SltSql()
+        {
+            FlushSQL();
+            FDO_SAFE_RELEASE(m_pSqlParmeterValues);
+        }
+        virtual FdoString* GetSQLStatement()
+        {
+            if (m_sql.size() == 0)
+                m_sql = A2W_SLOW(m_sb.Data());
+            return m_sql.c_str();
+        }
+        virtual void SetSQLStatement(FdoString* value)          
+        {
+            m_sb.Reset();
+            m_sb.Append(value ? value : L"");
+            FlushSQL();
+        }
+        // in this case we can keep the stmt in case user repeats the operation
         virtual FdoInt32 ExecuteNonQuery()
         {
-            return m_connection->ExecuteNonQuery(m_sql.c_str(), m_pSqlParmeterValues );
+            if (m_sb.Length() == 0)
+                throw FdoCommandException::Create(L"Invalid empty SQL statement.");
+
+            int count = 0;
+            int rc = SQLITE_OK;
+
+            sqlite3_stmt* pStmt = m_pCompiledSQL;
+            if (NULL != pStmt)
+            {
+                sqlite3_reset(pStmt);
+                BindPropVals(m_pSqlParmeterValues, pStmt);
+            }
+            else
+            {
+                if (m_pSqlParmeterValues != NULL && m_pSqlParmeterValues->GetCount() != 0)
+                {
+                    //parse the SQL statement
+                    const char* tail = NULL;
+                    if (sqlite3_prepare_v2(m_db, m_sb.Data(), -1, &m_pCompiledSQL, &tail) != SQLITE_OK)
+                        throw FdoCommandException::Create(L"Failed to parse SQL statement.");
+
+                    pStmt = m_pCompiledSQL;
+                    BindPropVals(m_pSqlParmeterValues, m_pCompiledSQL);
+                }
+                else
+                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
+            }
+
+            while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
+            if( rc == SQLITE_DONE )
+                count = sqlite3_changes(m_db);
+
+            if (NULL == m_pCompiledSQL)
+                m_connection->ReleaseParsedStatement(m_sb.Data(), pStmt);
+
+            if (rc == SQLITE_DONE)
+                return count;
+            else 
+                throw FdoCommandException::Create(L"Failed to execute sql command.");
         }
+
+        // in this case we cannot keep the stmt since is used by the reader
         virtual FdoISQLDataReader* ExecuteReader()
         {
-            return m_connection->ExecuteReader(m_sql.c_str(), m_pSqlParmeterValues);
+            if (m_sb.Length() == 0)
+                throw FdoCommandException::Create(L"Invalid empty SQL statement.");
+            
+            sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
+            if( m_pSqlParmeterValues != NULL && m_pSqlParmeterValues->GetCount() != 0 )
+                BindPropVals(m_pSqlParmeterValues, pStmt );
+            return new SltReader(m_connection, pStmt, false);
         }
 
         virtual FdoParameterValueCollection* GetParameterValues()
         { 
             if( m_pSqlParmeterValues == NULL )
-            m_pSqlParmeterValues = FdoParameterValueCollection::Create();
+                m_pSqlParmeterValues = FdoParameterValueCollection::Create();
 
-            FDO_SAFE_ADDREF(m_pSqlParmeterValues.p);
-
-            return m_pSqlParmeterValues;
+            return FDO_SAFE_ADDREF(m_pSqlParmeterValues);
         }
 
-
     private:
-        std::wstring m_sql;
-        FdoPtr<FdoParameterValueCollection>            m_pSqlParmeterValues;
+        void FlushSQL()
+        {
+            if (m_pCompiledSQL)
+            {
+                if (sqlite3_finalize(m_pCompiledSQL) != SQLITE_OK)
+                    fprintf(stderr, "%ls\n", L"Transient commit SQLite failure during execute.");
+                m_pCompiledSQL = NULL;
+            }
+            m_sql = L"";
+        }
+    private:
+        sqlite3_stmt*                    m_pCompiledSQL;
+        sqlite3*                         m_db;
+        // use this for speed performance
+        StringBuffer                     m_sb;
+        // this will be empty most of the time except when user calls getSQL
+        std::wstring                     m_sql;
+        FdoParameterValueCollection*     m_pSqlParmeterValues;
 };
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
