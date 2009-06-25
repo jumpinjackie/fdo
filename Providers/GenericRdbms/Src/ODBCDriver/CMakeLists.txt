@@ -1,7 +1,6 @@
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../..
-	${UNMANAGED_INCLUDE_DIR}
+	${ODBC_INCLUDE_DIR}
 	)
 
 set( FdoODBCDriver_STAT_SRCS

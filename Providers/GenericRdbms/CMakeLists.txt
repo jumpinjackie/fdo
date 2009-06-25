@@ -9,6 +9,7 @@ set( CMAKE_MODULE_PATH
 include(CPack)
 
 find_package( MySQL REQUIRED )
+find_package( UnixODBC REQUIRED )
 
 if( NOT FDO_CORE_BUILD )
 	find_package( FDO REQUIRED )
@@ -20,6 +21,8 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/Inc/Rdbi 
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}/Inc )
+
+add_definitions( ${ODBC_DEFINITIONS} )
 
 
 add_subdirectory( Nls )

@@ -15,7 +15,7 @@ include_directories(
 	${UTILITIES_TESTCOMMON_INCLUDE_DIR}
 	)
 
-add_definitions( -D__USE_GNU -DLINUX -DLINUX_IA32 -DRDBI_STATIC  )
+add_definitions( -DRDBI_STATIC  )
 
 set( OdbcUnitTests_STAT_SRCS
 	OdbcBaseSetup.cpp
