@@ -1,6 +1,14 @@
 # This file is strictly to check and enable system or internal Thirdparty
 # libraries
 
+if( ALL_THIRDPARTY )
+	set( INTERNAL_CPPUNIT true )
+	set( INTERNAL_GDAL true )
+	set( INTERNAL_OPENSSL true )
+	set( INTERNAL_BOOST true )
+	set( INTERNAL_CURL true )
+endif( ALL_THIRDPARTY )
+
 # Check GDAL or add ThirdParty
 if( NOT INTERNAL_GDAL )
 	find_package(GDAL REQUIRED)

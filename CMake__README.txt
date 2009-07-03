@@ -63,6 +63,8 @@ III. Using internal provided Thirdparty libraries
 	- SQLITE - Sqlite 3
 	- BOOST - Boost libraries
 	- POSTGRESQL - postgresql ( for PostGis provider )
+	If you desire buils all third party dependencies, use:
+	-DALL_DEPENDENCIES=TRUE
 
 IV. Compiling Providers
 	Providers can be called directly from cmake commandline, no need to compile separated anymore if you
@@ -73,13 +75,13 @@ IV. Compiling Providers
 	Where <provider> is the name of provider you want to compile, be case sensitive, all upper case or all lower case.
 
 	All OpenSource providers are available already.Usage example:
-	-DWITH_POSTGIS=1 or -DWITH_PostGIS=1 or -DWITH_postgis=1
+	-DWITH_POSTGIS=TRUE or -DWITH_PostGIS=TRUE or -DWITH_postgis=TRUE
 
 	With some providers:
-	-DWITH_POSTGIS=1 -DWITH_GDAL=1 -DWITH_WMS=1
+	-DWITH_POSTGIS=TRUE -DWITH_GDAL=TRUE -DWITH_WMS=TRUE
 
 	If you desire to build all available providers, use this definition ( case sensitive )
-	-DWITH_ALLPROVIDERS=1
+	-DALL_PROVIDERS=TRUE
 
 	There's no automatic provider compilation unless explicit defined.
 	The compilation order is same as providers defined in command line.
