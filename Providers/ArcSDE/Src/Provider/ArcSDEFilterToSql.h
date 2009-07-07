@@ -107,7 +107,7 @@ public:
 
 	/// <summary>Validate the computed identifiers wrt the natively supported functions</summary>
 	/// <returns> True if all expresions are supported, false otherwise. In addition, 2 output flags. </returns>
-	bool ArcSDEFilterToSql::ContainsSDEValidExpressionsOnly(FdoFilter *filter, FdoIdentifierCollection* selectIds, bool& filterValid, bool& selectListValid);
+	bool ContainsSDEValidExpressionsOnly(FdoFilter *filter, FdoIdentifierCollection* selectIds, bool& filterValid, bool& selectListValid);
 
     //
     // FdoIExpressionProcessor
