@@ -51,14 +51,22 @@ bool SQLiteSchemaMergeContext::CanAddProperty( FdoPropertyDefinition* prop )
 
 bool SQLiteSchemaMergeContext::CanDeleteProperty( FdoPropertyDefinition* prop )
 {
-    FdoPtr<FdoSchemaElement> pclass = prop->GetParent();
-    return !TableHasObjects(pclass->GetName());
+    FdoDataPropertyDefinition* dataProp = dynamic_cast<FdoDataPropertyDefinition*>(prop);
+    if(dataProp) {
+        FdoPtr<FdoClassDefinition> pclass = dynamic_cast<FdoClassDefinition*>( prop->GetParent() );
+        if(pclass) {
+            FdoPtr<FdoDataPropertyDefinitionCollection> identityProps = pclass->GetIdentityProperties();
+            return !identityProps->Contains(dataProp);
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool SQLiteSchemaMergeContext::CanModPropertyName( FdoPropertyDefinition* prop )
 {
-    FdoPtr<FdoSchemaElement> pclass = prop->GetParent();
-    return !TableHasObjects(pclass->GetName());
+    return true;
 }
 
 bool SQLiteSchemaMergeContext::CanModDataType( FdoDataPropertyDefinition* prop )
@@ -115,4 +123,9 @@ bool SQLiteSchemaMergeContext::TableHasObjects(FdoString* tableName)
     else
         retVal = it->second;
     return retVal;
+}
+
+bool SQLiteSchemaMergeContext::CheckDeleteProperty( FdoPropertyDefinition* prop )
+{
+    return CanDeleteProperty(prop);
 }

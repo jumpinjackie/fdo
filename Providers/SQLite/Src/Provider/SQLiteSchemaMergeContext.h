@@ -57,6 +57,8 @@ public:
     virtual bool CanRestrictDataConstraint(FdoDataPropertyDefinition* prop);
     virtual bool ClassHasObjects(FdoClassDefinition* classDef );
 
+    virtual bool CheckDeleteProperty( FdoPropertyDefinition* prop );
+
     bool TableHasObjects(FdoString* tableName);
 protected:
     SQLiteSchemaMergeContext() {}

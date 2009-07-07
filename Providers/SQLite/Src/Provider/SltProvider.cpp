@@ -797,6 +797,18 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         sb.AppendDQuoted(mbfc);
     }
 
+    if(filter) {
+        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc)->ToClass();
+        SltQueryTranslator qt(fc);
+        filter->Process(&qt);
+
+        const wchar_t* wfilter = qt.GetFilter();
+        if (*wfilter) {
+            sb.Append(" WHERE ");
+            sb.Append(qt.GetFilter());
+        }
+    }
+
     sb.Append(";");
 
     return new SltReader(this, sb.Data());
@@ -1146,7 +1158,12 @@ void SltConnection::UpdateClassesWithInvalidSC()
 
 void SltConnection::DeleteClassFromSchema(FdoClassDefinition* fc)
 {
-    std::string table = W2A_SLOW(fc->GetName());
+    DeleteClassFromSchema(fc->GetName());
+}
+
+void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
+{
+    std::string table = W2A_SLOW(fcName);
 
     StringBuffer sb;
     sb.Append("DROP TABLE IF EXISTS ");
@@ -1155,7 +1172,7 @@ void SltConnection::DeleteClassFromSchema(FdoClassDefinition* fc)
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     if (rc != SQLITE_OK)
     {
-        std::wstring errorMsg = std::wstring(L"Failed to delete class \'") + fc->GetName() + L"\'"; 
+        std::wstring errorMsg = std::wstring(L"Failed to delete class \'") + fcName + L"\'"; 
         throw FdoException::Create(errorMsg.c_str());
     }
     sb.Reset();
@@ -1206,11 +1223,11 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
     }
 }
 
-void SltConnection::UpdateClassFromSchema(FdoClassDefinition* fc, FdoClassDefinition* mainfc)
+void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc)
 {
     FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
     if (NULL != baseFc)
-        UpdateClassFromSchema(baseFc, mainfc);
+        UpdateClassFromSchema(classes, baseFc, mainfc);
 
     StringBuffer sb;
     // since we allow only to add fields when we have data
@@ -1220,47 +1237,165 @@ void SltConnection::UpdateClassFromSchema(FdoClassDefinition* fc, FdoClassDefini
     for (int i = 0; i < idpdc->GetCount(); i++)
     {
         FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
-        if (pd->GetElementState() == FdoSchemaElementState_Added)
+        if (pd->GetElementState() != FdoSchemaElementState_Unchanged)
             throw FdoException::Create(L"PRIMARY KEYs or UNIQUE constraints cannot be added when class contains data");
     }
-    for (int i = 0; i < pdc->GetCount(); i++)
+    // check if this altering is purely additive
+    bool pureAdditive = true;
+    for (int i = 0; pureAdditive && i < pdc->GetCount(); i++)
     {
         FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
-        // only new properties are processed
-        if (pd->GetElementState() != FdoSchemaElementState_Added)
-            continue;
+        pureAdditive = (pd->GetElementState() == FdoSchemaElementState_Added || pd->GetElementState() == FdoSchemaElementState_Unchanged);
+    }
+
+    if(!pureAdditive) 
+    {
+        const std::wstring originalClassName = fc->GetName();    
+        const std::wstring tempClassName     = originalClassName + L"_temp_copy";
+        fc->SetName(tempClassName.c_str());
+
+        // create temporary class (and table)
+        AddClassToSchema(classes, fc);
         
-        FdoPropertyType ptype = pd->GetPropertyType();
+        // copy relevant content of old into temporary table
+        sb.Reset();
+        sb.Append("INSERT INTO ");
+        sb.AppendDQuoted(tempClassName.c_str());
+        sb.Append(" (");
+
+        bool first = true;
+        for (int i = 0, iEnd = pdc->GetCount(); i<iEnd; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            if( pd->GetElementState() != FdoSchemaElementState_Detached &&
+                pd->GetElementState() != FdoSchemaElementState_Deleted
+            ) {
+                if(!first) {
+                    sb.Append(", ");            
+                }
+                sb.AppendDQuoted(pd->GetName());
+                first = false;
+            }
+        }
+        sb.Append(") SELECT ");
+        first = true;
+        for (int i = 0, iEnd = pdc->GetCount(); i<iEnd; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            if( pd->GetElementState() == FdoSchemaElementState_Unchanged ||
+                pd->GetElementState() == FdoSchemaElementState_Modified // only renaming is allowed so far
+            ) {
+                if(!first) {
+                    sb.Append(", ");            
+                }
+                sb.AppendDQuoted(pd->GetName());
+                first = false;                          
+            }         
+        }
+        sb.Append(" FROM ");
+        sb.Append(originalClassName.c_str());
+        sb.Append(";");
+
+        if (!first && sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL) != SQLITE_OK)
+        {
+            std::wstring errorMsg = L"Failed to copy table content for class \'" + originalClassName + L"\'"; 
+            throw FdoException::Create(errorMsg.c_str());
+        }
+        // drop old table
+        DeleteClassFromSchema(originalClassName.c_str());
+        // rename temporary table
         sb.Reset();
         sb.Append("ALTER TABLE ");
-        sb.AppendDQuoted(fc->GetName());
-        sb.Append(" ADD COLUMN ");
-        if (ptype == FdoPropertyType_DataProperty)
-        {
-            FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)pd.p;
-            
-            sb.AppendDQuoted(dpd->GetName());
-            sb.Append(" ", 1);
-            sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
-
-            AddPropertyConstraintDefaultValue(dpd, sb);
-            sb.Append(";", 1);
-            AddDataCol(dpd, mainfc->GetName());
-        }
-        else if (ptype == FdoPropertyType_GeometricProperty)
-        {
-            sb.AppendDQuoted(pd->GetName());
-            sb.Append(" BLOB, ", 7);
-
-            AddGeomCol((FdoGeometricPropertyDefinition*)pd.p, mainfc->GetName());
-        }
-        else
-            throw FdoException::Create(L"Invalid property type");
-        
+        sb.Append(tempClassName.c_str());
+        sb.Append(" RENAME TO ");
+        sb.Append(originalClassName.c_str());
+        sb.Append(";");
         if (sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL) != SQLITE_OK)
         {
-            std::wstring errorMsg = std::wstring(L"Failed to apply schema for class \'") + fc->GetName() + L"\'"; 
+            std::wstring errorMsg = L"Failed to rename temporary table for class \'" + originalClassName + L"\'"; 
             throw FdoException::Create(errorMsg.c_str());
+        }
+        // update table name column in meta tables 
+        sb.Reset();
+        sb.Append("UPDATE geometry_columns SET f_table_name=");
+        sb.AppendSQuoted(originalClassName.c_str());
+        sb.Append(" WHERE f_table_name=");
+        sb.AppendSQuoted(tempClassName.c_str());
+        sb.Append(";");
+        if (sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL) != SQLITE_OK)
+        {
+            std::wstring errorMsg = L"Failed to update geometry meta data table for class \'" + originalClassName + L"\'"; 
+            throw FdoException::Create(errorMsg.c_str());
+        }
+
+        if (m_bUseFdoMetadata)
+        {
+            sb.Reset();
+            sb.Append("UPDATE fdo_columns SET f_table_name=");
+            sb.AppendSQuoted(originalClassName.c_str());
+            sb.Append(" WHERE f_table_name=");
+            sb.AppendSQuoted(tempClassName.c_str());
+            sb.Append(";");
+            if (sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL) != SQLITE_OK)
+            {
+                std::wstring errorMsg = L"Failed to update meta data table for class \'" + originalClassName + L"\'"; 
+                throw FdoException::Create(errorMsg.c_str());
+            }
+        }
+        // update spatial index
+        std::string tempClassNameA = W2A_SLOW(tempClassName.c_str());
+        std::string originalClassNameA = W2A_SLOW(originalClassName.c_str());
+        SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*) tempClassNameA.c_str());
+        if (iter != m_mNameToSpatialIndex.end())
+        {
+             m_mNameToSpatialIndex.erase(iter);
+             m_mNameToSpatialIndex.insert(std::make_pair((char*) originalClassNameA.c_str(), iter->second));
+        }
+        // reset class name
+        fc->SetName(originalClassName.c_str());
+
+    } 
+    else 
+    {
+        for (int i = 0; i < pdc->GetCount(); i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            // only new properties are processed
+            if (pd->GetElementState() != FdoSchemaElementState_Added)
+                continue;
+            
+            FdoPropertyType ptype = pd->GetPropertyType();
+            sb.Reset();
+            sb.Append("ALTER TABLE ");
+            sb.AppendDQuoted(fc->GetName());
+            sb.Append(" ADD COLUMN ");
+            if (ptype == FdoPropertyType_DataProperty)
+            {
+                FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)pd.p;
+                
+                sb.AppendDQuoted(dpd->GetName());
+                sb.Append(" ", 1);
+                sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
+
+                AddPropertyConstraintDefaultValue(dpd, sb);
+                sb.Append(";", 1);
+                AddDataCol(dpd, mainfc->GetName());
+            }
+            else if (ptype == FdoPropertyType_GeometricProperty)
+            {
+                sb.AppendDQuoted(pd->GetName());
+                sb.Append(" BLOB, ", 7);
+
+                AddGeomCol((FdoGeometricPropertyDefinition*)pd.p, mainfc->GetName());
+            }
+            else
+                throw FdoException::Create(L"Invalid property type");
+            
+            if (sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL) != SQLITE_OK)
+            {
+                std::wstring errorMsg = std::wstring(L"Failed to apply schema for class \'") + fc->GetName() + L"\'"; 
+                throw FdoException::Create(errorMsg.c_str());
+            }
         }
     }
 }
@@ -1322,7 +1457,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
                         AddClassToSchema(classes, fc);
                     }
                     else
-                        UpdateClassFromSchema(fc, fc);
+                        UpdateClassFromSchema(classes, fc, fc);
                     changeMade = true;
                     break;
                 }
@@ -1343,7 +1478,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
                         AddClassToSchema(classes, fc);
                     }
                     else
-                        UpdateClassFromSchema(fc, fc);
+                        UpdateClassFromSchema(classes, fc, fc);
                 }
                 changeMade = true;
             }
@@ -1557,7 +1692,7 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
     {
         //now do the geometry property -- we want that to be near the 
         //beginning of the list for better performance when reading
-        if (gpd.p)
+        if (gpd.p && gpd->GetElementState() != FdoSchemaElementState_Deleted && gpd->GetElementState() != FdoSchemaElementState_Detached )
         {
             sb.AppendDQuoted(gpd->GetName());
             sb.Append(" BLOB, ", 7);
@@ -1572,6 +1707,8 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
         for (int i=0; i<pdc->GetCount(); i++)
         {
             FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            if( pd->GetElementState() == FdoSchemaElementState_Deleted || pd->GetElementState() == FdoSchemaElementState_Detached )
+                continue;
 
             FdoPropertyType ptype = pd->GetPropertyType();
 
@@ -1912,6 +2049,8 @@ FdoITransaction* SltConnection::BeginTransaction()
     return new SltTransaction(this);
 }
 
+#define SAVEPOINTS
+
 int SltConnection::StartTransaction(bool isUserTrans)
 {
     int rc = SQLITE_OK;
@@ -1919,7 +2058,11 @@ int SltConnection::StartTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_None)
         {
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+#endif
             if (rc == SQLITE_OK) // do we need it!?
                 m_transactionState = SQLiteActiveTransactionType_Internal;
         }
@@ -1934,11 +2077,19 @@ int SltConnection::StartTransaction(bool isUserTrans)
         else if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
             // commit internal transaction and open an user transaction
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+#endif
             m_transactionState = SQLiteActiveTransactionType_None;
         }
 
+#ifdef SAVEPOINTS
+        rc = sqlite3_exec(m_dbWrite, "SAVEPOINT sp;", NULL, NULL, NULL);
+#else
         rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+#endif
         if (rc == SQLITE_OK)
             m_transactionState = SQLiteActiveTransactionType_User;
         else
@@ -1954,7 +2105,11 @@ int SltConnection::CommitTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+#endif
             if (rc == SQLITE_OK)
                 m_transactionState = SQLiteActiveTransactionType_None;
             // else we need to handle this internally
@@ -1965,7 +2120,11 @@ int SltConnection::CommitTransaction(bool isUserTrans)
         if (m_transactionState == SQLiteActiveTransactionType_User)
         {
             // commit internal transaction and open an user transaction
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
+#endif
             if (rc == SQLITE_OK)
                 m_transactionState = SQLiteActiveTransactionType_None;
             else
@@ -1984,7 +2143,11 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "ROLLBACK TO SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+#endif
             m_transactionState = SQLiteActiveTransactionType_None;
         }
     }
@@ -1993,7 +2156,11 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
         if (m_transactionState == SQLiteActiveTransactionType_User)
         {
             // commit internal transaction and open an user transaction
+#ifdef SAVEPOINTS
+            rc = sqlite3_exec(m_dbWrite, "ROLLBACK TO SAVEPOINT sp;", NULL, NULL, NULL);
+#else
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
+#endif
             m_transactionState = SQLiteActiveTransactionType_None;
         }
         else

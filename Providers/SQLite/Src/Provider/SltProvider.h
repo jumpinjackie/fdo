@@ -222,7 +222,8 @@ private :
     void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
     void AddClassToSchema(FdoClassCollection* classes, FdoClassDefinition* fc);
     void DeleteClassFromSchema(FdoClassDefinition* fc);
-    void UpdateClassFromSchema(FdoClassDefinition* fc, FdoClassDefinition* mainfc);
+    void DeleteClassFromSchema(const wchar_t* fcName);
+    void UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc);
 
     int FindSpatialContext(const wchar_t* name);
     int GetDefaultSpatialContext();
