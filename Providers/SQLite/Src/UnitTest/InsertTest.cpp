@@ -88,3 +88,401 @@ void InsertTest::TestInsInvalidGeomTypes ()
         CPPUNIT_FAIL("Insert failed");
 	}
 }
+
+bool InsertTest::TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoString* propName, FdoInt32 id, FdoDateTime* expVal)
+{
+	FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	select->SetFeatureClassName(clsName);
+    FdoStringP filterTxt = FdoStringP::Format(L"FeatId=%d", id);
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterTxt);
+    select->SetFilter(filter);
+	FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+	if (rdr->ReadNext())
+	{
+        if (rdr->IsNull(propName))
+            return (expVal == NULL);
+
+        if (expVal == NULL)
+            return false;
+
+        FdoDateTime dt = rdr->GetDateTime(propName);
+        return (dt.day == expVal->day) && (dt.hour == expVal->hour) && (dt.minute == expVal->minute) && (dt.month == expVal->month)
+            && (dt.seconds == expVal->seconds) && (dt.year == expVal->year);
+	}
+    return false;
+}
+
+void InsertTest::TestConstraints1 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+		 
+        //apply schema
+		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
+        schColl->ReadXml(L"SchConstraintsTest1.xml");
+        CPPUNIT_ASSERT(schColl->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
+		applyschema->SetFeatureSchema(schema);
+		applyschema->Execute();
+
+        FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+        FdoPtr<FdoPropertyValue> propIns;
+        
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		double coords[] = { 7.2068, 43.7556, 
+							7.2088, 43.7556, 
+							7.2088, 43.7574, 
+							7.2068, 43.7574, 
+							7.2068, 43.7556 }; 
+		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+
+        FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
+        vals->Add(propGeomIns);
+        bool excRec = false;
+        
+        // Range test
+        try
+        {
+            // check the default value
+            insCmd->SetFeatureClassName(L"TestRange");
+            vals->Clear();
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            
+            FdoDateTime expVal(2009, 7, 7, 0, 0, 0);
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestRange", L"PropDT", rdr->GetInt32(L"FeatId"), &expVal));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        try
+        {
+            // try insert invalid date
+            FdoDateTime dt(2005, 1, 22, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            // expected exception
+            printf( "\nExpected exception: " );
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            excRec = true;
+        }
+        if (!excRec)
+        {
+            CPPUNIT_FAIL ("Expected exception not found");
+        }
+        try
+        {
+            // try insert valid date
+            FdoDateTime dt(2009, 7, 9, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestRange", L"PropDT", rdr->GetInt32(L"FeatId"), &dt));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        // List test
+        excRec = false;
+        try
+        {
+            // check the default value
+            insCmd->SetFeatureClassName(L"TestList");
+            vals->Clear();
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+
+            FdoDateTime expVal(2009, 7, 3, 0, 0, 0);
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestList", L"PropDT", rdr->GetInt32(L"FeatId"), &expVal));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        try
+        {
+            // try insert invalid date
+            FdoDateTime dt(2005, 1, 22, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            // expected exception
+            printf( "\nExpected exception: " );
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            excRec = true;
+        }
+        if (!excRec)
+        {
+            CPPUNIT_FAIL ("Expected exception not found");
+        }
+        try
+        {
+            // try insert valid date
+            FdoDateTime dt(2009, 7, 7, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestList", L"PropDT", rdr->GetInt32(L"FeatId"), &dt));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+    }
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void InsertTest::TestConstraints2 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+		 
+        //apply schema
+		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
+        schColl->ReadXml(L"SchConstraintsTest2.xml");
+        CPPUNIT_ASSERT(schColl->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
+		applyschema->SetFeatureSchema(schema);
+		applyschema->Execute();
+
+        FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+        FdoPtr<FdoPropertyValue> propIns;
+        
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		double coords[] = { 7.2068, 43.7556, 
+							7.2088, 43.7556, 
+							7.2088, 43.7574, 
+							7.2068, 43.7574, 
+							7.2068, 43.7556 }; 
+		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+
+        FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
+        vals->Add(propGeomIns);
+        bool excRec = false;
+        
+        // Range test
+        try
+        {
+            // check the default value
+            insCmd->SetFeatureClassName(L"TestRange");
+            vals->Clear();
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestRange", L"PropDT", rdr->GetInt32(L"FeatId"), NULL));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        try
+        {
+            // try insert invalid date
+            FdoDateTime dt(2010, 1, 22, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            // expected exception
+            printf( "\nExpected exception: " );
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            excRec = true;
+        }
+        if (!excRec)
+        {
+            CPPUNIT_FAIL ("Expected exception not found");
+        }
+        try
+        {
+            // try insert valid date
+            FdoDateTime dt(2005, 7, 9, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestRange", L"PropDT", rdr->GetInt32(L"FeatId"), &dt));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        // List test
+        excRec = false;
+        try
+        {
+            // check the default value
+            insCmd->SetFeatureClassName(L"TestList");
+            vals->Clear();
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestList", L"PropDT", rdr->GetInt32(L"FeatId"), NULL));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+
+        try
+        {
+            // try insert invalid date
+            FdoDateTime dt(2005, 1, 22, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            // expected exception
+            printf( "\nExpected exception: " );
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            excRec = true;
+        }
+        if (!excRec)
+        {
+            CPPUNIT_FAIL ("Expected exception not found");
+        }
+        try
+        {
+            // try insert valid date
+            FdoDateTime dt(2009, 7, 7, 0, 0, 0.0);
+            FdoPtr<FdoDateTimeValue> dtValue = FdoDateTimeValue::Create(dt);
+            propIns = FdoPropertyValue::Create(L"PropDT", dtValue);
+            vals->Clear();
+            vals->Add(propIns);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            CPPUNIT_ASSERT(TestForDateValue(conn, L"TestList", L"PropDT", rdr->GetInt32(L"FeatId"), &dt));
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+    }
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+

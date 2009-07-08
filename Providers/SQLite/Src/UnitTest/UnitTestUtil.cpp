@@ -149,7 +149,7 @@ FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_creat
 		pCreateCmd->Execute();	
 
 		// Open the connection
-		std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
+		std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath) + L";UseFdoMetadata=TRUE;";
 		conn->SetConnectionString(connStr.c_str());
 		FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
 		FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
