@@ -215,6 +215,7 @@ public:
     int CommitTransaction(bool isUserTrans = false);
     int RollbackTransaction(bool isUserTrans = false);
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
+    void CacheViewContent(const char* viewName);
 
 private :
 

@@ -25,6 +25,8 @@ enum GeomFormat
 
 class SltConnection;
 
+typedef std::vector<std::pair<std::string, std::string>> StlMapNamesList;
+
 //Data structure containing FDO metadata for an SQLite table
 class SltMetadata
 {
@@ -40,6 +42,8 @@ public:
     GeomFormat              GetGeomFormat() { return (GeomFormat)m_geomFormat; }
 
     static FdoDataValue* GenerateConstraintValue(FdoDataType type, FdoString* value);
+
+    bool IsView() {return (m_table != NULL) ? (m_table->pSelect != NULL) : false;}
 
 private:
     class SQLiteExpression
@@ -58,7 +62,7 @@ private:
     void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
 
     void FindSpatialContextName(int srid, std::wstring& ret);
-
+    void ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapNamesList& properties, StlMapNamesList& expressions);
 
     SltConnection*      m_connection;
     FdoClassDefinition* m_fc;

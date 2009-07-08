@@ -206,9 +206,22 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_reissueProps.Reserve(4);
     }
     
+    //remember the geometry encoding format
+    SltMetadata* md = m_connection->GetMetadata(fcname);
+
+    if (!md)
+        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 
     m_fromwhere.Append(" FROM ", 6);
-    m_fromwhere.Append(fcname);
+    if (!md->IsView())
+        m_fromwhere.Append(fcname);
+    else
+    {
+        m_connection->CacheViewContent(fcname);
+        m_fromwhere.Append("\"$view");
+        m_fromwhere.Append(fcname);
+        m_fromwhere.Append("\"");
+    }
 
     //construct the where clause and 
     //if necessary add FeatId filter -- in case we know which features we want
@@ -230,12 +243,6 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         else
             m_fromwhere.Append(";", 1);
     }
-
-    //remember the geometry encoding format
-    SltMetadata* md = m_connection->GetMetadata(fcname);
-
-    if (!md)
-        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 
     m_eGeomFormat = md->GetGeomFormat();
 
