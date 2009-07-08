@@ -50,7 +50,7 @@ int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
 }
 
 
-FdoDateTime DateFromString(const wchar_t* val)
+FdoDateTime DateFromString(const wchar_t* val, bool excOnErr)
 {
     // to avoid stack corruption declare following variables
     // since swscanf expects "Type of argument" = "Pointer to int"
@@ -61,15 +61,54 @@ FdoDateTime DateFromString(const wchar_t* val)
     int minute = -1;
     float seconds = 0.0f;
 
-    int res = swscanf(val, L"%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
-
+    const wchar_t* valtmp = val;
+    int formatDate = 0x00;
+    while(*valtmp != '\0' && valtmp-val < 30)
+    {
+        if (*valtmp == '-')
+            formatDate |= 0x01;
+        else if (*valtmp == ':')
+        {
+            formatDate |= 0x02;
+            break;
+        }
+        else if (*valtmp == ' ')
+        {
+            formatDate |= 0x04;
+            break;
+        }
+        else if (*valtmp == 'T')
+        {
+            formatDate |= 0x08;
+            break;
+        }
+        valtmp++;
+    }
+    
+    int res = 0;
+    if (formatDate != 0x00)
+    {
+        if ((formatDate&(~0x01)) == 0x00) // it's a date
+            res = swscanf(val, L"%d-%d-%d", &year, &month, &day);
+        else if ((formatDate&(~0x02)) == 0x00) // it's a time
+            res = swscanf(val, L"%d:%d:%f", &hour, &minute, &seconds);
+        else if ((formatDate&(~0x07)) == 0x00) // it's a datetime using space
+            res = swscanf(val, L"%d-%d-%d %d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
+        else  if ((formatDate&(~0x0B)) == 0x00) // it's a datetime using T
+            res = swscanf(val, L"%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
+    }
     if (res != 3 && res != 5 && res != 6)
-        throw FdoException::Create(L"Failed to parse DateTime.");
+    {
+        if (excOnErr)
+            throw FdoException::Create(L"Failed to parse DateTime.");
+        else
+            return FdoDateTime();
+    }
     
     return FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, (FdoInt8)hour, (FdoInt8)minute, seconds);
 }
 
-FdoDateTime DateFromString(const char* val)
+FdoDateTime DateFromString(const char* val, bool excOnErr)
 {
     // to avoid stack corruption declare following variables
     // since swscanf expects "Type of argument" = "Pointer to int"
@@ -80,10 +119,49 @@ FdoDateTime DateFromString(const char* val)
     int minute = -1;
     float seconds = 0.0f;
 
-    int res = sscanf(val, "%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
-
+    const char* valtmp = val;
+    int formatDate = 0x00;
+    while(*valtmp != '\0' && valtmp-val < 30)
+    {
+        if (*valtmp == '-')
+            formatDate |= 0x01;
+        else if (*valtmp == ':')
+        {
+            formatDate |= 0x02;
+            break;
+        }
+        else if (*valtmp == ' ')
+        {
+            formatDate |= 0x04;
+            break;
+        }
+        else if (*valtmp == 'T')
+        {
+            formatDate |= 0x08;
+            break;
+        }
+        valtmp++;
+    }
+    
+    int res = 0;
+    if (formatDate != 0x00)
+    {
+        if ((formatDate&(~0x01)) == 0x00) // it's a date
+            res = sscanf(val, "%d-%d-%d", &year, &month, &day);
+        else if ((formatDate&(~0x02)) == 0x00) // it's a time
+            res = sscanf(val, "%d:%d:%f", &hour, &minute, &seconds);
+        else if ((formatDate&(~0x07)) == 0x00) // it's a datetime using space
+            res = sscanf(val, "%d-%d-%d %d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
+        else  if ((formatDate&(~0x0B)) == 0x00) // it's a datetime using T
+            res = sscanf(val, "%d-%d-%dT%d:%d:%f", &year, &month, &day, &hour, &minute, &seconds);
+    }
     if (res != 3 && res != 5 && res != 6)
-        throw FdoException::Create(L"Failed to parse DateTime.");
+    {
+        if (excOnErr)
+            throw FdoException::Create(L"Failed to parse DateTime.");
+        else
+            return FdoDateTime();
+    }
     
     return FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, (FdoInt8)hour, (FdoInt8)minute, seconds);
 }

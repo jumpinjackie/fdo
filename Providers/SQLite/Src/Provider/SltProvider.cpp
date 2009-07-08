@@ -1529,32 +1529,71 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     FdoString* defVal = prop->GetDefaultValue();
     FdoDataType dt = prop->GetDataType();
     FdoPtr<FdoPropertyValueConstraint> constr = prop->GetValueConstraint();
+    char dateBuff[31];
+    *dateBuff = '\0';
     if(defVal != NULL && defVal[0] != '\0')
     {
         switch(dt)
         {
             case FdoDataType_String:
-                if (constr == NULL || constr->Contains(FdoPtr<FdoStringValue>(FdoStringValue::Create(defVal))))
+                if (constr != NULL && constr->Contains(FdoPtr<FdoStringValue>(FdoStringValue::Create(defVal))))
                 {
-                    sb.Append(" DEFAULT(");
+                    sb.Append(" DEFAULT(", 9);
                     sb.AppendSQuoted(defVal);
-                    sb.Append(")");
+                    sb.Append(")", 1);
                 }
             break;
             case FdoDataType_Boolean:
-            case FdoDataType_DateTime:
             case FdoDataType_BLOB:
             case FdoDataType_CLOB:
                 // nothing
             break;
+            case FdoDataType_DateTime:
+                // check if default values are ok in case we have a constraint
+                if(constr != NULL)
+                {
+                    int len = wcslen(defVal);
+                    const wchar_t* defValtmp = defVal;
+                    std::wstring wsVal;
+                    if (len > 2)
+                    {
+                        if (*defVal == '\'' && *(defVal+len-1) == '\'')
+                        {
+                            wsVal = std::wstring(defVal+1, len-2);
+                        }
+                        else if (*defVal == 'D' || *defVal == 'T' && *(defVal+len-1) == '\'')
+                        {
+                            // eliminate "DATE '" or "TIME '" or "TIMESTAMP '" from the default value
+                            while (*defValtmp != '\'' && *defValtmp != '\0' && (defValtmp-defVal)<15) defValtmp++;
+                            if (*defValtmp == '\'')
+                                wsVal = std::wstring(defValtmp+1, len-(defValtmp-defVal)-2);
+                            else
+                                wsVal = defVal;
+                        }
+                        else
+                            wsVal = defVal;
+
+                        FdoPtr<FdoDataValue> dVal = SltMetadata::GenerateConstraintValue(dt, wsVal.c_str());
+                        if(dVal != NULL && !dVal->IsNull() && constr->Contains(dVal))
+                        {
+                            sb.Append(" DEFAULT(", 9);
+                            FdoDateTimeValue* dataValue = static_cast<FdoDateTimeValue*>(dVal.p);
+                            FdoDateTime dtRet = dataValue->GetDateTime();
+                            DateToString(&dtRet, dateBuff, 31);
+                            sb.AppendSQuoted(dateBuff);
+                            sb.Append(")", 1);
+                        }
+                    }
+                }
+            break;
             //FdoDataType_Byte FdoDataType_Decimal FdoDataType_Double FdoDataType_Int16 FdoDataType_Int32 FdoDataType_Int64 FdoDataType_Single
             default:
                 // check if default values are ok in case we have a constraint
-                if(constr == NULL || constr->Contains(FdoPtr<FdoDataValue>(SltMetadata::GenerateConstraintValue(dt, defVal))))
+                if(constr != NULL && constr->Contains(FdoPtr<FdoDataValue>(SltMetadata::GenerateConstraintValue(dt, defVal))))
                 {
-                    sb.Append(" DEFAULT(");
+                    sb.Append(" DEFAULT(", 9);
                     sb.Append(defVal);
-                    sb.Append(")");
+                    sb.Append(")", 1);
                 }
             break;
         }
@@ -1563,11 +1602,104 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     if (constr == NULL)
         return;
 
-    if (dt == FdoDataType_DateTime) // TODO next
-        return;
-
     FdoString* propName = prop->GetName();
-    if (constr->GetConstraintType() == FdoPropertyValueConstraintType_Range)
+
+    if (dt == FdoDataType_DateTime)
+    {
+        *dateBuff = '\0';
+        FdoDateTime dtRet;
+        FdoDateTimeValue* dataValue;
+        if (constr->GetConstraintType() == FdoPropertyValueConstraintType_Range)
+        {
+            FdoPropertyValueConstraintRange* rgConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+            FdoPtr<FdoDataValue> dataMin = rgConstr->GetMinValue();
+            FdoPtr<FdoDataValue> dataMax = rgConstr->GetMaxValue();
+            if((dataMin != NULL && dataMin->GetDataType() == FdoDataType_DateTime && !dataMin->IsNull()) ||
+                (dataMax != NULL  && dataMax->GetDataType() == FdoDataType_DateTime && !dataMax->IsNull()))
+            {
+                sb.Append(" CONSTRAINT CHK_", 16);
+                sb.Append(propName);
+                sb.Append(" CHECK(", 7);
+                if ((dataMin != NULL && !dataMin->IsNull()) && (dataMax != NULL  && !dataMax->IsNull())
+                    && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
+                {
+                    sb.AppendDQuoted(propName);
+                    sb.Append(" BETWEEN ", 9);
+                    
+                    dataValue = static_cast<FdoDateTimeValue*>(dataMin.p);
+                    dtRet = dataValue->GetDateTime();
+                    DateToString(&dtRet, dateBuff, 31);
+                    sb.AppendSQuoted(dateBuff);
+                    sb.Append(" AND ", 5);
+                    dataValue = static_cast<FdoDateTimeValue*>(dataMax.p);
+                    dtRet = dataValue->GetDateTime();
+                    DateToString(&dtRet, dateBuff, 31);
+                    sb.AppendSQuoted(dateBuff);
+                }
+                else
+                {
+                    if (dataMin != NULL && !dataMin->IsNull())
+                    {
+                        sb.AppendDQuoted(propName);
+                        if(rgConstr->GetMinInclusive())
+                            sb.Append(">=", 2);
+                        else
+                            sb.Append(">", 1);
+                        dataValue = static_cast<FdoDateTimeValue*>(dataMin.p);
+                        dtRet = dataValue->GetDateTime();
+                        DateToString(&dtRet, dateBuff, 31);
+                        sb.AppendSQuoted(dateBuff);
+                    }
+                    if (dataMax != NULL && !dataMax->IsNull())
+                    {
+                        if(dataMin != NULL && !dataMin->IsNull())
+                            sb.Append(" AND ", 5);
+                        
+                        sb.AppendDQuoted(propName);
+                        if(rgConstr->GetMinInclusive())
+                            sb.Append("<=", 2);
+                        else
+                            sb.Append("<", 1);
+                        dataValue = static_cast<FdoDateTimeValue*>(dataMax.p);
+                        dtRet = dataValue->GetDateTime();
+                        DateToString(&dtRet, dateBuff, 31);
+                        sb.AppendSQuoted(dateBuff);
+                    }
+                }
+
+                sb.Append(")", 1);
+            }
+        }
+        else
+        {
+            FdoPropertyValueConstraintList* lsConstr = static_cast<FdoPropertyValueConstraintList*>(constr.p);
+            FdoPtr<FdoDataValueCollection> dataColl = lsConstr->GetConstraintList();
+            int cnt = (dataColl != NULL) ? dataColl->GetCount() : 0;
+            if (cnt != 0)
+            {
+                sb.Append(" CONSTRAINT CHK_", 16);
+                sb.Append(propName);
+                sb.Append(" CHECK(", 7);
+                sb.AppendDQuoted(propName);
+                sb.Append(" IN(", 4);
+                for(int idx = 0; idx < cnt; idx++)
+                {
+                    FdoPtr<FdoDataValue> dataItem = dataColl->GetItem(idx);
+                    if(dataItem != NULL && dataItem->GetDataType() == FdoDataType_DateTime && !dataItem->IsNull())
+                    {
+                        dataValue = static_cast<FdoDateTimeValue*>(dataItem.p);
+                        dtRet = dataValue->GetDateTime();
+                        DateToString(&dtRet, dateBuff, 31);
+                        sb.AppendSQuoted(dateBuff);
+                    }
+                    if (idx != (cnt-1))
+                        sb.Append(",", 1);
+                }
+                sb.Append("))", 2);
+            }
+        }
+    }
+    else if (constr->GetConstraintType() == FdoPropertyValueConstraintType_Range)
     {
         FdoPropertyValueConstraintRange* rgConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
         FdoPtr<FdoDataValue> dataMin = rgConstr->GetMinValue();

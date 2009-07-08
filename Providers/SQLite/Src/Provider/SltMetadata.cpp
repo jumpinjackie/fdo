@@ -350,7 +350,13 @@ FdoClassDefinition* SltMetadata::ToClass()
                 {
                     sb.Reset();
                     sb.Append((const char*)defValExp->token.z, defValExp->token.n);
-                    dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
+                    if (dt == FdoDataType_DateTime)
+                    {
+                        FdoPtr<FdoDateTimeValue> dtVal = FdoDateTimeValue::Create(DateFromString(sb.Data(), false));
+                        dpd->SetDefaultValue(dtVal->ToString());
+                    }
+                    else
+                        dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
                 }
                 // since on a class we usually don't have too many constraints we can use normal search
                 for(size_t idx = 0; idx < tableConstraints.size(); idx ++)
@@ -406,7 +412,10 @@ FdoDataValue* SltMetadata::GenerateConstraintValue(FdoDataType type, FdoString* 
         retVal = FdoStringValue::Create(value);
         break;
     case FdoDataType_DateTime:
-        // TODO
+        if (value == NULL || *value == '\0')
+            retVal = NULL;
+        else
+            retVal = FdoDateTimeValue::Create(DateFromString(value));
         break;
     }
     return FDO_SAFE_ADDREF(retVal.p);
