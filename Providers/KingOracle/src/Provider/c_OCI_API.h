@@ -162,7 +162,7 @@ public:
   
   
   //static void c_OCI_API::CloseConnection(oracle::occi::Connection * Conn);
-  static void c_OCI_API::CloseConnection(c_Oci_Connection* Conn);
+  static void CloseConnection(c_Oci_Connection* Conn);
   static void OciCheckError(OCIError *errhp, sword status);
   static void OciTerminate();
 
