@@ -521,11 +521,12 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     //first, make a list of all tables that can be FDO feature classes
     std::vector<std::string> tables;
 
-    const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;";
+    const char* tables_sql = "SELECT name FROM sqlite_master WHERE type=? ORDER BY name;";
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
     if (sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail) == SQLITE_OK)
     {
+        sqlite3_bind_text(pstmt, 1, "table", 5, SQLITE_STATIC);
         while (sqlite3_step(pstmt) == SQLITE_ROW)
             tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
     }
@@ -534,6 +535,11 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
         std::wstring err = A2W_SLOW(pzTail);
         throw FdoException::Create(err.c_str());
     }
+
+    sqlite3_reset(pstmt);
+    sqlite3_bind_text(pstmt, 1, "view", 4, SQLITE_STATIC);
+    while (sqlite3_step(pstmt) == SQLITE_ROW)
+        tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
 
     sqlite3_finalize(pstmt);
 
@@ -577,18 +583,30 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     size_t clen = 4 * wlen+1;
     char* mbfc = (char*)alloca(4*wlen+1);
     W2A_FAST(mbfc, clen, wfc, wlen);
+    StringBuffer sbfcn;
+    char* mbfcname = mbfc;
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
     StringBuffer where((size_t)0);
     bool canFastStep = true;
 
+    SltMetadata* md = GetMetadata(mbfc);
+    FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    if (md->IsView())
+    {
+        CacheViewContent(mbfc);
+        sbfcn.Reset();
+        sbfcn.Append("$view");
+        sbfcn.Append(wfc);
+        mbfc = sbfcn.Data();
+    }
+
     //Translate the filter from FDO to SQLite where clause.
     //Also detect if there is a BBOX query that we can accelerate
     //by using the spatial index.
     if (filter)
     {
-        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc)->ToClass();
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
@@ -617,7 +635,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfc);
+        SpatialIndex* si = GetSpatialIndex(mbfcname);
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
@@ -739,7 +757,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         }
     }
    
-    return new SltReader(this, props, mbfc, where.Data(), siter, canFastStep, ri);
+    return new SltReader(this, props, mbfcname, where.Data(), siter, canFastStep, ri);
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -751,10 +769,19 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
                                                 FdoIdentifierCollection*    grouping)
 {
     const wchar_t* wfc = fcname->GetName();
-    size_t wlen = wcslen(wfc);
-    size_t clen = 4 * wlen+1;
-    char* mbfc = (char*)alloca(4*wlen+1);
-    W2A_FAST(mbfc, clen, wfc, wlen);
+    StringBuffer sbfcn;
+    sbfcn.Append(wfc);
+    char* mbfc = sbfcn.Data();
+    SltMetadata* md = GetMetadata(mbfc);
+    FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    if (md->IsView())
+    {
+        CacheViewContent(mbfc);
+        sbfcn.Reset();
+        sbfcn.Append("$view");
+        sbfcn.Append(wfc);
+        mbfc = sbfcn.Data();
+    }
     
     StringBuffer sb;
     SltExpressionTranslator exTrans;
@@ -774,10 +801,6 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     }
     else
     {
-        SltMetadata* md = GetMetadata(mbfc);
-
-        FdoPtr<FdoClassDefinition> fc = md->ToClass();
-
         if (!filter && fc->GetClassType() == FdoClassType_FeatureClass)
         {
             SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p);
@@ -2299,4 +2322,24 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
             throw FdoException::Create(L"No active transaction to rollback");
     }
     return rc;
+}
+
+void SltConnection::CacheViewContent(const char* viewName)
+{
+    StringBuffer sb;
+    sb.Append("\"$view");
+    sb.Append(viewName);
+    sb.Append("\"");
+    Table* table = sqlite3FindTable(m_dbRead, sb.Data(), 0);
+    if (table == NULL)
+    {
+        sb.Reset();
+        sb.Append("CREATE TEMP TABLE ", 18);
+        sb.Append("\"$view");
+        sb.Append(viewName);
+        sb.Append("\" AS SELECT * FROM ");
+        sb.AppendDQuoted(viewName);
+        sb.Append(";");
+        sqlite3_exec(m_dbRead, sb.Data(), NULL, NULL, NULL);
+    }
 }
