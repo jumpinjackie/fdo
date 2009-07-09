@@ -214,7 +214,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     m_fromwhere.Append(" FROM ", 6);
     if (!md->IsView())
-        m_fromwhere.Append(fcname);
+        m_fromwhere.AppendDQuoted(fcname);
     else
     {
         m_connection->CacheViewContent(fcname);
