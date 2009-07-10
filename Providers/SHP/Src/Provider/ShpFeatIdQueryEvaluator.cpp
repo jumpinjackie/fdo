@@ -491,7 +491,7 @@ FdoGeometricPropertyDefinition* ShpFeatIdQueryEvaluator::FindGeomProp(FdoClassDe
 recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_list* right)
 {
     //if one of the lists is null it means it iterates over all features...
-    //so return NULL as the union of the two
+    //so return NULL as the union of the two.
     if (left == NULL || right == NULL)
         return NULL;  
 
