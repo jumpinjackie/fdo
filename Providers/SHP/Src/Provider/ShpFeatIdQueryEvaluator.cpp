@@ -491,12 +491,9 @@ FdoGeometricPropertyDefinition* ShpFeatIdQueryEvaluator::FindGeomProp(FdoClassDe
 recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_list* right)
 {
     //if one of the lists is null it means it iterates over all features...
-    //so return that list as the union of the two
-    if (left == NULL)
-        return left;
-
-    if (right == NULL)
-        return right;
+    //so return NULL as the union of the two
+    if (left == NULL || right == NULL)
+        return NULL;  
 
 	if ( left->size() > 0 )
 		std::sort(left->begin(), left->end(), std::less<FdoInt32>());
@@ -527,9 +524,7 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_li
         }
     }
 
-    //dispose of inputs and return newly allocated list
-    delete left;
-
+    //dispose of inputs and return newly allocated list   
 	right->clear();
 
     return ret;
@@ -539,12 +534,16 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsUnion(recno_list* left, recno_li
 recno_list* ShpFeatIdQueryEvaluator::FeatidListsIntersection(recno_list* left, recno_list* right)
 {
     //if one of the lists is null it means it iterates over all features...
-    //so return the non-null list as the intersection of the two, if one is non-null
-    if (left == NULL)
-        return right;
-
-    if (right == NULL)
-        return left;
+	//so return the non-null list as the intersection of the two, if one is non-null
+	if(left == NULL && right == NULL)
+		return NULL;
+	else
+	{
+		if (left == NULL)
+			return new recno_list(*right);
+		else if (right == NULL)
+			return new recno_list(*left);
+	}
 
     std::sort(left->begin(), left->end(), std::less<FdoInt32>());
     std::sort(right->begin(), right->end(), std::less<FdoInt32>());  // NO NEEED
@@ -573,8 +572,6 @@ recno_list* ShpFeatIdQueryEvaluator::FeatidListsIntersection(recno_list* left, r
     }
 
     //dispose of inputs and return newly allocated list
-    delete left;
-
 	right->clear();
 
     return ret;
@@ -696,8 +693,8 @@ bool  ShpFeatIdQueryEvaluator::MergeFeatidLists( size_t maxAllowedSize, int maxR
 			// Use current binary logical operation to merge the current leaf result to the global list
 			if ( first_leaf )
 			{
-				m_MergedFeatidList = new recno_list;
-				m_MergedFeatidList = FeatidListsUnion( m_MergedFeatidList, m_MergedFeatidListLeaf );		
+				recno_list temp_list;				
+				m_MergedFeatidList = FeatidListsUnion( &temp_list, m_MergedFeatidListLeaf );
 			}
 			else
 			{
@@ -707,11 +704,19 @@ bool  ShpFeatIdQueryEvaluator::MergeFeatidLists( size_t maxAllowedSize, int maxR
 				switch ( m_LogicalOpsList[depth3])
 				{
 				case FdoBinaryLogicalOperations_And:
-					m_MergedFeatidList = FeatidListsIntersection( m_MergedFeatidList, m_MergedFeatidListLeaf );
-					break;
+					{
+						recno_list* ret_list = FeatidListsIntersection( m_MergedFeatidList, m_MergedFeatidListLeaf );						
+						delete m_MergedFeatidList;
+						m_MergedFeatidList = ret_list;
+						break;
+					}
 				case FdoBinaryLogicalOperations_Or:
-					m_MergedFeatidList = FeatidListsUnion( m_MergedFeatidList, m_MergedFeatidListLeaf );
-					break;
+					{
+						recno_list* ret_list = FeatidListsUnion( m_MergedFeatidList, m_MergedFeatidListLeaf ); 
+						delete m_MergedFeatidList;
+						m_MergedFeatidList = ret_list;
+						break;
+					}
 				default:
 					throw FdoException::Create (L"Invalid logical operation type");
 				}
@@ -754,66 +759,69 @@ void ShpFeatIdQueryEvaluator::ProcessLeafExpession( interval_res* curr_filter, i
     {
         FdoInt32            featId = (*featid_list->begin());
 
-        recno_list*         tmp_list = new recno_list;
+        recno_list        tmp_list;
 
         switch ( curr_comp_op )
         {
         case FdoComparisonOperations_EqualTo : 
-            tmp_list->push_back( featId );
+            tmp_list.push_back( featId );
             break;
         case FdoComparisonOperations_NotEqualTo : 
             for ( FdoInt32 i = 0; i < maxRecords; i++ )
             {
                 if ( i != featId )
-                    tmp_list->push_back( i );
+                    tmp_list.push_back( i );
             }
             break;
         case FdoComparisonOperations_GreaterThan : 
             for ( FdoInt32 i = featId + 1; i < maxRecords; i++ )
-                tmp_list->push_back( i );
+                tmp_list.push_back( i );
             break;
         case FdoComparisonOperations_GreaterThanOrEqualTo : 
             for ( FdoInt32 i = featId; i < maxRecords; i++ )
-                tmp_list->push_back( i );
+                tmp_list.push_back( i );
             break;
         case FdoComparisonOperations_LessThan : 
             for ( FdoInt32 i = 0; i < featId; i++ )
-                tmp_list->push_back( i );
+                tmp_list.push_back( i );
             break;
         case FdoComparisonOperations_LessThanOrEqualTo : 
             for ( FdoInt32 i = 0; i <= featId; i++ )
-                tmp_list->push_back( i );
+                tmp_list.push_back( i );
             break;
         case ShpComparisonOperation_In: // In or Spatial query candidates
             for ( recno_list::iterator iter = featid_list->begin(); iter != featid_list->end(); iter++)
-                tmp_list->push_back( *iter );
+                tmp_list.push_back( *iter );
             break;
         case FdoComparisonOperations_Like :
         default:
             throw FdoException::Create (L"Invalid comparison operation type");
         }
 
-		// The merge functions returns the tmp_list in case the right arg. is NULL.
-		bool	deleteTmpList = true;
-
         // Use current binary logical operation to merge the current list
 
         switch ( curr_logical_op )
         {
-        case FdoBinaryLogicalOperations_And:
-			deleteTmpList = (m_MergedFeatidListLeaf != NULL );
-            m_MergedFeatidListLeaf = FeatidListsIntersection( m_MergedFeatidListLeaf, tmp_list );
-            break;
-        case FdoBinaryLogicalOperations_Or:
-			deleteTmpList = (m_MergedFeatidListLeaf != NULL );
-            m_MergedFeatidListLeaf = FeatidListsUnion( m_MergedFeatidListLeaf, tmp_list );
-            break;
+		case FdoBinaryLogicalOperations_And:
+			{
+				recno_list* ret_list = FeatidListsIntersection( m_MergedFeatidListLeaf, &tmp_list );
+				delete m_MergedFeatidListLeaf;
+				m_MergedFeatidListLeaf = ret_list;
+				break;
+			}
+		case FdoBinaryLogicalOperations_Or:
+			{
+				recno_list* ret_list = FeatidListsUnion( m_MergedFeatidListLeaf, &tmp_list );
+				delete m_MergedFeatidListLeaf;
+				m_MergedFeatidListLeaf = ret_list;
+				break;
+			}
         case ShpLogicalOperation_None:
 			{
 				// No merging if first time, just copy.  
 				m_MergedFeatidListLeaf = new recno_list;
-				recno_list::iterator iter1 = tmp_list->begin();
-				while (iter1 != tmp_list->end())
+				recno_list::iterator iter1 = tmp_list.begin();
+				while (iter1 != tmp_list.end())
 				{
 					m_MergedFeatidListLeaf->push_back(*iter1++);
 				}
@@ -821,13 +829,7 @@ void ShpFeatIdQueryEvaluator::ProcessLeafExpession( interval_res* curr_filter, i
             break;
         default:
             throw FdoException::Create (L"Invalid logical operation type");
-        }
-	
-		if ( deleteTmpList )
-		{
-			delete tmp_list;
-			tmp_list = NULL;
-		}
+        }		
 
 		if ( (m_LogicalOpsList.size() != 0 ) && m_LogicalOpsList[curr_filter->depth] == ShpUnaryLogicalOperation_Not )
 			m_MergedFeatidListLeaf = FeatidListNegate( m_MergedFeatidListLeaf, maxRecords );
