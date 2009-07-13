@@ -108,7 +108,6 @@ void ConnectionInfoTest::TestProviderInfo ()
 FdoIConnection *ConnectionInfoTest::CreateDb() 
 {
     FdoIConnection *connection;
-
 #ifdef _WIN32
 	wchar_t fullpath[1024];
 	_wfullpath(fullpath, CI_TEST_FILE, 1024);
