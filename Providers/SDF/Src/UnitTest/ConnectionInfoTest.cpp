@@ -109,17 +109,17 @@ FdoIConnection *ConnectionInfoTest::CreateDb()
 {
     FdoIConnection *connection;
 
-//#ifdef _WIN32
+#ifdef _WIN32
 	wchar_t fullpath[1024];
 	_wfullpath(fullpath, CI_TEST_FILE, 1024);
-//#else
-	//char cpath[1024];
-	//char cfullpath[1024];
-	//wcstombs(cpath, CI_TEST_FILE, 1024);
-	//realpath(cpath, cfullpath);
-	//wchar_t fullpath[1024];
-	//mbstowcs(fullpath, cfullpath, 1024);
-//#endif
+#else
+	char cpath[1024];
+	char cfullpath[1024];
+	wcstombs(cpath, CI_TEST_FILE, 1024);
+	realpath(cpath, cfullpath);
+	wchar_t fullpath[1024];
+	mbstowcs(fullpath, cfullpath, 1024);
+#endif
 
     size_t len = wcstombs(NULL, CI_TEST_FILE, 0);
 	char *mbsPath = new char[len+1];
