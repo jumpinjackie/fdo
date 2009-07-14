@@ -44,22 +44,6 @@ void CommandTest::setUp()
     // nothing to do at setup time... yet
 }
 
-void CommandTest::testException()
-{
-    bool bException = false;
-    try
-    {
-        FdoPtr<FdoIdentifier> pIdent;
-        pIdent->GetName();
-    }
-    catch (FdoException *exp)
-    {
-        bException = true;
-        exp->Release();
-    }
-    FDO_CPPUNIT_ASSERT(bException == true);
-}
-
 void CommandTest::testBatchParameterValueCollection()
 {
     FdoParameterValueCollection*    pColl;
