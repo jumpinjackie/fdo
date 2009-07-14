@@ -37,13 +37,11 @@ public:
 
     FdoClassDefinition*     ToClass(); 
 
-    bool                    Failed() { return m_table == 0; };
-
     GeomFormat              GetGeomFormat() { return (GeomFormat)m_geomFormat; }
 
     static FdoDataValue* GenerateConstraintValue(FdoDataType type, FdoString* value);
 
-    bool IsView() {return (m_table != NULL) ? (m_table->pSelect != NULL) : false;}
+    bool IsView() { return m_bIsView; }
 
 private:
     class SQLiteExpression
@@ -62,13 +60,13 @@ private:
     void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
 
     void FindSpatialContextName(int srid, std::wstring& ret);
-    void ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapNamesList& properties, StlMapNamesList& expressions);
+    void ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapNamesList& properties, StlMapNamesList& expressions, Table* pTable);
 
     SltConnection*      m_connection;
     FdoClassDefinition* m_fc;
-    Table*              m_table;
-    Table*              m_mdtable;
     int                 m_geomFormat;
     bool                m_bUseFdoMetadata;
+    std::string         m_tablename;
+    bool                m_bIsView;
 };
 

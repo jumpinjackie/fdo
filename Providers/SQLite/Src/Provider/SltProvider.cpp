@@ -274,6 +274,10 @@ FdoConnectionState SltConnection::Open()
     if (sUseMeta != NULL && _wcsicmp(sUseMeta, L"true") == 0)
         m_bUseFdoMetadata = true;
 
+    sqlite3_initialize();
+    sqlite3_mutex *pMaster = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER);
+    sqlite3_mutex_enter(pMaster);
+
     //We will use two connections to the database -- one for reading and one for writing.
     //This will help us with concurrent reads and writes (to different tables).
     //If we use the same SQLite connection, we will get problems with transaction nesting
@@ -327,6 +331,9 @@ FdoConnectionState SltConnection::Open()
     }
 
     m_connState = FdoConnectionState_Open;
+
+    sqlite3_mutex_leave(pMaster);
+
     return m_connState;
 }
 
@@ -938,14 +945,14 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
         if (!IsMetadataTable(table))
         {
             ret = new SltMetadata(this, table, m_bUseFdoMetadata && m_bHasFdoMetadata);
+            FdoPtr<FdoClassDefinition> fc = ret->ToClass();
 
-            if (ret->Failed())
+            //Check if it failed to find the corresponding database table
+            if (fc == NULL)
             {
                 delete ret;
                 ret = NULL;
             }
-            else //if we got a table, also create the cached FDO feature class corresponding to it
-                ret->ToClass()->Release();
         }
 
         m_mNameToMetadata[_strdup(table)] = ret; //Note the memory allocation here
