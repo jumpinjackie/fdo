@@ -1559,6 +1559,9 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     FdoString* defVal = prop->GetDefaultValue();
     FdoDataType dt = prop->GetDataType();
     FdoPtr<FdoPropertyValueConstraint> constr = prop->GetValueConstraint();
+    if (!prop->GetNullable())
+        sb.Append(" NOT NULL ", 10);
+
     char dateBuff[31];
     *dateBuff = '\0';
     if(defVal != NULL && defVal[0] != '\0')
@@ -1566,7 +1569,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
         switch(dt)
         {
             case FdoDataType_String:
-                if (constr != NULL && constr->Contains(FdoPtr<FdoStringValue>(FdoStringValue::Create(defVal))))
+                if (constr == NULL || constr->Contains(FdoPtr<FdoStringValue>(FdoStringValue::Create(defVal))))
                 {
                     sb.Append(" DEFAULT(", 9);
                     sb.AppendSQuoted(defVal);
@@ -1579,8 +1582,6 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
                 // nothing
             break;
             case FdoDataType_DateTime:
-                // check if default values are ok in case we have a constraint
-                if(constr != NULL)
                 {
                     int len = wcslen(defVal);
                     const wchar_t* defValtmp = defVal;
@@ -1604,7 +1605,8 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
                             wsVal = defVal;
 
                         FdoPtr<FdoDataValue> dVal = SltMetadata::GenerateConstraintValue(dt, wsVal.c_str());
-                        if(dVal != NULL && !dVal->IsNull() && constr->Contains(dVal))
+                        // check if default values are ok in case we have a constraint
+                        if((dVal != NULL && !dVal->IsNull()) && (constr == NULL || constr->Contains(dVal)))
                         {
                             sb.Append(" DEFAULT(", 9);
                             FdoDateTimeValue* dataValue = static_cast<FdoDateTimeValue*>(dVal.p);
@@ -1619,7 +1621,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
             //FdoDataType_Byte FdoDataType_Decimal FdoDataType_Double FdoDataType_Int16 FdoDataType_Int32 FdoDataType_Int64 FdoDataType_Single
             default:
                 // check if default values are ok in case we have a constraint
-                if(constr != NULL && constr->Contains(FdoPtr<FdoDataValue>(SltMetadata::GenerateConstraintValue(dt, defVal))))
+                if(constr == NULL || constr->Contains(FdoPtr<FdoDataValue>(SltMetadata::GenerateConstraintValue(dt, defVal))))
                 {
                     sb.Append(" DEFAULT(", 9);
                     sb.Append(defVal);
