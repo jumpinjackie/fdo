@@ -6,6 +6,8 @@
 #include "FdoCommonOSUtil.h"
 #include <math.h>
 #include <algorithm>
+#include <limits>       // For quiet_NaN()
+using namespace std;
 
 #define SQLITE_INFO_STRING(/*IN*/str, /*OUT*/len, /*OUT*/lenInChars, /*IN-OUT*/charsToStudy) {  \
   len = lenInChars = 0;                                                                         \
@@ -16,6 +18,10 @@
   }                                                                                             \
   len = (z2 - str);                                                                             \
 }                                                                                               \
+
+// TODO encapsulate this value in Fdo Common instead of defining
+// it in various places.
+#define NULL_ORD -1.25e126
 
 //===============================================================================
 //  Basic math functions
@@ -816,7 +822,7 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc == 1);
 
-    double ret = 0;
+    double ret = numeric_limits<double>::quiet_NaN();
 
     //extract operation type 1 = X, 2 = Y, 3 = Z, 4 = M
     long optype = (long)sqlite3_user_data(context);
@@ -889,7 +895,16 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         }
     }
 
-    sqlite3_result_double(context, ret);
+    if ( (ret == NULL_ORD) || 
+#ifdef _WIN32
+        _isnan(ret) 
+#else
+        isnan(ret)
+#endif
+    )
+        sqlite3_result_null(context);
+    else
+        sqlite3_result_double(context, ret);
 }
 
 //Implementation of the Lenght(), Area() functions for geometries
