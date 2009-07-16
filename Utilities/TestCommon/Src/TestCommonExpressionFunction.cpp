@@ -2272,6 +2272,7 @@ void TestCommonExpressionFunction::CheckXYZMValue (
         if (curr_value != exp_values[dimension][idx])
             unexpected_result = true;
 
+
       }  //  else ...
 
 	}  //  while ...
@@ -2513,6 +2514,8 @@ FdoIFeatureReader *TestCommonExpressionFunction::ExecuteSelectCommand (
     if (filter != NULL)
         sel_cmd->SetFilter(filter);
     id_col = sel_cmd->GetPropertyNames();
+    id_prop = FdoIdentifier::Create(L"featid");
+    id_col->Add(id_prop);
     if (inc_id_prop) {
 
         id_prop = FdoIdentifier::Create(L"id");
