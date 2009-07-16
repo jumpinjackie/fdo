@@ -19,10 +19,7 @@
 #ifndef FDO_EXPRESSIONFUNCTIONTEST_H
 #define FDO_EXPRESSIONFUNCTIONTEST_H
 
-#include <cppunit/TestCase.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <Fdo.h>
-
+#include <TestCommonExpressionFunctionW.h>
 
 // =============================================================================
 // | The file contains the definition of the class FdoExpressionFunctionTest. It
@@ -45,106 +42,10 @@ static const wchar_t* DATASTORE_EXTENSION = L"..\\..\\TestData\\ExpressionEngine
 static const wchar_t* DATASTORE_EXTENSION = L"../../TestData/ExpressionEngineFunctionTest.SDX";
 #endif
 
-static const wchar_t* XYZM_POINT_CLASS = L"xyzm_point";
-
-class FdoExpressionFunctionTest : public CppUnit::TestCase
+class FdoExpressionFunctionTest : public TestCommonExpressionFunctionW
 {
 
-  CPPUNIT_TEST_SUITE(FdoExpressionFunctionTest);
-    // =========================================
-    // ====  AGGREGATE FUNCTION UNIT TESTS  ====
-    // =========================================
-    // CPPUNIT_TEST(TestAvgFunction);
-    // CPPUNIT_TEST(TestCountFunction);
-    // CPPUNIT_TEST(TestMaxFunction);
-    // CPPUNIT_TEST(TestMedianFunction);
-    // CPPUNIT_TEST(TestMinFunction);
-    // CPPUNIT_TEST(TestStddevFunction);
-    // CPPUNIT_TEST(TestSumFunction);
-    // =========================================
-    // ==== CONVERSION FUNCTION UNIT TESTS  ====
-    // =========================================
-    // CPPUNIT_TEST(TestNullValueFunction);
-    // CPPUNIT_TEST(TestToDateFunction);
-    // CPPUNIT_TEST(TestToDateFunctionAsFilter);
-    // CPPUNIT_TEST(TestToDoubleFunction);
-    // CPPUNIT_TEST(TestToDoubleFunctionAsFilter);
-    // CPPUNIT_TEST(TestToFloatFunction);
-    // CPPUNIT_TEST(TestToInt32Function);
-    // CPPUNIT_TEST(TestToInt64Function);
-    // CPPUNIT_TEST(TestToStringFunction);
-    // =========================================
-    // ====    DATE FUNCTION UNIT TESTS     ====
-    // =========================================
-    // CPPUNIT_TEST(TestAddMonthsFunction);
-    // CPPUNIT_TEST(TestCurrentDateFunction);
-    // CPPUNIT_TEST(TestExtractFunction);
-    // CPPUNIT_TEST(TestExtractFunctionToDouble);
-    // CPPUNIT_TEST(TestExtractFunctionToInt);
-    // CPPUNIT_TEST(TestMonthsBetweenFunction);
-    // =========================================
-    // ====  GEOMTRY FUNCTION UNIT TESTS    ====
-    // =========================================
-	// CPPUNIT_TEST(TestXYZMFunction);
-    // =========================================
-    // ====    MATH FUNCTION UNIT TESTS     ====
-    // =========================================
-    // CPPUNIT_TEST(TestAbsFunction);
-    // CPPUNIT_TEST(TestAcosFunction);
-    // CPPUNIT_TEST(TestAsinFunction);
-    // CPPUNIT_TEST(TestAtanFunction);
-    // CPPUNIT_TEST(TestAtan2Function);
-    // CPPUNIT_TEST(TestCosFunction);
-    // CPPUNIT_TEST(TestExpFunction);
-    // CPPUNIT_TEST(TestLnFunction);
-    // CPPUNIT_TEST(TestLogFunction);
-    // CPPUNIT_TEST(TestModFunction);
-    // CPPUNIT_TEST(TestPowerFunction);
-    // CPPUNIT_TEST(TestRemainderFunction);
-    // CPPUNIT_TEST(TestSinFunction);
-    // CPPUNIT_TEST(TestSqrtFunction);
-    // CPPUNIT_TEST(TestTanFunction);
-    // =========================================
-    // ====   NUMERIC FUNCTION UNIT TESTS   ====
-    // =========================================
-    // CPPUNIT_TEST(TestCeilFunction);
-    // CPPUNIT_TEST(TestFloorFunction);
-    // CPPUNIT_TEST(TestRoundFunction);
-    // CPPUNIT_TEST(TestSignFunction);
-    // CPPUNIT_TEST(TestTruncFunction);
-    // =========================================
-    // ====   STRING FUNCTION UNIT TESTS    ====
-    // =========================================
-    // CPPUNIT_TEST(TestConcatFunction);
-    // CPPUNIT_TEST(TestInstrFunction);
-    // CPPUNIT_TEST(TestInstrFunctionAsFilter);
-    // CPPUNIT_TEST(TestLengthFunction);
-    // CPPUNIT_TEST(TestLowerFunction);
-    // CPPUNIT_TEST(TestLpadFunction);
-    // CPPUNIT_TEST(TestLtrimFunction);
-    // CPPUNIT_TEST(TestRpadFunction);
-    // CPPUNIT_TEST(TestRtrimFunction);
-    // CPPUNIT_TEST(TestSoundexFunction);
-    // CPPUNIT_TEST(TestSubstrFunction);
-    // CPPUNIT_TEST(TestTranslateFunction);
-    // CPPUNIT_TEST(TestTrimFunction);
-    // CPPUNIT_TEST(TestUpperFunction);
-    // =========================================
-    // ====     COMBINATION UNIT TESTS      ====
-    // =========================================
-    // CPPUNIT_TEST(NumberToStringComparison);
-    // CPPUNIT_TEST(RoundNumberToStringComparison);
-	// =========================================
-    // ====       RUN ALL UNIT TESTS        ====
-    // =========================================
-    CPPUNIT_TEST(RunAllExpFctTests);
-    // =========================================
-    // ====       SPECIAL UNIT TESTS        ====
-    // =========================================
-    // CPPUNIT_TEST(ModuloOperation);
-    // CPPUNIT_TEST(SoundexFilter);
-    // CPPUNIT_TEST(SubstrOperation);
-    // CPPUNIT_TEST(ToDateOperation);
+  CPPUNIT_TEST_SUB_SUITE(FdoExpressionFunctionTest, TestCommonExpressionFunctionW);
     // =========================================
     // ====         OPTIMIZER TEST          ====
     // =========================================
@@ -154,43 +55,9 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
 public:
             FdoExpressionFunctionTest ();
     virtual ~FdoExpressionFunctionTest ();
-    void    setUp ();
-    void    tearDown ();
 
 
 protected:
-
-    //-------------------------------------------------------------------------
-    //                       Test Environment Setup Functions
-    //-------------------------------------------------------------------------
-
-    //  AddFeature:
-    //      The function adds a new object for the specified class.The values
-    //      being added are predefined based on the predefined schema.
-
-    void AddFeature (FdoIConnection *current_connection,
-                     FdoString      *class_name,
-                     int            index);
-
-    //  AddTestSchema:
-    //      The function establishes the test schema in the FDO data store
-    //      the provided connection identifies.
-
-    void AddTestSchema (FdoIConnection *current_connection,
-                        FdoString      *schema_name);
-
-    // AddXYZMFeature:
-    //      The function adds a new object for the specified class. The values
-    //      being added are predefined based on the predefined schema.
-
-    void AddXYZMFeature (FdoIConnection *current_connection,
-                         FdoString      *class_name);
-
-    //  CloseConnection:
-    //      The function closes all open connections to the data store used in
-    //      the executed unit tests.
-
-    void CloseConnection ();
 
     //  Connect:
     //      The function establishes the connection to the data store used in
@@ -198,53 +65,9 @@ protected:
 
 	void Connect ();
 
-    //  CreateDataProperty :
-    //      The function creates a data property object based on the provided
-    //      data and returns it back to the calling routine.
-
-    FdoDataPropertyDefinition *CreateDataProperty (
-                                                   FdoString   *property_name,
-                                                   FdoDataType data_type,
-                                                   FdoInt32    data_size,
-                                                   FdoInt32    scale,
-                                                   bool        is_nullable);
-
-    //  CreateFdoFeatureClass:
-    //      The function creates a predefined feature class with the caller
-    //      identifying the class name.
-
-    FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name);
-
-    //  CreateGeometricProperty:
-    //      The function creates the named geometry property and returns it
-    //      back to the calling routine.
-
-    FdoGeometricPropertyDefinition *CreateGeometricProperty (
-                                                    FdoString *property_name);
-
-    // InsertTestFeatures:
-    //      The function inserts the test features for the filter optinmizer
-    //      test cases.
-
-    void InsertTestFeatures (FdoIConnection *connection);
-
-    //  SetupUnitTestEnvironment:
-    //      The function controls the establishing of the test environment in
-    //      the FDO data store the provided connection identifies.
-
-    void SetupUnitTestEnvironment (FdoIConnection *current_connection);
-
-
     //-------------------------------------------------------------------------
     //                           Unit Test Functions
     //-------------------------------------------------------------------------
-
-    //  RunAllExpFctTests:
-    //      The function controls the execution of all unit tests. This way,
-    //      the test setup is done only once.
-
-    void RunAllExpFctTests ();
-
 
     // ========================= AGGREGATE FUNCTIONS =========================
 
@@ -385,15 +208,6 @@ protected:
     //      MONTHSBETWEEN when used as a select-parameter.
 
     void TestMonthsBetweenFunction ();
-
-
-    // ========================= GEOMETRY FUNCTIONS ==========================
-
-    // TestXYZMFunction:
-    //      The function executes the test for the expression engine functions
-    //      X, Y, Z and M.
-
-    void TestXYZMFunction ();
 
 
     // =========================== MATH FUNCTIONS ============================
@@ -662,201 +476,6 @@ protected:
     //      no data is returned although at least one row qualifies.
 
     void ToDateOperation ();
-
-    //-------------------------------------------------------------------------
-    //                       General Supporting Functions
-    //-------------------------------------------------------------------------
-
-    //  CheckReader:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReader (FdoIDataReader *data_reader,
-                      bool           include_id_check,
-                      FdoInt32       expected_id_value,
-                      FdoDouble      expected_value);
-
-    void CheckReader (FdoIFeatureReader *data_reader,
-                      bool              include_id_check,
-                      FdoInt32          expected_id_value,
-                      FdoDouble         expected_value);
-
-    //  CheckReader16:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReader16 (FdoIFeatureReader *data_reader,
-                        bool              include_id_check,
-                        FdoInt32          expected_id_value,
-                        FdoInt16          expected_value);
-
-    //  CheckReader32:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReader32 (FdoIFeatureReader *data_reader,
-                        bool              include_id_check,
-                        FdoInt32          expected_id_value,
-                        FdoInt32          expected_value);
-
-    //  CheckReader64:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReader64 (FdoIDataReader *data_reader,
-                        bool           include_id_check,
-                        FdoInt32       expected_id_value,
-                        FdoInt64       expected_value);
-
-    void CheckReader64 (FdoIFeatureReader *data_reader,
-                        bool              include_id_check,
-                        FdoInt32          expected_id_value,
-                        FdoInt64          expected_value);
-
-    //  CheckReaderByte:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReaderByte (FdoIDataReader *data_reader,
-                          bool           include_id_check,
-                          FdoInt32       expected_id_value,
-                          FdoByte        expected_value);
-
-    void CheckReaderByte (FdoIFeatureReader *data_reader,
-                          bool              include_id_check,
-                          FdoInt32          expected_id_value,
-                          FdoByte           expected_value);
-
-    //  CheckReaderDt:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReaderDt (FdoIDataReader *data_reader,
-                        bool           include_id_check,
-                        bool           is_extract_request,
-                        FdoInt16       extract_type_id,
-                        FdoInt32       expected_id_value,
-                        FdoDateTime    expected_cmp_id_value);
-
-    void CheckReaderDt (FdoIFeatureReader *data_reader,
-                        bool              include_id_check,
-                        bool              is_extract_request,
-                        FdoInt16          extract_type_id,
-                        FdoInt32          expected_id_value,
-                        FdoDateTime       expected_cmp_id_value);
-
-    //  CheckReaderNumberString:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReaderNumberString (FdoIFeatureReader *data_reader,
-                                  FdoInt32          expected_id_value,
-                                  FdoString         *expected_cmp_id_value);
-
-    //  CheckReaderSgl:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReaderSgl (FdoIFeatureReader *data_reader,
-                         bool              include_id_check,
-                         FdoInt32          expected_id_value,
-                         FdoFloat          expected_value);
-
-    //  CheckReaderString:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckReaderString (FdoIFeatureReader *data_reader,
-                            FdoInt32          expected_id_value,
-                            FdoString         *expected_cmp_id_value);
-
-    //  CheckXYZMValue:
-    //      The function checks whether or not the provided reader contains
-    //      the expected data and throws an exception if this is not the 
-    //      case.
-
-    void CheckXYZMValue (FdoIFeatureReader *data_reader,
-                         FdoDouble         expected_id_value,
-                         FdoString         *property_name,
-                         FdoDouble         exp_values[5]);
-
-    // EvaluateResults:
-    //      The function evaluates the result from the filter optimizer test.
-
-    bool EvaluateResults (FdoSpatialCondition *bigGeomCond,
-                          FdoSpatialCondition *smallGeomCond,
-                          FdoIFeatureReader   *dataProv,
-                          FdoIFeatureReader   *result);
-
-    //  ExecuteSelAggrCommand:
-    //      The function executes a select-aggregate command using the pro-
-    //      vided data and returns the generated reader back to the calling
-    //      routine.
-
-    FdoIDataReader *ExecuteSelAggrCommand (FdoString *class_name,
-                                           FdoFilter *filter,
-                                           bool      inc_id_prop,
-                                           FdoString *cmp_id_str);
-
-    //  ExecuteSelectCommand:
-    //      The function executes a select-command using the provided data and
-    //      returns the generated reader back to the calling routine.
-
-    FdoIFeatureReader *ExecuteSelectCommand (FdoString *class_name,
-                                             FdoFilter *filter,
-                                             bool      inc_id_prop,
-                                             FdoString *cmp_id_str);
-
-    //  ExecuteSelectCommand:
-    //      The function executes a select-command to retrieve the values of
-    //      the named properties and returns the generated reader back to the
-    //      calling routine.
-
-    FdoIFeatureReader *ExecuteSelectCommand (FdoString *class_name,
-                                             FdoFilter *filter,
-                                             FdoString *prop1,
-                                             FdoString *prop2,
-                                             FdoString *prop3,
-                                             FdoString *prop4,
-                                             FdoString *prop5,
-                                             FdoString *prop6);
-
-    //  GetDate:
-    //      The function retrieves the date set for a property identified by
-    //      the provided filter and returns this one back to the calling pro-
-    //      cedure.
-
-    FdoDateTime GetDate (FdoString *class_name,
-                         FdoString *property_name,
-                         FdoFilter *filter);
-
-    //  GetStringValue:
-    //      The function retrieves the value for a string property identified
-    //      by the provided filter and returns it back to the calling pro-
-    //      cedure.
-
-    virtual FdoStringP GetStringValue (FdoString *class_name,
-                                       FdoString *property_name,
-                                       FdoFilter *filter);
-
-
-    //-------------------------------------------------------------------------
-    //                                Variables
-    //-------------------------------------------------------------------------
-
-    //  m_connection:
-    //      The variable holds the connection to the test data store.
-
-    FdoPtr<FdoIConnection> m_connection;
 
 };  //  class FdoExpressionFunctionTest
 

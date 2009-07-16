@@ -120,33 +120,15 @@ SdfConnection* SdfConnection::Create()
 
 void SdfConnection::InitFunctions()
 {
-
+// Bypassing but keeping scaffolding around in case we need to 
+// add some functions in the future.
+#if 0
 	FdoCommonThreadMutex mutex;
 
 	try {
 		mutex.Enter();
 		if (!m_bInitFunctions)
 		{
-			FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
-
-			// Add function X to the list of supported function
-			FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
-			customFuncs->Add( funcX );
-
-			// Add function Y to the list of supported function
-			FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
-			customFuncs->Add( funcY );
-
-			// Add function Z to the list of supported function
-			FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
-			customFuncs->Add( funcZ );
-
-			// Add function M to the list of supported function
-			FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
-			customFuncs->Add( funcM );
-
-			FdoExpressionEngine::RegisterFunctions(customFuncs);
-
 			m_bInitFunctions = true;
 		}
 		mutex.Leave();
@@ -161,7 +143,7 @@ void SdfConnection::InitFunctions()
         mutex.Leave();
         throw;
     }
-
+#endif
 }
 
 
