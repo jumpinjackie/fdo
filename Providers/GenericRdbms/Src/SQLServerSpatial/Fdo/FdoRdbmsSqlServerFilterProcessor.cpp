@@ -115,6 +115,13 @@ static wchar_t* sqlServerAggregateFunctions[] = {
 //  expression function SUBSTR cannot work with all the numeric data types
 //  FDO supports. Therefore, the evaluation of the function is handed to
 //  the Expression Engine.
+//
+//  X, Y
+//  ------
+//  In SQL Server, the function that is the native representation of the
+//  expression functions X and Y cannot work with geography type columns.
+//  Therefore, the evaluation of the function is handed to
+//  the Expression Engine.
 
 static wchar_t* sqlServerUnsupportedFdoFunctions[] = {
 
@@ -135,6 +142,8 @@ static wchar_t* sqlServerUnsupportedFdoFunctions[] = {
     L"TRIM",
 	L"LENGTH2D",
     L"AREA2D",
+    L"X",
+    L"Y",
     NULL
 };
 
@@ -490,6 +499,12 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
     if (FdoCommonOSUtil::wcsicmp(funcName, FDORDBMSSQLSERVER_FUNCTION_ISVALID) == 0)
         return ProcessIsValidFunction(expr);
 
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_Z) == 0)
+        return ProcessZMFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_M) == 0)
+        return ProcessZMFunction(expr);
+
     // The functions that do not require special handling use the
     // standard processing
     FdoRdbmsFilterProcessor::ProcessFunction(expr);
@@ -574,6 +589,20 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessIsValidFunction (FdoFunction& expr
     AppendString(CLOSE_PARENTH);
 
     AppendString(CLOSE_PARENTH);
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessZMFunction (FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+
+    // Assume just one argument. TODO throw exception if not geometry column.
+    AppendString(L"\"");
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+    
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L"\".");
+    AppendString( expr.GetName() );
+
 }
 
 

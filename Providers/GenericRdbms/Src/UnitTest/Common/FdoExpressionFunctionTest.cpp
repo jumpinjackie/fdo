@@ -33,41 +33,6 @@
 // --                            Helper functions                            --
 // ----------------------------------------------------------------------------
 
-static FdoPropertyValue *AddNewProperty (
-                                FdoPropertyValueCollection *property_values,
-                                FdoString                  *name )
-
-// +---------------------------------------------------------------------------
-// | The function searches for the named property. If it already exists, a
-// | reference to it is returned back to the calling routine. Otherwise, a new
-// | property is created, its value set and returned back to the calling pro-
-// | cedure.
-// +---------------------------------------------------------------------------
-
-{
-
-	// Declare and initialize all necessary local variables.
-
-    FdoPropertyValue *property_value = NULL;
-
-    // Serch for the named property. If it does not exist, create a new one
-    // and set its value.
-
-    property_value = property_values->FindItem(name);
-
-    if (property_value == NULL) {
-
-        property_value = FdoPropertyValue::Create();
-        property_value->SetName(name);
-        property_values->Add(property_value);
-
-    }  //  if (property_value == NULL) ...
-    
-    return property_value;
-
-}  //  AddNewProperty ()
-
-
 // ----------------------------------------------------------------------------
 // --                          Test Setup Functions                          --
 // ----------------------------------------------------------------------------
@@ -277,273 +242,20 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
 // +---------------------------------------------------------------------------
 
 {
+    TestCommonExpressionFunction::RunAllExpFctTests();
 
     // Declare and initailize all necessary local variables.
 
     bool tests_failed = false;
 
-    // Testing the aggregate functions.
+    // Testing the aggregate (SpatialExtents) function.
 
     printf(" >>> ... Testing Aggregate Functions \n");
     printf("\n");
 
     try {
 
-      TestAvgFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestCountFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestMaxFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestMedianFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestMinFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestStddevFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSumFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
       TestSpatialExtents();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    // Testing the conversion functions.
-
-    printf("\n");
-    printf("\n");
-    printf(" >>> ... Testing Conversion Functions \n");
-    printf("\n");
-
-    try {
-
-      TestNullValueFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToDateFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToDoubleFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToFloatFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToInt32Function();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToInt64Function();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestToStringFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    // Testing the date functions.
-
-    printf("\n");
-    printf("\n");
-    printf(" >>> ... Testing Date Functions \n");
-    printf("\n");
-
-    try {
-
-      TestAddMonthsFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestCurrentDateFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestExtractFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestExtractToDoubleFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestExtractToIntFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestMonthsBetweenFunction();
 
     }  //  try ...
 
@@ -584,426 +296,16 @@ void FdoExpressionFunctionTest::RunAllExpFctTests ()
 
     }  //  catch ...
 
-    // Testing the mathematical functions.
-
-    printf("\n");
-    printf("\n");
-    printf(" >>> ... Testing Mathematical Functions \n");
-    printf("\n");
-
-    try {
-
-      TestAbsFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestAcosFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestAsinFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestAtanFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestAtan2Function();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestCosFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestExpFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLnFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLogFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestModFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestPowerFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestRemainderFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSinFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSqrtFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestTanFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    // Testing the numeric functions.
-
-    printf("\n");
-    printf("\n");
-    printf(" >>> ... Testing Numeric Functions \n");
-    printf("\n");
-
-    try {
-
-      TestCeilFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestFloorFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestRoundFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSignFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestTruncFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
     // Testing the string functions.
 
     printf("\n");
     printf("\n");
-    printf(" >>> ... Testing String Functions \n");
+    printf(" >>> ... Testing RDBMS String Functions \n");
     printf("\n");
 
     try {
 
-      TestConcatFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestInstrFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
       TestInstrFunctionAsFilter();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLengthFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLowerFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLpadFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestLtrimFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestRpadFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestRtrimFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSoundexFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestSubstrFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestTranslateFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestTrimFunction();
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      tests_failed = true;
-
-    }  //  catch ...
-
-    try {
-
-      TestUpperFunction();
 
     }  //  try ...
 
@@ -18692,7 +17994,7 @@ void FdoExpressionFunctionTest::AddFeature (
           byte_array       = geometry_factory->GetFgf(line_str);
           geometry_value   = FdoGeometryValue::Create(byte_array);
 
-          property_value = AddNewProperty(property_values, L"RDBMS_GEOM");
+          property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
           FDO_SAFE_RELEASE(geometry_value);
           FDO_SAFE_RELEASE(line_str);
@@ -18704,7 +18006,7 @@ void FdoExpressionFunctionTest::AddFeature (
       else {
 
         data_value     = FdoDataValue::Create(index);
-        property_value = AddNewProperty(property_values, L"xid");
+        property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"xid");
         property_value->SetValue(data_value);
         FDO_SAFE_RELEASE(property_value);
         FDO_SAFE_RELEASE(data_value);
@@ -18714,21 +18016,21 @@ void FdoExpressionFunctionTest::AddFeature (
       // Set the new object's properties.
 
       data_value     = FdoDataValue::Create(index);
-      property_value = AddNewProperty(property_values, L"id");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"id");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       bool_value     = ((index % 2) == 0);
       data_value     = FdoDataValue::Create(bool_value);
-      property_value = AddNewProperty(property_values, L"bool_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"bool_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       byte_value     = (index % 10) + 65;
       data_value     = FdoDataValue::Create(byte_value);
-      property_value = AddNewProperty(property_values, L"byte_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"byte_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
@@ -18742,7 +18044,7 @@ void FdoExpressionFunctionTest::AddFeature (
           dt.minute      = 0;
           dt.seconds     = 0;
           data_value     = FdoDataValue::Create(dt);
-          property_value = AddNewProperty(property_values, L"dt_val");
+          property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dt_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
@@ -18758,7 +18060,7 @@ void FdoExpressionFunctionTest::AddFeature (
           dt.minute      = 0;
           dt.seconds     = 0;
           data_value     = FdoDataValue::Create(dt);
-          property_value = AddNewProperty(property_values, L"dt2_val");
+          property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dt2_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
@@ -18769,7 +18071,7 @@ void FdoExpressionFunctionTest::AddFeature (
 
           dbl_value      = index + (3.8 * index/8.9);
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Decimal);
-          property_value = AddNewProperty(property_values, L"dcl_val");
+          property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dcl_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
@@ -18780,7 +18082,7 @@ void FdoExpressionFunctionTest::AddFeature (
 
           dbl_value      = index + (6.34 * index/5.77);
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
-          property_value = AddNewProperty(property_values, L"dbl_val");
+          property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dbl_val");
           property_value->SetValue(data_value);
           FDO_SAFE_RELEASE(data_value);
           FDO_SAFE_RELEASE(property_value);
@@ -18788,34 +18090,34 @@ void FdoExpressionFunctionTest::AddFeature (
       }  //  if (index != 22) ...
 
       data_value     = FdoDataValue::Create((index * 4));
-      property_value = AddNewProperty(property_values, L"i16_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"i16_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       data_value     = FdoDataValue::Create((index * 10));
-      property_value = AddNewProperty(property_values, L"i32_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"i32_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       flt_value      = (FdoFloat) (2.4 * (index /6.99));
       data_value     = FdoDataValue::Create(flt_value);
-      property_value = AddNewProperty(property_values, L"sgl_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"sgl_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       id_str         = FdoStringP::Format(L"  %d  ", index);
       data_value     = FdoDataValue::Create((FdoString *)id_str);
-      property_value = AddNewProperty(property_values, L"str_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"str_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
 
       id_str         = FdoStringP::Format(L"The Color is: %d", (index + 2109));
       data_value     = FdoDataValue::Create((FdoString *)id_str);
-      property_value = AddNewProperty(property_values, L"str2_val");
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"str2_val");
       property_value->SetValue(data_value);
       FDO_SAFE_RELEASE(data_value);
       FDO_SAFE_RELEASE(property_value);
@@ -18865,107 +18167,6 @@ void FdoExpressionFunctionTest::AddFeature (
     }  //  catch ...
 
 }  //  AddFeature ()
-
-void FdoExpressionFunctionTest::AddTestSchema (
-                                        FdoIConnection *current_connection,
-                                        FdoString      *schema_name)
-
-// +---------------------------------------------------------------------------
-// | The function establishes the test schema in the FDO data store the pro-
-// | vided connection identifies.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local variables.
-
-    FdoClass                           *schema_class         = NULL;
-
-    FdoFeatureClass                    *schema_feature_class = NULL;
-
-	FdoIApplySchema                    *apply_schema_cmd     = NULL;
-
-    FdoClassCollection                 *classes              = NULL;
-
-    FdoPtr<FdoFeatureSchemaCollection> schemas;
-
-	FdoFeatureSchema                   *schema               = NULL;
-
-    try {
-
-      // Create a apply-schema command.
-
-      apply_schema_cmd = 
-        (FdoIApplySchema*) current_connection->CreateCommand(
-                                                   FdoCommandType_ApplySchema);
-
-      // Create the feature schema collection.
-
-      schemas = FdoFeatureSchemaCollection::Create(NULL);
-
-      // Create the lock test schema.
-
-	  schema  = FdoFeatureSchema::Create(schema_name,
-                                         L"Expression Function Test Schema");
-      classes = schema->GetClasses();
-
-      // Create the test classes for the unit test and add them to the schema.
-
-      printf(" >>> ...... adding feature classes \n");
-      printf(" >>> ......... adding class exfct_c1 \n");
-      schema_feature_class = CreateFdoFeatureClass(L"exfct_c1");
-      classes->Add(schema_feature_class);
-      FDO_SAFE_RELEASE(schema_feature_class);
-
-      printf(" >>> ...... adding non-feature classes \n");
-      printf(" >>> ......... adding class exfct_c2 \n");
-      schema_class = CreateFdoClass(L"exfct_c2");
-      classes->Add(schema_class);
-      FDO_SAFE_RELEASE(schema_class);
-
-      // Add the test schema to the schema collection.
-
-      schemas->Add(schema);
-
-      // Set the active schema and create it.
-
-      printf(" >>> ...... creating the schema \n");
-      apply_schema_cmd->SetFeatureSchema(schema);
-      apply_schema_cmd->Execute();
-
-      // Release the memory.
-
-      FDO_SAFE_RELEASE(classes);
-      FDO_SAFE_RELEASE(schema);
-      FDO_SAFE_RELEASE(apply_schema_cmd);
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      FDO_SAFE_RELEASE(classes);
-      FDO_SAFE_RELEASE(schema);
-      FDO_SAFE_RELEASE(apply_schema_cmd);
-
-      throw;
-
-    }  //  catch ...
-
-}  //  AddTestSchema ()
-
-void FdoExpressionFunctionTest::CloseConnection ()
-
-// +---------------------------------------------------------------------------
-// | The function closes all open connections to the data store used in the
-// | executed unit tests.
-// +---------------------------------------------------------------------------
-
-{
-
-    if (m_connection != NULL)
-        m_connection->Close();
-
-}  //  CloseConnection ()
 
 void FdoExpressionFunctionTest::Connect ()
 
@@ -19149,170 +18350,6 @@ FdoClass *FdoExpressionFunctionTest::CreateFdoClass (FdoString *class_name)
 
 }  //  CreateFdoClass ()
 
-FdoFeatureClass *FdoExpressionFunctionTest::CreateFdoFeatureClass (
-                                                    FdoString *class_name)
-
-// +---------------------------------------------------------------------------
-// | The function creates a predefined feature class of the given name.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local variables.
-
-    FdoFeatureClass                     *the_class                     = NULL;
-
-    FdoDataPropertyDefinition           *data_property_definition      = NULL;
-
-    FdoGeometricPropertyDefinition      *geometric_property_definition = NULL;
-
-    FdoPropertyDefinitionCollection     *data_property_definitions     = NULL;
-
-    FdoDataPropertyDefinitionCollection *id_property_definitions       = NULL;
-
-    try {
-
-      // Create the class and set the abstract property.
-
-	  the_class = FdoFeatureClass::Create(class_name, class_name);
-	  the_class->SetIsAbstract(false);
-
-      // Define each of the class properties and add it to the proper collection.
-      // If the property identifies the primary key add it to the class' primary
-      // key collection.
-
-      data_property_definitions = the_class->GetProperties();
-      id_property_definitions   = the_class->GetIdentityProperties();
-
-      data_property_definition =
-                CreateDataProperty(L"featid", FdoDataType_Int64, 0, 0, false);
-      data_property_definition->SetIsAutoGenerated(true);
-      data_property_definitions->Add(data_property_definition);
-      id_property_definitions->Add(data_property_definition);
-      FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"bool_val", FdoDataType_Boolean, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"byte_val", FdoDataType_Byte, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"dt_val", FdoDataType_DateTime, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"dt2_val", FdoDataType_DateTime, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"dcl_val", FdoDataType_Decimal, 8, 2, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"dbl_val", FdoDataType_Double, 10, 5, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"i16_val", FdoDataType_Int16, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"i32_val", FdoDataType_Int32, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"sgl_val", FdoDataType_Single, 10, 3, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"str_val", FdoDataType_String, 30, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"str2_val", FdoDataType_String, 30, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      data_property_definition =
-           CreateDataProperty(L"id", FdoDataType_Int32, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-
-      geometric_property_definition = CreateGeometricProperty(L"RDBMS_GEOM");
-	  data_property_definitions->Add(geometric_property_definition);
-      the_class->SetGeometryProperty(geometric_property_definition);
-	  FDO_SAFE_RELEASE(geometric_property_definition);
-
-      FDO_SAFE_RELEASE(id_property_definitions);
-      FDO_SAFE_RELEASE(data_property_definitions);
-
-      the_class->SetBaseClass(NULL);
-
-      // Return a handle to the created class.
-
-      return the_class;
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-	  FDO_SAFE_RELEASE(geometric_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
-      FDO_SAFE_RELEASE(id_property_definitions);
-      FDO_SAFE_RELEASE(data_property_definitions);
-
-      throw;
-
-    }  //  catch ...
-
-}  //  CreateFdoFeatureClass ()
-
-FdoGeometricPropertyDefinition
-                *FdoExpressionFunctionTest::CreateGeometricProperty (
-                                                    FdoString *property_name)
-
-// +---------------------------------------------------------------------------
-// | The function creates the named geometry property and returns it back to
-// | the calling routine.
-// +---------------------------------------------------------------------------
-
-{
-
-    // Declare and initialize all necessary local variables.
-
-    FdoGeometricPropertyDefinition *geometric_property_definition = NULL;
-
-    // Create the property object and initialize it using the given data.
-
-	geometric_property_definition = 
-                        FdoGeometricPropertyDefinition::Create(property_name,
-                                                               property_name);
-    geometric_property_definition->SetGeometryTypes(
-                                                FdoGeometricType_Point   | 
-                                                FdoGeometricType_Curve   | 
-                                                FdoGeometricType_Surface | 
-                                                FdoGeometricType_Solid     );
-    geometric_property_definition->SetHasElevation(true);
-
-    // Return the handle on the created object.
-
-    return geometric_property_definition;
-
-}  //  CreateGeometricProperty ()
-
 void FdoExpressionFunctionTest::CreateTestDataStore (
                                             FdoString *datastore_extension)
 
@@ -19404,6 +18441,9 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
       for (int i = 0; i < 31; i++)
         AddFeature(current_connection, L"exfct_c1", true, i);
 
+      printf(" >>> ...... for point classes \n");
+	  AddXYZMFeature(current_connection, XYZM_POINT_CLASS); 	
+
       //   > The non-spatial features.
 
       printf(" >>> ... adding data for non-features classes \n");
@@ -19448,4 +18488,14 @@ void FdoExpressionFunctionTest::SetupUnitTestEnvironment (
    }  //  catch ...
 
 }  //  SetupUnitTestEnvironment ()
+
+FdoInt32 FdoExpressionFunctionTest::GetFeatId( FdoIFeatureReader* rdr )
+{
+    return (FdoInt32)(rdr->GetInt64(L"featid"));
+}
+
+FdoDataType FdoExpressionFunctionTest::GetFeatIdType()
+{
+    return FdoDataType_Int64;
+}
 

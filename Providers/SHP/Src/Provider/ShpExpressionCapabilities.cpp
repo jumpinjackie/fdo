@@ -60,24 +60,7 @@ FdoFunctionDefinitionCollection* ShpExpressionCapabilities::GetFunctions()
 {
     if (m_supportedFunctions == NULL)
     {
-        m_supportedFunctions = FdoExpressionEngine::GetStandardFunctions();
-		
-		// Add function X to the list of supported function
-		FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
-		m_supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcX->GetFunctionDefinition()));
-		
-		// Add function Y to the list of supported function
-		FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
-		m_supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcY->GetFunctionDefinition()));
-		
-		// Add function Z to the list of supported function
-		FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
-		m_supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcZ->GetFunctionDefinition()));
-		
-		// Add function M to the list of supported function
-		FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
-		m_supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(funcM->GetFunctionDefinition()));
-
+        m_supportedFunctions = FdoExpressionEngine::GetStandardFunctions();		
     }
 
     return FDO_SAFE_ADDREF(m_supportedFunctions.p);

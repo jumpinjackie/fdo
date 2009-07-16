@@ -19,6 +19,7 @@
 #ifndef FDO_EXPRESSIONFUNCTIONTEST_H
 #define FDO_EXPRESSIONFUNCTIONTEST_H
 
+#include <TestCommonExpressionFunctionW.h>
 
 // =============================================================================
 // | The file contains the definition of the class FdoExpressionFunctionTest. It
@@ -81,93 +82,10 @@
 
 
 
-class FdoExpressionFunctionTest : public CppUnit::TestCase
+class FdoExpressionFunctionTest : public TestCommonExpressionFunctionW
 {
 
-  CPPUNIT_TEST_SUITE(FdoExpressionFunctionTest);
-    // =========================================
-    // ====  AGGREGATE FUNCTION UNIT TESTS  ====
-    // =========================================
-    // CPPUNIT_TEST(TestAvgFunction);
-    // CPPUNIT_TEST(TestCountFunction);
-    // CPPUNIT_TEST(TestMaxFunction);
-    // CPPUNIT_TEST(TestMedianFunction);
-    // CPPUNIT_TEST(TestMinFunction);
-    //CPPUNIT_TEST(TestSpatialExtents);
-    // CPPUNIT_TEST(TestStddevFunction);
-    // CPPUNIT_TEST(TestSumFunction);
-    // =========================================
-    // ==== CONVERSION FUNCTION UNIT TESTS  ====
-    // =========================================
-    // CPPUNIT_TEST(TestNullValueFunction);
-    // CPPUNIT_TEST(TestToDateFunction);
-    // CPPUNIT_TEST(TestToDoubleFunction);
-    // CPPUNIT_TEST(TestToFloatFunction);
-    // CPPUNIT_TEST(TestToInt32Function);
-    // CPPUNIT_TEST(TestToInt64Function);
-    // CPPUNIT_TEST(TestToStringFunction);
-    // =========================================
-    // ====    DATE FUNCTION UNIT TESTS     ====
-    // =========================================
-    // CPPUNIT_TEST(TestAddMonthsFunction);
-    // CPPUNIT_TEST(TestCurrentDateFunction);
-    // CPPUNIT_TEST(TestExtractFunction);
-    // CPPUNIT_TEST(TestExtractToDoubleFunction);
-    // CPPUNIT_TEST(TestExtractToIntFunction);
-    // CPPUNIT_TEST(TestMonthsBetweenFunction);
-    // =========================================
-    // ====    MATH FUNCTION UNIT TESTS     ====
-    // =========================================
-    // CPPUNIT_TEST(TestAbsFunction);
-    // CPPUNIT_TEST(TestAcosFunction);
-    // CPPUNIT_TEST(TestAsinFunction);
-    // CPPUNIT_TEST(TestAtanFunction);
-    // CPPUNIT_TEST(TestAtan2Function);
-    // CPPUNIT_TEST(TestCosFunction);
-    // CPPUNIT_TEST(TestExpFunction);
-    // CPPUNIT_TEST(TestLnFunction);
-    // CPPUNIT_TEST(TestLogFunction);
-    // CPPUNIT_TEST(TestModFunction);
-    // CPPUNIT_TEST(TestPowerFunction);
-    // CPPUNIT_TEST(TestRemainderFunction);
-    // CPPUNIT_TEST(TestSinFunction);
-    // CPPUNIT_TEST(TestSqrtFunction);
-    // CPPUNIT_TEST(TestTanFunction);
-    // =========================================
-    // ====   NUMERIC FUNCTION UNIT TESTS   ====
-    // =========================================
-    // CPPUNIT_TEST(TestCeilFunction);
-    // CPPUNIT_TEST(TestFloorFunction);
-    // CPPUNIT_TEST(TestRoundFunction);
-    // CPPUNIT_TEST(TestSignFunction);
-    // CPPUNIT_TEST(TestTruncFunction);
-    // CPPUNIT_TEST(TestTruncFunctionAsFilter);
-    // =========================================
-    // ====   STRING FUNCTION UNIT TESTS    ====
-    // =========================================
-    // CPPUNIT_TEST(TestConcatFunction);
-    // CPPUNIT_TEST(TestInstrFunction);
-    // CPPUNIT_TEST(TestInstrFunctionAsFilter);
-    // CPPUNIT_TEST(TestLengthFunction);
-    // CPPUNIT_TEST(TestLowerFunction);
-    // CPPUNIT_TEST(TestLpadFunction);
-    // CPPUNIT_TEST(TestLtrimFunction);
-    // CPPUNIT_TEST(TestRpadFunction);
-    // CPPUNIT_TEST(TestRtrimFunction);
-    // CPPUNIT_TEST(TestSoundexFunction);
-    // CPPUNIT_TEST(TestSubstrFunction);
-    // CPPUNIT_TEST(TestTranslateFunction);
-    // CPPUNIT_TEST(TestTrimFunction);
-    // CPPUNIT_TEST(TestUpperFunction);
-    // =========================================
-    // ====   GEOMETRY FUNCTION UNIT TESTS  ====
-    // =========================================
-	// CPPUNIT_TEST(TestLength2DFunction);
-	// CPPUNIT_TEST(TestArea2DFunction);
-    // =========================================
-    // ====       RUN ALL UNIT TESTS        ====
-    // =========================================
-    CPPUNIT_TEST(RunAllExpFctTests);
+  CPPUNIT_TEST_SUB_SUITE(FdoExpressionFunctionTest, TestCommonExpressionFunctionW );
     // =========================================
     // ====       SPECIAL UNIT TESTS        ====
     // =========================================
@@ -198,19 +116,6 @@ protected:
                              bool           is_spatial,
                              int            index);
 
-    //  AddTestSchema:
-    //      The function establishes the test schema in the FDO data store
-    //      the provided connection identifies.
-
-    virtual void AddTestSchema (FdoIConnection *current_connection,
-                                FdoString      *schema_name);
-
-    //  CloseConnection:
-    //      The function closes all open connections to the data store used in
-    //      the executed unit tests.
-
-    virtual void CloseConnection ();
-
     //  Connect:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
@@ -233,18 +138,6 @@ protected:
     //      name.
 
     virtual FdoClass *CreateFdoClass (FdoString *class_name);
-
-    //  CreateFdoFeatureClass:
-    //      The function creates a predefined feature class of the given name.
-
-    virtual FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name);
-
-    //  CreateGeometricProperty:
-    //      The function creates the named geometry property and returns it
-    //      back to the calling routine.
-
-    virtual FdoGeometricPropertyDefinition *CreateGeometricProperty (
-                                                    FdoString *property_name);
 
     //  CreateTestDataStore:
     //      The function creates the test data store.
@@ -937,15 +830,9 @@ protected:
                                          FdoStringP current_error_message,
                                          FdoInt16   test_case_id);
 
+    virtual FdoInt32 GetFeatId( FdoIFeatureReader* rdr );
 
-    //-------------------------------------------------------------------------
-    //                                Variables
-    //-------------------------------------------------------------------------
-
-    //  m_connection:
-    //      The variable holds the connection to the test data store.
-
-    FdoPtr<FdoIConnection> m_connection;
+    virtual FdoDataType GetFeatIdType();
 
 };  //  class FdoExpressionFunctionTest
 

@@ -1302,24 +1302,4 @@ double ShpConnection::GetToleranceXY( FdoGeometricPropertyDefinition* geomProp )
 void ShpConnection::InitFunctions()
 {
 
-	FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
-
-	// Add function X to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
-	customFuncs->Add( funcX );
-
-	// Add function Y to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
-	customFuncs->Add( funcY );
-
-	// Add function Z to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
-	customFuncs->Add( funcZ );
-
-	// Add function M to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
-	customFuncs->Add( funcM );
-
-    FdoExpressionEngine::RegisterFunctions(customFuncs);
-
 }
