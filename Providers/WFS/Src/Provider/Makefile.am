@@ -107,7 +107,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/Inc  \
   -I./inc -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDOUTILITIES)/OWS/Inc \
-  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -pthread
 
