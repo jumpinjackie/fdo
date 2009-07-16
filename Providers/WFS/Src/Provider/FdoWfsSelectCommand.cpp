@@ -23,9 +23,6 @@
 #include "FdoWfsFeatureType.h"
 #include "FdoWfsServiceMetadata.h"
 #include "FdoWfsDelegate.h"
-#include <FdoExpressionEngine.h>
-#include <Util/FdoExpressionEngineUtilDataReader.h>
-#include <Util/FdoExpressionEngineUtilFeatureReader.h>
 
 #include <malloc.h>
 
@@ -219,25 +216,18 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
         }
     }
 
-    bool bHasComputedProperties = false;
-
 	FdoPtr<FdoStringCollection> props = FdoStringCollection::Create();
 	if (mPropertiesToSelect != NULL) {
 		FdoInt32 count = mPropertiesToSelect->GetCount();
 		for (int i = 0; i < count; i++) {
 			FdoPtr<FdoIdentifier> identifier = mPropertiesToSelect->GetItem(i);
-            if ( dynamic_cast<FdoComputedIdentifier*>(identifier.p) == NULL ) {
-			    FdoStringP propName = identifier->GetName();
-			    if (propName.Contains(FdoWfsGlobals::Dot)) {
-				    FdoStringP propName1 = propName.Replace(FdoWfsGlobals::Dot, L".");
-				    props->Add(propName1);
-			    } else {
-				    props->Add(propName);
-			    }
-            }
-            else {
-                bHasComputedProperties = true;
-            }
+			FdoStringP propName = identifier->GetName();
+			if (propName.Contains(FdoWfsGlobals::Dot)) {
+				FdoStringP propName1 = propName.Replace(FdoWfsGlobals::Dot, L".");
+				props->Add(propName1);
+			} else {
+				props->Add(propName);
+			}
 		}
 	}
     if (sPropName.GetLength() != 0)
@@ -254,16 +244,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 
 	// yeah, all the parameters that WfsDeleget::GetFeature needs are ready
 	FdoPtr<FdoWfsDelegate> delegate = mConnection->GetWfsDelegate();
-	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(
-        schemas, 
-        mappings, 
-        targetNamespace, 
-        srsName, 
-        bHasComputedProperties ? (FdoStringCollection*) NULL : props, // Computed properties may reference other properties so retrieve all of them.
-        featureTypeName, 
-        mFilter, 
-        schemaFeatureName
-    );
+	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(schemas, mappings, targetNamespace, srsName, props, featureTypeName, mFilter, schemaFeatureName);
 
 	FdoWfsFeatureReader* reader = dynamic_cast<FdoWfsFeatureReader *>(ret.p);
 	if (reader)
@@ -278,20 +259,6 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 			reader->SetClassDefinition(clsdef.p, NULL);
 		}
 	}
-
-    if ( bHasComputedProperties ) {
-        // WFS does not support computed properties in the select list so always need
-        // to evaluate them using expression engine.
-
-        //TODO: Use Expression Engine to handle filters that reference functions not supported
-        //by the WFS. Need to parse out function list from WFS capabilities first.
-        ret =  new FdoExpressionEngineUtilFeatureReader(
-            clsdef,
-            ret, 
-            NULL,
-            mPropertiesToSelect,
-            NULL);
-    }
 
     return (FDO_SAFE_ADDREF (ret.p));
 }
