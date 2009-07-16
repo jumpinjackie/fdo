@@ -80,7 +80,7 @@ bool FdoWfsCommandCapabilities::SupportsSelectExpressions()
 /// <returns>Returns true if the feature provider supports select simple functions.</returns> 
 bool FdoWfsCommandCapabilities::SupportsSelectFunctions()
 {
-    return (true);
+    return (false);
 }
 
 /// <summary>Determines if Distinct can be used with SelectAggregates. This can be true only 
