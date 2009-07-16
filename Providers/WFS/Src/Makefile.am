@@ -38,6 +38,7 @@ libWFSProvider_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/Geometry/libFDOGeometry.la  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOUTILITIES)/OWS/libFdoOws.la  \
+  $(FDOUTILITIES)/ExpressionEngine/libExpressionEngine.la  \
   -lpthread
 
 libWFSProvider_la_LDFLAGS = \

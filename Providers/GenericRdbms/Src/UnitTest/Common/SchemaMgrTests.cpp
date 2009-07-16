@@ -465,10 +465,19 @@ void SchemaMgrTests::testGenDefault ()
             // Only execute the second check if the provider is SQL Server. Otherwise issue the
             // exception.
             if ( providerName.ICompare(L"SqlServer") == 0 )
-	            UnitTestUtil::CheckOutput( 
-                    FdoStringP::Format(L"gen_default1_%ls2005_master.txt", (FdoString*) providerName),
-                    UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
-                );
+                try {
+	                UnitTestUtil::CheckOutput( 
+                        FdoStringP::Format(L"gen_default1_%ls2008_master.txt", (FdoString*) providerName),
+                        UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
+                    );
+                }
+                catch (CppUnit::Exception exception)
+                {
+                    UnitTestUtil::CheckOutput( 
+                        FdoStringP::Format(L"gen_default1_%ls2005_master.txt", (FdoString*) providerName),
+                        UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
+                    );
+                }
             else
                 throw exception;
         }

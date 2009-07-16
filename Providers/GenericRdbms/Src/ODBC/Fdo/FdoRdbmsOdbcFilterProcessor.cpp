@@ -104,6 +104,12 @@ static wchar_t* odbcUnsupportedFdoFunctions[] = {
     L"TRANSLATE",
     L"TRIM",
     L"UPPER",
+    //TODO XYZM functions could be supported natively since it would
+    // simply be a matter of selecting the corresponding ordinate columns.
+    L"X",
+    L"Y",
+    L"Z",
+    L"M",
     NULL
 };
 
