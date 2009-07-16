@@ -356,6 +356,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\TestCommonExpressionFunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TestCommonExpressionFunctionR.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\TestCommonExpressionFunctionW.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\TestCommonFeatureCommands.cpp"
 				>
 			</File>
@@ -390,6 +402,18 @@
 			</File>
 			<File
 				RelativePath=".\Inc\TestCommonConstraints.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonExpressionFunction.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonExpressionFunctionR.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\TestCommonExpressionFunctionW.h"
 				>
 			</File>
 			<File
