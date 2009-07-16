@@ -26,6 +26,7 @@ noinst_PROGRAMS = UnitTest
 UnitTest_SOURCES = \
   UnitTest.cpp \
   glibpatch.cpp \
+  FdoExpressionFunctionTest.cpp \
   FdoMultiThreadTest.cpp \
   InsertTest.cpp \
   SpatialContextTest.cpp \
@@ -34,6 +35,7 @@ UnitTest_SOURCES = \
   UnitTestUtil.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
+  FdoExpressionFunctionTest.h \
   FdoMultiThreadTest.h \
   InsertTest.h \
   SpatialContextTest.h \

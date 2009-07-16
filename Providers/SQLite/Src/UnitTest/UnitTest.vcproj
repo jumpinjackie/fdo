@@ -860,6 +860,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\FdoExpressionFunctionTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FdoExpressionFunctionTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\FdoMultiThreadTest.cpp"
 			>
 		</File>

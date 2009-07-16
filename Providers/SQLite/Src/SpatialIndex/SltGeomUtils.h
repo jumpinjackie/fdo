@@ -407,7 +407,7 @@ struct FgfPoint
 {
     int geom_type;
     int dim;
-    double coords[3];
+    double coords[4];
 };
 struct FgfPolyline
 {
