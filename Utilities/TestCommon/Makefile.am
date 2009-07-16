@@ -25,6 +25,9 @@ EXTRA_DIST = \
 
 libTestCommon_la_SOURCES = \
   Src/TestCommonConstraints.cpp \
+  Src/TestCommonExpressionFunction.cpp \
+  Src/TestCommonExpressionFunctionR.cpp \
+  Src/TestCommonExpressionFunctionW.cpp \
   Src/TestCommonFeatureCommands.cpp \
   Src/TestCommonInsert.cpp \
   Src/TestCommonMiscUtil.cpp \
@@ -35,6 +38,9 @@ libTestCommon_la_SOURCES = \
 
 noinst_HEADERS = $(libTestCommon_la_SOURCES) \
   Inc/TestCommonConstraints.h \
+  Inc/TestCommonExpressionFunction.h \
+  Inc/TestCommonExpressionFunctionR.h \
+  Inc/TestCommonExpressionFunctionW.h \
   Inc/TestCommonFeatureCommands.h \
   Inc/TestCommonInsert.h \
   Inc/TestCommonMiscUtil.h \

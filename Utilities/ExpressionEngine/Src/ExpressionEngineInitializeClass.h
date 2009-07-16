@@ -47,6 +47,10 @@
 
 #include <Functions/Geometry/FdoFunctionArea2D.h>
 #include <Functions/Geometry/FdoFunctionLength2D.h>
+#include <Functions/Geometry/FdoFunctionX.h>
+#include <Functions/Geometry/FdoFunctionY.h>
+#include <Functions/Geometry/FdoFunctionZ.h>
+#include <Functions/Geometry/FdoFunctionM.h>
 
 #include <Functions/Math/FdoFunctionAbs.h>
 #include <Functions/Math/FdoFunctionAcos.h>
@@ -123,6 +127,10 @@ public:
 
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionArea2D::Create()));
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionLength2D::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionX::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionY::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionZ::Create()));
+        m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionM::Create()));
 
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAbs::Create()));
         m_StandardFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(FdoFunctionAcos::Create()));

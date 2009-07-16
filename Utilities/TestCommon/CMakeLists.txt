@@ -12,6 +12,9 @@ endif( UNIX )
 
 set( TestCommon_STAT_SRCS
    Src/TestCommonConstraints.cpp
+   Src/TestCommonExpressionFunction.cpp
+   Src/TestCommonExpressionFunctionR.cpp
+   Src/TestCommonExpressionFunctionW.cpp
    Src/TestCommonFeatureCommands.cpp
    Src/TestCommonInsert.cpp
    Src/TestCommonMiscUtil.cpp
