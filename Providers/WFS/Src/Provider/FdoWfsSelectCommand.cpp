@@ -24,8 +24,8 @@
 #include "FdoWfsServiceMetadata.h"
 #include "FdoWfsDelegate.h"
 #include <FdoExpressionEngine.h>
-#include "Util/FdoExpressionEngineUtilDataReader.h"
-#include "Util/FdoExpressionEngineUtilFeatureReader.h"
+#include <Util/FdoExpressionEngineUtilDataReader.h>
+#include <Util/FdoExpressionEngineUtilFeatureReader.h>
 
 #include <malloc.h>
 
