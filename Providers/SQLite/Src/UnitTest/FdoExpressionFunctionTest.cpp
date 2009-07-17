@@ -104,3 +104,9 @@ void FdoExpressionFunctionTest::RunAllExpFctTests()
         throw FdoException::Create(L"Unit tests executed with errors");
 
 }
+
+double FdoExpressionFunctionTest::GetNullOrdinate()
+{
+    return GetNaNOrdinate();
+}
+
