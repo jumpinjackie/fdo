@@ -82,6 +82,9 @@ void TestCommonExpressionFunctionW::TestXYZMFunction ()
     FdoPtr<FdoIGeometryCapabilities>     geom_caps;  
     FdoInt32                             dimensionalities;
 
+    FdoDouble                       expNull = IsNullOrdinate(GetNullOrdinate()) ? -1 : GetNullOrdinate();
+    FdoDouble                       expNaN = IsNullOrdinate(GetNaNOrdinate()) ? -1 : GetNaNOrdinate();
+
     printf("\n");
     printf("========================================================== \n");
     printf(" Current Unit Test Suite: X, Y, Z, M Function Testing      \n");
@@ -127,11 +130,11 @@ void TestCommonExpressionFunctionW::TestXYZMFunction ()
     exp_z_values[0][3] = -1;
     exp_z_values[0][4] = -1;
     exp_z_values[1][0] = 303.000000;
-    exp_z_values[1][1] = -1;
-    exp_z_values[1][2] = -1;
+    exp_z_values[1][1] = expNull;
+    exp_z_values[1][2] = expNaN;
     exp_z_values[2][0] = 402.000000;
-    exp_z_values[2][1] = -1;
-    exp_z_values[2][2] = -1;
+    exp_z_values[2][1] = expNull;
+    exp_z_values[2][2] = expNaN;
     exp_z_values[3][0] = -1;
     exp_z_values[3][1] = -1;
     exp_z_values[3][2] = -1;
@@ -145,11 +148,11 @@ void TestCommonExpressionFunctionW::TestXYZMFunction ()
     exp_m_values[1][1] = -1;
     exp_m_values[1][2] = -1;
     exp_m_values[2][0] = PointMAlwaysNull() ? -1 : 403.000000;
-    exp_m_values[2][1] = -1;
-    exp_m_values[2][2] = -1;
+    exp_m_values[2][1] = expNull;
+    exp_m_values[2][2] = expNaN;
     exp_m_values[3][0] = PointMAlwaysNull() ? -1 : 303.000000;
-    exp_m_values[3][1] = -1;
-    exp_m_values[3][2] = -1;
+    exp_m_values[3][1] = expNull;
+    exp_m_values[3][2] = expNaN;
 
     exp_xy_indexes[0] = 2;
 
@@ -854,11 +857,11 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
 	  coordinate_3D_null_buffer[0] = 301.0;
       coordinate_3D_null_buffer[1] = 302.0;
-      coordinate_3D_null_buffer[2] = -1.25e126;
+      coordinate_3D_null_buffer[2] = GetNullOrdinate();
 
 	  coordinate_3D_nan_buffer[0] = 301.0;
       coordinate_3D_nan_buffer[1] = 302.0;
-      coordinate_3D_nan_buffer[2] = numeric_limits<double>::quiet_NaN();
+      coordinate_3D_nan_buffer[2] = GetNaNOrdinate();
 
 	  coordinate_4D_buffer[0] = 400.0;
       coordinate_4D_buffer[1] = 401.0;
@@ -867,13 +870,13 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
 	  coordinate_4D_null_buffer[0] = 400.0;
       coordinate_4D_null_buffer[1] = 401.0;
-      coordinate_4D_null_buffer[2] = -1.25e126;
-      coordinate_4D_null_buffer[3] = -1.25e126;
+      coordinate_4D_null_buffer[2] = GetNullOrdinate();
+      coordinate_4D_null_buffer[3] = GetNullOrdinate();
 
 	  coordinate_4D_nan_buffer[0] = 400.0;
       coordinate_4D_nan_buffer[1] = 401.0;
-      coordinate_4D_nan_buffer[2] = numeric_limits<double>::quiet_NaN();
-      coordinate_4D_nan_buffer[3] = numeric_limits<double>::quiet_NaN();
+      coordinate_4D_nan_buffer[2] = GetNaNOrdinate();
+      coordinate_4D_nan_buffer[3] = GetNaNOrdinate();
 
 	  coordinate_line_buffer[0] = 301.0;
       coordinate_line_buffer[1] = 302.0;
