@@ -236,12 +236,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     else
     {
         m_fromwhere.Append(" WHERE ", 7);
-        m_fromwhere.Append(where);
 
         if (m_si || m_ri)
-            m_fromwhere.Append(" AND ROWID=?;", 13);
-        else
-            m_fromwhere.Append(";", 1);
+            m_fromwhere.Append("ROWID=? AND ", 12);
+
+        m_fromwhere.Append("(", 1);
+        m_fromwhere.Append(where);
+        m_fromwhere.Append(");", 2);
     }
 
     m_eGeomFormat = md->GetGeomFormat();
