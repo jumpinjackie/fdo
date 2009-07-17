@@ -128,15 +128,18 @@ template <class FEATURECOMMAND> class SltFeatureCommand : public SltCommand<FEAT
         virtual void SetFilter(FdoFilter* value)
         {
             FDO_SAFE_RELEASE(m_filter);
-            m_filter = value;
-            if (m_filter) m_filter->AddRef();
+            if (value != NULL)
+                m_filter = FdoExpressionEngine::OptimizeFilter(value);
         }
 
         virtual void SetFilter(FdoString* value)
         {
             FDO_SAFE_RELEASE(m_filter);
             if (value != NULL)
-                m_filter = FdoFilter::Parse(value);
+            {
+                FdoPtr<FdoFilter> filter = FdoFilter::Parse(value);
+                m_filter = FdoExpressionEngine::OptimizeFilter(filter);
+            }
         }
 
     protected:

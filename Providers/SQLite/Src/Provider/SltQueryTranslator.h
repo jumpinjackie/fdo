@@ -23,18 +23,100 @@
 
 typedef std::vector<__int64> recno_list;
 
-struct TCtx
+enum StlSpatialTypeOperation
 {
-    TCtx() : canOmit(false), ids(NULL)
-    {
-    }
-
-    std::wstring expr;
-    DBounds      bounds;
-    bool         canOmit;
-    recno_list* ids;
+    StlSpatialTypeOperation_None,
+    StlSpatialTypeOperation_And,
+    StlSpatialTypeOperation_Or
 };
 
+class FilterChunk
+{
+protected:
+    StringBuffer m_content;
+    StlSpatialTypeOperation m_operation;
+public:
+    DBounds      m_bounds;
+    bool         m_canOmit;
+    recno_list* m_ids;
+public:
+    FilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
+        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    {
+        
+    }
+    FilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
+        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    {
+        m_content.Append(str, len);
+    }
+    FilterChunk(const wchar_t* str, StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
+        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    {
+        m_content.Append(str);
+    }
+    virtual ~FilterChunk()
+    {
+        delete m_ids;
+        m_ids = NULL;
+    }
+    StlSpatialTypeOperation GetOperation()
+    {
+        return m_operation;
+    }
+    void SetOperation(StlSpatialTypeOperation op)
+    {
+        m_operation = op;
+    }
+    virtual void SetString(const wchar_t* str)
+    {
+        m_content.Reset();
+        m_content.Append(str);
+    }
+    virtual void SetString(const char* str)
+    {
+        m_content.Reset();
+        m_content.Append(str);
+    }
+    virtual const char* ToString()
+    {
+        return m_content.Data();
+    }
+};
+
+typedef std::vector<FilterChunk*> FilterChunkList;
+
+class ComplexFilterChunk : public FilterChunk
+{
+private:
+    FilterChunkList m_list;
+public:
+    ComplexFilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None) : FilterChunk(op)
+    {
+    }
+    virtual ~ComplexFilterChunk()
+    {
+        // m_list will be release by the caller
+    }
+    void AddToList(FilterChunk* val)
+    {
+        m_list.push_back(val);
+    }
+    void ReplaceContent(FilterChunk* val)
+    {
+        m_list.clear();
+        m_list.push_back(val);
+    }
+    virtual const char* ToString()
+    {
+        m_content.Reset();
+        for (FilterChunkList::iterator idx = m_list.begin(); idx < m_list.end(); idx++)
+        {
+            m_content.Append((*idx)->ToString());
+        }
+        return m_content.Data();
+    }
+};
 
 //Translates an FDO Filter to a SQLite WHERE clause
 //Extracts BBOX queries that can be accelerated by
@@ -93,16 +175,32 @@ public:
 public:
 
     void GetBBOX(DBounds& ext);
-    const wchar_t* GetFilter();
+    const char* GetFilter();
     bool CanUseFastStepping();
     recno_list* DetachIDList();
+    void Reset();
+    bool MustKeepFilterAlive() {return m_keepFilterAlive;}
+
+private:
+    FilterChunk* CreateFilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
+    FilterChunk* CreateFilterChunk(const wchar_t* str, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
+    ComplexFilterChunk* CreateComplexFilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
 
 private:
     
-    std::vector<TCtx>           m_evalStack; 
+    FilterChunkList             m_evalStack;
+    // this chunk needs to be restore in case we find out we cannot use fast stepping
+    ComplexFilterChunk*         m_fastSteppingChunk;
+    // this restoring value will be set for m_fastSteppingChunk
+    FilterChunk*                m_restoreValue;
+    // resulting bounding box in case we can reduce the query area
+    DBounds                     m_bounds;
     bool                        m_canUseFastStepping;
     FdoClassDefinition*         m_fc;
+    bool                        m_keepFilterAlive;
 
+    // list used to destroy the allocated objects at the end
+    FilterChunkList             m_allocatedObjects;
 };
 
 //Translates an FDO Expression to a SQLite expression

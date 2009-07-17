@@ -726,7 +726,8 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     int type[] = { sqlite3_value_type(argv[0]), sqlite3_value_type(argv[1]) };
 
     if (  ((type[0] != SQLITE_BLOB) && (type[0] != SQLITE_TEXT))
-        ||((type[1] != SQLITE_BLOB) && (type[1] != SQLITE_TEXT)) )
+        || ((type[1] != SQLITE_BLOB) && (type[1] != SQLITE_TEXT) && (type[1] != SQLITE_INTEGER))
+        )
     {
         sqlite3_result_int(context, 0);
         return;
@@ -784,7 +785,7 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
                     fg[i] = gf->CreateGeometryFromWkb(baba);
                 }
             }
-            else
+            else if (type[i] == SQLITE_TEXT)
             {
                 //WKT case
                 const char* wkt = (const char*)sqlite3_value_text(argv[i]);
@@ -792,6 +793,11 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
                 wchar_t* wwkt = (wchar_t*)alloca(sizeof(wchar_t) * len);
                 mbstowcs(wwkt, wkt, len);
                 fg[i] = gf->CreateGeometry(wwkt);        
+            }
+            else if (type[i] == SQLITE_INTEGER)
+            {
+                FdoByteArray* geomArray = (FdoByteArray*)sqlite3_value_int64(argv[i]);
+                fg[i] = gf->CreateGeometryFromFgf(geomArray);
             }
         }
     }
