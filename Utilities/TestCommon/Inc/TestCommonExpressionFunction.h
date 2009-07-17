@@ -821,6 +821,12 @@ protected:
 
     virtual bool PointMAlwaysNull();
 
+    virtual double GetNullOrdinate();
+
+    virtual double GetNaNOrdinate();
+
+    virtual bool IsNullOrdinate(double ordinate);
+
     //-------------------------------------------------------------------------
     //                                Variables
     //-------------------------------------------------------------------------

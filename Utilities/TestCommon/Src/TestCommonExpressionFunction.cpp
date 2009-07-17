@@ -2778,4 +2778,18 @@ bool TestCommonExpressionFunction::PointMAlwaysNull()
     return false;
 }
 
+double TestCommonExpressionFunction::GetNullOrdinate()
+{
+    return -1.25e126;
+}
+
+double TestCommonExpressionFunction::GetNaNOrdinate()
+{
+    return numeric_limits<double>::quiet_NaN();
+}
+
+bool TestCommonExpressionFunction::IsNullOrdinate( double ordinate)
+{
+    return (ordinate == GetNullOrdinate()) || (ordinate != ordinate);
+}
 
