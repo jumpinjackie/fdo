@@ -76,6 +76,7 @@ class SltReader :   public FdoIScrollableFeatureReader,
 
         virtual ~SltReader();
 
+        void SetInternalFilter(FdoFilter* filter);
 
 protected:
         //for internal use only!
@@ -210,6 +211,9 @@ protected:
 
         //stuff related to scrollable readers
         RowidIterator*      m_ri;
+        // kept here only for special cases when provider needs it alive
+        // due some optimizations to avoid copying a geometry
+        FdoFilter*          m_filter;
 };
 
 

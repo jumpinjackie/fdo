@@ -141,6 +141,30 @@ struct DBounds
             res->max[i] = std::min<double>(b1->max[i], b2->max[i]);
         }
     }
+    
+    // returns a value which can be used to compare the bounds (which is bigger/smaller)
+    // this function avoids to calculate an area since we could 
+    // get overflow
+    double GetBoundsLength()
+    {
+        double retVal = 0.0;
+        if (IsEmpty())
+            return retVal;
+        for (int i=0; i<SI_DIM; i++)
+        {
+            retVal += (max[i] - min[i]);
+        }
+        return retVal;
+    }
+
+    bool Intersects(const DBounds& b)
+    {
+        bool rez = true;
+        for (int i=0; i<SI_DIM; i++)
+            rez = rez && (min[i] <= b.max[i]) && (max[i] >= b.min[i]);
+
+        return rez;
+    }
 
     bool Contains(const DBounds& b)
     {

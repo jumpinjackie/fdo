@@ -597,6 +597,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     std::vector<__int64>* rowids = NULL;
     StringBuffer where((size_t)0);
     bool canFastStep = true;
+    bool mustKeepFilterAlive = false;
 
     SltMetadata* md = GetMetadata(mbfc);
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
@@ -617,12 +618,13 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
-        const wchar_t* wfilter = qt.GetFilter();
-        if (*wfilter) 
-            where.Append(qt.GetFilter());
+        const char* txtFilter = qt.GetFilter();
+        if (*txtFilter) 
+            where.Append(txtFilter);
         qt.GetBBOX(bbox);
         rowids = qt.DetachIDList();
         canFastStep = qt.CanUseFastStepping();
+        mustKeepFilterAlive = qt.MustKeepFilterAlive();
     }
 
     if (where.Length()>0 && scrollable)
@@ -647,10 +649,22 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
 
-        //only use spatial iterator if the search bounds does not
-        //fully contain the data bounds
-        if (!bbox.Contains(total_ext))
+        if (bbox.Contains(total_ext))
+        {
+            //only use spatial iterator if the search bounds does not
+            //fully contain the data bounds
+        }
+        else if (bbox.Intersects(total_ext))
+        {
             siter = new SpatialIterator(bbox, si);
+        }
+        else
+        {
+            // enforce an empty result since result will be empty
+            rowids = new std::vector<__int64>();
+            rowids->push_back(-1);
+            ri = new RowidIterator(-1, rowids);
+        }
     }
 
     //Now process any ordering options .
@@ -763,8 +777,11 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             ri = new RowidIterator(GetFeatureCount(mbfc), NULL);
         }
     }
-   
-    return new SltReader(this, props, mbfcname, where.Data(), siter, canFastStep, ri);
+    SltReader* rdr = new SltReader(this, props, mbfcname, where.Data(), siter, canFastStep, ri);
+    if (mustKeepFilterAlive)
+        rdr->SetInternalFilter(filter);
+
+    return rdr;
 }
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
@@ -827,21 +844,27 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         sb.AppendDQuoted(mbfc);
     }
 
+    bool mustKeepFilterAlive = false;
     if(filter) {
         FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc)->ToClass();
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
-        const wchar_t* wfilter = qt.GetFilter();
-        if (*wfilter) {
+        mustKeepFilterAlive = qt.MustKeepFilterAlive();
+        const char* txtFilter = qt.GetFilter();
+        if (*txtFilter) {
             sb.Append(" WHERE ");
-            sb.Append(qt.GetFilter());
+            sb.Append(txtFilter);
         }
     }
 
     sb.Append(";");
 
-    return new SltReader(this, sb.Data());
+    SltReader* rdr = new SltReader(this, sb.Data());
+    if (mustKeepFilterAlive)
+        rdr->SetInternalFilter(filter);
+
+    return rdr;
 }
 
 

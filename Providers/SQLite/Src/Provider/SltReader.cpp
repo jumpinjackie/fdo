@@ -79,6 +79,7 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_useFastStepping(false),
 m_ri(NULL),
+m_filter(NULL),
 m_aPropNames(NULL),
 m_fromwhere()
 {
@@ -108,6 +109,7 @@ m_closeDB(closeDB),
 m_useFastStepping(false),
 m_ri(NULL),
 m_aPropNames(NULL),
+m_filter(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
@@ -136,6 +138,7 @@ m_closeDB(false),
 m_useFastStepping(useFastStepping),
 m_ri(ri),
 m_aPropNames(NULL),
+m_filter(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
@@ -162,6 +165,7 @@ m_wkbBufferLen(0),
 m_closeDB(false),
 m_useFastStepping(true),
 m_aPropNames(NULL),
+m_filter(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
@@ -171,6 +175,7 @@ m_fromwhere()
 SltReader::~SltReader()
 {
 	Close();
+    FDO_SAFE_RELEASE(m_filter);
     FDO_SAFE_RELEASE(m_class);
     delete m_si;
     delete m_ri;
@@ -180,6 +185,11 @@ SltReader::~SltReader()
     delete[] m_aPropNames;
 }
 
+void SltReader::SetInternalFilter(FdoFilter* filter)
+{
+    FDO_SAFE_RELEASE(m_filter);
+    m_filter = FDO_SAFE_ADDREF(filter);
+}
 
 void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where)
 {
