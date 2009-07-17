@@ -3774,8 +3774,11 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
                             break;
                     }
 			    }
-				
-                if( (retOpt == FdoOptimizeResultType_Invalid ) || FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft ))
+
+                if( (retOpt == FdoOptimizeResultType_Invalid ) || 
+                    (FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft ) &&
+                    !((rightOp == FdoSpatialOperations_Crosses || rightOp == FdoSpatialOperations_Intersects || rightOp == FdoSpatialOperations_Overlaps || rightOp == FdoSpatialOperations_EnvelopeIntersects)
+                    && (leftOp == FdoSpatialOperations_Crosses || leftOp == FdoSpatialOperations_Intersects || leftOp == FdoSpatialOperations_Overlaps || leftOp == FdoSpatialOperations_EnvelopeIntersects))))
 				{
 					// If the condition do not overlap, then replace it with a filter that returns 0 features.
 #ifdef _WIN32
