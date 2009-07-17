@@ -52,6 +52,8 @@ protected:
 
     void RunAllExpFctTests();
 
+    virtual double GetNullOrdinate();
+
 };  //  class FdoExpressionFunctionTest
 
 #endif
