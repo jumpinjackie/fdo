@@ -45,6 +45,10 @@ protected:
     /// arguments.
     FDO_API FdoSpatialContextMismatchException(FdoString* message, FdoException* cause);
 
+    /// Constructs an instance of an FdoSpatialContextMismatchException using the specified
+    /// arguments.
+    FDO_API FdoSpatialContextMismatchException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
+
     FDO_API virtual ~FdoSpatialContextMismatchException();
 
     FDO_API virtual void Dispose();
@@ -73,6 +77,19 @@ public:
     /// Constructs an instance of an FdoSpatialContextMismatchException using the specified arguments.
     /// 
     /// \param message 
+    /// Input message text
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoSpatialContextMismatchException
+    /// 
+    FDO_API static FdoSpatialContextMismatchException* Create(FdoString* message, FdoInt64 nativeErrorCode);
+
+    /// \brief
+    /// Constructs an instance of an FdoSpatialContextMismatchException using the specified arguments.
+    /// 
+    /// \param message 
     /// Input name text
     /// \param cause 
     /// Input cause of exception
@@ -81,6 +98,21 @@ public:
     /// Returns FdoSpatialContextMismatchException
     /// 
     FDO_API static FdoSpatialContextMismatchException* Create(FdoString* message, FdoException* cause);
+
+    /// \brief
+    /// Constructs an instance of an FdoSpatialContextMismatchException using the specified arguments.
+    /// 
+    /// \param message 
+    /// Input name text
+    /// \param cause 
+    /// Input cause of exception
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoSpatialContextMismatchException
+    /// 
+    FDO_API static FdoSpatialContextMismatchException* Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
 };
 
 /// \ingroup (typedefs)

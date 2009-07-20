@@ -28,9 +28,19 @@ FdoAutogenerationException* FdoAutogenerationException::Create(FdoString* messag
 	return new FdoAutogenerationException(message);
 }
 
+FdoAutogenerationException* FdoAutogenerationException::Create(FdoString* message, FdoInt64 nativeErrorCode)
+{
+    return new FdoAutogenerationException(message, NULL, nativeErrorCode);
+}
+
 FdoAutogenerationException* FdoAutogenerationException::Create(FdoString* message, FdoException* cause)
 {
 	return new FdoAutogenerationException(message, cause);
+}
+
+FdoAutogenerationException* FdoAutogenerationException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    return new FdoAutogenerationException(message, cause, nativeErrorCode);
 }
 
 FdoAutogenerationException::FdoAutogenerationException() :
@@ -45,6 +55,11 @@ FdoAutogenerationException::FdoAutogenerationException(FdoString* message) :
 
 FdoAutogenerationException::FdoAutogenerationException(FdoString* message, FdoException* cause) :
   FdoSchemaException(message, cause)
+{
+}
+
+FdoAutogenerationException::FdoAutogenerationException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode) :
+  FdoSchemaException(message, cause, nativeErrorCode)
 {
 }
 

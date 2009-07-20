@@ -43,6 +43,10 @@ protected:
     /// arguments.
     FdoSchemaException(FdoString* message, FdoException* cause);
 
+    /// Constructs an instance of an FdoSchemaException using the specified
+    /// arguments.
+    FdoSchemaException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
+
     virtual ~FdoSchemaException();
 
     virtual void Dispose();
@@ -71,6 +75,19 @@ public:
     /// \brief
     /// Constructs an instance of an FdoSchemaException using the specified arguments.
     /// 
+    /// \param message 
+    /// Input message text
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API static FdoSchemaException* Create(FdoString* message, FdoInt64 nativeErrorCode);
+
+    /// \brief
+    /// Constructs an instance of an FdoSchemaException using the specified arguments.
+    /// 
     /// \param name 
     /// Input name text
     /// \param cause 
@@ -80,6 +97,21 @@ public:
     /// Returns FdoSchemaException
     /// 
     FDO_API static FdoSchemaException* Create(FdoString* name, FdoException* cause);
+
+    /// \brief
+    /// Constructs an instance of an FdoSchemaException using the specified arguments.
+    /// 
+    /// \param message 
+    /// Input message text
+    /// \param cause 
+    /// Input cause of exception
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API static FdoSchemaException* Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
 };
 
 /// \ingroup (typedefs)

@@ -32,11 +32,14 @@ NAMESPACE_OSGEO_COMMON::Exception^ NAMESPACE_OSGEO_COMMON::Exception::Create(Sys
 	        if (fdoCauseEx)
             {
                 NAMESPACE_OSGEO_COMMON::Exception^ mgCause = Create(System::IntPtr(fdoCauseEx));
-                ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()), mgCause);
+                ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()), 
+                                                                           mgCause, 
+                                                                           fdoEx->GetNativeErrorCode());
             }
 	        else
             {
-		        ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()));
+		        ret = gcnew NAMESPACE_OSGEO_COMMON::Exception(gcnew String(fdoEx->GetExceptionMessage()),
+                                                                           fdoEx->GetNativeErrorCode());
             }
         }
         catch (...)

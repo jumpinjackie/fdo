@@ -46,6 +46,10 @@ protected:
     /// arguments.
     FdoAutogenerationException(FdoString* message, FdoException* cause);
 
+    /// Constructs an instance of an FdoAutogenerationException using the specified
+    /// arguments.
+    FdoAutogenerationException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
+
     virtual ~FdoAutogenerationException();
 
     virtual void Dispose();
@@ -74,6 +78,19 @@ public:
     /// \brief
     /// Constructs an instance of an FdoAutogenerationException using the specified arguments.
     /// 
+    /// \param message 
+    /// Input message text
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API static FdoAutogenerationException* Create(FdoString* message, FdoInt64 nativeErrorCode);
+
+    /// \brief
+    /// Constructs an instance of an FdoAutogenerationException using the specified arguments.
+    /// 
     /// \param name 
     /// Input name text
     /// \param cause 
@@ -83,6 +100,21 @@ public:
     /// Returns FdoAutogenerationException
     /// 
     FDO_API static FdoAutogenerationException* Create(FdoString* name, FdoException* cause);
+
+    /// \brief
+    /// Constructs an instance of an FdoAutogenerationException using the specified arguments.
+    /// 
+    /// \param message 
+    /// Input message text
+    /// \param cause 
+    /// Input cause of exception
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API static FdoAutogenerationException* Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
 };
 
 /// \ingroup (typedefs)

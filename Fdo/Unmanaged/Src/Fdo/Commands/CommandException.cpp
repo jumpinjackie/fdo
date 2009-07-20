@@ -28,9 +28,19 @@ FdoCommandException* FdoCommandException::Create(FdoString* message)
 	return new FdoCommandException(message);
 }
 
+FdoCommandException* FdoCommandException::Create(FdoString* message, FdoInt64 nativeErrroCode)
+{
+    return new FdoCommandException(message, NULL, nativeErrroCode);
+}
+
 FdoCommandException* FdoCommandException::Create(FdoString* message, FdoException* cause)
 {
 	return new FdoCommandException(message, cause);
+}
+
+FdoCommandException* FdoCommandException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrroCode)
+{
+    return new FdoCommandException(message, cause, nativeErrroCode);
 }
 
 FdoCommandException::FdoCommandException() :
@@ -45,6 +55,11 @@ FdoCommandException::FdoCommandException(FdoString* message) :
 
 FdoCommandException::FdoCommandException(FdoString* message, FdoException* cause) :
   FdoException(message, cause)
+{
+}
+
+FdoCommandException::FdoCommandException(FdoString* message, FdoException* cause,  FdoInt64 nativeErrroCode) :
+    FdoException(message, cause, nativeErrroCode)
 {
 }
 

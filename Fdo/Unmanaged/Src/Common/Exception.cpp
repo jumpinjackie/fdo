@@ -88,27 +88,47 @@ FdoException* FdoException::Create(FdoString* message)
     return new FdoException(message);
 }
 
+FdoException* FdoException::Create(FdoString* message, FdoInt64 nativeErrorCode)
+{
+    return new FdoException(message, NULL, nativeErrorCode);
+}
+
 FdoException* FdoException::Create(FdoString* message, FdoException* cause)
 {
     return new FdoException(message, cause);
+}
+
+FdoException* FdoException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    return new FdoException(message, cause, nativeErrorCode);
 }
 
 FdoException::FdoException()
 {
     m_message = NULL;
     m_cause = NULL;
+    m_nativeErrorCode = 0;
 }
 
 FdoException::FdoException(FdoString* message)
 {
     m_message = FdoStringUtility::MakeString(message);
     m_cause = NULL;
+    m_nativeErrorCode = 0;
 }
 
 FdoException::FdoException(FdoString* message, FdoException* cause)
 {
     m_message = FdoStringUtility::MakeString(message);
     m_cause = FDO_SAFE_ADDREF(cause);
+    m_nativeErrorCode = 0;
+}
+
+FdoException::FdoException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    m_message = FdoStringUtility::MakeString(message);
+    m_cause = FDO_SAFE_ADDREF(cause);
+    m_nativeErrorCode = nativeErrorCode;
 }
 
 FdoException::~FdoException()
@@ -199,3 +219,7 @@ FdoString* FdoException::NLSGetMessage(FdoInt32 msgNum, const char* defMsg, cons
     return nls_msg_get_W2(NULL, catalog, 1, msgNum, defMsg, arguments); 
 }
 
+FdoInt64 FdoException::GetNativeErrorCode()
+{
+    return m_nativeErrorCode;
+}
