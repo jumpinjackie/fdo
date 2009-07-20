@@ -28,9 +28,19 @@ FdoSchemaException* FdoSchemaException::Create(FdoString* message)
 	return new FdoSchemaException(message);
 }
 
+FdoSchemaException* FdoSchemaException::Create(FdoString* message, FdoInt64 nativeErrorCode)
+{
+    return new FdoSchemaException(message, NULL, nativeErrorCode);
+}
+
 FdoSchemaException* FdoSchemaException::Create(FdoString* message, FdoException* cause)
 {
 	return new FdoSchemaException(message, cause);
+}
+
+FdoSchemaException* FdoSchemaException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    return new FdoSchemaException(message, cause, nativeErrorCode);
 }
 
 FdoSchemaException::FdoSchemaException() :
@@ -47,6 +57,12 @@ FdoSchemaException::FdoSchemaException(FdoString* message, FdoException* cause) 
   FdoException(message, cause)
 {
 }
+
+FdoSchemaException::FdoSchemaException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode) :
+  FdoException(message, cause, nativeErrorCode)
+{
+}
+
 
 FdoSchemaException::~FdoSchemaException()
 {

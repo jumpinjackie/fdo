@@ -57,6 +57,24 @@ protected:
     /// 
     FdoXmlException(FdoString* message, FdoException* cause);
 
+
+    /// \brief
+    ///  Constructs an instance of an FdoXmlException using the specified
+    /// arguments.
+    /// 
+    /// \param message 
+    /// Input the error message
+    /// \param cause 
+    /// Input the cause of the error
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    FdoXmlException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
+
+
     virtual void Dispose();
 /// \endcond
 
@@ -81,6 +99,19 @@ public:
     FDO_API_COMMON static FdoXmlException* Create(FdoString* message);
 
     /// \brief
+    /// Constructs an instance of an FdoXmlException using the specified arguments.
+    /// 
+    /// \param message 
+    /// Input message text
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API_COMMON static FdoXmlException* Create(FdoString* message, FdoInt64 nativeErrorCode);
+
+    /// \brief
     /// Returns an instance of an FdoXmlException using the specified arguments.
     /// 
     /// \param message 
@@ -93,6 +124,20 @@ public:
     /// 
     FDO_API_COMMON static FdoXmlException* Create(FdoString* message, FdoException* cause);
 
+    /// \brief
+    /// Constructs an instance of an FdoXmlException using the specified arguments.
+    /// 
+    /// \param message 
+    /// Input message text
+    /// \param cause 
+    /// Input cause of exception
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns FdoExpressionException
+    /// 
+    FDO_API_COMMON static FdoXmlException* Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode);
 };
 
 /// \ingroup (typedefs)

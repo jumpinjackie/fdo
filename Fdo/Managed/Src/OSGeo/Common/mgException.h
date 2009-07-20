@@ -38,6 +38,18 @@ public:
     /// 
 	static NAMESPACE_OSGEO_COMMON::Exception^ Create(System::IntPtr ex);
 
+    /// \brief
+    ///  Returns the native error code of the underlying provider.
+    /// 
+    ///
+    /// \returns
+    /// The native error code of the underlying provider
+    /// 
+    System::Int64 GetNativeErrorCode()
+    {
+        return m_nativeErrorCode;
+    }
+
 public:
     /// \brief
     /// Constructs a new empty Exception object
@@ -53,7 +65,37 @@ public:
     /// \param msg 
     /// Input the error message
     /// 
-	NAMESPACE_OSGEO_COMMON::Exception(String^ msg) : System::Exception(msg)
+	NAMESPACE_OSGEO_COMMON::Exception(String^ msg) : System::Exception(msg), m_nativeErrorCode(0)
+	{
+		
+	}
+
+    /// \brief
+    /// Creates an instance of an Exception using the specified arguments.
+    /// 
+    /// \param msg 
+    /// Input the error message
+    ///
+    /// \param nativeErrroCode 
+    /// Input the native error code
+    /// 
+    NAMESPACE_OSGEO_COMMON::Exception(String^ msg, System::Int64 nativeErrorCode) 
+        : System::Exception(msg), m_nativeErrorCode(nativeErrorCode)
+    {
+    
+    }
+
+    /// \brief
+    ///  Returns an instance of a Exception using the specified arguments.
+    /// 
+    /// \param msg 
+    /// Input the error message
+    ///
+    /// \param cause 
+    /// Input the cause of the error
+    /// 
+	NAMESPACE_OSGEO_COMMON::Exception(System::String^ msg, System::Exception^ cause) 
+        : System::Exception(msg, cause), m_nativeErrorCode(0)
 	{
 		
 	}
@@ -66,11 +108,17 @@ public:
     ///
     /// \param cause 
     /// Input the cause of the error
+    ///
+    /// \param nativeErrroCode 
+    /// Input the native error code
     /// 
-	NAMESPACE_OSGEO_COMMON::Exception(System::String^ msg, System::Exception^ cause) : System::Exception(msg, cause)
-	{
-		
-	}
+    NAMESPACE_OSGEO_COMMON::Exception(System::String^ msg, System::Exception^ cause, System::Int64 nativeErrorCode) 
+        : System::Exception(msg, cause), m_nativeErrorCode(nativeErrorCode)
+    {
+
+    }
+
+    
 
 /// \cond DOXYGEN-IGNORE
 protected:
@@ -78,6 +126,8 @@ protected:
 	{
 		
 	}
+
+    System::Int64   m_nativeErrorCode;
 /// \endcond
 };
 END_NAMESPACE_OSGEO_COMMON

@@ -28,9 +28,19 @@ FdoXmlException* FdoXmlException::Create(FdoString* message)
     return new FdoXmlException(message);
 }
 
+FdoXmlException* FdoXmlException::Create(FdoString* message, FdoInt64 nativeErrorCode)
+{
+    return new FdoXmlException(message, NULL, nativeErrorCode);
+}
+
 FdoXmlException* FdoXmlException::Create(FdoString* message, FdoException* cause)
 {
     return new FdoXmlException(message, cause);
+}
+
+FdoXmlException* FdoXmlException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    return new FdoXmlException(message, cause, nativeErrorCode);
 }
 
 FdoXmlException::FdoXmlException()
@@ -42,6 +52,10 @@ FdoXmlException::FdoXmlException(FdoString* message) : FdoException(message)
 }
 
 FdoXmlException::FdoXmlException(FdoString* message, FdoException* cause) : FdoException(message, cause)
+{
+}
+
+FdoXmlException::FdoXmlException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode) : FdoException(message, cause, nativeErrorCode)
 {
 }
 

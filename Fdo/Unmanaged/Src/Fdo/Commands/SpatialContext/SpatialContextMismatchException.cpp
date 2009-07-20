@@ -28,9 +28,19 @@ FdoSpatialContextMismatchException* FdoSpatialContextMismatchException::Create(F
 	return new FdoSpatialContextMismatchException(message);
 }
 
+FdoSpatialContextMismatchException* FdoSpatialContextMismatchException::Create(FdoString* message, FdoInt64 nativeErrorCode)
+{
+    return new FdoSpatialContextMismatchException(message, NULL, nativeErrorCode);
+}
+
 FdoSpatialContextMismatchException* FdoSpatialContextMismatchException::Create(FdoString* message, FdoException* cause)
 {
 	return new FdoSpatialContextMismatchException(message, cause);
+}
+
+FdoSpatialContextMismatchException* FdoSpatialContextMismatchException::Create(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode)
+{
+    return new FdoSpatialContextMismatchException(message, cause, nativeErrorCode);
 }
 
 FdoSpatialContextMismatchException::FdoSpatialContextMismatchException() :
@@ -45,6 +55,11 @@ FdoSpatialContextMismatchException::FdoSpatialContextMismatchException(FdoString
 
 FdoSpatialContextMismatchException::FdoSpatialContextMismatchException(FdoString* message, FdoException* cause) :
   FdoException(message, cause)
+{
+}
+
+FdoSpatialContextMismatchException::FdoSpatialContextMismatchException(FdoString* message, FdoException* cause, FdoInt64 nativeErrorCode) :
+  FdoException(message, cause, nativeErrorCode)
 {
 }
 

@@ -44,6 +44,10 @@ protected:
     /// message.
     FdoClientServiceException(const wchar_t* message);
 
+    /// Constructs an instance of a FdoClientServiceException using the exception
+    /// message, and the native error code
+    FdoClientServiceException(const wchar_t* message, FdoInt64 nativeErrorCode);
+
     virtual void Dispose();
 /// \endcond
 
@@ -75,6 +79,19 @@ public:
     /// Returns an FdoClientServicesException object containing the specified error mesage.
     /// 
     FDO_API static FdoClientServiceException* Create(const wchar_t* message);
+
+    /// \brief
+    /// Creates an instance of a FdoClientServiceException using the exception message and the native error code. 
+    /// 
+    /// \param message 
+    /// The Exception message.
+    /// \param nativeErrorCode 
+    /// Input the native error code of the error, which is returned by FDO data source
+    /// 
+    /// \return
+    /// Returns an FdoClientServicesException object containing the specified error mesage.
+    /// 
+    FDO_API static FdoClientServiceException* Create(const wchar_t* message, FdoInt64 nativeErrorCode);
 
     /// \brief
     /// Gets the message associated with this exception. If no message and
