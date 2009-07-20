@@ -22,8 +22,9 @@
 #include "TestCommonExpressionFunction.h"
 
 // =============================================================================
-// | The file contains the definition of the class FdoExpressionFunctionTest. It
-// | defines the expression function tests
+// | The file contains the definition of the class TestCommonExpressionFunctionR. It
+// | is the base class for the expression function tests for providers that don't
+// | support FdoIApplySchema
 // =============================================================================
 
 

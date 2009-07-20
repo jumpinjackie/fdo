@@ -25,8 +25,8 @@
 #include "TestCommonMiscUtil.h"
 
 // =============================================================================
-// | The file contains the definition of the class FdoExpressionFunctionTest. It
-// | defines the expression function tests
+// | The file contains the definition of the class TestCommonExpressionFunction. It
+// | is the common base for the expression function tests
 // =============================================================================
 
 
