@@ -179,7 +179,7 @@ public:
     bool CanUseFastStepping();
     recno_list* DetachIDList();
     void Reset();
-    bool MustKeepFilterAlive() {return m_keepFilterAlive;}
+    bool MustKeepFilterAlive() {return (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;}
 
 private:
     FilterChunk* CreateFilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
@@ -197,7 +197,7 @@ private:
     DBounds                     m_bounds;
     bool                        m_canUseFastStepping;
     FdoClassDefinition*         m_fc;
-    bool                        m_keepFilterAlive;
+    short                       m_geomCount;
 
     // list used to destroy the allocated objects at the end
     FilterChunkList             m_allocatedObjects;

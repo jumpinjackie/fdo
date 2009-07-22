@@ -49,6 +49,26 @@ int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
     return _ut_utf8_from_unicode(src, wlen, dst, clen);
 }
 
+int StringContains(const char* str, const char* val)
+{
+    const char* strTmp = str;
+    while (*strTmp != '\0')
+    {
+        const char* valTmp = val;
+        int ret = (int)(strTmp - str);
+        if(sqlite3UpperToLower[*strTmp] == sqlite3UpperToLower[*valTmp])
+        {
+            while(sqlite3UpperToLower[*strTmp++] == sqlite3UpperToLower[*valTmp++])
+            {
+                if (*valTmp == '\0')
+                    return ret;
+            }
+        }
+        else
+            strTmp++;
+    }
+    return -1;
+}
 
 FdoDateTime DateFromString(const wchar_t* val, bool excOnErr)
 {

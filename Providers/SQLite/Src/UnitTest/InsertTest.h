@@ -31,6 +31,8 @@ class InsertTest : public CppUnit::TestCase
     CPPUNIT_TEST( TestInsInvalidGeomTypes );
     CPPUNIT_TEST( TestConstraints1 );
     CPPUNIT_TEST( TestConstraints2 );
+    CPPUNIT_TEST( TestCompPK );
+    CPPUNIT_TEST( TestNoPK );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +45,11 @@ public:
 
     void TestConstraints1 ();
     void TestConstraints2 ();
+    void TestCompPK ();
+    void TestNoPK ();
 private:
     bool TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoString* propName, FdoInt32 id, FdoDateTime* expVal = NULL);
+    void TestInsertData(FdoIConnection* conn, FdoString* className, FdoInt32 expectedProps = -1, FdoIdentifierCollection* propNames = NULL);
 };
 
 #endif	//INSERTTEST_H

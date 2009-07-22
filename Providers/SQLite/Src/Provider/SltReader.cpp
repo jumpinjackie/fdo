@@ -257,7 +257,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     m_eGeomFormat = md->GetGeomFormat();
 
-	//if there were properties passed in the identifier collection, assume 
+    //if there were properties passed in the identifier collection, assume 
 	//the caller knows what they want and we will use the exact query
     //rather than paring down the property list initially
 	if (props && props->GetCount() > 0)
@@ -277,10 +277,29 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     //add the id
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
-    FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
-    m_reissueProps.Add(idp->GetName());
-
-    if (m_class->GetClassType() == FdoClassType_FeatureClass)
+    int nIdProps = idpdc->GetCount(); // a class cannot have no PK (a fake one is provided -ROWID-)
+    if (nIdProps != 0)
+     {
+        // in case we have more than one PK add them all
+        if (nIdProps > 1)
+        {
+            m_reissueProps.Add("rowid", 5);
+            if (m_class->GetClassType() == FdoClassType_FeatureClass)
+            {
+                //add the geom by doing a requery
+                FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
+                m_reissueProps.Add(gpd->GetName());
+            }
+        }
+        for (int i = 0; i < nIdProps; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> idp = idpdc->GetItem(i);
+            FdoPtr<FdoIdentifier> idf = (props != NULL) ? props->FindItem(idp->GetName()) : NULL;
+            if (idf == NULL)
+                m_reissueProps.Add(idp->GetName());
+        }
+    }
+    if (nIdProps <= 1 && m_class->GetClassType() == FdoClassType_FeatureClass)
     {
         //add the geom by doing a requery
         FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
@@ -476,6 +495,12 @@ FdoInt16 SltReader::GetInt16(FdoString* propertyName)
 FdoInt32 SltReader::GetInt32(FdoString* propertyName)
 {
 	return GetInt32(NameToIndex(propertyName));
+}
+
+FdoInt64 SltReader::GetInt64(int i)
+{
+    FdoInt64 res = sqlite3_column_int64(m_pStmt, i);
+	return res;
 }
 
 FdoInt32 SltReader::GetInt32(int i)
@@ -739,6 +764,16 @@ void SltReader::Close()
 	m_pStmt = NULL;
 }
 
+const char* SltReader::DecodeTableName(const char* name)
+{
+    if (name != NULL)
+    {
+        int pos = StringContains(name, "$view");
+        return (pos == 0) ? (name+5) : name;
+    }
+    return name;
+}
+
 	//-------------------------------------------------------
 	// FdoIFeatureReader implementation
 	//-------------------------------------------------------
@@ -751,8 +786,12 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 		//decide on a name for the class -- just pick the table name
 		//for the first column :)
 		const char* tableName = sqlite3_column_table_name(m_pStmt, 0);
+        //in case is a temp table filled with a view content use the view name
         if (NULL == tableName)
             tableName = "GeneratedClass";
+        else
+            tableName = DecodeTableName(tableName);
+
         std::wstring wtable = A2W_SLOW(tableName);
 		//find source feature class metadata
         SltMetadata* mainMd = m_connection->GetMetadata(tableName);
@@ -769,6 +808,7 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 			bool propFound = false;
 			//get name of table that is the source for this column
 			const char* table = sqlite3_column_table_name(m_pStmt, i);
+            table = DecodeTableName(table);
 
 			//find source feature class metadata
             SltMetadata* md = (table == NULL)? NULL : m_connection->GetMetadata(table);
@@ -785,18 +825,18 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 
 				FdoPtr<FdoPropertyDefinition> srcprop = pdc->FindItem(pname);
 
-                if (!srcprop.p)
-                    continue; //TODO: really in this case we need to jump to the else statement that handles generic columns
+                if (srcprop.p)
+                {
+                    FdoPtr<FdoPropertyDefinition> clonedprop = FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(srcprop);
+                    propFound = true;
+    			    dstpdc->Add(clonedprop);
 
-                FdoPtr<FdoPropertyDefinition> clonedprop = FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(srcprop);
-                propFound = true;
-    			dstpdc->Add(clonedprop);
+				    if (idpdc->Contains(pname))
+					    dstidpdc->Add((FdoDataPropertyDefinition*)clonedprop.p);
 
-				if (idpdc->Contains(pname))
-					dstidpdc->Add((FdoDataPropertyDefinition*)clonedprop.p);
-
-				if (NULL != geompd && wcscmp(pname, geompd->GetName()) == 0)
-					((FdoFeatureClass*)m_class)->SetGeometryProperty((FdoGeometricPropertyDefinition*)clonedprop.p);
+				    if (NULL != geompd && wcscmp(pname, geompd->GetName()) == 0)
+					    ((FdoFeatureClass*)m_class)->SetGeometryProperty((FdoGeometricPropertyDefinition*)clonedprop.p);
+                }
 			}
             // in case property was not found let's look at the sqlite column
 			if (!propFound)
