@@ -375,6 +375,8 @@ public:
 
     virtual bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
 
+    virtual bool CanSelectDistinctColType( FdoSmPhColType colType );
+
     virtual const wchar_t* FilterToSql( FdoFilter *filter,
                                         const wchar_t *className,
                                         SqlCommandType cmdType,

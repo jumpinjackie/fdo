@@ -184,7 +184,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm130"
-				Optimization="0"
+				Optimization="2"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged/src/geometry&quot;;&quot;$(FDOUTILITIES)\SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
@@ -254,7 +254,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm130"
-				Optimization="0"
+				Optimization="2"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged/src/geometry&quot;;&quot;$(FDOUTILITIES)\SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"

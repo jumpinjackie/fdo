@@ -889,6 +889,11 @@ bool FdoRdbmsFilterProcessor::CanOptimizeRelationQuery( const FdoSmLpClassDefini
     return true;
 }
 
+bool FdoRdbmsFilterProcessor::CanSelectDistinctColType( FdoSmPhColType colType )
+{
+    return true;
+}
+
 // This method is used to follow a value type object property or an m:1 association
 // and add the necessary column spec and table mappings for joining them later.
 void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, const FdoSmLpPropertyDefinition* propertyDefinition, FdoIdentifierCollection *selectedProperties )
@@ -1016,7 +1021,7 @@ void FdoRdbmsFilterProcessor::AppendObjectProperty( const FdoSmLpClassDefinition
     FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
     AppendString( GetTableAlias( sqlTableName ) );
     AppendString( L"." );
-    AppendString( pkCols->RefItem(0)->GetName() );
+    AppendString( (FdoString*)(pkCols->RefItem(0)->GetName()) );
 }
 
 void FdoRdbmsFilterProcessor::AppendGeometricProperty( const FdoSmLpClassDefinition* currentClass, const FdoSmLpGeometricPropertyDefinition* geomProp, bool useOuterJoin, bool inSelectList )
@@ -2248,7 +2253,10 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
     {
         FdoString * tableAlias = GetTableAlias( tableName );
         if (wcscmp(tableAlias, tableName) != 0)
+        {
+            AppendString(  L" " );
             AppendString(  GetTableAlias( tableName ) );
+        }
         AppendString( L" WHERE " );
         HandleFilter( filter );
     }
@@ -2292,6 +2300,9 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString
             if ( colType != FdoSmPhColType_Unknown ) 
             {
 		        bool bGeometry = colType == FdoSmPhColType_Geom;
+
+                if ( mRequiresDistinct && !CanSelectDistinctColType(colType) ) 
+                    continue;
 
                 if (!first )
                     PrependString( L"," );
