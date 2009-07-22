@@ -595,7 +595,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
-    StringBuffer where((size_t)0);
+    StringBuffer strWhere((size_t)0);
     bool canFastStep = true;
     bool mustKeepFilterAlive = false;
 
@@ -620,16 +620,11 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
         const char* txtFilter = qt.GetFilter();
         if (*txtFilter) 
-            where.Append(txtFilter);
+            strWhere.Append(txtFilter);
         qt.GetBBOX(bbox);
         rowids = qt.DetachIDList();
         canFastStep = qt.CanUseFastStepping();
         mustKeepFilterAlive = qt.MustKeepFilterAlive();
-    }
-
-    if (where.Length()>0 && scrollable)
-    {
-        throw FdoCommandException::Create(L"Scrollable reader cannot yet be created with attribute filters! TODO.");
     }
 
     SpatialIterator* siter = NULL;
@@ -749,40 +744,87 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         rc = sqlite3_finalize(stmt);
 
         ri = new RowidIterator(-1, rows);
+
+        if (strWhere.Length()>0 && scrollable)
+        {
+            FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
+            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+            collidf->Add(rowIdIdf);
+            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri);
+            ri = GetScrollableIterator(rdrSc);
+            delete rdrSc;
+            siter = NULL;
+            strWhere.Reset();
+            canFastStep = true;
+        }
     }
     else if (scrollable) //if we want the reader to be scrollable without ordering, we also need a rowid iterator
     {
-        //again, if we also have a spatial iterator, we need
-        //to eliminate it from the picture by intersecting the 
-        //row list with the spatial result list
-        if (siter)
+        if (strWhere.Length()>0 && scrollable)
         {
-            std::vector<__int64>* rows = new std::vector<__int64>;
-            int start = -1;
-            int end = -1;
-
-            while (siter->NextRange(start, end))
-            {
-                for (int i=start; i<=end; i++)
-                    rows->push_back(i);
-            }
-
-            delete siter;
+            FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
+            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+            collidf->Add(rowIdIdf);
+            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri);
+            ri = GetScrollableIterator(rdrSc);
+            delete rdrSc;
             siter = NULL;
-
-            ri = new RowidIterator(-1, rows);
+            strWhere.Reset();
+            canFastStep = true;
         }
-        else if (!ri)
+        else
         {
-            ri = new RowidIterator(GetFeatureCount(mbfc), NULL);
+            //again, if we also have a spatial iterator, we need
+            //to eliminate it from the picture by intersecting the 
+            //row list with the spatial result list
+            if (siter)
+            {
+                std::vector<__int64>* rows = new std::vector<__int64>;
+                int start = -1;
+                int end = -1;
+
+                while (siter->NextRange(start, end))
+                {
+                    for (int i=start; i<=end; i++)
+                        rows->push_back(i);
+                }
+
+                delete siter;
+                siter = NULL;
+
+                ri = new RowidIterator(-1, rows);
+            }
+            else if (!ri)
+            {
+                ri = new RowidIterator(GetFeatureCount(mbfc), NULL);
+            }
         }
     }
-    SltReader* rdr = new SltReader(this, props, mbfcname, where.Data(), siter, canFastStep, ri);
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri);
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
     return rdr;
 }
+
+RowidIterator* SltConnection::GetScrollableIterator(SltReader* rdr)
+{
+    std::vector<__int64>* list = new std::vector<__int64>;
+    while (rdr->ReadNext())
+    {
+        //With a default SltReader we know that rowID will
+        //be returned in column 0 and geometry in column 1
+        //Accessing by index is significantly faster than
+        //accessing by name
+        FdoInt64 id = rdr->GetInt64((int)0);
+        list->push_back(id);
+    }
+    rdr->Close();
+    if (list->size() == 0)
+        list->push_back(-1);
+    return new RowidIterator(-1, list);
+}
+
 
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
                                                 FdoIdentifierCollection*    properties,
@@ -1259,9 +1301,22 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
     sb.AppendDQuoted(fcname.c_str());
     sb.Append(" (");
 
-    CollectBaseClassProperties(classes, fc, fc, sb, 1);
+    FdoPtr<FdoClassDefinition> fctmp = FDO_SAFE_ADDREF(fc);
+    
+    int cntip = 0;
+    while (fctmp != NULL)
+    {
+        FdoPtr<FdoDataPropertyDefinitionCollection> pdi = fctmp->GetIdentityProperties();
+        if (pdi != NULL)
+            cntip += pdi->GetCount();
+        fctmp = fctmp->GetBaseClass();
+    }
+
+    CollectBaseClassProperties(classes, fc, fc, sb, (cntip > 1) ? 0 : 1);
     CollectBaseClassProperties(classes, fc, fc, sb, 2);
     CollectBaseClassProperties(classes, fc, fc, sb, 3);
+    if (cntip > 1)
+        AddClassPrimaryKeys(fc, sb);
 
     //HACK -- remove a trailing comma and space added by CollectBaseClassProps
     //and replace by a closing of the SQL command
@@ -1824,6 +1879,27 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     }
 }
 
+void SltConnection::AddClassPrimaryKeys(FdoClassDefinition* fc, StringBuffer& sb)
+{
+    FdoPtr<FdoClassDefinition> fctmp = FDO_SAFE_ADDREF(fc);
+    sb.Append("PRIMARY KEY(", 12);
+    while (fctmp != NULL)
+    {
+        FdoPtr<FdoDataPropertyDefinitionCollection> pdic = fctmp->GetIdentityProperties();
+        int cnt = pdic->GetCount();
+        for(int idx = 0; idx < cnt; idx++)
+        {
+            FdoPtr<FdoDataPropertyDefinition> item = pdic->GetItem(idx);
+            sb.AppendDQuoted(item->GetName());
+            sb.Append(",", 1);
+        }
+        fctmp = fctmp->GetBaseClass();
+    }
+    sb.Data()[sb.Length()-1] = ')';
+    // those values will be replaced at the end with ");"
+    sb.Append(", ", 2);
+}
+
 void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, StringBuffer& sb, int mode)
 {
     FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
@@ -1837,19 +1913,34 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
     if (fc->GetClassType() == FdoClassType_FeatureClass)
         gpd = ((FdoFeatureClass*)fc)->GetGeometryProperty();
 
-    if (mode == 1)
+    if (mode == 0)
+    {
+        int cntprops = idpdc->GetCount();
+        for (int i=0; i<cntprops; i++)
+        {
+            FdoPtr<FdoDataPropertyDefinition> dpd = idpdc->GetItem(i);
+            sb.AppendDQuoted(dpd->GetName());
+            sb.Append(" ", 1);
+            sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
+
+            AddPropertyConstraintDefaultValue(dpd, sb);
+            sb.Append(", ", 2);
+
+            //Add an entry to the metadata type table, if needed
+            AddDataCol(dpd, mainfc->GetName());
+        }
+    }
+    else if (mode == 1)
     {
         if (idpdc->GetCount() > 0)
         {
-            FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
-
             if (idpdc->GetCount() > 1)
             {
-                printf ("Source class has more than one identity property -- the converter does not support that.");
                 return;
             }
             else
             {
+                FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
                 FdoDataType dt = idp->GetDataType();
                 if (idp->GetIsAutoGenerated() 
                     || dt == FdoDataType_Int32 
@@ -2189,15 +2280,15 @@ void SltConnection::ClearQueryCache()
     m_mCachedQueries = newCache;
 }
 
-void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
+bool SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
 {
     std::string table = W2A_SLOW(fcname);
 
     SpatialIndex* si = GetSpatialIndex(table.c_str());
 
+    DBounds dext;
     if (si)
     {
-        DBounds dext;
         si->GetTotalExtent(dext);
 
         ext[0] = dext.min[0];
@@ -2205,6 +2296,7 @@ void SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
         ext[2] = dext.max[0];
         ext[3] = dext.max[1];
     }
+    return !dext.IsEmpty();
 }
 
 // function added to handle old files already created 
@@ -2359,17 +2451,16 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
 void SltConnection::CacheViewContent(const char* viewName)
 {
     StringBuffer sb;
-    sb.Append("\"$view");
+    sb.Append("$view");
     sb.Append(viewName);
-    sb.Append("\"");
     Table* table = sqlite3FindTable(m_dbRead, sb.Data(), 0);
     if (table == NULL)
     {
         sb.Reset();
-        sb.Append("CREATE TEMP TABLE ", 18);
-        sb.Append("\"$view");
+        sb.Append("CREATE TEMP TABLE IF NOT EXISTS ", 32);
+        sb.Append("\"$view", 6);
         sb.Append(viewName);
-        sb.Append("\" AS SELECT * FROM ");
+        sb.Append("\" AS SELECT * FROM ", 19);
         sb.AppendDQuoted(viewName);
         sb.Append(";");
         sqlite3_exec(m_dbRead, sb.Data(), NULL, NULL, NULL);

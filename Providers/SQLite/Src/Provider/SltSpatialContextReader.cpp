@@ -120,6 +120,11 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
 
     FdoFeatureClass* fc = NULL;
     FdoString* myname = GetName();
+    double ext[4];
+    ext[0] = -DBL_MAX;
+    ext[1] = -DBL_MAX;
+    ext[2] = DBL_MAX;
+    ext[3] = DBL_MAX;
 
     //do the search...
     for (int i=cc->GetCount()-1; i>=0; i--)
@@ -135,24 +140,15 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
             FdoString* sca = gpd->GetSpatialContextAssociation();
 
             if (wcscmp(sca, myname) == 0)
-                break;
+            {
+                if (m_connection->GetExtents(fc->GetName(), ext))
+                    break;
+            }
 
             fc = NULL;
         }
     }
 
-    double ext[4];
-    ext[0] = -DBL_MAX;
-    ext[1] = -DBL_MAX;
-    ext[2] = DBL_MAX;
-    ext[3] = DBL_MAX;
-
-    //if we found a feature class, get its extents
-    if (fc)
-    {
-        m_connection->GetExtents(fc->GetName(), ext);
-    }
-        
     FgfPolygon p;
 
     //generate FGF polygon and return as refcounted byte array

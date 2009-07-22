@@ -153,6 +153,7 @@ protected:
 
          const FdoByte*  GetGeometry(int i, FdoInt32* len);
          FdoInt32        GetInt32(int i);
+         FdoInt64        GetInt64(int i);
 
     protected:
 
@@ -160,6 +161,7 @@ protected:
 
     private:
 
+        const char* DecodeTableName(const char* name);
         std::wstring ExtractExpression(const wchar_t* exp, const wchar_t* propName);
 		void InitPropIndex(sqlite3_stmt* pStmt);
         int AddColumnToQuery(const wchar_t* name);

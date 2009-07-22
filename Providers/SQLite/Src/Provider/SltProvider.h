@@ -22,6 +22,7 @@
 class SltMetadata;
 class SpatialIndex;
 class SltReader;
+class RowidIterator;
 class SltExtendedSelect;
 struct NameOrderingPair;
 class StringBuffer;
@@ -199,7 +200,7 @@ public:
     sqlite3*        GetDbRead() { return m_dbRead; }
     sqlite3*        GetDbWrite() { return m_dbWrite; }
     SpatialIndex*   GetSpatialIndex(const char* table);
-    void            GetExtents(const wchar_t* fcname, double ext[4]);
+    bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
     int             GetFeatureCount(const char* table);
@@ -230,7 +231,9 @@ private :
     int GetDefaultSpatialContext();
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, StringBuffer& sb, int mode);
+    void AddClassPrimaryKeys(FdoClassDefinition* fc, StringBuffer& sb);
     void AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition* prop, StringBuffer& sb);
+    RowidIterator* GetScrollableIterator(SltReader* rdr);
 
     sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;

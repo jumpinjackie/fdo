@@ -25,31 +25,23 @@
 
 static FdoDataType ConvertDataType(const char* type)
 {
-    if (sqlite3StrICmp("BLOB", type) == 0)
+    if (StringContains(type, "INT") >= 0)
+        return FdoDataType_Int64;
+    else if ((StringContains(type, "CHAR") >= 0) || (StringContains(type, "CLOB") >= 0) || (StringContains(type, "TEXT") >= 0))
+        return FdoDataType_String;
+    else if (StringContains(type, "BLOB") >= 0)
         return FdoDataType_BLOB;
-    else if (sqlite3StrICmp("TEXT", type) == 0)
-        return FdoDataType_String;
-    else if (sqlite3StrICmp("INTEGER", type) == 0)
-        return FdoDataType_Int64;
-    else if (sqlite3StrICmp("INT", type) == 0)
-        return FdoDataType_Int64;
-    else if (sqlite3StrICmp("REAL", type) == 0)
+    else if ((StringContains(type, "REAL") >= 0) || (StringContains(type, "FLOA") >= 0) || (StringContains(type, "DOUB") >= 0))
         return FdoDataType_Double;
-    else if (sqlite3StrICmp("FLOAT", type) == 0)
-        return FdoDataType_Double;
-    else if (sqlite3StrICmp("DOUBLE", type) == 0)
-        return FdoDataType_Double;
-    else if (sqlite3StrICmp("VARCHAR", type) == 0)
-        return FdoDataType_String;
-    else if (sqlite3StrICmp("CLOB", type) == 0)
-        return FdoDataType_String;
+    else if (StringContains(type, "NULL") >= 0)
+        return (FdoDataType)-1;
+    // else should return it as NUMERIC !?
 
     //If we don't know the type, return -1,
     //which is an invalid data type -- hopefully
     //the client would skip over the column in such a case.
     return (FdoDataType)-1;
 }
-
 
 SltMetadata::SltMetadata(SltConnection* connection, const char* name, bool bUseFdoMetadata)
 : m_tablename(name),
@@ -402,18 +394,23 @@ FdoClassDefinition* SltMetadata::ToClass()
             }
         }
     }
-    if (pTable->nCol && pTable->pSelect != NULL) // is view
+    
+    // is view or a table without primary key !?
+    // One way to expose classes without primary keys is to expose the hidden column ROWID
+    // for now we may live with that since other solution is to add all properties as key 
+    // however this may not satisfy a PK all the time and could generate issues
+    if ((pTable->nCol && pTable->pSelect != NULL) || (idpdc->GetCount() == 0)) 
     {
         // views don't have a primary key we need to "generate" one as ROWID
-        std::wstring propAgName = L"ROWID";
+        std::wstring propAgName = L"rowid";
         FdoPtr<FdoPropertyDefinition> epd = pdc->FindItem(propAgName.c_str());
         if (epd != NULL)
         {
-            propAgName = L"_ROWID_";
+            propAgName = L"_rowid_";
             epd = pdc->FindItem(propAgName.c_str());
             if (epd != NULL)
             {
-                propAgName = L"OID";
+                propAgName = L"oid";
                 epd = pdc->FindItem(propAgName.c_str());
                 // if (epd != NULL) - bad luck, not sure what to do in this case... use it...
             }

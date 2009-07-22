@@ -115,7 +115,7 @@ SltQueryTranslator::SltQueryTranslator(FdoClassDefinition* fc)
 m_canUseFastStepping(false),
 m_restoreValue(NULL),
 m_fastSteppingChunk(NULL),
-m_keepFilterAlive(false)
+m_geomCount(0)
 {
     m_fc = FDO_SAFE_ADDREF(fc);
     m_evalStack.reserve(4);
@@ -370,20 +370,23 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
     FdoPtr<FdoExpression> right = filter.GetRightExpression();
 
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
-    FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
-    
-    if (filter.GetOperation() == FdoComparisonOperations_EqualTo && wcscmp(left->ToString(), idpd->GetName()) == 0)
+    if (idpdc->GetCount() == 1)
     {
-        __int64 idval = -1;
-        size_t len = 0;
-        int res = swscanf(right->ToString(), L"%lld%n", &idval, &len);
-
-        if (res == 1 && len == wcslen(right->ToString()))
+        FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
+        
+        if (filter.GetOperation() == FdoComparisonOperations_EqualTo && wcscmp(left->ToString(), idpd->GetName()) == 0)
         {
-            ret = CreateFilterChunk(filter.ToString());
-            ret->m_ids = new recno_list;
-            ret->m_ids->push_back(idval);
-            m_canUseFastStepping = true;
+            __int64 idval = -1;
+            size_t len = 0;
+            int res = swscanf(right->ToString(), L"%lld%n", &idval, &len);
+
+            if (res == 1 && len == wcslen(right->ToString()))
+            {
+                ret = CreateFilterChunk(filter.ToString());
+                ret->m_ids = new recno_list;
+                ret->m_ids->push_back(idval);
+                m_canUseFastStepping = true;
+            }
         }
     }
 
@@ -523,7 +526,6 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
     FdoPtr<FdoByteArray> fgf = expr.GetGeometry();
     GetFgfExtents(fgf->GetData(), fgf->GetCount(), (double*)&ext);
 
-#ifdef USE_FULL_GEOM_DEF
     //flatten the geometry, if it has curves -- this will
     //speed up spatial operations evaluation
     int geom_type = *(int*)(fgf->GetData());
@@ -541,9 +543,13 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
         if (flatgeom.p != fgfgeom.p)
         {
             fgf = gf->GetFgf(flatgeom);
+#ifndef USE_FULL_GEOM_DEF
+            expr.SetGeometry(fgf);
+#endif
         }
     }
 
+#ifdef USE_FULL_GEOM_DEF
     //convert the FGF array to binhex encoding that we can
     //use in the SQL query
     static const wchar_t hexdigits[] = 
@@ -570,7 +576,7 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
     FilterChunk* ret = CreateFilterChunk(wstr);
     delete[] wstr;
 #else
-    m_keepFilterAlive = true;
+    m_geomCount++;
     wchar_t buf[70];
     *buf = L'\0';
 #ifdef _WIN32
