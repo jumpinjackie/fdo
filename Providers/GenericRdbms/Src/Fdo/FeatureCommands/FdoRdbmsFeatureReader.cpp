@@ -326,6 +326,9 @@ const char* FdoRdbmsFeatureReader::Property2ColNameChar( const wchar_t *propName
     if( type )
         *type = FdoPropertyType_DataProperty;
 
+    if ( mClassDefinition == NULL ) 
+        return NULL;
+
     const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = mClassDefinition->RefProperties();
     const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(propName);
 
@@ -878,6 +881,9 @@ FdoClassDefinition *FdoRdbmsFeatureReader::GetClassDefinition()
     {
         FdoRdbmsDescribeSchemaCommand*  pDescSchemaCmd = new FdoRdbmsDescribeSchemaCommand( mConnection );
         pDescSchemaCmd->SetSchemaName(mClassDefinition->RefLogicalPhysicalSchema()->GetName());
+        FdoStringsP classNames = FdoStringCollection::Create();
+        classNames->Add(mCurrentClassName);
+        pDescSchemaCmd->SetClassNames(classNames);
         mSchemaCollection = pDescSchemaCmd->Execute();
         pDescSchemaCmd->Release();
     }
@@ -1406,7 +1412,7 @@ const wchar_t* FdoRdbmsFeatureReader::GetString( const wchar_t *propertyName )
 		int				cacheIndex;
         const	char	*colName = PROPERTY2COLNAME_IDX( propertyName, &type, NULL, &cacheIndex );
 
-        if (strlen(colName) == 0)
+        if ((colName == NULL) || (strlen(colName) == 0))
         {
 			if( type != FdoPropertyType_DataProperty )
 				throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp, propertyName ));
@@ -1748,7 +1754,7 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
     FdoSmLpGeometricPropertyDefinition* pGeometricPropertyNonConst =
                             (FdoSmLpGeometricPropertyDefinition*)(pGeometricProperty);
 
-    if( pGeometricProperty == NULL || wcscmp( propertyName, pGeometricProperty->GetName() ) != 0 )
+    if( pGeometricProperty != NULL && wcscmp( propertyName, pGeometricProperty->GetName() ) != 0 )
         throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_59, "Property '%1$ls' not defined for class '%2$ls'", propertyName, mLastClassName));
 
     if( ! mHasMoreFeatures )
@@ -1756,8 +1762,8 @@ FdoByteArray* FdoRdbmsFeatureReader::GetGeometry(const wchar_t* propertyName, bo
 
     try
     {
-        FdoSmOvGeometricColumnType columnType = pGeometricPropertyNonConst->GetGeometricColumnType();
-        FdoSmOvGeometricContentType contentType = pGeometricPropertyNonConst->GetGeometricContentType();
+        FdoSmOvGeometricColumnType columnType = pGeometricPropertyNonConst ? pGeometricPropertyNonConst->GetGeometricColumnType() : FdoSmOvGeometricColumnType_Default;
+        FdoSmOvGeometricContentType contentType = pGeometricPropertyNonConst ? pGeometricPropertyNonConst->GetGeometricContentType() : FdoSmOvGeometricContentType_Default;
         const char *    colName = NULL;
 		const wchar_t	*colNameW = NULL;
         const char *    colNameX = NULL;

@@ -92,6 +92,17 @@ int GdbiStatement::Bind(
     return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), datatype,  size, address, null_ind );
 }
 
+int GdbiStatement::Bind(
+        const char* parmName,
+        int   datatype,     /* A data type from Inc/rdbi.h              */
+        int   size,         /* binary size                              */
+        char *address,      /* data address                             */
+        GDBI_NI_TYPE *null_ind     /* pointer to null indicator variables      */
+            )
+{
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), (char*) parmName, datatype,  size, address, null_ind );
+}
+
 int GdbiStatement::BindNull( int parmIndex )
 {
 

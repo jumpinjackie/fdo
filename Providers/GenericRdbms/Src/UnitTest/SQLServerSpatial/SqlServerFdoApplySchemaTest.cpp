@@ -133,8 +133,12 @@ void SqlServerFdoApplySchemaTest::CreatePhSystemSchema( FdoIConnection* connecti
         FdoStringP expected = FdoStringP::Format( L"Cannot add schema %ls to database; it already exists ", (FdoString*) schemaName );
         FdoPtr<FdoException> cause = e->GetRootCause();
         CPPUNIT_ASSERT( cause );
+#ifdef _DEBUG
         FdoString* pMessage = wcschr( cause->GetExceptionMessage(), ')' );
         if (pMessage) pMessage += 2;
+#else
+        FdoString* pMessage = cause->GetExceptionMessage();
+#endif
 #ifdef _WIN32
 	    CPPUNIT_ASSERT( pMessage && wcscmp(pMessage, expected) == 0);
 #else

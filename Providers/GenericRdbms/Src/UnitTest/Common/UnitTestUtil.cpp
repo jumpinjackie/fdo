@@ -1268,6 +1268,7 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
         FdoString* pMessage = message;
         if ( stripLineNo ) {
 #ifdef _WIN32
+#ifdef _DEBUG
             // The following removes the function and line number info from error messages.
             FdoString* nextPos = pMessage;
             FdoString* nextPos2;
@@ -1339,6 +1340,11 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                     break;
                 }
             }
+#else
+        message = message.Mid(0, message.GetLength() - 1);
+        pMessage = message;
+		fprintf( fp, " %ls \n", pMessage );
+#endif
 #else
 		fprintf( fp, " %ls \n", pMessage );
 #endif

@@ -68,6 +68,14 @@ public:
         GDBI_NI_TYPE  *null_ind   /* pointer to null indicator variables      */
             );
 
+    int Bind(
+        const char* parmName,       /* bind variable name               */
+        int   datatype,     /* A data type from Inc/rdbi.h              */
+        int   size,         /* binary size                              */
+        char *address,      /* data address                             */
+        GDBI_NI_TYPE  *null_ind   /* pointer to null indicator variables      */
+            );
+
     int BindNull( int parmIndex );
     // End bind functions
 

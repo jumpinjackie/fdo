@@ -92,6 +92,10 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
 
 FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
 {
+    // Flush out any outstanding modifications before selecting; so that the select
+    // sees a current picture of the RDBMS.
+    mIConnection->Flush();
+
     int                 qid = -1;
     bool                res = false;
     const FdoSmLpClassDefinition *classDefinition = mConnection->GetSchemaUtil()->GetClass(this->GetClassNameRef()->GetText());

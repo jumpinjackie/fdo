@@ -221,9 +221,14 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
             }
             catch (FdoException* e ) {
 #ifdef _WIN32
+#ifdef _DEBUG
                 FdoStringP expectedMessage = L" Error creating spatial context Nowhere, coordinate system JunkCS is not in current datastore. ";
                 FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
                 if (pMessage) pMessage++;
+#else
+                FdoStringP expectedMessage = L"Error creating spatial context Nowhere, coordinate system JunkCS is not in current datastore. ";
+                FdoString* pMessage = e->GetExceptionMessage();
+#endif
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
 #endif
                 FDO_SAFE_RELEASE(e);
@@ -235,9 +240,14 @@ void FdoSpatialContextTest::DoTest( bool hasMetaSchema )
             }
             catch (FdoException* e ) {
 #ifdef _WIN32
+#ifdef _DEBUG
                 FdoStringP expectedMessage = L" Error creating spatial context California2, coordinate system catalog does not contain entry for WKT 'PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",60.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]' ";
                 FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
                 if (pMessage) pMessage++;
+#else
+                FdoStringP expectedMessage = L"Error creating spatial context California2, coordinate system catalog does not contain entry for WKT 'PROJCS[\"CA-I\",GEOGCS[\"LL27\",DATUM[\"NAD27\",SPHEROID[\"CLRK66\",60.400,294.97869821]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",2000000.000],PARAMETER[\"false_northing\",0.000],PARAMETER[\"central_meridian\",-122.00000000000000],PARAMETER[\"latitude_of_origin\",39.33333333333333],PARAMETER[\"standard_parallel_1\",41.66666666666666],PARAMETER[\"standard_parallel_2\",40.00000000000000],UNIT[\"Foot_US\",0.30480060960122]]' ";
+                FdoString* pMessage = e->GetExceptionMessage();
+#endif
                 CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
 #endif
                 FDO_SAFE_RELEASE(e);

@@ -2152,12 +2152,18 @@ void FdoApplySchemaTest::ModMetaClassSchema( FdoIConnection* connection )
 	}
 	catch ( FdoSchemaException* e )
 	{
-#ifdef _WIN32
+#ifdef WIN32
+#ifdef _DEBUG
         FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' );
         if (pMessage) pMessage += 2;
 	    CPPUNIT_ASSERT(pMessage && wcscmp( pMessage, L"MetaClass schema F_MetaClass is read-only; cannot modify it ") == 0);
 #else
         FdoString* pMessage = e->GetExceptionMessage();
+#endif
+	    CPPUNIT_ASSERT(pMessage && wcscmp( pMessage, L"MetaClass schema F_MetaClass is read-only; cannot modify it ") == 0);
+#else
+        FdoString* pMessage = e->GetExceptionMessage();
+
         CPPUNIT_ASSERT(pMessage && wcscmp( pMessage, L"MetaClass schema F_MetaClass is read-only; cannot modify it") == 0);
 #endif
 		FDO_SAFE_RELEASE(e);

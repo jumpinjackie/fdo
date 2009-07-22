@@ -77,6 +77,23 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
   private:
       bool HasLobProperty( const FdoSmLpClassDefinition *classDefinition );
 
+	  // Internal method added in support for the expression engine 
+	  FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( FdoSmLpSpatialContextCollection *scColl, FdoClassDefinition *classDef );
+
+	  // Internal method added in support for processing spatial conditions.
+	  void CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps );
+
+      // Binds spatial condition geometries to the query statement
+      // (if provider supports bound spatial condition geometries)
+      void  BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries );
+
+      // Frees all bound spatial condition geometries.
+      void  FreeBoundSpatialGeoms();
+
+  protected:
+      // Internal method in support for select command 
+      virtual FdoRdbmsFeatureReader *GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition );
+
       // Internal method added in support for the select aggregates command
       void SetGroupingFilter( FdoFilter* filter )
       {
@@ -93,21 +110,6 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       // Internal method added in support for the select aggregates command
       FdoIdentifierCollection* GetGrouping();
 
-	  // Internal method added in support for the expression engine 
-	  FdoExpressionEngineFunctionCollection* GetUserDefinedFunctions( FdoSmLpSpatialContextCollection *scColl, FdoClassDefinition *classDef );
-
-      // Internal method in support for select command 
-      FdoRdbmsFeatureReader *GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition );
-
-	  // Internal method added in support for processing spatial conditions.
-	  void CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps );
-
-      // Binds spatial condition geometries to the query statement
-      // (if provider supports bound spatial condition geometries)
-      void  BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries );
-
-      // Frees all bound spatial condition geometries.
-      void  FreeBoundSpatialGeoms();
 
   public:
 

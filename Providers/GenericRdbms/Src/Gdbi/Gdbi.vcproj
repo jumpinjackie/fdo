@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
+				Optimization="2"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../;$(FDO)/Unmanaged;$(FDO)/Unmanaged/inc;$(FDOUTILITIES)/Common/inc"
@@ -245,7 +245,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
+				Optimization="2"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="../../;$(FDO)/Unmanaged;$(FDO)/Unmanaged/inc;$(FDOUTILITIES)/Common/inc"
