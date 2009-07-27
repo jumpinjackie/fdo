@@ -22,6 +22,32 @@
 struct DBounds;
 struct sqlite3_stmt;
 
+enum TokenDateFormatType
+{
+    TokenDateFormatType_Unknown,
+    TokenDateFormatType_Separator,
+    TokenDateFormatType_Year2,
+    TokenDateFormatType_Year4,
+    TokenDateFormatType_Month_AbbName_All_Lower,
+    TokenDateFormatType_Month_AbbName_All_Upper,
+    TokenDateFormatType_Month_FullName_All_Lower,
+    TokenDateFormatType_Month_FullName_All_Upper,
+    TokenDateFormatType_Month_FullName_First_Upper,
+    TokenDateFormatType_Month_Number,
+    TokenDateFormatType_Day_AbbName_All_Lower,
+    TokenDateFormatType_Day_AbbName_All_Upper,
+    TokenDateFormatType_Day_FullName_All_Lower,
+    TokenDateFormatType_Day_FullName_All_Upper,
+    TokenDateFormatType_Day_FullName_First_Upper,
+    TokenDateFormatType_Day_Number,
+    TokenDateFormatType_Hour24,
+    TokenDateFormatType_Hour12,
+    TokenDateFormatType_Minute,
+    TokenDateFormatType_Second,
+    TokenDateFormatType_am,
+    TokenDateFormatType_pm
+};
+
 SLT_API std::string W2A_SLOW(const wchar_t* input);
 
 SLT_API std::wstring A2W_SLOW(const char* input);
@@ -39,6 +65,11 @@ SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
 SLT_API void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt);
 SLT_API void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv);
 SLT_API int StringContains(const char* str, const char* val);
+
+SLT_API TokenDateFormatType StringToDateFormat(const char* specifier);
+
+SLT_API char* EnsureNoIsLocalIndep(char* str);
+SLT_API wchar_t* EnsureNoIsLocalIndep(wchar_t* str);
 
 #endif
 

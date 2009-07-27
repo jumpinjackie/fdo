@@ -199,7 +199,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 	//so that he sees the properties he asked for. 
 	if (props && props->GetCount())
 	{
-        SltExpressionTranslator exTrans;
+        SltExpressionTranslator exTrans(props);
 		int nProps = props->GetCount();
         m_reissueProps.Reserve(nProps);
 		for (int i=0; i<nProps; i++)

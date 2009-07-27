@@ -850,7 +850,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     }
     
     StringBuffer sb;
-    SltExpressionTranslator exTrans;
+    SltExpressionTranslator exTrans(properties);
     
     if (bDistinct)
     {

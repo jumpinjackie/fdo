@@ -4,6 +4,7 @@
 #include "SltConversionUtils.h"
 #include "SltGeomUtils.h"
 #include "FdoCommonOSUtil.h"
+#include "StringUtil.h"
 #include <math.h>
 #include <algorithm>
 #include <limits>       // For quiet_NaN()
@@ -17,6 +18,569 @@
   }                                                                                             \
   len = (z2 - str);                                                                             \
 }                                                                                               \
+
+class DateTokenFormat;
+
+class DateToken
+{
+    friend class DateTokenFormat;
+    std::string m_value;
+    TokenDateFormatType m_type;
+private:
+    DateToken(const char* val, TokenDateFormatType type = TokenDateFormatType_Unknown)
+        : m_type(type), m_value(val)
+    {
+        
+    }
+    DateToken(const char* val, size_t sz, TokenDateFormatType type = TokenDateFormatType_Unknown)
+        : m_type(type)
+    {
+        m_value = std::string(val, sz);
+    }
+public:
+    size_t GetTokenLen()
+    {
+        return m_value.size();
+    }
+    const char* GetTokenValue()
+    {
+        return m_value.c_str();
+    }
+    TokenDateFormatType GetTokenType()
+    {
+        return m_type;
+    }
+};
+
+class DateTokenFormat
+{
+    std::vector<DateToken*> m_values;
+    StringBuffer m_result;
+    bool m_hasValidTokens;
+
+public:
+    DateTokenFormat() : m_hasValidTokens(false)
+    {
+    }
+    ~DateTokenFormat()
+    {
+        Clear();
+    }
+    void Clear()
+    {
+        for(std::vector<DateToken*>::iterator it = m_values.begin(); it < m_values.end(); it++)
+            delete *it;
+        m_values.clear();
+    }
+    bool HasValidTokens() {return m_hasValidTokens;}
+    DateToken* AddDateToken(const char* val, TokenDateFormatType type = TokenDateFormatType_Unknown)
+    {
+        DateToken* ret = new DateToken(val, type);
+        m_values.push_back(ret);
+        return ret;
+    }
+    DateToken* AddDateToken(const char* val, size_t sz, TokenDateFormatType type = TokenDateFormatType_Unknown)
+    {
+        DateToken* ret = new DateToken(val, sz, type);
+        m_values.push_back(ret);
+        return ret;
+    }
+    bool IsLeapYear (FdoInt16 year)
+    {
+        if (year % 4 != 0) return false;
+        if (year % 100 != 0) return true;
+        return ( year % 400 == 0 );
+    }
+
+    int CountOfFeb29 (FdoInt16 year)
+    {
+        int ret = 0;
+        if( year > 0 )
+        {
+            ret = 1; // Year 0 is a leap year
+            year--;  // Year nYear is not in the period
+        }
+        ret += year/4 - year/100 + year/400;
+        return ret;
+    } 
+
+    FdoInt8 DayOfWeek(FdoInt16 year, FdoInt8 month, FdoInt8 day)
+    {
+        int ret = 0;
+        const static int daysBeforeMonth[] = {0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+        
+        if (year < 0 || (month < 1 || month > 12) || !(day <= (daysBeforeMonth[month+1]-daysBeforeMonth[month]) || 
+            ( month == 2 && day == 29 && IsLeapYear(year) )))
+            throw FdoException::Create(L"Unexpected result for function ToString");
+
+        // The day of Jan 1, year
+        ret = 6 + year % 7 + CountOfFeb29(year) % 7 + 14;
+        // The day of month 1, year
+        ret += daysBeforeMonth[month];
+        if (month > 2 && IsLeapYear(year))
+            ret++;
+        // The day of month day, year
+        ret += day - 1;
+        ret %= 7;
+        return (FdoInt8)ret; 
+    }
+
+    void ProcessFormat(const char* str)
+    {
+        Clear();
+        if (str != NULL && *str != '\0')
+        {
+            size_t startPos = 0;
+            const char* strtmp = str;
+            int state = -1;
+            do
+            {
+                bool isSepChar = !isalnum(*strtmp);
+                switch(state)
+                {
+                case -1: // start
+                    state = isSepChar ? 0 : 1;
+                    break;
+                case 0: // separators
+                    if (!isSepChar)
+                    {
+                        AddDateToken(str + startPos, (int)(strtmp-str) - startPos, TokenDateFormatType_Separator);
+                        state = 1;
+                        startPos = (int)(strtmp-str);
+                    }            
+                    break;
+                case 1: // tokens
+                    if (isSepChar)
+                    {
+                        TokenDateFormatType type = StringToDateFormat(str + startPos);
+                        if (type != TokenDateFormatType_Unknown && type != TokenDateFormatType_Separator)
+                            m_hasValidTokens = true;
+                        AddDateToken(str + startPos, (int)(strtmp-str) - startPos, type);
+                        state = 0;
+                        startPos = (int)(strtmp-str);
+                    }            
+                    break;
+                }
+                strtmp++;
+            }
+            while (*strtmp != '\0');
+            if (state == 0)
+                AddDateToken(str + startPos, TokenDateFormatType_Separator);
+            else
+            {
+                TokenDateFormatType type = StringToDateFormat(str + startPos);
+                if (type != TokenDateFormatType_Unknown && type != TokenDateFormatType_Separator)
+                    m_hasValidTokens = true;
+                AddDateToken(str + startPos, type);
+            }
+        }
+        else
+        {
+            // use the default format e.g.  "21-JUL-2009 13:24:14.000"
+            AddDateToken("", TokenDateFormatType_Day_Number);
+            AddDateToken("-", TokenDateFormatType_Separator);
+            AddDateToken("", TokenDateFormatType_Month_AbbName_All_Upper);
+            AddDateToken("-", TokenDateFormatType_Separator);
+            AddDateToken("", TokenDateFormatType_Year4);
+            AddDateToken(" ", TokenDateFormatType_Separator);
+            AddDateToken("", TokenDateFormatType_Hour24);
+            AddDateToken(":", TokenDateFormatType_Separator);
+            AddDateToken("", TokenDateFormatType_Minute);
+            AddDateToken(":", TokenDateFormatType_Separator);
+            AddDateToken("", TokenDateFormatType_Second);
+            m_hasValidTokens = true;
+        }
+    }
+    const char* ToString(FdoDateTime dt)
+    {
+        char tmpUse[31];
+        const char* usePtr = NULL;
+        size_t idx = 0;
+
+        if (m_result.Length() == 0)
+        {
+            for(std::vector<DateToken*>::iterator it = m_values.begin(); it < m_values.end(); it++)
+            {
+                idx = 0;
+                DateToken* tk = *it;
+                switch(tk->GetTokenType())
+                {
+                case TokenDateFormatType_Year2:
+                    if (dt.year == -1)
+                        m_result.Append("00", 2);
+                    else
+                        m_result.Append(dt.year, "%04d", 2);
+                    break;
+
+                case TokenDateFormatType_Year4:
+                    if (dt.year == -1)
+                        m_result.Append("0000", 4);
+                    else
+                        m_result.Append(dt.year, "%04d");
+                    break;
+
+                case TokenDateFormatType_Month_AbbName_All_Lower:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_month_names[month-1];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Tolower(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse, 3);
+                    }
+                    break;
+
+                case TokenDateFormatType_Month_AbbName_All_Upper:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_month_names[month-1];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Toupper(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse, 3);
+                    }
+                    break;
+
+                case TokenDateFormatType_Month_FullName_All_Lower:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_month_names[month-1];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Tolower(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse);
+                    }
+                    break;
+
+                case TokenDateFormatType_Month_FullName_All_Upper:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_month_names[month-1];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Toupper(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse);
+                    }
+                    break;
+
+                case TokenDateFormatType_Month_FullName_First_Upper:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(g_month_names[month-1]);
+                    }
+                    break;
+
+                case TokenDateFormatType_Month_Number:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(month, "%02d");
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_AbbName_All_Lower:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_day_names[dayweek];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Tolower(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse, 3);
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_AbbName_All_Upper:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_day_names[dayweek];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Toupper(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse, 3);
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_FullName_All_Lower:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_day_names[dayweek];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Tolower(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse);
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_FullName_All_Upper:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        usePtr = g_day_names[dayweek];
+                        while(*usePtr != '\0')
+                        {
+                            tmpUse[idx++] = sqlite3Toupper(*usePtr);
+                            usePtr++;
+                        }
+                        tmpUse[idx] = '\0';
+                        m_result.Append(tmpUse);
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_FullName_First_Upper:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(g_day_names[dayweek]);
+                    }
+                    break;
+
+                case TokenDateFormatType_Day_Number:
+                    {
+                        FdoInt8 day = (dt.day == -1) ? 1 : dt.day;
+                        if (day < 1 || day > 31)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(day, "%02d");
+                    }
+                    break;
+                case TokenDateFormatType_Hour24:
+                    {
+                        FdoInt8 hour = (dt.hour == -1) ? 0 : dt.hour;
+                        if (hour < 0 || hour > 23)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(hour, "%02d");
+                    }
+                    break;
+                case TokenDateFormatType_Hour12:
+                    {
+                        FdoInt8 hour = (dt.hour == -1) ? 0 : dt.hour;
+                        if (hour < 0 || hour > 23)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append((hour > 12) ? (hour - 12) : hour, "%02d");
+                    }
+                    break;
+                case TokenDateFormatType_Minute:
+                    {
+                        FdoInt8 minute = (dt.minute == -1) ? 0 : dt.minute;
+                        if (minute < 0 || minute > 59)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(minute, "%02d");
+                    }
+                    break;
+                case TokenDateFormatType_Second:
+                    {
+                        if (dt.seconds == -1.0f)
+                            m_result.Append("00");
+                        else
+                        {
+                            if (dt.seconds < 0.0f || dt.seconds >= 60.0f)
+                                throw FdoException::Create(L"Unexpected result for function ToString");
+                            m_result.Append(dt.seconds, "%0.3f");
+                        }
+                    }
+                    break;
+                case TokenDateFormatType_am:
+                case TokenDateFormatType_pm:
+                    {
+                        FdoInt8 hour = (dt.hour == -1) ? 0 : dt.hour;
+                        if (hour < 0 || hour > 23)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        if (hour > 12)
+                            m_result.Append("PM", 2);
+                        else
+                            m_result.Append("AM", 2);
+                    }
+                    break;
+                default: // Separator & Unknown
+                    m_result.Append(tk->GetTokenValue(), tk->GetTokenLen());
+                    break;
+                }
+            }
+        }
+        return m_result.Data();
+    }
+
+    FdoDateTime ToDateTime(const char* str, size_t sz)
+    {
+        FdoDateTime dt;
+        if (!m_hasValidTokens || str == NULL || *str == '\0')
+            return dt;
+        const char* strtmp = str;
+        for(std::vector<DateToken*>::iterator it = m_values.begin(); it < m_values.end(); it++)
+        {
+            DateToken* tk = *it;
+            switch(tk->GetTokenType())
+            {
+            case TokenDateFormatType_Year2:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 2);
+                    dt.year = (FdoInt16)atoi(m_result.Data());
+                    // year can be 09 = 2009 or 55 = 1955/2055 !?
+                    // it's hard to know the real year when two characters are used
+                    // let's split in half for now
+                    if (dt.year > 0 && dt.year < 50)
+                        dt.year += 2000;
+                    strtmp += 2;
+                }
+                break;
+
+            case TokenDateFormatType_Year4:
+                if ((size_t)(strtmp-str+4) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 4);
+                    dt.year = (FdoInt16)atoi(m_result.Data());
+                    strtmp += 4;
+                }
+                break;
+
+            case TokenDateFormatType_Month_AbbName_All_Lower:
+            case TokenDateFormatType_Month_AbbName_All_Upper:
+            case TokenDateFormatType_Month_FullName_All_Lower:
+            case TokenDateFormatType_Month_FullName_All_Upper:
+            case TokenDateFormatType_Month_FullName_First_Upper:
+                {
+                    if ((size_t)(strtmp-str+3) <= sz)
+                    {
+                        FdoInt8 idx = 0;
+                        for (; idx < 12; idx++)
+                        {
+                            if (_strnicmp(strtmp, g_month_names[idx], 3) == 0)
+                            {
+                                dt.month = idx+1;
+                                strtmp += 3;
+                                break;
+                            }
+                        }
+                        if (idx == 12)
+                            strtmp++;
+                    }
+                }
+                break;
+
+            case TokenDateFormatType_Month_Number:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 2);
+                    dt.month = (FdoInt16)atoi(m_result.Data());
+                    strtmp += 2;
+                }
+                break;
+
+            case TokenDateFormatType_Day_AbbName_All_Lower:
+            case TokenDateFormatType_Day_AbbName_All_Upper:
+            case TokenDateFormatType_Day_FullName_All_Lower:
+            case TokenDateFormatType_Day_FullName_All_Upper:
+            case TokenDateFormatType_Day_FullName_First_Upper:
+                // nothing to do here since day of the week don't help us
+                if ((size_t)(strtmp-str+3) <= sz)
+                    strtmp += 3;
+                break;
+
+            case TokenDateFormatType_Day_Number:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 2);
+                    dt.day = (FdoInt16)atoi(m_result.Data());
+                    strtmp += 2;
+                }
+                break;
+            case TokenDateFormatType_Hour24:
+            case TokenDateFormatType_Hour12:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 2);
+                    dt.hour = (FdoInt16)atoi(m_result.Data());
+                    strtmp += 2;
+                }
+                break;
+            case TokenDateFormatType_Minute:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    m_result.Reset();
+                    m_result.Append(strtmp, 2);
+                    dt.minute = (FdoInt16)atoi(m_result.Data());
+                    strtmp += 2;
+                }
+                break;
+            case TokenDateFormatType_Second:
+                if ((size_t)(strtmp-str+1) <= sz) // at least one character
+                {
+                    // this will work since atof ignores other characters after numbers
+                    dt.seconds = (float)atof(strtmp);
+                    strtmp++; // just advance one position to be on number
+                }
+                break;
+            case TokenDateFormatType_am:
+            case TokenDateFormatType_pm:
+                if ((size_t)(strtmp-str+2) <= sz)
+                {
+                    // if it's PM we need to add 12 to hour
+                    if (dt.hour >= 0 && dt.hour < 12 && _strnicmp(strtmp, "PM", 2) == 0)
+                        dt.hour += 12;
+                    strtmp += 2;
+                }
+                break;
+            default: // Separator & Unknown
+                {
+                    // can we get the token value?
+                    int pos = StringContains(strtmp, tk->GetTokenValue());
+                    if (pos != -1) // in case yes jump over the position
+                        strtmp += (pos + tk->GetTokenLen());
+                }
+                break;
+            }
+            // stop in case we are at the end of date time string
+            if ((strtmp-str) >= sz)
+                break;
+        }
+        return dt;
+    }
+};
 
 //===============================================================================
 //  Basic math functions
@@ -635,7 +1199,7 @@ static void padFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 //  Conversion fuctions
 //===============================================================================
 //NOTE: these are implemented only for compatibility with FDO filters -- SQLite
-//expression evaluation uses implicit type conversion, so they are not sctrictly
+//expression evaluation uses implicit type conversion, so they are not strictly
 //necessary
 static void convFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
@@ -645,43 +1209,100 @@ static void convFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 
     switch(optype)
     {
-    case 1: //todate
-        {
-            //assumes date is stored in ISO 8601 string format
-            const char* s = (const char*)sqlite3_value_text(argv[0]);
-            sqlite3_result_text(context, s, -1, SQLITE_TRANSIENT);
-        }
-        break;
-    case 2: //todouble
+    case 1: //todouble
         {
             double d = sqlite3_value_double(argv[0]);
             sqlite3_result_double(context, d);
         }
         break;
-    case 3: //tofloat
+    case 2: //tofloat
         {
             float f = (float)sqlite3_value_double(argv[0]);
             sqlite3_result_double(context, f);
         }
         break;
-    case 4: //toint32
+    case 3: //toint32
         {
             int i = sqlite3_value_int(argv[0]);
             sqlite3_result_int(context, i);
         }
         break;
-    case 5: //toint64
+    case 4: //toint64
         {
             sqlite_int64 i = sqlite3_value_int64(argv[0]);
             sqlite3_result_int64(context, i);
         }
         break;
-    case 6: //tostring
+    }
+}
+
+static void todateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 1 || argc == 2);
+    int type = sqlite3_value_type(argv[0]);
+    const char* dateStr = (const char*)sqlite3_value_text(argv[0]);
+    if (type == SQLITE_NULL || dateStr == NULL || sqlite3_value_bytes(argv[0]) == 0)
+    {
+        sqlite3_result_null(context);
+    }
+    else if (type != SQLITE_TEXT)
+    {
+        sqlite3_result_null(context);
+    }
+    else
+    {
+        FdoDateTime dt = DateFromString(dateStr, false);
+        if (dt.IsDate() || dt.IsTime() || dt.IsDateTime())
         {
             const char* s = (const char*)sqlite3_value_text(argv[0]);
             sqlite3_result_text(context, s, -1, SQLITE_TRANSIENT);
         }
-        break;
+        else
+        {
+            DateTokenFormat dtc;
+            if (argc == 2 && sqlite3_value_type(argv[1]) == SQLITE_TEXT && sqlite3_value_bytes(argv[1]) != 0)
+                dtc.ProcessFormat((const char*)sqlite3_value_text(argv[1]));
+            else
+                dtc.ProcessFormat(NULL);
+
+            dt = dtc.ToDateTime(dateStr, sqlite3_value_bytes(argv[0]));
+            if (dt.IsDate() || dt.IsTime() || dt.IsDateTime())
+            {
+                char dateBuff[31];
+                *dateBuff = '\0';
+                DateToString(&dt, dateBuff, 31);
+                sqlite3_result_text(context, dateBuff, -1, SQLITE_TRANSIENT);
+            }
+            else
+                sqlite3_result_null(context);
+        }
+    }
+}
+
+static void toStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 1 || argc == 2);
+    int type = sqlite3_value_type(argv[0]);
+    const char* dateStr = (const char*)sqlite3_value_text(argv[0]);
+    if (type == SQLITE_NULL || dateStr == NULL || sqlite3_value_bytes(argv[0]) == 0)
+    {
+        sqlite3_result_null(context);
+    }
+    else if (type != SQLITE_TEXT)
+    {
+        sqlite3_result_text(context, dateStr, -1, SQLITE_TRANSIENT);
+    }
+    else // process date time
+    {
+        DateTokenFormat dtc;
+        FdoDateTime dt = DateFromString(dateStr);
+        
+        if (argc == 2 && sqlite3_value_type(argv[1]) == SQLITE_TEXT && sqlite3_value_bytes(argv[1]) != 0)
+            dtc.ProcessFormat((const char*)sqlite3_value_text(argv[1]));
+        else
+            dtc.ProcessFormat(NULL);
+
+        sqlite3_result_text(context, dtc.ToString(dt), -1, SQLITE_TRANSIENT);
     }
 }
 
@@ -1218,12 +1839,14 @@ void RegisterExtensions (sqlite3* db)
 
         { "GeomFromText",       1, 0, SQLITE_UTF8, 0, GeomFromText },
 
-        { "todate",             1, 1,  SQLITE_UTF8,    0, convFunc },
-        { "todouble",           1, 2,  SQLITE_UTF8,    0, convFunc },
-        { "tofloat",            1, 3,  SQLITE_UTF8,    0, convFunc },
-        { "toint32",            1, 4,  SQLITE_UTF8,    0, convFunc },
-        { "toint64",            1, 5,  SQLITE_UTF8,    0, convFunc },
-        { "tostring",           1, 6,  SQLITE_UTF8,    0, convFunc },
+        { "todate",             1, 1,  SQLITE_UTF8,    0, todateFunc },
+        { "todate",             2, 1,  SQLITE_UTF8,    0, todateFunc },
+        { "todouble",           1, 1,  SQLITE_UTF8,    0, convFunc },
+        { "tofloat",            1, 2,  SQLITE_UTF8,    0, convFunc },
+        { "toint32",            1, 3,  SQLITE_UTF8,    0, convFunc },
+        { "toint64",            1, 4,  SQLITE_UTF8,    0, convFunc },
+        { "tostring",           1, 1,  SQLITE_UTF8,    0, toStringFunc },
+        { "tostring",           2, 1,  SQLITE_UTF8,    0, toStringFunc },
         { "nullvalue",          2, 1,  SQLITE_UTF8,    0, nullvalueFunc }
 
     };
