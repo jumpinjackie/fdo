@@ -168,6 +168,31 @@ public:
         Append(tmp);
     }
 
+    // used to format values like 12.34
+    void Append(double value, const char* format)
+    {
+        char tmp[64];
+        _snprintf(tmp, 32, format, value);
+        EnsureNoIsLocalIndep(tmp);
+        Append(tmp);
+    }
+    
+    // used to format values like 09
+    void Append(int value, const char* format)
+    {
+        char tmp[32];
+        _snprintf(tmp, 32, format, value);
+        Append(tmp);
+    }
+    
+    // used to format values like (result is 2009 and we need 09)
+    void Append(int value, const char* format, int startIdx)
+    {
+        char tmp[32];
+        _snprintf(tmp, 32, format, value);
+        Append(tmp+startIdx);
+    }
+    
     //append a string of unknown length
     inline void Append(const char* str)
     {

@@ -54,6 +54,8 @@ protected:
 
     virtual double GetNullOrdinate();
 
+    void TestDateStringConv();
+
 };  //  class FdoExpressionFunctionTest
 
 #endif

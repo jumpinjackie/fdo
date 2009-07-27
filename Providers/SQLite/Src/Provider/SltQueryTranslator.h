@@ -201,6 +201,8 @@ private:
 
     // list used to destroy the allocated objects at the end
     FilterChunkList             m_allocatedObjects;
+    // used as cache string operations
+    StringBuffer                m_sb;
 };
 
 //Translates an FDO Expression to a SQLite expression
@@ -210,8 +212,10 @@ class SltExpressionTranslator : public FdoIExpressionProcessor
 
 public:
 
-    SltExpressionTranslator()
-    {}
+    SltExpressionTranslator(FdoIdentifierCollection* props = NULL)
+    {
+        m_props = FDO_SAFE_ADDREF(props);
+    }
     ~SltExpressionTranslator()
     {}
 
@@ -254,8 +258,9 @@ public:
     void Reset() { m_expr.Reset(); }
 
 private:
-    
+    FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;
+    char m_useConv[256];
 };
 
 //Helper class used at spatial context and count queries

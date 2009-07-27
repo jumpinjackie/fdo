@@ -73,6 +73,7 @@ extern "C"
   #define __forceinline __inline__
   #define __fastcall 
   #define _wcsdup wcsdup
+  #define _strnicmp strncasecmp
   #define _strdup strdup
   #define _snprintf snprintf
   #define _wcsicmp wcscasecmp

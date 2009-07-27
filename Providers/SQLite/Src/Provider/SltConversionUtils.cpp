@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "SpatialIndex.h"
 #include "SltConversionUtils.h"
+#include <locale.h>
 
 std::string W2A_SLOW(const wchar_t* input)
 {
@@ -195,10 +196,12 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
     else if (dt->IsTime())
     {
         _snprintf(s, nBytes, "%02d:%02d:%0.3f", dt->hour, dt->minute, dt->seconds);
+        EnsureNoIsLocalIndep(s);
     }
     else
     {
         _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, dt->seconds);
+        EnsureNoIsLocalIndep(s);
     }
 }
 
@@ -289,9 +292,9 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
                 {
                     FdoDateTimeValue* v = (FdoDateTimeValue*)dv;
                     FdoDateTime dtm = v->GetDateTime();
-                    char s[64];
+                    char s[31];
 
-                    DateToString(&dtm, s, 64);
+                    DateToString(&dtm, s, 31);
                     
                     rc = sqlite3_bind_text(stmt, i, s, -1, SQLITE_TRANSIENT);
                 }
@@ -365,4 +368,97 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
     }
 }
 
+SLT_API TokenDateFormatType StringToDateFormat(const char* specifier)
+{
+    if (strncmp(specifier, "YY", 2) == 0)
+        return TokenDateFormatType_Year2;
 
+    if (strncmp(specifier, "YYYY", 4) == 0)
+        return TokenDateFormatType_Year4;
+
+    if (strncmp(specifier, "MONTH", 5) == 0)
+        return TokenDateFormatType_Month_FullName_All_Upper;
+
+    if (strncmp(specifier, "Month", 5) == 0)
+        return TokenDateFormatType_Month_FullName_First_Upper;
+
+    if (strncmp(specifier, "month", 5) == 0)
+        return TokenDateFormatType_Month_FullName_All_Lower;
+
+    if (strncmp(specifier, "MON", 3) == 0)
+        return TokenDateFormatType_Month_AbbName_All_Upper;
+
+    if (strncmp(specifier, "mon", 3) == 0)
+        return TokenDateFormatType_Month_AbbName_All_Lower;
+
+    if (strncmp(specifier, "MM", 2) == 0)
+        return TokenDateFormatType_Month_Number;
+
+    if (strncmp(specifier, "DAY", 3) == 0)
+        return TokenDateFormatType_Day_FullName_All_Upper;
+
+    if (strncmp(specifier, "Day", 3) == 0)
+        return TokenDateFormatType_Day_FullName_First_Upper;
+
+    if (strncmp(specifier, "day", 3) == 0)
+        return TokenDateFormatType_Day_FullName_All_Lower;
+
+    if (strncmp(specifier, "DY", 2) == 0)
+        return TokenDateFormatType_Day_AbbName_All_Upper;
+
+    if (strncmp(specifier, "dy", 2) == 0)
+        return TokenDateFormatType_Day_AbbName_All_Lower;
+
+    if (strncmp(specifier, "DD", 2) == 0)
+        return TokenDateFormatType_Day_Number;
+
+    if (strncmp(specifier, "hh24", 4) == 0 || strncmp(specifier, "hh", 2) == 0)
+        return TokenDateFormatType_Hour24;
+
+    if (strncmp(specifier, "hh12", 4) == 0)
+        return TokenDateFormatType_Hour12;
+
+    if (strncmp(specifier, "mm", 2) == 0)
+        return TokenDateFormatType_Minute;
+
+    if (strncmp(specifier, "ss", 2) == 0)
+        return TokenDateFormatType_Second;
+
+    if (strncmp(specifier, "am", 2) == 0 || strncmp(specifier, "AM", 2) == 0)
+        return TokenDateFormatType_am;
+
+    if (strncmp(specifier, "pm", 2) == 0 || strncmp(specifier, "PM", 2) == 0)
+        return TokenDateFormatType_pm;
+
+    // should we thow an exception !?
+    // we lose custom formats like "My date YY/MM/DD"
+    return TokenDateFormatType_Unknown;
+}
+
+char* EnsureNoIsLocalIndep(char* str)
+{
+    char* strtmp = str;
+    struct lconv* nls = localeconv();
+    char radix = (nls != NULL && *nls->decimal_point != '\0') ? *nls->decimal_point : '.';
+    if (radix == '.')
+    {
+        while(*strtmp != '\0' && *strtmp != radix) strtmp++;
+        if (*strtmp == radix)
+            *strtmp = '.';
+    }
+    return str;
+}
+
+wchar_t* EnsureNoIsLocalIndep(wchar_t* str)
+{
+    wchar_t* strtmp = str;
+    struct lconv* nls = localeconv();
+    wchar_t radix = (nls != NULL && *nls->decimal_point != L'\0') ? *nls->decimal_point : L'.';
+    if (radix == L'.')
+    {
+        while(*strtmp != L'\0' && *strtmp != radix) strtmp++;
+        if (*strtmp == radix)
+            *strtmp = L'.';
+    }
+    return str;
+}

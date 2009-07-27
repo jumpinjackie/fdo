@@ -20,7 +20,7 @@
 #include "SltGeomUtils.h"
 #include "SltQueryTranslator.h"
 #include "SltExprExtensions.h"
-
+#include <FdoExpressionEngineCopyFilter.h>
 #include <algorithm>
 
 recno_list* recno_list_union(recno_list* left, recno_list* right)
@@ -28,10 +28,10 @@ recno_list* recno_list_union(recno_list* left, recno_list* right)
     //if one of the lists is null it means it iterates over all features...
     //so return that list as the union of the two
     if (left == NULL)
-        return left;
+        return right;
 
     if (right == NULL)
-        return right;
+        return left;
 
     std::sort(left->begin(), left->end(), std::less<__int64>());
     std::sort(right->begin(), right->end(), std::less<__int64>());
@@ -148,7 +148,6 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
 
     FdoBinaryLogicalOperations op = filter.GetOperation();
 
-    StringBuffer spVal;
     FilterChunk* ret = NULL;
 
     //determine logical op we want as string
@@ -233,6 +232,7 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                 DBounds::Union(&ret->m_bounds, &lefts->m_bounds, &rights->m_bounds);
             }
             ret->m_ids = recno_list_intersection(lefts->m_ids, rights->m_ids);
+            lefts->m_ids = rights->m_ids = NULL;
         }
         break;
     case FdoBinaryLogicalOperations_Or:
@@ -259,6 +259,7 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                 DBounds::Union(&ret->m_bounds, &lefts->m_bounds, &rights->m_bounds);
             }
             ret->m_ids = recno_list_union(lefts->m_ids, rights->m_ids);
+            lefts->m_ids = rights->m_ids = NULL;
         }
         break;
     }
@@ -288,16 +289,16 @@ void SltQueryTranslator::ProcessSpatialCondition(FdoSpatialCondition& filter)
 
     FdoPtr<FdoIdentifier> pname = filter.GetPropertyName();
     //construct the SQLite function we want to use for this spatial op
-    StringBuffer spVal;
-    spVal.Append(sfunc);
-    spVal.Append("(", 1);
-    spVal.Append(pname->GetName());
-    spVal.Append(",", 1);
-    spVal.Append(expr->ToString());
-    spVal.Append(")", 1);
+    m_sb.Reset();
+    m_sb.Append(sfunc);
+    m_sb.Append("(", 1);
+    m_sb.Append(pname->GetName());
+    m_sb.Append(",", 1);
+    m_sb.Append(expr->ToString());
+    m_sb.Append(")", 1);
     DBounds bdGeom = expr->m_bounds;
 
-    FilterChunk* ret = CreateFilterChunk(spVal.Data(), spVal.Length(), StlSpatialTypeOperation_And);
+    FilterChunk* ret = CreateFilterChunk(m_sb.Data(), m_sb.Length(), StlSpatialTypeOperation_And);
     //for some operations, we can speed up the query by also
     //performing a bbox check using the spatial index
     switch(op)
@@ -369,40 +370,112 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
     FdoPtr<FdoExpression> left = filter.GetLeftExpression();
     FdoPtr<FdoExpression> right = filter.GetRightExpression();
 
-    FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
-    if (idpdc->GetCount() == 1)
+    if (filter.GetOperation() == FdoComparisonOperations_EqualTo)
     {
-        FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
-        
-        if (filter.GetOperation() == FdoComparisonOperations_EqualTo && wcscmp(left->ToString(), idpd->GetName()) == 0)
+        FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_fc->GetIdentityProperties();
+        if (idpdc->GetCount() == 1)
         {
-            __int64 idval = -1;
-            size_t len = 0;
-            int res = swscanf(right->ToString(), L"%lld%n", &idval, &len);
-
-            if (res == 1 && len == wcslen(right->ToString()))
+            FdoPtr<FdoDataPropertyDefinition> idpd = idpdc->GetItem(0);
+            if (wcscmp(left->ToString(), idpd->GetName()) == 0)
             {
-                ret = CreateFilterChunk(filter.ToString());
-                ret->m_ids = new recno_list;
-                ret->m_ids->push_back(idval);
-                m_canUseFastStepping = true;
+                __int64 idval = -1;
+                size_t len = 0;
+                int res = swscanf(right->ToString(), L"%lld%n", &idval, &len);
+
+                if (res == 1 && len == wcslen(right->ToString()))
+                {
+                    ret = CreateFilterChunk(filter.ToString());
+                    ret->m_ids = new recno_list;
+                    ret->m_ids->push_back(idval);
+                    m_canUseFastStepping = true;
+                }
             }
         }
     }
+    if (ret == NULL)
+    {
+        // we need to be sure we handle datetime values, e.g. DATEPROP > DATE '10-10-2000'
+        FdoPtr<FdoExpression> param = filter.GetLeftExpression();
+        param->Process(this);
+        FilterChunk* exprLeft = m_evalStack.back();
+        m_evalStack.pop_back();
+        
+        param = filter.GetRightExpression();
+        param->Process(this);
+        FilterChunk* exprRight = m_evalStack.back();
+        m_evalStack.pop_back();
 
-    m_evalStack.push_back((ret != NULL) ? ret : CreateFilterChunk(filter.ToString()));
+        ComplexFilterChunk* compExp = CreateComplexFilterChunk();
+        ret = compExp;
+        compExp->AddToList(CreateFilterChunk("(", 1));
+        compExp->AddToList(exprLeft);
+        
+        switch(filter.GetOperation())
+        {
+        case FdoComparisonOperations_EqualTo:
+            compExp->AddToList(CreateFilterChunk("=", 1));
+            break;
+        case FdoComparisonOperations_NotEqualTo:
+            compExp->AddToList(CreateFilterChunk("<>", 2));
+            break;
+        case FdoComparisonOperations_GreaterThan:
+            compExp->AddToList(CreateFilterChunk(">", 1));
+            break;
+        case FdoComparisonOperations_GreaterThanOrEqualTo:
+            compExp->AddToList(CreateFilterChunk(">=", 2));
+            break;
+        case FdoComparisonOperations_LessThan:
+            compExp->AddToList(CreateFilterChunk("<", 1));
+            break;
+        case FdoComparisonOperations_LessThanOrEqualTo:
+            compExp->AddToList(CreateFilterChunk("<=", 2));
+            break;
+        case FdoComparisonOperations_Like:
+            compExp->AddToList(CreateFilterChunk(" LIKE ", 6));
+            break;
+        }
+        compExp->AddToList(exprRight);
+        compExp->AddToList(CreateFilterChunk(")", 1));
+    }
+    m_evalStack.push_back(ret);
 }
 
 void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
 {
-    m_evalStack.push_back(CreateFilterChunk(filter.ToString()));
+    size_t szBefore = m_evalStack.size();
+    FdoPtr<FdoValueExpressionCollection> vals = filter.GetValues();
+    int cnt = vals->GetCount();
+    for(int idx = 0; idx < cnt; idx++)
+    {
+        FdoPtr<FdoValueExpression> exp = vals->GetItem(idx);
+        exp->Process(this);
+    }
+    size_t szAfter = m_evalStack.size();
+
+    m_sb.Reset();
+    FdoPtr<FdoIdentifier> prop = filter.GetPropertyName();
+    m_sb.AppendDQuoted(prop->GetName());
+    m_sb.Append(" IN(", 4);
+    FilterChunk* item = NULL;
+    for(size_t idx = szBefore; idx < szAfter; idx++)
+    {
+        item = m_evalStack[idx];
+        m_sb.Append(item->ToString());
+        m_sb.Append(", ", 2);
+    }
+    m_sb.Data()[m_sb.Length()-2] = ')';
+    // clean stack
+    m_evalStack.erase(m_evalStack.begin() + szBefore, m_evalStack.end());
+    m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
 void SltQueryTranslator::ProcessNullCondition(FdoNullCondition& filter)
 {
     FdoPtr<FdoIdentifier> idf = filter.GetPropertyName();
-    std::wstring val = std::wstring(L"\"" + std::wstring(idf->GetName()) + L"\" IS NULL");
-    m_evalStack.push_back(CreateFilterChunk(val.c_str()));
+    m_sb.Reset();
+    m_sb.AppendDQuoted(idf->GetName());
+    m_sb.Append(" IS NULL", 8);
+    m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
 void SltQueryTranslator::ProcessDistanceCondition(FdoDistanceCondition& filter)
@@ -410,21 +483,100 @@ void SltQueryTranslator::ProcessDistanceCondition(FdoDistanceCondition& filter)
     m_evalStack.push_back(CreateFilterChunk(filter.ToString()));
 }
 
-
 //--------------------------------------------------------------------
 // FdoIExpressionProcessor
 //--------------------------------------------------------------------
 
 void SltQueryTranslator::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
+    FdoPtr<FdoExpression> param = expr.GetLeftExpression();
+    param->Process(this);
+    FilterChunk* exprLeft = m_evalStack.back();
+    m_evalStack.pop_back();
+    
+    param = expr.GetRightExpression();
+    param->Process(this);
+    FilterChunk* exprRight = m_evalStack.back();
+    m_evalStack.pop_back();
+
+    ComplexFilterChunk* ret = CreateComplexFilterChunk();
+    ret->AddToList(CreateFilterChunk("(", 1));
+    ret->AddToList(exprLeft);
+
+    switch(expr.GetOperation())
+    {
+    case FdoBinaryOperations_Add:
+        ret->AddToList(CreateFilterChunk("+", 1));
+        break;
+    case FdoBinaryOperations_Divide:
+        ret->AddToList(CreateFilterChunk("-", 1));
+        break;
+    case FdoBinaryOperations_Multiply:
+        ret->AddToList(CreateFilterChunk("*", 1));
+        break;
+    case FdoBinaryOperations_Subtract:
+        ret->AddToList(CreateFilterChunk("/", 1));
+        break;
+    }
+    ret->AddToList(exprRight);
+    ret->AddToList(CreateFilterChunk(")", 1));
+
+    m_evalStack.push_back(ret);
 }
 
 void SltQueryTranslator::ProcessUnaryExpression(FdoUnaryExpression& expr)
 {
+    FdoPtr<FdoExpression> arg = expr.GetExpression();
+    arg->Process(this);
+
+    FilterChunk* exprRez = m_evalStack.back();
+    m_evalStack.pop_back();
+
+    ComplexFilterChunk* ret = CreateComplexFilterChunk();
+    ret->AddToList(CreateFilterChunk(" (-(", 4));
+    ret->AddToList(exprRez);
+    ret->AddToList(CreateFilterChunk("))", 2));
+
+    m_evalStack.push_back(ret);
 }
 
 void SltQueryTranslator::ProcessFunction(FdoFunction& expr)
 {
+    // We need to handle this because of ToDate...
+    // "ToDate(DATE '10-10-2000')" which should be "ToDate('10-10-2000')"
+    // otherwise query will fail, because of syntax error
+
+    size_t szBefore = m_evalStack.size();
+    FdoPtr<FdoExpressionCollection> vals = expr.GetArguments();
+    int cnt = vals->GetCount();
+    for(int idx = 0; idx < cnt; idx++)
+    {
+        FdoPtr<FdoExpression> exp = vals->GetItem(idx);
+        exp->Process(this);
+    }
+    size_t szAfter = m_evalStack.size();
+    if (szAfter != szBefore)
+    {
+        m_sb.Reset();
+        m_sb.Append(expr.GetName());
+        m_sb.Append("(", 1);
+        for(size_t idx = szBefore; idx < szAfter; idx++)
+        {
+            m_sb.Append(m_evalStack[idx]->ToString());
+            m_sb.Append(", ", 2);
+        }
+        m_sb.Data()[m_sb.Length()-2] = ')';
+        // clean stack
+        m_evalStack.erase(m_evalStack.begin() + szBefore, m_evalStack.end());
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
+    }
+    else
+    {
+        m_sb.Reset();
+        m_sb.Append(expr.GetName());
+        m_sb.Append("()", 2);
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
+    }
 }
 
 void SltQueryTranslator::ProcessIdentifier(FdoIdentifier& expr)
@@ -458,63 +610,192 @@ void SltQueryTranslator::ProcessIdentifier(FdoIdentifier& expr)
         }
     }
 
-    m_evalStack.push_back(CreateFilterChunk(expr.GetName()));
+    m_sb.Reset();
+    m_sb.AppendDQuoted(expr.GetName());
+    m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
 void SltQueryTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
+    throw FdoException::Create(L"Unsupported FDO type in filters");
 }
 
 void SltQueryTranslator::ProcessParameter(FdoParameter& expr)
 {
+    throw FdoException::Create(L"Unsupported FDO type in filters");
 }
 
 void SltQueryTranslator::ProcessBooleanValue(FdoBooleanValue& expr)
 {
+    if (!expr.IsNull())
+    {
+        if (expr.GetBoolean())
+            m_evalStack.push_back(CreateFilterChunk("TRUE", 4));
+        else
+            m_evalStack.push_back(CreateFilterChunk("FALSE", 5));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessByteValue(FdoByteValue& expr)
 {
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+#ifdef _WIN32
+        _itoa_s(expr.GetByte() , m_sb.Data(), 256, 10);
+#else
+        itoa(expr.GetByte(), m_sb.Data(), 10);
+#endif
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
+    // the big issues here is FDO syntax add in front of the date
+    // DATE/TIME/TIMESTAMP which for SQLite should be removed
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+        char* dateStr = m_sb.Data();
+        *dateStr = '\'';
+        FdoDateTime dt = expr.GetDateTime();
+        DateToString(&dt, dateStr+1, 31);
+        size_t sz = strlen(dateStr+1);
+        dateStr[sz+1] = '\'';
+        m_evalStack.push_back(CreateFilterChunk(dateStr, sz+2));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
 {
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+        char* ptr = m_sb.Data();
+#ifdef _WIN32
+        _snprintf(ptr, 256, "%g", expr.GetDecimal());
+#else
+        sprintf(ptr, 256, "%g", expr.GetDecimal());
+#endif
+        EnsureNoIsLocalIndep(ptr);
+        m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
 {
-}
-
-void SltQueryTranslator::ProcessInt16Value(FdoInt16Value& expr)
-{
-}
-
-void SltQueryTranslator::ProcessInt32Value(FdoInt32Value& expr)
-{
-}
-
-void SltQueryTranslator::ProcessInt64Value(FdoInt64Value& expr)
-{
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+        char* ptr = m_sb.Data();
+#ifdef _WIN32
+        _snprintf(ptr, 256, "%g", expr.GetDouble());
+#else
+        sprintf(ptr, 256, "%g", expr.GetDouble());
+#endif
+        EnsureNoIsLocalIndep(ptr);
+        m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessSingleValue(FdoSingleValue& expr)
 {
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+        char* ptr = m_sb.Data();
+#ifdef _WIN32
+        _snprintf(ptr, 256, "%f", expr.GetSingle());
+#else
+        sprintf(ptr, 256, "%f", expr.GetSingle());
+#endif
+        EnsureNoIsLocalIndep(ptr);
+        m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
+}
+
+void SltQueryTranslator::ProcessInt16Value(FdoInt16Value& expr)
+{
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+#ifdef _WIN32
+        _itoa_s(expr.GetInt16(), m_sb.Data(), 256, 10);
+#else
+        itoa(expr.GetInt16(), m_sb.Data(), 10);
+#endif
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
+}
+
+void SltQueryTranslator::ProcessInt32Value(FdoInt32Value& expr)
+{
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+#ifdef _WIN32
+        _itoa_s(expr.GetInt32(), m_sb.Data(), 256, 10);
+#else
+        itoa(expr.GetInt32(), m_sb.Data(), 10);
+#endif
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
+}
+
+void SltQueryTranslator::ProcessInt64Value(FdoInt64Value& expr)
+{
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+#ifdef _WIN32
+        _i64toa_s(expr.GetInt64(), m_sb.Data(), 256, 10);
+#else
+        sprintf(m_sb.Data(), 256, "%lld", expr.GetInt64());
+#endif
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessStringValue(FdoStringValue& expr)
 {
+    // it's faster than expr.ToString()
+    if (!expr.IsNull())
+    {
+        m_sb.Reset();
+        m_sb.AppendSQuoted(expr.GetString());
+        m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
+    }
+    else
+        m_evalStack.push_back(CreateFilterChunk("null", 4));
 }
 
 void SltQueryTranslator::ProcessBLOBValue(FdoBLOBValue& expr)
 {
+    throw FdoException::Create(L"Unsupported FDO type in filters");
 }
 
 void SltQueryTranslator::ProcessCLOBValue(FdoCLOBValue& expr)
 {
+    throw FdoException::Create(L"Unsupported FDO type in filters");
 }
 
 void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
@@ -577,15 +858,14 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
     delete[] wstr;
 #else
     m_geomCount++;
-    wchar_t buf[70];
-    *buf = L'\0';
+    m_sb.Reset();
 #ifdef _WIN32
-    _i64tow_s((FdoInt64)fgf.p, buf, 70, 10);
+    _i64toa_s((FdoInt64)fgf.p, m_sb.Data(), 256, 10);
 #else
-    swprintf(buf, 70, L"%lld", (FdoInt64)fgf.p);
+    sprintf(m_sb.Data(), 256, "%lld", (FdoInt64)fgf.p);
 #endif
 
-    FilterChunk* ret = CreateFilterChunk(buf);
+    FilterChunk* ret = CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data()));
 #endif
 
     ret->m_bounds = ext;
@@ -706,13 +986,10 @@ void SltExpressionTranslator::ProcessBinaryExpression(FdoBinaryExpression& expr)
 
 void SltExpressionTranslator::ProcessUnaryExpression(FdoUnaryExpression& expr)
 {
-    if (expr.GetOperation() == FdoUnaryOperations_Negate)
-    {
-        m_expr.Append(" (-(", 4);
-        FdoPtr<FdoExpression> param = expr.GetExpression();
-        HandleExpr(param);
-        m_expr.Append("))", 2);
-    }
+    m_expr.Append(" (-(", 4);
+    FdoPtr<FdoExpression> param = expr.GetExpression();
+    HandleExpr(param);
+    m_expr.Append("))", 2);
 }
 
 void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
@@ -759,15 +1036,22 @@ void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
 
 void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
 {
-    m_expr.Append(expr.ToString());
+    m_expr.AppendDQuoted(expr.GetName());
 }
 
 void SltExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
     FdoPtr<FdoExpression> param = expr.GetExpression();
-    HandleExpr(param);
+    if (m_props != NULL)
+    {
+        // expand the expressions in case we have expressions besad on other expressions.
+        FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(param, m_props);
+        HandleExpr(expandedExpression);
+    }
+    else
+        HandleExpr(param);
     m_expr.Append(" AS ", 4);
-    m_expr.Append(expr.GetName());
+    m_expr.AppendDQuoted(expr.GetName());
 }
 
 void SltExpressionTranslator::ProcessParameter(FdoParameter& expr)
@@ -776,51 +1060,142 @@ void SltExpressionTranslator::ProcessParameter(FdoParameter& expr)
 }
 void SltExpressionTranslator::ProcessBooleanValue(FdoBooleanValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+        if (expr.GetBoolean())
+            m_expr.Append("TRUE", 4);
+        else
+            m_expr.Append("FALSE", 5);
+    }
+    else
+        m_expr.Append("null", 4);
 }
 void SltExpressionTranslator::ProcessByteValue(FdoByteValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _itoa_s(expr.GetByte(), m_useConv, 256, 10);
+#else
+        itoa(expr.GetByte(), m_useConv, 10);
+#endif
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+        FdoDateTime dt = expr.GetDateTime();
+        DateToString(&dt, m_useConv, 31);
+        m_expr.AppendSQuoted(m_useConv);
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _snprintf(m_useConv, 256, "%g", expr.GetDecimal());
+#else
+        sprintf(m_useConv, 256, "%g", expr.GetDecimal());
+#endif
+        EnsureNoIsLocalIndep(m_useConv);
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _snprintf(m_useConv, 256, "%g", expr.GetDouble());
+#else
+        sprintf(m_useConv, 256, "%g", expr.GetDouble());
+#endif
+        EnsureNoIsLocalIndep(m_useConv);
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessInt16Value(FdoInt16Value& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _itoa_s(expr.GetInt16(), m_useConv, 256, 10);
+#else
+        itoa(expr.GetInt16(), m_useConv, 10);
+#endif
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessInt32Value(FdoInt32Value& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _itoa_s(expr.GetInt32(), m_useConv, 256, 10);
+#else
+        itoa(expr.GetInt32(), m_useConv, 10);
+#endif
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessInt64Value(FdoInt64Value& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _i64toa_s(expr.GetInt64(), m_useConv, 256, 10);
+#else
+        sprintf(m_useConv, 256, "%lld", expr.GetInt64());
+#endif
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessSingleValue(FdoSingleValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+    {
+#ifdef _WIN32
+        _snprintf(m_useConv, 256, "%f", expr.GetSingle());
+#else
+        sprintf(m_useConv, 256, "%f", expr.GetSingle());
+#endif
+        EnsureNoIsLocalIndep(m_useConv);
+        m_expr.Append(m_useConv, strlen(m_useConv));
+    }
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessStringValue(FdoStringValue& expr)
 {
-    m_expr.Append(expr.ToString());
+    if (!expr.IsNull())
+        m_expr.AppendSQuoted(expr.GetString());
+    else
+        m_expr.Append("null", 4);
 }
 
 void SltExpressionTranslator::ProcessBLOBValue(FdoBLOBValue& expr)
