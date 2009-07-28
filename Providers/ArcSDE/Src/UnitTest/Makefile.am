@@ -47,6 +47,7 @@ UnitTest_SOURCES = \
   BasicArcSDETests.cpp \
   BasicInsertTests.cpp \
   BasicUpdateTests.cpp \
+  ExpressionFunction.cpp \
   LongTransactionExternalTests.cpp \
   SpatialContextTests.cpp \
   SQLTests.cpp \
@@ -64,6 +65,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   BasicSchemaTests.h \
   BasicTransactionTests.h \
   BasicUpdateTests.h \
+  ExpressionFunction.h \
   LockTests.h \
   LongTransactionExternalTests.h \
   LongTransactionTests.h \
@@ -83,6 +85,7 @@ INCLUDES = \
   -I$(FDOTHIRDPARTY)/linux/cppunit/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I$(FDOUTILITIES)/ExpressionEngine/Inc \
+  -I$(FDOUTILITIES)/TestCommon/Inc \
   -I../../Inc
 
 
@@ -93,6 +96,7 @@ UnitTest_LDADD = \
   $(BUILD_USING_SDE91) \
   $(BUILD_USING_SDE92) \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
   -lpthread_nonshared \
   -lpthread
 

@@ -2790,6 +2790,6 @@ double TestCommonExpressionFunction::GetNaNOrdinate()
 
 bool TestCommonExpressionFunction::IsNullOrdinate( double ordinate)
 {
-    return (ordinate == GetNullOrdinate()) || (ordinate != ordinate);
+    return (ordinate == TestCommonExpressionFunction::GetNullOrdinate()) || (ordinate != ordinate);
 }
 
