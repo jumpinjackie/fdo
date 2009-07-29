@@ -1361,50 +1361,38 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     {
         for (int i=0; i<2; i++)
         {
-            //We need to figure out what type of geometry format we are dealing with.
-            //I am not sure whether to be disgusted or delighted, but there is a way
-            //to do this without drilling a giant hole in the code back to the 
-            //FDO connection/schema. We can (with high confidence) determine the encoding by
-            //(1) checking if the length of the stream is even or odd -- FGF is always even
-            //while WKB is odd in the case of simple geometries, and (2) if the length
-            //is even, by looking if the first 4 bytes in the stream, when treated as an 
-            //integer are below 256 (due to the byte order byte resulting in a shift by 8 bits
-            //of the geometry type in the case of WKB. This is only valid on little endian
-            //machines (but works for both Intel and Motorla WKB streams).
-            //The rest of this provider is not endian-safe anyway. If it is 
-            //necessary that this work on big-endian, the solution would be to try to parse
-            //using the FDO geometry factory, catch the resulting exception and try again
-            //with the alternate encoding type.
+            // FGF is not always even, see Providers\SQLite\TestData\PARCEL_Source.SLT
+
+            // WKB supported format looks like (in bytes):
+            // ENDIAN[0] | GeometryType[1][2][3][4], where FDO supports only ENDIAN=1(WKB little endian)
+            // see FdoFgfGeometryFactory::CreateGeometryFromWkb for details
+            // so, byte[0] will be 1 all the time,
+            // since GeometryType =[0-132] => byte[1] (GeometryType[1]) will never be 0,
+            // however bytes[2][3][4] will all the time be 0
+            // to have WKB we have (byte[0] == 1 && byte[1] != 0)
+
+            // FGF supported format shows like (in bytes):
+            // GeometryType[0][1][2][3] | [dimensionality|count][0][1][2][3]
+            // since GeometryType =[0-132] => byte[0] (GeometryType[0]) will never be 0,
+            // however bytes[2][3][4] will all the time be 0
+            // to have FGF we have (byte[0] != 0 && byte[1] == 0)
+
             if (type[i] == SQLITE_BLOB)
             {
                 const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[i]);
                 int len1 = sqlite3_value_bytes(argv[i]);
-
-                bool isFGF = true;
-
-                //even length check
-                if (len1 % 2)
-                    isFGF = false;
-                else
-                {
-                    int type = *(int*)g1;
-
-                    //check if first 4 bytes are out of range
-                    //of FDO geometry types, due to there being
-                    //a WKB byte order marker.
-                    if (type > 255)
-                        isFGF = false;
-                }
-
-                if (isFGF)
-                {
-                    fg[i] = gf->CreateGeometryFromFgf(g1, len1);
-                }
-                else
+                
+                if (*g1 == 1 && *(g1+1) != 0) // is WKB
                 {
                     FdoPtr<FdoByteArray> baba = FdoByteArray::Create(g1, len1);
                     fg[i] = gf->CreateGeometryFromWkb(baba);
                 }
+                else if (*g1 != 0 && *(g1+1) == 0) // is FGF
+                {
+                    fg[i] = gf->CreateGeometryFromFgf(g1, len1);
+                }
+                else
+                    throw FdoException::Create(L"Unsupported geometry type");
             }
             else if (type[i] == SQLITE_TEXT)
             {
@@ -1464,15 +1452,13 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         const unsigned char* g1 = (const unsigned char*)sqlite3_value_blob(argv[0]);
         int len1 = sqlite3_value_bytes(argv[0]);
 
-        if (len1 % 2) //this check is enough to detect WKB in case of simple geometries, but may fail on multi ones
-                      //also see the long explanation in spatialOpFunc.
+        if (*g1 == 1 && *(g1+1) != 0) // is WKB
         {
-            //case of WKB, not FGF
             gf = FdoFgfGeometryFactory::GetInstance();
             FdoPtr<FdoByteArray> ba = FdoByteArray::Create(g1, len1);
             fg = gf->CreateGeometryFromWkb(ba);
         }
-        else
+        else if (*g1 != 0 && *(g1+1) == 0) // is FGF
         {
             //case of FGF, we can directly use the byte array as FgfPoint
             pt = *(FgfPoint*)g1;
@@ -1480,6 +1466,8 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
             if (pt.geom_type == FdoGeometryType_Point)
                 valid = true;
         }
+        else
+            valid = false;
     }
     else if (type == SQLITE_TEXT)
     {
@@ -1547,8 +1535,7 @@ static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 
         if (g1 != NULL && len != 0)
         {
-            if (len % 2) //this check is enough to detect WKB in case of simple geometries, but may fail on multi ones
-                          //also see the long explanation in spatialOpFunc.
+            if (*g1 == 1 && *(g1+1) != 0) // is WKB
             {
                 //case of WKB, not FGF
                 gf = FdoFgfGeometryFactory::GetInstance();
@@ -1558,7 +1545,7 @@ static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
                 geom = (const unsigned char*)ba->GetData();
                 lenGeom = ba->GetCount();
             }
-            else
+            else if (*g1 != 0 && *(g1+1) == 0) // is FGF
             {
                 //case of FGF, we can directly use the byte array
                 geom = g1;

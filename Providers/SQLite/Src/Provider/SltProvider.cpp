@@ -358,6 +358,9 @@ void SltConnection::Close()
     }
 
     m_mNameToMetadata.clear();
+    
+    if (m_transactionState == SQLiteActiveTransactionType_Internal)
+        CommitTransaction();
 
     ClearQueryCache();
 
@@ -932,36 +935,146 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         sb.Append("=?", 2);
     }
 
+    std::vector<__int64>* rowids = NULL;
+    StringBuffer strWhere((size_t)0);
+    DBounds bbox;
+    char* mbfc = NULL;
+    //Translate the filter from FDO to SQLite where clause.
+    //Also detect if there is a BBOX query that we can accelerate
+    //by using the spatial index.
     if (filter)
     {
-        sb.Append(" WHERE ", 7);
-        sb.Append(filter->ToString());
+        const wchar_t* wfc = fcname->GetName();
+        size_t wlen = wcslen(wfc);
+        size_t clen = 4 * wlen+1;
+        mbfc = (char*)alloca(4*wlen+1);
+        W2A_FAST(mbfc, clen, wfc, wlen);
+        SltMetadata* md = GetMetadata(mbfc);
+        FdoPtr<FdoClassDefinition> fc = md->ToClass();
+        // don't update views
+        if (md->IsView())
+            throw FdoException::Create(L"Views cannot be updated");
+
+        SltQueryTranslator qt(fc);
+        filter->Process(&qt);
+
+        const char* txtFilter = qt.GetFilter();
+        if (*txtFilter) 
+            strWhere.Append(txtFilter);
+        qt.GetBBOX(bbox);
+        rowids = qt.DetachIDList();
     }
 
-    sb.Append(";", 1);
+    RowidIterator* ri = NULL;
+    //if we have a query by specific ID, it will take precedence over spatial query
+    if (rowids)
+    {
+        ri = new RowidIterator(-1, rowids);
+    }
+    else if (!bbox.IsEmpty())
+    {
+        //if we have a BBOX filter, we need to get the spatial index
+        SpatialIndex* si = GetSpatialIndex(mbfc);
+
+        DBounds total_ext;
+        si->GetTotalExtent(total_ext);
+
+        if (bbox.Contains(total_ext))
+        {
+            //only use spatial iterator if the search bounds does not
+            //fully contain the data bounds
+        }
+        else if (bbox.Intersects(total_ext))
+        {
+            SpatialIterator* siter = new SpatialIterator(bbox, si);
+            rowids = new std::vector<__int64>();
+            int start = -1;
+            int end = -1;
+
+            while (siter->NextRange(start, end))
+            {
+                for (int i=start; i<=end; i++)
+                    rowids->push_back(i);
+            }
+            if (rowids->size() == 0)
+            {
+                delete rowids;
+                return 0;
+            }
+            else
+                ri = new RowidIterator(-1, rowids);
+        }
+        else
+            return 0; // enforce an empty result since result will be empty
+    }
+
+    if (!strWhere.Length())
+    {
+        if (ri)
+            sb.Append(" WHERE ROWID=?;", 15);
+        else
+            sb.Append(";", 1);
+    }
+    else
+    {
+        sb.Append(" WHERE ", 7);
+
+        if (ri)
+            sb.Append("ROWID=? AND ", 12);
+
+        sb.Append("(", 1);
+        sb.Append(strWhere.Data(), strWhere.Length());
+        sb.Append(");", 2);
+    }
 
     const char* tail = NULL;
     sqlite3_stmt* stmt = NULL;
     
+    FdoInt64 ret = 0;
     if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
-        BindPropVals(propvals, stmt);
-        if (sqlite3_step(stmt) != SQLITE_DONE)
+        if (!ri)
         {
-            sqlite3_finalize(stmt);
-            //TODO: this is likely a transient failure that we can ignore,
-            //especially in bulk insert cases
-            //throw FdoCommandException::Create(L"Update failed.");
+            BindPropVals(propvals, stmt);
+            if (sqlite3_step(stmt) != SQLITE_DONE)
+            {
+                sqlite3_finalize(stmt);
+                throw FdoCommandException::Create(L"Failed to execute update statement.");
+            }
+            ret += sqlite3_changes(m_dbWrite);
         }
+        else
+        {
+            ri->MoveToIndex(0);
+            int cntProps = propvals->GetCount();
+            while(ri->Next())
+            {
+                BindPropVals(propvals, stmt);
+                sqlite3_bind_int64(stmt, cntProps+1, ri->CurrentRowid());
+                
+                if (sqlite3_step(stmt) != SQLITE_DONE)
+                {
+                    sqlite3_finalize(stmt);
+                    if (ri)
+                        delete ri;
+                    throw FdoCommandException::Create(L"Failed to execute update statement.");
+                }
+                ret += sqlite3_changes(m_dbWrite);
+                sqlite3_reset(stmt);
+            }
+        }
+        if (ri)
+            delete ri;
+        sqlite3_finalize(stmt);
     }
     else
     {
+        if (ri)
+            delete ri;
         std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
         throw FdoCommandException::Create(err.c_str());
     }
-    sqlite3_finalize(stmt);
-
-    return sqlite3_changes(m_dbWrite);
+    return ret;
 }
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
@@ -969,34 +1082,144 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     StringBuffer sb;
 
     sb.Append("DELETE FROM ", 12);
-    sb.Append(fcname->GetName());
+    sb.AppendDQuoted(fcname->GetName());
 
+    std::vector<__int64>* rowids = NULL;
+    StringBuffer strWhere((size_t)0);
+    DBounds bbox;
+    char* mbfc = NULL;
+    //Translate the filter from FDO to SQLite where clause.
+    //Also detect if there is a BBOX query that we can accelerate
+    //by using the spatial index.
     if (filter)
     {
-        sb.Append(" WHERE ", 7);
-        sb.Append(filter->ToString());
+        const wchar_t* wfc = fcname->GetName();
+        size_t wlen = wcslen(wfc);
+        size_t clen = 4 * wlen+1;
+        mbfc = (char*)alloca(4*wlen+1);
+        W2A_FAST(mbfc, clen, wfc, wlen);
+        SltMetadata* md = GetMetadata(mbfc);
+        FdoPtr<FdoClassDefinition> fc = md->ToClass();
+        // don't update views
+        if (md->IsView())
+            throw FdoException::Create(L"Views cannot be updated");
+
+        SltQueryTranslator qt(fc);
+        filter->Process(&qt);
+
+        const char* txtFilter = qt.GetFilter();
+        if (*txtFilter) 
+            strWhere.Append(txtFilter);
+        qt.GetBBOX(bbox);
+        rowids = qt.DetachIDList();
     }
 
-    sb.Append(";", 1);
+    RowidIterator* ri = NULL;
+    //if we have a query by specific ID, it will take precedence over spatial query
+    if (rowids)
+    {
+        ri = new RowidIterator(-1, rowids);
+    }
+    else if (!bbox.IsEmpty())
+    {
+        //if we have a BBOX filter, we need to get the spatial index
+        SpatialIndex* si = GetSpatialIndex(mbfc);
+
+        DBounds total_ext;
+        si->GetTotalExtent(total_ext);
+
+        if (bbox.Contains(total_ext))
+        {
+            //only use spatial iterator if the search bounds does not
+            //fully contain the data bounds
+        }
+        else if (bbox.Intersects(total_ext))
+        {
+            SpatialIterator* siter = new SpatialIterator(bbox, si);
+            rowids = new std::vector<__int64>();
+            int start = -1;
+            int end = -1;
+
+            while (siter->NextRange(start, end))
+            {
+                for (int i=start; i<=end; i++)
+                    rowids->push_back(i);
+            }
+            if (rowids->size() == 0)
+            {
+                delete rowids;
+                return 0;
+            }
+            else
+                ri = new RowidIterator(-1, rowids);
+        }
+        else
+            return 0; // enforce an empty result since result will be empty
+    }
+
+    if (!strWhere.Length())
+    {
+        if (ri)
+            sb.Append(" WHERE ROWID=?;", 15);
+        else
+            sb.Append(";", 1);
+    }
+    else
+    {
+        sb.Append(" WHERE ", 7);
+
+        if (ri)
+            sb.Append("ROWID=? AND ", 12);
+
+        sb.Append("(", 1);
+        sb.Append(strWhere.Data(), strWhere.Length());
+        sb.Append(");", 2);
+    }
 
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
 
+    FdoInt64 ret = 0;
     if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
-        if (sqlite3_step(stmt) != SQLITE_DONE)
+        if (!ri)
         {
-            sqlite3_finalize(stmt);
-            throw FdoCommandException::Create(L"Failed to execute delete statement.");
+            if (sqlite3_step(stmt) != SQLITE_DONE)
+            {
+                sqlite3_finalize(stmt);
+                throw FdoCommandException::Create(L"Failed to execute delete statement.");
+            }
+            ret += sqlite3_changes(m_dbWrite);
         }
+        else
+        {
+            ri->MoveToIndex(0);
+            while(ri->Next())
+            {
+                sqlite3_bind_int64(stmt, 1, ri->CurrentRowid());
+                if (sqlite3_step(stmt) != SQLITE_DONE)
+                {
+                    sqlite3_finalize(stmt);
+                    if (ri)
+                        delete ri;
+                    throw FdoCommandException::Create(L"Failed to execute delete statement.");
+                }
+                ret += sqlite3_changes(m_dbWrite);
+                sqlite3_reset(stmt);
+            }
+        }
+        if (ri)
+            delete ri;
+        sqlite3_finalize(stmt);
     }
     else
     {
-        throw FdoCommandException::Create(L"Failed to parse delete statement.");
+        if (ri)
+            delete ri;
+        std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
+        throw FdoCommandException::Create(err.c_str());
     }
-
-    sqlite3_finalize(stmt);
-    return sqlite3_changes(m_dbWrite);
+    return ret;
 }
 
 SltMetadata* SltConnection::GetMetadata(const char* table)
@@ -2324,6 +2547,8 @@ bool SltConnection::SupportsDetailedGeomType()
 
 FdoITransaction* SltConnection::BeginTransaction()
 {
+    if (m_dbWrite == NULL)
+        throw FdoException::Create(L"Connection is not opened");
     StartTransaction(true);
     return new SltTransaction(this);
 }
@@ -2332,6 +2557,9 @@ FdoITransaction* SltConnection::BeginTransaction()
 
 int SltConnection::StartTransaction(bool isUserTrans)
 {
+    if (m_dbWrite == NULL)
+        return SQLITE_MISUSE;
+
     int rc = SQLITE_OK;
     if (!isUserTrans)
     {
@@ -2379,6 +2607,9 @@ int SltConnection::StartTransaction(bool isUserTrans)
 
 int SltConnection::CommitTransaction(bool isUserTrans)
 {
+    if (m_dbWrite == NULL)
+        return SQLITE_MISUSE;
+
     int rc = SQLITE_OK;
     if (!isUserTrans)
     {
@@ -2417,6 +2648,9 @@ int SltConnection::CommitTransaction(bool isUserTrans)
 
 int SltConnection::RollbackTransaction(bool isUserTrans)
 {
+    if (m_dbWrite == NULL)
+        return SQLITE_MISUSE;
+
     int rc = SQLITE_OK;
     if (!isUserTrans)
     {

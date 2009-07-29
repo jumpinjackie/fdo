@@ -293,8 +293,6 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
     protected:
         virtual ~SltUpdate()
         {
-            char* err = NULL;
-
             if (m_bInTransaction)
                 m_connection->CommitTransaction();
 
