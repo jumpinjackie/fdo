@@ -746,7 +746,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
 						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
@@ -869,6 +869,14 @@
 		</File>
 		<File
 			RelativePath=".\ApplySchemaTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\DeleteTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\DeleteTest.h"
 			>
 		</File>
 		<File
@@ -1013,6 +1021,14 @@
 		</File>
 		<File
 			RelativePath=".\UnitTestUtil.h"
+			>
+		</File>
+		<File
+			RelativePath=".\UpdateTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\UpdateTest.h"
 			>
 		</File>
 	</Files>

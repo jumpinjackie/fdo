@@ -262,6 +262,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //rather than paring down the property list initially
 	if (props && props->GetCount() > 0)
 	{
+        m_mainClassName = fcname;
         Requery2();
         InitPropIndex(m_pStmt);
         return;
@@ -878,6 +879,9 @@ FdoClassDefinition* SltReader::GetClassDefinition()
         // do we have unknown calculations !?
         if (unknownPropsIdx.size() != 0 && m_reissueProps.Count() != 0)
         {
+            if (NULL == mainMd && m_mainClassName.size() != 0)
+                mainMd = m_connection->GetMetadata(m_mainClassName.c_str());
+
             FdoPtr<FdoClassDefinition> origfc = (NULL == mainMd) ? NULL : mainMd->ToClass();
             // use the original class in case we have one otherwise use the generated class
             FdoClassDefinition* origClass = (origfc == NULL) ? m_class : origfc.p;

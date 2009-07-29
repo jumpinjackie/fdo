@@ -196,6 +196,10 @@ protected:
 
         //things cached/precomputed for speed
         FdoClassDefinition*         m_class;
+        // name used only in cases where select is a simple select 
+        // and we do not have m_class, e.g.: "select (A+B) as C from TN;"
+        // witout this we cannot identify the type of a calculation
+        std::string                 m_mainClassName;
         std::vector<const wchar_t*> m_propNames;
         wchar_t*                    m_aPropNames;
         PropertyNameIndex           m_mNameToIndex;
