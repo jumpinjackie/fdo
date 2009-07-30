@@ -692,6 +692,26 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
             result.back().name = A2W_SLOW(sb.Data());
         }
         break;
+    case TK_UMINUS:
+        if(node->pLeft != NULL)
+        {
+            valid = ExtractConstraints(node->pLeft, result);
+            SQLiteExpression& val = result.back();
+            if (val.values.size() == 1)
+                val.values[0] = L"-" + val.values[0];
+            else
+                valid = false;
+        }
+        else
+            valid = false;
+        break;
+    case TK_UPLUS:
+        // just get it since +val = val
+        if(node->pLeft != NULL)
+            valid = ExtractConstraints(node->pLeft, result);
+        else
+            valid = false;
+        break;
     default:
         valid = false;
         break;
