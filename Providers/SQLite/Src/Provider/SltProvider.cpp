@@ -266,8 +266,13 @@ FdoConnectionState SltConnection::Open()
     
     std::string file = W2A_SLOW(dsw);
 
-    if (_access(file.c_str(), 0) == -1)
+#ifdef _WIN32
+    if (_waccess(dsw, 0) == -1)
         throw FdoConnectionException::Create(L"File does not exist!");
+#else 
+    if (access(file.c_str(), 0) == -1)
+        throw FdoConnectionException::Create(L"File does not exist!");
+#endif
 
     const wchar_t* sUseMeta = GetProperty(PROP_NAME_FDOMETADATA);
 
