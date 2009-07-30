@@ -504,7 +504,7 @@ public:
                 {
                     m_result.Reset();
                     m_result.Append(strtmp, 2);
-                    dt.month = (FdoInt16)atoi(m_result.Data());
+                    dt.month = (FdoInt8)atoi(m_result.Data());
                     strtmp += 2;
                 }
                 break;
@@ -524,7 +524,7 @@ public:
                 {
                     m_result.Reset();
                     m_result.Append(strtmp, 2);
-                    dt.day = (FdoInt16)atoi(m_result.Data());
+                    dt.day = (FdoInt8)atoi(m_result.Data());
                     strtmp += 2;
                 }
                 break;
@@ -534,7 +534,7 @@ public:
                 {
                     m_result.Reset();
                     m_result.Append(strtmp, 2);
-                    dt.hour = (FdoInt16)atoi(m_result.Data());
+                    dt.hour = (FdoInt8)atoi(m_result.Data());
                     strtmp += 2;
                 }
                 break;
@@ -543,7 +543,7 @@ public:
                 {
                     m_result.Reset();
                     m_result.Append(strtmp, 2);
-                    dt.minute = (FdoInt16)atoi(m_result.Data());
+                    dt.minute = (FdoInt8)atoi(m_result.Data());
                     strtmp += 2;
                 }
                 break;
@@ -575,7 +575,7 @@ public:
                 break;
             }
             // stop in case we are at the end of date time string
-            if ((strtmp-str) >= sz)
+            if ((strtmp-str) >= (int)sz)
                 break;
         }
         return dt;

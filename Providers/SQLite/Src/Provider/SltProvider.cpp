@@ -1079,7 +1079,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
         throw FdoCommandException::Create(err.c_str());
     }
-    return ret;
+    return (FdoInt32)ret;
 }
 
 FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
@@ -1224,7 +1224,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
         std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
         throw FdoCommandException::Create(err.c_str());
     }
-    return ret;
+    return (FdoInt32)ret;
 }
 
 SltMetadata* SltConnection::GetMetadata(const char* table)
