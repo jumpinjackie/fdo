@@ -456,14 +456,22 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
     FdoPtr<FdoIdentifier> prop = filter.GetPropertyName();
     m_sb.AppendDQuoted(prop->GetName());
     m_sb.Append(" IN(", 4);
-    FilterChunk* item = NULL;
-    for(size_t idx = szBefore; idx < szAfter; idx++)
+    
+    if (szAfter > szBefore)
     {
-        item = m_evalStack[idx];
-        m_sb.Append(item->ToString());
-        m_sb.Append(", ", 2);
+        for(size_t idx = szBefore; idx < szAfter; idx++)
+        {
+            FilterChunk* item = m_evalStack[idx];
+            m_sb.Append(item->ToString());
+            m_sb.Append(", ", 2);
+        }
+        m_sb.Data()[m_sb.Length()-2] = ')';
     }
-    m_sb.Data()[m_sb.Length()-2] = ')';
+    else
+    {
+        m_sb.Append(")", 1);
+    }
+
     // clean stack
     m_evalStack.erase(m_evalStack.begin() + szBefore, m_evalStack.end());
     m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
