@@ -364,8 +364,15 @@ void SltConnection::Close()
 
     m_mNameToMetadata.clear();
     
-    if (m_transactionState == SQLiteActiveTransactionType_Internal)
+    switch(m_transactionState)
+    {
+    case SQLiteActiveTransactionType_Internal:
         CommitTransaction();
+        break;
+    case SQLiteActiveTransactionType_User:
+        RollbackTransaction(true); // enforce a rollback
+        break;
+    }
 
     ClearQueryCache();
 
@@ -1685,7 +1692,8 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         if (iter != m_mNameToSpatialIndex.end())
         {
              m_mNameToSpatialIndex.erase(iter);
-             m_mNameToSpatialIndex.insert(std::make_pair((char*) originalClassNameA.c_str(), iter->second));
+             free(iter->first); //was allocated using strdup
+             m_mNameToSpatialIndex[_strdup(originalClassNameA.c_str())] = iter->second; //Note the memory allocation
         }
         // reset class name
         fc->SetName(originalClassName.c_str());
@@ -2291,7 +2299,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     //get the count
     //we always use the count, whether we compute extents or not
-    int count = GetFeatureCount(fcname.c_str());
+    FdoInt64 count = GetFeatureCount(fcname.c_str());
 
     //case where we only need count
     if (extname.empty())
@@ -2308,7 +2316,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         //TODO: some day we should check the error codes...
         //but really, failure is not an option here.
         rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?);", -1, &stmt, &tail);
-        rc = sqlite3_bind_int(stmt, 1, count);
+        rc = sqlite3_bind_int64(stmt, 1, count);
         rc = sqlite3_step(stmt);
         rc = sqlite3_finalize(stmt);
     }
@@ -2343,7 +2351,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         //but really, failure is not an option here.
         rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?,?);", -1, &stmt, &tail);
         rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
-        rc = sqlite3_bind_int(stmt, 2, count);
+        rc = sqlite3_bind_int64(stmt, 2, count);
         rc = sqlite3_step(stmt);
         rc = sqlite3_finalize(stmt);
     }
@@ -2358,8 +2366,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.");
 }
 
-
-int SltConnection::GetFeatureCount(const char* table)
+FdoInt64 SltConnection::GetFeatureCount(const char* table)
 {
     //get the feature count -- this is approximate since
     //a real count would take a long time (table scan)

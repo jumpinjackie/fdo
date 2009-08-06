@@ -360,18 +360,24 @@ FdoClassDefinition* SltMetadata::ToClass()
                 dpd->SetDataType(dt);
                 
                 Expr* defValExp = pTable->aCol[i].pDflt;
-                // we support only simple default values
-                if(defValExp != NULL && defValExp->token.n != 0)
+                if(defValExp != NULL)
                 {
-                    sb.Reset();
-                    sb.Append((const char*)defValExp->token.z, defValExp->token.n);
-                    if (dt == FdoDataType_DateTime)
+                    std::vector<SQLiteExpression> defExp;
+                    defExp.push_back(SQLiteExpression(TK_EQ)); // emulate a condition Prop = val
+                    // we support only simple default values
+                    // only one value can be processed
+                    if (ExtractConstraints(defValExp, defExp) && defExp.back().values.size() == 1)
                     {
-                        FdoPtr<FdoDateTimeValue> dtVal = FdoDateTimeValue::Create(DateFromString(sb.Data(), false));
-                        dpd->SetDefaultValue(dtVal->ToString());
+                        sb.Reset();
+                        sb.Append(defExp.back().values[0].c_str());
+                        if (dt == FdoDataType_DateTime)
+                        {
+                            FdoPtr<FdoDateTimeValue> dtVal = FdoDateTimeValue::Create(DateFromString(sb.Data(), false));
+                            dpd->SetDefaultValue(dtVal->ToString());
+                        }
+                        else
+                            dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
                     }
-                    else
-                        dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
                 }
                 // since on a class we usually don't have too many constraints we can use normal search
                 for(size_t idx = 0; idx < tableConstraints.size(); idx ++)
