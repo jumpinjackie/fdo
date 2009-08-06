@@ -203,7 +203,7 @@ public:
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
-    int             GetFeatureCount(const char* table);
+    FdoInt64        GetFeatureCount(const char* table);
     
     sqlite3_stmt*   GetCachedParsedStatement(const char* sql, sqlite3* db = NULL);
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
