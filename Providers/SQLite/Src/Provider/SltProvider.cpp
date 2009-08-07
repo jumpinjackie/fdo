@@ -1872,6 +1872,9 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     // add the default value
     FdoString* defVal = prop->GetDefaultValue();
     FdoDataType dt = prop->GetDataType();
+    if (defVal != NULL && *defVal != '\0' && (dt != FdoDataType_String && _wcsicmp(defVal, L"null") == 0))
+        defVal = NULL;
+
     FdoPtr<FdoPropertyValueConstraint> constr = prop->GetValueConstraint();
     if (!prop->GetNullable())
         sb.Append(" NOT NULL ", 10);
