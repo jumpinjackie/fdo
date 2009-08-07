@@ -174,10 +174,12 @@ public:
                 if (type == column_type)
 				{
 					// Get the code page from LDID. If not valid try the .CPG file.
-					FdoStringP  codePage = mFileSet->GetDbfFile()->GetCodePage();
-
-					if (codePage == L"" && mFileSet->GetCpgFile())
+					FdoStringP  codePage = L"";
+					if(mFileSet->GetCpgFile())
 						codePage = mFileSet->GetCpgFile()->GetCodePage();
+
+					if (codePage == L"")
+						codePage = mFileSet->GetDbfFile()->GetCodePage();
 
 					mData->GetData (data, i, type, (WCHAR*)(FdoString *)codePage);
 				}

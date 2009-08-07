@@ -111,7 +111,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::ShapeDBF(ReadTableFieldDescriptorArray)");
 
 		// Get the OEM code page either from the header or CPG
-		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : (FdoString *)mCodePageESRI;
+		FdoStringP	codepageESRI = (codepageCPG == L"") ? mCodePageESRI : (FdoString *)codepageCPG;
 
         ShapeCPG    *cpg = new ShapeCPG();
 
