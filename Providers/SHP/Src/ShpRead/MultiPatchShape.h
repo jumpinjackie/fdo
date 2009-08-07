@@ -36,7 +36,7 @@ private:
     // follow their Outer Ring; a sequence of Rings representing a single surface patch must
     // start with a ring of the type First Ring.
     // So we use a three state machine:
-    typedef enum State
+    enum State
     {
         NOT_IN_RING_COMPLEX = 0,
         IN_OUTER_RING_COMPLEX = 1,

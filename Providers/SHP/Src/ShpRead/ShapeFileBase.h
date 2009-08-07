@@ -94,7 +94,7 @@ public:
     void SetHeaderDirty (bool dirty) { mHeaderDirty = dirty; }
     bool IsHeaderDirty ()            { return (mHeaderDirty); }
 
-    static wchar_t* ShapeTypeToString (eShapeTypes type);
+    static const wchar_t* ShapeTypeToString (eShapeTypes type);
 };
 
 #endif // SHAPEFILEBASE_H
