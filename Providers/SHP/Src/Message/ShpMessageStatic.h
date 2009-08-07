@@ -24,7 +24,7 @@ char *fdoshp_cat = "ShpMessage.dll";
 #else
 char *fdoshp_cat = "ShpMessage.cat";
 #endif
-FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
+FdoString* NlsMsgGet(int msg_num, const char* default_msg, ...)
 {
     va_list varargs;
     va_start(varargs, default_msg);
@@ -35,6 +35,6 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 }
 #else // SHP_MESSAGE_DEFINE
 extern char *fdoshp_cat;
-extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
+extern FdoString* NlsMsgGet(int msg_num, const char* default_msg, ...);
 #endif // SHP_MESSAGE_DEFINE
 

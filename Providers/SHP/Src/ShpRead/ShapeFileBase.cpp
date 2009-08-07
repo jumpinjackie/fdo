@@ -336,9 +336,9 @@ void ShapeFileBase::CheckBoundingBox(double dMinValue, double dMaxValue, eMinMax
     }
 }
 
-wchar_t* ShapeFileBase::ShapeTypeToString (eShapeTypes type)
+const wchar_t* ShapeFileBase::ShapeTypeToString (eShapeTypes type)
 {
-    wchar_t* ret;
+    const wchar_t* ret;
 
     switch (type)
     {
