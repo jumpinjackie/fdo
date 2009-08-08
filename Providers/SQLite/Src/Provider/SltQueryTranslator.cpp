@@ -651,11 +651,9 @@ void SltQueryTranslator::ProcessByteValue(FdoByteValue& expr)
     if (!expr.IsNull())
     {
         m_sb.Reset();
-#ifdef _WIN32
-        _itoa_s(expr.GetByte() , m_sb.Data(), 256, 10);
-#else
-        itoa(expr.GetByte(), m_sb.Data(), 10);
-#endif
+
+        _snprintf(m_sb.Data(), 256, "%d", (int)expr.GetByte());
+
         m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
     }
     else
@@ -687,11 +685,7 @@ void SltQueryTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
     {
         m_sb.Reset();
         char* ptr = m_sb.Data();
-#ifdef _WIN32
         _snprintf(ptr, 256, "%g", expr.GetDecimal());
-#else
-        sprintf(ptr, 256, "%g", expr.GetDecimal());
-#endif
         EnsureNoIsLocalIndep(ptr);
         m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
     }
@@ -705,11 +699,7 @@ void SltQueryTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
     {
         m_sb.Reset();
         char* ptr = m_sb.Data();
-#ifdef _WIN32
         _snprintf(ptr, 256, "%g", expr.GetDouble());
-#else
-        sprintf(ptr, 256, "%g", expr.GetDouble());
-#endif
         EnsureNoIsLocalIndep(ptr);
         m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
     }
@@ -723,11 +713,8 @@ void SltQueryTranslator::ProcessSingleValue(FdoSingleValue& expr)
     {
         m_sb.Reset();
         char* ptr = m_sb.Data();
-#ifdef _WIN32
         _snprintf(ptr, 256, "%f", expr.GetSingle());
-#else
-        sprintf(ptr, 256, "%f", expr.GetSingle());
-#endif
+
         EnsureNoIsLocalIndep(ptr);
         m_evalStack.push_back(CreateFilterChunk(ptr, strlen(ptr)));
     }
@@ -740,11 +727,9 @@ void SltQueryTranslator::ProcessInt16Value(FdoInt16Value& expr)
     if (!expr.IsNull())
     {
         m_sb.Reset();
-#ifdef _WIN32
-        _itoa_s(expr.GetInt16(), m_sb.Data(), 256, 10);
-#else
-        itoa(expr.GetInt16(), m_sb.Data(), 10);
-#endif
+
+        _snprintf(m_sb.Data(), 256, "%d", (int)expr.GetInt16());
+
         m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
     }
     else
@@ -756,11 +741,8 @@ void SltQueryTranslator::ProcessInt32Value(FdoInt32Value& expr)
     if (!expr.IsNull())
     {
         m_sb.Reset();
-#ifdef _WIN32
-        _itoa_s(expr.GetInt32(), m_sb.Data(), 256, 10);
-#else
-        itoa(expr.GetInt32(), m_sb.Data(), 10);
-#endif
+        _snprintf(m_sb.Data(), 256, "%d", expr.GetInt32());
+
         m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
     }
     else
@@ -775,7 +757,7 @@ void SltQueryTranslator::ProcessInt64Value(FdoInt64Value& expr)
 #ifdef _WIN32
         _i64toa_s(expr.GetInt64(), m_sb.Data(), 256, 10);
 #else
-        sprintf(m_sb.Data(), 256, "%lld", expr.GetInt64());
+        _snprintf(m_sb.Data(), 256, "%lld", (long long int)expr.GetInt64());
 #endif
         m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data())));
     }
@@ -870,7 +852,7 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
 #ifdef _WIN32
     _i64toa_s((FdoInt64)fgf.p, m_sb.Data(), 256, 10);
 #else
-    sprintf(m_sb.Data(), 256, "%lld", (FdoInt64)fgf.p);
+    _snprintf(m_sb.Data(), 256, "%lld", (long long int)fgf.p);
 #endif
 
     FilterChunk* ret = CreateFilterChunk(m_sb.Data(), strlen(m_sb.Data()));
@@ -1082,11 +1064,7 @@ void SltExpressionTranslator::ProcessByteValue(FdoByteValue& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
-        _itoa_s(expr.GetByte(), m_useConv, 256, 10);
-#else
-        itoa(expr.GetByte(), m_useConv, 10);
-#endif
+        _snprintf(m_useConv, 256, "%d", (int)expr.GetByte());
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
     else
@@ -1109,11 +1087,8 @@ void SltExpressionTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
         _snprintf(m_useConv, 256, "%g", expr.GetDecimal());
-#else
-        sprintf(m_useConv, 256, "%g", expr.GetDecimal());
-#endif
+
         EnsureNoIsLocalIndep(m_useConv);
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
@@ -1125,11 +1100,8 @@ void SltExpressionTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
         _snprintf(m_useConv, 256, "%g", expr.GetDouble());
-#else
-        sprintf(m_useConv, 256, "%g", expr.GetDouble());
-#endif
+
         EnsureNoIsLocalIndep(m_useConv);
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
@@ -1141,11 +1113,8 @@ void SltExpressionTranslator::ProcessInt16Value(FdoInt16Value& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
-        _itoa_s(expr.GetInt16(), m_useConv, 256, 10);
-#else
-        itoa(expr.GetInt16(), m_useConv, 10);
-#endif
+
+        _snprintf(m_useConv, 256, "%d", (int)expr.GetInt16());
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
     else
@@ -1156,11 +1125,8 @@ void SltExpressionTranslator::ProcessInt32Value(FdoInt32Value& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
-        _itoa_s(expr.GetInt32(), m_useConv, 256, 10);
-#else
-        itoa(expr.GetInt32(), m_useConv, 10);
-#endif
+
+        _snprintf(m_useConv, 256, "%d", (int)expr.GetInt32());
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
     else
@@ -1174,7 +1140,7 @@ void SltExpressionTranslator::ProcessInt64Value(FdoInt64Value& expr)
 #ifdef _WIN32
         _i64toa_s(expr.GetInt64(), m_useConv, 256, 10);
 #else
-        sprintf(m_useConv, 256, "%lld", expr.GetInt64());
+        _snprintf(m_useConv, 256, "%lld", (long long int)expr.GetInt64());
 #endif
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
@@ -1186,11 +1152,8 @@ void SltExpressionTranslator::ProcessSingleValue(FdoSingleValue& expr)
 {
     if (!expr.IsNull())
     {
-#ifdef _WIN32
         _snprintf(m_useConv, 256, "%f", expr.GetSingle());
-#else
-        sprintf(m_useConv, 256, "%f", expr.GetSingle());
-#endif
+
         EnsureNoIsLocalIndep(m_useConv);
         m_expr.Append(m_useConv, strlen(m_useConv));
     }
