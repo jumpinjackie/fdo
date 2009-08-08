@@ -25,7 +25,7 @@ enum GeomFormat
 
 class SltConnection;
 
-typedef std::vector<std::pair<std::string, std::string>> StlMapNamesList;
+typedef std::vector<std::pair<std::string, std::string> > StlMapNamesList;
 
 //Data structure containing FDO metadata for an SQLite table
 class SltMetadata
