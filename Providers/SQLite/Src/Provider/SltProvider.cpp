@@ -280,8 +280,6 @@ FdoConnectionState SltConnection::Open()
         m_bUseFdoMetadata = true;
 
     sqlite3_initialize();
-    sqlite3_mutex *pMaster = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER);
-    sqlite3_mutex_enter(pMaster);
 
     //We will use two connections to the database -- one for reading and one for writing.
     //This will help us with concurrent reads and writes (to different tables).
@@ -336,8 +334,6 @@ FdoConnectionState SltConnection::Open()
     }
 
     m_connState = FdoConnectionState_Open;
-
-    sqlite3_mutex_leave(pMaster);
 
     return m_connState;
 }
