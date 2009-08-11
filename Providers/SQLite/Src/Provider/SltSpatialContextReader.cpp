@@ -39,10 +39,11 @@ SltSpatialContextReader::SltSpatialContextReader(SltConnection* conn)
 
     m_pStmt = NULL;
     const char* zTail = NULL;
+    int rc = SQLITE_OK;
     if (sqlite3_prepare_v2(db, sql1, -1, &m_pStmt, &zTail) == SQLITE_OK)
         m_bHasScName = true;
-    else if (sqlite3_prepare_v2(db, sql2, -1, &m_pStmt, &zTail) != SQLITE_OK)
-        throw FdoException::Create(L"Query of spatial_ref_sys table failed.");
+    else if ((rc = sqlite3_prepare_v2(db, sql2, -1, &m_pStmt, &zTail)) != SQLITE_OK)
+        throw FdoException::Create(L"Query of spatial_ref_sys table failed.", rc);
 }
 
 SltSpatialContextReader::~SltSpatialContextReader()

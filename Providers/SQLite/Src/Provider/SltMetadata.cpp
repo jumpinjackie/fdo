@@ -111,7 +111,7 @@ FdoClassDefinition* SltMetadata::ToClass()
     sqlite3_stmt* pfdostmt = NULL;
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(db, sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(db, sb.Data(), -1, &pstmt, &pzTail)) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
         {
@@ -137,7 +137,7 @@ FdoClassDefinition* SltMetadata::ToClass()
     else
     {
         std::wstring err = A2W_SLOW(pzTail);
-        throw FdoException::Create(err.c_str());
+        throw FdoException::Create(err.c_str(), rc);
     }
 
     sqlite3_finalize(pstmt);
