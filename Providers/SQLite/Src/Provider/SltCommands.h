@@ -491,15 +491,15 @@ class SltInsert : public SltCommand<FdoIInsert>
                 if (m_connection->CommitTransaction() != SQLITE_OK)
                     m_connection->RollbackTransaction();
                 m_pCompiledSQL = NULL;
-                throw FdoCommandException::Create(L"SQLite insert failed!");
+                throw FdoCommandException::Create(L"SQLite insert failed!", rc);
             }
 
             if (++m_execCount == BULK_OP_SIZE)
             {
                 rc = m_connection->CommitTransaction();
                 
-                if (rc == SQLITE_OK && m_connection->StartTransaction() != SQLITE_OK)
-                    throw FdoCommandException::Create(L"SQLite begin transaction failed!");
+                if (rc == SQLITE_OK && (rc = m_connection->StartTransaction()) != SQLITE_OK)
+                    throw FdoCommandException::Create(L"SQLite begin transaction failed!", rc);
 
                 //We will accept commit failures at this point, since they are
                 //not critical. It is important that the last COMMIT completes,
@@ -580,7 +580,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             int rc = sqlite3_prepare_v2(m_db, sb.Data(), -1, &m_pCompiledSQL, &tail);
 
             if (rc != SQLITE_OK)
-                throw FdoCommandException::Create(L"Failed to parse insert sql.");
+                throw FdoCommandException::Create(L"Failed to parse insert sql.", rc);
         }
 
         FdoIdentifier*              m_className;
@@ -693,8 +693,9 @@ class SltSql : public SltCommand<FdoISQLCommand>
                 {
                     //parse the SQL statement
                     const char* tail = NULL;
-                    if (sqlite3_prepare_v2(m_db, m_sb.Data(), -1, &m_pCompiledSQL, &tail) != SQLITE_OK)
-                        throw FdoCommandException::Create(L"Failed to parse SQL statement.");
+                    int rc;
+                    if ((rc = sqlite3_prepare_v2(m_db, m_sb.Data(), -1, &m_pCompiledSQL, &tail)) != SQLITE_OK)
+                        throw FdoCommandException::Create(L"Failed to parse SQL statement.", rc);
 
                     pStmt = m_pCompiledSQL;
                     BindPropVals(m_pSqlParmeterValues, m_pCompiledSQL);
@@ -713,7 +714,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (rc == SQLITE_DONE)
                 return count;
             else 
-                throw FdoCommandException::Create(L"Failed to execute sql command.");
+                throw FdoCommandException::Create(L"Failed to execute sql command.", rc);
         }
 
         // in this case we cannot keep the stmt since is used by the reader
