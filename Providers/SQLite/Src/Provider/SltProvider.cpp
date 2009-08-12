@@ -41,6 +41,8 @@
 #include "DiskSpatialIndex.h"
 #endif
 
+#include "SpatialIndexDescriptor.h"
+
 //FDO entry point
 extern "C"
 SLT_API FdoIConnection* CreateConnection()
@@ -67,7 +69,6 @@ static bool IsMetadataTable(const char* table)
 }
 
 std::map<int, std::string> g_fdo2sql_map;
-
 
 SltConnection::SltConnection() : m_refCount(1)
 {
@@ -99,6 +100,10 @@ SltConnection::SltConnection() : m_refCount(1)
     m_bHasFdoMetadata = false;
     m_transactionState = SQLiteActiveTransactionType_None;
     m_cSupportsDetGeomType = -1;
+    m_wkbBuffer = NULL;
+    m_wkbBufferLen = 0;
+    m_updateHookEnabled = false;
+    m_changesAvailable = false;
 }
 
 SltConnection::~SltConnection()
@@ -345,8 +350,8 @@ void SltConnection::Close()
     for (SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.begin();
          iter != m_mNameToSpatialIndex.end(); iter++)
     {
-         delete iter->second;
-         free(iter->first); //was allocated using strdup
+        delete iter->second;
+        free(iter->first); //was allocated using strdup
     }
 
     m_mNameToSpatialIndex.clear();
@@ -372,6 +377,10 @@ void SltConnection::Close()
     }
 
     ClearQueryCache();
+    
+    delete[] m_wkbBuffer;
+    m_wkbBuffer = NULL;
+    m_wkbBufferLen = 0;
 
     if (m_dbRead && sqlite3_close(m_dbRead) != SQLITE_BUSY)
         m_dbRead = NULL;
@@ -382,6 +391,9 @@ void SltConnection::Close()
     FDO_SAFE_RELEASE(m_pSchema);
 
     m_connState = FdoConnectionState_Closed;
+
+    m_updateHookEnabled = false;
+    m_changesAvailable = false;
 }
 
 FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
@@ -926,13 +938,30 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
     StringBuffer sb;
+    bool geomPropIsUpdated = false;
 
     sb.Append("UPDATE ", 7);
     sb.AppendDQuoted(fcname->GetName());
     sb.Append(" SET ", 5);
 
-    //TODO: currently ignores spatial filter in delete
-    //TODO: filter needs to be passed through the SltQueryTranslator.
+    const wchar_t* wfc = fcname->GetName();
+    size_t wlen = wcslen(wfc);
+    size_t clen = 4 * wlen+1;
+    char* mbfc = (char*)alloca(4*wlen+1);
+    W2A_FAST(mbfc, clen, wfc, wlen);
+    SltMetadata* md = GetMetadata(mbfc);
+    FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    // don't update views
+    if (md->IsView())
+        throw FdoException::Create(L"Views cannot be updated");
+
+    FdoString* geomPropName = NULL;
+    if (fc->GetClassType() == FdoClassType_FeatureClass)
+    {
+        FdoFeatureClass* fcl = static_cast<FdoFeatureClass*>(fc.p);
+        FdoPtr<FdoGeometricPropertyDefinition> geomProp = fcl->GetGeometryProperty();
+        geomPropName = geomProp->GetName();
+    }
 
     for (int i=0; i<propvals->GetCount(); i++)
     {
@@ -940,31 +969,23 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
         FdoPtr<FdoPropertyValue> pv = propvals->GetItem(i);
         FdoPtr<FdoIdentifier> id = pv->GetName();
+        FdoString* propName = id->GetName();
+        
+        if (geomPropName != NULL && wcscmp(geomPropName, propName) == 0)
+            geomPropIsUpdated = true;
 
-        sb.Append(id->GetName());
+        sb.Append(propName);
         sb.Append("=?", 2);
     }
 
     std::vector<__int64>* rowids = NULL;
     StringBuffer strWhere((size_t)0);
     DBounds bbox;
-    char* mbfc = NULL;
     //Translate the filter from FDO to SQLite where clause.
     //Also detect if there is a BBOX query that we can accelerate
     //by using the spatial index.
     if (filter)
     {
-        const wchar_t* wfc = fcname->GetName();
-        size_t wlen = wcslen(wfc);
-        size_t clen = 4 * wlen+1;
-        mbfc = (char*)alloca(4*wlen+1);
-        W2A_FAST(mbfc, clen, wfc, wlen);
-        SltMetadata* md = GetMetadata(mbfc);
-        FdoPtr<FdoClassDefinition> fc = md->ToClass();
-        // don't update views
-        if (md->IsView())
-            throw FdoException::Create(L"Views cannot be updated");
-
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
 
@@ -1041,15 +1062,21 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     sqlite3_stmt* stmt = NULL;
     
     FdoInt64 ret = 0;
-    int rc;
-    if ((rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK))
+    int rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail);
+    if (rc == SQLITE_OK)
     {
+        if (geomPropIsUpdated)
+            EnableHooks(true);
+
         if (!ri)
         {
             BindPropVals(propvals, stmt);
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
                 sqlite3_finalize(stmt);
+                if (geomPropIsUpdated)
+                    EnableHooks(false, true);
+
                 throw FdoCommandException::Create(L"Failed to execute update statement.", rc);
             }
             ret += sqlite3_changes(m_dbWrite);
@@ -1068,6 +1095,9 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
                     sqlite3_finalize(stmt);
                     if (ri)
                         delete ri;
+                    if (geomPropIsUpdated)
+                        EnableHooks(false, true);
+
                     throw FdoCommandException::Create(L"Failed to execute update statement.", rc);
                 }
                 ret += sqlite3_changes(m_dbWrite);
@@ -1077,6 +1107,8 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         if (ri)
             delete ri;
         sqlite3_finalize(stmt);
+        if (geomPropIsUpdated)
+            EnableHooks(false);
     }
     else
     {
@@ -1194,11 +1226,13 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     FdoInt64 ret = 0;
     if ((rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail)) == SQLITE_OK)
     {
+        EnableHooks(true);
         if (!ri)
         {
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
                 sqlite3_finalize(stmt);
+                EnableHooks(false, true);
                 throw FdoCommandException::Create(L"Failed to execute delete statement.", rc);
             }
             ret += sqlite3_changes(m_dbWrite);
@@ -1214,6 +1248,8 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
                     sqlite3_finalize(stmt);
                     if (ri)
                         delete ri;
+
+                    EnableHooks(false, true);
                     throw FdoCommandException::Create(L"Failed to execute delete statement.", rc);
                 }
                 ret += sqlite3_changes(m_dbWrite);
@@ -1223,6 +1259,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
         if (ri)
             delete ri;
         sqlite3_finalize(stmt);
+        EnableHooks(false);
     }
     else
     {
@@ -1265,27 +1302,92 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
     return ret;
 }
 
+void SltConnection::GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext)
+{
+    if (ptr != NULL && len != 0)
+    {
+        if (*ptr == 1 && *(ptr+1) != 0) // is WKB
+        {
+            int estFGFLen = len * 2; //should be sufficient, heh
+            if (m_wkbBufferLen < estFGFLen)
+            {
+                delete[] m_wkbBuffer;
+                m_wkbBufferLen = estFGFLen;
+                m_wkbBuffer = new unsigned char[m_wkbBufferLen];
+            }
+            len = Wkb2Fgf(ptr, m_wkbBuffer);
+
+            GetFgfExtents(m_wkbBuffer, len, (double*)ext);
+        }
+        else if (*ptr != 0 && *(ptr+1) == 0) // is FGF
+        {
+            GetFgfExtents(ptr, len, (double*)ext);
+        }
+    }
+}
+
 SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 {
     SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*)table);
 
-    if (iter != m_mNameToSpatialIndex.end())
-        return iter->second;
-
-    //build the spatial index, if this is the first time it
-    //is needed
     SpatialIndex* si = NULL;
+    SpatialIndexDescriptor* spDesc = NULL;
+    SltReader* rdr = NULL;
+    DBounds ext;
+
+    if (iter != m_mNameToSpatialIndex.end())
+    {
+        spDesc = iter->second;
+        si = spDesc->GetSpatialIndex();
+        // don't auto-update the SI for views we will need to find a different way to do that
+        if (spDesc->IsView())
+            return si;
+        FdoInt64 id = si->GetLastInsertedIdx();
+        FdoInt64 lastCnt = spDesc->GetFeatureCount();
+        if (id < lastCnt)
+        {
+            // in this case is faster to not use a reader SltReader since we need limited
+            // functionality to get the id and the geometry
+            sqlite3_stmt* stmt = spDesc->GetNewFeatures(id);
+            if (stmt != NULL)
+            {
+                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoIGeometry> fg;
+                while(sqlite3_step(stmt) == SQLITE_ROW)
+                {
+                    FdoInt64 idToAdd = sqlite3_column_int64(stmt, 0);
+	                const unsigned char* ptr = (const unsigned char*)sqlite3_column_blob(stmt, 1);
+	                int len = sqlite3_column_bytes(stmt, 1);
+                    GetGeometryExtent(ptr, len, &ext);
+                    if (!ext.IsEmpty())
+                        si->Insert((unsigned int)idToAdd, ext);
+                }
+            }
+        }
+        // in case we have outstanding changes commit them
+        if (spDesc->ChangesAvailable())
+            spDesc->CommitChanges();
+        return si;
+    }
+
 #if 0
     clock_t t0 = clock();
     for (int i=0; i<1000; i++)
     {
     delete si;
 #endif
+    //build the spatial index, if this is the first time it
+    //is needed
     si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
+    // lets create the description in case we get an exception we don't leak
+    SltMetadata* md = GetMetadata(table);
+    if(md == NULL || md->IsView())
+        spDesc = new SpatialIndexDescriptor(si);
+    else
+        spDesc = new SpatialIndexDescriptor(this, table, si);
+    m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
 
-    SltReader* rdr = new SltReader(this, NULL, table, "", NULL, true, false);
-
-    DBounds ext;
+    rdr = new SltReader(this, NULL, table, "", NULL, true, NULL);
 
     while (rdr->ReadNext())
     {
@@ -1316,8 +1418,6 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     printf("Spatial index build time: %d\n", t1 - t0);
 #endif
 
-    m_mNameToSpatialIndex[_strdup(table)] = si; //Note the memory allocation
-    
     return si;
 }
 
@@ -1695,8 +1795,9 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         if (iter != m_mNameToSpatialIndex.end())
         {
              m_mNameToSpatialIndex.erase(iter);
+             SpatialIndexDescriptor* desc = new SpatialIndexDescriptor(this, originalClassNameA.c_str(), iter->second->DetachSpatialIndex());
              free(iter->first); //was allocated using strdup
-             m_mNameToSpatialIndex[_strdup(originalClassNameA.c_str())] = iter->second; //Note the memory allocation
+             m_mNameToSpatialIndex[_strdup(originalClassNameA.c_str())] = desc; //Note the memory allocation
         }
         // reset class name
         fc->SetName(originalClassName.c_str());
@@ -2289,8 +2390,6 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     }
     extname = W2A_SLOW(expTrans.GetSContextName());
     countname = W2A_SLOW(expTrans.GetCountName());
-    if (countname.size() == 0)
-        countname = "TheCount";
 
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.
@@ -2306,7 +2405,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     //get the count
     //we always use the count, whether we compute extents or not
-    FdoInt64 count = GetFeatureCount(fcname.c_str());
+    FdoInt64 count = countname.empty()? 0 : GetFeatureCount(fcname.c_str());
 
     //case where we only need count
     if (extname.empty())
@@ -2345,10 +2444,20 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         poly.p[8] = ext.min[0];   poly.p[9] = ext.min[1];
 
 
-        std::string sql = "CREATE TABLE SpatialExtentsResult (\"" + extname + "\" BLOB,\"" + countname + "\" INTEGER);";
-
+        StringBuffer sql;
+        sql.Append("CREATE TABLE SpatialExtentsResult (\"", 36);
+        sql.Append(extname.c_str(), extname.size());
+        if (!countname.empty())
+        {
+            sql.Append("\" BLOB,\"", 8);
+            sql.Append(countname.c_str(), countname.size());
+            sql.Append("\" INTEGER);", 11);
+        }
+        else
+            sql.Append("\" BLOB);", 8);
+        
         char* err;
-        rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
+        rc = sqlite3_exec(db, sql.Data(), NULL, NULL, &err);
 
         if (rc)
             sqlite3_free(err);
@@ -2356,9 +2465,13 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         //insert into the temporary table
         //TODO: some day we should check the error codes...
         //but really, failure is not an option here.
-        rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?,?);", -1, &stmt, &tail);
+        if (!countname.empty())
+            rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?,?);", -1, &stmt, &tail);
+        else
+            rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?);", -1, &stmt, &tail);
         rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
-        rc = sqlite3_bind_int64(stmt, 2, count);
+        if (countname.size() != 0)
+            rc = sqlite3_bind_int64(stmt, 2, count);
         rc = sqlite3_step(stmt);
         rc = sqlite3_finalize(stmt);
     }
@@ -2368,7 +2481,27 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     rc = sqlite3_prepare_v2(db, "SELECT * FROM SpatialExtentsResult;", -1, &stmt, &tail);
 
     if (rc == SQLITE_OK)
-        return new SltReader(this, stmt, true);        
+    {
+        FdoPtr<FdoFeatureClass> cls = FdoFeatureClass::Create(L"GenSpatialExtents", NULL);
+        FdoPtr<FdoPropertyDefinitionCollection> props = cls->GetProperties();
+
+        // add count
+        if (!countname.empty())
+        {
+            FdoPtr<FdoDataPropertyDefinition> dpdcnt = FdoDataPropertyDefinition::Create(expTrans.GetCountName(), NULL);
+		    dpdcnt->SetDataType(FdoDataType_Int64);
+            props->Add(dpdcnt);
+        }
+
+        if (!extname.empty())
+        {            
+            // we need extent
+            FdoPtr<FdoGeometricPropertyDefinition> geom = FdoGeometricPropertyDefinition::Create(expTrans.GetSContextName(), NULL);
+            props->Add(geom);
+            cls->SetGeometryProperty(geom);
+        }
+        return new SltReader(this, stmt, true, cls);        
+    }
     else
         throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.", rc);
 }
@@ -2642,6 +2775,9 @@ int SltConnection::CommitTransaction(bool isUserTrans)
             if (rc == SQLITE_OK)
                 m_transactionState = SQLiteActiveTransactionType_None;
             // else we need to handle this internally
+            
+            if (!m_updateHookEnabled)
+                SltConnection::commit_hook(this);
         }
     }
     else
@@ -2658,6 +2794,9 @@ int SltConnection::CommitTransaction(bool isUserTrans)
                 m_transactionState = SQLiteActiveTransactionType_None;
             else
                 throw FdoException::Create(L"SQLite commit transaction failed!", rc);
+            
+            if (!m_updateHookEnabled)
+                SltConnection::commit_hook(this);
         }
         else
             throw FdoException::Create(L"No active transaction to commit");
@@ -2681,6 +2820,9 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
 #endif
             m_transactionState = SQLiteActiveTransactionType_None;
+            
+            if (!m_updateHookEnabled)
+                SltConnection::rollback_hook(this);
         }
     }
     else
@@ -2694,6 +2836,9 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
 #endif
             m_transactionState = SQLiteActiveTransactionType_None;
+            
+            if (!m_updateHookEnabled)
+                SltConnection::rollback_hook(this);
         }
         else
             throw FdoException::Create(L"No active transaction to rollback");
@@ -2717,5 +2862,108 @@ void SltConnection::CacheViewContent(const char* viewName)
         sb.AppendDQuoted(viewName);
         sb.Append(";");
         sqlite3_exec(m_dbRead, sb.Data(), NULL, NULL, NULL);
+    }
+}
+
+// below section is a pain but is no other way to "see" the changes on update & delete
+void SltConnection::update_hook(void* caller, int action, char const* database,
+                                char const* tablename, sqlite3_int64 id)
+{
+    switch (action)
+    {
+    case SQLITE_DELETE:
+        {
+            SltConnection* conn = static_cast<SltConnection*>(caller);
+            SpatialIndexCache::iterator iter = conn->m_mNameToSpatialIndex.find((char*)tablename);
+            if (iter != conn->m_mNameToSpatialIndex.end())
+            {
+                iter->second->AddRowIdToDeleteList(id);
+                conn->m_changesAvailable = true;
+            }
+        }
+        break;
+    case SQLITE_UPDATE:
+        {
+            SltConnection* conn = static_cast<SltConnection*>(caller);
+            SpatialIndexCache::iterator iter = conn->m_mNameToSpatialIndex.find((char*)tablename);
+            if (iter != conn->m_mNameToSpatialIndex.end())
+            {
+                iter->second->AddRowIdToUpdateList(id);
+                conn->m_changesAvailable = true;
+            }
+        }
+        break;
+    //case SQLITE_INSERT:
+    default:
+        // in this case we do not do anything since
+        // insert is handled in a different way performance reasons
+        break;
+    }
+}
+
+int SltConnection::commit_hook(void* caller)
+{
+    SltConnection* conn = static_cast<SltConnection*>(caller);
+    if (conn->m_changesAvailable)
+    {
+        for (SpatialIndexCache::iterator iter = conn->m_mNameToSpatialIndex.begin();
+             iter != conn->m_mNameToSpatialIndex.end(); iter++)
+        {
+            iter->second->CommitChanges();
+        }
+        conn->m_changesAvailable = false;
+    }
+    return 0;
+}
+
+void SltConnection::rollback_hook(void* caller)
+{
+    // since rollback can be hard to maintain just force a SI 
+    // rebuild for those who contain changes
+    SltConnection* conn = static_cast<SltConnection*>(caller);
+    if (conn->m_changesAvailable)
+    {
+        for (SpatialIndexCache::iterator iter = conn->m_mNameToSpatialIndex.begin();
+             iter != conn->m_mNameToSpatialIndex.end(); iter++)
+        {
+            if (iter->second->ChangesAvailable())
+            {
+                delete iter->second;
+                free(iter->first); //was allocated using strdup
+                conn->m_mNameToSpatialIndex.erase(iter);
+                // we will get a crash in case we do not set it back
+                iter = conn->m_mNameToSpatialIndex.begin();
+            }
+        }
+        conn->m_changesAvailable = false;
+    }
+}
+
+void SltConnection::EnableHooks(bool enable, bool enforceRollback)
+{
+    if (enable)
+    {
+        if (m_updateHookEnabled)
+            return;
+        sqlite3_update_hook(m_dbWrite, SltConnection::update_hook, this);
+        sqlite3_commit_hook(m_dbWrite, SltConnection::commit_hook, this);
+        sqlite3_rollback_hook(m_dbWrite, SltConnection::rollback_hook, this);
+        m_updateHookEnabled = true;
+    }
+    else
+    {
+        sqlite3_update_hook(m_dbWrite, NULL, NULL);
+        sqlite3_commit_hook(m_dbWrite, NULL, NULL);
+        sqlite3_rollback_hook(m_dbWrite, NULL, NULL);
+        m_updateHookEnabled = false;
+
+        if (!enforceRollback)
+        {
+            // commit changes in case no transaction was started
+            if (!IsTransactionStarted())
+                SltConnection::commit_hook(this);
+        }
+        else
+            SltConnection::rollback_hook(this);
     }
 }

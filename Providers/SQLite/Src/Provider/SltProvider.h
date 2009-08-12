@@ -26,6 +26,8 @@ class RowidIterator;
 class SltExtendedSelect;
 struct NameOrderingPair;
 class StringBuffer;
+class SpatialIndexDescriptor;
+struct DBounds;
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -55,8 +57,8 @@ typedef std::vector<QueryCacheRec> QueryCacheRecList;
 typedef std::map<char*, QueryCacheRecList, string_less> QueryCache;
 
 typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
-typedef std::map<char*, SpatialIndex*, string_less> SpatialIndexCache;
 
+typedef std::map<char*, SpatialIndexDescriptor*, string_less> SpatialIndexCache;
 
 class SltConnection : public FdoIConnection, 
                       public FdoIConnectionInfo,
@@ -217,6 +219,8 @@ public:
     int RollbackTransaction(bool isUserTrans = false);
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
     void CacheViewContent(const char* viewName);
+    void EnableHooks(bool enable = true, bool enforceRollback = false);
+    void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
 
 private :
 
@@ -234,6 +238,13 @@ private :
     void AddClassPrimaryKeys(FdoClassDefinition* fc, StringBuffer& sb);
     void AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition* prop, StringBuffer& sb);
     RowidIterator* GetScrollableIterator(SltReader* rdr);
+
+    static void update_hook(void* caller, int action, char const* database, char const* tablename, sqlite3_int64 id);
+    static int commit_hook(void* caller);
+    static void rollback_hook(void* caller);
+
+    bool                                    m_updateHookEnabled;
+    bool                                    m_changesAvailable;
 
     sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;
@@ -253,4 +264,7 @@ private :
     bool                                    m_bHasFdoMetadata;
     char                                    m_cSupportsDetGeomType;
     SQLiteActiveTransactionType             m_transactionState;
+    // geometry conversion buffer
+    unsigned char*                          m_wkbBuffer;
+    int                                     m_wkbBufferLen;
 };

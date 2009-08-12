@@ -45,6 +45,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 //====================================================================
 SpatialIndex::SpatialIndex(const wchar_t* seedname)
 {
+    _lastInsertedIdx = 0;
     _seedName = std::wstring(seedname) + L".si.";
     _haveOffset = false;
     _rootLevel = 0;
@@ -83,6 +84,7 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
 
         _haveOffset = true;
     }
+    _lastInsertedIdx = fid;
 
     //translate the given bounds to local space
     Bounds b;
@@ -191,6 +193,16 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
         //index of Node containing our bounds at next skip level
         index = index >> BATCH_SHIFT; 
     }
+}
+
+void SpatialIndex::Update(unsigned fid, DBounds& ext)
+{
+    // TODO
+}
+
+void SpatialIndex::Delete(unsigned fid)
+{
+    // TODO
 }
 
 inline Node* SpatialIndex::GetNode(int level, int index)

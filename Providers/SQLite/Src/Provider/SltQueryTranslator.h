@@ -272,7 +272,7 @@ public:
     SltScCHelperTranslator(FdoFeatureClass* fc)
     {
         m_extname = L"";
-        m_countname = L"TheCount";
+        m_countname = L"";
         m_fc = fc;
         Reset();
     }
