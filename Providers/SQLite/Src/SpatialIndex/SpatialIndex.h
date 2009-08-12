@@ -46,9 +46,15 @@ public:
     
     void ReOpenForRead(); //for API compatibility with disk-backed index
     void Insert(unsigned fid, DBounds& ext);
+    void Update(unsigned fid, DBounds& ext);
+    void Delete(unsigned fid);
     void GetTotalExtent(DBounds& ext);
+    unsigned GetLastInsertedIdx() { return _lastInsertedIdx; }
 
 private:
+
+    // last inserted index
+    unsigned   _lastInsertedIdx;
 
     //current height of root level
     int        _rootLevel;

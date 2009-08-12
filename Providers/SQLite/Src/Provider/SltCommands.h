@@ -704,6 +704,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
             }
 
+            m_connection->EnableHooks();
             while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
             if( rc == SQLITE_DONE )
                 count = sqlite3_changes(m_db);
@@ -712,9 +713,15 @@ class SltSql : public SltCommand<FdoISQLCommand>
                 m_connection->ReleaseParsedStatement(m_sb.Data(), pStmt);
 
             if (rc == SQLITE_DONE)
+            {
+                m_connection->EnableHooks(false);
                 return count;
+            }
             else 
+            {
+                m_connection->EnableHooks(false, true);
                 throw FdoCommandException::Create(L"Failed to execute sql command.", rc);
+            }
         }
 
         // in this case we cannot keep the stmt since is used by the reader
@@ -814,6 +821,27 @@ public:
     virtual void            Execute()
     {
         StringBuffer sb;
+        int rc;
+        if (m_coordSysWkt.size() != 0)
+        {
+            sb.Append("SELECT srid FROM spatial_ref_sys WHERE srtext=");
+            sb.AppendSQuoted(m_coordSysWkt.c_str());
+            sb.Append(";", 1);
+            sqlite3_stmt* stmt = NULL;
+            const char* tail = NULL;
+            if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sb.Data(), -1, &stmt, &tail)) == SQLITE_OK)
+            {
+                if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
+                {
+                    sqlite3_finalize(stmt);
+                    // avoid adding multiple times the same CS
+                    return;
+                }
+                sqlite3_finalize(stmt);
+            }
+            sb.Reset();
+        }
+
         sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
 
         if (m_scName.empty())
@@ -838,9 +866,8 @@ public:
         sb.Append(");");
 
         char* zerr = NULL;
-        int rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
-
-        if (rc)
+        rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
+        if (rc != SQLITE_OK)
         {
             FdoCommandException::Create(L"Failed to create spatial context.");
         }

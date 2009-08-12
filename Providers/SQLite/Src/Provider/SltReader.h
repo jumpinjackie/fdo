@@ -64,7 +64,8 @@ class SltReader :   public FdoIScrollableFeatureReader,
 
         SltReader(  SltConnection*              connection, 
                     sqlite3_stmt*               stmt,
-                    bool closeDB);
+                    bool closeDB,
+                    FdoClassDefinition* cls = NULL);
 
 		SltReader(  SltConnection*              connection, 
                     FdoIdentifierCollection*    props, 

@@ -94,10 +94,9 @@ m_fromwhere()
 //Same as above, but this one takes a sqlite3 statement pointer rather than
 //a string. This means that it is a statement based on an ephemeral database
 //which this reader will close once it is done being read.
-SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB)
+SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB, FdoClassDefinition* cls)
 : m_refCount(1),
 m_sql(""),
-m_class(NULL),
 m_sprops(NULL),
 m_closeOpcode(-1),
 m_si(NULL),
@@ -113,6 +112,7 @@ m_filter(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
+    m_class = FDO_SAFE_ADDREF(cls);
 
     m_pStmt = stmt;
 	InitPropIndex(m_pStmt);

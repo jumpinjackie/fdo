@@ -45,6 +45,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 //====================================================================
 SpatialIndex::SpatialIndex(const wchar_t*)
 {
+    _lastInsertedIdx = 0;
     _haveOffset = false;
     _rootLevel = 0;
     memset(_sizes, 0, sizeof(_sizes));
@@ -73,6 +74,7 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
 
         _haveOffset = true;
     }
+    _lastInsertedIdx = fid;
 
     //translate the given bounds to local space
     Bounds b;
@@ -137,6 +139,15 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
     }
 }
 
+void SpatialIndex::Update(unsigned fid, DBounds& ext)
+{
+    // TODO
+}
+
+void SpatialIndex::Delete(unsigned fid)
+{
+    // TODO
+}
 
 void SpatialIndex::GetTotalExtent(DBounds& ext)
 {

@@ -499,6 +499,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SpatialIndexDescriptor.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SQLiteProvider.h"
 			>
 		</File>

@@ -52,13 +52,19 @@ public:
     ~SpatialIndex();
 
     void Insert(unsigned fid, DBounds& ext);
+    void Update(unsigned fid, DBounds& ext);
+    void Delete(unsigned fid);
     void GetTotalExtent(DBounds& ext);
     void ReOpenForRead();
+    unsigned GetLastInsertedIdx() { return _lastInsertedIdx; }
 
     Node* GetNode(int level, int index);
 
 private:
 
+    // last inserted index
+    unsigned   _lastInsertedIdx;
+    
     //current height of root level
     int        _rootLevel;
 
