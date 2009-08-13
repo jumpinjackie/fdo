@@ -702,8 +702,8 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
         {
             valid = ExtractConstraints(node->pLeft, result);
             SQLiteExpression& val = result.back();
-            if (val.values.size() == 1)
-                val.values[0] = L"-" + val.values[0];
+            if (val.values.size() != 0)
+                val.values.back() = L"-" + val.values.back();
             else
                 valid = false;
         }

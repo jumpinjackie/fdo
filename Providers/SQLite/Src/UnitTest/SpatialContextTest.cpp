@@ -19,10 +19,10 @@
 #include <ctime>
 #include <cppunit/extensions/HelperMacros.h>
 #ifdef _WIN32
-static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SpatialContextTest.slt";
+static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SpatialContextTest.sqlite";
 #else
 #include <unistd.h>
-static const wchar_t* SC_TEST_FILE = L"../../TestData/SpatialContextTest.slt";
+static const wchar_t* SC_TEST_FILE = L"../../TestData/SpatialContextTest.sqlite";
 #endif
 
 

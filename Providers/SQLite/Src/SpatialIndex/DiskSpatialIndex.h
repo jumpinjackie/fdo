@@ -61,9 +61,15 @@ public:
     Node* GetNode(int level, int index);
 
 private:
+    void FullSpatialIndexUpdate();
+    void Insert(unsigned fid, Bounds& b);
+private:
 
     // last inserted index
     unsigned   _lastInsertedIdx;
+    
+    // count of changes
+    unsigned   _countChanges;
     
     //current height of root level
     int        _rootLevel;

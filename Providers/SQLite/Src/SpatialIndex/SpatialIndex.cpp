@@ -46,6 +46,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 SpatialIndex::SpatialIndex(const wchar_t*)
 {
     _lastInsertedIdx = 0;
+    _countChanges = 0;
     _haveOffset = false;
     _rootLevel = 0;
     memset(_sizes, 0, sizeof(_sizes));
@@ -79,7 +80,11 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
     //translate the given bounds to local space
     Bounds b;
     TranslateBounds(&ext, _offset, &b);
+    Insert(fid, b);
+}
 
+void SpatialIndex::Insert(unsigned fid, Bounds& b)
+{
     //insert into the skip lists
     unsigned int index = (unsigned int)fid;
     unsigned int oldIndex = index;
@@ -141,13 +146,52 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
 
 void SpatialIndex::Update(unsigned fid, DBounds& ext)
 {
-    // TODO
+    // we can use insert, however we need to count number of changes 
+    // and later force a rebuild when the number of changes becomes too high
+    Insert(fid, ext);
+    _countChanges++;
+    if ((10*_countChanges) > _lastInsertedIdx)
+        FullSpatialIndexUpdate();
 }
 
 void SpatialIndex::Delete(unsigned fid)
 {
-    // TODO
+    //insert into the skip lists
+    unsigned int index = (unsigned int)fid;
+    Node** levels = _levels;
+
+    if (_sizes[0] > index)
+    {
+        Node* n = &((Node*)levels[0])[index];
+        n->b = EMPTY_BOX;
+        _countChanges++;
+        if ((10*_countChanges) > _lastInsertedIdx)
+            FullSpatialIndexUpdate();
+    }
 }
+
+void SpatialIndex::FullSpatialIndexUpdate()
+{
+    _countChanges = 0;
+    Node* n;
+    //insert into the skip lists
+    unsigned int* counts = _counts;
+    Node** levels = _levels;
+
+    for (int i=1; i<MAX_LEVELS; i++)
+    {
+        // clear the top levels
+        if (counts[i] != 0)
+            FillMem(&levels[i]->b, &EMPTY_BOX, counts[i]);
+    }
+
+    for (unsigned int y = 0; y < counts[0]; y++)
+    {
+        n = &((Node*)levels[0])[y];
+        Insert(y, n->b);
+    }
+}
+
 
 void SpatialIndex::GetTotalExtent(DBounds& ext)
 {

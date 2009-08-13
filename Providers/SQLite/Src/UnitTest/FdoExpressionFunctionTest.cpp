@@ -25,12 +25,12 @@
 #include <FdoCommonMiscUtil.h>
 
 #ifdef _WIN32
-static const wchar_t* EXPFCT_TEST_FILE = L"..\\..\\TestData\\ExpFctTest.slt";
-static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\ExpressionsTest.slt";
+static const wchar_t* EXPFCT_TEST_FILE = L"..\\..\\TestData\\ExpFctTest.sqlite";
+static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\ExpressionsTest.sqlite";
 #else
 #include <unistd.h>
-static const wchar_t* EXPFCT_TEST_FILE = L"../../TestData/ExpFctTest.slt";
-static const wchar_t* SC_TEST_FILE = L"../../TestData/ExpressionsTest.slt";
+static const wchar_t* EXPFCT_TEST_FILE = L"../../TestData/ExpFctTest.sqlite";
+static const wchar_t* SC_TEST_FILE = L"../../TestData/ExpressionsTest.sqlite";
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FdoExpressionFunctionTest);
