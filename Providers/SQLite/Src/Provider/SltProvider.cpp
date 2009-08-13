@@ -1637,6 +1637,8 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
     sb.Append(" (");
 
     FdoPtr<FdoClassDefinition> fctmp = FDO_SAFE_ADDREF(fc);
+    UniqueConstraints simpleUqc;
+    FdoPtr<FdoUniqueConstraintCollection> complexUqc = FdoUniqueConstraintCollection::Create();
     
     int cntip = 0;
     while (fctmp != NULL)
@@ -1644,12 +1646,35 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
         FdoPtr<FdoDataPropertyDefinitionCollection> pdi = fctmp->GetIdentityProperties();
         if (pdi != NULL)
             cntip += pdi->GetCount();
+
+        FdoPtr<FdoUniqueConstraintCollection> uqc = fctmp->GetUniqueConstraints();
+        int cntConstr = uqc->GetCount();
+        if (cntConstr != 0)
+        {
+            for (int i = 0; i < cntConstr; i++)
+            {
+                FdoPtr<FdoUniqueConstraint> uc = uqc->GetItem(i);
+                FdoPtr<FdoDataPropertyDefinitionCollection> propsConstr = uc->GetProperties();
+                int cntProps = propsConstr->GetCount();
+                if (cntProps == 1)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> propCu = propsConstr->GetItem(0);
+                    simpleUqc[propCu->GetName()] = uc.p;
+                }
+                else if (cntProps > 1)
+                    complexUqc->Add(uc);
+            }
+        }
         fctmp = fctmp->GetBaseClass();
     }
 
-    CollectBaseClassProperties(classes, fc, fc, sb, (cntip > 1) ? 0 : 1);
-    CollectBaseClassProperties(classes, fc, fc, sb, 2);
-    CollectBaseClassProperties(classes, fc, fc, sb, 3);
+    CollectBaseClassProperties(classes, fc, fc, sb, (cntip > 1) ? 0 : 1, simpleUqc);
+    CollectBaseClassProperties(classes, fc, fc, sb, 2, simpleUqc);
+    CollectBaseClassProperties(classes, fc, fc, sb, 3, simpleUqc);
+    
+    if (complexUqc->GetCount() != 0)
+        AddComplexUniqueConstraints(complexUqc, fc,sb);
+
     if (cntip > 1)
         AddClassPrimaryKeys(fc, sb);
 
@@ -1972,6 +1997,31 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
     m_pSchema = NULL;
 }
 
+std::wstring SltConnection::GenerateValidConstrName(FdoString* name)
+{
+    std::wstring ret(name);
+    int cnt = ret.size();
+    for (int idx = 0; idx < cnt; idx++)
+    {
+        if (iswalnum(ret[idx]) == 0)
+            ret[idx] = L'_';
+    }
+    return ret;
+}
+
+void SltConnection::AddPropertyUniqueConstraint(UniqueConstraints& simpleUniqueConstr, FdoDataPropertyDefinition* prop, StringBuffer& sb)
+{
+    UniqueConstraints::iterator it = simpleUniqueConstr.find(prop->GetName());
+    if (it == simpleUniqueConstr.end())
+        return;
+    FdoUniqueConstraint* uqc = it->second;
+    sb.Append(" CONSTRAINT UNQ_", 16);
+    sb.Append(GenerateValidConstrName(prop->GetName()).c_str());
+    sb.Append(" UNIQUE", 7);
+    // remove it to avoid another search
+    simpleUniqueConstr.erase(it);
+}
+
 void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition* prop, StringBuffer& sb)
 {
     // add the default value
@@ -2072,7 +2122,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
                 (dataMax != NULL  && dataMax->GetDataType() == FdoDataType_DateTime && !dataMax->IsNull()))
             {
                 sb.Append(" CONSTRAINT CHK_", 16);
-                sb.Append(propName);
+                sb.Append(GenerateValidConstrName(propName).c_str());
                 sb.Append(" CHECK(", 7);
                 if ((dataMin != NULL && !dataMin->IsNull()) && (dataMax != NULL  && !dataMax->IsNull())
                     && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
@@ -2132,7 +2182,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
             if (cnt != 0)
             {
                 sb.Append(" CONSTRAINT CHK_", 16);
-                sb.Append(propName);
+                sb.Append(GenerateValidConstrName(propName).c_str());
                 sb.Append(" CHECK(", 7);
                 sb.AppendDQuoted(propName);
                 sb.Append(" IN(", 4);
@@ -2161,7 +2211,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
         if(dataMin != NULL || dataMax != NULL)
         {
             sb.Append(" CONSTRAINT CHK_");
-            sb.Append(propName);
+            sb.Append(GenerateValidConstrName(propName).c_str());
             sb.Append(" CHECK(", 7);
             if(dataMin != NULL && dataMax != NULL && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
             {
@@ -2207,7 +2257,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
         if (cnt != 0)
         {
             sb.Append(" CONSTRAINT CHK_");
-            sb.Append(propName);
+            sb.Append(GenerateValidConstrName(propName).c_str());
             sb.Append(" CHECK(", 7);
             sb.AppendDQuoted(propName);
             sb.Append(" IN(", 4);
@@ -2220,6 +2270,31 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
             }
             sb.Append("))", 2);
         }
+    }
+}
+
+void SltConnection::AddComplexUniqueConstraints(FdoUniqueConstraintCollection* uniqueConstr, FdoClassDefinition* fc, StringBuffer& sb)
+{
+    int cntConstr = uniqueConstr->GetCount();
+    for (int i = 0; i < cntConstr; i++)
+    {
+        FdoPtr<FdoUniqueConstraint> uqc = uniqueConstr->GetItem(i);
+
+        sb.Append("CONSTRAINT UNQ_", 15);
+        sb.Append(GenerateValidConstrName(fc->GetName()).c_str());
+        sb.Append(i+1);
+        sb.Append(" UNIQUE (", 9);
+        FdoPtr<FdoDataPropertyDefinitionCollection> pdc = uqc->GetProperties();
+        int cnt = pdc->GetCount();
+        for(int idx = 0; idx < cnt; idx++)
+        {
+            FdoPtr<FdoDataPropertyDefinition> item = pdc->GetItem(idx);
+            sb.AppendDQuoted(item->GetName());
+            sb.Append(",", 1);
+        }
+        sb.Data()[sb.Length()-1] = ')';
+        // those values will be replaced at the end with ");"
+        sb.Append(", ", 2);
     }
 }
 
@@ -2244,11 +2319,12 @@ void SltConnection::AddClassPrimaryKeys(FdoClassDefinition* fc, StringBuffer& sb
     sb.Append(", ", 2);
 }
 
-void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, StringBuffer& sb, int mode)
+void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, 
+                                               StringBuffer& sb, int mode, UniqueConstraints& simpleUniqueConstr)
 {
     FdoPtr<FdoClassDefinition> baseFc = fc->GetBaseClass();
     if (NULL != baseFc)
-        CollectBaseClassProperties(myclasses, baseFc, mainfc, sb, mode);
+        CollectBaseClassProperties(myclasses, baseFc, mainfc, sb, mode, simpleUniqueConstr);
 
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
@@ -2268,6 +2344,8 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
             sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
 
             AddPropertyConstraintDefaultValue(dpd, sb);
+            if (!simpleUniqueConstr.empty())
+                AddPropertyUniqueConstraint(simpleUniqueConstr, dpd, sb);
             sb.Append(", ", 2);
 
             //Add an entry to the metadata type table, if needed
@@ -2284,6 +2362,7 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
             }
             else
             {
+                bool canAddUnique = true;
                 FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
                 FdoDataType dt = idp->GetDataType();
                 if (idp->GetIsAutoGenerated() 
@@ -2293,16 +2372,12 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                     //autogenerated ID -- we will have SQLite generate a new one for us
                     sb.AppendDQuoted(idp->GetName());
                     sb.Append(" INTEGER PRIMARY KEY");
-                }
-                else
-                {
-                    sb.AppendDQuoted(idp->GetName());
-                    sb.Append(" ", 1);
-                    sb.Append(g_fdo2sql_map[idp->GetDataType()].c_str());
-                    sb.Append(" UNIQUE", 7);
+                    canAddUnique = false;
                 }
 
                 AddPropertyConstraintDefaultValue(idp, sb);
+                if (canAddUnique && !simpleUniqueConstr.empty())
+                    AddPropertyUniqueConstraint(simpleUniqueConstr, idp, sb);
                 sb.Append(", ", 2);
 
                 //Add to the metadata table, if necessary
@@ -2347,6 +2422,8 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                 sb.Append(g_fdo2sql_map[dpd->GetDataType()].c_str());
 
                 AddPropertyConstraintDefaultValue(dpd, sb);
+                if (!simpleUniqueConstr.empty())
+                    AddPropertyUniqueConstraint(simpleUniqueConstr, dpd, sb);
                 sb.Append(", ", 2);
 
                 //Add an entry to the metadata type table, if needed

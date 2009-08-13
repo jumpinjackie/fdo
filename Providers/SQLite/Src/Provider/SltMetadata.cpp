@@ -438,6 +438,31 @@ FdoClassDefinition* SltMetadata::ToClass()
         ExtractViewDetailsInfo(sources, properties, expressions, pTable);
     }
 
+    if (pTable->pSelect == NULL && pTable->pIndex != NULL)
+    {
+        FdoPtr<FdoUniqueConstraintCollection> uqcc = m_fc->GetUniqueConstraints();
+        FdoPtr<FdoPropertyDefinitionCollection> clsProps = m_fc->GetProperties();
+
+        Index* pIndex = pTable->pIndex;
+        while (pIndex != NULL)
+        {
+            if (pIndex->nColumn != 0)
+            {
+                FdoPtr<FdoUniqueConstraint> uqc = FdoUniqueConstraint::Create();                
+                FdoPtr<FdoDataPropertyDefinitionCollection> propsConstr = uqc->GetProperties();
+                for (int i = 0; i < pIndex->nColumn; i++)
+                {
+                    FdoPtr<FdoPropertyDefinition> constrProp = clsProps->FindItem(A2W_SLOW(pTable->aCol[pIndex->aiColumn[i]].zName).c_str());
+                    if (constrProp != NULL && constrProp->GetPropertyType() == FdoPropertyType_DataProperty)
+                        propsConstr->Add(static_cast<FdoDataPropertyDefinition*>(constrProp.p));
+                }
+                if (propsConstr->GetCount() != 0)
+                    uqcc->Add(uqc);
+            }
+            pIndex = pIndex->pNext;
+        }        
+    }
+
     if (pfdostmt)
         sqlite3_finalize(pfdostmt);
 
