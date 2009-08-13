@@ -17,7 +17,7 @@
 //  
 
 typedef std::vector<FdoInt64> RowIdList;
-typedef std::vector<std::pair<FdoInt64, DBounds>> RowIdxUpdateList;
+typedef std::vector<std::pair<FdoInt64, DBounds> > RowIdxUpdateList;
 
 class SpatialIndexDescriptor
 {
