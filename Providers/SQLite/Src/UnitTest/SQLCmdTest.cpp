@@ -21,8 +21,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-static const wchar_t* SC_TEST_FILE = L"../../TestData/SQLCmdTest.slt";
-static const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_Source.SLT";
+static const wchar_t* SC_TEST_FILE = L"../../TestData/SQLCmdTest.sqlite";
+static const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_Source.sqlite";
 
 CPPUNIT_TEST_SUITE_REGISTRATION( SQLCmdTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SQLCmdTest, "SQLCmdTest");

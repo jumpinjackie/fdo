@@ -21,12 +21,12 @@
 #include "FdoCommonFile.h"
 
 #ifdef _WIN32
-static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\ApplySchemaTest.slt";
-static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.SLT";
+static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\ApplySchemaTest.sqlite";
+static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.sqlite";
 #else
 #include <unistd.h>
-static const wchar_t* SC_TEST_FILE = L"../../TestData/ApplySchemaTest.slt";
-static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.SLT";
+static const wchar_t* SC_TEST_FILE = L"../../TestData/ApplySchemaTest.sqlite";
+static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.sqlite";
 #endif
 
 

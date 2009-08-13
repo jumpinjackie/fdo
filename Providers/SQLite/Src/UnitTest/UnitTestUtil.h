@@ -25,7 +25,7 @@
 #include <Fdo.h>
 #include <TestCommonMiscUtil.h>
 #include <TestCommonFileUtil.h>
-#define DESTINATION_FILE L"../../TestData/PARCELS.SLT"
+#define DESTINATION_FILE L"../../TestData/PARCELS.sqlite"
 
 /* 
  * A test case for ApplySchemaCommand.

@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_Source.SLT";
+const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_Source.sqlite";
 
 
 FdoFeatureSchema* UnitTestUtil::CreateSLTSchema(FdoGeometryType singleType)

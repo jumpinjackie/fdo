@@ -1361,7 +1361,7 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     {
         for (int i=0; i<2; i++)
         {
-            // FGF is not always even, see Providers\SQLite\TestData\PARCEL_Source.SLT
+            // FGF is not always even, see Providers\SQLite\TestData\PARCEL_Source.sqlite
 
             // WKB supported format looks like (in bytes):
             // ENDIAN[0] | GeometryType[1][2][3][4], where FDO supports only ENDIAN=1(WKB little endian)

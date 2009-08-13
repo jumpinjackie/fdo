@@ -46,6 +46,7 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 SpatialIndex::SpatialIndex(const wchar_t* seedname)
 {
     _lastInsertedIdx = 0;
+    _countChanges = 0;
     _seedName = std::wstring(seedname) + L".si.";
     _haveOffset = false;
     _rootLevel = 0;
@@ -89,7 +90,11 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
     //translate the given bounds to local space
     Bounds b;
     TranslateBounds(&ext, _offset, &b);
+    Insert(fid, b);
+}
 
+void SpatialIndex::Insert(unsigned fid, Bounds& b)
+{
     //insert into the skip lists
     unsigned int index = (unsigned int)fid;
     unsigned int oldIndex = index;
@@ -197,12 +202,84 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
 
 void SpatialIndex::Update(unsigned fid, DBounds& ext)
 {
-    // TODO
+    // we can use insert, however we need to count number of changes 
+    // and later force a rebuild when the number of changes becomes too high
+    Insert(fid, ext);
+    _countChanges++;
+    if ((10*_countChanges) > _lastInsertedIdx)
+        FullSpatialIndexUpdate();
 }
 
 void SpatialIndex::Delete(unsigned fid)
 {
-    // TODO
+    //insert into the skip lists
+    unsigned int index = (unsigned int)fid;
+    void** levels = _levels;
+
+    if (_sizes[0] > index)
+    {
+        Node* n;
+        if (_levelTypes[0] == 0)
+        {
+            n = &((Node*)levels[0])[index];
+            n->b = EMPTY_BOX;
+        }
+        else //otherwise get a memory mapped pointer
+        {
+            MappedFile* mf = (MappedFile*)levels[0];
+            n = (Node*)mf->load_noaddref(index);
+            n->b = EMPTY_BOX;
+        }
+        _countChanges++;
+        if ((10*_countChanges) > _lastInsertedIdx)
+            FullSpatialIndexUpdate();
+    }
+}
+
+void SpatialIndex::FullSpatialIndexUpdate()
+{
+    _countChanges = 0;
+    Node* n;
+    //insert into the skip lists
+    unsigned int* counts = _counts;
+    void** levels = _levels;
+
+    for (int i=1; i<MAX_LEVELS; i++)
+    {
+        // clear the top levels
+        if (_levelTypes[i] == 0)
+        {
+            if (counts[i] != 0)
+                FillMem(&((Node*)levels[i])->b, &EMPTY_BOX, counts[i]);
+        }
+        else
+        {
+            MappedFile* mf = (MappedFile*)levels[i];
+            for (unsigned int y = 0; y < counts[i]; y++)
+            {
+                n = (Node*)mf->load_noaddref(y);
+                n->b = EMPTY_BOX;
+            }
+        }
+    }
+
+    if (_levelTypes[0] == 0)
+    {
+        for (unsigned int y = 0; y < counts[0]; y++)
+        {
+            n = &((Node*)levels[0])[y];
+            Insert(y, n->b);
+        }
+    }
+    else
+    {
+        MappedFile* mf = (MappedFile*)levels[0];
+        for (unsigned int y = 0; y < counts[0]; y++)
+        {
+            n = (Node*)mf->load_noaddref(y);
+            Insert(y, n->b);
+        }
+    }
 }
 
 inline Node* SpatialIndex::GetNode(int level, int index)
