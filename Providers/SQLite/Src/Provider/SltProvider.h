@@ -45,6 +45,14 @@ bool operator()(const char* _Left, const char* _Right) const
 	}
 };
 
+struct wstring_less
+{	// functor for operator<
+bool operator()(FdoString* _Left, FdoString* _Right) const
+	{	// apply operator< to operands
+	    return wcscmp(_Left, _Right) < 0;
+	}
+};
+
 struct QueryCacheRec
 {
     QueryCacheRec() : stmt(NULL), inUse(false) {}
@@ -57,6 +65,8 @@ typedef std::vector<QueryCacheRec> QueryCacheRecList;
 typedef std::map<char*, QueryCacheRecList, string_less> QueryCache;
 
 typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
+
+typedef std::map<FdoString*, FdoUniqueConstraint*, wstring_less> UniqueConstraints;
 
 typedef std::map<char*, SpatialIndexDescriptor*, string_less> SpatialIndexCache;
 
@@ -234,9 +244,13 @@ private :
     int FindSpatialContext(const wchar_t* name);
     int GetDefaultSpatialContext();
 
-    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, StringBuffer& sb, int mode);
+    void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, 
+        StringBuffer& sb, int mode, UniqueConstraints& simpleUniqueConstr);
     void AddClassPrimaryKeys(FdoClassDefinition* fc, StringBuffer& sb);
     void AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition* prop, StringBuffer& sb);
+    void AddPropertyUniqueConstraint(UniqueConstraints& simpleUniqueConstr, FdoDataPropertyDefinition* prop, StringBuffer& sb);
+    void AddComplexUniqueConstraints(FdoUniqueConstraintCollection* uniqueConstr, FdoClassDefinition* fc, StringBuffer& sb);
+    std::wstring GenerateValidConstrName(FdoString* name);
     RowidIterator* GetScrollableIterator(SltReader* rdr);
 
     static void update_hook(void* caller, int action, char const* database, char const* tablename, sqlite3_int64 id);

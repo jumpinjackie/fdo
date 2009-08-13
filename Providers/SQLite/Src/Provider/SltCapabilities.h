@@ -85,7 +85,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsValueConstraintsList()                     { return true; }
     virtual bool SupportsNullValueConstraints()                     { return true;  }
     virtual bool SupportsUniqueValueConstraints()                   { return true;  }
-    virtual bool SupportsCompositeUniqueValueConstraints()          { return false; }
+    virtual bool SupportsCompositeUniqueValueConstraints()          { return true; }
     virtual bool SupportsCompositeId()                              { return true; }
     virtual bool SupportsDefaultValue()                             { return true; }
 
