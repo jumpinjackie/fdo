@@ -114,9 +114,9 @@ void TestCommonInsert::DoSubtestDefaultValues(
 
     FdoPtr<FdoIDescribeSchema>  descCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
     FdoFeatureSchemasP schemas = descCmd->Execute();
-    FdoFeatureSchemaP schema = schemas->FindItem(SCHEMA_NAME);
+    FdoFeatureSchemaP schema = schemas->FindItem(GetDefaultSchemaName());
     if ( !schema )
-        schema = FdoFeatureSchema::Create( SCHEMA_NAME, L"" );
+        schema = FdoFeatureSchema::Create( GetDefaultSchemaName(), L"" );
 
     FdoPtr<FdoIApplySchema>  applyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
     FdoClassesP classes = schema->GetClasses();
@@ -256,7 +256,7 @@ void TestCommonInsert::DoSubtestDefaultValues(
 
     descCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
   	schemas = descCmd->Execute();
-    FdoFeatureSchemaP schema2 = schemas->FindItem(SCHEMA_NAME);
+    FdoFeatureSchemaP schema2 = schemas->FindItem(GetDefaultSchemaName());
     CPPUNIT_ASSERT(schema2);
     FdoClassesP classes2 = schema2->GetClasses();
     FdoClassDefinitionP classDef2 = classes2->FindItem(testName);
@@ -546,3 +546,7 @@ TestCommonInsert::Context::~Context()
     }
 }
 
+FdoString* TestCommonInsert::GetDefaultSchemaName(void)
+{
+    return SCHEMA_NAME;
+}

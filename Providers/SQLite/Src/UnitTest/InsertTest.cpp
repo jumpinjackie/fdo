@@ -806,3 +806,23 @@ void InsertTest::TestNoPK ()
    	}
 	printf( "Done\n" );
 }
+
+FdoString* InsertTest::GetDefaultSchemaName(void)
+{
+    return L"Default";
+}
+
+void InsertTest::CreateConnection( Context& context, FdoBoolean recreateDb )
+{
+    context.connection = UnitTestUtil::OpenConnection( SC_TEST_FILE, recreateDb, true );
+}
+
+bool InsertTest::InsertsDefaultValues()
+{
+    return false;
+}
+
+FdoDataType InsertTest::GetAutoIncrementType()
+{
+    return FdoDataType_Int32;
+}

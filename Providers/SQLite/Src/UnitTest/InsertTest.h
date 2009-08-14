@@ -24,16 +24,17 @@
 #include "Fdo.h"
 #include <cppunit/TestCase.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <TestCommonInsert.h>
 
-class InsertTest : public CppUnit::TestCase
+class InsertTest : public TestCommonInsert
 {
-    CPPUNIT_TEST_SUITE( InsertTest );
+	CPPUNIT_TEST_SUB_SUITE( InsertTest, TestCommonInsert );
     CPPUNIT_TEST( TestInsInvalidGeomTypes );
     CPPUNIT_TEST( TestConstraints1 );
     CPPUNIT_TEST( TestConstraints2 );
     CPPUNIT_TEST( TestCompPK );
     CPPUNIT_TEST( TestNoPK );
-    CPPUNIT_TEST_SUITE_END();
+	CPPUNIT_TEST_SUITE_END();
 
 public:
     InsertTest(void);
@@ -47,6 +48,14 @@ public:
     void TestConstraints2 ();
     void TestCompPK ();
     void TestNoPK ();
+protected:
+    virtual FdoString* GetDefaultSchemaName(void);
+
+    virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
+
+    virtual bool InsertsDefaultValues();
+
+    virtual FdoDataType GetAutoIncrementType();
 private:
     bool TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoString* propName, FdoInt32 id, FdoDateTime* expVal = NULL);
     void TestInsertData(FdoIConnection* conn, FdoString* className, FdoInt32 expectedProps = -1, FdoIdentifierCollection* propNames = NULL);

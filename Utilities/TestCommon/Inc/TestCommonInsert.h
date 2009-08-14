@@ -43,6 +43,7 @@ public:
     };
 
 protected:
+    virtual FdoString* GetDefaultSchemaName(void);
 
     virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
 
