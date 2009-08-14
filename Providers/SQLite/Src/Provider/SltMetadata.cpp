@@ -374,6 +374,12 @@ FdoClassDefinition* SltMetadata::ToClass()
                             FdoPtr<FdoDateTimeValue> dtVal = FdoDateTimeValue::Create(DateFromString(sb.Data(), false));
                             dpd->SetDefaultValue(dtVal->ToString());
                         }
+                        else if (dt == FdoDataType_Boolean)
+                        {
+                            FdoPtr<FdoDataValue> dtValBool = GenerateConstraintValue(dt, A2W_SLOW(sb.Data()).c_str());
+                            if (dtValBool != NULL)
+                                dpd->SetDefaultValue(dtValBool->ToString());
+                        }
                         else
                             dpd->SetDefaultValue(A2W_SLOW(sb.Data()).c_str());
                     }
@@ -515,6 +521,18 @@ FdoDataValue* SltMetadata::GenerateConstraintValue(FdoDataType type, FdoString* 
     FdoPtr<FdoDataValue> retVal;
     switch(type)
     {
+    case FdoDataType_Boolean:
+        {
+            bool bval = false;
+            if (sqlite3UpperToLower[*value] == sqlite3UpperToLower['T'])
+                bval = true;
+            else if(sqlite3UpperToLower[*value] == sqlite3UpperToLower['F'])
+                bval = false;
+            else
+                bval = FdoCommonOSUtil::wtoi(value) != 0;
+            retVal = FdoBooleanValue::Create(bval);
+        }
+        break;
     case FdoDataType_Byte:
         retVal = FdoByteValue::Create((FdoByte)FdoCommonOSUtil::wtoi(value));
         break;

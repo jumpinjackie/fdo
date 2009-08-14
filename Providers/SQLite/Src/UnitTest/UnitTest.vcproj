@@ -872,6 +872,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ConstraintsTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ConstraintsTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\DeleteTest.cpp"
 			>
 		</File>
