@@ -36,6 +36,8 @@
 
 class RowData;
 
+#pragma pack(push, 1)
+
 typedef struct {
     BYTE cDBFFormat;
     BYTE cUpdateDate[3];
@@ -68,6 +70,8 @@ typedef struct {
 	BYTE	cLDID;	
 	int		codePage;
 } EsriCodePageMap;
+
+#pragma pack(pop)
 
 // From <www.esrinl.com/content/file.asp?id=307>
 // (*) Secondary codepage

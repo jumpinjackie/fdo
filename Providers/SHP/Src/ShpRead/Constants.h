@@ -74,8 +74,7 @@ enum ePartTypes {
 // T Y P E D E F S
 //*******************************************************************
 
-#pragma pack(push)
-#pragma pack(4)
+#pragma pack(push, 1)
 
 // ESRI Shape Structures
 typedef struct {
@@ -99,7 +98,7 @@ typedef struct {
 } ESRIPolygonRecord;
 
 typedef struct {
-    ULONG nOffset;
+    unsigned int nOffset;
     int nContentLength;
 } SHPIndexRecordHeader;
 
