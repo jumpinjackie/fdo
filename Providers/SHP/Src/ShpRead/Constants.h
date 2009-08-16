@@ -74,10 +74,8 @@ enum ePartTypes {
 // T Y P E D E F S
 //*******************************************************************
 
-#ifdef _WIN32
 #pragma pack(push)
 #pragma pack(4)
-#endif
 
 // ESRI Shape Structures
 typedef struct {
@@ -131,9 +129,7 @@ typedef struct {
 } SHPHeader;
 const int SHPHeaderSize = sizeof (SHPHeader);
 
-#ifdef _WIN32
 #pragma pack(pop)
-#endif
 
 //*******************************************************************
 // D E F I N E S
