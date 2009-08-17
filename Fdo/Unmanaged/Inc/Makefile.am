@@ -148,6 +148,7 @@ EXTRA_DIST = \
     Fdo/Commands/LongTransaction/LongTransactionPrivileges.h \
     Fdo/Commands/LongTransaction/LongTransactionSetOperations.h \
     Fdo/Commands/OrderingOption.h \
+    Fdo/Commands/ParameterDirection.h \
     Fdo/Commands/ParameterValue.h \
     Fdo/Commands/ParameterValueCollection.h \
     Fdo/Commands/PropertyValue.h \

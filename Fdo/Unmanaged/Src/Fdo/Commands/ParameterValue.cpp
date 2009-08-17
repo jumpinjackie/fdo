@@ -41,6 +41,7 @@ FdoParameterValue::FdoParameterValue()
 {
 	m_name = NULL;
 	m_value = NULL;
+    m_parameterDirection = FdoParameterDirection_Input;
 }
 
 // Constructs an instance of a ParameterValue using the specified arguments.
@@ -48,6 +49,7 @@ FdoParameterValue::FdoParameterValue(FdoString* name)
 {
     m_name = FdoStringUtility::MakeString(name);
 	m_value = NULL;
+    m_parameterDirection = FdoParameterDirection_Input;
 }
 
 // Constructs an instance of a ParameterValue using the specified arguments.
@@ -55,6 +57,7 @@ FdoParameterValue::FdoParameterValue(FdoString* name, FdoLiteralValue* value)
 {
     m_name = FdoStringUtility::MakeString(name);
 	m_value = FDO_SAFE_ADDREF(value);
+    m_parameterDirection = FdoParameterDirection_Input;
 }
 
 FdoParameterValue::~FdoParameterValue()
@@ -99,5 +102,20 @@ void FdoParameterValue::SetValue(FdoString* value)
 {
 	FDO_SAFE_RELEASE(m_value);
 	m_value = FdoStringValue::Create(value);
+}
+
+/// Sets the function direction of the parameter value.
+/// Values can be Input, Output, InputOutput and Return.
+/// The default value for direction is Input.
+void FdoParameterValue::SetDirection(FdoParameterDirection value)
+{
+    m_parameterDirection = value;
+}
+
+/// Gets the function direction of the the command parameter.
+/// Values can be Input, Output, InputOutput and Return.
+FdoParameterDirection FdoParameterValue::GetDirection()
+{
+    return m_parameterDirection;
 }
 

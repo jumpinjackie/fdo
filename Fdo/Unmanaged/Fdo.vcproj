@@ -2029,6 +2029,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Inc\Fdo\Commands\ParameterDirection.h"
+					>
+				</File>
+				<File
 					RelativePath="Inc\Fdo\Commands\ParameterValue.h"
 					>
 				</File>

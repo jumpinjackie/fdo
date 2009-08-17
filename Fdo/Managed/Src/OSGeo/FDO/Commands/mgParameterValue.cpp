@@ -18,6 +18,7 @@
 */
 
 #include "stdafx.h"
+#include <Fdo\Commands\ParameterDirection.h>
 #include <Fdo\Commands\ParameterValue.h>
 #include <Fdo\Commands\CommandType.h>
 
@@ -62,6 +63,20 @@ System::String^ NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Name::get()
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Name::set(System::String^ value)
 {
 	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Direction::get()
+{
+	FdoParameterDirection result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetDirection())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection>(result);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Direction::set(NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetDirection(static_cast<FdoParameterDirection>(value)))
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ NAMESPACE_OSGEO_FDO_COMMANDS::ParameterValue::Value::get()

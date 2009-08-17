@@ -777,6 +777,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Src\OSGeo\FDO\Commands\mgParameterDirection.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Src\OSGeo\FDO\Commands\mgParameterValue.cpp"
 						>
 					</File>

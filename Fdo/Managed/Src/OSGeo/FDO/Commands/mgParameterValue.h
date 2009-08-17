@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "FDO\Commands\mgParameterDirection.h"
+
 class FdoParameterValue;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
@@ -97,6 +99,27 @@ public:
     {
         NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ get();
         System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ value);
+    }
+
+    /// \brief
+    /// Gets the function direction of the the command parameter.
+    /// 
+    /// \return
+    /// Returns the direction enumeration value
+    ///
+    /// \brief
+    /// Sets the function direction of the parameter value.
+    /// 
+    /// \param value 
+    /// Input the direction enumeration value
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    property NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection Direction
+    {
+        NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection get();
+        System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS::ParameterDirection value);
     }
 
     /// \brief
