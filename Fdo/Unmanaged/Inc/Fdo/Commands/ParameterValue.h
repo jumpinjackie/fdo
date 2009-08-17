@@ -26,6 +26,7 @@
 #include <FdoStd.h>
 #include <Fdo/Expression/LiteralValue.h>
 #include <Fdo/Expression/StringValue.h>
+#include <Fdo/Commands/ParameterDirection.h>
 
 /// \brief
 /// The FdoParameterValue class specifies a value for a particular parameter.
@@ -131,10 +132,33 @@ public:
     /// 
     FDO_API void SetValue(FdoString* value);
 
+    /// \brief
+    /// Sets the function direction of the parameter value.
+    /// Values can be Input, Output, InputOutput and Return.
+    /// The default value for direction is Input.
+    /// 
+    /// \param value 
+    /// Input the direction enumeration value
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    FDO_API void SetDirection(FdoParameterDirection value);
+
+    /// \brief
+    /// Gets the function direction of the the command parameter.
+    /// Values can be Input, Output, InputOutput and Return.
+    /// 
+    /// \return
+    /// Returns the direction enumeration value
+    /// 
+    FDO_API FdoParameterDirection GetDirection();
+
 protected:
 /// \cond DOXYGEN-IGNORE
-    wchar_t*            m_name;
-    FdoLiteralValue*    m_value;
+    wchar_t*                m_name;
+    FdoLiteralValue*        m_value;
+    FdoParameterDirection   m_parameterDirection;
 /// \endcond
 };
 #endif

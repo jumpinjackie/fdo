@@ -265,6 +265,7 @@ EXTRA_DIST = \
     Src/OSGeo/FDO/Commands/mgIFeatureCommandImp.cpp \
     Src/OSGeo/FDO/Commands/mgIFeatureCommandImp.h \
     Src/OSGeo/FDO/Commands/mgOrderingOption.h \
+    Src/OSGeo/FDO/Commands/mgParameterDirection.h \
     Src/OSGeo/FDO/Commands/mgParameterValue.cpp \
     Src/OSGeo/FDO/Commands/mgParameterValue.h \
     Src/OSGeo/FDO/Commands/mgParameterValueCollection.cpp \

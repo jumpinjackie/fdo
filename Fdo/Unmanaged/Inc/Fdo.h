@@ -38,6 +38,7 @@
 #include <Fdo/Commands/IdentifierCollection.h>
 #include <Fdo/Commands/IFeatureCommand.h>
 #include <Fdo/Commands/OrderingOption.h>
+#include <Fdo/Commands/ParameterDirection.h>
 #include <Fdo/Commands/ParameterValue.h>
 #include <Fdo/Commands/ParameterValueCollection.h>
 #include <Fdo/Commands/PropertyValue.h>
