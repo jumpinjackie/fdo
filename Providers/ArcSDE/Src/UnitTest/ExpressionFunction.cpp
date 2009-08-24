@@ -104,7 +104,7 @@ void TestExpressionFunction::setUp ()
       printf(" >>> Establishing necessary connection \n");
       Connect();
       printf(" >>> Predeleting Test Schema \n");
-      DropTestSchema(L"ExprFct");
+      DropTestSchema(GetSchemaName());
       printf(" >>> Establishing test environment \n");
       CreateSC();
       SetupUnitTestEnvironment(m_connection);
@@ -325,7 +325,6 @@ void TestExpressionFunction::CreateOrUpdateSpatialContext(FdoIConnection *conn, 
     }
 }
 
-
 FdoFeatureClass *TestExpressionFunction::CreateFdoFeatureClass (
                                                     FdoString *class_name,
                                                     bool has_elevation,
@@ -416,6 +415,11 @@ void TestExpressionFunction::AddFeature (FdoIConnection * /*current_connection*/
                  FdoString      * /*class_name*/,
                  int            /*index*/)
 {
+}
+
+FdoStringP TestExpressionFunction::GetSchemaName()
+{
+    return ArcSDETestConfig::UserNameMetadcov() + L"_" + TestCommonExpressionFunction::GetSchemaName();
 }
 
 double TestExpressionFunction::GetNullOrdinate()

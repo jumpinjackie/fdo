@@ -68,6 +68,9 @@ protected:
     void AddXYZMFeature (FdoIConnection *current_connection,
                          FdoString      *class_name);
 
+    virtual FdoFeatureSchema* CreateFeatureSchema (FdoIConnection *current_connection,
+                         FdoString      *schema_name);
+
     //  CreateDataProperty :
     //      The function creates a data property object based on the provided
     //      data and returns it back to the calling routine.

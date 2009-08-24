@@ -81,6 +81,8 @@ protected:
                  FdoString      *class_name,
                  int            index);
 
+    virtual FdoStringP GetSchemaName();
+
     virtual double GetNullOrdinate();
 
     virtual double GetNaNOrdinate();
