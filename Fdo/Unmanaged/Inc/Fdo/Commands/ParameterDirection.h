@@ -34,7 +34,7 @@ enum FdoParameterDirection{
     FdoParameterDirection_Input,
 
     // Specifies that the parameter is an output parameter.
-    FdoParameterDirection_Ouput,
+    FdoParameterDirection_Output,
 
     // Specifies that the parameter is an input & output parameter.
     FdoParameterDirection_InputOutput,
