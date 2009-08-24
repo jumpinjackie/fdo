@@ -516,13 +516,13 @@ void SltQueryTranslator::ProcessBinaryExpression(FdoBinaryExpression& expr)
     case FdoBinaryOperations_Add:
         ret->AddToList(CreateFilterChunk("+", 1));
         break;
-    case FdoBinaryOperations_Divide:
+    case FdoBinaryOperations_Subtract:
         ret->AddToList(CreateFilterChunk("-", 1));
         break;
     case FdoBinaryOperations_Multiply:
         ret->AddToList(CreateFilterChunk("*", 1));
         break;
-    case FdoBinaryOperations_Subtract:
+    case FdoBinaryOperations_Divide:
         ret->AddToList(CreateFilterChunk("/", 1));
         break;
     }
@@ -959,13 +959,13 @@ void SltExpressionTranslator::ProcessBinaryExpression(FdoBinaryExpression& expr)
     case FdoBinaryOperations_Add:
         m_expr.Append("+", 1);
         break;
-    case FdoBinaryOperations_Divide:
+    case FdoBinaryOperations_Subtract:
         m_expr.Append("-", 1);
         break;
     case FdoBinaryOperations_Multiply:
         m_expr.Append("*", 1);
         break;
-    case FdoBinaryOperations_Subtract:
+    case FdoBinaryOperations_Divide:
         m_expr.Append("/", 1);
         break;
     }
