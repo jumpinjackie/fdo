@@ -2255,12 +2255,12 @@ void TestCommonExpressionFunctionW::TestToDoubleFunction ()
 
     FdoInt16                  counter           = 0;
 
-    FdoDouble                 exp_dcl_val,
-                              exp_dbl_val,
-                              exp_i32_val,
-                              exp_sgl_val,
-                              exp_str_val,
-                              exp_byte_val;
+    FdoDouble                 exp_dcl_val = -1,
+                              exp_dbl_val = -1,
+                              exp_i32_val = -1,
+                              exp_sgl_val = -1,
+                              exp_str_val = -1,
+                              exp_byte_val = -1;
 
     FdoStringP                str_val,
                               func_call;
@@ -2696,12 +2696,12 @@ void TestCommonExpressionFunctionW::TestToFloatFunction ()
 
     FdoInt16                  counter           = 0;
 
-    FdoFloat                  exp_dcl_val,
-                              exp_dbl_val,
-                              exp_i32_val,
-                              exp_sgl_val,
-                              exp_str_val,
-                              exp_byte_val;
+    FdoFloat                  exp_dcl_val       = -1,
+                              exp_dbl_val       = -1,
+                              exp_i32_val       = -1,
+                              exp_sgl_val       = -1,
+                              exp_str_val       = -1,
+                              exp_byte_val      = -1;
 
     FdoStringP                str_val,
                               func_call;
@@ -3058,12 +3058,12 @@ void TestCommonExpressionFunctionW::TestToInt32Function ()
 
     FdoInt16                  counter           = 0;
 
-    FdoInt32                  exp_dcl_val,
-                              exp_dbl_val,
-                              exp_i32_val,
-                              exp_sgl_val,
-                              exp_str_val,
-                              exp_byte_val;
+    FdoInt32                  exp_dcl_val       = -1,
+                              exp_dbl_val       = -1,
+                              exp_i32_val       = -1,
+                              exp_sgl_val       = -1,
+                              exp_str_val       = -1,
+                              exp_byte_val      = -1;
 
     FdoStringP                str_val,
                               func_call;
@@ -3423,12 +3423,12 @@ void TestCommonExpressionFunctionW::TestToInt64Function ()
 
     FdoInt16                  counter           = 0;
 
-    FdoInt64                  exp_dcl_val,
-                              exp_dbl_val,
-                              exp_i32_val,
-                              exp_sgl_val,
-                              exp_str_val,
-                              exp_byte_val;
+    FdoInt64                  exp_dcl_val       = -1,
+                              exp_dbl_val       = -1,
+                              exp_i32_val       = -1,
+                              exp_sgl_val       = -1,
+                              exp_str_val       = -1,
+                              exp_byte_val      = -1;
 
     FdoStringP                str_val,
                               func_call;
@@ -5467,9 +5467,9 @@ void TestCommonExpressionFunctionW::TestAbsFunction ()
 
     FdoInt16                  counter           = 0;
 
-    FdoInt32                  exp_i32_val;
+    FdoInt32                  exp_i32_val       = -1;
 
-    FdoByte                   exp_byte_val;
+    FdoByte                   exp_byte_val      = 0;
 
     FdoStringP                func_call;
 
@@ -15350,7 +15350,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
       insert_command = 
             (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
-      insert_command->SetFeatureClassName(XY_POINT_CLASS);
+      insert_command->SetFeatureClassName(GetSchemaName() + L":" + XY_POINT_CLASS);
 
       // Get hold of the class property set.
 
@@ -15437,7 +15437,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
                 (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
 
-          insert_command->SetFeatureClassName(XYZ_POINT_CLASS);
+          insert_command->SetFeatureClassName(GetSchemaName() + L":" + XYZ_POINT_CLASS);
 
           // Get hold of the class property set.
 
@@ -15489,7 +15489,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
                 (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
 
-          insert_command->SetFeatureClassName(XYZM_POINT_CLASS);
+          insert_command->SetFeatureClassName(GetSchemaName() + L":" + XYZM_POINT_CLASS);
 
           // Get hold of the class property set.
 
@@ -15539,7 +15539,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
                 (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
 
-          insert_command->SetFeatureClassName(XYM_POINT_CLASS);
+          insert_command->SetFeatureClassName(GetSchemaName() + L":" + XYM_POINT_CLASS);
 
           // Get hold of the class property set.
 
@@ -15627,8 +15627,6 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
     FdoClassCollection                 *classes              = NULL;
 
-    FdoPtr<FdoFeatureSchemaCollection> schemas;
-
 	FdoFeatureSchema                   *schema               = NULL;
 
     FdoIGeometryCapabilities           *geom_caps           = NULL;  
@@ -15647,14 +15645,10 @@ void TestCommonExpressionFunctionW::AddTestSchema (
         (FdoIApplySchema*) current_connection->CreateCommand(
                                                    FdoCommandType_ApplySchema);
 
-      // Create the feature schema collection.
-
-      schemas = FdoFeatureSchemaCollection::Create(NULL);
-
       // Create the lock test schema.
 
-	  schema  = FdoFeatureSchema::Create(schema_name,
-                                         L"Expression Function Test Schema");
+	  schema  = CreateFeatureSchema(current_connection,
+                                        schema_name);
       classes = schema->GetClasses();
 
       // Create the test classes for the unit test and add them to the schema.
@@ -15700,10 +15694,6 @@ void TestCommonExpressionFunctionW::AddTestSchema (
           classes->Add(schema_class);
       FDO_SAFE_RELEASE(schema_class);
 
-      // Add the test schema to the schema collection.
-
-      schemas->Add(schema);
-
       // Set the active schema and create it.
 
       printf(" >>> ...... creating the schema \n");
@@ -15732,6 +15722,18 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
 }  //  AddTestSchema ()
 
+FdoFeatureSchema* TestCommonExpressionFunctionW::CreateFeatureSchema (
+                                        FdoIConnection* /*current_connection*/,
+                                        FdoString*     schema_name)
+{
+    return FdoFeatureSchema::Create(schema_name,
+                                         L"Expression Function Test Schema");
+}
+
+// +---------------------------------------------------------------------------
+// | The function adds a new object for the specified class. The values being
+// | added are predefined based on the predefined schema.
+// +---------------------------------------------------------------------------
 
 FdoDataPropertyDefinition *TestCommonExpressionFunctionW::CreateDataProperty (
                                                   FdoString     *property_name,
@@ -16157,7 +16159,7 @@ void TestCommonExpressionFunctionW::SetupUnitTestEnvironment (
       // Add the test schema.
 
       printf(" >>> ... adding test schema \n");
-      AddTestSchema(current_connection, L"ExprFct");
+      AddTestSchema(current_connection, GetSchemaName());
 
       // Load the features used in the unit tests.
       //   > The spatial features.

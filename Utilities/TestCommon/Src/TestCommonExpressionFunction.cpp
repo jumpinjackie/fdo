@@ -2455,7 +2455,7 @@ FdoIDataReader *TestCommonExpressionFunction::ExecuteSelAggrCommand (
     sel_aggreg_cmd =
             (FdoISelectAggregates*)m_connection->CreateCommand(
                                             FdoCommandType_SelectAggregates);
-    sel_aggreg_cmd->SetFeatureClassName(class_name);
+    sel_aggreg_cmd->SetFeatureClassName(GetSchemaName() + L":" + class_name);
     if (filter != NULL)
         sel_aggreg_cmd->SetFilter(filter);
     id_col = sel_aggreg_cmd->GetPropertyNames();
@@ -2510,7 +2510,7 @@ FdoIFeatureReader *TestCommonExpressionFunction::ExecuteSelectCommand (
     printf(" >>> Setup the select command \n");
 
     sel_cmd = (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
-    sel_cmd->SetFeatureClassName(class_name);
+    sel_cmd->SetFeatureClassName(GetSchemaName() + L":" + class_name);
     if (filter != NULL)
         sel_cmd->SetFilter(filter);
     id_col = sel_cmd->GetPropertyNames();
@@ -2570,7 +2570,7 @@ FdoIFeatureReader *TestCommonExpressionFunction::
     printf(" >>> Setup the command \n");
 
     sel_cmd = (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
-    sel_cmd->SetFeatureClassName(class_name);
+    sel_cmd->SetFeatureClassName(GetSchemaName() + L":" + class_name);
     if (filter != NULL)
         sel_cmd->SetFilter(filter);
     id_col = sel_cmd->GetPropertyNames();
@@ -2653,7 +2653,7 @@ FdoDateTime TestCommonExpressionFunction::GetDate (FdoString *class_name,
     select_cmd =
             (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
 
-    select_cmd->SetFeatureClassName(class_name);
+    select_cmd->SetFeatureClassName(GetSchemaName() + L":" + class_name);
     select_cmd->SetFilter(filter);
     id_col = select_cmd->GetPropertyNames();
     id_prop = FdoIdentifier::Create(property_name);
@@ -2697,7 +2697,7 @@ FdoStringP TestCommonExpressionFunction::GetStringValue (
     select_cmd =
             (FdoISelect*)m_connection->CreateCommand(FdoCommandType_Select);
 
-    select_cmd->SetFeatureClassName(class_name);
+    select_cmd->SetFeatureClassName(GetSchemaName() + L":" + class_name);
     select_cmd->SetFilter(filter);
     id_col = select_cmd->GetPropertyNames();
     id_prop = FdoIdentifier::Create(property_name);
@@ -2747,6 +2747,11 @@ void TestCommonExpressionFunction::SetupUnitTestEnvironment (
                                         FdoIConnection* /* current_connection */)
 {
 }  //  SetupUnitTestEnvironment ()
+
+FdoStringP TestCommonExpressionFunction::GetSchemaName()
+{
+    return L"ExprFct";
+}
 
 FdoInt32 TestCommonExpressionFunction::GetFeatId( FdoIFeatureReader* rdr )
 {

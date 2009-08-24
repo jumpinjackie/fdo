@@ -779,6 +779,10 @@ void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, S
             // Create the temporary coordref
             lResult = SE_coordref_create(&temp_coordref);
             handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
+            // Make it a duplicate of the column coordref (e.g. same coordinate system)
+            lResult = SE_coordref_duplicate(coordref, temp_coordref);
+            handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
+            // Expand the extents of the temporary coordref
             lResult = SE_coordref_set_xy_by_envelope(temp_coordref, &temp_coordref_envelope);
             handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_CONVERT_SHAPE_FAILED, "Failed to convert FGF geometry to ArcSDE shape.");
 

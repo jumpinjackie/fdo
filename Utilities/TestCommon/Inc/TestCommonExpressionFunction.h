@@ -811,6 +811,8 @@ protected:
                                        FdoString *property_name,
                                        FdoFilter *filter);
 
+    virtual FdoStringP GetSchemaName();
+
     virtual FdoInt32 GetFeatId( FdoIFeatureReader* rdr );
 
     virtual FdoDataType GetFeatIdType();

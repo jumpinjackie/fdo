@@ -305,6 +305,9 @@ void ArcSDECreateSpatialContext::Execute()
         sde_wide_to_multibyte(mbAuthName, wAuthName);
         lResult = SE_spatialrefinfo_set_auth_name(seSpatialRefInfo, mbAuthName);
         handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_SPATIALREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE spatial reference system.");
+        // ArcSDE 9.3 ignores auth_name unless auth_srid is also set.
+        lResult = SE_spatialrefinfo_set_auth_srid(seSpatialRefInfo, 1);
+        handle_sde_err<FdoCommandException>(connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_SPATIALREF_ERROR, "Unexpected error encountered while manipulating an ArcSDE spatial reference system.");
     }
 
     // Create (or update) spatial reference:
