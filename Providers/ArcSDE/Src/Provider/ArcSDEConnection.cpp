@@ -315,7 +315,15 @@ FdoConnectionState ArcSDEConnection::Open ()
 	if ((datastoreW.GetLength() != 0) && (0 == wcscmp(datastoreW, ArcSDEDefaultDataStore)))
         datastore = sde_pcwc2us(_TXT(""));
 
-    // Cache datastore & username:
+    // Cache connection parms:
+	if (server == NULL || sde_strlen(sde_pcus2wc(server)) == 0)
+        m_mbServer[0] = '\0';
+    else
+        sde_strcpy(sde_pus2wc(m_mbServer), sde_pcus2wc(server));
+	if (instance == NULL || sde_strlen(sde_pcus2wc(instance)) == 0)
+        m_mbInstance[0] = '\0';
+    else
+        sde_strcpy(sde_pus2wc(m_mbInstance), sde_pcus2wc(instance));
 	if (datastore == NULL || sde_strlen(sde_pcus2wc(datastore)) == 0)
         m_mbDatabaseName[0] = '\0';
     else
@@ -324,6 +332,10 @@ FdoConnectionState ArcSDEConnection::Open ()
         m_mbUserName[0] = '\0';
     else
         sde_strcpy(sde_pus2wc(m_mbUserName), sde_pcus2wc(username));
+	if (password == NULL || sde_strlen(sde_pcus2wc(password)) == 0)
+        m_mbPassword[0] = '\0';
+    else
+        sde_strcpy(sde_pus2wc(m_mbPassword), sde_pcus2wc(password));
 
     // Attempt to establish initial ArcSDE connection;
     // This is done in a separate method since we need to use __try/__except to catch the delay-loader's
@@ -1604,3 +1616,70 @@ void ArcSDEConnection::GetUuidGenerator(SE_UUIDGENERATOR &uuidGenerator)
 	}
 	uuidGenerator = m_uuidGenerator;
 }
+
+void ArcSDEConnection::MakeLog (SE_LOG* log, const CHAR* table)
+{
+    try
+    {
+        ArcSDELockUtility::MakeLog(log, GetConnection(), table);
+    }
+    catch ( FdoException* ) 
+    {
+        // If the current user does not have the logfile system tables then MakeLog will
+        // fail to create them if a transaction is open.
+        //
+        // This is worked around by creating a second connection without a transaction and
+        // calling MakeLog to prime the system tables. If this works, a second MakeLog 
+        // attempt is made on the main connection.
+        SE_CONNECTION connection2;
+        SE_ERROR error;
+        LONG result;
+
+        // Create second connection with this connection's parms.
+        result = SE_connection_create (
+            m_mbServer, // Host name of the server running ArcSDE.
+            m_mbInstance, // The ArcSDE instance name.
+            m_mbDatabaseName[0] == '\0' ? (CHAR*) NULL : m_mbDatabaseName, // The database or data source name. Not applicable for some DBMS.
+            m_mbUserName, // DBMS user's login name.
+            m_mbPassword, // DBMS user's login password.
+            &error, // Any error code is returned here.
+            &connection2); // Returned connection handle.
+
+        if ( result != SE_SUCCESS ) 
+            throw;
+
+        bool success = true;
+
+        try 
+        {
+            // Try MakeLog on 2nd connection
+            ArcSDELockUtility::MakeLog(log, connection2, table);
+        }
+        catch ( ... ) 
+        {
+            success = false;
+        }
+        
+        //2nd connection is temporary
+        SE_connection_free (connection2);
+        
+        if ( !success ) 
+            // MakeLog on 2nd connection failed. Give up and rethrow original exception.
+            throw;
+
+        try 
+        {
+            // Retry MakeLog
+            ArcSDELockUtility::MakeLog(log, GetConnection(), table);
+        }
+        catch ( ... ) 
+        {
+            success = false;
+        }
+
+        if ( !success ) 
+            // Retry failed. Give up and rethrow original exception.
+            throw;
+    }
+}
+

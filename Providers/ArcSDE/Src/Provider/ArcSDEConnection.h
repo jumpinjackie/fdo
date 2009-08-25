@@ -94,6 +94,16 @@ protected:
     ArcSDETransaction* mTransaction; // can't use FdoPtr<> because of circular reference
 
     /*
+     * Cached server at connection time.
+     */
+    CHAR m_mbServer[SE_MAX_SERVER_LEN];
+
+    /*
+     * Cached instance at connection time.
+     */
+    CHAR m_mbInstance[SE_MAX_INSTANCE_LEN];
+
+    /*
      * Cached database (empty if database not provided) at connection time.
      */
     CHAR m_mbDatabaseName[SE_MAX_DATABASE_LEN];
@@ -102,6 +112,11 @@ protected:
      * Cached user name at connection time.
      */
     CHAR m_mbUserName[SE_MAX_DATABASE_LEN];
+
+    /*
+     * Cached password at connection time.
+     */
+    CHAR m_mbPassword[SE_MAX_PASSWORD_LEN];
 
 
 	/*
@@ -348,6 +363,8 @@ public:
 
 	void GetUuidGenerator(SE_UUIDGENERATOR &uuidGenerator);
 
+    // Creates a log for the given table.
+    void MakeLog (SE_LOG* log, const CHAR* table);
 };
 
 #endif // ARCSDECONNECTION_H

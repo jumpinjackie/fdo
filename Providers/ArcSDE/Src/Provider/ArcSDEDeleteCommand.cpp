@@ -160,7 +160,7 @@ FdoInt32 ArcSDEDeleteCommand::Execute ()
         if (lockable || bIsSQLServer)
         {
             // set up a temporary log file
-            ArcSDELockUtility::MakeLog (&log, connection->GetConnection (), table);
+            connection->MakeLog (&log, table);
             ArcSDELockUtility::GetLogFile (logfile, connection->GetConnection (), log);
 
             // accumulate the query in the log file

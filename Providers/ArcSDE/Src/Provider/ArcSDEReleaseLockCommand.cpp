@@ -201,7 +201,7 @@ FdoILockConflictReader* ArcSDEReleaseLockCommand::Execute ()
     ApplyFilterInfoToStream (connection, stream, table, where, 1, columns, count, filters);
 
     // set up a temporary log file
-    ArcSDELockUtility::MakeLog (&log, mConnection->GetConnection (), table);
+    mConnection->MakeLog (&log, table);
 
     // accumulate the query in the log file
     result = SE_stream_set_logfile (stream, log, FALSE);
