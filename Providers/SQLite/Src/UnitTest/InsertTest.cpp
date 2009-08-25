@@ -742,7 +742,6 @@ void InsertTest::TestNoPK ()
             FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
             CPPUNIT_ASSERT(rdr->ReadNext());
             FdoPtr<FdoClassDefinition> clsrdr = rdr->GetClassDefinition();
-            CPPUNIT_ASSERT(rdr->GetInt64(L"rowid") == 1);
             
             rdr->Close();
         }
@@ -772,7 +771,6 @@ void InsertTest::TestNoPK ()
             FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
             CPPUNIT_ASSERT(rdr->ReadNext());
             FdoPtr<FdoClassDefinition> clsrdr = rdr->GetClassDefinition();
-            CPPUNIT_ASSERT(rdr->GetInt64(L"rowid") == 2);
             
             rdr->Close();
         }
@@ -782,6 +780,47 @@ void InsertTest::TestNoPK ()
             exc->Release();
             CPPUNIT_FAIL("\nUnexpected exception: ");
         }
+
+        // select values
+	    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    select->SetFeatureClassName(L"TestNoPK");
+        FdoPtr<FdoIdentifierCollection> collProps = select->GetPropertyNames();
+        
+        FdoPtr<FdoIdentifier> idfName = FdoIdentifier::Create(L"Name");
+        collProps->Add(idfName);
+        FdoPtr<FdoIdentifier> idfGeom = FdoIdentifier::Create(L"Geometry");
+        collProps->Add(idfGeom);
+        FdoPtr<FdoIdentifier> idfFeatId = FdoIdentifier::Create(L"FeatId");
+        collProps->Add(idfFeatId);
+        FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"22.44*FeatId - 33.44");
+        FdoPtr<FdoIdentifier> idfCalc = FdoComputedIdentifier::Create(L"Calc", exp);
+        collProps->Add(idfCalc);
+
+		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Geometry", FdoSpatialOperations_EnvelopeIntersects, gv);
+        select->SetFilter(filter);
+	    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        int cnt = 0;
+	    while (rdr->ReadNext())
+	    {
+            cnt++;
+            if (!rdr->IsNull(L"Name"))
+            {
+                FdoString* name = rdr->GetString(L"Name");
+                printf("Name=%ls\n", name);
+            }
+            if (!rdr->IsNull(L"FeatId"))
+            {
+                FdoInt64 featId = rdr->GetInt64(L"FeatId");
+                printf("FeatId=%ld\n", featId);
+            }
+            if (!rdr->IsNull(L"Calc"))
+            {
+                double calc = rdr->GetDouble(L"Calc");
+                printf("Calc=%g\n", calc);
+            }
+	    }
+        CPPUNIT_ASSERT(cnt == 2);
+
         conn->Close();
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
