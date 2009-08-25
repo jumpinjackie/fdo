@@ -33,7 +33,7 @@ public enum class ParameterDirection{
     ParameterDirection_Input = FdoParameterDirection_Input,
 
     // Specifies that the parameter is an output parameter.
-    ParameterDirection_Ouput = FdoParameterDirection_Ouput,
+    ParameterDirection_Ouput = FdoParameterDirection_Output,
 
     // Specifies that the parameter is an input & output parameter.
     ParameterDirection_InputOutput = FdoParameterDirection_InputOutput,
