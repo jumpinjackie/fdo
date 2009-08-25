@@ -300,6 +300,9 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
                 m_reissueProps.Add(idp->GetName());
         }
     }
+    else
+        m_reissueProps.Add("rowid", 5);
+
     if (nIdProps <= 1 && m_class->GetClassType() == FdoClassType_FeatureClass)
     {
         //add the geom by doing a requery

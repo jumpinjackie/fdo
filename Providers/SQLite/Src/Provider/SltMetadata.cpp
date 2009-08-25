@@ -406,11 +406,8 @@ FdoClassDefinition* SltMetadata::ToClass()
         }
     }
     
-    // is view or a table without primary key !?
-    // One way to expose classes without primary keys is to expose the hidden column ROWID
-    // for now we may live with that since other solution is to add all properties as key 
-    // however this may not satisfy a PK all the time and could generate issues
-    if ((pTable->nCol && pTable->pSelect != NULL) || (idpdc->GetCount() == 0)) 
+    // is view?
+    if ((pTable->nCol && pTable->pSelect != NULL))
     {
         // views don't have a primary key we need to "generate" one as ROWID
         std::wstring propAgName = L"rowid";
