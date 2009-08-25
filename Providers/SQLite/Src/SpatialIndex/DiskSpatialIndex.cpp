@@ -85,12 +85,16 @@ void SpatialIndex::Insert(unsigned fid, DBounds& ext)
 
         _haveOffset = true;
     }
-    _lastInsertedIdx = fid;
 
     //translate the given bounds to local space
     Bounds b;
     TranslateBounds(&ext, _offset, &b);
     Insert(fid, b);
+    
+    // avoid a update to change this value since update will provide 
+    // fid < _lastInsertedIdx and we will force SI update
+    if (fid > _lastInsertedIdx)
+        _lastInsertedIdx = fid;
 }
 
 void SpatialIndex::Insert(unsigned fid, Bounds& b)
@@ -190,6 +194,18 @@ void SpatialIndex::Insert(unsigned fid, Bounds& b)
                     Bounds::Add(&n->b, &oldRoot->b);
                 }
             }
+            else if (fid <= _lastInsertedIdx)
+            {
+                // in case we do an update we need to propagate the value till root
+                index = (unsigned int)fid;
+                // i=1 jump over the first level
+                for (int j=1; j<=_rootLevel; j++)
+                {
+                    index = index >> BATCH_SHIFT;
+                    Node* upperRoot = GetNode(j, (int)index);
+                    Bounds::Add(&upperRoot->b, &b);
+                }
+            }
             break;
         }
 
@@ -233,6 +249,8 @@ void SpatialIndex::Delete(unsigned fid)
         _countChanges++;
         if ((10*_countChanges) > _lastInsertedIdx)
             FullSpatialIndexUpdate();
+        else if (_lastInsertedIdx == index)
+            _lastInsertedIdx = (index == 0) ? 0 : (index-1);
     }
 }
 
