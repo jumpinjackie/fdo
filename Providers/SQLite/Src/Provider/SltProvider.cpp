@@ -2410,7 +2410,7 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                         //    sb.Append(g_fdo2sql_map[FdoDataType_Int64].c_str());
                         //else
                         sb.Append(g_fdo2sql_map[idp->GetDataType()].c_str());
-                        sb.Append(" UNIQUE", 7);
+                        sb.Append(" PRIMARY KEY", 12);
                         canAddUnique = false;
                     }
                 }
