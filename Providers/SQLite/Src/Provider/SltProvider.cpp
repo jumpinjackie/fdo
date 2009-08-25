@@ -2397,6 +2397,23 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                     sb.Append(" INTEGER PRIMARY KEY");
                     canAddUnique = false;
                 }
+                else
+                {
+                    if (simpleUniqueConstr.empty())
+                    {
+                        sb.AppendDQuoted(idp->GetName());
+                        sb.Append(" ", 1);
+                        // TODO should we !?
+                        // in case it's a decimal with no digits to the right of the decimal point, take
+                        // it as int64 since it's faster and it will create a closer copy of original schema
+                        //if (dt == FdoDataType_Decimal && idp->GetScale() == 0 && idp->GetPrecision() != 0)
+                        //    sb.Append(g_fdo2sql_map[FdoDataType_Int64].c_str());
+                        //else
+                        sb.Append(g_fdo2sql_map[idp->GetDataType()].c_str());
+                        sb.Append(" UNIQUE", 7);
+                        canAddUnique = false;
+                    }
+                }
 
                 AddPropertyConstraintDefaultValue(idp, sb);
                 if (canAddUnique && !simpleUniqueConstr.empty())
@@ -2876,7 +2893,7 @@ int SltConnection::CommitTransaction(bool isUserTrans)
                 m_transactionState = SQLiteActiveTransactionType_None;
             // else we need to handle this internally
             
-            if (!m_updateHookEnabled)
+            if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::commit_hook(this);
         }
     }
@@ -2895,7 +2912,7 @@ int SltConnection::CommitTransaction(bool isUserTrans)
             else
                 throw FdoException::Create(L"SQLite commit transaction failed!", rc);
             
-            if (!m_updateHookEnabled)
+            if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::commit_hook(this);
         }
         else
@@ -2921,7 +2938,7 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
 #endif
             m_transactionState = SQLiteActiveTransactionType_None;
             
-            if (!m_updateHookEnabled)
+            if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::rollback_hook(this);
         }
     }
@@ -2937,7 +2954,7 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
 #endif
             m_transactionState = SQLiteActiveTransactionType_None;
             
-            if (!m_updateHookEnabled)
+            if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::rollback_hook(this);
         }
         else
@@ -3057,12 +3074,9 @@ void SltConnection::EnableHooks(bool enable, bool enforceRollback)
         sqlite3_rollback_hook(m_dbWrite, NULL, NULL);
         m_updateHookEnabled = false;
 
+         // we need to commit since user wants to "see" his change during a transaction
         if (!enforceRollback)
-        {
-            // commit changes in case no transaction was started
-            if (!IsTransactionStarted())
-                SltConnection::commit_hook(this);
-        }
+            SltConnection::commit_hook(this);
         else
             SltConnection::rollback_hook(this);
     }
