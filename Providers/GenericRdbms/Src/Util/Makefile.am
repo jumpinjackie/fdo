@@ -22,12 +22,12 @@ EXTRA_DIST = util.vcproj
 noinst_LTLIBRARIES = libutil.la
 
 libutil_la_SOURCES = \
-  da_.c  \
-  dtoa.c \
-  dtoa_p.c \
-  itoa.c \
-  thread.c \
-  trace.c
+  da_.cpp  \
+  dtoa.cpp \
+  dtoa_p.cpp \
+  itoa.cpp \
+  thread.cpp \
+  trace.cpp
 
 noinst_HEADERS = $(libutil_la_SOURCES) \
   stdafx.h
