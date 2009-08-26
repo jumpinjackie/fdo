@@ -146,7 +146,7 @@ void SpatialIndex::Insert(unsigned fid, Bounds& b)
                 for (int j=1; j<=_rootLevel; j++)
                 {
                     index = index >> BATCH_SHIFT;
-                    Node* upperRoot = GetNode(j, (int)index);
+                    Node* upperRoot = &levels[j][index];
                     Bounds::Add(&upperRoot->b, &b);
                 }
             }
