@@ -31,7 +31,7 @@
 extern char *fdorfp_cat;   
 
 // Convenient NLS macros
-inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, int line, char* catalog, ...)
+inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* file, int line, const char* catalog, ...)
 {
     va_list arguments;
 
@@ -40,7 +40,7 @@ inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, char* defMsg, char* file, in
     va_end(arguments);
     return result;
 }
-inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, char* defMsg, char* catalog, ...)
+inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, const char* defMsg, const char* catalog, ...)
 {
     va_list arguments;
 

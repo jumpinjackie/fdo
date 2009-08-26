@@ -29,7 +29,7 @@
 #pragma once
 #endif //_WIN32
 
-static char* defaultSchema[] = {
+static const char* defaultSchema[] = {
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
 "<DataStore ",
 " xmlns:fdo=\"http://fdo.osgeo.org/schemas\"",
