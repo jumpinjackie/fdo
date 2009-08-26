@@ -248,7 +248,7 @@ void ExtendedSelectTest::WorldTestWFile(FdoIConnection* connection)
         printf ("Creation  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
         
         // Iterate in the forward direction from first to last
-        wchar_t*   expected[] = {L"Afghanistan",L"Albania",L"Algeria",L"Andorra",L"Angola",L"Angola",L"Antigua and Barbuda",L"Argentina",L"Argentina",L"Argentina"};
+        const wchar_t*   expected[] = {L"Afghanistan",L"Albania",L"Algeria",L"Andorra",L"Angola",L"Angola",L"Antigua and Barbuda",L"Argentina",L"Argentina",L"Argentina"};
         start = clock ();
         int count = 0;
         if( reader->ReadFirst() )
@@ -267,7 +267,7 @@ void ExtendedSelectTest::WorldTestWFile(FdoIConnection* connection)
         printf ("Read forward(%d)  time: %2.3f seconds\n\n\n",count, (double)(finish - start) / CLOCKS_PER_SEC);
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==419 );
 
-        wchar_t*   expected2[] = {L"Zimbabwe",L"Zambia",L"Zaire",L"Western Sahara",L"Virgin Islands",L"Vietnam",L"Venezuela",L"Venezuela",L"Uzbekistan",L"Uruguay"};
+        const wchar_t*   expected2[] = {L"Zimbabwe",L"Zambia",L"Zaire",L"Western Sahara",L"Virgin Islands",L"Vietnam",L"Venezuela",L"Venezuela",L"Uzbekistan",L"Uruguay"};
         count = 0;
         start = clock ();
         if( reader->ReadLast() )
@@ -285,7 +285,7 @@ void ExtendedSelectTest::WorldTestWFile(FdoIConnection* connection)
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==419 );
 
         // Jump to a particular record
-        wchar_t*   expected3[] = {L"Tunisia",L"Turkey",L"Turkmenistan",L"Turks and Caicos Islands",L"Turks and Caicos Islands",L"Uganda",L"Ukraine",L"United Kingdom",L"United Kingdom",L"United Kingdom"};
+        const wchar_t*   expected3[] = {L"Tunisia",L"Turkey",L"Turkmenistan",L"Turks and Caicos Islands",L"Turks and Caicos Islands",L"Uganda",L"Ukraine",L"United Kingdom",L"United Kingdom",L"United Kingdom"};
         FdoPtr<FdoPropertyValueCollection>key = FdoPropertyValueCollection::Create();
         FdoPtr<FdoStringValue> svname = FdoStringValue::Create(L"Tunisia");
         key->Add( FdoPtr<FdoPropertyValue>( FdoPropertyValue::Create(L"NAME", svname) ) );
@@ -366,7 +366,7 @@ void ExtendedSelectTest::WorldTestWoFile(FdoIConnection* connection)
         printf ("Creation  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
         
         // Iterate in the forward direction from first to last
-        wchar_t*   expected[] = {L"Afghanistan",L"Albania",L"Algeria",L"Andorra",L"Angola",L"Angola",L"Antigua and Barbuda",L"Argentina",L"Argentina",L"Argentina"};
+        const wchar_t*   expected[] = {L"Afghanistan",L"Albania",L"Algeria",L"Andorra",L"Angola",L"Angola",L"Antigua and Barbuda",L"Argentina",L"Argentina",L"Argentina"};
         start = clock ();
         int count = 0;
         if( reader->ReadFirst() )
@@ -385,7 +385,7 @@ void ExtendedSelectTest::WorldTestWoFile(FdoIConnection* connection)
         printf ("Read forward(%d)  time: %2.3f seconds\n\n\n",count, (double)(finish - start) / CLOCKS_PER_SEC);
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==419 );
 
-        wchar_t*   expected2[] = {L"Zimbabwe",L"Zambia",L"Zaire",L"Western Sahara",L"Virgin Islands",L"Vietnam",L"Venezuela",L"Venezuela",L"Uzbekistan",L"Uruguay"};
+        const wchar_t*   expected2[] = {L"Zimbabwe",L"Zambia",L"Zaire",L"Western Sahara",L"Virgin Islands",L"Vietnam",L"Venezuela",L"Venezuela",L"Uzbekistan",L"Uruguay"};
         count = 0;
         start = clock ();
         if( reader->ReadLast() )
@@ -403,7 +403,7 @@ void ExtendedSelectTest::WorldTestWoFile(FdoIConnection* connection)
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==419 );
 
         // Jump to a particular record
-        wchar_t*   expected3[] = {L"Tunisia",L"Turkey",L"Turkmenistan",L"Turks and Caicos Islands",L"Turks and Caicos Islands",L"Uganda",L"Ukraine",L"United Kingdom",L"United Kingdom",L"United Kingdom"};
+        const wchar_t*   expected3[] = {L"Tunisia",L"Turkey",L"Turkmenistan",L"Turks and Caicos Islands",L"Turks and Caicos Islands",L"Uganda",L"Ukraine",L"United Kingdom",L"United Kingdom",L"United Kingdom"};
         FdoPtr<FdoPropertyValueCollection>key = FdoPropertyValueCollection::Create();
         FdoPtr<FdoStringValue> svname = FdoStringValue::Create(L"Tunisia");
         key->Add( FdoPtr<FdoPropertyValue>( FdoPropertyValue::Create(L"NAME", svname) ) );
