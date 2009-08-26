@@ -16,6 +16,7 @@
  *
  ************************************************************************/
 
+#include "stdafx.h"
 #include <Fdo.h>
 #include <FdoCommonNlsUtil.h>
 #include <Inc/Nls/fdordbms_msg.h>
