@@ -11,7 +11,7 @@ get_target_property( MKCATDEFS_EXE mkcatdefs LOCATION )
 
 add_custom_command(
                 OUTPUT "${messagefile}"
-				COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${catalog}.mc ${CMAKE_CURRENT_BINARY_DIR}/${catalog}.msf \"*\" SDF
+				COMMAND ${MCTOMSF_EXE} ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${catalog}.mc ${CMAKE_CURRENT_BINARY_DIR}/${catalog}.msf \"*\" SDFMESSAGE
 				COMMAND ${MKCATDEFS_EXE} ARGS ${catalog} ${catalog}.msf > ${catalog}.tmp
 				COMMAND gencat ARGS  ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat ${catalog}.tmp
 				COMMAND sed ARGS -i "\"/#include/d\""  ${catalog}_msg.h

@@ -90,7 +90,7 @@ typedef unsigned short FCID_STORAGE;
 // the default message catalog filename
 extern char *fdoodbc_cat;
 
-inline FdoString* NlsMsgGetMain(int msg_num, char* default_msg, ...)
+inline FdoString* NlsMsgGetMain(int msg_num, const char* default_msg, ...)
 {
     va_list varargs;
     va_start(varargs, default_msg);
@@ -100,7 +100,7 @@ inline FdoString* NlsMsgGetMain(int msg_num, char* default_msg, ...)
     return ret;
 }
 
-inline FdoString* NlsMsgGetMain(int msg_num, char* default_msg, char* file, int line, ...)
+inline FdoString* NlsMsgGetMain(int msg_num, const char* default_msg, const char* file, int line, ...)
 {
     va_list varargs;
     va_start(varargs, line);
