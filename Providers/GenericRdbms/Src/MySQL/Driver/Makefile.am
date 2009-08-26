@@ -22,34 +22,34 @@ EXTRA_DIST = MySqlDriver.vcproj
 noinst_LTLIBRARIES = libmysqldr.la
 
 libmysqldr_la_SOURCES = \
-  bind.c \
-  commit.c \
-  connect.c \
-  define.c \
-  desc_bind.c \
-  desc_slct.c \
-  disconnect.c \
-  est_cursor.c \
-  execute.c \
-  fetch.c \
-  fre_cursor.c \
-  geom_srid.c	\
-  get_gen_id.c \
-  get_msg.c \
-  init.c \
-  nls.c \
-  null.c \
-  rdbi_init.c \
-  run_sql.c \
-  set_schema.c \
-  sql.c \
-  stdafx.c \
-  term.c \
-  type.c \
-  vndr_info.c \
-  vndr_name.c \
-  xlt_status.c \
-  Geometry.c
+  bind.cpp \
+  commit.cpp \
+  connect.cpp \
+  define.cpp \
+  desc_bind.cpp \
+  desc_slct.cpp \
+  disconnect.cpp \
+  est_cursor.cpp \
+  execute.cpp \
+  fetch.cpp \
+  fre_cursor.cpp \
+  geom_srid.cpp	\
+  get_gen_id.cpp \
+  get_msg.cpp \
+  init.cpp \
+  nls.cpp \
+  null.cpp \
+  rdbi_init.cpp \
+  run_sql.cpp \
+  set_schema.cpp \
+  sql.cpp \
+  stdafx.cpp \
+  term.cpp \
+  type.cpp \
+  vndr_info.cpp \
+  vndr_name.cpp \
+  xlt_status.cpp \
+  Geometry.cpp
 
 noinst_HEADERS = $(libmysqldr_la_SOURCES) \
   bind.h \
