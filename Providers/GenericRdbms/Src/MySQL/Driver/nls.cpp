@@ -17,6 +17,12 @@
  ************************************************************************/
 
 #include "stdafx.h"
+
+//TODO: this is needed to work around a #define bool BOOL in older mysql
+//headers, which messes up various STL inclusions from the headers below.
+//Once we move to a higher version of mysql, we can remove this 
+#undef bool
+
 #include <Fdo.h>
 #include <FdoCommonNlsUtil.h>
 #include <Inc/Nls/fdordbms_msg.h>
