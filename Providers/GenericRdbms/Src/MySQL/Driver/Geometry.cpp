@@ -17,9 +17,13 @@
  */
 
 #include "stdafx.h"
-#include <string.h>
+
+//TODO: this is needed to work around a #define bool BOOL in older mysql
+//headers, which messes up various STL inclusions from the headers below.
+//Once we move to a higher version of mysql, we can remove this 
+#undef bool
+
 #include "Geometry.h"
-#include <Fdo.h>
 #include <Geometry/Fgf/Factory.h>
 
 void *GeometryFromWkb (void *wkb, unsigned long size)
