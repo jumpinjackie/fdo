@@ -31,9 +31,7 @@
 //the spatial index and also significantly speeds up
 //spatial index searches, especially when data is not
 //spatially coherent and the index is therefore inefficient.
-#ifdef _MSC_VER
 #define ENABLE_SSE 1
-#endif
 
 #if ENABLE_SSE
 #ifndef _MSC_VER
