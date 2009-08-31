@@ -25,9 +25,8 @@
 
 #define _aligned_free free
 
-void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
+void* _aligned_malloc(size_t size, size_t alignment)
 {
-    _aligned_free(ptr);
     void* ret = 0;
     int res = posix_memalign(&ret, alignment, size);
     return ret;
@@ -102,7 +101,12 @@ void SpatialIndex::Insert(unsigned fid, Bounds& b)
         {
             //double the arrays when resizing -- wasteful but fast.
             int nsize = 2 * index + 1; 
-            Node* n = (Node*)_aligned_realloc(levels[i], nsize * sizeof(Node), 16);
+            Node* n = (Node*)_aligned_malloc(nsize * sizeof(Node), 16);
+            
+            //copy existing data into newly allocated array
+            //and free the old array
+            memcpy(n, levels[i], sizeof(Node) * counts[i]);
+            _aligned_free(levels[i]);
  
             //fill newly allocated section with empty boxes
             FillMem(&n[counts[i]].b, &EMPTY_BOX, nsize - counts[i]);
@@ -118,7 +122,7 @@ void SpatialIndex::Insert(unsigned fid, Bounds& b)
 
         //expand bounds of node at this level
         Bounds::Add(&n.b, &b); 
-
+        
         if (index == 0)
         {
             //update root level (it's the one where we there 
