@@ -23,6 +23,7 @@
 
 std::string W2A_SLOW(const wchar_t* input)
 {
+    assert( input!=NULL );
     size_t wlen = wcslen(input);
     int mbslen = (int) wlen * 4 + 1;
     char* mbs = (char*)alloca(mbslen);
@@ -33,6 +34,7 @@ std::string W2A_SLOW(const wchar_t* input)
 
 std::wstring A2W_SLOW(const char* input)
 {
+    assert( input!=NULL );
     int wlen = (int)strlen(input) + 1;
     wchar_t* ws = (wchar_t*)alloca(sizeof(wchar_t)*wlen);
     //MultiByteToWideChar(CP_UTF8, 0, input, -1, ws, wlen);
@@ -52,6 +54,7 @@ int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
 
 int StringContains(const char* str, const char* val)
 {
+    assert( str!=NULL );
     const char* strTmp = str;
     while (*strTmp != '\0')
     {
@@ -73,6 +76,7 @@ int StringContains(const char* str, const char* val)
 
 FdoDateTime DateFromString(const wchar_t* val, bool excOnErr)
 {
+    assert( val!=NULL );
     // to avoid stack corruption declare following variables
     // since swscanf expects "Type of argument" = "Pointer to int"
     int year = -1;
@@ -131,6 +135,7 @@ FdoDateTime DateFromString(const wchar_t* val, bool excOnErr)
 
 FdoDateTime DateFromString(const char* val, bool excOnErr)
 {
+    assert( val!=NULL );
     // to avoid stack corruption declare following variables
     // since swscanf expects "Type of argument" = "Pointer to int"
     int year = -1;

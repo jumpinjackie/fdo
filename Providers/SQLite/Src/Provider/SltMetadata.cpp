@@ -784,7 +784,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
         {
             const char* txt = (const char*)sqlite3_column_text(stmt, 0);
-            ret = A2W_SLOW(txt);
+            ret = (txt == NULL || *txt == '\0') ? L"" : A2W_SLOW(txt);
         }
 
         sqlite3_finalize(stmt);

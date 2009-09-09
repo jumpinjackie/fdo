@@ -798,16 +798,16 @@ protected:
 
 public:
     virtual FdoString*      GetName()                               { return m_scName.c_str(); }
-    virtual void            SetName(FdoString* value)               { m_scName = value; }
+    virtual void            SetName(FdoString* value)               { m_scName = (value != NULL) ? value : L""; }
     virtual FdoString*      GetDescription()                        { return m_description.c_str(); }
-    virtual void            SetDescription(FdoString* value)        { m_description = value; }
+    virtual void            SetDescription(FdoString* value)        { m_description = (value != NULL) ? value : L""; }
     virtual void            SetGeometricProperty(FdoPropertyDefinition *value) { }
     virtual void            SetDimensionality(int value)            { }
     virtual int             GetDimensionality()                     { return 0; }
     virtual FdoString*      GetCoordinateSystem()                   { return m_coordSysName.c_str(); }
-    virtual void            SetCoordinateSystem(FdoString* value)   { m_coordSysName = value; }
+    virtual void            SetCoordinateSystem(FdoString* value)   { m_coordSysName = (value != NULL) ? value : L""; }
     virtual FdoString*      GetCoordinateSystemWkt()                { return m_coordSysWkt.c_str(); }
-    virtual void            SetCoordinateSystemWkt(FdoString* value){ m_coordSysWkt = value; }
+    virtual void            SetCoordinateSystemWkt(FdoString* value){ m_coordSysWkt = (value != NULL) ? value : L""; }
     virtual FdoSpatialContextExtentType GetExtentType()             { return FdoSpatialContextExtentType_Dynamic; }
     virtual void            SetExtentType(FdoSpatialContextExtentType value) { }
     virtual FdoByteArray*   GetExtent()                             { return NULL; }
