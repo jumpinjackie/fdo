@@ -71,3 +71,18 @@ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReader^ NAMESPACE_OSGEO_FDO_COMMANDS_S
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateISQLDataReader(IntPtr(result), true);
 }
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::FetchSize::set(System::Int32 value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetFetchSize(static_cast<FdoInt32>(value)))
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLCommandImp::FetchSize::get()
+{
+	FdoInt32 result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetFetchSize())
+
+	return static_cast<System::Int32>(result);
+}
+

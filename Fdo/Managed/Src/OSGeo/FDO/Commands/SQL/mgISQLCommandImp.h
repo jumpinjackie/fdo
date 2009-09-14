@@ -59,6 +59,29 @@ public:
     }
 
     /// \brief
+    /// Sets the fetch size of the data set when executing query against 
+    /// the underlying data store.
+    /// 
+    /// \param value
+    /// Input the fetch size.
+    /// 
+    /// \return  
+    /// Returns nothing.
+    /// 
+    /// \brief 
+    /// Gets the fetch size of the data set when executing query against 
+    /// the underlying data store.
+    /// 
+    /// \return  
+    /// Returns the fetch size.
+    /// 
+    virtual property System::Int32 FetchSize
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
+    }
+
+    /// \brief
     /// Executes the SQL statement against the connection object and returns
     /// the number of rows affected.
     /// 
