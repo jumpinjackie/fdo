@@ -103,6 +103,52 @@ void SQLCmdTest::TestSimpleBind ()
 	}
 }
 
+void SQLCmdTest::TestErrorMessageSimpleBind ()
+{
+	try
+	{
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+
+		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+		 //apply schema
+		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
+		applyschema->SetFeatureSchema(schema);
+		applyschema->Execute();
+        conn->Close();
+        conn->Open();
+
+        FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+        sqlCmd->SetSQLStatement(L"insert into parcelchild2 (Name,Url,Key,Numb) values (?,?,?,?)");
+
+        FdoPtr<FdoParameterValueCollection> parmVals = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoStringValue>name = FdoStringValue::Create(L"Fred");
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Name", name )));
+
+        FdoPtr<FdoStringValue>url = FdoStringValue::Create(L"http://www.youtube.com/watch?v=zX53PVe8Rck");
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Url", url)));
+
+        FdoPtr<FdoStringValue>key = FdoStringValue::Create(L"Key1");
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Key", key)));
+
+        FdoPtr<FdoDoubleValue>dblVal = FdoDoubleValue::Create(234.234);
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Numb", dblVal)));
+
+        CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
+
+        CPPUNIT_FAIL("TestErrorMessageSimpleBind: Expected exception not found, test should fail!");
+	}
+	catch(FdoException *exp )
+	{
+        FdoStringP expErr = L"no such table: parcelchild2";
+        CPPUNIT_ASSERT(expErr == exp->GetExceptionMessage());
+        printf("\nExpected exception:\n");
+		UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+	}
+}
+
 void SQLCmdTest::TestUpdateWithBind ()
 {
 	try

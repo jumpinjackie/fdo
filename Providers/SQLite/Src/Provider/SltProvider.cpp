@@ -564,8 +564,11 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     }
     else
     {
-        std::wstring err = A2W_SLOW(pzTail);
-        throw FdoException::Create(err.c_str(), rc);
+        const char* err = sqlite3_errmsg(m_dbRead);
+        if (err != NULL)
+            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+        else
+            throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.", rc);
     }
 
     sqlite3_reset(pstmt);
@@ -702,15 +705,31 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         sb.AppendDQuoted(mbfc);
         sb.Append(" ORDER BY ");
 
+        SltExtractExpressionTranslator exTrans(props);
         for (size_t i=0; i<ordering.size(); i++)
         {
             if (i)
                 sb.Append(",");
 
-            //NOTE: We are using ToString() here in order to convert
-            //any computed identifiers/expression that may have been specified for sorting by.
-            sb.Append(ordering[i].name->ToString());
-           
+            // identifiers for order are provided as identifiers even are calculations.
+            // so in order to get the "expression" we need to look for them in the select list
+            FdoIdentifier* idfto = ordering[i].name;
+            FdoPtr<FdoIdentifier> idfadd;
+            if (props != NULL)
+            {
+                idfadd = props->FindItem(idfto->GetName());
+                if (idfadd != NULL)
+                {
+                    idfadd->Process(&exTrans);
+                    StringBuffer* exp = exTrans.GetExpression();
+                    sb.Append(exp->Data(), exp->Length());
+                    exTrans.Reset();
+                }
+            }
+            // in case it's a property not present in selection list just add it
+            if (idfadd == NULL)
+                sb.Append(idfto->ToString());
+
             if (ordering[i].option == FdoOrderingOption_Ascending)
                 sb.Append(" ASC");
             else
@@ -1077,7 +1096,11 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
                 if (geomPropIsUpdated)
                     EnableHooks(false, true);
 
-                throw FdoCommandException::Create(L"Failed to execute update statement.", rc);
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoCommandException::Create(L"Failed to execute update statement.", rc);                
             }
             ret += sqlite3_changes(m_dbWrite);
         }
@@ -1098,6 +1121,10 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
                     if (geomPropIsUpdated)
                         EnableHooks(false, true);
 
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+                else                    
                     throw FdoCommandException::Create(L"Failed to execute update statement.", rc);
                 }
                 ret += sqlite3_changes(m_dbWrite);
@@ -1114,8 +1141,14 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     {
         if (ri)
             delete ri;
-        std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
-        throw FdoCommandException::Create(err.c_str(), rc);
+        const char* err = sqlite3_errmsg(m_dbWrite);
+        if (err != NULL)
+            throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+        else
+        {
+            std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
+            throw FdoCommandException::Create(err.c_str(), rc);
+        }
     }
     return (FdoInt32)ret;
 }
@@ -1231,9 +1264,16 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
         {
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                FdoException* excThr = NULL;
+                if (err != NULL)
+                    excThr = FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    excThr = FdoCommandException::Create(L"Failed to execute delete statement.", rc);
+
                 sqlite3_finalize(stmt);
                 EnableHooks(false, true);
-                throw FdoCommandException::Create(L"Failed to execute delete statement.", rc);
+                throw excThr;
             }
             ret += sqlite3_changes(m_dbWrite);
         }
@@ -1245,12 +1285,18 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
                 sqlite3_bind_int64(stmt, 1, ri->CurrentRowid());
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
+                    const char* err = sqlite3_errmsg(m_dbWrite);
+                    FdoException* excThr = NULL;
+                    if (err != NULL)
+                        excThr = FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+                    else
+                        excThr = FdoCommandException::Create(L"Failed to execute delete statement.", rc);
                     sqlite3_finalize(stmt);
                     if (ri)
                         delete ri;
 
                     EnableHooks(false, true);
-                    throw FdoCommandException::Create(L"Failed to execute delete statement.", rc);
+                    throw excThr;
                 }
                 ret += sqlite3_changes(m_dbWrite);
                 sqlite3_reset(stmt);
@@ -1265,8 +1311,14 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
     {
         if (ri)
             delete ri;
-        std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
-        throw FdoCommandException::Create(err.c_str(), rc);
+        const char* err = sqlite3_errmsg(m_dbWrite);
+        if (err != NULL)
+            throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+        else
+        {
+            std::wstring err = L"Failed to parse: " + A2W_SLOW(sb.Data());
+            throw FdoCommandException::Create(err.c_str(), rc);
+        }
     }
     return (FdoInt32)ret;
 }
@@ -1602,8 +1654,12 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     if (rc != SQLITE_OK)
     {
+        FdoException* baseExc = NULL;
+        const char* err = sqlite3_errmsg(m_dbWrite);
+        if (err != NULL)
+            baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
         std::wstring errorMsg = std::wstring(L"Failed to delete class \'") + fcName + L"\'"; 
-        throw FdoException::Create(errorMsg.c_str(), rc);
+        throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
     }
     sb.Reset();
     sb.Append("DELETE FROM geometry_columns WHERE f_table_name=");
@@ -1687,8 +1743,12 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
     int rc;
     if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
     {
+        FdoException* baseExc = NULL;
+        const char* err = sqlite3_errmsg(m_dbWrite);
+        if (err != NULL)
+            baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
         std::wstring errorMsg = std::wstring(L"Failed to create class \'") + fc->GetName() + L"\'"; 
-        throw FdoException::Create(errorMsg.c_str(), rc);
+        throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
     }
 }
 
@@ -1768,8 +1828,12 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         int rc;
         if (!first && (rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
         {
+            FdoException* baseExc = NULL;
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
             std::wstring errorMsg = L"Failed to copy table content for class \'" + originalClassName + L"\'"; 
-            throw FdoException::Create(errorMsg.c_str(), rc);
+            throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
         }
         // drop old table
         DeleteClassFromSchema(originalClassName.c_str());
@@ -1783,8 +1847,12 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         
         if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
         {
+            FdoException* baseExc = NULL;
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
             std::wstring errorMsg = L"Failed to rename temporary table for class \'" + originalClassName + L"\'"; 
-            throw FdoException::Create(errorMsg.c_str(), rc);
+            throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
         }
         // update table name column in meta tables 
         sb.Reset();
@@ -1795,8 +1863,12 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         sb.Append(";");
         if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
         {
+            FdoException* baseExc = NULL;
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
             std::wstring errorMsg = L"Failed to update geometry meta data table for class \'" + originalClassName + L"\'"; 
-            throw FdoException::Create(errorMsg.c_str(), rc);
+            throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
         }
 
         if (m_bUseFdoMetadata)
@@ -1809,8 +1881,12 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
             sb.Append(";");
             if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
             {
+                FdoException* baseExc = NULL;
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
                 std::wstring errorMsg = L"Failed to update meta data table for class \'" + originalClassName + L"\'"; 
-                throw FdoException::Create(errorMsg.c_str(), rc);
+                throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
             }
         }
         // update spatial index
@@ -1867,8 +1943,12 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
             int rc;
             if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
             {
+                FdoException* baseExc = NULL;
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
                 std::wstring errorMsg = std::wstring(L"Failed to apply schema for class \'") + fc->GetName() + L"\'"; 
-                throw FdoException::Create(errorMsg.c_str(), rc);
+                throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
             }
         }
     }
@@ -2620,7 +2700,13 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         return new SltReader(this, stmt, true, cls);        
     }
     else
-        throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.", rc);
+    {
+        const char* err = sqlite3_errmsg(db);
+        if (err != NULL)
+            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+        else
+            throw FdoException::Create(L"Failed to generate Count() or SpatialExtents() reader.", rc);
+    }
 }
 
 FdoInt64 SltConnection::GetFeatureCount(const char* table)
@@ -2650,12 +2736,17 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
 // Do not use it in other functions than GetCachedParsedStatement
 // Statement is not cached -- make one, and also add an entry for it
 // into the cache table
-#define SQL_PREPARE_CACHEPARSEDSTM(db) {                                          \
-    const char* tail = NULL;                                                      \
-    int rc = sqlite3_prepare_v2(((NULL==db)?m_dbRead:db), sql, -1, &ret, &tail);  \
-    if (rc != SQLITE_OK || ret == NULL)                                           \
-        throw FdoException::Create(L"Failed to parse SQL statement", rc);             \
-}                                                                                 \
+#define SQL_PREPARE_CACHEPARSEDSTM(db) {                                           \
+    const char* tail = NULL;                                                       \
+    int rc = sqlite3_prepare_v2(((NULL==db)?m_dbRead:db), sql, -1, &ret, &tail);   \
+    if (rc != SQLITE_OK || ret == NULL){                                           \
+        const char* err = sqlite3_errmsg(((NULL==db)?m_dbRead:db));                \
+        if (err != NULL)                                                           \
+            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);                 \
+        else                                                                       \
+            throw FdoException::Create(L"Failed to parse SQL statement", rc);      \
+        }                                                                          \
+}                                                                                  \
 
 
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql, sqlite3* db)
