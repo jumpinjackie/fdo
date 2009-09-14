@@ -207,6 +207,7 @@ private:
 
 //Translates an FDO Expression to a SQLite expression
 //This class is used to process FdoComputedIdentifiers 
+// this class will generate A+B as C
 class SltExpressionTranslator : public FdoIExpressionProcessor
 {
 
@@ -216,7 +217,7 @@ public:
     {
         m_props = FDO_SAFE_ADDREF(props);
     }
-    ~SltExpressionTranslator()
+    virtual ~SltExpressionTranslator()
     {}
 
     SLT_IMPLEMENT_REFCOUNTING
@@ -257,10 +258,27 @@ public:
     StringBuffer* GetExpression() { return &m_expr; }
     void Reset() { m_expr.Reset(); }
 
-private:
+protected:
     FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;
     char m_useConv[256];
+};
+
+//Translates an FDO Expression to a SQLite expression
+//This class is used to process FdoComputedIdentifiers but no for select list
+// this class will generate A+B
+class SltExtractExpressionTranslator : public SltExpressionTranslator
+{
+
+public:
+
+    SltExtractExpressionTranslator(FdoIdentifierCollection* props = NULL)
+        : SltExpressionTranslator(props)
+    {
+    }
+    virtual ~SltExtractExpressionTranslator()
+    {}
+	virtual void ProcessComputedIdentifier      (FdoComputedIdentifier& expr);
 };
 
 //Helper class used at spatial context and count queries

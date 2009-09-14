@@ -481,6 +481,8 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             if (rc != SQLITE_DONE)
             {
+                const char* err = sqlite3_errmsg(m_db);
+                std::wstring errWstr = (err != NULL) ? A2W_SLOW(err) : L"";
                 //uh-oh the insert failed.
                 //What should we do?
                 sqlite3_finalize(m_pCompiledSQL);
@@ -491,7 +493,10 @@ class SltInsert : public SltCommand<FdoIInsert>
                 if (m_connection->CommitTransaction() != SQLITE_OK)
                     m_connection->RollbackTransaction();
                 m_pCompiledSQL = NULL;
-                throw FdoCommandException::Create(L"SQLite insert failed!", rc);
+                if (errWstr.size())
+                    throw FdoCommandException::Create(errWstr.c_str(), rc);
+                else
+                    throw FdoCommandException::Create(L"SQLite insert failed!", rc);
             }
 
             if (++m_execCount == BULK_OP_SIZE)
@@ -580,7 +585,13 @@ class SltInsert : public SltCommand<FdoIInsert>
             int rc = sqlite3_prepare_v2(m_db, sb.Data(), -1, &m_pCompiledSQL, &tail);
 
             if (rc != SQLITE_OK)
-                throw FdoCommandException::Create(L"Failed to parse insert sql.", rc);
+            {
+                const char* err = sqlite3_errmsg(m_db);
+                if (err != NULL)
+                    throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoCommandException::Create(L"Failed to parse insert sql.", rc);
+            }
         }
 
         FdoIdentifier*              m_className;
@@ -695,7 +706,13 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     const char* tail = NULL;
                     int rc;
                     if ((rc = sqlite3_prepare_v2(m_db, m_sb.Data(), -1, &m_pCompiledSQL, &tail)) != SQLITE_OK)
-                        throw FdoCommandException::Create(L"Failed to parse SQL statement.", rc);
+                    {
+                        const char* err = sqlite3_errmsg(m_db);
+                        if (err != NULL)
+                            throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);                        
+                        else
+                            throw FdoCommandException::Create(L"Failed to parse SQL statement.", rc);
+                    }
 
                     pStmt = m_pCompiledSQL;
                     BindPropVals(m_pSqlParmeterValues, m_pCompiledSQL);

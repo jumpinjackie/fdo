@@ -136,8 +136,11 @@ FdoClassDefinition* SltMetadata::ToClass()
     }
     else
     {
-        std::wstring err = A2W_SLOW(pzTail);
-        throw FdoException::Create(err.c_str(), rc);
+        const char* err = sqlite3_errmsg(db);
+        if (err != NULL)
+            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+        else
+            throw FdoException::Create(L"Failed to get class information.", rc);
     }
 
     sqlite3_finalize(pstmt);

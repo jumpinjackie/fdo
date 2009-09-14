@@ -1183,6 +1183,20 @@ void SltExpressionTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
 {
     throw FdoException::Create(L"Unsupported FDO type in expression");
 }
+
+void SltExtractExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
+{
+    FdoPtr<FdoExpression> param = expr.GetExpression();
+    if (m_props != NULL)
+    {
+        // expand the expressions in case we have expressions besad on other expressions.
+        FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(param, m_props);
+        HandleExpr(expandedExpression);
+    }
+    else
+        HandleExpr(param);
+}
+
 void SltScCHelperTranslator::ProcessFunction(FdoFunction& expr)
 {
     FdoPtr<FdoExpressionCollection> argColl = expr.GetArguments();
