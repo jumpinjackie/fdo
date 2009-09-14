@@ -68,3 +68,18 @@ NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption NAMESPACE_OSGEO_FDO_COMMANDS_FEATUR
 
 	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption>(result);
 }
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::FetchSize::set(System::Int32 value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetFetchSize(static_cast<FdoInt32>(value)))
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp::FetchSize::get()
+{
+	FdoInt32 result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetFetchSize())
+
+	return static_cast<System::Int32>(result);
+}
+

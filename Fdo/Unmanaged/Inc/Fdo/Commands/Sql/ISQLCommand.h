@@ -73,6 +73,33 @@ public:
     /// Returns the data reader.
     /// 
     FDO_API virtual FdoISQLDataReader* ExecuteReader() = 0;
+
+    /// \brief 
+    /// Gets the fetch size of the data set when executing query against 
+    /// the underlying data store. This parameter is typically set in 
+    /// situations where large amount of data are expected when a query
+    /// is executed and providers need to minimize the number of returned data.
+    /// For example, fetch 100 rows in one execution step.
+    /// 
+    /// \return
+    /// Returns the fetch size.
+    /// 
+    FDO_API virtual FdoInt32 GetFetchSize() { return 0; }
+  
+    /// \brief  
+    /// Sets the fetch size of the data set when executing query against 
+    /// the underlying data store. This parameter is typically set in 
+    /// situations where large amount of data are expected when a query
+    /// is executed and providers need to minimize the number of returned data.
+    /// For example, fetch 100 rows in one execution step.
+    /// 
+    /// \param value
+    /// Input the fetch size.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    FDO_API virtual void SetFetchSize(FdoInt32 fetchSize) { fetchSize; }
 };
 #endif
 

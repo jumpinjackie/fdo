@@ -78,7 +78,7 @@ public:
     /// OrderingOption_Ascending is the default value.
     /// 
     /// \return
-    /// Returns nothing
+    /// Returns nothing.
     /// 
     /// \brief
     /// Gets the ordering option.
@@ -90,6 +90,29 @@ public:
     {
         NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption get();
         System::Void set(NAMESPACE_OSGEO_FDO_COMMANDS::OrderingOption option);
+    }
+
+    /// \brief
+    /// Sets the fetch size of the data set when executing query against 
+    /// the underlying data store.
+    /// 
+    /// \param value
+    /// Input the fetch size.
+    /// 
+    /// \return  
+    /// Returns nothing.
+    /// 
+    /// \brief 
+    /// Gets the fetch size of the data set when executing query against 
+    /// the underlying data store.
+    /// 
+    /// \return  
+    /// Returns the fetch size.
+    /// 
+    property System::Int32 FetchSize
+    {
+        System::Int32 get();
+        System::Void set(System::Int32 value);
     }
 };
 
