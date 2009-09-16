@@ -100,7 +100,7 @@ public:
         {
             for (size_t i=0; i<m_list->size(); i++)
                 if (rowid == m_list->at(i))
-                    return i;
+                    return i + 1;
 
             return -1;
         }

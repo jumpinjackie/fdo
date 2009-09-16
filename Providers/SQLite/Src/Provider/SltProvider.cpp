@@ -2913,7 +2913,9 @@ FdoITransaction* SltConnection::BeginTransaction()
     return new SltTransaction(this);
 }
 
-#define SAVEPOINTS
+// save points keep data store locked!
+// all calls return SQLITE_LOCKED in case of rollback
+// #define SAVEPOINTS
 
 int SltConnection::StartTransaction(bool isUserTrans)
 {
