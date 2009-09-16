@@ -85,6 +85,8 @@ public:
     /// \param functionCategoryType 
     /// Input the category the function belongs to. Valid values for this parameter are defined
     /// in the enumeration FunctionCategoryType.
+    /// \param supportsVariableArgumentsList
+    /// Input a flag indicating whether or not this function supports a variable list of arguments
     /// 
     /// \return
     /// Returns FunctionDefinition
@@ -93,7 +95,8 @@ public:
                         System::String ^description,
                         NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
                         NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection ^arguments,
-                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType);
+                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType,
+                        System::Boolean supportsVariableArgumentsList);
 
     /// \brief
     ///  Constructs an instance of a FunctionDefinition using the specified arguments.
@@ -134,6 +137,8 @@ public:
     /// \param functionCategoryType 
     /// Input the category the function belongs to. Valid values for this parameter are defined
     /// in the enumeration FunctionCategoryType.
+    /// \param supportsVariableArgumentsList
+    /// Input a flag indicating whether or not this function supports a variable list of arguments
     /// 
     /// \return
     /// Returns FunctionDefinition
@@ -143,7 +148,8 @@ public:
                         NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType returnPropertyType,
                         NAMESPACE_OSGEO_FDO_SCHEMA::DataType returnType,
                         NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::ArgumentDefinitionCollection ^arguments,
-                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType);
+                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType,
+                        System::Boolean supportsVariableArgumentsList);
 
     /// \brief
     /// Constructs an instance of a FunctionDefinition using the specified arguments.
@@ -179,6 +185,8 @@ public:
     /// \param functionCategoryType 
     /// Input the category the function belongs to. Valid values for this parameter are defined
     /// in the enumeration FunctionCategoryType.
+    /// \param supportsVariableArgumentsList
+    /// Input a flag indicating whether or not this function supports a variable list of arguments
     /// 
     /// \return
     /// Returns FunctionDefinition
@@ -187,7 +195,8 @@ public:
                         System::String ^description,
                         System::Boolean isAggregate,
                         NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::SignatureDefinitionCollection ^signatures,
-                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType);
+                        NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType functionCategoryType,
+                        System::Boolean supportsVariableArgumentsList);
 
     /// \brief
     /// Gets the name of the function.
@@ -282,6 +291,14 @@ public:
     property NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType FunctionCategoryType
     {
         NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::FunctionCategoryType get();
+    }
+
+    /// \brief
+    /// Returns true if the function allows a variable list of arguments and false otherwise.
+    ///
+    property System::Boolean SupportsVariableArgumentsList
+    {
+        System::Boolean get();
     }
 
 internal:

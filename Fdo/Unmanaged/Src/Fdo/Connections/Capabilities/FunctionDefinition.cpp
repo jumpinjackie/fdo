@@ -23,9 +23,10 @@ FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                 
                                                       FdoString                       *description,
                                                       FdoDataType                     returnType,
                                                       FdoArgumentDefinitionCollection *arguments,
-                                                      FdoFunctionCategoryType         functionCategoryType)
+                                                      FdoFunctionCategoryType         functionCategoryType,
+                                                      bool                            supportsVariableArgumentsList)
 {
-	return new FdoFunctionDefinition(name, description, returnType, arguments, functionCategoryType);
+	return new FdoFunctionDefinition(name, description, returnType, arguments, functionCategoryType, supportsVariableArgumentsList);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
@@ -34,9 +35,10 @@ FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                 
                                                       FdoPropertyType                 returnPropertyType,
                                                       FdoDataType                     returnType,
                                                       FdoArgumentDefinitionCollection *arguments,
-                                                      FdoFunctionCategoryType         functionCategoryType)
+                                                      FdoFunctionCategoryType         functionCategoryType,
+                                                      bool                            supportsVariableArgumentsList)
 {
-	return new FdoFunctionDefinition(name, description, returnPropertyType, returnType, arguments, functionCategoryType);
+	return new FdoFunctionDefinition(name, description, returnPropertyType, returnType, arguments, functionCategoryType, supportsVariableArgumentsList);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
@@ -44,9 +46,10 @@ FdoFunctionDefinition* FdoFunctionDefinition::Create (FdoString                 
                                                       FdoString                        *description,
                                                       bool                             isAggregate,
                                                       FdoSignatureDefinitionCollection *signatures,
-                                                      FdoFunctionCategoryType          functionCategoryType)
+                                                      FdoFunctionCategoryType          functionCategoryType,
+                                                      bool                             supportsVariableArgumentsList)
 {
-	return new FdoFunctionDefinition(name, description, isAggregate, signatures, functionCategoryType);
+	return new FdoFunctionDefinition(name, description, isAggregate, signatures, functionCategoryType, supportsVariableArgumentsList);
 }
 
 // Constructs an instance of a FunctionDefinition using the specified arguments.
@@ -54,11 +57,13 @@ FdoFunctionDefinition::FdoFunctionDefinition (FdoString                       *n
                                               FdoString                       *description,
                                               FdoDataType                     returnType,
                                               FdoArgumentDefinitionCollection *arguments,
-                                              FdoFunctionCategoryType         functionCategoryType)
+                                              FdoFunctionCategoryType         functionCategoryType,
+                                              bool                            supportsVariableArgumentsList)
 {
 	m_name                 = FdoStringUtility::MakeString(name);
 	m_description          = FdoStringUtility::MakeString(description);
     m_isAggregate          = false;
+    m_supportsVariableArgumentsList = supportsVariableArgumentsList;
     m_functionCategoryType = functionCategoryType;
 
     FdoSignatureDefinition *newSignatureDefinition = FdoSignatureDefinition::Create(returnType, arguments);
@@ -75,11 +80,13 @@ FdoFunctionDefinition::FdoFunctionDefinition (FdoString                       *n
                                               FdoPropertyType                 returnPropertyType,
                                               FdoDataType                     returnType,
                                               FdoArgumentDefinitionCollection *arguments,
-                                              FdoFunctionCategoryType         functionCategoryType)
+                                              FdoFunctionCategoryType         functionCategoryType,
+                                              bool                            supportsVariableArgumentsList)
 {
 	m_name                 = FdoStringUtility::MakeString(name);
 	m_description          = FdoStringUtility::MakeString(description);
     m_isAggregate          = false;
+    m_supportsVariableArgumentsList = supportsVariableArgumentsList;
     m_functionCategoryType = functionCategoryType;
 
     FdoSignatureDefinition *newSignatureDefinition = FdoSignatureDefinition::Create(returnPropertyType, returnType, arguments);
@@ -95,11 +102,13 @@ FdoFunctionDefinition::FdoFunctionDefinition (FdoString                        *
                                               FdoString                        *description,
                                               bool                             isAggregate,
                                               FdoSignatureDefinitionCollection *signatures,
-                                              FdoFunctionCategoryType          functionCategoryType)
+                                              FdoFunctionCategoryType          functionCategoryType,
+                                              bool                             supportsVariableArgumentsList)
 {
 	m_name                 = FdoStringUtility::MakeString(name);
 	m_description          = FdoStringUtility::MakeString(description);
     m_isAggregate          = isAggregate;
+    m_supportsVariableArgumentsList = supportsVariableArgumentsList;
     m_functionCategoryType = functionCategoryType;
 
     m_signatures = FdoReadOnlySignatureDefinitionCollection::Create(signatures);
@@ -111,6 +120,7 @@ FdoFunctionDefinition::FdoFunctionDefinition()
 	m_name        = NULL;
 	m_description = NULL;
     m_isAggregate = false;
+    m_supportsVariableArgumentsList = false;
     m_signatures  = NULL;
     m_functionCategoryType = FdoFunctionCategoryType_Unspecified;
 
@@ -179,4 +189,9 @@ FdoReadOnlySignatureDefinitionCollection *FdoFunctionDefinition::GetSignatures()
 bool FdoFunctionDefinition::IsAggregate()
 {
     return m_isAggregate;
+}
+
+bool FdoFunctionDefinition::SupportsVariableArgumentsList()
+{
+    return m_supportsVariableArgumentsList;
 }
