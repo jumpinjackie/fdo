@@ -264,7 +264,7 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 #ifdef _WIN32
             _itow(int32_value->GetInt32(), &buffer[i * BUFFER_SIZE], 10);
 #else
-	        swprintf(buffer[i], BUFFER_SIZE, L"%d", int32_value->GetInt32());
+	        swprintf(&buffer[i * BUFFER_SIZE], BUFFER_SIZE, L"%d", int32_value->GetInt32());
 #endif
             arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
@@ -278,7 +278,7 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
 #ifdef _WIN32
                 _i64tow(int64_value->GetInt64(), &buffer[i * BUFFER_SIZE], 10);
 #else
-	            swprintf(buffer[i], BUFFER_SIZE, L"%lld", int64_value->GetInt64());
+	            swprintf(&buffer[i * BUFFER_SIZE], BUFFER_SIZE, L"%lld", int64_value->GetInt64());
 #endif
                 arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
