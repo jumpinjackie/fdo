@@ -35,19 +35,15 @@ FdoFunctionConcat::FdoFunctionConcat ()
 {
 
     // Initialize all class variables.
-    // NOTE: Due to the fact that data type enumeration misses an entry to
-    //       indicate a not-set value, the variables "para1_data_type" and
-    //       "para2_data_type" are set to "FdoDataType_CLOB" to indicate an
-    //       invalid data type because this function does not support this
-    //       type. 
 
     function_definition = NULL;
     tmp_buffer          = NULL;
+    arg_values          = NULL;
+	dt_index            = NULL;
+	size                = NULL;
+    buffer              = NULL;
 
     is_validated        = false;
-
-    para1_data_type     = FdoDataType_CLOB;
-    para2_data_type     = FdoDataType_CLOB;
 
 }  //  FdoFunctionConcat ()
 
@@ -63,7 +59,11 @@ FdoFunctionConcat::~FdoFunctionConcat ()
 
     FDO_SAFE_RELEASE(function_definition);
 
-    delete[] tmp_buffer;
+    delete[]    tmp_buffer;
+	delete[]	arg_values;
+	delete[]	dt_index;
+	delete[]	size;
+    delete[]    buffer;
 
 }  //  ~FdoFunctionConcat ()
 
@@ -123,12 +123,6 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
     // Declare and initialize all necessary local variables.
 
     size_t                   exp_buffer_size = 0;
-
-    FdoInt32                 i,
-                             dt_index[2];
-
-    FdoString                *arg_values[2];
-
     FdoDataType              curr_data_type;
 
     FdoPtr<FdoBooleanValue>  bool_value;
@@ -142,9 +136,6 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
     FdoPtr<FdoSingleValue>   single_value;
     FdoPtr<FdoStringValue>   string_value;
 
-    size_t                   size[2];
-
-
     // If this is the first call to this function validate the arguments and
     // initialize some member variables used to process the request.
 
@@ -154,22 +145,45 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
         result          = FdoStringValue::Create();
         tmp_buffer      = new wchar_t[INIT_ALLOCATE_SIZE+1];
         tmp_buffer_size = INIT_ALLOCATE_SIZE;
-        is_validated    = true;
+        numArgsMax      = 0;
+    }  
+    
+    // Allocate buffers
+    numArgs = literal_values->GetCount();
+    if (!is_validated || (numArgs > numArgsMax))
+    {
+        // Reallocate the buffers
+        if (is_validated)
+        {    	
+            delete[]	arg_values;
+            delete[]	dt_index;
+            delete[]	size;
+            delete[]    buffer;
+        }
 
-    }  //  if (!is_validated) ...
+   	    buffer          = new wchar_t[numArgs * BUFFER_SIZE];
+	    arg_values      = new FdoString*[numArgs];
+	    dt_index        = new FdoInt32[numArgs];
+	    size            = new size_t[numArgs];
+        numArgsMax      = numArgs; // save the current buffers size
+        is_validated    = true;
+    }
+
+    // Initialize
+	for (size_t i = 0; i < numArgs; i++)
+	{
+		arg_values[i] = NULL;
+		dt_index[i]   = -1;
+	}
 
     // Navigate through the provided arguments, transform the values into the
     // corresponding string results and collect them for further processing.
 
-    arg_values[0] = NULL;
-    arg_values[1] = NULL;
-    dt_index[0]   = -1;
-    dt_index[1]   = -1;
-
-
-    for (i = 0; i < 2; i++) {
+    for (size_t i = 0; i < numArgs; i++) {
       size[i] = 0;
-      curr_data_type = (i == 0) ? para1_data_type : para2_data_type;
+	  FdoPtr<FdoLiteralValue> literal_value = literal_values->GetItem(i);
+	  FdoDataValue *data_value = static_cast<FdoDataValue *>(literal_value.p);
+      curr_data_type = data_value->GetDataType(); 
 
       switch (curr_data_type) {
 
@@ -190,11 +204,11 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           if (!byte_value->IsNull())
           {
 #ifdef _WIN32
-            _itow(byte_value->GetByte(), buffer[i], 10);
+            _itow(byte_value->GetByte(), &buffer[i * BUFFER_SIZE], 10);
 #else
-	        swprintf(buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)byte_value->GetByte());
+	        swprintf(&buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)byte_value->GetByte());
 #endif	
-            arg_values[i] = buffer[i];
+            arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
 
           break;
@@ -203,7 +217,7 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           dt_value = (FdoDateTimeValue *) literal_values->GetItem(i);
           if (!dt_value->IsNull()) {
 
-              arg_values[i] = ProcessArgument(dt_value);
+              arg_values[i] = (wchar_t *)ProcessArgument(dt_value);
               dt_index[i]   = 1;
 
           }  //  if (!dt_value->IsNull()) ...
@@ -213,8 +227,8 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           decimal_value = (FdoDecimalValue *) literal_values->GetItem(i);
           if (!decimal_value->IsNull())
           {
-              FdoStringUtility::FormatDouble(decimal_value->GetDecimal(), buffer[i], BUFFER_SIZE);
-              arg_values[i] = buffer[i];
+              FdoStringUtility::FormatDouble(decimal_value->GetDecimal(), &buffer[i * BUFFER_SIZE], BUFFER_SIZE);
+              arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
 
           break;
@@ -223,8 +237,8 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           double_value = (FdoDoubleValue *) literal_values->GetItem(i);
           if (!double_value->IsNull())
           {
-              FdoStringUtility::FormatDouble(double_value->GetDouble(), buffer[i], BUFFER_SIZE);
-              arg_values[i] = buffer[i];
+              FdoStringUtility::FormatDouble(double_value->GetDouble(), &buffer[i * BUFFER_SIZE], BUFFER_SIZE);
+              arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
 
           break;
@@ -234,11 +248,11 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           if (!int16_value->IsNull())
           {
 #ifdef _WIN32
-            _itow(int16_value->GetInt16(), buffer[i], 10);
+            _itow(int16_value->GetInt16(), &buffer[i * BUFFER_SIZE], 10);
 #else
-	        swprintf(buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)int16_value->GetInt16());
+	        swprintf(&buffer[i], BUFFER_SIZE, L"%d", (FdoInt32)int16_value->GetInt16());
 #endif	
-            arg_values[i] = buffer[i];
+            arg_values[i] = &buffer[i * BUFFER_SIZE];
 
           }
           break;
@@ -248,11 +262,11 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           if (!int32_value->IsNull())
           {
 #ifdef _WIN32
-            _itow(int32_value->GetInt32(), buffer[i], 10);
+            _itow(int32_value->GetInt32(), &buffer[i * BUFFER_SIZE], 10);
 #else
 	        swprintf(buffer[i], BUFFER_SIZE, L"%d", int32_value->GetInt32());
 #endif
-            arg_values[i] = buffer[i];
+            arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
           break;
 
@@ -262,11 +276,11 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           {
 
 #ifdef _WIN32
-                _i64tow(int64_value->GetInt64(), buffer[i], 10);
+                _i64tow(int64_value->GetInt64(), &buffer[i * BUFFER_SIZE], 10);
 #else
 	            swprintf(buffer[i], BUFFER_SIZE, L"%lld", int64_value->GetInt64());
 #endif
-                arg_values[i] = buffer[i];
+                arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
           break;
 
@@ -274,8 +288,8 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           single_value = (FdoSingleValue *) literal_values->GetItem(i);
           if (!single_value->IsNull())
           {
-            FdoStringUtility::FormatSingle(single_value->GetSingle(), buffer[i], BUFFER_SIZE);
-            arg_values[i] = buffer[i];
+            FdoStringUtility::FormatSingle(single_value->GetSingle(), &buffer[i * BUFFER_SIZE], BUFFER_SIZE);
+            arg_values[i] = &buffer[i * BUFFER_SIZE];
           }
           break;
 
@@ -293,7 +307,7 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           exp_buffer_size += size[i];
       }
 
-    }  //  for (i = 0; i < 2; i++) ...
+    }  //  for (i = 0; i < numArgs; i++) ...
 
     if (exp_buffer_size > tmp_buffer_size) {
 
@@ -306,7 +320,7 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
     tmp_buffer[0] = '\0';
 
     size_t index = 0;
-    for (i = 0; i < 2; i++) {
+    for (size_t i = 0; i < numArgs; i++) {
       if (arg_values[i] != NULL) {
 
           if (dt_index[i] != -1)
@@ -321,9 +335,11 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           }
 
       }  //  if (arg_values[0] != NULL) ...
-    }  //  for (i = 0; i < 2; i++) {
+    }  //  for (i = 0; i < numArgs; i++) 
+
     tmp_buffer[index] = '\0';
     result->SetString(tmp_buffer);
+
     return FDO_SAFE_ADDREF(result.p);
 
 }  //  Evaluate ()
@@ -1415,7 +1431,8 @@ void FdoFunctionConcat::CreateFunctionDefinition ()
                                         desc,
                                         false,
                                         signatures,
-                                        FdoFunctionCategoryType_String);
+                                        FdoFunctionCategoryType_String,
+                                        true);
 
 }  //  CreateFunctionDefinition ()
 
@@ -1495,7 +1512,7 @@ void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
     // Check the number of arguments. CONCAT accepts two parameters. If the
     // number of parameters is not correct issue an exception.
 
-    if (count != 2) 
+    if (count < 2) 
         throw FdoException::Create(
                 FdoException::NLSGetMessage(
                   FUNCTION_PARAMETER_NUMBER_ERROR, 
@@ -1508,29 +1525,24 @@ void FdoFunctionConcat::Validate (FdoLiteralValueCollection *literal_values)
 
     for (i = 0; i < count; i++) {
 
-      literal_value = literal_values->GetItem(i);
-      if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
+        literal_value = literal_values->GetItem(i);
+        if (literal_value->GetLiteralValueType() != FdoLiteralValueType_Data)
           throw FdoException::Create(
-                 FdoException::NLSGetMessage(
-                    FUNCTION_PARAMETER_ERROR, 
-                    "Expression Engine: Invalid parameters for function '%1$ls'",
-                    FDO_FUNCTION_CONCAT));
+		         FdoException::NLSGetMessage(
+			        FUNCTION_PARAMETER_ERROR, 
+			        "Expression Engine: Invalid parameters for function '%1$ls'",
+			        FDO_FUNCTION_CONCAT));
 
-      data_value = static_cast<FdoDataValue *>(literal_value.p);
-      if (i == 0)
-          para1_data_type = data_value->GetDataType();
-      else
-        para2_data_type = data_value->GetDataType();
+        data_value = static_cast<FdoDataValue *>(literal_value.p);
+
+		if (!IsValidDataType(data_value->GetDataType()))
+			 throw FdoException::Create(
+					 FdoException::NLSGetMessage(
+					   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
+					   "Expression Engine: Invalid parameter data type for function '%1$ls'",
+					   FDO_FUNCTION_CONCAT));
 
     }  //  for (i = 0; i < count; i++) ...
-
-    if ((!IsValidDataType(para1_data_type)) ||
-        (!IsValidDataType(para2_data_type))    )
-         throw FdoException::Create(
-                 FdoException::NLSGetMessage(
-                   FUNCTION_PARAMETER_DATA_TYPE_ERROR, 
-                   "Expression Engine: Invalid parameter data type for function '%1$ls'",
-                   FDO_FUNCTION_CONCAT));
 
 }  //  Validate ()
 

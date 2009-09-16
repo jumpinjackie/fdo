@@ -146,16 +146,6 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 
         bool is_validated;
 
-        // para1_data_type:
-        //  References the data type associated with the first parameter.
-
-        FdoDataType para1_data_type;
-
-        // para2_data_type:
-        //  References the data type associated with the second parameter.
-
-        FdoDataType para2_data_type;
-
         // result:
         //  The variable represents the object to be returned by the function
         //  "Evaluate". For performance reasons, this object is allocated only
@@ -174,7 +164,20 @@ class FdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
 
         size_t tmp_buffer_size;
 
-        wchar_t buffer[2][BUFFER_SIZE];
+        // numArgs:
+        // The variable holds the current number of the arguments
+        size_t  numArgs;
+
+        // numArgsMax
+        // The variable holds the current buffers size
+        size_t  numArgsMax;
+
+        // Other buffers
+   	    wchar_t     *buffer;
+	    FdoString	**arg_values;
+	    FdoInt32	*dt_index;
+	    size_t		*size;
+
 
 };  //  class FdoFunctionConcat
 
