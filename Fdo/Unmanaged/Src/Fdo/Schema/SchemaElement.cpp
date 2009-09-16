@@ -249,6 +249,7 @@ FdoXmlSaxHandler* FdoSchemaElement::XmlStartElement(
         pRet = m_XmlErrorHandler.p;
     } else if ( wcscmp( name, L"SAD" ) == 0 ) {
         // Set up SAX handler to read Schema Attribute Dictionary.
+        FDO_SAFE_RELEASE(m_attributes);
         m_attributes = new FdoSchemaAttributeDictionary(*this);
         pRet = m_attributes;
     }
