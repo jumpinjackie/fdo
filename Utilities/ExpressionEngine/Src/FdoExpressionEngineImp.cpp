@@ -4374,7 +4374,8 @@ FdoFunctionDefinition *FdoExpressionEngineImp::DeepCopyFunctionDefinition(FdoFun
         newSignatures->Add(newSignature);
 
     }
-    FdoFunctionDefinition *newFunction = FdoFunctionDefinition::Create(functionDefinition->GetName(),functionDefinition->GetDescription(), functionDefinition->IsAggregate(), newSignatures, functionDefinition->GetFunctionCategoryType());
+    FdoFunctionDefinition *newFunction = FdoFunctionDefinition::Create(functionDefinition->GetName(),functionDefinition->GetDescription(), functionDefinition->IsAggregate(), newSignatures, functionDefinition->GetFunctionCategoryType(),
+        functionDefinition->SupportsVariableArgumentsList());
 
     return newFunction;
 }
