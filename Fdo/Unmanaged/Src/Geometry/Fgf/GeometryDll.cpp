@@ -108,7 +108,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 void _threadDataDestructor(void * voidData)
 {
     FdoGeometryThreadData *data = (FdoGeometryThreadData *) voidData;
-                                                                                                           
     if (NULL != data)
     {
         delete data;
@@ -126,6 +125,7 @@ void _load()
 void _unload()
 {
     FdoGeometryThreadDataKey key = FdoGeometryThreadData::GetKey();
+    FdoGeometryThreadData::ReleaseValue();
     pthread_key_delete(key);
 }
 

@@ -90,6 +90,7 @@ public:
     };
     ~InitClass()
     {
+        FdoFeatureAccessManager::Reset();
         _unload();
         _unloadFdoCommon();
     };
