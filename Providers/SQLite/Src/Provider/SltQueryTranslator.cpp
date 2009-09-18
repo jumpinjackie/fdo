@@ -901,6 +901,11 @@ const char* SltQueryTranslator::GetFilter()
     return m_evalStack[0]->ToString();
 }
 
+bool SltQueryTranslator::MustKeepFilterAlive()
+{
+    return !CanUseFastStepping() && (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;
+}
+
 bool SltQueryTranslator::CanUseFastStepping()
 {
     //TODO: the processor needs to be enhanced
@@ -911,10 +916,7 @@ bool SltQueryTranslator::CanUseFastStepping()
     //stepping for any filter that is not just a BBOX filter.
     //return m_canUseFastStepping;
 
-    if (m_evalStack.empty())
-        return true;
-
-    return m_canUseFastStepping;
+    return (m_evalStack.size() == 0 || m_canUseFastStepping || m_evalStack[0]->m_canOmit);
 }
 
 void SltQueryTranslator::Reset()
