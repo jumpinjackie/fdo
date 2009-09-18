@@ -179,7 +179,7 @@ public:
     bool CanUseFastStepping();
     recno_list* DetachIDList();
     void Reset();
-    bool MustKeepFilterAlive() {return (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;}
+    bool MustKeepFilterAlive();
 
 private:
     FilterChunk* CreateFilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);

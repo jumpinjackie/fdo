@@ -320,24 +320,26 @@ FdoConnectionState SltConnection::Open()
     RegisterExtensions(m_dbRead);
     RegisterExtensions(m_dbWrite);
 
-    //check if an FDO metadata table existsm, in case the caller asked
-    //for us to use it.
-    if (m_bUseFdoMetadata)
+    //in case we have a FDO metadata use it since we can make things out of sync by mixing things.
+    const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='fdo_columns';";
+    sqlite3_stmt* pstmt = NULL;
+    const char* pzTail = NULL;
+    m_bHasFdoMetadata = false;
+    rc = sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail); 
+    if (rc == SQLITE_OK)
     {
-        const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='fdo_columns';";
-        sqlite3_stmt* pstmt = NULL;
-        const char* pzTail = NULL;
-        if (sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail) == SQLITE_OK)
+        while (sqlite3_step(pstmt) == SQLITE_ROW)
         {
-            while (sqlite3_step(pstmt) == SQLITE_ROW)
-            {
-                m_bHasFdoMetadata = true;
-                break;
-            }
+            m_bHasFdoMetadata = true;
+            break;
         }
-
-        sqlite3_finalize(pstmt);
     }
+    else if (rc == SQLITE_NOTADB)
+        throw FdoException::Create(L"File opened that is not a database file.", rc);
+    else
+        m_bHasFdoMetadata = false;
+
+    sqlite3_finalize(pstmt);
 
     m_connState = FdoConnectionState_Open;
 
