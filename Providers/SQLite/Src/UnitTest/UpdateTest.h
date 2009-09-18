@@ -35,6 +35,7 @@ class UpdateTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( UpdateTest );
   CPPUNIT_TEST( TestSimpleUpdate );
+  CPPUNIT_TEST( TestParmBindUpdate );
   CPPUNIT_TEST( TestSpatialUpdate );
   CPPUNIT_TEST( TestComplexUpdate );
   CPPUNIT_TEST_SUITE_END();
@@ -46,6 +47,7 @@ public:
 	void tearDown ();
 
     void TestSimpleUpdate ();
+    void TestParmBindUpdate ();
     void TestSpatialUpdate ();
     void TestComplexUpdate ();
 };

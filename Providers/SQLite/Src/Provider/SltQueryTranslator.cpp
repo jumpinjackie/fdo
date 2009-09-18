@@ -630,7 +630,9 @@ void SltQueryTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 
 void SltQueryTranslator::ProcessParameter(FdoParameter& expr)
 {
-    throw FdoException::Create(L"Unsupported FDO type in filters");
+    m_sb.Reset();
+    m_sb.Append(" ?", 2);
+    m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
 void SltQueryTranslator::ProcessBooleanValue(FdoBooleanValue& expr)

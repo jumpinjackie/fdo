@@ -127,7 +127,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 }
             }
 
-            return m_connection->Select(m_className, m_filter, m_properties, false, ordering);
+            return m_connection->Select(m_className, m_filter, m_properties, false, ordering, m_pParmeterValues);
         }
                
         virtual FdoIdentifierCollection*    GetOrdering()       
@@ -187,7 +187,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 }
             }
 
-            return m_connection->Select(m_className, m_filter, m_properties, true, ordering);
+            return m_connection->Select(m_className, m_filter, m_properties, true, ordering, m_pParmeterValues);
         }
 
         //-------------------------------------------------------
@@ -246,7 +246,8 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
                                                     m_eOrderingOption, 
                                                     m_ordering, 
                                                     m_grfilter, 
-                                                    m_grouping); 
+                                                    m_grouping,
+                                                    m_pParmeterValues); 
         }
         virtual void                     SetDistinct( bool value )              { m_bDistinct = value; }
         virtual bool                     GetDistinct( )                         { return m_bDistinct; }
@@ -330,7 +331,8 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
 
             return m_connection->Update(m_className, 
                                         m_filter, 
-                                        m_properties);
+                                        m_properties,
+                                        m_pParmeterValues);
         }
         virtual FdoILockConflictReader* GetLockConflicts()      { return NULL; }
 
@@ -366,7 +368,7 @@ class SltDelete : public SltFeatureCommand<FdoIDelete>
     public:
         virtual FdoInt32 Execute()
         {
-            return m_connection->Delete(m_className, m_filter);
+            return m_connection->Delete(m_className, m_filter, m_pParmeterValues);
         }
         virtual FdoILockConflictReader* GetLockConflicts()              { return NULL; }
 };
@@ -660,7 +662,6 @@ class SltSql : public SltCommand<FdoISQLCommand>
             : SltCommand<FdoISQLCommand>(connection) 
         {
             m_pCompiledSQL = NULL;
-            m_pSqlParmeterValues = NULL;
             m_db = m_connection->GetDbWrite();
         }
 
@@ -669,7 +670,6 @@ class SltSql : public SltCommand<FdoISQLCommand>
         virtual ~SltSql()
         {
             FlushSQL();
-            FDO_SAFE_RELEASE(m_pSqlParmeterValues);
         }
         virtual FdoString* GetSQLStatement()
         {
@@ -696,11 +696,12 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (NULL != pStmt)
             {
                 sqlite3_reset(pStmt);
-                BindPropVals(m_pSqlParmeterValues, pStmt);
+                if( m_pParmeterValues != NULL )
+                    BindPropVals(m_pParmeterValues, pStmt);
             }
             else
             {
-                if (m_pSqlParmeterValues != NULL && m_pSqlParmeterValues->GetCount() != 0)
+                if (m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0)
                 {
                     //parse the SQL statement
                     const char* tail = NULL;
@@ -715,7 +716,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     }
 
                     pStmt = m_pCompiledSQL;
-                    BindPropVals(m_pSqlParmeterValues, m_pCompiledSQL);
+                    BindPropVals(m_pParmeterValues, m_pCompiledSQL);
                 }
                 else
                     pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
@@ -748,17 +749,9 @@ class SltSql : public SltCommand<FdoISQLCommand>
                 throw FdoCommandException::Create(L"Invalid empty SQL statement.");
             
             sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
-            if( m_pSqlParmeterValues != NULL && m_pSqlParmeterValues->GetCount() != 0 )
-                BindPropVals(m_pSqlParmeterValues, pStmt );
-            return new SltReader(m_connection, pStmt, false);
-        }
-
-        virtual FdoParameterValueCollection* GetParameterValues()
-        { 
-            if( m_pSqlParmeterValues == NULL )
-                m_pSqlParmeterValues = FdoParameterValueCollection::Create();
-
-            return FDO_SAFE_ADDREF(m_pSqlParmeterValues);
+            if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
+                BindPropVals(m_pParmeterValues, pStmt );
+            return new SltReader(m_connection, pStmt, false, NULL, NULL);
         }
 
     private:
@@ -779,7 +772,6 @@ class SltSql : public SltCommand<FdoISQLCommand>
         StringBuffer                     m_sb;
         // this will be empty most of the time except when user calls getSQL
         std::wstring                     m_sql;
-        FdoParameterValueCollection*     m_pSqlParmeterValues;
 };
 
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/

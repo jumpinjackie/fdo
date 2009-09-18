@@ -230,7 +230,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         return (FdoInt32*)commandsReadWrite;
     }
     
-    virtual bool SupportsParameters()                               { return false; }
+    virtual bool SupportsParameters()                               { return true; }
     //virtual bool SupportsTimeout()                                { return false; }
     virtual bool SupportsSelectExpressions()                        { return true;  }
     virtual bool SupportsSelectFunctions()                          { return true;  }

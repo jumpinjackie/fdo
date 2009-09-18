@@ -912,6 +912,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SelectTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SelectTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SpatialContextTest.cpp"
 			>
 		</File>
