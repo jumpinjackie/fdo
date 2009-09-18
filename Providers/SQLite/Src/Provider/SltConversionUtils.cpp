@@ -236,7 +236,7 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
     }
 }
 
-void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt)
+void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, int startIndex )
 {
     for(int i=1; i<=props->GetCount(); i++)
     {
@@ -244,10 +244,10 @@ void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt)
         FdoPtr<FdoLiteralValue> parmValue = fdoParm->GetValue();
         if (parmValue.p == NULL)
         {
-            sqlite3_bind_null(stmt, i);
+            sqlite3_bind_null(stmt, (startIndex+i));
             continue;
         }
-        BindPropValue(stmt, i, parmValue );
+        BindPropValue(stmt, (startIndex+i), parmValue );
     }
 }
 

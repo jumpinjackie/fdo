@@ -29,6 +29,7 @@ UnitTest_SOURCES = \
   FdoExpressionFunctionTest.cpp \
   FdoMultiThreadTest.cpp \
   InsertTest.cpp \
+  SelectTest.cpp \
   SpatialContextTest.cpp \
   SQLCmdTest.cpp \
   TransactionTest.cpp \
@@ -38,6 +39,7 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoExpressionFunctionTest.h \
   FdoMultiThreadTest.h \
   InsertTest.h \
+  SelectTest.h \
   SpatialContextTest.h \
   SQLCmdTest.h \
   UnitTestUtil.h \

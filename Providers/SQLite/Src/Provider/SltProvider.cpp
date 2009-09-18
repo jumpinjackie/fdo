@@ -609,7 +609,8 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                                  FdoFilter* filter, 
                                  FdoIdentifierCollection* props, 
                                  bool scrollable, 
-                                 const std::vector<NameOrderingPair>& ordering)
+                                 const std::vector<NameOrderingPair>& ordering,
+                                 FdoParameterValueCollection*  parmValues)
 {
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
@@ -796,7 +797,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
             FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
             collidf->Add(rowIdIdf);
-            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri);
+            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
             ri = GetScrollableIterator(rdrSc);
             delete rdrSc;
             siter = NULL;
@@ -811,7 +812,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
             FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
             collidf->Add(rowIdIdf);
-            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri);
+            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
             ri = GetScrollableIterator(rdrSc);
             delete rdrSc;
             siter = NULL;
@@ -846,7 +847,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             }
         }
     }
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri);
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
@@ -878,7 +879,8 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
                                                 FdoOrderingOption           eOrderingOption,
                                                 FdoIdentifierCollection*    ordering,
                                                 FdoFilter*                  filter,
-                                                FdoIdentifierCollection*    grouping)
+                                                FdoIdentifierCollection*    grouping,
+                                                FdoParameterValueCollection*  parmValues)
 {
     const wchar_t* wfc = fcname->GetName();
     StringBuffer sbfcn;
@@ -948,7 +950,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 
     sb.Append(";");
 
-    SltReader* rdr = new SltReader(this, sb.Data());
+    SltReader* rdr = new SltReader(this, sb.Data(), parmValues);
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
@@ -956,7 +958,9 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
 }
 
 
-FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
+FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, 
+                               FdoPropertyValueCollection* propvals,
+                               FdoParameterValueCollection*  parmValues )
 {
     StringBuffer sb;
     bool geomPropIsUpdated = false;
@@ -1083,6 +1087,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     sqlite3_stmt* stmt = NULL;
     
     FdoInt64 ret = 0;
+    
     int rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail);
     if (rc == SQLITE_OK)
     {
@@ -1092,6 +1097,9 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
         if (!ri)
         {
             BindPropVals(propvals, stmt);
+            if( parmValues != NULL )
+                BindPropVals(parmValues, stmt, propvals->GetCount());
+
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
                 sqlite3_finalize(stmt);
@@ -1115,6 +1123,9 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
                 BindPropVals(propvals, stmt);
                 sqlite3_bind_int64(stmt, cntProps+1, ri->CurrentRowid());
                 
+                if( parmValues != NULL )
+                    BindPropVals(parmValues, stmt, cntProps+1 );
+
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
                     sqlite3_finalize(stmt);
@@ -1155,7 +1166,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
     return (FdoInt32)ret;
 }
 
-FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
+FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoParameterValueCollection*  parmValues)
 {
     StringBuffer sb;
 
@@ -1264,6 +1275,9 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
         EnableHooks(true);
         if (!ri)
         {
+            if( parmValues != NULL )
+                BindPropVals(parmValues, stmt,0);
+
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
                 const char* err = sqlite3_errmsg(m_dbWrite);
@@ -1285,6 +1299,10 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
             while(ri->Next())
             {
                 sqlite3_bind_int64(stmt, 1, ri->CurrentRowid());
+                
+                if( parmValues != NULL )
+                    BindPropVals(parmValues, stmt, 1 );
+
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
                     const char* err = sqlite3_errmsg(m_dbWrite);
@@ -1441,7 +1459,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
         spDesc = new SpatialIndexDescriptor(this, table, si);
     m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
 
-    rdr = new SltReader(this, NULL, table, "", NULL, true, NULL);
+    rdr = new SltReader(this, NULL, table, "", NULL, true, NULL, NULL);
 
     while (rdr->ReadNext())
     {
@@ -2699,7 +2717,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             props->Add(geom);
             cls->SetGeometryProperty(geom);
         }
-        return new SltReader(this, stmt, true, cls);        
+        return new SltReader(this, stmt, true, cls, NULL);        
     }
     else
     {

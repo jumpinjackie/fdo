@@ -189,7 +189,8 @@ public:
                                                 FdoFilter*               filter, 
                                                 FdoIdentifierCollection* props,
                                                 bool                     scrollable,
-                                                const std::vector<NameOrderingPair>& ordering);
+                                                const std::vector<NameOrderingPair>& ordering,
+                                                FdoParameterValueCollection*  parmValues);
 
     FdoIDataReader*     SelectAggregates       (FdoIdentifier*             fcname, 
                                                 FdoIdentifierCollection*   properties,
@@ -197,14 +198,17 @@ public:
                                                 FdoOrderingOption          eOrderingOption,
                                                 FdoIdentifierCollection*   ordering,
                                                 FdoFilter*                 filter,
-                                                FdoIdentifierCollection*   grouping);
+                                                FdoIdentifierCollection*   grouping,
+                                                FdoParameterValueCollection*  parmValues);
 
     FdoInt32            Update                 (FdoIdentifier*              fcname, 
                                                 FdoFilter*                  filter, 
-                                                FdoPropertyValueCollection* propvals);
+                                                FdoPropertyValueCollection* propvals,
+                                                FdoParameterValueCollection*  parmValues);
     
     FdoInt32            Delete                 (FdoIdentifier*              fcname, 
-                                                FdoFilter*                  filter);
+                                                FdoFilter*                  filter,
+                                                FdoParameterValueCollection*  parmValues);
 
 
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);

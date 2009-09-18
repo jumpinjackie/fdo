@@ -13,8 +13,8 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-#ifndef DELETE_TEST_H_
-#define DELETE_TEST_H_
+#ifndef Select_TEST_H_
+#define Select_TEST_H_
 
 #ifdef _WIN32
 #pragma once
@@ -31,27 +31,27 @@
  * More tests would need to be added to provide full coverage.
  */
 
-class DeleteTest : public CppUnit::TestCase
+class SelectTest : public CppUnit::TestCase
 {
-  CPPUNIT_TEST_SUITE( DeleteTest );
-  CPPUNIT_TEST( TestSimpleDelete );
-  CPPUNIT_TEST( TestBindDelete );
-  CPPUNIT_TEST( TestSpatialDelete );
-  CPPUNIT_TEST( TestComplexDelete );
-  CPPUNIT_TEST(TestComplexWithBindDelete);
+  CPPUNIT_TEST_SUITE( SelectTest );
+  CPPUNIT_TEST( TestSimpleSelect );
+  CPPUNIT_TEST( TestBindSelect );
+  CPPUNIT_TEST( TestSpatialSelect );
+  CPPUNIT_TEST( TestComplexSelect );
+  CPPUNIT_TEST(TestComplexWithBindSelect);
   CPPUNIT_TEST_SUITE_END();
 
 public:
-    DeleteTest(void);
-    virtual ~DeleteTest(void);
+    SelectTest(void);
+    virtual ~SelectTest(void);
     void setUp ();
 	void tearDown ();
 
-    void TestSimpleDelete ();
-    void TestBindDelete ();
-    void TestSpatialDelete ();
-    void TestComplexDelete ();
-    void TestComplexWithBindDelete();
+    void TestSimpleSelect ();
+    void TestBindSelect ();
+    void TestSpatialSelect ();
+    void TestComplexSelect ();
+    void TestComplexWithBindSelect();
 };
 
 #endif

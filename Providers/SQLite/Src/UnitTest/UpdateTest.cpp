@@ -97,6 +97,55 @@ void UpdateTest::TestSimpleUpdate ()
 	printf( "Done\n" );
 }
 
+void UpdateTest::TestParmBindUpdate()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+	    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+	    update->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoPropertyValueCollection> updColl = update->GetPropertyValues();
+
+        FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"ID<30");
+        FdoPtr<FdoPropertyValue> pvurl = FdoPropertyValue::Create(L"Url", svurl);
+        updColl->Add(pvurl);
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm");
+        update->SetFilter(filter);
+
+        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
+
+        FdoPtr<FdoParameterValueCollection>parms = update->GetParameterValues();
+        FdoPtr<FdoInt32Value> intval = FdoInt32Value::Create(30);
+        FdoPtr<FdoParameterValue>parm = FdoParameterValue::Create(L"parm",intval);
+        parms->Add(parm);
+        FdoInt32 rez = update->Execute();
+        tr->Commit();
+        printf ("Updated features : %d\n", rez);
+        CPPUNIT_ASSERT(rez == 29);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
 
 void UpdateTest::TestSpatialUpdate ()
 {

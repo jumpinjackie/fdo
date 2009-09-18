@@ -29,6 +29,7 @@ template <class COMMAND> class SltCommand : public COMMAND
         {
             m_connection = connection;
             m_connection->AddRef();
+            m_pParmeterValues = NULL;
         }
 
     protected:
@@ -36,6 +37,7 @@ template <class COMMAND> class SltCommand : public COMMAND
         virtual ~SltCommand()
         {
             m_connection->Release();
+            FDO_SAFE_RELEASE(m_pParmeterValues);
         }
 
     //-------------------------------------------------------
@@ -60,7 +62,13 @@ template <class COMMAND> class SltCommand : public COMMAND
         virtual void SetTransaction(FdoITransaction* value) { }
         virtual FdoInt32 GetCommandTimeout()                { return 0;}
         virtual void SetCommandTimeout(FdoInt32 value)      { }
-        virtual FdoParameterValueCollection* GetParameterValues(){ return NULL; }
+        virtual FdoParameterValueCollection* GetParameterValues()
+        { 
+            if( m_pParmeterValues == NULL )
+                m_pParmeterValues = FdoParameterValueCollection::Create();
+
+            return FDO_SAFE_ADDREF(m_pParmeterValues);
+        }
         virtual void Prepare()                              { }
         virtual void Cancel()                               { }
 
@@ -70,6 +78,7 @@ template <class COMMAND> class SltCommand : public COMMAND
 
     protected:
         SltConnection* m_connection;
+        FdoParameterValueCollection*     m_pParmeterValues;
 
 };
 

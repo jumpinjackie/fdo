@@ -60,12 +60,14 @@ class SltReader :   public FdoIScrollableFeatureReader,
 {
     public:
         SltReader(  SltConnection*              connection, 
-                    const char*                 sql);
+                    const char*                 sql,
+                    FdoParameterValueCollection*  parmValues);
 
         SltReader(  SltConnection*              connection, 
                     sqlite3_stmt*               stmt,
                     bool closeDB,
-                    FdoClassDefinition* cls = NULL);
+                    FdoClassDefinition* cls,
+                    FdoParameterValueCollection*  parmValues);
 
 		SltReader(  SltConnection*              connection, 
                     FdoIdentifierCollection*    props, 
@@ -73,7 +75,8 @@ class SltReader :   public FdoIScrollableFeatureReader,
                     const char*                 where, 
                     SpatialIterator*            si,
                     bool                        useFastStepping,
-                    RowidIterator*              ri);
+                    RowidIterator*              ri,
+                    FdoParameterValueCollection*  parmValues);
 
         virtual ~SltReader();
 
@@ -221,6 +224,8 @@ protected:
         // kept here only for special cases when provider needs it alive
         // due some optimizations to avoid copying a geometry
         FdoFilter*          m_filter;
+
+        FdoParameterValueCollection*  m_parmValues;
 };
 
 

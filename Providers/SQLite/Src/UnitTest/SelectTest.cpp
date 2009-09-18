@@ -14,46 +14,46 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "stdafx.h"
-#include "DeleteTest.h"
+#include "SelectTest.h"
 #include "UnitTestUtil.h"
 #include <ctime>
 #include <cppunit/extensions/HelperMacros.h>
 #include "FdoCommonFile.h"
 
 #ifdef _WIN32
-static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\DeleteTest.sqlite";
+static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.sqlite";
 #else
 #include <unistd.h>
-static const wchar_t* SC_TEST_FILE = L"../../TestData/DeleteTest.sqlite";
+static const wchar_t* SC_TEST_FILE = L"../../TestData/SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.sqlite";
 #endif
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION( DeleteTest );
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( DeleteTest, "DeleteTest");
+CPPUNIT_TEST_SUITE_REGISTRATION( SelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SelectTest, "SelectTest");
 
-DeleteTest::DeleteTest(void)
+SelectTest::SelectTest(void)
 {
     
 }
 
-DeleteTest::~DeleteTest(void)
+SelectTest::~SelectTest(void)
 {
     
 }
 
 
-void DeleteTest::setUp ()
+void SelectTest::setUp ()
 {
 
 }
 
-void DeleteTest::tearDown ()
+void SelectTest::tearDown ()
 {
 }
 
-void DeleteTest::TestSimpleDelete ()
+void SelectTest::TestSimpleSelect ()
 {
     FdoPtr<FdoIConnection> conn;
 
@@ -65,16 +65,16 @@ void DeleteTest::TestSimpleDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 30");
-        deleteCmd->SetFilter(filter);
+        SelectCmd->SetFilter(filter);
 
-        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
-        FdoInt32 rez = deleteCmd->Execute();
-        tr->Commit();
-        printf ("Deleted features : %d\n", rez);
+        FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
+        int rez = 0;
+        while(reader->ReadNext())rez++;
+        printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
@@ -92,7 +92,7 @@ void DeleteTest::TestSimpleDelete ()
 	printf( "Done\n" );
 }
 
-void DeleteTest::TestBindDelete ()
+void SelectTest::TestBindSelect ()
 {
     FdoPtr<FdoIConnection> conn;
 
@@ -104,20 +104,20 @@ void DeleteTest::TestBindDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm");
-        deleteCmd->SetFilter(filter);
+        SelectCmd->SetFilter(filter);
 
-        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
-        FdoPtr<FdoParameterValueCollection>parms = deleteCmd->GetParameterValues();
+        FdoPtr<FdoParameterValueCollection>parms = SelectCmd->GetParameterValues();
         FdoPtr<FdoInt32Value> intval = FdoInt32Value::Create(30);
         FdoPtr<FdoParameterValue>parm = FdoParameterValue::Create(L"parm",intval);
         parms->Add(parm);
-        FdoInt32 rez = deleteCmd->Execute();
-        tr->Commit();
-        printf ("Deleted features : %d\n", rez);
+        FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
+        int rez = 0;
+        while(reader->ReadNext())rez++;
+        printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
@@ -135,7 +135,7 @@ void DeleteTest::TestBindDelete ()
 	printf( "Done\n" );
 }
 
-void DeleteTest::TestSpatialDelete ()
+void SelectTest::TestSpatialSelect ()
 {
     FdoPtr<FdoIConnection> conn;
 
@@ -147,17 +147,25 @@ void DeleteTest::TestSpatialDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    SelectCmd->SetFeatureClassName(L"DaKlass");
 
-        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
-        deleteCmd->SetFilter(filter);
-
-        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
-        FdoInt32 rez = deleteCmd->Execute();
-        tr->Commit();
-        printf ("Deleted features : %d\n", rez);
-        CPPUNIT_ASSERT(rez == 21884);
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID > :lowerbound AND ID < :upperbound AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
+        SelectCmd->SetFilter(filter);
+        
+        FdoPtr<FdoParameterValueCollection>parms = SelectCmd->GetParameterValues();
+        FdoPtr<FdoInt32Value> intval = FdoInt32Value::Create(5000);
+        FdoPtr<FdoParameterValue>parm = FdoParameterValue::Create(L"lowerbound",intval);
+        parms->Add(parm);
+        intval = FdoInt32Value::Create(10000);
+        parm = FdoParameterValue::Create(L"upperbound",intval);
+        parms->Add(parm);
+        FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
+        int rez = 0;
+        while(reader->ReadNext())rez++;
+        
+        printf ("Selectd features : %d\n", rez);
+        CPPUNIT_ASSERT(rez == 4954);
     }
     catch ( FdoException* e )
 	{
@@ -174,7 +182,7 @@ void DeleteTest::TestSpatialDelete ()
 	printf( "Done\n" );
 }
 
-void DeleteTest::TestComplexDelete ()
+void SelectTest::TestComplexSelect ()
 {
     FdoPtr<FdoIConnection> conn;
 
@@ -186,16 +194,16 @@ void DeleteTest::TestComplexDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 10000 AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
-        deleteCmd->SetFilter(filter);
+        SelectCmd->SetFilter(filter);
 
-        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
-        FdoInt32 rez = deleteCmd->Execute();
-        tr->Commit();
-        printf ("Deleted features : %d\n", rez);
+        FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
+        int rez = 0;
+        while(reader->ReadNext())rez++;
+        printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
@@ -213,7 +221,7 @@ void DeleteTest::TestComplexDelete ()
 	printf( "Done\n" );
 }
 
-void DeleteTest::TestComplexWithBindDelete ()
+void SelectTest::TestComplexWithBindSelect ()
 {
     FdoPtr<FdoIConnection> conn;
 
@@ -225,20 +233,20 @@ void DeleteTest::TestComplexWithBindDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
-        deleteCmd->SetFilter(filter);
+        SelectCmd->SetFilter(filter);
 
-        FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
-        FdoPtr<FdoParameterValueCollection>parms = deleteCmd->GetParameterValues();
+        FdoPtr<FdoParameterValueCollection>parms = SelectCmd->GetParameterValues();
         FdoPtr<FdoInt32Value> intval = FdoInt32Value::Create(10000);
         FdoPtr<FdoParameterValue>parm = FdoParameterValue::Create(L"parm",intval);
         parms->Add(parm);
-        FdoInt32 rez = deleteCmd->Execute();
-        tr->Commit();
-        printf ("Deleted features : %d\n", rez);
+        FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
+        int rez = 0;
+        while(reader->ReadNext())rez++;
+        printf ("Selectd features : %d\n", rez);
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )

@@ -65,7 +65,7 @@ static Mem *columnMem(sqlite3_stmt *pStmt, int i){
 
 
 //constructor taking a general sql statement, which we will step through
-SltReader::SltReader(SltConnection* connection, const char* sql)
+SltReader::SltReader(SltConnection* connection, const char* sql, FdoParameterValueCollection*  parmValues)
 : m_refCount(1),
 m_sql(sql),
 m_class(NULL),
@@ -84,6 +84,7 @@ m_aPropNames(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
+    m_parmValues  = FDO_SAFE_ADDREF(parmValues);
 
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
 
@@ -94,7 +95,7 @@ m_fromwhere()
 //Same as above, but this one takes a sqlite3 statement pointer rather than
 //a string. This means that it is a statement based on an ephemeral database
 //which this reader will close once it is done being read.
-SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB, FdoClassDefinition* cls)
+SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB, FdoClassDefinition* cls, FdoParameterValueCollection*  parmValues)
 : m_refCount(1),
 m_sql(""),
 m_sprops(NULL),
@@ -113,6 +114,7 @@ m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_class = FDO_SAFE_ADDREF(cls);
+    m_parmValues  = FDO_SAFE_ADDREF(parmValues);
 
     m_pStmt = stmt;
 	InitPropIndex(m_pStmt);
@@ -123,7 +125,7 @@ m_fromwhere()
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, RowidIterator* ri)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -142,6 +144,7 @@ m_filter(NULL),
 m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
+    m_parmValues  = FDO_SAFE_ADDREF(parmValues);
     DelayedInit(props, fcname, where);
 }
 
@@ -166,7 +169,8 @@ m_closeDB(false),
 m_useFastStepping(true),
 m_aPropNames(NULL),
 m_filter(NULL),
-m_fromwhere()
+m_fromwhere(),
+m_parmValues(NULL)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 }
@@ -177,6 +181,7 @@ SltReader::~SltReader()
 	Close();
     FDO_SAFE_RELEASE(m_filter);
     FDO_SAFE_RELEASE(m_class);
+    FDO_SAFE_RELEASE(m_parmValues);
     delete m_si;
     delete m_ri;
 	m_connection->Release();
@@ -319,6 +324,9 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
 {
 	m_propNames.clear();
 	m_mNameToIndex.Clear();
+
+    if( m_parmValues != NULL )
+        BindPropVals(m_parmValues, m_pStmt,0);
 
 	int nProps = sqlite3_column_count(pStmt);
 
@@ -592,7 +600,7 @@ FdoIRaster* SltReader::GetRaster(FdoString* propertyName)
 bool SltReader::ReadNext()
 {
     //clear the wide string row cache
-	for (size_t i=0; i<m_propNames.size(); i++)
+ 	for (size_t i=0; i<m_propNames.size(); i++)
 		m_sprops[i].valid = 0;
 
     //yes, we know what we are doing (hopefully)...
