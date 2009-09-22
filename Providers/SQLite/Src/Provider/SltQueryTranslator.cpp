@@ -386,6 +386,7 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
                 {
                     ret = CreateFilterChunk(filter.ToString());
                     ret->m_ids = new recno_list;
+                    ret->m_canOmit = true;
                     ret->m_ids->push_back(idval);
                     m_canUseFastStepping = true;
                 }
@@ -898,7 +899,7 @@ const char* SltQueryTranslator::GetFilter()
     //is it just a BBOX query -- then 
     //it will be fully handled by the 
     //spatial index
-    if (m_evalStack.size() == 0 || m_canUseFastStepping || m_evalStack[0]->m_canOmit)
+    if (m_evalStack.size() == 0 || (m_canUseFastStepping && m_evalStack[0]->m_canOmit))
         return "";
 
     return m_evalStack[0]->ToString();
@@ -906,7 +907,7 @@ const char* SltQueryTranslator::GetFilter()
 
 bool SltQueryTranslator::MustKeepFilterAlive()
 {
-    return !CanUseFastStepping() && (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;
+    return (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;
 }
 
 bool SltQueryTranslator::CanUseFastStepping()
@@ -919,7 +920,7 @@ bool SltQueryTranslator::CanUseFastStepping()
     //stepping for any filter that is not just a BBOX filter.
     //return m_canUseFastStepping;
 
-    return (m_evalStack.size() == 0 || m_canUseFastStepping || m_evalStack[0]->m_canOmit);
+    return (m_evalStack.size() == 0 || (m_canUseFastStepping && m_evalStack[0]->m_canOmit));
 }
 
 void SltQueryTranslator::Reset()
