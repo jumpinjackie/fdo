@@ -843,7 +843,18 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             }
             else if (!ri)
             {
-                ri = new RowidIterator(GetFeatureCount(mbfc), NULL);
+                // TODO: can we find a different way to get all items in scrollable reader?
+                // Issues to solve without this change: data store with 3 rows and max count=100
+                // since the other 97 rows were deleted. The returned count is 100, so Move to will not work.
+                // in case we run Count(rowid) and set the count will not work either since we could have:
+                // Feat1Id=40, Feat2Id=50 and Feat3Id=100, how can we implement move to, e.g MoveTo(2)!?
+                FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
+                FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+                collidf->Add(rowIdIdf);
+                SltReader* rdrSc = new SltReader(this, collidf, mbfcname, "", NULL, canFastStep, NULL, NULL);
+                ri = GetScrollableIterator(rdrSc);
+                delete rdrSc;
+                canFastStep = true;
             }
         }
     }

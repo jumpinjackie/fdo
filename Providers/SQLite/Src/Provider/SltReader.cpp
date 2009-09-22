@@ -281,39 +281,50 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 	//only the id and geometry properties to start with, and then reissue
 	//with other properties if needed
 
-    //add the id
-    FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
-    int nIdProps = idpdc->GetCount(); // a class cannot have no PK (a fake one is provided -ROWID-)
-    if (nIdProps != 0)
-     {
-        // in case we have more than one PK add them all
-        if (nIdProps > 1)
-        {
+    //the class don't have proprties in order ID, Geom, ... 
+    if (!md->IsOptimized())
+    {
+        // in this case we cannot use FastStepping
+        m_useFastStepping = false;
+        FdoPtr<FdoGeometricPropertyDefinition> gpd;
+        FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
+        int nIdProps = idpdc->GetCount(); // a class cannot have no PK (a fake one is provided -ROWID-)
+        if (nIdProps != 1) // in case we have no PK or more than one PK add rowid
             m_reissueProps.Add("rowid", 5);
-            if (m_class->GetClassType() == FdoClassType_FeatureClass)
-            {
-                //add the geom by doing a requery
-                FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
-                m_reissueProps.Add(gpd->GetName());
-            }
+        else
+        {
+            FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
+            FdoDataType dpType = idp->GetDataType();
+            if (FdoDataType_Int32 != dpType && FdoDataType_Int64 != dpType)
+                m_reissueProps.Add("rowid", 5);
         }
+
+        if (m_class->GetClassType() == FdoClassType_FeatureClass)
+        {
+            //add the geom by doing a requery
+            gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
+            if (gpd != NULL)
+                m_reissueProps.Add(gpd->GetName());
+        }
+        // now add all PK
         for (int i = 0; i < nIdProps; i++)
         {
             FdoPtr<FdoPropertyDefinition> idp = idpdc->GetItem(i);
-            FdoPtr<FdoIdentifier> idf = (props != NULL) ? props->FindItem(idp->GetName()) : NULL;
-            if (idf == NULL)
-                m_reissueProps.Add(idp->GetName());
+            m_reissueProps.Add(idp->GetName());
+        }
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
+        nIdProps = pdc->GetCount();
+        for (int i = 0; i < nIdProps; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> dp = pdc->GetItem(i);
+            FdoPtr<FdoPropertyDefinition> idp = idpdc->FindItem(dp->GetName());
+            if ((idp == NULL && FdoPropertyType_GeometricProperty != dp->GetPropertyType()) 
+                || (FdoPropertyType_GeometricProperty == dp->GetPropertyType()) && dp != gpd)
+                m_reissueProps.Add(dp->GetName());
         }
     }
     else
-        m_reissueProps.Add("rowid", 5);
-
-    if (nIdProps <= 1 && m_class->GetClassType() == FdoClassType_FeatureClass)
-    {
-        //add the geom by doing a requery
-        FdoPtr<FdoGeometricPropertyDefinition> gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
-        m_reissueProps.Add(gpd->GetName());
-    }
+        m_useFastStepping = true;
 
     //redo the query with the id and geom props only
     Requery2();    

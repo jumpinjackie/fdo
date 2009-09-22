@@ -42,6 +42,7 @@ public:
     static FdoDataValue* GenerateConstraintValue(FdoDataType type, FdoString* value);
 
     bool IsView() { return m_bIsView; }
+    bool IsOptimized() { return m_bIsOptimized; }
 
 private:
     class SQLiteExpression
@@ -68,5 +69,6 @@ private:
     bool                m_bUseFdoMetadata;
     std::string         m_tablename;
     bool                m_bIsView;
+    bool                m_bIsOptimized;
 };
 
