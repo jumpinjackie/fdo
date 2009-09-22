@@ -126,6 +126,7 @@ void _load()
 void _unload()
 {
     FdoGeometryThreadDataKey key = FdoGeometryThreadData::GetKey();
+    FdoGeometryThreadData::ReleaseValue();
     pthread_key_delete(key);
 }
 
