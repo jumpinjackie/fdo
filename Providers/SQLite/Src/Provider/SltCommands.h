@@ -697,7 +697,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             {
                 sqlite3_reset(pStmt);
                 if( m_pParmeterValues != NULL )
-                    BindPropVals(m_pParmeterValues, pStmt);
+                    BindPropVals(m_pParmeterValues, pStmt, false);
             }
             else
             {
@@ -716,7 +716,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     }
 
                     pStmt = m_pCompiledSQL;
-                    BindPropVals(m_pParmeterValues, m_pCompiledSQL);
+                    BindPropVals(m_pParmeterValues, m_pCompiledSQL, false);
                 }
                 else
                     pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
@@ -750,7 +750,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             
             sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
-                BindPropVals(m_pParmeterValues, pStmt );
+                BindPropVals(m_pParmeterValues, pStmt, false );
             return new SltReader(m_connection, pStmt, false, NULL, NULL);
         }
 

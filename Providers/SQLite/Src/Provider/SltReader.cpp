@@ -326,7 +326,7 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
 	m_mNameToIndex.Clear();
 
     if( m_parmValues != NULL )
-        BindPropVals(m_parmValues, m_pStmt,0);
+        BindPropVals(m_parmValues, m_pStmt, true);
 
 	int nProps = sqlite3_column_count(pStmt);
 

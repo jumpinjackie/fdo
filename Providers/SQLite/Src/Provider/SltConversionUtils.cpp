@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include "SpatialIndex.h"
 #include "SltConversionUtils.h"
+#include "StringUtil.h"
 #include <locale.h>
 
 std::string W2A_SLOW(const wchar_t* input)
@@ -200,12 +201,12 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
     }
     else if (dt->IsTime())
     {
-        _snprintf(s, nBytes, "%02d:%02d:%0.3f", dt->hour, dt->minute, dt->seconds);
+        _snprintf(s, nBytes, "%02d:%02d:%s%0.3f", dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
         EnsureNoIsLocalIndep(s);
     }
     else
     {
-        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, dt->seconds);
+        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%s%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
         EnsureNoIsLocalIndep(s);
     }
 }
@@ -236,18 +237,31 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
     }
 }
 
-void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, int startIndex )
+void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName )
 {
+    StringBuffer sb;
     for(int i=1; i<=props->GetCount(); i++)
     {
         FdoPtr<FdoParameterValue> fdoParm = props->GetItem(i-1);
         FdoPtr<FdoLiteralValue> parmValue = fdoParm->GetValue();
+        
+        int index = i;
+        if( useParmName )
+        {         
+            sb.Reset();
+            sb.Append(":");
+            sb.Append(fdoParm->GetName());
+            index = sqlite3_bind_parameter_index(stmt, sb.Data());
+            if( index == 0 )
+                continue;
+        }
+
         if (parmValue.p == NULL)
-        {
-            sqlite3_bind_null(stmt, (startIndex+i));
+        {          
+            sqlite3_bind_null(stmt, index);
             continue;
         }
-        BindPropValue(stmt, (startIndex+i), parmValue );
+        BindPropValue(stmt, index, parmValue );
     }
 }
 

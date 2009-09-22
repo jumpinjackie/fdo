@@ -154,12 +154,18 @@ void SelectTest::TestSpatialSelect ()
         SelectCmd->SetFilter(filter);
         
         FdoPtr<FdoParameterValueCollection>parms = SelectCmd->GetParameterValues();
-        FdoPtr<FdoInt32Value> intval = FdoInt32Value::Create(5000);
-        FdoPtr<FdoParameterValue>parm = FdoParameterValue::Create(L"lowerbound",intval);
-        parms->Add(parm);
+        FdoPtr<FdoInt32Value> intval;
+        FdoPtr<FdoParameterValue>parm;
+
+        // Add the bound paramaters in the reverse order.
         intval = FdoInt32Value::Create(10000);
         parm = FdoParameterValue::Create(L"upperbound",intval);
         parms->Add(parm);
+
+        intval = FdoInt32Value::Create(5000);
+        parm = FdoParameterValue::Create(L"lowerbound",intval);
+        parms->Add(parm);
+
         FdoPtr<FdoIFeatureReader>reader = SelectCmd->Execute();
         int rez = 0;
         while(reader->ReadNext())rez++;

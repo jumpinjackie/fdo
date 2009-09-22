@@ -631,7 +631,8 @@ void SltQueryTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 void SltQueryTranslator::ProcessParameter(FdoParameter& expr)
 {
     m_sb.Reset();
-    m_sb.Append(" ?", 2);
+    m_sb.Append(" :", 2);
+    m_sb.Append(expr.GetName());
     m_evalStack.push_back(CreateFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 

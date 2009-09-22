@@ -1098,7 +1098,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         {
             BindPropVals(propvals, stmt);
             if( parmValues != NULL )
-                BindPropVals(parmValues, stmt, propvals->GetCount());
+                BindPropVals(parmValues, stmt, true);
 
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
@@ -1124,7 +1124,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
                 sqlite3_bind_int64(stmt, cntProps+1, ri->CurrentRowid());
                 
                 if( parmValues != NULL )
-                    BindPropVals(parmValues, stmt, cntProps+1 );
+                    BindPropVals(parmValues, stmt, true );
 
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
@@ -1276,7 +1276,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
         if (!ri)
         {
             if( parmValues != NULL )
-                BindPropVals(parmValues, stmt,0);
+                BindPropVals(parmValues, stmt,true);
 
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
@@ -1301,7 +1301,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
                 sqlite3_bind_int64(stmt, 1, ri->CurrentRowid());
                 
                 if( parmValues != NULL )
-                    BindPropVals(parmValues, stmt, 1 );
+                    BindPropVals(parmValues, stmt, true );
 
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
