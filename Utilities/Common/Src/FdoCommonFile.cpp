@@ -1149,8 +1149,13 @@ bool FdoCommonFile::GetFileDirectoryAndName(const wchar_t *location, FdoStringP&
     const wchar_t* pdest = wcsrchr(location, FILE_PATH_DELIMITER); // L'\\'
     const wchar_t* pdest2 = wcsrchr(location, FILE_PATH_DELIMITER2); // L'/'
 
-    int index = (int)(pdest - location);
-    int index2 = (int)(pdest2 - location);
+    int index = 0;
+    int index2 = 0;
+
+    if (pdest)
+        index = (int)(pdest - location);
+    if (pdest2)
+        index2 = (int)(pdest2 - location);
 
     if (index2 > index) {
         index = index2;
