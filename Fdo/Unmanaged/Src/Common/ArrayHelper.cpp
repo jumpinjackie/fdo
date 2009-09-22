@@ -386,6 +386,7 @@ void _loadFdoCommon()
 void _unloadFdoCommon()
 {
     FdoCommonThreadDataKey key = FdoCommonThreadData::GetKey();
+    FdoCommonThreadData::ReleaseValue();
     pthread_key_delete(key);
 }
 
