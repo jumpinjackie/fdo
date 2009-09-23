@@ -1060,6 +1060,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
                 for (int i=start; i<=end; i++)
                     rowids->push_back(i);
             }
+            delete siter;
             if (rowids->size() == 0)
             {
                 delete rowids;
@@ -1242,6 +1243,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
                 for (int i=start; i<=end; i++)
                     rowids->push_back(i);
             }
+            delete siter;
             if (rowids->size() == 0)
             {
                 delete rowids;
