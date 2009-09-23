@@ -138,8 +138,8 @@ FdoByteArray* PolygonZShape::GetGeometry ()
         }
 
         if (RELATE_RINGS)
-            // Might return a Polygon or a MultiPolygon
-            geometry = FdoSpatialUtility::CreateGeometryFromRings (rings, RELATE_RINGS);
+            // Might return a Polygon or a MultiPolygon. Use the SHP custom method for relating rings.
+            geometry = CreateGeometryFromRings (rings, RELATE_RINGS);
         else
             // Always returns a Polygon
             geometry = factory->CreatePolygon(exteriorRing, rings);

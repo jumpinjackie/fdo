@@ -2833,17 +2833,9 @@ void InsertTests::insert_geometry_multipolygon_xy ()
         FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GeomFromText('MULTIPOLYGON XY (((5100 5230, 5100 5030, 5300 5030, 5300 5230, 5100 5230), (5239 5119, 5239 5141, 5261 5141, 5261 5119, 5239 5119), (5141 5135, 5141 5153, 5159 5153, 5159 5135, 5141 5135)), ((6100 5230, 6100 5030, 6300 5030, 6300 5230, 6100 5230), (6239 5119, 6239 5141, 6261 5141, 6261 5119, 6239 5119), (6141 5135, 6141 5153, 6159 5153, 6159 5135, 6141 5135)))')");
         value = FdoPropertyValue::Create (L"Geometry", geometry);
         values->Add (value);
-        try
-        {
-            FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
-            CPPUNIT_FAIL("SHP Provider shouldn't support multipolygons, but it accepted them on insert anyway");
-        }
-        catch (FdoException *e)
-        {
-            e->Release();
-        }
 
-        /*
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
         FdoInt32 featid;
         featid = -1;
         while (reader->ReadNext ())
@@ -2875,6 +2867,9 @@ void InsertTests::insert_geometry_multipolygon_xy ()
             FdoPtr<FdoByteArray> after = reader->GetGeometry (L"Geometry");
             int b = before->GetCount ();
             int a = after->GetCount ();
+
+            FdoPtr<FdoGeometryValue> geometryAfter = FdoGeometryValue::Create(after);
+
             CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b == a);
             int count = before->GetCount ();
             for (int i = 0; i < count; i++)
@@ -2919,7 +2914,6 @@ void InsertTests::insert_geometry_multipolygon_xy ()
             }
         }
         reader->Close ();
-        */
     }
     catch (FdoException* ge) 
     {
@@ -2952,20 +2946,12 @@ void InsertTests::insert_geometry_multipolygon_xyz ()
         values->Add (value);
 
         // add geometry value:
-        FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GeomFromText('MULTIPOLYGON XYZM (((5100 5230 21.828, 5100 5030 22.2828, 5300 5030 20.28282, 5300 5230 21.28282, 5100 5230 21.828), (5239 5119 20, 5239 5141 20, 5261 5141 20, 5261 5119 20, 5239 5119 20), (5141 5135 20, 5141 5153 20, 5159 5153 20, 5159 5135 20, 5141 5135 20)), ((6100 5230 20, 6100 5030 20, 6300 5030 20, 6300 5230 20, 6100 5230 20), (6239 5119 20, 6239 5141 20, 6261 5141 20, 6261 5119 20, 6239 5119 20), (6141 5135 20, 6141 5153 20, 6159 5153 20, 6159 5135 20, 6141 5135 20)))')");
+        FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GeomFromText('MULTIPOLYGON XYZ (((5100 5230 21.828, 5100 5030 22.2828, 5300 5030 20.28282, 5300 5230 21.28282, 5100 5230 21.828), (5239 5119 20, 5239 5141 20, 5261 5141 20, 5261 5119 20, 5239 5119 20), (5141 5135 20, 5141 5153 20, 5159 5153 20, 5159 5135 20, 5141 5135 20)), ((6100 5230 20, 6100 5030 20, 6300 5030 20, 6300 5230 20, 6100 5230 20), (6239 5119 20, 6239 5141 20, 6261 5141 20, 6261 5119 20, 6239 5119 20), (6141 5135 20, 6141 5153 20, 6159 5153 20, 6159 5135 20, 6141 5135 20)))')");
         value = FdoPropertyValue::Create (L"Geometry", geometry);
         values->Add (value);
-        try
-        {
-            FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
-            CPPUNIT_FAIL("SHP Provider shouldn't support multipolygons, but it accepted them on insert anyway");
-        }
-        catch (FdoException *e)
-        {
-            e->Release();
-        }
 
-        /*
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+        
         FdoInt32 featid;
         featid = -1;
         while (reader->ReadNext ())
@@ -2997,6 +2983,7 @@ void InsertTests::insert_geometry_multipolygon_xyz ()
             FdoPtr<FdoByteArray> after = reader->GetGeometry (L"Geometry");
             int b = before->GetCount ();
             int a = after->GetCount ();
+
             CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b == a);
             int count = before->GetCount ();
             for (int i = 0; i < count; i++)
@@ -3031,6 +3018,7 @@ void InsertTests::insert_geometry_multipolygon_xyz ()
             FdoPtr<FdoByteArray> after = reader->GetGeometry (L"Geometry");
             int b = before->GetCount ();
             int a = after->GetCount ();
+
             CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b == a);
             int count = before->GetCount ();
             for (int i = 0; i < count; i++)
@@ -3041,7 +3029,6 @@ void InsertTests::insert_geometry_multipolygon_xyz ()
             }
         }
         reader->Close ();
-        */
     }
     catch (FdoException* ge) 
     {
@@ -3077,17 +3064,9 @@ void InsertTests::insert_geometry_multipolygon_xym ()
         FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GeomFromText('MULTIPOLYGON XYM (((5100 5230 1, 5100 5030 2, 5300 5030 3, 5300 5230 1, 5100 5230 1), (5239 5119 1, 5239 5141 2, 5261 5141 3, 5261 5119 1, 5239 5119 1), (5141 5135 1, 5141 5153 2, 5159 5153 3, 5159 5135 1, 5141 5135 1)), ((6100 5230 1, 6100 5030 2, 6300 5030 3, 6300 5230 1, 6100 5230 1), (6239 5119 1, 6239 5141 2, 6261 5141 3, 6261 5119 1, 6239 5119 1), (6141 5135 1, 6141 5153 2, 6159 5153 3, 6159 5135 1, 6141 5135 1)))')");
         value = FdoPropertyValue::Create (L"Geometry", geometry);
         values->Add (value);
-        try
-        {
-            FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
-            CPPUNIT_FAIL("SHP Provider shouldn't support multipolygons, but it accepted them on insert anyway");
-        }
-        catch (FdoException *e)
-        {
-            e->Release();
-        }
 
-        /*
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
         FdoInt32 featid;
         featid = -1;
         while (reader->ReadNext ())
@@ -3163,7 +3142,6 @@ void InsertTests::insert_geometry_multipolygon_xym ()
             }
         }
         reader->Close ();
-        */
     }
     catch (FdoException* ge) 
     {
@@ -3199,17 +3177,9 @@ void InsertTests::insert_geometry_multipolygon_xyzm ()
         FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GeomFromText('MULTIPOLYGON XYZM (((5100 5230 20 1, 5100 5030 20 2, 5300 5030 20 3, 5300 5230 20 1, 5100 5230 20 1), (5239 5119 20 1, 5239 5141 20 2, 5261 5141 20 3, 5261 5119 20 1, 5239 5119 20 1), (5141 5135 20 1, 5141 5153 20 2, 5159 5153 20 3, 5159 5135 20 1, 5141 5135 20 1)), ((6100 5230 20 1, 6100 5030 20 2, 6300 5030 20 3, 6300 5230 20 1, 6100 5230 20 1), (6239 5119 20 1, 6239 5141 20 2, 6261 5141 20 3, 6261 5119 20 1, 6239 5119 20 1), (6141 5135 20 1, 6141 5153 20 2, 6159 5153 20 3, 6159 5135 20 1, 6141 5135 20 1)))')");
         value = FdoPropertyValue::Create (L"Geometry", geometry);
         values->Add (value);
-        try
-        {
-            FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
-            CPPUNIT_FAIL("SHP Provider shouldn't support multipolygons, but it accepted them on insert anyway");
-        }
-        catch (FdoException *e)
-        {
-            e->Release();
-        }
 
-        /*
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
         FdoInt32 featid;
         featid = -1;
         while (reader->ReadNext ())
@@ -3285,7 +3255,6 @@ void InsertTests::insert_geometry_multipolygon_xyzm ()
             }
         }
         reader->Close ();
-        */
     }
     catch (FdoException* ge) 
     {
@@ -3306,7 +3275,9 @@ void InsertTests::insert_invalid_polygons()
         FdoPtr<FdoPropertyValue> value;
 
         // Add geometry value that contains multiple invalid loops;
-        // such polygons need to roundtrip without errors/modification according to ECO 10400:
+        // Obsolete: such polygons need to roundtrip without errors/modification according to ECO 10400:
+        // Actual: according to RFC 38 the type of the output geometry is not guarranteed. In this case
+        // a multi-polygon should be returned instead.
         FdoPtr<FdoGeometryValue> geometry = (FdoGeometryValue*)FdoExpression::Parse (
             L"GeomFromText('POLYGON XYZM ("
             L"(1100 1100 20 1, 1200 1100 20 2, 1200 1200 20 3, 1100 1200 20 1, 1100 1100 20 1),"  // inner ring as first ring
@@ -3342,14 +3313,8 @@ void InsertTests::insert_invalid_polygons()
             FdoPtr<FdoByteArray> after = reader->GetGeometry (L"Geometry");
             int b = before->GetCount ();
             int a = after->GetCount ();
-            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b == a);
-            int count = before->GetCount ();
-            for (int i = 0; i < count; i++)
-            {
-                FdoByte left = before->GetData ()[i];
-                FdoByte right = after->GetData ()[i];
-                CPPUNIT_ASSERT_MESSAGE ("incorrect geometry content", left == right);
-            }
+
+            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b != a);
         }
         reader->Close ();
 
@@ -3369,15 +3334,9 @@ void InsertTests::insert_invalid_polygons()
             FdoPtr<FdoByteArray> after = reader->GetGeometry (L"Geometry");
             int b = before->GetCount ();
             int a = after->GetCount ();
-            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b == a);
-            int count = before->GetCount ();
-            for (int i = 0; i < count; i++)
-            {
-                FdoByte left = before->GetData ()[i];
-                FdoByte right = after->GetData ()[i];
-                CPPUNIT_ASSERT_MESSAGE ("incorrect geometry content", left == right);
-            }
-        }
+
+            CPPUNIT_ASSERT_MESSAGE ("incorrect geometry size", b != a);
+         }
         reader->Close ();
     }
     catch (FdoException* ge) 

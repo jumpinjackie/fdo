@@ -55,9 +55,7 @@ public:
     static Shape* ShapeFromLine (FdoILineString* line, BoundingBoxEx* box, int record);
     static Shape* ShapeFromMultiLine (FdoIMultiLineString* line, BoundingBoxEx* box, int record);
     static Shape* ShapeFromPolygon (FdoIPolygon* polygon, BoundingBoxEx* box, int record);
-    /* //ECO 10400 indicates we should never support FdoIMultiPolygon as input
     static Shape* ShapeFromMultiPolygon (FdoIMultiPolygon* polygons, BoundingBoxEx* box, int record);
-    */
     static Shape* ShapeFromGeometry (FdoByteArray* bytes, int nRecordNumber);
 
     // Data access methods
