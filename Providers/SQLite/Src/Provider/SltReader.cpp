@@ -285,6 +285,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     if (!md->IsOptimized())
     {
         // in this case we cannot use FastStepping
+        int idxToStart = 0;
         m_useFastStepping = false;
         FdoPtr<FdoGeometricPropertyDefinition> gpd;
         FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
@@ -296,7 +297,16 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
             FdoDataType dpType = idp->GetDataType();
             if (FdoDataType_Int32 != dpType && FdoDataType_Int64 != dpType)
+            {
+                // the PK is not int32/int64, add rowid and we will add it later
                 m_reissueProps.Add("rowid", 5);
+            }
+            else
+            {
+                // in case is a int32/int64 PK skip adding it one more time
+                idxToStart = 1;
+                m_reissueProps.Add(idp->GetName());
+            }
         }
 
         if (m_class->GetClassType() == FdoClassType_FeatureClass)
@@ -306,8 +316,8 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             if (gpd != NULL)
                 m_reissueProps.Add(gpd->GetName());
         }
-        // now add all PK
-        for (int i = 0; i < nIdProps; i++)
+        // now add rest of the PK
+        for (int i = idxToStart; i < nIdProps; i++)
         {
             FdoPtr<FdoPropertyDefinition> idp = idpdc->GetItem(i);
             m_reissueProps.Add(idp->GetName());
