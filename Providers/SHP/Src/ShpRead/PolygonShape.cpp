@@ -124,8 +124,8 @@ FdoByteArray* PolygonShape::GetGeometry ()
         }
         
         if (RELATE_RINGS)
-            // Might return a Polygon or a MultiPolygon
-            geometry = FdoSpatialUtility::CreateGeometryFromRings (rings, RELATE_RINGS);
+            // Might return a Polygon or a MultiPolygon. Use the SHP custom method for relating rings.
+            geometry = CreateGeometryFromRings (rings, RELATE_RINGS);
         else
             // Always returns a Polygon
             geometry = factory->CreatePolygon(exteriorRing, rings);
@@ -144,6 +144,176 @@ FdoByteArray* PolygonShape::GetGeometry ()
     }
 
     return (ret);
+}
+
+//
+// This method has been cloned from FdoSpatialUtility::CreateGeometryFromRings() which assumes the rings
+// are totally unrelated. For this reason the number of point-in-polygon tests can be very large leading
+// to an unacceptable performance problem. In addition it is based on a sort by area approach which also
+// adds overhead for area calculation.
+//
+// For SHP we can assume safely that the 1st ring is outer and the following rings are inner. Since the
+// rings orientation is not reliable we'll need to perform a point-in-polygon test for each candidate 
+// inner loop against the outer loop. When such a candidate is found outside the outer loop then we'll
+// start another outer loop and so on. The result will be a polygon or a multipolygon, depending on how
+// many outer loops have been found.
+//
+FdoIGeometry* PolygonShape::CreateGeometryFromRings( FdoLinearRingCollection* rings, bool relateRings )
+{
+    FdoPtr<FdoIPolygon>         polygon;
+    FdoPtr<FdoIMultiPolygon>    multipolygon;
+
+    FdoIGeometry                *geometry;
+    FdoFgfGeometryFactory       *factory = FdoFgfGeometryFactory::GetInstance ();
+
+    FdoInt32    numRings = rings->GetCount(); 
+    
+    // Just one ring case, quick exit.
+    if ( numRings == 1 )
+    {
+        FdoPtr<FdoILinearRing> ring = rings->GetItem(0);
+
+        polygon = factory->CreatePolygon( ring, NULL );
+        geometry = polygon;
+
+        FDO_SAFE_ADDREF( geometry );
+        FDO_SAFE_RELEASE( factory );
+
+        return geometry;
+    }
+
+    FdoPtr<FdoLinearRingCollection> intRings = FdoLinearRingCollection::Create (); 
+    FdoPtr<FdoPolygonCollection>    polygons = FdoPolygonCollection::Create ();
+
+    // Relate (associate) rings: find exterior/interior rings
+    // Ignore the rings orientation (cw/ccw) 
+
+    // Array to hold the ring association by index
+    int  *ringAssocIndex = new int[numRings];
+    for ( int i = 0; i < numRings; i++ )
+    { 
+        ringAssocIndex[i] = -1; // not associated
+    }
+
+    // Navigate forward starting from the 2nd ring. Try to associate the current ring with the current external loop:
+    // - inside -> it is a hole
+    // - outside -> it is a external loop
+
+    int extRingIndex = 0; 
+    FdoPtr<FdoILinearRing> extRing = rings->GetItem(extRingIndex);
+    FdoPtr<FdoIEnvelope>   extent = extRing->GetEnvelope();
+
+    for ( int i = 1; i < numRings; i++)
+    { 
+        FdoPtr<FdoILinearRing> ring = rings->GetItem(i);
+
+        // Get a point of this ring to perform 'point-in-polygon' test against the external ring
+        FdoPtr<FdoDirectPositionCollection> positions = ring->GetPositions();
+        FdoPtr<FdoIDirectPosition> pos = positions->GetItem(0);
+        double x = pos->GetX();
+        double y = pos->GetY();
+
+        // Check the point against the ring bounding box
+        bool isInside = (x <= extent->GetMaxX() && x >= extent->GetMinX() && y <= extent->GetMaxY() && y >= extent->GetMinY());
+
+        if (isInside) 
+            isInside = FdoSpatialUtility::PointInRing(extRing, x, y);
+
+        if (isInside) 
+        {
+            ringAssocIndex[i] = extRingIndex;
+        }
+        else
+        {
+            // Start a new external loop
+            extRingIndex = i; 
+            extRing = rings->GetItem(extRingIndex);
+            extent = extRing->GetEnvelope();
+        }
+    }
+
+    // At this point all the rings have been associated (holes). Those not associated are external loops.
+    for ( int i = 0; i < numRings; i++)
+    { 
+        // External ring, look for its associated rings
+        _ASSERT(ringAssocIndex[i] == -1 );
+
+        FdoInt32  extRingIndex = i; 
+        FdoPtr<FdoILinearRing> extRing = rings->GetItem(extRingIndex);
+
+        FdoPtr<FdoLinearRingCollection> intRings = FdoLinearRingCollection::Create (); 
+
+        bool  related = true;
+        for (int j = i + 1; j < numRings && related; j++)
+        { 
+            related = (ringAssocIndex[j] == extRingIndex);
+            if ( related )
+            {
+                FdoPtr<FdoILinearRing> intRing = rings->GetItem(j);
+                intRings->Add( intRing );
+                i++;  
+            }
+        }
+
+        // Given a polygon with interior rings we need to check for nested rings. 
+        bool    hasNestedRings = false;
+
+        if (intRings->GetCount() > 1)
+        {
+            // Because the nested rings are rare, it is worth doing a separate test, presumably cheap 
+            // (because we assume the bounding box test will eliminate lots of candidates): take
+            // all the interior rings and try to relate them. In case the number of resulting polygons is
+            // different from the number interior rings, then we have nested rings and we'll do full association.
+
+            // Must return a MultiPolygon
+            FdoPtr<FdoIMultiPolygon> multiPoly = (FdoIMultiPolygon *)FdoSpatialUtility::CreateGeometryFromRings (intRings, true);
+
+            _ASSERT(multiPoly);
+
+            // Check the number of the polygons. 
+            int x = multiPoly->GetCount();
+            hasNestedRings = (intRings->GetCount() > multiPoly->GetCount());
+
+            if (hasNestedRings)
+            {
+                // Create a temporary collection of rings
+                FdoPtr<FdoLinearRingCollection> tempRings = FdoLinearRingCollection::Create (); 
+                tempRings->Add(extRing);
+
+                for (int i = 0; i < intRings->GetCount(); i++)
+                {
+                    FdoPtr<FdoILinearRing> intRing = intRings->GetItem(i);
+                    tempRings->Add(intRing);
+                }
+                
+                // Do true rings association
+                multiPoly = (FdoIMultiPolygon *)FdoSpatialUtility::CreateGeometryFromRings (tempRings, true);
+
+                // Add these polygons to the output
+                for (int i = 0; i < multiPoly->GetCount(); i++)
+                {
+                    FdoPtr<FdoIPolygon> polygon = multiPoly->GetItem(i);            
+                    polygons->Add (polygon);
+                }
+            }
+        }
+        
+        if (!hasNestedRings)
+        {
+            // Polygon with one or no interior loops
+            polygon = factory->CreatePolygon( extRing, intRings );
+            polygons->Add (polygon);
+        }
+    }
+
+    delete[] ringAssocIndex;
+
+    // Check the number of polyons created and return the appropiate geometry type.
+    geometry = ( polygons->GetCount() == 1 ) ? (FdoIGeometry *) polygons->GetItem(0) :
+                                               (FdoIGeometry *) factory->CreateMultiPolygon (polygons);
+    FDO_SAFE_RELEASE( factory );
+
+    return geometry;
 }
 
 
@@ -215,5 +385,6 @@ void PolygonShape::DebugPrintDetails ()
 // * D E B U G  B L O C K
 // ****************************************************************************
 }
+
 
 

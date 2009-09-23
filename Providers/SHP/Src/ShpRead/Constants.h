@@ -250,6 +250,6 @@ const CHAR END_OF_FILE = (CHAR)0x1a;
 //     polygons (exterior rings and interior rings). A MultiPolygon may result as
 //     well, depending on the number of exterior rings detected).
 
-#define RELATE_RINGS    false
+#define RELATE_RINGS    true
 
 #endif  // CONSTANTS_H

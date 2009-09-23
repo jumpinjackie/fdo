@@ -44,7 +44,8 @@ FdoGeometryType* ShpGeometryCapabilities::GetGeometryTypes (FdoInt32& length)
         FdoGeometryType_LineString,
         FdoGeometryType_Polygon,
         FdoGeometryType_MultiPoint,
-        FdoGeometryType_MultiLineString
+        FdoGeometryType_MultiLineString,
+        FdoGeometryType_MultiPolygon
     };
 
     length = ELEMENTS(geomTypes);

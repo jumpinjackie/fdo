@@ -930,7 +930,6 @@ Shape* ShapeFile::ShapeFromPolygon (FdoIPolygon* polygon, BoundingBoxEx* box, in
     return (ret);
 }
 
-/* //ECO 10400 indicates we should never support FdoIMultiPolygon as input
 Shape* ShapeFile::ShapeFromMultiPolygon (FdoIMultiPolygon* polygons, BoundingBoxEx* box, int record)
 {
     FdoInt32 dimensions;
@@ -1199,7 +1198,6 @@ Shape* ShapeFile::ShapeFromMultiPolygon (FdoIMultiPolygon* polygons, BoundingBox
 
     return (ret);
 }
-*/
 
 Shape* ShapeFile::ShapeFromGeometry (FdoByteArray* bytes, int nRecordNumber)
 {
@@ -1251,6 +1249,9 @@ Shape* ShapeFile::ShapeFromGeometry (FdoByteArray* bytes, int nRecordNumber)
             break;
         case FdoGeometryType_MultiLineString:
             ret = ShapeFromMultiLine ((FdoIMultiLineString*)geometry.p, &box, nRecordNumber);
+            break;
+        case FdoGeometryType_MultiPolygon:
+            ret = ShapeFromMultiPolygon ((FdoIMultiPolygon*)geometry.p, &box, nRecordNumber);
             break;
         default:
             throw FdoException::Create (NlsMsgGet(FDO_131_UNSUPPORTED_GEOMETRY_TYPE, "The '%1$ls' geometry type (or combination of types) is not supported.", (FdoString *) FdoCommonMiscUtil::FdoGeometryTypeToString(type)));
