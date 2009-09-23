@@ -3830,14 +3830,21 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
             // Get a point of this ring to perform 'point-in-polygon' test agaist other rings
             FdoPtr<FdoDirectPositionCollection> positions = ring1->GetPositions();
             FdoPtr<FdoIDirectPosition> pos = positions->GetItem(0);
-            
+            double x = pos->GetX();
+            double y = pos->GetY();
+
             for ( int j = i-1; j >=0; j-- )
             {
                 FdoInt32 index2 = ringsArea[j].index; 
 
                 FdoPtr<FdoILinearRing> ring2 = rings->GetItem(index2);
+                FdoPtr<FdoIEnvelope>   extent2 = ring2->GetEnvelope();
 
-                bool isInside = FdoSpatialUtility::PointInRing( ring2, pos->GetX(), pos->GetY() );
+                // Check the point against the ring bounding box
+                bool isInside = (x <= extent2->GetMaxX() && x >= extent2->GetMinX() && y <= extent2->GetMaxY() && y >= extent2->GetMinY());
+
+                if (isInside)
+                    isInside = FdoSpatialUtility::PointInRing(ring2, x, y);
 
                 if (isInside) 
                 {
@@ -3847,34 +3854,62 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
             }
         }
 
-        // create a new array in the original order
+        // Create a new array in the original order
         RingArea_def *ringsOriginal = new RingArea_def[numRings];
         for (int i = 0; i < numRings; i++)
             ringsOriginal[ringsArea[i].index] = ringsArea[i];
 
-        // At this point all the rings have been associated (holes). Those not associated are external loops.
-        for ( int i = 0; i < numRings; i++ )
-        { 
-            // External ring, look for its associated rings
-            if ( ringsOriginal[i].indexAssoc == -1 )
+        // At this point all the rings have been associated to the closest ring. Those not associated (-1) are external loops.
+        // Check for nested loops and make corrections, i.e. turn interior rings into exterior if the case,
+		for ( int i = 0; i < numRings; i++ )
+		{ 
+            int assocIndex = ringsOriginal[i].indexAssoc;
+
+            // Skip those not associated
+            if ( assocIndex == -1 )
+                continue;
+
+            int depth = 0;
+            
+            while (assocIndex != -1)
             {
-                FdoInt32  extRingIndex = ringsOriginal[i].index;
-                FdoPtr<FdoILinearRing> extRing = rings->GetItem(extRingIndex);
-
-                FdoPtr<FdoLinearRingCollection> intRings = FdoLinearRingCollection::Create (); 
-
-                for (int j = 0; j < numRings; j++)
-                { 
-                    if ( ringsOriginal[j].indexAssoc == extRingIndex )
-                    {
-                        FdoPtr<FdoILinearRing> intRing = rings->GetItem(ringsOriginal[j].index);
-                        intRings->Add( intRing );
-                    }
-                }
-                polygon = factory->CreatePolygon( extRing, intRings );
-                polygons->Add (polygon);
+                depth++;
+                assocIndex = ringsOriginal[assocIndex].indexAssoc;
             }
+
+            bool isExteriorRing = (depth % 2 == 0); // even number
+
+            if (isExteriorRing)
+                ringsOriginal[i].indexAssoc = -1;
         }
+
+        // Create output polygons
+		for ( int i = 0; i < numRings; i++ )
+		{ 
+			// External ring, look for its associated rings
+			if ( ringsOriginal[i].indexAssoc == -1 )
+			{
+				FdoInt32  extRingIndex = ringsOriginal[i].index;
+				FdoPtr<FdoILinearRing> extRing = rings->GetItem(extRingIndex);
+
+				FdoPtr<FdoLinearRingCollection> intRings;
+				
+				for (int j = 0; j < numRings; j++)
+				{ 
+					if ( ringsOriginal[j].indexAssoc == extRingIndex)
+ 					{
+                        if (intRings == NULL)
+                            intRings = FdoLinearRingCollection::Create (); 
+
+						FdoPtr<FdoILinearRing> intRing = rings->GetItem(ringsOriginal[j].index);
+						intRings->Add( intRing );
+					}
+				}
+
+				polygon = factory->CreatePolygon( extRing, intRings );
+				polygons->Add (polygon);
+			}
+		}
 
         delete[] ringsArea;
         delete[] ringsOriginal;
