@@ -688,7 +688,6 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         {
             // enforce an empty result since result will be empty
             rowids = new std::vector<__int64>();
-            rowids->push_back(-1);
             ri = new RowidIterator(-1, rowids);
         }
     }
@@ -878,8 +877,6 @@ RowidIterator* SltConnection::GetScrollableIterator(SltReader* rdr)
         list->push_back(id);
     }
     rdr->Close();
-    if (list->size() == 0)
-        list->push_back(-1);
     return new RowidIterator(-1, list);
 }
 
