@@ -312,7 +312,7 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     {
         //get the SDF schema. It could be empty..., but we still have an object for it
         //since things like SDF version are stored in there
-        m_dbSchema = new SchemaDb(m_env, m_mbsFullPath, m_bReadOnly);
+        m_dbSchema = new SchemaDb(m_env, m_mbsFullPath, m_bReadOnly, m_bCreate);
     }
     catch (FdoException* e)
     {

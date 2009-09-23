@@ -28,7 +28,7 @@ class SchemaDb
 {
 public:
 
-    SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly);
+    SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly, bool bCreate);
     virtual ~SchemaDb();
 
     // Retrieves the version of the current SDF file. 
