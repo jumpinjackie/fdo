@@ -54,7 +54,7 @@ static const FdoInt32 APPLY_SCHEMA_ERROR_LIMIT = 100;
 
 
 
-SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
+SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly, bool bCreate) :
     m_bHasAssociations(false),
     m_majorVersion(0),
     m_minorVersion(0),
@@ -78,14 +78,25 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
                (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_0)
             && (m_majorVersion != SDFPROVIDER_VERSION_MAJOR_3 || m_minorVersion != SDFPROVIDER_VERSION_MINOR_3_1)
             )
+        {
+            m_db->close(0);
+            delete m_db;
+            m_db = NULL;
             throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_5_INCORRECT_SDF_VERSION),
                 m_majorVersion, m_minorVersion, SDFPROVIDER_VERSION_MAJOR_CURRENT, SDFPROVIDER_VERSION_MINOR_CURRENT));
+        }
     }
     else
     {
         //must close even if open failed
         m_db->close(0);
         delete m_db;
+        m_db = NULL;
+
+        // in case we are not trying to create the file avoid creating the SDF schem into 
+        // the file since it could be a non SDF file.
+        if (!bCreate)
+            throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
 
         if (bReadOnly)
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
@@ -94,7 +105,12 @@ SchemaDb::SchemaDb(SQLiteDataBase* env, const char* filename, bool bReadOnly) :
 
         // Since we failed to open an existing SDF file, create a new one instead:
         if (res = m_db->open(0, filename, DB_SCHEMA_NAME, DB_SCHEMA_NAME, SQLiteDB_CREATE, 0) != 0)
+        {
+            m_db->close(0);
+            delete m_db;
+            m_db = NULL;
             throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
+        }
 
         //we are creating the SDF file, so we have to write an 
         //SDF version ID to metadata record in the schema database
