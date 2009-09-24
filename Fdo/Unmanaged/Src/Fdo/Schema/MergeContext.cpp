@@ -279,7 +279,7 @@ bool FdoSchemaMergeContext::CheckAddProperty( FdoPropertyDefinition* prop )
 
         if ( prop->GetPropertyType() == FdoPropertyType_DataProperty ) {
             FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*) prop;
-            FdoClassDefinition* classDef = (FdoClassDefinition*)(prop->GetParent());
+            FdoClassDefinitionP classDef = (FdoClassDefinition*)(prop->GetParent());
             
             if ( (!dataProp->GetNullable()) && ClassHasObjects(classDef) ) {
                 // Can't add not-null property if class has objects.
@@ -322,7 +322,7 @@ bool FdoSchemaMergeContext::CheckDeleteProperty( FdoPropertyDefinition* prop )
     if ( CanDeleteProperty(prop) ) {
         canDelete = true;
 
-        FdoClassDefinition* classDef = (FdoClassDefinition*)(prop->GetParent());        
+        FdoClassDefinitionP classDef = (FdoClassDefinition*)(prop->GetParent());        
         if ( ClassHasObjects(classDef) ) {
             // Can't delete a property if class has objects.
             AddError( 
@@ -1697,6 +1697,7 @@ void FdoSchemaMergeContext::ResolveNetworkProps()
 
         if ( (networkLayerClass == NULL) && (ref->GetClassName() != L"") ) {
             // Unable to resolve this reference
+            FDO_SAFE_RELEASE(networkLayerClass);
             AddError( 
                 FdoSchemaExceptionP(
                     FdoSchemaException::Create (
