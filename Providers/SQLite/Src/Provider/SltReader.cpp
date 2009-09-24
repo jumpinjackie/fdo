@@ -490,75 +490,90 @@ void SltReader::Requery2()
 	//-------------------------------------------------------
 	// FdoIReader implementation
 	//-------------------------------------------------------
-
-bool SltReader::GetBoolean(FdoString* propertyName)
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+bool SltReader::GetBoolean(int index)
 {
-	int i = NameToIndex(propertyName);
-	int res = sqlite3_column_int(m_pStmt, i);
+	int res = sqlite3_column_int(m_pStmt, index);
 	return res != 0;
 }
-
-FdoByte SltReader::GetByte(FdoString* propertyName)
+bool SltReader::GetBoolean(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
-	int res = sqlite3_column_int(m_pStmt, i);
+    return SltReader::GetBoolean(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoByte SltReader::GetByte(int index)
+{
+	int res = sqlite3_column_int(m_pStmt, index);
 	return (FdoByte)res;
 }
-
-FdoDateTime SltReader::GetDateTime(FdoString* propertyName)
+FdoByte SltReader::GetByte(FdoString* propertyName)
 {
-    const FdoString* sdt = SltReader::GetString(propertyName);
+    return SltReader::GetByte(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoDateTime SltReader::GetDateTime(int index)
+{
+    const FdoString* sdt = SltReader::GetString(index);
 	return DateFromString(sdt);
 }
-
-double SltReader::GetDouble(FdoString* propertyName)
+FdoDateTime SltReader::GetDateTime(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
-	double res = sqlite3_column_double(m_pStmt, i);
+    return SltReader::GetDateTime(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+double SltReader::GetDouble(int index)
+{
+	double res = sqlite3_column_double(m_pStmt, index);
 	return res;
 }
-
-FdoInt16 SltReader::GetInt16(FdoString* propertyName)
+double SltReader::GetDouble(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
-	int res = sqlite3_column_int(m_pStmt, i);
+    return SltReader::GetDouble(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoInt16 SltReader::GetInt16(int index)
+{
+	int res = sqlite3_column_int(m_pStmt, index);
 	return (FdoInt16)res;
 }
-
+FdoInt16 SltReader::GetInt16(FdoString* propertyName)
+{
+    return SltReader::GetInt16(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoInt32 SltReader::GetInt32(int index)
+{
+	int res = sqlite3_column_int(m_pStmt, index);
+	return (FdoInt32)res;
+}
 FdoInt32 SltReader::GetInt32(FdoString* propertyName)
 {
 	return GetInt32(NameToIndex(propertyName));
 }
-
-FdoInt64 SltReader::GetInt64(int i)
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoInt64 SltReader::GetInt64(int index)
 {
-    FdoInt64 res = sqlite3_column_int64(m_pStmt, i);
+    FdoInt64 res = sqlite3_column_int64(m_pStmt, index);
 	return res;
 }
-
-FdoInt32 SltReader::GetInt32(int i)
-{
-	int res = sqlite3_column_int(m_pStmt, i);
-	return (FdoInt32)res;
-}
-
 FdoInt64 SltReader::GetInt64(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
-	sqlite3_int64 res = sqlite3_column_int64(m_pStmt, i);
-	return res;
+    return SltReader::GetInt64(NameToIndex(propertyName));
 }
-
-float SltReader::GetSingle(FdoString* propertyName)
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+float SltReader::GetSingle(int index)
 {
-	int i = NameToIndex(propertyName);
-	double res = sqlite3_column_double(m_pStmt, i);
+	double res = sqlite3_column_double(m_pStmt, index);
 	return (float)res;
 }
-
-FdoString* SltReader::GetString(FdoString* propertyName)
+float SltReader::GetSingle(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
+    return SltReader::GetSingle(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoString* SltReader::GetString(int index)
+{
+    int i = index;
 
 	if (m_sprops[i].valid)
 		return m_sprops[i].data;
@@ -594,29 +609,148 @@ FdoString* SltReader::GetString(FdoString* propertyName)
     }
 
 	return m_sprops[i].data;
-}
 
-FdoLOBValue* SltReader::GetLOB(FdoString* propertyName)
+}
+FdoString* SltReader::GetString(FdoString* propertyName)
+{
+    return SltReader::GetString(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoLOBValue* SltReader::GetLOB(int index)
 {
     //TODO: do something similar to GetGeometry
 	throw FdoException::Create(L"Not Implemented.");
 }
-
-FdoIStreamReader* SltReader::GetLOBStreamReader(FdoString* propertyName )
+FdoLOBValue* SltReader::GetLOB(FdoString* propertyName)
+{
+    return SltReader::GetLOB(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoIStreamReader* SltReader::GetLOBStreamReader(int index)
 {
 	throw FdoException::Create(L"Not Implemented.");
 }
-
+FdoIStreamReader* SltReader::GetLOBStreamReader(FdoString* propertyName )
+{
+	return SltReader::GetLOBStreamReader(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+bool SltReader::IsNull(int index)
+{
+	return sqlite3_column_type(m_pStmt, index) == SQLITE_NULL;
+}
 bool SltReader::IsNull(FdoString* propertyName)
 {
-	int i = NameToIndex(propertyName);
-	return sqlite3_column_type(m_pStmt, i) == SQLITE_NULL;
+    return SltReader::IsNull(NameToIndex(propertyName));
 }
-
-FdoIRaster* SltReader::GetRaster(FdoString* propertyName)
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoIRaster* SltReader::GetRaster(int index)
 {
 	throw FdoException::Create(L"GetRaster() is not implemented by this provider.");
 }
+FdoIRaster* SltReader::GetRaster(FdoString* propertyName)
+{
+    return SltReader::GetRaster(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoIFeatureReader* SltReader::GetFeatureObject(int index)
+{
+	throw FdoException::Create(L"GetFeatureObject() is not implemented by this provider.");
+}
+FdoIFeatureReader* SltReader::GetFeatureObject(FdoString* propertyName)
+{
+    return SltReader::GetFeatureObject(NameToIndex(propertyName));
+}
+
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+FdoByteArray* SltReader::GetGeometry(int index)
+{
+	int len = 0;
+    const void* ptr = SltReader::GetGeometry(index, &len);
+	return FdoByteArray::Create((unsigned char*)ptr, len);
+}
+FdoByteArray* SltReader::GetGeometry(FdoString* propertyName)
+{
+    return SltReader::GetGeometry(NameToIndex(propertyName));
+}
+
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+const FdoByte* SltReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
+{
+    return SltReader::GetGeometry(NameToIndex(propertyName), len);
+}
+
+const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
+{
+    //If the FDO flag is set, we can be pretty sure the underlying
+    //column is a geometry blob and we can fetch it directly from
+    //sqlite row cache memory
+    unsigned char* geom;
+
+    if (((Vdbe*)m_pStmt)->fdo)
+    {
+        Mem* blob = columnMem(m_pStmt, i);
+        *len = blob->n;
+        geom = (unsigned char*)blob->z;
+    }
+    else
+    {
+	    const void* ptr = sqlite3_column_blob(m_pStmt, i);
+	    *len = sqlite3_column_bytes(m_pStmt, i);
+    	geom = (unsigned char*)ptr;    
+    }
+
+    //is geometry null?
+    if (!len) return NULL;
+
+    if (m_eGeomFormat == eFGF)
+        return geom;
+    else if (m_eGeomFormat == eWKB)
+    {
+        int estFGFLen = (*len) * 2; //should be sufficient, heh
+        if (m_wkbBufferLen < estFGFLen)
+        {
+            delete[] m_wkbBuffer;
+            m_wkbBufferLen = estFGFLen;
+            m_wkbBuffer = new unsigned char[m_wkbBufferLen];
+        }
+
+        *len = Wkb2Fgf(geom, m_wkbBuffer);
+        return m_wkbBuffer;
+    }
+    else if (m_eGeomFormat == eWKT)
+    {
+        wchar_t* tmp = (wchar_t*)alloca(sizeof(wchar_t)*(*len+1));
+        A2W_FAST(tmp, *len+1, (const char*)geom, *len);
+
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+
+        FdoPtr<FdoIGeometry> geom = gf->CreateGeometry((FdoString*)tmp);
+        FdoPtr<FdoByteArray> fgf = gf->GetFgf(geom);
+        
+        *len = fgf->GetCount();
+        if (m_wkbBufferLen < *len)
+        {
+            delete[] m_wkbBuffer;
+            m_wkbBufferLen = *len;
+            m_wkbBuffer = new unsigned char[m_wkbBufferLen];
+        }
+
+        memcpy(m_wkbBuffer, fgf->GetData(), *len);
+        return m_wkbBuffer;
+    }
+    else
+    {
+        throw FdoException::Create(L"Unsupported geometry format.");
+    }
+
+    //return NULL;//can't get here from there.
+}
+
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
 
 bool SltReader::ReadNext()
 {
@@ -797,18 +931,9 @@ void SltReader::Close()
 	m_pStmt = NULL;
 }
 
-const char* SltReader::DecodeTableName(const char* name)
-{
-    if (name != NULL)
-    {
-        int pos = StringContains(name, "$view");
-        return (pos == 0) ? (name+5) : name;
-    }
-    return name;
-}
 
 	//-------------------------------------------------------
-	// FdoIFeatureReader implementation
+	// FdoIFeatureReader implementation (except GetGeometry, that's done above)
 	//-------------------------------------------------------
 
 FdoClassDefinition* SltReader::GetClassDefinition()
@@ -985,147 +1110,10 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 	return FDO_SAFE_ADDREF(m_class);
 }
 
-// function supports following formats (note a+b is just a sample - it can be any expression)
-//  a + b aS name
-//  a + b name
-//  a + b AS "na me"
-//  a + b "na me"
-std::wstring SltReader::ExtractExpression(const wchar_t* exp, const wchar_t* propName)
-{
-    std::wstring retVal;
-    wchar_t asValue[3];
-    size_t szExp = wcslen(exp);
-    size_t szName = wcslen(propName);
-    int posEnd = szExp - szName;
-    if (*(exp + szExp - 1) == '\"' && *propName != '\"')
-        posEnd -= 2; // eliminate "" in case we have them
-
-    int posAs = posEnd;
-    int posEndExp = posEnd;
-    if (posEnd > 0)
-    {
-        for(int idx = posEnd-1; idx > 0; idx--)
-        {
-            if (*(exp+idx) != ' ')
-            {
-                posAs = 0;
-                int idx2 = 0;
-                for(idx2 = idx; idx2 > 0; idx2--)
-                {
-                    if (*(exp+idx2) == ' ' || *(exp+idx2) == '\"')
-                    {
-                        posAs = idx2 + 1;
-                        break;
-                    }
-                }
-                posEndExp = posEnd; // assume could not find 'AS' take it as an exprerssion
-                if ((posEnd - posAs) == 2)
-                {
-                    memcpy(asValue, posAs + exp, (posEnd - posAs)*sizeof(wchar_t));
-                    asValue[2] = '\0';
-                    if(_wcsicmp(asValue, L"AS") == 0)
-                        posEndExp = posAs; // we found 'AS'
-                }
-                break;
-            }
-            else
-                posEnd--;
-        }
-    }
-    if (posEndExp > 0)
-        retVal = std::wstring(exp, posEndExp);
-    else
-        retVal = exp;
-    return retVal;
-}
 
 FdoInt32 SltReader::GetDepth()
 {
 	throw FdoException::Create(L"GetDepth() is not implemented by this provider.");
-}
-
-FdoIFeatureReader* SltReader::GetFeatureObject(FdoString* propertyName)
-{
-	throw FdoException::Create(L"GetFeatureObject() is not implemented by this provider.");
-}
-
-FdoByteArray* SltReader::GetGeometry(FdoString* propertyName)
-{
-	int len = 0;
-    const void* ptr = SltReader::GetGeometry(propertyName, &len);
-	return FdoByteArray::Create((unsigned char*)ptr, len);
-}
-
-const FdoByte* SltReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
-{
-    return SltReader::GetGeometry(NameToIndex(propertyName), len);
-}
-
-const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
-{
-    //If the FDO flag is set, we can be pretty sure the underlying
-    //column is a geometry blob and we can fetch it directly from
-    //sqlite row cache memory
-    unsigned char* geom;
-
-    if (((Vdbe*)m_pStmt)->fdo)
-    {
-        Mem* blob = columnMem(m_pStmt, i);
-        *len = blob->n;
-        geom = (unsigned char*)blob->z;
-    }
-    else
-    {
-	    const void* ptr = sqlite3_column_blob(m_pStmt, i);
-	    *len = sqlite3_column_bytes(m_pStmt, i);
-    	geom = (unsigned char*)ptr;    
-    }
-
-    //is geometry null?
-    if (!len) return NULL;
-
-    if (m_eGeomFormat == eFGF)
-        return geom;
-    else if (m_eGeomFormat == eWKB)
-    {
-        int estFGFLen = (*len) * 2; //should be sufficient, heh
-        if (m_wkbBufferLen < estFGFLen)
-        {
-            delete[] m_wkbBuffer;
-            m_wkbBufferLen = estFGFLen;
-            m_wkbBuffer = new unsigned char[m_wkbBufferLen];
-        }
-
-        *len = Wkb2Fgf(geom, m_wkbBuffer);
-        return m_wkbBuffer;
-    }
-    else if (m_eGeomFormat == eWKT)
-    {
-        wchar_t* tmp = (wchar_t*)alloca(sizeof(wchar_t)*(*len+1));
-        A2W_FAST(tmp, *len+1, (const char*)geom, *len);
-
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-
-        FdoPtr<FdoIGeometry> geom = gf->CreateGeometry((FdoString*)tmp);
-        FdoPtr<FdoByteArray> fgf = gf->GetFgf(geom);
-        
-        *len = fgf->GetCount();
-        if (m_wkbBufferLen < *len)
-        {
-            delete[] m_wkbBuffer;
-            m_wkbBufferLen = *len;
-            m_wkbBuffer = new unsigned char[m_wkbBufferLen];
-        }
-
-        memcpy(m_wkbBuffer, fgf->GetData(), *len);
-        return m_wkbBuffer;
-    }
-    else
-    {
-        throw FdoException::Create(L"Unsupported geometry format.");
-    }
-
-    //return NULL;//can't get here from there.
 }
 
 
@@ -1138,11 +1126,21 @@ FdoInt32 SltReader::GetPropertyCount()
 	return sqlite3_column_count(m_pStmt);
 }
 
+
 FdoString* SltReader::GetPropertyName(FdoInt32 index)
 {
 	return m_propNames[index];
 }
+int SltReader::GetPropertyIndex(FdoString* propertyName)
+{
+	return NameToIndex(propertyName);
+}
 
+
+FdoDataType SltReader::GetDataType(int index)
+{
+    return SltReader::GetDataType(m_propNames[index]);
+}
 FdoDataType SltReader::GetDataType(FdoString* propertyName)
 {
 	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
@@ -1152,6 +1150,10 @@ FdoDataType SltReader::GetDataType(FdoString* propertyName)
 	return ((FdoDataPropertyDefinition*)pd.p)->GetDataType();
 }
 
+FdoPropertyType SltReader::GetPropertyType(int index)
+{
+    return SltReader::GetPropertyType(m_propNames[index]);
+}
 FdoPropertyType SltReader::GetPropertyType(FdoString* propertyName)
 {
 	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
@@ -1175,7 +1177,16 @@ FdoString* SltReader::GetColumnName(FdoInt32 index)
 {
 	return GetPropertyName(index);
 }
+int SltReader::GetColumnIndex(FdoString* columnName)
+{
+	return GetPropertyIndex(columnName);
+}
 
+
+FdoDataType SltReader::GetColumnType(int index)
+{
+    return GetDataType(index);
+}
 FdoDataType SltReader::GetColumnType(FdoString* columnName)
 {
 	return GetDataType(columnName);
@@ -1317,6 +1328,74 @@ unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
     return 0;
 }
 
+
+//-------------------------------------------------------
+// Some utlity functions
+//-------------------------------------------------------
+
+const char* SltReader::DecodeTableName(const char* name)
+{
+    if (name != NULL)
+    {
+        int pos = StringContains(name, "$view");
+        return (pos == 0) ? (name+5) : name;
+    }
+    return name;
+}
+
+// function supports following formats (note a+b is just a sample - it can be any expression)
+//  a + b aS name
+//  a + b name
+//  a + b AS "na me"
+//  a + b "na me"
+std::wstring SltReader::ExtractExpression(const wchar_t* exp, const wchar_t* propName)
+{
+    std::wstring retVal;
+    wchar_t asValue[3];
+    size_t szExp = wcslen(exp);
+    size_t szName = wcslen(propName);
+    int posEnd = szExp - szName;
+    if (*(exp + szExp - 1) == '\"' && *propName != '\"')
+        posEnd -= 2; // eliminate "" in case we have them
+
+    int posAs = posEnd;
+    int posEndExp = posEnd;
+    if (posEnd > 0)
+    {
+        for(int idx = posEnd-1; idx > 0; idx--)
+        {
+            if (*(exp+idx) != ' ')
+            {
+                posAs = 0;
+                int idx2 = 0;
+                for(idx2 = idx; idx2 > 0; idx2--)
+                {
+                    if (*(exp+idx2) == ' ' || *(exp+idx2) == '\"')
+                    {
+                        posAs = idx2 + 1;
+                        break;
+                    }
+                }
+                posEndExp = posEnd; // assume could not find 'AS' take it as an exprerssion
+                if ((posEnd - posAs) == 2)
+                {
+                    memcpy(asValue, posAs + exp, (posEnd - posAs)*sizeof(wchar_t));
+                    asValue[2] = '\0';
+                    if(_wcsicmp(asValue, L"AS") == 0)
+                        posEndExp = posAs; // we found 'AS'
+                }
+                break;
+            }
+            else
+                posEnd--;
+        }
+    }
+    if (posEndExp > 0)
+        retVal = std::wstring(exp, posEndExp);
+    else
+        retVal = exp;
+    return retVal;
+}
 
 
 //-------------------------------------------------------
