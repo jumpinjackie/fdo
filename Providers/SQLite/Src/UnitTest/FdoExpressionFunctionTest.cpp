@@ -70,9 +70,7 @@ void FdoExpressionFunctionTest::Connect ()
 
     // Establish the connection.
 
-    m_connection = UnitTestUtil::CreateConnection();
-
-    UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, true, true, m_connection );
+    m_connection = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, true, true );
 
 }  //  Connect ()
 

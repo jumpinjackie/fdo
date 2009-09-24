@@ -51,10 +51,11 @@ bool SQLiteSchemaMergeContext::CanAddProperty( FdoPropertyDefinition* prop )
 
 bool SQLiteSchemaMergeContext::CanDeleteProperty( FdoPropertyDefinition* prop )
 {
-    FdoDataPropertyDefinition* dataProp = dynamic_cast<FdoDataPropertyDefinition*>(prop);
-    if(dataProp) {
-        FdoPtr<FdoClassDefinition> pclass = dynamic_cast<FdoClassDefinition*>( prop->GetParent() );
-        if(pclass) {
+    if (prop->GetPropertyType() == FdoPropertyType_DataProperty)
+    {
+        FdoDataPropertyDefinition* dataProp = static_cast<FdoDataPropertyDefinition*>(prop);
+        FdoPtr<FdoClassDefinition> pclass = static_cast<FdoClassDefinition*>( prop->GetParent() );
+        if(pclass != NULL) {
             FdoPtr<FdoDataPropertyDefinitionCollection> identityProps = pclass->GetIdentityProperties();
             return !identityProps->Contains(dataProp);
         } else {
