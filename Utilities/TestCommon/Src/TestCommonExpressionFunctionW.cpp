@@ -15074,25 +15074,25 @@ void TestCommonExpressionFunctionW::AddFeature (
 
     FdoBoolean                 bool_value           = false;
 
-    FdoIInsert                 *insert_command      = NULL;
+    FdoPtr<FdoIInsert>         insert_command;
 
     FdoDateTime                dt;
 
-	FdoDataValue               *data_value          = NULL;
+	FdoPtr<FdoDataValue>       data_value;
 
-    FdoByteArray               *byte_array          = NULL;
+    FdoPtr<FdoByteArray>       byte_array;
 
-    FdoILineString             *line_str            = NULL;
+    FdoPtr<FdoILineString>     line_str;
 
-    FdoGeometryValue           *geometry_value      = NULL;
+    FdoPtr<FdoGeometryValue>   geometry_value;
 
-	FdoPropertyValue           *property_value      = NULL;
+	FdoPtr<FdoPropertyValue>   property_value;
 
-    FdoIFeatureReader          *feature_reader      = NULL;
+    FdoPtr<FdoIFeatureReader>  feature_reader;
 
-    FdoFgfGeometryFactory      *geometry_factory    = NULL;
+    FdoPtr<FdoFgfGeometryFactory>  geometry_factory;
 
-    FdoPropertyValueCollection *property_values     = NULL;
+    FdoPtr<FdoPropertyValueCollection> property_values;
 
     try {
 
@@ -15126,33 +15126,22 @@ void TestCommonExpressionFunctionW::AddFeature (
 
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
       property_value->SetValue(geometry_value);
-      FDO_SAFE_RELEASE(geometry_value);
-      FDO_SAFE_RELEASE(line_str);
-      FDO_SAFE_RELEASE(byte_array);
-      FDO_SAFE_RELEASE(geometry_value);
-      FDO_SAFE_RELEASE(property_value);
 
       // Set the new object's properties.
 
       data_value     = FdoDataValue::Create(index);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"id");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       bool_value     = ((index % 2) == 0);
       data_value     = FdoDataValue::Create(bool_value);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"bool_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       byte_value     = (index % 10) + 65;
       data_value     = FdoDataValue::Create(byte_value);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"byte_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       if (index != 21) {
 
@@ -15165,8 +15154,6 @@ void TestCommonExpressionFunctionW::AddFeature (
           data_value     = FdoDataValue::Create(dt);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dt_val");
           property_value->SetValue(data_value);
-          FDO_SAFE_RELEASE(data_value);
-          FDO_SAFE_RELEASE(property_value);
 
       }  //  if (index != 21) ...
 
@@ -15181,8 +15168,6 @@ void TestCommonExpressionFunctionW::AddFeature (
           data_value     = FdoDataValue::Create(dt);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dt2_val");
           property_value->SetValue(data_value);
-          FDO_SAFE_RELEASE(data_value);
-          FDO_SAFE_RELEASE(property_value);
 
       }  //  if (index != 22) ...
 
@@ -15192,8 +15177,6 @@ void TestCommonExpressionFunctionW::AddFeature (
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Decimal);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dcl_val");
           property_value->SetValue(data_value);
-          FDO_SAFE_RELEASE(data_value);
-          FDO_SAFE_RELEASE(property_value);
 
       }  //  if (index != 21) ...
 
@@ -15210,22 +15193,16 @@ void TestCommonExpressionFunctionW::AddFeature (
           data_value     = FdoDataValue::Create(dbl_value, FdoDataType_Double);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dbl_val");
           property_value->SetValue(data_value);
-          FDO_SAFE_RELEASE(data_value);
-          FDO_SAFE_RELEASE(property_value);
 
       }  //  if (index != 22) ...
 
       data_value     = FdoDataValue::Create((index * 4));
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"i16_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       data_value     = FdoDataValue::Create((index * 10));
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"i32_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       switch (index) {
 
@@ -15238,16 +15215,12 @@ void TestCommonExpressionFunctionW::AddFeature (
       data_value     = FdoDataValue::Create(flt_value);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"sgl_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       if (index == 20) {
 
           data_value     = FdoDataValue::Create(L"30.3");
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"str_val");
           property_value->SetValue(data_value);
-          FDO_SAFE_RELEASE(data_value);
-          FDO_SAFE_RELEASE(property_value);
 
       }  //  if (index == 20) ...
       else {
@@ -15256,8 +15229,6 @@ void TestCommonExpressionFunctionW::AddFeature (
         data_value     = FdoDataValue::Create((FdoString *)id_str);
         property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"str_val");
         property_value->SetValue(data_value);
-        FDO_SAFE_RELEASE(data_value);
-        FDO_SAFE_RELEASE(property_value);
 
       }  //  else ...
 
@@ -15265,41 +15236,22 @@ void TestCommonExpressionFunctionW::AddFeature (
       data_value     = FdoDataValue::Create((FdoString *)id_str);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"str2_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       id_str         = FdoStringP::Format(L"9/20/2007");
       data_value     = FdoDataValue::Create((FdoString *)id_str);
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"dtstr_val");
       property_value->SetValue(data_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_value);
 
       // Execute the command.
 
       feature_reader = insert_command->Execute();
 
-      // Clean up.
-
-      FDO_SAFE_RELEASE(feature_reader);
-      FDO_SAFE_RELEASE(property_values);
-      FDO_SAFE_RELEASE(insert_command);
-
-      return;
-    
     }  //  try ...
-
+    catch ( FdoException* e ) {
+        throw e;
+    }
     catch ( ... ) {
 
-      FDO_SAFE_RELEASE(feature_reader);
-      FDO_SAFE_RELEASE(property_value);
-      FDO_SAFE_RELEASE(geometry_value);
-      FDO_SAFE_RELEASE(line_str);
-      FDO_SAFE_RELEASE(byte_array);
-      FDO_SAFE_RELEASE(geometry_value);
-      FDO_SAFE_RELEASE(data_value);
-      FDO_SAFE_RELEASE(property_values);
-      FDO_SAFE_RELEASE(insert_command);
       throw FdoException::Create(L"Failed to add a feature");
 
     }  //  catch ...
@@ -15326,16 +15278,16 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	double                     coordinate_4D_null_buffer[5];
 	double                     coordinate_4D_nan_buffer[5];
 	double                     coordinate_line_buffer[7];
-    FdoIInsert                 *insert_command      = NULL;
-    FdoILineString             *line_str            = NULL;
-	FdoIPoint				   *point               = NULL;
-    FdoGeometryValue           *geometry_value      = NULL;
-	FdoPropertyValue           *property_value      = NULL;
-    FdoFgfGeometryFactory      *geometry_factory    = NULL;
-    FdoPropertyValueCollection *property_values     = NULL;
-    FdoByteArray               *byte_array          = NULL;
-	FdoIFeatureReader          *feature_reader      = NULL;
-    FdoIGeometryCapabilities   *geom_caps           = NULL;  
+    FdoPtr<FdoIInsert>         insert_command;
+    FdoPtr<FdoILineString>     line_str;
+	FdoPtr<FdoIPoint>          point;
+    FdoPtr<FdoGeometryValue>   geometry_value;
+	FdoPtr<FdoPropertyValue>   property_value;
+    FdoPtr<FdoFgfGeometryFactory> geometry_factory;
+    FdoPtr<FdoPropertyValueCollection> property_values;
+    FdoPtr<FdoByteArray>       byte_array;
+	FdoPtr<FdoIFeatureReader>  feature_reader;
+    FdoPtr<FdoIGeometryCapabilities>   geom_caps;
     FdoInt32                    dimensionalities;
 
     try {
@@ -15413,7 +15365,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 0, idx, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
       }
 
       // Add a non-point (line) geometry.
@@ -15430,7 +15381,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	  feature_reader = insert_command->Execute();
       feature_reader->ReadNext();
       SetXYZMIndex( 0, idx, GetFeatId(feature_reader) );
-      FDO_SAFE_RELEASE(feature_reader);
 
       if ( dimensionalities & FdoDimensionality_Z ) {
           insert_command = 
@@ -15455,7 +15405,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 0, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                                         FdoDimensionality_XY | FdoDimensionality_Z,
@@ -15467,7 +15416,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 1, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                                         FdoDimensionality_XY | FdoDimensionality_Z,
@@ -15479,7 +15427,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 2, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
       }
 
 	  // Add a point XYZM geometry.
@@ -15505,7 +15452,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 0, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                    FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M,
@@ -15517,7 +15463,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 1, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                    FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M,
@@ -15529,7 +15474,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 2, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
       }
 
 	  // Add a point XYM geometry.
@@ -15555,7 +15499,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 0, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                                     FdoDimensionality_XY |  FdoDimensionality_M,
@@ -15567,7 +15510,6 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 1, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
 
           point = geometry_factory->CreatePoint(
                                     FdoDimensionality_XY |  FdoDimensionality_M,
@@ -15579,24 +15521,11 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 	      feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 2, GetFeatId(feature_reader) );
-          FDO_SAFE_RELEASE(feature_reader);
       }
-
-	  // Clean up.
-
-	  FDO_SAFE_RELEASE(point);
-	  FDO_SAFE_RELEASE(line_str);
-      FDO_SAFE_RELEASE(byte_array);
-	  FDO_SAFE_RELEASE(geometry_value);
-      FDO_SAFE_RELEASE(property_value);
-      FDO_SAFE_RELEASE(feature_reader);
-	  FDO_SAFE_RELEASE(insert_command);
-	  FDO_SAFE_RELEASE(geom_caps);
-
 	}  //  try ...
 
-    catch ( FdoException* ) {
-        throw;
+    catch ( FdoException* e) {
+        throw e;
     }
     catch ( ... ) {
 

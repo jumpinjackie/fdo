@@ -1231,9 +1231,9 @@ void TestCommonExpressionFunction::CheckXYZMCapabilities()
 {
     bool                            func_check_error = false;
 
-    FdoFunctionDefinition           *this_func;
-    FdoIExpressionCapabilities      *exp_cap;
-    FdoFunctionDefinitionCollection *func_col; 
+    FdoPtr<FdoFunctionDefinition> this_func;
+    FdoPtr<FdoIExpressionCapabilities> exp_cap;
+    FdoPtr<FdoFunctionDefinitionCollection> func_col; 
 
     try {
 
