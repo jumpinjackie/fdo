@@ -1090,16 +1090,16 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
 	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique33Int  );
 
 	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr3 = FdoUniqueConstraint::Create();
-	    newUniqueConstr3->GetProperties()->Add( pUnique31Int );
-	    newUniqueConstr3->GetProperties()->Add( pUnique32Int );
-	    newUniqueConstr3->GetProperties()->Add( pUnique33Int );
+	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique31Int );
+	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique32Int );
+	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique33Int );
 	    constraints->Add( newUniqueConstr3 );
 
 	    //////////////  4th unique constraint - on identity property ///////////////
         //////////////  should be silently ignored                   ///////////////
 
 	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr4 = FdoUniqueConstraint::Create();
-	    newUniqueConstr4->GetProperties()->Add( pIdProp );
+	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr4->GetProperties())->Add( pIdProp );
 	    constraints->Add( newUniqueConstr4 );
     }
 
@@ -1665,8 +1665,8 @@ void TestCommonConstraints::DescribeConstraintsSchema( Context& context, FdoStri
     FdoPtr<FdoClassDefinition> pClass2 = pClasses2->GetItem( className );
     FdoPtr<FdoClassDefinition> pClassBase2 = pClass2->GetBaseClass();
 
-    int count1 = pClass2->GetProperties()->GetCount();
-    int count2 = pClass2->GetBaseProperties()->GetCount();
+    int count1 = FdoPropertiesP(pClass2->GetProperties())->GetCount();
+    int count2 = FdoPtr<FdoReadOnlyPropertyDefinitionCollection>(pClass2->GetBaseProperties())->GetCount();
 
     printf("#props=%ld #baseProps=%ld\n", count1, count2);
 
@@ -2020,7 +2020,7 @@ void TestCommonConstraints::UpdateUniqueConstraints( Context& context )
 	    // Add unique constraint on identity property. Should be ignored.
 	    FdoPtr<FdoDataPropertyDefinition> pUnique5 = FdoDataPropertiesP(pClass2->GetIdentityProperties())->GetItem(0);
 	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr5 = FdoUniqueConstraint::Create();
-	    newUniqueConstr5->GetProperties()->Add( pUnique5 );
+	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr5->GetProperties())->Add( pUnique5 );
 	    pUniqueCs->Add( newUniqueConstr5 );
 
 	    pApplyCmd->Execute();
