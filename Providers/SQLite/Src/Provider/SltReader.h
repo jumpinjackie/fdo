@@ -98,19 +98,46 @@ protected:
     //-------------------------------------------------------
 
     public:
+
+         virtual bool                GetBoolean      (int index);
          virtual bool                GetBoolean      (FdoString* propertyName);
+
+         virtual FdoByte             GetByte         (int index);
          virtual FdoByte             GetByte         (FdoString* propertyName);
+
+         virtual FdoDateTime         GetDateTime     (int index);
          virtual FdoDateTime         GetDateTime     (FdoString* propertyName);
+
+         virtual double              GetDouble       (int index);
          virtual double              GetDouble       (FdoString* propertyName);
+
+         virtual FdoInt16            GetInt16        (int index);
          virtual FdoInt16            GetInt16        (FdoString* propertyName);
+
+         virtual FdoInt32            GetInt32        (int index);
          virtual FdoInt32            GetInt32        (FdoString* propertyName);
+
+         virtual FdoInt64            GetInt64        (int index);
          virtual FdoInt64            GetInt64        (FdoString* propertyName);
+
+         virtual float               GetSingle       (int index);
          virtual float               GetSingle       (FdoString* propertyName);
+
+         virtual FdoString*          GetString       (int index);
          virtual FdoString*          GetString       (FdoString* propertyName);
+
+         virtual FdoLOBValue*        GetLOB          (int index);
          virtual FdoLOBValue*        GetLOB          (FdoString* propertyName);
+
+         virtual FdoIStreamReader*   GetLOBStreamReader(int index);
          virtual FdoIStreamReader*   GetLOBStreamReader(FdoString* propertyName );
+
+         virtual bool                IsNull          (FdoInt32 index);
          virtual bool                IsNull          (FdoString* propertyName);
+
+         virtual FdoIRaster*         GetRaster       (int index);
          virtual FdoIRaster*         GetRaster       (FdoString* propertyName);
+
          virtual bool                ReadNext();
          virtual void                Close();
 
@@ -119,8 +146,14 @@ protected:
     //-------------------------------------------------------
          virtual FdoClassDefinition* GetClassDefinition();
          virtual FdoInt32            GetDepth();
+
+         virtual FdoIFeatureReader*  GetFeatureObject(int index);
          virtual FdoIFeatureReader*  GetFeatureObject(FdoString* propertyName);
+
+         virtual FdoByteArray*       GetGeometry     (int index);
          virtual FdoByteArray*       GetGeometry     (FdoString* propertyName);
+
+         virtual const FdoByte*      GetGeometry     (int index, FdoInt32* len);
          virtual const FdoByte*      GetGeometry     (FdoString* propertyName, FdoInt32* len);
 
     //-------------------------------------------------------
@@ -128,8 +161,14 @@ protected:
     //-------------------------------------------------------
 
          virtual FdoInt32            GetPropertyCount();
-         virtual FdoString*          GetPropertyName (FdoInt32 index);
+
+         virtual FdoString*          GetPropertyName (int index);
+         virtual FdoInt32            GetPropertyIndex(FdoString* propertyName);
+
+         virtual FdoDataType         GetDataType     (int index);
          virtual FdoDataType         GetDataType     (FdoString* propertyName);
+
+         virtual FdoPropertyType     GetPropertyType (int index);
          virtual FdoPropertyType     GetPropertyType (FdoString* propertyName);
 
     //-------------------------------------------------------
@@ -137,7 +176,10 @@ protected:
     //-------------------------------------------------------
 
          virtual FdoInt32            GetColumnCount();
+         virtual FdoInt32            GetColumnIndex  (FdoString* columnName);
          virtual FdoString*          GetColumnName   (FdoInt32 index);
+
+         virtual FdoDataType         GetColumnType   (int index);
          virtual FdoDataType         GetColumnType   (FdoString* columnName);
 
     //-------------------------------------------------------
@@ -150,14 +192,6 @@ protected:
         virtual bool                 ReadAt(FdoPropertyValueCollection* key);
         virtual bool                 ReadAtIndex( unsigned int recordIndex );
         virtual unsigned int         IndexOf(FdoPropertyValueCollection* key);
-
-    //-------------------------------------------------------
-    // Access values by index
-    //-------------------------------------------------------
-
-         const FdoByte*  GetGeometry(int i, FdoInt32* len);
-         FdoInt32        GetInt32(int i);
-         FdoInt64        GetInt64(int i);
 
     protected:
 
