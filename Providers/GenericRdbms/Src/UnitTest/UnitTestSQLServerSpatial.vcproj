@@ -1036,6 +1036,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\ReaderTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\ReaderTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\SchemaMgrTests.cpp"
 				>
 			</File>
@@ -1337,6 +1345,14 @@
 			</File>
 			<File
 				RelativePath=".\SQLServerSpatial\SqlServerGeometryTests.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerReaderTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerReaderTest.h"
 				>
 			</File>
 			<File

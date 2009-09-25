@@ -50,6 +50,13 @@ public:
     /// <returns>Returns the column name</returns> 
     virtual FdoString* GetColumnName (FdoInt32 index);
 
+    /// <summary>
+    /// Gets the index of the column with the specified name.
+    /// </summary>
+    /// <param name="columnName">Input the name of the column.</param>
+    /// <returns>Returns the column index</returns>
+    virtual FdoInt32 GetColumnIndex(FdoString* columnName);
+
     /// <summary>Gets the data type of the column with the specified name.</summary>
     /// <param name="columnName">Input the column name.</param> 
     /// <returns>Returns the type of the column.</returns> 
@@ -61,6 +68,22 @@ public:
     /// <param name="propertyName">Input the column name.</param> 
     /// <returns>Returns the FDO property type of the column.</returns> 
     virtual FdoPropertyType GetPropertyType(FdoString* columnName);
+
+    /// <summary>
+    /// Gets the data type of the column at the specified index.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the type of the column.</returns>
+    virtual FdoDataType GetColumnType(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the FDO property type of the column at the specified index. This is used
+    /// to indicate if a given column is a geometric property or a data property. If the column is
+    /// a FdoPropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FDO property type of the column.</returns>
+    virtual FdoPropertyType GetPropertyType(FdoInt32 index);
 
 
 protected:

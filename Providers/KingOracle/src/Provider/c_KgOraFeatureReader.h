@@ -20,11 +20,12 @@
 
 #include "c_SdoGeomToAGF2.h"
 #include <time.h>
+#include "FdoDefaultFeatureReader.h"
 
 
-
-class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
+class c_KgOraFeatureReader : public c_KgOraReader< FdoDefaultFeatureReader>
 {
+    typedef c_KgOraReader<FdoDefaultFeatureReader> superclass;
     public:
         c_KgOraFeatureReader(c_KgOraConnection * Connection
                             ,c_Oci_Statement* OciStatement 

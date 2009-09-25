@@ -33,8 +33,6 @@
 
 #include <Fdo/Xml/FeatureHandler.h>
 
-#include <vector>
-
 #include "BLOBProperty.h"
 
 class FdoXmlDataProperty;
@@ -75,8 +73,14 @@ public:
 
     virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName);
 
+    virtual const FdoByte * GetGeometry(FdoInt32 index, FdoInt32* count);
 
-	
+    virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index);
+
+    virtual FdoString* GetPropertyName(FdoInt32 index);
+
+    virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
+
 	//////////////////////////////////////////////////////////////////////////////////////
 	///   FdoIReader Overrides
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +89,7 @@ public:
 
     virtual FdoByte GetByte(FdoString* propertyName);
 
-	virtual FdoDateTime GetDateTime(FdoString* propertyName);
+    virtual FdoDateTime GetDateTime(FdoString* propertyName);
 
     virtual double GetDouble(FdoString* propertyName);
 
@@ -105,9 +109,37 @@ public:
 
     virtual bool IsNull(FdoString* propertyName);
 
-	virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
     virtual FdoIRaster* GetRaster(FdoString* propertyName);
+
+    virtual bool GetBoolean(FdoInt32 index);
+
+    virtual FdoByte GetByte(FdoInt32 index);
+
+    virtual FdoDateTime GetDateTime(FdoInt32 index);
+
+    virtual double GetDouble(FdoInt32 index);
+
+    virtual FdoInt16 GetInt16(FdoInt32 index);
+
+    virtual FdoInt32 GetInt32(FdoInt32 index);
+
+    virtual FdoInt64 GetInt64(FdoInt32 index);
+
+    virtual float GetSingle(FdoInt32 index);
+
+    virtual FdoString* GetString(FdoInt32 index);
+
+    virtual FdoLOBValue* GetLOB(FdoInt32 index);
+
+    virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 index);
+
+    virtual bool IsNull(FdoInt32 index);
+
+    virtual FdoByteArray* GetGeometry(FdoInt32 index);
+
+    virtual FdoIRaster* GetRaster(FdoInt32 index);
 
     virtual bool ReadNext();
 
@@ -223,6 +255,8 @@ private:
     FdoPtr<FdoXmlBLOBPropertyCollection> m_blobProperties;
     FdoPtr<FdoIoMemoryStream> m_blobBuffer;
     FdoStringP m_blobPropertyName;
+
+    FdoStringsP m_propertyNames;
 
     FdoPtr<FdoFeatureSchemaCollection> m_schemas;
     FdoPtr<FdoXmlFeatureFlags> m_flags;

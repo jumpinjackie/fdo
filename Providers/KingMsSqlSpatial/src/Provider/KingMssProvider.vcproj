@@ -273,7 +273,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;;..\..\inc;.\;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc\fdo\Expression&quot;"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\..\inc;.\;&quot;$(FDO)\Unmanaged\inc\fdo\Expression&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

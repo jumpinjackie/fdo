@@ -53,7 +53,8 @@ MySqlFdoUpdateTest.cpp \
 MySqlGeometryTests.cpp \
 MySqlSchemaMgrTests.cpp \
 MySqlSchemaOverrideUtil.cpp \
-MySqlSelectTests.cpp
+MySqlSelectTests.cpp \
+MySqlReaderTest.cpp
 
 noinst_HEADERS = $(libMySqlUnitTests_la_SOURCES) \
 MySqlConnectionUtil.h \
@@ -87,7 +88,8 @@ MySqlFdoUpdateTest.h \
 MySqlGeometryTests.h \
 MySqlSchemaMgrTests.h \
 MySqlSchemaOverrideUtil.h \
-MySqlSelectTests.h
+MySqlSelectTests.h \
+MySqlReaderTest.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

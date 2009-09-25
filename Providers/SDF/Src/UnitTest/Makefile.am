@@ -43,7 +43,8 @@ UnitTest_SOURCES = \
   SchemaTest.cpp \
   SpatialContextTest.cpp \
   UnitTestUtil.cpp \
-  UserFunctionsTest.cpp 
+  UserFunctionsTest.cpp \
+  ReaderTest.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   ApplySchemaTest.h \
@@ -65,7 +66,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   SpatialContextTest.h \
   UnitTestUtil.h \
   UserFunctionsTest.h \
-  tester-linux.h
+  tester-linux.h \
+  ReaderTest.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

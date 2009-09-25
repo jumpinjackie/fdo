@@ -104,6 +104,52 @@ public:
     /// Returns the nested feature reader
     /// 
     FDO_API virtual FdoIFeatureReader* GetFeatureObject(FdoString* propertyName) = 0;
+
+    /// \brief
+    /// Gets the geometry value of the property, at the specified index, 
+    /// as a byte array in FGF format. Because no conversion is performed, 
+    /// the property must be of Geometric type; otherwise, an exception is thrown. 
+    /// This method is a language-specific performance optimization that returns a
+    /// pointer to the array data, rather than to an object that encapsulates
+    /// the array.  The array's memory area is only guaranteed to be valid
+    /// until a call to ReadNext() or Close(), or the disposal of this reader
+    /// object.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// \param count 
+    /// Output the number of bytes in the array.
+    /// 
+    /// \return
+    /// Returns a pointer to the byte array in FGF format.
+    /// 
+    FDO_API virtual const FdoByte * GetGeometry(FdoInt32 index, FdoInt32* count) = 0;
+
+    /// \brief
+    /// Gets the geometry value of the specified property, at the specified index, 
+    /// as a byte array in FGF format. Because no conversion is performed, the property 
+    /// must be of Geometric type; otherwise, an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the byte array in FGF format.
+    /// 
+    FDO_API virtual FdoByteArray* GetGeometry(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets a reference to an FdoIFeatureReader to read the data contained in
+    /// the object or object collection property defined at the specified index 
+    /// position. If the property is not an object property, an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the nested feature reader
+    /// 
+    FDO_API virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index) = 0;
 };
 #endif
 

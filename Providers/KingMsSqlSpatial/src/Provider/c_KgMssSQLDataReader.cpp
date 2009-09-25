@@ -18,8 +18,7 @@
 #include "c_KgMssSQLDataReader.h"
 
 
-c_KgMssSQLDataReader::c_KgMssSQLDataReader(c_KgMssConnection * Connection
-                        ,otl_stream* Stream,c_KgOtlStreamReader*StreamReader)
+c_KgMssSQLDataReader::c_KgMssSQLDataReader(c_KgMssConnection * Connection, otl_stream* Stream,c_KgOtlStreamReader*StreamReader)
 {
   m_Connection = Connection;
   FDO_SAFE_ADDREF(m_Connection);
@@ -139,6 +138,20 @@ FdoString* c_KgMssSQLDataReader::GetColumnName(FdoInt32 Index)
   
   return m_ColName;
 
+}
+
+/// \brief
+/// Gets the index of the column with the given column name.
+/// 
+/// \param columnName 
+/// Input the column name.
+/// 
+/// \return
+/// Returns the column index
+/// 
+FdoInt32 c_KgMssSQLDataReader::GetColumnIndex(FdoString* columnName)
+{
+    return ColumnNameToColumnIndex(columnName);
 }
 
 /// \brief

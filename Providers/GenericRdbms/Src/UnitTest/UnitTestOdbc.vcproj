@@ -896,6 +896,14 @@
 				RelativePath=".\Common\MessageTest.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Common\ReaderTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\ReaderTest.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Utils"
@@ -1078,6 +1086,14 @@
 			</File>
 			<File
 				RelativePath=".\Odbc\OdbcFdoUpdateTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Odbc\OdbcReaderTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Odbc\OdbcReaderTest.h"
 				>
 			</File>
 		</Filter>

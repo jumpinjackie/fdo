@@ -33,7 +33,8 @@ UnitTest_SOURCES = \
   SpatialContextTest.cpp \
   SQLCmdTest.cpp \
   TransactionTest.cpp \
-  UnitTestUtil.cpp
+  UnitTestUtil.cpp \
+  ReaderTest.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   FdoExpressionFunctionTest.h \
@@ -44,7 +45,8 @@ noinst_HEADERS = $(UnitTest_SOURCES) \
   SQLCmdTest.h \
   UnitTestUtil.h \
   TransactionTest.h \
-  tester-linux.h
+  tester-linux.h \
+  ReaderTest.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

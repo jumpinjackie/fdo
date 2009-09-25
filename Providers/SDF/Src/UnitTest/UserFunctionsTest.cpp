@@ -254,6 +254,16 @@ public:
 
 public:
 
+    virtual FdoString* GetPropertyName(FdoInt32 index)
+    {
+        return L"";
+    }
+
+    virtual FdoInt32 GetPropertyIndex(FdoString* /*propertyName*/)
+    {
+        return -1;
+    }
+
     virtual bool GetBoolean(FdoString* propertyName)
     {
         return true;
@@ -326,6 +336,82 @@ public:
     }
 
     virtual FdoIRaster* GetRaster(FdoString* propertyName)
+    {
+        return NULL;
+    }
+
+    virtual bool GetBoolean(FdoInt32 index)
+    {
+        return true;
+    }
+
+    virtual FdoByte GetByte(FdoInt32 index)
+    {
+        return 0;
+    }
+
+    virtual FdoDateTime GetDateTime(FdoInt32 index)
+    {
+        FdoDateTimeValue* dataTime = FdoDateTimeValue::Create();
+        dataTime->GetDateTime();
+        return dataTime->GetDateTime();
+    }
+
+    virtual double GetDouble(FdoInt32 index)
+    {
+        return 0;
+    }
+
+    virtual FdoInt16 GetInt16(FdoInt32 index)
+    {
+        return 0;
+    }
+
+    virtual FdoInt32 GetInt32(FdoInt32 index)
+    {
+        return i;
+    }
+
+    virtual FdoInt64 GetInt64(FdoInt32 index)
+    {
+        return 0;
+    }
+
+    virtual float GetSingle(FdoInt32 index)
+    {
+        return 0;
+    }
+
+    virtual FdoString* GetString(FdoInt32 index)
+    {
+        static wchar_t temp[32];
+        swprintf(temp, 32, L"%d", i);
+
+
+        return temp;
+    }
+
+    virtual FdoLOBValue* GetLOB(FdoInt32 index)
+    {
+        return NULL;
+    }
+
+    FdoIStreamReader* GetLOBStreamReader(FdoInt32 index )
+    {
+        return NULL;
+    }
+
+    bool IsNull(FdoInt32 index)
+    {
+        return false;
+    }
+
+    virtual FdoByteArray* GetGeometry(FdoInt32 index)
+    {
+        return NULL;
+    }
+
+    virtual FdoIRaster* GetRaster(FdoInt32 index)
     {
         return NULL;
     }

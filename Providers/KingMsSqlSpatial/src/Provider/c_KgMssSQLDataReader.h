@@ -16,8 +16,9 @@
 */
 #ifndef _c_KgMssSQLDataReader_h
 #define _c_KgMssSQLDataReader_h
+#include "FdoDefaultSqlDataReader.h"
 
-class c_KgMssSQLDataReader : public FdoISQLDataReader
+class c_KgMssSQLDataReader : public FdoDefaultSqlDataReader
 {
 public:
   c_KgMssSQLDataReader(c_KgMssConnection * Connection
@@ -66,6 +67,17 @@ public:
     /// Returns the column name
     /// 
     FDOKGMSS_API virtual FdoString* GetColumnName(FdoInt32 index);
+
+    /// \brief
+    /// Gets the index of the column with the given column name.
+    /// 
+    /// \param columnName 
+    /// Input the column name.
+    /// 
+    /// \return
+    /// Returns the column index
+    /// 
+    FDOKGMSS_API virtual FdoInt32 GetColumnIndex(FdoString* columnName);
 
     /// \brief
     /// Gets the data type of the column with the specified name.

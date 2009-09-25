@@ -75,3 +75,22 @@ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMAN
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
 }
+
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetGeometry(System::Int32 index)
+{
+    const FdoByte* result;
+    FdoInt32 count = 0;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetGeometry(index, &count))
+
+    return FdoByteArrayToByteArray(result, count);
+}
+
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReaderImp::GetFeatureObject(System::Int32 index)
+{
+    FdoIFeatureReader* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureObject(index))
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIFeatureReader(IntPtr(result), true);
+}

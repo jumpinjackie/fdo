@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include <Util/FdoExpressionEngineUtilFeatureReader.h>
 #include <FdoCommonMiscUtil.h>
+#include <assert.h>
 
 #define EXPRESSIONENGINE_GET_RESULT_DEFINE(RESULT_TYPE, OBJECT_TYPE) \
 { \
@@ -47,6 +48,7 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 	m_reader = FDO_SAFE_ADDREF(reader);
 	m_filter = FDO_SAFE_ADDREF(filter);
 	m_classDef = FDO_SAFE_ADDREF(classDef);
+    m_selectedIds = FDO_SAFE_ADDREF(selectedIds);
 	m_computedIds = NULL;
 
 	// Create a list of computed ids only.
@@ -82,6 +84,33 @@ bool FdoExpressionEngineUtilFeatureReader::IsComputedProperty(FdoString* name)
 		dummy = m_computedIds->FindItem(name);
 
 	return (dummy != NULL );
+}
+
+FdoString* FdoExpressionEngineUtilFeatureReader::GetPropertyName(FdoInt32 index)
+{
+    assert(m_selectedIds != NULL && index < m_selectedIds->GetCount());
+
+    if (m_selectedIds != NULL && index < m_selectedIds->GetCount())
+    {
+        FdoPtr<FdoIdentifier> id = m_selectedIds->GetItem(index);
+        if (id != NULL)
+            return id->GetName();
+    }
+
+    assert(false);
+    return L""; // TODO: throw exceptions? 
+}
+
+FdoInt32 FdoExpressionEngineUtilFeatureReader::GetPropertyIndex(FdoString* propertyName)
+{
+    assert(m_selectedIds != NULL);
+    if (m_selectedIds != NULL)
+    {
+        return m_selectedIds->IndexOf(propertyName);
+    }
+
+    assert(false);
+    return -1; // TODO: throw exceptions? 
 }
 
 bool FdoExpressionEngineUtilFeatureReader::GetBoolean (FdoString* propertyName)
@@ -213,22 +242,96 @@ FdoByteArray* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoString* prope
 	return ret;
 }
 
-const FdoByte* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
-{
-	FdoByteArray * geom = GetGeometry(propertyName);
-
-	if ( count )
-		*count = geom ? geom->GetCount() : 0;
-
-	return (geom? geom->GetData() : NULL );
-}
-
 FdoIRaster* FdoExpressionEngineUtilFeatureReader::GetRaster(FdoString* propertyName)
 {
 	if ( IsComputedProperty( propertyName ) )
 		throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_70_PROPERTY_TYPE_NOT_SUPPORTED), FdoCommonMiscUtil::FdoPropertyTypeToString(FdoPropertyType_RasterProperty)));
 	else
 		return m_reader->GetRaster(propertyName);
+}
+
+bool FdoExpressionEngineUtilFeatureReader::GetBoolean (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetBoolean(propertyName);
+}
+
+FdoByte FdoExpressionEngineUtilFeatureReader::GetByte (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetByte(propertyName);
+}
+
+FdoDateTime FdoExpressionEngineUtilFeatureReader::GetDateTime (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDateTime(propertyName);
+}
+
+double FdoExpressionEngineUtilFeatureReader::GetDouble (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDouble(propertyName);
+}
+
+FdoInt16 FdoExpressionEngineUtilFeatureReader::GetInt16 (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt16(propertyName);
+}
+
+FdoInt32 FdoExpressionEngineUtilFeatureReader::GetInt32 (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt32(propertyName);
+}
+
+FdoInt64 FdoExpressionEngineUtilFeatureReader::GetInt64 (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt64(propertyName);
+}
+
+float FdoExpressionEngineUtilFeatureReader::GetSingle (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetSingle(propertyName);
+}
+
+FdoString* FdoExpressionEngineUtilFeatureReader::GetString (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetString(propertyName);
+}
+
+FdoLOBValue* FdoExpressionEngineUtilFeatureReader::GetLOB(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOB(propertyName);
+}
+
+FdoIStreamReader* FdoExpressionEngineUtilFeatureReader::GetLOBStreamReader(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOBStreamReader(propertyName);
+}
+
+bool FdoExpressionEngineUtilFeatureReader::IsNull(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return IsNull(propertyName);
+}
+
+FdoByteArray* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName);
+}
+
+FdoIRaster* FdoExpressionEngineUtilFeatureReader::GetRaster(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetRaster(propertyName);
 }
 
 void FdoExpressionEngineUtilFeatureReader::Close()
@@ -277,9 +380,29 @@ FdoInt32 FdoExpressionEngineUtilFeatureReader::GetDepth ()
     return (0);
 }
 
+const FdoByte* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32 * count)
+{
+    FdoByteArray * geom = GetGeometry(propertyName);
+
+    if ( count )
+        *count = geom ? geom->GetCount() : 0;
+
+    return (geom? geom->GetData() : NULL );
+}
+
 FdoIFeatureReader* FdoExpressionEngineUtilFeatureReader::GetFeatureObject (FdoString* propertyName)
 {
     throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_70_PROPERTY_TYPE_NOT_SUPPORTED), L"Object property"));
 }
 
+const FdoByte* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName, count);
+}
 
+FdoIFeatureReader* FdoExpressionEngineUtilFeatureReader::GetFeatureObject (FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetFeatureObject(propertyName);
+}

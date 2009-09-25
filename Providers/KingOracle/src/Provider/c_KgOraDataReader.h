@@ -20,11 +20,14 @@
 
 #include "c_SdoGeomToAGF2.h"
 #include <time.h>
+#include "FdoDefaultDataReader.h"
 
 
 
-class c_KgOraDataReader : public c_KgOraReader< FdoIDataReader>
+class c_KgOraDataReader : public c_KgOraReader< FdoDefaultDataReader>
 {
+    typedef c_KgOraReader<FdoDefaultDataReader> superclass;
+
     public:
         c_KgOraDataReader(c_KgOraConnection * Connection
                             ,c_Oci_Statement* OciStatement 
@@ -54,17 +57,6 @@ class c_KgOraDataReader : public c_KgOraReader< FdoIDataReader>
     /// Returns the number of propertys.
     /// 
     virtual FdoInt32 GetPropertyCount();
-
-    /// \brief
-    /// Gets the name of the property at the given ordinal position.
-    /// 
-    /// \param index 
-    /// Input the position of the property.
-    /// 
-    /// \return
-    /// Returns the property name
-    /// 
-    virtual FdoString* GetPropertyName(FdoInt32 index);
 
     /// \brief
     /// Gets the data type of the property with the specified name.

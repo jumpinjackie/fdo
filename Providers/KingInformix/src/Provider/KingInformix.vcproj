@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="KingInformix"
 	ProjectGUID="{4C9BC5B6-CB7C-46C8-9552-272CAA437990}"
 	RootNamespace="KingInformix"
@@ -202,7 +202,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;;..\..\inc;.\;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc\fdo\Expression&quot;"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\..\inc;.\;&quot;$(FDO)\Unmanaged\inc\fdo\Expression&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -280,7 +280,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc&quot;;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc&quot;;..\..\inc;.\;&quot;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc\fdo\Expression&quot;"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\..\inc;.\;&quot;$(FDO)\Unmanaged\inc\fdo\Expression&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -830,7 +830,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\Inc&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Utilities\Common\Inc&quot;;.\;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\Inc\Fdo\Expression&quot;;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;;D:\Development\MapGuide_OS\Providers\KingInformix\src\Provider\odbcutils"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUtilities)\Common\Inc&quot;;.\;&quot;$(FDO)\Unmanaged\Inc\Fdo\Expression&quot;;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;;.\odbcutils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGINF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -909,7 +909,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\Inc&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Utilities\Common\Inc&quot;;.\;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\Inc\Fdo\Expression&quot;;D:\Development\MapGuide_OS\Providers\KingInformix\src\Provider\odbcutils;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUtilities)\Common\Inc&quot;;.\;&quot;$(FDO)\Unmanaged\Inc\Fdo\Expression&quot;;.\odbcutils;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGINF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"

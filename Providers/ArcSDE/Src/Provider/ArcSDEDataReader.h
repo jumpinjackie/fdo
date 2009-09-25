@@ -52,11 +52,6 @@ public:
     /// <returns>Returns the number of propertys.</returns> 
     virtual FdoInt32 GetPropertyCount();
 
-    /// <summary>Gets the name of the property at the given ordinal position.</summary>
-    /// <param name="index">Input the position of the property.</param> 
-    /// <returns>Returns the property name</returns> 
-    virtual FdoString* GetPropertyName(FdoInt32 index);
-
     /// <summary>Gets the data type of the property with the specified name.</summary>
     /// <param name="propertyName">Input the property name.</param> 
     /// <returns>Returns the type of the property.</returns> 
@@ -68,6 +63,23 @@ public:
     /// <param name="propertyName">Input the property name.</param> 
     /// <returns>Returns the FDO property type.</returns> 
     virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
+
+    /// <summary>
+    /// Gets the data type of the property at the specified index position.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the type of the property.</returns>
+    virtual FdoDataType GetDataType(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the FDO property type of the property at the given index. This is used
+    /// to indicate if a given property is a geometric property or a data property. 
+    /// If the property is a FdoPropertyType_DataProperty, then GetDataType 
+    /// can be used to to find the data type of the property.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FDO property type.</returns>
+    virtual FdoPropertyType GetPropertyType(FdoInt32 index);
 
     /// <summary>Advances the reader to the next item and returns true if there is
     /// another object to read or false if reading is complete. The default

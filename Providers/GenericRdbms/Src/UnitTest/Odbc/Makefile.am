@@ -34,7 +34,8 @@ OdbcFdoMultiThreadTest.cpp \
 OdbcFdoSchemaTest.cpp \
 OdbcFdoSelectTest.cpp \
 OdbcFdoSqlCmdTest.cpp \
-OdbcFdoUpdateTest.cpp
+OdbcFdoUpdateTest.cpp \
+OdbcReaderTest.cpp
 
 noinst_HEADERS = $(libOdbcUnitTests_la_SOURCES) \
 OdbcBaseSetup.h \
@@ -49,7 +50,8 @@ OdbcFdoMultiThreadTest.h \
 OdbcFdoSchemaTest.h \
 OdbcFdoSelectTest.h \
 OdbcFdoSqlCmdTest.h \
-OdbcFdoUpdateTest.h
+OdbcFdoUpdateTest.h \
+OdbcReaderTest.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

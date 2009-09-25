@@ -24,7 +24,7 @@
 #include <string>
 // boost
 #include <boost/lexical_cast.hpp>
-
+#include "FdoDefaultSqlDataReader.h"
 //
 // Forward declarations
 //
@@ -42,7 +42,7 @@ namespace fdo { namespace postgis {
 /// \todo Add new constructor accepting custom coursor page size.
 ///       Consider moving the cursor page responsibility to command/PgCursor. 
 ///
-class SQLDataReader : public FdoISQLDataReader
+class SQLDataReader : public FdoDefaultSqlDataReader
 {
 public:
 
@@ -62,6 +62,9 @@ public:
     
     /// Get name of the column at the given ordinal position.
     FdoString* GetColumnName(FdoInt32 index);
+
+    /// Get name of the column at the given ordinal position.
+    FdoInt32 GetColumnIndex(FdoString* columnName);
     
     /// Get data type of the column with the specified name.
     FdoDataType GetColumnType(FdoString* columnName);

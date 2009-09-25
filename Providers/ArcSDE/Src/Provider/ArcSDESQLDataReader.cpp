@@ -18,6 +18,7 @@
  */
 
 #include "stdafx.h"
+#include <assert.h>
 
 ArcSDESQLDataReader::ArcSDESQLDataReader (ArcSDEConnection *connection, SE_STREAM stream) :
     ArcSDEReader(connection, NULL, NULL)
@@ -131,6 +132,19 @@ FdoString* ArcSDESQLDataReader::GetColumnName (FdoInt32 index)
     return ((ArcSDEReader::getColumnDef((int)index))->mColumnName);
 }
 
+FdoInt32 ArcSDESQLDataReader::GetColumnIndex(FdoString* columnName)
+{
+    ColumnDefinition* columnDef = getColumnDef(columnName);
+    assert(columnDef != NULL);
+    if (columnDef != NULL)
+    {
+        return columnDef->mColumnNumber;
+    }
+
+    assert(false);
+    throw FdoCommandException::Create(NlsMsgGet1(ARCSDE_COLUMN_NOT_IN_RESULT, "The column '%1$ls' is not in the query result.", columnName));
+}
+
 /// <summary>Gets the data type of the column with the specified name.</summary>
 /// <param name="columnName">Input the column name.</param> 
 /// <returns>Returns the type of the column.</returns> 
@@ -152,5 +166,27 @@ FdoPropertyType ArcSDESQLDataReader::GetPropertyType(FdoString* columnName)
     return FdoPropertyType_DataProperty;
 }
 
+/// <summary>
+/// Gets the data type of the column at the specified index.
+/// </summary>
+/// <param name="index">Input the index of the property.</param>
+/// <returns>Returns the type of the column.</returns>
+FdoDataType ArcSDESQLDataReader::GetColumnType(FdoInt32 index)
+{
+    return ((ArcSDEReader::getColumnDef (index))->mPropertyType);
+}
 
+/// <summary>
+/// Gets the FDO property type of the column at the specified index. This is used
+/// to indicate if a given column is a geometric property or a data property. If the column is
+/// a FdoPropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
+/// </summary>
+/// <param name="index">Input the index of the property.</param>
+/// <returns>Returns the FDO property type of the column.</returns>
+FdoPropertyType ArcSDESQLDataReader::GetPropertyType(FdoInt32 index)
+{
+    // Since ArcSDE doesn't let us read geometry values via SQL queries,
+    // we only support Data property types in ArcSDESQLDataReader:
+    return FdoPropertyType_DataProperty;
+}
 

@@ -34,23 +34,12 @@ class FdoIDataReader: public FdoIReader
 {
 public:
     /// \brief
-    /// Gets the number of propertys in the result set.
+    /// Gets the number of properties in the result set.
     /// 
     /// \return
-    /// Returns the number of propertys.
+    /// Returns the number of properties.
     /// 
     FDO_API virtual FdoInt32 GetPropertyCount() = 0;
-
-    /// \brief
-    /// Gets the name of the property at the given ordinal position.
-    /// 
-    /// \param index 
-    /// Input the position of the property.
-    /// 
-    /// \return
-    /// Returns the property name
-    /// 
-    FDO_API virtual FdoString* GetPropertyName(FdoInt32 index) = 0;
 
     /// \brief
     /// Gets the data type of the property with the specified name.
@@ -75,6 +64,31 @@ public:
     /// Returns the FDO property type.
     /// 
     FDO_API virtual FdoPropertyType GetPropertyType(FdoString* propertyName) = 0;
+
+    /// \brief
+    /// Gets the data type of the property at the specified index position.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the type of the property.
+    /// 
+    FDO_API virtual FdoDataType GetDataType(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the FDO property type of the property at the given index. This is used
+    /// to indicate if a given property is a geometric property or a data property. 
+    /// If the property is a FdoPropertyType_DataProperty, then GetDataType 
+    /// can be used to to find the data type of the property.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the FDO property type.
+    /// 
+    FDO_API virtual FdoPropertyType GetPropertyType(FdoInt32 index) = 0;
 };
 #endif
 

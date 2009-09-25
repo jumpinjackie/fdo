@@ -104,6 +104,11 @@ const wchar_t* FdoRdbmsSQLDataReader::GetColumnName(FdoInt32 index)
     return mConnection->GetUtility()->Utf8ToUnicode(mColList[index].column);
 }
 
+FdoInt32 FdoRdbmsSQLDataReader::GetColumnIndex(FdoString* columnName)
+{
+    return FindColumnIndex(columnName);
+}
+
 int FdoRdbmsSQLDataReader::FindColumnIndex( const wchar_t* columnName, FdoException* exc )
 {
     const char  *tmpColName = mConnection->GetUtility()->UnicodeToUtf8( columnName );
