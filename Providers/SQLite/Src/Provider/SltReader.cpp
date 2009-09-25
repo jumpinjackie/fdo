@@ -291,7 +291,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     //If the query is for a single feature, we will directly add all the properties
     //since in this case it is more likely for the caller to need them
-    if (maxIndex == -1 || m_ri && m_ri->Count() == 1)
+    if (maxIndex == -1 || (m_ri && m_ri->Count() == 1))
         maxIndex = pdc->GetCount() - 1;
 
     for (int i=0; i<=maxIndex; i++)
