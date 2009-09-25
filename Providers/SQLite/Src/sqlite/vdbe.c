@@ -2260,12 +2260,12 @@ case OP_Column: {
        I am not really sure what the consequences of this are in corner cases and such,
        so the only way to find out for sure is to do it empirically with lots of test data.
        */
-  if( p->fdo && zRec )
-  {
-    /*pDest->flags &= ~MEM_Ephem;*/
-    rc = SQLITE_OK;
-  }
-  else
+  //if( p->fdo && zRec )
+  //{
+  //  /*pDest->flags &= ~MEM_Ephem;*/
+  //  rc = SQLITE_OK;
+  //}
+  //else
     rc = sqlite3VdbeMemMakeWriteable(pDest);
 
 op_column_out:
