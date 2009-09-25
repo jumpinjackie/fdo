@@ -218,9 +218,11 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                 }
                 if (useExpression != 0)
                 {
+                    leftLen = (leftLen == 0) ? lefts->m_bounds.GetBoundsLength() : leftLen;
+                    rightLen = (rightLen == 0) ? rights->m_bounds.GetBoundsLength() : rightLen;
                     ComplexFilterChunk* rVal = CreateComplexFilterChunk(StlSpatialTypeOperation_And);
                     ret = rVal;
-                    if ((lefts->m_canOmit && useExpression == -1) || useExpression == 1)
+                    if ((lefts->m_canOmit && useExpression == -1 && rightLen != 0) || useExpression == 1)
                     {
                         rVal->AddToList(rights);
                         ret->m_bounds = lefts->m_bounds;
@@ -925,7 +927,7 @@ const char* SltQueryTranslator::GetFilter()
 
 bool SltQueryTranslator::MustKeepFilterAlive()
 {
-    int cnt = (m_geomCount - (int)(m_fastSteppingChunk!=NULL));
+    int cnt = (m_geomCount - (int)(m_fastSteppingChunk!=NULL && !m_fastSteppingChunk->m_bounds.IsEmpty()));
     if (cnt == 0)
         return false;
     return (cnt > 1 || !(cnt == 1 && (m_evalStack.size() == 0 || m_evalStack[0]->m_canOmit)));
@@ -941,7 +943,7 @@ bool SltQueryTranslator::CanUseFastStepping()
     //stepping for any filter that is not just a BBOX filter.
     //return m_canUseFastStepping;
 
-    return (m_evalStack.size() == 0 || m_canUseFastStepping || m_evalStack[0]->m_canOmit);
+    return (m_evalStack.size() == 0 || ((m_canUseFastStepping || m_evalStack[0]->m_canOmit) && !MustKeepFilterAlive()));
 }
 
 void SltQueryTranslator::Reset()
