@@ -277,64 +277,28 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //resulting feature class is identical to the one in the schema.
     m_class = md->ToClass();
 
-	//we have created the class definition -- now we can reissue with 
-	//only the id and geometry properties to start with, and then reissue
-	//with other properties if needed
+	//we have created the class definition -- now we can add the
+    //columns from the feature class in the same order as they appear in it
+    //We will speculatively add only the columns up to the geometry,
+    //since a lot of the time callers who do "select * ..." actually only
+    //use the geometry and the id, which most of the time are first and second in the table.
+    //We will add all the other properties after that if the caller asks for any property
+    //other than the geometry and id.
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
+    int maxIndex = md->GetGeomIndex();
+    if (maxIndex < md->GetIDIndex())
+        maxIndex = md->GetIDIndex();
 
-    //the class don't have proprties in order ID, Geom, ... 
-    if (!md->IsOptimized())
+    //If the query is for a single feature, we will directly add all the properties
+    //since in this case it is more likely for the caller to need them
+    if (maxIndex == -1 || m_ri && m_ri->Count() == 1)
+        maxIndex = pdc->GetCount() - 1;
+
+    for (int i=0; i<=maxIndex; i++)
     {
-        // in this case we cannot use FastStepping
-        int idxToStart = 0;
-        m_useFastStepping = false;
-        FdoPtr<FdoGeometricPropertyDefinition> gpd;
-        FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = m_class->GetIdentityProperties();
-        int nIdProps = idpdc->GetCount(); // a class cannot have no PK (a fake one is provided -ROWID-)
-        if (nIdProps != 1) // in case we have no PK or more than one PK add rowid
-            m_reissueProps.Add("rowid", 5);
-        else
-        {
-            FdoPtr<FdoDataPropertyDefinition> idp = idpdc->GetItem(0);
-            FdoDataType dpType = idp->GetDataType();
-            if (FdoDataType_Int32 != dpType && FdoDataType_Int64 != dpType)
-            {
-                // the PK is not int32/int64, add rowid and we will add it later
-                m_reissueProps.Add("rowid", 5);
-            }
-            else
-            {
-                // in case is a int32/int64 PK skip adding it one more time
-                idxToStart = 1;
-                m_reissueProps.Add(idp->GetName());
-            }
-        }
-
-        if (m_class->GetClassType() == FdoClassType_FeatureClass)
-        {
-            //add the geom by doing a requery
-            gpd = ((FdoFeatureClass*)m_class)->GetGeometryProperty();
-            if (gpd != NULL)
-                m_reissueProps.Add(gpd->GetName());
-        }
-        // now add rest of the PK
-        for (int i = idxToStart; i < nIdProps; i++)
-        {
-            FdoPtr<FdoPropertyDefinition> idp = idpdc->GetItem(i);
-            m_reissueProps.Add(idp->GetName());
-        }
-        FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
-        nIdProps = pdc->GetCount();
-        for (int i = 0; i < nIdProps; i++)
-        {
-            FdoPtr<FdoPropertyDefinition> dp = pdc->GetItem(i);
-            FdoPtr<FdoPropertyDefinition> idp = idpdc->FindItem(dp->GetName());
-            if ((idp == NULL && FdoPropertyType_GeometricProperty != dp->GetPropertyType()) 
-                || (FdoPropertyType_GeometricProperty == dp->GetPropertyType()) && dp != gpd)
-                m_reissueProps.Add(dp->GetName());
-        }
+        FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+        m_reissueProps.Add(pd->GetName());
     }
-    else
-        m_useFastStepping = true;
 
     //redo the query with the id and geom props only
     Requery2();    
@@ -408,15 +372,21 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
 
     //make sure the property exists in the feature class
     FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
-    FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(name);
+    int index = pdc->IndexOf(name);
 
-    if (pd.p)
+    //Add all the properties to the query.
+    //If we reach here, it means we speculatively added only the id and the geometry
+    //to the query for a "select * " query, but the caller needs more than just those
+    if (index != -1)
     {
-        m_reissueProps.Add(pd->GetName());
+        for (int i=m_reissueProps.Count(), iEnd = pdc->GetCount(); i<iEnd; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            m_reissueProps.Add(pd->GetName());
+        }
 
         Requery2();
         InitPropIndex(m_pStmt);
-
 
         //step till the feature we were at with the previous query
         while (cur_id != sqlite3_column_int(m_pStmt, 0))
@@ -1120,59 +1090,65 @@ FdoInt32 SltReader::GetDepth()
 	//-------------------------------------------------------
 	// FdoIDataReader implementation
 	//-------------------------------------------------------
-
-FdoInt32 SltReader::GetPropertyCount()
+//simple utility function we use a few times below
+FdoPropertyDefinition* SltReader::GetFdoProperty(int index)
 {
-	return sqlite3_column_count(m_pStmt);
+    FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+    return pdc->GetItem(index);
 }
 
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+FdoInt32 SltReader::GetPropertyCount()
+{
+    FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
+    FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+	return pdc->GetCount();
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoString* SltReader::GetPropertyName(FdoInt32 index)
 {
-	return m_propNames[index];
+    FdoPtr<FdoPropertyDefinition> pd = GetFdoProperty(index);
+    return pd->GetName();
 }
 int SltReader::GetPropertyIndex(FdoString* propertyName)
 {
 	return NameToIndex(propertyName);
 }
-
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoDataType SltReader::GetDataType(int index)
 {
-    return SltReader::GetDataType(m_propNames[index]);
-}
-FdoDataType SltReader::GetDataType(FdoString* propertyName)
-{
-	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
-	FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-	FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(propertyName);
+	FdoPtr<FdoPropertyDefinition> pd = GetFdoProperty(index);
 
 	return ((FdoDataPropertyDefinition*)pd.p)->GetDataType();
 }
-
+FdoDataType SltReader::GetDataType(FdoString* propertyName)
+{
+    return SltReader::GetDataType(NameToIndex(propertyName));
+}
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoPropertyType SltReader::GetPropertyType(int index)
 {
-    return SltReader::GetPropertyType(m_propNames[index]);
+	FdoPtr<FdoPropertyDefinition> pd = GetFdoProperty(index);
+
+    return pd->GetPropertyType();
 }
 FdoPropertyType SltReader::GetPropertyType(FdoString* propertyName)
 {
-	FdoPtr<FdoClassDefinition> fc = GetClassDefinition(); 
-	FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
-	FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(propertyName);
-    
-    return pd->GetPropertyType();
+    return SltReader::GetPropertyType(NameToIndex(propertyName));
 }
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 //-------------------------------------------------------
 // FdoISQLDataReader implementation
+// This is implemented in terms of the FdoIDataReader functions
 //-------------------------------------------------------
 
 FdoInt32 SltReader::GetColumnCount()
 {
 	return GetPropertyCount();
 }
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoString* SltReader::GetColumnName(FdoInt32 index)
 {
 	return GetPropertyName(index);
@@ -1181,7 +1157,7 @@ int SltReader::GetColumnIndex(FdoString* columnName)
 {
 	return GetPropertyIndex(columnName);
 }
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 FdoDataType SltReader::GetColumnType(int index)
 {
@@ -1191,7 +1167,7 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 {
 	return GetDataType(columnName);
 }
-
+//\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 //-------------------------------------------------------
 // FdoIScrollableFeatureReader implementation

@@ -46,10 +46,12 @@ static FdoDataType ConvertDataType(const char* type)
 SltMetadata::SltMetadata(SltConnection* connection, const char* name, bool bUseFdoMetadata)
 : m_tablename(name),
   m_bIsView(false),
-  m_bIsOptimized(false),
   m_fc(NULL),
   m_connection(connection), //No addref -- it owns us, and we are private to it
-  m_bUseFdoMetadata(bUseFdoMetadata)
+  m_bUseFdoMetadata(bUseFdoMetadata),
+  m_geomName(NULL),
+  m_geomIndex(-1),
+  m_idIndex(-1)
 {
 }
 
@@ -196,7 +198,6 @@ FdoClassDefinition* SltMetadata::ToClass()
         tableConstraints.clear();
 
     int iGeom = -1;
-    int iStateOpt = 0;
     for (int i=0; i<pTable->nCol; i++)
     {
         // TODO - handle Expr names (null names replaced by expression value) and names containing "." and ":"
@@ -218,8 +219,6 @@ FdoClassDefinition* SltMetadata::ToClass()
         //is it a geometry property
         if (gi != -1)
         {
-            if (iStateOpt == 1 && i == 1)
-                iStateOpt = 2;
             FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(wpname.c_str(), NULL);
             gpd->SetReadOnly(false);
 
@@ -228,6 +227,10 @@ FdoClassDefinition* SltMetadata::ToClass()
             // pick first from the table but enforce first from f_geometry_column
             if (iGeom == -1 || gi == 0)
             {
+                //cache the name of the geometry and its index in the proeprty collection
+                m_geomName = gpd->GetName();
+                m_geomIndex = pdc->GetCount();
+
                 ((FdoFeatureClass*)m_fc)->SetGeometryProperty(gpd);
                 iGeom = gi;
                 const char* gf = gformats[gi].c_str();
@@ -402,8 +405,6 @@ FdoClassDefinition* SltMetadata::ToClass()
                 pdc->Add(dpd);
                 if (pTable->aCol[i].isPrimKey)
                 {
-                    if (iStateOpt == 0 && i == 0 && (dt == FdoDataType_Int64 || dt == FdoDataType_Int32))
-                        iStateOpt = 1;
                     if (dt == FdoDataType_Int64 && !m_bUseFdoMetadata)
                     {
                         //Lie about the type of the primary key -- report Int32 for better Map3D compatibility,
@@ -413,6 +414,7 @@ FdoClassDefinition* SltMetadata::ToClass()
                         dt = FdoDataType_Int32;
                         dpd->SetDataType(dt);
                     }
+                    m_idIndex = pdc->GetCount() - 1; //remember the index of the id property in the property collection
                     idpdc->Add(dpd);
                 }
             }
@@ -425,7 +427,7 @@ FdoClassDefinition* SltMetadata::ToClass()
             }
         }
     }
-    m_bIsOptimized = (iStateOpt == 2);
+
     // is view?
     if ((pTable->nCol && pTable->pSelect != NULL))
     {
