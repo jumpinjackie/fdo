@@ -52,10 +52,10 @@ libProvidersCommon_la_SOURCES = \
   Src/Parse/Lex.cpp \
   Src/Parse/Parse.cpp \
   Src/Parse/yyConstraint.cpp \
-  FdoDefaultDataReader.cpp \
-  FdoDefaultFeatureReader.cpp \
-  FdoDefaultScrollableFeatureReader.cpp \
-  FdoDefaultSqlDataReader.cpp
+  Src/FdoDefaultDataReader.cpp \
+  Src/FdoDefaultFeatureReader.cpp \
+  Src/FdoDefaultScrollableFeatureReader.cpp \
+  Src/FdoDefaultSqlDataReader.cpp
 
 noinst_HEADERS = $(libProvidersCommon_la_SOURCES) \
   Inc/FdoCommonBinaryReader.h \
