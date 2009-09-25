@@ -204,6 +204,7 @@ protected:
 		void InitPropIndex(sqlite3_stmt* pStmt);
         int AddColumnToQuery(const wchar_t* name);
         void Requery2();
+        FdoPropertyDefinition* GetFdoProperty(int index);
 
         bool PositionScrollable(__int64 index);
 

@@ -1469,7 +1469,14 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
         spDesc = new SpatialIndexDescriptor(this, table, si);
     m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
 
-    rdr = new SltReader(this, NULL, table, "", NULL, true, NULL, NULL);
+    //we will need the ID and the geometry when we build the spatial index, so add them to the query
+    FdoPtr<FdoIdentifierCollection> idcol = FdoIdentifierCollection::Create();
+    FdoPtr<FdoIdentifier> idid = FdoIdentifier::Create(L"rowid");
+    idcol->Add(idid);
+    FdoPtr<FdoIdentifier> idgeom = FdoIdentifier::Create(md->GetGeomName());
+    idcol->Add(idgeom);
+
+    rdr = new SltReader(this, idcol, table, "", NULL, true, NULL, NULL);
 
     while (rdr->ReadNext())
     {
