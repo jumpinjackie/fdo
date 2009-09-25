@@ -639,7 +639,7 @@ void FdoDefaultFeatureReaderImpl<FDO_FEATURE_READER>::InitializePropertyNames()
     if (m_propertyNamesInitialized)
         return;
 
-    FdoPtr<FdoClassDefinition> classDef = GetClassDefinition();
+    FdoPtr<FdoClassDefinition> classDef = this->GetClassDefinition();
     VALIDATE_POINTER(classDef.p);
 
     m_propertyNames = FdoStringCollection::Create();
