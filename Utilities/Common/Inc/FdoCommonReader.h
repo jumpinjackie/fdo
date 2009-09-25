@@ -17,7 +17,7 @@
  */
 
 #ifndef FDOCOMMONREADER___H
-#define FDOCOMMONREADER___H	1
+#define FDOCOMMONREADER___H
 
 #ifdef _WIN32
 #pragma once
@@ -58,12 +58,33 @@ protected:
     virtual FdoIRaster*         GetRaster(FdoString* itemName);
     virtual bool                IsNull(FdoString* itemName);
 
+    virtual bool                GetBoolean( FdoInt32 index );
+    virtual FdoByte             GetByte( FdoInt32 index );
+    virtual double              GetDouble(FdoInt32 index);
+    virtual short               GetInt16( FdoInt32 index );
+    virtual int                 GetInt32( FdoInt32 index );
+    virtual FdoInt64            GetInt64( FdoInt32 index );
+    virtual float               GetSingle( FdoInt32 index );
+    virtual const wchar_t*      GetString( FdoInt32 index );
+    virtual FdoDateTime         GetDateTime( FdoInt32 index );
+    virtual FdoLOBValue*        GetLOB(FdoInt32 index);
+    virtual FdoIStreamReader *  GetLOBStreamReader(FdoInt32 index);
+    virtual FdoByteArray*       GetGeometry(FdoInt32 index);
+    virtual const FdoByte*      GetGeometry(FdoInt32 index, FdoInt32 *);
+    virtual FdoIRaster*         GetRaster(FdoInt32 index);
+    virtual bool                IsNull(FdoInt32 index);
+
+    virtual FdoString* GetPropertyName(FdoInt32 index);
+    virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
+
     // API methods for FdoIDataReader;
     // These do not need to be overriden since they rely on the GetItem*() methods which must be overridden:
     virtual FdoInt32 GetPropertyCount();
-    virtual FdoString* GetPropertyName(FdoInt32 index);
     virtual FdoDataType GetDataType(FdoString* propertyName);
     virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
+
+    virtual FdoDataType GetDataType(FdoInt32 index);
+    virtual FdoPropertyType GetPropertyType(FdoInt32 index);
 
     /// Retrieve information about metadata;
     /// An item is either a plain or computed property (in the case of FdoIFeatureReader and FdoIDataReader)
@@ -638,6 +659,115 @@ bool FdoCommonReader<BASECLASS>::IsNull( FdoString *itemName )
     return value;
 }
 
+template <typename BASECLASS>
+bool FdoCommonReader<BASECLASS>::GetBoolean( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetBoolean(propertyName);
+}
+
+template <typename BASECLASS>
+FdoByte FdoCommonReader<BASECLASS>::GetByte( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetByte(propertyName);
+}
+
+template <typename BASECLASS>
+FdoDateTime FdoCommonReader<BASECLASS>::GetDateTime( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetDateTime(propertyName);
+}
+
+template <typename BASECLASS>
+double FdoCommonReader<BASECLASS>::GetDouble( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetDouble(propertyName);
+}
+
+template <typename BASECLASS>
+FdoInt16 FdoCommonReader<BASECLASS>::GetInt16( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetInt16(propertyName);
+}
+
+template <typename BASECLASS>
+FdoInt32 FdoCommonReader<BASECLASS>::GetInt32( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetInt32(propertyName);
+}
+
+template <typename BASECLASS>
+FdoInt64 FdoCommonReader<BASECLASS>::GetInt64( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetInt64(propertyName);
+}
+
+template <typename BASECLASS>
+float FdoCommonReader<BASECLASS>::GetSingle( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetSingle(propertyName);
+}
+
+template <typename BASECLASS>
+FdoString * FdoCommonReader<BASECLASS>::GetString( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetString(propertyName);
+}
+
+template <typename BASECLASS>
+FdoByteArray * FdoCommonReader<BASECLASS>::GetGeometry(FdoInt32 index)
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetGeometry(propertyName);
+}
+
+
+template <typename BASECLASS>
+const FdoByte * FdoCommonReader<BASECLASS>::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetGeometry(propertyName, count);
+}
+
+
+template <typename BASECLASS>
+FdoIRaster * FdoCommonReader<BASECLASS>::GetRaster(FdoInt32 index)
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetRaster(propertyName);
+}
+
+
+template <typename BASECLASS>
+FdoLOBValue* FdoCommonReader<BASECLASS>::GetLOB(FdoInt32 index)
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetLOB(propertyName);
+}
+
+
+template <typename BASECLASS>
+FdoIStreamReader * FdoCommonReader<BASECLASS>::GetLOBStreamReader(FdoInt32 index)
+{
+    FdoStringP propertyName = GetItemName(index);
+    return GetLOBStreamReader(propertyName);
+}
+
+
+template <typename BASECLASS>
+bool FdoCommonReader<BASECLASS>::IsNull( FdoInt32 index )
+{
+    FdoStringP propertyName = GetItemName(index);
+    return IsNull(propertyName);
+}
 
 template <typename BASECLASS>
 FdoPropertyValue* FdoCommonReader<BASECLASS>::GetPropertValue(
@@ -698,6 +828,12 @@ FdoString* FdoCommonReader<BASECLASS>::GetPropertyName(FdoInt32 index)
 }
 
 template <typename BASECLASS>
+FdoInt32 FdoCommonReader<BASECLASS>::GetPropertyIndex(FdoString* propertyName)
+{
+    return GetItemIndex(propertyName);
+}
+
+template <typename BASECLASS>
 FdoDataType FdoCommonReader<BASECLASS>::GetDataType(FdoString* propertyName)
 {
     return GetItemDataType(GetItemIndex(propertyName));
@@ -707,6 +843,18 @@ template <typename BASECLASS>
 FdoPropertyType FdoCommonReader<BASECLASS>::GetPropertyType(FdoString* propertyName)
 {
     return GetItemType(GetItemIndex(propertyName));
+}
+
+template <typename BASECLASS>
+FdoDataType FdoCommonReader<BASECLASS>::GetDataType(FdoInt32 index)
+{
+    return GetItemDataType(index);
+}
+
+template <typename BASECLASS>
+FdoPropertyType FdoCommonReader<BASECLASS>::GetPropertyType(FdoInt32 index)
+{
+    return GetItemType(index);
 }
 
 template <typename BASECLASS>

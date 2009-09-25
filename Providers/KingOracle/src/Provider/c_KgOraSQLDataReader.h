@@ -16,8 +16,9 @@
 */
 #ifndef _c_KgOraSQLDataReader_h
 #define _c_KgOraSQLDataReader_h
+#include "FdoDefaultSqlDataReader.h"
 
-class c_KgOraSQLDataReader : public FdoISQLDataReader
+class c_KgOraSQLDataReader : public FdoDefaultSqlDataReader
 {
 public:
   c_KgOraSQLDataReader(c_KgOraConnection * Connection
@@ -68,6 +69,17 @@ public:
     /// Returns the column name
     /// 
     FDOKGORA_API virtual FdoString* GetColumnName(FdoInt32 index);
+
+    /// \brief
+    /// Gets the index of the column with the given column name.
+    /// 
+    /// \param columnName 
+    /// Input the column name.
+    /// 
+    /// \return
+    /// Returns the column index
+    /// 
+    FDOKGORA_API virtual FdoInt32 GetColumnIndex(FdoString* columnName);
 
     /// \brief
     /// Gets the data type of the column with the specified name.

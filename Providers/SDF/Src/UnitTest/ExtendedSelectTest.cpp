@@ -104,7 +104,7 @@ void ExtendedSelectTest::MainTest(bool fileSort, bool extendProps)
         FdoPtr<FdoIdentifierCollection> orders = select->GetOrdering();
         orders->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")));
         select->SetFilter(L"ID >= 10000 and ID < 20000");
-        FdoPtr<SdfIScrollableFeatureReader>reader;
+        FdoPtr<FdoIScrollableFeatureReader>reader;
         if( fileSort )
         {
             if( extendProps )

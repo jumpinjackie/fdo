@@ -93,6 +93,37 @@ public:
     /// 
 	virtual NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ GetFeatureObject(System::String^ propertyName);
 
+    /// \brief
+    /// Gets the geometry value of the property at the index position as a byte array in 
+    /// FGF format. Because no conversion is performed, the property must be
+    /// of Geometric type; otherwise, an exception is thrown. 
+    /// This method is a language-specific performance optimization that returns a
+    /// pointer to the array data, rather than to an object that encapsulates
+    /// the array.  The array's memory area is only guaranteed to be valid
+    /// until a call to ReadNext() or Close(), or the disposal of this reader
+    /// object.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns a pointer to the byte array in FGF format.
+    /// 
+    virtual array<System::Byte>^ GetGeometry(System::Int32 index) override;
+
+    /// \brief
+    /// Gets a reference to an IFeatureReader to read the data contained in
+    /// the object or object collection property at the index position. If the property is not an
+    /// object property, an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the nested feature reader
+    /// 
+    virtual NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ GetFeatureObject(System::Int32 index);
+
 internal:
 	IFeatureReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)
 	{

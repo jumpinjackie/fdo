@@ -52,6 +52,17 @@ public:
     FDO_API virtual FdoString* GetColumnName(FdoInt32 index) = 0;
 
     /// \brief
+    /// Gets the index of the column with the given column name.
+    /// 
+    /// \param columnName 
+    /// Input the column name.
+    /// 
+    /// \return
+    /// Returns the column index
+    /// 
+    FDO_API virtual FdoInt32 GetColumnIndex(FdoString* columnName) = 0;
+
+    /// \brief
     /// Gets the data type of the column with the specified name.
     /// 
     /// \param columnName 
@@ -193,7 +204,7 @@ public:
     FDO_API virtual FdoString* GetString(FdoString* columnName) = 0;
 
     /// \brief
-    /// Gets a LOBValue reference. The LOB is fully read in and data available.
+    /// Gets a LOBValue pointer. The LOB is fully read in and data available.
     /// Because no conversion is performed, the property must be FdoDataType_BLOB or
     /// FdoDataType_CLOB etc. (a LOB type)
     /// 
@@ -201,12 +212,12 @@ public:
     /// Input the property name.
     /// 
     /// \return
-    /// Returns the reference to LOBValue
+    /// Returns the pointer to LOBValue
     /// 
     FDO_API virtual FdoLOBValue* GetLOB(FdoString* propertyName) = 0;
 
     /// \brief
-    /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
+    /// Gets a pointer of the specified LOB property as a FdoBLOBStreamReader or
     /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
     /// Because no conversion is performed, the property must be FdoDataType_BLOB 
     /// or FdoDataType_CLOB etc. (a LOB type)
@@ -216,7 +227,7 @@ public:
     /// Input the property name.
     /// 
     /// \return
-    /// Returns a reference to a LOB stream reader
+    /// Returns a pointer to a LOB stream reader
     /// 
     FDO_API virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName ) = 0;
 
@@ -243,6 +254,199 @@ public:
     /// Returns the FGF byte array value.
     /// 
     FDO_API virtual FdoByteArray* GetGeometry(FdoString* columnName) = 0;
+
+    /// \brief
+    /// Gets the data type of the column at the specified index.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the type of the column.
+    /// 
+    FDO_API virtual FdoDataType GetColumnType(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the FDO property type of the column at the specified index. This is used
+    /// to indicate if a given column is a geometric property or a data property. If the column is
+    /// a FdoPropertyType_DataProperty, then GetColumnType can be used to find the data type of the column.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the FDO property type of the column.
+    /// 
+    FDO_API virtual FdoPropertyType GetPropertyType(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the Boolean value of the specified column. No conversion is
+    /// performed, thus the column must be FdoDataType_Boolean or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the Boolean value
+    /// 
+    FDO_API virtual FdoBoolean GetBoolean(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the byte value of the specified column. No conversion is
+    /// performed, thus the column must be FdoDataType_Byte or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the byte value.
+    /// 
+    FDO_API virtual FdoByte GetByte(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the date time value of the specified column. No conversion
+    /// is performed, thus the column must be FdoDataType_DateTime or
+    /// an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the date and time value.
+    /// 
+    FDO_API virtual FdoDateTime GetDateTime(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the double-precision floating point value of the specified column.
+    /// No conversion is performed, thus the column must be of type
+    /// Double or an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the double value.
+    /// 
+    FDO_API virtual FdoDouble GetDouble(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the signed 16-bit integer value of the specified column. No conversion is
+    /// performed, thus the column must be FdoDataType_Int16 or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the FdoInt16 value.
+    /// 
+    FDO_API virtual FdoInt16 GetInt16(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the signed 32-bit integer value of the specified column. No conversion is
+    /// performed, thus the column must be FdoDataType_Int32 or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the FdoInt32 value.
+    /// 
+    FDO_API virtual FdoInt32 GetInt32(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the signed 64-bit integer value of the specified column. No conversion
+    /// is performed, thus the column must be FdoDataType_Int64 or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the FdoInt64 value.
+    /// 
+    FDO_API virtual FdoInt64 GetInt64(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the single-precision floating point value of the specified column.
+    /// No conversion is performed, thus the column must be FdoDataType_Single
+    /// or an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the single value
+    /// 
+    FDO_API virtual FdoFloat GetSingle(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the string value of the specified column. No conversion is
+    /// performed, thus the column must be FdoDataType_String or an
+    /// exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the string value.
+    /// 
+    FDO_API virtual FdoString* GetString(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets a LOBValue pointer. The LOB is fully read in and data available.
+    /// Because no conversion is performed, the property must be FdoDataType_BLOB or
+    /// FdoDataType_CLOB etc. (a LOB type)
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the pointer to LOBValue
+    /// 
+    FDO_API virtual FdoLOBValue* GetLOB(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets a pointer of the specified LOB property as a FdoBLOBStreamReader or
+    /// FdoCLOBStreamReader etc. to allow reading in blocks of data. Because 
+    /// no conversion is performed, the property must be FdoDataType_BLOB 
+    /// or FdoDataType_CLOB etc. (a LOB type) Cast the FdoIStreamReader 
+    /// to the appropriate LOB Stream Reader.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns a pointer to a LOB stream reader
+    /// 
+    FDO_API virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Returns true if the value of the specified column is null.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns true if the value is null.
+    /// 
+    FDO_API virtual FdoBoolean IsNull(FdoInt32 index) = 0;
+
+    /// \brief
+    /// Gets the geometry value of the specified column as a byte array
+    /// in FGF format. No conversion is performed, thus the column
+    /// must be of Geometric type or an exception is thrown.
+    /// 
+    /// \param index 
+    /// Input the position of the column.   
+    /// 
+    /// \return
+    /// Returns the FGF byte array value.
+    /// 
+    FDO_API virtual FdoByteArray* GetGeometry(FdoInt32 index) = 0;
 
     /// \brief
     /// Advances the reader to the next item. The default position of the

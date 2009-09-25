@@ -364,6 +364,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\FdoDefaultDataReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\FdoDefaultFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\FdoDefaultScrollableFeatureReader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\FdoDefaultSqlDataReader.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -586,6 +602,26 @@
 			</File>
 			<File
 				RelativePath=".\Inc\FdoCommonThreadUtil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoDefaultDataReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoDefaultFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoDefaultFeatureReaderImpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoDefaultScrollableFeatureReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\FdoDefaultSqlDataReader.h"
 				>
 			</File>
 			<File

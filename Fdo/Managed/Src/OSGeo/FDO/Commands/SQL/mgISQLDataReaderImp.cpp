@@ -56,6 +56,15 @@ System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetColumnNa
 	return CHECK_STRING(result);
 }
 
+System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetColumnIndex(System::String^ name)
+{
+    System::Int32 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetColumnIndex(StringToUni(name)))
+
+    return result;
+}
+
 NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetColumnType(System::String^ name)
 {
 	FdoDataType result;
@@ -197,6 +206,149 @@ array<System::Byte>^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetGeo
 	        arr->Release();
     }
 	return result;
+}
+
+NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetColumnType(System::Int32 index)
+{
+    FdoDataType result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetColumnType(index))
+
+    return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::DataType>(result);
+}
+
+NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetPropertyType(System::Int32 index)
+{
+    FdoPropertyType result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyType(index))
+
+    return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType>(result);
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetBoolean(System::Int32 index)
+{
+    System::Boolean result;
+
+    EXCEPTION_HANDLER(result = !!GetImpObj()->GetBoolean(index))
+
+    return result;
+}
+
+System::Byte NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetByte(System::Int32 index)
+{
+    System::Byte result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetByte(index))
+
+    return result;
+}
+
+System::DateTime NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetDateTime(System::Int32 index)
+{
+    FdoDateTime result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetDateTime(index))
+
+    return FdoDateTimeToDateTime(result);
+}
+
+System::Double NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetDouble(System::Int32 index)
+{
+    System::Double result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetDouble(index))
+
+    return result;
+}
+
+System::Int16 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetInt16(System::Int32 index)
+{
+    System::Int16 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt16(index))
+
+    return result;
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetInt32(System::Int32 index)
+{
+    System::Int32 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt32(index))
+
+    return result;
+}
+
+System::Int64 NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetInt64(System::Int32 index)
+{
+    System::Int64 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt64(index))
+
+    return result;
+}
+
+System::Single NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetSingle(System::Int32 index)
+{
+    System::Single result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetSingle(index))
+
+    return result;
+}
+
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetString(System::Int32 index)
+{
+    FdoString* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetString(index))
+
+    return CHECK_STRING(result);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetLOB(System::Int32 index)
+{
+    FdoLOBValue* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetLOB(index))
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(IntPtr(result), true);
+}
+
+NAMESPACE_OSGEO_COMMON::IStreamReader^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetLOBStreamReader(System::Int32 index)
+{
+    FdoIStreamReader* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetLOBStreamReader(index))
+
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(IntPtr(result), true);
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::IsNull(System::Int32 index)
+{
+    System::Boolean result;
+
+    EXCEPTION_HANDLER(result = !!GetImpObj()->IsNull(index))
+
+    return result;
+}
+
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::GetGeometry(System::Int32 index)
+{
+    array<System::Byte>^ result;
+    FdoByteArray* arr;
+    try
+    {
+        EXCEPTION_HANDLER(arr = GetImpObj()->GetGeometry(index))
+            result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
+    return result;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_SQL::ISQLDataReaderImp::ReadNext()

@@ -18,15 +18,16 @@
 
 #ifndef FDOWFSDATAREADER_H
 #define FDOWFSDATAREADER_H
+#include "FdoDefaultDataReader.h"
 
 #ifdef _WIN32
 #pragma once
 #endif // _WIN32
 
 class FdoWfsDataReader :
-    public virtual FdoWfsReader<FdoIDataReader>
+    public virtual FdoWfsReader<FdoDefaultDataReader>
 {
-    typedef FdoWfsReader<FdoIDataReader> superclass;
+    typedef FdoWfsReader<FdoDefaultDataReader> superclass;
 
     friend class FdoWfsSelectAggregatesCommand;
 
@@ -51,6 +52,11 @@ public:
     /// <param name="index">Input the position of the property.</param> 
     /// <returns>Returns the property name</returns> 
     virtual FdoString* GetPropertyName(FdoInt32 index);
+
+    /// <summary>Gets the index of the property with the specified name.</summary>
+    /// <param name="propertyName">Input the name of the property.</param> 
+    /// <returns>Returns the property index</returns> 
+    virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
 
     /// <summary>Gets the data type of the property with the specified name.</summary>
     /// <param name="propertyName">Input the property name.</param> 

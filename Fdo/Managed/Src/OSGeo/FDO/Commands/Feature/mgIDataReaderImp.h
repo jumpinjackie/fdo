@@ -48,17 +48,6 @@ public:
 	virtual System::Int32 GetPropertyCount();
 
     /// \brief
-    /// Gets the name of the property at the given ordinal position.
-    /// 
-    /// \param index 
-    /// Input the position of the property.
-    /// 
-    /// \return
-    /// Returns the property name
-    /// 
-	virtual System::String^ GetPropertyName(System::Int32 index);
-
-    /// \brief
     /// Gets the data type of the property with the specified name.
     /// 
     /// \param name 
@@ -81,6 +70,30 @@ public:
     /// Returns the property type corresponding to the property name.
     /// 
 	virtual NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::String^ name);
+
+    /// \brief
+    /// Gets the data type of the property at the specified index position.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the data type of the property corresponding to the index.
+    /// 
+    virtual NAMESPACE_OSGEO_FDO_SCHEMA::DataType GetDataType(System::Int32 index);
+
+    /// \brief
+    /// Gets the property type of a given property at the specified index. This is used
+    /// to indicate if a given property is a geometric property or a data property. If the property is
+    /// a PropertyType_DataProperty, then GetDataType can be used to to find the data type of the property.
+    /// 
+    /// \param index 
+    /// Input the index of the property.
+    /// 
+    /// \return
+    /// Returns the property type corresponding to the property name.
+    /// 
+    virtual NAMESPACE_OSGEO_FDO_SCHEMA::PropertyType GetPropertyType(System::Int32 index);
 
 internal:
 	IDataReaderImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IReaderImp(unmanaged, autoDelete)

@@ -27,7 +27,7 @@ ShpFeatureReader::ShpFeatureReader ()
 }
 
 ShpFeatureReader::ShpFeatureReader (ShpConnection *connection, FdoString* className, FdoFilter* filter, FdoIdentifierCollection* selected) :
-    ShpReader<FdoIFeatureReader> (connection, className, filter, selected)
+    superclass (connection, className, filter, selected)
 {
 }
 

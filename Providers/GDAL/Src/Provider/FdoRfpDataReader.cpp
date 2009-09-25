@@ -25,9 +25,10 @@
 
 #include "FDORFP.h"
 #include "FdoRfpDataReader.h"
+#include <assert.h>
 
 FdoRfpDataReader::FdoRfpDataReader(const FdoPtr<FdoRfpQueryResult>& queryResult) :
-											FdoRfpCommonReader<FdoIDataReader>(queryResult)
+											superclass(queryResult)
 {
 }
 
@@ -56,6 +57,24 @@ FdoString* FdoRfpDataReader::GetPropertyName(FdoInt32 index)
 		throw FdoCommandException::Create(NlsMsgGet(GRFP_80_INDEX_OUT_OF_RANGE, "Index out of range."));
 	propertyName = (*(m_queryResult->identifiers[index]))[0];
 	return propertyName;
+}
+
+/// <summary>Gets the index of the property with the specified name.</summary>
+/// <param name="propertyName">Input the name of the property.</param> 
+/// <returns>Returns the property index</returns> 
+FdoInt32 FdoRfpDataReader::GetPropertyIndex(FdoString* propertyName)
+{
+    int numColumns = (int)m_queryResult->identifiers.size();
+    for (int col = 0; col < numColumns; col++)
+    {
+        std::vector<FdoStringP>& ids = *m_queryResult->identifiers[col];
+        for (std::vector<FdoStringP>::iterator it = ids.begin(); it != ids.end(); it++)
+            if (STRCASEEQ(propertyName, *it))
+                return col;
+    }
+
+    assert(false);
+    return -1; // throw exception?
 }
 
 /// <summary>Gets the data type of the property with the specified name.</summary>

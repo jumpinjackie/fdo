@@ -37,7 +37,7 @@ c_KgMssFeatureReader::c_KgMssFeatureReader(c_KgMssConnection * Connection
                                         ,FdoClassDefinition* ClassDef
                                         ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
                                         ,FdoIdentifierCollection* Props)
- : c_KgMssReader(Connection,OtlStream,OtlStreamReader,GeomPropSqlIndex, SqlColumns), m_ClassDef(ClassDef)
+ : superclass(Connection,OtlStream,OtlStreamReader,GeomPropSqlIndex, SqlColumns), m_ClassDef(ClassDef)
 {
   
   FDO_SAFE_ADDREF (m_ClassDef.p);

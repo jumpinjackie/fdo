@@ -18,7 +18,7 @@
 #define FDOPOSTGIS_DATAREADER_H_INCLUDED
 
 #include "Reader.h"
-
+#include "FdoDefaultDataReader.h"
 //
 // Forward declarations
 //
@@ -34,7 +34,7 @@ class PgCursor;
 /// relational table data.
 /// This reader works against PostGIS datastore.
 ///
-class DataReader : public Reader<FdoIDataReader>
+class DataReader : public Reader<FdoDefaultDataReader>
 {
 public:
 
@@ -53,6 +53,9 @@ public:
 
     /// Get name of property at given ordinal position.
     virtual FdoString* GetPropertyName(FdoInt32 index);
+
+    /// Get index of property with the specified name.
+    virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
 
     /// Get data type of property with the specified name.
     virtual FdoDataType GetDataType(FdoString* propertyName);
@@ -79,7 +82,7 @@ private:
     // Private data members
     //
 
-    typedef Reader<FdoIDataReader> Base;
+    typedef Reader<FdoDefaultDataReader> Base;
 
 };
 

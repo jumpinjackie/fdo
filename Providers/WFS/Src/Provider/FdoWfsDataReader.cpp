@@ -53,6 +53,14 @@ FdoString* FdoWfsDataReader::GetPropertyName (FdoInt32 index)
     return (L"");
 }
 
+/// <summary>Gets the index of the property with the specified name.</summary>
+/// <param name="propertyName">Input the name of the property.</param> 
+/// <returns>Returns the property index</returns> 
+FdoInt32 FdoWfsDataReader::GetPropertyIndex(FdoString* propertyName)
+{
+    return -1; // Not implemented.
+}
+
 /// <summary>Gets the data type of the property with the specified name.</summary>
 /// <param name="propertyName">Input the property name.</param> 
 /// <returns>Returns the type of the property.</returns> 

@@ -17,6 +17,8 @@
 //  
 
 #include "ProjConverter.h"
+#include "FdoDefaultFeatureReader.h"
+#include "FdoDefaultDataReader.h"
 
 //fwd decl
 class OGRDataSource;
@@ -1008,7 +1010,7 @@ class OgrSpatialContextReader : public FdoISpatialContextReader
 };
 
 //feature reader -- returned when executing a select command
-class OgrFeatureReader : public FdoIFeatureReader
+class OgrFeatureReader : public FdoDefaultFeatureReader
 {
     public:
         OGR_API OgrFeatureReader(OgrConnection* connection,
@@ -1073,7 +1075,7 @@ class OgrFeatureReader : public FdoIFeatureReader
 
 
 //data reader -- returned when executing a select aggregates command
-class OgrDataReader : public FdoIDataReader
+class OgrDataReader : public FdoDefaultDataReader
 {
     public:
 
@@ -1090,6 +1092,7 @@ class OgrDataReader : public FdoIDataReader
 
         OGR_API virtual FdoInt32 GetPropertyCount();
         OGR_API virtual FdoString* GetPropertyName(FdoInt32 index);
+        OGR_API virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
         OGR_API virtual FdoDataType GetDataType(FdoString* propertyName);
         OGR_API virtual FdoPropertyType GetPropertyType(FdoString* propertyName);
         OGR_API virtual bool GetBoolean(FdoString* propertyName);

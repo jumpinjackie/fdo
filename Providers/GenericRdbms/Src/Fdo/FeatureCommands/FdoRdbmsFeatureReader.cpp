@@ -632,7 +632,7 @@ void FdoRdbmsFeatureReader::ProcessCalculations(std::vector<int>& idxs)
 }
 
 // This is an internal method to support the DataReader
-FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
+FdoString* FdoRdbmsFeatureReader::GetPropertyNameForDataReader(FdoInt32 index)
 {
     if( index >= GetPropertyCount() )
        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
@@ -662,6 +662,27 @@ FdoString* FdoRdbmsFeatureReader::GetPropertyName(FdoInt32 index)
 
     return NULL;
 }
+
+//FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndex(FdoString* propertyName)
+//{
+//    FdoPropertyType type;
+//    int				cacheIndex;
+//    const	char	*colName = PROPERTY2COLNAME_IDX( propertyName, &type, NULL, &cacheIndex );
+//
+//    if ((colName == NULL) || (strlen(colName) == 0))
+//    {
+//        if( type != FdoPropertyType_DataProperty )
+//            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp, propertyName ));
+//
+//        // The catch block will create the message string
+//        throw "";
+//    }
+//
+//    FdoStringP m = GetPropertyInfoDef(cacheIndex)->columnPosition;
+//
+//    GetPropertyInfoDef(cacheIndex)->columnPosition;
+//    return GetColumnIndex(colName);
+//}
 
 // This is an internal method to support the DataReader
 FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)

@@ -133,9 +133,36 @@ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_XML::X
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureReader(IntPtr(result), true);
 }
 
+NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IFeatureReader^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetFeatureObject(System::Int32 index)
+{
+    FdoIFeatureReader* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetFeatureObject(index))
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateXmlFeatureReader(IntPtr(result), true);
+}
+
 /*
 	IReader implementation
 */
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetPropertyName(System::Int32 index)
+{
+    FdoString* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyName(index))
+
+    return CHECK_STRING(result);
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetPropertyIndex(System::String^ name)
+{
+    System::Int32 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetPropertyIndex(StringToUni(name)))
+
+    return result;
+}
+
 System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetBoolean(System::String^ name)
 {
 	System::Boolean result;
@@ -268,6 +295,140 @@ array<System::Byte>^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetGeometry(Syst
             arr->Release();
     }
 	return result;
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetBoolean(System::Int32 index)
+{
+    System::Boolean result;
+
+    EXCEPTION_HANDLER(result = !!GetImpObj()->GetBoolean(index))
+
+    return result;
+}
+
+System::Byte NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetByte(System::Int32 index)
+{
+    System::Byte result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetByte(index))
+
+    return result;
+}
+
+System::DateTime NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetDateTime(System::Int32 index)
+{
+    FdoDateTime result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetDateTime(index))
+
+    return FdoDateTimeToDateTime(result);
+}
+
+System::Double NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetDouble(System::Int32 index)
+{
+    System::Double result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetDouble(index))
+
+    return result;
+}
+
+System::Int16 NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetInt16(System::Int32 index)
+{
+    System::Int16 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt16(index))
+
+    return result;
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetInt32(System::Int32 index)
+{
+    System::Int32 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt32(index))
+
+    return result;
+}
+
+System::Int64 NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetInt64(System::Int32 index)
+{
+    System::Int64 result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetInt64(index))
+
+    return result;
+}
+
+System::Single NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetSingle(System::Int32 index)
+{
+    System::Single result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetSingle(index))
+
+    return result;
+}
+
+System::String^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetString(System::Int32 index)
+{
+    FdoString* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetString(index))
+
+    return CHECK_STRING(result);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::LOBValue^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetLOB(System::Int32 index)
+{
+    FdoLOBValue* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetLOB(index))
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLOBValue(IntPtr(result), true);
+}
+
+NAMESPACE_OSGEO_COMMON::IStreamReader^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetLOBStreamReader(System::Int32 index)
+{
+    FdoIStreamReader* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetLOBStreamReader(index))
+
+    return NAMESPACE_OSGEO_COMMON::ObjectFactory::CreateIStreamReader(IntPtr(result), true);
+}
+
+NAMESPACE_OSGEO_FDO_RASTER::IRaster^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetRaster(System::Int32 index)
+{
+    FdoIRaster* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetRaster(index))
+
+    return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIRaster(IntPtr(result), true);
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::IsNull(System::Int32 index)
+{
+    System::Boolean result;
+
+    EXCEPTION_HANDLER(result = !!GetImpObj()->IsNull(index))
+
+    return result;
+}
+
+array<System::Byte>^ NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::GetGeometry(System::Int32 index)
+{
+    FdoByteArray* arr = nullptr;
+    array<System::Byte>^ result;
+    try
+    {
+        EXCEPTION_HANDLER(arr = GetImpObj()->GetGeometry(index))
+        result = FdoByteArrayToByteArray(arr->GetData(), arr->GetCount());
+    }
+    finally
+    {
+        if (arr != nullptr)
+            arr->Release();
+    }
+    return result;
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlFeatureReader::ReadNext()

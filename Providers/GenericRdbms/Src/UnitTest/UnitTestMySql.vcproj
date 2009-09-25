@@ -1329,6 +1329,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MySql\MySqlReaderTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MySql\MySqlReaderTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MySQL\MySqlSchemaMgrTests.cpp"
 				>
 			</File>

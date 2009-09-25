@@ -73,6 +73,11 @@ FdoString* SQLDataReader::GetColumnName(FdoInt32 index)
     return static_cast<FdoString*>(mColumnName);
 }
 
+FdoInt32 SQLDataReader::GetColumnIndex(FdoString* columnName)
+{
+    return mCursor->GetFieldNumber(columnName);
+}
+
 FdoDataType SQLDataReader::GetColumnType(FdoString* columnName)
 {
     return mCursor->GetFieldType(columnName);

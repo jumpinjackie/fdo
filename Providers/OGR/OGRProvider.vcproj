@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
+				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OGRPROVIDER_EXPORTS,_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2D.lib fdospatial.lib"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2D.lib fdospatial.lib ProvidersCommon.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\Debug;&quot;$(FDOGDAL)\lib\win32\Debug&quot;;..\..\Thirdparty\gdal\lib\win32\Debug;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Debug&quot;"
+				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\Debug;&quot;$(FDOGDAL)\lib\win32\Debug&quot;;..\..\Thirdparty\gdal\lib\win32\Debug;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port"
+				AdditionalIncludeDirectories="..\..\Fdo\Unmanaged\Inc;&quot;$(FDOGDAL)\include&quot;;&quot;$(FDOGDAL)\ogr&quot;;&quot;$(FDOGDAL)\ogr\ogrsf_frmts&quot;;&quot;$(FDOGDAL)\port&quot;;..\..\Thirdparty\gdal\include;..\..\Thirdparty\gdal\ogr;..\..\Thirdparty\gdal\ogr\ogrsf_frmts;..\..\Thirdparty\gdal\port;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGRPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -138,9 +138,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib fdospatial.lib"
+				AdditionalDependencies="fdo.lib fdocommon.lib fdogeometry.lib wsock32.lib gdal_i.lib xerces-c_2.lib fdospatial.lib ProvidersCommon.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;&quot;gdal\gdal-1.5.1&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Release&quot;;..\..\Thirdparty\gdal\"
+				AdditionalLibraryDirectories="..\..\Fdo\Unmanaged\lib\win32\release;&quot;$(FDOGDAL)\lib\win32\Release&quot;;&quot;gdal\gdal-1.5.1&quot;;&quot;..\..\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Release&quot;;..\..\Thirdparty\gdal\;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;"
 				GenerateManifest="true"
 				IgnoreDefaultLibraryNames=""
 				DelayLoadDLLs="fdogeometry.dll"

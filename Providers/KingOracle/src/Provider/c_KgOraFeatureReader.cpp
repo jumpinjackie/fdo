@@ -37,7 +37,7 @@ c_KgOraFeatureReader::c_KgOraFeatureReader(c_KgOraConnection * Connection
                                           ,FdoClassDefinition* ClassDef
                                           ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
                                           ,FdoIdentifierCollection* Props)
- : c_KgOraReader<FdoIFeatureReader>(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
+ : superclass(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
 {
 
   m_ClassDef = ClassDef;

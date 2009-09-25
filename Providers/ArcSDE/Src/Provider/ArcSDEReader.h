@@ -127,8 +127,20 @@ public:
     ArcSDEReader & operator= (const ArcSDEReader &right);
 
     //
-    // FdoIFeatureReader interface
+    // FdoIReader interface
     //
+
+    /// <summary>Gets the name of the property at the given ordinal position.</summary>
+    /// <param name="index">Input the position of the property.</param> 
+    /// <returns>Returns the property name</returns> 
+    virtual FdoString* GetPropertyName(FdoInt32 index); 
+
+    /// <summary>
+    /// Gets the index of the property with the specified name.
+    /// </summary>
+    /// <param name="propertyName">Input the property name.</param>
+    /// <returns>Returns the property index</returns>
+    virtual FdoInt32 GetPropertyIndex(FdoString* propertyName);
 
     /// <summary>Gets the Boolean value of the specified property. No conversion is
     /// performed, thus the property must be FdoDataType_Boolean or an 
@@ -194,20 +206,20 @@ public:
     virtual FdoString* GetString (FdoString* identifier);
 
 
-    /// <summary>Gets a LOBValue reference. The LOB is fully read in and data available.
+    /// <summary>Gets a LOBValue pointer. The LOB is fully read in and data available.
     /// Because no conversion is performed, the property must be FdoDataType_BLOB or
     /// FdoDataType_CLOB etc. (a LOB type)
     /// <param name="propertyName">Input the property name.</param> 
-    /// <returns>Returns the reference to LOBValue</returns> 
+    /// <returns>Returns the pointer to LOBValue</returns> 
     virtual FdoLOBValue* GetLOB(FdoString* identifier);
 
-    /// <summary>Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
+    /// <summary>Gets a pointer of the specified LOB property as a FdoBLOBStreamReader or
     /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
     /// Because no conversion is performed, the property must be FdoDataType_BLOB 
     /// or FdoDataType_CLOB etc. (a LOB type)
     /// Cast the FdoIStreamReader to the appropiate LOB Stream Reader.
     /// <param name="propertyName">Input the property name.</param> 
-    /// <returns>Returns a reference to a LOB stream reader</returns> 
+    /// <returns>Returns a pointer to a LOB stream reader</returns> 
     virtual FdoIStreamReader* GetLOBStreamReader(FdoString* identifier);
 
     /// <summary>Returns true if the value of the specified property is null.</summary>
@@ -242,6 +254,148 @@ public:
     /// <returns>Returns the raster object.</returns> 
     virtual FdoIRaster* GetRaster(FdoString* identifier);
 
+
+    /// <summary>
+    /// Gets the Boolean value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_Boolean 
+    /// or an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the Boolean value.</returns>
+    virtual bool GetBoolean(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the byte value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_Byte 
+    /// or an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the byte value.</returns>
+    virtual FdoByte GetByte(FdoInt32 /*index*/);
+
+    /// <summary>
+    /// Gets the date and time value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_DateTime or an
+    /// exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the date and time value.</returns>
+    virtual FdoDateTime GetDateTime(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the double-precision floating point value of the specified property. 
+    /// at the index position. No conversion is performed, thus the property must 
+    /// be FdoDataType_Double or an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the double floating point value</returns>
+    virtual double GetDouble(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the 16-bit integer value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_Int16 or an exception
+    /// is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FdoInt16 value.</returns>
+    virtual FdoInt16 GetInt16(FdoInt32 /*index*/);
+
+    /// <summary>
+    /// Gets the 32-bit integer value of the specified property at the index position.
+    /// No conversion is performed, thus the property must be FdoDataType_Int32 or an exception
+    /// is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FdoInt32 value</returns>
+    virtual FdoInt32 GetInt32(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the 64-bit integer value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_Int64 or an exception
+    /// is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FdoInt64 value.</returns>
+    virtual FdoInt64 GetInt64(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the Single floating point value of the specified property at the index position.
+    /// No conversion is performed, thus the property must be FdoDataType_Single
+    /// or an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the single value</returns>
+    virtual float GetSingle(FdoInt32 /*index*/);
+
+    /// <summary>
+    /// Gets the string value of the specified property at the index position. 
+    /// No conversion is performed, thus the property must be FdoDataType_String or an exception
+    /// is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the string value</returns>
+    virtual FdoString* GetString(FdoInt32 index);
+
+    /// <summary>
+    /// Gets a LOBValue pointer at the index position. The LOB is fully read in and data available.
+    /// Because no conversion is performed, the property must be FdoDataType_BLOB or
+    /// FdoDataType_CLOB etc. (a LOB type)
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the pointer to LOBValue</returns>
+    virtual FdoLOBValue* GetLOB(FdoInt32 index);
+
+    /// <summary>
+    /// Gets a pointer of the specified LOB property at the index position as a FdoBLOBStreamReader or
+    /// FdoCLOBStreamReader etc. to allow reading in blocks of data.
+    /// Because no conversion is performed, the property must be FdoDataType_BLOB
+    /// or FdoDataType_CLOB etc. (a LOB type)
+    /// Cast the FdoIStreamReader to the appropriate LOB Stream Reader.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns a pointer to a LOB stream reader</returns>
+    virtual FdoIStreamReader* GetLOBStreamReader(FdoInt32 /*index*/);
+
+    /// <summary>
+    /// Returns true if the value of the specified property is null.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns true if the value is null.</returns>
+    virtual bool IsNull(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the geometry value of the specified property at the index position as a byte array in
+    /// FGF format. Because no conversion is performed, the property must be
+    /// of Geometric type; otherwise, an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the byte array in FGF format.</returns>
+    virtual FdoByteArray* GetGeometry(FdoInt32 index);
+
+    /// <summary>
+    /// Gets the geometry value of the specified property at the index position as a byte array in
+    /// FGF format. Because no conversion is performed, the property must be
+    /// of Geometric type; otherwise, an exception is thrown.
+    /// This method is a language-specific performance optimization that returns a
+    /// pointer to the array data, rather than to an object that encapsulates
+    /// the array.  The array's memory area is only guaranteed to be valid
+    /// until a call to ReadNext() or Close(), or the disposal of this reader
+    /// object.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <param name="count">Output the number of bytes in the array.</param>
+    /// <returns>Returns a pointer to the byte array in FGF format.</returns>
+    virtual const FdoByte* GetGeometry(FdoInt32 index, FdoInt32* count);
+
+    /// <summary>
+    /// Gets the raster object of the specified property at the index position.
+    /// Because no conversion is performed, the property must be
+    /// of Raster type; otherwise, an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the raster object.</returns>
+    virtual FdoIRaster* GetRaster(FdoInt32 /*index*/);
+
     /// <summary>Advances the reader to the next item and returns true if there is
     /// another object to read or false if reading is complete. The default
     /// position of the reader is prior to the first item. Thus you must
@@ -253,6 +407,18 @@ public:
     /// <returns>Returns nothing</returns> 
     virtual void Close ();
 
+    // Helper methods
+    FdoDateTime GetDateTimeHelper (ColumnDefinition* columnDef);
+    double GetDouble (ColumnDefinition* columnDef);
+    FdoInt16 GetInt16Helper (ColumnDefinition* columnDef);
+    FdoInt32 GetInt32Helper (ColumnDefinition* columnDef);
+    FdoInt64 GetInt64Helper (ColumnDefinition* columnDef);
+    float GetSingleHelper (ColumnDefinition* columnDef);
+    FdoString* GetStringHelper (ColumnDefinition* columnDef);
+    FdoLOBValue* GetLOBHelper(ColumnDefinition* columnDef);
+    FdoIStreamReader* GetLOBStreamReaderHelper(ColumnDefinition* columnDef );
+    bool IsNullHelper (ColumnDefinition* columnDef);
+    FdoByteArray* GetGeometryHelper (ColumnDefinition* columnDef);
 
     //
     // FdoISQLDataReader interface specific  (dummy implementation here; true implementations in ArcSDESQLDataReader)
@@ -267,11 +433,24 @@ public:
     /// <returns>Returns the column name</returns> 
     virtual FdoString* GetColumnName (FdoInt32 index) {return NULL;};
 
+    /// <summary>
+    /// Gets the index of the column with the specified name.
+    /// </summary>
+    /// <param name="columnName">Input the name of the column.</param>
+    /// <returns>Returns the column index</returns>
+    virtual FdoInt32 GetColumnIndex(FdoString* columnName) { return -1; }
+
     /// <summary>Gets the data type of the column with the specified name.</summary>
     /// <param name="columnName">Input the column name.</param> 
     /// <returns>Returns the type of the column.</returns> 
     virtual FdoDataType GetColumnType (FdoString* columnName) {return (FdoDataType)0;};
 
+    /// <summary>
+    /// Gets the data type of the column at the specified index.
+    /// </summary>
+    /// <param name="propertyName">Input the index of the property.</param>
+    /// <returns>Returns the type of the column.</returns>
+    virtual FdoDataType GetColumnType(FdoInt32 index) {return (FdoDataType)0;};
 
     //
     // FdoIFeatureReader interface specific  (dummy implementation here; true implementations in ArcSDEFeatureReader)
@@ -297,6 +476,14 @@ public:
     /// <returns>Returns the nested feature reader</returns> 
     virtual FdoIFeatureReader* GetFeatureObject (FdoString* propertyName) {return NULL;};
 
+    /// <summary>
+    /// Gets a reference to an FdoIFeatureReader to read the data contained in
+    /// the object or object collection property defined at the specified index 
+    /// position. If the property is not an object property, an exception is thrown.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the nested feature reader</returns>
+    FdoIFeatureReader* GetFeatureObject(FdoInt32 index) {return NULL;};
 
     //
     // FdoIDataReader interface specific  (dummy implementation here; true implementations in ArcSDEDataReader)
@@ -305,11 +492,6 @@ public:
     /// <summary>Gets the number of propertys in the result set.</summary>
     /// <returns>Returns the number of propertys.</returns> 
     virtual FdoInt32 GetPropertyCount() { return 0; };
-
-    /// <summary>Gets the name of the property at the given ordinal position.</summary>
-    /// <param name="index">Input the position of the property.</param> 
-    /// <returns>Returns the property name</returns> 
-    virtual FdoString* GetPropertyName(FdoInt32 index) { return L""; };
 
     /// <summary>Gets the data type of the property with the specified name.</summary>
     /// <param name="propertyName">Input the property name.</param> 
@@ -322,6 +504,23 @@ public:
     /// <param name="propertyName">Input the property name.</param> 
     /// <returns>Returns the FDO property type.</returns> 
     virtual FdoPropertyType GetPropertyType(FdoString* propertyName){ return (FdoPropertyType)0; };
+
+    /// <summary>
+    /// Gets the data type of the property at the specified index position.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the type of the property.</returns>
+    virtual FdoDataType GetDataType(FdoInt32 index) { return (FdoDataType)0; };
+
+    /// <summary>
+    /// Gets the FDO property type of the property at the given index. This is used
+    /// to indicate if a given property is a geometric property or a data property. 
+    /// If the property is a FdoPropertyType_DataProperty, then GetDataType 
+    /// can be used to to find the data type of the property.
+    /// </summary>
+    /// <param name="index">Input the index of the property.</param>
+    /// <returns>Returns the FDO property type.</returns>
+    virtual FdoPropertyType GetPropertyType(FdoInt32 index) { return (FdoPropertyType)0; };
 
 protected:
 	ArcSDEReader() {};

@@ -1320,6 +1320,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\ReaderTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ReaderTest.h"
+			>
+		</File>
+		<File
 			RelativePath=".\resource.h"
 			>
 		</File>

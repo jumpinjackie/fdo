@@ -57,7 +57,8 @@ SchemaMgrTests.cpp \
 SchemaOverrideUtil.cpp \
 SelectTests.cpp \
 XmlFormatter.cpp \
-UnitTestUtil.cpp
+UnitTestUtil.cpp \
+ReaderTest.cpp
 
 noinst_HEADERS = $(libCommonUnitTests_la_SOURCES) \
 ConnectionUtil.h \
@@ -95,7 +96,8 @@ SelectTests.h \
 StringPropertiesDictionary.h \
 UnitTestUtil.h \
 XmlFormatter.h \
-Pch.h
+Pch.h \
+ReaderTest.h
 
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \

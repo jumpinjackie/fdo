@@ -30,7 +30,7 @@
 #include "DataProperty.h"
 #include "GeometricProperty.h"
 #include "AssociationProperty.h"
-
+#include <assert.h>
 
 #include <iostream>
 using namespace std;
@@ -49,6 +49,8 @@ FdoXmlFeatureReaderImpl::FdoXmlFeatureReaderImpl(FdoXmlReader* reader, FdoXmlFea
 	m_featureReaderType = FeatureReaderType_Unknown;
 
     m_blobProperties = FdoXmlBLOBPropertyCollection::Create();
+
+    m_propertyNames = FdoStringCollection::Create();
 }
 
 FdoXmlFeatureReaderImpl::~FdoXmlFeatureReaderImpl()
@@ -272,6 +274,115 @@ FdoIRaster* FdoXmlFeatureReaderImpl::GetRaster(FdoString* propertyName)
 	return NULL;
 }
 
+FdoInt32 FdoXmlFeatureReaderImpl::GetPropertyIndex(FdoString* propertyName)
+{
+    return m_propertyNames->IndexOf(propertyName, false);
+}
+
+FdoString* FdoXmlFeatureReaderImpl::GetPropertyName(FdoInt32 index)
+{
+    assert(index < m_propertyNames->GetCount());
+
+    if (index < m_propertyNames->GetCount())
+        return m_propertyNames->GetString(index);
+    else
+        return L"";
+}
+
+const FdoByte * FdoXmlFeatureReaderImpl::GetGeometry(FdoInt32 index, FdoInt32 * count)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName, count);
+}
+
+FdoByteArray* FdoXmlFeatureReaderImpl::GetGeometry(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetGeometry(propertyName);
+}
+
+FdoIFeatureReader* FdoXmlFeatureReaderImpl::GetFeatureObject(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetFeatureObject(propertyName);
+}
+
+//FdoIReader overrides
+bool FdoXmlFeatureReaderImpl::GetBoolean(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetBoolean(propertyName);
+}
+
+FdoByte FdoXmlFeatureReaderImpl::GetByte(FdoInt32 index)
+{
+    return 0;
+}
+
+FdoDateTime FdoXmlFeatureReaderImpl::GetDateTime(FdoInt32 index)
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDateTime(propertyName);
+}
+
+double FdoXmlFeatureReaderImpl::GetDouble(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetDouble(propertyName);
+}
+
+FdoInt16 FdoXmlFeatureReaderImpl::GetInt16(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt16(propertyName);
+}
+
+FdoInt32 FdoXmlFeatureReaderImpl::GetInt32(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt32(propertyName);
+}
+
+FdoInt64 FdoXmlFeatureReaderImpl::GetInt64(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetInt64(propertyName);
+}
+
+float FdoXmlFeatureReaderImpl::GetSingle(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetSingle(propertyName);
+}
+
+FdoString* FdoXmlFeatureReaderImpl::GetString(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetString(propertyName);
+}
+
+FdoLOBValue* FdoXmlFeatureReaderImpl::GetLOB(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return GetLOB(propertyName);
+}
+
+FdoIStreamReader* FdoXmlFeatureReaderImpl::GetLOBStreamReader(FdoInt32 index) 
+{
+    return NULL;
+}
+
+bool FdoXmlFeatureReaderImpl::IsNull(FdoInt32 index) 
+{
+    FdoStringP propertyName = GetPropertyName(index);
+    return IsNull(propertyName);
+}
+
+FdoIRaster* FdoXmlFeatureReaderImpl::GetRaster(FdoInt32 index) 
+{
+    return NULL;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 ///FdoXmlFeatureHandler overrides
 /////////////////////////////////////////////////////////////////////////////////
@@ -312,7 +423,7 @@ FdoXmlFeatureHandler* FdoXmlFeatureReaderImpl::FeatureStart(FdoXmlFeatureContext
 		FdoXmlFeatureReaderImplP nestedHandler = FdoXmlFeatureReaderImpl::Create(NULL, NULL, m_depth + 1);
 		nestedHandler->m_featureReaderType = FeatureReaderType_Feature;
 
-		AddFeatureMember(nestedHandler);
+        AddFeatureMember(nestedHandler);
 
 		return nestedHandler;
 	}
@@ -540,6 +651,7 @@ void FdoXmlFeatureReaderImpl::AddDataProperty(FdoString* name, FdoString* value)
 	FdoXmlDataProperty* p = new FdoXmlDataProperty(name, value);
 	m_dataProperties.push_back(p);
 
+    m_propertyNames->Add(name);
 }
 
 void FdoXmlFeatureReaderImpl::AddGeometricProperty(FdoString* name, FdoXmlGeometry* geometry)
@@ -547,6 +659,7 @@ void FdoXmlFeatureReaderImpl::AddGeometricProperty(FdoString* name, FdoXmlGeomet
 	FdoXmlGeometricProperty* p = new FdoXmlGeometricProperty(name, geometry);
 	m_geometricProperties.push_back(p);
 
+    m_propertyNames->Add(name);
 }
 
 void FdoXmlFeatureReaderImpl::AddGeometricProperty(FdoString* name, FdoByteArray* fgfByteArray)
@@ -554,6 +667,7 @@ void FdoXmlFeatureReaderImpl::AddGeometricProperty(FdoString* name, FdoByteArray
 	FdoXmlGeometricProperty* p = new FdoXmlGeometricProperty(name, fgfByteArray);
 	m_geometricProperties.push_back(p);
 
+    m_propertyNames->Add(name);
 }
 
 void FdoXmlFeatureReaderImpl::AddAssociationProperty(FdoString* name, FdoXmlFeatureReaderImpl* feature)
@@ -561,6 +675,7 @@ void FdoXmlFeatureReaderImpl::AddAssociationProperty(FdoString* name, FdoXmlFeat
 	FdoXmlAssociationProperty* p = new FdoXmlAssociationProperty(name, feature);
 	m_associationProperties.push_back(p);
 
+    m_propertyNames->Add(name);
 }
 
 FdoString* FdoXmlFeatureReaderImpl::GetDataProperty(FdoString* name)

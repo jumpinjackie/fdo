@@ -142,6 +142,20 @@ FdoString* c_KgInfSQLDataReader::GetColumnName(FdoInt32 Index)
 }
 
 /// \brief
+/// Gets the index of the column with the given column name.
+/// 
+/// \param columnName 
+/// Input the column name.
+/// 
+/// \return
+/// Returns the column index
+/// 
+FdoInt32 c_KgInfSQLDataReader::GetColumnIndex(FdoString* columnName)
+{
+    return ColumnNameToColumnIndex(columnName);
+}
+
+/// \brief
 /// Gets the data type of the column with the specified name.
 /// 
 /// \param columnName 

@@ -105,14 +105,6 @@ FdoInt32 ArcSDEDataReader::GetPropertyCount()
     return mColumnCount;
 }
 
-/// <summary>Gets the name of the property at the given ordinal position.</summary>
-/// <param name="index">Input the position of the property.</param> 
-/// <returns>Returns the property name</returns> 
-FdoString* ArcSDEDataReader::GetPropertyName(FdoInt32 index)
-{
-    return ArcSDEReader::getColumnDef((int)index)->mPropertyName;
-}
-
 /// <summary>Gets the data type of the property with the specified name.</summary>
 /// <param name="propertyName">Input the property name.</param> 
 /// <returns>Returns the type of the property.</returns> 
@@ -128,6 +120,33 @@ FdoDataType ArcSDEDataReader::GetDataType(FdoString* propertyName)
 FdoPropertyType ArcSDEDataReader::GetPropertyType(FdoString* propertyName)
 {
     if (getColumnDef(propertyName)->mPropertyType == -1)
+        return FdoPropertyType_GeometricProperty;
+    else
+        return FdoPropertyType_DataProperty;
+}
+
+/// <summary>
+/// Gets the data type of the property at the specified index position.
+/// </summary>
+/// <param name="index">Input the index of the property.</param>
+/// <returns>Returns the type of the property.</returns>
+FdoDataType ArcSDEDataReader::GetDataType(FdoInt32 index)
+{
+    // NOTE: this value will be 'undefined' if the FDO property is not a Data property
+    return ArcSDEReader::getColumnDef(index)->mPropertyType;
+}
+
+/// <summary>
+/// Gets the FDO property type of the property at the given index. This is used
+/// to indicate if a given property is a geometric property or a data property. 
+/// If the property is a FdoPropertyType_DataProperty, then GetDataType 
+/// can be used to to find the data type of the property.
+/// </summary>
+/// <param name="index">Input the index of the property.</param>
+/// <returns>Returns the FDO property type.</returns>
+FdoPropertyType ArcSDEDataReader::GetPropertyType(FdoInt32 index)
+{
+    if (ArcSDEReader::getColumnDef(index)->mPropertyType == -1)
         return FdoPropertyType_GeometricProperty;
     else
         return FdoPropertyType_DataProperty;

@@ -1095,6 +1095,14 @@ FdoString* OgrDataReader::GetPropertyName(FdoInt32 index)
     return m_propnames[index].c_str();
 }
 
+FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
+{
+    W2A(propertyName);
+    if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
+
+    return m_poFeature->GetFieldIndex(mbpropertyName);
+}
+
 FdoDataType OgrDataReader::GetDataType(FdoString* propertyName)
 {
     W2A(propertyName);

@@ -39,7 +39,7 @@ c_KgOraDataReader::c_KgOraDataReader(c_KgOraConnection * Connection
                                     ,int GeomPropSqlIndex
                                     ,FdoStringCollection* SqlColumns
                                     ,FdoIdentifierCollection* Props)
- : c_KgOraReader<FdoIDataReader>(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
+ : superclass(Connection,OcciStatement ,GeomPropSqlIndex, SqlColumns)
 {
 
   m_ClassDef = ClassDef;
@@ -68,11 +68,6 @@ void c_KgOraDataReader::Dispose()
 FdoInt32 c_KgOraDataReader::GetPropertyCount()
 {
   return m_OciStatement->GetColumnsSize(); //m_MetaData.size();
-}
-
-FdoString* c_KgOraDataReader::GetPropertyName( FdoInt32 Index )
-{
-  return m_OciStatement->GetColumnName(Index+1);
 }
 
 FdoDataType c_KgOraDataReader::GetDataType( FdoString* PropertyName )

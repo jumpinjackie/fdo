@@ -18,7 +18,7 @@
 #define FDOPOSTGIS_FEATUREREADER_H_INCLUDED
 
 #include "Reader.h"
-
+#include "FdoDefaultFeatureReader.h"
 //
 // Forward declarations
 //
@@ -34,7 +34,7 @@ class PgCursor;
 /// feature data.
 /// This reader works against PostGIS datastore.
 ///
-class FeatureReader : public Reader<FdoIFeatureReader>
+class FeatureReader : public Reader<FdoDefaultFeatureReader>
 {
 public:
 
@@ -85,7 +85,7 @@ private:
     // Private data members
     //
 
-    typedef Reader<FdoIFeatureReader> Base;
+    typedef Reader<FdoDefaultFeatureReader> Base;
 	
     FdoPtr<FdoClassDefinition> mClassDef;
     
