@@ -23,7 +23,7 @@
 #define DBG(x)		//x
 #define DBG_MAX(x)		//x
 
-#define UNIT_TEST_DB_DESCRIPTION	L"Fdo datastore test"
+#define UNIT_TEST_DB_DESCRIPTION	L"Fdo's datastore test"
 #define UNIT_TEST_DB_PASSWORD		L"test"
 #define UNIT_TEST_DB_TABLESPACE		L"SYSTEM"
 
