@@ -30,7 +30,7 @@ public:
     /// \return
     /// Returns the Boolean value.
     /// 
-    FDO_API virtual bool FdoIReader::GetBoolean(FdoString* propertyName) = 0;
+    FDO_API virtual bool GetBoolean(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the byte value of the specified property. No conversion is 
@@ -43,7 +43,7 @@ public:
     /// \return
     /// Returns the byte value.
     /// 
-    FDO_API virtual FdoByte FdoIReader::GetByte(FdoString* propertyName) = 0;
+    FDO_API virtual FdoByte GetByte(FdoString* propertyName) = 0;
 
     /// \brief
     ///  Gets the date and time value of the specified property. No conversion is 
@@ -56,7 +56,7 @@ public:
     /// \return
     /// Returns the date and time value.
     /// 
-    FDO_API virtual FdoDateTime FdoIReader::GetDateTime(FdoString* propertyName) = 0;
+    FDO_API virtual FdoDateTime GetDateTime(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the double-precision floating point value of the specified property. No
@@ -69,7 +69,7 @@ public:
     /// \return
     /// Returns the double floating point value
     /// 
-    FDO_API virtual double FdoIReader::GetDouble(FdoString* propertyName) = 0;
+    FDO_API virtual double GetDouble(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the 16-bit integer value of the specified property. No conversion is
@@ -82,7 +82,7 @@ public:
     /// \return
     /// Returns the FdoInt16 value.
     /// 
-    FDO_API virtual FdoInt16 FdoIReader::GetInt16(FdoString* propertyName) = 0;
+    FDO_API virtual FdoInt16 GetInt16(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the 32-bit integer value of the specified property. No conversion is
@@ -95,7 +95,7 @@ public:
     /// \return
     /// Returns the FdoInt32 value
     /// 
-    FDO_API virtual FdoInt32 FdoIReader::GetInt32(FdoString* propertyName) = 0;
+    FDO_API virtual FdoInt32 GetInt32(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the 64-bit integer value of the specified property. No conversion is
@@ -108,7 +108,7 @@ public:
     /// \return
     /// Returns the FdoInt64 value.
     /// 
-    FDO_API virtual FdoInt64 FdoIReader::GetInt64(FdoString* propertyName) = 0;
+    FDO_API virtual FdoInt64 GetInt64(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the Single floating point value of the specified property. No
@@ -121,7 +121,7 @@ public:
     /// \return
     /// Returns the single value
     /// 
-    FDO_API virtual float FdoIReader::GetSingle(FdoString* propertyName) = 0;
+    FDO_API virtual float GetSingle(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the string value of the specified property. No conversion is
@@ -134,7 +134,7 @@ public:
     /// \return
     /// Returns the string value
     /// 
-    FDO_API virtual FdoString* FdoIReader::GetString(FdoString* propertyName) = 0;
+    FDO_API virtual FdoString* GetString(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
@@ -147,7 +147,7 @@ public:
     /// \return
     /// Returns the reference to LOBValue
     /// 
-    FDO_API virtual FdoLOBValue* FdoIReader::GetLOB(FdoString* propertyName) = 0;
+    FDO_API virtual FdoLOBValue* GetLOB(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
@@ -162,7 +162,7 @@ public:
     /// \return
     /// Returns a reference to a LOB stream reader
     /// 
-    FDO_API virtual FdoIStreamReader* FdoIReader::GetLOBStreamReader(const wchar_t* propertyName ) = 0;
+    FDO_API virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName ) = 0;
 
     /// \brief
     /// Returns true if the value of the specified property is null.
@@ -173,7 +173,7 @@ public:
     /// \return
     /// Returns true if the value is null.
     /// 
-    FDO_API virtual bool FdoIReader::IsNull(FdoString* propertyName) = 0;
+    FDO_API virtual bool IsNull(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array in 
@@ -186,7 +186,7 @@ public:
     /// \return
     /// Returns the byte array in FGF format.
     /// 
-    FDO_API virtual FdoByteArray* FdoIReader::GetGeometry(FdoString* propertyName) = 0;
+    FDO_API virtual FdoByteArray* GetGeometry(FdoString* propertyName) = 0;
 
 
     /// \brief
@@ -200,7 +200,7 @@ public:
     /// \return
     /// Returns the raster object.
     /// 
-    FDO_API virtual FdoIRaster* FdoIReader::GetRaster(FdoString* propertyName) = 0;
+    FDO_API virtual FdoIRaster* GetRaster(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the data type of the property with the specified name.

@@ -29,95 +29,95 @@ FdoDefaultDataReader::~FdoDefaultDataReader()
 FdoDataType FdoDefaultDataReader::GetDataType(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetDataType(propertyName);
+    return GetDataType((FdoString*)propertyName);
 }
 
 FdoPropertyType FdoDefaultDataReader::GetPropertyType(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetPropertyType(propertyName);
+    return GetPropertyType((FdoString*)propertyName);
 }
 
 FdoBoolean FdoDefaultDataReader::IsNull(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return IsNull(propertyName);
+    return IsNull((FdoString*)propertyName);
 }
 
 FdoBoolean FdoDefaultDataReader::GetBoolean(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetBoolean(propertyName);
+    return GetBoolean((FdoString*)propertyName);
 }
 
 FdoByte FdoDefaultDataReader::GetByte(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetByte(propertyName);
+    return GetByte((FdoString*)propertyName);
 }
 
 FdoDateTime FdoDefaultDataReader::GetDateTime(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetDateTime(propertyName);
+    return GetDateTime((FdoString*)propertyName);
 }
 
 FdoDouble FdoDefaultDataReader::GetDouble(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetDouble(propertyName);
+    return GetDouble((FdoString*)propertyName);
 }
 
 FdoInt16 FdoDefaultDataReader::GetInt16(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetInt16(propertyName);
+    return GetInt16((FdoString*)propertyName);
 }
 
 FdoInt32 FdoDefaultDataReader::GetInt32(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetInt32(propertyName);
+    return GetInt32((FdoString*)propertyName);
 }
 
 FdoInt64 FdoDefaultDataReader::GetInt64(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetInt64(propertyName);
+    return GetInt64((FdoString*)propertyName);
 }
 
 FdoFloat FdoDefaultDataReader::GetSingle(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetSingle(propertyName);
+    return GetSingle((FdoString*)propertyName);
 }
 
 FdoString* FdoDefaultDataReader::GetString(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetString(propertyName);
+    return GetString((FdoString*)propertyName);
 }
 
 FdoLOBValue* FdoDefaultDataReader::GetLOB(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetLOB(propertyName);
+    return GetLOB((FdoString*)propertyName);
 }
 
 FdoIStreamReader* FdoDefaultDataReader::GetLOBStreamReader(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetLOBStreamReader(propertyName);
+    return GetLOBStreamReader((FdoString*)propertyName);
 }
 
 FdoByteArray* FdoDefaultDataReader::GetGeometry(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetGeometry(propertyName);
+    return GetGeometry((FdoString*)propertyName);
 }
 
 FdoIRaster* FdoDefaultDataReader::GetRaster(FdoInt32 index)
 {
     FdoStringP propertyName = GetPropertyName(index);
-    return GetRaster(propertyName);
+    return GetRaster((FdoString*)propertyName);
 }

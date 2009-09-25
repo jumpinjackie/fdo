@@ -28,7 +28,7 @@ public:
     /// \return
     /// Returns the type of the column.
     /// 
-    virtual FdoDataType FdoISQLDataReader::GetColumnType(FdoString* columnName) = 0;
+    virtual FdoDataType GetColumnType(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the FDO property type of the column with the specified name. This is used
@@ -41,7 +41,7 @@ public:
     /// \return
     /// Returns the FDO property type of the column.
     /// 
-    virtual FdoPropertyType FdoISQLDataReader::GetPropertyType(FdoString* columnName) = 0;
+    virtual FdoPropertyType GetPropertyType(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the Boolean value of the specified column. No conversion is
@@ -54,7 +54,7 @@ public:
     /// \return
     /// Returns the Boolean value
     /// 
-    virtual bool FdoISQLDataReader::GetBoolean(FdoString* columnName) = 0;
+    virtual bool GetBoolean(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the byte value of the specified column. No conversion is
@@ -67,7 +67,7 @@ public:
     /// \return
     /// Returns the byte value.
     /// 
-    virtual FdoByte FdoISQLDataReader::GetByte(FdoString* columnName) = 0;
+    virtual FdoByte GetByte(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the date time value of the specified column. No conversion
@@ -80,7 +80,7 @@ public:
     /// \return
     /// Returns the date and time value.
     /// 
-    virtual FdoDateTime FdoISQLDataReader::GetDateTime(FdoString* columnName) = 0;
+    virtual FdoDateTime GetDateTime(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the double-precision floating point value of the specified column.
@@ -93,7 +93,7 @@ public:
     /// \return
     /// Returns the double value.
     /// 
-    virtual double FdoISQLDataReader::GetDouble(FdoString* columnName) = 0;
+    virtual double GetDouble(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the signed 16-bit integer value of the specified column. No conversion is
@@ -106,7 +106,7 @@ public:
     /// \return
     /// Returns the FdoInt16 value.
     /// 
-    virtual FdoInt16 FdoISQLDataReader::GetInt16(FdoString* columnName) = 0;
+    virtual FdoInt16 GetInt16(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the signed 32-bit integer value of the specified column. No conversion is
@@ -119,7 +119,7 @@ public:
     /// \return
     /// Returns the FdoInt32 value.
     /// 
-    virtual FdoInt32 FdoISQLDataReader::GetInt32(FdoString* columnName) = 0;
+    virtual FdoInt32 GetInt32(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the signed 64-bit integer value of the specified column. No conversion
@@ -132,7 +132,7 @@ public:
     /// \return
     /// Returns the FdoInt64 value.
     /// 
-    virtual FdoInt64 FdoISQLDataReader::GetInt64(FdoString* columnName) = 0;
+    virtual FdoInt64 GetInt64(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the single-precision floating point value of the specified column.
@@ -145,7 +145,7 @@ public:
     /// \return
     /// Returns the single value
     /// 
-    virtual float FdoISQLDataReader::GetSingle(FdoString* columnName) = 0;
+    virtual float GetSingle(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the string value of the specified column. No conversion is
@@ -158,7 +158,7 @@ public:
     /// \return
     /// Returns the string value.
     /// 
-    virtual FdoString* FdoISQLDataReader::GetString(FdoString* columnName) = 0;
+    virtual FdoString* GetString(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets a LOBValue reference. The LOB is fully read in and data available.
@@ -171,7 +171,7 @@ public:
     /// \return
     /// Returns the reference to LOBValue
     /// 
-    virtual FdoLOBValue* FdoISQLDataReader::GetLOB(FdoString* propertyName) = 0;
+    virtual FdoLOBValue* GetLOB(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
@@ -186,7 +186,7 @@ public:
     /// \return
     /// Returns a reference to a LOB stream reader
     /// 
-    virtual FdoIStreamReader* FdoISQLDataReader::GetLOBStreamReader(const wchar_t* propertyName ) = 0;
+    virtual FdoIStreamReader* GetLOBStreamReader(const wchar_t* propertyName ) = 0;
 
     /// \brief
     /// Returns true if the value of the specified column is null.
@@ -197,7 +197,7 @@ public:
     /// \return
     /// Returns true if the value is null.
     /// 
-    virtual bool FdoISQLDataReader::IsNull(FdoString* columnName) = 0;
+    virtual bool IsNull(FdoString* columnName) = 0;
 
     /// \brief
     /// Gets the geometry value of the specified column as a byte array
@@ -210,7 +210,7 @@ public:
     /// \return
     /// Returns the FGF byte array value.
     /// 
-    virtual FdoByteArray* FdoISQLDataReader::GetGeometry(FdoString* columnName) = 0;
+    virtual FdoByteArray* GetGeometry(FdoString* columnName) = 0;
 
 
     /// \brief

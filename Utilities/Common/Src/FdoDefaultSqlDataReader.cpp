@@ -29,89 +29,89 @@ FdoDefaultSqlDataReader::~FdoDefaultSqlDataReader()
 FdoBoolean FdoDefaultSqlDataReader::IsNull(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return IsNull(columnName);
+    return IsNull((FdoString*)columnName);
 }
 
 FdoDataType FdoDefaultSqlDataReader::GetColumnType(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetColumnType(columnName);
+    return GetColumnType((FdoString*)columnName);
 }
 
 FdoPropertyType FdoDefaultSqlDataReader::GetPropertyType(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetPropertyType(columnName);
+    return GetPropertyType((FdoString*)columnName);
 }
 
 FdoBoolean FdoDefaultSqlDataReader::GetBoolean(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetBoolean(columnName);
+    return GetBoolean((FdoString*)columnName);
 }
 
 FdoByte FdoDefaultSqlDataReader::GetByte(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetByte(columnName);
+    return GetByte((FdoString*)columnName);
 }
 
 FdoDateTime FdoDefaultSqlDataReader::GetDateTime(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetDateTime(columnName);
+    return GetDateTime((FdoString*)columnName);
 }
 
 FdoDouble FdoDefaultSqlDataReader::GetDouble(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetDouble(columnName);
+    return GetDouble((FdoString*)columnName);
 }
 
 FdoInt16 FdoDefaultSqlDataReader::GetInt16(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetInt16(columnName);
+    return GetInt16((FdoString*)columnName);
 }
 
 FdoInt32 FdoDefaultSqlDataReader::GetInt32(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetInt32(columnName);
+    return GetInt32((FdoString*)columnName);
 }
 
 FdoInt64 FdoDefaultSqlDataReader::GetInt64(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetInt64(columnName);
+    return GetInt64((FdoString*)columnName);
 }
 
 FdoFloat FdoDefaultSqlDataReader::GetSingle(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetSingle(columnName);
+    return GetSingle((FdoString*)columnName);
 }
 
 FdoString* FdoDefaultSqlDataReader::GetString(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetString(columnName);
+    return GetString((FdoString*)columnName);
 }
 
 FdoLOBValue* FdoDefaultSqlDataReader::GetLOB(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetLOB(columnName);
+    return GetLOB((FdoString*)columnName);
 }
 
 FdoIStreamReader* FdoDefaultSqlDataReader::GetLOBStreamReader(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetLOBStreamReader(columnName);
+    return GetLOBStreamReader((FdoString*)columnName);
 }
 
 FdoByteArray* FdoDefaultSqlDataReader::GetGeometry(FdoInt32 index)
 {
     FdoStringP columnName = GetColumnName(index);
-    return GetGeometry(columnName);
+    return GetGeometry((FdoString*)columnName);
 }
