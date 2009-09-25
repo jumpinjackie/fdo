@@ -60,6 +60,10 @@ public:
         delete m_ids;
         m_ids = NULL;
     }
+    virtual bool IsSimpleChunk()
+    {
+        return true;
+    }
     StlSpatialTypeOperation GetOperation()
     {
         return m_operation;
@@ -101,6 +105,10 @@ public:
     void AddToList(FilterChunk* val)
     {
         m_list.push_back(val);
+    }
+    virtual bool IsSimpleChunk()
+    {
+        return false;
     }
     void ReplaceContent(FilterChunk* val)
     {
@@ -189,7 +197,7 @@ private:
 private:
     
     FilterChunkList             m_evalStack;
-    // this chunk needs to be restore in case we find out we cannot use fast stepping
+    // this chunk needs to be restore in case we cannot optimize filter
     ComplexFilterChunk*         m_fastSteppingChunk;
     // this restoring value will be set for m_fastSteppingChunk
     FilterChunk*                m_restoreValue;
