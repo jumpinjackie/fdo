@@ -160,11 +160,22 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
             // in case we can omit one of the expessions L/R this chunk will be used to 
             // restore the full expression in case is needed, otherwise will be used as an expression
             ComplexFilterChunk* useChunk = CreateComplexFilterChunk(StlSpatialTypeOperation_And);
-            useChunk->AddToList(CreateFilterChunk("(", 1));
+            if (!lefts->IsSimpleChunk())
+                useChunk->AddToList(CreateFilterChunk("(", 1));
             useChunk->AddToList(lefts);
-            useChunk->AddToList(CreateFilterChunk(") AND (", 7));
-            useChunk->AddToList(rights);
-            useChunk->AddToList(CreateFilterChunk(")", 1));
+            std::string valChunk((!lefts->IsSimpleChunk()) ? ") AND " : " AND ");
+            if (!rights->IsSimpleChunk())
+            {
+                valChunk.append("(", 1);
+                useChunk->AddToList(CreateFilterChunk(valChunk.c_str(), valChunk.size()));
+                useChunk->AddToList(rights);
+                useChunk->AddToList(CreateFilterChunk(")", 1));
+            }
+            else
+            {
+                useChunk->AddToList(CreateFilterChunk(valChunk.c_str(), valChunk.size()));
+                useChunk->AddToList(rights);
+            }
 
             if (lefts->m_canOmit || rights->m_canOmit)
             {
@@ -197,6 +208,13 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                         useExpression = 2; // use right
                     else
                         useExpression = 1; // use left
+                }
+                else if (leftLen == 0 && rightLen == 0)
+                {
+                    // rare case: e.g. (ID=5 OR ID=6) AND ID=7
+                    // just keep the filter and SQLite will return empty result
+                    useExpression = 0;
+                    Reset();
                 }
                 if (useExpression != 0)
                 {
@@ -239,11 +257,9 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
         {
             // OR operations cannot omit, can only use the bounds
             ComplexFilterChunk* rVal = CreateComplexFilterChunk(StlSpatialTypeOperation_Or);
-            rVal->AddToList(CreateFilterChunk("(", 1));
             rVal->AddToList(lefts);
-            rVal->AddToList(CreateFilterChunk(") OR (", 6));
+            rVal->AddToList(CreateFilterChunk(" OR ", 4));
             rVal->AddToList(rights);
-            rVal->AddToList(CreateFilterChunk(")", 1));
             ret = rVal;
 
             if (lefts->GetOperation() == StlSpatialTypeOperation_None
@@ -259,6 +275,8 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                 DBounds::Union(&ret->m_bounds, &lefts->m_bounds, &rights->m_bounds);
             }
             ret->m_ids = recno_list_union(lefts->m_ids, rights->m_ids);
+            if (lefts->m_canOmit && rights->m_canOmit)
+                ret->m_canOmit = true;
             lefts->m_ids = rights->m_ids = NULL;
         }
         break;
@@ -899,7 +917,7 @@ const char* SltQueryTranslator::GetFilter()
     //is it just a BBOX query -- then 
     //it will be fully handled by the 
     //spatial index
-    if (m_evalStack.size() == 0 || (m_canUseFastStepping && m_evalStack[0]->m_canOmit))
+    if (m_evalStack.size() == 0 || m_evalStack[0]->m_canOmit)
         return "";
 
     return m_evalStack[0]->ToString();
@@ -907,7 +925,10 @@ const char* SltQueryTranslator::GetFilter()
 
 bool SltQueryTranslator::MustKeepFilterAlive()
 {
-    return (m_geomCount - (int)(m_fastSteppingChunk!=NULL)) > 0;
+    int cnt = (m_geomCount - (int)(m_fastSteppingChunk!=NULL));
+    if (cnt == 0)
+        return false;
+    return (cnt > 1 || !(cnt == 1 && (m_evalStack.size() == 0 || m_evalStack[0]->m_canOmit)));
 }
 
 bool SltQueryTranslator::CanUseFastStepping()
@@ -920,7 +941,7 @@ bool SltQueryTranslator::CanUseFastStepping()
     //stepping for any filter that is not just a BBOX filter.
     //return m_canUseFastStepping;
 
-    return (m_evalStack.size() == 0 || (m_canUseFastStepping && m_evalStack[0]->m_canOmit));
+    return (m_evalStack.size() == 0 || m_canUseFastStepping || m_evalStack[0]->m_canOmit);
 }
 
 void SltQueryTranslator::Reset()
