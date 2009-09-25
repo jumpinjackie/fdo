@@ -211,7 +211,7 @@ public:
     /// \return
     /// Returns the type of the property.
     /// 
-    FDO_API virtual FdoDataType FdoIDataReader::GetDataType(FdoString* propertyName) = 0;
+    FDO_API virtual FdoDataType GetDataType(FdoString* propertyName) = 0;
 
     /// \brief
     /// Gets the FDO property type of a given property. This is used
@@ -224,7 +224,7 @@ public:
     /// \return
     /// Returns the FDO property type.
     /// 
-    FDO_API virtual FdoPropertyType FdoIDataReader::GetPropertyType(FdoString* propertyName) = 0;
+    FDO_API virtual FdoPropertyType GetPropertyType(FdoString* propertyName) = 0;
 
 
     /// \brief
