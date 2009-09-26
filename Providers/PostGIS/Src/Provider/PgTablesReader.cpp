@@ -156,7 +156,7 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
     columns_t columns;
 
     if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached);
+      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached.c_str());
       return columns;
     }
 /* 2008/02
@@ -322,7 +322,7 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     assert(!mCurrentSchema.empty() && !mTableCached.empty());
 
     if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached );
+      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached.c_str() );
       FdoPtr<FdoEnvelopeImpl> extent;
       FDO_SAFE_ADDREF(extent.p);
       return extent.p;
@@ -407,7 +407,7 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::SelectColumnExtent(
     assert(!mCurrentSchema.empty() && !mTableCached.empty());
 
     if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached );
+      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached.c_str() );
       FdoPtr<FdoEnvelopeImpl> extent;
       FDO_SAFE_ADDREF(extent.p);
       return extent.p;
