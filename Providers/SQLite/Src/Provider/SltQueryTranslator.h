@@ -23,106 +23,168 @@
 
 typedef std::vector<__int64> recno_list;
 
-enum StlSpatialTypeOperation
+enum StlFilterType
 {
-    StlSpatialTypeOperation_None,
-    StlSpatialTypeOperation_And,
-    StlSpatialTypeOperation_Or
+    StlFilterType_None,
+    StlFilterType_List,
+    StlFilterType_Spatial
 };
 
-class FilterChunk
+class IFilterChunk
 {
 protected:
-    StringBuffer m_content;
-    StlSpatialTypeOperation m_operation;
+    StringBuffer* m_content;
 public:
-    DBounds      m_bounds;
     bool         m_canOmit;
-    recno_list* m_ids;
-public:
-    FilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
-        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    IFilterChunk() : m_canOmit(false)
     {
-        
+        m_content = new StringBuffer(20);
     }
-    FilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
-        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    IFilterChunk(const char* str, size_t len) : m_canOmit(false)
     {
-        m_content.Append(str, len);
+        m_content = new StringBuffer(len);
+        m_content->Append(str, len);
     }
-    FilterChunk(const wchar_t* str, StlSpatialTypeOperation op = StlSpatialTypeOperation_None)
-        : m_ids(NULL), m_operation(op), m_canOmit(false)
+    IFilterChunk(const wchar_t* str) : m_canOmit(false)
     {
-        m_content.Append(str);
+        m_content = new StringBuffer(20);
+        m_content->Append(str);
     }
-    virtual ~FilterChunk()
+    virtual ~IFilterChunk()
     {
-        delete m_ids;
-        m_ids = NULL;
+        delete m_content;
+        m_content = NULL;
     }
-    virtual bool IsSimpleChunk()
+    virtual inline recno_list* GetList()
     {
-        return true;
+        return NULL;
     }
-    StlSpatialTypeOperation GetOperation()
+    virtual inline DBounds* GetBounds()
     {
-        return m_operation;
+        return NULL;
     }
-    void SetOperation(StlSpatialTypeOperation op)
+    virtual inline recno_list* DetachIDList()
     {
-        m_operation = op;
+        return NULL;
     }
+    virtual inline StlFilterType GetType()
+    {
+        return StlFilterType_None;
+    }
+    virtual void ResetType()
+    {}
     virtual void SetString(const wchar_t* str)
     {
-        m_content.Reset();
-        m_content.Append(str);
+        m_content->Reset();
+        m_content->Append(str);
     }
     virtual void SetString(const char* str)
     {
-        m_content.Reset();
-        m_content.Append(str);
+        m_content->Reset();
+        m_content->Append(str);
     }
     virtual const char* ToString()
     {
-        return m_content.Data();
+        return m_content->Data();
     }
 };
 
-typedef std::vector<FilterChunk*> FilterChunkList;
+class FilterChunk : public IFilterChunk
+{
+protected:
+    StlFilterType m_type;
+public:
+    union
+    {
+        DBounds*    m_bounds;
+        recno_list* m_ids;
+    };
+public:
+    FilterChunk(StlFilterType type = StlFilterType_None)
+        : m_ids(NULL), m_type(type)
+    {
+    }
+    FilterChunk(const char* str, size_t len, StlFilterType type = StlFilterType_None)
+        : IFilterChunk(str, len), m_ids(NULL), m_type(type)
+    {
+    }
+    FilterChunk(const wchar_t* str, StlFilterType type = StlFilterType_None)
+        : IFilterChunk(str), m_ids(NULL), m_type(type)
+    {
+    }
+    virtual ~FilterChunk()
+    {
+        if (m_type == StlFilterType_Spatial)
+            delete m_bounds;
+        else
+            delete m_ids;
+        m_ids = NULL;
+    }
+    virtual inline recno_list* GetList()
+    {
+        return (m_type == StlFilterType_List) ? m_ids : NULL;
+    }
+    virtual inline DBounds* GetBounds()
+    {
+        return (m_type == StlFilterType_Spatial) ? m_bounds : NULL;
+    }
+    virtual inline recno_list* DetachIDList()
+    {
+        recno_list* lst = NULL;
+        if(m_type == StlFilterType_List)
+        {
+            lst = m_ids;
+            m_ids = NULL;
+            m_type = StlFilterType_None;
+        }
+        return lst;
+    }
+    virtual inline StlFilterType GetType()
+    {
+        return m_type;
+    }
+    virtual void ResetType()
+    {
+        if (m_type == StlFilterType_Spatial)
+            delete m_bounds;
+        else
+            delete m_ids;
+        m_ids = NULL;
+        m_type = StlFilterType_None;
+    }
+};
+
+typedef std::vector<IFilterChunk*> FilterChunkList;
 
 class ComplexFilterChunk : public FilterChunk
 {
 private:
     FilterChunkList m_list;
 public:
-    ComplexFilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None) : FilterChunk(op)
+    ComplexFilterChunk(StlFilterType type = StlFilterType_None) : FilterChunk(type)
     {
     }
     virtual ~ComplexFilterChunk()
     {
         // m_list will be release by the caller
     }
-    void AddToList(FilterChunk* val)
+    void AddToList(IFilterChunk* val)
     {
         m_list.push_back(val);
     }
-    virtual bool IsSimpleChunk()
-    {
-        return false;
-    }
-    void ReplaceContent(FilterChunk* val)
+    void ReplaceContent(IFilterChunk* val)
     {
         m_list.clear();
         m_list.push_back(val);
     }
     virtual const char* ToString()
     {
-        m_content.Reset();
+        m_content->Reset();
         for (FilterChunkList::iterator idx = m_list.begin(); idx < m_list.end(); idx++)
         {
-            m_content.Append((*idx)->ToString());
+            m_content->Append((*idx)->ToString());
         }
-        return m_content.Data();
+        return m_content->Data();
     }
 };
 
@@ -190,20 +252,22 @@ public:
     bool MustKeepFilterAlive();
 
 private:
-    FilterChunk* CreateFilterChunk(const char* str, size_t len, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
-    FilterChunk* CreateFilterChunk(const wchar_t* str, StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
-    ComplexFilterChunk* CreateComplexFilterChunk(StlSpatialTypeOperation op = StlSpatialTypeOperation_None);
+    IFilterChunk* CreateBaseFilterChunk(const char* str, size_t len);
+    IFilterChunk* CreateBaseFilterChunk(const wchar_t* str);
+    FilterChunk* CreateFilterChunk(const char* str, size_t len, StlFilterType type = StlFilterType_None);
+    FilterChunk* CreateFilterChunk(const wchar_t* str, StlFilterType type = StlFilterType_None);
+    ComplexFilterChunk* CreateComplexFilterChunk(StlFilterType type = StlFilterType_None);
 
 private:
     
     FilterChunkList             m_evalStack;
     // this chunk needs to be restore in case we cannot optimize filter
-    ComplexFilterChunk*         m_fastSteppingChunk;
-    // this restoring value will be set for m_fastSteppingChunk
-    FilterChunk*                m_restoreValue;
-    // resulting bounding box in case we can reduce the query area
-    DBounds                     m_bounds;
-    bool                        m_canUseFastStepping;
+    // or we find a better chunk
+    ComplexFilterChunk*         m_optimizedChunk;
+    // in case we need to replace m_optimizedChunk this value will be restored with
+    IFilterChunk*                m_restoreChunk;
+    // will tell us in case we have conditions against text properties or spatial filters
+    int                        m_strgeomOperations;
     FdoClassDefinition*         m_fc;
     short                       m_geomCount;
 
