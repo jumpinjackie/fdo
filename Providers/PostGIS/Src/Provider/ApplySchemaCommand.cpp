@@ -97,7 +97,7 @@ ov::ClassDefinition* ApplySchemaCommand::GetClassDefinition(FdoStringP className
     {
         // XXX - mloskot: Is this enough diagnostic to kill the exception
         //       and return NULL here ?
-        FDOLOG_WRITE(L"ERROR: Describe operation for '%s' failed. %s"
+        FDOLOG_WRITE(L"ERROR: Describe operation for '%ls' failed. %ls"
             , static_cast<FdoString*>(className)
             , e->ToString());
 
@@ -140,7 +140,7 @@ void ApplySchemaCommand::Execute()
                     FdoStringP msg = FdoStringP::Format(
                         L"[PostGIS] ApplySchemaCommand: Add class error! class '%s' already exist!",
                         classDef->GetName());
-                    FDOLOG_WRITE("ERROR: %s", static_cast<FdoString*>(msg));
+                    FDOLOG_WRITE("ERROR: %ls", static_cast<FdoString*>(msg));
                     throw FdoCommandException::Create(msg);
                 }
                 break;
@@ -153,7 +153,7 @@ void ApplySchemaCommand::Execute()
                     FdoStringP msg = FdoStringP::Format(
                         L"[PostGIS] ApplySchemaCommand: Delete class '%s' error! table in not empty!",
                         classDef->GetName());
-                    FDOLOG_WRITE("ERROR: %s", static_cast<FdoString*>(msg));
+                    FDOLOG_WRITE("ERROR: %ls", static_cast<FdoString*>(msg));
                     throw FdoCommandException::Create(msg);
                 }
                 break;
@@ -191,7 +191,7 @@ void ApplySchemaCommand::Execute()
             if (FdoSchemaElementState_Unchanged != classDef->GetElementState())
             {
                 std::string tableName(static_cast<char const*>(FdoStringP(classDef->GetName()).Lower()));
-                FDOLOG_WRITE("Error of ClassDefinition State of '%s'", tableName);
+                FDOLOG_WRITE("Error of ClassDefinition State of '%s'", tableName.c_str());
             }
         }
     }
@@ -467,7 +467,7 @@ void ApplySchemaCommand::AddGeometryColumn(std::string const& table,
         } 
         else 
         { 
-            FDOLOG_WRITE("ERROR: invalid SpatialContextAssociation %s, should be PostGIS_srid or srid", scName); 
+            FDOLOG_WRITE("ERROR: invalid SpatialContextAssociation %ls, should be PostGIS_srid or srid", static_cast<FdoString*>(scName)); 
         } 
     } 
 
@@ -572,7 +572,7 @@ void ApplySchemaCommand::DropTable(FdoPtr<FdoClassDefinition> classDef) const
         FdoStringP msg = FdoStringP::Format(
             L"[PostGIS] ApplySchemaCommand: Delete class '%s' error! ClassDefinition not fount!",
             classDef->GetName());
-        FDOLOG_WRITE("ERROR: %s", static_cast<FdoString*>(msg));
+        FDOLOG_WRITE("ERROR: %ls", static_cast<FdoString*>(msg));
         throw FdoCommandException::Create(msg);
     }
     
