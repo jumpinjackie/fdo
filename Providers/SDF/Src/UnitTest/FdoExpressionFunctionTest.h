@@ -58,6 +58,8 @@ class FdoExpressionFunctionTest : public TestCommonExpressionFunctionW
     // ====         OPTIMIZER TEST          ====
     // =========================================
     CPPUNIT_TEST(RunOptimizerTest);
+    // test Optimizer from EE
+    CPPUNIT_TEST(RunOptimizerTest2);
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -67,6 +69,7 @@ public:
 
 protected:
 
+    void RunOptimizerTest2();
     //  Connect:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
