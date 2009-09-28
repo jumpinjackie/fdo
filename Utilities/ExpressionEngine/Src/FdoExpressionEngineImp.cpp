@@ -3346,18 +3346,26 @@ void FdoExpressionEngineImp::ValidateFilter( FdoClassDefinition *cls, FdoFilter 
 
 FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 {
-	// This is mostly a place holder for potential filter optimization
+    enum OptFilterType
+    {
+        OptFilterType_ComCond,
+        OptFilterType_DistCond,
+        OptFilterType_InCond,
+        OptFilterType_NullCond,
+        OptFilterType_SpaCond,
+        OptFilterType_UnarCond,
+        OptFilterType_OrCond,
+        OptFilterType_AndCond
+    };
+    typedef std::vector<std::pair<OptFilterType, FdoFilter*> > FilterList;
+    typedef std::vector<FilterList*> StackFilter;
 
-	// For now we just reduce a simple case with potentiel significant performance improvement
-	// This is the case where a filter has 2 and'ed spatial conditions that can be reduced to a 
-	// single spatial condition.
- class FdoCommonFilterOptimizer :  public virtual FdoIFilterProcessor
+	// This is mostly a place holder for potential filter optimization
+    class FdoCommonFilterOptimizer :  public virtual FdoIFilterProcessor
     {
     private:
-        FdoPtr<FdoFilter>	 m_newFilter;
-		bool				 m_isOptimized;
-		FdoPtr<FdoIGeometry> m_geomRight;
-		FdoPtr<FdoIGeometry> m_geomLeft;
+        StackFilter          m_stack;
+        FdoPtr<FdoFgfGeometryFactory> m_gf;
 
     protected:
         void HandleFilter( FdoFilter *filter )
@@ -3563,263 +3571,416 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
             }
             return retVal;
         }
-        void CombineActiveFilter(FdoSpatialCondition& filter)
+        // when resultIsInvalid = true that mean the whole AND filter can be replaced by the returned filter which will generate an empty result
+        FdoFilter* TryOptimize(FdoSpatialCondition* leftFilter, FdoSpatialCondition* rightFilter, bool& resultIsInvalid)
         {
-            // Otherwise we make sure that the condition with the FdoSpatialOperations_EnvelopeIntersects is the left condition
-            if( filter.GetOperation() == FdoSpatialOperations_EnvelopeIntersects )
-            {
-	            // Let's re-arrage the filter to favor evaluating the envelope intersect first.
-	            m_newFilter = FdoFilter::Combine( &filter  , FdoBinaryLogicalOperations_And,  m_newFilter );
-	            m_isOptimized = true;
-            }
-            else // keep the old filter sinve we could have multiple spatial filters which can be optimized
-                m_newFilter = FdoFilter::Combine( m_newFilter, FdoBinaryLogicalOperations_And, &filter );
-        }
-
-        static FdoFilter* TryOptimize(FdoSpatialCondition& leftFilter, FdoSpatialCondition& rightFilter)
-        {
-            FdoPtr<FdoFilter> retVal;
 			try
             {
-                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
-			    FdoPtr<FdoExpression> lExpr = leftFilter.GetGeometry ();
-			    FdoPtr<FdoExpression> rExpr = rightFilter.GetGeometry ();
-			    FdoGeometryValue* lGv = dynamic_cast<FdoGeometryValue*>(lExpr.p);
-			    FdoGeometryValue* rGv = dynamic_cast<FdoGeometryValue*>(rExpr.p);
-    			
-			    if (lGv != NULL && rGv != NULL)
-                {
-                    FdoPtr<FdoByteArray> lba = lGv->GetGeometry ();
-                    FdoPtr<FdoByteArray> rba = rGv->GetGeometry ();
+                resultIsInvalid = false;
+			    FdoPtr<FdoExpression> lExpr = leftFilter->GetGeometry ();
+			    FdoPtr<FdoExpression> rExpr = rightFilter->GetGeometry ();
+			    FdoGeometryValue* lGv = static_cast<FdoGeometryValue*>(lExpr.p);
+			    FdoGeometryValue* rGv = static_cast<FdoGeometryValue*>(rExpr.p);
+                FdoPtr<FdoByteArray> lba = lGv->GetGeometry ();
+                FdoPtr<FdoByteArray> rba = rGv->GetGeometry ();
+                FdoPtr<FdoIGeometry> geomRight = m_gf->CreateGeometryFromFgf (rba);
+                FdoPtr<FdoIGeometry> geomLeft = m_gf->CreateGeometryFromFgf (lba);
+                
+                FdoSpatialOperations leftOp = leftFilter->GetOperation();
+                FdoSpatialOperations rightOp = rightFilter->GetOperation();
                     
-                    FdoSpatialOperations leftOp = leftFilter.GetOperation();
-                    FdoSpatialOperations rightOp = rightFilter.GetOperation();
-
-                    FdoPtr<FdoIGeometry> geomRight = gf->CreateGeometryFromFgf (rba);
-                    FdoPtr<FdoIGeometry> geomLeft = gf->CreateGeometryFromFgf (lba);
-                    
-                    FdoOptimizeResultType retOpt = FdoOptimizeResultType_NoOptimize;
-				    if( FdoSpatialUtility::Evaluate (geomLeft, FdoSpatialOperations_Inside, geomRight) )
-                    {
-                        FdoOptimizeResultType opOptim = FdoCommonFilterOptimizer::GetOptimizeOperation(leftOp, rightOp);
-                        if( opOptim == FdoOptimizeResultType_UseSmSpatial)
-                            retVal = FDO_SAFE_ADDREF(&leftFilter);
-                        else if( opOptim == FdoOptimizeResultType_UseBgSpatial)
-                            retVal = FDO_SAFE_ADDREF(&rightFilter);
-                    }
-                    else if( FdoSpatialUtility::Evaluate (geomRight, FdoSpatialOperations_Inside, geomLeft ) )
-			        {
-                        FdoOptimizeResultType opOptim = FdoCommonFilterOptimizer::GetOptimizeOperation(rightOp, leftOp);
-                        if ( opOptim == FdoOptimizeResultType_UseSmSpatial)
-                            retVal = FDO_SAFE_ADDREF(&rightFilter);
-                        else if( opOptim == FdoOptimizeResultType_UseBgSpatial)
-                            retVal = FDO_SAFE_ADDREF(&leftFilter);
-			        }
-                }
-            }
-            catch(FdoException* exc)
-            {
-                exc->Release();
-                retVal = NULL;
-            }
-            return FDO_SAFE_ADDREF(retVal.p);
-        }
-
-    public:
-
-		FdoCommonFilterOptimizer( ): m_isOptimized(false)
-        {
-        }
-
-		bool IsOptimized() { return m_isOptimized; }
-
-		FdoFilter* OptimizedFilter() { return FDO_SAFE_ADDREF(m_newFilter.p); }
-
-        virtual void Dispose() { delete this; }
-       
-        virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
-        {
-			if( filter.GetOperation() != FdoBinaryLogicalOperations_And )
-			{
-				m_isOptimized = false;
-				return;
-			}
-            HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
-            HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
-        }
-        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
-        {
-            m_isOptimized = false;
-			return;
-        }
-        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
-		{  
-			m_isOptimized = false;
-			return;
-		}
-
-        virtual void ProcessInCondition(FdoInCondition& filter)
-        {
-			m_isOptimized = false;
-			return;
-        }
-        virtual void ProcessNullCondition(FdoNullCondition& filter)
-        {
-            m_isOptimized = false;
-			return;
-        }
-        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
-		{  
-			bool isleft = ( m_newFilter == NULL );
-			
-			FdoPtr<FdoExpression> exprRight = filter.GetGeometry ();
-			FdoGeometryValue* gv = dynamic_cast<FdoGeometryValue*>(exprRight.p);
-			if (!gv)
-			{
-				m_isOptimized = false;
-				return;
-			}
-
-			FdoPtr<FdoByteArray> ba = gv->GetGeometry ();
-			FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
-			if( isleft )
-			{
-				m_geomLeft = gf->CreateGeometryFromFgf (ba);
-				m_newFilter = FDO_SAFE_ADDREF(&filter);
-			}
-			else
-			{
-                if (m_geomLeft == NULL)
-                {
-                    // There are more than 2 spatial condiions in a row SC1 AND SC2 AND SC3 ...
-                    FdoBinaryLogicalOperator* lgRightCond = dynamic_cast<FdoBinaryLogicalOperator*>(m_newFilter.p);
-                    if (lgRightCond != NULL && lgRightCond->GetOperation() == FdoBinaryLogicalOperations_And)
-                    {
-                        // check if is a spatial one
-                        FdoPtr<FdoFilter> rCond = lgRightCond->GetRightOperand();
-                        FdoSpatialCondition* lgSpRightCond = dynamic_cast<FdoSpatialCondition*>(rCond.p);
-                        if (lgSpRightCond != NULL)
-                        {
-                            // try optimize previous spatial condition with active one
-                            FdoPtr<FdoFilter> newRightCond = FdoCommonFilterOptimizer::TryOptimize(*lgSpRightCond, filter);
-                            if (newRightCond != NULL)
-                            {
-                                lgRightCond->SetRightOperand(newRightCond);
-                                m_isOptimized = true;
-                                return;
-                            }
-                        }
-                    }
-                    // just combine spatial conditions since no optimization can be done
-                    CombineActiveFilter(filter);
-                    return;
-                }
-
-                FdoSpatialOperations rightOp = filter.GetOperation();
-                FdoSpatialOperations leftOp = (FdoSpatialOperations)-1;
-                FdoSpatialCondition* spLeftCond = dynamic_cast<FdoSpatialCondition*>(m_newFilter.p);
-                if (spLeftCond != NULL)
-                    leftOp = spLeftCond->GetOperation();
-
-				m_geomRight = gf->CreateGeometryFromFgf (ba);
-
                 FdoOptimizeResultType retOpt = FdoOptimizeResultType_NoOptimize;
-				if( FdoSpatialUtility::Evaluate (m_geomLeft, FdoSpatialOperations_Inside, m_geomRight) )
+				if( FdoSpatialUtility::Evaluate (geomLeft, FdoSpatialOperations_Inside, geomRight) )
 				{
                     retOpt = FdoCommonFilterOptimizer::GetOptimizeOperation(leftOp, rightOp);
                     switch(retOpt)
                     {
                         case FdoOptimizeResultType_NoOptimize:
-                            // left geom cannot be used anymore since in left side we have 2 spatial cond
-                            m_geomLeft = NULL;
-                            CombineActiveFilter(filter);
-					        return;
+					        return NULL;
                         case FdoOptimizeResultType_UseSmSpatial:
                             // keep left geom since we keept left spatial condition
-					        m_isOptimized = true;
-					        return;
+					        return FDO_SAFE_ADDREF(leftFilter);
                         case FdoOptimizeResultType_UseBgSpatial:
                             // get right geom since we kept right spatial cond
-                            m_geomLeft = gf->CreateGeometryFromFgf (ba);
-                            m_newFilter = FDO_SAFE_ADDREF(&filter);
-				            m_isOptimized = true;
-				            return;
+                            return FDO_SAFE_ADDREF(rightFilter);
                         case FdoOptimizeResultType_Invalid:
                             // invalid spatial condition combination
                             break;
                     }
 				}
-                else if( FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Inside, m_geomLeft ) )
+                else if( FdoSpatialUtility::Evaluate (geomRight, FdoSpatialOperations_Inside, geomLeft ) )
 			    {
                     retOpt = FdoCommonFilterOptimizer::GetOptimizeOperation(rightOp, leftOp);
                     switch(retOpt)
                     {
                         case FdoOptimizeResultType_NoOptimize:
-                            // left geom cannot be used anymore since in left side we have 2 spatial cond
-                            m_geomLeft = NULL;
-                            CombineActiveFilter(filter);
-				            return;
-                        case FdoOptimizeResultType_UseBgSpatial:
-                            // keep left geom since we keept left spatial condition
-					        m_isOptimized = true;
-					        return;
+                            return NULL;
                         case FdoOptimizeResultType_UseSmSpatial:
                             // get right geom since we kept right spatial cond
-                            m_geomLeft = gf->CreateGeometryFromFgf (ba);
-                            m_newFilter = FDO_SAFE_ADDREF(&filter);
-				            m_isOptimized = true;
-				            return;
+                            return FDO_SAFE_ADDREF(rightFilter);
+                        case FdoOptimizeResultType_UseBgSpatial:
+                            // keep left geom since we keept left spatial condition
+					        return FDO_SAFE_ADDREF(leftFilter);
                         case FdoOptimizeResultType_Invalid:
                             // invalid spatial condition combination
                             break;
                     }
 			    }
-
                 if( (retOpt == FdoOptimizeResultType_Invalid ) || 
-                    (FdoSpatialUtility::Evaluate (m_geomRight, FdoSpatialOperations_Disjoint, m_geomLeft ) &&
+                    (FdoSpatialUtility::Evaluate (geomRight, FdoSpatialOperations_Disjoint, geomLeft ) &&
                     !((rightOp == FdoSpatialOperations_Crosses || rightOp == FdoSpatialOperations_Intersects || rightOp == FdoSpatialOperations_Overlaps || rightOp == FdoSpatialOperations_EnvelopeIntersects)
                     && (leftOp == FdoSpatialOperations_Crosses || leftOp == FdoSpatialOperations_Intersects || leftOp == FdoSpatialOperations_Overlaps || leftOp == FdoSpatialOperations_EnvelopeIntersects))))
 				{
+                    resultIsInvalid = true;
 					// If the condition do not overlap, then replace it with a filter that returns 0 features.
 #ifdef _WIN32
 					double small_dbl  =(double)(-9223372036854775807i64 - 1);
 #else
 					double small_dbl  =(double)(-9223372036854775807LL - 1);
 #endif
-					m_isOptimized = true;
-					FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-
 					double coords[] = { small_dbl, small_dbl, 
 										small_dbl, small_dbl, 
 										small_dbl, small_dbl, 
 										small_dbl, small_dbl, 
 										small_dbl, small_dbl }; 
 
-					FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+					FdoPtr<FdoILinearRing> outer = m_gf->CreateLinearRing(0, 10, coords);
 
-					FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+					FdoPtr<FdoIPolygon> poly = m_gf->CreatePolygon(outer, NULL);
 
-					FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+					FdoPtr<FdoByteArray> polyfgf = m_gf->GetFgf(poly);
 					FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
-					m_newFilter = FdoSpatialCondition::Create(FdoPtr<FdoIdentifier>(filter.GetPropertyName())->GetName(), FdoSpatialOperations_EnvelopeIntersects, gv);
-					return;
+					return FdoSpatialCondition::Create(FdoPtr<FdoIdentifier>(rightFilter->GetPropertyName())->GetName(), FdoSpatialOperations_EnvelopeIntersects, gv);
 				}
+            }
+            catch(FdoException* exc)
+            {
+                exc->Release();
+            }
+            return NULL;
+        }
 
-                CombineActiveFilter(filter);
-			}
+    public:
+
+		FdoCommonFilterOptimizer( )
+        {
+            m_gf = FdoFgfGeometryFactory::GetInstance ();
+        }
+
+        virtual void Dispose() { delete this; }
+        
+        void ClearFilterList(FilterList& lst)
+        {
+            for(FilterList::iterator it = lst.begin(); it < lst.end(); it++)
+                FDO_SAFE_RELEASE(it->second);
+            lst.clear();
+        }
+
+        // when it returns lst will contain max 1 filter!
+        void OptimizeSubSet(FilterList& lst)
+        {
+            FilterList lstEnvInt, lstSpatCond, lstOtherCond;
+            int cnt = lst.size();
+            bool invalidFilter = false;
+            for (int i = 0; i < cnt; i++)
+            {
+                if (lst[i].first == OptFilterType_SpaCond)
+                {
+                    FdoSpatialCondition* filter = static_cast<FdoSpatialCondition*>(lst[i].second);
+                    if (filter->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
+                        lstEnvInt.push_back(lst[i]);
+                    else
+                        lstSpatCond.push_back(lst[i]);
+                }
+                else
+                    lstOtherCond.push_back(lst[i]);
+            }
+            FdoSpatialCondition* leftFlt = NULL;
+            FdoSpatialCondition* rightFlt = NULL;
+            cnt = lstEnvInt.size();
+            if (cnt > 1)
+            {
+                // try optimize all EnvelopeIntersects in case we have more
+                for (int i = 0; i < cnt; i++)
+                {
+                    if ((i + 1) < cnt)
+                    {
+                        leftFlt = static_cast<FdoSpatialCondition*>(lstEnvInt[i].second);
+                        rightFlt = static_cast<FdoSpatialCondition*>(lstEnvInt[i+1].second);
+                        FdoFilter* flt = TryOptimize(leftFlt, rightFlt, invalidFilter);
+                        if (flt != NULL)
+                        {
+                            if (invalidFilter)
+                            {
+                                // we can reduce the whole filter to a filter which will generate empty results
+                                lst.clear();
+                                ClearFilterList(lstEnvInt);
+                                ClearFilterList(lstSpatCond);
+                                ClearFilterList(lstOtherCond);
+                                lst.push_back(std::make_pair(OptFilterType_SpaCond, flt));
+                                return;
+                            }
+                            // erase i and overwrite "i+1"
+                            lstEnvInt.erase(lstEnvInt.begin()+i);
+                            lstEnvInt[i] = std::make_pair(OptFilterType_SpaCond, flt);
+                            FDO_SAFE_RELEASE(leftFlt);
+                            FDO_SAFE_RELEASE(rightFlt);
+                            i--;
+                            cnt--;
+                        }
+                    }
+                }
+            }
+            int cntSec = lstSpatCond.size();
+            if (cntSec > 1)
+            {
+                // rare case when two spatial condition are in the same query
+                // try optimize all spatial cond in case we have more
+                for (int i = 0; i < cntSec; i++)
+                {
+                    if ((i + 1) < cntSec)
+                    {
+                        leftFlt = static_cast<FdoSpatialCondition*>(lstSpatCond[i].second);
+                        rightFlt = static_cast<FdoSpatialCondition*>(lstSpatCond[i+1].second);
+                        FdoFilter* flt = TryOptimize(leftFlt, rightFlt, invalidFilter);
+                        if (flt != NULL)
+                        {
+                            if (invalidFilter)
+                            {
+                                // we can reduce the whole filter to a filter which will generate empty results
+                                lst.clear();
+                                ClearFilterList(lstEnvInt);
+                                ClearFilterList(lstSpatCond);
+                                ClearFilterList(lstOtherCond);
+                                lst.push_back(std::make_pair(OptFilterType_SpaCond, flt));
+                                return;
+                            }
+                            // erase i and overwrite "i+1"
+                            lstSpatCond.erase(lstSpatCond.begin()+i);
+                            lstSpatCond[i] = std::make_pair(OptFilterType_SpaCond, flt);
+                            FDO_SAFE_RELEASE(leftFlt);
+                            FDO_SAFE_RELEASE(rightFlt);
+                            i--;
+                            cntSec--;
+                        }
+                    }
+                }
+            }
+            // often case when we have a EnvelopeIntersects and a spatial cond
+            if (cnt > 0 && cntSec > 0)
+            {
+                // not nice but I do not see other way
+                for (int i = 0; i < cnt; i++)
+                {
+                    for (int y = 0; y < cntSec; y++)
+                    {
+                        leftFlt = static_cast<FdoSpatialCondition*>(lstEnvInt[i].second);
+                        rightFlt = static_cast<FdoSpatialCondition*>(lstSpatCond[y].second);
+                        FdoFilter* flt = TryOptimize(leftFlt, rightFlt, invalidFilter);
+                        if (flt != NULL)
+                        {
+                            if (invalidFilter)
+                            {
+                                // we can reduce the whole filter to a filter which will generate empty results
+                                lst.clear();
+                                ClearFilterList(lstEnvInt);
+                                ClearFilterList(lstSpatCond);
+                                ClearFilterList(lstOtherCond);
+                                lst.push_back(std::make_pair(OptFilterType_SpaCond, flt));
+                                return;
+                            }
+                            FdoSpatialCondition* newFilter = static_cast<FdoSpatialCondition*>(flt);
+                            if (newFilter->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
+                            {
+                                lstEnvInt[i] = std::make_pair(OptFilterType_SpaCond, flt);
+                                lstSpatCond.erase(lstSpatCond.begin()+y);
+                                y--;
+                                cntSec--;
+                            }
+                            else
+                            {
+                                lstSpatCond[y] = std::make_pair(OptFilterType_SpaCond, flt);
+                                lstEnvInt.erase(lstEnvInt.begin()+i);
+                                i--;
+                                cnt--;
+                            }
+                            FDO_SAFE_RELEASE(leftFlt);
+                            FDO_SAFE_RELEASE(rightFlt);
+                        }
+                    }
+                }
+            }
+            // we can clear it since we have all filters in the opter lists
+            lst.clear();
+            if (lstEnvInt.size() != 0)
+                lst.insert(lst.begin(), lstEnvInt.begin(), lstEnvInt.end());
+            if (lstSpatCond.size() != 0)
+                lst.insert(lst.end(), lstSpatCond.begin(), lstSpatCond.end());
+            if (lstOtherCond.size() != 0)
+                lst.insert(lst.end(), lstOtherCond.begin(), lstOtherCond.end());
+
+            if (lst.size() > 1)
+                lst.push_back(std::make_pair(OptFilterType_AndCond, GenerateAndFilter(lst)));
+        }
+
+        FdoFilter* GenerateAndFilter(FilterList& lst)
+        {
+            FdoPtr<FdoBinaryLogicalOperator> blof = FdoBinaryLogicalOperator::Create();
+            FdoFilter* filter = FDO_SAFE_ADDREF(blof.p);
+            int cnt = lst.size();
+
+            FdoFilter* tmp = NULL;
+            for (int i = 0; i < cnt; i++)
+            {
+                if ((i + 2) >= cnt)
+                {
+                    tmp = lst[i].second;
+                    blof->SetLeftOperand(tmp);
+                    FDO_SAFE_RELEASE(tmp);
+                    
+                    tmp = lst[i+1].second;
+                    blof->SetRightOperand(tmp);
+                    FDO_SAFE_RELEASE(tmp);
+
+                    blof->SetOperation(FdoBinaryLogicalOperations_And);
+                    break;
+                }
+                else
+                {
+                    tmp = lst[i].second;
+                    blof->SetLeftOperand(tmp);
+                    FDO_SAFE_RELEASE(tmp);
+
+                    FdoPtr<FdoBinaryLogicalOperator> sblof = FdoBinaryLogicalOperator::Create();
+                    sblof->SetOperation(FdoBinaryLogicalOperations_And);
+                    blof->SetRightOperand(sblof);
+                    blof = sblof;
+                }
+            }
+            lst.clear();
+            return filter;
+        }
+
+
+        virtual void ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
+        {
+            FilterList lst;
+            FdoBinaryLogicalOperations bop = filter.GetOperation();
+            if (bop == FdoBinaryLogicalOperations_Or )
+            {
+                OptFilterType rez = OptFilterType_ComCond;
+                m_stack.push_back(&lst);
+                FdoPtr<FdoFilter> leftNewFlt;
+                FdoPtr<FdoFilter> rightNewFlt;
+
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
+                if (lst.size() > 1)
+                    OptimizeSubSet(lst);
+                if (lst.size() == 1)
+                    leftNewFlt = FDO_SAFE_ADDREF(lst[0].second);
+
+                for (FilterList::iterator it = lst.begin(); it < lst.end(); it++)
+                    FDO_SAFE_RELEASE(it->second);
+                lst.clear();
+                
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+                if (lst.size() > 1)
+                    OptimizeSubSet(lst);
+                if (lst.size() == 1)
+                    rightNewFlt = FDO_SAFE_ADDREF(lst[0].second);
+
+                for (FilterList::iterator it = lst.begin(); it < lst.end(); it++)
+                    FDO_SAFE_RELEASE(it->second);
+                lst.clear();
+                
+                m_stack.pop_back();
+                if (leftNewFlt != NULL && rightNewFlt != NULL)
+                {
+                    FdoFilter* flt = FdoBinaryLogicalOperator::Create(leftNewFlt, FdoBinaryLogicalOperations_Or, rightNewFlt);
+                    m_stack.back()->push_back(std::make_pair(OptFilterType_OrCond, flt));
+                }
+                else if (leftNewFlt != NULL)
+                {
+                    FdoFilter* flt = leftNewFlt;
+                    FDO_SAFE_ADDREF(flt);
+                    m_stack.back()->push_back(std::make_pair(rez, flt));
+                }
+                else if (leftNewFlt != NULL)
+                {
+                    FdoFilter* flt = rightNewFlt;
+                    FDO_SAFE_ADDREF(flt);
+                    m_stack.back()->push_back(std::make_pair(rez, flt));
+                }
+            }
+            else
+            {
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetLeftOperand()) );
+                HandleFilter( FdoPtr<FdoFilter>(filter.GetRightOperand()) );
+            }
+        }
+        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
+        {
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_ComCond, flt));
+        }
+        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
+		{  
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_DistCond, flt));
+		}
+
+        virtual void ProcessInCondition(FdoInCondition& filter)
+        {
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_InCond, flt));
+        }
+        virtual void ProcessNullCondition(FdoNullCondition& filter)
+        {
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_NullCond, flt));
+        }
+        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
+		{  
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_SpaCond, flt));
 		}
 
         virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
         {
-            m_isOptimized = false;
-			return;
+            FdoFilter* flt = &filter;
+            FDO_SAFE_ADDREF(flt);
+            m_stack.back()->push_back(std::make_pair(OptFilterType_UnarCond, flt));
+        }
+
+        FdoFilter* OptimizeFilter(FdoFilter* filter)
+        {
+            // in case we want to not change the filter we can copy it
+            // however this will add some performance loss
+            //m_copyFilter = FdoExpressionEngineCopyFilter::Copy(filter);
+            FilterList baseFilterLst;
+            m_stack.push_back(&baseFilterLst);
+            
+            filter->Process(this);
+            OptimizeSubSet(baseFilterLst);
+
+            if (baseFilterLst.size() == 0)
+                return NULL; // here we should return an "empty" spatial filter
+            else
+            {
+                filter = baseFilterLst[0].second; // it's already add ref
+                m_stack.clear();
+                return filter;
+            }
         }
     };
 
-    FdoCommonFilterOptimizer  optimizer;
-    filter->Process( &optimizer ); 
-
-	return optimizer.IsOptimized()?optimizer.OptimizedFilter():FDO_SAFE_ADDREF(filter);
+    FdoCommonFilterOptimizer optimizer;
+    return optimizer.OptimizeFilter(filter); 
 }
 
 FdoLiteralValue* FdoExpressionEngineImp::Evaluate(FdoExpression *expression)
