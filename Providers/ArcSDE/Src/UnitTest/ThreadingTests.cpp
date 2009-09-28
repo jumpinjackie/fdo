@@ -330,7 +330,7 @@ void ThreadingTests::a_few_threads ()
     bool success;
     int count;
 #define THREADS 4
-#define SECONDS 1000
+#define SECONDS 2000
     int* faults;
     Context* context;
     FdoException** exceptions;
