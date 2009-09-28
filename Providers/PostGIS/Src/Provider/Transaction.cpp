@@ -25,7 +25,8 @@ namespace fdo { namespace postgis {
 
 Transaction::Transaction(Connection* conn) : mConn(conn)
 {
-    assert(NULL != mConn);
+  assert(NULL != mConn);
+  FDO_SAFE_ADDREF(mConn.p);
 }
 
 Transaction::~Transaction()
