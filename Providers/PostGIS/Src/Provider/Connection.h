@@ -158,6 +158,9 @@ public:
     /// \todo To be documented.
     FdoFeatureSchemaCollection* GetLogicalSchema();
     
+    /// clears all cached schema information, next access will recache.
+    void ResetSchema();
+
     /// \todo To be documented.
     ov::PhysicalSchemaMapping* GetPhysicalSchemaMapping();
     
@@ -209,6 +212,17 @@ public:
     
     /// Force unwinding of any active transaction with commit execution.
     void PgFlushSoftTransaction();
+
+    /// retreive the next value giving a sequence name.
+    std::string GetPgNextVal(std::string sequence);
+    /// Execute a query and return a single value.
+    std::string PgQueryOneValue(std::string sql);
+    ///Return the csName and csWkt associated to the postgis srid number
+    bool GetCoordinateSystemWkt(std::string sridText,std::string& csName,std::string& csWkt);
+    ///try to find a srid number giving a coordsystem name
+    bool GetSrid(std::string csName,std::string& sridText);
+
+
 
 protected:
 

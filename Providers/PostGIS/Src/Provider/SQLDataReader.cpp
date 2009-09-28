@@ -416,7 +416,9 @@ bool SQLDataReader::ReadNext()
 
     try
     {
-      if ((mCurrentTuple + 1 )>= mCursor->GetTuplesCount())
+      FdoSize nbTupples = mCursor->GetTuplesCount();
+      //if(nbTupples == 0) return eof;
+      if ((mCurrentTuple + 1 )>= nbTupples)
       {
           PgCursor::ResultPtr pgRes = mCursor->Fetch(mCoursorPageSize);
           if (PGRES_TUPLES_OK == PQresultStatus(pgRes))

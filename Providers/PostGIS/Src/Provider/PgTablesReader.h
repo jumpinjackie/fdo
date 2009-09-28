@@ -131,6 +131,13 @@ private:
     // Validates basic state of the reader instance.
     void ValidateConnectionState() const;
 
+    // Executes query to test if estimated_extent is available
+    // for the given geometry column in a table.
+    // Table is used with full path: schema.table.
+    bool IsEstimateColumnExtentAvailable(
+        std::string const& column) const;
+
+
     // Executes query to estimate spatial extent of features
     // in given geometry column in a table.
     // Table is used with full path: schema.table.
