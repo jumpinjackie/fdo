@@ -18,7 +18,6 @@
 #define _ShpIScrollableFeatureReader_
 
 #include "Fdo.h"
-#include "FdoDefaultScrollableFeatureReader.h"
 
-typedef  FdoDefaultScrollableFeatureReader ShpIScrollableFeatureReader; 
+typedef  FdoIScrollableFeatureReader ShpIScrollableFeatureReader; 
 #endif

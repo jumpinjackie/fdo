@@ -17,10 +17,10 @@
 #define _ShpImpScrollableFeatureReader_H_
 
 #include "SHP/IScrollableFeatureReader.h"
-
+#include "FdoDefaultScrollableFeatureReader.h"
 
 template <class T>
-class ShpImpScrollableFeatureReader : public ShpIScrollableFeatureReader
+class ShpImpScrollableFeatureReader : public FdoDefaultScrollableFeatureReader
 {
 
 public:
