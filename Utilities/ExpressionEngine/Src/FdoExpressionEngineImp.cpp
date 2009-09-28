@@ -38,6 +38,20 @@
 #include <Util/FdoExpressionEngineUtilDataReader.h>
 #include "ExpressionEngineInitializeClass.h"
 
+enum OptFilterType
+{
+    OptFilterType_ComCond,
+    OptFilterType_DistCond,
+    OptFilterType_InCond,
+    OptFilterType_NullCond,
+    OptFilterType_SpaCond,
+    OptFilterType_UnarCond,
+    OptFilterType_OrCond,
+    OptFilterType_AndCond
+};
+typedef std::vector< std::pair< OptFilterType, FdoFilter* > > FilterList;
+typedef std::vector< FilterList* > StackFilter;
+
 FdoCommonThreadMutex mutex;
 
 ExpressionEngineInitializeClass initFunction;
@@ -3346,20 +3360,6 @@ void FdoExpressionEngineImp::ValidateFilter( FdoClassDefinition *cls, FdoFilter 
 
 FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 {
-    enum OptFilterType
-    {
-        OptFilterType_ComCond,
-        OptFilterType_DistCond,
-        OptFilterType_InCond,
-        OptFilterType_NullCond,
-        OptFilterType_SpaCond,
-        OptFilterType_UnarCond,
-        OptFilterType_OrCond,
-        OptFilterType_AndCond
-    };
-    typedef std::vector<std::pair<OptFilterType, FdoFilter*> > FilterList;
-    typedef std::vector<FilterList*> StackFilter;
-
 	// This is mostly a place holder for potential filter optimization
     class FdoCommonFilterOptimizer :  public virtual FdoIFilterProcessor
     {
