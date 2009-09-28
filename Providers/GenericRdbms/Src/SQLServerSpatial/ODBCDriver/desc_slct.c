@@ -184,6 +184,7 @@ int local_odbcdr_desc_slct(
 			*binary_size = (int) odbc_precision;
 			break;
 		case SQL_VARCHAR :
+		case SQL_GUID :
 			*rdbi_type	= RDBI_STRING;
 			*binary_size = (int) odbc_precision;
 			break;
