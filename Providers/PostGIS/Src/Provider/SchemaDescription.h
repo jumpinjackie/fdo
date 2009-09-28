@@ -53,9 +53,11 @@ public:
     // default schema name: FdoPostGIS.
     //
     void DescribeSchema(Connection* conn, FdoString* schemaName);
-    
+
     /// Get flag indicating if schema has been successfully described.
     bool IsDescribed() const;
+
+    void ResetSchema();
     
     void SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas);
     void SetSchemaMapping(ov::PhysicalSchemaMapping* phSchemaMapping);

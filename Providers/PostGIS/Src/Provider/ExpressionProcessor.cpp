@@ -166,11 +166,23 @@ void ExpressionProcessor::ProcessFunction(FdoFunction& expr)
     }
     else if (0 == name.ICompare(FDO_FUNCTION_SPATIALEXTENTS))
     {
+        /*
         processArgs = false;
         mBuffer.append("GeomFromEwkb(AsEwkb(Extent(");
         FdoPtr<FdoExpression> geomExpr(args->GetItem(0));
         geomExpr->Process(this);
         mBuffer.append(")))");
+        */
+
+        //Coalesce( GeomFromEwkb(AsEwkb(Extent(geometry_1))) , geomfromtext('POLYGON((0 0,0 0,0 0,0 0,0 0))'))
+      
+        processArgs = false;
+        mBuffer.append("Coalesce(GeomFromEwkb(AsEwkb(Extent(");
+        FdoPtr<FdoExpression> geomExpr(args->GetItem(0));
+        geomExpr->Process(this);
+        mBuffer.append("))),geomfromtext('POLYGON((0 0,0 50,50 50,50 0,0 0))'))");
+        
+
     }
     else if (0 == name.ICompare(FDO_FUNCTION_AREA2D))
     {

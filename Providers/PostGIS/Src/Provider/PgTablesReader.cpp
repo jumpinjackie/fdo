@@ -225,14 +225,17 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
 
             // Estimate bounding box of geometries in given column
             FdoPtr<FdoEnvelopeImpl> bbox;
-            bbox = EstimateColumnExtent(static_cast<char const*>(name));
-            if (bbox->GetIsEmpty()) 
+            if(IsEstimateColumnExtentAvailable(static_cast<char const*>(name)))
+            {
+              bbox = EstimateColumnExtent(static_cast<char const*>(name));
+            }
+            else
             {
               bbox = SelectColumnExtent(static_cast<char const*>(name));
-              if (bbox->GetIsEmpty()) 
-              {
-                bbox = FdoEnvelopeImpl::Create(0.0, 0.0, 0.0, 0.0);
-              }
+            }
+            if (bbox->GetIsEmpty()) 
+            {
+              bbox = FdoEnvelopeImpl::Create(0.0, 0.0, 0.0, 0.0);
             }
 
             // Describe geometry column and add to the collection
@@ -315,6 +318,47 @@ void PgTablesReader::ValidateConnectionState() const
     }
 }
 
+bool PgTablesReader::IsEstimateColumnExtentAvailable(
+    std::string const& column) const
+{
+    FDOLOG_MARKER("PgTablesReader::-IsEstimateColumnExtentAvailable");
+    assert(!mCurrentSchema.empty() && !mTableCached.empty());
+
+    if (!mTableSpatialCached) {
+      return false;
+    }
+
+    std::string sql("SELECT count(*) FROM pg_statistic s, pg_class c, pg_attribute a, pg_namespace n WHERE c.relname = '"
+                    + mTableCached + "' AND a.attrelid = c.oid AND a.attname = '"
+                    + column + "' AND n.nspname = '"
+                    + mCurrentSchema + "' AND c.relnamespace = n.oid AND s.starelid=c.oid AND s.staattnum = a.attnum AND staattnum = attnum");
+    try
+    {
+        boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
+        assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
+        assert(1 == PQntuples(pgRes.get()));
+
+        bool    nullVal = false;
+        char const* cval = NULL;
+        cval = PQgetvalue(pgRes.get(), 0, 0);
+        if (!cval || !strlen(cval)) return false;
+        int nbStats = StringConv<int>(cval);
+        if(nbStats > 0) return true;
+        return false;
+    }
+    catch (FdoException* e)
+    {
+      FDOLOG_WRITE(L"Warning! estimated_extent is empty! use VACUUM or ANALYZE");
+      e->Release();
+      return false;
+    }
+    catch (boost::bad_lexical_cast& e)
+    {
+      FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
+      throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
+    }
+}
+
 FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     std::string const& column) const
 {
@@ -389,9 +433,13 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::EstimateColumnExtent(
     }
     catch (FdoException* e)
     {
-      FDOLOG_WRITE(L"Error occured while reading coordinate of estimated extent");
-      throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
+      FdoPtr<FdoEnvelopeImpl> extent;
+      extent = FdoEnvelopeImpl::Create(); // create empty envelope!
+      FDOLOG_WRITE(L"Warning! estimated_extent is empty! use VACUUM or ANALYZE");
+      //throw FdoException::Create(L"Error occured while reading coordinate of estimated extent");
       e->Release();
+      FDO_SAFE_ADDREF(extent.p);
+      return extent.p;
     }
     catch (boost::bad_lexical_cast& e)
     {
@@ -425,14 +473,12 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::SelectColumnExtent(
                      + mCurrentSchema + "."+ mTableCached // TODO add mBaseName
                      + ") AS box");
 
-    // NOTE: The PgExecuteQuery throws on error, but if no exception occurs,
-    //       valid query result is assumed.
-
-    boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
-    assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
-    assert(1 == PQntuples(pgRes.get()));
     try
     {
+        boost::shared_ptr<PGresult> pgRes(mConn->PgExecuteQuery(sql.c_str()), PQclear);
+        assert(PGRES_TUPLES_OK == PQresultStatus(pgRes.get()));
+        assert(1 == PQntuples(pgRes.get()));
+
         bool    nullVal = false;
         char const* cval = NULL;
         
@@ -468,10 +514,19 @@ FdoPtr<FdoEnvelopeImpl> PgTablesReader::SelectColumnExtent(
         FDO_SAFE_ADDREF(extent.p);
         return extent.p;
     }
+    catch (FdoException* e)
+    {
+      FdoPtr<FdoEnvelopeImpl> extent;
+      extent = FdoEnvelopeImpl::Create(); // create empty envelope!
+      FDOLOG_WRITE(L"Warning! SelectColumnExtent failed, table must be empty");
+      FDO_SAFE_ADDREF(extent.p);
+      e->Release();
+      return extent.p;
+    }
     catch (boost::bad_lexical_cast& e)
     {
-        FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
-        throw FdoException::Create(L"Error occured while select coordinate of extent");
+      FDOLOG_WRITE("Extent coordinate value conversion failed: %s", e.what());
+      throw FdoException::Create(L"Error occured while select coordinate of extent");
     }
 }
 

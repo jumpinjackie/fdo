@@ -146,8 +146,18 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
 
         FDOLOG_WRITE("Number of schema elements fetched: %d", logicalSchema->GetCount());
 
-        FDO_SAFE_ADDREF(logicalSchema.p);
-        return logicalSchema.p;
+        // need to create a copy to return beacuse of issue in MapGuide 
+        // ( when decribe scchema command is running than MG serialize and temporary removes (and returns back ) 
+        // class from this schema.
+        // and if multisession's (multhi threading) application is running and if they share this same schema
+        // then it got's exception.
+        // If I create a copy and for every request return copy than it is OK.
+        // and some other callers (FME) may change it and that is nt ok for us then
+        
+        FdoFeatureSchemaCollection* ret = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(logicalSchema);
+        return ret;  
+        //FDO_SAFE_ADDREF(logicalSchema.p);
+        //return logicalSchema.p;
     }
     catch (FdoException* e)
     {

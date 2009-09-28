@@ -46,12 +46,14 @@ FdoThreadCapability ConnectionCapabilities::GetThreadCapability()
     // TODO: Verify threading model
 
     return FdoThreadCapability_PerConnectionThreaded;
+    //return FdoThreadCapability_PerCommandThreaded;
 }
 
 FdoSpatialContextExtentType* ConnectionCapabilities::GetSpatialContextTypes(FdoInt32& size)
 {
     static FdoSpatialContextExtentType types[] = {
-        FdoSpatialContextExtentType_Static
+        //FdoSpatialContextExtentType_Static
+        FdoSpatialContextExtentType_Dynamic
     };
 
     size = (sizeof(types) / sizeof(FdoSpatialContextExtentType));
@@ -120,7 +122,7 @@ bool ConnectionCapabilities::SupportsCSysWKTFromCSysName()
 
 bool ConnectionCapabilities::SupportsWrite()
 {
-    return false;
+    return true;
 }
 
 bool ConnectionCapabilities::SupportsMultiUserWrite()
