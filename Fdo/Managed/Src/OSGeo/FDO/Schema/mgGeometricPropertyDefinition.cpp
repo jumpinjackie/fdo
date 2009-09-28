@@ -143,4 +143,6 @@ System::Void NAMESPACE_OSGEO_FDO_SCHEMA::GeometricPropertyDefinition::set_Specif
         unobj[i] = static_cast<FdoGeometryType>(types[i]);
 	}
     EXCEPTION_HANDLER(GetImpObj()->SetSpecificGeometryTypes(unobj, length));
+    if (unobj != NULL)
+        delete[] unobj;
 }
