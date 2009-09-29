@@ -62,7 +62,8 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
         // Other commands
         FdoCommandType_SQLCommand,
-        FdoCommandType_GetSpatialContexts
+        FdoCommandType_GetSpatialContexts,
+        FdoCommandType_CreateSpatialContext
     };
 
     size = (sizeof(commands) / sizeof(FdoCommandType));
@@ -72,7 +73,7 @@ FdoInt32* CommandCapabilities::GetCommands(FdoInt32& size)
 
 bool CommandCapabilities::SupportsParameters()
 {
-    return false;
+    return true;
 }
 
 bool CommandCapabilities::SupportsTimeout()
@@ -102,8 +103,7 @@ bool CommandCapabilities::SupportsSelectOrdering()
 
 bool CommandCapabilities::SupportsSelectGrouping()
 {
-    // TODO: SelectAggregate commands is under construction
-    return false;
+    return true;
 }
 
 }} // namespace fdo::postgis
