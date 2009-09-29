@@ -37,6 +37,7 @@ GDALENABLE=yes
 OGRENABLE=yes
 POSTGISENABLE=yes
 KINGORACLEENABLE=yes
+SQLITEENABLE=yes
 SHOWHELP=no
 
 
@@ -125,6 +126,7 @@ do
        OGRENABLE=no
        POSTGISENABLE=no
        KINGORACLEENABLE=no
+       SQLITEENABLE=no
     fi
     if test -z "$1"; then
        echo "$arg Invalid parameter $1"
@@ -141,6 +143,7 @@ do
         OGRENABLE=yes
         POSTGISENABLE=yes
         KINGORACLEENABLE=yes
+        SQLITEENABLE=yes
     elif test "$1" == fdocore; then
 	FDOCOREENABLE=yes
     elif test "$1" == fdo; then
@@ -158,6 +161,7 @@ do
         OGRENABLE=yes
         POSTGISENABLE=yes
         KINGORACLEENABLE=yes
+        SQLITEENABLE=yes
     elif test "$1" == shp; then
         SHPENABLE=yes
     elif test "$1" == sdf; then
@@ -178,6 +182,8 @@ do
         POSTGISENABLE=yes
     elif test "$1" == kingoracle; then
         KINGORACLEENABLE=yes
+    elif test "$1" == sqlite; then
+        SQLITEENABLE=yes
     else
         echo "$arg Invalid parameter $1"
         exit 1
@@ -263,7 +269,9 @@ if test "$SHOWHELP" == yes; then
    if test -e "Providers/KingOracle/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, kingoracle"
    fi
-   
+   if test -e "Providers/SQLite/build_linux.sh"; then
+   HELPSTRINGWITH="$HELPSTRINGWITH, sqlite"
+   fi
    echo "$HELPSTRINGWITH"
    echo "******************************************************************************************"
 
@@ -464,6 +472,16 @@ if test "$KINGORACLEENABLE" == yes; then
        popd >& /dev/null
    fi
 fi
+
+#build SSLite Provider
+if test "$SQLITEENABLE" == yes; then
+   if test -e "Providers/SQLite/build_linux.sh"; then
+       pushd Providers/SQLite >& /dev/null
+       ./build_linux.sh $CMDEX
+       popd >& /dev/null
+   fi
+fi
+
 
 exit 0
 
