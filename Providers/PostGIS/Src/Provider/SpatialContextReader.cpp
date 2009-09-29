@@ -45,7 +45,7 @@ void SpatialContextReader::Dispose()
 FdoString* SpatialContextReader::GetName()
 {
     FDOLOG_MARKER("SpatialContextReader::+GetName");
-    FDOLOG_WRITE(L"Context name: %s", mCurrentContext->GetName());
+    FDOLOG_WRITE(L"Context name: %ls", mCurrentContext->GetName());
     
     return mCurrentContext->GetName();
 }
@@ -58,7 +58,7 @@ FdoString* SpatialContextReader::GetDescription()
 FdoString* SpatialContextReader::GetCoordinateSystem()
 {
     FDOLOG_MARKER("SpatialContextReader::+GetCoordinateSystem");
-    FDOLOG_WRITE(L"Coordinate System: %s", mCurrentContext->GetCoordinateSystem());
+    FDOLOG_WRITE(L"Coordinate System: %ls", mCurrentContext->GetCoordinateSystem());
 
     return mCurrentContext->GetCoordinateSystem();
 }
@@ -66,7 +66,7 @@ FdoString* SpatialContextReader::GetCoordinateSystem()
 FdoString* SpatialContextReader::GetCoordinateSystemWkt()
 {
     FDOLOG_MARKER("SpatialContextReader::+GetCoordinateSystemWkt");
-    FDOLOG_WRITE(L"WKT: %s", mCurrentContext->GetCoordinateSystemWkt());
+    FDOLOG_WRITE(L"WKT: %ls", mCurrentContext->GetCoordinateSystemWkt());
     return mCurrentContext->GetCoordinateSystemWkt();
 }
 

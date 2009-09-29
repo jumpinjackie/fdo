@@ -195,7 +195,7 @@ FdoIFeatureReader* InsertCommand::Execute()
         }
         else
         {
-            FDOLOG_WRITE(L"can not find porpertyDefinition '%s'",
+            FDOLOG_WRITE(L"can not find porpertyDefinition '%ls'",
                 static_cast<FdoString*>(propVal->GetName()->GetName()));        
         }
 
@@ -225,7 +225,7 @@ FdoIFeatureReader* InsertCommand::Execute()
                         FdoDateTimeValue *dateValuePtr=dynamic_cast<FdoDateTimeValue*>(propVal->GetValue());
                         if (!dateValuePtr->IsNull())
                         {
-                            FDOLOG_WRITE(L"convert Date:", dateValuePtr->ToString());
+                            FDOLOG_WRITE(L"convert Date: '%ls'", dateValuePtr->ToString());
                             value = static_cast<char const*>(FdoStringP(dateValuePtr->ToString()));
                         }
                         else

@@ -392,7 +392,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
        {
           FDOLOG_WRITE(L"ERROR: Describe operation for '%ls' failed. %ls"
               , static_cast<FdoString*>(fdoClassName)
-              , e->GetExceptionMessage());
+              , static_cast<FdoString*>(e->GetExceptionMessage()));
           e->Release();
        }
 

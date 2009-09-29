@@ -105,7 +105,7 @@ FdoInt32 UpdateCommand::Execute()
         }
         else
         {
-            FDOLOG_WRITE(L"can not find porpertyDefinition '%s'", static_cast<FdoString*>(propVal->GetName()->GetName()));
+            FDOLOG_WRITE(L"can not find porpertyDefinition '%ls'", static_cast<FdoString*>(propVal->GetName()->GetName()));
         }
 
         FdoPtr<FdoValueExpression> expr(propVal->GetValue());

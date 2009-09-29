@@ -144,9 +144,9 @@ void FeatureCommand<T>::SetFeatureClassName(FdoIdentifier* classIdentifier)
     FdoPtr<FdoIdentifier> newIdentifier;
     if (NULL != classIdentifier)
     {
-        FDOLOG_WRITE(L"Feature class identifier: %s", classIdentifier->GetText());
-        FDOLOG_WRITE(L"Schema name: %s", classIdentifier->GetSchemaName());
-        FDOLOG_WRITE(L"Class name: %s", classIdentifier->GetName());
+        FDOLOG_WRITE(L"Feature class identifier: %ls", classIdentifier->GetText());
+        FDOLOG_WRITE(L"Schema name: %ls", classIdentifier->GetSchemaName());
+        FDOLOG_WRITE(L"Class name: %ls", classIdentifier->GetName());
 
         // TODO: See comments inside InsertCommand::SetFeatureClassName()
         //       explaining this hacks

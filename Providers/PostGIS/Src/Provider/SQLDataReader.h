@@ -191,7 +191,7 @@ T SQLDataReader::GetValue(FdoString* columnName)
     }
     catch (boost::bad_lexical_cast& e)
     {
-        FDOLOG_WRITE(L"SQLDataReader can not read value of column '%s'", columnName);
+        FDOLOG_WRITE(L"SQLDataReader can not read value of column '%ls'", columnName);
         FDOLOG_WRITE("ERROR: %s", e.what());
 
         throw FdoCommandException::Create(L"Field value conversion failed.");

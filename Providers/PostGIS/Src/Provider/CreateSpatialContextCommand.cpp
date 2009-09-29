@@ -374,9 +374,10 @@ void CreateSpatialContextCommand::Execute()
       std::string tmpSrid;
       if(mConn->GetSrid(static_cast<char const*>(orig_csname),tmpSrid) == false)
       {
-        FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System not found.\nCreate an entry in spatial_ref_sys\n Name:%s \nWkt:%s",
-            orig_csname,orig_wkt);
-        FDOLOG_WRITE("ERROR: %s", static_cast<FdoString*>(msg));
+        FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System not found.\nCreate an entry in spatial_ref_sys\n Name: %ls \nWkt:%ls",
+            static_cast<FdoString*>(orig_csname), 
+            static_cast<FdoString*>(orig_wkt));
+        FDOLOG_WRITE("ERROR: %ls", static_cast<FdoString*>(msg));
         throw FdoCommandException::Create(msg);    
       }
       sridText = tmpSrid.c_str();

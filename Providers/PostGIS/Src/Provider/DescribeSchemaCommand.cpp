@@ -162,7 +162,7 @@ FdoFeatureSchemaCollection* DescribeSchemaCommand::Execute()
     catch (FdoException* e)
     {
         FDOLOG_WRITE("The execution of DescribeSchema command failed.");
-        FDOLOG_WRITE(L" - schema name: %s", GetSchemaName());
+        FDOLOG_WRITE(L" - schema name: %ls", GetSchemaName());
 
         FdoCommandException* ne = NULL;
         ne = FdoCommandException::Create(
