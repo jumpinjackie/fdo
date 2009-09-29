@@ -29,6 +29,7 @@ set( PostGISProvider_LIB_SRCS
 	CreateDataStore.cpp
 	md5.cpp
 	SpatialContext.cpp
+	CreateSpatialContextCommand.cpp
 	DataReader.cpp
 	PgCursor.cpp
 	SpatialContextReader.cpp
