@@ -15,3 +15,4 @@ set( FdoRdbms_Lock_STAT_SRCS
 )
 
 add_library( FdoRdbms_Lock STATIC ${FdoRdbms_Lock_STAT_SRCS} )
+add_dependencies( FdoRdbms_Lock fdordbmsmsg )

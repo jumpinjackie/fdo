@@ -7,3 +7,4 @@ set( FdoRdbms_Connection_STAT_SRCS
 )
 
 add_library( FdoRdbms_Connection STATIC ${FdoRdbms_Connection_STAT_SRCS} )
+add_dependencies( FdoRdbms_Connection fdordbmsmsg )

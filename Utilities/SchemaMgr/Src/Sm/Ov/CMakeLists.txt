@@ -7,4 +7,7 @@ set( SmOverrides_STAT_SRCS
    stdafx.cpp
 )
 
+
+
 add_library( SmOverrides STATIC ${SmOverrides_STAT_SRCS} )
+add_dependencies( SmOverrides SMMessage )

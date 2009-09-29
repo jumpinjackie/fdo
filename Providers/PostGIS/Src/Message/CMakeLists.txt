@@ -20,6 +20,5 @@ add_custom_command(
 
 add_custom_target( PostGisMessage ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
 	
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat DESTINATION nls )
-#install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../Inc/${catalog}.h DESTINATION include )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat DESTINATION share/locale/en )
 

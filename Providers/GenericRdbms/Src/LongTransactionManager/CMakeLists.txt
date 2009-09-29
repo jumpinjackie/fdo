@@ -13,3 +13,4 @@ set( LTManager_STAT_SRCS
 )
 
 add_library( LTManager STATIC ${LTManager_STAT_SRCS} )
+add_dependencies( LTManager fdordbmsmsg )

@@ -33,3 +33,4 @@ set( SmLogicalPhysical_SRCS
 )
 
 add_library( SmLogicalPhysical STATIC ${SmLogicalPhysical_SRCS} )
+add_dependencies( SmLogicalPhysical SMMessage )

@@ -38,4 +38,5 @@ set( mysqldr_STAT_SRCS
 set_source_files_properties( ${mysqldr_STAT_SRCS} PROPERTIES LANGUAGE CXX )
 
 add_library( mysqldr STATIC ${mysqldr_STAT_SRCS} )
+add_dependencies( mysqldr fdordbmsmsg )
 

@@ -10,3 +10,4 @@ set( Gdbi_STAT_SRCS
 )
 
 add_library( Gdbi STATIC ${Gdbi_STAT_SRCS} )
+add_dependencies( Gdbi fdordbmsmsg )

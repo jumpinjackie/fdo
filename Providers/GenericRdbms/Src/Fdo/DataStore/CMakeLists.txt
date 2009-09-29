@@ -6,3 +6,4 @@ set( FdoRdbms_DataStore_STAT_SRCS
 )
 
 add_library( FdoRdbms_DataStore STATIC ${FdoRdbms_DataStore_STAT_SRCS} )
+add_dependencies( FdoRdbms_DataStore fdordbmsmsg )

@@ -13,3 +13,4 @@ set( FdoRdbmsMySQL_SchemaMgr_Ph_Rd_STAT_SRCS
 )
 
 add_library( FdoRdbmsMySQL_SchemaMgr_Ph_Rd STATIC ${FdoRdbmsMySQL_SchemaMgr_Ph_Rd_STAT_SRCS} )
+add_dependencies( FdoRdbmsMySQL_SchemaMgr_Ph_Rd fdordbmsmsg )

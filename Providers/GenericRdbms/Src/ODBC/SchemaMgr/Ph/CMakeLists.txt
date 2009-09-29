@@ -27,3 +27,4 @@ set( FdoRdbmsODBC_SchemaMgr_Ph_STAT_SRCS
 )
 
 add_library( FdoRdbmsODBC_SchemaMgr_Ph STATIC ${FdoRdbmsODBC_SchemaMgr_Ph_STAT_SRCS} )
+add_dependencies( FdoRdbmsODBC_SchemaMgr_Ph fdorbdmsmsg )

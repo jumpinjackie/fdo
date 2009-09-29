@@ -11,4 +11,6 @@ set( SmPhRb_SRCS
 	Table.cpp
 )
 
+
 add_library( SmPhRb STATIC ${SmPhRb_SRCS} )
+add_dependencies( SmPhRb SMMessage )
