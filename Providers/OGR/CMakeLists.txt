@@ -15,6 +15,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${UNMANAGED_INCLUDE_DIR}
 	${GDAL_INCLUDE_DIR}
+	${UTILITIES_COMMON_INCLUDE_DIR}
 	)
 
 set( OGRProvider_SRCS
@@ -27,6 +28,7 @@ add_library( OGRProvider SHARED ${OGRProvider_SRCS} )
 
 target_link_libraries( OGRProvider
 	FDO
+	ProvidersCommon
 	${GDAL_LIBRARY}
  )
 
