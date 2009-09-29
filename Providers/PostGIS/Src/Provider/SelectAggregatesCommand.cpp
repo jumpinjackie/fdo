@@ -159,9 +159,9 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         assert(NULL != classIdentifier);
         FdoStringP classId = classIdentifier->GetText();
 
-        FDOLOG_WRITE(L"Logical schema name: %s",
+        FDOLOG_WRITE(L"Logical schema name: %ls",
             static_cast<FdoString*>(classIdentifier->GetSchemaName()));
-        FDOLOG_WRITE(L"Class name: %s",
+        FDOLOG_WRITE(L"Class name: %ls",
             static_cast<FdoString*>(classIdentifier->GetName()));
 
         // Find definition of the feature class
@@ -170,7 +170,7 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         if (NULL == featureClasses)
         {
             FdoStringP msg =
-                FdoStringP::Format(L"Logical schema for '%s' not found", 
+                FdoStringP::Format(L"Logical schema for '%ls' not found", 
                 static_cast<FdoString*>(classId));
             FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
             throw FdoCommandException::Create(msg);
@@ -181,7 +181,7 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         if (featureClasses->GetCount() <= 0)
         {
             FdoStringP msg =
-                FdoStringP::Format(L"No class definition found for schema '%s'", 
+                FdoStringP::Format(L"No class definition found for schema '%ls'", 
                 static_cast<FdoString*>(classId));
             FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
             throw FdoCommandException::Create(msg);
@@ -192,7 +192,7 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         assert(NULL != classDef);
         FdoStringP className = classDef->GetName();
 
-        FDOLOG_WRITE(L"Class definition for: %s", static_cast<FdoString*>(className));
+        FDOLOG_WRITE(L"Class definition for: %ls", static_cast<FdoString*>(className));
 
         //
         // Get Physical Schema details
@@ -200,14 +200,14 @@ FdoIDataReader* SelectAggregatesCommand::Execute()
         ov::PhysicalSchemaMapping::Ptr schemaMapping;
         schemaMapping = mConn->GetPhysicalSchemaMapping();
 
-        FDOLOG_WRITE(L"Schema mapping for: %", schemaMapping->GetName());
+        FDOLOG_WRITE(L"Schema mapping for: '%ls'", schemaMapping->GetName());
 
         ov::ClassDefinition::Ptr phClassDef;
         phClassDef = schemaMapping->FindByClassName(className);
         if (NULL == phClassDef)
         {
             FdoStringP msg =
-                FdoStringP::Format(L"Physical schema for '%s' not found", 
+                FdoStringP::Format(L"Physical schema for '%ls' not found", 
                 static_cast<FdoString*>(className));
             FDOLOG_WRITE("ERROR: %s", static_cast<char const*>(msg));
             throw FdoCommandException::Create(msg);

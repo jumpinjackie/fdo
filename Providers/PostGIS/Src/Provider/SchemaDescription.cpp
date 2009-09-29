@@ -222,12 +222,12 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
           if (stReader->IsSpatialTable())
           {
               xClass = FdoFeatureClass::Create(fdoClassName, L"");      
-              FDOLOG_WRITE(L"Created feature class: %s", static_cast<FdoString*>(fdoClassName));
+              FDOLOG_WRITE(L"Created feature class: %ls", static_cast<FdoString*>(fdoClassName));
           }
           else
           {
               xClass = FdoClass::Create(fdoClassName, L"");      
-              FDOLOG_WRITE(L"Created class: %s", static_cast<FdoString*>(fdoClassName));
+              FDOLOG_WRITE(L"Created class: %ls", static_cast<FdoString*>(fdoClassName));
           }
           
 
@@ -258,7 +258,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                 spContext->SetExtent(static_cast<FdoEnvelopeImpl*>(geomColumn->GetEnvelope()));
                 spContexts->Add(spContext);
 
-                FDOLOG_WRITE(L"Created spatial context: %s",
+                FDOLOG_WRITE(L"Created spatial context: %ls",
                     static_cast<FdoString*>(spContextName));
             }
 
@@ -299,7 +299,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             pdc->Add(geomPropDef);
             (dynamic_cast<FdoFeatureClass*>(xClass.p))->SetGeometryProperty(geomPropDef);
 
-            FDOLOG_WRITE(L"+ geometric property: %s",
+            FDOLOG_WRITE(L"+ geometric property: %ls",
                 static_cast<FdoString*>(geomColumn->GetName()));
 
           } //if stReader->IsSpatialTable()
@@ -327,7 +327,7 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
                   datPropDef = FdoDataPropertyDefinition::Create(
                       colName, tcReader->GetColumnDescription());
 
-                  FDOLOG_WRITE(L"+ data property: %s",
+                  FDOLOG_WRITE(L"+ data property: %ls",
                       static_cast<FdoString*>(tcReader->GetColumnName()));
 
                   FdoDataType const dataType = tcReader->GetColumnType();
@@ -390,9 +390,9 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
        }
        catch (FdoException* e)
        {
-          FDOLOG_WRITE(L"ERROR: Describe operation for '%s' failed. %s"
+          FDOLOG_WRITE(L"ERROR: Describe operation for '%ls' failed. %ls"
               , static_cast<FdoString*>(fdoClassName)
-              , e->GetExceptionMessage());
+              , static_cast<FdoString*>(e->GetExceptionMessage()));
           e->Release();
        }
 
@@ -502,8 +502,8 @@ SpatialContext* SchemaDescription::CreateSpatialContext(Connection* conn,
     FdoStringP csWkt(wkt.c_str());
     spContext->SetCoordinateSystemWkt(csWkt);
 
-    FDOLOG_WRITE(L"CRS: %s", static_cast<FdoString*>(csName));
-    FDOLOG_WRITE(L"WKT: %s", static_cast<FdoString*>(csWkt));
+    FDOLOG_WRITE(L"CRS: %ls", static_cast<FdoString*>(csName));
+    FDOLOG_WRITE(L"WKT: %ls", static_cast<FdoString*>(csWkt));
 
     FDO_SAFE_ADDREF(spContext.p);
     return spContext.p;
