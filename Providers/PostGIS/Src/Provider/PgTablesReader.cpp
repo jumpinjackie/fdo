@@ -156,7 +156,7 @@ PgTablesReader::columns_t PgTablesReader::GetGeometryColumns() const
     columns_t columns;
 
     if (!mTableSpatialCached) {
-      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached);
+      FDOLOG_WRITE("PgTablesReader::-SelectColumnExtent '%s' is not a geometrie table!", mTableCached.c_str());
       return columns;
     }
 /* 2008/02
