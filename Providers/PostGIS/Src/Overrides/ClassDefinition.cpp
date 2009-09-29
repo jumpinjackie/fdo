@@ -127,7 +127,7 @@ FdoStringP ClassDefinition::GetTablePath() const
     FdoStringP path;
     if (schema.GetLength() && table.GetLength()) 
     {
-      path = FdoStringP::Format(L"\"%s\".\"%s\"",
+      path = FdoStringP::Format(L"\"%ls\".\"%ls\"",
           static_cast<FdoString*>(schema), static_cast<FdoString*>(table));
     } 
     else
