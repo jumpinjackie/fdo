@@ -275,7 +275,7 @@ FdoConnectionState Connection::Open()
             Close();
             assert(NULL == mPgConn);
 
-            FDOLOG_WRITE(L"ERROR: Connection open failed: %s", static_cast<FdoString*>(msg));
+            FDOLOG_WRITE(L"ERROR: Connection open failed: %ls", static_cast<FdoString*>(msg));
             throw FdoConnectionException::Create(msg);
         }
 
@@ -304,7 +304,7 @@ FdoConnectionState Connection::Open()
 
                 mConnState = FdoConnectionState_Open;
                 
-                FDOLOG_WRITE(L"Step 2 - FDO datastore open: %s",
+                FDOLOG_WRITE(L"Step 2 - FDO datastore open: %ls",
                     static_cast<FdoString*>(datastore));
             }
             else
@@ -527,7 +527,7 @@ void Connection::PgExecuteCommand(char const* sql, FdoSize& affected)
     {
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
-        FDOLOG_WRITE(L"SQL command failed: [%s] %s",
+        FDOLOG_WRITE(L"SQL command failed: [%ls] %ls",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_SQL_STATEMENT_EXECUTION_FAILED,
@@ -603,7 +603,7 @@ void Connection::PgExecuteCommand(char const* sql,
         FdoStringP errCode(PQresStatus(pgStatus));
         FdoStringP errMsg(PQresultErrorMessage(pgRes.get()));
 
-        FDOLOG_WRITE(L"ERROR: SQL command failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: SQL command failed: [%ls] %ls",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -657,7 +657,7 @@ PGresult* Connection::PgExecuteQuery(char const* sql)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE(L"ERROR: SQL query failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: SQL query failed: [%ls] %ls",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         // TODO: Consider translation of PostgreSQL status to FDO exception (new types?)
@@ -735,7 +735,7 @@ PGresult* Connection::PgDescribeCursor(char const* name)
         PQclear(pgRes);
         pgRes = NULL;
 
-        FDOLOG_WRITE(L"ERROR: Describe portal command failed: [%s] %s",
+        FDOLOG_WRITE(L"ERROR: Describe portal command failed: [%ls] %ls",
             static_cast<FdoString*>(errCode), static_cast<FdoString*>(errMsg));
 
         throw FdoCommandException::Create(NlsMsgGet(MSG_POSTGIS_CURSOR_DESCRIBE_FAILED,
@@ -855,7 +855,7 @@ SchemaDescription* Connection::DescribeSchema()
         }
         catch (FdoException* e)
         {
-            FDOLOG_WRITE(L"ERROR: Describe operation for '%s' failed",
+            FDOLOG_WRITE(L"ERROR: Describe operation for '%ls' failed",
                 static_cast<FdoString*>(schemaName));
 
             FdoCommandException* ne = NULL;
@@ -938,7 +938,7 @@ void Connection::ValidateConnectionString()
     FdoCommonConnStringParser parser(NULL, connStr);
     if (!parser.IsConnStringValid())
     {
-        FDOLOG_WRITE(L"ERROR: Invalid connection string: %s",
+        FDOLOG_WRITE(L"ERROR: Invalid connection string: %ls",
             static_cast<FdoString*>(connStr));
         
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_STRING,
@@ -951,7 +951,7 @@ void Connection::ValidateConnectionString()
 
     if (parser.HasInvalidProperties(dict))
     {
-        FDOLOG_WRITE(L"ERROR: Invalid connection property name: %s",
+        FDOLOG_WRITE(L"ERROR: Invalid connection property name: %ls",
             parser.GetFirstInvalidPropertyName(dict));
         
         throw FdoException::Create(NlsMsgGet(MSG_POSTGIS_INVALID_CONNECTION_PROPERTY,
@@ -977,7 +977,7 @@ void Connection::ValidateRequiredProperties()
             FdoStringP propValue(dict->GetProperty(propNames[i]));
             if (propValue.GetLength() <= 0)
             {
-                FDOLOG_WRITE(L"ERROR: The connection property '%s' required but not set.",
+                FDOLOG_WRITE(L"ERROR: The connection property '%ls' required but not set.",
                     propNames[i]);
                     
                 throw FdoException::Create(
@@ -1106,7 +1106,7 @@ FdoStringP Connection::GetPgCurrentSchema()
         schemaName = PQgetvalue(pgRes.get(), 0, 0);
     }
 
-    FDOLOG_WRITE(L"Current schema: %s", static_cast<FdoString*>(schemaName));
+    FDOLOG_WRITE(L"Current schema: %ls", static_cast<FdoString*>(schemaName));
 
     return schemaName;
 }
