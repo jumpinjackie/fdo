@@ -23,6 +23,7 @@ set( SchemaMgr_OV_LIB_SRCS
 )
 
 add_library( SchemaMgr_OV SHARED ${SchemaMgr_OV_LIB_SRCS} )
+add_dependencies( SchemaMgr_OV fdordbmsmsg )
 
 target_link_libraries( SchemaMgr_OV 
 	FDO 

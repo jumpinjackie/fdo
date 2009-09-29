@@ -59,3 +59,4 @@ set( rdbi_STAT_SRCS
 set_source_files_properties( ${rdbi_STAT_SRCS} PROPERTIES LANGUAGE CXX )
 
 add_library( rdbi STATIC ${rdbi_STAT_SRCS} )
+add_dependencies( rdbi fdordbmsmsg )

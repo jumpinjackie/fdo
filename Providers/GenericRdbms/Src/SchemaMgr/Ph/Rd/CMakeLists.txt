@@ -15,3 +15,4 @@ set( SmPhRdGrd_STAT_SRCS
 )
 
 add_library( SmPhRdGrd STATIC ${SmPhRdGrd_STAT_SRCS} )
+add_dependencies( SmPhRdGrd fdordbmsmsg )

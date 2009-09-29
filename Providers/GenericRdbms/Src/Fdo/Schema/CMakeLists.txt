@@ -11,3 +11,4 @@ set( FdoRdbms_Schema_STAT_SRCS
 )
 
 add_library( FdoRdbms_Schema STATIC ${FdoRdbms_Schema_STAT_SRCS} )
+add_dependencies( FdoRdbms_Schema fdordbmsmsg )

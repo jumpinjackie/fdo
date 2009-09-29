@@ -13,3 +13,4 @@ set( FdoRdbms_Other_STAT_SRCS
 )
 
 add_library( FdoRdbms_Other STATIC ${FdoRdbms_Other_STAT_SRCS} )
+add_dependencies( FdoRdbms_Other fdordbmsmsg )

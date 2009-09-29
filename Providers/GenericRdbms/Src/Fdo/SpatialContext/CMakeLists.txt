@@ -9,3 +9,4 @@ set( FdoRdbms_SpatialContext_STAT_SRCS
 )
 
 add_library( FdoRdbms_SpatialContext STATIC ${FdoRdbms_SpatialContext_STAT_SRCS} )
+add_dependencies( FdoRdbms_SpatialContext fdordbmsmsg )

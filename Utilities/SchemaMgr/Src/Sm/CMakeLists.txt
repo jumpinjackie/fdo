@@ -25,6 +25,8 @@ target_link_libraries( SchemaMgr
 	ProvidersCommon
 	FDO )
 
+add_dependencies( SchemaMgr SMMessage )
+
 if( CMAKE_COMPILER_IS_GNUCXX )
 	target_link_libraries( SchemaMgr
 		-Wl,-whole-archive

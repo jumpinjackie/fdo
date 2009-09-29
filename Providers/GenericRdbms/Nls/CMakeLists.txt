@@ -20,6 +20,6 @@ add_custom_command(
 				COMMENT "Generating ${catalog}.h ..."
         )
 
-add_custom_target( ${catalog} ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
+	add_custom_target( ${catalog} ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
 	
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat DESTINATION nls )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat DESTINATION share/locale/en )

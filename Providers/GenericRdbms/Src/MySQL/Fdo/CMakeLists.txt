@@ -12,3 +12,4 @@ set( FdoRdbmsMySQL_Fdo_STAT_SRCS
 )
 
 add_library( FdoRdbmsMySQL_Fdo STATIC ${FdoRdbmsMySQL_Fdo_STAT_SRCS} )
+add_dependencies( FdoRdbmsMySQL_Fdo fdordbmsmsg )

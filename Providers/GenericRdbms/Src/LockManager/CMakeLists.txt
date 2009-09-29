@@ -12,3 +12,4 @@ set( LockManager_STAT_SRCS
 )
 
 add_library( LockManager STATIC ${LockManager_STAT_SRCS} )
+add_dependencies( LockManager fdordbmsmsg )

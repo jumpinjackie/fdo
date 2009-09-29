@@ -11,5 +11,7 @@ set( SmPhCfg_SRCS
 	SchemaReader.cpp
 )
 
+
 add_library( SmPhCfg STATIC ${SmPhCfg_SRCS} )
+add_dependencies( SmPhCfg SMMessage )
 

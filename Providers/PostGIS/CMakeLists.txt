@@ -17,5 +17,5 @@ endif( NOT FDO_CORE_BUILD )
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/Inc )
 
 add_subdirectory( Src )
-add_subdirectory( Doc )
-add_subdirectory( Inc )
+#add_subdirectory( Doc )
+#add_subdirectory( Inc )

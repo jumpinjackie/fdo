@@ -79,5 +79,7 @@ set( SmPhysical_SRCS
 	Writer.cpp
 )
 
+
 add_library( SmPhysical STATIC ${SmPhysical_SRCS} )
+add_dependencies( SmPhysical SMMessage )
 

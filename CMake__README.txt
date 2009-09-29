@@ -32,15 +32,17 @@ Unix / Linux Instructions
 I. Requiremnents
 	Base:
 		CMake
-	For system libraries, developemnet packages for:
+	For system libraries, development packages for:
 		openssl
 		curl
 		boost
 		gdal
-		cppunit ( not recomended yet )
-		sqlite3
+		cppunit
 		xerces-c
 		xalan-c
+		postgresql
+		mysql
+		unixODBC
 
 II. Usage
 	Cmake build can be done ( and recomended to ) in out of source directory, so a simple run would be
@@ -60,11 +62,9 @@ III. Using internal provided Thirdparty libraries
 	- GDAL - gdal library
 	- CPPUNIT - Olf cppunit version
 	- CURL - curl library
-	- SQLITE - Sqlite 3
 	- BOOST - Boost libraries
-	- POSTGRESQL - postgresql ( for PostGis provider )
 	If you desire buils all third party dependencies, use:
-	-DALL_DEPENDENCIES=TRUE
+	-DALL_THIRDPARTY=TRUE
 
 IV. Compiling Providers
 	Providers can be called directly from cmake commandline, no need to compile separated anymore if you

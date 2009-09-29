@@ -12,3 +12,4 @@ set( FdoRdbms_FeatureCommands_STAT_SRCS
 )
 
 add_library( FdoRdbms_FeatureCommands STATIC ${FdoRdbms_FeatureCommands_STAT_SRCS} )
+add_dependencies( FdoRdbms_FeatureCommands fdordbmsmsg )

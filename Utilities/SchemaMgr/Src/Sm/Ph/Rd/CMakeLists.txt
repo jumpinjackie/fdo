@@ -31,4 +31,6 @@ set( SmPhRd_SRCS
 	ViewReader.cpp
 )
 
+
 add_library( SmPhRd STATIC ${SmPhRd_SRCS} )
+add_dependencies( SmPhRd SMMessage )

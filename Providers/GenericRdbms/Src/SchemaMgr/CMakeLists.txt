@@ -10,3 +10,4 @@ set( SmGrd_STAT_SRCS
 )
 
 add_library( SmGrd STATIC ${SmGrd_STAT_SRCS} )
+add_dependencies( SmGrd fdordbmsmsg )

@@ -136,4 +136,5 @@ set( FdoRdbms_STAT_SRCS
 )
 
 add_library( FdoRdbms STATIC ${FdoRdbms_STAT_SRCS} )
+add_dependencies( FdoRdbms fdordbmsmsg )
 

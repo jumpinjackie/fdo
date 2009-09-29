@@ -19,6 +19,6 @@ add_custom_command(
 
 add_custom_target( FDOMessage ALL DEPENDS ${messagefile} McToMsf mkcatdefs )
 	
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/FDOMessage.cat DESTINATION nls )
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/FDOMessage.cat DESTINATION share/locale/en )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/../../Inc/FdoMessage.h DESTINATION include )
 

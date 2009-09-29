@@ -16,4 +16,6 @@ set( SmPhMt_SRCS
 	SpatialContextReader.cpp
 )
 
+
 add_library( SmPhMt STATIC ${SmPhMt_SRCS} )
+add_dependencies( SmPhMt SMMessage )

@@ -6,8 +6,9 @@ INSTALL( FILES
         DESTINATION include )
 
 INSTALL(
-        DIRECTORY Common Fdo Geometry
+	DIRECTORY Common Fdo Geometry
         DESTINATION include
-        PATTERN ".svn" EXCLUDE
-        PATTERN "TransformerXalan.h" EXCLUDE
+        PATTERN *.h
+		PATTERN "TransformerXalan.h" EXCLUDE
+		PATTERN .svn EXCLUDE
         )
