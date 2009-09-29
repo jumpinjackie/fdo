@@ -400,7 +400,7 @@ FdoInt32 Command<T>::GetSRID(FdoPropertyDefinitionCollection *propsDef)
                     }
                 }
 
-                FDOLOG_WRITE(L"\t+ %s (SRID=%d)", propDef->GetName(), currentSrid);
+                FDOLOG_WRITE(L"\t+ %ls (SRID=%d)", propDef->GetName(), currentSrid);
             }
         }
     }
