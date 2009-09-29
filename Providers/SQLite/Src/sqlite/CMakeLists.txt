@@ -14,13 +14,7 @@ set( sqlitefdoprovider3_SRCS
 	delete.c
 	expr.c
 	fault.c
-	fts3.c
 	fts3_expr.c
-	fts3_hash.c
-	fts3_icu.c
-	fts3_porter.c
-	fts3_tokenizer1.c
-	fts3_tokenizer.c
 	func.c
 	global.c
 	hash.c
