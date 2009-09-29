@@ -317,8 +317,9 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
               if (pdc->FindItem(colName)) 
               { 
                   // NOTE - Eric Barby: Because is out of date after a remove thisTable 'DROP TABLE...'
-                  FDOLOG_WRITE("ERROR: Table '%s' PropertyDefinition '%s' is already in the PropertyDefinitionCollection",
-                      stReader->GetTableName(), colName);
+                  FDOLOG_WRITE("ERROR: Table '%ls' PropertyDefinition '%ls' is already in the PropertyDefinitionCollection",
+                      static_cast<FdoString*>(stReader->GetTableName()), 
+                      static_cast<FdoString*>(colName));
               } 
               else 
               {
