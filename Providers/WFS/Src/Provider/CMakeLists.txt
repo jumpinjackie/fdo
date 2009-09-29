@@ -9,38 +9,38 @@ include_directories(
 	)
 
 set( WFSProvider_SRCS
-    FdoWfsCommandCapabilities.cpp
-    FdoWfsConnectionCapabilities.cpp
-    FdoWfsConnection.cpp
-    FdoWfsConnectionInfo.cpp
-    FdoWfsDataReader.cpp
-    FdoWfsDelegate.cpp
-    FdoWfsDescribeFeatureType.cpp
-    FdoWfsDescribeSchemaCommand.cpp
-    FdoWfsExpressionCapabilities.cpp
-    FdoWfsFeatureReader.cpp
-    FdoWfsFeatureType.cpp
-    FdoWfsFeatureTypeList.cpp
-    FdoWfsFilterCapabilities.cpp
-    FdoWfsGeometryCapabilities.cpp
-    FdoWfsGetFeature.cpp
-    FdoWfsGetSpatialContexts.cpp
-    FdoWfsOgcFilterCapabilities.cpp
-    FdoWfsOgcScalarCapabilities.cpp
-    FdoWfsOgcSpatialCapabilities.cpp
-    FdoWfsRasterCapabilities.cpp
-    FdoWfsSchemaCapabilities.cpp
-    FdoWfsSchemaCopyHandler.cpp
-    FdoWfsSchemaMerger.cpp
-    FdoWfsSchemaRefHandler.cpp
-    FdoWfsSelectAggregatesCommand.cpp
-    FdoWfsSelectCommand.cpp
-    FdoWfsServiceMetadata.cpp
-    FdoWfsSpatialContextReader.cpp
-    FdoWfsTopologyCapabilities.cpp
-    FdoWfsUtils.cpp
-    stdafx.cpp
-    FdoWfsSpatialExtentsAggregateReader.cpp
+	FdoWfsCommandCapabilities.cpp
+	FdoWfsConnectionCapabilities.cpp
+	FdoWfsConnection.cpp
+	FdoWfsConnectionInfo.cpp
+	FdoWfsDataReader.cpp
+	FdoWfsDelegate.cpp
+	FdoWfsDescribeFeatureType.cpp
+	FdoWfsDescribeSchemaCommand.cpp
+	FdoWfsExpressionCapabilities.cpp
+	FdoWfsFeatureReader.cpp
+	FdoWfsFeatureType.cpp
+	FdoWfsFeatureTypeList.cpp
+	FdoWfsFilterCapabilities.cpp
+	FdoWfsGeometryCapabilities.cpp
+	FdoWfsGetFeature.cpp
+	FdoWfsGetSpatialContexts.cpp
+	FdoWfsOgcFilterCapabilities.cpp
+	FdoWfsOgcScalarCapabilities.cpp
+	FdoWfsOgcSpatialCapabilities.cpp
+	FdoWfsRasterCapabilities.cpp
+	FdoWfsSchemaCapabilities.cpp
+	FdoWfsSchemaCopyHandler.cpp
+	FdoWfsSchemaMerger.cpp
+	FdoWfsSchemaRefHandler.cpp
+	FdoWfsSelectAggregatesCommand.cpp
+	FdoWfsSelectCommand.cpp
+	FdoWfsServiceMetadata.cpp
+	FdoWfsSpatialContextReader.cpp
+	FdoWfsTopologyCapabilities.cpp
+	FdoWfsUtils.cpp
+	stdafx.cpp
+	FdoWfsSpatialExtentsAggregateReader.cpp
 )
 
 add_library( WFSProvider SHARED ${WFSProvider_SRCS} )
@@ -49,6 +49,7 @@ add_dependencies( WFSProvider WFSMessage )
 target_link_libraries( WFSProvider
 	FDO
 	ProvidersCommon
+	ExpressionEngine
 	FdoOws
 	pthread
  )
