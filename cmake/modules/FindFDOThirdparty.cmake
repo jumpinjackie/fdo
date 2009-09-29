@@ -42,6 +42,28 @@ else( NOT INTERNAL_CPPUNIT )
 	mark_as_advanced( CPPUNIT_LIBRARY_DIR CPPUNIT_INCLUDE_DIR )
 endif( NOT INTERNAL_CPPUNIT )
 
+# Check for xerces-c or ThirdParty
+if( NOT INTERNAL_XERCESC )
+	find_package( XercesC REQUIRED )
+else( NOT INTERNAL_XERCESC )
+	set( LOCAL_XERCESC TRUE )
+	set( XERCESC_LIBRARY_DIR  ${FDOTHIRDPARTY}/apache/xml-xerces/c )
+	set( XERCESC_INCLUDE_DIR  ${FDOTHIRDPARTY}/apache/xml-xerces/c/src/xercesc/} )
+	set( XERCESC_FOUND TRUE )
+	mark_as_advanced( XERCESC_LIBRARY_DIR XERCESC_INCLUDE_DIR )
+endif( NOT INTERNAL_XERCESC )
+
+# Check for xalan-c or ThirdParty
+if( NOT INTERNAL_XALANC )
+	find_package( XalanC REQUIRED )
+else( NOT INTERNAL_XALANC )
+	set( LOCAL_XALANC TRUE )
+	set( XALANC_LIBRARY_DIR  ${FDOTHIRDPARTY}/apache/xml-xalan/c )
+	set( XALANC_INCLUDE_DIR  ${FDOTHIRDPARTY}/apache/xml-xalan/c/src/xalanc/} )
+	set( XALANC_FOUND TRUE )
+	mark_as_advanced( XALANC_LIBRARY_DIR XALANC_INCLUDE_DIR )
+endif( NOT INTERNAL_XALANC )
+
 # SqLite ThirdParty
 set( SQLITE_INCLUDE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
 set( SQLITE_DIR ${FDOTHIRDPARTY}/Sqlite3.3.13/Src )
