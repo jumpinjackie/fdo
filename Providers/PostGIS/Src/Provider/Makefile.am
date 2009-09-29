@@ -41,6 +41,7 @@ SpatialContextCollection.cpp \
 CreateDataStore.cpp \
 md5.cpp \
 SpatialContext.cpp \
+CreateSpatialContextCommand.cpp \
 DataReader.cpp \
 PgCursor.cpp \
 SpatialContextReader.cpp \
@@ -91,6 +92,7 @@ SpatialContextCollection.h \
 DataReader.h \
 PgCursor.h \
 SpatialContext.h \
+CreateSpatialContextCommand.h \
 DataStoreReader.h \
 PgGeometryColumn.h \
 SpatialContextReader.h \
