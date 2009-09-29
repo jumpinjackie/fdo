@@ -154,6 +154,10 @@ private:
     //
     void DropTable(FdoPtr<FdoClassDefinition> classDef) const;
 
+    // This function alter a feature table, support only add and drop column
+    // classDef - definition of feature class
+    //
+    void AlterTable(FdoPtr<FdoClassDefinition> classDef) const;
 
     // This function registers geometry column in PostGIS meta-schema.
     // It is a simple proxy around SQL command:
@@ -175,6 +179,7 @@ private:
     void CreateSpatialIndex(std::string const& table, FdoPtr<FdoGeometricPropertyDefinition> prop) const;
 
     void CreateSequence(std::string const& table, FdoPtr<FdoDataPropertyDefinition> prop) const;
+    void InsertDummyRecord(std::string const& table, FdoPtr<FdoDataPropertyDefinition> prop) const;
 
     ov::ClassDefinition* GetClassDefinition(FdoStringP className) const;
 

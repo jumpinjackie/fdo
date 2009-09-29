@@ -174,6 +174,8 @@ void ApplySchemaCommand::Execute()
             case FdoSchemaElementState_Detached:
                 break;            
             case FdoSchemaElementState_Modified:
+                AlterTable(classDef);
+                break;
             case FdoSchemaElementState_Unchanged:
                 break;
             }
@@ -258,6 +260,82 @@ bool ApplySchemaCommand::TestingDropTable(ov::ClassDefinition* phClass) const
     }
 
     return !hasData;
+}
+
+void ApplySchemaCommand::AlterTable(FdoPtr<FdoClassDefinition> classDef) const
+{
+    FDOLOG_MARKER("ApplySchemaCommand::-AlterTable");
+
+    int nbPropModified=0;
+    ov::ClassDefinition* phClass;
+    phClass = this->GetClassDefinition(classDef->GetName());
+    if (NULL == phClass)
+    {
+      CreateTable(classDef);
+      return;
+      /*
+        FdoStringP msg = FdoStringP::Format(
+            L"[PostGIS] ApplySchemaCommand: Alter class '%s' error! ClassDefinition not fount!",
+            classDef->GetName());
+        FDOLOG_WRITE("ERROR: %s", static_cast<FdoString*>(msg));
+        throw FdoCommandException::Create(msg);
+        */
+    }
+    
+    std::string schemaName(static_cast<char const*>(phClass->GetSchemaName()));
+    std::string tableName (static_cast<char const*>(phClass->GetTableName()));
+
+    std::string sqlAlter("ALTER TABLE ");
+    sqlAlter += tableName;
+
+    FdoPtr<FdoPropertyDefinitionCollection> props(classDef->GetProperties());
+    if (NULL != props && props->GetCount() > 0)
+    {
+        //
+        // Read properties and parse details: name, data type, size.
+        // 
+        FdoInt32 const propsSize = props->GetCount();
+        for (FdoInt32 j = 0; j < propsSize; j++)
+        {
+            FdoPtr<FdoPropertyDefinition> propDef(props->GetItem(j));
+            if (FdoPropertyType_DataProperty == propDef->GetPropertyType())
+            {
+                FdoSchemaElementState propState = propDef->GetElementState();
+                FdoStringP propName(propDef->GetName());
+                std::string sqlType(details::PgTypeFromFdoProperty(propDef));
+                if (sqlType.empty())
+                {
+                    throw FdoCommandException::Create(L"ApplySchemaCommand::Execute: Unkown data property type"); 
+                }
+                switch(propState)
+                {
+                  case FdoSchemaElementState_Added:
+                    if(nbPropModified > 0) sqlAlter += ',';
+                    sqlAlter += " ADD COLUMN ";
+                    sqlAlter += static_cast<char const*>(propName);
+                    sqlAlter += " " + sqlType;
+                    nbPropModified++;
+                    break;
+                  case FdoSchemaElementState_Deleted:
+                    if(nbPropModified > 0) sqlAlter += ',';
+                    sqlAlter += " DROP COLUMN ";
+                    sqlAlter += static_cast<char const*>(propName);
+                    nbPropModified++;
+                    break;
+                }
+
+            }
+        }
+    }
+    if(nbPropModified)
+    {
+      FDOLOG_WRITE("SQL:\n\t%s", sqlAlter.c_str());
+      mConn->PgExecuteCommand(sqlAlter.c_str());
+      //
+      // Update a Logical & Physical mapping of the feature class
+      //
+      mConn->ResetSchema();
+    }
 }
 
 void ApplySchemaCommand::CreateTable(FdoPtr<FdoClassDefinition> classDef) const
@@ -407,28 +485,14 @@ void ApplySchemaCommand::CreateTable(FdoPtr<FdoClassDefinition> classDef) const
             {
                 CreateSequence(tableName, propId);
             }
+            InsertDummyRecord(tableName, propId);
         }
 
         // TODO: Add class description as a COMMENT
 
-        // Physical mapping for the feature class
-        if (NULL == phClass) {
-          ov::PhysicalSchemaMapping *schemaMapping=mConn->GetPhysicalSchemaMapping();
-          if (schemaMapping) {
-            ov::ClassCollection::Ptr phClasses(schemaMapping->GetClasses());
-            ov::ClassDefinition::Ptr classDef = ov::ClassDefinition::Create();
-            classDef->SetName(className);
-            classDef->SetSchemaName(FdoStringP(schemaName.c_str()));
-            try {
-              phClasses->Add(classDef);
-            }
-            catch (FdoException* e)
-            {
-              FDOLOG_WRITE("Error Do not append ClassDefinition / Schema Mapping for class");
-              e->Release();
-            }
-          }
-        }
+        // Update Logical & Physical mapping for the feature class
+        //mConn->ResetSchema();
+
     } // if (NULL != props && props->GetCount() > 0)
 }
 
@@ -557,6 +621,18 @@ void ApplySchemaCommand::CreateSequence(std::string const& table,
     mConn->PgExecuteCommand(sql.c_str());
 }
 
+void ApplySchemaCommand::InsertDummyRecord(std::string const& table,
+                                        FdoPtr<FdoDataPropertyDefinition> prop) const
+{
+    FDOLOG_MARKER("ApplySchemaCommand::-InsertDummyRecord");
+
+    assert(!table.empty());
+    std::string column(static_cast<char const*>(FdoStringP(prop->GetName()).Lower()));
+
+    std::string sql("INSERT INTO " + table + "(" + column + ") values(0)");
+    mConn->PgExecuteCommand(sql.c_str());
+}
+
 void ApplySchemaCommand::DropTable(FdoPtr<FdoClassDefinition> classDef) const
 {
     assert(NULL != mFeatureSchema);
@@ -633,8 +709,9 @@ void ApplySchemaCommand::DropTable(FdoPtr<FdoClassDefinition> classDef) const
     }
 
     //
-    // TODO: Remove a Physical mapping of the feature class
+    // Update a Logical & Physical mapping of the feature class
     //
+    mConn->ResetSchema();
 
 }
 
