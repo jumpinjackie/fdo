@@ -367,3 +367,4 @@ void SQLCmdTest::TestComplexBind ()
         CPPUNIT_FAIL("TestComplexBind failed");
 	}
 }
+

@@ -41,5 +41,5 @@ INCLUDES = \
   -I./   \
   -I/usr/include 
 
-CXXFLAGS = @CXXFLAGS_SQLITE@ -msse
+CXXFLAGS = @CXXFLAGS_SQLITE@ -msse -msse2 -mmmx
 

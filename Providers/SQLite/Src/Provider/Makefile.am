@@ -30,7 +30,6 @@ libSQLiteProviderSrc_la_SOURCES = \
    SltQueryTranslator.cpp \
    SltReader.cpp \
    SltSpatialContextReader.cpp \
-   SpatialIndexRtree.cpp \
    SQLiteSchemaMergeContext.cpp
 
 noinst_HEADERS = $(libSQLiteProviderSrc_la_SOURCES) \
@@ -42,13 +41,11 @@ noinst_HEADERS = $(libSQLiteProviderSrc_la_SOURCES) \
    SltCommandTemplates.h \
    SltConversionUtils.h \
    SltExprExtensions.h \
-   SltFdoPtr.h \
    SltMetadata.h \
    SltProvider.h \
    SltQueryTranslator.h \
    SltReader.h \
    SltSpatialContextReader.h \
-   SpatialIndexRtree.h \
    stdafx.h \
    SQLiteProvider.h \
    StringUtil.h \
@@ -67,5 +64,5 @@ INCLUDES = \
   -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I/usr/include
 
-CXXFLAGS = @CXXFLAGS_SQLITE@
+CXXFLAGS = @CXXFLAGS_SQLITE@ -msse -msse2 -mmmx
 

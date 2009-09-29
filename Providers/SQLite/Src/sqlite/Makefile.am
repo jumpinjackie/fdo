@@ -37,13 +37,7 @@ libSqlite3Engine_la_SOURCES = \
   delete.c \
   expr.c \
   fault.c \
-  fts3.c \
   fts3_expr.c \
-  fts3_hash.c \
-  fts3_icu.c \
-  fts3_porter.c \
-  fts3_tokenizer.c \
-  fts3_tokenizer1.c \
   func.c \
   global.c \
   hash.c \
@@ -83,7 +77,6 @@ libSqlite3Engine_la_SOURCES = \
   shell.c \
   status.c \
   table.c \
-  tclsqlite.c \
   tokenize.c \
   trigger.c \
   update.c \
@@ -131,7 +124,7 @@ INCLUDES = \
 
 libSqlite3Engine_la_LDFLAGS =
 
-CXXFLAGS = @CXXFLAGS_SQLITE@ -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_OMIT_TRACE -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_SHARED_CACHEXXX -DSQLITE_THREADSAFE=2 -DSQLITE_ENABLE_RTREE -DSQLITE_CORE 
+CXXFLAGS = @CXXFLAGS_SQLITE@ -DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_OMIT_TRACE -DSQLITE_OMIT_EXPLAIN -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_UTF16 -DSQLITE_OMIT_SHARED_CACHEXXX -DSQLITE_THREADSAFE=2 -DSQLITE_ENABLE_RTREE -DSQLITE_CORE -DSQLITE_SOUNDEX
 ##To be consistent with internal build, force the compiler to be g++. 
-CC = g++
+CC = gcc
 
