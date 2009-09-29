@@ -24,9 +24,13 @@ set( ProvidersCommon_SRCS
    Src/FdoCommonThreadMutex.cpp
    Src/FdoCommonThreadUtil.cpp
    Src/stdafx.cpp
+   Src/Parse/yyConstraint.cpp
    Src/Parse/Lex.cpp
    Src/Parse/Parse.cpp
-   Src/Parse/yyConstraint.cpp
+   Src/FdoDefaultDataReader.cpp
+   Src/FdoDefaultFeatureReader.cpp
+   Src/FdoDefaultScrollableFeatureReader.cpp
+   Src/FdoDefaultSqlDataReader.cpp
 )
 
 add_library( ProvidersCommon SHARED ${ProvidersCommon_SRCS} )
