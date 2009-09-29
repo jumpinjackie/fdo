@@ -69,6 +69,15 @@ bool SchemaDescription::IsDescribed() const
     return mIsDescribed;
 }
 
+void SchemaDescription::ResetSchema()
+{
+
+  FDO_SAFE_RELEASE(mLogicalSchemas.p);
+  FDO_SAFE_RELEASE(mSchemaMapping.p);
+  FDO_SAFE_RELEASE(mSpatialContexts.p);
+  mIsDescribed = false;
+}
+
 void SchemaDescription::SetLogicalSchemas(FdoFeatureSchemaCollection* logicalSchemas)
 {
     mLogicalSchemas = logicalSchemas;

@@ -445,6 +445,14 @@
 			Name="SpatialContext"
 			>
 			<File
+				RelativePath=".\CreateSpatialContextCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CreateSpatialContextCommand.h"
+				>
+			</File>
+			<File
 				RelativePath=".\GetSpatialContextsCommand.cpp"
 				>
 			</File>

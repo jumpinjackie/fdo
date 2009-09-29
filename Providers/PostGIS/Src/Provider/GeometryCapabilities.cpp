@@ -89,7 +89,7 @@ FdoGeometryComponentType* GeometryCapabilities::GetGeometryComponentTypes(FdoInt
 
 FdoInt32 GeometryCapabilities::GetDimensionalities()
 {
-    return (FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M);
+    return (FdoDimensionality_XY );//| FdoDimensionality_Z | FdoDimensionality_M);
 }
 
 

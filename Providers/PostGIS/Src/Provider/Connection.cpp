@@ -37,6 +37,7 @@
 #include "ApplySchemaCommand.h"
 #include "DescribeSchemaCommand.h"
 #include "GetSpatialContextsCommand.h"
+#include "CreateSpatialContextCommand.h"
 #include "InsertCommand.h"
 #include "UpdateCommand.h"
 #include "DeleteCommand.h"
@@ -423,6 +424,9 @@ FdoICommand* Connection::CreateCommand(FdoInt32 type)
     case FdoCommandType_GetSpatialContexts:
         cmd = new GetSpatialContextsCommand(this);
         break;
+    case FdoCommandType_CreateSpatialContext:
+        cmd = new CreateSpatialContextCommand(this);
+        break;
     default:
         {
             FDOLOG_WRITE("ERROR: Unsupported command requested.");
@@ -470,6 +474,18 @@ FdoFeatureSchemaCollection* Connection::GetLogicalSchema()
     SchemaDescription::Ptr sc(DescribeSchema());
 
     return sc->GetLogicalSchemas();
+}
+
+void Connection::ResetSchema()
+{
+    FDOLOG_MARKER("Connection::+ResetSchema");
+    
+    if (NULL != mSchemaDesc)
+    {
+      mSchemaDesc->ResetSchema();
+      FDO_SAFE_RELEASE(mSchemaDesc.p);
+    }
+
 }
 
 ov::PhysicalSchemaMapping* Connection::GetPhysicalSchemaMapping()
@@ -783,7 +799,7 @@ void Connection::PgRollbackSoftTransaction()
     
     if (0 >= mSoftTransactionLevel)
     {
-        FDOLOG_WRITE("No active transaction to commit");
+        FDOLOG_WRITE("No active transaction to rollback");
     }
     else
     {
@@ -821,7 +837,7 @@ SchemaDescription* Connection::DescribeSchema()
 {
     FDOLOG_MARKER("Connection::-DescribeSchema");
 
-    if (NULL == mSchemaDesc)
+    if (NULL == mSchemaDesc || mSchemaDesc->IsDescribed() == false)
     {
         // TODO: Add support of describing selected schema instead of all
         
@@ -1093,6 +1109,76 @@ FdoStringP Connection::GetPgCurrentSchema()
     FDOLOG_WRITE(L"Current schema: %s", static_cast<FdoString*>(schemaName));
 
     return schemaName;
+}
+
+std::string Connection::GetPgNextVal(std::string sequence)
+{
+    FDOLOG_MARKER("Connection::-GetPgNextVal");
+    
+    std::string sql("select nextval(\'" + sequence + "\')");
+
+    return PgQueryOneValue(sql);
+
+}
+
+std::string Connection::PgQueryOneValue(std::string sql)
+{
+    FDOLOG_MARKER("Connection::-PgQueryOneValue");
+    boost::shared_ptr<PGresult> pgRes(PgExecuteQuery(sql.c_str()), PQclear);
+    std::string value;
+    value = PQgetvalue(pgRes.get(), 0, 0);
+    FDOLOG_WRITE(L"Value : %s", value.c_str());
+    return value;
+}
+
+bool Connection::GetCoordinateSystemWkt(std::string sridText,std::string& csName,std::string& csWkt)
+{
+    std::string sql("SELECT srtext FROM spatial_ref_sys WHERE srid = " + sridText);
+    boost::shared_ptr<PGresult> pgRes(PgExecuteQuery(sql.c_str()), PQclear);    
+    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()) || PQntuples(pgRes.get()) < 1)
+    {
+        FDOLOG_WRITE("ERROR: The Spatial Reference System for SRID=%s not found",sridText.c_str());
+        /*
+        FdoStringP tmp = sridText.c_str();
+        FdoStringP msg = FdoStringP::Format(L"The Spatial Reference System for SRID=%s not found.",
+            static_cast<FdoString const*>(tmp));
+        throw FdoException::Create(static_cast<FdoString*>(msg));
+        */
+        return false;
+    }
+
+    int const nfield = PQfnumber(pgRes.get(), "srtext");
+    std::string wkt(PQgetvalue(pgRes.get(), 0, nfield));
+    assert(!wkt.empty());
+    csWkt = wkt;
+
+    // Use substring between first quotes ("") as the SRS name
+    std::string wktName("UNKNOWN");
+    std::string::size_type pos1 = wkt.find_first_of('"') + 1;
+    std::string::size_type pos2 = wkt.find_first_of(',') - 1;
+    if (pos1 != std::string::npos && pos2 != std::string::npos)
+    {
+        wktName = wkt.substr(pos1, pos2 - pos1);
+    }
+    csName = wktName;
+    return true;
+}
+
+bool Connection::GetSrid(std::string csName,std::string& sridText)
+{
+    std::string sql("SELECT srid FROM spatial_ref_sys WHERE srtext like '%" + csName + "%'");
+    boost::shared_ptr<PGresult> pgRes(PgExecuteQuery(sql.c_str()), PQclear);    
+    if (PGRES_TUPLES_OK != PQresultStatus(pgRes.get()) || PQntuples(pgRes.get()) < 1)
+    {
+        FDOLOG_WRITE("ERROR: The SRID not found for csName=%s",csName.c_str());
+        return false;
+    }
+
+    int const nfield = PQfnumber(pgRes.get(), "srid");
+    std::string srid(PQgetvalue(pgRes.get(), 0, nfield));
+    assert(!srid.empty());
+    sridText = srid;
+    return true;
 }
 
 }} // namespace fdo::postgis
