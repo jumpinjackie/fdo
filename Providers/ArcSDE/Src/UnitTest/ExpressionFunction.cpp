@@ -88,7 +88,8 @@ void TestExpressionFunction::setUp ()
 // +---------------------------------------------------------------------------
 
 {
-
+// See note in RunAllExpFctTests
+#ifdef _WIN32
     // Declare and initialize all necessary local variables.
 
     FdoStringP datastore_name;
@@ -157,6 +158,7 @@ void TestExpressionFunction::setUp ()
       throw;
 
     }  //  catch ...
+#endif
 }  //  setUp ()
 
 void TestExpressionFunction::tearDown ()
@@ -166,6 +168,8 @@ void TestExpressionFunction::tearDown ()
 // +---------------------------------------------------------------------------
 
 {
+// See note in RunAllExpFctTests
+#ifdef _WIN32
 
     // Declare and initialize all necessary local variables.
 
@@ -232,7 +236,7 @@ void TestExpressionFunction::tearDown ()
       throw;
 
     }  //  catch ...
-
+#endif
 }  //  tearDown ()
 
 void TestExpressionFunction::DropTestSchema ( FdoString* schema_name)
