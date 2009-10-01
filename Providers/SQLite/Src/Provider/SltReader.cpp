@@ -393,7 +393,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
             ReadNext();
 
         //return the index of the new property
-        return (int)m_reissueProps.Count() - 1;
+        return index; // this is not accurate since other properties can be already selected...
     }
     else
     {
