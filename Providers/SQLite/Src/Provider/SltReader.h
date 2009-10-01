@@ -215,7 +215,8 @@ protected:
             if (ret >= 0)
                 return ret;
 
-            return AddColumnToQuery(name);
+            AddColumnToQuery(name);
+            return m_mNameToIndex.GetIndex(name);
         }
 
         SltConnection* m_connection;
