@@ -321,6 +321,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
         // 5. For those object properties whose class definition only contains one or more geometry properties,
         //    change the property type from object to geometry cause it's a customized geometry property and thus shouldn't
         //    be recognized as object property.
+        // 6. Set the Class capabilities
         FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = mSchemas->GetXmlSchemaMappings();
         FdoInt32 count = mSchemas->GetCount();
         for (int i = count - 1; i >= 0; i--) {
@@ -345,19 +346,19 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                 mappings->Remove(mapping.p);
                 mSchemas->RemoveAt(i);
                 continue;
-                }
+            }
             
             FdoPtr<FdoWfsFeatureTypeList> pFeatList = mServiceMetadata->GetFeatureTypeList();
             FdoPtr<FdoWfsFeatureTypeCollection> pFeatColl = pFeatList->GetFeatureTypes();
             bool bNameModified = false;
             for (int j  = classes->GetCount() - 1; j >= 0; j--) {
                 FdoPtr<FdoClassDefinition> classDef = classes->GetItem(j);
-
                 if(FdoCommonOSUtil::wcsicmp(classDef->GetName(), FEATCOLLECTION) == 0)
                 {
                     bNameModified = true;
                     classDef->SetName(FEATCOLLECTION);
                 }
+
                 // Prepare for implementation of #3
                 FdoPtr<FdoClassDefinition> base = classDef->GetBaseClass();
                 bool bNoIdentity = false;
@@ -389,6 +390,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                 FdoPtr<FdoXmlElementMappingCollection> elements;
                 if (classMapping != NULL)
                     elements = classMapping->GetElementMappings();
+
                 for (int k = props->GetCount() - 1; k >= 0; k--) {
                     FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
 
@@ -519,6 +521,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                     }
                 } // end of for each property
+
                 // in case we have a choice for geometry property replace them with only one geometry propertyy
                 if (cntGeometricProperties)
                 {
@@ -564,6 +567,7 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     newGeoProp->SetGeometryTypes(pNewTypeGeom);
                     props->Add(newGeoProp);
                 }
+
                 if (bNameModified)
                 {
                     for (int k = classMappings->GetCount() - 1; k >= 0; k--)
@@ -588,10 +592,26 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                         }
                     }
                 }
+
+                // Perform 6. Set Class capabilities
+                FdoPtr<FdoClassCapabilities> classCaps = classDef->GetCapabilities();
+                if (NULL == classCaps)
+                {
+                    // Create the class capabilities.
+                    classCaps = FdoClassCapabilities::Create(*classDef.p);
+                    classCaps->SetSupportsLocking(false);
+                    classCaps->SetSupportsLongTransactions(false);
+                    classCaps->SetSupportsWrite(false);
+                    
+                    // Set the class capabilities
+                    classDef->SetCapabilities(classCaps);
+                }
+
                 // Set description for class
                 _setClassDescription (classDef);
 
             } // end of for each class
+
             // this step at the end - after we cleaned the class
             for (int j  = classes->GetCount() - 1; j >= 0; j--)
             {
