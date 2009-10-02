@@ -2950,9 +2950,10 @@ FdoITransaction* SltConnection::BeginTransaction()
     return new SltTransaction(this);
 }
 
-// save points keep data store locked!
-// all calls return SQLITE_LOCKED in case of rollback
-// #define SAVEPOINTS
+//Turn on in order to use SAVEPOINTS rather than BEGIN/COMMIT
+//for internal transactions. Internally transactions are used for
+//batching bulk updates and bulk inserts.
+#define SAVEPOINTS_INTERNAL
 
 int SltConnection::StartTransaction(bool isUserTrans)
 {
@@ -2964,7 +2965,7 @@ int SltConnection::StartTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_None)
         {
-#ifdef SAVEPOINTS
+#ifdef SAVEPOINTS_INTERNAL
             rc = sqlite3_exec(m_dbWrite, "SAVEPOINT sp;", NULL, NULL, NULL);
 #else
             rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
@@ -2983,7 +2984,7 @@ int SltConnection::StartTransaction(bool isUserTrans)
         else if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
             // commit internal transaction and open an user transaction
-#ifdef SAVEPOINTS
+#ifdef SAVEPOINTS_INTERNAL
             rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
 #else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
@@ -2991,11 +2992,8 @@ int SltConnection::StartTransaction(bool isUserTrans)
             m_transactionState = SQLiteActiveTransactionType_None;
         }
 
-#ifdef SAVEPOINTS
-        rc = sqlite3_exec(m_dbWrite, "SAVEPOINT sp;", NULL, NULL, NULL);
-#else
         rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
-#endif
+
         if (rc == SQLITE_OK)
             m_transactionState = SQLiteActiveTransactionType_User;
         else
@@ -3014,7 +3012,7 @@ int SltConnection::CommitTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
-#ifdef SAVEPOINTS
+#ifdef SAVEPOINTS_INTERNAL
             rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
 #else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
@@ -3032,11 +3030,8 @@ int SltConnection::CommitTransaction(bool isUserTrans)
         if (m_transactionState == SQLiteActiveTransactionType_User)
         {
             // commit internal transaction and open an user transaction
-#ifdef SAVEPOINTS
-            rc = sqlite3_exec(m_dbWrite, "RELEASE SAVEPOINT sp;", NULL, NULL, NULL);
-#else
             rc = sqlite3_exec(m_dbWrite, "COMMIT;", NULL, NULL, NULL);
-#endif
+
             if (rc == SQLITE_OK)
                 m_transactionState = SQLiteActiveTransactionType_None;
             else
@@ -3061,7 +3056,7 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
     {
         if (m_transactionState == SQLiteActiveTransactionType_Internal)
         {
-#ifdef SAVEPOINTS
+#ifdef SAVEPOINTS_INTERNAL
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK TO SAVEPOINT sp;", NULL, NULL, NULL);
 #else
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
@@ -3077,11 +3072,8 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
         if (m_transactionState == SQLiteActiveTransactionType_User)
         {
             // commit internal transaction and open an user transaction
-#ifdef SAVEPOINTS
-            rc = sqlite3_exec(m_dbWrite, "ROLLBACK TO SAVEPOINT sp;", NULL, NULL, NULL);
-#else
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
-#endif
+
             m_transactionState = SQLiteActiveTransactionType_None;
             
             if (!m_updateHookEnabled && m_changesAvailable)
