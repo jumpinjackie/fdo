@@ -184,7 +184,7 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                     rVal = CreateComplexFilterChunk(StlFilterType_Spatial);
                     rVal->m_bounds = new DBounds();
                     // do we keep the old chunk!?
-                    if (useExpression = -1)
+                    if (useExpression == -1)
                     {
                         *rVal->m_bounds = *m_optimizedChunk->GetBounds();
                         rVal->AddToList(CreateBaseFilterChunk("(", 1));
