@@ -175,7 +175,17 @@ System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefin
 {
 	FdoInt32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->Add((value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer())))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(index = GetImpObj()->Add(dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(index = GetImpObj()->Add(NULL)) 
+    } 
 
 	return index;
 }
@@ -184,26 +194,66 @@ System::Int32 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefin
 {
 	FdoInt32 index;
 
-	EXCEPTION_HANDLER(index = GetImpObj()->IndexOf((value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer())))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(index = GetImpObj()->IndexOf(dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(index = GetImpObj()->IndexOf(NULL)) 
+    } 
 
 	return index;
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection::Insert(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Insert(index, (value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer())))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(GetImpObj()->Insert(index, dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(GetImpObj()->Insert(index, NULL)) 
+    } 
 }
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection::Remove(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->Remove((value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer())))))
+   if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(GetImpObj()->Remove(dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(GetImpObj()->Remove(NULL)) 
+    } 
 }
 
 System::Boolean NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection::Contains(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* value)
 {
 	FdoBoolean exist;
 
-	EXCEPTION_HANDLER(exist = (!!GetImpObj()->Contains((value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer()))))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(exist = !!GetImpObj()->Contains(NULL)) 
+    } 
 
 	return exist;
 }
@@ -261,8 +311,19 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* NAMESP
 
 System::Void  NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection::set_RealTypeItem(System::Int32 index, NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetItem(index, (value == NULL ? NULL : dynamic_cast<FdoOdbcOvPropertyDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer())))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(GetImpObj()->SetItem(index, dynamic_cast<FdoOdbcOvPropertyDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(GetImpObj()->SetItem(index, NULL)) 
+    } 
 }
+
 NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::IOvPropertyDefinition* NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_ODBC::OvPropertyDefinitionCollection::get_Item(System::Int32 index)
 {
 	return get_RealTypeItem(index);
