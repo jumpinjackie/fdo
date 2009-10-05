@@ -43,6 +43,8 @@ extern "C" {CRITICAL_SECTION NlsMsgGetCriticalSection;}
 extern "C" {pthread_mutex_t NlsMsgGetCriticalSection = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;}
 #endif
 
+extern "C"   
+void nls_msg_close_handles();  
 
 class NlsMsgGetAccess
 {
@@ -62,6 +64,7 @@ public:
 #else
     pthread_mutex_destroy(&NlsMsgGetCriticalSection);
 #endif
+    nls_msg_close_handles(); 
     }
 };
 

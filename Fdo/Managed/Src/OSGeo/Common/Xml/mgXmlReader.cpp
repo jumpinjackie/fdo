@@ -85,21 +85,57 @@ System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlReader::Parse()
 System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlReader::Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler)
 {
 	FdoBoolean rv;
-	EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse((NULL == saxHandler ? NULL : static_cast<FdoXmlSaxHandler*>(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(saxHandler))->UnmanagedObject.ToPointer()), NULL, false)))
+    
+    if (saxHandler != NULL)  
+    {  
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(saxHandler);  
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp);  
+        FdoXmlSaxHandler* handler = static_cast<FdoXmlSaxHandler*>(fdoDisp->UnmanagedObject.ToPointer());  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(handler, NULL, false));  
+    }  
+    else  
+    {  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(NULL, NULL, false));  
+    }  
+
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlReader::Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext)
 {
 	FdoBoolean rv;
-	EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse((static_cast<FdoXmlSaxHandler*>(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(saxHandler))->UnmanagedObject.ToPointer()), saxContext->GetImpObj(), false)))
+
+    if (saxHandler != NULL)  
+    {  
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(saxHandler);  
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp);  
+        FdoXmlSaxHandler* handler = static_cast<FdoXmlSaxHandler*>(fdoDisp->UnmanagedObject.ToPointer());  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(handler, saxContext->GetImpObj(), false));  
+    }  
+    else  
+    {  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(NULL, saxContext->GetImpObj(), false));  
+    }  
+
 	return rv;
 }
 
 System::Boolean NAMESPACE_OSGEO_COMMON_XML::XmlReader::Parse(NAMESPACE_OSGEO_COMMON_XML::IXmlSaxHandler* saxHandler, NAMESPACE_OSGEO_COMMON_XML::XmlSaxContext* saxContext, System::Boolean incremental)
 {
 	FdoBoolean rv;
-	EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(static_cast<FdoXmlSaxHandler*>(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(saxHandler))->UnmanagedObject.ToPointer()), saxContext->GetImpObj(), incremental))
+
+    if (saxHandler != NULL)  
+    {  
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(saxHandler);  
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp);  
+        FdoXmlSaxHandler* handler = static_cast<FdoXmlSaxHandler*>(fdoDisp->UnmanagedObject.ToPointer());  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(handler, saxContext->GetImpObj(), incremental));  
+    }  
+    else  
+    {  
+        EXCEPTION_HANDLER(rv = !!GetImpObj()->Parse(NULL, saxContext->GetImpObj(), incremental));  
+    }  
+
 	return rv;
 }
 
