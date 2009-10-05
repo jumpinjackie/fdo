@@ -206,34 +206,83 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 	FdoXmlSaxHandler* nextSaxHandler = NULL;
 	FdoXmlFeatureHandler* nextFeatureHandler = NULL;
 
-	GmlBaseType baseType = getGmlBaseType(validName, uri);
+	////////////////////////////////////////////////////////////////////////////////////
+    // Greg Boone. October 1, 2009.
+    // This is a bit of a workaround to get schemas from MapGuide 2009 to parse correctly.
+    // I found that the GetFeature responses from MapGuide were not returning any URI
+    // Information. Unfortunately this caused the entire parse to fail as the parsing
+    // of Features is tied off of the URI identifier for schema and class retrieval.
+    // In an attempt to enable continued parsing, the following block of code was
+    // added to search through the available schemas to identify the schema name based
+    // on the use of the 'name' element being parsed being the class name. This does
+    // work in limited scenarios. There is the chance for failure if the same class
+    // exists in multiple schemas. If multiple schemas are matched to a class name
+    // the workaround will be abandoned since it will not be possible to determine 
+    // which schema the class actually conforms with.
+	////////////////////////////////////////////////////////////////////////////////////
+    FdoStringP lUri = uri;
+    if (curState == ParsingState_FeatureAssociation && lUri == L"" && NULL != m_schemaManager) {
+        int schemaCount = 0;
+        FdoPtr<FdoFeatureSchema> theSchema;
+        FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = m_flags->GetSchemaMappings();
+        if (NULL != schemaMappings) {
+            FdoPtr<FdoFeatureSchemaCollection> coll = GetFeatureSchemas();
+            for (int i =0; i<coll->GetCount(); i++) {
+                FdoPtr<FdoFeatureSchema> schema = coll->GetItem(i);
+                FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+                FdoPtr<FdoClassDefinition> cls = classes->FindItem(name);
+                if (NULL != cls) {
+                    schemaCount++;
+                    theSchema = schema;
+                }
+            }
+        }
+        if (NULL != theSchema && schemaCount == 1) {
+            FdoPtr<FdoXmlLpSchema> lpSchema = m_schemaManager->NameToSchema(theSchema->GetName());
+            if (NULL != lpSchema) {
+                FdoPtr<FdoXmlSchemaMapping> schemaMappings = lpSchema->GetMappings();
+                if (NULL != schemaMappings) {
+                    // Set the parser's feature URI to that of the schema mapping's
+                    // target namespace. This will be used later when parsing feature
+                    // sub-elements.
+                    m_featureURI = lUri = schemaMappings->GetTargetNamespace();
+                }
+            }
+        }
+    }
+    // Once feature parsing starts, we also have to use the feature URI for parsing the
+    // underlying elements of the feature
+    else if (curState == ParsingState_Feature && lUri == L"")
+    {
+        lUri = m_featureURI;
+    }
+	////////////////////////////////////////////////////////////////////////////////////
+    // End Workaround
+    // Greg Boone. October 1, 2009.
+	////////////////////////////////////////////////////////////////////////////////////
+
+    GmlBaseType baseType = getGmlBaseType(validName, lUri);
 
 	switch(baseType){
 		//feature collection
 		case GmlBaseType_FeatureCollection:
 			m_parsingStateStack.push_back(ParsingState_FeatureCollection);
-
 			//TODO: get class definition
 			nextFeatureHandler = curFeatureHandler->FeatureCollectionStart(m_featureContext, NULL);
-
 			break;
 
 		//feature association
 		case GmlBaseType_FeatureAssociation:
-			
 			m_parsingStateStack.push_back(ParsingState_FeatureAssociation);
-			
 			//TODO: get class definition
 			nextFeatureHandler = curFeatureHandler->FeatureStartAssociationProperty(m_featureContext, name, NULL);
-
 			break;
 
 		//feature
 		case GmlBaseType_Feature:
             {
-
-                // find out current complex type's class definition
-                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, uri);
+                // find out current complex type's class definition               
+                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, lUri);
                 if (classDef != NULL)
                     m_lpClassStack.push_back(classDef.p);
 
@@ -247,7 +296,6 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 		//direct gml geometry association
 		case GmlBaseType_GmlDirectGeometry:
 			m_parsingStateStack.push_back(ParsingState_GmlDirectGeometry);
-			
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
             m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
             nextSaxHandler = m_geometryHandler->SkipFirstParseStep();
@@ -258,16 +306,13 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 		//gml geometry association
 		case GmlBaseType_GmlGeometryAssociation:
 			m_parsingStateStack.push_back(ParsingState_GmlGeometryAssociation);
-			
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
             m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
 			nextSaxHandler = m_geometryHandler;
 			break;
 		//geometry association
 		case GmlBaseType_GeometryAssociation:
-
 			m_parsingStateStack.push_back(ParsingState_GeometryAssociation);
-			
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
             m_geometryHandler->SetExpectedGmlGeometry((FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
 			nextSaxHandler = m_geometryHandler;
@@ -275,20 +320,16 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 
 		//bounding shape
 		case GmlBaseType_BoundingShape:
-
-
 			m_parsingStateStack.push_back(ParsingState_BoundingShape);
-
 			m_geometryHandler = FdoXmlGeometryHandler::Create();
 			nextSaxHandler = m_geometryHandler;
-
 			break;
 
 		//generic complex type
 		case GmlBaseType_GenericComplexType:
             {
-                // find out current complex type's class definition
-                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, uri);
+                // find out current complex type's class definition                
+                FdoPtr<FdoXmlLpClassDefinition> classDef = getClassDef(validName, lUri);
                 if (classDef != NULL)
                     m_lpClassStack.push_back(classDef.p);
     			
@@ -394,27 +435,25 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 	{
 	//feature collection
 	case ParsingState_FeatureCollection:
+        m_featureURI = "";
 		isPauseParsing = curFeatureHandler->FeatureCollectionEnd(m_featureContext);
 		break;
 
 	//feature association
 	case ParsingState_FeatureAssociation:
+        m_featureURI = "";
 		isPauseParsing = curFeatureHandler->FeatureEndAssociationProperty(m_featureContext);
-
 		break;
 
 	//feature
 	case ParsingState_Feature:
-		
         if (m_lpClassStack.back() != NULL)
             m_lpClassStack.pop_back();
-
 		isPauseParsing = curFeatureHandler->FeatureEnd(m_featureContext);
 		break;
 
 	//bounding shape
 	case ParsingState_BoundingShape:
-
 		//"Bounds" is FDO property for gml:boundedBy
 	    tempGeometry =  m_geometryHandler->GetGeometry();
 	    if (tempGeometry)
@@ -426,8 +465,8 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 	    }		
 		FDO_SAFE_RELEASE(tempByteArray);
 		FDO_SAFE_RELEASE(tempGeometry);
-
 		break;
+
 	//geometry association
 	case ParsingState_GmlDirectGeometry:
 	case ParsingState_GmlGeometryAssociation:
@@ -435,6 +474,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
         {
             if (curState == ParsingState_GmlDirectGeometry) // run last step only in this case
                 m_geometryHandler->RunLastParseStep(name, (FdoXmlGeometryHandler::GmlGeometryType)m_activeGmlGeometryType);
+
             tempGeometry =  m_geometryHandler->GetGeometry();
             FdoStringP pPropName = name;
             bool found = false;
@@ -454,6 +494,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
                 pPropName = L"gml/";
                 pPropName += name;
             }
+
             // match the names of geometry field
             if (NULL != classDef)
             {
@@ -462,6 +503,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
                 if (pMainGeomPropName != NULL && pPropName != pMainGeomPropName)
                     pPropName = pMainGeomPropName;
             }
+
             FdoByte* arrayData = NULL;
             FdoInt32 szArrayData = 0;
 	        if (tempGeometry){
@@ -471,6 +513,7 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
                 szArrayData = tempByteArray->GetCount();
                 }
             }
+
 	        isPauseParsing = curFeatureHandler->FeatureGeometricProperty(m_featureContext, 
 		                pPropName, arrayData, szArrayData);
         }
@@ -480,12 +523,9 @@ FdoBoolean FdoXmlFeaturePropertyReaderImpl::XmlEndElement(
 
 	//Generic Complex Type
 	case ParsingState_GenericComplexType:
-        
         if (m_lpClassStack.back() != NULL)
             m_lpClassStack.pop_back();
-
 		isPauseParsing = curFeatureHandler->FeatureEndObjectProperty(m_featureContext);
-
 		break;
 
 	//simple value & element pending
@@ -793,6 +833,8 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                     rv = GmlBaseType_hexBinary;
                                 else if (wcscmp(className, L"base64Binary") == 0)
                                     rv = GmlBaseType_base64Binary;
+                                else if (wcscmp(className, L"AbstractGeometry") == 0)
+                                    rv = GmlBaseType_GeometryAssociation;
                                 else
                                     rv = GmlBaseType_SimpleValue;
                             }

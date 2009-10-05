@@ -135,7 +135,9 @@ private:
 
     FdoPtr<FdoFeatureSchemaCollection> m_schemas;
     FdoPtr<FdoXmlSchemaManager> m_schemaManager;
-    
+   
+    FdoStringP m_featureURI;
+
 // 
 // helpers
 //
