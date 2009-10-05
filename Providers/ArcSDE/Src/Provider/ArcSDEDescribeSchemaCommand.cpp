@@ -366,6 +366,16 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                     data_definition->SetDataType (dataType);
 
                     // Set Length (Only applies to String/Blob/Clob data properties):
+#ifdef SDE_UNICODE
+					if (columns[i].sde_type == SE_NCLOB_TYPE  || columns[i].sde_type == SE_CLOB_TYPE && columns[i].size == 0)
+					{
+						//We don't know the limits of the underlying RDBMS.
+						//Can't set to -1, so set to the maximum value of an int.
+						//Mysql provider uses 4294967296LL.  (<fdo root>\Providers\GenericRdbms\Src\MySQL\SchemaMgr\Ph\ColumnBLOB.h)
+						data_definition->SetLength(2147483647); 
+					}
+					else
+#endif
                     if ((dataType == FdoDataType_String) || (dataType == FdoDataType_BLOB) || (dataType == FdoDataType_CLOB))
                     {
                         data_definition->SetLength (columns[i].size);
