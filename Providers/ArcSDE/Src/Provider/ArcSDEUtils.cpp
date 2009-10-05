@@ -1448,10 +1448,16 @@ FdoDataType SDEType2FdoType (LONG sdeType)
         case SE_NSTRING_TYPE:          /* Null term. Character array */
             ret = FdoDataType_String;
             break;
+		case SE_NCLOB_TYPE:
+			ret = FdoDataType_CLOB;
+			break;
 #endif
         case SE_STRING_TYPE:          /* Null term. Character array */
             ret = FdoDataType_String;
             break;
+		case SE_CLOB_TYPE:
+			ret = FdoDataType_CLOB;
+			break;
         case SE_BLOB_TYPE:            /* Variable length data */
             ret = FdoDataType_BLOB;
             break;
@@ -1464,6 +1470,7 @@ FdoDataType SDEType2FdoType (LONG sdeType)
         case SE_UUID_TYPE:
             ret = FdoDataType_String;
 			break;
+		
         default:
             ret = (FdoDataType) FDODATATYPE_UNHANDLEDSDETYPE;
             break;
@@ -1509,7 +1516,9 @@ LONG FdoType2SDEType (FdoDataType type)
         case FdoDataType_DateTime:
             ret = SE_DATE_TYPE;
             break;
-
+		case FdoDataType_CLOB:
+			ret = SE_CLOB_TYPE;
+			break;
 
 //
 // these aren't really supported:
@@ -1521,7 +1530,7 @@ LONG FdoType2SDEType (FdoDataType type)
         case FdoDataType_Boolean:
             ret = SE_SMALLINT_TYPE;        /* 2-byte integer */
             break;
-        case FdoDataType_CLOB:
+        
         default:
             throw FdoException::Create (NlsMsgGet1(ARCSDE_DATATYPE_UNHANDLED, "The FDO DataType %1$d is unsupported.", (int)type));
     }

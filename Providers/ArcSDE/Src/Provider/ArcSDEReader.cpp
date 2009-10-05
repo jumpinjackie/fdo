@@ -388,7 +388,7 @@ FdoLOBValue* ArcSDEReader::GetLOB(FdoString* identifier)
 
     // Get appropriate ColumnDefinition:
     columnDef = getColumnDef (identifier);
-    if (columnDef->mPropertyType != FdoDataType_BLOB)
+    if ((columnDef->mPropertyType != FdoDataType_BLOB) && (columnDef->mPropertyType != FdoDataType_CLOB))
         throw FdoException::Create (NlsMsgGet2(ARCSDE_VALUE_TYPE_MISMATCH, "Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.", L"FdoBLOB", identifier));
     if (SE_IS_NULL_VALUE == columnDef->mBindIsNull)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_NULL_VALUE, "The value of property '%1$ls' is null.", identifier));
@@ -402,8 +402,20 @@ FdoLOBValue* ArcSDEReader::GetLOB(FdoString* identifier)
     FdoPtr<FdoByteArray> byteArray = FdoByteArray::Create ((FdoByte*) columnDef->mBindVariable._blob.blob_buffer,
         columnDef->mBindVariable._blob.blob_length);
 
-    // Return the LOB value:
-    return (FdoLOBValue*)FdoLOBValue::Create(byteArray, FdoDataType_BLOB);
+#if !SDE_UNICODE
+	if (columnDef->mColumnType == SE_CLOB_TYPE)
+	{
+		//Convert to UNICODE
+		FdoPtr<FdoByteArray> unicodeByteArray = FdoByteArray::Create(2 * (strlen((char*)byteArray.p) + 1));
+		multibyte_to_wide_noalloc((wchar_t*)unicodeByteArray.p, (char*)byteArray.p);
+		return (FdoLOBValue*)FdoLOBValue::Create(unicodeByteArray, FdoDataType_BLOB);
+	}
+	else
+#endif
+	{
+		// Return the LOB value:
+		return (FdoLOBValue*)FdoLOBValue::Create(byteArray, FdoDataType_BLOB);
+	}
 }
 
 /// <summary>Gets a reference of the specified LOB property as a FdoBLOBStreamReader or
@@ -424,8 +436,12 @@ FdoIStreamReader* ArcSDEReader::GetLOBStreamReader(FdoString* identifier )
 
     // Get appropriate ColumnDefinition:
     columnDef = getColumnDef (identifier);
-    if (columnDef->mPropertyType != FdoDataType_BLOB)
+    if ((columnDef->mPropertyType != FdoDataType_BLOB) && (columnDef->mPropertyType != FdoDataType_CLOB))
         throw FdoException::Create (NlsMsgGet2(ARCSDE_VALUE_TYPE_MISMATCH, "Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.", L"FdoBLOB", identifier));
+#if !SDE_UNICODE
+	if (columnDef->mColumnType == SE_CLOB_TYPE)
+		throw FdoException::Create (NlsMsgGet2(ARCSDE_VALUE_TYPE_MISMATCH, "Cannot get LOB stream on property '%2$ls'.  Underlying DBMS is multibyte, stream requires unicode.  Use GetLOB instead.", L"FdoBLOB", identifier));
+#endif
     if (SE_IS_NULL_VALUE == columnDef->mBindIsNull)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_NULL_VALUE, "The value of property '%1$ls' is null.", identifier));
 
@@ -604,6 +620,12 @@ bool ArcSDEReader::ReadNext ()
                     columnDef->mBindVariableInitialized = true;
                     result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
                 }
+				else if (columnDef->mColumnType == SE_NCLOB_TYPE)
+                {
+                    columnDef->mBindVariable._blob.blob_length = 0;
+                    columnDef->mBindVariable._blob.blob_buffer = NULL;
+                    result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)&(columnDef->mBindVariable._blob), &columnDef->mBindIsNull);
+                }
 				else
 #endif
                 if (columnDef->mColumnType == SE_STRING_TYPE)
@@ -611,6 +633,12 @@ bool ArcSDEReader::ReadNext ()
                     columnDef->mBindVariable._string = (new CHAR[columnDef->mDataLength + 1]);
                     columnDef->mBindVariableInitialized = true;
                     result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)(columnDef->mBindVariable._string), &columnDef->mBindIsNull);
+                }
+				else if (columnDef->mColumnType == SE_CLOB_TYPE)
+                {
+                    columnDef->mBindVariable._blob.blob_length = 0;
+                    columnDef->mBindVariable._blob.blob_buffer = NULL;
+                    result = SE_stream_bind_output_column(mStream, columnDef->mColumnNumber, (void*)&(columnDef->mBindVariable._blob), &columnDef->mBindIsNull);
                 }
                 else if (columnDef->mColumnType == SE_UUID_TYPE)
                 {
