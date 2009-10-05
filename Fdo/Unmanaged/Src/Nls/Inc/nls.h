@@ -118,6 +118,9 @@ extern char *   nls_msg_get_A       PROTO ((char *msg_string,
                                         DWORD msg_num,
                                         char *default_msg,
                                         ...));
+
+extern void nls_msg_close_handles(); 
+
 extern wchar_t *    nls_msg_get_W2       PROTO ((wchar_t *msg_string,
                                         char *cat_name,
                                         int  set_num,
@@ -147,6 +150,8 @@ extern char *   nls_msg_get     PROTO ((char *msg_string,
                                         int  msg_num,
                                         char *default_msg,
                                         ...));
+
+extern void nls_msg_close_handles(); 
 
 extern wchar_t *    nls_msg_get_W2      PROTO ((wchar_t *msg_string,
                                         char *cat_name,
