@@ -60,5 +60,15 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::OvObjectPropertyDefinition::set_MappingDefinition(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_MYSQL::IOvPropertyMappingDefinition* propertyMappingDefinition)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(dynamic_cast<FdoMySQLOvPropertyMappingDefinition*>((FdoIDisposable*)(static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(propertyMappingDefinition)))->UnmanagedObject.ToPointer())))
+    if (NULL != propertyMappingDefinition) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(propertyMappingDefinition); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(dynamic_cast<FdoMySQLOvPropertyMappingDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(NULL)) 
+    } 
 }

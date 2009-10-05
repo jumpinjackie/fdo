@@ -54,5 +54,15 @@ NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappin
 
 System::Void NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::OvObjectPropertyDefinition::set_MappingDefinition(NAMESPACE_OSGEO_FDO_PROVIDERS_RDBMS_OVERRIDE_SQLSERVERSPATIAL::IOvPropertyMappingDefinition* value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition((NULL == value ? NULL : dynamic_cast<FdoSqlServerOvPropertyMappingDefinition*>((FdoIDisposable*)static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(static_cast<System::IDisposable*>(value))->UnmanagedObject.ToPointer()))))
+    if (NULL != value) 
+    { 
+        System::IDisposable* baseDisp = static_cast<System::IDisposable*>(value); 
+        NAMESPACE_OSGEO_RUNTIME::Disposable* fdoDisp = static_cast<NAMESPACE_OSGEO_RUNTIME::Disposable*>(baseDisp); 
+        FdoIDisposable* ptr = static_cast<FdoIDisposable*>(fdoDisp->UnmanagedObject.ToPointer()); 
+        EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(dynamic_cast<FdoSqlServerOvPropertyMappingDefinition*>(ptr))) 
+    } 
+    else 
+    { 
+        EXCEPTION_HANDLER(GetImpObj()->SetMappingDefinition(NULL)) 
+    } 
 }
