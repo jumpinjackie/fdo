@@ -23,7 +23,7 @@
 
 NAMESPACE_OSGEO_COMMON::StringElement::StringElement(System::String* value) : Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoStringElement::Create(FdoStringP(StringToUni(value), true)), true))
+	EXCEPTION_HANDLER(Attach(FdoStringElement::Create(FdoStringP(StringToUni(value))), true))
 }
 
 NAMESPACE_OSGEO_COMMON::StringElement::StringElement(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)

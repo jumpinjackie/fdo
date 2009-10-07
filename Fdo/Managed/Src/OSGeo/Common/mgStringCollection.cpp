@@ -36,12 +36,12 @@ NAMESPACE_OSGEO_COMMON::StringCollection::StringCollection(StringCollection* col
 
 NAMESPACE_OSGEO_COMMON::StringCollection::StringCollection(System::String* data, System::String* delimiters) : Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoStringCollection::Create(FdoStringP(StringToUni(data), true), StringToUni(delimiters)), true))
+	EXCEPTION_HANDLER(Attach(FdoStringCollection::Create(FdoStringP(StringToUni(data)), StringToUni(delimiters)), true))
 }
 
 NAMESPACE_OSGEO_COMMON::StringCollection::StringCollection(System::String* data, System::String* delimiters, System::Boolean nullTokens) : Disposable(System::IntPtr::Zero, false)
 {
-	EXCEPTION_HANDLER(Attach(FdoStringCollection::Create(FdoStringP(StringToUni(data), true), StringToUni(delimiters), nullTokens), true))
+	EXCEPTION_HANDLER(Attach(FdoStringCollection::Create(FdoStringP(StringToUni(data)), StringToUni(delimiters), nullTokens), true))
 }
 
 NAMESPACE_OSGEO_COMMON::StringCollection::StringCollection(System::IntPtr unmanaged, System::Boolean autoDelete) : Disposable(unmanaged, autoDelete)
