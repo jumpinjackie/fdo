@@ -47,7 +47,18 @@ SpatialIndex::SpatialIndex(const wchar_t* seedname)
 {
     _lastInsertedIdx = 0;
     _countChanges = 0;
-    _seedName = std::wstring(seedname) + L".si.";
+
+    //If a specific path was passed in for the spatial index file
+    //use that, otherwise get a temp file location
+    if (!seedname || !*seedname)
+    {
+        GetSIFilename(_seedName);
+    }
+    else
+    {
+        _seedName = std::wstring(seedname) + L".si.";
+    }
+
     _haveOffset = false;
     _rootLevel = 0;
     memset(_sizes, 0, sizeof(_sizes));
@@ -70,6 +81,32 @@ SpatialIndex::~SpatialIndex()
         }
     }
 }
+
+//Returns a temporary filename to use for
+//spillover spatial index data when the spatial
+//index gets too large
+void SpatialIndex::GetSIFilename(std::wstring& res)
+{
+    wchar_t lpPathBuffer[MAX_PATH];
+    wchar_t szTempName[MAX_PATH];
+
+    // Get the temp path.
+    DWORD dwRetVal = GetTempPath(MAX_PATH, lpPathBuffer); 
+    if (dwRetVal > MAX_PATH || (dwRetVal == 0))
+    {
+        printf ("GetTempPath failed (%d)\n", GetLastError());
+    }
+
+    // Create a temporary file. 
+    DWORD uRetVal = GetTempFileName(lpPathBuffer, L"si", 0, szTempName);  
+    if (uRetVal == 0)
+    {
+        printf ("GetTempFileName failed (%d)\n", GetLastError());
+    }
+
+    res = szTempName;
+}
+
 
 static Bounds EMPTY_BOX(true);
 

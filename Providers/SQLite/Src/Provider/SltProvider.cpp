@@ -1460,7 +1460,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 #endif
     //build the spatial index, if this is the first time it
     //is needed
-    si = new SpatialIndex(GetProperty(PROP_NAME_FILENAME));
+    si = new SpatialIndex(NULL);
     // lets create the description in case we get an exception we don't leak
     SltMetadata* md = GetMetadata(table);
     if(md == NULL || md->IsView())
