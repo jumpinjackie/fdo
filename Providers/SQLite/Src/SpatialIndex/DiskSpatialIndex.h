@@ -63,6 +63,7 @@ public:
 private:
     void FullSpatialIndexUpdate();
     void Insert(unsigned fid, Bounds& b);
+    void GetSIFilename(std::wstring& res);
 private:
 
     // last inserted index
