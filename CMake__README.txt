@@ -1,28 +1,29 @@
 Feature Data Objects (FDO) CMake Experimental Build
 ===================================================
 
-Thie ReadMe contains instructions of how to use CMake to compile FDO wihtout needing rely on any
-of the external scripts.
+This ReadMe contains instructions of how to use CMake to compile FDO without using the automake/shell scripts.
 Initial support is only Linux and Unix and the goal is use all possible system external libraries,
 but code is been prepared for Windows ( possible MacOSX )
 
 Current Status:
 
-- Compiles Whole FDO Core and Utilities, except SQLiteInterface ( SQLiteInterface can't be build yet
-	since relies on non public headers. A code tu use standard sqlite can be made replacing explicit
-	BTree code.
-- Test for SYSTEM third party dependencies as default and use it if available
+- Compiles Whole FDO Core and Utilities, and the following providers:
+    - SDF
+    - SHP
+    - OGR
+    - SQLite
+    - GDAL
+    - RDBMS
+    - WFS
+    - WMS
+    - PostGIS
+ 
 
 TODO
 - Make internal apache Thirdparty compile ( now only system )
 - Finish install part ( not tested yet )
 - Create a global instalable FindFDO.cmake to enable providers compile independent of full FDO source
 - Compile providers ( independent )
-
-ISSUES
-- SQlite have two different internal versions on FDO source, one in ThirdParty, other in SQL provider
-- Make SQLite provider CMake build been common among all providers following new system
-- Need to use internal CPPUNIT since Unittest is compiling only with specific included version
 
 
 ----------------------------------
@@ -45,13 +46,14 @@ I. Requiremnents
 		unixODBC
 
 II. Usage
-	Cmake build can be done ( and recomended to ) in out of source directory, so a simple run would be
+	Cmake build can be done ( and recomended to do ) outside of the source directory, so a simple run would be
 	- mkdir <MY_BUILDDIR>
 	- cd <MY_BUILDDIR>
-	- cmake <FDO_SOURCEDIR> -DINTERNAL_CPPUNIT=TRUE
+	- cmake <FDO_SOURCEDIR> -DWITH_SDF=TRUE -DWITH_SHP=TRUE -DWITH_SQLITE=TRUE
 	- make
 
-	You can pass any definition to compiler through this method.
+	The example enables the SDF, SHP and SQlite provider builds. 
+        You can pass any definition to compiler through this method.
 
 III. Using internal provided Thirdparty libraries
 	Since fdo main source has a Thirdparty internal  dependencies source provided, if you desire
@@ -60,11 +62,15 @@ III. Using internal provided Thirdparty libraries
 	Where DEPENDENCY can be one of this ( case sensitive ):
 	- OPENSSL - openssl library
 	- GDAL - gdal library
-	- CPPUNIT - Olf cppunit version
+	- CPPUNIT - Old cppunit version
 	- CURL - curl library
 	- BOOST - Boost libraries
 	If you desire buils all third party dependencies, use:
 	-DALL_THIRDPARTY=TRUE
+	
+	NOTE: It is *not* recommended to use the internal third party libraries, unless you are using
+        an older compiler which requires them.
+
 
 IV. Compiling Providers
 	Providers can be called directly from cmake commandline, no need to compile separated anymore if you
@@ -74,7 +80,7 @@ IV. Compiling Providers
 	-DWITH_<provider>
 	Where <provider> is the name of provider you want to compile, be case sensitive, all upper case or all lower case.
 
-	All OpenSource providers are available already.Usage example:
+	All OpenSource providers are available already. Usage example:
 	-DWITH_POSTGIS=TRUE or -DWITH_PostGIS=TRUE or -DWITH_postgis=TRUE
 
 	With some providers:
