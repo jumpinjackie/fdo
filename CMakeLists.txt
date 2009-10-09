@@ -13,7 +13,6 @@ set(CMAKE_MODULE_PATH
 # Make CPack available to easy generate binary packages
 include(CPack)
 
-
 # Set FDO version macros
 
 set ( FDO_VERSION_MAJOR 3 )
@@ -21,6 +20,10 @@ set ( FDO_VERSION_MINOR 5 )
 set ( FDO_VERSION_RELEASE 0 )
 set ( FDO_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}" )
 set ( FDO_DISTRIBUTION_TEXT "Self compiled sources" CACHE STRING "Indicate compilation origin" )
+
+
+# Override install directory to match what the automake build does (/use/local, rather than /usr/local/lib)
+set( INSTALL_PREFIX "/usr/local/fdo-${FDO_VERSION}" )
 
 
 # FDO Build Directories
