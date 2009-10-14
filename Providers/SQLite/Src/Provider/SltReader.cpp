@@ -288,6 +288,24 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     int maxIndex = md->GetGeomIndex();
     if (maxIndex < md->GetIDIndex())
         maxIndex = md->GetIDIndex();
+    
+    FdoPtr<FdoDataPropertyDefinitionCollection> pdic = m_class->GetIdentityProperties();
+    bool addRowId = true;
+    if (pdic->GetCount() == 1)
+    {
+        FdoPtr<FdoDataPropertyDefinition> pdi = pdic->GetItem(0);
+        FdoDataType dtdpi = pdi->GetDataType();
+        if (dtdpi == FdoDataType_Byte || dtdpi == FdoDataType_Int16 || 
+            dtdpi == FdoDataType_Int32 || dtdpi == FdoDataType_Int64)
+            addRowId = false;
+    }
+
+    // in case we have non-integer PK add RowId
+    if (addRowId)
+    {
+        m_reissueProps.Add("rowid", 5);
+        maxIndex = -1; // composite, non-int or no PK force add all
+    }
 
     //If the query is for a single feature, we will directly add all the properties
     //since in this case it is more likely for the caller to need them
