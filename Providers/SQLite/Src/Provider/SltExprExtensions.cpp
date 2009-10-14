@@ -988,36 +988,35 @@ static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc >= 2);
 
-    const char* a1 = (const char*)sqlite3_value_text(argv[0]);
-    const char* a2 = (const char*)sqlite3_value_text(argv[1]);
-    
-    bool isNullargv0 = (sqlite3_value_type(argv[0]) == SQLITE_NULL) || (a1 == NULL);
-    bool isNullargv1 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a2 == NULL);
-    
     long funcId = (long)sqlite3_user_data(context);
 
     switch(funcId)
     {
         case 1: // concat
+        case 2: // concat
         {
-            assert(argc == 2);
-            if (isNullargv0 && isNullargv1)
-                sqlite3_result_null(context);
-            else if((isNullargv0 && !isNullargv1) || (!isNullargv0 && isNullargv1))
-                sqlite3_result_text(context, (a1 != NULL) ? a1 : a2, -1, SQLITE_TRANSIENT);
-            else
+            StringBuffer result(50);
+            const char* a1 = NULL;
+            for (int i = 0; i < argc; i++)
             {
-                char* res = (char*)alloca(sqlite3_value_bytes(argv[0]) + sqlite3_value_bytes(argv[1]) + 1);
-                *res = '\0';
-                strcat(res, a1);
-                strcat(res, a2);
-                sqlite3_result_text(context, res, -1, SQLITE_TRANSIENT);
+                a1 = (const char*)sqlite3_value_text(argv[i]);
+                if (a1 != NULL && *a1 != '\0')
+                    result.Append(a1);
             }
+            if (result.Length() == 0)
+                sqlite3_result_null(context);
+            else
+                sqlite3_result_text(context, result.Data(), result.Length(), SQLITE_TRANSIENT);
         }
             break;
-        case 2: // instr
+        case 3: // instr
         {
             assert(argc == 2);
+            const char* a1 = (const char*)sqlite3_value_text(argv[0]);
+            const char* a2 = (const char*)sqlite3_value_text(argv[1]);
+            
+            bool isNullargv0 = (sqlite3_value_type(argv[0]) == SQLITE_NULL) || (a1 == NULL);
+            bool isNullargv1 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a2 == NULL);
             if (!isNullargv0 && !isNullargv1)
             {
                 i64 pos = 0;
@@ -1030,9 +1029,14 @@ static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
                 sqlite3_result_null(context);
         }
             break;
-        case 3: // translate
+        case 4: // translate
         {
             assert(argc == 3);
+            const char* a1 = (const char*)sqlite3_value_text(argv[0]);
+            const char* a2 = (const char*)sqlite3_value_text(argv[1]);
+            
+            bool isNullargv0 = (sqlite3_value_type(argv[0]) == SQLITE_NULL) || (a1 == NULL);
+            bool isNullargv1 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a2 == NULL);
             const char* a3 = (const char*)sqlite3_value_text(argv[2]);
             bool isNullargv2 = (sqlite3_value_type(argv[1]) == SQLITE_NULL) || (a3 == NULL);
             size_t src_len = sqlite3_value_bytes(argv[0]);
@@ -1787,9 +1791,10 @@ void RegisterExtensions (sqlite3* db)
         { "sign",               1, 5,  SQLITE_UTF8,    0, numFunc },
         { "remainder",          2, 6,  SQLITE_UTF8,    0, numFunc },
 
-        { "concat",             2, 1,  SQLITE_UTF8,    0, strFunc },
-        { "instr",              2, 2,  SQLITE_UTF8,    0, strFunc },
-        { "translate",          3, 3,  SQLITE_UTF8,    0, strFunc },
+        { "concat",            -1, 1,  SQLITE_UTF8,    0, strFunc },
+        { "concat",             2, 2,  SQLITE_UTF8,    0, strFunc },
+        { "instr",              2, 3,  SQLITE_UTF8,    0, strFunc },
+        { "translate",          3, 4,  SQLITE_UTF8,    0, strFunc },
 
         { "lpad",               2, 1,  SQLITE_UTF8,    0, padFunc },
         { "lpad",               3, 1,  SQLITE_UTF8,    0, padFunc },
