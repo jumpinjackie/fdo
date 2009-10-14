@@ -227,7 +227,7 @@ void SpatialIndex::GetTotalExtent(DBounds& ext)
 }
 
 //for API compatibility with disk-backed index
-void SpatialIndex::ReOpenForRead()
+void SpatialIndex::ReOpen()
 {
 } 
 

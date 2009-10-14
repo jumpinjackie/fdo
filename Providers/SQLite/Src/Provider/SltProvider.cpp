@@ -1500,7 +1500,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 
     rdr->Close();
     delete rdr;
-    si->ReOpenForRead();
+    si->ReOpen();
 #if 0
     }
     clock_t t1 = clock();

@@ -346,7 +346,7 @@ inline Node* SpatialIndex::GetNode(int level, int index)
 }
 
 
-void SpatialIndex::ReOpenForRead()
+void SpatialIndex::ReOpen()
 {
     for (int i=0; i<MAX_LEVELS; i++)
     {
@@ -355,7 +355,7 @@ void SpatialIndex::ReOpenForRead()
             MappedFile* mf = (MappedFile*)_levels[i];
             const wchar_t* name =  mf->name().c_str();
             mf->close();
-            mf->open(name, true);
+            mf->open(name);
         }
     }
 }
