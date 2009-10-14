@@ -44,7 +44,7 @@ public:
     SpatialIndex(const wchar_t*); //argument unused, for compatibility with disk backed implementation only
     ~SpatialIndex();
     
-    void ReOpenForRead(); //for API compatibility with disk-backed index
+    void ReOpen(); //for API compatibility with disk-backed index
     void Insert(unsigned fid, DBounds& ext);
     void Update(unsigned fid, DBounds& ext);
     void Delete(unsigned fid);

@@ -55,7 +55,7 @@ public:
     void Update(unsigned fid, DBounds& ext);
     void Delete(unsigned fid);
     void GetTotalExtent(DBounds& ext);
-    void ReOpenForRead();
+    void ReOpen();
     unsigned GetLastInsertedIdx() { return _lastInsertedIdx; }
 
     Node* GetNode(int level, int index);
