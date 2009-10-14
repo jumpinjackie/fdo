@@ -30,6 +30,7 @@ class OdbcMySqlFdoConnectTest : public FdoConnectTest
     void  set_provider();
     void connect() {};
     void query () {};
+    virtual void connectFailAndSucceed() {};
     
 	void ConnectByDsn();
 };
@@ -45,6 +46,7 @@ class OdbcOracleFdoConnectTest : public FdoConnectTest
 
     void connect() {};
     void query () {};
+    virtual void connectFailAndSucceed() {};
 
     void ConfigFileTest();
     void AllDatabaseTypesTest();
@@ -84,6 +86,7 @@ class OdbcAccessFdoConnectTest : public FdoConnectTest
     void OpenTest();
     void ConfigFileTest();
 	virtual void connectWithInvalidString(){};
+    virtual void connectFailAndSucceed() {};
 
     // Some values that can vary by target datastore...
 	FdoString * GetConnectString() {return L"DataSourceName=MsTest;UserId=;Password=;";}

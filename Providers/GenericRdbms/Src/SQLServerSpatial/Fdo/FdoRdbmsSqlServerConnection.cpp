@@ -316,39 +316,6 @@ FdoConnectionState FdoRdbmsSqlServerConnection::Open()
     FdoConnectionState  state = GetConnectionState();
 	if( state != FdoConnectionState_Open )
 	{
-        FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
-        FdoPtr<FdoCommonConnPropDictionary> dict = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
-        
-        FdoStringP connStr = dict->GetProperty(FDO_RDBMS_CONNECTION_CONNSTRING);
-        if (connStr.GetLength() == 0)
-        {
-            // Supported parameters identify datastore, userid and password.
-			// We'll generate an odbc connection string in this format:
-			//  "DRIVER={SQL Server};SERVER=seconds;UID=username;PWD=passwd;" 
-			// If the UID and PWD parameters are not specified, the trusted connection 
-			// (windows authentication) is assumed.
-            FdoStringP dataSource = dict->GetProperty(FDO_RDBMS_CONNECTION_SERVICE);
-            if (dataSource != NULL && dataSource.GetLength() > 0)
-            {
-                FdoStringP newCs = L"ConnectionString=\"DRIVER={SQL Server}; SERVER=";
-                newCs += dataSource;
-				FdoStringP user = dict->GetProperty(FDO_RDBMS_CONNECTION_USERNAME);
-				if (user.GetLength() > 0)
-				{
-					newCs += L";UID="; 
-					newCs += user;
-					FdoStringP passwd = dict->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD);
-					if (passwd.GetLength() > 0)
-					{
-						newCs += L";PWD=";
-						newCs += passwd;
-					}
-				}
-				newCs += L"\";";
-                newCs += GetConnectionString();
-                SetConnectionString(newCs);
-            }
-        }
   	    state = FdoRdbmsConnection::Open();
 	    if( state == FdoConnectionState_Open )
 	    {
@@ -426,6 +393,43 @@ void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
 
 }
 
+FdoStringP FdoRdbmsSqlServerConnection::GenConnectionStringParm( FdoStringP connectionString )
+{
+    FdoStringP newCs;
+
+    FdoConnectionState  state = GetConnectionState();
+    if ( (connectionString.GetLength() == 0) && (state != FdoConnectionState_Open) )
+	{
+        FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo();
+        FdoPtr<FdoCommonConnPropDictionary> dict = dynamic_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
+        
+        // Supported parameters identify datastore, userid and password.
+		// We'll generate an odbc connection string in this format:
+		//  "DRIVER={SQL Server};SERVER=seconds;UID=username;PWD=passwd;" 
+		// If the UID and PWD parameters are not specified, the trusted connection 
+		// (windows authentication) is assumed.
+        FdoStringP dataSource = dict->GetProperty(FDO_RDBMS_CONNECTION_SERVICE);
+        if (dataSource != NULL && dataSource.GetLength() > 0)
+        {
+            newCs = L"DRIVER={SQL Server}; SERVER=";
+            newCs += dataSource;
+			FdoStringP user = dict->GetProperty(FDO_RDBMS_CONNECTION_USERNAME);
+			if (user.GetLength() > 0)
+			{
+				newCs += L";UID="; 
+				newCs += user;
+				FdoStringP passwd = dict->GetProperty(FDO_RDBMS_CONNECTION_PASSWORD);
+				if (passwd.GetLength() > 0)
+				{
+					newCs += L";PWD=";
+					newCs += passwd;
+				}
+			}
+        }
+    }
+
+    return newCs;
+}
 
 // TODO: externalize messages in logOpen
 void FdoRdbmsSqlServerConnection::logOpen(char accessMode)

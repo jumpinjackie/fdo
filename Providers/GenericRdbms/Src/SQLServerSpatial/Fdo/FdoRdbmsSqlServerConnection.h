@@ -61,6 +61,10 @@ protected:
     // provider.
     void CheckForFdoGeometries();
 
+    // Generates a native ODBC connection string, from other connection parms,
+    //if given string is empty.
+    virtual FdoStringP GenConnectionStringParm( FdoStringP connectionString );
+
 public:
 	static FdoRdbmsSqlServerConnection* Create();
     

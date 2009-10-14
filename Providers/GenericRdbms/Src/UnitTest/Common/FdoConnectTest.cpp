@@ -201,3 +201,40 @@ void FdoConnectTest::connectWithExtraneousSpaces()
         throw "connectWithExtraneousSpaces failed";
     }
 }
+
+void FdoConnectTest::connectFailAndSucceed()
+{
+    // Create datastore if it doesn't exist
+    FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(L"", true);
+    connection->Close();
+    connection = NULL;
+
+    // Open connection to datastore but omit password.
+    connection = UnitTestUtil::GetProviderConnectionObject();
+    FdoPtr<FdoIConnectionInfo> connInfo = connection->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> dict = connInfo->GetConnectionProperties();
+
+	dict->SetProperty( L"Service", UnitTestUtil::GetEnviron("service") );
+	dict->SetProperty( L"Username", UnitTestUtil::GetEnviron("username") );
+	dict->SetProperty( L"DataStore", UnitTestUtil::GetEnviron("datastore", L"") );
+
+    bool failed = false;
+
+    try {
+        connection->Open();
+    }
+    catch ( ... ) {
+        // Connect without password should fail
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT( failed );
+
+    // Set password and connection again; should succeed.
+    dict->SetProperty( L"Password", UnitTestUtil::GetEnviron("password") );
+    connection->Open();
+
+    CPPUNIT_ASSERT( connection->GetConnectionState() == FdoConnectionState_Open );
+
+    connection->Close();
+}

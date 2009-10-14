@@ -36,6 +36,7 @@ class FdoRdbmsConnection: public FdoIConnection
 private:
 
     FdoStringP                      mConnectionString; // connection string for the database
+    FdoStringP                      mConnectionStringParm; // native connection string for the database
     int                             mConnectionTimeout; // connection attempt timeout in seconds
     FdoConnectionState              mState;
     DbiConnection                   *mDbiConnection; // Internal DBI connection
@@ -323,6 +324,10 @@ protected:
     ) = 0;
 
     virtual FdoConnectionState DbiOpen(bool skipPending);
+
+    // Allows specific providers to customize the native connection string used to 
+    // open a connection. Default implementation does not change this string.
+    virtual FdoStringP GenConnectionStringParm( FdoStringP connectionString );
 
 private:
 
