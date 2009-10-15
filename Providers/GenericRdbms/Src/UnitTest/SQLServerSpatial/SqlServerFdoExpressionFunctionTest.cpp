@@ -925,7 +925,7 @@ void SqlServerFdoExpressionFunctionTest::TestConcatFunction ()
     printf("2. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
-    printf("  function CONCAT on values of two different properties of \n");
+    printf("  function CONCAT on values of three properties of         \n");
     printf("  type BOOLEAN and BYTE. No exceptions are expected.       \n");
     printf("---------------------------------------------------------- \n");
 
@@ -933,11 +933,11 @@ void SqlServerFdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "074".
+      // is expected to be "0740".
 
-      func_call   = L"(Concat(bool_val, byte_val) as cmp_id)";
+      func_call   = L"(Concat(bool_val, byte_val, bool_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"074");
+      CheckReaderString(data_reader, 9, L"0740");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -1073,19 +1073,20 @@ void SqlServerFdoExpressionFunctionTest::TestConcatFunction ()
     printf("6. Test Case:                                              \n");
     printf("  The test executes a select-command to select the value   \n");
     printf("  of a computed property that is defined by using the      \n");
-    printf("  function CONCAT on values of two different properties of \n");
-    printf("  type BOOLEAN and INT16. No exceptions are expected.      \n");
+    printf("  function CONCAT on values of three different properties of\n");
+    printf("  type BOOLEAN, INT16 and DOUBLE. No exceptions are        \n");
+    printf("  expected.                                                \n");
     printf("---------------------------------------------------------- \n");
 
     try {
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "036".
+      // is expected to be "03618.8891".
 
-      func_call   = L"(Concat(bool_val, i16_val) as cmp_id)";
+      func_call   = L"(Concat(bool_val, i16_val, dbl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"036");
+      CheckReaderString(data_reader, 9, L"03618.8891");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
