@@ -37,6 +37,8 @@ class SQLCmdTest : public CppUnit::TestCase
 
     CPPUNIT_TEST( TestSelectWithBind );
 
+    CPPUNIT_TEST( TestExpressionWithBind );
+
     CPPUNIT_TEST( TestComplexBind );
 
     CPPUNIT_TEST( TestErrorMessageSimpleBind );
@@ -56,6 +58,8 @@ public:
     void TestDeleteWithBind ();
 
     void TestSelectWithBind ();
+
+    void TestExpressionWithBind ();
 
     void TestComplexBind();
     

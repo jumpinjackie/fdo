@@ -217,12 +217,14 @@ void SQLCmdTest::TestSelectWithBind ()
 		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );		 
 
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
-        sqlCmd->SetSQLStatement(L"select Name from parcelchild where Key=?");
+        sqlCmd->SetSQLStatement(L"select f.Name from parcelchild f where f.Key=:parm1 and f.id>=:parm2");
 
         FdoPtr<FdoParameterValueCollection> parmVals = sqlCmd->GetParameterValues();
 
         FdoPtr<FdoStringValue>key = FdoStringValue::Create(L"Key1");
-        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Key", key)));
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"parm1", key)));
+        FdoPtr<FdoInt32Value>id = FdoInt32Value::Create(1);
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"parm2", id)));
 
         FdoPtr<FdoISQLDataReader> reader = sqlCmd->ExecuteReader();
         CPPUNIT_ASSERT(reader->ReadNext() );
@@ -250,6 +252,43 @@ void SQLCmdTest::TestSelectWithBind ()
         CPPUNIT_FAIL("TestBindBasicTypes failed");
 	}
 }
+
+void SQLCmdTest::TestExpressionWithBind ()
+{
+	try
+	{
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+
+		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );		 
+
+        FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+        sqlCmd->SetSQLStatement(L"select (max(f.id))+1,null,Name from parcelchild f where f.Key=:key and f.id>=:id");
+
+        FdoPtr<FdoParameterValueCollection> parmVals = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoStringValue>key = FdoStringValue::Create(L"Key1");
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Key", key)));
+        FdoPtr<FdoInt32Value>id = FdoInt32Value::Create(1);
+        parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"id", id)));
+
+        FdoPtr<FdoISQLDataReader> reader = sqlCmd->ExecuteReader();
+        CPPUNIT_ASSERT(reader->ReadNext() );
+        CPPUNIT_ASSERT(reader->GetColumnType(0)==FdoDataType_Int64);
+        CPPUNIT_ASSERT(reader->GetString(1)==NULL);
+        CPPUNIT_ASSERT(wcscmp(reader->GetString(2),L"Fred")==0);
+
+        int idxColName = reader->GetColumnIndex(L"Name");
+        FdoStringP nameCol = reader->GetColumnName(idxColName);
+        CPPUNIT_ASSERT(wcscmp(nameCol,L"Name")==0);
+	}
+	catch(FdoException *exp )
+	{
+		UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+        CPPUNIT_FAIL("TestExpressionWithBind failed");
+	}
+}
+
 
 void SQLCmdTest::TestComplexBind ()
 {
