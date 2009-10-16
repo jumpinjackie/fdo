@@ -988,32 +988,44 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 			if (!propFound)
 			{
 				//case where the reader is a result of arbitrary sql and the
-				//resulting columns do not come from any existing table (is this case possible?)
+				//resulting columns do not come from any existing table. This a case of an ad-hoc query 
+                //with a select list that contains an expression withiout an alias: select (max(f.id))+1 from...
 				FdoPtr<FdoDataPropertyDefinition> dpd;
-
+                
+                // Replace FDO special characters with an underscore otherwise the FdoDataPropertyDefinition::Create will
+                // fail for expression with "." similar to the above example.
+                FdoStringP propName = m_propNames[i];
+                propName = propName.Replace(L":",L"_");
+                propName = propName.Replace(L".",L"_");
 				//NOTE: Unfortunately, the result of calling this function
 				//may vary when called on different rows of the result.
+
+                // A ReadNext is required before the type of an expression can be known. Otherwise, the result
+                // will default to a string.
 				int type = sqlite3_column_type(m_pStmt, i);
 				switch (type)
 				{
 				case SQLITE_INTEGER: 
-                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+                    dpd = FdoDataPropertyDefinition::Create(propName, NULL);
     				dpd->SetDataType(FdoDataType_Int64);
 					break;
 				case SQLITE_TEXT:
-                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+                    dpd = FdoDataPropertyDefinition::Create(propName, NULL);
     				dpd->SetDataType(FdoDataType_String);
 					break;
 				case SQLITE_FLOAT:
-                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+                    dpd = FdoDataPropertyDefinition::Create(propName, NULL);
     				dpd->SetDataType(FdoDataType_Double);
 					break;
 				case SQLITE_BLOB:
-                    dpd = FdoDataPropertyDefinition::Create(m_propNames[i], NULL);
+                    dpd = FdoDataPropertyDefinition::Create(propName, NULL);
     				dpd->SetDataType(FdoDataType_BLOB);
 					break;
 				case SQLITE_NULL:
+                    // Create a data property with a default type and
                     // we will process them later at the end...
+                    dpd = FdoDataPropertyDefinition::Create(propName, NULL);
+    				dpd->SetDataType(FdoDataType_String);
                     unknownPropsIdx.push_back(i);
 					break;
 				}
@@ -1071,26 +1083,19 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                 {
                     // we failed to detect the type use the default type
                     exc->Release();
-                    FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
-				    dpd->SetDataType(FdoDataType_String);
-                    pdToAdd = dpd;
                 }
                 if (pdToAdd != NULL)
-				    dstpdc->Add(pdToAdd);
-            }
-        }
-        else
-        {
-            // we have unknown columns and no calculations
-            // this can be a result of a query like "pragma table_info('ClassName');"
-            // for now let's expose them as text (since BLOB is not nice supported)
-
-            // TODO when SQL pass-thru will be implemented study to see if we can do more here
-            for(size_t idx = 0; idx < unknownPropsIdx.size(); idx++)
-            {
-                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(m_propNames[unknownPropsIdx.at(idx)], NULL);
-			    dpd->SetDataType(FdoDataType_String);
-                dstpdc->Add(dpd);
+                {
+                    FdoPtr<FdoPropertyDefinition> dpd = dstpdc->FindItem(pdToAdd->GetName());
+                    if( dpd != NULL )
+                    {
+                        int index = dstpdc->IndexOf(dpd);
+                        dstpdc->RemoveAt( index );
+                        dstpdc->Insert(index,pdToAdd);
+                    }
+                    else
+				        dstpdc->Add(pdToAdd);
+                }
             }
         }
 	}
