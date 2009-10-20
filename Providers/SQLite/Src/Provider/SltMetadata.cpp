@@ -357,7 +357,19 @@ FdoClassDefinition* SltMetadata::ToClass()
                 case FdoDataType_CLOB:
                     dpd->SetLength(sqlite3_limit(m_connection->GetDbRead(), SQLITE_LIMIT_LENGTH, -1));
                     break;
-                default: // set len = 8 for all other cases
+                case FdoDataType_Boolean:
+                case FdoDataType_Byte:
+                case FdoDataType_Int16:
+                case FdoDataType_Int32:
+                case FdoDataType_Int64:
+                    dpd->SetLength(20); // assume max size
+                    break;
+                case FdoDataType_Decimal:
+                case FdoDataType_Double:
+                case FdoDataType_Single:
+                    dpd->SetLength(30); // assume max size
+                    break;
+                default:
                     dpd->SetLength(8);
                     break;
                 }
