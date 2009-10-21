@@ -200,11 +200,16 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 {
     int rc = 0;
 
+    SltMetadata* md = m_connection->GetMetadata(fcname);
+
+    if (!md)
+        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
+
 	//first, issue the full statement, and create the FDO feature class from it -- we will present that to the caller
 	//so that he sees the properties he asked for. 
 	if (props && props->GetCount())
 	{
-        SltExpressionTranslator exTrans(props);
+        SltExpressionTranslator exTrans(props, md->ToClass());
 		int nProps = props->GetCount();
         m_reissueProps.Reserve(nProps);
 		for (int i=0; i<nProps; i++)
@@ -221,12 +226,6 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_reissueProps.Reserve(4);
     }
     
-    //remember the geometry encoding format
-    SltMetadata* md = m_connection->GetMetadata(fcname);
-
-    if (!md)
-        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
-
     m_fromwhere.Append(" FROM ", 6);
     if (!md->IsView())
         m_fromwhere.AppendDQuoted(fcname);
@@ -260,6 +259,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_fromwhere.Append(");", 2);
     }
 
+    //remember the geometry encoding format
     m_eGeomFormat = md->GetGeomFormat();
 
     //if there were properties passed in the identifier collection, assume 

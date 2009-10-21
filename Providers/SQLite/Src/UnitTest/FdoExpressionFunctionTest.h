@@ -56,6 +56,8 @@ protected:
 
     void TestDateStringConv();
 
+    void TestConcat();
+
 };  //  class FdoExpressionFunctionTest
 
 #endif

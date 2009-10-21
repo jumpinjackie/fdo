@@ -92,6 +92,7 @@ void FdoExpressionFunctionTest::RunAllExpFctTests()
 
       TestXYZMFunction();
       TestDateStringConv();
+      TestConcat();
 
     }  //  try ...
 
@@ -243,4 +244,67 @@ void FdoExpressionFunctionTest::TestDateStringConv()
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
 	printf( "Done\n" );
+}
+
+void FdoExpressionFunctionTest::TestConcat()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+		conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
+        try
+        {
+            FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	        select->SetFeatureClassName(L"exfct_c1");
+
+            FdoPtr<FdoIdentifierCollection> selColl = select->GetPropertyNames();
+            
+            // Make sure TRUE/FALSE is returned 
+            FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"Concat(featid, bool_val)");
+            FdoPtr<FdoIdentifier> idfCalc = FdoComputedIdentifier::Create(L"Calc", exp);
+            selColl->Add(idfCalc);
+
+            // Concat more than 2 values
+            exp = FdoExpression::Parse(L"Concat(bool_val, '=', bool_val)");
+            idfCalc = FdoComputedIdentifier::Create(L"Calc1", exp);
+            selColl->Add(idfCalc);
+
+            FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+            while(rdr->ReadNext())
+            {
+                if (!rdr->IsNull(L"Calc"))
+                {
+                    FdoStringP val = rdr->GetString(L"Calc");
+                    printf ("Calc=%ls\n", val);
+
+                    CPPUNIT_ASSERT(val.Contains(L"TRUE") || val.Contains(L"FALSE"));
+                }
+
+                if (!rdr->IsNull(L"Calc1"))
+                {
+                    FdoStringP val = rdr->GetString(L"Calc1");
+                    printf ("Calc1=%ls\n", val);
+                    CPPUNIT_ASSERT(val == L"TRUE=TRUE" || val == L"FALSE=FALSE");
+                }
+            }
+            rdr->Close();
+        }
+        catch(FdoException* exc)
+        {
+            UnitTestUtil::PrintException(exc);
+            exc->Release();
+            CPPUNIT_FAIL("\nUnexpected exception: ");
+        }
+    }
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+
 }

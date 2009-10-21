@@ -1146,14 +1146,34 @@ void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
     if (cnt > 0)
     {
         FdoPtr<FdoExpression> param;
+        bool  isConcatFunc = (_wcsicmp(name, FDO_FUNCTION_CONCAT) == 0 );
+        bool   bConvAdded = false;
+
         for(int i = 0; i < cnt-1; i++)
         {
             param = argColl->GetItem(i);
+            
+            bConvAdded = false;
+
+            if (isConcatFunc)
+                bConvAdded = ProcessConcatFunction(param);
+
             HandleExpr(param);
+
+            if (bConvAdded)
+                m_expr.Append(")");
+
             m_expr.Append(",", 1);
         }
         param = argColl->GetItem(cnt-1);
+
+        if (isConcatFunc)
+            bConvAdded = ProcessConcatFunction(param);
+
         HandleExpr(param);
+
+        if (bConvAdded)
+            m_expr.Append(")");
     }
     m_expr.Append(")", 1);
 }
@@ -1316,6 +1336,34 @@ void SltExpressionTranslator::ProcessCLOBValue(FdoCLOBValue& expr)
 void SltExpressionTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
 {
     throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+
+bool SltExpressionTranslator::ProcessConcatFunction(FdoExpression* param)
+{
+    bool    bConvAdded = false;
+        
+    FdoIdentifier * id = dynamic_cast<FdoIdentifier *>( param );
+    if ( m_fc && id )
+    {
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
+        FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(id->GetName());
+
+        if (pd.p)
+        {
+            FdoPropertyType type = pd->GetPropertyType();
+
+            if (type == FdoPropertyType_DataProperty)
+            {
+                FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)(pd.p);
+
+                bConvAdded = (dpd->GetDataType() == FdoDataType_Boolean);
+
+                if (bConvAdded)
+                    m_expr.Append("booleantostring(");
+            }
+        }
+    }
+    return bConvAdded;
 }
 
 void SltExtractExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)

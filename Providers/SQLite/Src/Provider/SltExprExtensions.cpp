@@ -1310,6 +1310,25 @@ static void toStringFunc(sqlite3_context *context, int argc, sqlite3_value **arg
     }
 }
 
+static void booleanToStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc == 1);
+    int type = sqlite3_value_type(argv[0]);
+    assert(type == SQLITE_INTEGER || type == SQLITE_NULL);
+
+    if (type == SQLITE_NULL || sqlite3_value_bytes(argv[0]) == 0)
+    {
+        sqlite3_result_null(context);
+    }
+    else 
+    {
+        // It is assumed that booleantostring() has been added only for boolean identifiers
+        int val = sqlite3_value_int(argv[0]);
+        sqlite3_result_text(context, (val != 0) ? "TRUE" : "FALSE", -1, SQLITE_TRANSIENT);
+    }
+}
+
+
 static void nullvalueFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
     assert(argc == 2);
@@ -1839,6 +1858,7 @@ void RegisterExtensions (sqlite3* db)
         { "toint64",            1, 4,  SQLITE_UTF8,    0, convFunc },
         { "tostring",           1, 1,  SQLITE_UTF8,    0, toStringFunc },
         { "tostring",           2, 1,  SQLITE_UTF8,    0, toStringFunc },
+        { "booleantostring",    1, 1,  SQLITE_UTF8,    0, booleanToStringFunc },
         { "nullvalue",          2, 1,  SQLITE_UTF8,    0, nullvalueFunc }
 
     };
