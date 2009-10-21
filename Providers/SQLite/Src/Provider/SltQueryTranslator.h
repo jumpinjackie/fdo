@@ -285,9 +285,10 @@ class SltExpressionTranslator : public FdoIExpressionProcessor
 
 public:
 
-    SltExpressionTranslator(FdoIdentifierCollection* props = NULL)
+    SltExpressionTranslator(FdoIdentifierCollection* props = NULL, FdoClassDefinition* classDef = NULL)
     {
         m_props = FDO_SAFE_ADDREF(props);
+        m_fc = classDef;
     }
     virtual ~SltExpressionTranslator()
     {}
@@ -330,7 +331,11 @@ public:
     StringBuffer* GetExpression() { return &m_expr; }
     void Reset() { m_expr.Reset(); }
 
+private:
+    bool ProcessConcatFunction(FdoExpression* param);
+
 protected:
+    FdoClassDefinition*             m_fc;
     FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;
     char m_useConv[256];
