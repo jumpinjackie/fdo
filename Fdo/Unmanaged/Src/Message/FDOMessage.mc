@@ -831,7 +831,11 @@ SymbolicName=SCHEMA_151_DEFAULTDATEVIOLATION
 Language=English
 Data Property %1$ls default value '%2$ls' is not an FDO datetime; must be "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'", "DATE 'YYYY-MM-DD'" or "TIME 'HH24:MM:SS'"
 .
-
+MessageId=1152
+SymbolicName=SCHEMA_152_MODCLASSCONSTRAINT
+Language=English
+Cannot modify unique constraints for class '%1$ls'; class has data
+.
 MessageId=2001
 SymbolicName=EXPRESSION_1_BLOBVALUENULL
 Language=English

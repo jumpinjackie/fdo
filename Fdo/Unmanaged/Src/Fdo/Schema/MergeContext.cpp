@@ -856,7 +856,7 @@ void FdoSchemaMergeContext::AddUniqueConstraintRef( FdoClassDefinition* pClsRef,
     
     FdoPtr<UniqueConstraintRef> oldRef = mUniConsRefs->FindItem( ref->GetName() );
     
-    if ( oldRef ) {
+    if ( oldRef && !oldRef->MustBeRemoved()) {
         oldRef->SetRefClass( pClsRef );
     }
     else {
@@ -1989,6 +1989,22 @@ void FdoSchemaMergeContext::ResolveUniqueConstraints()
         FdoClassDefinitionP pClass = (FdoClassDefinition*)(MapElement(FdoSchemaElementP(ref->GetRefClass())));
         FdoUniqueConstraintP pConstraint = ref->GetRefUniqueConstraint();
         FdoStringsP consProps = ref->GetStrings();
+        if (pConstraint == NULL && consProps->GetCount() != 0) {
+            // we need to add a new constraint and all properties will be added below
+            pConstraint = FdoUniqueConstraint::Create();
+            FdoPtr<FdoUniqueConstraintCollection> uniqueConstrColl = pClass->GetUniqueConstraints();
+            uniqueConstrColl->Add(pConstraint);
+            pClass->SetElementState(FdoSchemaElementState_Modified);
+        }
+        else if (pConstraint != NULL && ref->MustBeRemoved()) {
+            FdoPtr<FdoUniqueConstraintCollection> uniqueConstrColl = pClass->GetUniqueConstraints();
+            uniqueConstrColl->Remove(pConstraint);
+            pClass->SetElementState(FdoSchemaElementState_Modified);
+            continue;
+        }
+        else {
+            continue;
+        }
 
         for (FdoInt32 j=0; j<consProps->GetCount(); j++) {
             FdoStringP dvPropName = consProps->GetString(j);
@@ -2362,6 +2378,15 @@ FdoSchemaMergeContext::UniqueConstraintRef::UniqueConstraintRef( FdoClassDefinit
     mStrings = strings;
     SetRefClass( pClsRef );
 	mUniConsRef = pUniConsRef;
+    if (mStrings->GetCount() == 0)
+    {
+        mMustBeRemoved = true;
+        FdoPtr<FdoDataPropertyDefinitionCollection> props = mUniConsRef->GetProperties();
+        for (int idx = 0; idx < props->GetCount(); idx++ ) 
+            mStrings->Add( FdoPtr<FdoDataPropertyDefinition>(props->GetItem(idx))->GetName() );
+    }
+    else
+        mMustBeRemoved = false;
 }
 
 FdoClassDefinition* FdoSchemaMergeContext::UniqueConstraintRef::GetRefClass()

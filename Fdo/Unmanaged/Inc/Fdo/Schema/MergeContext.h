@@ -713,7 +713,10 @@ private:
         {
             return false;
         }
-
+        FdoBoolean MustBeRemoved()
+        {
+            return mMustBeRemoved;
+        }
     protected:
         UniqueConstraintRef() {}
         UniqueConstraintRef( FdoClassDefinition* pClsRef, FdoUniqueConstraint* pUniConsRef, FdoStringsP strings );
@@ -724,6 +727,7 @@ private:
 		FdoPtr<FdoUniqueConstraint> mUniConsRef;
         FdoStringsP mStrings;
         FdoStringP mQName;
+        bool mMustBeRemoved;
 	};
 
 	// Collection of references to unique constraint references
