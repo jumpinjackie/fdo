@@ -44,10 +44,11 @@ public:
     virtual bool CanAddClass(FdoClassDefinition* classDef) { return true; }
     virtual bool CanDeleteClass(FdoClassDefinition* classDef) { return true; }
     virtual bool CanModClassName(FdoClassDefinition* classDef) { return true; }
+    virtual bool CanModIdProps(FdoClassDefinition* classDef);
     
     virtual bool CanAddProperty(FdoPropertyDefinition* prop);
     virtual bool CanDeleteProperty(FdoPropertyDefinition* prop);
-    virtual bool CanModPropertyName(FdoPropertyDefinition* prop);
+    virtual bool CanModPropertyName(FdoPropertyDefinition* prop) { return true; }
 
     virtual bool CanModDataType(FdoDataPropertyDefinition* prop);
     virtual bool CanModDefaultValue(FdoDataPropertyDefinition* prop);

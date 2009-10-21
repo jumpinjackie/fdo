@@ -35,6 +35,7 @@ class FdoReadOnlyPropertyDefinitionCollection;
 class FdoReadOnlyDataPropertyDefinitionCollection;
 class FdoIDisposableCollection;
 class FdoUniqueConstraintCollection;
+class FdoSchemaMergeContext;
 
 /// \brief
 /// FdoClassDefinition is an abstract class that derives from FdoSchemaElement.
@@ -46,6 +47,7 @@ class FdoClassDefinition : public FdoSchemaElement
     friend class FdoRelationEnd;
     friend class FdoRelation;
     friend class FdoObjectPropertyDefinition;
+    friend class FdoSchemaMergeContext;
 
 /// \cond DOXYGEN-IGNORE
 protected:

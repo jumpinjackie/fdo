@@ -62,7 +62,7 @@ void FdoClassDefinition::Init()
     m_isAbstractCHANGED = false;
     m_baseClassCHANGED = NULL;
     m_basePropertiesCHANGED = NULL;
-	m_uniqueConstraintsCHANGED = NULL;
+    m_uniqueConstraintsCHANGED = NULL;
 
     m_bProperties = false;
     m_isComputed = false;
@@ -301,6 +301,24 @@ bool FdoClassDefinition::IsSubClass()
     return (m_baseClass != NULL);
 }
 
+FdoUniqueConstraintCollection* DeepCopyConstraints(FdoUniqueConstraintCollection* src)
+{
+    FdoPtr<FdoUniqueConstraintCollection> dest = FdoUniqueConstraintCollection::Create();
+    if (src == NULL || src->GetCount() == 0)
+        return FDO_SAFE_ADDREF(dest.p);
+    for ( int idx = 0; idx < src->GetCount(); idx++ ) {
+        FdoPtr<FdoUniqueConstraint> uc = src->GetItem(idx);
+        FdoPtr<FdoUniqueConstraint> newuc = FdoUniqueConstraint::Create();
+        dest->Add(newuc);
+        
+        FdoPtr<FdoDataPropertyDefinitionCollection> newucProps = newuc->GetProperties();
+        FdoPtr<FdoDataPropertyDefinitionCollection> ucProps = uc->GetProperties();
+        for (int idx2 = 0; idx2 < ucProps->GetCount(); idx2++ ) 
+            newucProps->Add( FdoPtr<FdoDataPropertyDefinition>(ucProps->GetItem(idx2)));
+    }
+    return FDO_SAFE_ADDREF(dest.p);
+}
+
 void FdoClassDefinition::_StartChanges()
 {
     if (!(m_changeInfoState & (CHANGEINFO_PRESENT|CHANGEINFO_PROCESSING)))
@@ -310,6 +328,8 @@ void FdoClassDefinition::_StartChanges()
         m_isAbstractCHANGED = m_isAbstract;
         m_baseClassCHANGED = FDO_SAFE_ADDREF(m_baseClass);
         m_basePropertiesCHANGED = FDO_SAFE_ADDREF(m_baseProperties);
+        FDO_SAFE_RELEASE(m_uniqueConstraintsCHANGED);
+        m_uniqueConstraintsCHANGED = DeepCopyConstraints(m_uniqueConstraints);
     }
 }
 
@@ -336,11 +356,17 @@ void FdoClassDefinition::_RejectChanges()
             FDO_SAFE_RELEASE(m_baseProperties);
             m_baseProperties = FDO_SAFE_ADDREF(m_basePropertiesCHANGED);
         }
+        if (m_uniqueConstraintsCHANGED != NULL)
+        {
+            FDO_SAFE_RELEASE(m_uniqueConstraints);
+            m_uniqueConstraints = FDO_SAFE_ADDREF(m_uniqueConstraintsCHANGED);
+        }
 
         // reset
         m_isAbstractCHANGED = false;
         FDO_SAFE_RELEASE(m_baseClassCHANGED);
         FDO_SAFE_RELEASE(m_basePropertiesCHANGED);
+        FDO_SAFE_RELEASE(m_uniqueConstraintsCHANGED);
     }
 
     if (m_baseClass)
@@ -365,6 +391,7 @@ void FdoClassDefinition::_AcceptChanges()
 
         // NOTE: no need to call _AcceptChanges() on m_basePropertiesCHANGED, it cannot change once set.
         FDO_SAFE_RELEASE(m_basePropertiesCHANGED);
+        FDO_SAFE_RELEASE(m_uniqueConstraintsCHANGED);
     }
 
     if (m_baseClass)
@@ -539,7 +566,94 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext*
             }
         }
 
-        //TODO: handle unique constraints
+        // FdoUniqueConstraint is not a FdoSchemaElement we cannot "merge" elements in the default way
+        // We do not have an API function CanModUniqueConstr(pClass) we use CanModIdProps which
+        // will do the same thing in most of data sources
+        if (pClass->GetElementState() == FdoSchemaElementState_Modified)
+        {
+            bool changeDoneUq = false;
+            FdoPtr<FdoUniqueConstraintCollection> uniqueConstrColl = pClass->GetUniqueConstraints();
+            FdoStringsP oldConstPropNames = FdoStringCollection::Create();
+            FdoStringsP newConstPropNames = FdoStringCollection::Create();
+            // see which one needs to be deleted
+            for ( idx = 0; idx < m_uniqueConstraints->GetCount(); idx++ ) {
+                FdoPtr<FdoUniqueConstraint> olduc = m_uniqueConstraints->GetItem(idx);
+                
+                FdoPtr<FdoDataPropertyDefinitionCollection> olducProps = olduc->GetProperties();
+                for (int idx2 = 0; idx2 < olducProps->GetCount(); idx2++ ) 
+                    oldConstPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(olducProps->GetItem(idx2))->GetName() );
+                
+                bool constrFound = false;
+                for ( int idx3 = 0; idx3 < uniqueConstrColl->GetCount(); idx3++ ) {
+                    FdoPtr<FdoUniqueConstraint> newuc = uniqueConstrColl->GetItem(idx3);
+                    
+                    FdoPtr<FdoDataPropertyDefinitionCollection> newucProps = newuc->GetProperties();
+                    for (int idx2 = 0; idx2 < newucProps->GetCount(); idx2++ ) 
+                        newConstPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(newucProps->GetItem(idx2))->GetName() );
+                    if (oldConstPropNames->ToString() == newConstPropNames->ToString())
+                    {
+                        constrFound = true;
+                        break;
+                    }
+                    newConstPropNames->Clear();
+                }
+                if (!constrFound)
+                {
+                    FdoStringsP emptyStrs = FdoStringCollection::Create();
+                    pContext->AddUniqueConstraintRef(this, olduc, emptyStrs);
+                    changeDoneUq = true;
+                }
+
+                oldConstPropNames->Clear();
+                newConstPropNames->Clear();
+            }
+            // see which one needs to be added
+            for ( idx = 0; idx < uniqueConstrColl->GetCount(); idx++ ) {
+                FdoPtr<FdoUniqueConstraint> newuc = uniqueConstrColl->GetItem(idx);
+                
+                FdoPtr<FdoDataPropertyDefinitionCollection> newucProps = newuc->GetProperties();
+                for (int idx2 = 0; idx2 < newucProps->GetCount(); idx2++ ) 
+                    newConstPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(newucProps->GetItem(idx2))->GetName() );
+                
+                bool constrFound = false;
+                for ( int idx3 = 0; idx3 < m_uniqueConstraints->GetCount(); idx3++ ) {
+                    FdoPtr<FdoUniqueConstraint> olduc = m_uniqueConstraints->GetItem(idx3);
+                    
+                    FdoPtr<FdoDataPropertyDefinitionCollection> olducProps = olduc->GetProperties();
+                    for (int idx2 = 0; idx2 < olducProps->GetCount(); idx2++ ) 
+                        oldConstPropNames->Add( FdoPtr<FdoDataPropertyDefinition>(olducProps->GetItem(idx2))->GetName() );
+                    if (newConstPropNames->ToString() == oldConstPropNames->ToString())
+                    {
+                        constrFound = true;
+                        break;
+                    }
+                    oldConstPropNames->Clear();
+                }
+                if (!constrFound)
+                {
+                    pContext->AddUniqueConstraintRef(this, NULL, newConstPropNames);
+                    newConstPropNames = FdoStringCollection::Create();
+                    changeDoneUq = true;
+                }
+
+                oldConstPropNames->Clear();
+                newConstPropNames->Clear();
+            }
+            if (changeDoneUq && !pContext->CanModIdProps(pClass))
+            {
+                // Can't change unique constraints for a class with data.
+                pContext->AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_152_MODCLASSCONSTRAINT),
+                                (FdoString*) pClass->GetQualifiedName()
+                            )
+                        )
+                    )
+                );
+            }
+        }
 
         if ( pContext->GetReplaceClass() ) {
             // If we're completely replacing classes (this is done when reading from XML)
@@ -767,6 +881,7 @@ void FdoClassDefinition::InitFromXml(FdoSchemaXmlContext* pContext, FdoXmlAttrib
     // instead of an additive merge.
     m_identityProperties->Clear();
     m_properties->Clear();
+    m_uniqueConstraints->Clear();
     SetBaseClass(NULL);
     FDO_SAFE_RELEASE(m_baseProperties);
 
