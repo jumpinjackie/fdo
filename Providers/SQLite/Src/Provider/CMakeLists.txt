@@ -18,7 +18,7 @@ set( SQLiteProvider_SRCS
 	) 
 
 if( UNIX )
-	add_definitions(-msse -msse2 -mmmx)
+	add_definitions(-msse -msse2 -mmmx -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_PROGRESS_CALLBACK)
 endif( UNIX )
 
 add_library (SQLiteProvider SHARED ${SQLiteProvider_SRCS} )

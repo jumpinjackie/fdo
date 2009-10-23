@@ -76,13 +76,13 @@ void ReaderTest::TestDataReaderWithIndex ()
         {
             CPPUNIT_ASSERT(reader->GetPropertyCount() == 2);
 
-            CPPUNIT_ASSERT(reader->GetPropertyIndex(L"SpatialExtents_geometry") == 0);
-            CPPUNIT_ASSERT(reader->GetPropertyIndex(L"count_int32")             == 1);
+            CPPUNIT_ASSERT(reader->GetPropertyIndex(L"count_int32")             == 0);
+            CPPUNIT_ASSERT(reader->GetPropertyIndex(L"SpatialExtents_geometry") == 1);
 
-            CPPUNIT_ASSERT(reader->GetInt64(L"count_int32") == reader->GetInt64(1));
+            CPPUNIT_ASSERT(reader->GetInt64(L"count_int32") == reader->GetInt64(0));
 
-            CPPUNIT_ASSERT(reader->GetPropertyType(L"SpatialExtents_geometry") == reader->GetPropertyType(0));
-            CPPUNIT_ASSERT(reader->GetPropertyType(L"count_int32") == reader->GetPropertyType(1));
+            CPPUNIT_ASSERT(reader->GetPropertyType(L"SpatialExtents_geometry") == reader->GetPropertyType(1));
+            CPPUNIT_ASSERT(reader->GetPropertyType(L"count_int32") == reader->GetPropertyType(0));
         }
         else
         {

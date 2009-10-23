@@ -5,6 +5,7 @@
 #include "SltGeomUtils.h"
 #include "FdoCommonOSUtil.h"
 #include "StringUtil.h"
+#include "SltProvider.h"
 #include <math.h>
 #include <algorithm>
 #include <limits>       // For quiet_NaN()
@@ -1596,12 +1597,9 @@ static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     if (geom == NULL) // enforce a null return
         optype = 0;
 
-    // TODO: we need to find a way to 'detect' if geometry is geodetic
-    // somehow from class definition-geometric property we need to look at 
-    // spatial context WKT if contains/starts with 'GEOGCS'
-    // the problem is not to detect if is geodetic, it is to 
-    // propagate it till here from select command
-    bool computeGeodetic = false; // for now keep it to false
+    ConnInfoDetails* infoCS = (ConnInfoDetails*)sqlite3_context_db_handle(context)->pUserArg;
+    bool computeGeodetic = (infoCS != NULL) ? infoCS->IsCoordSysLatLong() : false;
+
     switch(optype)
     {
     case 1:
