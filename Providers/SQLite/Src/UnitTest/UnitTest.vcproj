@@ -735,8 +735,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy SchBooleanTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;SchBooleanTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -746,8 +746,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy SchBooleanTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;SchBooleanTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -758,7 +758,7 @@
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
 						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll"
+						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;SchBooleanTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -768,8 +768,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing fake install"
-						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
-						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll"
+						CommandLine="copy providers.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest1.xml $(OutDir)&#x0D;&#x0A;copy SchConstraintsTest2.xml $(OutDir)&#x0D;&#x0A;copy SchPKTest.xml $(OutDir)&#x0D;&#x0A;copy SchBooleanTest.xml $(OutDir)&#x0D;&#x0A;copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)&#x0D;&#x0A;"
+						AdditionalDependencies="providers.xml;SchConstraintsTest1.xml;SchConstraintsTest2.xml;SchPKTest.xml;SchBooleanTest.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll"
 						Outputs="$(OutDir)\providers.xml"
 					/>
 				</FileConfiguration>
@@ -778,6 +778,18 @@
 		<Filter
 			Name="Others"
 			>
+			<File
+				RelativePath=".\SchBooleanTest.xml"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath=".\SchConstraintsTest1.xml"
 				>
@@ -912,19 +924,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\SelectTest.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\SelectTest.h"
-			>
-		</File>
-		<File
 			RelativePath=".\ReaderTest.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\ReaderTest.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SelectTest.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SelectTest.h"
 			>
 		</File>
 		<File

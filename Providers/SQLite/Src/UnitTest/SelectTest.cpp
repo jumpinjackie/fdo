@@ -270,3 +270,160 @@ void SelectTest::TestComplexWithBindSelect ()
 	printf( "Done\n" );
 }
 
+void SelectTest::BooleanDataTest ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+		 
+        //apply schema
+		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
+        schColl->ReadXml(L"SchBooleanTest.xml");
+        CPPUNIT_ASSERT(schColl->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
+		applyschema->SetFeatureSchema(schema);
+		applyschema->Execute();
+
+        {
+            FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+            FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+            FdoPtr<FdoPropertyValue> propIns;
+            
+		    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		    double coords[] = { 7.2068, 43.7556, 
+							    7.2088, 43.7556, 
+							    7.2088, 43.7574, 
+							    7.2068, 43.7574, 
+							    7.2068, 43.7556 }; 
+		    FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+		    FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+		    FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+		    FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+
+            FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
+            vals->Add(propGeomIns);
+            
+            FdoPtr<FdoBooleanValue> boolVal = FdoBooleanValue::Create(true);
+            FdoPtr<FdoPropertyValue> propBoolIns = FdoPropertyValue::Create(L"BoolProp", boolVal);
+            vals->Add(propBoolIns);
+
+            FdoPtr<FdoStringValue> strVal = FdoStringValue::Create(L"sky is blue");
+            FdoPtr<FdoPropertyValue> propStrIns = FdoPropertyValue::Create(L"Name", strVal);
+            vals->Add(propStrIns);
+
+            insCmd->SetFeatureClassName(L"BoolTest");
+            
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+            
+            boolVal->SetBoolean(false);
+            strVal->SetString(L"water is red");
+            rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+
+            boolVal->SetNull();
+            strVal->SetString(L"snow is white or black");
+            rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            rdr->Close();
+        }
+
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+
+        FdoPtr<FdoIdentifierCollection> props =  selectCmd->GetPropertyNames();
+        props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId")));
+        props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Geometry")));
+        props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"BoolProp")));
+        props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Name")));
+        FdoPtr<FdoComputedIdentifier> cmpid = FdoComputedIdentifier::Create(L"JustTrue", FdoPtr<FdoExpression>(FdoExpression::Parse(L"TRUE")));
+        props->Add(cmpid);
+
+        FdoPtr<FdoComputedIdentifier> cmpid2 = FdoComputedIdentifier::Create(L"CanBe", FdoPtr<FdoExpression>(FdoExpression::Parse(L"concat(Name, ' and this can be ', TRUE)")));
+        props->Add(cmpid2);
+        
+        FdoPtr<FdoComputedIdentifier> cmpid3 = FdoComputedIdentifier::Create(L"ConcText", FdoPtr<FdoExpression>(FdoExpression::Parse(L"concat(Name, ' and this is ', BoolProp)")));
+        props->Add(cmpid3);
+
+        selectCmd->SetFeatureClassName(L"BoolTest");
+        FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+        int idx = 0;
+        while(reader->ReadNext())
+        {
+            if (!reader->IsNull(L"JustTrue"))
+            {
+                bool justTrue = reader->GetBoolean(L"JustTrue");
+                CPPUNIT_ASSERT(justTrue);
+            }
+            else
+            {
+                CPPUNIT_FAIL ("Invalid result data");
+            }
+            if (!reader->IsNull(L"CanBe"))
+            {
+                FdoStringP canBe = reader->GetString(L"CanBe");
+                switch(idx)
+                {
+                case 0:
+                    CPPUNIT_ASSERT(canBe == L"sky is blue and this can be TRUE");
+                    break;
+                case 1:
+                    CPPUNIT_ASSERT(canBe == L"water is red and this can be TRUE");
+                    break;
+                case 2:
+                    CPPUNIT_ASSERT(canBe == L"snow is white or black and this can be TRUE");
+                    break;
+                default:
+                    CPPUNIT_FAIL ("Invalid row index");
+                }
+            }
+            else
+            {
+                CPPUNIT_FAIL ("Invalid result data");
+            }
+            if (!reader->IsNull(L"ConcText"))
+            {
+                FdoStringP concText = reader->GetString(L"ConcText");
+                switch(idx)
+                {
+                case 0:// bool is TRUE
+                    CPPUNIT_ASSERT(concText == L"sky is blue and this is TRUE");
+                    break;
+                case 1:// bool is FALSE
+                    CPPUNIT_ASSERT(concText == L"water is red and this is FALSE");
+                    break;
+                case 2: // bool is NULL
+                    CPPUNIT_ASSERT(concText == L"snow is white or black and this is ");
+                    break;
+                default:
+                    CPPUNIT_FAIL ("Invalid row index");
+                }
+            }
+            else
+            {
+                CPPUNIT_FAIL ("Invalid result data");
+            }
+            idx++;
+        }
+        reader->Close();
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+		
+	printf( "Done\n" );
+}

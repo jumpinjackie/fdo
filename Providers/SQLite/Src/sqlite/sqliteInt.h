@@ -849,6 +849,7 @@ struct sqlite3 {
   void (*xUnlockNotify)(void **, int);  /* Unlock notify callback */
   sqlite3 *pNextBlocked;        /* Next in list of all blocked connections */
 #endif
+  void* pUserArg;               /* Custom user data used to share data over connection */
 };
 
 /*

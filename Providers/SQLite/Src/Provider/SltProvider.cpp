@@ -104,6 +104,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_wkbBufferLen = 0;
     m_updateHookEnabled = false;
     m_changesAvailable = false;
+    m_connDet = NULL;
 }
 
 SltConnection::~SltConnection()
@@ -268,6 +269,9 @@ void SltConnection::CreateDatabase()
 
 FdoConnectionState SltConnection::Open()
 {
+    if (m_connState == FdoConnectionState_Open)
+        return m_connState;
+
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
     
     std::string file = W2A_SLOW(dsw);
@@ -306,7 +310,7 @@ FdoConnectionState SltConnection::Open()
     }
 
     rc = sqlite3_exec(m_dbRead, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
-    
+
     //Open the Write connection
     if( (rc = sqlite3_open(file.c_str(), &m_dbWrite)) != SQLITE_OK )
     {
@@ -342,6 +346,10 @@ FdoConnectionState SltConnection::Open()
     sqlite3_finalize(pstmt);
 
     m_connState = FdoConnectionState_Open;
+    
+    m_connDet = new ConnInfoDetails(this);
+    m_dbRead->pUserArg = m_connDet;
+    m_dbWrite->pUserArg = m_connDet;
 
     return m_connState;
 }
@@ -384,11 +392,19 @@ void SltConnection::Close()
     m_wkbBuffer = NULL;
     m_wkbBufferLen = 0;
 
-    if (m_dbRead && sqlite3_close(m_dbRead) != SQLITE_BUSY)
-        m_dbRead = NULL;
+    if (m_dbRead)
+    {
+        m_dbRead->pUserArg = NULL;
+        if(sqlite3_close(m_dbRead) != SQLITE_BUSY)
+            m_dbRead = NULL;
+    }
 
-    if (m_dbWrite && sqlite3_close(m_dbWrite) != SQLITE_BUSY)
-        m_dbWrite = NULL;
+    if (m_dbWrite)
+    {
+        m_dbWrite->pUserArg = NULL;
+        if(sqlite3_close(m_dbWrite) != SQLITE_BUSY)
+            m_dbWrite = NULL;
+    }
     
     FDO_SAFE_RELEASE(m_pSchema);
 
@@ -396,6 +412,9 @@ void SltConnection::Close()
 
     m_updateHookEnabled = false;
     m_changesAvailable = false;
+
+    delete m_connDet;
+    m_connDet = NULL;
 }
 
 FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
@@ -2622,7 +2641,15 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         if (expTrans.IsError())
             return NULL;
     }
-    extname = W2A_SLOW(expTrans.GetSContextName());
+    bool countIsFirst = true;
+    FdoString* spContxName = expTrans.GetSContextName();
+    if (spContxName != NULL && *spContxName != '\0')
+    {
+        FdoPtr<FdoIdentifier> identifier = props->GetItem(0);
+        countIsFirst = (wcscmp(spContxName, identifier->GetName()) != 0);
+    }
+
+    extname = W2A_SLOW(spContxName);
     countname = W2A_SLOW(expTrans.GetCountName());
 
     //ok this is a spatial extents or count computed property.
@@ -2635,7 +2662,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     sqlite3_stmt* stmt;
     const char* tail = NULL;
-    std::string sql;
+    StringBuffer sql;
 
     //get the count
     //we always use the count, whether we compute extents or not
@@ -2644,10 +2671,12 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     //case where we only need count
     if (extname.empty())
     {
-        sql = "CREATE TABLE SpatialExtentsResult (\"" + countname + "\" INTEGER);";
+        sql.Append("CREATE TABLE SpatialExtentsResult(");
+        sql.AppendDQuoted(countname.c_str());
+        sql.Append(" INTEGER);");
 
         char* err;
-        rc = sqlite3_exec(db, sql.c_str(), NULL, NULL, &err);
+        rc = sqlite3_exec(db, sql.Data(), NULL, NULL, &err);
 
         if (rc)
             sqlite3_free(err);
@@ -2677,8 +2706,6 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         poly.p[6] = ext.min[0];   poly.p[7] = ext.max[1];
         poly.p[8] = ext.min[0];   poly.p[9] = ext.min[1];
 
-
-        StringBuffer sql;
         sql.Append("CREATE TABLE SpatialExtentsResult (\"", 36);
         sql.Append(extname.c_str(), extname.size());
         if (!countname.empty())
@@ -2712,7 +2739,28 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     stmt = NULL;
     tail = NULL;
-    rc = sqlite3_prepare_v2(db, "SELECT * FROM SpatialExtentsResult;", -1, &stmt, &tail);
+    sql.Reset();
+    sql.Append("SELECT ");
+    if (!countname.empty())
+    {
+        if (countIsFirst)
+        {
+            sql.AppendDQuoted(countname.c_str());
+            sql.Append(",", 1);
+            sql.AppendDQuoted(extname.c_str());
+        }
+        else
+        {
+            sql.AppendDQuoted(extname.c_str());
+            sql.Append(",", 1);
+            sql.AppendDQuoted(countname.c_str());
+        }
+    }
+    else
+        sql.AppendDQuoted(extname.c_str());
+    sql.Append(" FROM SpatialExtentsResult;");
+
+    rc = sqlite3_prepare_v2(db, sql.Data(), -1, &stmt, &tail);
 
     if (rc == SQLITE_OK)
     {
@@ -2733,6 +2781,12 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             FdoPtr<FdoGeometricPropertyDefinition> geom = FdoGeometricPropertyDefinition::Create(expTrans.GetSContextName(), NULL);
             props->Add(geom);
             cls->SetGeometryProperty(geom);
+        }
+        if (!countIsFirst && !countname.empty())
+        {
+            FdoPtr<FdoPropertyDefinition> cntProp = props->GetItem(0);
+            props->RemoveAt(0);
+            props->Add(cntProp);
         }
         return new SltReader(this, stmt, true, cls, NULL);        
     }
@@ -3202,4 +3256,38 @@ void SltConnection::EnableHooks(bool enable, bool enforceRollback)
         else
             SltConnection::rollback_hook(this);
     }
+}
+
+bool SltConnection::IsCoordSysLatLong()
+{
+    if (m_dbRead == NULL)
+        return false;
+
+    const char* sql = "select srid from spatial_ref_sys where srtext LIKE '%GEOGCS%';";
+    sqlite3_stmt* pStmt = NULL;
+    const char* zTail = NULL;
+    bool retVal = false;
+    if (sqlite3_prepare_v2(m_dbRead, sql, -1, &pStmt, &zTail) == SQLITE_OK)
+    {
+        retVal = (sqlite3_step(pStmt) == SQLITE_ROW);
+        sqlite3_finalize(pStmt);
+    }
+    return retVal;
+}
+
+ConnInfoDetails::ConnInfoDetails(SltConnection* conn)
+{
+    m_isInitialized = m_isCoordSysLatLong = false;
+    m_conn = conn;
+}
+
+bool ConnInfoDetails::IsCoordSysLatLong()
+{
+    if (!m_isInitialized)
+    {
+        // cache the result to avoid multiple callsto execute
+        m_isInitialized = true;
+        m_isCoordSysLatLong = m_conn->IsCoordSysLatLong();
+    }
+    return m_isCoordSysLatLong;
 }

@@ -156,6 +156,13 @@ public:
 
 typedef std::vector<IFilterChunk*> FilterChunkList;
 
+enum StlBoolTopOperationType
+{
+    StlBoolTopOperationType_IntNeeded,
+    StlBoolTopOperationType_StrNeeded
+};
+typedef std::vector<StlBoolTopOperationType> BoolTopOperationStack;
+
 class ComplexFilterChunk : public FilterChunk
 {
 private:
@@ -275,6 +282,8 @@ private:
     FilterChunkList             m_allocatedObjects;
     // used as cache string operations
     StringBuffer                m_sb;
+    // used to convert Booleans on demand
+    BoolTopOperationStack       m_boolConvStack;
 };
 
 //Translates an FDO Expression to a SQLite expression
@@ -331,10 +340,8 @@ public:
     StringBuffer* GetExpression() { return &m_expr; }
     void Reset() { m_expr.Reset(); }
 
-private:
-    bool ProcessConcatFunction(FdoExpression* param);
-
 protected:
+    BoolTopOperationStack           m_boolConvStack;
     FdoClassDefinition*             m_fc;
     FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;

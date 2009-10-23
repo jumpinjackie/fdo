@@ -28,6 +28,7 @@ struct NameOrderingPair;
 class StringBuffer;
 class SpatialIndexDescriptor;
 struct DBounds;
+class ConnInfoDetails;
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -235,6 +236,7 @@ public:
     void CacheViewContent(const char* viewName);
     void EnableHooks(bool enable = true, bool enforceRollback = false);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
+    bool IsCoordSysLatLong();
 
 private :
 
@@ -285,4 +287,19 @@ private :
     // geometry conversion buffer
     unsigned char*                          m_wkbBuffer;
     int                                     m_wkbBufferLen;
+    ConnInfoDetails*                        m_connDet;
+};
+
+class ConnInfoDetails
+{
+public:
+    ConnInfoDetails(SltConnection* conn);
+    bool IsCoordSysLatLong();
+
+private:
+    // don't use add ref here
+    SltConnection* m_conn;
+    bool m_isInitialized;
+    bool m_isCoordSysLatLong; // specify if connection is based on a lat/long CS
+    // other parameters needed to pass thru sqlite connection
 };

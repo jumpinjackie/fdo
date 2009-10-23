@@ -39,6 +39,7 @@ class SelectTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestSpatialSelect );
   CPPUNIT_TEST( TestComplexSelect );
   CPPUNIT_TEST(TestComplexWithBindSelect);
+  CPPUNIT_TEST(BooleanDataTest);  
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,6 +53,7 @@ public:
     void TestSpatialSelect ();
     void TestComplexSelect ();
     void TestComplexWithBindSelect();
+    void BooleanDataTest ();
 };
 
 #endif
