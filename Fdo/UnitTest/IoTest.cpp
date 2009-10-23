@@ -901,7 +901,7 @@ void FdoIoTest::CheckContext( FdoIoStream* stream, FILE* fp  )
 #ifdef _WIN32
             int fd = _fileno(fp);
 #else
-            int fd = fileno(mFp);
+            int fd = fileno(fp);
 #endif
             struct stat fileStat;
 
