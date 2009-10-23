@@ -156,33 +156,35 @@ public:
             }
         }
 
-        if ( rdr && rdr->ReadNext() ) {
+        if ( rdr ) {
             // A component reader was created so cache the components that it fetches.
 
-            while ( !rdr->IsEOF()) {
-                // Get the dbObject name for the currently read row.
-                FdoStringP nextObjectName = GetObjectName( rdr );
-                FdoSmPhDbObjectP dbObject = FindDbObject( dbObjects, nextObjectName );
-                
-                if ( dbObject ) {
-                    // Cache all components for this dbObject
-                    if ( !CacheObjectComponents( dbObject, rdr ) )
-                        // If the components were cached, the component reader is advanced to just 
-                        // after the current dbObject. However, if they weren't, then must
-                        // advance the reader here. This can happen if the current dbObject
-                        // is not in the cache.
+            if ( rdr->ReadNext() ) {
+                while ( !rdr->IsEOF()) {
+                    // Get the dbObject name for the currently read row.
+                    FdoStringP nextObjectName = GetObjectName( rdr );
+                    FdoSmPhDbObjectP dbObject = FindDbObject( dbObjects, nextObjectName );
+                    
+                    if ( dbObject ) {
+                        // Cache all components for this dbObject
+                        if ( !CacheObjectComponents( dbObject, rdr ) )
+                            // If the components were cached, the component reader is advanced to just 
+                            // after the current dbObject. However, if they weren't, then must
+                            // advance the reader here. This can happen if the current dbObject
+                            // is not in the cache.
+                            rdr->ReadNext();
+                    }
+                    else {
                         rdr->ReadNext();
-                }
-                else {
-                    rdr->ReadNext();
-                }
+                    }
 
-                FdoDictionaryElementP elem = candidates->FindItem( nextObjectName );
-                if ( elem )
-                    // Mark current candidate dbObject has having been read.
-                    elem->SetValue(L"f");
+                    FdoDictionaryElementP elem = candidates->FindItem( nextObjectName );
+                    if ( elem )
+                        // Mark current candidate dbObject has having been read.
+                        elem->SetValue(L"f");
+                }
             }
-
+            
             // Do component caching for any candidates for which no components were found. 
             // This forces the component list for each candidate to be initialized so that
             // we won't retry loading its components. The retry would be done with one query
