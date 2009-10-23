@@ -17,6 +17,14 @@
 #include "IoTest.h"
 #include "UnitTestUtil.h"
 #include <Common/Io/ByteStreamReader.h>
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+#include <fcntl.h>
+#include <sys/stat.h>
+
 #ifdef _DEBUG
 //#define DEBUG_DETAIL  1
 #endif
@@ -883,8 +891,28 @@ void FdoIoTest::CheckContext( FdoIoStream* stream, FILE* fp  )
     try {
         FdoInt64 index = ftell( fp );
 
-        if ( index >= 0 ) 
-            hasContext = true;
+        if ( index >= 0 ) {
+            // ftell succeeds if the stream is on a pipe but pipes aren't really 
+            // fully contextual. I tried some fseeks on the pipes; they succeed but
+            // the file pointer doesn't actually move.
+            //
+            // Check further to see if the stream is on a pipe. HasContext should be
+            // false in this case.
+#ifdef _WIN32
+            int fd = _fileno(fp);
+#else
+            int fd = fileno(mFp);
+#endif
+            struct stat fileStat;
+
+            if ( fstat(fd, &fileStat) == 0 ) { 
+#ifdef _WIN32
+                hasContext = ( (fileStat.st_mode & _S_IFIFO) == 0 ); 
+#else
+                hasContext = ( (fileStat.st_mode & S_IFIFO) == 0 ); 
+#endif
+            }
+        }
     }
     catch ( ... ) {
         hasContext = false;
