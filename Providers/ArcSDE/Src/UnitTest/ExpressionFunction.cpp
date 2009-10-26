@@ -67,6 +67,7 @@ void TestExpressionFunction::RunAllExpFctTests()
     try {
 
       TestXYZMFunction();
+      TestConcatFunction();
 
     }  //  try ...
 
@@ -420,10 +421,69 @@ FdoFeatureClass *TestExpressionFunction::CreateFdoFeatureClass (
 
 }  //  CreateFdoFeatureClass ()
 
-void TestExpressionFunction::AddFeature (FdoIConnection * /*current_connection*/,
-                 FdoString      * /*class_name*/,
-                 int            /*index*/)
+// Override because ArcSDE doesn't support all the datatypes.
+// Note it doesn't populate the geometry.
+void TestExpressionFunction::AddFeature (FdoIConnection * current_connection,
+                 FdoString      * class_name,
+                 int            index)
+// +---------------------------------------------------------------------------
+// | The function adds a new object for the specified class. The values being
+// | added are predefined based on the predefined schema.
+// +---------------------------------------------------------------------------
 {
+    // Declare and initialize all necessary local variables.
+
+    FdoStringP                 id_str;
+
+    FdoPtr<FdoIInsert>         insert_command;
+
+    FdoDateTime                dt;
+
+	FdoPtr<FdoDataValue>       data_value;
+
+	FdoPtr<FdoPropertyValue>   property_value;
+
+    FdoPtr<FdoIFeatureReader>  feature_reader;
+
+    FdoPtr<FdoPropertyValueCollection> property_values;
+
+    try {
+
+      // Create the FdoIInsert command and set the necessary command properties.
+
+      insert_command = 
+            (FdoIInsert *) current_connection->CreateCommand(
+                                                        FdoCommandType_Insert);
+      insert_command->SetFeatureClassName(class_name);
+
+      // Get hold of the class property set.
+
+	  property_values = insert_command->GetPropertyValues();
+
+      //// Set the new object's properties.
+
+      data_value     = FdoDataValue::Create(index);
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"id");
+      property_value->SetValue(data_value);
+
+
+      data_value     = FdoDataValue::Create((index * 10));
+      property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"i32_val");
+      property_value->SetValue(data_value);
+
+      // Execute the command.
+
+      feature_reader = insert_command->Execute();
+
+    }  //  try ...
+    catch ( FdoException* e ) {
+        throw e;
+    }
+    catch ( ... ) {
+
+      throw FdoException::Create(L"Failed to add a feature");
+
+    }  //  catch ...
 }
 
 FdoStringP TestExpressionFunction::GetSchemaName()
@@ -441,3 +501,183 @@ double TestExpressionFunction::GetNaNOrdinate()
     return 0;
 }
 
+void TestExpressionFunction::TestConcatFunction()
+// +---------------------------------------------------------------------------
+// | The function executes the test for the expression engine function CONCAT
+// | when used as a select-parameter.
+// | NOTE: The default test is overwritten because the SQL Server returns a
+// |       different format for the date/time string than other providers.
+// |       This has to be reflected in the test.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    FdoStringP                func_call;
+
+    FdoPtr<FdoFilter>         filter;
+    FdoIFeatureReader*        data_reader;
+
+    printf("\n");
+    printf("========================================================== \n");
+    printf(" Current Unit Test Suite: CONCAT Function Testing          \n");
+    printf("========================================================== \n");
+    printf("\n");
+
+    // Define the filter for all tests in this test suite.
+
+    filter = (FdoComparisonCondition::Create(
+               FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"id")),
+               FdoComparisonOperations_EqualTo, 
+               FdoPtr<FdoDataValue>(FdoDataValue::Create(9))));
+
+    // Execute the test cases.
+
+    printf("---------------------------------------------------------- \n");
+    printf("1. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of two different properties of \n");
+    printf("  type INT32. No exceptions are expected.                  \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      // Execute the test and check the returned data. It is expected that
+      // this call returns 1 row. The value for the selected computed property
+      // is expected to be "99".
+
+      func_call   = L"(Concat(id, id) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"99");
+      printf(" >>> Test succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+
+    printf("\n");
+    printf("---------------------------------------------------------- \n");
+    printf("2. Test Case:                                              \n");
+    printf("  The test executes a select-command to select the value   \n");
+    printf("  of a computed property that is defined by using the      \n");
+    printf("  function CONCAT on values of properties of               \n");
+    printf("  type INT32. No exceptions are expected.                 \n");
+    printf("---------------------------------------------------------- \n");
+
+    try {
+
+      func_call   = L"(Concat(id, Concat(id, id)) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"999");
+      printf(" >>> Test 2.1 succeeded \n");
+
+        // Other tests with variable number of arguments.
+      func_call   = L"(Concat(id, id, id, id) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"9999");
+      printf(" >>> Test 2.2 succeeded \n");
+
+      func_call   = L"(Concat(id, id, id, id, id) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"99999");
+      printf(" >>> Test 2.3 succeeded \n");
+
+      func_call   = L"(Concat(id, id, id, id, id, id) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"999999");
+      printf(" >>> Test 2.4 succeeded \n");
+
+      func_call   = L"(Concat(id, Concat(id, Concat(id, Concat(id, Concat(id, id))))) as cmp_id)";
+      data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
+      CheckReaderString(data_reader, 9, L"999999");
+      printf(" >>> Test 2.5 succeeded \n");
+
+    }  //  try ...
+
+    catch (FdoException *exp) {
+
+      printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+      printf(" >>> Test failed \n");
+      throw exp;
+
+    }  //  catch (FdoException *ex) ...
+
+    catch ( ... ) {
+
+      printf(" >>> Test failed for an unknown reason \n");
+      throw;
+
+    }  //  catch ( ... ) ...
+}
+
+void TestExpressionFunction::CheckReaderString (
+                                    FdoIFeatureReader *data_reader,
+                                    FdoInt32          expected_id_value,
+                                    FdoString         *expected_cmp_id_value)
+
+// +---------------------------------------------------------------------------
+// | The function checks whether or not the provided reader contains the expec-
+// | ted data and throws an exception if this is not the case.
+// +---------------------------------------------------------------------------
+
+{
+
+    // Declare and initialize all necessary local vatiables.
+
+    bool      is_valid_result = false;
+
+    FdoInt32  data_count      = 0,
+              id_prop_val;
+
+    FdoString *cmp_id_val;
+
+    // Navigate through the reader and perform the necessary checks.
+
+    printf(" >>> Cross check result \n");
+
+    while (data_reader->ReadNext()) {
+
+      data_count++;
+
+      id_prop_val = data_reader->GetInt32(L"id");
+      cmp_id_val  = (data_reader->IsNull(L"cmp_id"))
+                  ? NULL
+                  : data_reader->GetString(L"cmp_id");
+
+      is_valid_result =
+        ((id_prop_val == expected_id_value) &&
+         (((cmp_id_val == NULL) && (expected_cmp_id_value == NULL)) ||
+          ((cmp_id_val != NULL) && (expected_cmp_id_value != NULL) &&
+                         (wcscmp(cmp_id_val, expected_cmp_id_value) == 0))));
+
+      // Expect just one row. 
+      // Besides for some reason it crashes in ArcSDEReader::ColumnDefinition::ClearCache()
+      // at when  delete[] (wchar_t*)mValuePointer;
+      break;
+
+    }  //  while (data_reader-> ...
+
+    // Issue an exception if the expected result is not met.
+
+    if ((!is_valid_result) || (data_count != 1))
+         throw FdoException::Create(
+                        L"Unexpected result(s) when checking returned data");
+    else
+      printf(" >>> ... All expected data found\n");
+
+}  //  CheckReaderString ()

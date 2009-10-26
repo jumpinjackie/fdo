@@ -144,7 +144,7 @@ void FdoExpressionFunctionTest::tearDown ()
 // +---------------------------------------------------------------------------
 
 {
-
+return;
     // Declare and initialize all necessary local variables.
 
     bool is_disconnected = false;
