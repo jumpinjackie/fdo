@@ -1376,7 +1376,7 @@ void TestCommonExpressionFunction::CheckReader (FdoIDataReader *data_reader,
     bool      is_valid_result = false;
 
     FdoInt32  data_count    = 0,
-              id_prop_val;
+              id_prop_val   = 0;
 
     FdoDouble cmp_id_val,
               tmp_val;
@@ -1439,7 +1439,7 @@ void TestCommonExpressionFunction::CheckReader (
     bool      is_valid_result = false;
 
     FdoInt32  data_count    = 0,
-              id_prop_val;
+              id_prop_val   = 0;
 
     FdoDouble cmp_id_val,
               tmp_val;
@@ -1502,7 +1502,7 @@ void TestCommonExpressionFunction::CheckReader16 (
     FdoInt16 cmp_id_val      = 0;
 
     FdoInt32 data_count      = 0,
-             id_prop_val;
+             id_prop_val     = 0;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -1558,8 +1558,8 @@ void TestCommonExpressionFunction::CheckReader32 (
     bool      is_valid_result = false;
 
     FdoInt32  data_count    = 0,
-              cmp_id_val,
-              id_prop_val;
+              cmp_id_val    = 0,
+              id_prop_val   = 0;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -1615,7 +1615,7 @@ void TestCommonExpressionFunction::CheckReader64 (
     bool     is_valid_result = false;
 
     FdoInt32 data_count    = 0,
-             id_prop_val;
+             id_prop_val   = 0;
 
     FdoInt64 tmp_val,
              cmp_id_val;
@@ -1743,7 +1743,7 @@ void TestCommonExpressionFunction::CheckReaderByte (
     FdoByte  cmp_id_val;
 
     FdoInt32 data_count    = 0,
-             id_prop_val;
+             id_prop_val   = 0;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -2033,7 +2033,7 @@ void TestCommonExpressionFunction::CheckReaderDt (
 
 void TestCommonExpressionFunction::CheckReaderNumberString (
                                     FdoIFeatureReader *data_reader,
-                                    FdoInt32          expected_id_value,
+                                    FdoInt32          /*expected_id_value*/,
                                     FdoString         *expected_cmp_id_value)
 
 // +---------------------------------------------------------------------------
