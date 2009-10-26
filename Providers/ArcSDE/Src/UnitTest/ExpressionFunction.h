@@ -62,6 +62,8 @@ protected:
 
     void RunAllExpFctTests();
 
+    virtual void TestConcatFunction();
+
     virtual void setUp();
 
     virtual void tearDown();
@@ -80,6 +82,10 @@ protected:
     virtual void AddFeature (FdoIConnection *current_connection,
                  FdoString      *class_name,
                  int            index);
+
+    virtual void CheckReaderString (FdoIFeatureReader *data_reader,
+                            FdoInt32          expected_id_value,
+                            FdoString         *expected_cmp_id_value);
 
     virtual FdoStringP GetSchemaName();
 
