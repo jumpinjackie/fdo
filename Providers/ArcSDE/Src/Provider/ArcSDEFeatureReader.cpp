@@ -164,7 +164,7 @@ void ArcSDEFeatureReader::PrepareStream ()
             FdoPtr<FdoIdentifier> propertyId;
             properties = mClassDef->GetProperties ();
             FdoInt32 numProperties = mSelectIds->GetCount();
-            columnNames = (CHAR **)alloca (numProperties * sizeof (CHAR *));
+            columnNames = (CHAR **)alloca (numProperties * sizeof(CHAR *));
 
             for (int i=0; i<numProperties; i++)
             {
@@ -173,6 +173,9 @@ void ArcSDEFeatureReader::PrepareStream ()
 
 				FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(propertyId.p);
             
+                // Allocate storage for the current column name
+            	columnNames[i] = (CHAR*)alloca (SE_MAX_COLUMN_LEN * sizeof(CHAR));
+
 				// Special handling for computed identifiers in the select list. 
 				// The entire function(expresion) stands for the column name.
 				if (pComputedId)
@@ -186,12 +189,11 @@ void ArcSDEFeatureReader::PrepareStream ()
 
 					FdoStringP	func = f2s->GetSql (); // volatile, since memory is on stack
 					FdoStringP	func2 = func.Right(L"WHERE "); // trim
-
+                    
 					CHAR *mbName = NULL;
 					sde_wide_to_multibyte (mbName, (FdoString *) func2);  
-					
-					columnNames[i] = mbName;				
 
+				    sde_strcpy (sde_pus2wc(columnNames[i]), sde_pcus2wc(mbName));
 				}
 				else
 				{
@@ -201,15 +203,14 @@ void ArcSDEFeatureReader::PrepareStream ()
 					FdoPtr<ArcSDEPropertyMapping> propertyMapping = mConnection->GetPropertyMapping(mClassDef, fdoPropertyDef->GetName());
 					CHAR *columnName = NULL;
 					if (wcslen(propertyMapping->GetColumnName()) > 0)
-					{
+                    {
 						sde_wide_to_multibyte(columnName, propertyMapping->GetColumnName());
-						columnNames[i] = columnName;
-					}
-					else
-					{
+                    }
+                    else
+                    {
 						sde_wide_to_multibyte(columnName, fdoPropertyDef->GetName());
-						columnNames[i] = columnName;
-					}
+                    }
+                    sde_strcpy (sde_pus2wc(columnNames[i]), sde_pcus2wc(columnName));
 				}
             }
 
