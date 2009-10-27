@@ -2002,9 +2002,6 @@ void FdoSchemaMergeContext::ResolveUniqueConstraints()
             pClass->SetElementState(FdoSchemaElementState_Modified);
             continue;
         }
-        else {
-            continue;
-        }
 
         for (FdoInt32 j=0; j<consProps->GetCount(); j++) {
             FdoStringP dvPropName = consProps->GetString(j);
