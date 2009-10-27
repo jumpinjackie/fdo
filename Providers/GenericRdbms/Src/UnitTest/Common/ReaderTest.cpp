@@ -632,8 +632,8 @@ void ReaderTest::PrepareData()
         vals->Add(propIns);
 
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        double coords[] = { 1, 1, 10, 1, 10, 10, 1,10 }; 
-        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 8, coords);
+        double coords[] = { 1, 1, 10, 1, 10, 10, 1,10, 1, 1 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
         FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
         FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
         propIns = FdoPropertyValue::Create(L"geometry", FdoPtr<FdoGeometryValue>(FdoGeometryValue::Create(polyfgf)));
@@ -685,8 +685,8 @@ void ReaderTest::PrepareData()
         vals->Add(propIns);
 
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        double coords[] = { 1, 1, 10, 1, 10, 10, 1,10 }; 
-        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 8, coords);
+        double coords[] = { 1, 1, 10, 1, 10, 10, 1,10, 1, 1 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
         FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
         FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
 
@@ -716,7 +716,7 @@ void ReaderTest::PrepareData()
         {
             // check the default value
             FdoPtr<FdoISQLCommand> insertCmd = static_cast<FdoISQLCommand*>(m_connection->CreateCommand(FdoCommandType_SQLCommand));
-            insertCmd->SetSQLStatement(L"insert into IndexAccessSQL (ID, boolean, byte, double_data, int16, int32, int64, string) \
+            insertCmd->SetSQLStatement(L"insert into IndexAccessSQL (ID, boolean, BYTE, double_data, int16, int32, int64, string) \
                                         values (1, 1, 2, 0.123456789, 3, 4, 5, 'string value')");
             FdoInt32 count = insertCmd->ExecuteNonQuery();
             CPPUNIT_ASSERT(count == 1);
