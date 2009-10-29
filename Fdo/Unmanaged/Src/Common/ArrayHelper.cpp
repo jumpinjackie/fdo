@@ -230,7 +230,16 @@ FdoArrayHelper::GenericArray* FdoArrayHelper::AllocMore(GenericArray* array, Fdo
     }
 
     if (NULL == newArray)
-	    newArray = (GenericArray*) new FdoByte[newAllocBytes];
+    {
+        // Fix ticket 575 to avoid out-of-memory exception causing application crash.
+        try
+        {
+            newArray = (GenericArray*) new FdoByte[newAllocBytes];
+        }
+        catch(...)
+        {
+        }
+    }
 	if (0==newArray)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
