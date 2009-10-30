@@ -400,6 +400,21 @@ protected:
             return;
         m_changeInfoState |= CHANGEINFO_PROCESSED;
 
+        /// Accept changes to items currently in this collection.
+        for (FdoInt32 i=0; i < FdoNamedCollection<OBJ, FdoSchemaException>::GetCount(); i++)
+        {
+            FdoPtr<OBJ>    pitem = FdoNamedCollection<OBJ, FdoSchemaException>::GetItem(i);
+
+            if (pitem->GetElementState() == FdoSchemaElementState_Deleted)
+            {
+            /// Really remove items marked for deletion.
+                RemoveAt(i);
+                i--;
+            }
+
+            pitem->_AcceptChanges();
+        }
+        
         if (m_changeInfoState & CHANGEINFO_PRESENT)
         {
         /// Reset.
@@ -414,21 +429,6 @@ protected:
             delete [] m_listCHANGED;
             m_listCHANGED = NULL;
             m_sizeCHANGED = 0;
-        }
-
-        /// Accept changes to items currently in this collection.
-        for (FdoInt32 i=0; i < FdoNamedCollection<OBJ, FdoSchemaException>::GetCount(); i++)
-        {
-            FdoPtr<OBJ>    pitem = FdoNamedCollection<OBJ, FdoSchemaException>::GetItem(i);
-
-            if (pitem->GetElementState() == FdoSchemaElementState_Deleted)
-            {
-            /// Really remove items marked for deletion.
-                RemoveAt(i);
-                i--;
-            }
-
-            pitem->_AcceptChanges();
         }
     }
 
