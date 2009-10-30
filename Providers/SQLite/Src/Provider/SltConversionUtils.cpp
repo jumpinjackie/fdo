@@ -389,11 +389,11 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
 
 SLT_API TokenDateFormatType StringToDateFormat(const char* specifier)
 {
-    if (strncmp(specifier, "YY", 2) == 0)
-        return TokenDateFormatType_Year2;
-
     if (strncmp(specifier, "YYYY", 4) == 0)
         return TokenDateFormatType_Year4;
+
+    if (strncmp(specifier, "YY", 2) == 0)
+        return TokenDateFormatType_Year2;
 
     if (strncmp(specifier, "MONTH", 5) == 0)
         return TokenDateFormatType_Month_FullName_All_Upper;
@@ -409,6 +409,9 @@ SLT_API TokenDateFormatType StringToDateFormat(const char* specifier)
 
     if (strncmp(specifier, "mon", 3) == 0)
         return TokenDateFormatType_Month_AbbName_All_Lower;
+
+    if (strncmp(specifier, "Mon", 3) == 0)
+        return TokenDateFormatType_Month_AbbName_First_Upper;
 
     if (strncmp(specifier, "MM", 2) == 0)
         return TokenDateFormatType_Month_Number;
@@ -427,6 +430,9 @@ SLT_API TokenDateFormatType StringToDateFormat(const char* specifier)
 
     if (strncmp(specifier, "dy", 2) == 0)
         return TokenDateFormatType_Day_AbbName_All_Lower;
+
+    if (strncmp(specifier, "Dy", 2) == 0)
+        return TokenDateFormatType_Day_AbbName_First_Upper;
 
     if (strncmp(specifier, "DD", 2) == 0)
         return TokenDateFormatType_Day_Number;
