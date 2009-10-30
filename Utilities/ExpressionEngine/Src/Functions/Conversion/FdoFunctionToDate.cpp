@@ -331,6 +331,9 @@ FdoFunctionToDate::ToDateFormatSpecifierTokens
     if (specifier == L"mon")
         return ToDateFormatSpecifierTokens_Month_AbbName_All_Lower;
 
+    if (specifier == L"Mon")
+        return ToDateFormatSpecifierTokens_Month_AbbName_First_Upper;
+
     if (specifier == L"MM")
         return ToDateFormatSpecifierTokens_Month_Number;
 
@@ -348,6 +351,9 @@ FdoFunctionToDate::ToDateFormatSpecifierTokens
 
     if (specifier == L"dy")
         return ToDateFormatSpecifierTokens_Day_AbbName_All_Lower;
+
+    if (specifier == L"Dy")
+        return ToDateFormatSpecifierTokens_Day_AbbName_First_Upper;
 
     if (specifier == L"DD")
         return ToDateFormatSpecifierTokens_Day_Number;
@@ -811,6 +817,7 @@ void FdoFunctionToDate::ProcessDateTimeValue (FdoString  *dt_value,
 
       case ToDateFormatSpecifierTokens_Month_AbbName_All_Lower:
       case ToDateFormatSpecifierTokens_Month_AbbName_All_Upper:
+      case ToDateFormatSpecifierTokens_Month_AbbName_First_Upper:
         dt_object.month = ProcessMonthName(dt_value, true);
         break;
 
@@ -826,6 +833,7 @@ void FdoFunctionToDate::ProcessDateTimeValue (FdoString  *dt_value,
 
       case ToDateFormatSpecifierTokens_Day_AbbName_All_Lower:
       case ToDateFormatSpecifierTokens_Day_AbbName_All_Upper:
+      case ToDateFormatSpecifierTokens_Day_AbbName_First_Upper:
         // This information is not stored in the date/time object and
         // hence not processed yet.
         break;

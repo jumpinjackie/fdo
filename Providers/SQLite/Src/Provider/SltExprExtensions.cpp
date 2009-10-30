@@ -292,6 +292,15 @@ public:
                         m_result.Append(g_month_names[month-1]);
                     }
                     break;
+                    
+                case TokenDateFormatType_Month_AbbName_First_Upper:
+                    {
+                        FdoInt8 month = (dt.month == -1) ? 1 : dt.month;
+                        if (month < 1 || month > 12)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(g_month_names[month-1], 3);
+                    }
+                    break;
 
                 case TokenDateFormatType_Month_Number:
                     {
@@ -374,6 +383,15 @@ public:
                         m_result.Append(g_day_names[dayweek]);
                     }
                     break;
+                
+                case TokenDateFormatType_Day_AbbName_First_Upper:
+                    {
+                        FdoInt8 dayweek = DayOfWeek(dt.year, dt.month, dt.day);
+                        if (dayweek < 0 || dayweek > 6)
+                            throw FdoException::Create(L"Unexpected result for function ToString");
+                        m_result.Append(g_day_names[dayweek], 3);
+                    }
+                    break;                    
 
                 case TokenDateFormatType_Day_Number:
                     {
@@ -440,6 +458,32 @@ public:
         return m_result.Data();
     }
 
+    // function used to avoid cases like we expect 2 digits but user provides only one
+    // get max n(2) chars which are digits, e.g. jan-9-2000 (and we ask for 'mon-DD-YYYY')
+    const char* GetFirstNotdigit(const char* str)
+    {
+        while (*str != '\0')
+        {
+            if (!isdigit(*str))
+                break;
+            else
+                str++;
+        }
+        return str;
+    }
+
+    const char* GetFirstSeparator(const char* str)
+    {
+        while (*str != '\0')
+        {
+            if (!isalnum(*str))
+                break;
+            else
+                str++;
+        }
+        return str;
+    }
+
     FdoDateTime ToDateTime(const char* str, size_t sz)
     {
         FdoDateTime dt;
@@ -454,25 +498,35 @@ public:
             case TokenDateFormatType_Year2:
                 if ((size_t)(strtmp-str+2) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 2);
-                    dt.year = (FdoInt16)atoi(m_result.Data());
-                    // year can be 09 = 2009 or 55 = 1955/2055 !?
-                    // it's hard to know the real year when two characters are used
-                    // let's split in half for now
-                    if (dt.year > 0 && dt.year < 50)
-                        dt.year += 2000;
-                    strtmp += 2;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(2, notDig-strtmp));
+                        dt.year = (FdoInt16)atoi(m_result.Data());
+                        // year can be 09 = 2009 or 55 = 1955/2055 !?
+                        // it's hard to know the real year when two characters are used
+                        // let's split in half for now
+                        if (dt.year >= 0 && dt.year < 50)
+                            dt.year += 2000;
+                        else if (dt.year >= 50 && dt.year <= 99)
+                            dt.year += 1900;
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
 
             case TokenDateFormatType_Year4:
                 if ((size_t)(strtmp-str+4) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 4);
-                    dt.year = (FdoInt16)atoi(m_result.Data());
-                    strtmp += 4;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(4, notDig-strtmp));
+                        dt.year = (FdoInt16)atoi(m_result.Data());
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
 
@@ -481,6 +535,7 @@ public:
             case TokenDateFormatType_Month_FullName_All_Lower:
             case TokenDateFormatType_Month_FullName_All_Upper:
             case TokenDateFormatType_Month_FullName_First_Upper:
+            case TokenDateFormatType_Month_AbbName_First_Upper:                
                 {
                     if ((size_t)(strtmp-str+3) <= sz)
                     {
@@ -490,7 +545,8 @@ public:
                             if (_strnicmp(strtmp, g_month_names[idx], 3) == 0)
                             {
                                 dt.month = idx+1;
-                                strtmp += 3;
+                                const char* firstSep = GetFirstSeparator(strtmp);
+                                strtmp += (firstSep-strtmp);
                                 break;
                             }
                         }
@@ -503,10 +559,14 @@ public:
             case TokenDateFormatType_Month_Number:
                 if ((size_t)(strtmp-str+2) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 2);
-                    dt.month = (FdoInt8)atoi(m_result.Data());
-                    strtmp += 2;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(2, notDig-strtmp));
+                        dt.month = (FdoInt8)atoi(m_result.Data());
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
 
@@ -515,37 +575,53 @@ public:
             case TokenDateFormatType_Day_FullName_All_Lower:
             case TokenDateFormatType_Day_FullName_All_Upper:
             case TokenDateFormatType_Day_FullName_First_Upper:
+            case TokenDateFormatType_Day_AbbName_First_Upper:
                 // nothing to do here since day of the week don't help us
                 if ((size_t)(strtmp-str+3) <= sz)
-                    strtmp += 3;
+                {
+                    const char* firstSep = GetFirstSeparator(strtmp);
+                    strtmp += (firstSep-strtmp);
+                }
                 break;
 
             case TokenDateFormatType_Day_Number:
                 if ((size_t)(strtmp-str+2) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 2);
-                    dt.day = (FdoInt8)atoi(m_result.Data());
-                    strtmp += 2;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(2, notDig-strtmp));
+                        dt.day = (FdoInt8)atoi(m_result.Data());
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
             case TokenDateFormatType_Hour24:
             case TokenDateFormatType_Hour12:
                 if ((size_t)(strtmp-str+2) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 2);
-                    dt.hour = (FdoInt8)atoi(m_result.Data());
-                    strtmp += 2;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(2, notDig-strtmp));
+                        dt.hour = (FdoInt8)atoi(m_result.Data());
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
             case TokenDateFormatType_Minute:
                 if ((size_t)(strtmp-str+2) <= sz)
                 {
-                    m_result.Reset();
-                    m_result.Append(strtmp, 2);
-                    dt.minute = (FdoInt8)atoi(m_result.Data());
-                    strtmp += 2;
+                    const char* notDig = GetFirstNotdigit(strtmp);
+                    if (notDig != strtmp)
+                    {
+                        m_result.Reset();
+                        m_result.Append(strtmp, min(2, notDig-strtmp));
+                        dt.minute = (FdoInt8)atoi(m_result.Data());
+                        strtmp += m_result.Length();
+                    }
                 }
                 break;
             case TokenDateFormatType_Second:
