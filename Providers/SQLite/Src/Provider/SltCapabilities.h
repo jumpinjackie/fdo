@@ -341,7 +341,8 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_STDDEV);
         ret->Add(wellKnownFunction);
-
+/*
+        // for now just avoid exposing extra functions since it needs to be registered in EE
         // Is safe to copy the signatures since we don't alter them and functions get the same parameters
         // this will save us memory allocation and time...
         FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
@@ -358,7 +359,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         FdoString *desc = L"Represents a measure of the dispersion around their mean value.";
         wellKnownFunction = FdoFunctionDefinition::Create(FDO_FUNCTION_VARIANCE, desc, true, signatures, FdoFunctionCategoryType_Aggregate);
         ret->Add(wellKnownFunction);
-
+*/
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_ABS);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_ACOS);
@@ -375,7 +376,8 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LN);
         ret->Add(wellKnownFunction);
-
+/*
+        // for now just avoid exposing extra functions since it needs to be registered in EE
         // Is safe to copy the signatures since we don't alter them and functions get the same parameters
         // this will save us memory allocation and time...
         signatures = FdoSignatureDefinitionCollection::Create();
@@ -392,7 +394,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
         desc = L"Represents the base-10 logarithm of the value.";
         wellKnownFunction = FdoFunctionDefinition::Create(FDO_FUNCTION_LOG10, desc, true, signatures, FdoFunctionCategoryType_Math);
         ret->Add(wellKnownFunction);
-
+*/
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_LOG);
         ret->Add(wellKnownFunction);
         wellKnownFunction = wellKnownFunctions->GetItem(                    FDO_FUNCTION_MOD);
