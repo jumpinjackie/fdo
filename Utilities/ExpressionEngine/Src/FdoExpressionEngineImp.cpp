@@ -4306,10 +4306,10 @@ bool FdoExpressionEngineImp::ProcessFilter(FdoFilter *filter)
 {
     bool passedFilter;
     bool bIsNull;
-    Reset();
-	filter->Process(this);
+
+    filter->Process(this);
     passedFilter = GetBooleanResult(bIsNull);
-    Reset();
+
     return passedFilter;
 }
 
