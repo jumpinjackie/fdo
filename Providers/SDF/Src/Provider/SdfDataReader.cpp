@@ -29,7 +29,7 @@
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_35_PROPERTY_NOT_AVAILABLE))); \
                                                                                 \
     if (ps->m_dataType != FdoDataType_##type)                                   \
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE))); \
+        throw FdoCommandException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH))); \
                                                                                 \
     int len = PositionReader(ps->m_recordIndex);                                \
                                                                                 \
@@ -176,7 +176,7 @@ FdoByteArray* SdfDataReader::GetGeometry(FdoString* propertyName)
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_35_PROPERTY_NOT_AVAILABLE)));
                                                                                 
     if (ps->m_dataType != FdoDataType(-1))                                   
-        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_36_INCORRECT_PROPERTY_TYPE)));
+        throw FdoCommandException::Create (FdoException::NLSGetMessage(FDO_NLSID(FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
                                                                                 
     int len = PositionReader(ps->m_recordIndex);                                
                                                                                 

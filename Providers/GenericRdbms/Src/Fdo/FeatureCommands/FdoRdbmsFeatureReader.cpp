@@ -660,29 +660,49 @@ FdoString* FdoRdbmsFeatureReader::GetPropertyNameForDataReader(FdoInt32 index)
         return mConnection->GetSchemaUtil()->ColName2Property(mClassDefinition->GetQName(), mConnection->GetUtility()->Utf8ToUnicode(mColList[colIdx].column) );
     }
 
-    return NULL;
+    throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), index));
+    return NULL; // to suppress compiler warning
 }
 
-//FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndex(FdoString* propertyName)
-//{
-//    FdoPropertyType type;
-//    int				cacheIndex;
-//    const	char	*colName = PROPERTY2COLNAME_IDX( propertyName, &type, NULL, &cacheIndex );
-//
-//    if ((colName == NULL) || (strlen(colName) == 0))
-//    {
-//        if( type != FdoPropertyType_DataProperty )
-//            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_67, strObjPropetryExp, propertyName ));
-//
-//        // The catch block will create the message string
-//        throw "";
-//    }
-//
-//    FdoStringP m = GetPropertyInfoDef(cacheIndex)->columnPosition;
-//
-//    GetPropertyInfoDef(cacheIndex)->columnPosition;
-//    return GetColumnIndex(colName);
-//}
+FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndexForDataReader(FdoString* propertyName)
+{
+    // Initializes the column description if is the case
+    if( mColCount == -1 )
+        (void)GetPropertyCount(); 
+
+    // try and see if it's a calculation
+    const char *colName = FdoRdbmsFeatureReader::GetDbAliasName( propertyName, NULL );
+    if (colName == NULL)
+    {
+        FdoPropertyType proptype;
+        colName = PROPERTY2COLNAME( propertyName, &proptype );
+        if (colName != NULL && *colName != '\0')
+        {
+            int i;
+
+            // Get the column name
+            for(i=(int)strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
+                ;
+            if( i >=0 )
+                colName = &colName[i+1];
+
+            for ( int k=0; k<mColCount; k++ )
+                if( FdoCommonOSUtil::stricmp(colName, mColList[k].column) == 0 )
+                    return k;
+        }
+    }
+    else
+    {
+        // It must be a computed identifier
+        colName = GetDbAliasName(propertyName);
+        for ( int k=0; k<mColCount; k++ )
+            if( strcmp(colName, mColList[k].c_alias) == 0 )
+                return k;
+    }
+
+    throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    return -1; // to suppress compiler warning
+}
 
 // This is an internal method to support the DataReader
 FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)
@@ -697,21 +717,24 @@ FdoDataType FdoRdbmsFeatureReader::GetDataType(FdoString* propertyName)
     {
         FdoPropertyType proptype;
         colName = PROPERTY2COLNAME( propertyName, &proptype );
-        int i;
+        if (colName != NULL && *colName != '\0')
+        {
+            int i;
 
-        // Get the column name
-        for(i=(int)strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
-            ;
-        if( i >=0 )
-            colName = &colName[i+1];
+            // Get the column name
+            for(i=(int)strlen(colName)-1; i>=0 && colName[i] != '.'; i--)
+                ;
+            if( i >=0 )
+                colName = &colName[i+1];
 
-        // It must be a data property
-        if( proptype != FdoPropertyType_DataProperty )
-            return (FdoDataType)0;
+            // It must be a data property
+            if( proptype != FdoPropertyType_DataProperty )
+                return (FdoDataType)0;
 
-        for ( int k=0; k<mColCount; k++ )
-            if( FdoCommonOSUtil::stricmp(colName, mColList[k].column) == 0 )
-                return FdoRdbmsUtil::DbiToFdoType( mColList[k].datatype );
+            for ( int k=0; k<mColCount; k++ )
+                if( FdoCommonOSUtil::stricmp(colName, mColList[k].column) == 0 )
+                    return FdoRdbmsUtil::DbiToFdoType( mColList[k].datatype );
+        }
     }
     else
     {

@@ -97,20 +97,29 @@ FdoString* FdoExpressionEngineUtilFeatureReader::GetPropertyName(FdoInt32 index)
             return id->GetName();
     }
 
-    assert(false);
-    return L""; // TODO: throw exceptions? 
+    throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), index));
+    return L""; //to suppress compiler warning.
 }
 
 FdoInt32 FdoExpressionEngineUtilFeatureReader::GetPropertyIndex(FdoString* propertyName)
 {
+    FdoInt32 index = -1;
+
     assert(m_selectedIds != NULL);
     if (m_selectedIds != NULL)
     {
-        return m_selectedIds->IndexOf(propertyName);
+        index = m_selectedIds->IndexOf(propertyName);
     }
 
-    assert(false);
-    return -1; // TODO: throw exceptions? 
+    if (-1 != index)
+    {
+        return index;
+    }
+    else
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+        return -1; // to suppress compiler warning.
+    }
 }
 
 bool FdoExpressionEngineUtilFeatureReader::GetBoolean (FdoString* propertyName)

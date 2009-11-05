@@ -148,7 +148,7 @@ FdoCommonPropertyStub* FdoCommonPropertyIndex::GetPropInfo(FdoString* name)
             return ps;
     }
 
-	return NULL;
+    throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), name));
 }
 
 bool FdoCommonPropertyIndex::IsPropAutoGen(FdoString* name)

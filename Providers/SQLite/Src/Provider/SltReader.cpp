@@ -386,7 +386,8 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     int cur_id = sqlite3_column_int(m_pStmt, 0);
 
     if (!m_class)
-        throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. API misuse by the caller!");
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), name));
+        //throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. API misuse by the caller!");
 
     //make sure the property exists in the feature class
     FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
@@ -415,7 +416,8 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     }
     else
     {
-        throw FdoCommandException::Create(L"Column does not exist in the select query.");
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), name));
+        //throw FdoCommandException::Create(L"Column does not exist in the select query.");
     }
 
     return -1;
@@ -481,6 +483,7 @@ void SltReader::Requery2()
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 bool SltReader::GetBoolean(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	int res = sqlite3_column_int(m_pStmt, index);
 	return res != 0;
 }
@@ -491,6 +494,7 @@ bool SltReader::GetBoolean(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoByte SltReader::GetByte(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	int res = sqlite3_column_int(m_pStmt, index);
 	return (FdoByte)res;
 }
@@ -501,6 +505,7 @@ FdoByte SltReader::GetByte(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoDateTime SltReader::GetDateTime(int index)
 {
+    ValidateIndex(m_pStmt, index);
     const FdoString* sdt = SltReader::GetString(index);
 	return DateFromString(sdt);
 }
@@ -511,6 +516,7 @@ FdoDateTime SltReader::GetDateTime(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 double SltReader::GetDouble(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	double res = sqlite3_column_double(m_pStmt, index);
 	return res;
 }
@@ -521,6 +527,7 @@ double SltReader::GetDouble(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoInt16 SltReader::GetInt16(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	int res = sqlite3_column_int(m_pStmt, index);
 	return (FdoInt16)res;
 }
@@ -531,6 +538,7 @@ FdoInt16 SltReader::GetInt16(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoInt32 SltReader::GetInt32(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	int res = sqlite3_column_int(m_pStmt, index);
 	return (FdoInt32)res;
 }
@@ -541,6 +549,7 @@ FdoInt32 SltReader::GetInt32(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoInt64 SltReader::GetInt64(int index)
 {
+    ValidateIndex(m_pStmt, index);
     FdoInt64 res = sqlite3_column_int64(m_pStmt, index);
 	return res;
 }
@@ -551,6 +560,7 @@ FdoInt64 SltReader::GetInt64(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 float SltReader::GetSingle(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	double res = sqlite3_column_double(m_pStmt, index);
 	return (float)res;
 }
@@ -561,6 +571,7 @@ float SltReader::GetSingle(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoString* SltReader::GetString(int index)
 {
+    ValidateIndex(m_pStmt, index);
     int i = index;
 
 	if (m_sprops[i].valid)
@@ -625,6 +636,7 @@ FdoIStreamReader* SltReader::GetLOBStreamReader(FdoString* propertyName )
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 bool SltReader::IsNull(int index)
 {
+    ValidateIndex(m_pStmt, index);
 	return sqlite3_column_type(m_pStmt, index) == SQLITE_NULL;
 }
 bool SltReader::IsNull(FdoString* propertyName)
@@ -672,6 +684,8 @@ const FdoByte* SltReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
 
 const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
 {
+    ValidateIndex(m_pStmt, i);
+
     //If the FDO flag is set, we can be pretty sure the underlying
     //column is a geometry blob and we can fetch it directly from
     //sqlite row cache memory
@@ -1331,6 +1345,15 @@ unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
 //-------------------------------------------------------
 // Some utlity functions
 //-------------------------------------------------------
+
+void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
+{
+    int count = sqlite3_column_count(pStmt);
+    if (index < 0 || index >= count)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), index));
+    }
+}
 
 const char* SltReader::DecodeTableName(const char* name)
 {
