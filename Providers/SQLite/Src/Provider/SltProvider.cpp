@@ -655,7 +655,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     {
         CacheViewContent(mbfc);
         sbfcn.Reset();
-        sbfcn.Append("$view");
+        sbfcn.Append("$view", 5);
         sbfcn.Append(wfc);
         mbfc = sbfcn.Data();
     }
@@ -722,15 +722,15 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (!ordering.empty())
     {
         StringBuffer sb;
-        sb.Append("SELECT ROWID FROM ");
+        sb.Append("SELECT ROWID FROM ", 18);
         sb.AppendDQuoted(mbfc);
-        sb.Append(" ORDER BY ");
+        sb.Append(" ORDER BY ", 10);
 
         SltExtractExpressionTranslator exTrans(props);
         for (size_t i=0; i<ordering.size(); i++)
         {
             if (i)
-                sb.Append(",");
+                sb.Append(",", 1);
 
             // identifiers for order are provided as identifiers even are calculations.
             // so in order to get the "expression" we need to look for them in the select list
@@ -752,9 +752,9 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                 sb.Append(idfto->ToString());
 
             if (ordering[i].option == FdoOrderingOption_Ascending)
-                sb.Append(" ASC");
+                sb.Append(" ASC", 4);
             else
-                sb.Append(" DESC");
+                sb.Append(" DESC", 5);
         }
 
         sb.Append(";");
@@ -903,9 +903,10 @@ RowidIterator* SltConnection::GetScrollableIterator(SltReader* rdr)
 FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcname, 
                                                 FdoIdentifierCollection*    properties,
                                                 bool                        bDistinct,
+                                                FdoFilter*                  filter,
                                                 FdoOrderingOption           eOrderingOption,
                                                 FdoIdentifierCollection*    ordering,
-                                                FdoFilter*                  filter,
+                                                FdoFilter*                  grFilter,
                                                 FdoIdentifierCollection*    grouping,
                                                 FdoParameterValueCollection*  parmValues)
 {
@@ -919,63 +920,110 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     {
         CacheViewContent(mbfc);
         sbfcn.Reset();
-        sbfcn.Append("$view");
+        sbfcn.Append("$view", 5);
         sbfcn.Append(wfc);
         mbfc = sbfcn.Data();
     }
     
     StringBuffer sb;
     SltExpressionTranslator exTrans(properties);
+    int propsCount = properties->GetCount();
     
+    if (!bDistinct && !filter && fc->GetClassType() == FdoClassType_FeatureClass)
+    {
+        SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p);
+
+        if (rdr)
+            return rdr;
+    }
+
+    sb.Append("SELECT ", 7);
     if (bDistinct)
+        sb.Append("DISTINCT ", 9);
+        
+    for (int i=0; i<propsCount; i++)
     {
-        //make SQL for distict values 
-        
-        FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        
-        sb.Append("SELECT DISTINCT ");
-        id->Process(&exTrans);
+        if (i)
+            sb.Append(",", 1);
+
+        FdoPtr<FdoIdentifier> identifier = properties->GetItem(i);
+        exTrans.Reset();
+        identifier->Process(&exTrans);
         StringBuffer* exp = exTrans.GetExpression();
         sb.Append(exp->Data(), exp->Length());
-        sb.Append(" FROM ");
-        sb.AppendDQuoted(mbfc);
     }
+    if (propsCount == 0)
+        sb.Append("* FROM ", 7);
     else
-    {
-        if (!filter && fc->GetClassType() == FdoClassType_FeatureClass)
-        {
-            SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p);
-
-            if (rdr)
-                return rdr;
-        }
-
-        //select aggregate -- only one computed identifier expected!
-        FdoPtr<FdoIdentifier> id = properties->GetItem(0);
-        id->Process(&exTrans);
-
-        sb.Append("SELECT ");
-        StringBuffer* exp = exTrans.GetExpression();
-        sb.Append(exp->Data(), exp->Length());
-        sb.Append(" FROM ");
-        sb.AppendDQuoted(mbfc);
-    }
+        sb.Append(" FROM ", 6);
+    sb.AppendDQuoted(mbfc);
 
     bool mustKeepFilterAlive = false;
-    if(filter) {
-        FdoPtr<FdoClassDefinition> fc = GetMetadata(mbfc)->ToClass();
+    if(filter)
+    {
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
-
         mustKeepFilterAlive = qt.MustKeepFilterAlive();
+        qt.Reset(); // avoid optimize the filter
+
         const char* txtFilter = qt.GetFilter();
-        if (*txtFilter) {
-            sb.Append(" WHERE ");
+        if (*txtFilter)
+        {
+            sb.Append(" WHERE ", 7);
             sb.Append(txtFilter);
         }
     }
+    propsCount = grouping->GetCount();
+    if (propsCount)
+    {
+        sb.Append(" GROUP BY ", 10);
+        for (int i=0; i<propsCount; i++)
+        {
+            if (i)
+                sb.Append(",", 1);
 
-    sb.Append(";");
+            FdoPtr<FdoIdentifier> identifier = grouping->GetItem(i);
+            exTrans.Reset();
+            identifier->Process(&exTrans);
+            StringBuffer* exp = exTrans.GetExpression();
+            sb.Append(exp->Data(), exp->Length());
+        }
+        if (grFilter)
+        {
+            SltQueryTranslator qt(fc);
+            grFilter->Process(&qt);
+            qt.Reset(); // avoid optimize the filter
+
+            const char* txtFilter = qt.GetFilter();
+            if (*txtFilter)
+            {
+                sb.Append(" HAVING ", 8);
+                sb.Append(txtFilter);
+            }
+        }
+    }
+    propsCount = ordering->GetCount();
+    if (propsCount)
+    {
+        SltExtractExpressionTranslator exTransEx(properties);
+        sb.Append(" ORDER BY ", 10);
+        for (int i=0; i<propsCount; i++)
+        {
+            if (i)
+                sb.Append(",", 1);
+
+            FdoPtr<FdoIdentifier> identifier = ordering->GetItem(i);
+            identifier->Process(&exTransEx);
+            StringBuffer* exp = exTransEx.GetExpression();
+            sb.Append(exp->Data(), exp->Length());
+            exTransEx.Reset();
+        }
+        if (eOrderingOption == FdoOrderingOption_Ascending)
+            sb.Append(" ASC", 4);
+        else
+            sb.Append(" DESC", 5);
+    }
+    sb.Append(";", 1);
 
     SltReader* rdr = new SltReader(this, sb.Data(), parmValues);
     if (mustKeepFilterAlive)
@@ -2630,27 +2678,37 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     std::string countname = "";
 
     int propsCount = props->GetCount();
-    if (propsCount != 1 && propsCount != 2)
-        return NULL;
-    
+    bool error = false;
     SltScCHelperTranslator expTrans(fc);
     for (int i=0; i<propsCount; i++)
     {
         FdoPtr<FdoIdentifier> identifier = props->GetItem(i);
         identifier->Process(&expTrans);
-        if (expTrans.IsError())
-            return NULL;
+        if (expTrans.IsError()) // delay error to check calls to SpatialExtents()
+            error = true;
     }
-    bool countIsFirst = true;
     FdoString* spContxName = expTrans.GetSContextName();
+    FdoString* spCountName = expTrans.GetCountName();
+
+    bool countIsFirst = true;
     if (spContxName != NULL && *spContxName != '\0')
     {
+        // we do not support SpatialExtents() mixed with other identifiers
+        if (propsCount == 2 && (spCountName == NULL || spCountName == '\0'))
+            throw FdoException::Create(L"SpatialExtents() can be mixed only with Count()", 1);
+
         FdoPtr<FdoIdentifier> identifier = props->GetItem(0);
         countIsFirst = (wcscmp(spContxName, identifier->GetName()) != 0);
     }
+    else if (propsCount == 2) // in case we mix Count() with other identifiers do it in a different way.
+        return NULL;
+
+    // in case we have error or multiple identifiers in select return NULL
+    if (error || (propsCount != 1 && propsCount != 2))
+        return NULL;
 
     extname = W2A_SLOW(spContxName);
-    countname = W2A_SLOW(expTrans.GetCountName());
+    countname = W2A_SLOW(spCountName);
 
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.

@@ -243,6 +243,7 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
             return m_connection->SelectAggregates(  m_className, 
                                                     m_properties, 
                                                     m_bDistinct, 
+                                                    m_filter,
                                                     m_eOrderingOption, 
                                                     m_ordering, 
                                                     m_grfilter, 
