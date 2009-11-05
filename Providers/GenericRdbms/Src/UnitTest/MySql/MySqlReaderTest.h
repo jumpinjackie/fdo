@@ -39,6 +39,8 @@ class MySqlReaderTest : public CppUnit::TestCase
 
     CPPUNIT_TEST( TestReaderMatchClassDefinition );
 
+    CPPUNIT_TEST(TestExceptionalCase);
+
     CPPUNIT_TEST_SUITE_END ();
 
 public:
@@ -55,6 +57,8 @@ public:
 
     void TestReaderMatchClassDefinition();
 
+    void TestExceptionalCase();
+
     void  set_provider();
 
 protected:
@@ -69,6 +73,8 @@ protected:
     void Done();
 
     bool SupportsFunction(FdoString* functionName);
+    void CompareFeatureReader(FdoIFeatureReader* reader);
+    void CompareDataReader(FdoIDataReader* reader);
 };
 
 #endif // MYSQL_FDOREADERTEST_H

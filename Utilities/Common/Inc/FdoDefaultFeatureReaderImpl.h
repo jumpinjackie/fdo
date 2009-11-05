@@ -503,13 +503,11 @@ FdoString* FdoDefaultFeatureReaderImpl<FDO_FEATURE_READER>::GetPropertyName(FdoI
 {
     InitializePropertyNames();
 
-    assert(index < m_propertyNames->GetCount());
-    if (index < m_propertyNames->GetCount())
+    if (index >=0 && index < m_propertyNames->GetCount())
         return m_propertyNames->GetString(index);
     else
     {
-        assert(false);
-        return L"";
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), index));
     }
 }
 
@@ -518,7 +516,15 @@ FdoInt32 FdoDefaultFeatureReaderImpl<FDO_FEATURE_READER>::GetPropertyIndex(FdoSt
 {
     InitializePropertyNames();
 
-    return m_propertyNames->IndexOf(propertyName, false);
+    int index = m_propertyNames->IndexOf(propertyName, false);
+    if (-1 != index)
+    {
+        return index;
+    }
+    else
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
 }
 
 template<class FDO_FEATURE_READER>

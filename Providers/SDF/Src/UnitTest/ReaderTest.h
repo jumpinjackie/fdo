@@ -37,6 +37,8 @@ class ReaderTest : public CppUnit::TestCase
 
     CPPUNIT_TEST( TestReaderMatchClassDefinition );
 
+    CPPUNIT_TEST( TestExceptionalCase );
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -53,6 +55,8 @@ public:
 
     void TestReaderMatchClassDefinition();
 
+    void TestExceptionalCase();
+
 private:
     void Prepare();
     void PrepareConnection();
@@ -62,6 +66,7 @@ private:
     void Done();
 
     bool SupportsFunction(FdoString* functionName);
+    void CompareFeatureReader(FdoIFeatureReader* reader);
 
     FdoPtr<FdoIConnection> m_connection;
 };

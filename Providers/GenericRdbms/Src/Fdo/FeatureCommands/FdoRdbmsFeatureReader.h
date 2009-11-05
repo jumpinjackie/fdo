@@ -196,6 +196,7 @@ public:
     // TODO: try to merge it with GetPropertyName()derived from FdoDefaultFeatureReader
     // This is an internal method to support the DataReader
     virtual FdoString* GetPropertyNameForDataReader(FdoInt32 index);
+    virtual FdoInt32   GetPropertyIndexForDataReader(FdoString* propertyName);
 
     // This is an internal method to support the DataReader
     virtual FdoDataType GetDataType(FdoString* propertyName);

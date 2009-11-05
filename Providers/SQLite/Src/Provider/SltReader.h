@@ -199,6 +199,7 @@ protected:
 
     private:
 
+        void ValidateIndex(sqlite3_stmt *pStmt, int index);
         const char* DecodeTableName(const char* name);
         std::wstring ExtractExpression(const wchar_t* exp, const wchar_t* propName);
 		void InitPropIndex(sqlite3_stmt* pStmt);

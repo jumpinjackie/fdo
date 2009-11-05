@@ -214,7 +214,7 @@ FdoDataType FdoExpressionEngineUtilDataReader::GetDataType(FdoString* propertyNa
 
     _ASSERT (ps->m_dataType != FdoDataType(-1));
 
-    return ps->m_dataType;         
+    return ps->m_dataType;
 }
 
 FdoPropertyType FdoExpressionEngineUtilDataReader::GetPropertyType(FdoString* propertyName)

@@ -301,6 +301,298 @@ void ReaderTest::TestSqlDataReaderWithIndex ()
     }
 }
 
+void ReaderTest::TestExceptionalCase()
+{
+    // Data Reader
+    {
+        FdoPtr<FdoISelectAggregates> select1 = (FdoISelectAggregates*)m_connection->CreateCommand (FdoCommandType_SelectAggregates);
+        select1->SetFeatureClassName(L"IndexAccess");
+
+        //FdoPtr<FdoIdentifierCollection> props = select1->GetPropertyNames();
+        //props->Add(FdoIdentifier::Create(L"int32"));
+        //props->Add(FdoIdentifier::Create(L"geometry"));
+
+        FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"int32=3");
+        select1->SetGroupingFilter(groupingFilter);
+
+        FdoPtr<FdoIDataReader> reader1 = (FdoIDataReader*)select1->Execute();
+        CPPUNIT_ASSERT(reader1->ReadNext());
+
+        CompareDataReader(reader1);
+
+        try
+        {
+            FdoInt32 val1 = reader1->GetInt32(100);
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Index out of range"));
+        }
+
+        // Enable this test case once data type match is fixed.
+        try
+        {
+            FdoInt32 val2 = reader1->GetInt32(0);//city, it's actually string type.
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Fetching a property value did not match the property type."));
+        }
+        catch (FdoException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+        }
+
+        try
+        {
+            FdoInt32 val3 = reader1->GetPropertyIndex(L"missing_id");
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"The property 'missing_id' was not found."));
+        }
+
+        reader1->Close();
+    }
+
+    // Feature Reader
+    {
+        FdoPtr<FdoISelect> select2 = (FdoISelect*)m_connection->CreateCommand (FdoCommandType_Select);
+        select2->SetFeatureClassName(L"IndexAccess");
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"int32=3");
+        select2->SetFilter(filter);
+
+        FdoPtr<FdoIFeatureReader> reader2 = (FdoIFeatureReader*)select2->Execute();
+        CPPUNIT_ASSERT(reader2->ReadNext());
+
+        CompareFeatureReader(reader2);
+
+        try
+        {
+            FdoInt32 val1 = reader2->GetInt32(100);
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Property index '100' is out of bounds."));
+        }
+
+        // Enable this test case once data type match is fixed.
+        try
+        {
+            FdoInt32 val2 = reader2->GetInt32(3);//city, it's actually string type.
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Fetching a property value did not match the property type."));
+        }
+        catch (FdoException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+        }
+
+        try
+        {
+            FdoInt32 val3 = reader2->GetPropertyIndex(L"missing_id");
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"The property 'missing_id' was not found."));
+        }
+
+        reader2->Close();
+    }
+
+    // SQL reader
+    {
+        FdoPtr<FdoISQLCommand> select3 = (FdoISQLCommand*)m_connection->CreateCommand (FdoCommandType_SQLCommand);
+        select3->SetSQLStatement(L"select * from IndexAccess");
+        FdoPtr<FdoISQLDataReader> reader3 = select3->ExecuteReader();
+
+        CPPUNIT_ASSERT(reader3->ReadNext());
+        try
+        {
+            FdoInt32 val1 = reader3->GetInt32(100);
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Index out of range"));
+        }
+
+        // Enable this test case once data type match is fixed.
+        try
+        {
+            FdoInt32 val3 = reader3->GetInt32(3);//city, it's actually string type.
+        }
+        catch (FdoCommandException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+            CPPUNIT_ASSERT(expErr.Contains(L"Fetching a property value did not match the property type."));
+        }
+        catch (FdoException* exp)
+        {
+            FdoStringP expErr = exp->GetExceptionMessage();
+        }
+
+        reader3->Close();
+    }
+}
+
+void ReaderTest::CompareFeatureReader(FdoIFeatureReader* reader)
+{
+    try
+    {
+        FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+        CPPUNIT_ASSERT(classDef.p != NULL);
+
+        FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+        CPPUNIT_ASSERT(props.p != NULL);
+
+        for (int index = 0; index < props->GetCount(); index++)
+        {
+            FdoStringP name   = reader->GetPropertyName(index);
+            FdoInt32 newIndex = reader->GetPropertyIndex(name);
+            CPPUNIT_ASSERT(index == newIndex);
+            CPPUNIT_ASSERT(reader->IsNull(index) == reader->IsNull(name));
+
+            FdoPtr<FdoPropertyDefinition> propDef = props->GetItem(index);
+            CPPUNIT_ASSERT(propDef.p != NULL);
+
+            if (!reader->IsNull(index))
+            {
+                FdoPropertyType propType = propDef->GetPropertyType();
+                if (FdoPropertyType_DataProperty == propType)
+                {
+                    FdoDataPropertyDefinition* dataPropDef = (FdoDataPropertyDefinition*)propDef.p;
+                    FdoDataType dataType = dataPropDef->GetDataType();
+                    switch(dataType)
+                    {
+                    case FdoDataType_Boolean:
+                        CPPUNIT_ASSERT(reader->GetBoolean(index) == reader->GetBoolean(name));
+                        break;
+                    case FdoDataType_Byte:
+                        CPPUNIT_ASSERT(reader->GetByte(index) == reader->GetByte(name));
+                        break;
+                    case FdoDataType_DateTime:
+                        {
+                            FdoDateTime val1 = reader->GetDateTime(index);
+                            FdoDateTime val2 = reader->GetDateTime(name);
+                            CPPUNIT_ASSERT(val1.year == val2.year);
+                            CPPUNIT_ASSERT(val1.month == val2.month);
+                            CPPUNIT_ASSERT(val1.day == val2.day);
+                            CPPUNIT_ASSERT(val1.hour == val2.hour);
+                            CPPUNIT_ASSERT(val1.seconds == val2.seconds);
+                        }
+                        break;
+                    case FdoDataType_Decimal:
+                        CPPUNIT_ASSERT(reader->GetDouble(index) == reader->GetDouble(name));
+                        break;
+                    case FdoDataType_Double:
+                        CPPUNIT_ASSERT(reader->GetDouble(index) == reader->GetDouble(name));
+                        break;
+                    case FdoDataType_Int16:
+                        CPPUNIT_ASSERT(reader->GetInt16(index) == reader->GetInt16(name));
+                        break;
+                    case FdoDataType_Int32:
+                        CPPUNIT_ASSERT(reader->GetInt32(index) == reader->GetInt32(name));
+                        break;
+                    case FdoDataType_Int64:
+                        CPPUNIT_ASSERT(reader->GetInt64(index) == reader->GetInt64(name));
+                        break;
+                    case FdoDataType_Single:
+                        CPPUNIT_ASSERT(reader->GetSingle(index) == reader->GetSingle(name));
+                        break;
+                    case FdoDataType_String:
+                        CPPUNIT_ASSERT(reader->GetString(index) == reader->GetString(name));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    catch (FdoException* exp)
+    {
+        FdoStringP expErr = exp->GetExceptionMessage();
+        CPPUNIT_ASSERT(false);
+    }
+}
+
+void ReaderTest::CompareDataReader(FdoIDataReader* reader)
+{
+    try
+    {
+        for (int index = 0; index < reader->GetPropertyCount(); index++)
+        {
+            FdoStringP name   = reader->GetPropertyName(index);
+            FdoInt32 newIndex = reader->GetPropertyIndex(name);
+            CPPUNIT_ASSERT(index == newIndex);
+            CPPUNIT_ASSERT(reader->IsNull(index) == reader->IsNull(name));
+
+            if (!reader->IsNull(index))
+            {
+                FdoPropertyType propType = reader->GetPropertyType(index);
+                if (FdoPropertyType_DataProperty == propType)
+                {
+                    FdoDataType dataType = reader->GetDataType(index);
+                    switch(dataType)
+                    {
+                    case FdoDataType_Boolean:
+                        CPPUNIT_ASSERT(reader->GetBoolean(index) == reader->GetBoolean(name));
+                        break;
+                    case FdoDataType_Byte:
+                        CPPUNIT_ASSERT(reader->GetByte(index) == reader->GetByte(name));
+                        break;
+                    case FdoDataType_DateTime:
+                        {
+                            FdoDateTime val1 = reader->GetDateTime(index);
+                            FdoDateTime val2 = reader->GetDateTime(name);
+                            CPPUNIT_ASSERT(val1.year == val2.year);
+                            CPPUNIT_ASSERT(val1.month == val2.month);
+                            CPPUNIT_ASSERT(val1.day == val2.day);
+                            CPPUNIT_ASSERT(val1.hour == val2.hour);
+                            CPPUNIT_ASSERT(val1.seconds == val2.seconds);
+                        }
+                        break;
+                    case FdoDataType_Decimal:
+                        CPPUNIT_ASSERT(reader->GetDouble(index) == reader->GetDouble(name));
+                        break;
+                    case FdoDataType_Double:
+                        CPPUNIT_ASSERT(reader->GetDouble(index) == reader->GetDouble(name));
+                        break;
+                    case FdoDataType_Int16:
+                        CPPUNIT_ASSERT(reader->GetInt16(index) == reader->GetInt16(name));
+                        break;
+                    case FdoDataType_Int32:
+                        CPPUNIT_ASSERT(reader->GetInt32(index) == reader->GetInt32(name));
+                        break;
+                    case FdoDataType_Int64:
+                        CPPUNIT_ASSERT(reader->GetInt64(index) == reader->GetInt64(name));
+                        break;
+                    case FdoDataType_Single:
+                        CPPUNIT_ASSERT(reader->GetSingle(index) == reader->GetSingle(name));
+                        break;
+                    case FdoDataType_String:
+                        CPPUNIT_ASSERT(reader->GetString(index) == reader->GetString(name));
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    catch (FdoException* exp)
+    {
+        FdoStringP expErr = exp->GetExceptionMessage();
+        CPPUNIT_ASSERT(false);
+    }
+}
+
 void ReaderTest::Prepare()
 {
     PrepareConnection();
