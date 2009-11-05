@@ -303,7 +303,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     // in case we have non-integer PK add RowId
     if (addRowId)
     {
-        m_reissueProps.Add("rowid", 5);
+        m_reissueProps.Add("\"rowid\"", 7);
         maxIndex = -1; // composite, non-int or no PK force add all
     }
 
@@ -312,10 +312,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     if (maxIndex == -1 || (m_ri && m_ri->Count() == 1))
         maxIndex = pdc->GetCount() - 1;
 
+    StringBuffer propName(30);
     for (int i=0; i<=maxIndex; i++)
     {
         FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
-        m_reissueProps.Add(pd->GetName());
+        propName.Reset();
+        propName.AppendDQuoted(pd->GetName());
+        m_reissueProps.Add(propName.Data(), propName.Length());
     }
 
     //redo the query with the id and geom props only
@@ -398,10 +401,13 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     //to the query for a "select * " query, but the caller needs more than just those
     if (index != -1)
     {
+        StringBuffer propName(30);
         for (int i=m_reissueProps.Count(), iEnd = pdc->GetCount(); i<iEnd; i++)
         {
             FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
-            m_reissueProps.Add(pd->GetName());
+            propName.Reset();
+            propName.AppendDQuoted(pd->GetName());
+            m_reissueProps.Add(propName.Data(), propName.Length());
         }
 
         Requery2();

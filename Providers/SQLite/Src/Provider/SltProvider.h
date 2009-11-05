@@ -196,9 +196,10 @@ public:
     FdoIDataReader*     SelectAggregates       (FdoIdentifier*             fcname, 
                                                 FdoIdentifierCollection*   properties,
                                                 bool                       bDistinct,
+                                                FdoFilter*                  filter,
                                                 FdoOrderingOption          eOrderingOption,
                                                 FdoIdentifierCollection*   ordering,
-                                                FdoFilter*                 filter,
+                                                FdoFilter*                 grFilter,
                                                 FdoIdentifierCollection*   grouping,
                                                 FdoParameterValueCollection*  parmValues);
 

@@ -427,3 +427,63 @@ void SelectTest::BooleanDataTest ()
 		
 	printf( "Done\n" );
 }
+
+void SelectTest::TestAggregatesSelect ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+	    selectCmd->SetFeatureClassName(L"DaKlass");
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID > 1");
+        selectCmd->SetFilter(filter);
+        
+        FdoPtr<FdoIdentifierCollection> idfc = selectCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"Name");
+        idfc->Add(idf);
+        FdoPtr<FdoExpression> exp1 = FdoExpression::Parse(L"ID * 12.44 - 4.5");
+        FdoPtr<FdoComputedIdentifier> cidf = FdoComputedIdentifier::Create(L"dbVal", exp1);
+        idfc->Add(cidf);
+
+        FdoPtr<FdoIdentifierCollection> idfcg = selectCmd->GetGrouping();
+        FdoPtr<FdoIdentifier> idfg = FdoIdentifier::Create(L"Name");
+        idfcg->Add(idfg);
+        FdoPtr<FdoFilter> grFilter = FdoFilter::Parse(L"Name='AB0026'");
+        selectCmd->SetGroupingFilter(grFilter);
+        
+        FdoPtr<FdoIdentifierCollection> idfco = selectCmd->GetOrdering();
+        idfco->Add(cidf);
+
+        FdoPtr<FdoIDataReader> rdr = selectCmd->Execute();
+        int idx = 0;
+        while(rdr->ReadNext())
+        {
+            FdoDataType dt = rdr->GetDataType(L"dbVal");
+            FdoString* name = rdr->GetString(L"Name");
+            double dbVal = rdr->GetDouble(L"dbVal");
+            printf("[%d] = '%ls' & %g", idx++, name, dbVal);
+        }
+        rdr->Close();
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
