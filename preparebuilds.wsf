@@ -43,7 +43,7 @@
 			Dim UseFileName
 			
 			Set WshShell = CreateObject("WScript.Shell")
-			InstallPath = WshShell.ExpandEnvironmentStrings("%FDOBINPATHFDO%")
+			InstallPath = WshShell.ExpandEnvironmentStrings("%FDOBINPATH%")
 			Set WshShell = nothing
 			Set fsc = New FileSystemClass
 		    UseFileName = InstallPath & "\providers.xml"
@@ -56,7 +56,7 @@
                     Call fsc.CopyFile("..\providers.windows.template.xml", UseFileName)
                     Call fsc.RemoveReadOnly(UseFileName)
                     Do 
-                        repeat = fsc.ReplaceStringInFile(UseFileName, "%FDOBINPATHFDO%", InstallPath)
+                        repeat = fsc.ReplaceStringInFile(UseFileName, "%FDOBINPATH%", InstallPath)
                     Loop While repeat = True
                 Else
                     WScript.Echo ("Invalid file to process!")
