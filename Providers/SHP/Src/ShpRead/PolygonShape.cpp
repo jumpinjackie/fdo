@@ -261,18 +261,28 @@ FdoIGeometry* PolygonShape::CreateGeometryFromRings( FdoLinearRingCollection* ri
         if (intRings->GetCount() > 1)
         {
             // Because the nested rings are rare, it is worth doing a separate test, presumably cheap 
-            // (because we assume the bounding box test will eliminate lots of candidates): take
-            // all the interior rings and try to relate them. In case the number of resulting polygons is
-            // different from the number interior rings, then we have nested rings and we'll do full association.
+            // (because we assume the bounding box test will eliminate lots of candidates): exclude the external ring,
+            // take all the interior rings and try to relate them. In case the number of resulting polygons is
+            // different from the number of interior rings, then we have nested rings and we'll do full association.
+            // Note: "a nested ring" refers to an exterior ring that is inside the interior ring of a surrounding 
+            // polygon (at least two concentric polygons, separated by unoccupied space).
 
-            // Must return a MultiPolygon
-            FdoPtr<FdoIMultiPolygon> multiPoly = (FdoIMultiPolygon *)FdoSpatialUtility::CreateGeometryFromRings (intRings, true);
+            // Returns a Polygon or a MultiPolygon
+            FdoPtr<FdoIGeometry> geom = FdoSpatialUtility::CreateGeometryFromRings (intRings, true);
+            FdoGeometryType      gtype = geom->GetDerivedType();
 
-            _ASSERT(multiPoly);
-
-            // Check the number of the polygons. 
-            int x = multiPoly->GetCount();
-            hasNestedRings = (intRings->GetCount() > multiPoly->GetCount());
+            _ASSERT(gtype == FdoGeometryType_Polygon || gtype == FdoGeometryType_MultiPolygon);
+            if (gtype == FdoGeometryType_Polygon)
+            {
+                // Just one external loop with rings
+                hasNestedRings = true;
+            }
+            else if (gtype == FdoGeometryType_MultiPolygon)
+            {
+                // Check the number of polygons. 
+                FdoIMultiPolygon*  multiPoly = (FdoIMultiPolygon *) (geom.p);
+                hasNestedRings = (intRings->GetCount() > multiPoly->GetCount());          
+            }
 
             if (hasNestedRings)
             {
@@ -287,13 +297,24 @@ FdoIGeometry* PolygonShape::CreateGeometryFromRings( FdoLinearRingCollection* ri
                 }
                 
                 // Do true rings association
-                multiPoly = (FdoIMultiPolygon *)FdoSpatialUtility::CreateGeometryFromRings (tempRings, true);
+                FdoPtr<FdoIGeometry> geom = FdoSpatialUtility::CreateGeometryFromRings (tempRings, true);
 
-                // Add these polygons to the output
-                for (int i = 0; i < multiPoly->GetCount(); i++)
+                if (geom->GetDerivedType() == FdoGeometryType_MultiPolygon)
                 {
-                    FdoPtr<FdoIPolygon> polygon = multiPoly->GetItem(i);            
-                    polygons->Add (polygon);
+                    FdoIMultiPolygon* multiPoly = static_cast<FdoIMultiPolygon *>(geom.p);
+
+                    // Add these polygons to the output
+                    for (int i = 0; i < multiPoly->GetCount(); i++)
+                    {
+                        FdoPtr<FdoIPolygon> polygon = multiPoly->GetItem(i);            
+                        polygons->Add (polygon);
+                    }
+                }
+                else
+                {
+                    // This should never happen
+                    _ASSERT(geom->GetDerivedType() == FdoGeometryType_MultiPolygon);  
+                    hasNestedRings = false;  
                 }
             }
         }
