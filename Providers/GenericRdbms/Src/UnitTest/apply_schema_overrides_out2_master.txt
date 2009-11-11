@@ -406,5 +406,20 @@
 <Column name="SEQ"/>
 </element>
 </complexType>
+<complexType name="viewbaseType" tableMapping="Concrete">
+<Table pkeyName="PK_VIEWBASE" name="VIEWBASE"/>
+<element name="Column2">
+<Column name="COL2"/>
+</element>
+<element name="Geometry">
+<GeometricColumn name="GEOMETRY"/>
+</element>
+<element name="col1">
+<Column name="COL1"/>
+</element>
+<element name="id">
+<Column name="ID"/>
+</element>
+</complexType>
 </SchemaMapping>
 </fdo:DataStore>
