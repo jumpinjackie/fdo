@@ -278,9 +278,12 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                     // column is not a system column in a foreign schema wrapping view.
                     // System properties not applicable to foreign schema.
                     if ( (!ColumnIsForeign()) || (!GetIsSystem()) ) {
-        		        // Create the column 
-     		            SetColumn( NewColumn(dbObject, columnNameGen) );
-                        mbColumnCreator = true;
+                        // Do not add system columns to dbobject that already exists. 
+                        if ( (!GetIsSystem()) || (dbObject->GetElementState() == FdoSchemaElementState_Added) ) {
+        		            // Create the column 
+     		                SetColumn( NewColumn(dbObject, columnNameGen) );
+                            mbColumnCreator = true;
+                        }
                     }
                 }
             }
