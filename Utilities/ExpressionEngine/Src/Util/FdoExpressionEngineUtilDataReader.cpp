@@ -197,13 +197,17 @@ FdoInt32 FdoExpressionEngineUtilDataReader::GetPropertyCount()
 FdoString* FdoExpressionEngineUtilDataReader::GetPropertyName(FdoInt32 index)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(index);
-   
+
     return ps->m_name;
 }
 
 FdoInt32 FdoExpressionEngineUtilDataReader::GetPropertyIndex(FdoString* propertyName)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+    if (NULL == ps)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
 
     return ps->m_recordIndex;
 }
@@ -211,6 +215,10 @@ FdoInt32 FdoExpressionEngineUtilDataReader::GetPropertyIndex(FdoString* property
 FdoDataType FdoExpressionEngineUtilDataReader::GetDataType(FdoString* propertyName)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+    if (NULL == ps)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
 
     _ASSERT (ps->m_dataType != FdoDataType(-1));
 
@@ -220,6 +228,11 @@ FdoDataType FdoExpressionEngineUtilDataReader::GetDataType(FdoString* propertyNa
 FdoPropertyType FdoExpressionEngineUtilDataReader::GetPropertyType(FdoString* propertyName)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+    if (NULL == ps)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
+
     return ps->m_propertyType;         
 }
 
@@ -344,6 +357,10 @@ FdoIStreamReader* FdoExpressionEngineUtilDataReader::GetLOBStreamReader(const wc
 bool FdoExpressionEngineUtilDataReader::IsNull(FdoString* propertyName)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+    if (NULL == ps)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
 
     FdoPtr<FdoCommonBinaryReader> reader = GetBinaryReader();
     int len = reader->PositionReader(ps->m_recordIndex, m_propIndex);
@@ -358,6 +375,10 @@ bool FdoExpressionEngineUtilDataReader::IsNull(FdoString* propertyName)
 FdoByteArray* FdoExpressionEngineUtilDataReader::GetGeometry(FdoString* propertyName)
 {
     FdoCommonPropertyStub* ps = m_propIndex->GetPropInfo(propertyName);
+    if (NULL == ps)
+    {
+        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+    }
 
     if (ps->m_dataType != FdoDataType(-1))
         throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
