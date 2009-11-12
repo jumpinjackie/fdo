@@ -198,6 +198,13 @@ int odbcdr_execute(						/* execute an SQL statement		  */
         /* Reduce array size to exactly that which is populated. */
         ODBCDR_RDBI_ERR( odbcdr_geom_setNumRows( context, c, count ) );
 
+        /* Reset last error. odbcdr_geom_convertBoundToSqlServer sets 
+           last error if SQLParamData returns SQL_SUCCESS_WITH_INFO, which
+           happens when an insert fails.
+           This allows us to subsequently check if odbcdr_geom_convertBoundToSqlServer
+           did set last error
+        */
+        context->odbcdr_last_rc = SQL_SUCCESS;
         ODBCDR_RDBI_ERR( odbcdr_geom_convertBoundToSqlServer( context, c, count ) );
 
         rc = SQL_SUCCESS;
@@ -235,6 +242,20 @@ int odbcdr_execute(						/* execute an SQL statement		  */
         else {
             if ( c->is_insert ) 
             {
+                if ( (*rows_processed < 1) && (context->odbcdr_last_rc != SQL_SUCCESS) )
+                {
+                    /* 
+                    ** This can happen if the call to SQLParamData,
+                    ** in odbcdr_geom_convertBoundToSqlServer, returns
+                    ** SQL_SUCCESS_WITH_INFO, due to the insert failing.
+                    ** odbcdr_geom_convertBoundToSqlServer has already set
+                    ** the last error message on the context so just return
+                    ** failure from here
+                    */
+                    rdbi_status = RDBI_GENERIC_ERROR;
+                    goto the_exit;
+                }
+
                 // for inserts, odbcdr_sql tacks on a statement to select the
                 // autoincremented value, which is generated if any column
                 // is autoincremented. For SQL Server there is a maximum of 1
@@ -252,8 +273,8 @@ int odbcdr_execute(						/* execute an SQL statement		  */
                         break;
 
                     if ( (rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO) ) {
-		                rdbi_status = rc;
-		                goto the_exit;
+                        rdbi_status = RDBI_GENERIC_ERROR;
+						goto the_exit;
 	                }
 
                     // Check if the current results set has the column holding
@@ -326,7 +347,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
                     // an infinite loop occurs when this statement is next executed.
                     rc = SQLMoreResults( c->hStmt );
                     if ( (rc != SQL_SUCCESS) && (rc != SQL_SUCCESS_WITH_INFO) && (rc != SQL_NO_DATA) ) {
-	                    rdbi_status = rc;
+	                    rdbi_status = RDBI_GENERIC_ERROR;
 	                    goto the_exit;
                     }
                 }
