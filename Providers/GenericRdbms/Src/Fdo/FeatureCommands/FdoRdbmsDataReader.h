@@ -66,7 +66,7 @@ public:
     /// <returns>Returns the property index</returns>
     virtual FdoInt32 GetPropertyIndex(FdoString* propertyName)
     {
-        EXECUTE_METHOD(GetPropertyIndex( propertyName ));
+        EXECUTE_METHOD(GetPropertyIndexForDataReader( propertyName ));
     }
 
     /// <summary>Gets the data type of the property with the specified name.</summary>
