@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include <Util/FdoExpressionEngineUtilFeatureReader.h>
 #include <FdoCommonMiscUtil.h>
+#include "FdoCommonSchemaUtil.h"
 #include <assert.h>
 
 #define EXPRESSIONENGINE_GET_RESULT_DEFINE(RESULT_TYPE, OBJECT_TYPE) \
@@ -47,7 +48,12 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
 	m_filter = FDO_SAFE_ADDREF(filter);
-	m_classDef = FDO_SAFE_ADDREF(classDef);
+	
+    FdoPtr<FdoCommonSchemaCopyContext> copyContext;
+    if (selectedIds != NULL && selectedIds->GetCount() > 0)
+        copyContext = FdoCommonSchemaCopyContext::Create(selectedIds);
+    m_classDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(classDef, copyContext);//FDO_SAFE_ADDREF(classDef);
+    
     m_selectedIds = FDO_SAFE_ADDREF(selectedIds);
 	m_computedIds = NULL;
 
@@ -55,6 +61,7 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 	if ( selectedIds )
 	{
 		m_computedIds = FdoIdentifierCollection::Create();
+        FdoPtr<FdoPropertyDefinitionCollection> props = m_classDef->GetProperties();
 
 		for (FdoInt32 i = 0; i < selectedIds->GetCount(); i++)
 		{
@@ -62,12 +69,27 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 			FdoComputedIdentifier* pComputedId = dynamic_cast<FdoComputedIdentifier*>(pPropertyId.p);
 
 			if ( pComputedId )
-				m_computedIds->Add(	pPropertyId );
+            {
+                m_computedIds->Add(	pPropertyId );
+
+                // Add it into class definition
+                FdoPtr<FdoExpression> expr = pComputedId->GetExpression();
+
+                FdoPropertyType propType;
+                FdoDataType dataType;
+
+                FdoExpressionEngine::GetExpressionType(classDef, expr, propType, dataType);
+
+                FdoPtr<FdoDataPropertyDefinition> pd = FdoDataPropertyDefinition::Create(pComputedId->GetName(), NULL);
+                pd->SetDataType(dataType);
+                props->Add(pd);
+
+            }
 		}
 	}
 
 	// In the presence of the filter, pass NULL for the list of properties (i.e. all ) 
-	m_filterExec = FdoExpressionEngine::Create (reader, m_classDef, 
+	m_filterExec = FdoExpressionEngine::Create (reader, classDef, 
 												m_filter ? m_computedIds : m_computedIds, 
 												userDefinedFunctions);
 }
