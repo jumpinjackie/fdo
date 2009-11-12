@@ -1713,13 +1713,12 @@ int SltConnection::FindSpatialContext(const wchar_t* name)
 int SltConnection::GetDefaultSpatialContext()
 {
     int retVal = 0; // invalid CS
-    std::string sql = "SELECT srid FROM spatial_ref_sys;";
     int rc;
     int ret = 0;
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
    
-    if ((rc = sqlite3_prepare_v2(m_dbRead, sql.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_dbRead, "SELECT srid FROM spatial_ref_sys;", -1, &stmt, &tail)) != SQLITE_OK)
         return 0;
 
     if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
@@ -1729,15 +1728,15 @@ int SltConnection::GetDefaultSpatialContext()
     return retVal; //returns 0 if not found
 }
 
-void SltConnection::UpdateClassesWithInvalidSC()
+void SltConnection::UpdateClassesWithInvalidSC(int defSpatialContextId)
 {
-    int defSC = GetDefaultSpatialContext();
+    int defSC = defSpatialContextId ? defSpatialContextId : GetDefaultSpatialContext();
     if(defSC != 0)
     {
         StringBuffer sb;
-        sb.Append("UPDATE geometry_columns SET srid=");
+        sb.Append("UPDATE geometry_columns SET srid=", 33);
         sb.Append(defSC);
-        sb.Append(" WHERE srid=0;");
+        sb.Append(";", 1);
         int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     }
 }
@@ -2087,6 +2086,10 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
 
     FdoPtr<FdoClassCollection> classes = mergedSchema->GetClasses();
 
+    // avoid some lock issues in case there is a opened transaction 
+    // tables can be locked till we commit since we make changes on tables.
+    int defSpatialContextId = GetDefaultSpatialContext();
+
     int rc = StartTransaction();
 
     try
@@ -2171,7 +2174,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
         // We need to add this call since we have so many cases when users apply schema followed by create 
         // spatial context or the applied schema has invalid CS names (not added into the data store).
         // We may modify this later in case we don't like to enforce classes with an invalid CS to get the default CS
-        UpdateClassesWithInvalidSC();
+        UpdateClassesWithInvalidSC(defSpatialContextId);
     }
     else // not sure we need to do that yet
         RollbackTransaction();
@@ -3321,7 +3324,7 @@ bool SltConnection::IsCoordSysLatLong()
     if (m_dbRead == NULL)
         return false;
 
-    const char* sql = "select srid from spatial_ref_sys where srtext LIKE '%GEOGCS%';";
+    const char* sql = "SELECT srid FROM spatial_ref_sys WHERE srtext LIKE '%GEOGCS%' AND srtext NOT LIKE '%PROJCS%';";
     sqlite3_stmt* pStmt = NULL;
     const char* zTail = NULL;
     bool retVal = false;

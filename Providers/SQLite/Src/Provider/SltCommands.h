@@ -832,25 +832,10 @@ public:
     {
         StringBuffer sb;
         int rc;
+        char* zerr = NULL;
+        // ensure no other CS are there since we cannot support multiple CS
         if (m_coordSysWkt.size() != 0)
-        {
-            sb.Append("SELECT srid FROM spatial_ref_sys WHERE srtext=");
-            sb.AppendSQuoted(m_coordSysWkt.c_str());
-            sb.Append(";", 1);
-            sqlite3_stmt* stmt = NULL;
-            const char* tail = NULL;
-            if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sb.Data(), -1, &stmt, &tail)) == SQLITE_OK)
-            {
-                if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
-                {
-                    sqlite3_finalize(stmt);
-                    // avoid adding multiple times the same CS
-                    return;
-                }
-                sqlite3_finalize(stmt);
-            }
-            sb.Reset();
-        }
+            rc = sqlite3_exec(m_connection->GetDbWrite(), "delete from spatial_ref_sys;", NULL, NULL, &zerr);
 
         sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
 
@@ -875,7 +860,6 @@ public:
 
         sb.Append(");");
 
-        char* zerr = NULL;
         rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
         if (rc != SQLITE_OK)
         {

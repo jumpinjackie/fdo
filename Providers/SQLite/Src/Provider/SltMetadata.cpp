@@ -139,11 +139,15 @@ FdoClassDefinition* SltMetadata::ToClass()
     }
     else
     {
-        const char* err = sqlite3_errmsg(db);
-        if (err != NULL)
-            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
-        else
-            throw FdoException::Create(L"Failed to get class information.", rc);
+        // do we have geometry_columns? The file can be a normal data store
+        if (SQLITE_ERROR != rc || sqlite3FindTable(db, "geometry_columns", 0) != NULL)
+        {
+            const char* err = sqlite3_errmsg(db);
+            if (err != NULL)
+                throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+            else
+                throw FdoException::Create(L"Failed to get class information.", rc);
+        }
     }
 
     sqlite3_finalize(pstmt);
