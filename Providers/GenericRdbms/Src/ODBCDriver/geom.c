@@ -661,6 +661,16 @@ geom_convert_S(
 				context->odbcdr_last_rc = rc;
 				goto the_exit;
 			}
+		    if ( (rc == SQL_SUCCESS_WITH_INFO) && (cursor->is_sqlserver_insert) ) 
+		    {
+                // Inserts are done by compound statements (insert + select autoincremented value).
+                // In this case SQLParamData returns SQL_SUCCESS_WITH_INFO when
+                // the insert fails. 
+                // Fill in the context with the error message but wait until
+                // odbcdr_execute fails before returning error status
+			    context->odbcdr_last_rc = SQL_ERROR;
+			    odbcdr_xlt_status( context, context->odbcdr_last_rc, SQL_HANDLE_STMT, cursor->hStmt);
+		    }
 		}
     }   /* end if (columnList != NULL) */
 
