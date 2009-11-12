@@ -227,7 +227,7 @@ public:
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
-    void UpdateClassesWithInvalidSC();
+    void UpdateClassesWithInvalidSC(int defSpatialContextId = 0);
     bool SupportsDetailedGeomType();
     
     int StartTransaction(bool isUserTrans = false); 
