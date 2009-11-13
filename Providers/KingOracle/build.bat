@@ -20,6 +20,8 @@ rem
 SET TYPEACTION=build
 SET MSACTION=Build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
 SET FDOPATH=%cd%
 SET FDOINSPATH=%cd%\Fdo
 SET FDOBINPATH=%cd%\Fdo\Bin
@@ -38,6 +40,9 @@ if "%1"=="-outpath" goto get_path
 
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
+
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
 
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
@@ -58,6 +63,12 @@ if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto next_param
 SET FDOPATH=%~2
@@ -73,6 +84,10 @@ goto study_params
 
 :start_build
 if not exist "%FDOORACLE%" goto error
+
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR=Win32
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=Win64
+
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
 
@@ -81,7 +96,7 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_KORA
 
 echo %MSACTION% %TYPEBUILD% KORA Provider Dlls
-msbuild Src/KingOracle.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild Src/KingOracle.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
@@ -93,14 +108,14 @@ if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
 if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
 echo Copy %TYPEBUILD% KingOracle Provider Output Files
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleMessage.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleMessage.pdb" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleProvider.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleProvider.pdb" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleOverrides.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\KingOracleOverrides.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleProvider.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleOverrides.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleOverrides.pdb" "%FDOBINPATH%"
 echo Copy %TYPEBUILD% KingOracle Library Files
-copy /y "Lib\Win32\%TYPEBUILD%\KingOracleOverrides.lib" "%FDOLIBPATH%"
+copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\KingOracleOverrides.lib" "%FDOLIBPATH%"
 echo Copy KingOracle Header Files
 xcopy /S /C /Q /R /Y Inc\KingOracle\*.h "%FDOINCPATH%\KingOracle\"
 

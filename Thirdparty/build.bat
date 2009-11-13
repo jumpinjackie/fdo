@@ -164,8 +164,12 @@ if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xml-xalan\c
 if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xml-xerces\c
 if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xml-xalan\c\Src\xalanc\NLS
 
+if "%TYPEBUILDTHR%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEBUILDTHR%"=="x64" SET INTERMEDIATEDIR="Win64"
+
 if "%TYPEACTIONTHR%"=="build" goto start_exbuild
 if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
+
 if not exist "%FDOINSPATHTHR%" mkdir "%FDOINSPATHTHR%"
 if not exist "%FDOBINPATHTHR%" mkdir "%FDOBINPATHTHR%"
 if not exist "%FDOINCPATHTHR%" mkdir "%FDOINCPATHTHR%"
@@ -209,16 +213,12 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_fdo
 rem # Install all Thirdparty Files
 :install_all_files
 echo copy %TYPEBUILDTHR% Thirdparty files
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-
-rem # Not all components are x64 enabled
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
-
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal16.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
-copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_date_time-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xerces\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal16.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-vc90-mt%TYPEBUILDTHRPATH%-1_34_1.dll" "%FDOBINPATHTHR%"
 
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo

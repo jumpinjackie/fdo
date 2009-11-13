@@ -105,8 +105,13 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR=Win32
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=Win64
+
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEMANAGEDDIR=Win32
+if "%TYPEBUILD%"=="debug" SET INTERMEDIATEMANAGEDDIR=Debug
+if "%TYPEBUILD%"=="release" SET INTERMEDIATEMANAGEDDIR=Release
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEMANAGEDDIR=%INTERMEDIATEMANAGEDDIR%64
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
@@ -142,17 +147,17 @@ copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ODBCOverrides.pdb" "%FDOBINPATH
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.dll" "%FDOBINPATH%"
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.pdb" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\SchemaMgr\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SmMessage.dll" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
 copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsOverrides.lib" "%FDOLIBPATH%"
 copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ODBCOverrides.lib" "%FDOLIBPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.ODBC.Overrides.dll" "%FDOBINPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.ODBC.Overrides.pdb" "%FDOBINPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.pdb" "%FDOBINPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATH%"
-copy /y "..\..\Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.Rdbms.Overrides.pdb" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.ODBC.Overrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.ODBC.Overrides.pdb" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.Rdbms.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.Rdbms.pdb" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.Rdbms.Overrides.dll" "%FDOBINPATH%"
+copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.Rdbms.Overrides.pdb" "%FDOBINPATH%"
 
 
 echo copy header files

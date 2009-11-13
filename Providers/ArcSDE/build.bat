@@ -20,6 +20,8 @@ rem
 SET TYPEACTION=build
 SET MSACTION=Build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
 SET FDOINSPATH=\Fdo
 SET FDOBINPATH=\Fdo\Bin
 SET FDOINCPATH=\Fdo\Inc
@@ -41,6 +43,9 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
@@ -59,6 +64,12 @@ goto custom_error
 SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
+goto custom_error
+
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
 goto custom_error
 
 :get_action
@@ -96,8 +107,6 @@ SET FDOACTENVSTUDY="SDEHOME"
 if ("%SDEHOME%")==("") goto env_error
 if not exist "%SDEHOME%" goto env_path_error
 
-if "%TYPEACTION%"=="build" goto start_setbuild
-if "%TYPEACTION%"=="clean" goto start_setbuild
 if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
@@ -105,17 +114,21 @@ if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
 if not exist "%FDOLIBPATH%" mkdir "%FDOLIBPATH%"
 if not exist "%FDODOCPATH%" mkdir "%FDODOCPATH%"
 
-:start_setbuild
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
 if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows\bin\sde91.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%1
 if exist "%FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows\bin\sde.dll" SET ARCSDEVERSIONACTIVE=%ARCSDEVERSIONACTIVE%2
+
 if "%ARCSDEVERSIONACTIVE%"=="9" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%%SDEVER_ARCUNITTEST%Only
 if "%ARCSDEVERSIONACTIVE%"=="912" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%
 if "%ARCSDEVERSIONACTIVE%"=="91" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%91Only
 if "%ARCSDEVERSIONACTIVE%"=="92" SET ARCSDEVERSIONACTIVE=%TYPEBUILD%92Only
 
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+:start_setbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_ArcSDE
 
@@ -124,7 +137,7 @@ SET FDOACTIVEBUILD=%cd%\Src\ArcSDE
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
 
-msbuild ArcSDE_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild ArcSDE_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 
 SET FDOERROR=%errorlevel%
 if exist ArcSDE_temp.sln del /Q /F ArcSDE_temp.sln
@@ -135,17 +148,17 @@ if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_ArcSDE
 echo copy %TYPEBUILD% ArcSDE provider output files
-copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEMessage.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEMessage.pdb" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider.pdb" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\win32\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\win32\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
-if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.dll" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.dll" "%FDOBINPATH%"
-if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.pdb" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider91.pdb" "%FDOBINPATH%"
-if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.dll" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.dll" "%FDOBINPATH%"
-if exist "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.pdb" copy /y "Bin\Win32\%TYPEBUILD%\ArcSDEProvider92.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
+if exist "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider91.dll" copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider91.dll" "%FDOBINPATH%"
+if exist "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider91.pdb" copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider91.pdb" "%FDOBINPATH%"
+if exist "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider92.dll" copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider92.dll" "%FDOBINPATH%"
+if exist "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider92.pdb" copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ArcSDEProvider92.pdb" "%FDOBINPATH%"
 
 echo copy header files
 xcopy /C /Q /R /Y /I "%FDOUTILITIES%\ExpressionEngine\Inc\*.h" "%FDOINCPATH%\ExpressionEngine"
@@ -198,12 +211,18 @@ echo The command is not recognized.
 echo Please use the format:
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action] [-d=BuildDocs]
+echo build.bat [-h] 
+echo           [-o=OutFolder] 
+echo           [-c=BuildType]
+echo           [-a=Action] 
+echo           [-p=PlatformType]
+echo           [-d=BuildDocs]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo BuildDocs:      -d[ocs]=skip(default), build
 echo **************************************************************************
 exit /B 0

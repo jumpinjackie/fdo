@@ -12,6 +12,9 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -101,6 +104,95 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning GRFPOverrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\GRFPOverrides.dll"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;..\..\Inc;..\"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Overrides.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="FDO.lib FDOCommon.lib"
+				OutputFile="$(OutDir)/GRFPOverrides.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\debug&quot;;&quot;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Debug&quot;;&quot;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Debug&quot;;&quot;$(FDOUTILITIES)\Common\lib\win64\debug&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/GRFPOverrides.pdb"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win64\Debug\GRFPOverrides.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="$(OutDir)/GRFPOverrides.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning GRFPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\GRFPOverrides.dll"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -194,6 +286,99 @@
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\GRFPOverrides.dll"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\..\Bin\Win64\Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;..\..\Inc;..\"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Overrides.h"
+				BrowseInformation="1"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="FDO.lib FDOCommon.lib"
+				OutputFile="$(OutDir)/GRFPOverrides.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC7\Release&quot;;&quot;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC7\Release&quot;;&quot;$(FDOUTILITIES)\Common\lib\win64\release&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/GRFPOverrides.pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win64\Release\GRFPOverrides.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				OutputFile="$(OutDir)/GRFPOverrides.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning GRFPOverrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\GRFPOverrides.dll"
+				ExcludedFromBuild="true"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -250,7 +435,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

@@ -286,7 +286,7 @@ if "%ARCENABLE%"=="no" goto rebuild_odbc
 if not exist "%SDEHOME%" goto rebuild_odbc
 if not exist Providers\ArcSDE\build.bat goto rebuild_odbc
 pushd Providers\ArcSDE
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -311,7 +311,7 @@ if "%FDOERROR%"=="1" goto error
 if "%GDALENABLE%"=="no" goto rebuild_ogr
 if not exist Providers\GDAL\build.bat goto rebuild_ogr
 pushd Providers\GDAL
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -319,7 +319,7 @@ if "%FDOERROR%"=="1" goto error
 if "%OGRENABLE%"=="no" goto rebuild_postgis
 if not exist Providers\OGR\build.bat goto rebuild_postgis
 pushd Providers\OGR
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 
@@ -336,7 +336,7 @@ if "%KINGORACLEENABLE%"=="no" goto rebuild_sqlspatial
 if not exist "%FDOORACLE%" goto rebuild_sqlspatial
 if not exist Providers\KingOracle\build.bat goto rebuild_sqlspatial
 pushd Providers\KingOracle
-call build.bat %PROVCALLCMDEX%
+call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
 

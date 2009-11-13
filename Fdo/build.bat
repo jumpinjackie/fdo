@@ -114,8 +114,8 @@ SET FDOACTENVSTUDY="FDOTHIRDPARTY"
 if ("%FDOTHIRDPARTY%")==("") goto env_error
 if not exist "%FDOTHIRDPARTY%" goto env_path_error
 
-if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR="Win64"
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
