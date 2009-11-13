@@ -1418,8 +1418,10 @@ void ShapeFile::ReadRecordInfo(SHPRecordInfo *pRecordInfo )
         pRecordInfo->nContentLength = SWAPLONG(shpRecordHeader.nContentLength);
         
         // in case nRecordNumber == 0 the header is empty and will be handled later as a null shape object.
-		// in case the record is corrupted then set it to sane values (empty header).
-        if(pRecordInfo->nRecordNumber < 0 || pRecordInfo->nContentLength < 0)
+		// in case the record is corrupted then set it to sane values (empty header), e.g. when the
+        // geometry size is larger than the file size.
+        if(pRecordInfo->nRecordNumber < 0 || pRecordInfo->nContentLength < 0 ||
+           pRecordInfo->nContentLength > m_nFileLength * WORD_SIZE_IN_BYTES)
         {
             pRecordInfo->nRecordNumber = 0;
             pRecordInfo->nContentLength = 0;
