@@ -94,11 +94,11 @@ if not "%2"=="wfs" goto stp3_get_with
 	goto next_param
 :stp3_get_with
 if not "%2"=="wms" goto stp4_get_with
-	SET WMSENABLETHR=yes	
+	SET WMSENABLETHR=yes
 	goto next_param
 :stp4_get_with
 if not "%2"=="postgis" goto stp5_get_with
-	SET POSTGISENABLETHR=yes	
+	SET POSTGISENABLETHR=yes
 	goto next_param
 :stp5_get_with
 if not "%2"=="fdo" goto stp6_get_with
@@ -106,7 +106,7 @@ if not "%2"=="fdo" goto stp6_get_with
 	goto next_param
 :stp6_get_with
 if not "%2"=="gdal" goto stp7_get_with
-	SET GDALENABLETHR=yes	
+	SET GDALENABLETHR=yes
 	goto next_param
 :stp7_get_with
 if not "%2"=="all" goto stp8_get_with
@@ -120,7 +120,7 @@ if not "%2"=="all" goto stp8_get_with
 	goto next_param
 :stp8_get_with
 if not "%2"=="ogr" goto custom_error
-	SET GDALENABLETHR=yes	
+	SET GDALENABLETHR=yes
 	goto next_param
 
 :get_action
@@ -164,8 +164,8 @@ if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xml-xalan\c
 if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xml-xerces\c
 if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xml-xalan\c\Src\xalanc\NLS
 
-if "%PLATFORMTHR%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%PLATFORMTHR%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%PLATFORMTHR%"=="Win32" SET INTERMEDIATEDIR=Win32
+if "%PLATFORMTHR%"=="x64" SET INTERMEDIATEDIR=Win64
 
 if "%TYPEACTIONTHR%"=="build" goto start_exbuild
 if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
@@ -251,7 +251,6 @@ if "%FDOERROR%"=="1" goto error
 rem # Build WFS Provider Thirdparty Files
 :rebuild_wfs
 if "%WFSENABLETHR%"=="no" goto rebuild_wms
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS files
@@ -261,6 +260,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+if not "%PLATFORMTHR%"=="Win32" goto rebuild_wms
 msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -276,7 +276,6 @@ rem # End WFS part #
 rem # Build WMS Provider Thirdparty Files
 :rebuild_wms
 if "%WMSENABLETHR%"=="no" goto rebuild_gdal
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_gdal
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS files
@@ -289,6 +288,7 @@ if "%FDOERROR%"=="1" goto error
 msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+if not "%PLATFORMTHR%"=="Win32" goto rebuild_gdal
 msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
@@ -305,7 +305,6 @@ rem # End WMS part #
 rem # Build GDAL Provider Thirdparty Files
 :rebuild_gdal
 if "%GDALENABLETHR%"=="no" goto rebuild_postgis
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_postgis
 if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL files
