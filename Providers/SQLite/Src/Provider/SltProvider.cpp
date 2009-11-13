@@ -929,9 +929,9 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     SltExpressionTranslator exTrans(properties);
     int propsCount = properties->GetCount();
     
-    if (!bDistinct && !filter && fc->GetClassType() == FdoClassType_FeatureClass)
+    if (!bDistinct && fc->GetClassType() == FdoClassType_FeatureClass && (propsCount == 1 || propsCount == 2))
     {
-        SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p);
+        SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p, filter);
 
         if (rdr)
             return rdr;
@@ -1544,7 +1544,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     idcol->Add(idgeom);
 
     rdr = new SltReader(this, idcol, table, "", NULL, true, NULL, NULL);
-
+    FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     while (rdr->ReadNext())
     {
         int len = 0;
@@ -1564,9 +1564,7 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
             si->Insert(id, ext);
         }
     }
-
     rdr->Close();
-    delete rdr;
     si->ReOpen();
 #if 0
     }
@@ -2671,8 +2669,121 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
     }
 }
 
+bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq)
+{
+    *countReq = 0;
 
-SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc)
+    const wchar_t* wfc = fc->GetName();
+    size_t wlen = wcslen(wfc);
+    size_t clen = 4 * wlen+1;
+    char* mbfc = (char*)alloca(4*wlen+1);
+    W2A_FAST(mbfc, clen, wfc, wlen);
+    StringBuffer sbfcn;
+    char* mbfcname = mbfc;
+
+    DBounds bbox;
+    std::vector<__int64>* rowids = NULL;
+    StringBuffer strWhere((size_t)0);
+    bool canFastStep = true;
+    bool mustKeepFilterAlive = false;
+
+    SltMetadata* md = GetMetadata(mbfc);
+    if (md->IsView())
+    {
+        CacheViewContent(mbfc);
+        sbfcn.Reset();
+        sbfcn.Append("$view", 5);
+        sbfcn.Append(wfc);
+        mbfc = sbfcn.Data();
+    }
+
+    //Translate the filter from FDO to SQLite where clause.
+    //Also detect if there is a BBOX query that we can accelerate
+    //by using the spatial index.
+    if (filter)
+    {
+        SltQueryTranslator qt(fc);
+        filter->Process(&qt);
+
+        const char* txtFilter = qt.GetFilter();
+        if (*txtFilter) 
+            strWhere.Append(txtFilter);
+        qt.GetBBOX(bbox);
+        rowids = qt.DetachIDList();
+        canFastStep = qt.CanUseFastStepping();
+        mustKeepFilterAlive = qt.MustKeepFilterAlive();
+    }
+
+    SpatialIterator* siter = NULL;
+    RowidIterator* ri = NULL;
+
+
+    //if we have a query by specific ID, it will take precedence over spatial query
+    if (rowids)
+    {
+        ri = new RowidIterator(-1, rowids);
+    }
+    else if (!bbox.IsEmpty())
+    {
+        //if we have a BBOX filter, we need to get the spatial index
+        SpatialIndex* si = GetSpatialIndex(mbfcname);
+
+        DBounds total_ext;
+        si->GetTotalExtent(total_ext);
+
+        if (bbox.Contains(total_ext))
+        {
+            //only use spatial iterator if the search bounds does not
+            //fully contain the data bounds
+        }
+        else if (bbox.Intersects(total_ext))
+        {
+            siter = new SpatialIterator(bbox, si);
+        }
+        else
+        {
+            // enforce an empty result since result will be empty
+            rowids = new std::vector<__int64>();
+            ri = new RowidIterator(-1, rowids);
+        }
+    }
+
+    FdoPtr<FdoIdentifierCollection> props = FdoIdentifierCollection::Create();
+    if (isExtentReq)
+    {
+        FdoPtr<FdoGeometricPropertyDefinition> geomProp = fc->GetGeometryProperty();
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(geomProp->GetName());
+        props->Add(idf);
+    }
+    else
+    {
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"rowid");
+        props->Add(idf);
+    }
+
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, NULL);
+    FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
+    DBounds ext;
+    while(rdr->ReadNext())
+    {
+        if (isExtentReq)
+        {
+            int len = 0;
+            const FdoByte* geom = rdr->GetGeometry(0, &len);
+            if (len)
+            {
+                //TODO: assumes DBounds is 2D since GetFgfExtents is 2D
+                GetFgfExtents((unsigned char*)geom, len, (double*)&ext);
+                DBounds::Union(extReq, &ext, extReq);
+            }
+        }
+        *countReq += 1;
+    }
+    // empty result !?
+    return (*countReq == 0);
+}
+
+SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter)
 {
     //Checks for a SpatialExtents or Count request
     std::string fcname = W2A_SLOW(fc->GetName());
@@ -2713,6 +2824,12 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     extname = W2A_SLOW(spContxName);
     countname = W2A_SLOW(spCountName);
 
+    FdoInt64 countReq = -1;
+    DBounds extReq;
+    bool emptyResult = false;
+    if (filter)
+        emptyResult = GetExtentAndCountInfo(fc, filter, !extname.empty(), &countReq, &extReq);
+
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.
     //We will always return count, but not extents, if they are not needed.
@@ -2727,7 +2844,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
 
     //get the count
     //we always use the count, whether we compute extents or not
-    FdoInt64 count = countname.empty()? 0 : GetFeatureCount(fcname.c_str());
+    FdoInt64 count = (countname.empty() || emptyResult) ? 0 : ((countReq != -1) ? countReq : GetFeatureCount(fcname.c_str()));
 
     //case where we only need count
     if (extname.empty())
@@ -2753,9 +2870,14 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     else
     {
         //get the extents and convert to blob
-        SpatialIndex* si = GetSpatialIndex(fcname.c_str());
         DBounds ext;
-        si->GetTotalExtent(ext);
+        if (extReq.IsEmpty() && !emptyResult)
+        {
+            SpatialIndex* si = GetSpatialIndex(fcname.c_str());
+            si->GetTotalExtent(ext);
+        }
+        else
+            ext = extReq;
 
         //convert to FGF byte array
         FgfPolygon poly;

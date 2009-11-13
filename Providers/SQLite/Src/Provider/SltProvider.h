@@ -220,7 +220,7 @@ public:
     SpatialIndex*   GetSpatialIndex(const char* table);
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
-    SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc);
+    SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter);
     FdoInt64        GetFeatureCount(const char* table);
     
     sqlite3_stmt*   GetCachedParsedStatement(const char* sql, sqlite3* db = NULL);
@@ -247,6 +247,7 @@ private :
     void DeleteClassFromSchema(FdoClassDefinition* fc);
     void DeleteClassFromSchema(const wchar_t* fcName);
     void UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc);
+    bool GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq);
 
     int FindSpatialContext(const wchar_t* name);
     int GetDefaultSpatialContext();
