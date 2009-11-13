@@ -107,8 +107,13 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR=Win32
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=Win64
+
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEMANAGEDDIR=Win32
+if "%TYPEBUILD%"=="debug" SET INTERMEDIATEMANAGEDDIR=Debug
+if "%TYPEBUILD%"=="release" SET INTERMEDIATEMANAGEDDIR=Release
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEMANAGEDDIR=%INTERMEDIATEMANAGEDDIR%64
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
@@ -137,8 +142,10 @@ if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_shp
 echo copy %TYPEBUILD% SHP provider output files
-copy /y "Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.SHP.Overrides.dll" "%FDOBINPATH%"
-copy /y "Managed\bin\%TYPEBUILD%\OSGeo.FDO.Providers.SHP.Overrides.pdb" "%FDOBINPATH%"
+
+copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.SHP.Overrides.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.SHP.Overrides.pdb" "%FDOBINPATH%"
+
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPProvider.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPProvider.pdb" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPOverrides.dll" "%FDOBINPATH%"
@@ -146,9 +153,10 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPOverrides.pdb" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPMessage.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPMessage.pdb" "%FDOBINPATH%"
 copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\SHPOverrides.lib" "%FDOLIBPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
-copy /y "%FDOUTILITIES%\ExpressionEngine\lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
+
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\SHP\*.h "%FDOINCPATH%\SHP\"

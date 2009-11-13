@@ -20,6 +20,9 @@ rem
 SET TYPEACTION=build
 SET MSACTION=Build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
+
 SET FDOORGPATH=%cd%
 SET FDOINSPATH=%cd%\Fdo
 SET FDOBINPATH=%cd%\Fdo\Bin
@@ -40,6 +43,9 @@ if "%1"=="-outpath" goto get_path
 
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
+
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
 
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
@@ -69,6 +75,12 @@ if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
 goto custom_error
 
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
+goto custom_error
+
 :get_path
 if (%2)==() goto custom_error
 SET FDOORGPATH=%~2
@@ -94,8 +106,12 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR=Win32
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=Win64
+
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
+
 if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 if not exist "%FDOINCPATH%" mkdir "%FDOINCPATH%"
@@ -110,24 +126,24 @@ echo %MSACTION% %TYPEBUILD% GdalFile provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\RFP
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild RFP_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild RFP_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if exist RFP_temp.sln del /Q /F RFP_temp.sln
 popd
+
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files_rfp
 echo Copy %TYPEBUILD% GdalFile Provider Output Files
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPMessage.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPMessage.pdb" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPOverrides.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPOverrides.pdb" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPProvider.dll" "%FDOBINPATH%"
-copy /y "Bin\Win32\%TYPEBUILD%\GRFPProvider.pdb" "%FDOBINPATH%"
-
-copy /y "Lib\Win32\%TYPEBUILD%\GRFPOverrides.lib" "%FDOLIBPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPMessage.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPOverrides.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPOverrides.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPProvider.pdb" "%FDOBINPATH%"
+copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\GRFPOverrides.lib" "%FDOLIBPATH%"
 
 echo Copy GdalFile SDK Header Files
 xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATH%\GdalFile\"

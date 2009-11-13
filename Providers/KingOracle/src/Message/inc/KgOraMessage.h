@@ -1192,4 +1192,4 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 #define M_KGORA_PROVIDER_DESCRIPTION     0x000036B2L
 
-
+

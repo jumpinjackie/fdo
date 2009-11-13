@@ -20,6 +20,8 @@ rem
 SET TYPEACTION=build
 SET MSACTION=Build
 SET TYPEBUILD=release
+SET TYPEPLATFORM=Win32
+SET INTERMEDIATEDIR=Win32
 SET FDOPATH=%cd%
 SET FDOINSPATH=%cd%\Fdo
 SET FDOBINPATH=%cd%\Fdo\Bin
@@ -37,6 +39,9 @@ if "%1"=="-outpath" goto get_path
 if "%1"=="-c"       goto get_conf
 if "%1"=="-config"  goto get_conf
 
+if "%1"=="-p"           goto get_platform
+if "%1"=="-platform"    goto get_platform
+
 if "%1"=="-a"       goto get_action
 if "%1"=="-action"  goto get_action
 
@@ -48,12 +53,18 @@ if "%2"=="install" goto next_param
 if "%2"=="build" goto next_param
 if "%2"=="buildinstall" goto next_param
 if "%2"=="clean" goto next_param
-goto next_param
+goto custom_error
 
 :get_conf
 SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" goto next_param
+goto custom_error
+
+:get_platform
+SET TYPEPLATFORM=%2
+if "%2"=="Win32" goto next_param
+if "%2"=="x64" goto next_param
 goto custom_error
 
 :get_path
@@ -73,12 +84,16 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 
+if "%TYPEBUILD%"=="debug" SET INTERMEDIATEDIR=Debug
+if "%TYPEBUILD%"=="release" SET INTERMEDIATEDIR=Release
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=%INTERMEDIATEDIR%64
+
 :start_exbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_ogr
 
 echo %MSACTION% %TYPEBUILD% OGR Provider Dlls
-msbuild OGRProvider.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild OGRProvider.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
@@ -86,8 +101,8 @@ if "%TYPEACTION%"=="build" goto end
 
 :install_files_ogr
 echo Copy %TYPEBUILD% OGR Provider Output Files
-copy /y "%TYPEBUILD%\OGRProvider.dll" "%FDOBINPATH%"
-copy /y "%TYPEBUILD%\OGRProvider.pdb" "%FDOBINPATH%"
+copy /y "%INTERMEDIATEDIR%\OGRProvider.dll" "%FDOBINPATH%"
+copy /y "%INTERMEDIATEDIR%\OGRProvider.pdb" "%FDOBINPATH%"
 
 :end
 echo End OGR %MSACTION%
@@ -103,11 +118,16 @@ echo Please use the format:
 
 :help_show
 echo **************************************************************************
-echo build.bat [-h] [-o=OutFolder] [-c=BuildType] [-a=Action]
+echo build.bat [-h] 
+echo           [-o=OutFolder] 
+echo           [-c=BuildType]
+echo           [-a=Action] 
+echo           [-p=PlatformType]
 echo *
 echo Help:           -h[elp]
 echo OutFolder:      -o[utpath]=destination folder for binaries
 echo BuildType:      -c[onfig]=release(default), debug
+echo PlatformType:   -p[latform]=Win32(default), x64
 echo Action:         -a[ction]=build(default), buildinstall, install, clean
 echo **************************************************************************
 exit /B 0

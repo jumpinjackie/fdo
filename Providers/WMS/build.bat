@@ -109,8 +109,13 @@ SET FDOACTENVSTUDY="FDOUTILITIES"
 if ("%FDOUTILITIES%")==("") goto env_error
 if not exist "%FDOUTILITIES%" goto env_path_error
 
-if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR="Win64"
+
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEMANAGEDDIR=Win32
+if "%TYPEBUILD%"=="debug" SET INTERMEDIATEMANAGEDDIR=Debug
+if "%TYPEBUILD%"=="release" SET INTERMEDIATEMANAGEDDIR=Release
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEMANAGEDDIR=%INTERMEDIATEMANAGEDDIR%64
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
@@ -147,8 +152,8 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsOverrides.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsOverrides.pdb" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsProvider.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsProvider.pdb" "%FDOBINPATH%"
-copy /y "Managed\Bin\%TYPEBUILD%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATH%"
-copy /y "Managed\Bin\%TYPEBUILD%\OSGeo.FDO.Providers.WMS.Overrides.pdb" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATH%"
+copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.pdb" "%FDOBINPATH%"
 copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\WMSOverrides.lib" "%FDOLIBPATH%"
 
 echo copy header files
