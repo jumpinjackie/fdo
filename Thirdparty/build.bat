@@ -164,8 +164,8 @@ if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xml-xalan\c
 if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xml-xerces\c
 if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xml-xalan\c\Src\xalanc\NLS
 
-if "%TYPEBUILDTHR%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILDTHR%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%PLATFORMTHR%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%PLATFORMTHR%"=="x64" SET INTERMEDIATEDIR="Win64"
 
 if "%TYPEACTIONTHR%"=="build" goto start_exbuild
 if "%TYPEACTIONTHR%"=="clean" goto start_exbuild
@@ -189,9 +189,6 @@ SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-
-rem # Not all components are x64 enabled
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_fdo
 
 if "%FDOERROR%"=="1" goto error
 msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
@@ -237,9 +234,9 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_sdf
 rem # Install FDO API Thirdparty Files
 :install_fdo_files
 echo copy %TYPEBUILDTHR% Thirdparty files
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\Release\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\Release\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\Release\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 
 rem # Build SDF Provider Thirdparty Files
 :rebuild_sdf
