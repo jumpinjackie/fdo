@@ -95,13 +95,13 @@ struct DBounds
         //the whole world (i.e. we will be forcing a table scan)
         if (b1->IsEmpty())
         {
-            *res = *b1;
+            *res = *b2;
             return;
         }
 
         if (b2->IsEmpty())
         {
-            *res = *b2;
+            *res = *b1;
             return;
         }
 
