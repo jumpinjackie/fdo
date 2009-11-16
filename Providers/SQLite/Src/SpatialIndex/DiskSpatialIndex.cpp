@@ -50,14 +50,8 @@ SpatialIndex::SpatialIndex(const wchar_t* seedname)
 
     //If a specific path was passed in for the spatial index file
     //use that, otherwise get a temp file location
-    if (!seedname || !*seedname)
-    {
-        GetSIFilename(_seedName);
-    }
-    else
-    {
+    if (!(!seedname || !*seedname))
         _seedName = std::wstring(seedname) + L".si.";
-    }
 
     _haveOffset = false;
     _rootLevel = 0;
@@ -156,6 +150,8 @@ void SpatialIndex::Insert(unsigned fid, Bounds& b)
             MappedFile* mf = new MappedFile(sizeof(Bounds), sizeof(Bounds)*1024*64, 20);
             wchar_t tmp[16];
             swprintf(tmp, sizeof(tmp), L"%d", i);
+            if (_seedName.size() == 0)
+                GetSIFilename(_seedName);
             std::wstring name = _seedName + tmp;
             mf->create(name.c_str(), true);
 
