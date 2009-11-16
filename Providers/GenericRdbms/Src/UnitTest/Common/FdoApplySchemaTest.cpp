@@ -1085,12 +1085,12 @@ void FdoApplySchemaTest::TestLT ()
 #ifdef RDBI_DEF_ORA
         pTable = ph->FindDbObject(L"CIRCLE_LT1_GRIP",L"",L"",false);
 #else
-#ifdef RDBI_DEF_SSQL
-        pTable = ph->FindDbObject(ph->GetDcDbObjectName(L"Circle Lt_Grip"),L"",L"",false);
-#else
-        pTable = ph->FindDbObject(L"CIRCLE_LT_GRIP",L"",L"",false);
+        if ( ph->IsRdbObjNameAscii7() ) 
+            pTable = ph->FindDbObject(L"CIRCLE_LT_GRIP",L"",L"",false);
+        else
+            pTable = ph->FindDbObject(ph->GetDcDbObjectName(L"Circle Lt_Grip"),L"",L"",false);
 #endif
-#endif
+        CPPUNIT_ASSERT(pTable);
         column = pTable->RefColumns()->RefItem( ph->GetDcColumnName(L"ltid") );
         CPPUNIT_ASSERT( (LtLckMethod == 1) == (column != NULL) );
 
