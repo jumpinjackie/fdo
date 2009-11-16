@@ -29,8 +29,6 @@ class SqlServerFdoDatastoreTest : public FdoDatastoreTest
 
     void  set_provider();
 
-    void Cmd_CreateNoMeta();
-
 	virtual FdoStringP get_lt_mode()
 	{
 		return (UNIT_TEST_DB_LKMODE_FDO)? L"FDO" : L"NONE";

@@ -170,13 +170,13 @@ void SchemaMgrTests::testGenDefault ()
         column = table->CreateColumnDbObject( L"OBJECT_NAME", true );
         column = table->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, false );
         AddProviderColumns( table );
-        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN345678901234567890", L"INT16_COLUMN345678901234567890 < 20000" );
+        FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"int16_check", L"INT16_COLUMN345678901234567890", L"\"INT16_COLUMN345678901234567890\" < 20000" );
         table->AddCkeyCol( constraint );
-		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"DECIMAL_COLUMN > BYTE_COLUMN" );
+		constraint = new FdoSmPhCheckConstraint( L"decimal_check", L"DECIMAL_COLUMN", L"\"DECIMAL_COLUMN\" > \"BYTE_COLUMN\"" );
 		table->AddCkeyCol( constraint );
-        constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"INT32_COLUMN = 45 or INT32_COLUMN > 100" );
+        constraint = new FdoSmPhCheckConstraint( L"int32_check", L"INT32_COLUMN", L"\"INT32_COLUMN\" = 45 or \"INT32_COLUMN\" > 100" );
         table->AddCkeyCol( constraint );
-        constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"SINGLE_COLUMN = 45 or DOUBLE_COLUMN > 100" );
+        constraint = new FdoSmPhCheckConstraint( L"single_check", L"SINGLE_COLUMN", L"\"SINGLE_COLUMN\" = 45 or \"DOUBLE_COLUMN\" > 100" );
         table->AddCkeyCol( constraint );
 
         FdoSmPhTableP table2 = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE2" ));
@@ -297,7 +297,7 @@ void SchemaMgrTests::testGenDefault ()
     	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"TABLE7_ID12345678901234567890" );
 
         database->Commit();
-        
+
         owner->DiscardDbObject(table);
         // Make sure RTABLE2 got removed from the not found list.
         CPPUNIT_ASSERT( owner->FindDbObject(phMgr->GetDcDbObjectName(L"RTABLE2")) != NULL );
