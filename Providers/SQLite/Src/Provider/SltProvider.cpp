@@ -105,6 +105,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_updateHookEnabled = false;
     m_changesAvailable = false;
     m_connDet = NULL;
+    m_defSpatialContextId = 0;
 }
 
 SltConnection::~SltConnection()
@@ -757,7 +758,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                 sb.Append(" DESC", 5);
         }
 
-        sb.Append(";");
+        sb.Append(";", 1);
 
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
@@ -1584,21 +1585,21 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     bool supDetGeom = SupportsDetailedGeomType();
     if(supDetGeom)
         sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
-            geometry_type,geometry_dettype,coord_dimension,srid)VALUES(");
+            geometry_type,geometry_dettype,coord_dimension,srid)VALUES(", 135);
     else
         sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
-            geometry_type,coord_dimension,srid)VALUES(");
+            geometry_type,coord_dimension,srid)VALUES(", 118);
     
     sb.AppendSQuoted(fcname);//f_table_name
-    sb.Append(","); 
+    sb.Append(",", 1); 
     sb.AppendSQuoted(gpd->GetName());//f_geometry_column
-    sb.Append(",'FGF',"); 
+    sb.Append(",'FGF',", 7); 
 
     int gtype = gpd->GetGeometryTypes();
     //if gdettype remains 0 at this points, it will be treated as "All" types
     //of geometry
     sb.Append(gtype);
-    sb.Append(",");
+    sb.Append(",", 1);
 
     int len = 0;
     int gdettype = 0;
@@ -1613,7 +1614,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
             gdettype |= (0x01 << ((*(gtypes + idx)) - 1));
         }
         sb.Append(gdettype);
-        sb.Append(",");
+        sb.Append(",", 1);
     }
 
     int dim = 0x00;
@@ -1623,7 +1624,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
         dim |= 0x02;
     
     sb.Append(dim); //coord_dimension
-    sb.Append(",");
+    sb.Append(",", 1);
     
     //find a record in spatial_ref_sys whose sr_name matches
     //the name of the spatial context association.
@@ -1631,7 +1632,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     //geometry table. This way we remove the FDO-idiosyncratic
     //spatial context name from the picture.
     sb.Append((int) FindSpatialContext(gpd->GetSpatialContextAssociation()));
-    sb.Append(");");
+    sb.Append(");", 2);
 
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
 }
@@ -1645,32 +1646,32 @@ void SltConnection::AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fc
         return;
 
     StringBuffer sb;
-    sb.Append(  "INSERT INTO fdo_columns (f_table_name, f_column_name, f_column_desc, "
-        "fdo_data_type, fdo_data_details, fdo_data_length, fdo_data_precision, fdo_data_scale) VALUES("  );
+    sb.Append("INSERT INTO fdo_columns (f_table_name, f_column_name, f_column_desc, "
+        "fdo_data_type, fdo_data_details, fdo_data_length, fdo_data_precision, fdo_data_scale) VALUES(", 162);
     sb.AppendSQuoted(fcname);
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.AppendSQuoted(dpd->GetName());
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.AppendSQuotedHandleNull(dpd->GetDescription());
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.Append((int)dpd->GetDataType());
-    sb.Append(",");
+    sb.Append(",", 1);
     //nullable = 0x02, system = 0x01
     sb.Append((int)((dpd->GetNullable() ? 0x02 : 0x00) |(dpd->GetIsSystem() ? 0x01 : 0x00)));
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.Append((int)dpd->GetLength());
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.Append((int)dpd->GetPrecision());
-    sb.Append(",");
+    sb.Append(",", 1);
     sb.Append((int)dpd->GetScale());
-    sb.Append(");");
+    sb.Append(");", 2);
 
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
 }
 
 //Returns the SRID of an entry in the spatial_ref_sys table,
 //whose sr_name column matches the input.
-int SltConnection::FindSpatialContext(const wchar_t* name)
+int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
 {
     // After apply schema a class can have a garbage CS name
     // in case we do not find it return the first CS SRID
@@ -1693,7 +1694,7 @@ int SltConnection::FindSpatialContext(const wchar_t* name)
        
         if ((rc = sqlite3_prepare_v2(m_dbRead, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
             if ((rc = sqlite3_prepare_v2(m_dbRead, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
-                return 0;
+                return (!valIfNotFound) ? 0 : valIfNotFound;
 
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
             ret = sqlite3_column_int(stmt, 0);
@@ -1703,40 +1704,27 @@ int SltConnection::FindSpatialContext(const wchar_t* name)
     // most of FDO providers have only one CS per schema
     // in case we have invalid CS name try getting the first one
     if (!retVal)
-        retVal = GetDefaultSpatialContext();
+        retVal = (!valIfNotFound) ? GetDefaultSpatialContext() : valIfNotFound;        
     
     return retVal; //returns 0 if not found
 }
 
 int SltConnection::GetDefaultSpatialContext()
 {
-    int retVal = 0; // invalid CS
     int rc;
-    int ret = 0;
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
    
     if ((rc = sqlite3_prepare_v2(m_dbRead, "SELECT srid FROM spatial_ref_sys;", -1, &stmt, &tail)) != SQLITE_OK)
-        return 0;
+        return m_defSpatialContextId;
 
+    // avoid some lock issues in case there is a opened transaction tables can be locked 
+    // till we commit since we make changes on tables, cache the value
     if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
-        retVal = sqlite3_column_int(stmt, 0);
+        m_defSpatialContextId = sqlite3_column_int(stmt, 0);
 
     sqlite3_finalize(stmt);
-    return retVal; //returns 0 if not found
-}
-
-void SltConnection::UpdateClassesWithInvalidSC(int defSpatialContextId)
-{
-    int defSC = defSpatialContextId ? defSpatialContextId : GetDefaultSpatialContext();
-    if(defSC != 0)
-    {
-        StringBuffer sb;
-        sb.Append("UPDATE geometry_columns SET srid=", 33);
-        sb.Append(defSC);
-        sb.Append(";", 1);
-        int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
-    }
+    return m_defSpatialContextId; //returns 0 if not found
 }
 
 void SltConnection::DeleteClassFromSchema(FdoClassDefinition* fc)
@@ -1749,9 +1737,9 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
     std::string table = W2A_SLOW(fcName);
 
     StringBuffer sb;
-    sb.Append("DROP TABLE IF EXISTS ");
+    sb.Append("DROP TABLE IF EXISTS ", 21);
     sb.AppendDQuoted(table.c_str());
-    sb.Append(";");
+    sb.Append(";", 1);
     int rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     if (rc != SQLITE_OK)
     {
@@ -1763,17 +1751,17 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
         throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
     }
     sb.Reset();
-    sb.Append("DELETE FROM geometry_columns WHERE f_table_name=");
+    sb.Append("DELETE FROM geometry_columns WHERE f_table_name=", 48);
     sb.AppendSQuoted(table.c_str());
-    sb.Append(";");
+    sb.Append(";", 1);
     rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
 
     if (m_bUseFdoMetadata)
     {
         sb.Reset();
-        sb.Append("DELETE FROM fdo_columns WHERE f_table_name=");
+        sb.Append("DELETE FROM fdo_columns WHERE f_table_name=", 43);
         sb.AppendSQuoted(table.c_str());
-        sb.Append(";");
+        sb.Append(";", 1);
         rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     }
     SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*)table.c_str());
@@ -1789,9 +1777,9 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
 {
     std::string fcname = W2A_SLOW(fc->GetName());
     StringBuffer sb;
-    sb.Append("CREATE TABLE ");
+    sb.Append("CREATE TABLE ", 13);
     sb.AppendDQuoted(fcname.c_str());
-    sb.Append(" (");
+    sb.Append(" (", 2);
 
     FdoPtr<FdoClassDefinition> fctmp = FDO_SAFE_ADDREF(fc);
     UniqueConstraints simpleUqc;
@@ -1889,9 +1877,9 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         
         // copy relevant content of old into temporary table
         sb.Reset();
-        sb.Append("INSERT INTO ");
+        sb.Append("INSERT INTO ", 12);
         sb.AppendDQuoted(tempClassName.c_str());
-        sb.Append(" (");
+        sb.Append(" (", 2);
 
         bool first = true;
         for (int i = 0, iEnd = pdc->GetCount(); i<iEnd; i++)
@@ -1901,13 +1889,13 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
                 pd->GetElementState() != FdoSchemaElementState_Deleted
             ) {
                 if(!first) {
-                    sb.Append(", ");            
+                    sb.Append(", ", 2);            
                 }
                 sb.AppendDQuoted(pd->GetName());
                 first = false;
             }
         }
-        sb.Append(") SELECT ");
+        sb.Append(") SELECT ", 9);
         first = true;
         for (int i = 0, iEnd = pdc->GetCount(); i<iEnd; i++)
         {
@@ -1916,15 +1904,15 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
                 pd->GetElementState() == FdoSchemaElementState_Modified // only renaming is allowed so far
             ) {
                 if(!first) {
-                    sb.Append(", ");            
+                    sb.Append(", ", 2);            
                 }
                 sb.AppendDQuoted(pd->GetName());
                 first = false;                          
             }         
         }
-        sb.Append(" FROM ");
+        sb.Append(" FROM ", 6);
         sb.Append(originalClassName.c_str());
-        sb.Append(";");
+        sb.Append(";", 1);
 
         int rc;
         if (!first && (rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
@@ -1940,11 +1928,11 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         DeleteClassFromSchema(originalClassName.c_str());
         // rename temporary table
         sb.Reset();
-        sb.Append("ALTER TABLE ");
+        sb.Append("ALTER TABLE ", 12);
         sb.Append(tempClassName.c_str());
-        sb.Append(" RENAME TO ");
+        sb.Append(" RENAME TO ", 11);
         sb.Append(originalClassName.c_str());
-        sb.Append(";");
+        sb.Append(";", 1);
         
         if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
         {
@@ -1957,11 +1945,11 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         }
         // update table name column in meta tables 
         sb.Reset();
-        sb.Append("UPDATE geometry_columns SET f_table_name=");
+        sb.Append("UPDATE geometry_columns SET f_table_name=", 41);
         sb.AppendSQuoted(originalClassName.c_str());
-        sb.Append(" WHERE f_table_name=");
+        sb.Append(" WHERE f_table_name=", 20);
         sb.AppendSQuoted(tempClassName.c_str());
-        sb.Append(";");
+        sb.Append(";", 1);
         if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
         {
             FdoException* baseExc = NULL;
@@ -1975,11 +1963,11 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         if (m_bUseFdoMetadata)
         {
             sb.Reset();
-            sb.Append("UPDATE fdo_columns SET f_table_name=");
+            sb.Append("UPDATE fdo_columns SET f_table_name=", 36);
             sb.AppendSQuoted(originalClassName.c_str());
-            sb.Append(" WHERE f_table_name=");
+            sb.Append(" WHERE f_table_name=", 20);
             sb.AppendSQuoted(tempClassName.c_str());
-            sb.Append(";");
+            sb.Append(";", 1);
             if ((rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL)) != SQLITE_OK)
             {
                 FdoException* baseExc = NULL;
@@ -2016,9 +2004,9 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
             
             FdoPropertyType ptype = pd->GetPropertyType();
             sb.Reset();
-            sb.Append("ALTER TABLE ");
+            sb.Append("ALTER TABLE ", 12);
             sb.AppendDQuoted(fc->GetName());
-            sb.Append(" ADD COLUMN ");
+            sb.Append(" ADD COLUMN ", 12);
             if (ptype == FdoPropertyType_DataProperty)
             {
                 FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)pd.p;
@@ -2084,10 +2072,8 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
 
     FdoPtr<FdoClassCollection> classes = mergedSchema->GetClasses();
 
-    // avoid some lock issues in case there is a opened transaction 
-    // tables can be locked till we commit since we make changes on tables.
-    int defSpatialContextId = GetDefaultSpatialContext();
-
+    // cache the default SpatialContext Id to avoid some locking issues
+    GetDefaultSpatialContext();
     int rc = StartTransaction();
 
     try
@@ -2167,13 +2153,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
 
     rc = CommitTransaction();
     if (rc == SQLITE_OK)
-    {
         schema->AcceptChanges();
-        // We need to add this call since we have so many cases when users apply schema followed by create 
-        // spatial context or the applied schema has invalid CS names (not added into the data store).
-        // We may modify this later in case we don't like to enforce classes with an invalid CS to get the default CS
-        UpdateClassesWithInvalidSC(defSpatialContextId);
-    }
     else // not sure we need to do that yet
         RollbackTransaction();
 
@@ -2418,7 +2398,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
         FdoPtr<FdoDataValue> dataMax = rgConstr->GetMaxValue();
         if(dataMin != NULL || dataMax != NULL)
         {
-            sb.Append(" CONSTRAINT CHK_");
+            sb.Append(" CONSTRAINT CHK_", 16);
             sb.Append(GenerateValidConstrName(propName).c_str());
             sb.Append(" CHECK(", 7);
             if(dataMin != NULL && dataMax != NULL && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
@@ -2464,7 +2444,7 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
         int cnt = (dataColl != NULL) ? dataColl->GetCount() : 0;
         if (cnt != 0)
         {
-            sb.Append(" CONSTRAINT CHK_");
+            sb.Append(" CONSTRAINT CHK_", 16);
             sb.Append(GenerateValidConstrName(propName).c_str());
             sb.Append(" CHECK(", 7);
             sb.AppendDQuoted(propName);
@@ -2579,7 +2559,10 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
                 {
                     //autogenerated ID -- we will have SQLite generate a new one for us
                     sb.AppendDQuoted(idp->GetName());
-                    sb.Append(" INTEGER PRIMARY KEY");
+                    if (idp->GetIsAutoGenerated())
+                        sb.Append(" INTEGER PRIMARY KEY", 20);
+                    else
+                        sb.Append(" INTEGER PRIMARY KEY NOT NULL", 29);
                     canAddUnique = false;
                 }
                 else
@@ -2849,9 +2832,9 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     //case where we only need count
     if (extname.empty())
     {
-        sql.Append("CREATE TABLE SpatialExtentsResult(");
+        sql.Append("CREATE TABLE SpatialExtentsResult(", 34);
         sql.AppendDQuoted(countname.c_str());
-        sql.Append(" INTEGER);");
+        sql.Append(" INTEGER);", 10);
 
         char* err;
         rc = sqlite3_exec(db, sql.Data(), NULL, NULL, &err);
@@ -2923,7 +2906,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     stmt = NULL;
     tail = NULL;
     sql.Reset();
-    sql.Append("SELECT ");
+    sql.Append("SELECT ", 7);
     if (!countname.empty())
     {
         if (countIsFirst)
@@ -2941,7 +2924,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     }
     else
         sql.AppendDQuoted(extname.c_str());
-    sql.Append(" FROM SpatialExtentsResult;");
+    sql.Append(" FROM SpatialExtentsResult;", 27);
 
     rc = sqlite3_prepare_v2(db, sql.Data(), -1, &stmt, &tail);
 
@@ -2992,9 +2975,9 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
     const char* tail = NULL;
 
     StringBuffer sb;
-    sb.Append("SELECT MAX(ROWID) FROM ");
+    sb.Append("SELECT MAX(ROWID) FROM ", 23);
     sb.AppendDQuoted(table);
-    sb.Append(";");
+    sb.Append(";", 1);
 
     if (sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
@@ -3325,7 +3308,7 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
 void SltConnection::CacheViewContent(const char* viewName)
 {
     StringBuffer sb;
-    sb.Append("$view");
+    sb.Append("$view", 5);
     sb.Append(viewName);
     Table* table = sqlite3FindTable(m_dbRead, sb.Data(), 0);
     if (table == NULL)
@@ -3336,7 +3319,7 @@ void SltConnection::CacheViewContent(const char* viewName)
         sb.Append(viewName);
         sb.Append("\" AS SELECT * FROM ", 19);
         sb.AppendDQuoted(viewName);
-        sb.Append(";");
+        sb.Append(";", 1);
         sqlite3_exec(m_dbRead, sb.Data(), NULL, NULL, NULL);
     }
 }

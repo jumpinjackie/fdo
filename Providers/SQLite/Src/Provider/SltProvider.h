@@ -227,7 +227,6 @@ public:
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
-    void UpdateClassesWithInvalidSC(int defSpatialContextId = 0);
     bool SupportsDetailedGeomType();
     
     int StartTransaction(bool isUserTrans = false); 
@@ -238,6 +237,10 @@ public:
     void EnableHooks(bool enable = true, bool enforceRollback = false);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong();
+    
+    // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
+    int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
+    int GetDefaultSpatialContext();
 
 private :
 
@@ -248,9 +251,6 @@ private :
     void DeleteClassFromSchema(const wchar_t* fcName);
     void UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc);
     bool GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq);
-
-    int FindSpatialContext(const wchar_t* name);
-    int GetDefaultSpatialContext();
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, 
         StringBuffer& sb, int mode, UniqueConstraints& simpleUniqueConstr);
@@ -290,6 +290,7 @@ private :
     unsigned char*                          m_wkbBuffer;
     int                                     m_wkbBufferLen;
     ConnInfoDetails*                        m_connDet;
+    int                                     m_defSpatialContextId;
 };
 
 class ConnInfoDetails

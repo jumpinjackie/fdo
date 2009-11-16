@@ -793,6 +793,7 @@ public:
     SltCreateSpatialContext(SltConnection* connection)
         : SltCommand<FdoICreateSpatialContext>(connection)
     {
+        m_updateExisting = false;
     }
 
 protected:
@@ -833,40 +834,67 @@ public:
         StringBuffer sb;
         int rc;
         char* zerr = NULL;
-        // ensure no other CS are there since we cannot support multiple CS
-        if (m_coordSysWkt.size() != 0)
-            rc = sqlite3_exec(m_connection->GetDbWrite(), "delete from spatial_ref_sys;", NULL, NULL, &zerr);
+        int idToUpdate = -1;
+        if (m_updateExisting && m_scName.size() != 0)
+            idToUpdate = m_connection->FindSpatialContext(m_scName.c_str(), -1);
 
-        sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
+        // caller should ensure the SC is not already created
+        if (idToUpdate == -1)
+        {
+            sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
 
-        if (m_scName.empty())
-            sb.Append("NULL");
+            if (m_scName.empty())
+                sb.Append("NULL", 4);
+            else
+                sb.AppendSQuoted(m_scName.c_str());
+
+            sb.Append(",", 1);
+
+            if (m_coordSysName.empty())
+                sb.Append("NULL", 4);
+            else
+                sb.AppendSQuoted(m_coordSysName.c_str());
+
+            sb.Append(",", 1);
+
+            if (m_coordSysWkt.empty())
+                sb.Append("NULL", 4);
+            else
+                sb.AppendSQuoted(m_coordSysWkt.c_str());
+
+            sb.Append(");", 2);
+        }
         else
-            sb.AppendSQuoted(m_scName.c_str());
+        {
+            sb.Append("UPDATE spatial_ref_sys SET ");
 
-        sb.Append(",");
+            sb.Append("sr_name=");
+            if (m_scName.empty())
+                sb.Append("NULL");
+            else
+                sb.AppendSQuoted(m_scName.c_str());
 
-        if (m_coordSysName.empty())
-            sb.Append("NULL");
-        else
-            sb.AppendSQuoted(m_coordSysName.c_str());
+            sb.Append(",auth_name=");
+            if (m_coordSysName.empty())
+                sb.Append("NULL");
+            else
+                sb.AppendSQuoted(m_coordSysName.c_str());
 
-        sb.Append(",");
+            sb.Append(",srtext=");
 
-        if (m_coordSysWkt.empty())
-            sb.Append("NULL");
-        else
-            sb.AppendSQuoted(m_coordSysWkt.c_str());
+            if (m_coordSysWkt.empty())
+                sb.Append("NULL");
+            else
+                sb.AppendSQuoted(m_coordSysWkt.c_str());
 
-        sb.Append(");");
+            sb.Append(" WHERE srid=");
+            sb.Append(idToUpdate);
+            sb.Append(";", 1);
+        }
 
         rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
         if (rc != SQLITE_OK)
-        {
             FdoCommandException::Create(L"Failed to create spatial context.");
-        }
-
-        m_connection->UpdateClassesWithInvalidSC();
     }
 
     //-------------------------------------------------------
