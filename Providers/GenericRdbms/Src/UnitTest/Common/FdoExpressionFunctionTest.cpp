@@ -17773,27 +17773,15 @@ FdoStringP FdoExpressionFunctionTest::GetExpectedErrorMessage (
     switch (test_case_id) {
 
       case EXTRACT_TEST_CASE_CODE_1:
-        exp_err_message =
-            FdoStringP::Format(
-                       L"%ls: %ls ",
-                       L"Expression Engine",
-                       L"Invalid parameter data type for function 'Extract'");
+        exp_err_message = L"One or more arguments for function 'Extract' did not match the expected argument types. ";
         break;
 
       case EXTRACTTODOUBLE_TEST_CASE_CODE_1:
-        exp_err_message =
-            FdoStringP::Format(
-                L"%ls: %ls ",
-                L"Expression Engine",
-                L"Invalid parameter data type for function 'ExtractToDouble'");
+        exp_err_message = L"One or more arguments for function 'ExtractToDouble' did not match the expected argument types. ";
         break;
 
       case EXTRACTTOINT_TEST_CASE_CODE_1:
-        exp_err_message =
-            FdoStringP::Format(
-                   L"%ls: %ls ",
-                   L"Expression Engine",
-                   L"Invalid parameter data type for function 'ExtractToInt'");
+        exp_err_message = L"One or more arguments for function 'ExtractToInt' did not match the expected argument types. ";
         break;
 
       default:
