@@ -412,7 +412,7 @@ void ReaderTest::TestExceptionalCase()
     // SQL reader
     {
         FdoPtr<FdoISQLCommand> select3 = (FdoISQLCommand*)m_connection->CreateCommand (FdoCommandType_SQLCommand);
-        select3->SetSQLStatement(L"select * from IndexAccess");
+        select3->SetSQLStatement(L"select * from indexaccess");
         FdoPtr<FdoISQLDataReader> reader3 = select3->ExecuteReader();
 
         CPPUNIT_ASSERT(reader3->ReadNext());
