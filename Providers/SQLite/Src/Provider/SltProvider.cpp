@@ -1584,11 +1584,9 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     
     bool supDetGeom = SupportsDetailedGeomType();
     if(supDetGeom)
-        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
-            geometry_type,geometry_dettype,coord_dimension,srid)VALUES(", 135);
+        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,geometry_type,geometry_dettype,coord_dimension,srid)VALUES(", 135);
     else
-        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,\
-            geometry_type,coord_dimension,srid)VALUES(", 118);
+        sb.Append("INSERT INTO geometry_columns(f_table_name,f_geometry_column,geometry_format,geometry_type,coord_dimension,srid)VALUES(", 118);
     
     sb.AppendSQuoted(fcname);//f_table_name
     sb.Append(",", 1); 
@@ -1646,8 +1644,7 @@ void SltConnection::AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fc
         return;
 
     StringBuffer sb;
-    sb.Append("INSERT INTO fdo_columns (f_table_name, f_column_name, f_column_desc, "
-        "fdo_data_type, fdo_data_details, fdo_data_length, fdo_data_precision, fdo_data_scale) VALUES(", 162);
+    sb.Append("INSERT INTO fdo_columns (f_table_name,f_column_name,f_column_desc,fdo_data_type,fdo_data_details,fdo_data_length,fdo_data_precision,fdo_data_scale)VALUES(", 154);
     sb.AppendSQuoted(fcname);
     sb.Append(",", 1);
     sb.AppendSQuoted(dpd->GetName());
