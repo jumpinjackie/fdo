@@ -241,6 +241,7 @@ public:
     // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
     int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
     int GetDefaultSpatialContext();
+	FdoClassDefinition* GetFdoClassDefinition(const char* table);
 
 private :
 

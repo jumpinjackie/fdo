@@ -196,7 +196,7 @@ void SltReader::SetInternalFilter(FdoFilter* filter)
     m_filter = FDO_SAFE_ADDREF(filter);
 }
 
-void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where)
+void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where, bool addPkOnly)
 {
     int rc = 0;
 
@@ -307,18 +307,31 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         maxIndex = -1; // composite, non-int or no PK force add all
     }
 
-    //If the query is for a single feature, we will directly add all the properties
-    //since in this case it is more likely for the caller to need them
-    if (maxIndex == -1 || (m_ri && m_ri->Count() == 1))
-        maxIndex = pdc->GetCount() - 1;
-
     StringBuffer propName(30);
-    for (int i=0; i<=maxIndex; i++)
+    if (addPkOnly)
     {
-        FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
-        propName.Reset();
-        propName.AppendDQuoted(pd->GetName());
-        m_reissueProps.Add(propName.Data(), propName.Length());
+        for (int i = 0; i < pdic->GetCount(); i++)
+        {
+            FdoPtr<FdoDataPropertyDefinition> pdi = pdic->GetItem(i);
+            propName.Reset();
+            propName.AppendDQuoted(pdi->GetName());
+            m_reissueProps.Add(propName.Data(), propName.Length());
+        }
+    }
+    else
+    {
+        //If the query is for a single feature, we will directly add all the properties
+        //since in this case it is more likely for the caller to need them
+        if (maxIndex == -1 || (m_ri && m_ri->Count() == 1))
+            maxIndex = pdc->GetCount() - 1;
+
+        for (int i=0; i<=maxIndex; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pd = pdc->GetItem(i);
+            propName.Reset();
+            propName.AppendDQuoted(pd->GetName());
+            m_reissueProps.Add(propName.Data(), propName.Length());
+        }
     }
 
     //redo the query with the id and geom props only
@@ -1196,7 +1209,7 @@ FdoString* SltReader::GetColumnName(FdoInt32 index)
 {
 	return GetPropertyName(index);
 }
-int SltReader::GetColumnIndex(FdoString* columnName)
+ int SltReader::GetColumnIndex(FdoString* columnName)
 {
 	return GetPropertyIndex(columnName);
 }
@@ -1434,12 +1447,14 @@ std::wstring SltReader::ExtractExpression(const wchar_t* exp, const wchar_t* pro
 DelayedInitReader::DelayedInitReader(   SltConnection*              connection, 
                                         FdoIdentifierCollection*    props, 
                                         const char*                 fcname, 
-                                        const char*                 where)
+                                        const char*                 where,
+                                        RowidIterator* ri)
 : SltReader(connection),
 m_bInit(false),
 m_fcname(fcname),
 m_where(where)
 {
+    m_ri = ri;
     m_props = FDO_SAFE_ADDREF(props);   
 }
 
@@ -1452,7 +1467,7 @@ bool DelayedInitReader::ReadNext()
 {
     if (!m_bInit)
     {
-        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str());
+        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), true);
         m_bInit = true;
     }
 
@@ -1463,10 +1478,295 @@ FdoClassDefinition* DelayedInitReader::GetClassDefinition()
 {
     if (!m_bInit)
     {
-        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str());
+        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), true);
         m_bInit = true;
     }
 
     return SltReader::GetClassDefinition();
 }
 
+SltIdReader::SltIdReader (FdoDataPropertyDefinition* idProp, sqlite3_int64 id)
+  : m_refCount(1), m_id(id), m_rdrEnd(false)
+{
+	m_idProp = FDO_SAFE_ADDREF(idProp);
+	m_cls = NULL;
+}
+
+SltIdReader::~SltIdReader()
+{
+	FDO_SAFE_RELEASE(m_idProp);
+	FDO_SAFE_RELEASE(m_cls);
+}
+
+bool SltIdReader::ReadNext()
+{
+	bool retVal = !m_rdrEnd;
+	m_rdrEnd = true;
+	return retVal;
+}
+
+FdoClassDefinition* SltIdReader::GetClassDefinition()
+{
+	if (!m_cls)
+	{
+		m_cls = FdoFeatureClass::Create(L"GenClass", L"Id class");
+		FdoPtr<FdoPropertyDefinitionCollection> props = m_cls->GetProperties();
+		FdoPtr<FdoDataPropertyDefinition> idProp = FdoDataPropertyDefinition::Create(m_idProp->GetName(), L"Id");
+		idProp->SetDataType(m_idProp->GetDataType());
+		props->Add(idProp);
+	}
+	return m_cls;
+}
+FdoInt32 SltIdReader::GetDepth()
+{
+    return 1;
+}
+
+const FdoByte* SltIdReader::GetGeometry(FdoString* /*propertyName*/, FdoInt32* /*count*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoByteArray* SltIdReader::GetGeometry(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoIFeatureReader* SltIdReader::GetFeatureObject(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+const FdoByte* SltIdReader::GetGeometry(FdoInt32 /*index*/, FdoInt32* /*count*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoByteArray* SltIdReader::GetGeometry(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoIFeatureReader* SltIdReader::GetFeatureObject(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+void SltIdReader::CheckProperty(int idx)
+{
+	if (idx != 0)
+		throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), idx));
+}
+
+void SltIdReader::CheckProperty(FdoString* propertyName)
+{
+	if (propertyName == NULL || *propertyName != *m_idProp->GetName())
+		throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+}
+
+FdoInt32 SltIdReader::GetColumnCount()
+{
+    return 1;
+}
+
+FdoInt32 SltIdReader::GetColumnIndex(FdoString* columnName)
+{
+	CheckProperty(columnName);
+	return 0;
+}
+
+FdoString* SltIdReader::GetColumnName(FdoInt32 index)
+{
+	CheckProperty(index);
+	return m_idProp->GetName();
+}
+
+FdoDataType SltIdReader::GetColumnType(FdoString* columnName)
+{
+	CheckProperty(columnName);
+	return m_idProp->GetDataType();
+}
+
+FdoDataType SltIdReader::GetColumnType(FdoInt32 index)
+{
+	CheckProperty(index);
+	return m_idProp->GetDataType();
+}
+
+FdoInt32 SltIdReader::GetPropertyCount()
+{
+    return 1;
+}
+
+FdoDataType SltIdReader::GetDataType(FdoString* propertyName)
+{
+	CheckProperty(propertyName);
+	return m_idProp->GetDataType();
+}
+
+FdoPropertyType SltIdReader::GetPropertyType(FdoString* propertyName)
+{
+	CheckProperty(propertyName);
+	return m_idProp->GetPropertyType();
+}
+
+FdoDataType SltIdReader::GetDataType(FdoInt32 index)
+{
+	CheckProperty(index);
+	return m_idProp->GetDataType();
+}
+
+FdoPropertyType SltIdReader::GetPropertyType(FdoInt32 index)
+{
+	CheckProperty(index);
+	return m_idProp->GetPropertyType();
+}
+
+FdoString* SltIdReader::GetPropertyName(FdoInt32 index)
+{
+	CheckProperty(index);
+	return m_idProp->GetName();
+}
+
+FdoInt32 SltIdReader::GetPropertyIndex(FdoString* propertyName)
+{
+	CheckProperty(propertyName);
+	return 0;
+}
+
+bool SltIdReader::GetBoolean(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoByte SltIdReader::GetByte(FdoString* propertyName)
+{
+	return (FdoByte)m_id;
+}
+
+FdoDateTime SltIdReader::GetDateTime(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+double SltIdReader::GetDouble(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoInt16 SltIdReader::GetInt16(FdoString* propertyName)
+{
+	return (FdoInt16)m_id;
+}
+
+FdoInt32 SltIdReader::GetInt32(FdoString* propertyName)
+{
+	return (FdoInt32)m_id;
+}
+
+FdoInt64 SltIdReader::GetInt64(FdoString* propertyName)
+{
+	return (FdoInt32)m_id;
+}
+
+float SltIdReader::GetSingle(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoString* SltIdReader::GetString(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoLOBValue* SltIdReader::GetLOB(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoIStreamReader* SltIdReader::GetLOBStreamReader(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+bool SltIdReader::IsNull(FdoString* propertyName)
+{
+	CheckProperty(propertyName);
+	return false;
+}
+
+FdoIRaster* SltIdReader::GetRaster(FdoString* /*propertyName*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoBoolean SltIdReader::GetBoolean(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoByte SltIdReader::GetByte(FdoInt32 index)
+{
+	return (FdoByte)m_id;
+}
+
+FdoDateTime SltIdReader::GetDateTime(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoDouble SltIdReader::GetDouble(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoInt16 SltIdReader::GetInt16(FdoInt32 index)
+{
+	return (FdoInt16)m_id;
+}
+
+FdoInt32 SltIdReader::GetInt32(FdoInt32 index)
+{
+	return (FdoInt32)m_id;
+}
+
+FdoInt64 SltIdReader::GetInt64(FdoInt32 index)
+{
+	return m_id;
+}
+
+FdoFloat SltIdReader::GetSingle(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoString* SltIdReader::GetString(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoLOBValue* SltIdReader::GetLOB(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoIStreamReader* SltIdReader::GetLOBStreamReader(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+FdoBoolean SltIdReader::IsNull(FdoInt32 index)
+{
+	CheckProperty(index);
+    return false;
+}
+
+FdoIRaster* SltIdReader::GetRaster(FdoInt32 /*index*/)
+{
+	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+}
+
+void SltIdReader::Close()
+{
+	m_rdrEnd = true;
+}

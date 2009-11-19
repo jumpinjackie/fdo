@@ -1454,6 +1454,12 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
     return ret;
 }
 
+FdoClassDefinition* SltConnection::GetFdoClassDefinition(const char* table)
+{
+	SltMetadata* md = GetMetadata(table);
+	return (md) ? md->ToClass() : NULL;
+}
+
 void SltConnection::GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext)
 {
     if (ptr != NULL && len != 0)
@@ -1812,10 +1818,13 @@ void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefini
         fctmp = fctmp->GetBaseClass();
     }
 
+	size_t szInit = sb.Length();
     CollectBaseClassProperties(classes, fc, fc, sb, (cntip > 1) ? 0 : 1, simpleUqc);
     CollectBaseClassProperties(classes, fc, fc, sb, 2, simpleUqc);
     CollectBaseClassProperties(classes, fc, fc, sb, 3, simpleUqc);
-    
+    if (szInit == sb.Length())
+		throw FdoException::Create(L"Classes without properties are not supported", 1);
+
     if (complexUqc->GetCount() != 0)
         AddComplexUniqueConstraints(complexUqc, fc,sb);
 
