@@ -26,6 +26,7 @@
 class SltConnection;
 class SpatialIterator;
 class RowidIterator;
+class SltIdReader;
 
 struct StringRec
 {
@@ -195,7 +196,7 @@ protected:
 
     protected:
 
-        void DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where);
+        void DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where, bool addPkOnly = false);
 
     private:
 
@@ -255,14 +256,14 @@ protected:
         SpatialIterator*    m_si;
         int                 m_siEnd;
         sqlite3_int64       m_curfid;
-
-        //stuff related to scrollable readers
-        RowidIterator*      m_ri;
         // kept here only for special cases when provider needs it alive
         // due some optimizations to avoid copying a geometry
         FdoFilter*          m_filter;
 
         FdoParameterValueCollection*  m_parmValues;
+protected:
+        //stuff related to scrollable readers
+        RowidIterator*      m_ri;
 };
 
 
@@ -277,7 +278,8 @@ public:
     DelayedInitReader(      SltConnection*              connection, 
                             FdoIdentifierCollection*    props, 
                             const char*                 fcname, 
-                            const char*                 where);
+                            const char*                 where,
+                            RowidIterator* ri);
 
     virtual ~DelayedInitReader();
 
@@ -291,6 +293,83 @@ private:
     std::string                 m_fcname;
     std::string                 m_where;
     bool                        m_bInit;
+};
+
+// can be used RowidIterator* here but since is not needed let's avoid alloc new memory
+// do not use this reader for other things, since is not "smart"
+class SltIdReader : public FdoIFeatureReader, 
+                    public FdoIDataReader, 
+                    public FdoISQLDataReader
+{
+	FdoDataPropertyDefinition*	m_idProp;
+	sqlite3_int64				m_id;
+	bool						m_rdrEnd;
+	FdoClassDefinition*			m_cls;
+public:
+
+	SltIdReader (FdoDataPropertyDefinition* idProp, sqlite3_int64 id);
+	virtual ~SltIdReader();
+
+	//-------------------------------------------------------
+    // FdoIDisposable implementation
+    //-------------------------------------------------------
+    
+    SLT_IMPLEMENT_REFCOUNTING
+
+	bool ReadNext();
+    FdoClassDefinition* GetClassDefinition();
+	FdoInt32 GetDepth();
+	const FdoByte * GetGeometry(FdoString* /*propertyName*/, FdoInt32* /*count*/);
+    FdoByteArray* GetGeometry(FdoString* /*propertyName*/);
+    FdoIFeatureReader* GetFeatureObject(FdoString* /*propertyName*/);
+    const FdoByte * GetGeometry(FdoInt32 /*index*/, FdoInt32* /*count*/);
+    FdoByteArray* GetGeometry(FdoInt32 /*index*/);
+    FdoIFeatureReader* GetFeatureObject(FdoInt32 /*index*/);
+	void CheckProperty(int idx);
+	void CheckProperty(FdoString* propertyName);
+	FdoInt32 GetColumnCount();
+	FdoInt32 GetColumnIndex(FdoString* columnName);
+    FdoString* GetColumnName(FdoInt32 index);
+	FdoDataType GetColumnType(FdoString* columnName);
+	FdoDataType GetColumnType(FdoInt32 index);
+
+	//-------------------------------------------------------
+    // FdoIDataReader implementation
+    //-------------------------------------------------------
+	FdoInt32 GetPropertyCount();
+	FdoDataType GetDataType(FdoString* propertyName);
+    FdoPropertyType GetPropertyType(FdoString* propertyName);
+    FdoDataType GetDataType(FdoInt32 index);
+    FdoPropertyType GetPropertyType(FdoInt32 index);
+	FdoString* GetPropertyName(FdoInt32 index);
+    FdoInt32 GetPropertyIndex(FdoString* propertyName);
+    bool GetBoolean(FdoString* /*propertyName*/);
+    FdoByte GetByte(FdoString* propertyName);
+    FdoDateTime GetDateTime(FdoString* /*propertyName*/);
+    double GetDouble(FdoString* /*propertyName*/);
+    FdoInt16 GetInt16(FdoString* propertyName);
+    FdoInt32 GetInt32(FdoString* propertyName);
+    FdoInt64 GetInt64(FdoString* propertyName);
+    float GetSingle(FdoString* /*propertyName*/);
+    FdoString* GetString(FdoString* /*propertyName*/);
+    FdoLOBValue* GetLOB(FdoString* /*propertyName*/);
+    FdoIStreamReader* GetLOBStreamReader(FdoString* /*propertyName*/);
+    bool IsNull(FdoString* propertyName);
+    FdoIRaster* GetRaster(FdoString* /*propertyName*/);
+    FdoBoolean GetBoolean(FdoInt32 /*index*/);
+    FdoByte GetByte(FdoInt32 index);
+    FdoDateTime GetDateTime(FdoInt32 /*index*/);
+    FdoDouble GetDouble(FdoInt32 /*index*/);
+    FdoInt16 GetInt16(FdoInt32 index);
+    FdoInt32 GetInt32(FdoInt32 index);
+    FdoInt64 GetInt64(FdoInt32 index);
+    FdoFloat GetSingle(FdoInt32 /*index*/);
+    FdoString* GetString(FdoInt32 /*index*/);
+    FdoLOBValue* GetLOB(FdoInt32 /*index*/);
+    FdoIStreamReader* GetLOBStreamReader(FdoInt32 /*index*/);
+    FdoBoolean IsNull(FdoInt32 index);
+    FdoIRaster* GetRaster(FdoInt32 /*index*/);
+    void Close();
 };
 
 #endif
