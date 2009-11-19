@@ -201,12 +201,12 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
     }
     else if (dt->IsTime())
     {
-        _snprintf(s, nBytes, "%02d:%02d:%s%0.3f", dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
+        _snprintf(s, nBytes, "%02d:%02d:%s%0.3f", dt->hour, dt->minute, (dt->seconds >=10.0)?"":"0",dt->seconds);
         EnsureNoIsLocalIndep(s);
     }
     else
     {
-        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%s%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
+        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%s%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, (dt->seconds >=10.0)?"":"0",dt->seconds);
         EnsureNoIsLocalIndep(s);
     }
 }
