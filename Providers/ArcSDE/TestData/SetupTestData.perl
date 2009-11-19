@@ -300,6 +300,14 @@ foreach $RDBMS ("ORACLE", "SQLSERVER")
     system "echo y | sdetable -o delete -t TESTA -u " . $username_metadcov . " -p test " . $DB_INST;
   }
 
+  if ($INSTALLACTION ne "U") {
+    system "sdetable -o create -t TEST_UUID -d \"ID uuid, MYSTRING string(50) \" -u " . $username_metadcov . " -p test -k WKB_GEOMETRY " . $DB_INST;
+    system "echo y | sdetable -o alter_reg -t TEST_UUID -c OBJECTID -C SDE -u " . $username_metadcov . " -p test -k WKB_GEOMETRY " . $DB_INST;
+    system "sdelayer -o add -l TEST_UUID,SHAPE -e nplsa+ -x -10000,-10000,100000 -g 100 -u " . $username_metadcov . " -p test -k WKB_GEOMETRY " . $DB_INST;
+  } else {
+    system "echo y | sdetable -o delete -t TEST_UUID -u " . $username_metadcov . " -p test " . $DB_INST;
+  }
+
   # On SQL Server only: create a table with same name/owner but different database,
   # and enable versionning on these 3 tables to avoid problems with SE_stream_delete_from_table() that happen only on SQL Server:
 

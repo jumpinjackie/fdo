@@ -15101,7 +15101,7 @@ void TestCommonExpressionFunctionW::AddFeature (
       insert_command = 
             (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
-      insert_command->SetFeatureClassName(class_name);
+      insert_command->SetFeatureClassName(GetSchemaName() + L":" + class_name);
 
       // Get hold of the class property set.
 
@@ -15535,6 +15535,22 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
 } // AddXYZMFeature()
 
+void TestCommonExpressionFunctionW::DeleteXYZMFeature (
+                                        FdoIConnection *current_connection)
+
+// +---------------------------------------------------------------------------
+// | The function adds a new object for the specified class. The values being
+// | added are predefined based on the predefined schema.
+// +---------------------------------------------------------------------------
+
+{
+    TestCommonMiscUtil::DeleteObjects(current_connection, GetSchemaName(), XY_POINT_CLASS, NULL);
+    TestCommonMiscUtil::DeleteObjects(current_connection, GetSchemaName(), XYZ_POINT_CLASS, NULL);
+    TestCommonMiscUtil::DeleteObjects(current_connection, GetSchemaName(), XYZM_POINT_CLASS, NULL);
+    TestCommonMiscUtil::DeleteObjects(current_connection, GetSchemaName(), XYM_POINT_CLASS, NULL);
+}
+
+
 void TestCommonExpressionFunctionW::AddTestSchema (
                                         FdoIConnection *current_connection,
                                         FdoString      *schema_name)
@@ -15560,6 +15576,8 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
     FdoIGeometryCapabilities           *geom_caps           = NULL;  
     FdoInt32                            dimensionalities;
+
+    printf(" >>> ... adding test schema \n");
 
     try {
 
@@ -15887,6 +15905,36 @@ FdoGeometricPropertyDefinition
 
 }  //  CreateGeometricProperty ()
 
+void TestCommonExpressionFunctionW::AddTestFeatures(FdoIConnection* connection)
+
+// +---------------------------------------------------------------------------
+// | The function inserts the test features for most test cases.
+// +---------------------------------------------------------------------------
+
+{
+    //   > The spatial features.
+    printf(" >>> ... adding data for feature classes \n");
+    printf(" >>> ...... for class exfct_c1 \n");
+    for (int i = 0; i < 31; i++)
+        AddFeature(connection, L"exfct_c1", i);
+
+    printf(" >>> ...... for class %ls \n", XYZM_POINT_CLASS);
+	AddXYZMFeature(connection, XYZM_POINT_CLASS); 	
+}
+
+void TestCommonExpressionFunctionW::DeleteTestFeatures(FdoIConnection* connection)
+
+// +---------------------------------------------------------------------------
+// | The function inserts the test features for most test cases.
+// +---------------------------------------------------------------------------
+
+{
+    //   > The spatial features.
+    printf(" >>> ... deleting features from class exfct_c1 \n");
+    TestCommonMiscUtil::DeleteObjects(connection, GetSchemaName(), L"exfct_c1", NULL );
+	DeleteXYZMFeature(connection); 	
+}
+
 void TestCommonExpressionFunctionW::InsertTestFeatures(FdoIConnection* connection)
 
 // +---------------------------------------------------------------------------
@@ -16087,19 +16135,10 @@ void TestCommonExpressionFunctionW::SetupUnitTestEnvironment (
 
       // Add the test schema.
 
-      printf(" >>> ... adding test schema \n");
       AddTestSchema(current_connection, GetSchemaName());
 
       // Load the features used in the unit tests.
-      //   > The spatial features.
-      printf(" >>> ... adding data for feature classes \n");
-      printf(" >>> ...... for class exfct_c1 \n");
-      for (int i = 0; i < 31; i++)
-        AddFeature(current_connection, L"exfct_c1", i);
-
-      printf(" >>> ...... for class %ls \n", XYZM_POINT_CLASS);
-	  AddXYZMFeature(current_connection, XYZM_POINT_CLASS); 	
-
+      AddTestFeatures(current_connection);
    }  //  try ...
 
    catch (FdoException *exp) {
