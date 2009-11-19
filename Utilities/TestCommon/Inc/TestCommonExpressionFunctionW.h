@@ -68,6 +68,11 @@ protected:
     void AddXYZMFeature (FdoIConnection *current_connection,
                          FdoString      *class_name);
 
+    // DeleteXYZMFeature:
+    //      The function deletes the features added by AddXYZMFeature
+
+    void DeleteXYZMFeature (FdoIConnection *current_connection);
+
     virtual FdoFeatureSchema* CreateFeatureSchema (FdoIConnection *current_connection,
                          FdoString      *schema_name);
 
@@ -104,6 +109,17 @@ protected:
                                                     FdoString *property_name,
                                                     bool has_elevation = true,
                                                     bool has_measure = false);
+
+    // AddTestFeatures:
+    //      The function inserts the test features for most
+    //      test cases.
+
+    virtual void AddTestFeatures (FdoIConnection *connection);
+
+    // DeleteTestFeatures:
+    //      The function deletes the test features added by AddTestFeatures
+
+    virtual void DeleteTestFeatures (FdoIConnection *connection);
 
     // InsertTestFeatures:
     //      The function inserts the test features for the filter optinmizer

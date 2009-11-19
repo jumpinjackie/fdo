@@ -82,8 +82,8 @@ void BasicUpdateTests::setUp ()
 
 void BasicUpdateTests::tearDown ()
 {
-    if ((mConnection != NULL) && (mConnection->GetConnectionState() != FdoConnectionState_Closed))
-        mConnection->Close ();
+    // Destructor will close connection
+    mConnection = NULL;
 }
 
 /* Test basic update operation. */
@@ -521,6 +521,120 @@ void BasicUpdateTests::update_on_lock_enabled_table ()
 
 		// Clean up after test:
 		CleanUpClass(mConnection, ArcSDETestConfig::ClassSchemaTestClassSimple(), ArcSDETestConfig::ClassNameSample(), true);
+        mConnection->Close();
+    }
+    catch (FdoException* ge) 
+    {
+        fail (ge);
+    }
+}
+
+/* Test insert/update/select on a table that has a UUID column. */
+void BasicUpdateTests::update_uuid ()
+{
+    if (CreateSchemaOnly())  return;
+
+    try
+    {
+        mConnection = ArcSDETests::GetConnection ();
+        mConnection->SetConnectionString (ArcSDETestConfig::ConnStringMetadcov());
+        mConnection->Open ();
+
+		// Clean up previous tests:
+        CleanUpClass(mConnection, ArcSDETestConfig::ClassSchemaTestClassUuid(), ArcSDETestConfig::ClassNameTestClassUuid(), true);
+        
+        FdoPtr<FdoIInsert> insert = (FdoIInsert*)mConnection->CreateCommand (FdoCommandType_Insert);
+        insert->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassUuid());
+        FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
+        FdoPtr<FdoStringValue> expression = FdoStringValue::Create (L"Added");
+        FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (AdjustRdbmsName(L"MYSTRING"), expression);
+        values->Add (value);
+        FdoPtr<FdoIFeatureReader> reader = insert->Execute ();
+
+        expression->SetString(L"Updated");
+        reader = insert->Execute ();
+
+        expression->SetString(L"Deleted");
+        reader = insert->Execute ();
+
+        FdoStringP addedUuid1;
+        FdoStringP updatedUuid1;
+        FdoStringP deletedUuid;
+        FdoStringP updatedUuid2 = L"{ABCDEFGH-IJKL-MNOP-QRST-UVWXYZ123456}";
+        FdoStringP addedUuid3;
+        FdoStringP updatedUuid3;
+        
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassUuid());
+        reader = select->Execute ();
+
+        while (reader->ReadNext ())
+        {
+            FdoStringP myString = reader->GetString(AdjustRdbmsName(L"MYSTRING"));
+
+            if ( myString == L"Added" ) 
+                addedUuid1 = reader->GetString(AdjustRdbmsName(L"ID"));
+            else if ( myString == L"Updated" ) 
+                updatedUuid1 = reader->GetString(AdjustRdbmsName(L"ID"));
+            else if ( myString == L"Deleted" ) 
+                deletedUuid = reader->GetString(AdjustRdbmsName(L"ID"));
+        }
+        reader->Close();
+     
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)mConnection->CreateCommand (FdoCommandType_Update);
+        update->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassUuid());
+        FdoStringP filter = FdoStringP::Format( L"%ls = '%ls'", (FdoString*) AdjustRdbmsName(L"ID"), (FdoString*) updatedUuid1 );
+        update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
+	    values = update->GetPropertyValues ();
+	    value = FdoPropertyValue::Create ();
+        value->SetName (AdjustRdbmsName(L"ID"));
+        expression = FdoStringValue::Create (updatedUuid2);
+        value->SetValue (expression);
+        values->Add (value);
+
+        bool updateFailed = false;
+
+        // ID is readonly so update should fail.
+        try 
+        {
+            update->Execute ();
+        }
+        catch ( FdoException* ex ) 
+        {
+            ex->Release();
+            updateFailed = true;
+        }
+
+        CPPUNIT_ASSERT ("update failed");
+
+        FdoPtr<FdoIDelete> dlte = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
+        dlte->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassUuid());
+        filter = FdoStringP::Format( L"%ls = '%ls'", (FdoString*) AdjustRdbmsName(L"ID"), (FdoString*) deletedUuid );
+        dlte->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
+        if (1 != dlte->Execute ())
+            CPPUNIT_FAIL ("delete execute failed");
+
+        // check by doing a select
+        select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (ArcSDETestConfig::QClassNameTestClassUuid());
+        reader = select->Execute ();
+        int count = 0;
+        while (reader->ReadNext ())
+        {
+            count++;
+            FdoStringP myString = reader->GetString(AdjustRdbmsName(L"MYSTRING"));
+            if ( myString == L"Added" ) 
+                addedUuid3 = reader->GetString(AdjustRdbmsName(L"ID"));
+            else if ( myString == L"Updated" ) 
+                updatedUuid3 = reader->GetString(AdjustRdbmsName(L"ID"));
+        }
+        reader->Close();
+
+        CPPUNIT_ASSERT( count == 2 );
+        CPPUNIT_ASSERT( addedUuid3 == addedUuid1 );
+        CPPUNIT_ASSERT( updatedUuid3 == updatedUuid1 );
+        CPPUNIT_ASSERT( updatedUuid3 != updatedUuid2 );
+
         mConnection->Close();
     }
     catch (FdoException* ge) 

@@ -73,7 +73,11 @@ protected:
     virtual void CreateSC();
 
     // Create or update a spatial context:
-    void CreateOrUpdateSpatialContext(FdoIConnection *conn, FdoStringP& scName, double dXMin, double dYMin, double dXMax, double dYMax, FdoString* scCoordSys);
+    void CreateOrUpdateSpatialContext(
+        FdoIConnection *conn, FdoStringP& scName, 
+        double lXMin, double lYMin, double lXMax, double lYMax, 
+        double cXMin, double cYMin, double cXMax, double cYMax, 
+        FdoString* scCoordSys);
 
     virtual FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name,
                                                     bool has_elevation = true,

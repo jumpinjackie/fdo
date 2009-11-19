@@ -50,6 +50,9 @@ void TestExpressionFunction::Connect ()
 
 void TestExpressionFunction::RunAllExpFctTests()
 {
+    if (mSDETests.CreateSchemaOnly())
+        return;
+
 // TODO: By default, Linux unit tests are run in release mode. However, this
 // test depends on the ApplySchema command which is unavailable in release
 // mode. Therefore, some rework is needed before TestXYZMFunction will work
@@ -110,11 +113,19 @@ void TestExpressionFunction::setUp ()
 
       printf(" >>> Establishing necessary connection \n");
       Connect();
-      printf(" >>> Predeleting Test Schema \n");
-      DropTestSchema(GetSchemaName());
-      printf(" >>> Establishing test environment \n");
-      CreateSC();
-      SetupUnitTestEnvironment(m_connection);
+      if (mSDETests.CreateSchemaOnly())
+      {
+          printf(" >>> Predeleting Test Schema \n");
+          DropTestSchema(GetSchemaName());
+          printf(" >>> Establishing test environment \n");
+          CreateSC();
+          AddTestSchema(m_connection, GetSchemaName());
+      }
+      else
+      {
+          DeleteTestFeatures(m_connection);
+          AddTestFeatures(m_connection);
+      }
 
       printf(" >>> Testing ... \n");
       printf("\n");
@@ -125,8 +136,6 @@ void TestExpressionFunction::setUp ()
 
     catch (FdoException *exp) {
 
-      printf(" >>> Removing test schema \n");
-      DropTestSchema(L"ExprFct");
       printf(" >>> Disconnecting \n");
       CloseConnection();
       printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
@@ -144,8 +153,6 @@ void TestExpressionFunction::setUp ()
 
     catch ( ... ) {
 
-      printf(" >>> Removing test schema \n");
-      DropTestSchema(L"ExprFct");
       printf(" >>> Disconnecting \n");
       CloseConnection();
 
@@ -266,64 +273,68 @@ void TestExpressionFunction::CreateSC()
 {
     // Create spatial context:
     mSC = L"TestSC_GeomXYZMFunc";
-    // Need particular extents to prevent coordinate drift for integer coordinates.
-    CreateOrUpdateSpatialContext(m_connection, mSC, -35314400, -28428600, 900684611074.099, 900691496874.099, L"26943");
+
+    if ( ArcSDETestConfig::RdbmsType() == ArcSDETestConfig::ArcSDETestRdbmsType_Oracle )
+    {
+        CreateOrUpdateSpatialContext(
+            m_connection, mSC, 
+            0, 0, 9007199254740990, 9007199254740990, 
+            0, 0, 2147483648, 2147483648, 
+            L"26943");
+    }
+    else
+    {
+        CreateOrUpdateSpatialContext(
+            m_connection, mSC, 
+            0, 0, 0, 0, 
+            0, 0, 1048576, 1048576, 
+            L"26943");
+    }
 }
 
-void TestExpressionFunction::CreateOrUpdateSpatialContext(FdoIConnection *conn, FdoStringP& scName, double dXMin, double dYMin, double dXMax, double dYMax, FdoString* scCoordSys)
+void TestExpressionFunction::CreateOrUpdateSpatialContext(
+    FdoIConnection *conn, FdoStringP& scName, 
+    double lXMin, double lYMin, double lXMax, double lYMax, 
+    double cXMin, double cYMin, double cXMax, double cYMax, 
+    FdoString* scCoordSys)
 {
     // Determine if the spatial context already exists:
     FdoPtr<FdoIGetSpatialContexts> getSCs = (FdoIGetSpatialContexts*)conn->CreateCommand(FdoCommandType_GetSpatialContexts);
     FdoPtr<FdoISpatialContextReader> scReader = getSCs->Execute();
     bool bExists = false;
-    bool bIdentical = false;
+
+    getSCs = (FdoIGetSpatialContexts*)conn->CreateCommand(FdoCommandType_GetSpatialContexts);
+    scReader = getSCs->Execute();
+    
     while (scReader->ReadNext())
     {
-        if (0==wcscmp(scReader->GetName(), scName))
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoByteArray> bytes = scReader->GetExtent();
+        FdoPtr<FdoIGeometry> geomObj = gf->CreateGeometryFromFgf(bytes);
+        FdoPtr<FdoIEnvelope> env = geomObj->GetEnvelope();
+        double eXMin = env->GetMinX();
+        double eYMin = env->GetMinY();
+        double eXMax = env->GetMaxX();
+        double eYMax = env->GetMaxY();
+
+        if ( mSDETests.fuzzyEqual(lXMin,eXMin) && mSDETests.fuzzyEqual(lYMin,eYMin) && mSDETests.fuzzyEqual(lXMax,eXMax) && mSDETests.fuzzyEqual(lYMax,eYMax) ) 
         {
+            scName = scReader->GetName();
             bExists = true;
             break;
         }
     }
 
-    if ( !bExists ) 
-    {
-        getSCs = (FdoIGetSpatialContexts*)conn->CreateCommand(FdoCommandType_GetSpatialContexts);
-        scReader = getSCs->Execute();
-        
-        while (scReader->ReadNext())
-        {
-            if (0==wcscmp(scReader->GetCoordinateSystem(), scCoordSys))
-            {
-                FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                FdoPtr<FdoByteArray> bytes = scReader->GetExtent();
-                FdoPtr<FdoIGeometry> geomObj = gf->CreateGeometryFromFgf(bytes);
-                FdoPtr<FdoIEnvelope> env = geomObj->GetEnvelope();
-                double eXMin = env->GetMinX();
-                double eYMin = env->GetMinY();
-                double eXMax = env->GetMaxX();
-                double eYMax = env->GetMaxY();
-
-                if ( mSDETests.fuzzyEqual(dXMin,eXMin) && mSDETests.fuzzyEqual(dYMin,eYMin) && mSDETests.fuzzyEqual(dXMax,eXMax) && mSDETests.fuzzyEqual(dYMax,eYMax) ) 
-                {
-                    scName = scReader->GetName();
-                    bExists = true;
-                    bIdentical = true;
-                    break;
-                }
-            }
-        }
-    }
     scReader = NULL;
 
-    if ( !bIdentical ) 
+    if ( !bExists ) 
     {
         // Create the spatial context (or update it if it already exists):
         FdoPtr<FdoICreateSpatialContext> createSC = (FdoICreateSpatialContext*)conn->CreateCommand(FdoCommandType_CreateSpatialContext);
         createSC->SetName(scName);
-        mSDETests.set_extent(createSC, dXMin, dYMin, dXMax, dYMax);
+        mSDETests.set_extent(createSC, cXMin, cYMin, cXMax, cYMax);
         createSC->SetCoordinateSystem(scCoordSys);
-        createSC->SetUpdateExisting(bExists);
+        createSC->SetUpdateExisting(true);
         try 
         {
             createSC->Execute();
@@ -454,7 +465,7 @@ void TestExpressionFunction::AddFeature (FdoIConnection * current_connection,
       insert_command = 
             (FdoIInsert *) current_connection->CreateCommand(
                                                         FdoCommandType_Insert);
-      insert_command->SetFeatureClassName(class_name);
+      insert_command->SetFeatureClassName(GetSchemaName() + L":" + class_name);
 
       // Get hold of the class property set.
 
