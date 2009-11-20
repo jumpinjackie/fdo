@@ -278,8 +278,8 @@ void TestExpressionFunction::CreateSC()
     {
         CreateOrUpdateSpatialContext(
             m_connection, mSC, 
-            0, 0, 9007199254740990L, 9007199254740990L, 
-            0, 0, 2147483648L, 2147483648L, 
+            0, 0, 9007199254740990LL, 9007199254740990LL, 
+            0, 0, 2147483648LL, 2147483648LL, 
             L"26943");
     }
     else
