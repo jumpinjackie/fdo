@@ -266,10 +266,7 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
                     {
                         rVal = CreateComplexFilterChunk(StlFilterType_Spatial);
                         rVal->m_bounds = new DBounds();
-                        // avoid doing intersect since we can have two disjoint bboxes and a feature intersecting both
-                        if (leftType == StlFilterType_Spatial && rightType == StlFilterType_Spatial)
-                            DBounds::Union(rVal->m_bounds, lefts->GetBounds(), rights->GetBounds());
-                        else if (leftType == StlFilterType_Spatial)
+                        if (lefts->m_canOmit && leftType == StlFilterType_Spatial)
                             *rVal->m_bounds = *lefts->GetBounds();
                         else
                             *rVal->m_bounds = *rights->GetBounds();
