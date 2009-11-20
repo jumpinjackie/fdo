@@ -1154,7 +1154,7 @@ FdoInt32 FdoSmPhOwner::GetCandFetchSize()
 void FdoSmPhOwner::LoadLtLck()
 {
     // Reading options for owners in other database instances is not yet supported.
-    if ( (!mLtLckLoaded) && (wcslen(GetParent()->GetName()) == 0) ) {
+    if ( (!mLtLckLoaded) && (wcslen(GetParent()->GetName()) == 0) && this->GetHasMetaSchema() ) {
         mLtLckLoaded = true;
         FdoSmPhOptionsReaderP optRdr = GetManager()->CreateOptionsReader( GetName() );
 
