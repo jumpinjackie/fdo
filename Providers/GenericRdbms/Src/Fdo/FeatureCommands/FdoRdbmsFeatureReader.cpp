@@ -670,6 +670,8 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndexForDataReader(FdoString* propert
     if( mColCount == -1 )
         (void)GetPropertyCount(); 
 
+    int  colIdx = 0;
+
     // try and see if it's a calculation
     const char *colName = FdoRdbmsFeatureReader::GetDbAliasName( propertyName, NULL );
     if (colName == NULL)
@@ -687,8 +689,15 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndexForDataReader(FdoString* propert
                 colName = &colName[i+1];
 
             for ( int k=0; k<mColCount; k++ )
+            {
+                if (SkipColumnForProperty(k))
+                    continue;
+
                 if( FdoCommonOSUtil::stricmp(colName, mColList[k].column) == 0 )
-                    return k;
+                    return colIdx;
+
+                colIdx++;
+            }
         }
     }
     else
@@ -696,8 +705,15 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyIndexForDataReader(FdoString* propert
         // It must be a computed identifier
         colName = GetDbAliasName(propertyName);
         for ( int k=0; k<mColCount; k++ )
+        {
+            if (SkipColumnForProperty(k))
+                continue;
+
             if( strcmp(colName, mColList[k].c_alias) == 0 )
-                return k;
+                return colIdx;
+
+            colIdx++;
+        }
     }
 
     throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
