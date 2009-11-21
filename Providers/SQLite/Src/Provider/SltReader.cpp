@@ -605,13 +605,36 @@ FdoString* SltReader::GetString(int index)
     {
 	    Mem* textmem = columnMem(m_pStmt, i);
 
-        if (!textmem->n) 
-            return L""; //empty string L"" better than NULL, since callers may not be used to NULL :)
+		if (textmem->type == SQLITE_INTEGER)
+		{
+			m_sprops[i].EnsureSize(32);
+#ifdef _WIN32
+			_i64tow_s(textmem->u.i, m_sprops[i].data, 32, 10);
+#else
+		    swprintf(m_sprops[i].data, 256, "%lld", (long long int)textmem->u.i);
+#endif
+			m_sprops[i].valid = 1;
+		}
+		else if(textmem->type == SQLITE_FLOAT)
+		{
+			m_sprops[i].EnsureSize(256);
+			swprintf(m_sprops[i].data, 256, L"%g", textmem->r);
+			m_sprops[i].valid = 1;
+		}
+		else if(textmem->type == SQLITE_NULL)
+		{
+			return L"";
+		}
+		else
+		{
+			if (!textmem->n) 
+				return L""; //empty string L"" better than NULL, since callers may not be used to NULL :)
 
-	    int len = (int)textmem->n;
-	    m_sprops[i].EnsureSize(len+1);
-	    A2W_FAST(m_sprops[i].data, len + 1, (const char*)textmem->z, len);
-	    m_sprops[i].valid = 1;
+			int len = (int)textmem->n;
+			m_sprops[i].EnsureSize(len+1);
+			A2W_FAST(m_sprops[i].data, len + 1, (const char*)textmem->z, len);
+			m_sprops[i].valid = 1;
+		}
     }
     else
     {
