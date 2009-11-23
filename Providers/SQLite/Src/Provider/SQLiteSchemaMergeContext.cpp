@@ -67,7 +67,7 @@ bool SQLiteSchemaMergeContext::CanDeleteProperty( FdoPropertyDefinition* prop )
 
 bool SQLiteSchemaMergeContext::CanModIdProps(FdoClassDefinition* classDef)
 {
-    return !TableHasObjects(classDef->GetName());
+    return false;
 }
 
 bool SQLiteSchemaMergeContext::CanModDataType( FdoDataPropertyDefinition* prop )

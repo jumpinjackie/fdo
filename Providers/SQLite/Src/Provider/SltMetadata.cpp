@@ -337,7 +337,8 @@ FdoClassDefinition* SltMetadata::ToClass()
                          
                         int detail = (int)sqlite3_column_int(pfdostmt, 2);
                         dpd->SetIsSystem((detail & 0x01) != 0);
-                        dpd->SetNullable((detail & 0x02) != 0);
+                        if ((detail & 0x02) != 0)
+                            dpd->SetReadOnly(true);
                         dpd->SetLength((int)sqlite3_column_int(pfdostmt, 3));
                         dpd->SetPrecision((int)sqlite3_column_int(pfdostmt, 4));
                         dpd->SetScale((int)sqlite3_column_int(pfdostmt, 5));
