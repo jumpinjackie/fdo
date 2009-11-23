@@ -611,7 +611,7 @@ FdoString* SltReader::GetString(int index)
 #ifdef _WIN32
 			_i64tow_s(textmem->u.i, m_sprops[i].data, 32, 10);
 #else
-		    swprintf(m_sprops[i].data, 256, "%lld", (long long int)textmem->u.i);
+		    swprintf(m_sprops[i].data, 256, L"%lld", (long long int)textmem->u.i);
 #endif
 			m_sprops[i].valid = 1;
 		}
