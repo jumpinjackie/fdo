@@ -52,10 +52,10 @@ void c_LogAPI::WriteLog0(const char* Text)
     if( GisDebugFile )
     {
       // add new line date and time
-      struct tm *newtime = NULL;
-      FdoCommonOSUtil::getsystime(newtime);
+      struct tm newtime;
+      FdoCommonOSUtil::getsystime(&newtime);
 
-      fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
+      fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime.tm_yday,newtime.tm_mon,newtime.tm_mday,newtime.tm_hour,newtime.tm_min,newtime.tm_sec);
 
       fprintf(GisDebugFile, Text);
       fclose(GisDebugFile);
@@ -100,9 +100,9 @@ void c_LogAPI::WriteLog(const char* text,...)
     if( GisDebugFile )
     {
       // add new line date and time
-      struct tm *newtime = NULL;
-      FdoCommonOSUtil::getsystime(newtime);
-      fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime->tm_yday,newtime->tm_mon,newtime->tm_mday,newtime->tm_hour,newtime->tm_min,newtime->tm_sec);
+      struct tm newtime;
+      FdoCommonOSUtil::getsystime(&newtime);
+      fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime.tm_yday,newtime.tm_mon,newtime.tm_mday,newtime.tm_hour,newtime.tm_min,newtime.tm_sec);
 
       char* cbuff = new char[2048];
       cbuff[2047]=0;
