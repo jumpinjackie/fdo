@@ -781,7 +781,7 @@ void WmsTestSelect::testCubeServer ()
 #endif//_DEBUG
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName(L"LANDICEA_1M Foundation");
+        cmdSelect->SetFeatureClassName(L"Foundation LANDICEA_1M");
 
         FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
         FdoPtr<FdoClassDefinition> classDef2 = featureReader->GetClassDefinition();
