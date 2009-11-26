@@ -1420,7 +1420,9 @@ void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool sca
         if( dynamic_cast<FdoComputedIdentifier *>( property ) != NULL )
         {
             // Add the pseudo column for the computed identifier expression.
+            PrependString(L"\"");
             PrependString( mDbiConnection->GetSchemaUtil()->MakeDBValidName(property->GetName()) );
+            PrependString(L"\"");
             PrependString( L" AS " );
         }
         PrependString( compIdentPseudoCol );
