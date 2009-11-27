@@ -43,6 +43,8 @@ class SQLCmdTest : public CppUnit::TestCase
 
     CPPUNIT_TEST( TestErrorMessageSimpleBind );
 
+    CPPUNIT_TEST( TestSelectWithTrans );
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -64,6 +66,8 @@ public:
     void TestComplexBind();
     
     void TestErrorMessageSimpleBind();
+
+    void TestSelectWithTrans();
 };
 
 #endif	//SQLCmdTest_H
