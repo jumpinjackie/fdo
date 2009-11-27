@@ -322,7 +322,7 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
                 {
                     FdoDoubleValue* v = (FdoDoubleValue*)dv;
                     double d = v->GetDouble();
-                    rc = sqlite3_bind_int(stmt, i, (int)d);
+                    rc = sqlite3_bind_double(stmt, i, d);
                 }
             case FdoDataType_Double:
                 {

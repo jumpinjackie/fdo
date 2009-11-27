@@ -813,32 +813,53 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
 void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 {
     ret.clear();
+	int defSc = -1;
+	if (!srid)
+	{
+		srid = m_connection->GetDefaultSpatialContext();
+		defSc = srid;
+	}
 
-    const char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
-
-    int rc;
-    sqlite3_stmt* stmt = NULL;
-    const char* tail = NULL;
-   
-    //NOTE: This should fail around here if the column sr_name
-    //does not exist -- we'll deal with that 
-    if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql, -1, &stmt, &tail)) == SQLITE_OK)
-    {
-        rc = sqlite3_bind_int(stmt, 1, srid);
-        if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
-        {
-            const char* txt = (const char*)sqlite3_column_text(stmt, 0);
-            ret = (txt == NULL || *txt == '\0') ? L"" : A2W_SLOW(txt);
-        }
-
-        sqlite3_finalize(stmt);
-    }
-
-    //No sr_name -- use the SRID as the name
-    if (ret.empty())
-    {
-        wchar_t tmp[64];
-        swprintf(tmp, 64, L"%d", srid);
-        ret = tmp;
-    }
+	// in case we still have a valid SRID search for it
+	if (srid)
+	{
+		const char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
+		int rc;
+		sqlite3_stmt* stmt = NULL;
+		const char* tail = NULL;
+		//NOTE: This should fail around here if the column sr_name
+		//does not exist -- we'll deal with that 
+		if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql, -1, &stmt, &tail)) == SQLITE_OK)
+		{
+			do
+			{
+				rc = sqlite3_bind_int(stmt, 1, srid);
+				if ((rc = sqlite3_step(stmt)) == SQLITE_ROW )
+				{
+					const char* txt = (const char*)sqlite3_column_text(stmt, 0);
+					ret = (txt == NULL || *txt == '\0') ? L"" : A2W_SLOW(txt);
+					defSc = 0; // enforce to leave the break
+				}
+				else if (defSc == -1) // No sr_name -- use the SRID as the name
+				{
+					// here can be two cases: one is the SRID is not valid for some reason
+					// and second when a geometry points to a SC which has been deleted (rare case)
+					// requery with the default SRID
+					sqlite3_reset(stmt);
+					defSc = m_connection->GetDefaultSpatialContext();
+					srid = defSc; // try to return the default one.
+				}
+				else
+					defSc = 0; // enforce to leave the break
+			}while(defSc == -1);
+			sqlite3_finalize(stmt);
+		}
+	}
+	// In case still did not find any CS use the SRID as the name
+	if (ret.empty())
+	{
+		wchar_t tmp[64];
+		swprintf(tmp, 64, L"%d", srid);
+		ret = tmp;
+	}
 }
