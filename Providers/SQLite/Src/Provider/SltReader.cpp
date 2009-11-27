@@ -1111,7 +1111,15 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                     const char* propDef = m_reissueProps.Get(unknownPropsIdx.at(idx));
                     std::wstring expUni = A2W_SLOW(propDef);
                     std::wstring expression = ExtractExpression(expUni.c_str(), m_propNames[unknownPropsIdx.at(idx)]);
-                    FdoPtr<FdoExpression> expr = FdoExpression::Parse(expression.c_str());
+
+                    // Replace the internal functions. Since they are not standard getting the definitions will fail below.
+                    FdoStringP  origExpr = FdoStringP(expression.c_str());
+                    origExpr = origExpr.Replace(L"booleantostring", L"");
+                    origExpr = origExpr.Replace(L"floattostring", L"");
+                    origExpr = origExpr.Replace(L"doubletostring", L"");
+                    origExpr = origExpr.Replace(L"datetostring", L"");
+
+                    FdoPtr<FdoExpression> expr = FdoExpression::Parse(origExpr);
                     FdoCommonMiscUtil::GetExpressionType(functionDefinitions, origClass, expr, retPropType, retDataType);
                     switch(retPropType)
                     {

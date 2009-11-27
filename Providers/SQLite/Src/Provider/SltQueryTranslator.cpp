@@ -1211,6 +1211,27 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
                     m_expr.Append(")", 1);
                     return;
                 }
+                else if (dpd->GetDataType() == FdoDataType_Single)
+                {
+                    m_expr.Append("floattostring(", 14);
+                    m_expr.AppendDQuoted(expr.GetName());
+                    m_expr.Append(")", 1);
+                    return;
+                }
+                else if (dpd->GetDataType() == FdoDataType_Double)
+                {
+                    m_expr.Append("doubletostring(", 15);
+                    m_expr.AppendDQuoted(expr.GetName());
+                    m_expr.Append(")", 1);
+                    return;
+                }
+                else if (dpd->GetDataType() == FdoDataType_DateTime)
+                {
+                    m_expr.Append("datetostring(", 13);
+                    m_expr.AppendDQuoted(expr.GetName());
+                    m_expr.Append(")", 1);
+                    return;
+                }
             }
         }
     }
