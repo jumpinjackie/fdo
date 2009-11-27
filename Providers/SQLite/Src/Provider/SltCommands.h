@@ -683,7 +683,6 @@ class SltSql : public SltCommand<FdoISQLCommand>
             : SltCommand<FdoISQLCommand>(connection) 
         {
             m_pCompiledSQL = NULL;
-            m_db = m_connection->GetDbWrite();
         }
 
     protected:
@@ -713,6 +712,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             int count = 0;
             int rc = SQLITE_OK;
 
+            sqlite3* db = m_connection->GetDbWrite();
             sqlite3_stmt* pStmt = m_pCompiledSQL;
             if (NULL != pStmt)
             {
@@ -727,9 +727,9 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     //parse the SQL statement
                     const char* tail = NULL;
                     int rc;
-                    if ((rc = sqlite3_prepare_v2(m_db, m_sb.Data(), -1, &m_pCompiledSQL, &tail)) != SQLITE_OK)
+                    if ((rc = sqlite3_prepare_v2(db, m_sb.Data(), -1, &m_pCompiledSQL, &tail)) != SQLITE_OK)
                     {
-                        const char* err = sqlite3_errmsg(m_db);
+                        const char* err = sqlite3_errmsg(db);
                         if (err != NULL)
                             throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);                        
                         else
@@ -740,13 +740,13 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     BindPropVals(m_pParmeterValues, m_pCompiledSQL, false);
                 }
                 else
-                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
+                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
             }
 
             m_connection->EnableHooks();
             while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
             if( rc == SQLITE_DONE )
-                count = sqlite3_changes(m_db);
+                count = sqlite3_changes(db);
 
             if (NULL == m_pCompiledSQL)
                 m_connection->ReleaseParsedStatement(m_sb.Data(), pStmt);
@@ -769,7 +769,8 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (m_sb.Length() == 0)
                 throw FdoCommandException::Create(L"Invalid empty SQL statement.");
             
-            sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), m_db);
+            sqlite3* db = m_connection->GetDbRead();
+            sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
                 BindPropVals(m_pParmeterValues, pStmt, false );
             return new SltReader(m_connection, pStmt, false, NULL, NULL);
@@ -788,7 +789,6 @@ class SltSql : public SltCommand<FdoISQLCommand>
         }
     private:
         sqlite3_stmt*                    m_pCompiledSQL;
-        sqlite3*                         m_db;
         // use this for speed performance
         StringBuffer                     m_sb;
         // this will be empty most of the time except when user calls getSQL

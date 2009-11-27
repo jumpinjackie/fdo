@@ -18,6 +18,7 @@
 #include "UnitTestUtil.h"
 #include <ctime>
 #include <cppunit/extensions/HelperMacros.h>
+#include "FdoCommonFile.h"
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -407,3 +408,50 @@ void SQLCmdTest::TestComplexBind ()
 	}
 }
 
+void SQLCmdTest::TestSelectWithTrans()
+{
+
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SOURCE_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        FdoPtr<FdoISQLCommand> selectCmd = (FdoISQLCommand*)conn->CreateCommand(FdoCommandType_SQLCommand); 
+        selectCmd->SetSQLStatement(L"select (max(FeatId)+1) from DaKlass");
+        
+        FdoPtr<FdoISQLDataReader> rdr = selectCmd->ExecuteReader();
+        FdoIDataReader* reader = dynamic_cast<FdoIDataReader*>(rdr.p);
+        
+        if ( reader->ReadNext() )
+        {
+            FdoString* prop = reader->GetPropertyName(0);
+            FdoPropertyType tp = rdr->GetPropertyType(prop);
+		}
+        // added just to force dispose transaction
+        if (reader)
+        {
+            FdoPtr<FdoITransaction> tr1 = conn->BeginTransaction();
+        }
+
+        // test if we can open a new transaction
+        FdoPtr<FdoITransaction> tr2 = conn->BeginTransaction();
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
