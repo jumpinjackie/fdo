@@ -193,7 +193,7 @@ FdoDateTime DateFromString(const char* val, bool excOnErr)
     return FdoDateTime((FdoInt16)year, (FdoInt8)month, (FdoInt8)day, (FdoInt8)hour, (FdoInt8)minute, seconds);
 }
 
-void DateToString(FdoDateTime* dt, char* s, int nBytes)
+void DateToString(FdoDateTime* dt, char* s, int nBytes, bool useFdoStyle)
 {
     if (dt->IsDate())
     {
@@ -201,12 +201,20 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes)
     }
     else if (dt->IsTime())
     {
-        _snprintf(s, nBytes, "%02d:%02d:%s%0.3f", dt->hour, dt->minute, (dt->seconds >=10.0)?"":"0",dt->seconds);
+        if (useFdoStyle)
+            _snprintf(s, nBytes, "%02d:%02d:%02g", dt->hour, dt->minute, dt->seconds);
+        else 
+            _snprintf(s, nBytes, "%02d:%02d:%s%0.3f", dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
+
         EnsureNoIsLocalIndep(s);
     }
     else
     {
-        _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%s%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, (dt->seconds >=10.0)?"":"0",dt->seconds);
+        if (useFdoStyle)
+            _snprintf(s, nBytes, "%04d-%02d-%02d %02d:%02d:%02g", dt->year, dt->month, dt->day, dt->hour, dt->minute, dt->seconds);
+        else
+            _snprintf(s, nBytes, "%04d-%02d-%02dT%02d:%02d:%s%0.3f", dt->year, dt->month, dt->day, dt->hour, dt->minute, (dt->seconds >10.0)?"":"0",dt->seconds);
+        
         EnsureNoIsLocalIndep(s);
     }
 }

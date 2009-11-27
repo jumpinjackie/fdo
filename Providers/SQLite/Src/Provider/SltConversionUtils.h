@@ -61,7 +61,7 @@ SLT_API int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen);
 
 SLT_API FdoDateTime DateFromString(const wchar_t* val, bool excOnErr = true);
 SLT_API FdoDateTime DateFromString(const char* val, bool excOnErr = true);
-SLT_API void DateToString(FdoDateTime* dt, char* str, int nBytes);
+SLT_API void DateToString(FdoDateTime* dt, char* str, int nBytes, bool useFdoStyle = false);
 
 SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt);
 SLT_API void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName);

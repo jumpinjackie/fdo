@@ -9,6 +9,8 @@
 #include <math.h>
 #include <algorithm>
 #include <limits>       // For quiet_NaN()
+#include <float.h>      // for FLT_DIG and DBL_DIG
+#include <locale.h>
 
 #define SQLITE_INFO_STRING(/*IN*/str, /*OUT*/len, /*OUT*/lenInChars, /*IN-OUT*/charsToStudy) {  \
   len = lenInChars = 0;                                                                         \
@@ -1335,8 +1337,10 @@ static void todateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         FdoDateTime dt = DateFromString(dateStr, false);
         if (dt.IsDate() || dt.IsTime() || dt.IsDateTime())
         {
-            const char* s = (const char*)sqlite3_value_text(argv[0]);
-            sqlite3_result_text(context, s, -1, SQLITE_TRANSIENT);
+            char dateBuff[31];
+            *dateBuff = '\0';
+            DateToString(&dt, dateBuff, 31, true);
+            sqlite3_result_text(context, dateBuff, -1, SQLITE_TRANSIENT);
         }
         else
         {
@@ -1351,13 +1355,18 @@ static void todateFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
             {
                 char dateBuff[31];
                 *dateBuff = '\0';
-                DateToString(&dt, dateBuff, 31);
+                DateToString(&dt, dateBuff, 31, true);
                 sqlite3_result_text(context, dateBuff, -1, SQLITE_TRANSIENT);
             }
             else
                 sqlite3_result_null(context);
         }
     }
+}
+
+static void dateToStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    todateFunc(context, argc, argv);
 }
 
 static void toStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
@@ -1405,6 +1414,104 @@ static void booleanToStringFunc(sqlite3_context *context, int argc, sqlite3_valu
     }
 }
 
+// Cloned from FDO FdoStringUtility::FormatNumber() for consistency with ToString() for floating numbers
+static void FormatNumber(double d, char *buff, int len, int precision)
+{
+    int             left;               // digits to left of decimal
+    int             right;              // digits to right of decimal
+    char*           end;                // end of formatted string
+    char            radix = '\0';       // radix character
+    struct lconv    *nls;               // NLS info
+
+    // Get NLS Info and extract the decimal separator character (if available)
+    nls = localeconv();
+    if (nls)
+        radix = nls->decimal_point[0];
+    if (radix == '\0')
+        radix = '.';    // if not there, default to '.'
+
+    // determine digits to left of decimal point.  note: add 1.0 before int cnv
+    // so that: 1.n=>1, 0.n=>0 not 0.n=>1
+    if (d > 0)
+        left = (int)(log10(d) + 1.0);
+    else if (d < 0)
+        left = (int)(log10(-d) + 1.0);
+    else
+        left = 0;
+    //  treat 0 like .nnnn ...
+    if (left < 0)
+        left = 0;
+
+    // determine digits allowed on right, within precision
+    right = precision - left;
+
+    //  format with appropriate decimals
+    if (right < 0)      // go to exponential format
+    {
+        right = 0;
+#ifdef _WIN32
+        _snprintf(buff, len, "%.*g", precision, d);
+#else
+        sprintf(buff, len, "%.*g", precision, d);
+#endif
+        return;
+    }
+    else
+#ifdef _WIN32
+        _snprintf(buff, len, "%.*f", right, d);
+#else
+        sprintf(buff, iLen, "%.*f", right, d);
+#endif
+    end = buff + strlen(buff) - 1;
+
+    //  note: sprintf rounds dec remove trailing '0's if there is a decimal
+    if (right > 0) {
+        while (*end == '0')
+            end--;
+    }
+
+    //  remove radix if no decimal
+    if (*end == radix)
+        *end = '\0';
+    else
+        *(end+1) = '\0';   //  keep last non-zero
+
+    // special case for "-0".  Change to "0"
+    if (strcmp(buff, "-0") == 0)
+        strcpy(buff, "0");
+}
+
+static void numberToStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv, int precision)
+{
+    assert(argc == 1);
+    int type = sqlite3_value_type(argv[0]);
+    assert(type == SQLITE_REAL);
+
+    if (type == SQLITE_NULL || sqlite3_value_bytes(argv[0]) == 0)
+    {
+        sqlite3_result_null(context);
+    }
+    else 
+    {    
+        const int  len = 256;
+        char buff[len];
+        *buff = '\0';
+
+        double val = sqlite3_value_double(argv[0]);
+        FormatNumber(val, buff, len, precision);
+        sqlite3_result_text(context, buff, -1, SQLITE_TRANSIENT);
+    }
+}
+
+static void floatToStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    numberToStringFunc(context, argc, argv, FLT_DIG);
+}
+
+static void doubleToStringFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    numberToStringFunc(context, argc, argv, DBL_DIG);
+}
 
 static void nullvalueFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
@@ -1933,8 +2040,10 @@ void RegisterExtensions (sqlite3* db)
         { "tostring",           1, 1,  SQLITE_UTF8,    0, toStringFunc },
         { "tostring",           2, 1,  SQLITE_UTF8,    0, toStringFunc },
         { "booleantostring",    1, 1,  SQLITE_UTF8,    0, booleanToStringFunc },
-        { "nullvalue",          2, 1,  SQLITE_UTF8,    0, nullvalueFunc }
-
+        { "nullvalue",          2, 1,  SQLITE_UTF8,    0, nullvalueFunc },
+        { "floattostring",      1, 1,  SQLITE_UTF8,    0, floatToStringFunc },
+        { "doubletostring",     1, 1,  SQLITE_UTF8,    0, doubleToStringFunc },
+        { "datetostring",       1, 1,  SQLITE_UTF8,    0, dateToStringFunc },
     };
    
     static const struct {
