@@ -117,7 +117,7 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
         }
 
 		// Get the OEM code page either from the header or CPG
-		FdoStringP	codepageESRI = (mCodePageESRI == L"") ? codepageCPG : (FdoString *)mCodePageESRI;
+		FdoStringP	codepageESRI = (((FdoStringP)codepageCPG) == L"") ? (FdoString *)mCodePageESRI : codepageCPG;
 
         ShapeCPG    *cpg = new ShapeCPG();
 
