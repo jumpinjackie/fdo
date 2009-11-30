@@ -1452,7 +1452,7 @@ static void FormatNumber(double d, char *buff, int len, int precision)
 #ifdef _WIN32
         _snprintf(buff, len, "%.*g", precision, d);
 #else
-        sprintf(buff, len, "%.*g", precision, d);
+        sprintf(buff, "%.*g", precision, d);
 #endif
         return;
     }
@@ -1460,7 +1460,7 @@ static void FormatNumber(double d, char *buff, int len, int precision)
 #ifdef _WIN32
         _snprintf(buff, len, "%.*f", right, d);
 #else
-        sprintf(buff, iLen, "%.*f", right, d);
+        sprintf(buff, "%.*f", right, d);
 #endif
     end = buff + strlen(buff) - 1;
 
