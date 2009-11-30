@@ -31,6 +31,8 @@ class TransactionTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestStartTransaction );
   CPPUNIT_TEST( TestCommit );
   CPPUNIT_TEST( TestRollback );
+  CPPUNIT_TEST( TestCommitOnApplySchemaNoUsrTr );
+  CPPUNIT_TEST( TestCommitOnApplySchemaUsrTr );
   CPPUNIT_TEST_SUITE_END();
 public:
     TransactionTest(void);
@@ -41,6 +43,8 @@ public:
     void TestStartTransaction();
     void TestCommit();
     void TestRollback();
+    void TestCommitOnApplySchemaNoUsrTr();
+    void TestCommitOnApplySchemaUsrTr();
 
 private:
     void InsertOneValue(FdoIConnection* conn, FdoString* nameProp, FdoValueExpression* value);
