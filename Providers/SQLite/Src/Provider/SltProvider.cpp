@@ -2114,7 +2114,29 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
     rc = sqlite3_exec(m_dbWrite, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
     m_resetJournalModeNeeded = true;
 
-    rc = StartTransaction();
+    bool needsCommit = false;
+    switch(m_transactionState)
+    {
+    case SQLiteActiveTransactionType_None:
+        rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+        if (rc == SQLITE_OK)
+        {
+            m_transactionState = SQLiteActiveTransactionType_User;
+            needsCommit = true;
+        }
+        break;
+    case SQLiteActiveTransactionType_Internal:
+        CommitTransaction();
+        rc = sqlite3_exec(m_dbWrite, "BEGIN;", NULL, NULL, NULL);
+        if (rc == SQLITE_OK)
+        {
+            m_transactionState = SQLiteActiveTransactionType_User;
+            needsCommit = true;
+        }
+        break;
+    case SQLiteActiveTransactionType_User:
+        break;
+    }
 
     try
     {
@@ -2184,7 +2206,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
     }
     catch(...)
     {
-        RollbackTransaction();
+        RollbackTransaction(needsCommit);
         // The cached FDO schema will need to be refreshed
         FDO_SAFE_RELEASE(m_pSchema);
         m_pSchema = NULL;
@@ -2193,11 +2215,11 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
         throw;
     }
 
-    rc = CommitTransaction();
+    rc = CommitTransaction(needsCommit);
     if (rc == SQLITE_OK)
         schema->AcceptChanges();
     else // not sure we need to do that yet
-        RollbackTransaction();
+        RollbackTransaction(needsCommit);
     
     if (m_transactionState != SQLiteActiveTransactionType_User)
         ResetJournalMode();
