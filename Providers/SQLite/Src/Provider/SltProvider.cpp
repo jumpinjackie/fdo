@@ -1778,10 +1778,18 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
     {
         FdoException* baseExc = NULL;
         const char* err = sqlite3_errmsg(m_dbWrite);
-        if (err != NULL)
-            baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
-        std::wstring errorMsg = std::wstring(L"Failed to delete class \'") + fcName + L"\'"; 
-        throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
+        if (rc == SQLITE_LOCKED)
+        {
+            std::wstring errorMsg = std::wstring(L"Class \'") + fcName + L"\' is locked (used) by other request(s): " + 
+                ((err != NULL) ? A2W_SLOW(err) : std::wstring(L""));
+            throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
+        }
+        else
+        {
+            std::wstring errorMsg = std::wstring(L"Failed to delete class \'") + fcName + L"\': " + 
+                ((err != NULL) ? A2W_SLOW(err) : std::wstring(L""));
+            throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
+        }
     }
     sb.Reset();
     sb.Append("DELETE FROM geometry_columns WHERE f_table_name=", 48);
