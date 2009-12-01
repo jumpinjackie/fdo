@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "ColTypeMapper.h"
+#include <FdoCommonGeometryUtil.h>
 
 // This Map currently has a few duplicates. This is ok since the column type
 // mapper simply uses the first matched entry.
@@ -33,14 +34,14 @@ static FdoSmPhMySqlColTypeMapEntry timeEntry( FdoSmPhColType_Date, L"time" );
 static FdoSmPhMySqlColTypeMapEntry decimalEntry( FdoSmPhColType_Decimal, L"decimal" );
 static FdoSmPhMySqlColTypeMapEntry singleEntry( FdoSmPhColType_Single, L"float" );
 static FdoSmPhMySqlColTypeMapEntry doubleEntry( FdoSmPhColType_Double, L"double" );
-static FdoSmPhMySqlColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry", FdoGeometryType_MultiGeometry, FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
-static FdoSmPhMySqlColTypeMapEntry pointEntry( FdoSmPhColType_Geom, L"point", FdoGeometryType_Point, FdoGeometricType_Point);
-static FdoSmPhMySqlColTypeMapEntry lineStringEntry( FdoSmPhColType_Geom, L"linestring", FdoGeometryType_LineString, FdoGeometricType_Curve);
-static FdoSmPhMySqlColTypeMapEntry polygonEntry( FdoSmPhColType_Geom, L"polygon", FdoGeometryType_Polygon, FdoGeometricType_Surface);
-static FdoSmPhMySqlColTypeMapEntry geomCollectionEntry( FdoSmPhColType_Geom, L"geometrycollection", FdoGeometryType_MultiGeometry, FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
-static FdoSmPhMySqlColTypeMapEntry multiPointEntry( FdoSmPhColType_Geom, L"multipoint", FdoGeometryType_MultiPoint, FdoGeometricType_Point);
-static FdoSmPhMySqlColTypeMapEntry multiLineStringEntry( FdoSmPhColType_Geom, L"multilinestring", FdoGeometryType_MultiLineString, FdoGeometricType_Curve);
-static FdoSmPhMySqlColTypeMapEntry multiPolygonEntry( FdoSmPhColType_Geom, L"multipolygon", FdoGeometryType_MultiPolygon, FdoGeometricType_Surface);
+static FdoSmPhMySqlColTypeMapEntry geomEntry( FdoSmPhColType_Geom, L"geometry", FdoSmPhMySqlColTypeMapper::GetDefaultFdoGeometryType(), FdoSmPhMySqlColTypeMapper::GetDefaultFdoGeometricType());
+static FdoSmPhMySqlColTypeMapEntry pointEntry( FdoSmPhColType_Geom, L"point", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Point), FdoGeometricType_Point);
+static FdoSmPhMySqlColTypeMapEntry lineStringEntry( FdoSmPhColType_Geom, L"linestring", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_LineString), FdoGeometricType_Curve);
+static FdoSmPhMySqlColTypeMapEntry polygonEntry( FdoSmPhColType_Geom, L"polygon", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Polygon), FdoGeometricType_Surface);
+static FdoSmPhMySqlColTypeMapEntry geomCollectionEntry( FdoSmPhColType_Geom, L"geometrycollection", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiGeometry), FdoSmPhMySqlColTypeMapper::GetDefaultFdoGeometricType());
+static FdoSmPhMySqlColTypeMapEntry multiPointEntry( FdoSmPhColType_Geom, L"multipoint", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPoint), FdoGeometricType_Point);
+static FdoSmPhMySqlColTypeMapEntry multiLineStringEntry( FdoSmPhColType_Geom, L"multilinestring", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiLineString), FdoGeometricType_Curve);
+static FdoSmPhMySqlColTypeMapEntry multiPolygonEntry( FdoSmPhColType_Geom, L"multipolygon", FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPolygon), FdoGeometricType_Surface);
 static FdoSmPhMySqlColTypeMapEntry stringEntry( FdoSmPhColType_String, L"varchar" );
 static FdoSmPhMySqlColTypeMapEntry longIntEntry( FdoSmPhColType_Int32, L"int" );
 static FdoSmPhMySqlColTypeMapEntry bigIntEntry( FdoSmPhColType_Int64, L"bigint" );
@@ -207,7 +208,7 @@ FdoInt32 FdoSmPhMySqlColTypeMapper::GetColFdoGeometryType(FdoString* colTypeStri
         if ( mapEntry->mColTypeString == colTypeString )
             return mapEntry->mColFdoGeometryType;
     }
-    return FdoGeometryType_MultiGeometry;
+    return GetDefaultFdoGeometryType();
 }
 
 FdoInt32 FdoSmPhMySqlColTypeMapper::GetColFdoGeometricType(FdoString* colTypeString)
@@ -218,5 +219,20 @@ FdoInt32 FdoSmPhMySqlColTypeMapper::GetColFdoGeometricType(FdoString* colTypeStr
         if ( mapEntry->mColTypeString == colTypeString )
             return mapEntry->mColFdoGeometricType;
     }
+    return GetDefaultFdoGeometricType();
+}
+
+FdoInt32 FdoSmPhMySqlColTypeMapper::GetDefaultFdoGeometryType()
+{
+    return FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Point) | 
+           FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPoint) | 
+           FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_LineString) | 
+           FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiLineString) | 
+           FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_Polygon) | 
+           FdoCommonGeometryUtil::MapGeometryTypeToHexCode(FdoGeometryType_MultiPolygon);
+}
+
+FdoInt32 FdoSmPhMySqlColTypeMapper::GetDefaultFdoGeometricType()
+{
     return (FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface);
 }

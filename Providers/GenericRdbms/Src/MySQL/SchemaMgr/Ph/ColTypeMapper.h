@@ -77,6 +77,9 @@ public:
     static FdoInt32 GetColFdoGeometryType(FdoString* colTypeString);
     static FdoInt32 GetColFdoGeometricType(FdoString* colTypeString);
 
+    static FdoInt32 GetDefaultFdoGeometryType();
+    static FdoInt32 GetDefaultFdoGeometricType();
+
 private:
     // Enum-String mappings for each property type.
     static FdoSmPhMySqlColTypeMapEntry* mMap[];
