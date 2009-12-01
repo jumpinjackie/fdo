@@ -28,8 +28,6 @@
 #include <ShpSpatialContext.h>
 #include <ShpLpFeatureSchema.h>
 
-#include <FdoCommonThreadMutex.h>
-
 class ShpConnection : public FdoIConnection
 {
     friend class ShpDescribeSchemaCommand;
@@ -99,14 +97,6 @@ protected:
      * Flag true when configuration file is specified.
      */
     bool mConfigured;
-
-	/**
-	 * Globals to keep track of opened connections and the files to compress after
-	 * delete command. The compression is triggered on the last connection close().
-	 */
-	static	FdoCommonThreadMutex mMutex;
-	static	int mGlobalRefCount;
-
 
 private:
 
