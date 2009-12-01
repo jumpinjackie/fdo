@@ -184,7 +184,7 @@ public:
 					mData->GetData (data, i, type, (WCHAR*)(FdoString *)codePage);
 				}
                 else
-                    throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type (%1$ls) to insert, update or retrieve doesn't match the type (%2$ls) of property '%3$ls'.", type_name, ColumnTypeToString (type), propertyName));
+                    throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.", ColumnTypeToString (type), propertyName));
                 break;
             }
         }
