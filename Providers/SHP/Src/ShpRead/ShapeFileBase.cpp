@@ -84,8 +84,23 @@ void ShapeFileBase::OpenWrite (const wchar_t* name, eShapeTypes shape_type, bool
     m_dYMax = fNO_DATA;
     m_dZMin = fNO_DATA;
     m_dZMax = fNO_DATA;
-    m_dMMin = fNO_DATA;
-    m_dMMax = fNO_DATA;
+
+    // http://www.esri.com/library/whitepapers/pdfs/shapefile.pdf
+    // According to SHP specification, Mmin and Mmax is equal to 0.0, if not Measured type
+    // If the shapefile is empty (that is, has no records), the values
+    // for Xmin, Ymin, Xmax, and Ymax are unspecified. Mmin and Mmax can contain "no
+    // data" values for shapefiles of measured shape types that contain no measures.
+    if (has_m)
+    {
+        m_dMMin = fNO_DATA;
+        m_dMMax = fNO_DATA;
+    }
+    else
+    {
+        m_dMMin = 0.0;
+        m_dMMax = 0.0;
+    }
+
 	OpenFlags flags = IDF_OPEN_UPDATE;
 
 	if ( !FileExists (name) )
@@ -185,11 +200,14 @@ void ShapeFileBase::GetFileHeaderDetails ()
 #endif
             // In the SHP specification there is a note about the M bounding box: if M values are not used
             // then Mmin and Mmax are 0.0. In such situation, m_bMdataPresent should not be set to true. 
-            if ((m_dMMin > fNO_DATA) && (m_dMMax > fNO_DATA) && (m_dMMin != 0.0) && (m_dMMax != 0.0))
+            if ((m_dMMin != 0.0) && (m_dMMax != 0.0))
             {
                 m_bMDataPresent = true;
+#if 0
+                // Same issue as with Z values validation. See comment above.
                 if (m_nFileLength * WORD_SIZE_IN_BYTES > SHPHeaderSize) // only check if there are shapes
                     CheckBoundingBox(m_dMMin, m_dMMax, eMinMMaxM);
+#endif
             }
             else
                 m_bMDataPresent = false;
