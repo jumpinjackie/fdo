@@ -1,0 +1,195 @@
+##
+## Copyright (C) 2004-2006  Autodesk, Inc.
+## 
+## This library is free software; you can redistribute it and/or
+## modify it under the terms of version 2.1 of the GNU Lesser
+## General Public License as published by the Free Software Foundation.
+## 
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## Lesser General Public License for more details.
+## 
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+##
+
+AUTOMAKE_OPTIONS = foreign
+
+EXTRA_DIST = \
+Sm/Base.h \
+Sm/Disposable.h \
+Sm/ObjectState.h \
+Sm/SchemaElement.h \
+Sm/SmMessage.h \
+Sm/Collection.h \
+Sm/Error.h \
+Sm/NamedCollection.h \
+Sm/SchemaManager.h \
+Sm/Lp/AssociationPropertyDefinition.h \
+Sm/Lp/IndexCollection.h \
+Sm/Lp/PropertyTypeMapper.h \
+Sm/Lp/CheckConstraintCollection.h \
+Sm/Lp/Index.h \
+Sm/Lp/QClassCollection.h \
+Sm/Lp/CheckConstraint.h \
+Sm/Lp/JoinTreeNodeCollection.h \
+Sm/Lp/SAD.h \
+Sm/Lp/ClassCollection.h \
+Sm/Lp/JoinTreeNode.h \
+Sm/Lp/SchemaCollection.h \
+Sm/Lp/ClassDefinition.h \
+Sm/Lp/ObjectPropertyClass.h \
+Sm/Lp/SchemaElement.h \
+Sm/Lp/Class.h \
+Sm/Lp/ObjectPropertyDefinition.h \
+Sm/Lp/Schema.h \
+Sm/Lp/ClassTypeMapper.h \
+Sm/Lp/PropertyDefinitionCollection.h \
+Sm/Lp/SimplePropertyDefinition.h \
+Sm/Lp/DataPropertyDefinitionCollection.h \
+Sm/Lp/PropertyDefinition.h \
+Sm/Lp/SpatialContextCollection.h \
+Sm/Lp/DataPropertyDefinition.h \
+Sm/Lp/PropertyMappingClass.h \
+Sm/Lp/SpatialContextGeom.h \
+Sm/Lp/DataTypeMapper.h \
+Sm/Lp/PropertyMappingConcrete.h \
+Sm/Lp/SpatialContext.h \
+Sm/Lp/DbObjectCollection.h \
+Sm/Lp/PropertyMappingDefinition.h \
+Sm/Lp/UniqueConstraintCollection.h \
+Sm/Lp/DbObject.h \
+Sm/Lp/PropertyMappingRelation.h \
+Sm/Lp/UniqueConstraint.h \
+Sm/Lp/FeatureClass.h \
+Sm/Lp/PropertyMappingSingle.h \
+Sm/Lp/GeometricPropertyDefinition.h \
+Sm/Lp/PropertyMappingType.h \
+Sm/Ph/AssociationReader.h \
+Sm/Ph/ColumnVarlen.h \
+Sm/Ph/OwnerCollection.h \
+Sm/Ph/AssociationWriter.h \
+Sm/Ph/CommandWriter.h \
+Sm/Ph/Owner.h \
+Sm/Ph/DatabaseCollection.h \
+Sm/Ph/PropertyReader.h \
+Sm/Ph/CheckConstraintCollection.h \
+Sm/Ph/Database.h \
+Sm/Ph/PropertyWriter.h \
+Sm/Ph/CheckConstraint.h \
+Sm/Ph/DbElement.h \
+Sm/Ph/ClassIndexReader.h \
+Sm/Ph/DbObjectCollection.h \
+Sm/Ph/ClassPropertyReader.h \
+Sm/Ph/DbObject.h \
+Sm/Ph/Reader.h \
+Sm/Ph/ClassPropertySADReader.h \
+Sm/Ph/DbObjType.h \
+Sm/Ph/ReadWrite.h \
+Sm/Ph/ClassReader.h \
+Sm/Ph/DependencyCollection.h \
+Sm/Ph/RowCollection.h \
+Sm/Ph/ClassSADReader.h \
+Sm/Ph/Dependency.h \
+Sm/Ph/Row.h \
+Sm/Ph/ClassSOReader.h \
+Sm/Ph/DependencyReader.h \
+Sm/Ph/SADReader.h \
+Sm/Ph/ClassSOWriter.h \
+Sm/Ph/DependencyWriter.h \
+Sm/Ph/SADWriter.h \
+Sm/Ph/ClassWriter.h \
+Sm/Ph/FieldCollection.h \
+Sm/Ph/SchemaElement.h \
+Sm/Ph/Coltype.h \
+Sm/Ph/Field.h \
+Sm/Ph/SchemaReader.h \
+Sm/Ph/ColumnBatchCollection.h \
+Sm/Ph/FkeyCollection.h \
+Sm/Ph/SchemaSOReader.h \
+Sm/Ph/ColumnBLOB.h \
+Sm/Ph/Fkey.h \
+Sm/Ph/SchemaSOWriter.h \
+Sm/Ph/ColumnBool.h \
+Sm/Ph/GroupReader.h \
+Sm/Ph/SchemaWriter.h \
+Sm/Ph/ColumnByte.h \
+Sm/Ph/IndexCollection.h \
+Sm/Ph/SOReader.h \
+Sm/Ph/ColumnChar.h \
+Sm/Ph/Index.h \
+Sm/Ph/SOWriter.h \
+Sm/Ph/ColumnCollection.h \
+Sm/Ph/IndexPropertyReader.h \
+Sm/Ph/SpatialContextGeomReader.h \
+Sm/Ph/ColumnDate.h \
+Sm/Ph/IndexPropertyWriter.h \
+Sm/Ph/SpatialContextGeomWriter.h \
+Sm/Ph/ColumnDecimal.h \
+Sm/Ph/IndexReader.h \
+Sm/Ph/SpatialContextGroupReader.h \
+Sm/Ph/ColumnDouble.h \
+Sm/Ph/IndexType.h \
+Sm/Ph/SpatialContextGroupWriter.h \
+Sm/Ph/ColumnGeom.h \
+Sm/Ph/IndexWriter.h \
+Sm/Ph/SpatialContextReader.h \
+Sm/Ph/Column.h \
+Sm/Ph/ISADReader.h \
+Sm/Ph/SpatialContextWriter.h \
+Sm/Ph/ColumnInt16.h \
+Sm/Ph/LockTypesCollection.h \
+Sm/Ph/SpatialIndex.h \
+Sm/Ph/ColumnInt32.h \
+Sm/Ph/LockTypes.h \
+Sm/Ph/TableComponentReader.h \
+Sm/Ph/ColumnInt64.h \
+Sm/Ph/Mgr.h \
+Sm/Ph/Table.h \
+Sm/Ph/ColumnList.h \
+Sm/Ph/TempObject.h \
+Sm/Ph/ColumnSingle.h \
+Sm/Ph/OptionsReader.h \
+Sm/Ph/View.h \
+Sm/Ph/ColumnUnknown.h \
+Sm/Ph/OptionsWriter.h \
+Sm/Ph/Writer.h \
+Sm/Ph/Cfg/ClassReader.h \
+Sm/Ph/Cfg/PropertyReader.h \
+Sm/Ph/Cfg/SchemaReader.h \
+Sm/Ph/Mt/AssociationReader.h \
+Sm/Ph/Mt/PropertyReader.h \
+Sm/Ph/Mt/SpatialContextGeomReader.h \
+Sm/Ph/Mt/SpatialContextReader.h \
+Sm/Ph/Mt/ClassReader.h \
+Sm/Ph/Mt/SchemaReader.h \
+Sm/Ph/Mt/SpatialContextGroupReader.h \
+Sm/Ph/Rb/Cache.h \
+Sm/Ph/Rb/ColumnCollection.h \
+Sm/Ph/Rb/Column.h \
+Sm/Ph/Rb/TableCollection.h \
+Sm/Ph/Rb/Table.h \
+Sm/Ph/Rd/AssociationReader.h \
+Sm/Ph/Rd/CoordSysReader.h \
+Sm/Ph/Rd/OwnerReader.h \
+Sm/Ph/Rd/SchemaReader.h \
+Sm/Ph/Rd/ClassReader.h \
+Sm/Ph/Rd/DbObjectReader.h \
+Sm/Ph/Rd/PkeyReader.h \
+Sm/Ph/Rd/SpatialContextGeomReader.h \
+Sm/Ph/Rd/ColumnReader.h \
+Sm/Ph/Rd/FkeyReader.h \
+Sm/Ph/Rd/PropertyReader.h \
+Sm/Ph/Rd/SpatialContextGroupReader.h \
+Sm/Ph/Rd/ConstraintReader.h \
+Sm/Ph/Rd/IndexReader.h \
+Sm/Ph/Rd/QueryReader.h \
+Sm/Ph/Rd/SpatialContextReader.h \
+Utilities/SchemaMgr/Overrides/GeometricColumnType.h \
+Utilities/SchemaMgr/Overrides/GeometricContentType.h \
+Utilities/SchemaMgr/Overrides/TableMappingType.h \
+Utilities/SchemaMgr/Overrides/GeometricColumnTypeMapper.h \
+Utilities/SchemaMgr/Overrides/GeometricContentTypeMapper.h \
+Utilities/SchemaMgr/Overrides/TableMappingTypeMapper.h

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS gml:id="Bermuda">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Bermuda</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Bermuda-x20-Duplicate">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Bermuda Duplicate</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Bermuda-x20-Mentor">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Bermuda Mentor</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Bermuda.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="California">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+California</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="CA-I">
+<gml:srsName>
+CA-I</gml:srsName>
+<fdo:WKT>
+PROJCS["California test",GEOGCS["For testing only",DATUM["Test",SPHEROID["NAD 27",6300000,123.465,]]]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Liberia-x20-by-x20-WKT">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Liberia by WKT</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Liberia.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Mentor-x20-by-x20-WKT">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Mentor by WKT</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="CANQ-M5">
+<gml:srsName>
+CANQ-M5</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec test",GEOGCS["For testing only",DATUM["Test",SPHEROID["NAD 27",6300000,123.465,]]]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Qatar-x20-wrong-x20-name">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Qatar wrong name</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Qatar74.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Rectangular">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Rectangular</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1000.000000 1000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Rectangular-x20--x28-Feet-x29-">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Rectangular (Feet)</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#XY-FT"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Rectangular-x20--x28-Metre-x29-">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+Rectangular (Metre)</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="XY-M">
+<gml:srsName>
+XY-M</gml:srsName>
+<fdo:WKT>
+LOCAL_CS["Non-Earth Metre",UNIT["Metre",1]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+South</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South-x20-Duplicate">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+South Duplicate</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="sc_1">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+sc_1</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#LL27"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="sc_2">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+sc_2</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#PRVI.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="ClassB1" type="dbo:ClassB1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="ClassB1Key">
+<xs:selector xpath=".//ClassB1"/>
+<xs:field xpath="Prop1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="ClassB1Type" abstract="false" fdo:geometryName="Geometry1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="Geometry1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Bermuda" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Geometry2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Rectangular" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Geometry3" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="South" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Geometry4" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Bermuda" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Geometry5" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Prop1" fdo:readOnly="true" fdo:autogenerated="true">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:schema>
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.4" name="dbo">
+<complexType name="ClassB1Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="Prop1">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_classb1" name="dbo.ClassB1"/>
+<element name="Prop1">
+<Column name="Prop1"/>
+</element>
+<element name="Geometry1">
+<GeometricColumn name="Geometry1"/>
+</element>
+<element name="Geometry2">
+<GeometricColumn name="Geometry2"/>
+</element>
+<element name="Geometry3">
+<GeometricColumn name="Geometry3"/>
+</element>
+<element name="Geometry4">
+<GeometricColumn name="Geometry4"/>
+</element>
+<element name="Geometry5">
+<GeometricColumn name="Geometry5"/>
+</element>
+</complexType>
+</SchemaMapping>
+</fdo:DataStore>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sample configuration file for SDP DataStore that contains Hydrographic soundings -->
+<fdo:DataStore 
+ xmlns:fds="http://fdo.osgeo.org/schemas/fds"
+ xmlns:fdo="http://fdo.osgeo.org/schemas"
+ xmlns:gml="http://www.opengis.net/gml"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://fdo.osgeo.org/schemas/fds
+ FdoDocumentSample.xsd"
+>
+	<!-- spatial context for the Hydrographic Soundings -->
+	<gml:DerivedCRS gml:id="survey1">
+		<!-- remarks contain spatial context description -->
+		<gml:remarks>Spatial context for Survey Area 1</gml:remarks>
+		<!-- srsName contains spatial context name -->
+		<gml:srsName>survey1</gml:srsName>
+		<!-- ValidArea defines the spatial context extents. -->
+		<gml:validArea>
+			<!-- GML allows polygon areas but only rectangular areas valid for FDO 
+			     Spatial Context extents -->
+			<gml:boundingBox>
+				<gml:pos>200000 1000000</gml:pos>
+				<gml:pos>300000 1100000</gml:pos>
+			</gml:boundingBox>
+		</gml:validArea>
+		<!-- BaseCRS defines the coordinate system name, which is "utm_zone1" in this case. 
+		     The CRS is assumed to be a well-known CRS and this file does not define it -->
+		<gml:baseCRS xlink:href="http://www.mysurvey.com/coord_ref_systems#utm_zone1"/>
+		<!-- DefinedByConversion defines the coordinate conversion from the base CRS to this CRS.
+		     This would always be an identity transformation since Spatial Contexts don't define any
+		-->
+		<gml:definedByConversion xlink:href="http://www.mysurvey.com/coord_conversions#identity"/>
+		<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+		<!-- UsesCS defines the Coordinate System for this Coordinate Reference system. For FDO, this 
+		  would be the same as the Coordinate System for the BaseCRS. 
+		-->
+		<gml:usesCS xlink:href="http://www.mysurvey.com/coord_systems#default"/>
+	</gml:DerivedCRS>
+
+	<!-- Hydrographic Feature Schema -->
+	<!-- was: http://www.oceanographic.org -->
+	<xs:schema 
+	 xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	 targetNamespace="http://fdo.osgeo.org/schemas/feature/hydro" 
+	 xmlns:fdo="http://fdo.osgeo.org/schemas" 
+	 xmlns:hydro="http://fdo.osgeo.org/schemas/feature/hydro" 
+	 elementFormDefault="qualified" 
+	 attributeFormDefault="qualified"
+	>
+		<!-- Only one class (Sounding). The following element specifies the identityProperties -->
+		<xs:element name="Sounding" type="hydro:SoundingType" abstract="false"
+		 substitutionGroup="gml:_Feature"
+		>
+			<xs:key name="SoundingKey"> 
+  				<xs:selector xpath=".//Sounding"/>
+				<xs:field xpath="Id"/>
+			</xs:key>
+ 		</xs:element>
+		<!-- Sounding class definition -->
+		<xs:complexType name="SoundingType" abstract="false" >
+			<xs:complexContent>
+				<!-- following extension defines Sounding as a Feature Class -->
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="Id" type="fdo:int64" />
+						<xs:element name="SoundingDate" type="xs:dateTime" />
+						<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasElevation="true" fdo:geometricTypes="Point" fdo:srsName="survey1" />
+		        	</xs:sequence>
+      			</xs:extension>
+   			</xs:complexContent>
+		</xs:complexType>
+	</xs:schema>
+
+	<!-- Schema Overrides for Hydrographic Feature Schema -->
+	<SchemaMapping name="hydro" provider="OSGeo.ODBC.3.4" physicalSchemaName="" 
+	 xmlns="http://fdoodbc.osgeo.org/schemas"
+	>
+		<!-- Schema Overrides for Sounding Feature Class -->
+		<complexType name="SoundingType">
+			<!-- Soundings kept in SNDG table and geometry columns are overridden -->
+			<Table name="SNDG"/>
+			<element name="Id">
+				<!-- Identifier kept in Id column -->
+				<Column name="FEATID1"/>
+			</element>
+			<element name="SoundingDate">
+				<!-- Date kept in SNDG_DATE column -->
+				<Column name="SNDG_DATE"/>
+			</element>
+                  <!-- Geometry ordinate columns are overridden -->
+			<element name="Geometry" xColumnName="POINT_X" yColumnName="POINT_Y" zColumnName="POINT_Z" />
+		</complexType>
+	</SchemaMapping>
+</fdo:DataStore>

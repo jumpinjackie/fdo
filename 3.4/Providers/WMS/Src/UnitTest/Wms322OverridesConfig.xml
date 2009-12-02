@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SchemaMapping provider="OSGeo.WMS.3.4" name="JPL_World_Map" xmlns="http://fdowms.osgeo.org/schemas">
+  <complexType name="worldwindType">
+    <RasterDefinition name="Raster">
+      <Format>TIF</Format>
+      <Transparent>true</Transparent>
+      <BackgroundColor>0xFFFFFF</BackgroundColor>
+      <Time>TIME=current</Time>
+      <Elevation>ELEVATION=100</Elevation>
+      <SpatialContext>EPSG:4326</SpatialContext>
+      <Layer name="worldwind_dem">
+        <Style name="short_int"/>
+      </Layer>
+      <Layer name="us_ned">
+        <Style name="short_int"/>
+      </Layer>
+    </RasterDefinition>
+  </complexType>
+</SchemaMapping>

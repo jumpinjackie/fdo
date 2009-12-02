@@ -1,0 +1,1 @@
+provider=MySql;service=mysqlserver;username=root;password=xxxx;clean=true;
