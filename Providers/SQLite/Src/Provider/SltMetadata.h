@@ -16,6 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
+#ifndef SLT_METADATA_H
+#define SLT_METADATA_H
+
 enum GeomFormat
 {
     eFGF = 0,
@@ -76,3 +79,4 @@ private:
     int                 m_geomIndex;
 };
 
+#endif

@@ -20,6 +20,7 @@
 #include "SltReader.h"
 #include "SltConversionUtils.h"
 #include "StringUtil.h"
+#include "SltMetadata.h"
 #include "RowidIterator.h"
 
 //When performing bulk inserts or updates, we commit the transaction 
@@ -398,6 +399,8 @@ class SltInsert : public SltCommand<FdoIInsert>
             m_pCompiledSQL = NULL;
 			m_idProp = NULL;
             m_db = m_connection->GetDbWrite();
+            m_geomFormat = eFGF; //eFGF by default, we will get the correct 
+                              //format later when we know the feature class
         }
 
     protected:
@@ -492,7 +495,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             sqlite3_reset(m_pCompiledSQL);
 
-            BindPropVals(m_properties, m_pCompiledSQL);
+            BindPropVals(m_properties, m_pCompiledSQL, m_geomFormat);
 
             int rc = sqlite3_step(m_pCompiledSQL);
 
@@ -599,6 +602,11 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             sb.Append(");");
 
+            SltMetadata* md = m_connection->GetMetadata(m_fcname.c_str());
+
+            if (md)
+                m_geomFormat = md->GetGeomFormat();
+
             //begin the insert transaction
             m_connection->StartTransaction();
 
@@ -625,6 +633,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         sqlite3_stmt*               m_pCompiledSQL;
         int                         m_execCount;
         std::vector<std::wstring>   m_propNames;
+        int                         m_geomFormat;
 };
 
 
@@ -718,7 +727,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             {
                 sqlite3_reset(pStmt);
                 if( m_pParmeterValues != NULL )
-                    BindPropVals(m_pParmeterValues, pStmt, false);
+                    BindPropVals(m_pParmeterValues, pStmt, false, eFGF /* with raw SQL we don't know what it really is, so assume FGF */);
             }
             else
             {
@@ -737,7 +746,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     }
 
                     pStmt = m_pCompiledSQL;
-                    BindPropVals(m_pParmeterValues, m_pCompiledSQL, false);
+                    BindPropVals(m_pParmeterValues, m_pCompiledSQL, false, eFGF /* with raw SQL we don't know what it really is, so assume FGF */);
                 }
                 else
                     pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
@@ -772,7 +781,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             sqlite3* db = m_connection->GetDbRead();
             sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
-                BindPropVals(m_pParmeterValues, pStmt, false );
+                BindPropVals(m_pParmeterValues, pStmt, false, eFGF /* with SQL command we don't know the precise geom type, so assume FGF */ );
             return new SltReader(m_connection, pStmt, false, NULL, NULL);
         }
 

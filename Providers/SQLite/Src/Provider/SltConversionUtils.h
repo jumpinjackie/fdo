@@ -63,9 +63,9 @@ SLT_API FdoDateTime DateFromString(const wchar_t* val, bool excOnErr = true);
 SLT_API FdoDateTime DateFromString(const char* val, bool excOnErr = true);
 SLT_API void DateToString(FdoDateTime* dt, char* str, int nBytes, bool useFdoStyle = false);
 
-SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt);
-SLT_API void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName);
-SLT_API void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv);
+SLT_API void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt, int geomFormat);
+SLT_API void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName, int geomFormat);
+SLT_API void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv, int geomFormat);
 SLT_API int StringContains(const char* str, const char* val);
 
 SLT_API TokenDateFormatType StringToDateFormat(const char* specifier);

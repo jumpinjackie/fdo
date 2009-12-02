@@ -20,6 +20,8 @@
 #include "SpatialIndex.h"
 #include "SltConversionUtils.h"
 #include "StringUtil.h"
+#include "SltMetadata.h"
+#include "SltGeomUtils.h"
 #include <locale.h>
 
 std::string W2A_SLOW(const wchar_t* input)
@@ -222,9 +224,10 @@ void DateToString(FdoDateTime* dt, char* s, int nBytes, bool useFdoStyle)
 //binds specific values to the parameters in a pre-compiled
 //sql statement -- assumes parameters in the sql are in the
 //same order as the given property value collection.
-void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
+void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt, int geomFormat)
 {
-    for (int i=1; i<=props->GetCount(); i++)
+    int max = props->GetCount();
+    for (int i=1; i<=max; i++)
     {
         FdoPtr<FdoPropertyValue> pv = props->GetItem(i-1);
         FdoPtr<FdoValueExpression> ve = pv->GetValue();
@@ -241,11 +244,11 @@ void BindPropVals(FdoPropertyValueCollection* props, sqlite3_stmt* stmt)
             sqlite3_bind_null(stmt, i);
             continue;
         }
-        BindPropValue(stmt, i, lv );
+        BindPropValue(stmt, i, lv, geomFormat );
     }
 }
 
-void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName )
+void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool useParmName, int geomFormat )
 {
     StringBuffer sb;
     for(int i=1; i<=props->GetCount(); i++)
@@ -269,11 +272,11 @@ void BindPropVals(FdoParameterValueCollection* props, sqlite3_stmt* stmt, bool u
             sqlite3_bind_null(stmt, index);
             continue;
         }
-        BindPropValue(stmt, index, parmValue );
+        BindPropValue(stmt, index, parmValue, geomFormat );
     }
 }
 
-void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
+void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv, int geomFormat)
 {
     int rc;
     if (lv->GetLiteralValueType() == FdoLiteralValueType_Data)
@@ -391,7 +394,27 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv)
         }
 
         FdoPtr<FdoByteArray> ba = gv->GetGeometry();
-        rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
+
+        //Convert geometry byte array to specified target internal binary format
+        if (geomFormat == eFGF)
+        {
+            rc = sqlite3_bind_blob(stmt, i, ba->GetData(), ba->GetCount(), SQLITE_TRANSIENT);
+        }
+        else if (geomFormat == eWKB)
+        {
+            unsigned char* wkb = new unsigned char[ba->GetCount()]; //WKB is a bit smaller than FGF so space should be enough here
+            int len = Fgf2Wkb(ba->GetData(), wkb);
+            rc = sqlite3_bind_blob(stmt, i, wkb, len, SQLITE_TRANSIENT);
+            delete [] wkb;
+        }
+        else if (geomFormat == eWKT)
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoIGeometry> g = gf->CreateGeometryFromFgf(ba);
+            std::string wkt = W2A_SLOW(g->GetText());
+            rc = sqlite3_bind_blob(stmt, i, wkt.c_str(), -1, SQLITE_TRANSIENT); 
+        }
+
     }
 }
 

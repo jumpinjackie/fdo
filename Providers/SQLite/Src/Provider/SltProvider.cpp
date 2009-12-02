@@ -1056,6 +1056,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
 {
     StringBuffer sb;
     bool geomPropIsUpdated = false;
+    int geomFormat = eFGF;
 
     sb.Append("UPDATE ", 7);
     sb.AppendDQuoted(fcname->GetName());
@@ -1074,6 +1075,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         errVal.append(L"' is not found");
         throw FdoException::Create(errVal.c_str(), 1);
     }
+    geomFormat = md->GetGeomFormat();    
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
     // don't update views
     if (md->IsView())
@@ -1196,9 +1198,9 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
 
         if (!ri)
         {
-            BindPropVals(propvals, stmt);
+            BindPropVals(propvals, stmt, geomFormat);
             if( parmValues != NULL )
-                BindPropVals(parmValues, stmt, true);
+                BindPropVals(parmValues, stmt, true, geomFormat);
 
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
@@ -1220,11 +1222,11 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
             int cntProps = propvals->GetCount();
             while(ri->Next())
             {
-                BindPropVals(propvals, stmt);
+                BindPropVals(propvals, stmt, geomFormat);
                 sqlite3_bind_int64(stmt, cntProps+1, ri->CurrentRowid());
                 
                 if( parmValues != NULL )
-                    BindPropVals(parmValues, stmt, true );
+                    BindPropVals(parmValues, stmt, true, geomFormat );
 
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
@@ -1382,9 +1384,9 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
     {
         EnableHooks(true);
         if (!ri)
-        {
+        { 
             if( parmValues != NULL )
-                BindPropVals(parmValues, stmt,true);
+                BindPropVals(parmValues, stmt,true, eFGF /* not necessary to be correct in case of delete */);
 
             if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
             {
@@ -1409,7 +1411,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
                 sqlite3_bind_int64(stmt, 1, ri->CurrentRowid());
                 
                 if( parmValues != NULL )
-                    BindPropVals(parmValues, stmt, true );
+                    BindPropVals(parmValues, stmt, true, eFGF /* not necessary to be correct in case of delete */ );
 
                 if ((rc = sqlite3_step(stmt)) != SQLITE_DONE)
                 {
