@@ -106,19 +106,6 @@ private:
 	/// <returns>Returns nothing</returns> 
 	void InitConnectionPaths();
 
-	/// <summary>Compresses all the file sets</summary>
-	/// <returns>Returns nothing</returns> 
-	void CompressFileSets ();
-
-	/// <summary>Compresses a file set (eliminates the deleted rows)</summary>
-	/// <param name="baseName">Fileset full path</param> 
-	/// <returns>Returns nothing</returns> 
-	void CompressFileSet (const wchar_t* baseName);
-
-	/// <summary>Initialize the list of function in the Expr Engine</summary>
-	/// <returns>Returns nothing</returns> 
-	void InitFunctions();
-
 public:
     ShpConnection (void);
     virtual ~ShpConnection(void);

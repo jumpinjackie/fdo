@@ -110,8 +110,6 @@ ShpConnection::ShpConnection (void) :
     // Create the default SC
     ShpSpatialContextP defltSpatialContext = new ShpSpatialContext();
     mSpatialContextColl->Add( defltSpatialContext );
-
-	InitFunctions();
 }
 
 ShpConnection::~ShpConnection (void)
@@ -1143,9 +1141,4 @@ double ShpConnection::GetToleranceXY( FdoGeometricPropertyDefinition* geomProp )
 			xyTol = SPATIALCONTEXT_DEFAULT_XY_TOLERANCE_LL ;
 	}
 	return xyTol;
-}
-
-void ShpConnection::InitFunctions()
-{
-
 }
