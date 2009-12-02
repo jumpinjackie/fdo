@@ -28,6 +28,8 @@
 #include <ShpSpatialContext.h>
 #include <ShpLpFeatureSchema.h>
 
+#include <FdoCommonThreadMutex.h>
+
 class ShpConnection : public FdoIConnection
 {
     friend class ShpDescribeSchemaCommand;
@@ -98,6 +100,11 @@ protected:
      */
     bool mConfigured;
 
+    /**
+     * Mutex to support access to thread-unsafe data.
+     */
+    static FdoCommonThreadMutex mMutex;
+
 private:
 
 	/// <summary>Sets the connection paths
@@ -108,6 +115,7 @@ private:
 
 	/// <summary>Initialize the list of function in the Expr Engine</summary>
 	/// <returns>Returns nothing</returns> 
+	static bool m_bInitFunctions;
 	void InitFunctions();
 
 public:

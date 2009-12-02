@@ -100,6 +100,9 @@ extern "C" FDOSHP_API FdoIConnection* CreateConnection ()
    return (new ShpConnection ());
 }
 
+FdoCommonThreadMutex ShpConnection::mMutex;
+bool ShpConnection::m_bInitFunctions = false;
+
 ShpConnection::ShpConnection (void) :
     mConnectionString ((wchar_t*)NULL),
     mConnectionState(FdoConnectionState_Closed),
@@ -1146,25 +1149,43 @@ double ShpConnection::GetToleranceXY( FdoGeometricPropertyDefinition* geomProp )
 
 void ShpConnection::InitFunctions()
 {
+    try
+    {
+        mMutex.Enter();
+        if (!m_bInitFunctions)
+        {
+            FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
 
-	FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
+            // Add function X to the list of supported function
+            FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
+            customFuncs->Add( funcX );
 
-	// Add function X to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcX = FdoFunctionX::Create();
-	customFuncs->Add( funcX );
+            // Add function Y to the list of supported function
+            FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
+            customFuncs->Add( funcY );
 
-	// Add function Y to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcY = FdoFunctionY::Create();
-	customFuncs->Add( funcY );
+            // Add function Z to the list of supported function
+            FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
+            customFuncs->Add( funcZ );
 
-	// Add function Z to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcZ = FdoFunctionZ::Create();
-	customFuncs->Add( funcZ );
+            // Add function M to the list of supported function
+            FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
+            customFuncs->Add( funcM );
 
-	// Add function M to the list of supported function
-	FdoPtr<FdoExpressionEngineIFunction> funcM = FdoFunctionM::Create();
-	customFuncs->Add( funcM );
+            FdoExpressionEngine::RegisterFunctions(customFuncs);
 
-    FdoExpressionEngine::RegisterFunctions(customFuncs);
-
+            m_bInitFunctions = true;
+        }
+        mMutex.Leave();
+    }
+    catch (FdoException *)
+    {
+        mMutex.Leave();
+        throw;
+    }
+    catch (...)
+    {
+        mMutex.Leave();
+        throw;
+    }
 }
