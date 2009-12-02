@@ -345,7 +345,7 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
 	m_mNameToIndex.Clear();
 
     if( m_parmValues != NULL )
-        BindPropVals(m_parmValues, m_pStmt, true);
+        BindPropVals(m_parmValues, m_pStmt, true, m_eGeomFormat);
 
 	int nProps = sqlite3_column_count(pStmt);
 
