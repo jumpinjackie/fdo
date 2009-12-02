@@ -21,7 +21,6 @@
 #include "Owner.h"
 #include "Mgr.h"
 #include "Rd/ConstraintReader.h"
-#include "Rd/IndexReader.h"
 
 FdoSmPhMySqlTable::FdoSmPhMySqlTable(
     FdoStringP name,
@@ -48,13 +47,6 @@ const FdoLockType* FdoSmPhMySqlTable::GetLockTypes(FdoInt32& size) const
     return (FdoLockType*) NULL;
     // TODO call base GetLockTypes when storage engine is InnoDB or BDB 
     // (these engines do support transactions).
-}
-
-FdoPtr<FdoSmPhRdIndexReader> FdoSmPhMySqlTable::CreateIndexReader() const
-{
-    FdoSmPhMySqlTable* pTable = (FdoSmPhMySqlTable*) this;
-
-    return new FdoSmPhRdMySqlIndexReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
 }
 
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhMySqlTable::CreateConstraintReader( FdoString* type ) const
@@ -97,27 +89,6 @@ bool FdoSmPhMySqlTable::Delete()
     gdbiConn->ExecuteNonQuery( (const char*) sqlStmt, true );
 
     return true;
-}
-
-FdoSmPhIndexP FdoSmPhMySqlTable::NewIndex(
-    FdoStringP name,
-    bool isUnique,
-    FdoSchemaElementState elementState
-)
-{
-    return new FdoSmPhMySqlIndex( name, this, isUnique, elementState );
-}
-
-FdoSmPhIndexP FdoSmPhMySqlTable::NewSpatialIndex(
-    FdoStringP name,
-    bool isUnique,
-    FdoSchemaElementState elementState
-)
-{
-    throw FdoSchemaException::Create( L"TODO: Implement spatial indexes for MySQL Provider" );
-    return (FdoSmPhIndex*)NULL;
-//TODO: implement MySql spatial indexes.
-//    return new FdoSmPhMySqlIndex( name, this, isUnique, elementState );
 }
 
 FdoSmPhFkeyP FdoSmPhMySqlTable::NewFkey(

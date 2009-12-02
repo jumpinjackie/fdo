@@ -34,10 +34,10 @@ public:
         return mIsUnique;
     }
 
-    /// Get the table for this index.
-    const FdoSmPhTable* RefTable() const
+    /// Get the database object to which this index applies.
+    FdoSmPhDbObjectP GetDbObject() const
     {
-        return mpTable;
+        return FDO_SAFE_ADDREF(mpDbObject);
     }
 
     /// Add a column to this index.
@@ -66,12 +66,12 @@ protected:
     /// 
     /// Parameters:
     /// 	name: Index name
-    ///      pParent: the index's table.
+    ///      pParent: the index's database object (object that contains the index columns).
     /// 	isUnique: true if the index is unique, false if non-unique
     ///      elementState: Indicates whether the index is new or already exists.
     FdoSmPhIndex(
         FdoStringP name, 
-        const FdoSmPhTable* pParent,
+        FdoSmPhDbObject* pParent,
         bool isUnique,
 		FdoSchemaElementState elementState = FdoSchemaElementState_Added
     );
@@ -97,7 +97,7 @@ private:
     bool mIsUnique;
 
     /// Not smart pointer in order to avoid circular reference.
-    const FdoSmPhTable* mpTable;
+    FdoSmPhDbObject* mpDbObject;
 
     FdoSmPhColumnsP mColumns;
 };

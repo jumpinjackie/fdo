@@ -25,6 +25,7 @@
 #include "Rd/OraBaseObjectReader.h"
 #include "Sm/Ph/Rd/DbObjectReader.h"
 #include "Rd/PkeyReader.h"
+#include "Rd/IndexReader.h"
 #include "ColumnChar.h"
 #include "ColumnBool.h"
 #include "ColumnByte.h"
@@ -38,6 +39,7 @@
 #include "ColumnBLOB.h"
 #include "ColumnGeom.h"
 #include "ColumnUnknown.h"
+#include "Index.h"
 #include "Mgr.h"
 #include <Inc/Rdbi/context.h>
 
@@ -264,6 +266,25 @@ FdoSmPhColumnP FdoSmPhOdbcDbObject::NewColumnDbObject(
     );
 }
 
+FdoSmPhIndexP FdoSmPhOdbcDbObject::NewIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    return new FdoSmPhOdbcIndex( name, this, isUnique, elementState );
+}
+
+FdoSmPhIndexP FdoSmPhOdbcDbObject::NewSpatialIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    throw FdoSchemaException::Create();
+    return (FdoSmPhIndex*)NULL;
+}
+
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhOdbcDbObject::CreateColumnReader()
 {
    // rdbi_context_def    *rdbi_context = ((FdoSmPhOdbcMgr*)(FdoSmPhMgr*)GetManager())->GetRdbiContext();
@@ -303,5 +324,12 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhOdbcDbObject::CreatePkeyReader() const
     FdoSmPhOdbcDbObject* pDbObject = (FdoSmPhOdbcDbObject*) this;
 
     return new FdoSmPhRdOdbcPkeyReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+}
+
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhOdbcDbObject::CreateIndexReader() const
+{
+    FdoSmPhOdbcDbObject* pTable = (FdoSmPhOdbcDbObject*) this;
+
+    return new FdoSmPhRdOdbcIndexReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
 }
 

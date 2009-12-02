@@ -23,12 +23,12 @@
 
 FdoSmPhGrdIndex::FdoSmPhGrdIndex(
         FdoStringP name,
-        const FdoSmPhTable* pTable,
+        FdoSmPhDbObject* pParent,
         bool isUnique,
         FdoSchemaElementState elementState
 ) :
-    FdoSmPhIndex( name, pTable, isUnique, elementState ),
-    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pTable->GetParent() )
+    FdoSmPhIndex( name, pParent, isUnique, elementState ),
+    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pParent->GetParent() )
 {
 }
 
@@ -38,20 +38,17 @@ FdoSmPhGrdIndex::~FdoSmPhGrdIndex(void)
 
 bool FdoSmPhGrdIndex::Add()
 {
-    FdoSmPhGrdMgrP mgr = GetManager()->SmartCast<FdoSmPhGrdMgr>();
-    GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
-
-    FdoSmPhGrdTable* table = static_cast<FdoSmPhGrdTable*>((FdoSmPhTable*) RefTable());
+    FdoSmPhDbObjectP dbObject = GetDbObject();
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"create %lsindex %ls on %ls ( %ls )",
         GetIsUnique() ? L"unique " : L"",
         (FdoString*) GetDDLQName(),
-        (FdoString*) table->GetDDLQName(),
+        (FdoString*) dbObject->GetDDLQName(),
         (FdoString*) GetKeyColsSql(GetColumns())->ToString( L", " )
     );
 
-    table->ExecuteDDL( sqlStmt );
+    dbObject->ExecuteDDL( sqlStmt );
 
     return true;
 }
@@ -67,17 +64,14 @@ bool FdoSmPhGrdIndex::Modify()
 
 bool FdoSmPhGrdIndex::Delete()
 {
-    FdoSmPhGrdMgrP mgr = GetManager()->SmartCast<FdoSmPhGrdMgr>();
-    GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
-
-    FdoSmPhGrdTable* table = static_cast<FdoSmPhGrdTable*>((FdoSmPhTable*)RefTable());
+    FdoSmPhDbObjectP dbObject = GetDbObject();
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"drop index %ls",
         (FdoString*) GetDDLQName()
     );
 
-    table->ExecuteDDL( sqlStmt );
+    dbObject->ExecuteDDL( sqlStmt );
 
     return true;
 }

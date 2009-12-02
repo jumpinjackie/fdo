@@ -20,9 +20,7 @@
 #include "Table.h"
 #include "Owner.h"
 #include "Mgr.h"
-#include "SpatialIndex.h"
 #include "Rd/ConstraintReader.h"
-#include "Rd/IndexReader.h"
 #include "Rd/DbObjectReader.h"
 
 
@@ -53,13 +51,6 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhSqsTable::CreateConstraintReader( FdoSt
 	FdoSmPhSqsOwner* pSqsOwner = static_cast<FdoSmPhSqsOwner*>((FdoSmPhDbElement*) GetParent());
 
     return new FdoSmPhRdSqsConstraintReader( pSqsOwner, GetName(), type );
-}
-
-FdoPtr<FdoSmPhRdIndexReader> FdoSmPhSqsTable::CreateIndexReader() const
-{
-    FdoSmPhSqsTable* pTable = (FdoSmPhSqsTable*) this;
-
-    return new FdoSmPhRdSqsIndexReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
 }
 
 bool FdoSmPhSqsTable::Add()
@@ -126,24 +117,6 @@ bool FdoSmPhSqsTable::Delete()
     gdbiConn->ExecuteNonQuery( (FdoString*) sqlStmt );
 
     return true;
-}
-
-FdoSmPhIndexP FdoSmPhSqsTable::NewIndex(
-    FdoStringP name,
-    bool isUnique,
-    FdoSchemaElementState elementState
-)
-{
-    return new FdoSmPhSqsIndex( name, this, isUnique, elementState );
-}
-
-FdoSmPhIndexP FdoSmPhSqsTable::NewSpatialIndex(
-    FdoStringP name,
-    bool isUnique,
-    FdoSchemaElementState elementState
-)
-{
-    return new FdoSmPhSqsSpatialIndex( name, this, elementState );
 }
 
 FdoSmPhFkeyP FdoSmPhSqsTable::NewFkey(

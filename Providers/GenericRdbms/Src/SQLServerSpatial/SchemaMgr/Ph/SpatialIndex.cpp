@@ -28,12 +28,12 @@
 
 FdoSmPhSqsSpatialIndex::FdoSmPhSqsSpatialIndex(
         FdoStringP name,
-        const FdoSmPhTable* pTable,
+        FdoSmPhDbObject* pParent,
         FdoSchemaElementState elementState
 ) :
-    FdoSmPhSpatialIndex( name, pTable, false, elementState ),
-    FdoSmPhSqsDbObject( name, (const FdoSmPhOwner*) pTable->GetParent(), NULL ),
-    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pTable->GetParent(), elementState ),
+    FdoSmPhSpatialIndex( name, pParent, false, elementState ),
+    FdoSmPhSqsDbObject( name, (const FdoSmPhOwner*) pParent->GetParent(), NULL ),
+    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pParent->GetParent(), elementState ),
     mIsRtree(true),
     mIs3d(false)
 {
@@ -45,7 +45,6 @@ FdoSmPhSqsSpatialIndex::~FdoSmPhSqsSpatialIndex(void)
 
 FdoStringP FdoSmPhSqsSpatialIndex::GetDDLName() const
 {
-    const FdoSmPhSqsTable* table = static_cast<const FdoSmPhSqsTable*>(RefTable());
     FdoStringP name = GetName();
     if ( name.Contains(L".") ) 
         name = name.Right(L".");
@@ -139,7 +138,7 @@ bool FdoSmPhSqsSpatialIndex::Add()
     FdoSmPhSqsMgrP mgr = GetManager()->SmartCast<FdoSmPhSqsMgr>();
     GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
 
-    FdoSmPhSqsTable* table = static_cast<FdoSmPhSqsTable*>((FdoSmPhTable*)(RefTable()));
+    FdoSmPhDbObjectP dbObject = GetDbObject();
     FdoSmPhOwner* owner = (FdoSmPhOwner*)(dynamic_cast<const FdoSmPhOwner*>(GetParent()));
     FdoSmPhColumnsP columns = GetColumns();
 
@@ -152,10 +151,10 @@ bool FdoSmPhSqsSpatialIndex::Add()
             // Skip silently if not exactly one column that is geometric.
             // Errors2Exception already caught these errors
             FdoStringP sqlStmt;
-            FdoStringP tableName = table->GetDDLName();
+            FdoStringP tableName = dbObject->GetDDLName();
 
             FdoStringP dbQName = GetDbQName();
-            FdoStringP tableDbQName = table->GetDDLQName();
+            FdoStringP tableDbQName = dbObject->GetDDLQName();
 
               // Use same defaults as the Default spatial context.
             FdoInt64   srid = 0L;
@@ -226,7 +225,7 @@ bool FdoSmPhSqsSpatialIndex::Add()
                 );
             }
 
-            table->ExecuteDDL( sqlStmt, NULL, false );
+            dbObject->ExecuteDDL( sqlStmt, NULL, false );
         }
     }
 
@@ -235,13 +234,13 @@ bool FdoSmPhSqsSpatialIndex::Add()
 
 bool FdoSmPhSqsSpatialIndex::Delete()
 {
-    const FdoSmPhTable* table = RefTable();
+    FdoSmPhDbObjectP dbObject = GetDbObject();
 
     // Index name must be qualified by table name.
     FdoStringP sqlStmt = FdoStringP::Format(
         L"drop index %ls on %ls",
         (FdoString*) GetDDLName(),
-        (FdoString*) ((FdoSmPhTable*)table)->GetDbName()
+        (FdoString*) dbObject->GetDbName()
     );
 
     // SqlServer does not allow qualified name for index to create.

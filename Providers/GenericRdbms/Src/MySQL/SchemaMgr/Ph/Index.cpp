@@ -22,14 +22,14 @@
 
 FdoSmPhMySqlIndex::FdoSmPhMySqlIndex(
         FdoStringP name,
-        const FdoSmPhTable* pTable,
+        FdoSmPhDbObject* pParent,
         bool isUnique,
         FdoSchemaElementState elementState,
         FdoSmPhRdDbObjectReader* reader
 ) :
-    FdoSmPhGrdIndex( name, pTable, isUnique, elementState ),
-    FdoSmPhMySqlDbObject( name, (const FdoSmPhOwner*) pTable->GetParent(), reader ),
-    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pTable->GetParent(), elementState )
+    FdoSmPhGrdIndex( name, pParent, isUnique, elementState ),
+    FdoSmPhMySqlDbObject( name, (const FdoSmPhOwner*) pParent->GetParent(), reader ),
+    FdoSmPhDbObject( name, (const FdoSmPhOwner*) pParent->GetParent(), elementState )
 {
 }
 
@@ -44,13 +44,13 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhMySqlIndex::CreateColumnReader()
 
 bool FdoSmPhMySqlIndex::Add()
 {
-    const FdoSmPhTable* table = RefTable();
+    FdoSmPhDbObjectP dbObject = GetDbObject();
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"create %lsindex %ls on %ls ( %ls )",
         GetIsUnique() ? L"unique " : L"",
         (FdoString*) GetDbName(),
-        (FdoString*) table->GetDbQName(),
+        (FdoString*) dbObject->GetDbQName(),
         (FdoString*) GetKeyColsSql(GetColumns())->ToString( L", " )
     );
 
@@ -64,17 +64,15 @@ bool FdoSmPhMySqlIndex::Add()
 
 bool FdoSmPhMySqlIndex::Delete()
 {
-    FdoSmPhMySqlMgrP      mgr = GetManager()->SmartCast<FdoSmPhMySqlMgr>();
-    GdbiConnection*     gdbiConn = mgr->GetGdbiConnection();
-    const FdoSmPhTable* table = RefTable();
+    FdoSmPhDbObjectP    dbObject = GetDbObject();
 
     FdoStringP sqlStmt = FdoStringP::Format(
         L"alter table %ls drop index %ls",
-        (FdoString*) table->GetDbQName(),
+        (FdoString*) dbObject->GetDbQName(),
         (FdoString*) GetDbName()
     );
 
-    gdbiConn->ExecuteNonQuery( (const char*) sqlStmt, true );
+    dbObject->ExecuteDDL( (const char*) sqlStmt, (FdoSmPhDbObject*) NULL, true );
 
     return true;
 }

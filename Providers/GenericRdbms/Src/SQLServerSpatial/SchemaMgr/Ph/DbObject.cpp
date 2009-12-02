@@ -21,6 +21,7 @@
 #include "Owner.h"
 #include "Rd/ColumnReader.h"
 #include "Rd/PkeyReader.h"
+#include "Rd/IndexReader.h"
 #include "Rd/FkeyReader.h"
 #include "Rd/BaseObjectReader.h"
 #include "Rd/DbObjectReader.h"
@@ -37,6 +38,8 @@
 #include "ColumnBlob.h"
 #include "ColumnGeom.h"
 #include "ColumnUnknown.h"
+#include "SpatialIndex.h"
+#include "Index.h"
 
 FdoSmPhSqsDbObject::FdoSmPhSqsDbObject(
     FdoStringP name,
@@ -319,6 +322,25 @@ FdoSmPhColumnP FdoSmPhSqsDbObject::NewColumnDbObject(
     );
 }
 
+FdoSmPhIndexP FdoSmPhSqsDbObject::NewIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    return new FdoSmPhSqsIndex( name, this, isUnique, elementState );
+}
+
+FdoSmPhIndexP FdoSmPhSqsDbObject::NewSpatialIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    return new FdoSmPhSqsSpatialIndex( name, this, elementState );
+}
+
+
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhSqsDbObject::CreateColumnReader()
 {
     return new FdoSmPhRdSqsColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
@@ -336,6 +358,13 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhSqsDbObject::CreatePkeyReader() const
     FdoSmPhSqsDbObject* pDbObject = (FdoSmPhSqsDbObject*) this;
 
     return new FdoSmPhRdSqsPkeyReader( FDO_SAFE_ADDREF(pDbObject) );
+}
+
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhSqsDbObject::CreateIndexReader() const
+{
+    FdoSmPhSqsDbObject* pDbObject = (FdoSmPhSqsDbObject*) this;
+
+    return new FdoSmPhRdSqsIndexReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
 }
 
 FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhSqsDbObject::CreateFkeyReader() const

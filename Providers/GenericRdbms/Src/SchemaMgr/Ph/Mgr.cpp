@@ -435,6 +435,13 @@ void FdoSmPhGrdMgr::ExecSchemaFile( FdoStringP fileName, FdoStringsP keywords )
     }
 }
 
+void FdoSmPhGrdMgr::ExecuteSQL( FdoStringP sqlStmt, bool isDDL )
+{
+    GdbiConnection*     gdbiConn = GetGdbiConnection();
+
+    gdbiConn->ExecuteNonQuery( (FdoString*) sqlStmt, isDDL );
+}
+
 // This function was copied from adb/exec_file.c
 void FdoSmPhGrdMgr::RemoveFileComments( char* line, int* inside_comment, char* quote_char)
 {
