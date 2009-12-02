@@ -1173,6 +1173,8 @@ void SchemaMgrTests::testGenKeys ()
         grdOwner->ActivateAndExecute( (FdoString*) createIx6cSql );
         grdOwner->ActivateAndExecute( (FdoString*) createJoinSql );
 
+        int specificClassCount = GenKeysCreateSpecific( grdOwner );
+
         mgr = NULL;
         phMgr = NULL;
         conn->disconnect();
@@ -1196,9 +1198,9 @@ void SchemaMgrTests::testGenKeys ()
         FdoClassesP classes = schema->GetClasses();
 
 #ifdef RDBI_DEF_ORA
-        CPPUNIT_ASSERT( classes->GetCount() == 25 );
+        CPPUNIT_ASSERT( classes->GetCount() == (25 + specificClassCount) );
 #else
-        CPPUNIT_ASSERT( classes->GetCount() == 23 );
+        CPPUNIT_ASSERT( classes->GetCount() == (23 + specificClassCount) );
 #endif
         FdoInt32 pass;
         FdoClassDefinitionP featClass;
@@ -1334,6 +1336,8 @@ void SchemaMgrTests::testGenKeys ()
             CPPUNIT_ASSERT( idProps->GetCount() == 0 );
         }
 
+        GenKeysVldSpecific( classes );
+
         UnitTestUtil::CloseConnection( fdoConn, false, L"_schema_mgr" );
 
         printf( "Updating original schema ...\n" );
@@ -1384,9 +1388,9 @@ void SchemaMgrTests::testGenKeys ()
         classes = schema->GetClasses();
 
 #ifdef RDBI_DEF_ORA
-        CPPUNIT_ASSERT( classes->GetCount() == 25 );
+        CPPUNIT_ASSERT( classes->GetCount() == (25 + specificClassCount) );
 #else
-        CPPUNIT_ASSERT( classes->GetCount() ==  23);
+        CPPUNIT_ASSERT( classes->GetCount() ==  (23 + specificClassCount) );
 #endif
         featClass = classes->GetItem( table2class(phMgr,L"TABLE_IX2") );
         idProps = featClass->GetIdentityProperties();
@@ -2088,6 +2092,15 @@ void SchemaMgrTests::testSpatialContexts()
     {
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
+}
+
+int SchemaMgrTests::GenKeysCreateSpecific( FdoSmPhGrdOwner* grdOwner )
+{
+    return 0;
+}
+
+void SchemaMgrTests::GenKeysVldSpecific( FdoClassCollection* classes )
+{
 }
 
 void SchemaMgrTests::GenDefaultClassList()

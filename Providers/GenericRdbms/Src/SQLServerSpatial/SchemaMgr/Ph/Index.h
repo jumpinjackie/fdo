@@ -36,7 +36,7 @@ public:
 
     FdoSmPhSqsIndex(
         FdoStringP name,
-        const FdoSmPhTable* pParent,
+        FdoSmPhDbObject* pParent,
         bool isUnique,
         FdoSchemaElementState elementState = FdoSchemaElementState_Added,
         FdoSmPhRdDbObjectReader* reader = NULL

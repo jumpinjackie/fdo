@@ -703,6 +703,13 @@ public:
 
     virtual FdoStringP ClassName2DbObjectName(FdoStringP schemaName, FdoStringP className);
 
+    // Executes a SQL statement
+    virtual void ExecuteSQL( 
+        FdoStringP sqlStmt,               // the SQL statement
+        bool isDDL = true                 // true if the statement must be executed
+                                          // as a DDL statement. 
+    ) = 0;
+
 protected:
     void SetDefaultOwnerName( FdoStringP name)
     {

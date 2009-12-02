@@ -228,9 +228,24 @@ protected:
         FdoSmPhRdColumnReader* colRdr = NULL
     );
 
+    // Index creator implementation
+    virtual FdoSmPhIndexP NewIndex(
+        FdoStringP name,
+        bool isUnique,
+        FdoSchemaElementState elementState = FdoSchemaElementState_Added
+    );
+
+    // Spatial Index creator implementation
+    virtual FdoSmPhIndexP NewSpatialIndex(
+        FdoStringP name,
+        bool isUnique,
+        FdoSchemaElementState elementState = FdoSchemaElementState_Added
+    );
+
     // Implementations for creating column, primary key and foreign key readers
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
 private:

@@ -31,9 +31,7 @@ class FdoSmPhMgr;
 class FdoSmPhOwner;
 class FdoSmPhReader;
 class FdoSmPhRdConstraintReader;
-class FdoSmPhRdIndexReader;
 class FdoSmPhTableComponentReader;
-class FdoSmPhTableIndexReader;
 
 // Table represents a table in the database.
 class FdoSmPhTable : virtual public FdoSmPhDbObject
@@ -59,17 +57,6 @@ public:
     /// Returns a CHECK() clause, each provider must implement. It should be pure virtual.
 	virtual FdoStringP FixCkeyClause( FdoStringP checkClause ) { return checkClause; }
 
-    /// Returns all the indexes in this table.
-    const FdoSmPhIndexCollection* RefIndexes() const;
-    FdoSmPhIndexesP GetIndexes();
-
-    /// Returns the table's best identity columns, where all columns are in the given
-    /// database object (the given object is typically a view based on this table).
-    /// These are the primary key columns if the table has a primary key.
-    /// Otherwise, the columns for the table's lightest unique index are returned.
-    /// NULL is returned if the table has no identity.
-    virtual FdoSmPhColumnsP GetBestIdentity( FdoSmPhDbObjectP dbObject );
-    
     /// Returns an array of all types of locking supported on this Database Object.
     /// size is set to the size of the array.
     /// Returns NULL when size is 0.
@@ -147,10 +134,6 @@ public:
 	/// Return the list of constraints marked for drop
 	FdoStringsP	GetDeletedConstraints();
 
-    /// Removes the given index from the cache without
-    /// deleting it from the datastore.
-    void DiscardIndex( FdoSmPhIndex* index );
-
     /// Deletes all rows from this table.
     virtual void ClearRows() = 0;
 
@@ -162,12 +145,6 @@ public:
 
     // Load this table's check constraints from the given reader
     virtual void CacheCkeys( FdoPtr<FdoSmPhRdConstraintReader> rdr );
-
-    // Load this table's indexes from the given reader
-    virtual void CacheIndexes( FdoPtr<FdoSmPhRdIndexReader> rdr );
-
-    // Returns true if this table's indexes have been cached.
-    bool IndexesLoaded();
 
     /// Gather all errors for this element and child elements into a chain of exceptions.
     /// Adds each error as an exception, to the given exception chain and returns
@@ -202,30 +179,10 @@ protected:
 
 	~FdoSmPhTable(void);
 
-    /// Add an index from an index reader
-    FdoSmPhIndexP CreateIndex(
-        FdoPtr<FdoSmPhTableIndexReader> rdr
-    );
-
-    /// Readers for Constraints and Indexes.
+    /// Readers for Constraints 
     /// All have provider-specific implementations
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader(FdoString* type) const = 0;
-    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const = 0;
-
-    /// Index object creator
-    virtual FdoSmPhIndexP NewIndex(
-        FdoStringP name, 
-        bool isUnique,
-		FdoSchemaElementState elementState = FdoSchemaElementState_Added
-    ) = 0;
-
-    /// Spatial Index object creator
-    virtual FdoSmPhIndexP NewSpatialIndex(
-        FdoStringP name, 
-        bool isUnique,
-		FdoSchemaElementState elementState = FdoSchemaElementState_Added
-    ) = 0;
-
+    
     /// Commit modifications to child objects
     virtual void CommitChildren( bool isBeforeParent );
 
@@ -249,7 +206,6 @@ protected:
 	/// Add a constrait given the fully qualified string.
 	virtual bool AddConstraint( FdoStringP constraint ) = 0;
 
-    virtual void AddIndexColumnError(FdoStringP columnName);
 
 private:
     /// Load Unique Keys if not yet loaded
@@ -259,18 +215,11 @@ private:
 	void LoadCkeys();
 	void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr, bool isSkipAdd );
 	
-    /// Load Indexes if not yet loaded
-    void LoadIndexes();
-    void LoadIndexes( FdoPtr<FdoSmPhTableIndexReader> indexRdr, bool isSkipAdd );
-	
     // Create new unique constraint group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableUkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
 
     // Create new check constraint group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableCkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
-
-    // Create new index group reader
-    virtual FdoPtr<FdoSmPhTableIndexReader> NewTableIndexReader( FdoPtr<FdoSmPhRdIndexReader> rdr );
 
 	void AddUkeyColumnError(FdoStringP columnName);
 	void AddUkeyError(FdoStringP columnNames);
@@ -281,8 +230,6 @@ private:
 	FdoSmPhBatchColumnsP		mUkeysCollection;
 	FdoSmPhCheckConstraintsP	mCkeysCollection;
 	FdoStringsP					mDeletedConstraints;
-
-    FdoSmPhIndexesP mIndexes;
 
 };
 

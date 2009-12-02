@@ -22,6 +22,7 @@
 #include "Mgr.h"
 #include "Rd/ColumnReader.h"
 #include "Rd/PkeyReader.h"
+#include "Rd/IndexReader.h"
 #include "Rd/FkeyReader.h"
 #include "ColumnChar.h"
 #include "ColumnBool.h"
@@ -36,6 +37,7 @@
 #include "ColumnBLOB.h"
 #include "ColumnGeom.h"
 #include "ColumnUnknown.h"
+#include "Index.h"
 #include <FdoCommonStringUtil.h>
 
 FdoSmPhMySqlDbObject::FdoSmPhMySqlDbObject(
@@ -405,6 +407,27 @@ FdoSmPhColumnP FdoSmPhMySqlDbObject::NewColumnDbObject(
     );
 }
 
+FdoSmPhIndexP FdoSmPhMySqlDbObject::NewIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    return new FdoSmPhMySqlIndex( name, this, isUnique, elementState );
+}
+
+FdoSmPhIndexP FdoSmPhMySqlDbObject::NewSpatialIndex(
+    FdoStringP name,
+    bool isUnique,
+    FdoSchemaElementState elementState
+)
+{
+    throw FdoSchemaException::Create( L"TODO: Implement spatial indexes for MySQL Provider" );
+    return (FdoSmPhIndex*)NULL;
+//TODO: implement MySql spatial indexes.
+//    return new FdoSmPhMySqlIndex( name, this, isUnique, elementState );
+}
+
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhMySqlDbObject::CreateColumnReader()
 {
     return new FdoSmPhRdMySqlColumnReader( GetManager(), FDO_SAFE_ADDREF(this) );
@@ -415,6 +438,13 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhMySqlDbObject::CreatePkeyReader() const
     FdoSmPhMySqlDbObject* pDbObject = (FdoSmPhMySqlDbObject*) this;
 
     return new FdoSmPhRdMySqlPkeyReader( FDO_SAFE_ADDREF(pDbObject) );
+}
+
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhMySqlDbObject::CreateIndexReader() const
+{
+    FdoSmPhMySqlDbObject* pTable = (FdoSmPhMySqlDbObject*) this;
+
+    return new FdoSmPhRdMySqlIndexReader( pTable->GetManager(), FDO_SAFE_ADDREF(pTable) );
 }
 
 FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhMySqlDbObject::CreateFkeyReader() const
