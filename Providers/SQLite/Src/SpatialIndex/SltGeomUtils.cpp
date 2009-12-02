@@ -69,6 +69,7 @@
 struct ArcSegmentDetails
 {
     bool isCounterClockWise;
+    bool isCircle;
     double center[2];
     double length;
     double radius;
@@ -577,8 +578,15 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                                 //mid, and end, start point is the last point
                                 //of the previous segment.
                                 double* pts = (double*)ireader;
+                                // add points we have
                                 AddToExtent(2, dim, pts, ext);
+                                // adjust extents for curves and add it again
+                                double extArc[4];
+                                AdjustExtentsForCurves(dim, startpt, pts, extArc);
+                                // add adjusted extents
+                                AddToExtent(2, 2, extArc, ext);
                                 ireader = (int*)(pts + 2 * dim);
+                                startpt = pts+dim;
                             }
                             break;
 
@@ -1205,6 +1213,9 @@ void SkipGeometry(const unsigned char** inputStream)
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
+// vectorToRight determines whether the vector (x2, y2) points to right or
+// left side of vector (x1,y1) and returns false for right and true for left.
+#define vectorToLeft( x1, y1, x2, y2 ) ( ((x1)*(y2) - (x2)*(y1)) < 0 ? false : true )
 
 // circular arc segment contains two points mid, and end, start point is the last point of the previous segment.
 double ComputeCircularArcSegmentLength(unsigned int dim, const double *startpoint, const double *ordinates, bool computeGeodetic)
@@ -1219,6 +1230,7 @@ double ComputeCircularArcSegmentLength(unsigned int dim, const double *startpoin
 
 bool GetCircularArcSegmentDetails(unsigned int dim, const double *startpoint, const double *ordinates, ArcSegmentDetails* details)
 {
+    details->isCircle = false;
     // Special cases
     if (ArePositionsEqualXY(*startpoint, *(startpoint+1), *(ordinates+dim), *(ordinates+dim+1)))
     {
@@ -1232,6 +1244,9 @@ bool GetCircularArcSegmentDetails(unsigned int dim, const double *startpoint, co
         {
             details->radius = DistanceBetweenPositionsXY(*startpoint, *(startpoint+1), *ordinates, *(ordinates+1)) / 2.0;
             details->length = M_PI * details->radius;
+            details->isCircle = true;
+            details->center[0] = (*ordinates+*startpoint)*0.5;
+            details->center[1] = (*(ordinates+1)+*(startpoint+1))*0.5;
 		    return true; // Full circle.
         }
     }
@@ -1753,3 +1768,48 @@ double ComputeUsingTesselateArcSegment(unsigned int dim, const double *startpoin
     return retVal;
 }
 
+#define __dX     *(ordinates+dim)-*startpoint
+#define __dY     *(ordinates+dim+1)-*(startpoint+1)
+#define __sX     *startpoint
+#define __sY     *(startpoint+1)
+#define __eX     *(ordinates+dim)
+#define __eY     *(ordinates+dim+1)
+
+void AdjustExtentsForCurves(int dim, double* startpoint, double* ordinates, double* ext)
+{
+    ArcSegmentDetails details;
+    if(!GetCircularArcSegmentDetails(dim, startpoint, ordinates, &details))
+    {
+        ext[0] = ext[1] =  DBL_MAX;
+        ext[2] = ext[3] = -DBL_MAX;
+    }
+    else
+    {
+        if (details.isCircle)
+        {
+            *ext = details.center[0] - details.radius;
+            *(ext+1) = details.center[1] - details.radius;
+            *(ext+2) = details.center[0] + details.radius;
+            *(ext+3) = details.center[1] + details.radius;
+        }
+        else
+        {
+            *ext = __eX < __sX ? __eX : __sX;
+            *(ext+1) = __eY < __sY ? __eY : __sY;
+            *(ext+2) = __eX > __sX ? __eX : __sX;
+            *(ext+3) = __eY > __sY ? __eY : __sY;
+            
+            if (vectorToLeft(details.center[0]-__sX, details.center[1]+details.radius-__sY, __dX, __dY) == details.isCounterClockWise)
+                *(ext+3) = details.center[1] + details.radius; // Use circle top.
+
+            if (vectorToLeft(details.center[0]-__sX, details.center[1]-details.radius-__sY, __dX, __dY) == details.isCounterClockWise)
+                *(ext+1) = details.center[1] - details.radius; // Use circle bottom.
+
+            if (vectorToLeft(details.center[0]-details.radius-__sX, details.center[1]-__sY, __dX, __dY) == details.isCounterClockWise)
+                *ext = details.center[0] - details.radius; // Use circle left.
+
+            if (vectorToLeft(details.center[0]+details.radius-__sX, details.center[1]-__sY, __dX, __dY) == details.isCounterClockWise)
+                *(ext+2) = details.center[0] + details.radius; // Use circle right.
+        }
+    }
+}
