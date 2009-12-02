@@ -21,10 +21,9 @@
 /*
  *  Use multiple static message buffers to mitigate the fact that nsl_msg_get()
  *  is not reentrant.  Make the number of message buffers a power of 2 since
- *  this is least inefficient way to index a multi-dimensional array.
+ *  this is the least inefficient way to index a multi-dimensional array.
  */
-#define MSG_BUFFERS 8
-static wchar_t msg_buf[MSG_BUFFERS][NLS_BUFFSZ + 1];
+#define MSG_BUFFERS 32
 static wchar_t msg_bufW[MSG_BUFFERS][NLS_BUFFSZ + 1];
 static unsigned msg_buf_index = 0;
 
@@ -50,9 +49,10 @@ wchar_t* nls_msg_get_W2(wchar_t *msg_string,
                         const char *default_msg,
                         va_list argp)
 {
+    static wchar_t  msg_buf[NLS_BUFFSZ +1];
     char            *fmt_str = NULL;
     unsigned        msg_size;
-    wchar_t         *msg_bufp;
+    wchar_t         *msg_bufp = msg_buf;
     wchar_t         *Wtext;
 
     pthread_mutex_lock(&NlsMsgGetCriticalSection);
@@ -72,23 +72,25 @@ wchar_t* nls_msg_get_W2(wchar_t *msg_string,
             fmt_str = catgets(cat_desc, set_num, msg_num, default_msg);
         }
     }
+
     /*
      *  If no catalog or no catalog string, then use default_msg.
      */
     if (fmt_str == NULL || *fmt_str == '\0')
         fmt_str = default_msg;
+
     /*
      *  Allocate next message buffer.
      */
-    Wtext = msg_bufW[msg_buf_index % MSG_BUFFERS];
+    Wtext = msg_bufW[msg_buf_index++ % MSG_BUFFERS];
     Wtext[0] = 0;
-    msg_bufp = msg_buf[msg_buf_index++ % MSG_BUFFERS];
     mbstowcs ( msg_bufp, fmt_str, NLS_BUFFSZ);
 
     /*
      *  Format variadic arguments.
      */
     msg_size = vswprintf(Wtext, NLS_BUFFSZ, msg_bufp, argp);
+
     /*
      *  If we overflowed the msg buffer, panic.
      */
@@ -300,16 +302,11 @@ wchar_t * nls_msg_get_W2(wchar_t *msg_string,
     static wchar_t      tmp_buf[NLS_BUFFSZ +1];
     static wchar_t      buffer[NLS_BUFFSZ +1];
     wchar_t             *ptr_src = NULL;
-    wchar_t             *ptr_dst= buffer;
+    wchar_t             *ptr_dst = buffer;
     wchar_t             *Wtext;
     int                 length;
 
     EnterCriticalSection (&NlsMsgGetCriticalSection);
-
-    /*
-     *  Allocate next message buffer.
-     */
-    Wtext = msg_bufW[msg_buf_index++ % MSG_BUFFERS];
 
     if (LoadMessage (cat_name, msg_num, tmp_buf, NLS_BUFFSZ ))
         ptr_src = tmp_buf;
@@ -365,6 +362,9 @@ wchar_t * nls_msg_get_W2(wchar_t *msg_string,
         }   
     }
     *ptr_dst = '\0';
+
+    // Allocate next message buffer
+    Wtext = msg_bufW[msg_buf_index++ % MSG_BUFFERS];
 
     FormatMessageW(
         FORMAT_MESSAGE_FROM_STRING | 
