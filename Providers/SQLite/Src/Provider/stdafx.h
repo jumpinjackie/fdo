@@ -86,12 +86,4 @@ extern "C"
 #pragma warning (disable: 4100)
 #pragma warning (disable: 4189)
 
-#ifdef max
-#undef max
-#endif
-
-#ifdef min
-#undef min
-#endif
-
 #endif

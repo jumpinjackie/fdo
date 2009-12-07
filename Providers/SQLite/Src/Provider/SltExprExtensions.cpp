@@ -12,6 +12,18 @@
 #include <float.h>      // for FLT_DIG and DBL_DIG
 #include <locale.h>
 
+#ifdef _MSC_VER
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+#include <xutility>
+#endif
+
 #define SQLITE_INFO_STRING(/*IN*/str, /*OUT*/len, /*OUT*/lenInChars, /*IN-OUT*/charsToStudy) {  \
   len = lenInChars = 0;                                                                         \
   const char* z2 = NULL;                                                                        \
@@ -504,7 +516,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(2, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(2, (int)(notDig-strtmp)));
                         dt.year = (FdoInt16)atoi(m_result.Data());
                         // year can be 09 = 2009 or 55 = 1955/2055 !?
                         // it's hard to know the real year when two characters are used
@@ -525,7 +537,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(4, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(4, (int)(notDig-strtmp)));
                         dt.year = (FdoInt16)atoi(m_result.Data());
                         strtmp += m_result.Length();
                     }
@@ -565,7 +577,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(2, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(2, (int)(notDig-strtmp)));
                         dt.month = (FdoInt8)atoi(m_result.Data());
                         strtmp += m_result.Length();
                     }
@@ -593,7 +605,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(2, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(2, (int)(notDig-strtmp)));
                         dt.day = (FdoInt8)atoi(m_result.Data());
                         strtmp += m_result.Length();
                     }
@@ -607,7 +619,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(2, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(2, (int)(notDig-strtmp)));
                         dt.hour = (FdoInt8)atoi(m_result.Data());
                         strtmp += m_result.Length();
                     }
@@ -620,7 +632,7 @@ public:
                     if (notDig != strtmp)
                     {
                         m_result.Reset();
-                        m_result.Append(strtmp, std::min(2, notDig-strtmp));
+                        m_result.Append(strtmp, std::min(2, (int)(notDig-strtmp)));
                         dt.minute = (FdoInt8)atoi(m_result.Data());
                         strtmp += m_result.Length();
                     }
