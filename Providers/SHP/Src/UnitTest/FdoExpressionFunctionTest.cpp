@@ -6715,11 +6715,11 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSEFALSE".
+      // is expected to be "00".
 
       func_call   = L"(Concat(bool_val, bool_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSEFALSE");
+      CheckReaderString(data_reader, 9, L"00");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6752,11 +6752,11 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE2007-09-09".
+      // is expected to be "02007-09-09".
 
       func_call   = L"(Concat(bool_val, dt_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE2007-09-09");
+      CheckReaderString(data_reader, 9, L"02007-09-09");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6789,11 +6789,11 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE12.84".
+      // is expected to be "012.84".
 
       func_call   = L"(Concat(bool_val, dcl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE12.84");
+      CheckReaderString(data_reader, 9, L"012.84");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6826,11 +6826,11 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE90".
+      // is expected to be "090".
 
       func_call   = L"(Concat(bool_val, i32_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE90");
+      CheckReaderString(data_reader, 9, L"090");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -6863,11 +6863,11 @@ void FdoExpressionFunctionTest::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSEThe Color is: 2118".
+      // is expected to be "0The Color is: 2118".
 
       func_call   = L"(Concat(bool_val, str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSEThe Color is: 2118");
+      CheckReaderString(data_reader, 9, L"0The Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
