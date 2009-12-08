@@ -1269,6 +1269,8 @@ FdoDataType SltReader::GetColumnType(FdoString* columnName)
 //which does all the hard SQLite work.
 bool SltReader::PositionScrollable(__int64 index)
 {
+    if (m_ri->Count() < index)
+        return false;
     //remember which rowid we are looking for,
     //we will later check if that's what we got when
     //we stepped sqlite forward.
