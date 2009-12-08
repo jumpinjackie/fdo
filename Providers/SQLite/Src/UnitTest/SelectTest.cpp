@@ -370,13 +370,13 @@ void SelectTest::BooleanDataTest ()
                 switch(idx)
                 {
                 case 0:
-                    CPPUNIT_ASSERT(canBe == L"sky is blue and this can be TRUE");
+                    CPPUNIT_ASSERT(canBe == L"sky is blue and this can be 1");
                     break;
                 case 1:
-                    CPPUNIT_ASSERT(canBe == L"water is red and this can be TRUE");
+                    CPPUNIT_ASSERT(canBe == L"water is red and this can be 1");
                     break;
                 case 2:
-                    CPPUNIT_ASSERT(canBe == L"snow is white or black and this can be TRUE");
+                    CPPUNIT_ASSERT(canBe == L"snow is white or black and this can be 1");
                     break;
                 default:
                     CPPUNIT_FAIL ("Invalid row index");
@@ -392,10 +392,10 @@ void SelectTest::BooleanDataTest ()
                 switch(idx)
                 {
                 case 0:// bool is TRUE
-                    CPPUNIT_ASSERT(concText == L"sky is blue and this is TRUE");
+                    CPPUNIT_ASSERT(concText == L"sky is blue and this is 1");
                     break;
                 case 1:// bool is FALSE
-                    CPPUNIT_ASSERT(concText == L"water is red and this is FALSE");
+                    CPPUNIT_ASSERT(concText == L"water is red and this is 0");
                     break;
                 case 2: // bool is NULL
                     CPPUNIT_ASSERT(concText == L"snow is white or black and this is ");

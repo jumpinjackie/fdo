@@ -278,14 +278,14 @@ void FdoExpressionFunctionTest::TestConcat()
                     FdoStringP val = rdr->GetString(L"Calc");
                     printf ("Calc=%ls\n", val);
 
-                    CPPUNIT_ASSERT(val.Contains(L"TRUE") || val.Contains(L"FALSE"));
+                    CPPUNIT_ASSERT(val.Contains(L"1") || val.Contains(L"0"));
                 }
 
                 if (!rdr->IsNull(L"Calc1"))
                 {
                     FdoStringP val = rdr->GetString(L"Calc1");
                     printf ("Calc1=%ls\n", val);
-                    CPPUNIT_ASSERT(val == L"TRUE=TRUE" || val == L"FALSE=FALSE");
+                    CPPUNIT_ASSERT(val == L"1=1" || val == L"0=0");
                 }
             }
             rdr->Close();

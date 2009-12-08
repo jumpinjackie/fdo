@@ -123,7 +123,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
 {
 
     // Declare and initialize all necessary local variables.
-
+    FdoPtr<FdoBooleanValue> boolean_value;
     FdoPtr<FdoByteValue>    byte_value;
     FdoPtr<FdoDecimalValue> decimal_value;
     FdoPtr<FdoDoubleValue>  double_value;
@@ -143,6 +143,17 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
 
     switch (para1_data_type) {
 
+      case FdoDataType_Boolean:
+        boolean_value = (FdoBooleanValue *) literal_values->GetItem(0);
+        if (boolean_value->IsNull())
+            return_string_value->SetNull();
+        else if (boolean_value->GetBoolean())
+            return_string_value->SetString(L"1");
+        else
+            return_string_value->SetString(L"0");
+        return FDO_SAFE_ADDREF(return_string_value.p);
+        break;
+
       case FdoDataType_DateTime:
         return ProcessDateTime(literal_values);
         break;
@@ -153,7 +164,7 @@ FdoLiteralValue *FdoFunctionToString::Evaluate (
             return_string_value->SetNull();
         else
             return_string_value->SetString(byte_value->ToString());
-          return FDO_SAFE_ADDREF(return_string_value.p);
+        return FDO_SAFE_ADDREF(return_string_value.p);
         break;
 
       case FdoDataType_Decimal:
@@ -1343,7 +1354,8 @@ void FdoFunctionToString::Validate (FdoLiteralValueCollection *literal_values)
 
     }  //  for (i = 0; i < count; i++) ...
 
-    if ((para1_data_type != FdoDataType_Byte    ) &&
+    if ((para1_data_type != FdoDataType_Boolean ) &&
+        (para1_data_type != FdoDataType_Byte    ) &&
         (para1_data_type != FdoDataType_Decimal ) &&
         (para1_data_type != FdoDataType_Double  ) &&
         (para1_data_type != FdoDataType_Int16   ) &&
