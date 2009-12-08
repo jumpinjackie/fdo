@@ -507,7 +507,7 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
             return;
         }
     }
-    m_boolConvStack.push_back(StlBoolTopOperationType_IntNeeded);
+    m_convReqStack.push_back(StlConvReqOperationType_Default);
     // we need to be sure we handle datetime values, e.g. DATEPROP > DATE '10-10-2000'
     left->Process(this);
     IFilterChunk* exprLeft = m_evalStack.back();
@@ -516,7 +516,7 @@ void SltQueryTranslator::ProcessComparisonCondition(FdoComparisonCondition& filt
     right->Process(this);
     IFilterChunk* exprRight = m_evalStack.back();
     m_evalStack.pop_back();
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
 
     m_sb.Reset();
     m_sb.Append(exprLeft->ToString());
@@ -553,13 +553,13 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
     size_t szBefore = m_evalStack.size();
     FdoPtr<FdoValueExpressionCollection> vals = filter.GetValues();
     int cnt = vals->GetCount();
-    m_boolConvStack.push_back(StlBoolTopOperationType_IntNeeded);
+    m_convReqStack.push_back(StlConvReqOperationType_Default);
     for(int idx = 0; idx < cnt; idx++)
     {
         FdoPtr<FdoValueExpression> exp = vals->GetItem(idx);
         exp->Process(this);
     }
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
     size_t szAfter = m_evalStack.size();
 
     m_sb.Reset();
@@ -668,7 +668,7 @@ void SltQueryTranslator::ProcessFunction(FdoFunction& expr)
     // We need to handle this because of ToDate...
     // "ToDate(DATE '10-10-2000')" which should be "ToDate('10-10-2000')"
     // otherwise query will fail, because of syntax error
-    m_boolConvStack.push_back(StlBoolTopOperationType_StrNeeded);
+    m_convReqStack.push_back(StlConvReqOperationType_String);
     size_t szBefore = m_evalStack.size();
     FdoPtr<FdoExpressionCollection> vals = expr.GetArguments();
     int cnt = vals->GetCount();
@@ -700,7 +700,7 @@ void SltQueryTranslator::ProcessFunction(FdoFunction& expr)
         m_sb.Append("()", 2);
         m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
     }
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
 }
 
 void SltQueryTranslator::ProcessIdentifier(FdoIdentifier& expr)
@@ -730,23 +730,7 @@ void SltQueryTranslator::ProcessIdentifier(FdoIdentifier& expr)
             FdoDataType dt = dpd->GetDataType();
 
             if (dt == FdoDataType_String || dt == FdoDataType_BLOB)
-            {
                 m_strgeomOperations++;
-            }
-            else
-            {
-                // do we need the string from Boolean !?
-                if (dt == FdoDataType_Boolean && m_boolConvStack.size() != 0 && 
-                    m_boolConvStack.back() == StlBoolTopOperationType_StrNeeded)
-                {
-                    m_sb.Reset();
-                    m_sb.Append("booleantostring(", 16);
-                    m_sb.AppendDQuoted(expr.GetName());
-                    m_sb.Append(")", 1);
-                    m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
-                    return;
-                }
-            }
         }
     }
 
@@ -772,20 +756,10 @@ void SltQueryTranslator::ProcessBooleanValue(FdoBooleanValue& expr)
 {
     if (!expr.IsNull())
     {
-        if (m_boolConvStack.size() != 0 && m_boolConvStack.back() == StlBoolTopOperationType_StrNeeded)
-        {
-            if (expr.GetBoolean())
-                m_evalStack.push_back(CreateBaseFilterChunk("'TRUE'", 6));
-            else
-                m_evalStack.push_back(CreateBaseFilterChunk("'FALSE'", 7));
-        }
+        if (expr.GetBoolean())
+            m_evalStack.push_back(CreateBaseFilterChunk("1", 1));
         else
-        {
-            if (expr.GetBoolean())
-                m_evalStack.push_back(CreateBaseFilterChunk("1", 1));
-            else
-                m_evalStack.push_back(CreateBaseFilterChunk("0", 1));
-        }
+            m_evalStack.push_back(CreateBaseFilterChunk("0", 1));
     }
     else
         m_evalStack.push_back(CreateBaseFilterChunk("null", 4));
@@ -1168,8 +1142,8 @@ void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
     }
     // in case Boolean values/properties can be used in functions as parameters
     // other than concat we need to check the function name
-    // since concat needs Boolean as text pass StlBoolTopOperationType_StrNeeded
-    m_boolConvStack.push_back(StlBoolTopOperationType_StrNeeded);
+    // since concat needs values as text pass StlConvReqOperationType_String
+    m_convReqStack.push_back(StlConvReqOperationType_String);
 
     m_expr.Append(name);
     m_expr.Append("(", 1);
@@ -1188,13 +1162,13 @@ void SltExpressionTranslator::ProcessFunction(FdoFunction& expr)
     }
     m_expr.Append(")", 1);
 
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
 }
 
 void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
 {
-    // most of the time m_boolConvStack.size() == 0 and this should not add any performance impact
-    if (m_boolConvStack.size() != 0 && m_boolConvStack.back() == StlBoolTopOperationType_StrNeeded
+    // most of the time m_convReqStack.size() == 0 and this should not add any performance impact
+    if (m_convReqStack.size() != 0 && m_convReqStack.back() == StlConvReqOperationType_String
         && m_fc != NULL)
     {
         FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
@@ -1204,14 +1178,7 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
             if (pd->GetPropertyType() == FdoPropertyType_DataProperty)
             {
                 FdoDataPropertyDefinition* dpd = static_cast<FdoDataPropertyDefinition*>(pd.p);
-                if (dpd->GetDataType() == FdoDataType_Boolean)
-                {
-                    m_expr.Append("booleantostring(", 16);
-                    m_expr.AppendDQuoted(expr.GetName());
-                    m_expr.Append(")", 1);
-                    return;
-                }
-                else if (dpd->GetDataType() == FdoDataType_Single)
+                if (dpd->GetDataType() == FdoDataType_Single)
                 {
                     m_expr.Append("floattostring(", 14);
                     m_expr.AppendDQuoted(expr.GetName());
@@ -1240,8 +1207,7 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
 
 void SltExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
-    // handle cases like "TRUE as MyBool"
-    m_boolConvStack.push_back(StlBoolTopOperationType_IntNeeded);
+    m_convReqStack.push_back(StlConvReqOperationType_Default);
     FdoPtr<FdoExpression> param = expr.GetExpression();
     if (m_props != NULL)
     {
@@ -1253,7 +1219,7 @@ void SltExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& e
         HandleExpr(param);
     m_expr.Append(" AS ", 4);
     m_expr.AppendDQuoted(expr.GetName());
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
 }
 
 void SltExpressionTranslator::ProcessParameter(FdoParameter& expr)
@@ -1266,20 +1232,10 @@ void SltExpressionTranslator::ProcessBooleanValue(FdoBooleanValue& expr)
 {
     if (!expr.IsNull())
     {
-        if (m_boolConvStack.size() != 0 && m_boolConvStack.back() == StlBoolTopOperationType_StrNeeded)
-        {
-            if (expr.GetBoolean())
-                m_expr.Append("'TRUE'", 6);
-            else
-                m_expr.Append("'FALSE'", 7);
-        }
+        if (expr.GetBoolean())
+            m_expr.Append("1", 1);
         else
-        {
-            if (expr.GetBoolean())
-                m_expr.Append("1", 1);
-            else
-                m_expr.Append("0", 1);
-        }
+            m_expr.Append("0", 1);
     }
     else
         m_expr.Append("null", 4);
@@ -1410,8 +1366,7 @@ void SltExpressionTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
 
 void SltExtractExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
-    // handle cases like "TRUE as MyBool"
-    m_boolConvStack.push_back(StlBoolTopOperationType_IntNeeded);
+    m_convReqStack.push_back(StlConvReqOperationType_Default);
     FdoPtr<FdoExpression> param = expr.GetExpression();
     if (m_props != NULL)
     {
@@ -1421,7 +1376,7 @@ void SltExtractExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdenti
     }
     else
         HandleExpr(param);
-    m_boolConvStack.pop_back();
+    m_convReqStack.pop_back();
 }
 
 void SltScCHelperTranslator::ProcessFunction(FdoFunction& expr)

@@ -11972,11 +11972,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSEFALSE".
+      // is expected to be "00".
 
       func_call   = L"(Concat(bool_val, bool_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSEFALSE");
+      CheckReaderString(data_reader, 9, L"00");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12009,11 +12009,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE74".
+      // is expected to be "074".
 
       func_call   = L"(Concat(bool_val, byte_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE74");
+      CheckReaderString(data_reader, 9, L"074");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12046,11 +12046,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE2007-09-09 21:00:00".
+      // is expected to be "02007-09-09 21:00:00".
 
       func_call   = L"(Concat(bool_val, dt_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE2007-09-09 21:00:00");
+      CheckReaderString(data_reader, 9, L"02007-09-09 21:00:00");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12083,14 +12083,14 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE12.8426966292135".
+      // is expected to be "02.8426966292135".
       // NOTE: The decimal value is 12.84, but the function converting the
       //       value to a string adds additional decimal positions that the
       //       test has to take into account. 
 
       func_call   = L"(Concat(bool_val, dcl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE12.8426966292135");
+      CheckReaderString(data_reader, 9, L"012.8426966292135");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12123,14 +12123,14 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE18.8890814558059".
+      // is expected to be "018.8890814558059".
       // NOTE: The decimal value is 18.8890815, but the function converting the
       //       value to a string adds additional decimal positions that the
       //       test has to take into account. 
 
       func_call   = L"(Concat(bool_val, dbl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE18.8890814558059");
+      CheckReaderString(data_reader, 9, L"018.8890814558059");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12163,11 +12163,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE36".
+      // is expected to be "036".
 
       func_call   = L"(Concat(bool_val, i16_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE36");
+      CheckReaderString(data_reader, 9, L"036");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12200,11 +12200,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE90".
+      // is expected to be "090".
 
       func_call   = L"(Concat(bool_val, i32_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE90");
+      CheckReaderString(data_reader, 9, L"090");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12237,11 +12237,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSE3.09013".
+      // is expected to be "03.09013".
 
       func_call   = L"(Concat(bool_val, sgl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSE3.09013");
+      CheckReaderString(data_reader, 9, L"03.09013");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -12274,11 +12274,11 @@ void TestCommonExpressionFunctionW::TestConcatFunction ()
 
       // Execute the test and check the returned data. It is expected that
       // this call returns 1 row. The value for the selected computed property
-      // is expected to be "FALSEThe Color is: 2118".
+      // is expected to be "0The Color is: 2118".
 
       func_call   = L"(Concat(bool_val, str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"FALSEThe Color is: 2118");
+      CheckReaderString(data_reader, 9, L"0The Color is: 2118");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...

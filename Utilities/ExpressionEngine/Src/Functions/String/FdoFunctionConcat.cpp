@@ -192,9 +192,9 @@ FdoLiteralValue *FdoFunctionConcat::Evaluate (
           if (!bool_value->IsNull())
           {
               if (bool_value->GetBoolean())
-                arg_values[i] = L"TRUE";
+                arg_values[i] = L"1";
               else
-                arg_values[i] = L"FALSE";
+                arg_values[i] = L"0";
           }
 
           break;
