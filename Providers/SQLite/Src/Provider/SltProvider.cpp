@@ -2989,7 +2989,10 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?,?);", -1, &stmt, &tail);
         else
             rc = sqlite3_prepare_v2(db, "INSERT INTO SpatialExtentsResult VALUES(?);", -1, &stmt, &tail);
-        rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
+        if (ext.IsEmpty())
+            rc = sqlite3_bind_blob(stmt, 1, NULL, 0, SQLITE_TRANSIENT);
+        else
+            rc = sqlite3_bind_blob(stmt, 1, &poly, sizeof(FgfPolygon), SQLITE_TRANSIENT);
         if (countname.size() != 0)
             rc = sqlite3_bind_int64(stmt, 2, count);
         rc = sqlite3_step(stmt);
