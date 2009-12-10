@@ -232,6 +232,12 @@ FdoArrayHelper::GenericArray* FdoArrayHelper::AllocMore(GenericArray* array, Fdo
     if (NULL == newArray)
     {
         // Fix ticket 575 to avoid out-of-memory exception causing application crash.
+        // Suppress any existing new handler to avoid unexpected behavior.
+#ifdef _WIN32
+        _PNH prevHdlr = _set_new_handler(NULL);
+#else
+        std::new_handler prevHdlr = std::set_new_handler(NULL);
+#endif
         try
         {
             newArray = (GenericArray*) new FdoByte[newAllocBytes];
@@ -239,6 +245,12 @@ FdoArrayHelper::GenericArray* FdoArrayHelper::AllocMore(GenericArray* array, Fdo
         catch(...)
         {
         }
+        // restore old handler
+#ifdef _WIN32
+        _set_new_handler(prevHdlr);
+#else
+        std::set_new_handler(prevHdlr);
+#endif
     }
 	if (0==newArray)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
