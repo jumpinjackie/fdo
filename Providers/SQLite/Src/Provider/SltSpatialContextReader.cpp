@@ -128,10 +128,8 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
     FdoFeatureClass* fc = NULL;
     FdoString* myname = GetName();
     double ext[4];
-    ext[0] = -DBL_MAX;
-    ext[1] = -DBL_MAX;
-    ext[2] = DBL_MAX;
-    ext[3] = DBL_MAX;
+    ext[0] = ext[1] = DBL_MAX;
+    ext[2] = ext[3] = -DBL_MAX;
 
     //do the search...
     for (int i=cc->GetCount()-1; i>=0; i--)
@@ -155,6 +153,9 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
             fc = NULL;
         }
     }
+    // in case the extent is "empty" return null
+    if (*ext > *(ext+2))
+        return NULL;
 
     FgfPolygon p;
 
