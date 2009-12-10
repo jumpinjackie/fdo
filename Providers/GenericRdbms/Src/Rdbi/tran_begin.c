@@ -85,6 +85,10 @@ char    *tran_id )
                                             sizeof(struct tran_entry_def));
     if (tran_entry == NULL) goto the_exit;
 
+    if( context->rdbi_cnct->tran_head == NULL && context->dispatch.tran_begin != NULL )
+    {
+        (*(context->dispatch.tran_begin))(context->drvr);
+    }
     strncpy(tran_entry->tran_id, tran_id, sizeof(tran_entry->tran_id));
     tran_entry->tran_id[sizeof(tran_entry->tran_id)-1] = '\0';
     tran_entry->tran_ended  = FALSE;

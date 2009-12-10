@@ -46,7 +46,7 @@
 
 int rdbi_set_schema (rdbi_context_def *context, const char *schema_name)
 {
-    int   status;
+    int   status = RDBI_SUCCESS;
 	char			sql[200];
 	int             trace_line_num;
 
@@ -55,7 +55,8 @@ int rdbi_set_schema (rdbi_context_def *context, const char *schema_name)
 	sprintf(sql, "set current_schema = %s", schema_name);
 	debug_trace(sql, (wchar_t *)NULL, &trace_line_num);
 
-    status = (*(context->dispatch.set_schema))(context->drvr, schema_name);
+    if( context->dispatch.set_schema != NULL )
+        status = (*(context->dispatch.set_schema))(context->drvr, schema_name);
 
 	sprintf(sql, "Status: %d", status);
 	debug_trace(sql, (wchar_t *)NULL, NULL);
@@ -68,7 +69,7 @@ int rdbi_set_schema (rdbi_context_def *context, const char *schema_name)
 
 int rdbi_set_schemaW (rdbi_context_def *context, const wchar_t *schema_name)
 {
-    int   status;
+    int   status = RDBI_SUCCESS;
 	wchar_t			sql[200];
 	int             trace_line_num;
 
@@ -77,7 +78,8 @@ int rdbi_set_schemaW (rdbi_context_def *context, const wchar_t *schema_name)
 	swprintf(sql, 199, L"set current_schema = %ls", schema_name);
 	debug_trace((char*) NULL, sql, &trace_line_num);
 
-    status = (*(context->dispatch.set_schemaW))(context->drvr, schema_name);
+    if( context->dispatch.set_schemaW != NULL )
+        status = (*(context->dispatch.set_schemaW))(context->drvr, schema_name);
 
 	swprintf(sql, 199, L"Status: %d", status);
 	debug_trace((char*) NULL, sql, NULL);
