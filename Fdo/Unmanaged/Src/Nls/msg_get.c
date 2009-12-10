@@ -52,7 +52,7 @@ wchar_t* nls_msg_get_W2(wchar_t *msg_string,
     static wchar_t  msg_buf[NLS_BUFFSZ +1];
     char			*fmt_str = NULL;
     unsigned		msg_size;
-    wchar_t        *msg_bufp;
+    wchar_t         *msg_bufp = msg_buf;
 	wchar_t        *Wtext;
 
     pthread_mutex_lock(&NlsMsgGetCriticalSection);
