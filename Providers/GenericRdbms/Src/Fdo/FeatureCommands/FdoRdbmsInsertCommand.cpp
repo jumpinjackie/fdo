@@ -251,7 +251,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
                // Get the autoincremented Id values if not already set
 				if( featInfoCol->GetCount() != 0 )
 				{
-					FetchAutoincrementedIdValues( oneClass->GetClass(), featInfoCol );
+                    FetchAutoincrementedIdValues( oneClass->GetClass(), featInfoCol, (i==0)?allPropertyValues:NULL );
 				}
             }
             catch( FdoRdbmsException *exp )
@@ -631,7 +631,7 @@ bool FdoRdbmsInsertCommand::IsPropertyValueAutoincremented( const FdoSmLpClassDe
 	return isAutoincremented;
 }
 
-void FdoRdbmsInsertCommand::FetchAutoincrementedIdValues( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection* featInfoCol )
+void FdoRdbmsInsertCommand::FetchAutoincrementedIdValues( const FdoSmLpClassDefinition *classDefinition, FdoPropertyValueCollection* featInfoCol, FdoPropertyValueCollection* allPropertyValues )
 {   
     int idx;
 
@@ -646,6 +646,18 @@ void FdoRdbmsInsertCommand::FetchAutoincrementedIdValues( const FdoSmLpClassDefi
 	        FdoPtr<FdoDataValue>idValue = FdoDataValue::Create( newNumber );
 	        infoProp->SetValue( idValue );
             break;
+        }
+        else if( allPropertyValues != NULL )
+        {
+            FdoPtr<FdoIdentifier> infoIdent = infoProp->GetName();
+            FdoPtr<FdoPropertyValue> propVal = allPropertyValues->FindItem( infoIdent->GetName() );
+            if ( propVal ) 
+            {
+                FdoPtr<FdoValueExpression> propValue = propVal->GetValue();
+
+                if ( propValue && wcscmp(infoIdent->GetName(),L"RevisionNumber") != 0)
+                    infoProp->SetValue( propValue );
+            }
         }
     }
 }

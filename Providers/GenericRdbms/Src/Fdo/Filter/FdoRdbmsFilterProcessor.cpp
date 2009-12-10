@@ -2211,7 +2211,13 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
         {
             if(( FdoCommonOSUtil::wcsicmp( dataPropertyDef->GetColumnName(), L"classname" )  != 0 ) &&
                ( FdoCommonOSUtil::wcsicmp( dataPropertyDef->GetColumnName(), L"schemaname" ) != 0 )     )
-                all->Add( dataPropertyDef->GetColumnName() );
+            {
+                if ( dataPropertyDef->RefColumn() )
+				{
+					const FdoSmPhColumn* column = dataPropertyDef->RefColumn();
+                    all->Add( column->GetDbName() );
+                }
+            }
         }
 		else
 		{
