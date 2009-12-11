@@ -23,7 +23,8 @@
 #include <malloc.h>
 #include <sys/stat.h>
 #include <xalanc/XalanDOM/XalanNode.hpp>
-
+#include <xercesc/util/TransENameMap.hpp>
+#include "XML885915Transcoder.h"
 
 class FdoXmlUtilXrcsSingleton
 {
@@ -31,12 +32,54 @@ public:
     FdoXmlUtilXrcsSingleton()
     {
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();
+
+        // Fix Ticket #600 - the capability document with ISO-8859-15 can't be parsed by Xerecs library
+        if (XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgTransService)
+        {
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgTransService->addEncoding((const XMLCh*)fgISO885915EncodingString, new XERCES_CPP_NAMESPACE::ENameMapFor<XML885915Transcoder>(fgISO885915EncodingString));
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgTransService->addEncoding((const XMLCh*)fgISO885915EncodingString2, new XERCES_CPP_NAMESPACE::ENameMapFor<XML885915Transcoder>(fgISO885915EncodingString2));
+            XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgTransService->addEncoding((const XMLCh*)fgISO885915EncodingString3, new XERCES_CPP_NAMESPACE::ENameMapFor<XML885915Transcoder>(fgISO885915EncodingString3));
+        }
     }
 
     ~FdoXmlUtilXrcsSingleton()
     {
         XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
     }
+
+private:
+    static const XMLCh fgISO885915EncodingString[];  //"ISO8859-15"
+    static const XMLCh fgISO885915EncodingString2[]; //"ISO-8859-15"
+    static const XMLCh fgISO885915EncodingString3[]; //"ISO_8859-15"
+};
+
+// "ISO8859-15"
+const XMLCh FdoXmlUtilXrcsSingleton::fgISO885915EncodingString[] = 
+{
+    0x49, 0x53, 0x4F, /*I,S,O,*/
+    0x38, 0x38, 0x35, 0x39, /*8,8,5,9*/
+    0x2D, /*-*/
+    0x31, 0x35, 0x00 /*1,5*/
+};
+
+// "ISO-8859-15"
+const XMLCh FdoXmlUtilXrcsSingleton::fgISO885915EncodingString2[] = 
+{
+    0x49, 0x53, 0x4F, /*I,S,O,*/
+    0x2D, /*-*/
+    0x38, 0x38, 0x35, 0x39, /*8,8,5,9*/
+    0x2D, /*-*/
+    0x31, 0x35, 0x00 /*1,5*/
+};
+
+// "ISO_8859-15"
+const XMLCh FdoXmlUtilXrcsSingleton::fgISO885915EncodingString3[] = 
+{
+    0x49, 0x53, 0x4F, /*I,S,O,*/
+    0x5F, /*_*/
+    0x38, 0x38, 0x35, 0x39, /*8,8,5,9*/
+    0x2D, /*-*/
+    0x31, 0x35, 0x00 /*1,5*/
 };
 
 class FdoXslSingleton

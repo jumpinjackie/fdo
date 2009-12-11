@@ -574,6 +574,14 @@
 					RelativePath="Src\Common\Xsl\TransformerXalan.cpp"
 					>
 				</File>
+				<File
+					RelativePath="Src\Common\Xsl\XML885915Transcoder.cpp"
+					>
+				</File>
+				<File
+					RelativePath="Src\Common\Xsl\XML885915Transcoder.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="temp"

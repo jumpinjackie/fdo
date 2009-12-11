@@ -59,6 +59,7 @@ libFDOCommon_la_SOURCES = \
   Xml/XmlException.cpp \
   Xsl/Transformer.cpp \
   Xsl/TransformerXalan.cpp \
+  Xsl/XML885915Transcoder.cpp \
   Gml212/Schema.cpp \
   Gml212/Gml212.cpp
 
@@ -70,7 +71,8 @@ noinst_HEADERS = $(libFDOCommon_la_SOURCES) \
   Gml212/geometry.h \
   Gml212/xlinks.h \
   Xml/ReaderXrcs.h \
-  Xml/WriterXrcs.h
+  Xml/WriterXrcs.h \
+  Xsl/XML885915Transcoder.h
 
 INCLUDES = \
   -I../../Inc \
