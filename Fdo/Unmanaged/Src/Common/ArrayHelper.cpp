@@ -16,8 +16,8 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #include <memory.h>
-
 #include <FdoCommon.h>
+#include <new.h>
 
 #define MIN_ALLOC 1
 #define GROWTH_FACTOR 1     /* Proportion of array size to grow when needed. */
