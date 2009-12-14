@@ -523,7 +523,7 @@ FdoSmPhSpatialContextGroupWriterP FdoSmPhMgr::GetSpatialContextGroupWriter()
     if ( !mSpatialContextGroupWriter ) 
         mSpatialContextGroupWriter = NewSpatialContextGroupWriter();
 
-    mSpatialContextGroupWriter->Clear();
+    mSpatialContextGroupWriter->Initialize();
 
     return mSpatialContextGroupWriter;
 }

@@ -103,7 +103,7 @@ FdoSmPhReaderP FdoSmPhSpatialContextGroupReader::MakeReader( FdoSmPhMgrP mgr )
     // Create the row collection describing class attributes.
     FdoSmPhRowsP rows = new FdoSmPhRowCollection();
 
-    FdoSmPhRowP scgRow = FdoSmPhSpatialContextGroupWriter::MakeRow(mgr);
+    FdoSmPhRowP scgRow = mgr->GetSpatialContextGroupWriter()->MakeRow(mgr);
     rows->Add( scgRow );
 
     // TODO: add handling for spatial contexts in configuration files.

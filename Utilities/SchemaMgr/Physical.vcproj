@@ -831,6 +831,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath=".\Src\Sm\Ph\Rd\SchemaDbObjectBinds.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Src\Sm\Ph\Rd\SchemaReader.cpp"
 					>
 					<FileConfiguration
@@ -1623,11 +1627,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
@@ -1979,6 +1983,10 @@
 				</File>
 				<File
 					RelativePath="Inc\Sm\Ph\Rd\QueryReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\SchemaDbObjectBinds.h"
 					>
 				</File>
 				<File

@@ -23,7 +23,8 @@
 
 
 FdoSmPhSpatialContextGroupWriter::FdoSmPhSpatialContextGroupWriter(FdoSmPhMgrP mgr) : 
-	FdoSmPhWriter( MakeWriter(mgr) )
+	FdoSmPhWriter( (FdoSmPhWriter*) NULL ),
+    mMgr(mgr.p)
 {
 }
 
@@ -216,12 +217,12 @@ FdoSmPhRowP FdoSmPhSpatialContextGroupWriter::MakeRow( FdoSmPhMgrP mgr )
     field = new FdoSmPhField( row, L"srid", (FdoSmPhColumn*) NULL, L"" );
     field = new FdoSmPhField( row, L"xtolerance", (FdoSmPhColumn*) NULL, L"0.001" );
     field = new FdoSmPhField( row, L"ztolerance", (FdoSmPhColumn*) NULL, L"0.001" );
-    field = new FdoSmPhField( row, L"xmin", (FdoSmPhColumn*) NULL, L"-2000000" );
-    field = new FdoSmPhField( row, L"ymin", (FdoSmPhColumn*) NULL, L"-2000000" );
-    field = new FdoSmPhField( row, L"zmin", (FdoSmPhColumn*) NULL, L"-2000000" );
-    field = new FdoSmPhField( row, L"xmax", (FdoSmPhColumn*) NULL, L"2000000" );
-    field = new FdoSmPhField( row, L"ymax", (FdoSmPhColumn*) NULL, L"2000000" );
-    field = new FdoSmPhField( row, L"zmax", (FdoSmPhColumn*) NULL, L"2000000" );
+    field = new FdoSmPhField( row, L"xmin", row->CreateColumnDouble(ColNameXMin(),true), L"-2000000" );
+    field = new FdoSmPhField( row, L"ymin", row->CreateColumnDouble(ColNameYMin(),true), L"-2000000" );
+    field = new FdoSmPhField( row, L"zmin", row->CreateColumnDouble(ColNameZMin(),true), L"-2000000" );
+    field = new FdoSmPhField( row, L"xmax", row->CreateColumnDouble(ColNameXMax(),true), L"2000000" );
+    field = new FdoSmPhField( row, L"ymax", row->CreateColumnDouble(ColNameYMax(),true), L"2000000" );
+    field = new FdoSmPhField( row, L"zmax", row->CreateColumnDouble(ColNameZMax(),true), L"2000000" );
     field = new FdoSmPhField( row, L"extenttype", (FdoSmPhColumn*) NULL, L"S" );
 
     return( row );
@@ -233,3 +234,40 @@ FdoSmPhWriterP FdoSmPhSpatialContextGroupWriter::MakeWriter( FdoSmPhMgrP mgr )
 
     return subWriter.p->SmartCast<FdoSmPhWriter>();
 }
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameXMin()
+{
+    return L"xmin";
+}
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameYMin()
+{
+    return L"ymin";
+}
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameZMin()
+{
+    return L"zmin";
+}
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameXMax()
+{
+    return L"xmax";
+}
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameYMax()
+{
+    return L"ymax";
+}
+
+FdoStringP FdoSmPhSpatialContextGroupWriter::ColNameZMax()
+{
+    return L"zmax";
+}
+
+void FdoSmPhSpatialContextGroupWriter::Initialize()
+{
+    SetSubWriter( MakeWriter(FDO_SAFE_ADDREF(mMgr)) );
+    Clear();
+}
+
