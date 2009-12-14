@@ -1257,6 +1257,11 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
                         className = schemaName + L":" + className;
                     }
                 }
+                else 
+                {
+                    if ( schemaName != className.Left(delimiter) ) 
+                        continue;
+                }
 
                 const FdoSmLpClassDefinition* pLpClassDef = pLpSchema->FindClass(className, false);
                 if (pLpClassDef)

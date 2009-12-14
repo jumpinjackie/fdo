@@ -112,7 +112,19 @@ public:
 	//
     /// Parameters:
     /// 	physicalSchema: holds the connection for the datastore to query.
-    static FdoSmPhRowP MakeRow( FdoSmPhMgrP mgr );
+    virtual FdoSmPhRowP MakeRow( FdoSmPhMgrP mgr );
+
+    // Various functions that specific column names for f_spatialcontextgroup
+    // attributes. Providers that need to can override these.
+    virtual FdoStringP ColNameXMin();
+    virtual FdoStringP ColNameYMin();
+    virtual FdoStringP ColNameZMin();
+    virtual FdoStringP ColNameXMax();
+    virtual FdoStringP ColNameYMax();
+    virtual FdoStringP ColNameZMax();
+
+    // Initialize this object. Set up its sub-writer.
+    virtual void Initialize();
 
 protected:
     /// Unused constructor needed only to build on Linux
@@ -122,6 +134,9 @@ protected:
     FdoSmPhWriterP MakeWriter( FdoSmPhMgrP mgr );
     
     void SetId( FdoInt64 lValue);
+
+private:
+    FdoSmPhMgr* mMgr;
 };
 
 typedef FdoPtr<FdoSmPhSpatialContextGroupWriter> FdoSmPhSpatialContextGroupWriterP;
