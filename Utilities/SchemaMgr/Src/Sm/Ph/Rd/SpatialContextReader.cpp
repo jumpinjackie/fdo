@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/Table.h>
+#include <FdoCommonGeometryUtil.h>
 
 const double FdoSmPhRdSpatialContextReader::mDefaultXMin = -2000000;
 const double FdoSmPhRdSpatialContextReader::mDefaultYMin = -2000000;
@@ -71,6 +72,13 @@ bool FdoSmPhRdSpatialContextReader::GetHasElevation()
 bool FdoSmPhRdSpatialContextReader::GetHasMeasure()
 {
 	return false;
+}
+
+FdoInt32 FdoSmPhRdSpatialContextReader::GetGeometryType()
+{
+    // By default, Spatial Context Geometry associations do not 
+    // restrict geometry types.
+    return FdoCommonGeometryUtil::GetAllGeometryTypesCode();
 }
 
 FdoString* FdoSmPhRdSpatialContextReader::GetCoordinateSystem()

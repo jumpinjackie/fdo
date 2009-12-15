@@ -1292,6 +1292,7 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
 														    scReader->GetGeomColumnName(),
 														    scReader->GetHasElevation(),
                                                             scReader->GetHasMeasure(),
+                                                            scReader->GetGeometryType(),
                                                             scReader->IsDerived(),
                                                             sc,
                                                             mSpatialContexts
