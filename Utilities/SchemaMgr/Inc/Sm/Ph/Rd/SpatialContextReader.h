@@ -54,6 +54,9 @@ public:
 
     virtual bool GetHasMeasure();
 
+    // Allowed geometry types in hexcode format.
+    virtual FdoInt32 GetGeometryType();
+
     /// Gets the name of the coordinate system of the spatial context currently
     /// being read. If the result is a null or empty string, the coordinate system is
     /// unknown to the spatial context.
