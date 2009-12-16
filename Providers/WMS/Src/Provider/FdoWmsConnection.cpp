@@ -983,7 +983,7 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
         for (FdoInt32 i=0; i<cntChildLayers; i++)
         {
             FdoWmsLayerP childLayer = childLayers->GetItem (i);
-            _addFeatureClass (featClasses, childLayer, featureClassDef != NULL ? featureClassDef : parent);
+            _addFeatureClass (featClasses, childLayer, featureClassDef.p != NULL ? featureClassDef.p : parent);
         }
     }
 }
