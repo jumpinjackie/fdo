@@ -871,6 +871,29 @@ void FdoWmsConnection::_buildUpDefaultSchemaMappings ()
     }
 }
 
+// helper function to generate a valid FDO class name from a WMS layer name
+FdoStringP _generateValidFdoClassName(FdoStringP& layerName)
+{
+    // If these characters are in the layer name, adding the class to the schema will fail
+    // FOR NOW... Remove these characters and substitute with empty spaces 
+    FdoStringP modLayerName = layerName.Replace( L".", L" " );
+    modLayerName = modLayerName.Replace( L":", L" " );
+
+    // Trim off any leading/trailing spaces
+    int origLen = modLayerName.GetLength();
+    FdoString* checkStr = (FdoString*)modLayerName;
+    if (NULL != wcschr(L" ", checkStr[0]))
+        modLayerName = modLayerName.Right(L" ");
+
+    origLen = modLayerName.GetLength();
+    checkStr = (FdoString*)modLayerName;
+    if (NULL != wcschr(L" ", checkStr[origLen-1]))
+        modLayerName = modLayerName.Mid(0, origLen-1);
+
+    // Return the modified layer name
+    return modLayerName;
+}
+
 // helper function to create a feature class from a WMS layer and add the class into the collection
 void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWmsLayer* layer, FdoClassDefinition* parent)
 {
@@ -884,20 +907,18 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
         layerName = layer->GetTitle ();
     }
 
-    // If these characters are in the layer name, adding the class to the schema will fail
-    // FOR NOW... Remove these characters and substitute with empty spaces 
-    FdoStringP tmpLayerName = layerName.Replace( L".", L" " );
-    FdoStringP modLayerName = tmpLayerName.Replace( L":", L" " );
-
+    // Generate a valid FDO class name from a WMS layer name
+    FdoStringP modLayerName = _generateValidFdoClassName(layerName);
+    
     // If the layer name is valid, we can try and add the layer
-    FdoClassDefinition* classDef = NULL;
+    FdoPtr<FdoClassDefinition> featureClassDef;
     if (layerName.GetLength() != 0) 
     {
         // If the FDO Feature class exists, we cannot add it
-        classDef = featClasses->FindItem (modLayerName);
+        FdoPtr<FdoClassDefinition> classDef = featClasses->FindItem (modLayerName);
         if (NULL == classDef)
         {
-            // Map the modofoed FDO class name to the WMS layer name so that the layer name can be used 
+            // Map the modified FDO class name to the WMS layer name so that the layer name can be used 
             // in the FdoISelect command to return 
             FdoDictionaryElementP dictElement = FdoDictionaryElement::Create(modLayerName, layerName);
             mLayerMappings->Add(dictElement);
@@ -950,7 +971,7 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
             featClasses->Add (featClass);
 
             // Set the outer class definition object
-            classDef = featClass.p;
+            featureClassDef = FDO_SAFE_ADDREF(featClass.p);
         }
     }
 
@@ -962,7 +983,7 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
         for (FdoInt32 i=0; i<cntChildLayers; i++)
         {
             FdoWmsLayerP childLayer = childLayers->GetItem (i);
-            _addFeatureClass (featClasses, childLayer, classDef != NULL ? classDef : parent);
+            _addFeatureClass (featClasses, childLayer, featureClassDef != NULL ? featureClassDef : parent);
         }
     }
 }
@@ -1215,11 +1236,9 @@ void FdoWmsConnection::_buildUpClassLayerMappings (FdoWmsLayerCollection *layers
 
 void FdoWmsConnection::_buildUpClassLayerMapping (FdoWmsLayer* layer)
 {
-    //
     // Retrieve the layer 'Name' from the WMS layer. We first try  
     // the actual layer name. If that is not set, we use the layer 
     // title as the name
-    //
     FdoStringP layerName = layer->GetName ();
     if (layerName.GetLength() == 0) {
         layerName = layer->GetTitle ();
@@ -1228,18 +1247,12 @@ void FdoWmsConnection::_buildUpClassLayerMapping (FdoWmsLayer* layer)
         }
     }
 
-    //
-    // If these characters are in the layer name, adding the class to the schema will fail
-    // FOR NOW... Remove these characters and substitute with empty spaces 
-    //
-    FdoStringP tmpLayerName = layerName.Replace( L".", L" " );
-    FdoStringP modLayerName = tmpLayerName.Replace( L":", L" " );
+    // Generate a valid FDO class name from a WMS layer name
+    FdoStringP modLayerName = _generateValidFdoClassName(layerName);
 
-    //
     // If not already in the layer collection, add it. 
     // NOTE: Several abstract layers may have the same title.
     // This would cause the second item to be igniored
-    //
     if (mLayerMappings->FindItem (modLayerName) == NULL)
     {
         FdoPtr<FdoDictionaryElement> pair = FdoDictionaryElement::Create (modLayerName, layerName);
