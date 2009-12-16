@@ -265,6 +265,7 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     FdoStringP                              form_arg_literal;
     FdoStringP                              num_arg_literal;
 
+    FdoPtr<FdoArgumentDefinition>           bool_arg;
     FdoPtr<FdoArgumentDefinition>           byte_arg;
     FdoPtr<FdoArgumentDefinition>           dt_arg;
     FdoPtr<FdoArgumentDefinition>           dcl_arg;
@@ -278,6 +279,7 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     FdoPtr<FdoArgumentDefinitionCollection> dt_args;
     FdoPtr<FdoArgumentDefinitionCollection> dt_form_args;
 
+    FdoPtr<FdoArgumentDefinitionCollection> bool_args;
     FdoPtr<FdoArgumentDefinitionCollection> byte_args;
     FdoPtr<FdoArgumentDefinitionCollection> dcl_args;
     FdoPtr<FdoArgumentDefinitionCollection> dbl_args;
@@ -314,6 +316,8 @@ void FdoFunctionToString::CreateFunctionDefinition ()
                     dt_arg_literal, arg1_description, FdoDataType_DateTime);
     form_arg  = FdoArgumentDefinition::Create(
                     form_arg_literal, arg2_description, FdoDataType_String);
+    bool_arg  = FdoArgumentDefinition::Create(
+                    num_arg_literal, arg1_description, FdoDataType_Boolean);
     byte_arg  = FdoArgumentDefinition::Create(
                     num_arg_literal, arg1_description, FdoDataType_Byte);
     dcl_arg   = FdoArgumentDefinition::Create(
@@ -335,6 +339,9 @@ void FdoFunctionToString::CreateFunctionDefinition ()
     dt_form_args = FdoArgumentDefinitionCollection::Create();
     dt_form_args->Add(dt_arg);
     dt_form_args->Add(form_arg);
+
+    bool_args = FdoArgumentDefinitionCollection::Create();
+    bool_args->Add(bool_arg);
 
     byte_args = FdoArgumentDefinitionCollection::Create();
     byte_args->Add(byte_arg);
@@ -366,6 +373,9 @@ void FdoFunctionToString::CreateFunctionDefinition ()
 
     signature = FdoSignatureDefinition::Create(
                                             FdoDataType_String, dt_form_args);
+    signatures->Add(signature);
+
+    signature = FdoSignatureDefinition::Create(FdoDataType_String, bool_args);
     signatures->Add(signature);
 
     signature = FdoSignatureDefinition::Create(FdoDataType_String, byte_args);
