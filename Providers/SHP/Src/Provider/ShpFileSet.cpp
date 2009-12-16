@@ -645,8 +645,11 @@ bool ShpFileSet::AdjustExtents (Shape* shape, bool remove, bool useCopyFiles)
         shp->SetBoundingBoxMaxY (after.yMax);
         shp->SetBoundingBoxMinZ (after.zMin);
         shp->SetBoundingBoxMaxZ (after.zMax);
-        shp->SetBoundingBoxMinM (after.mMin);
-        shp->SetBoundingBoxMaxM (after.mMax);
+        if (after.mMin > fNO_DATA && after.mMax > fNO_DATA)
+        {
+            shp->SetBoundingBoxMinM (after.mMin);
+            shp->SetBoundingBoxMaxM (after.mMax);
+        }
         shp->SetHeaderDirty (true);
         shx->SetBoundingBoxMinX (after.xMin);
         shx->SetBoundingBoxMaxX (after.xMax);
@@ -654,8 +657,11 @@ bool ShpFileSet::AdjustExtents (Shape* shape, bool remove, bool useCopyFiles)
         shx->SetBoundingBoxMaxY (after.yMax);
         shx->SetBoundingBoxMinZ (after.zMin);
         shx->SetBoundingBoxMaxZ (after.zMax);
-        shx->SetBoundingBoxMinM (after.mMin);
-        shx->SetBoundingBoxMaxM (after.mMax);
+        if (after.mMin > fNO_DATA && after.mMax > fNO_DATA)
+        {
+            shx->SetBoundingBoxMinM (after.mMin);
+            shx->SetBoundingBoxMaxM (after.mMax);
+        }
         shx->SetHeaderDirty (true);
     }
 
