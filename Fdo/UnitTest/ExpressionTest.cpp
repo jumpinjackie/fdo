@@ -15,6 +15,7 @@
 
 #include "Pch.h"
 #include "ExpressionTest.h"
+#include "UnitTestUtil.h"
 #include <math.h>
 #ifdef _DEBUG
 //#define DEBUG_DETAIL	1
@@ -282,408 +283,447 @@ void ExpressionTest::testDataValue()
 
 void ExpressionTest::testDataValueConvert()
 {
-/* From Boolean Tests */
-    FdoBoolean normBool[] = { true, false };
-    FdoString* expNormBool[] = { L"TRUE", L"FALSE" };
-    FdoString* expNormBoolNum[] = { L"1", L"0" };
-    FdoString* expNormBoolStr[] = { L"'TRUE'", L"'FALSE'" };
+    try {
+    /* From Boolean Tests */
+        FdoBoolean normBool[] = { true, false };
+        FdoString* expNormBool[] = { L"TRUE", L"FALSE" };
+        FdoString* expNormBoolNum[] = { L"1", L"0" };
+        FdoString* expNormBoolStr[] = { L"'TRUE'", L"'FALSE'" };
 
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBool, FdoDataType_Boolean);
-    IncompatibleCase<FdoBooleanValue, FdoBoolean>(normBool[0], FdoDataType_DateTime);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Byte);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Decimal);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Double);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int16);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int32);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int64);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Single);
-    NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolStr, FdoDataType_String);
-    NullCases<FdoBooleanValue>();
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBool, FdoDataType_Boolean);
+        IncompatibleCase<FdoBooleanValue, FdoBoolean>(normBool[0], FdoDataType_DateTime);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Byte);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Decimal);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Double);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int16);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int32);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Int64);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolNum, FdoDataType_Single);
+        NormalCase<FdoBooleanValue, FdoBoolean>(2, normBool, expNormBoolStr, FdoDataType_String);
+        NullCases<FdoBooleanValue>();
 
-/* From Byte Tests */
-    FdoByte normByte[] = { 5, 0, 128, 255, 254 };
-    FdoString* expNormByte[] = { L"5", L"0", L"128", L"255", L"254" };
-    FdoString* expNormByteStr[] = { L"'5'", L"'0'", L"'128'", L"'255'", L"'254'" };
-    FdoByte truncByte[] = { 2, 100, 255 };
-    FdoString* expTruncByte[] = { L"TRUE", L"TRUE", L"TRUE" };
-
-
-    NormalToBoolCase<FdoByteValue, FdoByte>();
-    IncompatibleCase<FdoByteValue, FdoByte>(normBool[0], FdoDataType_DateTime);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Byte);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Decimal);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Double);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int16);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int32);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int64);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Single);
-    NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByteStr, FdoDataType_String);
-    NullCases<FdoByteValue>();
-    TruncateCase<FdoByteValue, FdoByte>(3, truncByte, expTruncByte, FdoDataType_Boolean);
-
-/* From DateTime Tests */
-    FdoDateTime normDateTime[] = { FdoDateTime(2008, 10, 30, 16, 0, 30) };
-    FdoString* expNormDateTime[] = { L"TIMESTAMP '2008-10-30 16:00:30'" };
-    FdoString* expNormDateTimeStr[] = { L"'TIMESTAMP ''2008-10-30 16:00:30'''" };
-
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Boolean);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Byte);
-    NormalCase<FdoDateTimeValue, FdoDateTime>(1, normDateTime, expNormDateTime, FdoDataType_DateTime);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Decimal);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Double);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int16);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int32);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int64);
-    IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Single);
-    NormalCase<FdoDateTimeValue, FdoDateTime>(1, normDateTime, expNormDateTimeStr, FdoDataType_String);
-    NullCases<FdoDateTimeValue>();
-
-/* From Decimal Tests */
-
-    FdoDouble doubleVals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483648LL, 2147483647, -2147483649LL, 2147483648LL, -1000000000000LL, -pow((FdoDouble)2,(FdoDouble) 63), (pow((FdoDouble)2, (FdoDouble)52) - 1) * pow((FdoDouble)2, (FdoDouble)11), -pow((FdoDouble)2, (FdoDouble)63) - pow((FdoDouble)2, (FdoDouble)11), pow((FdoDouble)2,(FdoDouble) 63), 1.892e101, -1.7e308, 1.7e308 };
-    FdoString* expDoubleVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854773760", L"-9.22337203685478e+018", L"9.22337203685478e+018", L"1.892e101", L"-1.7e308", L"1.7e308" };
-    FdoString* expDoubleValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", L"'-9.22337203685478e+018'", L"'9.22337203685477e+018'", L"'-9.22337203685478e+018'", L"'9.22337203685478e+018'", L"'1.892e101'", L"'-1.7e308'", L"'1.7e308'" };
-    FdoString* expDoubleValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expDoubleValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"255", L"0", L"255" };
-    FdoString* expDoubleValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767" };
-    FdoString* expDoubleValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"2147483647", L"-2147483648", L"2147483647" };
-    FdoString* expDoubleValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"9223372036854775807", L"-9223372036854775808", L"9223372036854775807" };
-    FdoString* expDoubleValsSingle[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"3.4e+038", L"-3.4e+038", L"3.4e+038" };
-    FdoDouble doubleFractVals[] = { -5.8, -5.5, -5.3, -0.51, -0.5, -0.1, 0.2, 0.5, 0.51, 100.4, 101.5, 105.9 };
-    FdoString* expDoubleFractVals[] = { L"-5.8", L"-5.5", L"-5.3", L"-0.51", L"-0.5", L"-0.1", L"0.2", L"0.5", L"0.51", L"100.4", L"101.5", L"105.9" };
-    FdoString* expDoubleRoundVals[] = { L"-6", L"-6", L"-5", L"-1", L"-1", L"0", L"0", L"1", L"1", L"100", L"102", L"106" };
-    FdoString* expDoubleFractValsStr[] = { L"'-5.8'", L"'-5.5'", L"'-5.3'", L"'-0.51'", L"'-0.5'", L"'-0.1'", L"'0.2'", L"'0.5'", L"'0.51'", L"'100.4'", L"'101.5'", L"'105.9'" };
-    FdoString* expDoubleRoundValsBool[] = { L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoDouble doubleFractValsByte[] = { -0.5, -0.1, 255.2, 255.5 };
-    FdoString* expDoubleFractValsByte[] = { L"0", L"0", L"255", L"255" };
-    FdoDouble doubleFractValsInt16[] = { -32768.5, -32768.1, 32767.2, 32767.5 };
-    FdoString* expDoubleFractValsInt16[] = { L"-32768", L"-32768", L"32767", L"32767" };
-    FdoDouble doubleFractValsInt32[] = { -2147483648.5, -2147483648.1, 2147483647.2, 2147483647.5 };
-    FdoString* expDoubleFractValsInt32[] = { L"-2147483648", L"-2147483648", L"2147483647", L"2147483647" };
-
-    NormalToBoolCase<FdoDecimalValue, FdoDouble>();
-    NormalCase<FdoDecimalValue, FdoDouble>(5, doubleVals, expDoubleVals, FdoDataType_Byte);
-    IncompatibleCase<FdoDecimalValue, FdoDouble>(doubleVals[7], FdoDataType_DateTime);
-    NormalCase<FdoDecimalValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Decimal);
-    NormalCase<FdoDecimalValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Double);
-    NormalCase<FdoDecimalValue, FdoDouble>(10, doubleVals, expDoubleVals, FdoDataType_Int16);
-    NormalCase<FdoDecimalValue, FdoDouble>(15, doubleVals, expDoubleVals, FdoDataType_Int32);
-    NormalCase<FdoDecimalValue, FdoDouble>(20, doubleVals, expDoubleVals, FdoDataType_Int64);
-    NormalCase<FdoDecimalValue, FdoDouble>(13, doubleVals, expDoubleVals, FdoDataType_Single);
-    NormalCase<FdoDecimalValue, FdoDouble>(18, doubleVals, expDoubleValsStr, FdoDataType_String);
-    NullCases<FdoDecimalValue>();
-    TruncateCase<FdoDecimalValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoDecimalValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoDecimalValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoDecimalValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
-    TruncateCase<FdoDecimalValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
-    TruncateCase<FdoDecimalValue, FdoDouble>(3, &doubleVals[22], &expDoubleValsSingle[22], FdoDataType_Single);
-    TruncateCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundValsBool, FdoDataType_Boolean);
-    NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Decimal);
-    NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Double);
-    ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int16);
-    ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int32);
-    ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int64);
-    ShiftCase<FdoDecimalValue, FdoDouble>(1, doubleFractVals, expDoubleFractVals, FdoDataType_Single);
-    NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractValsStr, FdoDataType_String);
-
-/* From Double Tests */
-
-    NormalToBoolCase<FdoDoubleValue, FdoDouble>();
-    NormalCase<FdoDoubleValue, FdoDouble>(5, doubleVals, expDoubleVals, FdoDataType_Byte);
-    IncompatibleCase<FdoDoubleValue, FdoDouble>(doubleVals[7], FdoDataType_DateTime);
-    NormalCase<FdoDoubleValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Decimal);
-    NormalCase<FdoDoubleValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Double);
-    NormalCase<FdoDoubleValue, FdoDouble>(10, doubleVals, expDoubleVals, FdoDataType_Int16);
-    NormalCase<FdoDoubleValue, FdoDouble>(15, doubleVals, expDoubleVals, FdoDataType_Int32);
-    NormalCase<FdoDoubleValue, FdoDouble>(20, doubleVals, expDoubleVals, FdoDataType_Int64);
-    NormalCase<FdoDoubleValue, FdoDouble>(13, doubleVals, expDoubleVals, FdoDataType_Single);
-    NormalCase<FdoDoubleValue, FdoDouble>(18, doubleVals, expDoubleValsStr, FdoDataType_String);
-    NullCases<FdoDoubleValue>();
-    TruncateCase<FdoDoubleValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoDoubleValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoDoubleValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoDoubleValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
-    TruncateCase<FdoDoubleValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
-    TruncateCase<FdoDoubleValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoDoubleValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoDoubleValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoDoubleValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
-    TruncateCase<FdoDoubleValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
-    TruncateCase<FdoDoubleValue, FdoDouble>(3, &doubleVals[22], &expDoubleValsSingle[22], FdoDataType_Single);
-    TruncateCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundValsBool, FdoDataType_Boolean);
-    NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Decimal);
-    NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Double);
-    ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int16);
-    ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int32);
-    ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int64);
-    ShiftCase<FdoDoubleValue, FdoDouble>(1, doubleFractVals, expDoubleFractVals, FdoDataType_Single);
-    NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractValsStr, FdoDataType_String);
-    ShiftCase<FdoDoubleValue, FdoDouble>(4, &doubleVals[18], &expDoubleValsStr[18], FdoDataType_String);
-
-    TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsByte, expDoubleFractValsByte, FdoDataType_Byte);
-    TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsInt16, expDoubleFractValsInt16, FdoDataType_Int16);
-    TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsInt32, expDoubleFractValsInt32, FdoDataType_Int32);
+    /* From Byte Tests */
+        FdoByte normByte[] = { 5, 0, 128, 255, 254 };
+        FdoString* expNormByte[] = { L"5", L"0", L"128", L"255", L"254" };
+        FdoString* expNormByteStr[] = { L"'5'", L"'0'", L"'128'", L"'255'", L"'254'" };
+        FdoByte truncByte[] = { 2, 100, 255 };
+        FdoString* expTruncByte[] = { L"TRUE", L"TRUE", L"TRUE" };
 
 
-/* From Int16 Tests */
-    FdoInt16 int16Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767 };
-    FdoString* expInt16Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767" };
-    FdoString* expInt16ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'" };
-    FdoString* expInt16ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expInt16ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255" };
+        NormalToBoolCase<FdoByteValue, FdoByte>();
+        IncompatibleCase<FdoByteValue, FdoByte>(normBool[0], FdoDataType_DateTime);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Byte);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Decimal);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Double);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int16);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int32);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Int64);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByte, FdoDataType_Single);
+        NormalCase<FdoByteValue, FdoByte>(5, normByte, expNormByteStr, FdoDataType_String);
+        NullCases<FdoByteValue>();
+        TruncateCase<FdoByteValue, FdoByte>(3, truncByte, expTruncByte, FdoDataType_Boolean);
 
-    NormalToBoolCase<FdoInt16Value, FdoInt16>();
-    NormalCase<FdoInt16Value, FdoInt16>(5, int16Vals, expInt16Vals, FdoDataType_Byte);
-    IncompatibleCase<FdoInt16Value, FdoInt16>(int16Vals[7], FdoDataType_DateTime);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Decimal);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Double);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int16);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int32);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int64);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Single);
-    NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16ValsStr, FdoDataType_String);
-    NullCases<FdoInt16Value>();
-    TruncateCase<FdoInt16Value, FdoInt16>(8, &int16Vals[2], &expInt16ValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoInt16Value, FdoInt16>(5, &int16Vals[5], &expInt16ValsByte[5], FdoDataType_Byte);
+    /* From DateTime Tests */
+        FdoDateTime normDateTime[] = { FdoDateTime(2008, 10, 30, 16, 0, 30) };
+        FdoString* expNormDateTime[] = { L"TIMESTAMP '2008-10-30 16:00:30'" };
+        FdoString* expNormDateTimeStr[] = { L"'TIMESTAMP ''2008-10-30 16:00:30'''" };
 
-/* From Int32 Tests */
-    FdoInt32 int32Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483647L - 1L, 2147483647 };
-    FdoString* expInt32Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647" };
-    FdoString* expInt32ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'" };
-    FdoString* expInt32ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expInt32ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255" };
-    FdoString* expInt32ValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767" };
-    FdoInt32 int32ShiftVals[] = { -2147483647, 2147483391, 2147483647 };
-    FdoString* expInt32ShiftValsSingle[] = { L"-2.14748e+009", L"2.14748e+009", L"2.14748e+009" };
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Boolean);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Byte);
+        NormalCase<FdoDateTimeValue, FdoDateTime>(1, normDateTime, expNormDateTime, FdoDataType_DateTime);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Decimal);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Double);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int16);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int32);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Int64);
+        IncompatibleCase<FdoDateTimeValue, FdoDateTime>(normDateTime[0], FdoDataType_Single);
+        NormalCase<FdoDateTimeValue, FdoDateTime>(1, normDateTime, expNormDateTimeStr, FdoDataType_String);
+        NullCases<FdoDateTimeValue>();
 
-    NormalToBoolCase<FdoInt32Value, FdoInt32>();
-    NormalCase<FdoInt32Value, FdoInt32>(5, int32Vals, expInt32Vals, FdoDataType_Byte);
-    IncompatibleCase<FdoInt32Value, FdoInt32>(int32Vals[7], FdoDataType_DateTime);
-    NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Decimal);
-    NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Double);
-    NormalCase<FdoInt32Value, FdoInt32>(10, int32Vals, expInt32Vals, FdoDataType_Int16);
-    NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Int32);
-    NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Int64);
-    NormalCase<FdoInt32Value, FdoInt32>(13, int32Vals, expInt32Vals, FdoDataType_Single);
-    NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32ValsStr, FdoDataType_String);
-    NullCases<FdoInt32Value>();
-    TruncateCase<FdoInt32Value, FdoInt32>(13, &int32Vals[2], &expInt32ValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoInt32Value, FdoInt32>(10, &int32Vals[5], &expInt32ValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoInt32Value, FdoInt32>(5, &int32Vals[10], &expInt32ValsInt16[10], FdoDataType_Int16);
-    ShiftCase<FdoInt32Value, FdoInt32>(3, int32ShiftVals, expInt32ShiftValsSingle, FdoDataType_Single);
+    /* From Decimal Tests */
 
-/* From Int64 Tests */
-    FdoInt64 int64Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483648LL, 2147483647, -2147483649LL, 2147483648LL, -1000000000000LL, -9223372036854775807LL - 1LL, 9223372036854775807LL };
-    FdoString* expInt64Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854775807" };
-    FdoString* expInt64ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", L"'-9223372036854775808'", L"'9223372036854775807'" };
-    FdoString* expInt64ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expInt64ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
-    FdoString* expInt64ValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
-    FdoString* expInt64ValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
-    FdoInt64 int64ShiftVals[] = { - 9223372036854775807LL, 9223372036854775807LL - 4096, 9223372036854775807LL };
-    FdoString* expInt64ShiftValsSingle[] = { L"-9.22337e+018", L"9.22337e+018", L"9.22337e+018" };
-    FdoString* expInt64ShiftValsDouble[] = { L"-9.22337203685478e+018", L"9.22337203685477e+018", L"9.22337203685478e+018" };
+        FdoDouble doubleVals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483648LL, 2147483647, -2147483649LL, 2147483648LL, -1000000000000LL, -pow((FdoDouble)2,(FdoDouble) 63), (pow((FdoDouble)2, (FdoDouble)52) - 1) * pow((FdoDouble)2, (FdoDouble)11), -pow((FdoDouble)2, (FdoDouble)63) - pow((FdoDouble)2, (FdoDouble)11), pow((FdoDouble)2,(FdoDouble) 63), 1.892e101, -1.7e308, 1.7e308 };
+        FdoString* expDoubleVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854773760", 
+#ifdef _WIN32
+            L"-9.22337203685478e+018", L"9.22337203685478e+018", 
+#else
+            L"-9.22337203685478e+18", L"9.22337203685478e+18", 
+#endif
+            L"1.892e101", L"-1.7e308", L"1.7e308" };
+        FdoString* expDoubleValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", 
+#ifdef _WIN32
+            L"'-9.22337203685478e+018'", L"'9.22337203685477e+018'", L"'-9.22337203685478e+018'", L"'9.22337203685478e+018'", 
+#else
+            L"'-9.22337203685478e+18'", L"'9.22337203685477e+18'", L"'-9.22337203685478e+18'", L"'9.22337203685478e+18'", 
+#endif
+            L"'1.892e101'", L"'-1.7e308'", L"'1.7e308'" };
+        FdoString* expDoubleValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expDoubleValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"255", L"0", L"255" };
+        FdoString* expDoubleValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767" };
+        FdoString* expDoubleValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"2147483647", L"-2147483648", L"2147483647" };
+        FdoString* expDoubleValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"9223372036854775807", L"-9223372036854775808", L"9223372036854775807" };
+        FdoString* expDoubleValsSingle[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", 
+#ifdef _WIN32
+            L"3.4e+038", L"-3.4e+038", L"3.4e+038" };
+#else
+            L"3.4e+38", L"-3.4e+38", L"3.4e+38" };
+#endif
+        FdoDouble doubleFractVals[] = { -5.8, -5.5, -5.3, -0.51, -0.5, -0.1, 0.2, 0.5, 0.51, 100.4, 101.5, 105.9 };
+        FdoString* expDoubleFractVals[] = { L"-5.8", L"-5.5", L"-5.3", L"-0.51", L"-0.5", L"-0.1", L"0.2", L"0.5", L"0.51", L"100.4", L"101.5", L"105.9" };
+        FdoString* expDoubleRoundVals[] = { L"-6", L"-6", L"-5", L"-1", L"-1", L"0", L"0", L"1", L"1", L"100", L"102", L"106" };
+        FdoString* expDoubleFractValsStr[] = { L"'-5.8'", L"'-5.5'", L"'-5.3'", L"'-0.51'", L"'-0.5'", L"'-0.1'", L"'0.2'", L"'0.5'", L"'0.51'", L"'100.4'", L"'101.5'", L"'105.9'" };
+        FdoString* expDoubleRoundValsBool[] = { L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoDouble doubleFractValsByte[] = { -0.5, -0.1, 255.2, 255.5 };
+        FdoString* expDoubleFractValsByte[] = { L"0", L"0", L"255", L"255" };
+        FdoDouble doubleFractValsInt16[] = { -32768.5, -32768.1, 32767.2, 32767.5 };
+        FdoString* expDoubleFractValsInt16[] = { L"-32768", L"-32768", L"32767", L"32767" };
+        FdoDouble doubleFractValsInt32[] = { -2147483648.5, -2147483648.1, 2147483647.2, 2147483647.5 };
+        FdoString* expDoubleFractValsInt32[] = { L"-2147483648", L"-2147483648", L"2147483647", L"2147483647" };
 
-    NormalToBoolCase<FdoInt64Value, FdoInt64>();
-    NormalCase<FdoInt64Value, FdoInt64>(5, int64Vals, expInt64Vals, FdoDataType_Byte);
-    IncompatibleCase<FdoInt64Value, FdoInt64>(int64Vals[7], FdoDataType_DateTime);
-    NormalCase<FdoInt64Value, FdoInt64>(18, int64Vals, expInt64Vals, FdoDataType_Decimal);
-    NormalCase<FdoInt64Value, FdoInt64>(18, int64Vals, expInt64Vals, FdoDataType_Double);
-    NormalCase<FdoInt64Value, FdoInt64>(10, int64Vals, expInt64Vals, FdoDataType_Int16);
-    NormalCase<FdoInt64Value, FdoInt64>(15, int64Vals, expInt64Vals, FdoDataType_Int32);
-    NormalCase<FdoInt64Value, FdoInt64>(20, int64Vals, expInt64Vals, FdoDataType_Int64);
-    NormalCase<FdoInt64Value, FdoInt64>(13, int64Vals, expInt64Vals, FdoDataType_Single);
-    NormalCase<FdoInt64Value, FdoInt64>(20, int64Vals, expInt64ValsStr, FdoDataType_String);
-    NullCases<FdoInt64Value>();
-    TruncateCase<FdoInt64Value, FdoInt64>(18, &int64Vals[2], &expInt64ValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoInt64Value, FdoInt64>(15, &int64Vals[5], &expInt64ValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoInt64Value, FdoInt64>(10, &int64Vals[10], &expInt64ValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoInt64Value, FdoInt64>(5, &int64Vals[15], &expInt64ValsInt32[15], FdoDataType_Int32);
-    ShiftCase<FdoInt64Value, FdoInt64>(3, int64ShiftVals, expInt64ShiftValsSingle, FdoDataType_Single);
-    ShiftCase<FdoInt64Value, FdoInt64>(3, int64ShiftVals, expInt64ShiftValsDouble, FdoDataType_Double);
+        NormalToBoolCase<FdoDecimalValue, FdoDouble>();
+        NormalCase<FdoDecimalValue, FdoDouble>(5, doubleVals, expDoubleVals, FdoDataType_Byte);
+        IncompatibleCase<FdoDecimalValue, FdoDouble>(doubleVals[7], FdoDataType_DateTime);
+        NormalCase<FdoDecimalValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Decimal);
+        NormalCase<FdoDecimalValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Double);
+        NormalCase<FdoDecimalValue, FdoDouble>(10, doubleVals, expDoubleVals, FdoDataType_Int16);
+        NormalCase<FdoDecimalValue, FdoDouble>(15, doubleVals, expDoubleVals, FdoDataType_Int32);
+        NormalCase<FdoDecimalValue, FdoDouble>(20, doubleVals, expDoubleVals, FdoDataType_Int64);
+        NormalCase<FdoDecimalValue, FdoDouble>(13, doubleVals, expDoubleVals, FdoDataType_Single);
+        NormalCase<FdoDecimalValue, FdoDouble>(18, doubleVals, expDoubleValsStr, FdoDataType_String);
+        NullCases<FdoDecimalValue>();
+        TruncateCase<FdoDecimalValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoDecimalValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoDecimalValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoDecimalValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
+        TruncateCase<FdoDecimalValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
+        TruncateCase<FdoDecimalValue, FdoDouble>(3, &doubleVals[22], &expDoubleValsSingle[22], FdoDataType_Single);
+        TruncateCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundValsBool, FdoDataType_Boolean);
+        NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Decimal);
+        NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Double);
+        ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int16);
+        ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int32);
+        ShiftCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int64);
+        ShiftCase<FdoDecimalValue, FdoDouble>(1, doubleFractVals, expDoubleFractVals, FdoDataType_Single);
+        NormalCase<FdoDecimalValue, FdoDouble>(12, doubleFractVals, expDoubleFractValsStr, FdoDataType_String);
 
-/* From Single Tests */
+    /* From Double Tests */
 
-    FdoFloat singleVals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, (FdoFloat) -2147483648LL, (pow((FdoFloat)2, (FdoFloat)23) - 1) * pow((FdoFloat)2, (FdoFloat)8), -pow((FdoFloat)2, (FdoFloat)31) - pow((FdoFloat)2, (FdoFloat)8), pow((FdoFloat)2, (FdoFloat)31), (FdoFloat) -999999995904LL, -pow((FdoFloat)2,(FdoFloat) 63), (pow((FdoFloat)2, (FdoFloat)23) - 1) * pow((FdoFloat)2, (FdoFloat)40), -pow((FdoFloat)2, (FdoFloat)63) - pow((FdoFloat)2, (FdoFloat)40), pow((FdoFloat)2,(FdoFloat) 63), (FdoFloat)-1.892e31, (FdoFloat)-3.4e38, (FdoFloat)3.4e38 };
-    FdoString* expSingleVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483392", L"-2147483904", L"2147483648", L"-999999995904", L"-9223372036854775808", L"9223370937343148032", L"todo", L"todo", L"todo", L"todo", L"todo" };
-    FdoString* expSingleValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2.14748e+009'", L"'2.14748e+009'", L"'-2.14748e+009'", L"'2.14748e+009'", L"'-999999995904'", L"'-9.22337203685478e+018'", L"'9.22337203685477e+018'", L"todo", L"todo", L"todo", L"todo", L"todo" };
-    FdoString* expSingleValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expSingleValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
-    FdoString* expSingleValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
-    FdoString* expSingleValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
-    FdoString* expSingleValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483904", L"-2147483904", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"-9223372036854775808", L"-9223372036854775808", L"9223372036854775807" };
-    FdoFloat singleFractVals[] = { (FdoFloat)-5.8, (FdoFloat)-5.5, (FdoFloat)-5.3, (FdoFloat)-0.51, (FdoFloat)-0.5, (FdoFloat)-0.1, (FdoFloat)0.2, (FdoFloat)0.5, (FdoFloat)0.51, (FdoFloat)100.4, (FdoFloat)101.5, (FdoFloat)105.9 };
-    FdoString* expSingleFractVals[] = { L"-5.8", L"-5.5", L"-5.3", L"-0.51", L"-0.5", L"-0.1", L"0.2", L"0.5", L"0.51", L"100.4", L"101.5", L"105.9" };
-    FdoString* expSingleRoundVals[] = { L"-6", L"-6", L"-5", L"-1", L"-1", L"0", L"0", L"1", L"1", L"100", L"102", L"106" };
-    FdoString* expSingleFractValsStr[] = { L"'-5.8'", L"'-5.5'", L"'-5.3'", L"'-0.51'", L"'-0.5'", L"'-0.1'", L"'0.2'", L"'0.5'", L"'0.51'", L"'100.4'", L"'101.5'", L"'105.9'" };
-    FdoString* expSingleRoundValsBool[] = { L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoFloat singleFractValsByte[] = { (FdoFloat)-0.5, (FdoFloat)-0.1, (FdoFloat)255.2, (FdoFloat)255.5 };
-    FdoString* expSingleFractValsByte[] = { L"0", L"0", L"255", L"255" };
-    FdoFloat singleFractValsInt16[] = { (FdoFloat)-32768.5, (FdoFloat)-32768.1, (FdoFloat)32767.2, (FdoFloat)32767.5 };
-    FdoString* expSingleFractValsInt16[] = { L"-32768", L"-32768", L"32767", L"32767" };
+        NormalToBoolCase<FdoDoubleValue, FdoDouble>();
+        NormalCase<FdoDoubleValue, FdoDouble>(5, doubleVals, expDoubleVals, FdoDataType_Byte);
+        IncompatibleCase<FdoDoubleValue, FdoDouble>(doubleVals[7], FdoDataType_DateTime);
+        NormalCase<FdoDoubleValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Decimal);
+        NormalCase<FdoDoubleValue, FdoDouble>(25, doubleVals, expDoubleVals, FdoDataType_Double);
+        NormalCase<FdoDoubleValue, FdoDouble>(10, doubleVals, expDoubleVals, FdoDataType_Int16);
+        NormalCase<FdoDoubleValue, FdoDouble>(15, doubleVals, expDoubleVals, FdoDataType_Int32);
+        NormalCase<FdoDoubleValue, FdoDouble>(20, doubleVals, expDoubleVals, FdoDataType_Int64);
+        NormalCase<FdoDoubleValue, FdoDouble>(13, doubleVals, expDoubleVals, FdoDataType_Single);
+        NormalCase<FdoDoubleValue, FdoDouble>(18, doubleVals, expDoubleValsStr, FdoDataType_String);
+        NullCases<FdoDoubleValue>();
+        TruncateCase<FdoDoubleValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoDoubleValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoDoubleValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoDoubleValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
+        TruncateCase<FdoDoubleValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
+        TruncateCase<FdoDoubleValue, FdoDouble>(23, &doubleVals[2], &expDoubleValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoDoubleValue, FdoDouble>(20, &doubleVals[5], &expDoubleValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoDoubleValue, FdoDouble>(15, &doubleVals[10], &expDoubleValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoDoubleValue, FdoDouble>(10, &doubleVals[15], &expDoubleValsInt32[15], FdoDataType_Int32);
+        TruncateCase<FdoDoubleValue, FdoDouble>(5, &doubleVals[20], &expDoubleValsInt64[20], FdoDataType_Int64);
+        TruncateCase<FdoDoubleValue, FdoDouble>(3, &doubleVals[22], &expDoubleValsSingle[22], FdoDataType_Single);
+        TruncateCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundValsBool, FdoDataType_Boolean);
+        NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Decimal);
+        NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractVals, FdoDataType_Double);
+        ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int16);
+        ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int32);
+        ShiftCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleRoundVals, FdoDataType_Int64);
+        ShiftCase<FdoDoubleValue, FdoDouble>(1, doubleFractVals, expDoubleFractVals, FdoDataType_Single);
+        NormalCase<FdoDoubleValue, FdoDouble>(12, doubleFractVals, expDoubleFractValsStr, FdoDataType_String);
+        ShiftCase<FdoDoubleValue, FdoDouble>(4, &doubleVals[18], &expDoubleValsStr[18], FdoDataType_String);
 
-    NormalToBoolCase<FdoSingleValue, FdoFloat>();
-    NormalCase<FdoSingleValue, FdoFloat>(5, singleVals, expSingleVals, FdoDataType_Byte);
-    IncompatibleCase<FdoSingleValue, FdoFloat>(singleVals[7], FdoDataType_DateTime);
-    NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Decimal);
-    NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Double);
-    NormalCase<FdoSingleValue, FdoFloat>(10, singleVals, expSingleVals, FdoDataType_Int16);
-    NormalCase<FdoSingleValue, FdoFloat>(15, singleVals, expSingleVals, FdoDataType_Int32);
-    NormalCase<FdoSingleValue, FdoFloat>(20, singleVals, expSingleVals, FdoDataType_Int64);
-    NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Single);
-    NormalCase<FdoSingleValue, FdoFloat>(13, singleVals, expSingleValsStr, FdoDataType_String);
-    NullCases<FdoSingleValue>();
-    TruncateCase<FdoSingleValue, FdoFloat>(23, &singleVals[2], &expSingleValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoSingleValue, FdoFloat>(20, &singleVals[5], &expSingleValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoSingleValue, FdoFloat>(15, &singleVals[10], &expSingleValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoSingleValue, FdoFloat>(10, &singleVals[15], &expSingleValsInt32[15], FdoDataType_Int32);
-    TruncateCase<FdoSingleValue, FdoFloat>(5, &singleVals[20], &expSingleValsInt64[20], FdoDataType_Int64);
-    TruncateCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundValsBool, FdoDataType_Boolean);
-    NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractVals, FdoDataType_Decimal);
-    NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractVals, FdoDataType_Double);
-    ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int16);
-    ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int32);
-    ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int64);
-    NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleVals, FdoDataType_Single);
-    NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractValsStr, FdoDataType_String);
-    TruncateCase<FdoDecimalValue, FdoFloat>(4, singleFractValsByte, expSingleFractValsByte, FdoDataType_Byte);
-    TruncateCase<FdoDecimalValue, FdoFloat>(4, singleFractValsInt16, expSingleFractValsInt16, FdoDataType_Int16);
-    ShiftCase<FdoSingleValue, FdoFloat>(4, &singleVals[13], &expSingleValsStr[13], FdoDataType_String);
+        TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsByte, expDoubleFractValsByte, FdoDataType_Byte);
+        TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsInt16, expDoubleFractValsInt16, FdoDataType_Int16);
+        TruncateCase<FdoDecimalValue, FdoDouble>(4, doubleFractValsInt32, expDoubleFractValsInt32, FdoDataType_Int32);
 
-/* From String Tests */
 
-    FdoString* stringVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854775807" };
-    FdoString* stringValsDt[] = { L"TIMESTAMP '2008-10-30 16:00:30'" };
-    FdoString* expStringValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
-    FdoString* expStringValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", L"'-9223372036854775808'", L"'9223372036854775807'" };
-    FdoString* expStringValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
-    FdoString* expStringValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
-    FdoString* expStringValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
-    FdoString* expStringValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483904", L"-2147483904", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"-9223372036854775808", L"-9223372036854775808", L"9223372036854775807" };
-    FdoString* stringFractVals[] = { L"8.125", L"15.5" };
-    FdoString* expStringRoundVals[] = { L"8", L"16" };
-    FdoString* expStringRoundValsBool[] = { L"TRUE", L"TRUE" };
+    /* From Int16 Tests */
+        FdoInt16 int16Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767 };
+        FdoString* expInt16Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767" };
+        FdoString* expInt16ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'" };
+        FdoString* expInt16ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expInt16ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255" };
 
-    NormalCase<FdoStringValue, FdoString*>(2, stringVals, expStringValsBool, FdoDataType_Boolean);
-    NormalCase<FdoStringValue, FdoString*>(2, expStringValsBool, expStringValsBool, FdoDataType_Boolean);
-    NormalCase<FdoStringValue, FdoString*>(5, stringVals, stringVals, FdoDataType_Byte);
-    NormalCase<FdoStringValue, FdoString*>(1, stringValsDt, stringValsDt, FdoDataType_DateTime);
-    IncompatibleCase<FdoStringValue, FdoString*>(stringVals[7], FdoDataType_DateTime);
-    NormalCase<FdoStringValue, FdoString*>(18, stringVals, stringVals, FdoDataType_Decimal);
-    NormalCase<FdoStringValue, FdoString*>(18, stringVals, stringVals, FdoDataType_Double);
-    NormalCase<FdoStringValue, FdoString*>(10, stringVals, stringVals, FdoDataType_Int16);
-    NormalCase<FdoStringValue, FdoString*>(15, stringVals, stringVals, FdoDataType_Int32);
-    NormalCase<FdoStringValue, FdoString*>(20, stringVals, stringVals, FdoDataType_Int64);
-    NormalCase<FdoStringValue, FdoString*>(13, stringVals, stringVals, FdoDataType_Single);
-    NormalCase<FdoStringValue, FdoString*>(20, stringVals, expStringValsStr, FdoDataType_String);
-    NullCases<FdoStringValue>();
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Boolean);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Byte);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Byte);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"8 + 9", FdoDataType_Decimal);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Double);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int16);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int32);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int64);
-    IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Single);
-    TruncateCase<FdoStringValue, FdoString*>(18, &stringVals[2], &expStringValsBool[2], FdoDataType_Boolean);
-    TruncateCase<FdoStringValue, FdoString*>(15, &stringVals[5], &expStringValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoStringValue, FdoString*>(15, &stringVals[5], &expStringValsByte[5], FdoDataType_Byte);
-    TruncateCase<FdoStringValue, FdoString*>(10, &stringVals[10], &expStringValsInt16[10], FdoDataType_Int16);
-    TruncateCase<FdoStringValue, FdoString*>(5, &stringVals[15], &expStringValsInt32[15], FdoDataType_Int32);
-//    TruncateCase<FdoStringValue, FdoString*>(5, &stringVals[20], &expStringValsInt64[20], FdoDataType_Int64);
-    TruncateCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundValsBool, FdoDataType_Boolean);
-    ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Byte);
-    NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Decimal);
-    NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Double);
-    ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int16);
-    ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int32);
-    ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int64);
-    NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Single);
+        NormalToBoolCase<FdoInt16Value, FdoInt16>();
+        NormalCase<FdoInt16Value, FdoInt16>(5, int16Vals, expInt16Vals, FdoDataType_Byte);
+        IncompatibleCase<FdoInt16Value, FdoInt16>(int16Vals[7], FdoDataType_DateTime);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Decimal);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Double);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int16);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int32);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Int64);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16Vals, FdoDataType_Single);
+        NormalCase<FdoInt16Value, FdoInt16>(10, int16Vals, expInt16ValsStr, FdoDataType_String);
+        NullCases<FdoInt16Value>();
+        TruncateCase<FdoInt16Value, FdoInt16>(8, &int16Vals[2], &expInt16ValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoInt16Value, FdoInt16>(5, &int16Vals[5], &expInt16ValsByte[5], FdoDataType_Byte);
 
-/* From BLOB cases */
-    FdoByte lobBytes[4] = { 'a', 'b', 'c', 0 };
-    FdoPtr<FdoByteArray> lobValue = FdoByteArray::Create( lobBytes, 4 );
-    FdoByteArray* lobVals[] = { lobValue.p };
-    FdoString* expLobVals[] = { L"abc" };
-    NormalCase<FdoBLOBValue, FdoByteArray*>(1, lobVals, expLobVals, FdoDataType_BLOB);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Boolean);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Byte);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Decimal);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Double);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int16);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int32);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int64);
-    IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Single);
+    /* From Int32 Tests */
+        FdoInt32 int32Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483647L - 1L, 2147483647 };
+        FdoString* expInt32Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647" };
+        FdoString* expInt32ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'" };
+        FdoString* expInt32ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expInt32ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255" };
+        FdoString* expInt32ValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767" };
+        FdoInt32 int32ShiftVals[] = { -2147483647, 2147483391, 2147483647 };
+        FdoString* expInt32ShiftValsSingle[] = { 
+#ifdef _WIN32
+            L"-2.14748e+009", L"2.14748e+009", L"2.14748e+009" };
+#else
+            L"-2.14748e+09", L"2.14748e+09", L"2.14748e+09" };
+#endif
 
-/* From CLOB cases */
-    NormalCase<FdoCLOBValue, FdoByteArray*>(1, lobVals, expLobVals, FdoDataType_CLOB);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Boolean);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Byte);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Decimal);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Double);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int16);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int32);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int64);
-    IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Single);
+        NormalToBoolCase<FdoInt32Value, FdoInt32>();
+        NormalCase<FdoInt32Value, FdoInt32>(5, int32Vals, expInt32Vals, FdoDataType_Byte);
+        IncompatibleCase<FdoInt32Value, FdoInt32>(int32Vals[7], FdoDataType_DateTime);
+        NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Decimal);
+        NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Double);
+        NormalCase<FdoInt32Value, FdoInt32>(10, int32Vals, expInt32Vals, FdoDataType_Int16);
+        NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Int32);
+        NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32Vals, FdoDataType_Int64);
+        NormalCase<FdoInt32Value, FdoInt32>(13, int32Vals, expInt32Vals, FdoDataType_Single);
+        NormalCase<FdoInt32Value, FdoInt32>(15, int32Vals, expInt32ValsStr, FdoDataType_String);
+        NullCases<FdoInt32Value>();
+        TruncateCase<FdoInt32Value, FdoInt32>(13, &int32Vals[2], &expInt32ValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoInt32Value, FdoInt32>(10, &int32Vals[5], &expInt32ValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoInt32Value, FdoInt32>(5, &int32Vals[10], &expInt32ValsInt16[10], FdoDataType_Int16);
+        ShiftCase<FdoInt32Value, FdoInt32>(3, int32ShiftVals, expInt32ShiftValsSingle, FdoDataType_Single);
 
-/* The above exercises all of the Create functions for the specific 
-   FdoDataValue derivations but does not verify that they are exposed
-   via the FDO API. The following verifies this
-*/
+    /* From Int64 Tests */
+        FdoInt64 int64Vals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, -2147483648LL, 2147483647, -2147483649LL, 2147483648LL, -1000000000000LL, -9223372036854775807LL - 1LL, 9223372036854775807LL };
+        FdoString* expInt64Vals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854775807" };
+        FdoString* expInt64ValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", L"'-9223372036854775808'", L"'9223372036854775807'" };
+        FdoString* expInt64ValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expInt64ValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
+        FdoString* expInt64ValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
+        FdoString* expInt64ValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
+        FdoInt64 int64ShiftVals[] = { - 9223372036854775807LL, 9223372036854775807LL - 4096, 9223372036854775807LL };
+#ifdef _WIN32        
+        FdoString* expInt64ShiftValsSingle[] = { L"-9.22337e+018", L"9.22337e+018", L"9.22337e+018" };
+        FdoString* expInt64ShiftValsDouble[] = { L"-9.22337203685478e+018", L"9.22337203685477e+018", L"9.22337203685478e+018" };
+#else
+        FdoString* expInt64ShiftValsSingle[] = { L"-9.22337e+18", L"9.22337e+18", L"9.22337e+18" };
+        FdoString* expInt64ShiftValsDouble[] = { L"-9.22337203685478e+18", L"9.22337203685477e+18", L"9.22337203685478e+18" };
+#endif
 
-    FdoPtr<FdoBooleanValue> bool1 = FdoBooleanValue::Create(true);
-    FdoPtr<FdoBooleanValue> bool2 = FdoBooleanValue::Create( bool1 );
-    CPPUNIT_ASSERT( bool2->GetBoolean() );
+        NormalToBoolCase<FdoInt64Value, FdoInt64>();
+        NormalCase<FdoInt64Value, FdoInt64>(5, int64Vals, expInt64Vals, FdoDataType_Byte);
+        IncompatibleCase<FdoInt64Value, FdoInt64>(int64Vals[7], FdoDataType_DateTime);
+        NormalCase<FdoInt64Value, FdoInt64>(18, int64Vals, expInt64Vals, FdoDataType_Decimal);
+        NormalCase<FdoInt64Value, FdoInt64>(18, int64Vals, expInt64Vals, FdoDataType_Double);
+        NormalCase<FdoInt64Value, FdoInt64>(10, int64Vals, expInt64Vals, FdoDataType_Int16);
+        NormalCase<FdoInt64Value, FdoInt64>(15, int64Vals, expInt64Vals, FdoDataType_Int32);
+        NormalCase<FdoInt64Value, FdoInt64>(20, int64Vals, expInt64Vals, FdoDataType_Int64);
+        NormalCase<FdoInt64Value, FdoInt64>(13, int64Vals, expInt64Vals, FdoDataType_Single);
+        NormalCase<FdoInt64Value, FdoInt64>(20, int64Vals, expInt64ValsStr, FdoDataType_String);
+        NullCases<FdoInt64Value>();
+        TruncateCase<FdoInt64Value, FdoInt64>(18, &int64Vals[2], &expInt64ValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoInt64Value, FdoInt64>(15, &int64Vals[5], &expInt64ValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoInt64Value, FdoInt64>(10, &int64Vals[10], &expInt64ValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoInt64Value, FdoInt64>(5, &int64Vals[15], &expInt64ValsInt32[15], FdoDataType_Int32);
+        ShiftCase<FdoInt64Value, FdoInt64>(3, int64ShiftVals, expInt64ShiftValsSingle, FdoDataType_Single);
+        ShiftCase<FdoInt64Value, FdoInt64>(3, int64ShiftVals, expInt64ShiftValsDouble, FdoDataType_Double);
 
-    FdoPtr<FdoByteValue> byte1 = FdoByteValue::Create(45);
-    FdoPtr<FdoByteValue> byte2 = FdoByteValue::Create( byte1 );
-    CPPUNIT_ASSERT( byte2->GetByte() == 45 );
+    /* From Single Tests */
 
-    FdoPtr<FdoDecimalValue> decimal2 = FdoDecimalValue::Create(byte2);
-    CPPUNIT_ASSERT( decimal2->GetDecimal() == 45 );
+        FdoFloat singleVals[] = { 1, 0, 128, 255, 254, -1, -32768, 2000, 256, 32767, -32769, 32768, 100000, (FdoFloat) -2147483648LL, (pow((FdoFloat)2, (FdoFloat)23) - 1) * pow((FdoFloat)2, (FdoFloat)8), -pow((FdoFloat)2, (FdoFloat)31) - pow((FdoFloat)2, (FdoFloat)8), pow((FdoFloat)2, (FdoFloat)31), (FdoFloat) -999999995904LL, -pow((FdoFloat)2,(FdoFloat) 63), (pow((FdoFloat)2, (FdoFloat)23) - 1) * pow((FdoFloat)2, (FdoFloat)40), -pow((FdoFloat)2, (FdoFloat)63) - pow((FdoFloat)2, (FdoFloat)40), pow((FdoFloat)2,(FdoFloat) 63), (FdoFloat)-1.892e31, (FdoFloat)-3.4e38, (FdoFloat)3.4e38 };
+        FdoString* expSingleVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483392", L"-2147483904", L"2147483648", L"-999999995904", L"-9223372036854775808", L"9223370937343148032", L"todo", L"todo", L"todo", L"todo", L"todo" };
+        FdoString* expSingleValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", 
+#ifdef _WIN32
+            L"'-2.14748e+009'", L"'2.14748e+009'", L"'-2.14748e+009'", L"'2.14748e+009'", L"'-999999995904'", L"'-9.22337203685478e+018'", L"'9.22337203685477e+018'", 
+#else
+            L"'-2.14748e+09'", L"'2.14748e+09'", L"'-2.14748e+09'", L"'2.14748e+09'", L"'-999999995904'", L"'-9.22337203685478e+18'", L"'9.22337203685477e+18'", 
+#endif
+            L"todo", L"todo", L"todo", L"todo", L"todo" };
+        FdoString* expSingleValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expSingleValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
+        FdoString* expSingleValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
+        FdoString* expSingleValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
+        FdoString* expSingleValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483904", L"-2147483904", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"-9223372036854775808", L"-9223372036854775808", L"9223372036854775807" };
+        FdoFloat singleFractVals[] = { (FdoFloat)-5.8, (FdoFloat)-5.5, (FdoFloat)-5.3, (FdoFloat)-0.51, (FdoFloat)-0.5, (FdoFloat)-0.1, (FdoFloat)0.2, (FdoFloat)0.5, (FdoFloat)0.51, (FdoFloat)100.4, (FdoFloat)101.5, (FdoFloat)105.9 };
+        FdoString* expSingleFractVals[] = { L"-5.8", L"-5.5", L"-5.3", L"-0.51", L"-0.5", L"-0.1", L"0.2", L"0.5", L"0.51", L"100.4", L"101.5", L"105.9" };
+        FdoString* expSingleRoundVals[] = { L"-6", L"-6", L"-5", L"-1", L"-1", L"0", L"0", L"1", L"1", L"100", L"102", L"106" };
+        FdoString* expSingleFractValsStr[] = { L"'-5.8'", L"'-5.5'", L"'-5.3'", L"'-0.51'", L"'-0.5'", L"'-0.1'", L"'0.2'", L"'0.5'", L"'0.51'", L"'100.4'", L"'101.5'", L"'105.9'" };
+        FdoString* expSingleRoundValsBool[] = { L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoFloat singleFractValsByte[] = { (FdoFloat)-0.5, (FdoFloat)-0.1, (FdoFloat)255.2, (FdoFloat)255.5 };
+        FdoString* expSingleFractValsByte[] = { L"0", L"0", L"255", L"255" };
+        FdoFloat singleFractValsInt16[] = { (FdoFloat)-32768.5, (FdoFloat)-32768.1, (FdoFloat)32767.2, (FdoFloat)32767.5 };
+        FdoString* expSingleFractValsInt16[] = { L"-32768", L"-32768", L"32767", L"32767" };
 
-    FdoPtr<FdoDoubleValue> double2 = FdoDoubleValue::Create(byte2);
-    CPPUNIT_ASSERT( double2->GetDouble() == 45 );
+        NormalToBoolCase<FdoSingleValue, FdoFloat>();
+        NormalCase<FdoSingleValue, FdoFloat>(5, singleVals, expSingleVals, FdoDataType_Byte);
+        IncompatibleCase<FdoSingleValue, FdoFloat>(singleVals[7], FdoDataType_DateTime);
+        NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Decimal);
+        NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Double);
+        NormalCase<FdoSingleValue, FdoFloat>(10, singleVals, expSingleVals, FdoDataType_Int16);
+        NormalCase<FdoSingleValue, FdoFloat>(15, singleVals, expSingleVals, FdoDataType_Int32);
+        NormalCase<FdoSingleValue, FdoFloat>(20, singleVals, expSingleVals, FdoDataType_Int64);
+        NormalCase<FdoSingleValue, FdoFloat>(25, singleVals, expSingleVals, FdoDataType_Single);
+        NormalCase<FdoSingleValue, FdoFloat>(13, singleVals, expSingleValsStr, FdoDataType_String);
+        NullCases<FdoSingleValue>();
+        TruncateCase<FdoSingleValue, FdoFloat>(23, &singleVals[2], &expSingleValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoSingleValue, FdoFloat>(20, &singleVals[5], &expSingleValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoSingleValue, FdoFloat>(15, &singleVals[10], &expSingleValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoSingleValue, FdoFloat>(10, &singleVals[15], &expSingleValsInt32[15], FdoDataType_Int32);
+        TruncateCase<FdoSingleValue, FdoFloat>(5, &singleVals[20], &expSingleValsInt64[20], FdoDataType_Int64);
+        TruncateCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundValsBool, FdoDataType_Boolean);
+        NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractVals, FdoDataType_Decimal);
+        NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractVals, FdoDataType_Double);
+        ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int16);
+        ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int32);
+        ShiftCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleRoundVals, FdoDataType_Int64);
+        NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleVals, FdoDataType_Single);
+        NormalCase<FdoSingleValue, FdoFloat>(12, singleFractVals, expSingleFractValsStr, FdoDataType_String);
+        TruncateCase<FdoDecimalValue, FdoFloat>(4, singleFractValsByte, expSingleFractValsByte, FdoDataType_Byte);
+        TruncateCase<FdoDecimalValue, FdoFloat>(4, singleFractValsInt16, expSingleFractValsInt16, FdoDataType_Int16);
+        ShiftCase<FdoSingleValue, FdoFloat>(4, &singleVals[13], &expSingleValsStr[13], FdoDataType_String);
 
-    FdoPtr<FdoInt16Value> int16v = FdoInt16Value::Create(byte2);
-    CPPUNIT_ASSERT( int16v->GetInt16() == 45 );
+    /* From String Tests */
 
-    FdoPtr<FdoInt32Value> int32v = FdoInt32Value::Create(byte2);
-    CPPUNIT_ASSERT( int32v->GetInt32() == 45 );
+        FdoString* stringVals[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483649", L"2147483648", L"-1000000000000", L"-9223372036854775808", L"9223372036854775807" };
+        FdoString* stringValsDt[] = { L"TIMESTAMP '2008-10-30 16:00:30'" };
+        FdoString* expStringValsBool[] = { L"TRUE", L"FALSE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE", L"TRUE" };
+        FdoString* expStringValsStr[] = { L"'1'", L"'0'", L"'128'", L"'255'", L"'254'", L"'-1'", L"'-32768'", L"'2000'", L"'256'", L"'32767'", L"'-32769'", L"'32768'", L"'100000'", L"'-2147483648'", L"'2147483647'", L"'-2147483649'", L"'2147483648'", L"'-1000000000000'", L"'-9223372036854775808'", L"'9223372036854775807'" };
+        FdoString* expStringValsByte[] = { L"1", L"0", L"128", L"255", L"254", L"0", L"0", L"255", L"255", L"255", L"0", L"255", L"255", L"0", L"255", L"0", L"255", L"0", L"0", L"255", L"0", L"255", L"0", L"0", L"255" };
+        FdoString* expStringValsInt16[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32768", L"32767", L"32767", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767", L"-32768", L"32767", L"-32768", L"-32768", L"32767" };
+        FdoString* expStringValsInt32[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647", L"-2147483648", L"2147483647", L"-2147483648", L"-2147483648", L"2147483647" };
+        FdoString* expStringValsInt64[] = { L"1", L"0", L"128", L"255", L"254", L"-1", L"-32768", L"2000", L"256", L"32767", L"-32769", L"32768", L"100000", L"-2147483648", L"2147483647", L"-2147483904", L"-2147483904", L"-2147483648", L"-2147483648", L"2147483647", L"-9223372036854775808", L"9223372036854775807", L"-9223372036854775808", L"-9223372036854775808", L"9223372036854775807" };
+        FdoString* stringFractVals[] = { L"8.125", L"15.5" };
+        FdoString* expStringRoundVals[] = { L"8", L"16" };
+        FdoString* expStringRoundValsBool[] = { L"TRUE", L"TRUE" };
 
-    FdoPtr<FdoInt64Value> int64v = FdoInt64Value::Create(byte2);
-    CPPUNIT_ASSERT( int64v->GetInt64() == 45 );
+        NormalCase<FdoStringValue, FdoString*>(2, stringVals, expStringValsBool, FdoDataType_Boolean);
+        NormalCase<FdoStringValue, FdoString*>(2, expStringValsBool, expStringValsBool, FdoDataType_Boolean);
+        NormalCase<FdoStringValue, FdoString*>(5, stringVals, stringVals, FdoDataType_Byte);
+        NormalCase<FdoStringValue, FdoString*>(1, stringValsDt, stringValsDt, FdoDataType_DateTime);
+        IncompatibleCase<FdoStringValue, FdoString*>(stringVals[7], FdoDataType_DateTime);
+        NormalCase<FdoStringValue, FdoString*>(18, stringVals, stringVals, FdoDataType_Decimal);
+        NormalCase<FdoStringValue, FdoString*>(18, stringVals, stringVals, FdoDataType_Double);
+        NormalCase<FdoStringValue, FdoString*>(10, stringVals, stringVals, FdoDataType_Int16);
+        NormalCase<FdoStringValue, FdoString*>(15, stringVals, stringVals, FdoDataType_Int32);
+        NormalCase<FdoStringValue, FdoString*>(20, stringVals, stringVals, FdoDataType_Int64);
+        NormalCase<FdoStringValue, FdoString*>(13, stringVals, stringVals, FdoDataType_Single);
+        NormalCase<FdoStringValue, FdoString*>(20, stringVals, expStringValsStr, FdoDataType_String);
+        NullCases<FdoStringValue>();
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Boolean);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Byte);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Byte);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"8 + 9", FdoDataType_Decimal);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Double);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int16);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int32);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Int64);
+        IncompatibleCase<FdoStringValue, FdoString*>(L"NEITHER", FdoDataType_Single);
+        TruncateCase<FdoStringValue, FdoString*>(18, &stringVals[2], &expStringValsBool[2], FdoDataType_Boolean);
+        TruncateCase<FdoStringValue, FdoString*>(15, &stringVals[5], &expStringValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoStringValue, FdoString*>(15, &stringVals[5], &expStringValsByte[5], FdoDataType_Byte);
+        TruncateCase<FdoStringValue, FdoString*>(10, &stringVals[10], &expStringValsInt16[10], FdoDataType_Int16);
+        TruncateCase<FdoStringValue, FdoString*>(5, &stringVals[15], &expStringValsInt32[15], FdoDataType_Int32);
+    //    TruncateCase<FdoStringValue, FdoString*>(5, &stringVals[20], &expStringValsInt64[20], FdoDataType_Int64);
+        TruncateCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundValsBool, FdoDataType_Boolean);
+        ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Byte);
+        NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Decimal);
+        NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Double);
+        ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int16);
+        ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int32);
+        ShiftCase<FdoStringValue, FdoString*>(2, stringFractVals, expStringRoundVals, FdoDataType_Int64);
+        NormalCase<FdoStringValue, FdoString*>(2, stringFractVals, stringFractVals, FdoDataType_Single);
 
-    FdoPtr<FdoSingleValue> single2 = FdoSingleValue::Create(byte2);
-    CPPUNIT_ASSERT( single2->GetSingle() == 45 );
+    /* From BLOB cases */
+        FdoByte lobBytes[4] = { 'a', 'b', 'c', 0 };
+        FdoPtr<FdoByteArray> lobValue = FdoByteArray::Create( lobBytes, 4 );
+        FdoByteArray* lobVals[] = { lobValue.p };
+        FdoString* expLobVals[] = { L"abc" };
+        NormalCase<FdoBLOBValue, FdoByteArray*>(1, lobVals, expLobVals, FdoDataType_BLOB);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Boolean);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Byte);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Decimal);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Double);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int16);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int32);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int64);
+        IncompatibleCase<FdoBLOBValue, FdoByteArray*>(lobValue, FdoDataType_Single);
 
-    FdoPtr<FdoStringValue> string2 = FdoStringValue::Create(byte2);
-    CPPUNIT_ASSERT( wcscmp(string2->GetString(), L"45") == 0 );
+    /* From CLOB cases */
+        NormalCase<FdoCLOBValue, FdoByteArray*>(1, lobVals, expLobVals, FdoDataType_CLOB);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Boolean);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Byte);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Decimal);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Double);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int16);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int32);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Int64);
+        IncompatibleCase<FdoCLOBValue, FdoByteArray*>(lobValue, FdoDataType_Single);
 
-    FdoByte bytes1[3] = { 8, 42, 156 };
-    FdoPtr<FdoByteArray> byteArray1 = FdoByteArray::Create( bytes1, 3 );
-    FdoPtr<FdoBLOBValue> blob1 = FdoBLOBValue::Create( byteArray1 );
-    FdoPtr<FdoBLOBValue> blob2 = FdoBLOBValue::Create( blob1 );
-    FdoPtr<FdoByteArray> byteArray2 = blob2->GetData();
-    CPPUNIT_ASSERT( byteArray2->GetCount() == 3 ); 
-    FdoByte* bytes2 = byteArray2->GetData();
-    CPPUNIT_ASSERT( bytes2[0] == bytes1[0] ); 
-    CPPUNIT_ASSERT( bytes2[1] == bytes1[1] ); 
-    CPPUNIT_ASSERT( bytes2[2] == bytes1[2] ); 
+    /* The above exercises all of the Create functions for the specific 
+       FdoDataValue derivations but does not verify that they are exposed
+       via the FDO API. The following verifies this
+    */
 
-    FdoByte chars1[4] = { 'a', 'c', 'x', 'z' };
-    FdoPtr<FdoByteArray> charArray1 = FdoByteArray::Create( chars1, 4 );
-    FdoPtr<FdoCLOBValue> clob1 = FdoCLOBValue::Create( charArray1 );
-    FdoPtr<FdoCLOBValue> clob2 = FdoCLOBValue::Create( clob1 );
-    FdoPtr<FdoByteArray> charArray2 = clob2->GetData();
-    CPPUNIT_ASSERT( charArray2->GetCount() == 4 ); 
-    FdoByte* chars2 = charArray2->GetData();
-    CPPUNIT_ASSERT( chars2[0] == chars1[0] ); 
-    CPPUNIT_ASSERT( chars2[1] == chars1[1] ); 
-    CPPUNIT_ASSERT( chars2[2] == chars1[2] ); 
-    CPPUNIT_ASSERT( chars2[3] == chars1[3] ); 
+        FdoPtr<FdoBooleanValue> bool1 = FdoBooleanValue::Create(true);
+        FdoPtr<FdoBooleanValue> bool2 = FdoBooleanValue::Create( bool1 );
+        CPPUNIT_ASSERT( bool2->GetBoolean() );
+
+        FdoPtr<FdoByteValue> byte1 = FdoByteValue::Create(45);
+        FdoPtr<FdoByteValue> byte2 = FdoByteValue::Create( byte1 );
+        CPPUNIT_ASSERT( byte2->GetByte() == 45 );
+
+        FdoPtr<FdoDecimalValue> decimal2 = FdoDecimalValue::Create(byte2);
+        CPPUNIT_ASSERT( decimal2->GetDecimal() == 45 );
+
+        FdoPtr<FdoDoubleValue> double2 = FdoDoubleValue::Create(byte2);
+        CPPUNIT_ASSERT( double2->GetDouble() == 45 );
+
+        FdoPtr<FdoInt16Value> int16v = FdoInt16Value::Create(byte2);
+        CPPUNIT_ASSERT( int16v->GetInt16() == 45 );
+
+        FdoPtr<FdoInt32Value> int32v = FdoInt32Value::Create(byte2);
+        CPPUNIT_ASSERT( int32v->GetInt32() == 45 );
+
+        FdoPtr<FdoInt64Value> int64v = FdoInt64Value::Create(byte2);
+        CPPUNIT_ASSERT( int64v->GetInt64() == 45 );
+
+        FdoPtr<FdoSingleValue> single2 = FdoSingleValue::Create(byte2);
+        CPPUNIT_ASSERT( single2->GetSingle() == 45 );
+
+        FdoPtr<FdoStringValue> string2 = FdoStringValue::Create(byte2);
+        CPPUNIT_ASSERT( wcscmp(string2->GetString(), L"45") == 0 );
+
+        FdoByte bytes1[3] = { 8, 42, 156 };
+        FdoPtr<FdoByteArray> byteArray1 = FdoByteArray::Create( bytes1, 3 );
+        FdoPtr<FdoBLOBValue> blob1 = FdoBLOBValue::Create( byteArray1 );
+        FdoPtr<FdoBLOBValue> blob2 = FdoBLOBValue::Create( blob1 );
+        FdoPtr<FdoByteArray> byteArray2 = blob2->GetData();
+        CPPUNIT_ASSERT( byteArray2->GetCount() == 3 ); 
+        FdoByte* bytes2 = byteArray2->GetData();
+        CPPUNIT_ASSERT( bytes2[0] == bytes1[0] ); 
+        CPPUNIT_ASSERT( bytes2[1] == bytes1[1] ); 
+        CPPUNIT_ASSERT( bytes2[2] == bytes1[2] ); 
+
+        FdoByte chars1[4] = { 'a', 'c', 'x', 'z' };
+        FdoPtr<FdoByteArray> charArray1 = FdoByteArray::Create( chars1, 4 );
+        FdoPtr<FdoCLOBValue> clob1 = FdoCLOBValue::Create( charArray1 );
+        FdoPtr<FdoCLOBValue> clob2 = FdoCLOBValue::Create( clob1 );
+        FdoPtr<FdoByteArray> charArray2 = clob2->GetData();
+        CPPUNIT_ASSERT( charArray2->GetCount() == 4 ); 
+        FdoByte* chars2 = charArray2->GetData();
+        CPPUNIT_ASSERT( chars2[0] == chars1[0] ); 
+        CPPUNIT_ASSERT( chars2[1] == chars1[1] ); 
+        CPPUNIT_ASSERT( chars2[2] == chars1[2] ); 
+        CPPUNIT_ASSERT( chars2[3] == chars1[3] ); 
+    }
+    catch ( FdoException* ex )
+    {
+        UnitTestUtil::FailOnException( ex );
+    }
 }
 
 void ExpressionTest::testFunction()
