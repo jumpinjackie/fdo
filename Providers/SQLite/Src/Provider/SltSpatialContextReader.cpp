@@ -22,6 +22,7 @@
 #include "SltProvider.h"
 #include "SltGeomUtils.h"
 #include "SltConversionUtils.h"
+#include "StringUtil.h"
 
 SltSpatialContextReader::SltSpatialContextReader(SltConnection* conn)
 {
@@ -117,42 +118,42 @@ FdoSpatialContextExtentType SltSpatialContextReader::GetExtentType()
 
 FdoByteArray* SltSpatialContextReader::GetExtent()
 {
-    //Get the spatial context's extent by 
-    //going via the spatial index for the 
-    //feature class that owns the geometry property
-    //corresponding to this spatial context.
-    FdoPtr<FdoFeatureSchemaCollection> fsc = m_connection->DescribeSchema(NULL, false);
-    FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(0);
-    FdoPtr<FdoClassCollection> cc = schema->GetClasses();
-
-    FdoFeatureClass* fc = NULL;
     FdoString* myname = GetName();
     double ext[4];
     ext[0] = ext[1] = DBL_MAX;
     ext[2] = ext[3] = -DBL_MAX;
-
-    //do the search...
-    for (int i=cc->GetCount()-1; i>=0; i--)
+    StringBuffer sb(100);
+    int defaultSpatialContext = m_connection->GetDefaultSpatialContext();
+    int spContext = m_connection->FindSpatialContext(myname, defaultSpatialContext);
+    if (defaultSpatialContext != spContext)
     {
-        FdoPtr<FdoClassDefinition> cd = cc->GetItem(i);
-
-        if (cd->GetClassType() == FdoClassType_FeatureClass)
-        {
-            fc = (FdoFeatureClass*)cd.p;
-
-            FdoPtr<FdoGeometricPropertyDefinition> gpd = fc->GetGeometryProperty();
-
-            FdoString* sca = gpd->GetSpatialContextAssociation();
-
-            if (wcscmp(sca, myname) == 0)
-            {
-                if (m_connection->GetExtents(fc->GetName(), ext))
-                    break;
-            }
-
-            fc = NULL;
-        }
+        sb.Append("SELECT f_table_name FROM geometry_columns WHERE srid=", 53);
+        sb.Append(spContext);
+        sb.Append(";", 1);
     }
+    else
+    {
+        sb.Append("SELECT geometry_columns.f_table_name from geometry_columns, spatial_ref_sys WHERE geometry_columns.srid=0", 105);
+        if (spContext != 0)
+        {
+            sb.Append(" OR geometry_columns.srid=", 26);
+            sb.Append(spContext);
+        }
+        sb.Append(" OR (geometry_columns.srid NOT IN (SELECT spatial_ref_sys.srid FROM spatial_ref_sys));", 86);
+    }
+    sqlite3_stmt* pstmt = NULL;
+    const char* pzTail = NULL;
+    if (sqlite3_prepare_v2(m_connection->GetDbRead(), sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    {
+        while (sqlite3_step(pstmt) == SQLITE_ROW)
+        {
+            const char* colName = (const char*)sqlite3_column_text(pstmt, 0);
+            if (colName != NULL && *colName != '\0' && m_connection->GetExtents(A2W_SLOW(colName).c_str(), ext))
+                break;
+        }
+        sqlite3_finalize(pstmt);
+    }
+
     // in case the extent is "empty" return null
     if (*ext > *(ext+2))
         return NULL;
