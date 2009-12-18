@@ -70,6 +70,17 @@ public:
     /// 
 	static void ComputeGeometryArea(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoIGeometry* geometry, FdoDouble *area);
 
+    /// \brief
+    /// Checks if the given ordinate has a null value.
+    /// 
+    /// \param ordinate 
+    /// Input the ordinate to check
+    /// 
+    /// \return
+    /// Returns true if ordinate is quiet_nan or m_nullOrd.
+    /// 
+    static bool     IsOrdinateNull(const double ordinate);
+
 private:
 	static FdoInt32 DimensionalityToNumOrdinates(FdoInt32 dimensionality);
 
@@ -98,6 +109,11 @@ private:
 
 	static double	DistanceBetweenPositionsXY(FdoIDirectPosition * p1, FdoIDirectPosition * p2);
 	static bool		ArePositionsEqualXY(FdoIDirectPosition * p1, FdoIDirectPosition * p2);
+
+    // Special constant for representing a null ordinate in FDO geometries
+    static const double m_nullOrd;
+
+
 };
 
 #endif
