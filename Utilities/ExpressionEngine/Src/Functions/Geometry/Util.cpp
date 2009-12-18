@@ -21,11 +21,17 @@
 #include <Functions/Geometry/Util.h>
 #include <Spatial/SpatialStd.h>
 #include <Spatial/SpatialUtility.h>		// for TesselateCurve()
+#include <float.h>                      // for _isnan()
 #include <math.h>
 
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
+
+// Special constant for representing a null ordinate in FDO geometries.
+// In the future, this should change to numeric_limits<double>::quiet_NaN(),
+// once AutoCAD Map is able to handle NaN's.
+const double FdoExpressionEngineGeometryUtil::m_nullOrd = -1.25e126;
 
 /************************************************************************/
 /* ComputeGeometryLength												*/
@@ -844,3 +850,15 @@ bool FdoExpressionEngineGeometryUtil::ArePositionsEqualXY(
 
     return	( (fabs(dx) < EPS2) && (fabs(dy) < EPS2) );
 }
+
+bool FdoExpressionEngineGeometryUtil::IsOrdinateNull(const double ordinate)
+{
+    return 
+#ifdef _WIN32
+        _isnan(ordinate)
+#else
+	    isnan(ordinate)
+#endif
+        || (m_nullOrd == ordinate);
+}
+
