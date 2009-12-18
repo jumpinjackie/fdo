@@ -195,7 +195,7 @@ XML885915Transcoder::transcodeTo(const   XMLCh* const    srcData
                 }
                 
             }
-            if (rep == NULL) // no special character found, use the souce as it is.
+            if (rep == 0) // no special character found, use the souce as it is.
                 rep = XMLByte(*srcPtr);
             ++srcPtr;
             *destPtr++ = rep;
