@@ -19,6 +19,10 @@
 #include <FdoCommon.h>
 #include <new>
 
+#ifdef _WIN32
+#include <new.h>
+#endif
+
 #define MIN_ALLOC 1
 #define GROWTH_FACTOR 1     /* Proportion of array size to grow when needed. */
 #define POOL_ENTRY_BYTESIZE_LIMIT   (8*1024)    // 8KB limit on pooled FdoByteArray values, to suppress retention of large values in memory.
@@ -233,7 +237,11 @@ FdoArrayHelper::GenericArray* FdoArrayHelper::AllocMore(GenericArray* array, Fdo
     {
         // Fix ticket 575 to avoid out-of-memory exception causing application crash.
         // Suppress any existing new handler to avoid unexpected behavior.
+#ifdef _WIN32
+        _PNH prevHdlr = _set_new_handler(NULL);
+#else
         std::new_handler prevHdlr = std::set_new_handler(NULL);
+#endif
         try
         {
             newArray = (GenericArray*) new FdoByte[newAllocBytes];
@@ -242,7 +250,11 @@ FdoArrayHelper::GenericArray* FdoArrayHelper::AllocMore(GenericArray* array, Fdo
         {
         }
         // restore old handler
+#ifdef _WIN32
+        _set_new_handler(prevHdlr);
+#else
         std::set_new_handler(prevHdlr);
+#endif
     }
 	if (0==newArray)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
