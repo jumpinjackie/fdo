@@ -30,6 +30,7 @@ FdoKgOraClassDefinition::FdoKgOraClassDefinition(void)
   m_Properties = FdoKgOraPropertyDefinitionCollection::Create(this);
   m_IsPointGeometry = false;
   
+  m_IsClassSDE = false;
   
 }
 

@@ -28,6 +28,16 @@ public:
 public:
   long m_OraSrid;
   bool m_IsGeodetic;  
+  
+  double m_SDE_FalseX;
+  double m_SDE_FalseY;
+  double m_SDE_XYUnit;
+  
+  double m_SDE_FalseZ;
+  double m_SDE_ZUnit;
+  
+  double m_SDE_FalseM;
+  double m_SDE_MUnit;
 };
 
 #endif

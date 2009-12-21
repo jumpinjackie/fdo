@@ -28,7 +28,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)&#x0D;&#x0A;if not exist ..\..\bin\Win32\$(ConfigurationName) mkdir ..\..\bin\Win32\$(ConfigurationName)"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -101,6 +101,89 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
+				GeneratePreprocessedFile="0"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="oraocci10.lib oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\Win64\$(ConfigurationName)\$(TargetName).lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\bin\Win32\$(ConfigurationName)"
 			IntermediateDirectory="..\..\obj\Provider\Win32\$(ConfigurationName)"
@@ -110,7 +193,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)&#x0D;&#x0A;if not exist ..\..\bin\Win32\$(ConfigurationName) mkdir ..\..\bin\Win32\$(ConfigurationName)"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -180,260 +263,16 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug_FDO_3_4|Win32"
-			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;..\..\oracle\instantclient_10_2\sdk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
-				GeneratePreprocessedFile="0"
-				MinimalRebuild="true"
-				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="4"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="..\..\oracle\10.2.0\client_1\oci\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning $(ProjectName).dll"
-				CommandLine="call KingStampVersion $(OutDir)"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release_FDO_3_4|Win32"
-			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;..\..\oracle\instantclient_10_2\sdk\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
-				RuntimeLibrary="2"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				LinkLibraryDependencies="false"
-				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\Release;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning $(ProjectName).dll"
-				CommandLine="call KingStampVersion $(OutDir)"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\bin\Win64\$(ConfigurationName)"
-			IntermediateDirectory="..\..\obj\Message\Win64\$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win64\$(ConfigurationName) mkdir ..\..\lib\Win64\$(ConfigurationName)&#x0D;&#x0A;if not exist ..\..\bin\Win64\$(ConfigurationName) mkdir ..\..\bin\Win64\$(ConfigurationName)"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
-				GeneratePreprocessedFile="0"
-				MinimalRebuild="true"
-				RuntimeLibrary="3"
-				TreatWChar_tAsBuiltInType="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="oraocci10.lib oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\Win64\$(ConfigurationName)\$(TargetName).lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning $(ProjectName).dll"
-				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
-			OutputDirectory="..\..\bin\Win64\$(ConfigurationName)"
-			IntermediateDirectory="..\..\obj\Message\Win64\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win64\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if not exist ..\..\lib\Win64\$(ConfigurationName) mkdir ..\..\lib\Win64\$(ConfigurationName)&#x0D;&#x0A;if not exist ..\..\bin\Win64\$(ConfigurationName) mkdir ..\..\bin\Win64\$(ConfigurationName)"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -504,8 +343,90 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug_FDO_3_4|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\oracle\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
+				GeneratePreprocessedFile="0"
+				MinimalRebuild="true"
+				RuntimeLibrary="3"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				AdditionalLibraryDirectories="..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="copy /y $(OutDir)\*.dll D:\Development\Fdo2Fdo\v1.2\bin\Debug\&#x0D;&#x0A;copy /y $(OutDir)\*.pdb D:\Development\Fdo2Fdo\v1.2\bin\Debug\&#x0D;&#x0A;copy /y $(OutDir)\*.dll ..\UnitTest\$(ConfigurationName)\&#x0D;&#x0A;call KingStampVersion $(OutDir)&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Debug_FDO_3_4|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win64\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -531,10 +452,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;..\..\oracle\instantclient_10_2\sdk\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
+				AdditionalIncludeDirectories="&quot;..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -554,12 +475,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="..\..\oracle\10.2.0\client_1\oci\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
+				ImportLibrary="..\..\lib\Win64\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -587,8 +508,8 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release_FDO_3_4|x64"
-			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			Name="Release_FDO_3_4|Win32"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -609,7 +530,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TargetEnvironment="3"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -640,6 +560,90 @@
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="..\..\lib\Win32\$(ConfigurationName)\$(TargetName).lib"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning $(ProjectName).dll"
+				CommandLine="copy /y $(OutDir)\*.dll D:\Development\Fdo2Fdo\v1.2\bin\Release\&#x0D;&#x0A;call KingStampVersion $(OutDir)&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release_FDO_3_4|x64"
+			OutputDirectory="..\..\Bin\Win64\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine="if not exist ..\..\lib\Win32\$(ConfigurationName) mkdir ..\..\lib\Win32\$(ConfigurationName)"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
+				RuntimeLibrary="2"
+				StructMemberAlignment="0"
+				TreatWChar_tAsBuiltInType="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkLibraryDependencies="false"
+				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\Release;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\lib\Win64\$(ConfigurationName)\$(TargetName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -689,31 +693,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_FDO_3_4|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_FDO_3_4|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -729,7 +717,23 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug_FDO_3_4|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug_FDO_3_4|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_FDO_3_4|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -858,6 +862,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\c_KgOraSelectAggregates.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\c_KgOraSelectAggregates.h"
+				>
+			</File>
+			<File
 				RelativePath=".\c_KgOraSelectCommand.cpp"
 				>
 			</File>
@@ -952,6 +964,14 @@
 		</File>
 		<File
 			RelativePath=".\c_FdoOra_API2.h"
+			>
+		</File>
+		<File
+			RelativePath=".\c_FdoSde_API.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_FdoSde_API.h"
 			>
 		</File>
 		<File
@@ -1067,10 +1087,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\c_KgOraSelectAggregates.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\c_KgOraSQLCommand.cpp"
 			>
 		</File>
@@ -1124,6 +1140,14 @@
 		</File>
 		<File
 			RelativePath=".\c_Ora_API2.h"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SdeGeom2AGF.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SdeGeom2AGF.h"
 			>
 		</File>
 		<File

@@ -37,6 +37,7 @@
 #define D_CONN_PROPERTY_SERVICE_NAME  L"Service"
 #define D_CONN_PROPERTY_ORACLE_SCHEMA L"OracleSchema"
 #define D_CONN_PROPERTY_KING_FDO_CLASS L"KingFdoClass"
+#define D_CONN_PROPERTY_SDE_SCHEMA L"SDE Schema"
 
 
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -19,13 +19,24 @@
 #define _c_KGORAFEATUREREADER_H
 
 #include "c_SdoGeomToAGF2.h"
+#include "c_SdeGeom2AGF.h"
 #include <time.h>
+
+#ifdef _FDO_3_5
 #include "FdoDefaultFeatureReader.h"
+#endif
 
-
-class c_KgOraFeatureReader : public c_KgOraReader< FdoDefaultFeatureReader>
+#ifdef _FDO_3_5
+  class c_KgOraFeatureReader : public c_KgOraReader< FdoDefaultFeatureReader>
+#else 
+  class c_KgOraFeatureReader : public c_KgOraReader< FdoIFeatureReader>
+#endif
 {
-    typedef c_KgOraReader<FdoDefaultFeatureReader> superclass;
+    #ifdef _FDO_3_5
+      typedef c_KgOraReader<FdoDefaultFeatureReader> superclass;
+    #else
+      typedef c_KgOraReader<FdoIFeatureReader> superclass;
+    #endif
     public:
         c_KgOraFeatureReader(c_KgOraConnection * Connection
                             ,c_Oci_Statement* OciStatement 
@@ -103,4 +114,50 @@ class c_KgOraFeatureReader : public c_KgOraReader< FdoDefaultFeatureReader>
         
 };
 
+
+class c_KgOraSdeFeatureReader : public c_KgOraFeatureReader
+{
+public:
+  c_KgOraSdeFeatureReader(c_KgOraConnection * Connection
+    ,c_Oci_Statement* OciStatement 
+    ,FdoClassDefinition* ClassDef
+    ,c_KgOraSridDesc& SridDesc
+    ,int SdeGeometryType
+    ,int GeomPropSqlIndex,FdoStringCollection* SqlColumns
+    , FdoIdentifierCollection* Props);
+
+protected:
+  virtual ~c_KgOraSdeFeatureReader();
+
+  //-------------------------------------------------------
+  // FdoIDisposable implementation
+  //-------------------------------------------------------
+
+protected:
+  // dispose this object
+  virtual void Dispose();
+  
+public:
+  FDOKGORA_API virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
+
+  /// \brief
+  /// Gets the geometry value of the specified property as a byte array in 
+  /// AGF format. Because no conversion is performed, the property must be
+  /// of Geometric type; otherwise, an exception is thrown.
+  /// 
+  /// \param propertyName 
+  /// Input the property name.
+  /// 
+  /// \return
+  /// Returns the byte array in AGF format.
+  /// 
+  FDOKGORA_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);  
+  
+protected:
+  c_SdeGeom2AGF m_SdeAgfConv;  
+  c_KgOraSridDesc m_SridDesc;
+  int m_SdeGeometryType;
+
+
+};
 #endif

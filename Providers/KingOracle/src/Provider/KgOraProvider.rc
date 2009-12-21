@@ -89,7 +89,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright SL-King© 2009"
             VALUE "OriginalFilename", "KingOracleProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "0.8.10.0"
+            VALUE "ProductVersion", "0.8.11.0"
         END
     END
     BLOCK "VarFileInfo"

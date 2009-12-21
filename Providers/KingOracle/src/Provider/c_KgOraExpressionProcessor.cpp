@@ -135,16 +135,46 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
   
   if( FdoCommonOSUtil::wcsicmp(fname,FDO_FUNCTION_SPATIALEXTENTS) == 0)
   {
-    if( m_ConstantSpatialExtent.GetLength() > 0 )
+    FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
+    FdoPtr<FdoKgOraClassDefinition> phys_class;
+    if( m_KgOraSchemaDesc.p && m_ClassId.p )
     {
+      phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
+      phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
+
+    }
+    
+    if( phys_class && phys_class->GetIsSdeClass() )
+    {
+      AppendString( L"min(" );
+      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( L".eminx)" );
       
-      AppendString( m_ConstantSpatialExtent );
+      AppendString( L",min(" );
+      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( L".eminy)" );
+      
+      AppendString( L",max(" );
+      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( L".emaxx)" );
+
+      AppendString( L",max(" );
+      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( L".emaxy) " );
       
       return;
     }
     else
-    {
-      AppendString( L"SDO_AGGR_MBR" );
+    {    
+      if( m_ConstantSpatialExtent.GetLength() > 0 )
+      {      
+        AppendString( m_ConstantSpatialExtent );      
+        return;
+      }
+      else
+      {
+        AppendString( L"SDO_AGGR_MBR" );
+      }
     }
   }
   else
@@ -187,6 +217,48 @@ void c_KgOraExpressionProcessor::ProcessComputedIdentifier(FdoComputedIdentifier
     if( pExpr == NULL )
         throw FdoFilterException::Create(L"FdoComputedIdentifier is missing the expression");
 
+
+// Check if it is SpatialExtent function and SDE class
+// It is not enough to override in ProcessFunction to create min(eminx),min(eminy),max(emaxx),max(emaxy)
+// but need to avoid adding parethness () and also keyword "AS" , so I proccess that separetly
+    FdoFunction* funcex = (dynamic_cast<FdoFunction*>(pExpr.p));
+    if( funcex )
+    {
+      if( FdoCommonOSUtil::wcsicmp(funcex->GetName(),FDO_FUNCTION_SPATIALEXTENTS) == 0)
+      {
+        FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
+        FdoPtr<FdoKgOraClassDefinition> phys_class;
+        if( m_KgOraSchemaDesc.p && m_ClassId.p )
+        {
+          phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
+          phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
+
+        }
+
+        if( phys_class && phys_class->GetIsSdeClass() )
+        {
+          AppendString( L"min(" );
+          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( L".eminx)" );
+
+          AppendString( L",min(" );
+          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( L".eminy)" );
+
+          AppendString( L",max(" );
+          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( L".emaxx)" );
+
+          AppendString( L",max(" );
+          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( L".emaxy) " );
+
+
+          return;
+        }
+      }
+    }
+    
     AppendString( D_FILTER_OPEN_PARENTH );
     ProcessExpresion( pExpr );
     AppendString( D_FILTER_CLOSE_PARENTH );

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -39,4 +39,3 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 extern char *g_KgOraMsgCat;
 extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 #endif // KGORA_MESSAGE_DEFINE
-

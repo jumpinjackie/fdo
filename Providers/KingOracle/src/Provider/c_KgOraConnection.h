@@ -78,6 +78,8 @@ public:
                               // if empty that will display classes from all schemas
                               
     std::wstring m_FdoViewsTable;
+    
+    std::wstring m_SdeSchema;
                                   
     int m_OracleMainVersion;
 	  int m_OracleSubVersion;

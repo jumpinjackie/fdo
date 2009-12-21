@@ -156,8 +156,10 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
     if( !classdef.p ) 
     {
       D_KGORA_ELOG_WRITE("c_KgOraSelectCommand.Execute : ERROR: FindClassDefinition() return NULL ");
-      return NULL;
+      throw FdoCommandException::Create( L"c_KgOraSelectCommand.Execute : ERROR: FindClassDefinition() return NULL " );  
+      //return NULL;
     }
+    FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
     
     int geom_sqlcol_index;
     FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
@@ -230,7 +232,10 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       
       fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
       
-      oci_stm->ExecuteSelectAndDefine(256);
+      if( phys_class && phys_class->GetIsSdeClass() )
+        oci_stm->ExecuteSelectAndDefine(4);
+      else
+        oci_stm->ExecuteSelectAndDefine(256);
       //m_Connection->OCI_TerminateStatement(occi_stm);
     }
     catch(c_Oci_Exception* ea)
@@ -256,7 +261,11 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
     }
 
     
-    return new c_KgOraFeatureReader(m_Connection,oci_stm, classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
+    
+    if( phys_class && phys_class->GetIsSdeClass() )
+      return new c_KgOraSdeFeatureReader(m_Connection,oci_stm, classdef,orasrid,phys_class->GetSdeGeometryType(),geom_sqlcol_index,sqlcols, m_PropertyNames);
+    else
+      return new c_KgOraFeatureReader(m_Connection,oci_stm, classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
     
 }//end of c_KgOraSelectCommand::Execute 
 
@@ -278,6 +287,7 @@ FdoILockConflictReader* c_KgOraSelectCommand::GetLockConflicts ()
 {
     throw FdoCommandException::Create (NlsMsgGet (M_KGORA_LOCKING_NOT_SUPPORTED, "Locking not supported (%1$ls).", L"GetLockConflicts"));
 }
+
 
 
 std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns)
@@ -316,6 +326,10 @@ std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& Filte
     FdoStringP fultablename = phys_class->GetOracleFullTableName();
     FdoStringP table_alias = phys_class->GetOraTableAlias();
     
+    FdoStringP sdegeom_table_alias = phys_class->GetSdeGeomTableAlias();
+    FdoStringP sdegeom_fultablename = phys_class->GetSdeGeometryTableName();
+    FdoStringP sde_featurekey_column = phys_class->GetSdeFeatureKeyColumn();
+    
     /* Define properties to be included in SELECT statement */    
     FdoPtr<FdoPropertyDefinition> propdef;
     FdoStringP sql_select_columns_part;
@@ -348,24 +362,42 @@ std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& Filte
           
           GeomSqlColumnIndex=ind;
           
-          if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+          if( phys_class->GetIsSdeClass() )
           {
-          // this is geometry created as point from numeric columns
+            sql_select_columns_part += sep + sdegeom_table_alias + "." + "POINTS" + " as " + propname;  sep = ",";
             
-            FdoStringP pointstr;
-            if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
-              pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
-            else
-              pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
-                      
-            sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+            sql_select_columns_part += sep + sdegeom_table_alias + "." + "NUMOFPTS" + " as " + "SDE_NUMOFPTS";  sep = ",";
+            SqlColumns->Add(L"SDE_NUMOFPTS");
+            
+            sql_select_columns_part += sep + sdegeom_table_alias + "." + "ENTITY" + " as " + "SDE_ENTITY";  sep = ",";
+            SqlColumns->Add(L"SDE_ENTITY");
+            
+            
+            
+            
             sep = ",";
           }
           else
-          {
-          // this is normal geomerty property - oracle column
-          // add just property name in select
-            sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+          {                    
+            if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+            {
+            // this is geometry created as point from numeric columns
+              
+              FdoStringP pointstr;
+              if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
+                pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+              else
+                pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
+                        
+              sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+              sep = ",";
+            }
+            else
+            {
+            // this is normal geomerty property - oracle column
+            // add just property name in select
+              sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+            }
           }
         }
         else
@@ -394,6 +426,16 @@ std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& Filte
     {
     FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
     
+    if( phys_class->GetIsSdeClass() )
+    {
+      // select a1.shape, g1.points, g1.eminx from UNISDETRAIN.UFRM_LICASE_POLY a1 LEFT JOIN UNISDETRAIN.F323 g1 ON a1.shape = g1.fid 
+      FdoStringP sbuffjoin = FdoStringP::Format(L" LEFT JOIN %s %s ON %s.%s=%s.%s"
+                          ,(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias
+                          ,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+                          ,(const wchar_t*)sdegeom_table_alias,L"fid"
+                          );     
+      sbuff = sbuff + sbuffjoin;                       
+    }
     
     sqlstr = (FdoString*)sbuff;
     if( filtertext && *filtertext )

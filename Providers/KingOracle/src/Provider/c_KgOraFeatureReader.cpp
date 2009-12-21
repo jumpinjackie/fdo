@@ -22,7 +22,7 @@
 
 #include "c_SdoGeomToAGF2.h"
 #include "c_LogAPI.h"
-
+#include "c_FdoSde_API.h"
 
     
     
@@ -128,3 +128,117 @@ FdoIFeatureReader* c_KgOraFeatureReader::GetFeatureObject(FdoString* propertyNam
 
 
 
+//---------------------------------------------------------------------
+//
+//    c_KgOraSdeFeatureReader
+//
+//---------------------------------------------------------------------
+
+c_KgOraSdeFeatureReader::c_KgOraSdeFeatureReader(c_KgOraConnection * Connection
+                                           ,c_Oci_Statement* OcciStatement  
+                                           ,FdoClassDefinition* ClassDef
+                                           ,c_KgOraSridDesc& SridDesc
+                                           ,int SdeGeometryType
+                                           ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
+                                           ,FdoIdentifierCollection* Props)
+                                           : c_KgOraFeatureReader(Connection,OcciStatement ,ClassDef,GeomPropSqlIndex, SqlColumns,Props)
+{
+
+ 
+  m_SridDesc=SridDesc;
+  m_SdeGeometryType = SdeGeometryType;
+}
+
+c_KgOraSdeFeatureReader::~c_KgOraSdeFeatureReader()
+{
+  //Close();
+  
+
+}
+
+void c_KgOraSdeFeatureReader::Dispose()
+{
+  delete this;
+}
+
+FdoByteArray* c_KgOraSdeFeatureReader::GetGeometry(FdoString* propertyName)
+{
+  int len = 0;
+  const void* ptr = GetGeometry(propertyName, &len);
+
+  if( len > 0 )
+    return FdoByteArray::Create((const FdoByte*)ptr, len);
+  else
+    throw FdoException::Create(L"c_KgOraReader::GetGeometry Invalid Geometry !");
+}
+
+
+
+
+const FdoByte* c_KgOraSdeFeatureReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
+{
+
+
+
+  if( m_OciStatement )
+  {
+    
+    try
+    {
+      int oraind = PropNameToColumnNumber(propertyName); 
+      if( !m_OciStatement->IsColumnNull(oraind) )
+      {
+        //int oraind = PropNameToColumnNumber(propertyName); 
+        int sde_numofpts = m_OciStatement->GetInteger(oraind+1);
+        int sde_entity = m_OciStatement->GetInteger(oraind+2);
+        
+        
+        long length = m_OciStatement->GetLongRawLength(oraind); // oracle is 1 based - our index is 0 based        
+        unsigned char* sdata = m_OciStatement->GetLongRaw(oraind);
+        m_SdeAgfConv.SetSdeGeometry(&m_SridDesc,m_SdeGeometryType,sde_numofpts,sde_entity,length,sdata);
+        *len = m_SdeAgfConv.ToAGF();
+        return (const unsigned char*)m_SdeAgfConv.GetBuff();
+      }
+    }
+    catch(FdoException* ea)
+    {      
+      throw ea;
+    }
+    catch(c_Oci_Exception* ea)
+    {
+      delete ea;
+      //printf("\n----------------------c_KgOraReader::GetGeometry: occi::SQLException Exception ---------------------- ");
+      *len=0;
+
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry SQLException !");
+    }
+    catch(...)
+    {
+      //printf("\n----------------------c_KgOraReader::GetGeometry: Uknown Exception ---------------------- ");
+      *len=0;
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry Uknown Exception !");
+    }
+
+    /*
+    *len=0;
+    if( geom )
+    {
+      m_SdoAgfConv.SetGeometry(geom);
+      *len = m_SdoAgfConv.ToAGF();
+
+      delete geom;
+    }
+    else
+    {
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry NULL SDO_GEOMETRY!");
+    }
+
+
+    return (const unsigned char*)m_SdoAgfConv.GetBuff();
+    */
+  }
+  
+
+
+  return NULL;
+}

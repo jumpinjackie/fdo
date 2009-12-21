@@ -578,7 +578,7 @@ where a.srid = b.srid (+) and a.owner = :1 ;
 //FdoPtr<FdoFeatureSchemaCollection> g_FeatureSchemas(NULL);
 //FdoPtr<FdoKgOraPhysicalSchemaMapping>  g_PhysicalSchemaMapping(NULL);
 
-c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema,const wchar_t* KingFdoViews)
+c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema,const wchar_t* KingFdoViews,const wchar_t* SdeSchema)
 {
       
         FdoPtr<FdoFeatureSchemaCollection> fschema;
@@ -594,10 +594,40 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
   
   FdoPtr<c_KgOraSpatialContextCollection> sc_collection = new c_KgOraSpatialContextCollection();
 
+
+
+// Create FDO classes from SDE tables
+{
+  if( SdeSchema && *SdeSchema )
+  {
+    FdoPtr<FdoFeatureSchema> schema;
+    
+    schema = (FdoFeatureSchema*)fschema->FindItem(L"KingOra");
+    if( !schema.p)
+    {        
+      schema = FdoFeatureSchema::Create(L"KingOra", L"");          
+      fschema->Add(schema.p);
+    }
+    FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+    FdoPtr<FdoKgOraClassCollection> phys_classes = phschema->GetClasses();
+    
+    bool bind_owner = false;
+    c_FdoOra_API2::DescribeSchemaSDE(OciConn,UseOraSchema, classes,phys_classes,sc_collection,aliasnum);
+  }
+}
+
 // Create FDO classes from tables in SDO_GEOM_METADATA
+if( OciConn->IsSdoTypes() )
 {  
-  FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"KingOra", L"");          
-  fschema->Add(schema.p);
+  FdoPtr<FdoFeatureSchema> schema;
+
+  schema = (FdoFeatureSchema*)fschema->FindItem(L"KingOra");
+  if( !schema.p)
+  {        
+    schema = FdoFeatureSchema::Create(L"KingOra", L"");          
+    fschema->Add(schema.p);
+  }
   
   FdoPtr<FdoClassCollection> classes = schema->GetClasses();
   
@@ -823,6 +853,7 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
     c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlquery.c_str(),bind_owner,UseOraSchema,classes,phys_classes,sc_collection,aliasnum,isoracle9);
     
     
+    
   }
   /*
   catch(FdoException* e)
@@ -841,7 +872,7 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
  
 }
 // Create FDO classes from tables in KingFDOViews table
-if( KingFdoViews && *KingFdoViews )
+if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
 { 
   // FdoPtr<FdoFeatureSchema> schema = fschema->FindItem(L"KingFdoClass"); 
   // If I set different schema than when selecting feature in MG, it will not select one feature
@@ -923,6 +954,8 @@ if( KingFdoViews && *KingFdoViews )
     
       
     c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlstr.c_str(),false,NULL, classes,phys_classes,sc_collection,aliasnum,isoracle9);
+    
+    
   }
   catch(FdoException* e)
   {
@@ -1108,7 +1141,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     bool ora_srid_isnull;
     std::wstring ora_tablename,ora_geom_colname,ora_tableowner,ora_fdo_classname,ora_index_name;
     long ora_srid;
-    c_SDO_GEOMETRY *ora_mbr;
+    c_SDO_GEOMETRY *ora_mbr=NULL;
     std::wstring ora_coord_sys_name,ora_coord_sys_wktext,ora_layer_gtype;
     std::wstring ora_fullname,ora_sequence_name;
     
@@ -1638,6 +1671,387 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
   }
 }//end of c_FdoOra_API2::DescribeSchemaSQL
 
+void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* Owner
+                                      ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
+                                      ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum )
+{
+  c_Oci_Statement * stm=NULL;
+  try
+  {
+    // Run Query for layers fdo SDE.layers table 
+    std::wstring sqlquery = \
+    L"SELECT l.layer_id, l.owner, l.table_name, l.spatial_column"
+    L" ,g.g_table_schema,g.g_table_name,g.geometry_type,g.coord_dimension"
+    L" ,r.srid,r.srtext,r.falsex,r.falsey,r.xyunits,r.falsez,r.zunits,r.falsem,r.munits" 
+    L" FROM sde.layers l INNER JOIN (sde.geometry_columns g INNER JOIN sde.spatial_references r ON g.srid = r.srid)" 
+    L" ON l.table_name = g.f_table_name and l.owner = g.f_table_schema";
+
+    if( Owner && *Owner )
+    {
+      sqlquery = sqlquery + L" where l.owner='";
+      sqlquery = sqlquery + Owner;
+      sqlquery = sqlquery + L"'";
+      //stm->BindString(1,Owner);
+    }
+    
+    stm = OciConn->CreateStatement();
+    stm->Prepare(sqlquery.c_str());
+    
+    
+    stm->ExecuteSelectAndDefine();
+
+    std::wstring ora_tablename,ora_geom_colname,ora_tableowner,ora_fdo_classname,ora_index_name;
+    long sde_srid;
+    c_SDO_GEOMETRY *ora_mbr=NULL;
+    std::wstring sde_coord_sys_name,sde_coord_sys_wktext;
+    double sde_falsex,sde_falsey,sde_falsez,sde_falsem;
+    double sde_xyunits,sde_zunits,sde_munits;
+    std::wstring ora_fullname,ora_sequence_name;
+
+    
+    
+    long sde_layer_id;
+    std::wstring sde_geom_owner,sde_geom_table,sde_featurekey_colname;
+    std::wstring  sde_full_geometry_table_name,sde_full_index_table_name;
+    long sde_geom_type,sde_geom_coord_dim;
+    
+    int duplicate_rec=0;
+    int rec_count=0;
+    while( stm->ReadNext() )
+    {
+      rec_count++;
+      
+      if( stm->IsColumnNull(1) )
+      {      
+        continue;
+      }
+      else
+      {
+        sde_layer_id = stm->GetLong(1);
+      }
+      
+      if( stm->IsColumnNull(2) )
+      {
+        if( Owner )
+          ora_tableowner = Owner;
+        else
+          ora_tableowner = L"";
+      }
+      else
+      {
+        ora_tableowner = stm->GetString(2);
+      }
+
+      ora_tablename = stm->IsColumnNull(3) ? L"" : stm->GetString(3);
+      sde_featurekey_colname = stm->IsColumnNull(4) ? L"" : stm->GetString(4);
+      ora_geom_colname = L"FdoGeom";
+      
+      if( ora_tablename.empty() || ora_geom_colname.empty() ) continue;
+
+      // check if dot is in table or column name
+      // in this version of provider skip those tables because fdo doesn't allow dots in names
+      // TODO: change table name or column name so it doen't have dots
+      if( (ora_tablename.find(L".") != std::wstring::npos) || (ora_geom_colname.find(L".") != std::wstring::npos) )
+      {
+        continue;
+      }
+
+
+      sde_geom_owner = stm->IsColumnNull(5) ? L"" : stm->GetString(5);
+      sde_geom_table = stm->IsColumnNull(6) ? L"" : stm->GetString(6);
+      
+      sde_geom_type = stm->IsColumnNull(7) ? 0 : stm->GetLong(7);
+      sde_geom_coord_dim = stm->IsColumnNull(8) ? 0 : stm->GetLong(8);
+
+      sde_full_geometry_table_name = sde_geom_owner + L"." + sde_geom_table;
+      FdoStringP temp2 = FdoStringP::Format(L"S%ld",sde_layer_id);
+      sde_full_index_table_name = temp2;
+      sde_full_index_table_name = sde_geom_owner + L".S" + sde_full_index_table_name;
+
+      sde_srid = stm->IsColumnNull(9) ? 0 : stm->GetLong(9);
+      sde_coord_sys_wktext = stm->IsColumnNull(10) ? L"" : stm->GetString(10);
+
+      FdoStringP temp = FdoStringP::Format(L"SDE_SRID_%ld",sde_srid);
+      sde_coord_sys_name = temp;
+      
+      sde_falsex = stm->IsColumnNull(11) ? 0 : stm->GetDouble(11);
+      sde_falsey = stm->IsColumnNull(12) ? 0 : stm->GetDouble(12);
+      sde_xyunits = stm->IsColumnNull(13) ? 1 : stm->GetDouble(13);
+      
+      sde_falsez = stm->IsColumnNull(14) ? 0 : stm->GetDouble(14);
+      sde_zunits = stm->IsColumnNull(15) ? 1 : stm->GetDouble(15);
+      
+      sde_falsem = stm->IsColumnNull(16) ? 0 : stm->GetDouble(16);
+      sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(16);
+      
+      
+
+      
+      ora_sequence_name = FdoStringP::Format(L"I%ld",sde_srid);
+
+     
+
+      c_KgOraSridDesc orasriddesc;
+
+      
+
+      orasriddesc.m_OraSrid = (long)sde_srid;
+      orasriddesc.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(sde_coord_sys_wktext.c_str());
+      orasriddesc.m_SDE_FalseX = sde_falsex;
+      orasriddesc.m_SDE_FalseY = sde_falsey;
+      orasriddesc.m_SDE_XYUnit = sde_xyunits;
+      orasriddesc.m_SDE_FalseZ = sde_falsez;
+      orasriddesc.m_SDE_ZUnit = sde_zunits;
+      orasriddesc.m_SDE_FalseM = sde_falsem;
+      orasriddesc.m_SDE_MUnit = sde_munits;
+      
+      
+
+
+      // Test for coordinate system if exists and 
+      FdoPtr<c_KgOraSpatialContext> spatial_context;
+      if( (long)sde_srid >= 0 )
+      {
+        FdoStringP cname = FdoStringP::Format(L"SdeSrid%ld",(long)sde_srid);
+        spatial_context = SC_Collection->FindItem(cname);
+        if( !spatial_context )
+        {
+          spatial_context = new c_KgOraSpatialContext();
+          spatial_context->SetName(cname);
+
+          FdoStringP csname = sde_coord_sys_name.c_str();
+          spatial_context->SetCoordSysName(csname);
+
+          FdoStringP cswkt = sde_coord_sys_wktext.c_str();
+          spatial_context->SetCoordinateSystemWkt(cswkt);
+
+          spatial_context->SetOraSridDesc(orasriddesc);
+
+         
+          SC_Collection->Insert(0,spatial_context);
+        }
+
+      }
+      else
+      {
+        // this is no coordinate system
+        // then I use DEFAULT spatial context
+        if( ora_mbr )
+        {
+          spatial_context = SC_Collection->FindItem(D_SPATIALCONTEXT_DEFAULT_NAME);       
+        }
+      }
+
+      // Now set extents for spatial context
+      double minx,miny,maxx,maxy;
+      bool isminmax = false;
+      
+
+      // Apply new extent
+      if( spatial_context.p && isminmax )
+      {
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIEnvelope> env = gf->CreateEnvelopeXY(minx, miny, maxx, maxy);
+
+        spatial_context->ExpandExtent( env );
+      }
+
+
+      // Delete ora objects as there are not needed any more
+
+
+
+      if( ora_tableowner.length() > 0 )
+        ora_fullname = ora_tableowner + L"." + ora_tablename;
+      else
+        ora_fullname = ora_tablename;
+
+      ora_fdo_classname = ora_tableowner + L"~" + ora_tablename + L"~" + ora_geom_colname;
+
+      FdoStringP w_fdo_classname = ora_fdo_classname.c_str();
+
+      
+
+      // check if class already exist
+      // the previous sql can return multiple rows for same table.column because of multiple indexes on same column
+      // so I need to check not to duplicate classes
+      if( !FdoClasses->FindItem( w_fdo_classname ) )
+      {
+
+        FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(w_fdo_classname, L"");      
+
+        FdoPtr<FdoKgOraClassDefinition> phys_class  = FdoKgOraClassDefinition::Create();
+
+
+        if( ora_mbr )
+        {
+          if( orasriddesc.m_IsGeodetic )
+          {
+            // for now I am setting spatial extent for geodetic layer maximum big
+            // beacuse SDO_ROOT_MBR has some special values for geodetic layers
+            // this will be changed when i know how to calculate it
+            phys_class->SetSdoRootMBR(L"MDSYS.SDO_GEOMETRY(2003,null,null,MDSYS.SDO_ELEM_INFO_ARRAY(1,1003,3),MDSYS.SDO_ORDINATE_ARRAY(-180,-90,180,90))");
+          }
+          else
+          {
+            wchar_t* buff = c_Ora_API2::SdoGeomToStringW(ora_mbr);
+            phys_class->SetSdoRootMBR(buff);
+            delete []buff;
+          }
+        }
+        phys_class->SetName( w_fdo_classname );
+        phys_class->SetOracleFullTableName( FdoStringP(ora_fullname.c_str()) );
+        AliasNum++;
+        phys_class->SetOraTableAliasNum( AliasNum );
+        
+        phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str());
+
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //  Create Geometry Property
+        ////////////////////////////////////////////////////////////////////////////////////////////       
+        //
+        //  Define Layer Geometry Type  
+        //
+        FdoInt32 fdo_geom_type = FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
+        switch(sde_geom_type)
+        {
+          case 0: // 0 = Geometry
+          case 6: // 6 = collection
+            fdo_geom_type = FdoGeometricType_Point|FdoGeometricType_Curve|FdoGeometricType_Surface;
+          break;
+          case 1: // 1 = point
+          case 7: // 7 = multipoint
+            fdo_geom_type = FdoGeometricType_Point;
+          break;
+          case 2: // 2 = curve
+          case 3: // 3 = linestring
+          case 8: // 8 = multicurve
+          case 9: // 9 = multilinestring
+            fdo_geom_type = FdoGeometricType_Curve;
+          break;
+          
+          case 4: // 4 = surface
+          case 5: // 5 = polygon
+          case 10: // 10 = multisurface
+          case 11: // 11 = multipolygon
+            fdo_geom_type = FdoGeometricType_Surface;
+          break;
+        }
+
+        
+        
+        if( ora_geom_colname.length() > 0 )
+        {
+          //FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(FdoStringP(ora_geom_colname.c_str()), L"");
+          FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(ora_geom_colname.c_str(), L"");                        
+
+          gpd->SetGeometryTypes(fdo_geom_type);  
+
+          if( spatial_context )
+          {
+            gpd->SetSpatialContextAssociation( spatial_context->GetName() );
+          }
+
+          pdc->Add(gpd);
+
+          fc->SetGeometryProperty(gpd);
+        }
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //  Add other non-geometry sttributes from table  
+        //////////////////////////////////////////////////////////////////////////////////////////// 
+
+        // Because there could be table names in sdo_geom_metadata which doesn't exists as tables or views
+        // catch erro returned
+        bool table_exists=false;
+
+        table_exists = DescribeTableProperties(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pdc);
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //  Check for primary keys
+        //////////////////////////////////////////////////////////////////////////////////////////// 
+        /*
+        std::vector<std::wstring> pcols;
+
+        if( BindOwner )
+          c_OCI_API::GetTablePkeyColumns(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pcols);
+        else
+          c_OCI_API::GetTablePkeyColumns(OciConn,NULL,ora_tablename.c_str(),pcols);
+        
+        if( pcols.size() > 0 )
+        */
+        {
+          bool isidentity_int=true;
+          
+          FdoPtr<FdoDataPropertyDefinition> entid = dynamic_cast<FdoDataPropertyDefinition*>(pdc->FindItem(sde_featurekey_colname.c_str()));
+          if( entid.p )
+          {
+            FdoPtr<FdoDataPropertyDefinitionCollection> ic = fc->GetIdentityProperties();
+            ic->Add( entid );
+          }     
+          
+          
+          
+          ////////////////////////////////////////////////////////////////////////////////////////////
+          //  Set Oracle Sequence
+          ////////////////////////////////////////////////////////////////////////////////////////////  
+          // If primary ky is one int column and if there is sequence TableName_FDOSEQ
+          // then this sequence will be use to populate identity id during inserts
+          std::wstring comb_sequence_name;        
+          comb_sequence_name = ora_sequence_name;
+          /*
+          if( (pcols.size() == 1) && (isidentity_int = true) && (comb_sequence_name.length()>0) )
+          {
+            FdoStringP fdostr = comb_sequence_name.c_str();
+            phys_class->SetUseSequenceForIdentity(fdostr);
+          } 
+          */         
+        }
+       
+
+        FdoClasses->Add(fc);
+        PhysClasses->Add( phys_class );
+      }
+      else
+      {
+        duplicate_rec++;
+      
+      }
+      
+      if(ora_mbr )
+        delete ora_mbr;
+
+    }
+
+    //g_FeatureSchemas = FDO_SAFE_ADDREF(m_FeatureSchemas.p);
+    //g_PhysicalSchemaMapping = FDO_SAFE_ADDREF(m_PhysicalSchemaMapping.p);
+
+    int class_count = FdoClasses->GetCount();
+
+    OciConn->TerminateStatement(stm);
+
+  }
+  catch(c_Oci_Exception* ex)
+  {
+    FdoStringP gstr = ex->GetErrorText();
+#ifdef _KGORA_EXTENDED_LOG  
+    D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
+#endif
+    delete ex;
+    if( stm )
+    {
+      OciConn->TerminateStatement(stm);
+
+    }
+
+    throw FdoException::Create( gstr );
+  }
+}//end of c_FdoOra_API2::DescribeSchemaSDE
 
 
 bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoStringP& OraType)

@@ -16,9 +16,16 @@
 */
 #ifndef _c_KgOraSQLDataReader_h
 #define _c_KgOraSQLDataReader_h
-#include "FdoDefaultSqlDataReader.h"
 
-class c_KgOraSQLDataReader : public FdoDefaultSqlDataReader
+#ifdef _FDO_3_5
+#include "FdoDefaultSqlDataReader.h"
+#endif
+
+#ifdef _FDO_3_5
+  class c_KgOraSQLDataReader : public FdoDefaultSqlDataReader
+#else
+  class c_KgOraSQLDataReader : public FdoISQLDataReader
+#endif
 {
 public:
   c_KgOraSQLDataReader(c_KgOraConnection * Connection

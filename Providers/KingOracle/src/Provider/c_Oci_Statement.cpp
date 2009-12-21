@@ -407,35 +407,38 @@ void c_Oci_Statement::DefineColumn( int ColNumber,int DataType,const wchar_t*Typ
   
     
 
-  if( coldata->GetDataDefineType() == SQLT_NTY )
-  {
-    m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
-    (dvoid *)0, 
-    0,SQLT_NTY,
-    (dvoid *)0, (ub2 *)0, (ub2 *)0, 
-    (ub4)OCI_DEFAULT));
-    
-    m_OciConn->OciCheckError( OCIDefineObject(defn1p, m_OciConn->m_OciHpError, coldata->GetDataOciType(), 
-        (dvoid **)coldata->GetDataDefineBuffer(), (ub4 *)0, 
-        (dvoid **)coldata->GetDataIndDefineBuffer(), (ub4 *)0));    
-        
-  }
-  else
-  {
-    m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
-    (dvoid *)coldata->GetDataDefineBuffer(), 
-    //(sb4)sizeof(OCINumber), SQLT_VNU,
-    coldata->GetDataDefineSize(),coldata->GetDataDefineType(),
-    (dvoid *)coldata->GetDataIndDefineBuffer(), (ub2 *)0, (ub2 *)0, 
-    (ub4)OCI_DEFAULT));
-  }
+  
+  
+    if( coldata->GetDataDefineType() == SQLT_NTY )
+    {
+      m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
+      (dvoid *)0, 
+      0,SQLT_NTY,
+      (dvoid *)0, (ub2 *)0, (ub2 *)0, 
+      (ub4)OCI_DEFAULT));
+      
+      m_OciConn->OciCheckError( OCIDefineObject(defn1p, m_OciConn->m_OciHpError, coldata->GetDataOciType(), 
+          (dvoid **)coldata->GetDataDefineBuffer(), (ub4 *)0, 
+          (dvoid **)coldata->GetDataIndDefineBuffer(), (ub4 *)0));    
+          
+    }
+    else
+    {
+      m_OciConn->OciCheckError( OCIDefineByPos(m_OciHpStm, &defn1p, m_OciConn->m_OciHpError, (ub4)ColNumber, 
+      (dvoid *)coldata->GetDataDefineBuffer(), 
+      //(sb4)sizeof(OCINumber), SQLT_VNU,
+      coldata->GetDataDefineSize(),coldata->GetDataDefineType(),
+      (dvoid *)coldata->GetDataIndDefineBuffer(), (ub2 *)coldata->GetDataRealLengthBuffer(), (ub2 *)0, 
+      (ub4)OCI_DEFAULT));
+    }
+  
     
     
 }
 
 bool c_Oci_Statement::IsColumnNull( int ColNumber )
 {
-  if( (ColNumber<1) || (ColNumber > m_ColumnDataSize) ) throw c_Oci_Exception(0,0,L"Invalid Column Number");
+  if( (ColNumber<1) || (ColNumber > m_ColumnDataSize) ) throw new c_Oci_Exception(0,0,L"Invalid Column Number");
   
   c_Oci_ColumnData* coldata = m_ColumnDataPtrArray[ColNumber-1];
   
@@ -494,7 +497,7 @@ bool c_Oci_Statement::ReadNext()
 int c_Oci_Statement::GetInteger( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   int data;
@@ -507,7 +510,7 @@ int c_Oci_Statement::GetInteger( int ColNumber )
 long c_Oci_Statement::GetLong( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   long data;
@@ -520,7 +523,7 @@ long c_Oci_Statement::GetLong( int ColNumber )
 double c_Oci_Statement::GetDouble( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   double data;
@@ -532,7 +535,7 @@ double c_Oci_Statement::GetDouble( int ColNumber )
 OCIDate* c_Oci_Statement::GetOciDate( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   return coldata->GetOciDate();
@@ -542,16 +545,34 @@ OCIDate* c_Oci_Statement::GetOciDate( int ColNumber )
 const wchar_t* c_Oci_Statement::GetString( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   
   return coldata->GetString();  
 }
+
+long c_Oci_Statement::GetLongRawLength( int ColNumber )
+{
+  c_Oci_ColumnData*coldata;
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  coldata = m_ColumnDataPtrArray[ColNumber-1];
+  
+  return coldata->GetLongRawLength();
+}
+unsigned char* c_Oci_Statement::GetLongRaw( int ColNumber )
+{
+  c_Oci_ColumnData*coldata;
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  coldata = m_ColumnDataPtrArray[ColNumber-1];
+
+  return coldata->GetLongRaw();
+}
+
 c_SDO_GEOMETRY* c_Oci_Statement::GetSdoGeom( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   SDO_GEOMETRY_TYPE* geom;
@@ -563,7 +584,7 @@ c_SDO_GEOMETRY* c_Oci_Statement::GetSdoGeom( int ColNumber )
 c_SDO_DIM_ARRAY c_Oci_Statement::GetSdoDimArray( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
-  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
   

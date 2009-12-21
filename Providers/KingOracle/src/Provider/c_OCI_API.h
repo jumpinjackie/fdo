@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -79,7 +79,7 @@ class c_Oci_Connection
     void LogOff();
     void OciCheckError(sword status);
     
-   
+    bool IsSdoTypes() { return m_OciType_SdoGeometry!=NULL && m_OciType_SdoDimArray!=NULL && m_OciType_SdoDimElement!=NULL; }
 
   public:
   

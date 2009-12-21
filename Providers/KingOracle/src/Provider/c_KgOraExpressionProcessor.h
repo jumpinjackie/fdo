@@ -44,6 +44,7 @@ protected:
   c_FilterStringBuffer* m_StringBuff; // pointer to buffer set in constructor; so it can share buffer with expresion processor
   c_KgOraSridDesc m_OraSridDesc; // when converting geomerty need to have this one
   
+  
   FdoStringP m_ConstantSpatialExtent;
   
   int m_ParamNumberOffset;
