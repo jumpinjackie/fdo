@@ -204,7 +204,7 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
 
    
 
-    private:
+    protected:
         #ifdef _KGORA_EXTENDED_LOG
         
         long m_CountRows;

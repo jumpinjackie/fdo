@@ -247,9 +247,65 @@ void c_KgOraFilterProcessor::ProcessNullCondition(FdoNullCondition& Filter)
 
 void c_KgOraFilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& Filter)
 {
+
 FdoPtr<FdoIdentifier> geomprop = Filter.GetPropertyName();
 
 FdoPtr<FdoExpression> geomexp = Filter.GetGeometry();
+
+// If class is from SDE then need to apply only primary check of min max
+if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
+{
+  FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
+  if (geomval)
+  {
+    FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
+    FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
+
+    double minx = envelope->GetMinX();
+    double miny = envelope->GetMinY();
+
+    double maxx = envelope->GetMaxX();
+    double maxy = envelope->GetMaxY();
+
+    FdoStringP buff;
+
+    AppendString(D_FILTER_OPEN_PARENTH);
+    AppendString(L" NOT ");
+    AppendString(D_FILTER_OPEN_PARENTH);
+
+    AppendString(L"eminx");
+    AppendString(L">");       
+    buff = FdoStringP::Format(L"%.8lf",maxx);
+    AppendString((FdoString*)buff);
+
+    AppendString(L" or ");
+
+    AppendString(L"emaxx");
+    AppendString(L"<");        
+    buff = FdoStringP::Format(L"%.8lf",minx);
+    AppendString((FdoString*)buff);
+
+    AppendString(L" or ");
+
+    AppendString(L"eminy");
+    AppendString(L">");        
+    buff = FdoStringP::Format(L"%.8lf",maxy);
+    AppendString((FdoString*)buff);
+
+    AppendString(L" or ");
+
+    AppendString(L"emaxy");
+    AppendString(L"<");        
+    buff = FdoStringP::Format(L"%.8lf",miny);
+    AppendString((FdoString*)buff);
+
+    AppendString(D_FILTER_CLOSE_PARENTH);        
+    AppendString(D_FILTER_CLOSE_PARENTH);        
+  }    
+  return;
+}
 
 switch( Filter.GetOperation() )
 {

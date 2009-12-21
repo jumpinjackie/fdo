@@ -175,6 +175,12 @@ FdoIConnectionPropertyDictionary* c_KgOraConnectionInfo::GetConnectionProperties
                                             NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE, propname),
                                             L"", false, false, false, false, false, false,false, 0, NULL);
     m_PropertyDictionary->AddProperty(newproperty);
+    
+    wide_to_multibyte (propname, D_CONN_PROPERTY_SDE_SCHEMA);
+    newproperty = new ConnectionProperty (D_CONN_PROPERTY_SDE_SCHEMA,
+      NlsMsgGet(M_KGORA_CONNECTION_PROPERTY_SDE_SCHEMA, propname),
+      L"", false, false, false, false, false, false,false, 0, NULL);
+    m_PropertyDictionary->AddProperty(newproperty);
   }
   
   return (FDO_SAFE_ADDREF(m_PropertyDictionary.p));

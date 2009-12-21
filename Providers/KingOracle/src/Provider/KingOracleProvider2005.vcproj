@@ -2096,6 +2096,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\c_SdeGeom2AGF.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_SdeGeom2AGF.h"
+			>
+		</File>
+		<File
 			RelativePath=".\c_SDO_DIM_ELEMENT.cpp"
 			>
 		</File>

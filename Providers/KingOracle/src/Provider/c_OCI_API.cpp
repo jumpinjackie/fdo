@@ -316,13 +316,26 @@ void c_Oci_Connection::LogOn( const wchar_t* UserName,const wchar_t* Password,co
       (ub4)OCI_HTYPE_DESCRIBE, (size_t)0,
       (dvoid **)0));
 
-    m_OciType_SdoGeometry = GetOciType(D_OCI_SDO_GEOMETRY);
+
+    m_OciType_SdoGeometry = NULL;
+    m_OciType_SdoDimArray = NULL;
+    m_OciType_SdoDimElement = NULL;
     
-    // describe spatial object types 
-   
-    m_OciType_SdoDimArray = GetOciType(D_OCI_SDO_DIM_ARRAY);
-   
-    m_OciType_SdoDimElement = GetOciType(D_OCI_SDO_DIM_ELEMENT);
+    // Ignore error of missing SDO_GEMETRY TYPES
+    try
+    {
+      m_OciType_SdoGeometry = GetOciType(D_OCI_SDO_GEOMETRY);
+      
+      // describe spatial object types 
+     
+      m_OciType_SdoDimArray = GetOciType(D_OCI_SDO_DIM_ARRAY);
+     
+      m_OciType_SdoDimElement = GetOciType(D_OCI_SDO_DIM_ELEMENT);
+    }
+    catch (c_Oci_Exception* e)
+    {
+      delete e; // ignore error
+    }
 
 }
 

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2009  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -38,9 +38,7 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, ...)
 #else // KGORA_MESSAGE_DEFINE
 extern char *g_KgOraMsgCat;
 extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
-#endif // KGORA_MESSAGE_DEFINE
-
-//************************************************************************************
+#endif // KGORA_MESSAGE_DEFINE//************************************************************************************
 //************************************************************************************
 //** GENERIC MESSAGES 
 //************************************************************************************
@@ -414,6 +412,15 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 // FdoViewsTable
 //
 #define M_KGORA_CONNECTION_PROPERTY_FDO_VIEWS_TABLE 0x00000BBFL
+
+//
+// MessageId: M_KGORA_CONNECTION_PROPERTY_SDE_SCHEMA
+//
+// MessageText:
+//
+// SDE Schema
+//
+#define M_KGORA_CONNECTION_PROPERTY_SDE_SCHEMA 0x00000BC0L
 
 //************************************************************************************
 //************************************************************************************
@@ -1192,4 +1199,4 @@ extern FdoString* NlsMsgGet(int msg_num, char* default_msg, ...);
 //
 #define M_KGORA_PROVIDER_DESCRIPTION     0x000036B2L
 
-
+

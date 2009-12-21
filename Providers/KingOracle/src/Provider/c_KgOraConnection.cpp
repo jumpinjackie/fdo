@@ -327,6 +327,8 @@ g_Mutex.Enter();
     FdoStringP service = dictionary->GetProperty (D_CONN_PROPERTY_SERVICE_NAME);
     FdoStringP oraschema = dictionary->GetProperty (D_CONN_PROPERTY_ORACLE_SCHEMA);
     FdoStringP fdoviewstable = dictionary->GetProperty (D_CONN_PROPERTY_KING_FDO_CLASS);
+    
+    FdoStringP sdeschema = dictionary->GetProperty (D_CONN_PROPERTY_SDE_SCHEMA);
 		
 		
 		//FdoStringP username = dictionary->GetProperty (L"Username");
@@ -344,6 +346,7 @@ g_Mutex.Enter();
 	  m_OraConnectionDbLink = service;
 	  m_OraSchemaName = oraschema.Upper();
 	  m_FdoViewsTable = fdoviewstable.Upper();
+	  m_SdeSchema = sdeschema.Upper();
 	  
 	  
 	  if( !c_Ora_API2::GetOracleVersion(m_OciConnection,m_OracleMainVersion,m_OracleSubVersion) )
@@ -728,7 +731,8 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
     m_SchemaDesc = c_KgOraSchemaPool::GetSchemaData(this);
     if( !m_SchemaDesc.p )
     {
-      m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+      m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str()
+                      ,m_FdoViewsTable.c_str(),m_SdeSchema.c_str());
       if( m_SchemaDesc.p )
       {
         c_KgOraSchemaPool::AddSchemaData(this,m_SchemaDesc.p);
@@ -736,7 +740,7 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
     }
   
   #else
-    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str());
+    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str(),m_SdeSchema.c_str());
   #endif
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);

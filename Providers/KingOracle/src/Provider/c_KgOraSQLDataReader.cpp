@@ -193,7 +193,7 @@ FdoPropertyType c_KgOraSQLDataReader::GetPropertyType(FdoString* ColumnName)
     
     if( str )
     {
-      if( wcscmp(str,L"1") == 0 ) return true;
+      //if( wcscmp(str,L"1") == 0 ) return true;
       if( FdoCommonOSUtil::wcsicmp(str,L"1") == 0 ) return true;
       
     }

@@ -77,6 +77,18 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
     case SQLT_TIMESTAMP:
       m_DataBufferType = e_OciDateTime;
     break;
+    
+    
+    case SQLT_LBI:
+      m_DataBufferType = e_OciLongRaw;
+    break;
+    
+    case SQLT_BLOB:
+      m_DataBufferType = e_OciBlob;
+    break;
+    case SQLT_CLOB:
+      m_DataBufferType = e_OciClob;
+    break;
 
     
     case SQLT_NTY:
@@ -154,6 +166,34 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
     {
       m_DataDateTime = new OCIDate[m_DataArraySize];
       m_ScalarInd = new sb2[m_DataArraySize];      
+    }
+    break;
+    case e_OciLongRaw:
+    case e_OciBlob:
+    case e_OciClob:
+    {
+      m_ColSize = 64000;
+      m_DataLongRaw = new ub1[m_DataArraySize*m_ColSize];
+      m_DataLength = new ub2[m_DataArraySize];
+      /*
+      for(int ind=0;ind<m_DataArraySize;ind++)
+      {
+        m_DataLob[ind]=new ub1[32000];
+      }
+      */
+      
+    /*
+      m_DataLob = new OCILobLocator*[m_DataArraySize];
+      for(int ind=0;ind<m_DataArraySize;ind++)
+      {
+        m_DataLob[ind]=NULL;
+      }
+      for(int ind=0;ind<m_DataArraySize;ind++)
+      {
+         OCIDescriptorAlloc((dvoid*)OciConn->m_OciHpEnvironment, (dvoid **)&m_DataLob[ind],(ub4)OCI_DTYPE_LOB, (size_t)0,(dvoid**)0);
+      }
+    */  
+      m_ScalarInd = new sb2[m_DataArraySize];
     }
     break;
     case e_OciSdoGeometry:
@@ -235,6 +275,25 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
       delete []m_ScalarInd;
     }
     break;
+    case e_OciLongRaw:
+    case e_OciBlob:
+    case e_OciClob:
+    {
+    /*
+      for(int ind=0;ind<m_DataArraySize;ind++)
+      {
+        if( m_DataLob[ind] )
+        {
+          c_OCI_API::OciCheckError(m_OciConn->m_OciHpError, OCIDescriptorFree(m_DataLob[ind],OCI_DTYPE_LOB ));      
+          m_DataLob[ind] = NULL;
+        }                
+      }
+      */
+      delete []m_DataLongRaw;
+      delete []m_ScalarInd;
+      if( m_DataLength ) delete []m_DataLength;
+    }
+    break;
     case e_OciSdoGeometry:
     {
       for(int ind=0;ind<m_DataArraySize;ind++)
@@ -268,6 +327,9 @@ bool c_Oci_ColumnData::IsNull()
     case e_OciString:
     case e_OciNumber:    
     case e_OciDateTime:
+    case e_OciLongRaw:
+    case e_OciBlob:
+    case e_OciClob:
     {      
       return m_ScalarInd[m_CurrentRow] != 0;
       
@@ -300,7 +362,7 @@ OCINumber* c_Oci_ColumnData::GetOciNumber()
     return &m_DataNumber[m_CurrentRow];
   }
   
-  throw c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not OCINumber!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not OCINumber!");
 }
 OCIDate* c_Oci_ColumnData::GetOciDate()
 {
@@ -309,7 +371,7 @@ OCIDate* c_Oci_ColumnData::GetOciDate()
     return &m_DataDateTime[m_CurrentRow];
   }
   
-  throw c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not OCIDate!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not OCIDate!");
 }
 
 
@@ -321,7 +383,7 @@ const wchar_t* c_Oci_ColumnData::GetString()
     return &m_DataStringPtr[m_CurrentRow*(m_ColSize+1)];
   }
   
-  throw c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
 }
 SDO_GEOMETRY_TYPE* c_Oci_ColumnData::GetSdoGeom(SDO_GEOMETRY_ind** GeomInd)
 {
@@ -331,8 +393,36 @@ SDO_GEOMETRY_TYPE* c_Oci_ColumnData::GetSdoGeom(SDO_GEOMETRY_ind** GeomInd)
     return m_DataSdoGeom[m_CurrentRow];
   }
   
-  throw c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
 }
+
+unsigned char* c_Oci_ColumnData::GetLongRaw()
+{
+  if( m_DataBufferType==e_OciLongRaw || m_DataBufferType==e_OciBlob || m_DataBufferType==e_OciClob)
+  {
+    return &m_DataLongRaw[m_CurrentRow*m_ColSize];
+  }
+
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not Blob!");
+}
+long c_Oci_ColumnData::GetLongRawLength()
+{
+  if( m_DataBufferType==e_OciLongRaw || m_DataBufferType==e_OciBlob || m_DataBufferType==e_OciClob)
+  {
+    ub4 length=0;
+    /*
+    if (OCILobGetLength(m_OciConn->m_OciHpServiceContext,m_OciConn->m_OciHpError, m_DataLob[m_CurrentRow], &length) != OCI_SUCCESS)
+    {
+      throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData: Error 'OCILobGetLength'!");
+    }
+    */
+    length = m_DataLength[m_CurrentRow];
+    return length;
+  }
+
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not Blob!");
+}
+
 OCIArray* c_Oci_ColumnData::GetSdoDimArray()
 {
   if( m_DataBufferType==e_OciSdoDimArray)
@@ -340,7 +430,7 @@ OCIArray* c_Oci_ColumnData::GetSdoDimArray()
     return m_DataSdoDimArray[m_CurrentRow];
   }
   
-  throw c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not String!");
 }
 
 void* c_Oci_ColumnData::GetDataDefineBuffer()
@@ -376,6 +466,18 @@ void* c_Oci_ColumnData::GetDataDefineBuffer()
       return m_DataDateTime;      
     }
     break;
+    case e_OciLongRaw:
+    case e_OciBlob:
+    case e_OciClob:
+    {
+      return m_DataLongRaw;
+      /*
+      if( m_DataArraySize == 1)
+      return m_DataSdoGeom[0];
+      else
+      return m_DataSdoGeom;
+      */       
+    }
     case e_OciSdoGeometry:
     {
       return m_DataSdoGeom;
@@ -408,28 +510,48 @@ void* c_Oci_ColumnData::GetDataIndDefineBuffer()
 {
   switch(m_DataBufferType)
   {
-    case e_MemBuffer:
-    case e_OciString:
-    case e_OciNumber:    
-    case e_OciDateTime:
+  case e_MemBuffer:
+  case e_OciString:
+  case e_OciNumber:    
+  case e_OciDateTime:
+  case e_OciLongRaw:
+  case e_OciBlob:
+  case e_OciClob:
     {      
       return m_ScalarInd;
     }
     break;
-    
-    case e_OciSdoGeometry:
+
+  case e_OciSdoGeometry:
     {
       return m_SdoGeomInd;      
     }
     break;
-    
-    case e_OciSdoDimArray:
+
+  case e_OciSdoDimArray:
     {
       return m_SdoDimArrayInd;      
     }
     break;
-    
+
   }
+
+  return NULL;
+}
+
+void* c_Oci_ColumnData::GetDataRealLengthBuffer()
+{
+  switch(m_DataBufferType)
+  {
+   case e_OciLongRaw:
+   case e_OciBlob:
+   case e_OciClob:
+    {      
+      return m_DataLength;
+    }
+    break;
+    
+   }
   
   return NULL;
 }
@@ -459,6 +581,17 @@ int c_Oci_ColumnData::GetDataDefineType()
     {
       //return SQLT_DAT;      
       return SQLT_ODT;
+    }
+    break;
+    case e_OciLongRaw:
+    {
+      return m_OciDataType;  
+    }
+    break;
+    case e_OciBlob:
+    case e_OciClob:
+    {
+      return SQLT_LBI ;  
     }
     break;
     case e_OciSdoGeometry:
@@ -497,6 +630,13 @@ int c_Oci_ColumnData::GetDataDefineSize()
     {
       return sizeof(OCIDate);      
       //return m_ColSize;      
+    }
+    break;
+    case e_OciLongRaw:
+    case e_OciBlob:
+    case e_OciClob:
+    {
+      return m_ColSize;
     }
     break;
     case e_OciSdoGeometry:

@@ -101,3 +101,125 @@ FdoDataType c_KgOraDataReader::GetDataType( FdoString* PropertyName )
 }
 
 
+ //---------------------------------------------------------------------
+ //
+ //    c_KgOraSdeDataReader
+ //
+ //---------------------------------------------------------------------
+
+ c_KgOraSdeDataReader::c_KgOraSdeDataReader(c_KgOraConnection * Connection
+   ,c_Oci_Statement* OcciStatement  
+   ,FdoClassDefinition* ClassDef
+   ,c_KgOraSridDesc& SridDesc
+   ,int SdeGeometryType
+   ,int GeomPropSqlIndex, FdoStringCollection* SqlColumns
+   ,FdoIdentifierCollection* Props,FdoString *SdeSpatialExtent_ColumnName)
+   : c_KgOraDataReader(Connection,OcciStatement ,ClassDef,GeomPropSqlIndex, SqlColumns,Props)
+ {
+
+
+   m_SridDesc=SridDesc;
+   m_SdeGeometryType = SdeGeometryType;
+   
+   m_SdeSpatialExtent_ColumnName = SdeSpatialExtent_ColumnName;
+ }
+
+ c_KgOraSdeDataReader::~c_KgOraSdeDataReader()
+ {
+   //Close();
+
+
+ }
+
+ void c_KgOraSdeDataReader::Dispose()
+ {
+   delete this;
+ }
+
+ FdoByteArray* c_KgOraSdeDataReader::GetGeometry(FdoString* propertyName)
+ {
+   int len = 0;
+   const void* ptr = GetGeometry(propertyName, &len);
+
+   if( len > 0 )
+     return FdoByteArray::Create((const FdoByte*)ptr, len);
+   else
+     throw FdoException::Create(L"c_KgOraReader::GetGeometry Invalid Geometry !");
+ }
+
+
+
+
+const FdoByte* c_KgOraSdeDataReader::GetGeometry(FdoString* propertyName, FdoInt32* len)
+{
+
+  if( m_OciStatement )
+  {
+
+    try
+    {
+      if( m_SdeSpatialExtent_ColumnName.GetLength()>0 && m_SdeSpatialExtent_ColumnName.ICompare(propertyName) == 0 )
+      {
+        int oraind;
+        oraind = PropNameToColumnNumber(L"sdo_fdo_eminx"); 
+        double minx = m_OciStatement->GetDouble(oraind);
+        double miny = m_OciStatement->GetDouble(oraind+1);
+        double maxx = m_OciStatement->GetDouble(oraind+2);
+        double maxy = m_OciStatement->GetDouble(oraind+3);
+        
+        *len = m_SdeAgfConv.ToAGF(minx,miny,maxx,maxy);
+        return (const unsigned char*)m_SdeAgfConv.GetBuff();
+      }
+      
+      int oraind = PropNameToColumnNumber(propertyName); 
+      if( !m_OciStatement->IsColumnNull(oraind) )
+      {
+        
+        //int oraind = PropNameToColumnNumber(propertyName); 
+        int sde_numofpts = m_OciStatement->GetInteger(oraind+1);
+        int sde_entity = m_OciStatement->GetInteger(oraind+2);
+
+
+        long length = m_OciStatement->GetLongRawLength(oraind); // oracle is 1 based - our index is 0 based        
+        unsigned char* sdata = m_OciStatement->GetLongRaw(oraind);
+        m_SdeAgfConv.SetSdeGeometry(&m_SridDesc,m_SdeGeometryType,sde_numofpts,sde_entity,length,sdata);
+        *len = m_SdeAgfConv.ToAGF();
+        return (const unsigned char*)m_SdeAgfConv.GetBuff();
+      }
+    }
+    catch(FdoException* ea)
+    {      
+      throw ea;
+    }
+    catch(c_Oci_Exception* ea)
+    {
+      delete ea;
+      //printf("\n----------------------c_KgOraReader::GetGeometry: occi::SQLException Exception ---------------------- ");
+      *len=0;
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry SQLException !");
+    }
+    catch(...)
+    {
+      //printf("\n----------------------c_KgOraReader::GetGeometry: Uknown Exception ---------------------- ");
+      *len=0;
+      throw FdoException::Create(L"c_KgOraReader::GetGeometry Uknown Exception !");
+    }   
+  }
+
+ return NULL;
+}
+
+FDOKGORA_API  bool c_KgOraSdeDataReader::IsNull( FdoString* propertyName )
+{
+  if( m_SdeSpatialExtent_ColumnName.GetLength()>0 && m_SdeSpatialExtent_ColumnName.ICompare(propertyName) == 0 )
+  {
+    int oraind;
+    oraind = PropNameToColumnNumber(L"sdo_fdo_eminx"); 
+    
+    return m_OciStatement->IsColumnNull(oraind) || m_OciStatement->IsColumnNull(oraind+1) || m_OciStatement->IsColumnNull(oraind+2) || m_OciStatement->IsColumnNull(oraind+3);         
+  }
+  
+  return c_KgOraDataReader::IsNull(propertyName);
+  
+
+}

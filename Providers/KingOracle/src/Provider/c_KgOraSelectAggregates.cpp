@@ -113,13 +113,21 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
     FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = schemadesc->GetPhysicalSchemaMapping();
     
     FdoPtr<FdoClassDefinition> classdef = schemadesc->FindClassDefinition(classid);
-    if( !classdef.p ) return NULL;
+    if( !classdef.p ) 
+    {
+      D_KGORA_ELOG_WRITE("c_KgOraSelectAggregates.Execute : ERROR: FindClassDefinition() return NULL ");
+      throw FdoCommandException::Create( L"c_KgOraSelectAggregates.Execute : ERROR: FindClassDefinition() return NULL " );  
+      //return NULL;
+    }
+    FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
     
     int geom_sqlcol_index;
     FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
     
     
     c_KgOraSridDesc orasrid;
+    m_Connection->GetOracleSridDesc(classdef,orasrid);
+    /*
     if( !m_PropertyNames.p || (m_PropertyNames->GetCount()==0) )
     {
       FdoPtr<FdoPropertyDefinition> propdef;        
@@ -155,11 +163,11 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
         FdoString * pstr2 = compident->ToString();
       }
     }
+    */
     
-    
-    
+    FdoStringP sdespatialextent_columnname;
     c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
-    std::wstring sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols);
+    std::wstring sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols,sdespatialextent_columnname);
     
     D_KGORA_ELOG_WRITE3("c_KgOraSelectAggregates%d::Execute class_name = '%s' PropCount=%d",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name),propcount);
     
@@ -182,7 +190,11 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
       
       fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
       
-      oci_stm->ExecuteSelectAndDefine(256);
+      if( phys_class && phys_class->GetIsSdeClass() )
+        oci_stm->ExecuteSelectAndDefine(4);
+      else
+        oci_stm->ExecuteSelectAndDefine(256);
+      
       //m_Connection->OCI_TerminateStatement(occi_stm);
     }
     catch(c_Oci_Exception* ea)
@@ -208,7 +220,10 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
     }
 
     
-    return new c_KgOraDataReader(m_Connection,oci_stm, classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
+    if( phys_class && phys_class->GetIsSdeClass() )
+      return new c_KgOraSdeDataReader(m_Connection,oci_stm, classdef,orasrid,phys_class->GetSdeGeometryType(),geom_sqlcol_index,sqlcols, m_PropertyNames,sdespatialextent_columnname);
+    else
+      return new c_KgOraDataReader(m_Connection,oci_stm, classdef,geom_sqlcol_index,sqlcols, m_PropertyNames);
     
     
 }//end of c_KgOraSelectAggregates::Execute 
@@ -216,7 +231,7 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
 
 
 
-std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns)
+std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& FilterProc,int& GeomSqlColumnIndex,FdoStringCollection* SqlColumns,FdoStringP& SdeSpatialExtent_ColumnName)
 {
     FdoPtr<FdoIdentifier> classid = GetFeatureClassName ();
     FdoString* class_name = classid->GetText ();
@@ -246,6 +261,10 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
     FdoPtr<FdoKgOraClassDefinition> phys_class = schemadesc->FindClassMapping(classid);
     FdoStringP fultablename = phys_class->GetOracleFullTableName();
     FdoStringP table_alias = phys_class->GetOraTableAlias();
+    
+    FdoStringP sdegeom_table_alias = phys_class->GetSdeGeomTableAlias();
+    FdoStringP sdegeom_fultablename = phys_class->GetSdeGeometryTableName();
+    FdoStringP sde_featurekey_column = phys_class->GetSdeFeatureKeyColumn();
     
     c_KgOraSridDesc orasrid;
     m_Connection->GetOracleSridDesc(classdef,orasrid);
@@ -277,6 +296,45 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       for( int ind = 0; ind < count; ind++ )
       {
         FdoPtr<FdoIdentifier> ident = m_PropertyNames->GetItem(ind);
+        
+        // special case: If class is SDE class and it is required to compute spatial extent of class
+        if( phys_class->GetIsSdeClass() )
+        {
+          FdoComputedIdentifier* compound = (dynamic_cast<FdoComputedIdentifier*>(ident.p));
+          if( compound )
+          {
+            FdoPtr<FdoExpression>pExpr = compound->GetExpression();
+            FdoFunction* funcex = (dynamic_cast<FdoFunction*>(pExpr.p));
+            if( funcex )
+            {
+              if( FdoCommonOSUtil::wcsicmp(funcex->GetName(),FDO_FUNCTION_SPATIALEXTENTS) == 0)
+              {
+                FdoStringP buff = FdoStringP::Format(L"min(%s.eminx) as sdo_fdo_eminx,min(%s.eminy) as sdo_fdo_eminy"
+                                                     L",max(%s.emaxx) as sdo_fdo_emaxx,max(%s.emaxy) as sdo_fdo_emaxy",phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias(),phys_class->GetSdeGeomTableAlias() );
+
+
+                SqlColumns->Add("sdo_fdo_eminx");  
+                SqlColumns->Add("sdo_fdo_eminy");  
+                SqlColumns->Add("sdo_fdo_emaxx");  
+                SqlColumns->Add("sdo_fdo_emaxy");  
+                if( ind > 0 )
+                {
+                  sql_select_columns_part += L",";
+                  sql_select_columns_part +=  buff;
+                }
+                else
+                  sql_select_columns_part += buff;
+                  
+                SdeSpatialExtent_ColumnName = compound->GetName();
+                  
+                continue;
+              
+              }
+            }
+          }
+        }
+        
+        // standard case: It is not SDE class and Spatial Context
         ident->Process(&expproc);
         SqlColumns->Add(ident->GetName());
         if( ind > 0 )
@@ -365,6 +423,16 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
     
     FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
     
+    if( phys_class->GetIsSdeClass() )
+    {
+      // select a1.shape, g1.points, g1.eminx from UNISDETRAIN.UFRM_LICASE_POLY a1 LEFT JOIN UNISDETRAIN.F323 g1 ON a1.shape = g1.fid 
+      FdoStringP sbuffjoin = FdoStringP::Format(L" LEFT JOIN %s %s ON %s.%s=%s.%s"
+        ,(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias
+        ,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+        ,(const wchar_t*)sdegeom_table_alias,L"fid"
+        );     
+      sbuff = sbuff + sbuffjoin;                       
+    }
     
     sqlstr = (FdoString*)sbuff;
     if( filtertext && *filtertext )
