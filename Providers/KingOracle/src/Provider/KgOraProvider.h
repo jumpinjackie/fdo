@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (C) 2006  SL-King
+* Copyright (C) 2009  SL-King
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
