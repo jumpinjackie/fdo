@@ -17,6 +17,7 @@
  */
 
 #include "stdafx.h"
+#include <stdlib.h>
 #include "FdoExpressionFunctionTest.h"
 #include "UnitTestUtil.h"
 #include <math.h>
@@ -762,14 +763,24 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest ()
 
     try {
 
-      wchar_t fullpath[1024];
-      _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
-      std::wstring connStr = std::wstring(L"File=") + fullpath;
-      connStr += std::wstring(L";ReadOnly=TRUE");
-      conn->SetConnectionString(connStr.c_str());
-      conn->Open();
+    wchar_t fullpath[1024];
 
-      FdoPtr<FdoFilter> spFilter =
+#ifdef _WIN32
+    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
+#else
+    char cpath[1024];
+    char cfullpath[1024];
+    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, 1024);
+    realpath(cpath, cfullpath);
+    mbstowcs(fullpath, cfullpath, 1024);
+#endif
+
+    std::wstring connStr = std::wstring(L"File=") + fullpath;
+    connStr += std::wstring(L";ReadOnly=TRUE");
+    conn->SetConnectionString(connStr.c_str());
+    conn->Open();
+
+    FdoPtr<FdoFilter> spFilter =
           FdoFilter::Parse(FdoStringP(
                 "Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON (( "
                 "1887474.9312 450098.4312,"
@@ -849,14 +860,24 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest2 ()
 
     try {
 
-      wchar_t fullpath[1024];
-      _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
-      std::wstring connStr = std::wstring(L"File=") + fullpath;
-      connStr += std::wstring(L";ReadOnly=TRUE");
-      conn->SetConnectionString(connStr.c_str());
-      conn->Open();
+    wchar_t fullpath[1024];
 
-      FdoPtr<FdoFilter> spFilter =
+#ifdef _WIN32
+    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
+#else
+    char cpath[1024];
+    char cfullpath[1024];
+    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, 1024);
+    realpath(cpath, cfullpath);
+    mbstowcs(fullpath, cfullpath, 1024);
+#endif
+
+    std::wstring connStr = std::wstring(L"File=") + fullpath;
+    connStr += std::wstring(L";ReadOnly=TRUE");
+    conn->SetConnectionString(connStr.c_str());
+    conn->Open();
+
+    FdoPtr<FdoFilter> spFilter =
           FdoFilter::Parse(FdoStringP(
                 "Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON (( "
                 "1887474.9312 450098.4312,"
