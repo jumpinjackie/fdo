@@ -40,9 +40,25 @@ public:
     FDOKGORA_API void SetUseSequenceForIdentity(FdoString * TableSequence) { m_UseSequenceForIdentity=TableSequence; };
     FDOKGORA_API FdoString* GetUseSequenceForIdentity() const { return m_UseSequenceForIdentity; }
     
-    FDOKGORA_API void SetOraTableAliasNum(int AliasNum) { char tbuff[16]; sprintf(tbuff,"a%d",AliasNum);  m_OraTableAlias=tbuff; };
+    FDOKGORA_API void SetOraTableAliasNum(int AliasNum) { char tbuff[16]; sprintf(tbuff,"a%d",AliasNum);  m_OraTableAlias=tbuff;sprintf(tbuff,"g%d",AliasNum);  m_SdeGeomTableAlias=tbuff; };
     FDOKGORA_API const wchar_t* GetOraTableAlias() { return  m_OraTableAlias; };
+    FDOKGORA_API const wchar_t* GetSdeGeomTableAlias() { return  m_SdeGeomTableAlias; };
 	
+	
+    FDOKGORA_API void SetSdeClass(bool IsSde,FdoString * SdeFeatureKeyColumn,FdoString * SdeGeometryTableName,int SdeGeometryType,FdoString * SdeIndexTableName) 
+    { 
+      m_IsClassSDE = IsSde;
+      m_SdeFeatureKeyColumn = SdeFeatureKeyColumn;
+      m_SdeGeometryTableName=SdeGeometryTableName; 
+      m_SdeGeometryType = SdeGeometryType;
+      m_SdeIndexTableName = SdeIndexTableName; 
+    }
+    FDOKGORA_API bool GetIsSdeClass() { return m_IsClassSDE; }
+    FDOKGORA_API FdoString* GetSdeFeatureKeyColumn() { return m_SdeFeatureKeyColumn; };
+    FDOKGORA_API FdoString* GetSdeGeometryTableName() { return m_SdeGeometryTableName; };
+    FDOKGORA_API int GetSdeGeometryType() { return m_SdeGeometryType; };
+    
+    FDOKGORA_API FdoString* GetSdeIndexTableName() { return m_SdeIndexTableName; };
 
     FDOKGORA_API void SetPointGeometry(FdoString *GeomPropertyName, FdoString *X_OraColumn, FdoString *Y_OraColumn, FdoString *Z_OraColumn )
     {
@@ -80,7 +96,7 @@ protected:
     virtual void Dispose(void);
 
 private:
-	  FdoStringP m_OracleTableFullName; // complete table name in Oracle (owner.table) for fdo class
+	  FdoStringP m_OracleTableFullName; // complete table name in Oracle (owner.table) for fdo class. For SDE layer it is feature table (no geomtry).
 	  FdoStringP m_OraTableAlias; // table allias used for in SQL (generated in describe schema)
 	  FdoStringP m_UseSequenceForIdentity; // if this
 	  
@@ -92,6 +108,15 @@ private:
 	  FdoStringP m_PoinGeometry_Y_OraColumn;  // name of oracle column (number) which is used for Y coordinate of point
 	  FdoStringP m_PoinGeometry_Z_OraColumn;  // name of oracle column (number) which is used for Z coordinate of point - can be empty for 2D points
 	  
+	  
+    // For SDE Layers
+    bool m_IsClassSDE;
+    FdoStringP m_SdeGeomTableAlias;
+    FdoStringP m_SdeFeatureKeyColumn;
+    FdoStringP m_SdeGeometryTableName; // complete table name in Oracle (owner.table) for Geometries for SDE Layer 
+    int m_SdeGeometryType; // 
+    FdoStringP m_SdeIndexTableName; // complete table name in Oracle (owner.table) for spatial index for SDE Layer 
+    
 	  
 	  FdoStringP m_Sdo_Root_MBR; // root mbr from spatial index metadata; written as oracle geometry
 	  
