@@ -3774,38 +3774,41 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
                 {
                     for (int y = 0; y < cntSec; y++)
                     {
-                        leftFlt = static_cast<FdoSpatialCondition*>(lstEnvInt[i].second);
-                        rightFlt = static_cast<FdoSpatialCondition*>(lstSpatCond[y].second);
-                        FdoFilter* flt = TryOptimize(leftFlt, rightFlt, invalidFilter);
-                        if (flt != NULL)
+                        if ((i >= 0 && i < cnt) && (y >= 0 && y < cntSec))
                         {
-                            if (invalidFilter)
+                            leftFlt = static_cast<FdoSpatialCondition*>(lstEnvInt[i].second);
+                            rightFlt = static_cast<FdoSpatialCondition*>(lstSpatCond[y].second);
+                            FdoFilter* flt = TryOptimize(leftFlt, rightFlt, invalidFilter);
+                            if (flt != NULL)
                             {
-                                // we can reduce the whole filter to a filter which will generate empty results
-                                lst.clear();
-                                ClearFilterList(lstEnvInt);
-                                ClearFilterList(lstSpatCond);
-                                ClearFilterList(lstOtherCond);
-                                lst.push_back(std::make_pair(OptFilterType_SpaCond, flt));
-                                return;
+                                if (invalidFilter)
+                                {
+                                    // we can reduce the whole filter to a filter which will generate empty results
+                                    lst.clear();
+                                    ClearFilterList(lstEnvInt);
+                                    ClearFilterList(lstSpatCond);
+                                    ClearFilterList(lstOtherCond);
+                                    lst.push_back(std::make_pair(OptFilterType_SpaCond, flt));
+                                    return;
+                                }
+                                FdoSpatialCondition* newFilter = static_cast<FdoSpatialCondition*>(flt);
+                                if (newFilter->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
+                                {
+                                    lstEnvInt[i] = std::make_pair(OptFilterType_SpaCond, flt);
+                                    lstSpatCond.erase(lstSpatCond.begin()+y);
+                                    y--;
+                                    cntSec--;
+                                }
+                                else
+                                {
+                                    lstSpatCond[y] = std::make_pair(OptFilterType_SpaCond, flt);
+                                    lstEnvInt.erase(lstEnvInt.begin()+i);
+                                    i--;
+                                    cnt--;
+                                }
+                                FDO_SAFE_RELEASE(leftFlt);
+                                FDO_SAFE_RELEASE(rightFlt);
                             }
-                            FdoSpatialCondition* newFilter = static_cast<FdoSpatialCondition*>(flt);
-                            if (newFilter->GetOperation() == FdoSpatialOperations_EnvelopeIntersects)
-                            {
-                                lstEnvInt[i] = std::make_pair(OptFilterType_SpaCond, flt);
-                                lstSpatCond.erase(lstSpatCond.begin()+y);
-                                y--;
-                                cntSec--;
-                            }
-                            else
-                            {
-                                lstSpatCond[y] = std::make_pair(OptFilterType_SpaCond, flt);
-                                lstEnvInt.erase(lstEnvInt.begin()+i);
-                                i--;
-                                cnt--;
-                            }
-                            FDO_SAFE_RELEASE(leftFlt);
-                            FDO_SAFE_RELEASE(rightFlt);
                         }
                     }
                 }
