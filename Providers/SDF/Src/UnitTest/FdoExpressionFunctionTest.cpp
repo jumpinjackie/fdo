@@ -36,6 +36,12 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(FdoExpressionFunctionTest, "FdoExpressionF
     static const wchar_t* EE_OPT_TEST_FILE = L"../../TestData/OptimizerTest.sdf";
 #endif
 
+#ifdef _WIN32
+    static const wchar_t* EE_HOSPITAL_TEST_FILE = L"..\\..\\TestData\\HOSPITAL.SDF";
+#else
+    static const wchar_t* EE_HOSPITAL_TEST_FILE = L"../../TestData/HOSPITAL.SDF";
+#endif
+
 
 // ----------------------------------------------------------------------------
 // --                          Test Setup Functions                          --
@@ -741,6 +747,181 @@ void FdoExpressionFunctionTest::ToDateOperation ()
 
 }  //  ToDateOperation ()
 
+
+//-------------------------------------------------------------------------
+//                     Embeded INTERSECTS Test Functions
+//-------------------------------------------------------------------------
+void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest ()
+{
+    bool                        testResult = true;
+    FdoPtr<IConnectionManager>  manager;
+    FdoPtr<FdoIConnection>      conn;
+
+    manager = FdoFeatureAccessManager::GetConnectionManager ();
+    conn    = manager->CreateConnection (L"OSGeo.SDF");
+
+    try {
+
+      wchar_t fullpath[1024];
+      _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
+      std::wstring connStr = std::wstring(L"File=") + fullpath;
+      connStr += std::wstring(L";ReadOnly=TRUE");
+      conn->SetConnectionString(connStr.c_str());
+      conn->Open();
+
+      FdoPtr<FdoFilter> spFilter =
+          FdoFilter::Parse(FdoStringP(
+                "Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON (( "
+                "1887474.9312 450098.4312,"
+                "1896219.4944 450098.4312,"
+                "1896219.4944 458090.2237,"
+                "1887474.9312 458090.2237,"
+                "1887474.9312 450098.4312"
+                "))') "
+                "AND Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
+                "1889298.3991 457671.4451 0,"
+                "1887474.9312 453675.5488 0,"
+                "1890023.7450 450098.4312 0," 
+                "1894396.0265 450517.2099 0," 
+                "1896219.4944 454513.1061 0," 
+                "1893670.6807 458090.2237 0," 
+                "1889298.3991 457671.4451 0"
+                "))') "
+                "AND Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
+                "1892048.0272 456421.0618 0," 
+                "1891678.7365 455964.5416 0," 
+                "1891805.4093 455391.1828 0," 
+                "1892332.6585 455132.7362 0," 
+                "1892863.4547 455383.8175 0," 
+                "1892998.0974 455955.3572 0," 
+                "1892635.2054341326 456416.98213748500 0," 
+                "1892048.0272 456421.0618 0"
+                "))') "
+                "AND Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
+                "1890067.8281 455373.4786 0,"
+                "1889011.3434 454714.0822 0," 
+                "1888730.5596 453500.7710 0," 
+                "1889389.9560 452444.2863 0," 
+                "1890603.2672 452163.5025 0," 
+                "1891659.7519 452822.8990 0," 
+                "1891940.5357 454036.2101 0," 
+                "1891281.1392 455092.6948 0," 
+                "1890067.8281 455373.4786 0"
+                "))')")
+            );
+
+        // Run query which will be optimized.
+
+        FdoPtr<FdoIExtendedSelect> selCmd = (FdoIExtendedSelect*)conn->CreateCommand(FdoCommandType_ExtendedSelect);
+        selCmd->SetFeatureClassName(L"Hospital");
+        selCmd->SetFilter(spFilter);
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        bool results = reader->ReadNext();
+        CPPUNIT_ASSERT(results == false);
+        reader->Close();
+        testResult = true;
+
+    }  //  try ...
+
+    catch (FdoException *ex) {
+
+        FdoStringP msg = ex->GetExceptionMessage();
+        ex->Release();
+        CPPUNIT_FAIL ((const char*)msg);
+
+    }  //  catch(FdoException *ex) ...
+
+    if (!testResult)
+        CPPUNIT_FAIL ("Evaluation failed see above text!");
+}
+
+//-------------------------------------------------------------------------
+//                     Embeded INTERSECTS Test Functions II
+//-------------------------------------------------------------------------
+void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest2 ()
+{
+    bool                        testResult = true;
+    FdoPtr<IConnectionManager>  manager;
+    FdoPtr<FdoIConnection>      conn;
+
+    manager = FdoFeatureAccessManager::GetConnectionManager ();
+    conn    = manager->CreateConnection (L"OSGeo.SDF");
+
+    try {
+
+      wchar_t fullpath[1024];
+      _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
+      std::wstring connStr = std::wstring(L"File=") + fullpath;
+      connStr += std::wstring(L";ReadOnly=TRUE");
+      conn->SetConnectionString(connStr.c_str());
+      conn->Open();
+
+      FdoPtr<FdoFilter> spFilter =
+          FdoFilter::Parse(FdoStringP(
+                "Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON (( "
+                "1887474.9312 450098.4312,"
+                "1896219.4944 450098.4312,"
+                "1896219.4944 458090.2237,"
+                "1887474.9312 458090.2237,"
+                "1887474.9312 450098.4312"
+                "))') "
+                "AND Geometry INSIDE GeomFromText('POLYGON XYZ (( "
+                "1889298.3991 457671.4451 0,"
+                "1887474.9312 453675.5488 0,"
+                "1890023.7450 450098.4312 0," 
+                "1894396.0265 450517.2099 0," 
+                "1896219.4944 454513.1061 0," 
+                "1893670.6807 458090.2237 0," 
+                "1889298.3991 457671.4451 0"
+                "))') "
+                "Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
+                "1892048.0272 456421.0618 0," 
+                "1891678.7365 455964.5416 0," 
+                "1891805.4093 455391.1828 0," 
+                "1892332.6585 455132.7362 0," 
+                "1892863.4547 455383.8175 0," 
+                "1892998.0974 455955.3572 0," 
+                "1892635.2054341326 456416.98213748500 0," 
+                "1892048.0272 456421.0618 0"
+                "))') "
+                "AND NOT Geometry INSIDE GeomFromText('POLYGON XYZ (( "
+                "1890067.8281 455373.4786 0,"
+                "1889011.3434 454714.0822 0," 
+                "1888730.5596 453500.7710 0," 
+                "1889389.9560 452444.2863 0," 
+                "1890603.2672 452163.5025 0," 
+                "1891659.7519 452822.8990 0," 
+                "1891940.5357 454036.2101 0," 
+                "1891281.1392 455092.6948 0," 
+                "1890067.8281 455373.4786 0"
+                "))')"
+                )
+            );
+
+        // Run query which will be optimized.
+
+        FdoPtr<FdoIExtendedSelect> selCmd = (FdoIExtendedSelect*)conn->CreateCommand(FdoCommandType_ExtendedSelect);
+        selCmd->SetFeatureClassName(L"Hospital");
+        selCmd->SetFilter(spFilter);
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        bool results = reader->ReadNext();
+        CPPUNIT_ASSERT(results == true);
+        reader->Close();
+        testResult = true;
+
+    }  //  try ...
+
+    catch (FdoException *ex) {
+
+        FdoStringP msg = ex->GetExceptionMessage();
+        ex->Release();
+        CPPUNIT_FAIL ((const char*)msg);
+
+    }  //  catch(FdoException *ex) ...
+
+    if (!testResult)
+        CPPUNIT_FAIL ("Evaluation failed see above text!");
+}
 
 // ----------------------------------------------------------------------------
 // --                      General Supporting Functions                      --
