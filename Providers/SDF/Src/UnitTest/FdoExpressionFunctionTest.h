@@ -47,29 +47,35 @@ class FdoExpressionFunctionTest : public TestCommonExpressionFunctionW
 
   CPPUNIT_TEST_SUB_SUITE(FdoExpressionFunctionTest, TestCommonExpressionFunctionW);
    // =========================================
-    // ====       SPECIAL UNIT TESTS        ====
-    // =========================================
-    // CPPUNIT_TEST(ModuloOperation);
-    // CPPUNIT_TEST(SoundexFilter);
-    // CPPUNIT_TEST(SubstrOperation);
-    // CPPUNIT_TEST(ToDateOperation);
-    // =========================================
-     // =========================================
-    // ====         OPTIMIZER TEST          ====
-    // =========================================
-    CPPUNIT_TEST(RunOptimizerTest);
-    // test Optimizer from EE
-    CPPUNIT_TEST(RunOptimizerTest2);
-  CPPUNIT_TEST_SUITE_END();
+   // ====       SPECIAL UNIT TESTS        ====
+   // =========================================
+   // CPPUNIT_TEST(ModuloOperation);
+   // CPPUNIT_TEST(SoundexFilter);
+   // CPPUNIT_TEST(SubstrOperation);
+   // CPPUNIT_TEST(ToDateOperation);
+   // =========================================
+   // =========================================
+   // ====         OPTIMIZER TEST          ====
+   // =========================================
+   CPPUNIT_TEST(RunOptimizerTest);
+   // test Optimizer from EE
+   CPPUNIT_TEST(RunOptimizerTest2);
+   // =========================================
+   // =========================================
+   // ====     Embeded INTERSECTS TESTS    ====
+   // =========================================
+   CPPUNIT_TEST(RunEmbeddedIntersectsTest);
+   CPPUNIT_TEST(RunEmbeddedIntersectsTest2);
+   CPPUNIT_TEST_SUITE_END();
 
 public:
             FdoExpressionFunctionTest ();
     virtual ~FdoExpressionFunctionTest ();
 
-
 protected:
 
     void RunOptimizerTest2();
+
     //  Connect:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
@@ -83,6 +89,13 @@ protected:
     void NumberToStringComparison ();
 
     void RoundNumberToStringComparison ();
+
+    //-------------------------------------------------------------------------
+    //                     Embeded INTERSECTS Test Functions
+    //-------------------------------------------------------------------------
+
+    void RunEmbeddedIntersectsTest ();
+    void RunEmbeddedIntersectsTest2 ();
 
     //-------------------------------------------------------------------------
     //                       Special Unit Test Functions
