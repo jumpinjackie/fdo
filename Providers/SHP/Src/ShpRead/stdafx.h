@@ -93,6 +93,7 @@ typedef ULONG_PTR DWORD_PTR;
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonMiscUtil.h>
 
+#include <../Message/ShpMessageStatic.h>
 #include <../Message/Inc/ShpMessage.h>
 
 #endif // SHPREAD_STDAFX_H

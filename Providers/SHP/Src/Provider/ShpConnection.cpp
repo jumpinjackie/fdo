@@ -18,8 +18,12 @@
  */
 
 #include "stdafx.h"
+
 #define SHP_MESSAGE_DEFINE
+
+#include <../Message/ShpMessageStatic.h>
 #include <../Message/Inc/ShpMessage.h>
+
 #include "ShpSchemaUtilities.h"
 
 #include <malloc.h>

@@ -87,6 +87,8 @@ DWORD dwHighDateTime;
 // Provider specific headers
 #include <KingOracle/FdoKgOraOverrides.h>
 #include "KgOraProvider.h"
+
+#include "../Message/KgOraMessageStatic.h"
 #include "../Message/inc/KgOraMessage.h"
 
 #include <c_KgOraSridDesc.h>

@@ -17,8 +17,6 @@
 
 #include "stdafx.h"
 
-
-
 #include "c_OCI_API.h"
 #include "c_Ora_API2.h"
 #include "c_FdoOra_API2.h"
@@ -30,6 +28,8 @@
 #include <time.h>
 
 #define KGORA_MESSAGE_DEFINE
+
+#include <../Message/KgOraMessageStatic.h>
 #include <../Message/inc/KgOraMessage.h>
 
 #ifdef _WIN32

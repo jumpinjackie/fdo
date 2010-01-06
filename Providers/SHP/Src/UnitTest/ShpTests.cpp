@@ -24,6 +24,8 @@
 #include <FdoCommonFile.h>
 
 #define SHP_MESSAGE_DEFINE
+
+#include <../Message/ShpMessageStatic.h>
 #include <../Message/Inc/ShpMessage.h>
 
 bool ShpTests::VERBOSE = false;
