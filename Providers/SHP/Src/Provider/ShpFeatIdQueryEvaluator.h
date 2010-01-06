@@ -77,6 +77,7 @@ public:
     bool                    IsFeatidQuery();
     retno_lists*            GetFeatidLists();
     logical_op_list*        GetFeatidFilterOpsList();
+    left_right_op_list*     GetLeftRightOpsList();
     recno_list*             GetMergedFeatidList();
     bool                    MergeFeatidLists( size_t maxAllowedSize, int maxRecords );
 

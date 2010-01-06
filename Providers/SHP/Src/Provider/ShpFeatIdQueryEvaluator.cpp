@@ -128,6 +128,11 @@ logical_op_list* ShpFeatIdQueryEvaluator::GetFeatidFilterOpsList()
     return &m_LogicalOpsList;
 }
 
+left_right_op_list* ShpFeatIdQueryEvaluator::GetLeftRightOpsList()
+{
+    return &m_LeftRightOpsList;
+}
+
 recno_list*  ShpFeatIdQueryEvaluator::GetMergedFeatidList()
 {
     return m_MergedFeatidList;
@@ -647,6 +652,7 @@ bool  ShpFeatIdQueryEvaluator::MergeFeatidLists( size_t maxAllowedSize, int maxR
     // Quit if too large
     if ( aproxListSize > maxAllowedSize )
         return false;
+    
 
 	if (SHP_DEBUG_PARSE_TREE)
 		PrintFlattenParseTree();
