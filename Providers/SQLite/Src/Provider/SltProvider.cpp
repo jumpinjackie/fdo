@@ -106,7 +106,6 @@ SltConnection::SltConnection() : m_refCount(1)
     m_changesAvailable = false;
     m_connDet = NULL;
     m_defSpatialContextId = 0;
-    m_resetJournalModeNeeded = false;
 }
 
 SltConnection::~SltConnection()
@@ -326,6 +325,8 @@ FdoConnectionState SltConnection::Open()
     //Register the extra SQL functions we would like to support
     RegisterExtensions(m_dbRead);
     RegisterExtensions(m_dbWrite);
+    rc = sqlite3_exec(m_dbRead, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
+    rc = sqlite3_exec(m_dbWrite, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
 
     //in case we have a FDO metadata use it since we can make things out of sync by mixing things.
     const char* tables_sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='fdo_columns';";
@@ -2120,10 +2121,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
 
     // cache the default SpatialContext Id to avoid some locking issues
     GetDefaultSpatialContext();
-    int rc = sqlite3_exec(m_dbRead, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
-    rc = sqlite3_exec(m_dbWrite, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
-    m_resetJournalModeNeeded = true;
-
+    int rc = SQLITE_OK;
     bool needsCommit = false;
     switch(m_transactionState)
     {
@@ -2220,8 +2218,6 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
         // The cached FDO schema will need to be refreshed
         FDO_SAFE_RELEASE(m_pSchema);
         m_pSchema = NULL;
-        if (m_transactionState != SQLiteActiveTransactionType_User)
-            ResetJournalMode();
         throw;
     }
 
@@ -2231,9 +2227,6 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
     else // not sure we need to do that yet
         RollbackTransaction(needsCommit);
     
-    if (m_transactionState != SQLiteActiveTransactionType_User)
-        ResetJournalMode();
-
     // The cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
     m_pSchema = NULL;
@@ -3353,7 +3346,6 @@ int SltConnection::CommitTransaction(bool isUserTrans)
             
             if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::commit_hook(this);
-            ResetJournalMode();
         }
         else
             throw FdoException::Create(L"No active transaction to commit");
@@ -3393,7 +3385,6 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
             
             if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::rollback_hook(this);
-            ResetJournalMode();
         }
         else
             throw FdoException::Create(L"No active transaction to rollback");
@@ -3552,16 +3543,4 @@ bool ConnInfoDetails::IsCoordSysLatLong()
         m_isCoordSysLatLong = m_conn->IsCoordSysLatLong();
     }
     return m_isCoordSysLatLong;
-}
-
-bool SltConnection::ResetJournalMode()
-{
-    int rc = SQLITE_OK;
-    if (m_resetJournalModeNeeded)
-    {
-        int rc = sqlite3_exec(m_dbRead, "PRAGMA journal_mode=DELETE;", NULL, NULL, NULL);
-        rc = sqlite3_exec(m_dbWrite, "PRAGMA journal_mode=DELETE;", NULL, NULL, NULL);
-        m_resetJournalModeNeeded = false;
-    }
-    return (rc == SQLITE_OK);
 }
