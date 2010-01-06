@@ -19,6 +19,9 @@
 
 #include "stdafx.h"
 
+#define SHP_MESSAGE_DEFINE
+
+#include <../Message/ShpMessageStatic.h>
 
 
 

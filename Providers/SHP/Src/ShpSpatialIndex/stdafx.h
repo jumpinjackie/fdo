@@ -84,6 +84,8 @@ typedef time_t FILETIME;
 #include <cstring>
 #include <Fdo.h>
 #include <FdoCommonStringUtil.h>
+
+#include <../Message/ShpMessageStatic.h>
 #include <../Message/Inc/ShpMessage.h>
 
 #endif // SHPINDEX_STDAFX_H

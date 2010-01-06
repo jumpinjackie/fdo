@@ -337,7 +337,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;"
+					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc"
 					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
 					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
 				/>
@@ -348,7 +348,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;"
+					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc"
 					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
 					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
 				/>
@@ -359,7 +359,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;&#x0D;&#x0A;"
+					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc"
 					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
 					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
 				/>
@@ -370,7 +370,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step:  Creating ShpEMessage.h and ShpMessage.rc from ShpMessage.mc"
-					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc&#x0D;&#x0A;ren Inc\ShpMessage.h ShpMessageDynamic.h&#x0D;&#x0A;copy ShpMessageStatic.h+Inc\ShpMessageDynamic.h Inc\ShpMessage.h&#x0D;&#x0A;del Inc\ShpMessageDynamic.h&#x0D;&#x0A;&#x0D;&#x0A;"
+					CommandLine="mc -U -h Inc\ -r .\ ./ShpMessage.mc&#x0D;&#x0A;ren .\ShpMessage.rc ShpMessageDynamic.rc&#x0D;&#x0A;copy .\ShpMessageStatic.rc+.\ShpMessageDynamic.rc .\ShpMessage.rc&#x0D;&#x0A;del .\ShpMessageDynamic.rc"
 					AdditionalDependencies="ShpMessage.mc;ShpMessageStatic.h"
 					Outputs="Inc\ShpMessage.h;.\ShpMessage.rc"
 				/>
