@@ -50,7 +50,7 @@ $(CATALOGS_CAT) : $(CATDIR)/%.cat : %.msf
 	@mv ./Inc/$(basename $(notdir $<))_msg.h ./Inc/$(basename $(notdir $<)).h
 
 ShpMessage.msf : ShpMessage.mc
-	$(FDO)/Unmanaged/Src/McToMsf/McToMsf ShpMessage.mc ShpMessage.msf Shp
+	$(FDO)/Unmanaged/Src/McToMsf/McToMsf ShpMessage.mc ShpMessage.msf SHP 
 
 INSTALL_DIR  = $(prefix)/nls
 
