@@ -778,7 +778,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (m_sb.Length() == 0)
                 throw FdoCommandException::Create(L"Invalid empty SQL statement.");
             
-            sqlite3* db = m_connection->GetDbWrite();
+            sqlite3* db = m_connection->GetDbRead();
             sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
                 BindPropVals(m_pParmeterValues, pStmt, false, eFGF /* with SQL command we don't know the precise geom type, so assume FGF */ );
