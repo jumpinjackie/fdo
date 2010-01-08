@@ -436,6 +436,9 @@ void SQLCmdTest::TestSelectWithTrans()
         if (reader)
         {
             FdoPtr<FdoITransaction> tr1 = conn->BeginTransaction();
+            // Rollback will not work is a SQLite limitation which needs to be avoided
+            // Rollback with readers opened and transaction opened during opened reader will not work
+            tr1->Commit();
         }
 
         // test if we can open a new transaction
