@@ -160,7 +160,8 @@ protected:
   void AGF_WritePointsFromIntegers(int* Integers,int NumIntegers);
   
   void AGF_WriteLineString();
-  
+  void AGF_WriteLineString(int PartIndex);
+
   void AGF_WritePolygon();
   void AGF_WritePolygon(int PartIndex);
   int AGF_WriteMultiPolygon();

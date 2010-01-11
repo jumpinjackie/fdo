@@ -242,6 +242,32 @@ int c_SdeGeom2AGF::ToAGF()
 
     }
     break;
+    case 7: // MultiPoint
+    {
+      AGF_WriteGeometryType(FdoGeometryType_MultiPoint);
+      // number of points
+      
+      int parts = GetNumberOfParts();
+      AGF_WriteInt(parts); // number of points
+      
+      
+      for(int ind=0;ind<parts;ind++)
+      {
+      
+        int numofintegers;
+        int* ptr_integers = GetPartIntegers(ind,numofintegers);
+        int numpoints = numofintegers / m_PointSize;
+        if( (numofintegers % m_PointSize) > 0  )
+        {
+          FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
+          throw FdoException::Create( err );      
+        }
+        AGF_WriteGeometryType(FdoGeometryType_Point);
+        AGF_WriteDimensionality();
+        AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+      }
+    }
+    break;
     case 9: // MultiLine
     {
 
@@ -249,8 +275,13 @@ int c_SdeGeom2AGF::ToAGF()
 
       bool islinear = true;
       AGF_WriteGeometryType(FdoGeometryType_MultiLineString);
-      AGF_WriteInt(1);
-      AGF_WriteLineString();
+      
+      int parts = GetNumberOfParts();
+      AGF_WriteInt(parts);
+      for(int ind=0;ind<parts;ind++)
+      {
+        AGF_WriteLineString(ind);
+      }
 
     }
     break;
@@ -263,6 +294,8 @@ int c_SdeGeom2AGF::ToAGF()
 
       AGF_WriteGeometryType(FdoGeometryType_MultiPolygon);
       int ptr_num_strings_buffpos = m_BuffLen;
+      
+      
       AGF_WriteInt(1);
       int numpoly = AGF_WriteMultiPolygon();
       AGF_UpdateInt(ptr_num_strings_buffpos,numpoly);
@@ -295,6 +328,25 @@ void c_SdeGeom2AGF::AGF_WriteLineString()
 
   int numofintegers;
   int* ptr_integers = GetPartIntegers(0,numofintegers);
+
+
+  int numpoints = numofintegers / m_PointSize;
+  if( (numofintegers % m_PointSize) > 0  )
+  {
+    FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
+    throw FdoException::Create( err );      
+  }
+  AGF_WriteInt(numpoints);
+  AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+}
+void c_SdeGeom2AGF::AGF_WriteLineString(int PartIndex)
+{
+  AGF_WriteGeometryType(FdoGeometryType_LineString);
+  AGF_WriteDimensionality();    
+  
+
+  int numofintegers;
+  int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
 
 
   int numpoints = numofintegers / m_PointSize;
