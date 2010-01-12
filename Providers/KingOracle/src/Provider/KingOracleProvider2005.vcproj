@@ -5,10 +5,6 @@
 	Name="KingOracleProvider"
 	ProjectGUID="{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}"
 	RootNamespace="KingOracleProvider"
-	SccProjectName="SAK"
-	SccAuxPath="SAK"
-	SccLocalPath="SAK"
-	SccProvider="SAK"
 	>
 	<Platforms>
 		<Platform

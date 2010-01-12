@@ -29,7 +29,7 @@
 
 #define KGORA_MESSAGE_DEFINE
 
-#include <../Message/KgOraMessageStatic.h>
+//#include <../Message/KgOraMessageStatic.h>
 #include <../Message/inc/KgOraMessage.h>
 
 #ifdef _WIN32
