@@ -252,6 +252,7 @@ private :
     void DeleteClassFromSchema(const wchar_t* fcName);
     void UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc);
     bool GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq);
+    void GenerateAutoGenerateTrigger(FdoClassDefinition* fc, bool dropTriggerFirst = false);
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, 
         StringBuffer& sb, int mode, UniqueConstraints& simpleUniqueConstr);
