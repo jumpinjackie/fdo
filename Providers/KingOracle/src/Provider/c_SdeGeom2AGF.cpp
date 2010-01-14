@@ -392,8 +392,9 @@ void c_SdeGeom2AGF::AGF_WritePolygon(int PartIndex)
 
   int numofintegers;
   int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
-  AGF_WriteInt(1); // number of rings is 1
-
+  
+  int ptr_num_strings_buffpos = m_BuffLen;
+  AGF_WriteInt(1); // temporary number of rings is 1
 
   int numpoints = numofintegers / m_PointSize;
   if( (numofintegers % m_PointSize) > 0  )
@@ -401,8 +402,11 @@ void c_SdeGeom2AGF::AGF_WritePolygon(int PartIndex)
     FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
     throw FdoException::Create( err );      
   }
-  AGF_WriteInt(numpoints);
-  AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+  int numrings = AGF_WriteRingsFromIntegers(ptr_integers,numofintegers);
+  AGF_UpdateInt(ptr_num_strings_buffpos,numrings);
+  
+  //AGF_WriteInt(numpoints);
+  //AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
 }
 
 
@@ -555,6 +559,255 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
 
 }//end of   c_SdeGeom2AGF::AGF_WritePointsFromIntegers
 
+
+// Rings are divided with points which are same as starting point of ring.
+int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
+{
+  int rings_counter = 0;
+  int numpoints = NumIntegers / m_PointSize;
+  if( (NumIntegers % m_PointSize) > 0  )
+  {
+    FdoStringP err = FdoStringP::Format(L"Not correct number of integers to convert to points. Integers (%d) Point Size(%d)",NumIntegers,m_PointSize);
+    throw FdoException::Create( err );      
+  }
+
+  int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
+  if( (m_BuffLen+bfs) > ( m_BuffSize-D_BUFF_SIZE_RESERVE) )
+  {
+    m_BuffSize = m_BuffLen + bfs + D_BUFF_SIZE_INC + D_BUFF_SIZE_RESERVE;
+
+    char *newbuff = new char[m_BuffSize];
+
+    memcpy(newbuff,m_BuffMem,m_BuffLen);
+
+    delete [] m_BuffMem;
+
+    m_BuffMem = newbuff;
+
+    m_BuffCurr = (int*)&m_BuffMem[m_BuffLen];
+
+  }
+
+  double *fgf_points;      
+  fgf_points = (double *)m_BuffCurr;
+  int ix,iy;
+  double x,y,e1,e2;
+  double laste1,laste2,rel_e1,rel_e2;
+  double lastx = m_SridDesc->m_SDE_FalseX ;
+  double lasty = m_SridDesc->m_SDE_FalseY;
+
+
+  switch( m_PointSize ) 
+  {
+    case 2:
+    { 
+      int ring_pt_cnt=0; // counter of points in ring
+      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      int ptr_num_ringppoints_buffpos=m_BuffLen;
+      for(int ind=0;ind<numpoints;ind++)
+      {
+      
+        ix=*Integers++;iy=*Integers++;
+        x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
+        lastx = x;
+        lasty = y;
+        
+        if( ring_pt_cnt == 0 )
+        {
+          // it is start of ring
+          ptr_num_ringppoints_buffpos = m_BuffLen;  
+          // write temporary number of ring points
+          AGF_WriteInt(1);
+          rings_counter++;
+          
+          suma_ring_int_x =0;suma_ring_int_y=0;
+          
+          // add point to ring
+          AGF_WritePoint(x,y);
+          ring_pt_cnt++;
+        }
+        else
+        {
+        // add point to ring
+          AGF_WritePoint(x,y);
+          ring_pt_cnt++;
+          
+        // check if coordinates of point are equal to start point  
+          suma_ring_int_x += ix; suma_ring_int_y += iy;
+        // check if point is equal to start point of ring
+          if( (suma_ring_int_x == 0) && (suma_ring_int_y == 0) )
+          {
+            AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
+            ring_pt_cnt=0;
+          }          
+        }
+        
+        
+        //*fgf_points++ = x; 
+        //*fgf_points++ = y;
+      }
+      //m_BuffLen += numpoints*2*sizeof(double);
+      //m_BuffCurr = (int*)fgf_points;
+      //AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
+      if( ring_pt_cnt != 0 )
+      {
+        // this shouldn't happened if rings are correct - each ring should be closed
+        // and ring_pt_cnt should be set to 0 in previous loop
+      }
+    }
+    break;
+
+  case 3:
+    {
+      int ring_pt_cnt=0; // counter of points in ring
+      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      int ptr_num_ringppoints_buffpos=m_BuffLen;
+      if( m_CoordDim & CoordDim_Z )
+      {
+        laste1 = m_SridDesc->m_SDE_FalseZ;
+        rel_e1 = m_SridDesc->m_SDE_ZUnit;
+      }
+      else
+      {
+        laste1 = m_SridDesc->m_SDE_FalseM;
+        rel_e1 = m_SridDesc->m_SDE_MUnit;
+      }
+      int* e1_integers = &Integers[numpoints*2];
+      for(int ind=0;ind<numpoints;ind++)
+      {
+        ix=*Integers++;iy=*Integers++;
+        x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
+        lastx = x;
+        lasty = y;
+        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        laste1 = e1;
+        
+        if( ring_pt_cnt == 0 )
+        {
+          // it is start of ring
+          ptr_num_ringppoints_buffpos = m_BuffLen;  
+          // write temporary number of ring points
+          AGF_WriteInt(1);
+          rings_counter++;
+
+          suma_ring_int_x =0;suma_ring_int_y=0;
+
+          // add point to ring
+          AGF_WritePoint(x,y,e1);
+          ring_pt_cnt++;
+        }
+        else
+        {
+          // add point to ring
+          AGF_WritePoint(x,y,e1);
+          ring_pt_cnt++;
+
+          // check if coordinates of point are equal to start point  
+          suma_ring_int_x += ix; suma_ring_int_y += iy;
+          // check if point is equal to start point of ring
+          if( (suma_ring_int_x == 0) && (suma_ring_int_y == 0) )
+          {
+            AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
+            ring_pt_cnt=0;
+          }          
+        }
+
+        //*fgf_points++ = x; 
+        //*fgf_points++ = y;
+
+        
+
+        
+
+        //*fgf_points++ = e1;
+      }
+
+
+      //m_BuffLen += numpoints*3*sizeof(double);
+
+      //m_BuffCurr = (int*)fgf_points;
+    }
+    break;
+  case 4:
+    {
+      int ring_pt_cnt=0; // counter of points in ring
+      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      int ptr_num_ringppoints_buffpos=m_BuffLen;
+      
+      laste1 = m_SridDesc->m_SDE_FalseZ;
+      rel_e1 = m_SridDesc->m_SDE_ZUnit;
+
+      laste2 = m_SridDesc->m_SDE_FalseM;
+      rel_e2 = m_SridDesc->m_SDE_MUnit;
+
+      int* e1_integers = &Integers[numpoints*2];
+      int* e2_integers = &Integers[numpoints*3];
+      for(int ind=0;ind<numpoints;ind++)
+      {
+        ix=*Integers++;iy=*Integers++;
+        x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
+        lastx = x;
+        lasty = y;
+
+        //*fgf_points++ = x; 
+        //*fgf_points++ = y;
+
+        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        laste1 = e1;
+
+        //*fgf_points++ = e1;
+
+        e2 = (double)(*e2_integers++) / rel_e2 + laste2;
+        laste2 = e2;
+
+        //*fgf_points++ = e2;
+        
+        if( ring_pt_cnt == 0 )
+        {
+          // it is start of ring
+          ptr_num_ringppoints_buffpos = m_BuffLen;  
+          // write temporary number of ring points
+          AGF_WriteInt(1);
+          rings_counter++;
+
+          suma_ring_int_x =0;suma_ring_int_y=0;
+
+          // add point to ring
+          AGF_WritePoint(x,y,e1,e2);
+          ring_pt_cnt++;
+        }
+        else
+        {
+          // add point to ring
+          AGF_WritePoint(x,y,e1,e2);
+          ring_pt_cnt++;
+
+          // check if coordinates of point are equal to start point  
+          suma_ring_int_x += ix; suma_ring_int_y += iy;
+          // check if point is equal to start point of ring
+          if( (suma_ring_int_x == 0) && (suma_ring_int_y == 0) )
+          {
+            AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
+            ring_pt_cnt=0;
+          }          
+        }
+
+      }
+
+      //m_BuffLen += numpoints*4*sizeof(double);
+
+      //m_BuffCurr = (int*)fgf_points;
+    }
+    break;
+  }     
+
+  return rings_counter;
+}//end of   c_SdeGeom2AGF::AGF_WritePointsFromIntegers
+
+
 int c_SdeGeom2AGF::GetNumberOfParts()
 {
   return m_NumberOfParts;
@@ -686,6 +939,34 @@ void c_SdeGeom2AGF::AGF_WriteInt(int Val)
   *m_BuffCurr++ = Val;
   m_BuffLen += sizeof(int);
 }//end of c_SdeGeom2AGF::AGF_WriteInt
+
+void c_SdeGeom2AGF::AGF_WritePoint(double X,double Y)
+{
+  double *ptbuff = (double*)m_BuffCurr;
+  *ptbuff++ = X;
+  *ptbuff++ = Y;
+  m_BuffCurr = (int*)ptbuff;
+  m_BuffLen += 2*sizeof(double);
+}//end of c_SdeGeom2AGF::AGF_WritePoint
+void c_SdeGeom2AGF::AGF_WritePoint(double X,double Y,double Z)
+{
+  double *ptbuff = (double*)m_BuffCurr;
+  *ptbuff++ = X;
+  *ptbuff++ = Y;
+  *ptbuff++ = Z;
+  m_BuffCurr = (int*)ptbuff;
+  m_BuffLen += 3*sizeof(double);
+}//end of c_SdeGeom2AGF::AGF_WritePoint
+void c_SdeGeom2AGF::AGF_WritePoint(double X,double Y,double Z,double M)
+{
+  double *ptbuff = (double*)m_BuffCurr;
+  *ptbuff++ = X;
+  *ptbuff++ = Y;
+  *ptbuff++ = Z;
+  *ptbuff++ = M;
+  m_BuffCurr = (int*)ptbuff;
+  m_BuffLen += 4*sizeof(double);
+}//end of c_SdeGeom2AGF::AGF_WritePoint
 
 void c_SdeGeom2AGF::RestoreBuff(int BuffPos)
 {
