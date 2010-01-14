@@ -165,6 +165,10 @@ protected:
   void AGF_WritePolygon();
   void AGF_WritePolygon(int PartIndex);
   int AGF_WriteMultiPolygon();
+  int AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers);
+  void AGF_WritePoint(double X,double Y,double Z,double M);
+  void AGF_WritePoint(double X,double Y,double Z);
+  void AGF_WritePoint(double X,double Y);
 
 
 };
