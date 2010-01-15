@@ -247,14 +247,14 @@ void SdfDataValidator::ValidateDataProperty( SdfConnection* connection, FdoDataP
                         {
                             FdoPtr<FdoPropertyValueConstraintRange> rangeConstraint = FDO_SAFE_ADDREF(static_cast<FdoPropertyValueConstraintRange*>(valueConstraint.p));
                             FdoPtr<FdoDataValue> maxValue = rangeConstraint->GetMaxValue();
-                            if (maxValue != NULL)
+                            if (maxValue != NULL && !maxValue->IsNull())
                             {
                                 int iComparison = FdoCommonMiscUtil::CompareDataValues(dataValue, maxValue);
                                 if ((iComparison > 0) || (iComparison==0 && !rangeConstraint->GetMaxInclusive()))
                                     FdoCommonMiscUtil::ThrowPropertyConstraintException(dprop, dataValue);
                             }
                             FdoPtr<FdoDataValue> minValue = rangeConstraint->GetMinValue();
-                            if (minValue != NULL)
+                            if (minValue != NULL && !minValue->IsNull())
                             {
                                 int iComparison = FdoCommonMiscUtil::CompareDataValues(dataValue, minValue);
                                 if ((iComparison < 0) || (iComparison==0 && !rangeConstraint->GetMinInclusive()))
