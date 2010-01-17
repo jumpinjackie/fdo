@@ -19,7 +19,7 @@
 #ifndef _c_KgOraSridDesc_h
 #define _c_KgOraSridDesc_h
 
-class c_KgOraSridDesc
+class FDOKGORA_API c_KgOraSridDesc
 {
 public:
   c_KgOraSridDesc(void);

@@ -30,7 +30,7 @@ int m_IndexOfIntegers;
 }t_SdeFeaturePart;
   
   
-class c_SdeGeom2AGF 
+class FDOKGORA_API c_SdeGeom2AGF 
 {
 public:
   c_SdeGeom2AGF();
