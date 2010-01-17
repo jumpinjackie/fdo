@@ -206,12 +206,7 @@ int c_SdeGeom2AGF::ToAGF()
       
       int numofintegers;
       int* ptr_integers = GetPartIntegers(0,numofintegers);
-      int numpoints = numofintegers / m_PointSize;
-      if( (numofintegers % m_PointSize) > 0  )
-      {
-        FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-        throw FdoException::Create( err );      
-      }
+      
       
       AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
       
@@ -256,12 +251,7 @@ int c_SdeGeom2AGF::ToAGF()
       
         int numofintegers;
         int* ptr_integers = GetPartIntegers(ind,numofintegers);
-        int numpoints = numofintegers / m_PointSize;
-        if( (numofintegers % m_PointSize) > 0  )
-        {
-          FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-          throw FdoException::Create( err );      
-        }
+       
         AGF_WriteGeometryType(FdoGeometryType_Point);
         AGF_WriteDimensionality();
         AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
@@ -330,12 +320,8 @@ void c_SdeGeom2AGF::AGF_WriteLineString()
   int* ptr_integers = GetPartIntegers(0,numofintegers);
 
 
-  int numpoints = numofintegers / m_PointSize;
-  if( (numofintegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  int numpoints = numofintegers / 2;
+  
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
 }
@@ -349,12 +335,8 @@ void c_SdeGeom2AGF::AGF_WriteLineString(int PartIndex)
   int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
 
 
-  int numpoints = numofintegers / m_PointSize;
-  if( (numofintegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  int numpoints = numofintegers / 2;
+  
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
 }
@@ -375,12 +357,8 @@ void c_SdeGeom2AGF::AGF_WritePolygon()
   AGF_WriteInt(1); // number of rings is 1
 
 
-  int numpoints = numofintegers / m_PointSize;
-  if( (numofintegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  int numpoints = numofintegers / 2;
+  
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
 }
@@ -396,12 +374,7 @@ void c_SdeGeom2AGF::AGF_WritePolygon(int PartIndex)
   int ptr_num_strings_buffpos = m_BuffLen;
   AGF_WriteInt(1); // temporary number of rings is 1
 
-  int numpoints = numofintegers / m_PointSize;
-  if( (numofintegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Incorrect number of integers to convert to points. Integers (%d) Point Size(%d)",numofintegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  
   int numrings = AGF_WriteRingsFromIntegers(ptr_integers,numofintegers);
   AGF_UpdateInt(ptr_num_strings_buffpos,numrings);
   
@@ -430,12 +403,8 @@ int c_SdeGeom2AGF::AGF_WriteMultiPolygon()
 void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
 {
 
-  int numpoints = NumIntegers / m_PointSize;
-  if( (NumIntegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Not correct number of integers to convert to points. Integers (%d) Point Size(%d)",NumIntegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  int numpoints = NumIntegers / 2;
+  
 
   int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
   if( (m_BuffLen+bfs) > ( m_BuffSize-D_BUFF_SIZE_RESERVE) )
@@ -565,11 +534,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
 {
   int rings_counter = 0;
   int numpoints = NumIntegers / m_PointSize;
-  if( (NumIntegers % m_PointSize) > 0  )
-  {
-    FdoStringP err = FdoStringP::Format(L"Not correct number of integers to convert to points. Integers (%d) Point Size(%d)",NumIntegers,m_PointSize);
-    throw FdoException::Create( err );      
-  }
+  
 
   int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
   if( (m_BuffLen+bfs) > ( m_BuffSize-D_BUFF_SIZE_RESERVE) )
@@ -882,7 +847,9 @@ void c_SdeGeom2AGF::UnpackParts()
   
   int int_count=0,x,y,part_start_ind=0,sumx=0,sumy=0;
   int* int_ptr = m_UnpackedIntegers;
-  while( int_count < unpacked_count )
+  int xy_count = m_NumOfPts*2; // count of xy pairs
+  if( unpacked_count < xy_count ) xy_count = unpacked_count;
+  while( int_count < xy_count )
   {
     x = *int_ptr;
     sumx += x;
@@ -895,13 +862,13 @@ void c_SdeGeom2AGF::UnpackParts()
       {
         part->m_NumberOfIntegers = int_count - part_start_ind;
         part = AddPart();
-        part->m_IndexOfIntegers = int_count + m_PointSize; // skip separator
-        part_start_ind = int_count + m_PointSize; // skip separator
+        part->m_IndexOfIntegers = int_count + 2; // skip separator
+        part_start_ind = int_count + 2; // skip separator
       }
     }
     
-    int_ptr += m_PointSize; 
-    int_count+=m_PointSize;
+    int_ptr += 2; 
+    int_count+=2;
     
   }
   
