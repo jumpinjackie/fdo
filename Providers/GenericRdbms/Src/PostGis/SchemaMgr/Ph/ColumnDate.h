@@ -36,6 +36,7 @@ class FdoSmPhPostGisColumnDate :
 public:
 
     /// Constructor.
+
     FdoSmPhPostGisColumnDate(FdoStringP columnName,
         FdoSchemaElementState state,
         FdoSmPhDbObject* parentObject,
