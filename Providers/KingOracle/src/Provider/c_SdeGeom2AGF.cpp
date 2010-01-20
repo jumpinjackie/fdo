@@ -38,6 +38,7 @@ c_SdeGeom2AGF::c_SdeGeom2AGF()
   
   
   m_UnpackedIntegers=NULL; 
+  m_CountUnpackedIntegers=0;
   m_AllocatedUnpackedIntegers=0; 
   
   m_NumberOfParts=0;
@@ -204,11 +205,10 @@ int c_SdeGeom2AGF::ToAGF()
         throw FdoException::Create( err );      
       }
       
-      int numofintegers;
-      int* ptr_integers = GetPartIntegers(0,numofintegers);
-      
-      
-      AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+      //int numofintegers;
+      //int* ptr_integers = GetPartIntegers(0,numofintegers);
+      t_SdeFeaturePart* part = GetPart(0);
+      AGF_WritePointsFromIntegers(part);
       
     }
     break;
@@ -249,12 +249,14 @@ int c_SdeGeom2AGF::ToAGF()
       for(int ind=0;ind<parts;ind++)
       {
       
-        int numofintegers;
-        int* ptr_integers = GetPartIntegers(ind,numofintegers);
+        //int numofintegers;
+        //int* ptr_integers = GetPartIntegers(ind,numofintegers);
+        t_SdeFeaturePart* part = GetPart(ind);
+        
        
         AGF_WriteGeometryType(FdoGeometryType_Point);
         AGF_WriteDimensionality();
-        AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+        AGF_WritePointsFromIntegers(part);
       }
     }
     break;
@@ -316,14 +318,16 @@ void c_SdeGeom2AGF::AGF_WriteLineString()
     throw FdoException::Create( err );      
   }
 
-  int numofintegers;
-  int* ptr_integers = GetPartIntegers(0,numofintegers);
+  //int numofintegers;
+  //int* ptr_integers = GetPartIntegers(0,numofintegers);
+  t_SdeFeaturePart* part = GetPart(0);
+  
 
 
-  int numpoints = numofintegers / 2;
+  int numpoints = part->m_NumberOfIntegers / 2;
   
   AGF_WriteInt(numpoints);
-  AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+  AGF_WritePointsFromIntegers(part);
 }
 void c_SdeGeom2AGF::AGF_WriteLineString(int PartIndex)
 {
@@ -331,14 +335,15 @@ void c_SdeGeom2AGF::AGF_WriteLineString(int PartIndex)
   AGF_WriteDimensionality();    
   
 
-  int numofintegers;
-  int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
+  //int numofintegers;
+  //int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
+  t_SdeFeaturePart* part = GetPart(PartIndex);
 
 
-  int numpoints = numofintegers / 2;
+  int numpoints = part->m_NumberOfIntegers / 2;
   
   AGF_WriteInt(numpoints);
-  AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+  AGF_WritePointsFromIntegers(part);
 }
 void c_SdeGeom2AGF::AGF_WritePolygon()
 {
@@ -352,15 +357,16 @@ void c_SdeGeom2AGF::AGF_WritePolygon()
     throw FdoException::Create( err );      
   }
 
-  int numofintegers;
-  int* ptr_integers = GetPartIntegers(0,numofintegers);
+  //int numofintegers;
+  //int* ptr_integers = GetPartIntegers(0,numofintegers);
+  t_SdeFeaturePart*part=GetPart(0);
   AGF_WriteInt(1); // number of rings is 1
 
 
-  int numpoints = numofintegers / 2;
+  int numpoints = part->m_NumberOfIntegers / 2;
   
   AGF_WriteInt(numpoints);
-  AGF_WritePointsFromIntegers(ptr_integers,numofintegers);
+  AGF_WritePointsFromIntegers(part);
 }
 
 void c_SdeGeom2AGF::AGF_WritePolygon(int PartIndex)
@@ -368,14 +374,15 @@ void c_SdeGeom2AGF::AGF_WritePolygon(int PartIndex)
   AGF_WriteGeometryType(FdoGeometryType_Polygon);
   AGF_WriteDimensionality();    
 
-  int numofintegers;
-  int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
+  //int numofintegers;
+  //int* ptr_integers = GetPartIntegers(PartIndex,numofintegers);
+  t_SdeFeaturePart*part=GetPart(PartIndex);
   
   int ptr_num_strings_buffpos = m_BuffLen;
   AGF_WriteInt(1); // temporary number of rings is 1
 
   
-  int numrings = AGF_WriteRingsFromIntegers(ptr_integers,numofintegers);
+  int numrings = AGF_WriteRingsFromIntegers(part);
   AGF_UpdateInt(ptr_num_strings_buffpos,numrings);
   
   //AGF_WriteInt(numpoints);
@@ -400,9 +407,11 @@ int c_SdeGeom2AGF::AGF_WriteMultiPolygon()
 //
 //  It will increment buffer pointer and ordinates index
 //
-void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
+void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
 {
 
+  int* Integers = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
+  int NumIntegers = Part->m_NumberOfIntegers;
   int numpoints = NumIntegers / 2;
   
 
@@ -463,7 +472,7 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
         laste1 = m_SridDesc->m_SDE_FalseM;
         rel_e1 = m_SridDesc->m_SDE_MUnit;
       }
-      int* e1_integers = &Integers[numpoints*2];
+      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
       for(int ind=0;ind<numpoints;ind++)
       {
         x = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lastx;
@@ -474,7 +483,10 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
         *fgf_points++ = x; 
         *fgf_points++ = y;
         
-        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        if( e1_integers )
+          e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        else
+          e1=0;
         
         laste1 = e1;
         
@@ -495,8 +507,8 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
       laste2 = m_SridDesc->m_SDE_FalseM;
       rel_e2 = m_SridDesc->m_SDE_MUnit;
       
-      int* e1_integers = &Integers[numpoints*2];
-      int* e2_integers = &Integers[numpoints*3];
+      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      int* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
       for(int ind=0;ind<numpoints;ind++)
       {
         x = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lastx;
@@ -506,13 +518,19 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
 
         *fgf_points++ = x; 
         *fgf_points++ = y;
-
-        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+          
+        if( e1_integers )  
+          e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        else
+          e1 = 0.0;
         laste1 = e1;
         
         *fgf_points++ = e1;
         
-        e2 = (double)(*e2_integers++) / rel_e2 + laste2;
+        if( e2_integers )
+          e2 = (double)(*e2_integers++) / rel_e2 + laste2;
+        else
+          e2=0.0;
         laste2 = e2;
         
         *fgf_points++ = e2;
@@ -530,11 +548,13 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(int* Integers,int NumIntegers)
 
 
 // Rings are divided with points which are same as starting point of ring.
-int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
+int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int IntegersStartIndex,int NumIntegers)
 {
   int rings_counter = 0;
-  int numpoints = NumIntegers / m_PointSize;
+  int numpoints = Part->m_NumberOfIntegers / 2;
   
+  int* Integers = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
+  int NumIntegers = Part->m_NumberOfIntegers;
 
   int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
   if( (m_BuffLen+bfs) > ( m_BuffSize-D_BUFF_SIZE_RESERVE) )
@@ -638,7 +658,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
         laste1 = m_SridDesc->m_SDE_FalseM;
         rel_e1 = m_SridDesc->m_SDE_MUnit;
       }
-      int* e1_integers = &Integers[numpoints*2];
+      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
       for(int ind=0;ind<numpoints;ind++)
       {
         ix=*Integers++;iy=*Integers++;
@@ -646,7 +666,10 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
         y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
         lasty = y;
-        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        if( e1_integers )
+          e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        else
+          e1 = 0.0;
         laste1 = e1;
         
         if( ring_pt_cnt == 0 )
@@ -707,8 +730,8 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
       laste2 = m_SridDesc->m_SDE_FalseM;
       rel_e2 = m_SridDesc->m_SDE_MUnit;
 
-      int* e1_integers = &Integers[numpoints*2];
-      int* e2_integers = &Integers[numpoints*3];
+      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      int* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
       for(int ind=0;ind<numpoints;ind++)
       {
         ix=*Integers++;iy=*Integers++;
@@ -720,12 +743,18 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers)
         //*fgf_points++ = x; 
         //*fgf_points++ = y;
 
-        e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        if( e1_integers )
+          e1 = (double)(*e1_integers++) / rel_e1 + laste1;
+        else
+          e1 = 0.0;
         laste1 = e1;
 
         //*fgf_points++ = e1;
 
-        e2 = (double)(*e2_integers++) / rel_e2 + laste2;
+        if( e2_integers )
+          e2 = (double)(*e2_integers++) / rel_e2 + laste2;
+        else
+          e2 = 0.0;
         laste2 = e2;
 
         //*fgf_points++ = e2;
@@ -777,11 +806,16 @@ int c_SdeGeom2AGF::GetNumberOfParts()
 {
   return m_NumberOfParts;
 }
-
+/*
 int* c_SdeGeom2AGF::GetPartIntegers( int PartIndex,int& NumOfIntegers )
 {
   NumOfIntegers=m_FeatureParts[PartIndex].m_NumberOfIntegers;  
   return &m_UnpackedIntegers[m_FeatureParts[PartIndex].m_IndexOfIntegers];
+}
+*/
+t_SdeFeaturePart* c_SdeGeom2AGF::GetPart( int PartIndex)
+{
+  return &m_FeatureParts[PartIndex];
 }
 
 t_SdeFeaturePart* c_SdeGeom2AGF::AddPart()
@@ -799,7 +833,13 @@ t_SdeFeaturePart* c_SdeGeom2AGF::AddPart()
   m_FeatureParts = newmem;
   m_AllocatedParts = newsize;
   
-  return &m_FeatureParts[m_NumberOfParts++];
+  t_SdeFeaturePart *newpart = &m_FeatureParts[m_NumberOfParts];
+  m_NumberOfParts++;
+  
+  newpart->m_ZIntegers = NULL;
+  newpart->m_MIntegers = NULL;
+  
+  return newpart;
 }
 void c_SdeGeom2AGF::UnpackParts()
 {
@@ -815,11 +855,11 @@ void c_SdeGeom2AGF::UnpackParts()
 // unpack integers
   int val,sign,shift,b;
   int *unpacked_ptr = m_UnpackedIntegers;
-  int unpacked_count=0;
+  m_CountUnpackedIntegers=0;
   const unsigned char *bytes = &m_SdeGeom[8];
   int bytecount = m_CoordStreamLen;
   
-  while( (bytecount>0) && (unpacked_count<numof_integers)  )
+  while( (bytecount>0) && (m_CountUnpackedIntegers<numof_integers)  )
   {
     val = *bytes & 0x3f;
     sign = *bytes & 0x40 ? -1 : 1;
@@ -835,7 +875,7 @@ void c_SdeGeom2AGF::UnpackParts()
     val = val * sign;
     
     *unpacked_ptr++ = val;
-    unpacked_count++;
+    m_CountUnpackedIntegers++;
     
     bytes++;bytecount--;
   }
@@ -844,11 +884,14 @@ void c_SdeGeom2AGF::UnpackParts()
   // part separators are x=-1 y=0
   t_SdeFeaturePart* part = AddPart();  
   part->m_IndexOfIntegers = 0;
+  part->m_ZIntegers = part->m_MIntegers = NULL;
   
+  int part_z_integers=0;
+  int part_m_integers=part_z_integers+m_NumOfPts; //
   int int_count=0,x,y,part_start_ind=0,sumx=0,sumy=0;
   int* int_ptr = m_UnpackedIntegers;
   int xy_count = m_NumOfPts*2; // count of xy pairs
-  if( unpacked_count < xy_count ) xy_count = unpacked_count;
+  if( m_CountUnpackedIntegers < xy_count ) xy_count = m_CountUnpackedIntegers;
   while( int_count < xy_count )
   {
     x = *int_ptr;

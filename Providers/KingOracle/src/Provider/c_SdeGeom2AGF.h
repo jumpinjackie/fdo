@@ -27,6 +27,8 @@ typedef struct t_SdeFeaturePart
 {
 int m_NumberOfIntegers;
 int m_IndexOfIntegers;
+int* m_ZIntegers; // points to start of Z integer values of part if exists
+int* m_MIntegers; // points to start of M integer values of part if exists
 }t_SdeFeaturePart;
   
   
@@ -107,6 +109,8 @@ protected:
   
 protected:  
   int* m_UnpackedIntegers; // size of this allocation has to be at least m_NumOfPts * m_PointInSize
+  int m_CountUnpackedIntegers; // number of unpacked integers - this is not always equal m_NumOfPts * m_PointInSize 
+                               // - it looks like sometimes Z or M integers are missing (perhaps case when they are zeros?)
   int m_AllocatedUnpackedIntegers; 
   
   int m_NumberOfParts;
@@ -155,17 +159,21 @@ protected:
   void RestoreBuff(int BuffPos);
   void UnpackParts();
   int GetNumberOfParts();
-  int* GetPartIntegers(int PartIndex,int& NumOfIntegers);;
-  t_SdeFeaturePart* AddPart();
-  void AGF_WritePointsFromIntegers(int* Integers,int NumIntegers);
+  //int* GetPartIntegers(int PartIndex,int& NumOfIntegers);;
   
+  t_SdeFeaturePart* GetPart( int PartIndex );
+  t_SdeFeaturePart* AddPart();
+  //void AGF_WritePointsFromIntegers(int* Integers,int NumIntegers);
+  void AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part);
+
   void AGF_WriteLineString();
   void AGF_WriteLineString(int PartIndex);
 
   void AGF_WritePolygon();
   void AGF_WritePolygon(int PartIndex);
   int AGF_WriteMultiPolygon();
-  int AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers);
+  //int AGF_WriteRingsFromIntegers(int* Integers,int NumIntegers);
+  int AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part);
   void AGF_WritePoint(double X,double Y,double Z,double M);
   void AGF_WritePoint(double X,double Y,double Z);
   void AGF_WritePoint(double X,double Y);
