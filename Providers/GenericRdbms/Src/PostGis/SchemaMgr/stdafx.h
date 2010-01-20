@@ -39,3 +39,4 @@
 #include <Sm/Lp/SchemaCollection.h>
 
 #endif // POSTGISSCHEMAMGRSTDAFX_H
+
