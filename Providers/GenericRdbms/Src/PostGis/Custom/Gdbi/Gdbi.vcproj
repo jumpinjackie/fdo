@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
-	Name="Gdbi_PostGIS"
+	Version="9.00"
+	Name="Gdbi"
 	ProjectGUID="{2D1B39E1-0ED4-48B4-BD94-FC1AA67AE15F}"
 	RootNamespace="Gdbi"
 	Keyword="Win32Proj"
