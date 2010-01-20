@@ -129,7 +129,7 @@ if not exist "%FDOBINPATH%\com" mkdir "%FDOBINPATH%\com"
 
 :start_exbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
-if "%TYPEACTION%"=="install" goto install_files_MySQL
+if "%TYPEACTION%"=="install" goto install_files
 
 echo %MSACTION% %TYPEBUILD% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL
@@ -141,7 +141,7 @@ if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs
 
-:install_files_MySQL
+:install_files
 echo copy %TYPEBUILD% MySQL provider output files
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.dll" "%FDOBINPATH%"
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.pdb" "%FDOBINPATH%"
@@ -170,7 +170,6 @@ copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.Rdbms.Ov
 echo copy header files
 xcopy /S /C /Q /R /Y "..\..\inc\Rdbms\*.h" "%FDOINCPATH%\Rdbms\"
 copy /y "..\..\Inc\Rdbms.h" "%FDOINCPATH%\Rdbms\"
-if exist "%FDOINCPATH%\Rdbms\Override\PostGis" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\PostGis"
 if exist "%FDOINCPATH%\Rdbms\Override\Oracle" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\Oracle"
 if exist "%FDOINCPATH%\Rdbms\Override\SqlServer" rmdir /S /Q "%FDOINCPATH%\Rdbms\Override\SqlServer"
 if exist "%FDOINCPATH%\Rdbms\FdoSqlServer.h" del /Q /F "%FDOINCPATH%\Rdbms\FdoSqlServer.h"

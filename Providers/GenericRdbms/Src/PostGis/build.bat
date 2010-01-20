@@ -129,7 +129,7 @@ if not exist "%FDOBINPATH%\com" mkdir "%FDOBINPATH%\com"
 :start_exbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files
-echo %MSACTION% %TYPEBUILD% PostGIS Provider DLLs
+echo %MSACTION% %TYPEBUILD% PostgreSQL Provider DLLs
 SET FDOACTIVEBUILD=%cd%\PostGIS
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
 msbuild PostGIS_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
@@ -140,7 +140,7 @@ if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs
 
 :install_files
-echo copy %TYPEBUILD% PostGIS provider output files
+echo copy %TYPEBUILD% PostgreSQL provider output files
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.dll" "%FDOBINPATH%"
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\RdbmsMsg.pdb" "%FDOBINPATH%"
 copy /y "..\..\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\PostgreSQLProvider.dll" "%FDOBINPATH%"
@@ -209,7 +209,7 @@ rem if exist "Docs\PostGIS_Provider_API_managed.chm" copy /y "Docs\PostGIS_Provi
 rem popd
 
 :end
-echo End PostGIS %MSACTION%
+echo End PostgreSQL %MSACTION%
 exit /B 0
 
 :env_error
