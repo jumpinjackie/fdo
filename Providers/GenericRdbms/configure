@@ -19394,6 +19394,10 @@ fi
                                                                                                                                                                                                                                                                                                                                                                                                                                     ac_config_files="$ac_config_files com/Makefile Docs/Makefile Inc/Makefile Nls/Makefile Src/Makefile Src/Fdo/Makefile Src/Fdo/Capability/Makefile Src/Fdo/Connection/Makefile Src/Fdo/Custom/Makefile Src/Fdo/DataStore/Makefile Src/Fdo/FeatureCommands/Makefile Src/Fdo/Filter/Makefile Src/Fdo/Lock/Makefile Src/Fdo/Lt/Makefile Src/Fdo/Other/Makefile Src/Fdo/Pvc/Makefile Src/Fdo/Schema/Makefile Src/Fdo/SpatialContext/Makefile Src/Gdbi/Makefile Src/Geometry/Makefile Src/Geometry/Fgf/Makefile Src/LongTransactionManager/Makefile Src/LockManager/Makefile Src/MySQL/Makefile Src/MySQL/Driver/Makefile Src/MySQL/Fdo/Makefile Src/MySQL/SchemaMgr/Makefile Src/MySQL/SchemaMgr/Lp/Makefile Src/MySQL/SchemaMgr/Ov/Makefile Src/MySQL/SchemaMgr/Ph/Makefile Src/MySQL/SchemaMgr/Ph/Rd/Makefile Src/Rdbi/Makefile Src/SchemaMgr/Makefile Src/SchemaMgr/Lp/Makefile Src/SchemaMgr/Ov/Makefile Src/SchemaMgr/Ph/Makefile Src/SchemaMgr/Ph/Cfg/Makefile Src/SchemaMgr/Ph/Rd/Makefile Src/UnitTest/Common/Makefile Src/UnitTest/MySql/Makefile Src/UnitTest/Makefile Src/Util/Makefile"
 
 
+#PostGIS
+                                                                                ac_config_files="$ac_config_files Src/PostGis/Makefile Src/PostGis/Driver/Makefile Src/PostGis/Fdo/Makefile Src/PostGis/SchemaMgr/Makefile Src/PostGis/SchemaMgr/Lp/Makefile Src/PostGis/SchemaMgr/Ov/Makefile Src/PostGis/SchemaMgr/Ph/Makefile Src/PostGis/SchemaMgr/Ph/Rd/Makefile"
+
+
 #ODBCDriver
           ac_config_files="$ac_config_files Src/ODBCDriver/Makefile"
 
@@ -20030,6 +20034,14 @@ do
   "Src/UnitTest/MySql/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/MySql/Makefile" ;;
   "Src/UnitTest/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/UnitTest/Makefile" ;;
   "Src/Util/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/Util/Makefile" ;;
+  "Src/PostGis/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/Makefile" ;;
+  "Src/PostGis/Driver/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/Driver/Makefile" ;;
+  "Src/PostGis/Fdo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/Fdo/Makefile" ;;
+  "Src/PostGis/SchemaMgr/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/SchemaMgr/Makefile" ;;
+  "Src/PostGis/SchemaMgr/Lp/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/SchemaMgr/Lp/Makefile" ;;
+  "Src/PostGis/SchemaMgr/Ov/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/SchemaMgr/Ov/Makefile" ;;
+  "Src/PostGis/SchemaMgr/Ph/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/SchemaMgr/Ph/Makefile" ;;
+  "Src/PostGis/SchemaMgr/Ph/Rd/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/PostGis/SchemaMgr/Ph/Rd/Makefile" ;;
   "Src/ODBCDriver/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBCDriver/Makefile" ;;
   "Src/ODBC/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBC/Makefile" ;;
   "Src/ODBC/Fdo/Makefile" ) CONFIG_FILES="$CONFIG_FILES Src/ODBC/Fdo/Makefile" ;;

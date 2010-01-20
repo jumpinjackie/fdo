@@ -220,6 +220,16 @@ AC_CONFIG_FILES([com/Makefile \
                  Src/UnitTest/Makefile \
                  Src/Util/Makefile])
 
+#PostGIS
+AC_CONFIG_FILES([Src/PostGis/Makefile \
+                 Src/PostGis/Driver/Makefile \
+                 Src/PostGis/Fdo/Makefile \
+                 Src/PostGis/SchemaMgr/Makefile \
+                 Src/PostGis/SchemaMgr/Lp/Makefile \
+                 Src/PostGis/SchemaMgr/Ov/Makefile \
+                 Src/PostGis/SchemaMgr/Ph/Makefile \
+                 Src/PostGis/SchemaMgr/Ph/Rd/Makefile])
+
 #ODBCDriver
 AC_CONFIG_FILES([Src/ODBCDriver/Makefile])
 
