@@ -34,6 +34,7 @@ SET MYSQLENABLE=yes
 SET GDALENABLE=yes
 SET OGRENABLE=yes
 SET POSTGISENABLE=yes
+SET POSTGESQLENABLE=yes
 SET KINGORACLEENABLE=yes
 SET SQLSPATIALENABLE=yes
 SET FDOENABLE=yes
@@ -89,6 +90,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
 	SET POSTGISENABLE=no
 	SET KINGORACLEENABLE=no
 	SET SQLSPATIALENABLE=no
+	SET POSTGESQLENABLE=no
 :stp1_get_with
 if not "%2"=="shp" goto stp2_get_with
 	SET SHPENABLE=yes
@@ -146,7 +148,11 @@ if not "%2"=="sqlite" goto stp15_get_with
 	SET SQLITEENABLE=yes
 	goto next_param
 :stp15_get_with
-if not "%2"=="providers" goto stp16_get_with
+if not "%2"=="postgresql" goto stp16_get_with
+	SET POSTGESQLENABLE=yes
+	goto next_param
+:stp16_get_with
+if not "%2"=="providers" goto stp17_get_with
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
 	SET SQLITEENABLE=yes
@@ -158,10 +164,11 @@ if not "%2"=="providers" goto stp16_get_with
 	SET GDALENABLE=yes
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
+	SET POSTGESQLENABLE=yes
 	SET KINGORACLEENABLE=yes
 	SET SQLSPATIALENABLE=yes
 	goto next_param
-:stp16_get_with
+:stp17_get_with
 if not "%2"=="all" goto custom_error
 	SET SHPENABLE=yes
 	SET SDFENABLE=yes
@@ -175,6 +182,7 @@ if not "%2"=="all" goto custom_error
 	SET GDALENABLE=yes
 	SET OGRENABLE=yes
 	SET POSTGISENABLE=yes
+	SET POSTGESQLENABLE=yes
 	SET KINGORACLEENABLE=yes
 	SET SQLSPATIALENABLE=yes
 	goto next_param
@@ -349,9 +357,17 @@ popd
 if "%FDOERROR%"=="1" goto error
 
 :rebuild_sqlite
-if "%SQLITEENABLE%"=="no" goto end
-if not exist Providers\SQLite\build.bat goto end
+if "%SQLITEENABLE%"=="no" goto rebuild_postgresql
+if not exist Providers\SQLite\build.bat goto rebuild_postgresql
 pushd Providers\SQLite
+call build.bat %PROVCALLCMDEXPLTFRM%
+popd
+if "%FDOERROR%"=="1" goto error
+
+:rebuild_postgresql
+if "%POSTGESQLENABLE%"=="no" goto end
+if not exist Providers\GenericRdbms\Src\PostGis\build.bat goto end
+pushd Providers\GenericRdbms\Src\PostGis
 call build.bat %PROVCALLCMDEXPLTFRM%
 popd
 if "%FDOERROR%"=="1" goto error
@@ -427,8 +443,11 @@ echo                                kingoracle,
 if not exist Providers\GenericRdbms\Src\SQLServerSpatial\build.bat goto sqlite_check
 echo                                sqlspatial,
 :sqlite_check
-if not exist Providers\SQLite\build.bat goto end_show_capabilities
+if not exist Providers\SQLite\build.bat goto postgresql_check
 echo                                sqlite
+:postgresql_check
+if not exist Providers\GenericRdbms\Src\PostGis\build.bat goto end_show_capabilities
+echo                                postgresql
 :end_show_capabilities
 echo ************************************************************************
 exit /B 0
