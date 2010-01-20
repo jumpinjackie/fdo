@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="PostGISOverrides"
 	ProjectGUID="{C7C93492-5656-42D9-A576-67C1CA628AF5}"
 	RootNamespace="PostGISOverrides"
@@ -80,7 +80,7 @@
 				ProgramDatabaseFile="$(OutDir)/PostgreSQLOverrides.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\..\Lib\Win32\Debug\PostGISOverrides.lib"
+				ImportLibrary="..\..\..\Lib\Win32\Debug\PostgreSQLOverrides.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -168,7 +168,7 @@
 				ProgramDatabaseFile="$(OutDir)/PostgreSQLOverrides.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\..\Lib\Win64\Debug\PostGISOverrides.lib"
+				ImportLibrary="..\..\..\Lib\Win64\Debug\PostgreSQLOverrides.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -257,7 +257,7 @@
 				ProgramDatabaseFile="$(OutDir)/PostgreSQLOverrides.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\..\Lib\Win32\Release\PostGISOverrides.lib"
+				ImportLibrary="..\..\..\Lib\Win32\Release\PostgreSQLOverrides.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -345,7 +345,7 @@
 				ProgramDatabaseFile="$(OutDir)/PostgreSQLOverrides.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="..\..\..\Lib\Win64\Release\PostGISOverrides.lib"
+				ImportLibrary="..\..\..\Lib\Win64\Release\PostgreSQLOverrides.lib"
 				TargetMachine="17"
 			/>
 			<Tool
