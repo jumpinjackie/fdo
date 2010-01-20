@@ -28,16 +28,16 @@ EXTRA_DIST = \
    PostGis.rc \
    ReadMe.txt
 
-noinst_LTLIBRARIES = libFdoRdbmsPostGis.la
+noinst_LTLIBRARIES = libFdoRdbmsPostgreSQL.la
 
-libFdoRdbmsPostGis_la_SOURCES  = \
+libFdoRdbmsPostgreSQL_la_SOURCES  = \
   PostGis.cpp \
   stdafx.cpp
 
-noinst_HEADERS = $(libFdoRdbmsPostGis_la_SOURCES) \
+noinst_HEADERS = $(libFdoRdbmsPostgreSQL_la_SOURCES) \
   stdafx.h
 
-libFdoRdbmsPostGis_la_LDFLAGS = \
+libFdoRdbmsPostgreSQL_la_LDFLAGS = \
   Fdo/libFdoRdbmsPostGis_Fdo.la \
   SchemaMgr/libFdoRdbmsPostGis_SchemaMgr.la \
   SchemaMgr/Lp/libFdoRdbmsPostGis_SchemaMgr_Lp.la \

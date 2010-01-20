@@ -17,15 +17,65 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC UnitTest
-DIST_SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry ODBCDriver ODBC UnitTest
+SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry PostGis ODBCDriver ODBC UnitTest
+DIST_SUBDIRS = Fdo Gdbi LongTransactionManager LockManager MySQL Rdbi SchemaMgr Util Geometry PostGis ODBCDriver ODBC UnitTest
 
 EXTRA_DIST = 
 
-lib_LTLIBRARIES = libFdoMySQL.la libFdoODBC.la libSchemaMgr_OV.la
+lib_LTLIBRARIES = libFdoPostgreSQL.la libFdoMySQL.la libFdoODBC.la libSchemaMgr_OV.la
 
 libdir = $(prefix)/lib
 
+#PostGIS
+libFdoPostgreSQL_la_SOURCES =
+
+##building libFdoPostgreSQL.so
+# Dummy C++ source to cause C++ linking.
+
+nodist_EXTRA_libFdoPostgreSQL_la_SOURCES = dummy.cpp
+
+libFdoPostgreSQL_la_LIBADD =  \
+  -lxalan-c \
+  -lxalanMsg \
+  -lxerces-c \
+  -lz \
+  -lpq \
+  PostGis/libFdoRdbmsPostgreSQL.la  \
+  Fdo/libFdoRdbms.la   \
+  Rdbi/librdbi.la  \
+  PostGis/Driver/libpostgisdr.la   \
+  Gdbi/libGdbi.la  \
+  LongTransactionManager/libLTManager.la  \
+  LockManager/libLockManager.la  \
+  Util/libutil.la  \
+  Geometry/Fgf/libgeometry_fgf.la  \
+  SchemaMgr/Lp/libSmLpGrd.la  \
+  SchemaMgr/libSmGrd.la   \
+  SchemaMgr/Ov/libSchemaMgr_OV.la  \
+  SchemaMgr/Ph/Cfg/libSmPhCfgGrd.la  \
+  SchemaMgr/Ph/libSmPhGrd.la   \
+  SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
+  $(FDO)/Unmanaged/Src/libFDO.la   \
+  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
+  $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Cfg/libSmPhCfg.la  \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Mt/libSmPhMt.la  \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
+  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la
+
+libFdoPostgreSQL_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION) \
+  -L$(FDOPOSTGRESQL)/lib \
+  -L$(FDOTHIRDPARTY)/pgsql/lib \
+  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
+  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
+
+#MySQL
 libFdoMySQL_la_SOURCES =
 
 ##building libFdoMySQL.so
