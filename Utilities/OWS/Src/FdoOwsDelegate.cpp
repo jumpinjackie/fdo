@@ -48,8 +48,11 @@ void FdoOwsDelegate::SetRequestMetadatas(FdoOwsRequestMetadataCollection* reques
 FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
 {
     bool bGet = true;
+    
+    // We wont modify the URL from the GetCapabilities response directly
     FdoStringP url = m_defaultUrl;
 
+    // If possible, try and resolve the URL address
     if (m_requestMetadatas != NULL)
     {
         if (m_urlResolver == NULL)
@@ -57,6 +60,66 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
         FdoStringP rv = m_urlResolver->GetUrl(bGet, request->GetRequest ());
         if (rv != NULL)
             url = rv;
+    }
+
+    // Only URL encode the parameters for non-GetCapability responses
+    if (NULL == dynamic_cast<FdoOwsGetCapabilities*>(request))
+    {
+        // Extract the URL and additional parameters
+        FdoStringP parameters = url.Right(L"?");
+
+        // URL encode the additiional parameters
+        if (parameters != L"")
+        {
+            // Encoded parameters
+            FdoStringP encodedParams;
+
+            // Extract the url base string
+            FdoStringP urlbase = url.Left(L"?");
+
+            // Extract all the additional parameter components into their respective string values
+            FdoStringsP parameterItems = FdoStringCollection::Create(parameters, FdoOwsGlobals::And);
+            for (FdoInt32 i=0; i<parameterItems->GetCount(); i++)
+            {
+                // Extract eact item
+                FdoStringElementP parameterItem = parameterItems->GetItem(i);
+
+                // Extract the parameter name/value
+                FdoStringP parameterString = parameterItem->GetString();
+                FdoStringP parameterName = parameterString.Left(FdoOwsGlobals::Equal);
+                FdoStringP parameterValue = parameterString.Right(FdoOwsGlobals::Equal);
+
+                // URL encode the additiional parameters
+                if (parameterValue != L"" && 
+                    FdoCommonStringUtil::StringCompareNoCase(parameterName, FdoOwsGlobals::version) != 0 &&
+                    FdoCommonStringUtil::StringCompareNoCase(parameterName, FdoOwsGlobals::SRS) != 0 &&
+                    FdoCommonStringUtil::StringCompareNoCase(parameterName, FdoOwsGlobals::CRS) != 0)
+                {
+                    // Get curl to escape the additional params
+                    char* temp = curl_escape(parameterValue, 0);
+                    if (temp != NULL)
+                    {
+                        parameterValue = temp;
+                        curl_free(temp);
+                    }
+
+                    // Rebuild the parameter item
+                    encodedParams += FdoStringP::Format(L"%ls%ls%ls", (FdoString*)parameterName, FdoOwsGlobals::Equal, (FdoString*)parameterValue);
+                }
+                else
+                {
+                    // Rebuild the parameter item
+                    encodedParams += parameterString;
+                }
+
+                // If we have more parameters to process, add the delimeter
+                if (i != (parameterItems->GetCount()-1))
+                    encodedParams += FdoOwsGlobals::And;
+            }
+
+            // Rebuild the URL
+            url = FdoStringP::Format(L"%ls?%ls", (FdoString*)urlbase, (FdoString*)encodedParams);
+        }
     }
 
     // encode request
@@ -67,7 +130,7 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
         requestString = request->EncodeXml();
 
     // create http handler, which is also a IO stream
-    //Addresses may be input as UTF-8, wide characters depending of local of the sender!
+    // Addresses may be input as UTF-8, wide characters depending of local of the sender!
     const char* mbUrl = url;
     const char* mbRequestString = requestString;
     const char* mbUserName = m_userName;
@@ -78,11 +141,12 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
     // Here we use 2 mins as the default value for "connection" timeout.
     httpHandler->SetConnectionTimeout (60 * 2);
 
-    httpHandler->Perform(); // This call won't return util beginning receiving http content.
-                          // If there are any connection related problems, exceptions
-                          // thrown out here
+    // The Perform call won't return util beginning receiving http content.
+    // If there are any connection related problems, exceptions
+    // thrown out here
+    httpHandler->Perform(); 
 
-    // check whether there is an exception reported from server
+    // Check whether there is an exception reported from server
     FdoOwsMIMEType mimeType = httpHandler->GetMIMEType();
     FdoIoStream* stream = static_cast<FdoIoStream*>(httpHandler.p);
     if (mimeType == FdoOwsMIMEType_text_xml || mimeType == FdoOwsMIMEType_unknown) // there might be exception, we must try
@@ -104,8 +168,6 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
 
     // return Ows response
     return FdoOwsResponse::Create(mimeType, stream); 
-
-
 }
 
 
