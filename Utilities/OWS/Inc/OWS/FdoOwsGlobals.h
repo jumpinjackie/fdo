@@ -52,6 +52,9 @@ namespace FdoOwsGlobals
     static FdoString* Equal                                 = L"=";
     static FdoString* service                               = L"service";
     static FdoString* And                                   = L"&";
+    static FdoString* SRS                                   = L"SRS";
+    static FdoString* CRS                                   = L"CRS";
+
 
     static const size_t MIN_LEN_HTTP_RESPONSE_FIRST_LINE    = 12;
     static const char* HTTP_SLASH                           = "HTTP/";
