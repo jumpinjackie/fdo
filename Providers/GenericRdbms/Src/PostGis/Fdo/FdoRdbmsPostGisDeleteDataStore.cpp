@@ -15,8 +15,8 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 #include "stdafx.h"
-#include "FdoRdbmsPostGisDeleteDataStore.h"
 #include "FdoRdbmsPostGisConnection.h"
+#include "FdoRdbmsPostGisDeleteDataStore.h"
 #include "../../Fdo/Connection/FdoRdbmsConnectionPropertyDictionary.h"
 #include "../../Fdo/DataStore/FdoRdbmsDeleteDataStore.h"
 #include "../../Fdo/FeatureCommands/FdoRdbmsCommand.h"
