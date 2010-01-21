@@ -37,6 +37,7 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testHttpBasicAuthentification);
 #endif
 
+    CPPUNIT_TEST (testURLEcoding);
     CPPUNIT_TEST (testServer2);
     CPPUNIT_TEST (testResample);
     CPPUNIT_TEST (testClip);
@@ -114,8 +115,7 @@ public:
     void testLinuxgurrl ();
 	void testOpenmaps ();
     void testquestionmarkend ();
-
-
+    void testURLEcoding ();
 };
 
 #endif//FDOWMSTESTSELECT_H
