@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##
-## Copyright (C) 2004-2006  Autodesk, Inc.
+## Copyright (C) 2004-2009  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -56,13 +56,11 @@ ARCENABLECHK=no
 RDBMSENABLECHK=no
 GDALENABLECHK=no
 KINGORACLEENABLECHK=no
-KINGSPATIALENABLECHK=no
+SQLITEENABLECHK=no
 POSTGISENABLECHK=no
 OGRENABLECHK=no
 SHOWHELP=no
 
-FDO_SVN_USERNAME=
-FDO_SVN_PASSWORD=
 FDO_SVN_SOURCEDIR=
 
 if test -z "$FDO_SVN_SOURCEDIR"; then
@@ -83,38 +81,20 @@ do
     break
     ;;
   -s | --s | --source)
-     if test -z	 "$1"; then
+     if test -z     "$1"; then
         echo "Source location can not be empty"
-	    exit 1
+        exit 1
      else 
         FDO_SVN_SOURCEDIR="$1"
      fi
      shift
     ;;
   -o | --o | --outpath)
-     if test -z	 "$1"; then
+     if test -z     "$1"; then
         echo "Destination folder can not be empty"
-	    exit 1
-     else 
-        FDO_SVN_DESTDIR="$1"
-     fi
-     shift
-    ;;
-  -u | --u | --user)
-     if test -z	 "$1"; then
-        echo "User id can not be empty"
-	    exit 1
-     else 
-        FDO_SVN_USERNAME="$1"
-     fi
-     shift
-    ;;
-  -p | --p | --password)
-     if test -z	 "$1"; then
-        echo "Password can not be empty"
         exit 1
      else 
-        FDO_SVN_PASSWORD="$1"
+        FDO_SVN_DESTDIR="$1"
      fi
      shift
     ;;
@@ -135,13 +115,13 @@ do
         UTILENABLECHK=no
         GDALENABLECHK=no
         KINGORACLEENABLECHK=no
-        KINGSPATIALENABLECHK=no
+        SQLITEENABLECHK=no
         POSTGISENABLECHK=no
         OGRENABLECHK=no
      fi
      if test -z "$1"; then
         echo "Invalid parameter"
-	    exit 1
+        exit 1
      elif test "$1" == providers; then
         FDOPROVIDERSENABLECHK=yes
      elif test "$1" == all; then
@@ -159,8 +139,8 @@ do
         RDBMSENABLECHK=no
         GDALENABLECHK=no
         KINGORACLEENABLECHK=no
-        KINGSPATIALENABLECHK=no
-	POSTGISENABLECHK=no
+        SQLITEENABLECHK=no
+        POSTGISENABLECHK=no
         OGRENABLECHK=no
      elif test "$1" == fdocore; then
         FDOCOREENABLECHK=yes
@@ -189,15 +169,15 @@ do
         GDALENABLECHK=yes
      elif test "$1" == kingoracle; then
         KINGORACLEENABLECHK=yes
-     elif test "$1" == kingspatial; then
-        KINGSPATIALENABLECHK=yes
+     elif test "$1" == sqlite; then
+        SQLITEENABLECHK=yes
      elif test "$1" == postgis; then
         POSTGISENABLECHK=yes
      elif test "$1" == ogr; then
         OGRENABLECHK=yes
      else
         echo "Invalid parameter"
-	exit 1
+    exit 1
      fi
      shift
     ;;
@@ -217,12 +197,6 @@ do
   esac
 done
 
-if test "$FDO_SVN_USERNAME" == ""; then 
-    SHOWHELP=yes 
-fi
-if test "$FDO_SVN_PASSWORD" == ""; then 
-    SHOWHELP=yes 
-fi
 if test "$FDO_SVN_SOURCEDIR" == ""; then 
     SHOWHELP=yes 
 fi
@@ -233,8 +207,6 @@ if test "$SHOWHELP" == yes; then
    echo "               [--o OutFolder]"
    echo "               [--w WithModule]"
    echo "               --s Source"
-   echo "               --u UserId"
-   echo "               --p UserPassword"
    echo " "
    echo "Help:           --h[elp]"
    echo "Source:         --s[ource]=location of source file, either"
@@ -254,11 +226,9 @@ if test "$SHOWHELP" == yes; then
    echo "                         rdbms"
    echo "                         gdal"
    echo "                         kingoracle"
-   echo "                         kingspatial"
+   echo "                         sqlite"
    echo "                         postgis"
    echo "                         ogr"
-   echo "User:           --u[ser]=user id"
-   echo "Password:       --p[assword]=user password"
    echo "**********************************************************"
    exit 0
 fi
@@ -270,90 +240,90 @@ fi
 # Check out All source files
 if test "$FDOALLENABLECHK" == "yes"; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR "$FDO_SVN_DESTDIR" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR "$FDO_SVN_DESTDIR"
 fi
 # Check out All Provider source files
 if test "$FDOPROVIDERSENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers "$FDO_SVN_DESTDIR/Providers" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers "$FDO_SVN_DESTDIR/Providers"
 fi
 # Check out fdocore source files: FDO, Thirdparty, Utilities
 if test "$FDOCOREENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo "$FDO_SVN_DESTDIR/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo "$FDO_SVN_DESTDIR/Fdo"
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty "$FDO_SVN_DESTDIR/Thirdparty" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty "$FDO_SVN_DESTDIR/Thirdparty"
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities "$FDO_SVN_DESTDIR/Utilities" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities "$FDO_SVN_DESTDIR/Utilities"
 fi
 # Check out Fdo source files
 if test "$FDOCOREENABLECHK" == no && test "$FDOENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo "$FDO_SVN_DESTDIR/Fdo" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Fdo "$FDO_SVN_DESTDIR/Fdo"
 fi
 # Check out Thirdparty source files
 if test "$FDOCOREENABLECHK" == no && test "$THRPENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty "$FDO_SVN_DESTDIR/Thirdparty" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Thirdparty "$FDO_SVN_DESTDIR/Thirdparty"
 fi
 # Check out Utility source files
 if test "$FDOCOREENABLECHK" == no && test "$UTILENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities "$FDO_SVN_DESTDIR/Utilities" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Utilities "$FDO_SVN_DESTDIR/Utilities"
 fi
 # Check out SHP Provider source files
 if test "$SHPENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SHP"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SHP "$FDO_SVN_DESTDIR/Providers/SHP" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SHP "$FDO_SVN_DESTDIR/Providers/SHP"
 fi
 # Check out SDF Provider source files
 if test "$SDFENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SDF"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SDF "$FDO_SVN_DESTDIR/Providers/SDF" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SDF "$FDO_SVN_DESTDIR/Providers/SDF"
 fi
 # Check out WFS Provider source files
 if test "$WFSENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WFS"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WFS "$FDO_SVN_DESTDIR/Providers/WFS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WFS "$FDO_SVN_DESTDIR/Providers/WFS"
 fi
 # Check out WMS Provider source files
 if test "$WMSENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WMS"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WMS "$FDO_SVN_DESTDIR/Providers/WMS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/WMS "$FDO_SVN_DESTDIR/Providers/WMS"
 fi
 # Check out ArcSDE Provider source files
 if test "$ARCENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/ArcSDE"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/ArcSDE "$FDO_SVN_DESTDIR/Providers/ArcSDE" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/ArcSDE "$FDO_SVN_DESTDIR/Providers/ArcSDE"
 fi
 # Check out GenericRDBMS Providers source files
 if test "$RDBMSENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms "$FDO_SVN_DESTDIR/Providers/GenericRdbms" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GenericRdbms "$FDO_SVN_DESTDIR/Providers/GenericRdbms"
 fi
 # Check out GDAL Provider source files
 if test "$GDALENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GDAL"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GDAL "$FDO_SVN_DESTDIR/Providers/GDAL" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/GDAL "$FDO_SVN_DESTDIR/Providers/GDAL"
 fi
 # Check out King Oracle Provider source files
 if test "$KINGORACLEENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle "$FDO_SVN_DESTDIR/Providers/KingOracle" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingOracle "$FDO_SVN_DESTDIR/Providers/KingOracle"
 fi
-# Check out King MsSpatial  Provider source files
-if test "$KINGSPATIALENABLECHK" == yes; then
-   echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingMsSqlSpatial"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/KingMsSqlSpatial "$FDO_SVN_DESTDIR/Providers/KingMsSqlSpatial" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+# Check out SQLite Provider source files
+if test "$SQLITEENABLECHK" == yes; then
+   echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SQLite"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SQLite "$FDO_SVN_DESTDIR/Providers/SQLite"
 fi
 # Check out PostGIS  Provider source files
 if test "$POSTGISENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS "$FDO_SVN_DESTDIR/Providers/PostGIS" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS "$FDO_SVN_DESTDIR/Providers/PostGIS"
 fi
 # Check out OGR Provider source files
 if test "$OGRENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/OGR"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/OGR "$FDO_SVN_DESTDIR/Providers/OGR" --username "$FDO_SVN_USERNAME" --password "$FDO_SVN_PASSWORD"
+   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/OGR "$FDO_SVN_DESTDIR/Providers/OGR"
 fi
 exit 0
