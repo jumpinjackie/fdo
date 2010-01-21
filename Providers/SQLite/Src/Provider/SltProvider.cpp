@@ -1104,7 +1104,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         if (geomPropName != NULL && wcscmp(geomPropName, propName) == 0)
             geomPropIsUpdated = true;
 
-        sb.Append(propName);
+        sb.AppendDQuoted(propName);
         sb.Append("=?", 2);
     }
 
