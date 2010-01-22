@@ -1843,7 +1843,9 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       }
 
       // Now set extents for spatial context
-      double minx,miny,maxx,maxy;
+      double minx=D_SPATIALCONTEXT_DEFAULT_MINX,miny=D_SPATIALCONTEXT_DEFAULT_MINY;
+      double maxx=D_SPATIALCONTEXT_DEFAULT_MAXX,maxy=D_SPATIALCONTEXT_DEFAULT_MAXY;
+      
       bool isminmax = false;
       
 
