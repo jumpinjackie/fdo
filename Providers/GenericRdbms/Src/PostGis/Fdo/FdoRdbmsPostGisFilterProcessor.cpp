@@ -151,6 +151,14 @@ FdoStringP FdoRdbmsPostGisFilterProcessor::GetGeometryColumnNameForProperty(
 	return retVal;
 }
 
+void FdoRdbmsPostGisFilterProcessor::ProcessBooleanValue(FdoBooleanValue& expr)
+{
+    if( expr.GetBoolean() )
+        AppendString( L"TRUE" );   // Database bool true
+    else
+        AppendString( L"FALSE" );  // Database bool false
+}
+
 void FdoRdbmsPostGisFilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& filter)
 {
     ProcessSpatialDistanceCondition( &filter, false);
@@ -281,7 +289,7 @@ void FdoRdbmsPostGisFilterProcessor::BuildSpatialFilter( FdoStringP columnName, 
 
     if (FdoSpatialOperations_EnvelopeIntersects == spatialFilter->GetOperation())
     { 
-        buf = buf + L"\"" + columnName + L"\"";
+        buf = buf + L" "+ columnName;
         buf += SPATIAL_BBOX_INTERSECT;
         buf += geomFromText;
     }
@@ -295,7 +303,7 @@ void FdoRdbmsPostGisFilterProcessor::BuildSpatialFilter( FdoStringP columnName, 
 
         if (FdoSpatialOperations_Disjoint != spatialFilter->GetOperation())
         {
-            buf = buf + L"\"" + columnName + L"\"";
+            buf = buf + L" " + columnName;
             buf += SPATIAL_BBOX_INTERSECT;
             buf += geomFromText;
             buf += LOGICAL_AND;
@@ -332,7 +340,7 @@ void FdoRdbmsPostGisFilterProcessor::BuildSpatialFilter( FdoStringP columnName, 
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
         }
 
-        buf += spatialPred + L"(\"" + columnName + L"\"," + geomFromText + L")";
+        buf += spatialPred + L"(" + columnName + L"," + geomFromText + L")";
     }
 
     buf += CLOSE_PARENTH;
