@@ -298,7 +298,7 @@ int c_SdeGeom2AGF::ToAGF()
 
     default:
     {
-      FdoStringP err = FdoStringP::Format(L"Unsupported Geomtry Type (%d)",m_GeometryType);
+      FdoStringP err = FdoStringP::Format(L"Unsupported Geometry Type (%d)",m_GeometryType);
       throw FdoException::Create( err );      
     }
     break;
@@ -324,7 +324,7 @@ void c_SdeGeom2AGF::AGF_WriteLineString()
   
 
 
-  int numpoints = part->m_NumberOfIntegers / 2;
+  int numpoints = part->m_NumberOfPoints;
   
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(part);
@@ -340,7 +340,7 @@ void c_SdeGeom2AGF::AGF_WriteLineString(int PartIndex)
   t_SdeFeaturePart* part = GetPart(PartIndex);
 
 
-  int numpoints = part->m_NumberOfIntegers / 2;
+  int numpoints = part->m_NumberOfPoints;
   
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(part);
@@ -363,7 +363,7 @@ void c_SdeGeom2AGF::AGF_WritePolygon()
   AGF_WriteInt(1); // number of rings is 1
 
 
-  int numpoints = part->m_NumberOfIntegers / 2;
+  int numpoints = part->m_NumberOfPoints;
   
   AGF_WriteInt(numpoints);
   AGF_WritePointsFromIntegers(part);
@@ -410,9 +410,9 @@ int c_SdeGeom2AGF::AGF_WriteMultiPolygon()
 void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
 {
 
-  int* Integers = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
-  int NumIntegers = Part->m_NumberOfIntegers;
-  int numpoints = NumIntegers / 2;
+  t_SdeIntOffset* Offsets = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
+  int numpoints = Part->m_NumberOfPoints;
+  
   
 
   int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
@@ -446,8 +446,8 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
     {              
       for(int ind=0;ind<numpoints;ind++)
       {
-        x = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lastx;
-        y = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lasty;
+        x = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
         lasty = y;
 
@@ -472,11 +472,11 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
         laste1 = m_SridDesc->m_SDE_FalseM;
         rel_e1 = m_SridDesc->m_SDE_MUnit;
       }
-      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      t_SdeIntOffset* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
       for(int ind=0;ind<numpoints;ind++)
       {
-        x = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lastx;
-        y = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lasty;
+        x = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
         lasty = y;
 
@@ -507,12 +507,12 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
       laste2 = m_SridDesc->m_SDE_FalseM;
       rel_e2 = m_SridDesc->m_SDE_MUnit;
       
-      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
-      int* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
+      t_SdeIntOffset* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      t_SdeIntOffset* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
       for(int ind=0;ind<numpoints;ind++)
       {
-        x = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lastx;
-        y = (double)(*Integers++) / m_SridDesc->m_SDE_XYUnit + lasty;
+        x = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lastx;
+        y = (double)(*Offsets++) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
         lasty = y;
 
@@ -551,10 +551,10 @@ void c_SdeGeom2AGF::AGF_WritePointsFromIntegers(t_SdeFeaturePart* Part)
 int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int IntegersStartIndex,int NumIntegers)
 {
   int rings_counter = 0;
-  int numpoints = Part->m_NumberOfIntegers / 2;
+  int numpoints = Part->m_NumberOfPoints;
   
-  int* Integers = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
-  int NumIntegers = Part->m_NumberOfIntegers;
+  double* Offsets = &m_UnpackedIntegers[Part->m_IndexOfIntegers];
+  
 
   int bfs = m_PointSize * numpoints * sizeof(double); // size is in int
   if( (m_BuffLen+bfs) > ( m_BuffSize-D_BUFF_SIZE_RESERVE) )
@@ -575,7 +575,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
 
   double *fgf_points;      
   fgf_points = (double *)m_BuffCurr;
-  int ix,iy;
+  t_SdeIntOffset ix,iy;
   double x,y,e1,e2;
   double laste1,laste2,rel_e1,rel_e2;
   double lastx = m_SridDesc->m_SDE_FalseX ;
@@ -587,12 +587,12 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
     case 2:
     { 
       int ring_pt_cnt=0; // counter of points in ring
-      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      t_SdeIntOffset suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
       int ptr_num_ringppoints_buffpos=m_BuffLen;
       for(int ind=0;ind<numpoints;ind++)
       {
       
-        ix=*Integers++;iy=*Integers++;
+        ix=*Offsets++;iy=*Offsets++;
         x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
         y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
@@ -639,6 +639,9 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
       {
         // this shouldn't happened if rings are correct - each ring should be closed
         // and ring_pt_cnt should be set to 0 in previous loop
+        
+        // now I can throw exception about unclosed ring or update number of points in unclosed ring - choosed second one
+        AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
       }
     }
     break;
@@ -646,7 +649,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
   case 3:
     {
       int ring_pt_cnt=0; // counter of points in ring
-      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      t_SdeIntOffset suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
       int ptr_num_ringppoints_buffpos=m_BuffLen;
       if( m_CoordDim & CoordDim_Z )
       {
@@ -658,10 +661,10 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
         laste1 = m_SridDesc->m_SDE_FalseM;
         rel_e1 = m_SridDesc->m_SDE_MUnit;
       }
-      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      t_SdeIntOffset* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
       for(int ind=0;ind<numpoints;ind++)
       {
-        ix=*Integers++;iy=*Integers++;
+        ix=*Offsets++;iy=*Offsets++;
         x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
         y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
@@ -701,6 +704,15 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
             ring_pt_cnt=0;
           }          
         }
+        
+        if( ring_pt_cnt != 0 )
+        {
+          // this shouldn't happened if rings are correct - each ring should be closed
+          // and ring_pt_cnt should be set to 0 in previous loop
+          
+          // now I can throw exception about unclosed ring or update number of points in unclosed ring - choosed second one
+          AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
+        }
 
         //*fgf_points++ = x; 
         //*fgf_points++ = y;
@@ -711,7 +723,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
 
         //*fgf_points++ = e1;
       }
-
+      //AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
 
       //m_BuffLen += numpoints*3*sizeof(double);
 
@@ -721,7 +733,7 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
   case 4:
     {
       int ring_pt_cnt=0; // counter of points in ring
-      int suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
+      t_SdeIntOffset suma_ring_int_x =0,suma_ring_int_y=0; // sum of integers of ring without first point             
       int ptr_num_ringppoints_buffpos=m_BuffLen;
       
       laste1 = m_SridDesc->m_SDE_FalseZ;
@@ -730,11 +742,11 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
       laste2 = m_SridDesc->m_SDE_FalseM;
       rel_e2 = m_SridDesc->m_SDE_MUnit;
 
-      int* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
-      int* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
+      t_SdeIntOffset* e1_integers = Part->m_ZIntegers; // &Integers[numpoints*2];
+      t_SdeIntOffset* e2_integers = Part->m_MIntegers; // &Integers[numpoints*3];
       for(int ind=0;ind<numpoints;ind++)
       {
-        ix=*Integers++;iy=*Integers++;
+        ix=*Offsets++;iy=*Offsets++;
         x = (double)(ix) / m_SridDesc->m_SDE_XYUnit + lastx;
         y = (double)(iy) / m_SridDesc->m_SDE_XYUnit + lasty;
         lastx = x;
@@ -789,6 +801,14 @@ int c_SdeGeom2AGF::AGF_WriteRingsFromIntegers(t_SdeFeaturePart* Part) //int Inte
           }          
         }
 
+      }
+      if( ring_pt_cnt != 0 )
+      {
+        // this shouldn't happened if rings are correct - each ring should be closed
+        // and ring_pt_cnt should be set to 0 in previous loop
+        
+        // now I can throw exception about unclosed ring or update number of points in unclosed ring - choosed second one
+        AGF_UpdateInt(ptr_num_ringppoints_buffpos,ring_pt_cnt);
       }
 
       //m_BuffLen += numpoints*4*sizeof(double);
@@ -849,28 +869,35 @@ void c_SdeGeom2AGF::UnpackParts()
     if( m_UnpackedIntegers ) delete []m_UnpackedIntegers; 
     m_AllocatedUnpackedIntegers=numof_integers + 500; 
 
-    m_UnpackedIntegers = new int[m_AllocatedUnpackedIntegers];
+    m_UnpackedIntegers = new t_SdeIntOffset[m_AllocatedUnpackedIntegers];
   }
   
 // unpack integers
-  int val,sign,shift,b;
-  int *unpacked_ptr = m_UnpackedIntegers;
+  double val,b; // offset is 64 bit integer 
+  double shift;
+  int sign;
+  t_SdeIntOffset *unpacked_ptr = m_UnpackedIntegers;
   m_CountUnpackedIntegers=0;
   const unsigned char *bytes = &m_SdeGeom[8];
   int bytecount = m_CoordStreamLen;
+  
+  //long long g;
+  
+  //int s1 = sizeof(g);
+  //int s2 = sizeof(val);
   
   while( (bytecount>0) && (m_CountUnpackedIntegers<numof_integers)  )
   {
     val = *bytes & 0x3f;
     sign = *bytes & 0x40 ? -1 : 1;
-    shift = 6;
+    shift = 64; // << 6
     while( *bytes & 0x80 )
     {
       bytes++;bytecount--;
       b = *bytes & 0x7f;  
-      val = b << shift | val;
+      val = b * shift + val;
       
-      shift += 7;
+      shift = shift * 128; // <<7;
     }
     val = val * sign;
     
@@ -880,42 +907,85 @@ void c_SdeGeom2AGF::UnpackParts()
     bytes++;bytecount--;
   }
   
+  
+  bool is_zoff=false;
+  bool is_moff=false;
+  
+  if(m_CountUnpackedIntegers >= m_NumOfPts*3 ) is_zoff=true; // check if there are really 3 coordinate values ( regardless of dimensionality flags)
+  
+  if(m_CountUnpackedIntegers >= m_NumOfPts*4 ) is_moff=true;
+  
+  
   // now go trough integers and look for part separators
   // part separators are x=-1 y=0
   t_SdeFeaturePart* part = AddPart();  
   part->m_IndexOfIntegers = 0;
-  part->m_ZIntegers = part->m_MIntegers = NULL;
+  
+  t_SdeIntOffset* zptr = is_zoff ?  &m_UnpackedIntegers[m_NumOfPts*2] : NULL;
+  t_SdeIntOffset* mptr = is_moff ?  &m_UnpackedIntegers[m_NumOfPts*3] : NULL;
+  part->m_ZIntegers = zptr;
+  part->m_MIntegers = mptr;
   
   int part_z_integers=0;
   int part_m_integers=part_z_integers+m_NumOfPts; //
-  int int_count=0,x,y,part_start_ind=0,sumx=0,sumy=0;
-  int* int_ptr = m_UnpackedIntegers;
+  int int_count=0;
+  t_SdeIntOffset x,y,sumx=0,sumy=0;
+  t_SdeIntOffset* int_ptr = m_UnpackedIntegers;
   int xy_count = m_NumOfPts*2; // count of xy pairs
   if( m_CountUnpackedIntegers < xy_count ) xy_count = m_CountUnpackedIntegers;
+  
+  int point_index=0;
+  int part_point_count=0;
   while( int_count < xy_count )
   {
-    x = *int_ptr;
+    x = *int_ptr++;
     sumx += x;
-    y = *(int_ptr+1);
+    y = *int_ptr++;
     sumy += y;
     if( sumx==-1 )
     {
       
       if( sumy == 0 )
       {
-        part->m_NumberOfIntegers = int_count - part_start_ind;
+        part->m_NumberOfPoints = part_point_count;
         part = AddPart();
+        part_point_count=0;
         part->m_IndexOfIntegers = int_count + 2; // skip separator
-        part_start_ind = int_count + 2; // skip separator
+        //part_start_ind = int_count + 2; // skip separator
+        
+        // now calculate where z,m values starts for that part
+        // skip one z,m because z,m are undefined for x,y which are used as separator
+        
+        part->m_ZIntegers = is_zoff ?  &m_UnpackedIntegers[m_NumOfPts*2 + point_index + 1] : NULL;
+        part->m_MIntegers = is_moff ?  &m_UnpackedIntegers[m_NumOfPts*3 + point_index + 1] : NULL;
       }
     }
     
-    int_ptr += 2; 
-    int_count+=2;
+    
+    part_point_count++;
+    point_index++;
+    
+    int_count += 2;
+    
     
   }
+  part->m_NumberOfPoints = part_point_count;
   
-  part->m_NumberOfIntegers = int_count - part_start_ind;
+  
+  #ifdef _DEBUG
+  double z;
+  int zvalues_count=0;
+  while( int_count < m_CountUnpackedIntegers )
+  {
+    z = *int_ptr;
+    
+    zvalues_count++;
+    int_count++;
+    int_ptr++;
+  }
+  #endif
+  
+  
  
 }
 

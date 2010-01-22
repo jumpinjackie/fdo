@@ -3,14 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KingOracleProvider", "Provider\KingOracleProvider.vcproj", "{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}"
 	ProjectSection(ProjectDependencies) = postProject
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 		{655D105C-2C30-484D-80F8-556772000572} = {655D105C-2C30-484D-80F8-556772000572}
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE} = {5B5F49A3-7760-4171-9F3C-47BB775EC4FE}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KingOracleOverrides", "Overrides\KingOracleOverrides.vcproj", "{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}"
 	ProjectSection(ProjectDependencies) = postProject
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
 		{655D105C-2C30-484D-80F8-556772000572} = {655D105C-2C30-484D-80F8-556772000572}
 	EndProjectSection
 EndProject
@@ -21,7 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CopyDebug.bat = CopyDebug.bat
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcproj", "{07E40766-1E29-499A-A333-76435DA1E7C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278} = {A8CAD4E4-5C05-4D3F-B8CC-96D862110278}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +30,8 @@ Global
 		Debug_FDO_3_4|x64 = Debug_FDO_3_4|x64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		InsClient_Rel_Fdo_3_3_1|Win32 = InsClient_Rel_Fdo_3_3_1|Win32
+		InsClient_Rel_Fdo_3_3_1|x64 = InsClient_Rel_Fdo_3_3_1|x64
 		Release_FDO_3_4|Win32 = Release_FDO_3_4|Win32
 		Release_FDO_3_4|x64 = Release_FDO_3_4|x64
 		Release|Win32 = Release|Win32
@@ -43,6 +46,9 @@ Global
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Debug|Win32.Build.0 = Debug|Win32
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Debug|x64.ActiveCfg = Debug|x64
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Debug|x64.Build.0 = Debug|x64
+		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.InsClient_Rel_Fdo_3_3_1|Win32.ActiveCfg = Release_FDO_3_4|x64
+		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.InsClient_Rel_Fdo_3_3_1|x64.ActiveCfg = Release_FDO_3_4|x64
+		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.InsClient_Rel_Fdo_3_3_1|x64.Build.0 = Release_FDO_3_4|x64
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Release_FDO_3_4|Win32.ActiveCfg = Release_FDO_3_4|Win32
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Release_FDO_3_4|Win32.Build.0 = Release_FDO_3_4|Win32
 		{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}.Release_FDO_3_4|x64.ActiveCfg = Release_FDO_3_4|x64
@@ -59,6 +65,9 @@ Global
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Debug|Win32.Build.0 = Debug|Win32
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Debug|x64.ActiveCfg = Debug|x64
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Debug|x64.Build.0 = Debug|x64
+		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.InsClient_Rel_Fdo_3_3_1|Win32.ActiveCfg = Release_FDO_3_4|x64
+		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.InsClient_Rel_Fdo_3_3_1|x64.ActiveCfg = Release_FDO_3_4|x64
+		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.InsClient_Rel_Fdo_3_3_1|x64.Build.0 = Release_FDO_3_4|x64
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Release_FDO_3_4|Win32.ActiveCfg = Release_FDO_3_4|Win32
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Release_FDO_3_4|Win32.Build.0 = Release_FDO_3_4|Win32
 		{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}.Release_FDO_3_4|x64.ActiveCfg = Release_FDO_3_4|x64
@@ -75,6 +84,9 @@ Global
 		{655D105C-2C30-484D-80F8-556772000572}.Debug|Win32.Build.0 = Debug|Win32
 		{655D105C-2C30-484D-80F8-556772000572}.Debug|x64.ActiveCfg = Debug|x64
 		{655D105C-2C30-484D-80F8-556772000572}.Debug|x64.Build.0 = Debug|x64
+		{655D105C-2C30-484D-80F8-556772000572}.InsClient_Rel_Fdo_3_3_1|Win32.ActiveCfg = Release_FDO_3_4|x64
+		{655D105C-2C30-484D-80F8-556772000572}.InsClient_Rel_Fdo_3_3_1|x64.ActiveCfg = Release_FDO_3_4|x64
+		{655D105C-2C30-484D-80F8-556772000572}.InsClient_Rel_Fdo_3_3_1|x64.Build.0 = Release_FDO_3_4|x64
 		{655D105C-2C30-484D-80F8-556772000572}.Release_FDO_3_4|Win32.ActiveCfg = Release_FDO_3_4|Win32
 		{655D105C-2C30-484D-80F8-556772000572}.Release_FDO_3_4|Win32.Build.0 = Release_FDO_3_4|Win32
 		{655D105C-2C30-484D-80F8-556772000572}.Release_FDO_3_4|x64.ActiveCfg = Release_FDO_3_4|x64
@@ -83,22 +95,21 @@ Global
 		{655D105C-2C30-484D-80F8-556772000572}.Release|Win32.Build.0 = Release|Win32
 		{655D105C-2C30-484D-80F8-556772000572}.Release|x64.ActiveCfg = Release|x64
 		{655D105C-2C30-484D-80F8-556772000572}.Release|x64.Build.0 = Release|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug_FDO_3_4|Win32.ActiveCfg = Debug|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug_FDO_3_4|Win32.Build.0 = Debug|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug_FDO_3_4|x64.ActiveCfg = Debug|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug_FDO_3_4|x64.Build.0 = Debug|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|Win32.Build.0 = Debug|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|x64.ActiveCfg = Debug|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Debug|x64.Build.0 = Debug|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release_FDO_3_4|Win32.ActiveCfg = Release|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release_FDO_3_4|Win32.Build.0 = Release|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release_FDO_3_4|x64.ActiveCfg = Release|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release_FDO_3_4|x64.Build.0 = Release|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|Win32.ActiveCfg = Release|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|Win32.Build.0 = Release|Win32
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.ActiveCfg = Release|x64
-		{9037A345-04EB-418C-98D0-3D5B19FC9D55}.Release|x64.Build.0 = Release|x64
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug_FDO_3_4|Win32.ActiveCfg = Debug_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug_FDO_3_4|Win32.Build.0 = Debug_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug_FDO_3_4|x64.ActiveCfg = Debug_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug|Win32.Build.0 = Debug|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Debug|x64.ActiveCfg = Debug|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.InsClient_Rel_Fdo_3_3_1|Win32.ActiveCfg = InsClient_Rel_Fdo_3_3_1|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.InsClient_Rel_Fdo_3_3_1|Win32.Build.0 = InsClient_Rel_Fdo_3_3_1|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.InsClient_Rel_Fdo_3_3_1|x64.ActiveCfg = InsClient_Rel_Fdo_3_3_1|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release_FDO_3_4|Win32.ActiveCfg = Release_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release_FDO_3_4|Win32.Build.0 = Release_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release_FDO_3_4|x64.ActiveCfg = Release_FDO_3_4|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release|Win32.ActiveCfg = Release|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release|Win32.Build.0 = Release|Win32
+		{07E40766-1E29-499A-A333-76435DA1E7C0}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

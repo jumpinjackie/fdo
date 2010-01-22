@@ -23,12 +23,14 @@
 #include "c_OCI_API.h"
 
 
+typedef double t_SdeIntOffset;
+
 typedef struct t_SdeFeaturePart
 {
-int m_NumberOfIntegers;
+int m_NumberOfPoints; 
 int m_IndexOfIntegers;
-int* m_ZIntegers; // points to start of Z integer values of part if exists
-int* m_MIntegers; // points to start of M integer values of part if exists
+t_SdeIntOffset* m_ZIntegers; // points to start of Z integer values of part if exists
+t_SdeIntOffset* m_MIntegers; // points to start of M integer values of part if exists
 }t_SdeFeaturePart;
   
   
@@ -108,7 +110,7 @@ protected:
   unsigned int m_BuffLen;
   
 protected:  
-  int* m_UnpackedIntegers; // size of this allocation has to be at least m_NumOfPts * m_PointInSize
+  t_SdeIntOffset* m_UnpackedIntegers; // size of this allocation has to be at least m_NumOfPts * m_PointInSize
   int m_CountUnpackedIntegers; // number of unpacked integers - this is not always equal m_NumOfPts * m_PointInSize 
                                // - it looks like sometimes Z or M integers are missing (perhaps case when they are zeros?)
   int m_AllocatedUnpackedIntegers; 
