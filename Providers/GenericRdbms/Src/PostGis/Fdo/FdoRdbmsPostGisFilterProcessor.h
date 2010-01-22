@@ -125,6 +125,8 @@ public:
 
 protected:
 
+    virtual void ProcessBooleanValue(FdoBooleanValue& expr);
+
     /// Processes distance condition passed in.
     /// This function processese distance condition to emit spatial
     /// query string for direct consumption by PostGIS-SDO.
