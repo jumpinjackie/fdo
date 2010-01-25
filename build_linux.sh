@@ -287,6 +287,10 @@ if test "$TYPECONFIGURE" == configure ; then
       automake --add-missing --copy
       autoconf
 
+      if test "$HOSTTYPE" == "i686" ; then
+         export CPPFLAGS="-march=i686" 
+      fi
+
       if test "$TYPEBUILD" == release; then
          ./configure --prefix="$PREFIXVAL"
       else
