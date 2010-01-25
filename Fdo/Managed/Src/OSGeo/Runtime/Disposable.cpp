@@ -53,8 +53,11 @@ NAMESPACE_OSGEO_RUNTIME::Disposable::Disposable(System::IntPtr unmanagedPointer,
 	
     if (unmanagedPointer == IntPtr::Zero)
 		return;
+
     m_imp = unmanagedPointer;
     m_bAutoDelete = (autoDelete ? 1 : 0);
+
+    GetImpObj()->EnableObjectThreadLocking(true);
 }
 
 NAMESPACE_OSGEO_RUNTIME::Disposable::!Disposable()
@@ -93,6 +96,8 @@ System::Void NAMESPACE_OSGEO_RUNTIME::Disposable::Attach(System::IntPtr unmanage
 	
     m_imp = unmanagedPointer;
 	m_bAutoDelete = autoDelete;
+
+    GetImpObj()->EnableObjectThreadLocking(true);
 }
 
 System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::Equals(System::Object^ obj)

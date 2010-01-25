@@ -416,6 +416,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Common\IDisposable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Src\Common\Semaphore.cpp"
 				>
 			</File>
