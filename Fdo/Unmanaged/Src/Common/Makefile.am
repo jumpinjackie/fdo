@@ -32,6 +32,7 @@ libFDOCommon_la_SOURCES = \
   Context.cpp \
   DictionaryElement.cpp \
   Exception.cpp  \
+  IDisposable.cpp \
   Semaphore.cpp  \
   StringP.cpp  \
   StringCollection.cpp  \
