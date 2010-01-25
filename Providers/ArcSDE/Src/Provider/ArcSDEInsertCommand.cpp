@@ -64,7 +64,7 @@ void ArcSDEInsertCommand::insertOneRow (SE_STREAM &stream, CHAR* table_name, Fdo
 
     // Set all given property values on the stream;
     // NOTE: some properties may be missing (e.g. for read-only or nullable properties):
-    assignValues (mConnection, stream, table_name, properties, values, true, uuidColumns, uuid_list, classDef->GetName());
+    assignValues (mConnection, stream, table_name, properties, values, true, uuidColumns, uuid_list, classDef->GetName(), idCollection);
 
     // Perform the actual insert:
     result = SE_stream_execute (stream);
@@ -96,7 +96,7 @@ void ArcSDEInsertCommand::insertOneRow (SE_STREAM &stream, CHAR* table_name, Fdo
             outputValue->SetValue(inputValueExpr->ToString());
         }
 
-        idCollection->Add (outputValue);
+        idCollection->Insert(0, outputValue);
     }
 }
 
