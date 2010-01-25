@@ -615,7 +615,7 @@ FdoDataValue* SltMetadata::GenerateConstraintValue(FdoDataType type, FdoString* 
         if (value == NULL || *value == '\0')
             retVal = NULL;
         else
-            retVal = FdoDateTimeValue::Create(DateFromString(value));
+            retVal = FdoDateTimeValue::Create(DateFromString(value, false));
         break;
     }
     return FDO_SAFE_ADDREF(retVal.p);
