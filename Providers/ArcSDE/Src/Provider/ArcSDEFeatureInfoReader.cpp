@@ -127,14 +127,13 @@ bool ArcSDEFeatureInfoReader::IsNull (const wchar_t* name)
     Validate();
 
     // make sure the given name is a valid property name:
-    FdoPtr<FdoPropertyValue> property = mFeatInfoCollection->GetItem (m_iRowIndex);
-    FdoPtr<FdoIdentifier> id = property->GetName();
-    if (0!=wcscmp(id->GetText(), name))
+    FdoPtr<FdoPropertyValue> propVal = mFeatInfoCollection->FindItem (name);
+    if (propVal == NULL)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_PROPERTY_NOT_FOUND, "The property '%1$ls' was not found.", name));
 
     // Determine whether or not this value is null:
-    FdoPtr<FdoValueExpression> valueExpr = property->GetValue();
-    FdoDataValue *dataValue = dynamic_cast<FdoDataValue*>(valueExpr.p);
+    FdoPtr<FdoValueExpression> valueExpr = propVal->GetValue();
+    FdoDataValue *dataValue = static_cast<FdoDataValue*>(valueExpr.p);
     if (NULL != dataValue)
         return dataValue->IsNull();
     else
@@ -163,7 +162,8 @@ bool ArcSDEFeatureInfoReader::ReadNext ()
 
     m_iRowIndex++;
 
-    return ((mFeatInfoCollection != NULL) && (m_iRowIndex < mFeatInfoCollection->GetCount()));
+    // only one row can be returned
+    return ((mFeatInfoCollection != NULL) && m_iRowIndex == 0);
 }
 
 void ArcSDEFeatureInfoReader::Close ()
@@ -182,7 +182,7 @@ void ArcSDEFeatureInfoReader::Validate()
     if (m_iRowIndex == -1)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_READER_NOT_READY, "Must %1$ls prior to accessing reader.", L"ReadNext"));
 
-    if ((mFeatInfoCollection==NULL) || (m_iRowIndex >= mFeatInfoCollection->GetCount()))
+    if ((mFeatInfoCollection==NULL) || (m_iRowIndex != 0))
         throw FdoException::Create(NlsMsgGet(ARCSDE_READER_EXHAUSTED, "Reader is exhausted."));
 
     if (mClosed)
@@ -195,13 +195,12 @@ T* ArcSDEFeatureInfoReader::GetValue(FdoString* name, FdoString* typeName)
 {
     Validate();
 
-    FdoPtr<FdoPropertyValue> property = mFeatInfoCollection->GetItem (m_iRowIndex);
-    FdoPtr<FdoIdentifier> id = property->GetName();
-    if (0!=wcscmp(id->GetText(), name))
+    FdoPtr<FdoPropertyValue> propVal = mFeatInfoCollection->FindItem (name);
+    if (propVal == NULL)
         throw FdoException::Create (NlsMsgGet1(ARCSDE_PROPERTY_NOT_FOUND, "The property '%1$ls' was not found.", name));
 
-    FdoPtr<FdoValueExpression> valueExpr = property->GetValue ();
-    T* value = dynamic_cast<T*>(valueExpr.p);
+    FdoPtr<FdoValueExpression> valueExpr = propVal->GetValue ();
+    T* value = static_cast<T*>(valueExpr.p);
     if (value == NULL)
         throw FdoException::Create (NlsMsgGet2(ARCSDE_PROPERTY_UNEXPECTED_TYPE, "The property '%1$ls' was not of the expect type '%2$ls'.", name, typeName));
 
