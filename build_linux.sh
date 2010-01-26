@@ -368,7 +368,7 @@ if test "$FDOENABLE" == yes; then
 fi
 
 #build Utilities
-if test "$FDOCOREENABLE" == yes || test "$UTILENABLE" == yes; then
+if test "$UTILENABLE" == yes; then
    pushd Utilities >& /dev/null
    
    if test "$TYPEACTION" == clean ; then
