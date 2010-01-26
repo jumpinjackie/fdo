@@ -168,6 +168,28 @@ int c_SdeGeom2AGF::ToAGF()
   
   m_CoordStreamLen = (unsigned int)m_SdeGeom[0] | (unsigned int)m_SdeGeom[1]<<8 | (unsigned int)m_SdeGeom[2]<<16  | (unsigned int)m_SdeGeom[3]<<24; // number of bytes used for coordinates
   
+  const unsigned char* bytes = &m_SdeGeom[0];
+  int b,shift,sign;
+  int bytecount=5;
+  //while( bytecount>0) 
+  {
+    
+    m_CoordStreamLen = *bytes & 0x3f;
+    sign = *bytes & 0x40 ? -1 : 1;
+    shift = 6;
+    while( *bytes & 0x80 )
+    {
+      bytes++;bytecount--;
+      b = *bytes & 0x7f;  
+      m_CoordStreamLen = (b << shift) + m_CoordStreamLen;
+
+      shift += 7;
+    }
+    m_CoordStreamLen = m_CoordStreamLen * sign;
+
+    bytecount--;
+  }
+  
   /*
   bool is_z = m_SdeGeom[4] & 0x01;
   bool is_m = m_SdeGeom[4] & 0x02;
@@ -176,7 +198,7 @@ int c_SdeGeom2AGF::ToAGF()
   if( is_m ) m_CoordDim = m_CoordDim | CoordDim_M;
   */
   // Dimensionaluty is set in same way fro SDE and FDO geometry format 0.. XY bit 1 is Z bit 2 is M
-  m_CoordDim = m_SdeGeom[4];
+  m_CoordDim = m_SdeGeom[5];
   
   m_PointSize = 2;
   if( m_CoordDim & CoordDim_Z ) m_PointSize++;
@@ -911,9 +933,12 @@ void c_SdeGeom2AGF::UnpackParts()
   bool is_zoff=false;
   bool is_moff=false;
   
-  if(m_CountUnpackedIntegers >= m_NumOfPts*3 ) is_zoff=true; // check if there are really 3 coordinate values ( regardless of dimensionality flags)
-  
+  /*
+  if(m_CountUnpackedIntegers >= m_NumOfPts*3 ) is_zoff=true; // check if there are really 3 coordinate values ( regardless of dimensionality flags)  
   if(m_CountUnpackedIntegers >= m_NumOfPts*4 ) is_moff=true;
+  */
+  is_zoff = m_PointSize >= 3; 
+  is_moff = m_PointSize >= 4;
   
   
   // now go trough integers and look for part separators
