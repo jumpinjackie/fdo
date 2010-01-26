@@ -166,29 +166,30 @@ int c_SdeGeom2AGF::ToAGF()
   
   
   
-  m_CoordStreamLen = (unsigned int)m_SdeGeom[0] | (unsigned int)m_SdeGeom[1]<<8 | (unsigned int)m_SdeGeom[2]<<16  | (unsigned int)m_SdeGeom[3]<<24; // number of bytes used for coordinates
+  //m_CoordStreamLen = (unsigned int)m_SdeGeom[0] | (unsigned int)m_SdeGeom[1]<<8 | (unsigned int)m_SdeGeom[2]<<16  | (unsigned int)m_SdeGeom[3]<<24; // number of bytes used for coordinates
+  
+  
+  // First 5 bytes are byte length of coordinate stream
+  // It is integer written as ArcSDE packed integers
   
   const unsigned char* bytes = &m_SdeGeom[0];
   int b,shift,sign;
-  int bytecount=5;
-  //while( bytecount>0) 
-  {
     
-    m_CoordStreamLen = *bytes & 0x3f;
-    sign = *bytes & 0x40 ? -1 : 1;
-    shift = 6;
-    while( *bytes & 0x80 )
-    {
-      bytes++;bytecount--;
-      b = *bytes & 0x7f;  
-      m_CoordStreamLen = (b << shift) + m_CoordStreamLen;
+  m_CoordStreamLen = *bytes & 0x3f;
+  sign = *bytes & 0x40 ? -1 : 1;
+  shift = 6;
+  while( *bytes & 0x80 )
+  {
+    bytes++;
+    b = *bytes & 0x7f;  
+    m_CoordStreamLen = (b << shift) + m_CoordStreamLen;
 
-      shift += 7;
-    }
-    m_CoordStreamLen = m_CoordStreamLen * sign;
-
-    bytecount--;
+    shift += 7;
   }
+  // it is lenght of bytes should always be positive
+  // m_CoordStreamLen = m_CoordStreamLen * sign; 
+
+  
   
   /*
   bool is_z = m_SdeGeom[4] & 0x01;
