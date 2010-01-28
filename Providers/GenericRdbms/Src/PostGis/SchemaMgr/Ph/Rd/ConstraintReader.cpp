@@ -147,12 +147,25 @@ FdoStringP FdoSmPhRdPostGisConstraintReader::GetString( FdoStringP tableName, Fd
     FdoStringP fieldValue;
 
     if ( fieldName == L"check_clause" )  {
-        // postgres changes our check from "prop" IN (...) to "prop" = ANY (ARRAY[...]). The caller expect the IN clause.
+        // postgres return an IN condition is the form: "prop" = ANY (ARRAY[...]). The caller expect the IN clause.
+        // Also postgres add the data type to each element of the list. The constarint parser does not expect the type much less the
+        // postgres types. We have to strip off any type qualifier from the list such as: ("PropList"::text = ANY (ARRAY['Str10'::character varying, 'Str50'::character varying]::text[]))
         FdoStringP defValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName ); 
-        if( defValue != NULL && defValue.Contains(L"= ANY (ARRAY[") )
+        if( defValue != NULL && (defValue.Contains(L"= ANY (ARRAY[") || defValue.Contains(L"= ANY ((ARRAY[") ) )
         {
-            fieldValue = defValue.Replace(L"= ANY (ARRAY[",L"IN (");
-            fieldValue = fieldValue.Replace(L"]",L")");
+            fieldValue = defValue.Replace(L"= ANY ((ARRAY[",L"IN (");
+            fieldValue = fieldValue.Replace(L"= ANY (ARRAY[",L"IN (");
+            fieldValue = fieldValue.Replace(L"::text[]",L"");
+            fieldValue = fieldValue.Replace(L"::text",L"");
+            fieldValue = fieldValue.Replace(L"::bigint",L"");
+            fieldValue = fieldValue.Replace(L"::numeric",L"");
+            fieldValue = fieldValue.Replace(L"::real",L"");
+            fieldValue = fieldValue.Replace(L"::date",L"");
+            fieldValue = fieldValue.Replace(L"::timestamp without time zone",L"");
+            fieldValue = fieldValue.Replace(L"]",L")"); 
+            fieldValue = fieldValue.Replace(L"double precision",L"");
+            fieldValue = fieldValue.Replace(L"character varying",L"");           
+            fieldValue = fieldValue.Replace(L"::",L" ");
         }
         else
             fieldValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName );

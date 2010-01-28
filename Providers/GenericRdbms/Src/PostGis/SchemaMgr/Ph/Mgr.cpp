@@ -212,11 +212,16 @@ FdoStringP FdoSmPhPostGisMgr::FormatSQLVal(FdoStringP value,
     
     if (value.GetLength() > 0)
     {
-        if (FdoSmPhColType_String == type || FdoSmPhColType_Date == type)
+        if (FdoSmPhColType_String == type)
         {
             sqlString = FdoStringP(L"'") 
                         + FdoStringP(value).Replace(L"'", L"''")
                         + FdoStringP(L"'");
+        }
+        else if (FdoSmPhColType_Bool == type)
+        {
+            sqlString = FdoStringP(value).Replace(L"1", L"true");
+            sqlString = sqlString.Replace(L"0", L"false");
         }
         else
         {
