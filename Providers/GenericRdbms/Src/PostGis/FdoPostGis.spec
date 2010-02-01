@@ -1,15 +1,15 @@
-Summary: FDO PostGIS Provider
-Name: fdo-postgis
+Summary: FDO PostgreSQL Provider
+Name: fdo-postgresql
 Version: 3.5.0.0
 Release: 1
 Copyright: Autodesk
-Group: Development/Libraries 
-BuildRoot: /tmp/FdoPostGIS
+Group: Development/Libraries
+BuildRoot: /tmp/FdoPostgreSQL
 Autoreqprov: no
 
 %undefine __check_files
 %description
-PostGIS FDO provider
+PostgreSQL FDO provider
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -29,7 +29,6 @@ pushd .
 cd $BUILDROOT/Providers/GenericRdbms/Inc/Rdbms/Override
 find . -name '*.h' -exec install -D -m 444 {} $RPM_BUILD_ROOT/usr/local/fdo-3.5.0/include/Rdbms/Override/{} \;
 
-rm -rf $RPM_BUILD_ROOT/usr/local/fdo-3.5.0/include/Rdbms/Override/ODBC
 rm -rf $RPM_BUILD_ROOT/usr/local/fdo-3.5.0/include/Rdbms/Override/Oracle
 rm -rf $RPM_BUILD_ROOT/usr/local/fdo-3.5.0/include/Rdbms/Override/SqlServer
 popd

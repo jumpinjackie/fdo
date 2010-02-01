@@ -1985,3 +1985,13 @@ SymbolicName=FDORDBMS_542
 Language=English
 Read/write access to feature data in a MS SQL Server Spatial data store. Supports geospatial and nongeospatial data and schema R/W access.
 .
+MessageId=2768
+SymbolicName=FDORDBMS_543
+Language=English
+OSGeo FDO Provider for PostgreSQL/PostGIS
+.
+MessageId=2769
+SymbolicName=FDORDBMS_544
+Language=English
+Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations.
+.
