@@ -17,7 +17,9 @@
  */
 
 #include "stdafx.h"
+#ifndef _WIN32
 #include <stdint.h>
+#endif
 #include "define.h"
 #include "local.h"
 #include "type.h"
