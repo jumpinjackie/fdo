@@ -40,6 +40,7 @@ libFdoPostgreSQL_la_LIBADD =  \
   -lxerces-c \
   -lz \
   -lpq \
+  -lcrypt \
   PostGis/libFdoRdbmsPostgreSQL.la  \
   Fdo/libFdoRdbms.la   \
   Rdbi/librdbi.la  \

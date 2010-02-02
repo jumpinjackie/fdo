@@ -19,6 +19,9 @@ libpostgisdr_la_SOURCES = \
   fre_cursor.c \
   geom_srid.c \
   Geometry.c \
+  get_gen_id.c \
+  desc_slct.c \
+  pgresult_error.c \
   get_msg.c \
   init.c \
   null.c \
