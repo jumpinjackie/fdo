@@ -17,7 +17,7 @@
  */
 
 #include "stdafx.h"
-
+#include <stdint.h>
 #include "define.h"
 #include "local.h"
 #include "type.h"
