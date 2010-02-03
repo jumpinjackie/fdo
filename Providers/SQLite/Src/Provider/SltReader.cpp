@@ -1548,7 +1548,7 @@ FdoClassDefinition* SltIdReader::GetClassDefinition()
 		idProp->SetDataType(m_idProp->GetDataType());
 		props->Add(idProp);
 	}
-	return m_cls;
+    return FDO_SAFE_ADDREF(m_cls);
 }
 FdoInt32 SltIdReader::GetDepth()
 {
