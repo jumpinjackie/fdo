@@ -276,7 +276,7 @@ void FdoExpressionFunctionTest::TestConcat()
                 if (!rdr->IsNull(L"Calc"))
                 {
                     FdoStringP val = rdr->GetString(L"Calc");
-                    printf ("Calc=%ls\n", val);
+                    printf ("Calc=%ls\n", (FdoString*)val);
 
                     CPPUNIT_ASSERT(val.Contains(L"1") || val.Contains(L"0"));
                 }
@@ -284,7 +284,7 @@ void FdoExpressionFunctionTest::TestConcat()
                 if (!rdr->IsNull(L"Calc1"))
                 {
                     FdoStringP val = rdr->GetString(L"Calc1");
-                    printf ("Calc1=%ls\n", val);
+                    printf ("Calc1=%ls\n", (FdoString*)val);
                     CPPUNIT_ASSERT(val == L"1=1" || val == L"0=0");
                 }
             }
