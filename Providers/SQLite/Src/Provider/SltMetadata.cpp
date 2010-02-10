@@ -190,7 +190,7 @@ FdoClassDefinition* SltMetadata::ToClass()
         }
     }
     else
-        caps->SetSupportsWrite(true);
+        caps->SetSupportsWrite(!m_connection->IsReadOnlyConnection());
 
     m_fc->SetCapabilities(caps);
     

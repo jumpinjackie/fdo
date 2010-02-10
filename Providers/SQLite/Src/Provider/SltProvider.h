@@ -237,6 +237,7 @@ public:
     void EnableHooks(bool enable = true, bool enforceRollback = false);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong();
+    bool IsReadOnlyConnection();
     
     // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
     int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
@@ -269,6 +270,7 @@ private :
 
     bool                                    m_updateHookEnabled;
     bool                                    m_changesAvailable;
+    bool                                    m_isReadOnlyConnection;
 
     sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;
