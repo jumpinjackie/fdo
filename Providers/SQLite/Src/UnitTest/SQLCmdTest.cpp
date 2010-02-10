@@ -458,3 +458,31 @@ void SQLCmdTest::TestSelectWithTrans()
    	}
 	printf( "Done\n" );
 }
+
+void SQLCmdTest::TestSelectWithIdtNames()
+{
+	try
+	{
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+        sqlCmd->SetSQLStatement(L"select FeatId ID, Name Name1, 'test' Name1, FeatId*33, FeatId*33, FeatId*33 from DaKlass;");
+
+        FdoPtr<FdoISQLDataReader> rdr = sqlCmd->ExecuteReader();
+        bool val = rdr->ReadNext();
+        FdoPropertyType pt = rdr->GetPropertyType(L"ID");
+        pt = rdr->GetPropertyType(L"Name1");
+        pt = rdr->GetPropertyType(L"Name1$1");
+        pt = rdr->GetPropertyType(L"FeatId*33");
+        pt = rdr->GetPropertyType(L"FeatId*33$1");
+        pt = rdr->GetPropertyType(L"FeatId*33$2");
+	}
+	catch(FdoException *exp )
+	{
+		UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+        CPPUNIT_FAIL("TestBindBasicTypes failed");
+	}
+}

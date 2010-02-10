@@ -984,6 +984,8 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 {
 	if (!m_class)
 	{
+        int additionalSize = 0;
+        std::vector<int> idxProperties;
         std::vector<int> unknownPropsIdx;
 		//decide on a name for the class -- just pick the table name
 		//for the first column :)
@@ -1007,6 +1009,7 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 		//cache information about the returned columns
 		for (int i=0; i<nProps; i++)
 		{
+            idxProperties.push_back(-1);
 			bool propFound = false;
 			//get name of table that is the source for this column
 			const char* table = sqlite3_column_table_name(m_pStmt, i);
@@ -1031,9 +1034,14 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                 {
                     FdoPtr<FdoPropertyDefinition> clonedprop = FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(srcprop);
                     propFound = true;
-    			    dstpdc->Add(clonedprop);
+                    if (dstpdc->Contains(pname))
+                    {
+                        additionalSize += GenerateUniqueName(pname, clonedprop, dstpdc);
+                        idxProperties[i] = dstpdc->GetCount();
+                    }
+                    dstpdc->Add(clonedprop);
 
-				    if (idpdc->Contains(pname))
+                    if (idpdc->Contains(pname))
 					    dstidpdc->Add((FdoDataPropertyDefinition*)clonedprop.p);
 
 				    if (NULL != geompd && wcscmp(pname, geompd->GetName()) == 0)
@@ -1086,7 +1094,15 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 					break;
 				}
                 if (dpd != NULL)
+                {
+                    const wchar_t* pname = dpd->GetName();
+                    if (dstpdc->Contains(pname))
+                    {
+                        additionalSize += GenerateUniqueName(pname, dpd, dstpdc);
+                        idxProperties[i] = dstpdc->GetCount();
+                    }
 				    dstpdc->Add(dpd);
+                }
 			}
 		}
         // do we have unknown calculations !?
@@ -1162,11 +1178,75 @@ FdoClassDefinition* SltReader::GetClassDefinition()
                 }
             }
         }
+        if (additionalSize != 0)
+        {
+            m_mNameToIndex.Clear();
+            int buflen = (int)(m_propNames.back() - m_propNames[0]) + wcslen(m_propNames.back()) + 1 + additionalSize;
+            wchar_t* aPropNames = new wchar_t[buflen];
+            wchar_t* dst = aPropNames;
+
+	        //convert column names to wchar and store in our buffer
+	        for (int i=0; i<nProps; i++)
+	        {
+                int len = 0;
+                if (idxProperties[i] == -1)
+                {
+                    // property name did not changed
+                    wcscpy(dst, m_propNames[i]);
+                    len = wcslen(dst) + 1;
+                }
+                else
+                {
+                    FdoPtr<FdoPropertyDefinition> propDefChg = dstpdc->GetItem(idxProperties[i]);
+                    FdoString* propNameChg = propDefChg->GetName();
+                    wcscpy(dst, propNameChg);
+                    len = wcslen(dst) + 1;
+                }
+                m_propNames.push_back(dst);
+                dst += len;
+	        }
+            delete[] m_aPropNames;
+            m_aPropNames = aPropNames;
+            m_propNames.erase(m_propNames.begin(), m_propNames.begin()+nProps);
+            for (int i=0; i<nProps; i++)
+            {
+                m_mNameToIndex.Add(m_propNames[i], i);
+            }
+
+            m_mNameToIndex.Prepare();
+        }
 	}
 
 	return FDO_SAFE_ADDREF(m_class);
 }
 
+// returns the additional size needs to be allocated
+int SltReader::GenerateUniqueName(const wchar_t* pname, FdoPropertyDefinition* prop, FdoPropertyDefinitionCollection* pcol)
+{
+    int idxProp = 1;
+    int idx = 0;
+    wchar_t buffer[5];
+    
+    int propsize = wcslen(pname);
+    wchar_t* pnewName = new wchar_t[propsize + 1 + 4]; // from 1 to max 999
+    memcpy(pnewName, pname, propsize * sizeof(wchar_t));
+    *(pnewName+propsize) = L'$';
+    do
+    {
+        swprintf(buffer, 5, L"%d", idxProp);
+        idx = 0;
+        while(buffer[idx] != L'\0')
+            *(pnewName+propsize+1+idx) = buffer[idx++];
+        *(pnewName+propsize+1+idx) = L'\0';
+        idxProp++;
+    }
+    while(pcol->Contains(pnewName));
+    
+    prop->SetName(pnewName);
+    delete[] pnewName;
+
+    return idx + 1; // '$' + len(no)
+}
 
 FdoInt32 SltReader::GetDepth()
 {

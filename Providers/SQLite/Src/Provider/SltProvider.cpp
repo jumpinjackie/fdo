@@ -34,6 +34,7 @@
 #include "FdoCommonSchemaUtil.h"
 #include "SQLiteSchemaMergeContext.h"
 #include "SltTransaction.h"
+#include <sys/stat.h>
 
 #ifndef _MSC_VER
 #include "SpatialIndex.h"
@@ -109,6 +110,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_changesAvailable = false;
     m_connDet = NULL;
     m_defSpatialContextId = 0;
+    m_isReadOnlyConnection = true;
 }
 
 SltConnection::~SltConnection()
@@ -282,11 +284,17 @@ FdoConnectionState SltConnection::Open()
     std::string file = W2A_SLOW(dsw);
 
 #ifdef _WIN32
-    if (_waccess(dsw, 0) == -1)
+    struct _stat statInfo;
+    if (0 != _wstat (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
         throw FdoConnectionException::Create(L"File does not exist!");
+    if ((statInfo.st_mode&_S_IREAD) == 0)
+        throw FdoConnectionException::Create(L"File cannot be accessed!");
 #else 
-    if (access(file.c_str(), 0) == -1)
+    struct stat statInfo;
+    if (0 != stat (file.c_str(), &statInfo) || (statInfo.st_mode&S_IFREG) == 0)
         throw FdoConnectionException::Create(L"File does not exist!");
+    if ((statInfo.st_mode&S_IREAD) == 0)
+        throw FdoConnectionException::Create(L"File cannot be accessed!");
 #endif
 
     const wchar_t* sUseMeta = GetProperty(PROP_NAME_FDOMETADATA);
@@ -358,6 +366,11 @@ FdoConnectionState SltConnection::Open()
     m_dbRead->pUserArg = m_connDet;
     m_dbWrite->pUserArg = m_connDet;
 
+#ifdef _WIN32
+    m_isReadOnlyConnection = ((statInfo.st_mode&_S_IWRITE)==0);
+#else // _WIN32
+    m_isReadOnlyConnection = ((statInfo.st_mode&S_IWRITE)==0);
+#endif // _WIN32
     return m_connState;
 }
 
@@ -419,6 +432,7 @@ void SltConnection::Close()
 
     m_updateHookEnabled = false;
     m_changesAvailable = false;
+    m_isReadOnlyConnection = true;
 
     delete m_connDet;
     m_connDet = NULL;
@@ -3600,6 +3614,11 @@ bool SltConnection::IsCoordSysLatLong()
         sqlite3_finalize(pStmt);
     }
     return retVal;
+}
+
+bool SltConnection::IsReadOnlyConnection()
+{
+    return m_isReadOnlyConnection;
 }
 
 ConnInfoDetails::ConnInfoDetails(SltConnection* conn)
