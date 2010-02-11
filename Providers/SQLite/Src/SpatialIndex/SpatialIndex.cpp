@@ -217,6 +217,16 @@ void SpatialIndex::FullSpatialIndexUpdate()
 
 void SpatialIndex::GetTotalExtent(DBounds& ext)
 {
+    //Is the spatial index empty? Return some default
+    //extent.
+    //TODO: what exactly is a good empty extent? Perhaps
+    //it is coord sys dependent
+    if (_counts[0] == 0)
+    {
+        ext.SetEmpty();
+        return;
+    }
+    
     Bounds* b = &_levels[_rootLevel][0].b;
 
     for (int i=0; i<SI_DIM; i++)
