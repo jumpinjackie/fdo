@@ -54,7 +54,7 @@ FdoWmsServiceMetadata* FdoWmsDelegate::GetServiceMetadata(FdoString* pVersion)
     if (pVersion == NULL || wcslen(pVersion) == 0)
         request->SetVersion(FdoWmsXmlGlobals::WmsVersion);
     else
-        request->SetVersion(L""); // version already in URL.
+        request->SetVersion(pVersion, false); // version already in URL.
     FdoPtr<FdoOwsResponse> response = Invoke(request);
     FdoPtr<FdoIoStream> stream = response->GetStream();
     FdoWmsServiceMetadataP rv = FdoWmsServiceMetadata::Create();

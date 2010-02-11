@@ -272,7 +272,7 @@ FdoStringCollection* FdoWmsConnection::GetSupportedStyles(FdoString* featureClas
         {
             throw FdoException::Create (NlsMsgGet(FDOWMS_12001_LAYER_NOT_EXIST, 
             "The WMS layer '%1$ls' does not exist.", 
-            (FdoString *) layerName));
+            layerName != L"" ? ((FdoString *) layerName) : featureClass));
         }
         _processLayerStyles(currentLayer, styleNames);
      
