@@ -97,6 +97,7 @@ namespace FdoWmsXmlGlobals
 	static FdoString *WmsRequestDefaultStyle				= L"";
     static FdoString *EXCEPTIONS                            = L"EXCEPTIONS";
     static FdoString* ExceptionType                         = L"application/vnd.ogc.se_xml";
+    static FdoString* ExceptionType130                      = L"XML";
 };
 
 
