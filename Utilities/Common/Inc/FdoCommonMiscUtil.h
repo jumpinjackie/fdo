@@ -133,7 +133,7 @@ public:
     /// \brief
     ///  Handles read-only properties and default values in the given PropertyValue collection.
     /// 
-    static void HandleReadOnlyAndDefaultValues(FdoClassDefinition *classDef, FdoPropertyValueCollection *propValues, bool bMakeNullsExplicit = false);
+    static void HandleReadOnlyAndDefaultValues(FdoClassDefinition *classDef, FdoPropertyValueCollection *propValues, bool bMakeNullsExplicit = false, bool bValidateProps = true);
 
     /// \brief
     ///  Throw a detailed exception stating that the given data value violates the given property's constraint. 

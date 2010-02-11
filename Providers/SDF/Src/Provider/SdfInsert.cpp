@@ -184,6 +184,12 @@ FdoIFeatureReader* SdfInsert::Execute()
 		m_NeedSync = false;
 	}
 
+    // At insert time it would replace the null with the default value
+    // in case that property value is null and it has default value even it's readonly.
+    FdoPtr<FdoPropertyValueCollection> values;
+    values = GetPropertyValues ();
+    FdoCommonMiscUtil::HandleReadOnlyAndDefaultValues(clas, values, false, false);
+
     PropertyIndex* pi = m_connection->GetPropertyIndex(clas);
 
 	if( m_ValidationFlag != SdfDataValidationType_None )
