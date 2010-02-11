@@ -186,6 +186,7 @@ set( FDOSrc_SRCS
 )
 
 set( FDOCommon_SRCS
+    Common/IDisposable.cpp
 	Common/ArrayHelper.cpp
 	Common/CommonInternal.cpp
 	Common/Context.cpp
