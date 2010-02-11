@@ -16,7 +16,7 @@ add_custom_command(
 				COMMAND gencat ARGS  ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US/${catalog}.cat ${catalog}.tmp
 				COMMAND sed ARGS -i "\"/#include/d\""  ${catalog}_msg.h
 				COMMAND sed ARGS -i "/MF_/s/\"\(.*\).cat\"/1_cat/"  ${catalog}_msg.h
-				COMMAND cat ARGS ${CMAKE_CURRENT_SOURCE_DIR}/${catalog}Static.h ${catalog}_msg.h > ${messagefile}
+				COMMAND cp ${catalog}_msg.h ${messagefile}
 				COMMENT "Generating ${catalog}.h ..."
         )
 
