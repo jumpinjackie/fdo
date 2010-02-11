@@ -46,7 +46,7 @@ class FdoCommonFile
 public:
 
     /// relative file positions for SetFilePointer()
-    typedef enum FilePos
+    enum FilePos
     {
         FILE_POS_BEGIN   = FILE_BEGIN,
         FILE_POS_CURRENT = FILE_CURRENT,
@@ -62,7 +62,7 @@ public:
 public:
 
     /// relative file positions for SetFilePointer()
-    typedef enum FilePos
+    enum FilePos
     {
         FILE_POS_BEGIN   = SEEK_SET,
         FILE_POS_CURRENT = SEEK_CUR,
@@ -72,7 +72,7 @@ public:
 #endif // _WIN32
 
     /// file open/creation flags
-    typedef enum OpenFlags
+    enum OpenFlags
     {
         IDF_OPEN_READ     = 0x01,
         IDF_OPEN_UPDATE   = 0x02,
@@ -83,7 +83,7 @@ public:
     };
 
     /// error codes from OpenFile
-    typedef enum ErrorCode
+    enum ErrorCode
     {
         ERROR_NONE = 0,
         FAILED_TO_OPEN_FILE = -1,
