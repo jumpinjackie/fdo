@@ -117,7 +117,7 @@ FdoIConnectionPropertyDictionary* SdfConnectionInfo::GetConnectionProperties()
         newProp = new ConnectionProperty (PROP_NAME_RDONLY,
                 NlsMsgGetMain(SDFPROVIDER_49_PROP_NAME_READONLY, mbPropName),
                 RDONLY_TRUE, false, false, true, false, false, false, false, false, 2, (const wchar_t**)pReadOnlyVals);
-        newProp->SetValue(RDONLY_TRUE);
+        newProp->SetValue(RDONLY_FALSE);
         mPropertyDictionary->AddProperty(newProp);
 
         // Maximum cache size in # of features
