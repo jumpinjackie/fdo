@@ -73,7 +73,7 @@ II. Build Notes
      MsBuild tool that is used by the the FDO build process is included in 
      the Windows system PATH.
 
-        set PATH=%PATH%;C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
+        set PATH=%PATH%;c:\WINDOWS\Microsoft.NET\Framework\v3.5
  
   5. In order to build the ArcSDE Provider, you will need to have the
      ArcSDE 9.1 Client SDK and/or ArcSDE 9.2 Client SDK installed 
@@ -102,7 +102,7 @@ II. Build Notes
   6. In order to build the MySQL Provider, you will need to download 
      and install the MySQL 5.0 Windows client and developer components from:
 
-        http://dev.mysql.com/downloads/mysql/5.0.html
+        http://downloads.mysql.com/archives.php?p=mysql-5.0
 
      Following the installation, set the following FDO Windows environment variable:
 
@@ -535,12 +535,12 @@ II. Build Notes
      extract the MySQL client and MySQL 5.0 devloper components from MySQL. 
      These components are located at:
  
-       http://dev.mysql.com/downloads/mysql/5.0.html
+       http://downloads.mysql.com/archives.php?p=mysql-5.0
         
-     For example, for Red Hat Enterprise Linux 3 RPM (x86)
+     For example, for Red Hat Enterprise Linux 5 RPM (x86)
        
-       Client:                   MySQL-client-standard-5.0.22-0.rhel3.i386.rpm
-       Headers and Libraries:    MySQL-devel-standard-5.0.22-0.rhel3.i386.rpm
+       Client:                   MySQL-client-community-5.0.86-0.rhel5.i386.rpm
+       Headers and Libraries:    MySQL-devel-community-5.0.86-0.rhel5.i386.rpm
 
      NOTE: Choosing the RPM install of the MySQL components is *strongly* 
      recommended. However, if a non-RPM installation of MySQL is chosen, 
@@ -557,7 +557,7 @@ II. Build Notes
            http://www.unixodbc.org/
 
            Download Location: 
-           http://sourceforge.net/project/showfiles.php?group_id=1544
+           http://sourceforge.net/projects/unixodbc/files/
 
            Download Files: 
            unixODBC-CORE  - unixODBC-2.2.11-1.i386.rpm
@@ -744,7 +744,8 @@ II. Build Notes
                                      gdal,
                                      ogr.
                                      postgis
-                                     kingoracle
+                                     kingoracle,
+									 sqlite
            **************************************************************
 
            e.g.
