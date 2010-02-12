@@ -461,9 +461,13 @@ void SQLCmdTest::TestSelectWithTrans()
 
 void SQLCmdTest::TestSelectWithIdtNames()
 {
-	try
-	{
-        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SOURCE_FILE, SC_TEST_FILE);
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
 
