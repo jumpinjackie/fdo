@@ -402,7 +402,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     int cur_id = sqlite3_column_int(m_pStmt, 0);
 
     if (!m_class)
-        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), name));
+        throw FdoCommandException::Create((std::wstring(L"The property \'") + name + L"\' was not found.").c_str());
         //throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. API misuse by the caller!");
 
     //make sure the property exists in the feature class
@@ -434,10 +434,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
         return index; // this is not accurate since other properties can be already selected...
     }
     else
-    {
-        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), name));
-        //throw FdoCommandException::Create(L"Column does not exist in the select query.");
-    }
+        throw FdoCommandException::Create((std::wstring(L"The property \'") + name + L"\' was not found.").c_str());
 
     return -1;
 }
@@ -1483,7 +1480,9 @@ void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
     int count = sqlite3_column_count(pStmt);
     if (index < 0 || index >= count)
     {
-        throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), index));
+		wchar_t tmp[15];
+		swprintf(tmp, 15, L"%d", index);
+        throw FdoCommandException::Create((std::wstring(L"Property index \'") + tmp + L"\' is out of bounds.").c_str());
     }
 }
 
@@ -1637,44 +1636,48 @@ FdoInt32 SltIdReader::GetDepth()
 
 const FdoByte* SltIdReader::GetGeometry(FdoString* /*propertyName*/, FdoInt32* /*count*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoByteArray* SltIdReader::GetGeometry(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoIFeatureReader* SltIdReader::GetFeatureObject(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 const FdoByte* SltIdReader::GetGeometry(FdoInt32 /*index*/, FdoInt32* /*count*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoByteArray* SltIdReader::GetGeometry(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoIFeatureReader* SltIdReader::GetFeatureObject(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 void SltIdReader::CheckProperty(int idx)
 {
 	if (idx != 0)
-		throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_73_PROPERTY_INDEXOUTOFBOUNDS), idx));
+    {
+		wchar_t tmp[15];
+		swprintf(tmp, 15, L"%d", idx);
+        throw FdoCommandException::Create((std::wstring(L"Property index \'") + tmp + L"\' is out of bounds.").c_str());
+    }
 }
 
 void SltIdReader::CheckProperty(FdoString* propertyName)
 {
 	if (propertyName == NULL || *propertyName != *m_idProp->GetName())
-		throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_74_PROPERTY_NAME_NOT_FOUND), propertyName));
+        throw FdoCommandException::Create((std::wstring(L"The property \'") + propertyName + L"\' was not found.").c_str());
 }
 
 FdoInt32 SltIdReader::GetColumnCount()
@@ -1749,7 +1752,7 @@ FdoInt32 SltIdReader::GetPropertyIndex(FdoString* propertyName)
 
 bool SltIdReader::GetBoolean(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoByte SltIdReader::GetByte(FdoString* propertyName)
@@ -1759,12 +1762,12 @@ FdoByte SltIdReader::GetByte(FdoString* propertyName)
 
 FdoDateTime SltIdReader::GetDateTime(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 double SltIdReader::GetDouble(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoInt16 SltIdReader::GetInt16(FdoString* propertyName)
@@ -1784,22 +1787,22 @@ FdoInt64 SltIdReader::GetInt64(FdoString* propertyName)
 
 float SltIdReader::GetSingle(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoString* SltIdReader::GetString(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoLOBValue* SltIdReader::GetLOB(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoIStreamReader* SltIdReader::GetLOBStreamReader(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 bool SltIdReader::IsNull(FdoString* propertyName)
@@ -1810,12 +1813,12 @@ bool SltIdReader::IsNull(FdoString* propertyName)
 
 FdoIRaster* SltIdReader::GetRaster(FdoString* /*propertyName*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoBoolean SltIdReader::GetBoolean(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoByte SltIdReader::GetByte(FdoInt32 index)
@@ -1825,12 +1828,12 @@ FdoByte SltIdReader::GetByte(FdoInt32 index)
 
 FdoDateTime SltIdReader::GetDateTime(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoDouble SltIdReader::GetDouble(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoInt16 SltIdReader::GetInt16(FdoInt32 index)
@@ -1850,22 +1853,22 @@ FdoInt64 SltIdReader::GetInt64(FdoInt32 index)
 
 FdoFloat SltIdReader::GetSingle(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoString* SltIdReader::GetString(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoLOBValue* SltIdReader::GetLOB(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoIStreamReader* SltIdReader::GetLOBStreamReader(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 FdoBoolean SltIdReader::IsNull(FdoInt32 index)
@@ -1876,7 +1879,7 @@ FdoBoolean SltIdReader::IsNull(FdoInt32 index)
 
 FdoIRaster* SltIdReader::GetRaster(FdoInt32 /*index*/)
 {
-	throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(EXPRESSION_15_INVALIDDATAVALUE)));
+	throw FdoCommandException::Create(L"Invalid data type.");
 }
 
 void SltIdReader::Close()
