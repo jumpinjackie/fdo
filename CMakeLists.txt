@@ -41,6 +41,7 @@ endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 
 if( CMAKE_COMPILER_IS_GNUCXX )
 	add_definitions( -D__USE_GNU -Wno-deprecated )
+	set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 find_package( FDOThirdparty REQUIRED )
