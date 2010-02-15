@@ -507,7 +507,7 @@ FdoGeometryValue* FdoExpressionEngineImp::GetGeometricResult (bool &bIsNull)
     bIsNull = gv->IsNull();
     ret = gv;
 
-    //We dont (yet) cache geometry values:
+    //We don't (yet) cache geometry values:
     //RelinquishDataValue (dv);
     
     return (ret);
@@ -1084,7 +1084,7 @@ void FdoExpressionEngineImp::RelinquishDataValue (FdoLiteralValue* data)
     }
     else if (data->GetLiteralValueType() == FdoLiteralValueType_Geometry)
     {
-        // nothing to do since we dont pool geometry values (yet)
+        // nothing to do since we don't pool geometry values (yet)
     }
     else
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
@@ -1470,7 +1470,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 	{
 		if (m_processingAggregate)
 		{
-	        FdoLiteralValueCollection* functionParameters = ObtainLiteralValueCollection();
+	        FdoPtr<FdoLiteralValueCollection> functionParameters = ObtainLiteralValueCollection();
 			FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
 			for (int i=0; i<args->GetCount(); i++)
 			{
@@ -1480,25 +1480,24 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 
             for (int i=0; i<args->GetCount(); i++)
             {
-				FdoDataValue* dv = (FdoDataValue*)m_retvals.back ();
-                
+    			FdoPtr<FdoDataValue> dv = (FdoDataValue*)m_retvals.back ();
 				m_retvals.pop_back ();
 				functionParameters->Insert(0, dv);
-
-                // The geometries are not pooled so release them here.
-                if (dv->GetLiteralValueType() == FdoLiteralValueType_Geometry)
-                    FDO_SAFE_RELEASE(dv);
 			}
 
 			FdoExpressionEngineIAggregateFunction *func = m_AggregateFunctions.at(m_CurrentIndex);
 			func->Process(functionParameters);
 			for (int i=0; i<functionParameters->GetCount(); i++)
 			{
-				FdoPtr<FdoLiteralValue> literalValue = functionParameters->GetItem(i);
+				FdoLiteralValue* literalValue = functionParameters->GetItem(i);
 				RelinquishDataValue(literalValue);
+
+                // The geometries are not pooled so release them here.
+                if (literalValue->GetLiteralValueType() == FdoLiteralValueType_Geometry)
+                    FDO_SAFE_RELEASE(literalValue);
 			}
             functionParameters->Clear();
-            RelinquishLiteralValueCollection(functionParameters);
+            RelinquishLiteralValueCollection(functionParameters.Detach());
 		}
 		else
 		{
@@ -1611,8 +1610,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 	}
 	else
 	{
-
-	    FdoLiteralValueCollection* functionParameters = ObtainLiteralValueCollection();
+	    FdoPtr<FdoLiteralValueCollection> functionParameters = ObtainLiteralValueCollection();
 		FdoPtr<FdoExpressionCollection> args = expr.GetArguments ();
 		for (int i=0; i<args->GetCount(); i++)
 		{
@@ -1622,7 +1620,7 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
 
         for (int i=0; i<args->GetCount(); i++)
         {
-			FdoDataValue* dv = (FdoDataValue*)m_retvals.back ();
+			FdoPtr<FdoDataValue> dv = (FdoDataValue*)m_retvals.back ();
 			m_retvals.pop_back ();
             functionParameters->Insert(0, dv);
         }
@@ -1631,11 +1629,11 @@ void FdoExpressionEngineImp::ProcessFunction (FdoFunction& expr)
         PushLiteralValue(result);
 		for (int i=0; i<functionParameters->GetCount(); i++)
 		{
-			FdoPtr<FdoLiteralValue> literalValue = functionParameters->GetItem(i);
+			FdoLiteralValue* literalValue = functionParameters->GetItem(i);
 			RelinquishDataValue(literalValue);
 		}
         functionParameters->Clear();
-        RelinquishLiteralValueCollection(functionParameters);
+        RelinquishLiteralValueCollection(functionParameters.Detach());
 		return;
 	}
 }
@@ -4565,7 +4563,7 @@ void FdoExpressionEngineImp::RegisterFunctions(FdoExpressionEngineFunctionCollec
 }
 
 // This method would only be usefully when calling from the Evaluate methods. The Evaluate method returns a FdoLiteralValue object to the user. This object should only be re-used
-// by the Expression Egnine when the ref-count is 1(ie. the caller is not holding a reference to the object.)
+// by the Expression Engine when the ref-count is 1(ie. the caller is not holding a reference to the object.)
 void FdoExpressionEngineImp::PotentialRelinquishLiteralValue(FdoLiteralValue *value)
 {
     if (value->GetLiteralValueType() == FdoLiteralValueType_Data)
