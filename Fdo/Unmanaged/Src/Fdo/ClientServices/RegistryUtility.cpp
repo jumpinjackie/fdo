@@ -814,6 +814,9 @@ wchar_t *FdoRegistryUtility::GetFileName()
             if ((0 != stat (_fileName, &my_stat)) || !S_ISREG(my_stat.st_mode))
                 // not found or not a file, try the install location
                 if ((0 == stat (install, &my_stat)) && S_ISDIR(my_stat.st_mode))
+                // Try lib64 first, since some 64 bits linux install put libraries it there
+                    sprintf (_fileName, "%s%s", install, "/lib64/providers.xml");
+                if ((0 != stat (_fileName, &my_stat)) || !S_ISREG(my_stat.st_mode))
                     sprintf (_fileName, "%s%s", install, "/lib/providers.xml");
 			mbstowcs(fileName, _fileName, 512);        }
 #else
