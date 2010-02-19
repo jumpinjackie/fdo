@@ -281,10 +281,7 @@ void ShpFeatIdQueryEvaluator::DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpa
         FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
         delete shape;
 
-		// The Polygon might be a multi polygon. 
-		FdoPtr<FdoIGeometry> geometry = ReconstructPolygon( geomLeft );
-
-		bool  ret = FdoSpatialUtility::Evaluate( geometry? geometry : geomLeft, spatialOp, filterGeom);
+		bool  ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, filterGeom);
 
         if ( ret )
             secFilterList->push_back( featNum );
@@ -453,10 +450,7 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
                 FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
                 delete shape;
 
-				// The Polygon might be actually a multi polygon. 
-				FdoPtr<FdoIGeometry> geometry = ReconstructPolygon( geomLeft );
-
-				bool  ret = FdoSpatialUtility::Evaluate( geometry? geometry : geomLeft, spatialOp, geomRight);
+				bool  ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, geomRight);
                 if ( ret )
                     secFilterList->push_back( featNum );
             }
@@ -929,32 +923,6 @@ size_t ShpFeatIdQueryEvaluator::EvaluateMergedListSize( int maxRecords )
     }
 
     return aproxListSize;
-}
-
-// Returns NULL in case geometry was not reconstructed
-FdoIGeometry *ShpFeatIdQueryEvaluator::ReconstructPolygon( FdoIGeometry *geometry )
-{
-	FdoPtr<FdoIGeometry> newGeometry;
-
-	if ( geometry->GetDerivedType() == FdoGeometryType_Polygon )
-	{
-		FdoIPolygon * poly = (FdoIPolygon *)geometry;
-		if ( poly->GetInteriorRingCount() != 0 )
-		{
-			FdoPtr<FdoLinearRingCollection> rings = FdoLinearRingCollection::Create ();
-	
-			FdoPtr<FdoILinearRing>	ring = poly->GetExteriorRing();
-			rings->Add(ring);
-
-			for (int i = 0; i < poly->GetInteriorRingCount(); i++)
-			{
-				FdoPtr<FdoILinearRing>	ring = poly->GetInteriorRing(i);
-				rings->Add(ring);
-			}
-			newGeometry = FdoSpatialUtility::CreateGeometryFromRings (rings, true);
-		}
-	}
-	return FDO_SAFE_ADDREF(newGeometry.p);
 }
 
 void ShpFeatIdQueryEvaluator::PrintFlattenParseTree()
