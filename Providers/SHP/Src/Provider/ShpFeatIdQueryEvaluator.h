@@ -93,7 +93,6 @@ private:
 	void					ProcessLeafExpession( interval_res* curr_filter, int curr_logical_op, int maxRecords );
 	void					PrintFlattenParseTree();
 	void					DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpatialOperations spatialOp );
-	FdoIGeometry*			ReconstructPolygon( FdoIGeometry *geometry );
 
     FdoGeometricPropertyDefinition* FindGeomProp(FdoClassDefinition* classDef);
 
