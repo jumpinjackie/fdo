@@ -252,4 +252,14 @@ const CHAR END_OF_FILE = (CHAR)0x1a;
 
 #define RELATE_RINGS    true
 
+// RELATE_RINGS_NESTED flag controls the behaviour: 
+//     - FALSE we assume that there are no nested rings (rings inside an interior ring).
+//       Such ring will be associated with exterior ring.
+//     - TRUE then the an algorithm for correctly associating the nested rings, no matter
+//       the nesting level will be executed and turn them into exterior rings.
+// NOTE: The algorithm for nesting check is expensive and until an optimization is found
+//       the ckeck is disabled.
+
+#define RELATE_NESTED_RINGS    false
+
 #endif  // CONSTANTS_H

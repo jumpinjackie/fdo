@@ -258,7 +258,7 @@ FdoIGeometry* PolygonShape::CreateGeometryFromRings( FdoLinearRingCollection* ri
         // Given a polygon with interior rings we need to check for nested rings. 
         bool    hasNestedRings = false;
 
-        if (intRings->GetCount() > 1)
+        if (RELATE_NESTED_RINGS && intRings->GetCount() > 1)
         {
             // Because the nested rings are rare, it is worth doing a separate test, presumably cheap 
             // (because we assume the bounding box test will eliminate lots of candidates): exclude the external ring,
