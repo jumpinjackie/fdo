@@ -2,46 +2,8 @@
 
 #include <Fdo.h>
 #include <wchar.h>
+#include <FdoCommonStringUtil.h>
 
-//FDO 3.2 to 3.1 renaming -- remove these when FDO 3.2 is out.
-//#define FDO_31
-#ifdef FDO_31
-#define FdoGeometryType GisGeometryType
-#define FdoGeometryComponentType GisGeometryComponentType
-#define FdoIReader GisIReader
-#define FdoByte GisByte
-#define FdoByteArray GisByteArray
-#define FdoString GisString
-#define FdoInt16 GisInt16
-#define FdoInt32 GisInt32
-#define FdoInt64 GisInt64
-#define FdoIoStream GisIoStream
-#define FdoDateTime GisDateTime
-#define FdoIStreamReader GisIStreamReader
-#define FDO_SAFE_RELEASE GIS_SAFE_RELEASE
-#define FDO_SAFE_ADDREF GIS_SAFE_ADDREF
-#define FdoIPolygon GisIPolygon
-#define FdoIGeometry GisIGeometry
-#define FdoPtr GisPtr
-#define FdoFgfGeometryFactory GisAgfGeometryFactory
-#define CreateGeometryFromFgf CreateGeometryFromAgf
-#define FdoIEnvelope GisIEnvelope
-#define GetFgf GetAgf
-#define FdoILinearRing GisILinearRing
-#define FdoGeometryType_Point GisGeometryType_Point
-#define FdoGeometryType_LineString GisGeometryType_LineString
-#define FdoGeometryType_Polygon GisGeometryType_Polygon
-#define FdoGeometryType_MultiPoint GisGeometryType_MultiPoint
-#define FdoGeometryType_MultiLineString GisGeometryType_MultiLineString
-#define FdoGeometryType_MultiPolygon GisGeometryType_MultiPolygon
-#define FdoGeometryType_MultiGeometry GisGeometryType_MultiGeometry
-#define FdoGeometryComponentType_LinearRing GisGeometryComponentType_LinearRing
-#define FdoGeometryComponentType_LineStringSegment GisGeometryComponentType_LineStringSegment
-#define FdoGeometryComponentType_Ring GisGeometryComponentType_Ring
-#define FdoDimensionality_XY GisDimensionality_XY
-#define FdoDimensionality_Z GisDimensionality_Z
-#define FdoDimensionality_M GisDimensionality_M
-#endif
 
 #ifdef _WIN32
 #define OGR_API __declspec(dllexport)
@@ -57,16 +19,37 @@
 #include <ogrsf_frmts.h>
 
 
-//TODO: usage of wcstombs/mbstowcs is incorrect in most cases
-#define A2W(x) \
-    size_t len##x = strlen(x)*4+4; \
-    wchar_t* w##x = (wchar_t*)alloca(len##x); \
-    mbstowcs(w##x, x, len##x);
-    
-#define W2A(x) \
-    size_t len##x = wcslen(x)*4+1; \
-    char* mb##x = (char*)alloca(len##x); \
-    wcstombs(mb##x, x, len##x);
+#define W2A_PROPNAME(x)  \
+    size_t wlen = wcslen(x); \
+    size_t clen = wlen*4 + 1; \
+    char* mb##x = (char*)alloca(clen); \
+    W2A_FAST(mb##x, clen, x, wlen);
 
+static std::string W2A_SLOW(const wchar_t* input)
+{
+    size_t wlen = wcslen(input);
+    int mbslen = (int) wlen * 4 + 1;
+    char* mbs = (char*)alloca(mbslen);
+    //WideCharToMultiByte(CP_UTF8, 0, input, -1, mbs, mbslen, 0, 0);
+    _ut_utf8_from_unicode(input, wlen, mbs, mbslen);
+    return std::string(mbs);
+}
 
+static std::wstring A2W_SLOW(const char* input)
+{
+    int wlen = (int)strlen(input) + 1;
+    wchar_t* ws = (wchar_t*)alloca(sizeof(wchar_t)*wlen);
+    //MultiByteToWideChar(CP_UTF8, 0, input, -1, ws, wlen);
+    _ut_utf8_to_unicode(input, wlen, ws, wlen);
+    return std::wstring(ws);
+}
 
+static int A2W_FAST(wchar_t* dst, int wlen, const char* src, int clen)
+{
+    return _ut_utf8_to_unicode(src, clen, dst, wlen);
+}
+
+static int W2A_FAST(char* dst, int clen, const wchar_t* src, int wlen)
+{
+    return _ut_utf8_from_unicode(src, wlen, dst, clen);
+}

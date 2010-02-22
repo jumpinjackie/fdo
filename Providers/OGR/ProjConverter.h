@@ -30,7 +30,7 @@ class ProjConverter
     public:
         ProjConverter();
         virtual ~ProjConverter();
-        const wchar_t* TranslateProjection(const wchar_t* proj);
+        std::wstring TranslateProjection(const wchar_t* proj);
         static ProjConverter* ProjectionConverter;
 
 };
