@@ -34,18 +34,8 @@
 #define RDONLY_TRUE          L"TRUE"
 
 
-extern void tilde2dot(char* mbfc);
+extern void tilde2dot(std::string& mbfc);
 extern void dot2tilde(wchar_t* wname);
-
-
-static void avoidwarnings()
-{
-    //those two are here just to suppress warnings from showing up
-    //for unused variables.
-    (void)FDO_ACTIVELONGTRANSACTION;
-    (void)FDO_ROOTLONGTRANSACTION;
-    avoidwarnings();
-}
 
 
 //FDO entry point
@@ -168,7 +158,7 @@ FdoConnectionState OgrConnection::Open()
     wcsncpy(tmp, dsw, slen);
     tmp[slen] = 0;
 
-    W2A(tmp);
+    std::string mbtmp = W2A_SLOW(tmp);
 
     delete tmp;
     
@@ -177,14 +167,12 @@ FdoConnectionState OgrConnection::Open()
     printf ("ReadOnly %d\n", (int)readonly);
 #endif
     
-    m_poDS = OGRSFDriverRegistrar::Open(mbtmp, !readonly);
+    m_poDS = OGRSFDriverRegistrar::Open(mbtmp.c_str(), !readonly);
     if( m_poDS == NULL )
     {
         std::string str = "Connect failed: "; 
         str.append(CPLGetLastErrorMsg());
-        const char* x = str.c_str();
-        A2W(x);
-        throw FdoConnectionException::Create(wx);
+        throw FdoConnectionException::Create(A2W_SLOW(str.c_str()).c_str());
     }
     m_connState = FdoConnectionState_Open;
     
@@ -396,11 +384,12 @@ FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filte
 {
     bool bbox = false;
     FdoString* fc = fcname->GetName();
-    W2A(fc);
+    
+    std::string mbfc = W2A_SLOW(fc);
 
     tilde2dot(mbfc);
     
-    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
 
     OgrFdoUtil::ApplyFilter(layer, filter);
 
@@ -416,7 +405,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
                                  FdoIdentifierCollection* grouping)
 {
     FdoString* fc = fcname->GetName();
-    W2A(fc);
+    std::string mbfc = W2A_SLOW(fc);
     
     if (bDistinct)
     {
@@ -426,9 +415,9 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         
         FdoPtr<FdoIdentifier> id = properties->GetItem(0);
         FdoString* pname = id->GetName();
-        W2A(pname);
+        std::string mbpname = W2A_SLOW(pname);
         
-        sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname, mbfc);
+        sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname.c_str(), mbfc);
 #if DEBUG
         printf (" select distinct: %s\n", sql);
 #endif
@@ -459,11 +448,11 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
             throw FdoCommandException::Create(L"Unsupported aggregate operation.");
 
         FdoString* exprs = expr->ToString();
-        W2A(exprs);
+        std::string mbexprs = W2A_SLOW(exprs);
         
         char sql[512];
         
-        sprintf(sql, "SELECT %s FROM '%s'", mbexprs, mbfc);
+        sprintf(sql, "SELECT %s FROM '%s'", mbexprs.c_str(), mbfc.c_str());
 #if DEBUG
         printf (" select distinct: %s\n", sql);
 #endif
@@ -479,11 +468,11 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
 FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
     FdoString* fc = fcname->GetName();
-    W2A(fc);
+    std::string mbfc = W2A_SLOW(fc);
 
     tilde2dot(mbfc);
     
-    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
     
         //check if we can delete
     int canDo = layer->TestCapability(OLCRandomWrite);
@@ -513,11 +502,11 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
     FdoString* fc = fcname->GetName();
-    W2A(fc);
+    std::string mbfc = W2A_SLOW(fc);
 
     tilde2dot(mbfc);
     
-    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
     
         //check if we can delete
     int canDo = layer->TestCapability(OLCDeleteFeature);
@@ -551,11 +540,11 @@ FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValueCollection* propvals)
 {
     FdoString* fc = fcname->GetName();
-    W2A(fc);
+    std::string mbfc = W2A_SLOW(fc);
 
     tilde2dot(mbfc);
     
-    OGRLayer* layer = m_poDS->GetLayerByName(mbfc);
+    OGRLayer* layer = m_poDS->GetLayerByName(mbfc.c_str());
     
     //check if we can insert
     int canDo = layer->TestCapability(OLCSequentialWrite);
@@ -617,9 +606,7 @@ void OgrSpatialContextReader::Dispose()
 FdoString* OgrSpatialContextReader::GetName()
 {
     const char* name = m_connection->GetOGRDataSource()->GetLayer(m_nIndex)->GetLayerDefn()->GetName();
-    A2W(name);
-
-    m_name = wname;
+    m_name = A2W_SLOW(name);
     return m_name.c_str();
 }
 
@@ -644,11 +631,11 @@ FdoString* OgrSpatialContextReader::GetCoordinateSystemWkt()
     if (wkt == NULL)
         return ArbitraryWkt_Meter;
     
-    A2W(wkt);
-    m_wkt = wwkt;
+    m_wkt = A2W_SLOW(wkt);
     
     OGRFree (wkt);
-    return ProjConverter::ProjectionConverter->TranslateProjection(m_wkt.c_str());
+    m_wkt = ProjConverter::ProjectionConverter->TranslateProjection(m_wkt.c_str()); 
+    return m_wkt.c_str();
 }
 
 FdoSpatialContextExtentType OgrSpatialContextReader::GetExtentType()
@@ -794,7 +781,7 @@ FdoByte OgrFeatureReader::GetByte(FdoString* propertyName)
 
 FdoDateTime OgrFeatureReader::GetDateTime(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     int yr = -1;
     int mt = -1;
     int dy = -1;
@@ -811,7 +798,7 @@ FdoDateTime OgrFeatureReader::GetDateTime(FdoString* propertyName)
 
 double OgrFeatureReader::GetDouble(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     return m_poFeature->GetFieldAsDouble(mbpropertyName);
 }
 
@@ -822,7 +809,7 @@ FdoInt16 OgrFeatureReader::GetInt16(FdoString* propertyName)
 
 FdoInt32 OgrFeatureReader::GetInt32(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
@@ -845,11 +832,10 @@ float OgrFeatureReader::GetSingle(FdoString* propertyName)
 
 FdoString* OgrFeatureReader::GetString(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
     
-    A2W(val);
-    m_sprops[(long)val] = wval;
+    m_sprops[(long)val] = A2W_SLOW(val);
     return m_sprops[(long)val].c_str();
 }
 
@@ -865,7 +851,7 @@ FdoIStreamReader* OgrFeatureReader::GetLOBStreamReader(FdoString* propertyName )
 
 bool OgrFeatureReader::IsNull(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
@@ -980,7 +966,7 @@ void OgrFeatureReader::Close()
 
 FdoDataType OgrFeatureReader::GetDataType( FdoString* propertyName )
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
     
@@ -1043,7 +1029,7 @@ OgrDataReader::OgrDataReader(OgrConnection* conn, OGRLayer* layer, FdoIdentifier
                 if (func)
                 {
                     FdoString* name = func->GetName();
-                    W2A(name);
+                    std::string mbname = W2A_SLOW(name);
                     
                     FdoPtr<FdoExpressionCollection> args = func->GetArguments();
                     FdoPtr<FdoExpression> fexpr = args->GetItem(0);
@@ -1053,11 +1039,11 @@ OgrDataReader::OgrDataReader(OgrConnection* conn, OGRLayer* layer, FdoIdentifier
                     if (prop)
                     {
                         FdoString* propname = prop->GetName();
-                        W2A(propname);
+                        std::string mbpropname = W2A_SLOW(propname);
                         
                         char ogrname[512];
                         
-                        sprintf(ogrname, "%s_%s", mbname, mbpropname);
+                        sprintf(ogrname, "%s_%s", mbname.c_str(), mbpropname.c_str());
                         
                         m_namemap[cidname] = ogrname;
                     }
@@ -1088,8 +1074,7 @@ FdoString* OgrDataReader::GetPropertyName(FdoInt32 index)
     if (m_propnames[index].empty())
     {
         const char* name = m_poLayer->GetLayerDefn()->GetFieldDefn(index)->GetNameRef();
-        A2W(name);
-        m_propnames[index] = wname;
+        m_propnames[index] = A2W_SLOW(name);
     }
     
     return m_propnames[index].c_str();
@@ -1097,7 +1082,7 @@ FdoString* OgrDataReader::GetPropertyName(FdoInt32 index)
 
 FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
     return m_poFeature->GetFieldIndex(mbpropertyName);
@@ -1105,7 +1090,7 @@ FdoInt32 OgrDataReader::GetPropertyIndex(FdoString* propertyName)
 
 FdoDataType OgrDataReader::GetDataType(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
     
     OGRFeatureDefn* fdefn = m_poLayer->GetLayerDefn();
@@ -1144,7 +1129,7 @@ FdoByte OgrDataReader::GetByte(FdoString* propertyName)
 
 FdoDateTime OgrDataReader::GetDateTime(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
     
     int yr = -1;
@@ -1163,7 +1148,7 @@ FdoDateTime OgrDataReader::GetDateTime(FdoString* propertyName)
 
 double OgrDataReader::GetDouble(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
     return m_poFeature->GetFieldAsDouble(mbpropertyName);
@@ -1176,7 +1161,7 @@ FdoInt16 OgrDataReader::GetInt16(FdoString* propertyName)
 
 FdoInt32 OgrDataReader::GetInt32(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
     return m_poFeature->GetFieldAsInteger(mbpropertyName);
@@ -1194,13 +1179,12 @@ float OgrDataReader::GetSingle(FdoString* propertyName)
 
 FdoString* OgrDataReader::GetString(FdoString* propertyName)
 {
-    W2A(propertyName);
+    W2A_PROPNAME(propertyName);
     if (m_bUseNameMap) mbpropertyName = (char*)m_namemap[propertyName].c_str();
 
     const char* val = m_poFeature->GetFieldAsString(mbpropertyName);
     
-    A2W(val);
-    m_sprops[(long)val] = wval;
+    m_sprops[(long)val] = A2W_SLOW(val);
     return m_sprops[(long)val].c_str();
 }
 
