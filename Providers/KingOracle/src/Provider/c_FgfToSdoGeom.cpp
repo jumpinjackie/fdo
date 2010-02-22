@@ -275,7 +275,7 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
       
       size_t numrings = *fbuff++;
       
-      numrings--;
+      //numrings--;
       for(size_t ind =0;ind<numrings;ind++)
       {
         // get first point
