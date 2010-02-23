@@ -100,6 +100,87 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\UnitTest\Win64\Debug"
+			ConfigurationType="1"
+			InheritedPropertySheets="..\PostGis.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\Provider;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK;_WIN64"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="Pch.h"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4275;4251;4273"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win64\Debug mkdir ..\..\Bin\Win64\Debug"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib&quot;"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="..\..\Bin\Win32\Release"
 			IntermediateDirectory="..\..\Obj\Win32\Release\UnitTest"
@@ -179,87 +260,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory="..\..\Obj\UnitTest\Win64\Debug"
-			ConfigurationType="1"
-			InheritedPropertySheets="..\PostGis.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\Provider;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="Pch.h"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4275;4251;4273"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Bin\Win64\Debug mkdir ..\..\Bin\Win64\Debug"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib&quot;"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\..\Bin\Win64\Release"
 			IntermediateDirectory="..\..\Obj\UnitTest\Win64\Release"
@@ -287,7 +287,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\Provider;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;"
-				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK"
+				PreprocessorDefinitions="_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_DYN_LINK;_WIN64"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -504,17 +504,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying FDO files"
-						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb"
-						Outputs="$(OutDir)\CopyFdo.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -522,6 +511,17 @@
 						Description="Copying FDO files"
 						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb"
+						Outputs="$(OutDir)\CopyFdo.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying FDO files"
+						CommandLine="copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)&#x0D;&#x0A;copy &quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyFdo.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDO.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;&quot;$(FDO)&quot;\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb"
 						Outputs="$(OutDir)\CopyFdo.ilk"
 					/>
 				</FileConfiguration>
@@ -552,17 +552,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Copying thirdparty dlls"
-						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_program_options-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_program_options-vc80-mt-1_34_1.dll"
-						Outputs="$(OutDir)\CopyThirdparty.ilk"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -570,6 +559,17 @@
 						Description="Copying thirdparty dlls"
 						CommandLine="if not exist &quot;$(OutDir)\testrunnerd.dll&quot; copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)&#x0D;&#x0A;if not exist &quot;$(OutDir)\cppunitd_dll.dll&quot; copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)&#x0D;&#x0A;if not exist &quot;$(OutDir)\Xalan-C_1_7_0D.dll&quot; copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Debug\Xalan-C_1_7_0D.dll $(OutDir)&#x0D;&#x0A;if not exist &quot;$(OutDir)\XalanMessages_1_7_0D.dll&quot; copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Debug\XalanMessages_1_7_0D.dll $(OutDir)&#x0D;&#x0A;if not exist &quot;$(OutDir)\xerces-c_2_5_0.dll&quot; copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Debug\xerces-c_2_5_0D.dll $(OutDir)&#x0D;&#x0A;if not exist &quot;$(OutDir)\boost_program_options-vc90-mt-gd-1_34_1.dll&quot; copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_program_options-vc90-mt-gd-1_34_1.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
 						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Debug\Xalan-C_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win64\VC9\Debug\XalanMessages_1_7_0D.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win64\VC9\Debug\xerces-c_2_5_0D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_program_options-vc80-mt-gd-1_34_1.dll"
+						Outputs="$(OutDir)\CopyThirdparty.ilk"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Copying thirdparty dlls"
+						CommandLine="copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll $(OutDir)&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_program_options-vc90-mt-1_34_1.dll $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_program_options-vc80-mt-1_34_1.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -600,7 +600,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -611,7 +611,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
