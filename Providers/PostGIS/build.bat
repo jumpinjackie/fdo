@@ -83,8 +83,8 @@ shift
 goto study_params
 
 :start_build
-if "%TYPEBUILD%"=="Win32" SET INTERMEDIATEDIR="Win32"
-if "%TYPEBUILD%"=="x64" SET INTERMEDIATEDIR="Win64"
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR="Win64"
 
 if "%TYPEACTION%"=="build" goto start_exbuild
 if "%TYPEACTION%"=="clean" goto start_exbuild
