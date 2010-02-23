@@ -240,7 +240,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib GRFPOverrides.lib cppunitd.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib GRFPOverrides.lib cppunit.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;"
@@ -328,7 +328,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib GRFPOverrides.lib cppunitd.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib GRFPOverrides.lib cppunit.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win64\Release;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;"
