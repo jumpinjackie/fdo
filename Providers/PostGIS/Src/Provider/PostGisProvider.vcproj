@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpqdll.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug&quot;"
@@ -99,6 +99,89 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISProvider.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISProvider.dll&quot;"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="..\..\Bin\Win64\Debug"
+			IntermediateDirectory="..\..\Obj\Provider\Win64\Debug"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Inc&quot;;&quot;$(FDOTHIRDPARTY)\boost&quot;;&quot;$(FDOPOSTGRESQL)\include&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOPOSTGIS_EXPORTS;BOOST_ALL_DYN_LINK"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				CommandLine="if not exist ..\..\Bin\Win64\Debug mkdir ..\..\Bin\Win64\Debug&#x0D;&#x0A;if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug&#x0D;&#x0A;"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpqdll.lib ExpressionEngine.lib"
+				OutputFile="$(OutDir)\PostGISProvider.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms\Win64&quot;;$(NOINHERIT)"
+				GenerateDebugInformation="true"
+				SubSystem="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="..\..\Lib\Win64\Debug\PostGISProvider.lib"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="Versioning PostGISProvider.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISProvider.dll&quot;"
+				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -145,7 +228,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpqdll.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win32\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release&quot;"
@@ -183,95 +266,10 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory="..\..\Obj\Provider\Win64\Debug"
-			ConfigurationType="2"
-			InheritedPropertySheets="..\PostGis.vsprops"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories=""
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOPOSTGIS_EXPORTS;BOOST_ALL_DYN_LINK"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				CommandLine="if not exist ..\..\Bin\Win64\Debug mkdir ..\..\Bin\Win64\Debug&#x0D;&#x0A;if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
-				OutputFile="$(OutDir)\PostGISProvider.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug&quot;"
-				GenerateDebugInformation="true"
-				SubSystem="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="..\..\Lib\Win64\Debug\PostGISProvider.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Versioning PostGISProvider.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISProvider.dll&quot;"
-				ExcludedFromBuild="true"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\..\Bin\Win64\Release"
 			IntermediateDirectory="..\..\Obj\Provider\Win64\Release"
 			ConfigurationType="2"
-			InheritedPropertySheets="..\PostGis.vsprops"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -293,7 +291,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOPOSTGIS_EXPORTS;BOOST_ALL_DYN_LINK"
+				AdditionalIncludeDirectories="..\..\Inc;&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUTILITIES)\Common\Inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Inc&quot;;&quot;$(FDOTHIRDPARTY)\boost&quot;;&quot;$(FDOPOSTGRESQL)\include&quot;"
+				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOPOSTGIS_EXPORTS;BOOST_ALL_DYN_LINK"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
@@ -311,10 +310,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpq.lib ExpressionEngine.lib"
+				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONLS.lib ProvidersCommon.lib libpqdll.lib ExpressionEngine.lib"
 				OutputFile="$(OutDir)\PostGISProvider.dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDO)\Unmanaged\Lib\Win64\release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms\Win64&quot;;$(NOINHERIT)"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -578,7 +577,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -586,7 +585,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
