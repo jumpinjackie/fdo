@@ -481,9 +481,10 @@ void DeleteTests::del_without_dbf ()
             numDeleted = deleteCmd->Execute();
         }
 
-        // Disconnect & Reconnect:
-        conn->Close();
-        conn->Open();
+        // Note: Do not Disconnect & Reconnect since the file compression will kick in and hence
+        // the featIds will not match anymore.
+        //conn->Close();
+        //conn->Open();
 
         // Select all the features to verify they have been deleted correctly:
         selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
