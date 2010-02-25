@@ -400,13 +400,13 @@
     <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" />
   </gml:DerivedCRS>
   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/WMSLayers" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:WMSLayers="http://fdo.osgeo.org/schemas/feature/WMSLayers" elementFormDefault="qualified" attributeFormDefault="unqualified">
-    <xs:element name="BARRIERL_1M-x20-Foundation" type="WMSLayers:BARRIERL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
-      <xs:key name="BARRIERL_1M-x20-FoundationKey">
-        <xs:selector xpath=".//BARRIERL_1M-x20-Foundation" />
+    <xs:element name="Foundation-x20-BARRIERL_1M" type="WMSLayers:Foundation-x20-BARRIERL_1MType" abstract="false" substitutionGroup="gml:_Feature">
+      <xs:key name="Foundation-x20-BARRIERL_1MKey">
+        <xs:selector xpath=".//Foundation-x20-BARRIERL_1M" />
         <xs:field xpath="Id" />
       </xs:key>
     </xs:element>
-    <xs:complexType name="BARRIERL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+    <xs:complexType name="Foundation-x20-BARRIERL_1MType" abstract="false" fdo:hasGeometry="false">
       <xs:annotation>
         <xs:documentation>Barrier Line Features</xs:documentation>
       </xs:annotation>
@@ -428,13 +428,13 @@
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
-    <xs:element name="COASTL_1M-x20-Foundation" type="WMSLayers:COASTL_1M-x20-FoundationType" abstract="false" substitutionGroup="gml:_Feature">
-      <xs:key name="COASTL_1M-x20-FoundationKey">
-        <xs:selector xpath=".//COASTL_1M-x20-Foundation" />
+    <xs:element name="Foundation-x20-COASTL_1M" type="WMSLayers:Foundation-x20-COASTL_1MType" abstract="false" substitutionGroup="gml:_Feature">
+      <xs:key name="Foundation-x20-COASTL_1MKey">
+        <xs:selector xpath=".//Foundation-x20-COASTL_1M" />
         <xs:field xpath="Id" />
       </xs:key>
     </xs:element>
-    <xs:complexType name="COASTL_1M-x20-FoundationType" abstract="false" fdo:hasGeometry="false">
+    <xs:complexType name="Foundation-x20-COASTL_1MType" abstract="false" fdo:hasGeometry="false">
       <xs:annotation>
         <xs:documentation>Coastlines</xs:documentation>
       </xs:annotation>
@@ -458,7 +458,7 @@
     </xs:complexType>
   </xs:schema>
   <SchemaMapping provider="OSGeo.WMS.3" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
-    <complexType name="BARRIERL_1M-x20-FoundationType">
+    <complexType name="Foundation-x20-BARRIERL_1MType">
       <RasterDefinition name="Image">
         <Format>PNG</Format>
         <FormatType>image/png; PhotometricInterpretation=PaletteColor</FormatType>
@@ -467,10 +467,10 @@
         <Time />
         <Elevation />
         <SpatialContext>EPSG:4326</SpatialContext>
-        <Layer name="WMS_Schema:BARRIERL_1M Foundation" />
+        <Layer name="WMS_Schema:Foundation BARRIERL_1M" />
       </RasterDefinition>
     </complexType>
-    <complexType name="COASTL_1M-x20-FoundationType">
+    <complexType name="Foundation-x20-COASTL_1MType">
       <RasterDefinition name="Image">
         <Format>TIF</Format>
         <FormatType>image/tiff; PhotometricInterpretation=RGB</FormatType>
@@ -479,7 +479,7 @@
         <Time />
         <Elevation />
         <SpatialContext>EPSG:4326</SpatialContext>
-        <Layer name="WMS_Schema:COASTL_1M Foundation" />
+        <Layer name="WMS_Schema:FOUNDATION COASTL_1M" />
       </RasterDefinition>
     </complexType>
   </SchemaMapping>
