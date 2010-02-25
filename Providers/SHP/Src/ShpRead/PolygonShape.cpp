@@ -22,6 +22,13 @@
 
 #include <FdoSpatial.h>
 
+#define GET_ITEM(p, i, xptr, yptr)  \
+        {                  \
+            double dummy1; \
+            int dim_ring;  \
+            (p)->GetItemByMembers(i, xptr, yptr, &dummy1, &dummy1, &dim_ring); \
+        }
+
 PolygonShape::PolygonShape (int nRecordNumber, void* pMemory, bool bOverlay, int nParts, int nPoints, BoundingBoxEx *box) :
     PolyShape (nRecordNumber, pMemory, bOverlay,
         (int*)(((ESRIPolygonRecord*)pMemory) + 1),
@@ -147,6 +154,53 @@ FdoByteArray* PolygonShape::GetGeometry ()
 }
 
 //
+// The following code is cloned from FdoSpatialUtility::PointInRing(). 
+// (Refer the original method for extensive commnents on the altgorithm)
+// Optimized it for speed by skipping the "on boundary" test because 
+// a) it is expensive and b) we assume the rings are well formed and 
+// the chosen point is not on the ring.
+
+bool PolygonShape::PointInRing(FdoILinearRing* ring, double x, double y)
+{
+    bool yflag0, yflag1;
+    double vtx0X, vtx0Y, vtx1X, vtx1Y;
+
+    bool isInside = false;
+    int count = 0;
+   
+    int numverts = ring->GetCount();
+
+    // get the last point in the contour
+    GET_ITEM(ring, numverts-1, &vtx0X, &vtx0Y);
+
+    // get test bit for above/below X axis
+    yflag0 = (vtx0Y >= y);
+
+    for (int j = 0; j < numverts; j++)
+    {
+        GET_ITEM(ring, j, &vtx1X, &vtx1Y);
+       
+        yflag1 = (vtx1Y >= y);
+
+        if (yflag0 != yflag1)
+        {
+            if (((vtx1Y-y)*(vtx0X-vtx1X) >=
+                (vtx1X-x)*(vtx0Y-vtx1Y)) == yflag1)
+            {
+                isInside  = !isInside;
+            }
+        }
+
+        // move to the next pair of vertices, retaining info as possible
+        yflag0 = yflag1;
+        vtx0X = vtx1X;
+        vtx0Y = vtx1Y;
+    }
+
+    return isInside;
+} 
+
+//
 // This method has been cloned from FdoSpatialUtility::CreateGeometryFromRings() which assumes the rings
 // are totally unrelated. For this reason the number of point-in-polygon tests can be very large leading
 // to an unacceptable performance problem. In addition it is based on a sort by area approach which also
@@ -207,17 +261,30 @@ FdoIGeometry* PolygonShape::CreateGeometryFromRings( FdoLinearRingCollection* ri
     { 
         FdoPtr<FdoILinearRing> ring = rings->GetItem(i);
 
-        // Get a point of this ring to perform 'point-in-polygon' test against the external ring
-        FdoPtr<FdoDirectPositionCollection> positions = ring->GetPositions();
-        FdoPtr<FdoIDirectPosition> pos = positions->GetItem(0);
-        double x = pos->GetX();
-        double y = pos->GetY();
+        // Pick the mid point of the segment instead of 1st point for "point-in-ring" testing. 
+        // This checks unambiguosly "on boundary" cases where the rings are touching.
+        double x0, y0, x1, y1;
+        GET_ITEM(ring, 0, &x0, &y0);
+
+        double x = x1 = x0;
+        double y = y1 = y0;
+        int  k = 1;
+
+        while ((x0 == x1) && (y0 == y1) && (k < ring->GetCount() - 1))
+        {
+            GET_ITEM(ring, k, &x1, &y1);  
+            k++;
+        }
+
+        // Take the mid of the segment
+        x = (x0 + x1)/2;
+        y = (y0 + y1)/2;
 
         // Check the point against the ring bounding box
         bool isInside = (x <= extent->GetMaxX() && x >= extent->GetMinX() && y <= extent->GetMaxY() && y >= extent->GetMinY());
 
         if (isInside) 
-            isInside = FdoSpatialUtility::PointInRing(extRing, x, y);
+            isInside = PointInRing(extRing, x, y);
 
         if (isInside) 
         {
