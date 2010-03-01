@@ -518,3 +518,34 @@ wchar_t* EnsureNoIsLocalIndep(wchar_t* str)
     }
     return str;
 }
+
+const char* ExtractDbName(const char* v, int& stStr, int& lenStr)
+{
+    const char* tmp = v;
+    stStr = lenStr = 0;
+    while (*tmp == '\"') tmp++;
+    bool dqPr = ((int)(tmp-v) % 2) != 0;
+    stStr = (int)dqPr;
+    do
+    {
+        tmp++;
+        if (!dqPr && (*tmp == '.' || *tmp == '\0'))
+        {
+            lenStr = (int)(tmp-v);
+            return (*tmp == '.') ? tmp+1 : NULL;
+        }
+        if (dqPr && *tmp == '\"')
+        {
+            const char* t = tmp;
+            while (*t == '\"') t++;
+            if (((int)(t-tmp) % 2) != 0)
+            {
+                lenStr = (int)(t-v)-stStr-1;
+                return (*t == '\0') ? NULL : t+1;
+            }
+            tmp = t;
+        }
+        
+    }while(*tmp != '\0');
+    return NULL;
+}
