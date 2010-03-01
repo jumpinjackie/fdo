@@ -277,7 +277,7 @@ void FdoCommonQueryAggregator::ProcessFunction(FdoFunction& expr)
             FdoString* strResult = NULL;
             FdoDateTime dateTimeResult;
             bool bValueIsNull = false;
-            FdoDataType resultDataType;
+            FdoDataType resultDataType = FdoDataType_BLOB;
             if (GetResultPropertyType() == FdoPropertyType_DataProperty)
             {
                 resultDataType = GetResultDataType();
