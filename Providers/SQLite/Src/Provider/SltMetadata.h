@@ -28,7 +28,11 @@ enum GeomFormat
 
 class SltConnection;
 
-typedef std::vector<std::pair<std::string, std::string> > StlMapNamesList;
+typedef std::pair<std::string, std::string> StlNamePair;
+typedef std::vector< StlNamePair > StlMapNamesList;
+
+typedef std::pair<std::string, StlNamePair> StlPropNamePair;
+typedef std::vector< StlPropNamePair > StlMapPropNamesList;
 
 //Data structure containing FDO metadata for an SQLite table
 class SltMetadata
@@ -42,6 +46,8 @@ public:
 
     GeomFormat              GetGeomFormat() { return (GeomFormat)m_geomFormat; }
     const wchar_t*          GetGeomName()   { return m_geomName; }
+    const wchar_t*          GetIdName()     { return m_idName; }
+    const char*             GetMainViewTable() { return m_tablename.c_str(); }
     int                     GetGeomIndex()  { return m_geomIndex; }
     int                     GetIDIndex()    { return m_idIndex; }
 
@@ -65,8 +71,10 @@ private:
     bool ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& result);
     void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
 
+    void ProcessViewProperties(Table* pTable);
     void FindSpatialContextName(int srid, std::wstring& ret);
-    void ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapNamesList& properties, StlMapNamesList& expressions, Table* pTable);
+    // returns true in case extra checking needs to be done
+    bool ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapPropNamesList& properties, StlMapNamesList& expressions, Table* pTable);
 
     SltConnection*      m_connection;
     FdoClassDefinition* m_fc;
@@ -74,6 +82,7 @@ private:
     bool                m_bUseFdoMetadata;
     std::string         m_tablename;
     bool                m_bIsView;
+    const wchar_t*      m_idName; // in case is a view and we have one
     const wchar_t*      m_geomName;
     int                 m_idIndex;
     int                 m_geomIndex;

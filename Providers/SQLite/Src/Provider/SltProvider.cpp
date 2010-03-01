@@ -655,7 +655,6 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
 
-
     const wchar_t* wfc = fcname->GetName();
     size_t wlen = wcslen(wfc);
     size_t clen = 4 * wlen+1;
@@ -670,6 +669,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     bool canFastStep = true;
     bool mustKeepFilterAlive = false;
 
+    const wchar_t* idClassProp = L"rowid";
     SltMetadata* md = GetMetadata(mbfc);
     if (md == NULL)
     {
@@ -681,11 +681,16 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
     if (md->IsView())
     {
-        CacheViewContent(mbfc);
-        sbfcn.Reset();
-        sbfcn.Append("$view", 5);
-        sbfcn.Append(wfc);
-        mbfc = sbfcn.Data();
+        if (md->GetIdName() == NULL)
+        {
+            CacheViewContent(mbfc);
+            sbfcn.Reset();
+            sbfcn.Append("$view", 5);
+            sbfcn.Append(wfc);
+            mbfc = sbfcn.Data();
+        }
+        else
+            idClassProp = md->GetIdName();
     }
 
     //Translate the filter from FDO to SQLite where clause.
@@ -750,7 +755,9 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (!ordering.empty())
     {
         StringBuffer sb;
-        sb.Append("SELECT ROWID FROM ", 18);
+        sb.Append("SELECT ", 7);
+        sb.AppendDQuoted(idClassProp);
+        sb.Append(" FROM ", 6);
         sb.AppendDQuoted(mbfc);
         sb.Append(" ORDER BY ", 10);
 
@@ -841,7 +848,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         if (strWhere.Length()>0 && scrollable)
         {
             FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
             collidf->Add(rowIdIdf);
             SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
             ri = GetScrollableIterator(rdrSc);
@@ -856,7 +863,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         if (strWhere.Length()>0 && scrollable)
         {
             FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
             collidf->Add(rowIdIdf);
             SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
             ri = GetScrollableIterator(rdrSc);
@@ -895,7 +902,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                 // in case we run Count(rowid) and set the count will not work either since we could have:
                 // Feat1Id=40, Feat2Id=50 and Feat3Id=100, how can we implement move to, e.g MoveTo(2)!?
                 FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-                FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(L"rowid");
+                FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
                 collidf->Add(rowIdIdf);
                 SltReader* rdrSc = new SltReader(this, collidf, mbfcname, "", NULL, canFastStep, NULL, NULL);
                 ri = GetScrollableIterator(rdrSc);
@@ -951,7 +958,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         throw FdoException::Create(errVal.c_str(), 1);
     }
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
-    if (md->IsView())
+    if (md->IsView() && md->GetIdName() == NULL)
     {
         CacheViewContent(mbfc);
         sbfcn.Reset();
@@ -1584,14 +1591,31 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
 #endif
     //build the spatial index, if this is the first time it
     //is needed
-    si = new SpatialIndex(NULL);
+    bool autodel = true;
     // lets create the description in case we get an exception we don't leak
     SltMetadata* md = GetMetadata(table);
     if(md == NULL || md->IsView())
-        spDesc = new SpatialIndexDescriptor(si);
+    {
+        if(md != NULL && md->GetIdName() != NULL)
+        {
+            si = GetSpatialIndex(md->GetMainViewTable());
+            autodel = (si==NULL);
+        }
+        if (autodel)
+            si = new SpatialIndex(NULL);
+
+        spDesc = new SpatialIndexDescriptor(si, autodel);
+    }
     else
+    {
+        si = new SpatialIndex(NULL);
         spDesc = new SpatialIndexDescriptor(this, table, si);
+    }
     m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
+
+    // SI already built return it
+    if (!autodel)
+        return si;
 
     //we will need the ID and the geometry when we build the spatial index, so add them to the query
     FdoPtr<FdoIdentifierCollection> idcol = FdoIdentifierCollection::Create();
@@ -2835,6 +2859,7 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
     bool canFastStep = true;
     bool mustKeepFilterAlive = false;
 
+    const wchar_t* idClassProp = L"rowid";
     SltMetadata* md = GetMetadata(mbfc);
     if (md == NULL)
     {
@@ -2845,11 +2870,16 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
     }
     if (md->IsView())
     {
-        CacheViewContent(mbfc);
-        sbfcn.Reset();
-        sbfcn.Append("$view", 5);
-        sbfcn.Append(wfc);
-        mbfc = sbfcn.Data();
+        if (md->GetIdName() == NULL)
+        {
+            CacheViewContent(mbfc);
+            sbfcn.Reset();
+            sbfcn.Append("$view", 5);
+            sbfcn.Append(wfc);
+            mbfc = sbfcn.Data();
+        }
+        else
+            idClassProp = md->GetIdName();
     }
 
     //Translate the filter from FDO to SQLite where clause.
@@ -2912,7 +2942,7 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
     }
     else
     {
-        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"rowid");
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(idClassProp);
         props->Add(idf);
     }
 

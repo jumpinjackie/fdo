@@ -125,7 +125,7 @@ m_fromwhere()
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* where, SpatialIterator* si, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* strWhere, SpatialIterator* si, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -145,7 +145,7 @@ m_fromwhere()
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
-    DelayedInit(props, fcname, where);
+    DelayedInit(props, fcname, strWhere);
 }
 
 //Same as above but does not initialize the reader.
@@ -196,7 +196,7 @@ void SltReader::SetInternalFilter(FdoFilter* filter)
     m_filter = FDO_SAFE_ADDREF(filter);
 }
 
-void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where, bool addPkOnly)
+void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, bool addPkOnly)
 {
     int rc = 0;
 
@@ -226,24 +226,39 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_reissueProps.Reserve(4);
     }
     
+    const wchar_t* idClassProp = L"rowid";
+
     m_fromwhere.Append(" FROM ", 6);
     if (!md->IsView())
         m_fromwhere.AppendDQuoted(fcname);
     else
     {
-        m_connection->CacheViewContent(fcname);
-        m_fromwhere.Append("\"$view");
-        m_fromwhere.Append(fcname);
-        m_fromwhere.Append("\"");
+        if (md->GetIdName() == NULL)
+        {
+            m_connection->CacheViewContent(fcname);
+            m_fromwhere.Append("\"$view");
+            m_fromwhere.Append(fcname);
+            m_fromwhere.Append("\"");
+        }
+        else
+        {
+            m_useFastStepping = false;
+            idClassProp = md->GetIdName();
+            m_fromwhere.AppendDQuoted(fcname);
+        }
     }
 
     //construct the where clause and 
     //if necessary add FeatId filter -- in case we know which features we want
     //like when we have a spatial iterator
-    if (*where==0)
+    if (*strWhere==0)
     {
         if (m_si || m_ri)
-            m_fromwhere.Append(" WHERE ROWID=?;", 15);
+        {
+            m_fromwhere.Append(" WHERE ", 7);
+            m_fromwhere.AppendDQuoted(idClassProp);
+            m_fromwhere.Append("=?;", 3);
+        }
         else
             m_fromwhere.Append(";", 1);
     }
@@ -252,10 +267,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_fromwhere.Append(" WHERE ", 7);
 
         if (m_si || m_ri)
-            m_fromwhere.Append("ROWID=? AND ", 12);
+        {
+            m_fromwhere.AppendDQuoted(idClassProp);
+            m_fromwhere.Append("=? AND ", 7);
+        }
 
         m_fromwhere.Append("(", 1);
-        m_fromwhere.Append(where);
+        m_fromwhere.Append(strWhere);
         m_fromwhere.Append(");", 2);
     }
 
@@ -378,10 +396,12 @@ void SltReader::InitPropIndex(sqlite3_stmt* pStmt)
 	for (int i=0; i<nProps; i++)
 	{
 		const char* cname = sqlite3_column_name(pStmt, i);
+        int stProp = 0, lenProp = 0;
+        ExtractDbName(cname, stProp, lenProp);
         
         //Note buflen is longer than the column name, but the code we call will terminate when it sees the NULL terminator.
         //We just need to pass in a number that is bigger than the length of the string, and buflen is guaranteed to be.
-        int len = 1 + A2W_FAST(dst, buflen, cname, buflen); 
+        int len = 1 + A2W_FAST(dst, buflen, cname+stProp, lenProp); 
 
         m_propNames.push_back(dst);
         m_mNameToIndex.Add(dst, i);
@@ -1559,12 +1579,12 @@ std::wstring SltReader::ExtractExpression(const wchar_t* exp, const wchar_t* pro
 DelayedInitReader::DelayedInitReader(   SltConnection*              connection, 
                                         FdoIdentifierCollection*    props, 
                                         const char*                 fcname, 
-                                        const char*                 where,
+                                        const char*                 strWhere,
                                         RowidIterator* ri)
 : SltReader(connection),
 m_bInit(false),
 m_fcname(fcname),
-m_where(where)
+m_where(strWhere)
 {
     m_ri = ri;
     m_props = FDO_SAFE_ADDREF(props);   
