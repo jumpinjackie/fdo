@@ -257,9 +257,9 @@ const CHAR END_OF_FILE = (CHAR)0x1a;
 //       Such ring will be associated with exterior ring.
 //     - TRUE then the an algorithm for correctly associating the nested rings, no matter
 //       the nesting level will be executed and turn them into exterior rings.
-// NOTE: The algorithm for nesting check is expensive and until an optimization is found
-//       the ckeck is disabled.
+// NOTE: The algorithm for nesting check is expensive and it might affect the performance
+//       on reading the polygons.
 
-#define RELATE_NESTED_RINGS    false
+#define RELATE_NESTED_RINGS    true
 
 #endif  // CONSTANTS_H
