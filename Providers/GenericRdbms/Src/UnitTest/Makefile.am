@@ -17,8 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Common Odbc MySql PostGis
-DIST_SUBDIRS = Common Odbc MySql PostGis
+SUBDIRS = Common Odbc MySql
+DIST_SUBDIRS = Common Odbc MySql
 
 EXTRA_DIST = \
   MsTest.xls \
@@ -94,7 +94,7 @@ EXTRA_DIST = \
   LogicalPhysicalSorter.xslt \
   OverrideBender.xslt
 
-noinst_PROGRAMS = UnitTestMySql UnitTestOdbc UnitTestPostGis
+noinst_PROGRAMS = UnitTestMySql UnitTestOdbc
 
 #MySql
 UnitTestMySql_SOURCES = MySqlTestRegister.cpp
@@ -195,56 +195,6 @@ UnitTestOdbc_LDADD =  \
 UnitTestOdbc_LDFLAGS = \
   -L$(FDOODBC)/lib
   
-#PostGis
-UnitTestPostGis_SOURCES = PostGisTestRegister.cpp
-
-UnitTestPostGis_LDADD =  \
-  -lxalan-c \
-  -lxalanMsg \
-  -lxerces-c \
-  -lz \
-  -lpq \
-  -lcrypt \
-  ./Common/libCommonUnitTests.la \
-  ./PostGis/libPostGisUnitTests.la  \
-  ../PostGis/libFdoRdbmsPostgreSQL.la  \
-  ../Fdo/libFdoRdbms.la   \
-  ../Rdbi/librdbi.la  \
-  ../PostGis/Driver/libpostgisdr.la \
-  ../Gdbi/libGdbi.la  \
-  ../LongTransactionManager/libLTManager.la  \
-  ../LockManager/libLockManager.la  \
-  ../Util/libutil.la  \
-  ../Geometry/Fgf/libgeometry_fgf.la  \
-  ../SchemaMgr/Lp/libSmLpGrd.la  \
-  ../SchemaMgr/libSmGrd.la   \
-  ../SchemaMgr/Ov/libSchemaMgr_OV.la  \
-  ../SchemaMgr/Ph/Cfg/libSmPhCfgGrd.la  \
-  ../SchemaMgr/Ph/libSmPhGrd.la   \
-  ../SchemaMgr/Ph/Rd/libSmPhRdGrd.la  \
-  ../PostGis/SchemaMgr/Ph/Rd/libFdoRdbmsPostGis_SchemaMgr_Ph_Rd.la \
-  $(FDO)/Unmanaged/Src/libFDO.la   \
-  $(FDOTHIRDPARTY)/linux/cppunit/lib/libcppunit.a \
-  $(FDOUTILITIES)/Common/libProvidersCommon.la \
-  $(FDOUTILITIES)/TestCommon/libTestCommon.la \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/libSchemaMgr.la \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Lp/libSmLogicalPhysical.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/libSmPhysical.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Cfg/libSmPhCfg.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Mt/libSmPhMt.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rb/libSmPhRb.la  \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ph/Rd/libSmPhRd.la \
-  $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
-  $(FDOUTILITIES)/ExpressionEngine/Src/libExpressionEngine.la \
-  $(FDOUTILITIES)/Common/libProvidersCommon.la \
-  ../Rdbi/librdbi.la \
-  ../Util/libutil.la \
-  -lpq \
-  -lz
-
-UnitTestPostGis_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/pgsql/lib
-  
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
   -I$(FDO)/Unmanaged \
@@ -265,7 +215,6 @@ INCLUDES = \
   -I../Fdo/FeatureCommands \
   -I./Common \
   -I./MySql \
-  -I./Odbc  \
-  -I./PostGis
+  -I./Odbc
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -D__STDC_LIMIT_MACROS -DRDBI_STATIC

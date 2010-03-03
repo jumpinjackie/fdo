@@ -4,13 +4,11 @@ include_directories(
 	Common
 	MySql
 	Odbc
-	PostGis
 	)
 
 add_subdirectory( Common )
 add_subdirectory( Odbc )
 add_subdirectory( MySql )
-add_subdirectory( PostGis )
 
 add_definitions( -D__STDC_LIMIT_MACROS -DRDBI_STATIC )
 
@@ -35,15 +33,6 @@ set( UnitTestOdbc_SRCS
 add_executable( UnitTestOdbc ${UnitTestOdbc_SRCS} )
 
 target_link_libraries( UnitTestOdbc
-	)
-
-set( UnitTestPostGis_SRCS
-   PostGisTestRegister.cpp
-)
-
-add_executable( UnitTestPostGis ${UnitTestPostGis_SRCS} )
-
-target_link_libraries( UnitTestPostGis
 	)
 
 
