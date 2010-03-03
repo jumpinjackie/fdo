@@ -111,7 +111,11 @@ int postgis_est_cursor_obj (postgis_context_def *context, char **cursor)
             // already defined in the current session.
 
             sprintf (curs->stmt_name, "fdo%x",(unsigned long)&(curs->stmt_name));
+#ifdef _WIN32
             sprintf (curs->cursor_name, "fdo%I64d",getNextCursorId());
+#else
+            sprintf (curs->cursor_name, "fdo%lld",getNextCursorId());
+#endif
 
             /* Initialize cursor members. */
             curs->sql = NULL;
