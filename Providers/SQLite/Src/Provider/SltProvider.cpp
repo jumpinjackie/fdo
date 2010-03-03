@@ -147,45 +147,113 @@ void SltConnection::SetConnectionString(FdoString* value)
 {
     m_mProps->clear();
     
-    //parse the connection properties from the connection string
-    size_t len = wcslen(value);
-    wchar_t* valcpy = (wchar_t*)alloca(sizeof(wchar_t) * (len + 1));
-    wcscpy(valcpy, value);
+    if(!value)
+        return;
 
-#ifdef _WIN32
-    wchar_t* token = wcstok(valcpy, L";");
-#else
-    wchar_t* ptr = NULL; //for Linux wcstok
-    wchar_t* token = wcstok(valcpy, L";", &ptr);
-#endif
-
-    //tokenize input string into separate connection properties
-    while (token) 
+    std::wstring token;
+    bool isError = false;
+    short state = 0;
+    int pos = 0, possn = 0, possv = 0, posend = 0;
+    do
     {
-        //token is in the form "<prop_name>=<prop_value>"
-        //look for the = sign
-        wchar_t* eq = wcschr(token, L'=');
-
-        if (eq)
+        switch(state)
         {
-            *eq = L'\0';
-    
-                //pass empty string instead of null. This means the null prop value
-                //exception is delayed up to until the user attempts to open the 
-                //connection. This gives the opportunity to fix the connection
-                //string before opening the connection.
-            if (*(eq+1) == L'\0')
-                SetProperty(token, L"");
-            else
-                SetProperty(token, eq+1);
+            case 0: // looking for start property name skipping spaces, e.g. <  Name=Val>
+                if (*(value+pos) == L'=')
+                    isError = true;
+                else if (*(value+pos) != L' ' && *(value+pos) != L';')
+                {
+                    possn = pos;
+                    posend = pos+1;
+                    state = 1;
+                }
+                token.clear();
+            break;
+            case 1: //get property name skipping spaces after name, e.g. <Name  =Val>
+                if (*(value+pos) == L'=')
+                {
+                    token.append(value+possn, posend-possn);
+                    if (*(value+pos+1) == L'\"')
+                    {
+                        pos++;
+                        state = 3;
+                    }
+                    else if (*(value+pos+1) == L' ')
+                    {
+                        pos++;
+                        state = 4;
+                    }
+                    else
+                    {
+                        posend = pos+1;
+                        state = 2;
+                    }
+                    possv = pos+1;
+                }
+                else if(*(value+pos) == L';' || *(value+pos) == L'\0')
+                    isError = true;
+                else if(*(value+pos) != L' ')
+                    posend = pos+1;
+            break;
+            case 2:  // get property value in case value is not surrounded by "
+                if(*(value+pos) == L'\"')
+                    isError = true;
+                else if(*(value+pos) == L';' || *(value+pos) == L'\0')
+                {
+                    if (posend != possv)
+                    {
+                        std::wstring val(value+possv, posend-possv);
+                        SetProperty(token.c_str(), val.c_str());
+                    }
+                    else
+                        SetProperty(token.c_str(), L"");
+                    state = 0;
+                }
+                else if(*(value+pos) != L' ')
+                    posend = pos+1;
+            break;
+            case 3:  //get property value in case value is surrounded by "
+                if(*(value+pos) == L'\"')
+                {
+                    if (pos != possv)
+                    {
+                        std::wstring val(value+possv, pos-possv);
+                        SetProperty(token.c_str(), val.c_str());
+                    }
+                    else
+                        SetProperty(token.c_str(), L"");
+                    state = 0;
+                }
+                else if(*(value+pos+1) == L'\0')
+                    isError = true;
+            break;
+            case 4:  // handle space before ", it skipsd all spaces before ", e.g. <Name=  Val;>
+                if (*(value+pos) == L'\"')
+                {
+                    pos++;
+                    state = 3;
+                }
+                else if(*(value+pos) == L';')
+                {
+                    // handle empty values like: <File=;> or <File="";> or <File= ;>
+                    // and cases like <File=val; ;; Test=;>
+                    if (!token.empty())
+                        SetProperty(token.c_str(), L"");
+                    state = 0;
+                }
+                else if(*(value+pos) != L' ')
+                {
+                    posend = pos;
+                    state = 2;
+                }
+                possv = pos;
+            break;
         }
-    
-    #ifdef _WIN32
-            token = wcstok(NULL, L";");
-    #else
-            token = wcstok(NULL, L";", &ptr);
-    #endif
-    }
+        pos++;
+    }while(*(value+pos-1) != L'\0' && !isError);
+
+    if (isError)
+        throw FdoConnectionException::Create(L"Invalid connection string!");
 }
 
 //creates a new database, based on the filename stored in the
