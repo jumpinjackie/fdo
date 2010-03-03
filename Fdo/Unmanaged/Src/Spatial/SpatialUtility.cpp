@@ -27,6 +27,7 @@
 #include <Spatial/SpatialGeometryValidity.h>
 #include <Fdo/Filter/SpatialCondition.h>
 
+#include <vector>
 
 FdoIGeometry * FdoSpatialUtility::ApproximateGeometryWithLineStrings(
     FdoIGeometry * geometry, 
@@ -3092,6 +3093,53 @@ bool FdoSpatialUtility::PointInRing2( FdoILinearRing* ring, bool exteriorRing, b
     return pt_inside_ring;
  }
 
+//
+// The following code is cloned from FdoSpatialUtility::PointInRing(). 
+// (Refer the original method for extensive commnents on the altgorithm)
+// Optimized it for speed by skipping the "on boundary" test because 
+// a) it is expensive and b) we assume the chosen point is not on the ring.
+
+bool FdoSpatialUtility::PointInRingFast(FdoILinearRing* ring, double x, double y)
+{
+    bool yflag0, yflag1;
+    double vtx0X, vtx0Y, vtx1X, vtx1Y;
+    int dummydim;
+
+    bool isInside = false;
+    int count = 0;
+   
+    int numverts = ring->GetCount();
+
+    // get the last point in the contour
+    GET_ITEM(ring, numverts-1, &vtx0X, &vtx0Y, &dummydim);
+
+    // get test bit for above/below X axis
+    yflag0 = (vtx0Y >= y);
+
+    for (int j = 0; j < numverts; j++)
+    {
+        GET_ITEM(ring, j, &vtx1X, &vtx1Y, &dummydim);
+       
+        yflag1 = (vtx1Y >= y);
+
+        if (yflag0 != yflag1)
+        {
+            if (((vtx1Y-y)*(vtx0X-vtx1X) >=
+                (vtx1X-x)*(vtx0Y-vtx1Y)) == yflag1)
+            {
+                isInside  = !isInside;
+            }
+        }
+
+        // move to the next pair of vertices, retaining info as possible
+        yflag0 = yflag1;
+        vtx0X = vtx1X;
+        vtx0Y = vtx1Y;
+    }
+
+    return isInside;
+} 
+
 ///////////////////////////////////////////////////////////////////////////////
 FdoIGeometry* FdoSpatialUtility::TesselateCurve(FdoIGeometry* curve)
 {
@@ -3811,12 +3859,18 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
         // Ignore the rings orientation (cvw/ccw) 
         RingArea_def *ringsArea = new RingArea_def[numRings];
 
+        // Cache all envelops
+        std::vector<FdoIEnvelope *> allEnv;
+
         for ( int i = 0; i < numRings; i++ )
         { 
             FdoPtr<FdoILinearRing> ring = rings->GetItem(i);
             ringsArea[i].index = i;
             ringsArea[i].indexAssoc = -1; 
             ringsArea[i].area = fabs( ComputeLinearRingArea( ring ) );
+
+            FdoIEnvelope* env = ring->GetEnvelope();
+            allEnv.push_back(env);
         }
 
         qsort( (void *)ringsArea, numRings, sizeof(RingArea_def), CompareByArea );
@@ -3827,24 +3881,39 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
             FdoInt32 index1 = ringsArea[i].index; 
             FdoPtr<FdoILinearRing> ring1 = rings->GetItem(index1);
 
-            // Get a point of this ring to perform 'point-in-polygon' test agaist other rings
-            FdoPtr<FdoDirectPositionCollection> positions = ring1->GetPositions();
-            FdoPtr<FdoIDirectPosition> pos = positions->GetItem(0);
-            double x = pos->GetX();
-            double y = pos->GetY();
+            // Pick the mid point of the segment instead of 1st point for "point-in-ring" testing. 
+            // This checks unambiguosly "on boundary" cases where the rings are touching.
+            double x0, y0, x1, y1;
+            int    dummydim;
+
+            GET_ITEM(ring1, 0, &x0, &y0, &dummydim);
+
+            double x = x1 = x0;
+            double y = y1 = y0;
+            int  k = 1;
+
+            while ((x0 == x1) && (y0 == y1) && (k < ring1->GetCount() - 1))
+            {
+                GET_ITEM(ring1, k, &x1, &y1, &dummydim);  
+                k++;
+            }
+
+            // Take the mid of the segment
+            x = (x0 + x1)/2;
+            y = (y0 + y1)/2;
 
             for ( int j = i-1; j >=0; j-- )
             {
                 FdoInt32 index2 = ringsArea[j].index; 
 
                 FdoPtr<FdoILinearRing> ring2 = rings->GetItem(index2);
-                FdoPtr<FdoIEnvelope>   extent2 = ring2->GetEnvelope();
+                FdoIEnvelope*   extent2 = allEnv.at(index2);
 
                 // Check the point against the ring bounding box
                 bool isInside = (x <= extent2->GetMaxX() && x >= extent2->GetMinX() && y <= extent2->GetMaxY() && y >= extent2->GetMinY());
 
                 if (isInside)
-                    isInside = FdoSpatialUtility::PointInRing(ring2, x, y);
+                    isInside = FdoSpatialUtility::PointInRingFast(ring2, x, y);
 
                 if (isInside) 
                 {
@@ -3852,6 +3921,13 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
                     break;
                 }
             }
+        }
+
+        // Cleanup
+        for (size_t i = 0; i < allEnv.size(); i++) {
+
+            FdoIEnvelope* ptr = allEnv.at(i);
+            FDO_SAFE_RELEASE(ptr); 
         }
 
         // Create a new array in the original order

@@ -235,7 +235,9 @@ public:
     static bool PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, bool strictInside = false);
     static bool PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, bool strictInside = false);
     static bool LineStringContainsLineString(FdoILineString* line1, FdoILineString* line2);
-    static bool LinearRingIsClockwise(FdoILinearRing* ring);
+    static bool PointInRingFast(FdoILinearRing* ring, double x, double y);
+
+    FDO_SPATIAL_API static bool LinearRingIsClockwise(FdoILinearRing* ring);
 
     /// \brief
     /// Computes the area of a ring.
