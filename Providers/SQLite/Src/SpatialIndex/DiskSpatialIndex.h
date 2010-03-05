@@ -22,6 +22,9 @@
 #define BATCH_SHIFT 3
 #define BATCH_MASK ((~0) << BATCH_SHIFT)
 
+typedef std::map<FdoInt64, unsigned int> LinkMap;
+typedef std::vector<__int64> BackMap;
+
 //We will have up to this many levels
 //in the skip list hierarchy
 //NOTE: MAX_LEVELS * BATCH_SHIFT must be less than 32,
@@ -51,23 +54,24 @@ public:
     SpatialIndex(const wchar_t* seedname);
     ~SpatialIndex();
 
-    void Insert(unsigned fid, DBounds& ext);
-    void Update(unsigned fid, DBounds& ext);
-    void Delete(unsigned fid);
+    void Insert(FdoInt64 dbId, DBounds& ext);
+    void Update(FdoInt64 dbId, DBounds& ext);
+    void Delete(FdoInt64 dbId);
     void GetTotalExtent(DBounds& ext);
     void ReOpen();
-    unsigned GetLastInsertedIdx() { return _lastInsertedIdx; }
+    FdoInt64 GetLastInsertedIdx() { return _lastInsertedIdx; }
 
     Node* GetNode(int level, int index);
+    FdoInt64 operator[](int fid);
 
 private:
     void FullSpatialIndexUpdate();
-    void Insert(unsigned fid, Bounds& b);
+    void Insert(unsigned int fid, Bounds& b);
     void GetSIFilename(std::wstring& res);
 private:
 
     // last inserted index
-    unsigned   _lastInsertedIdx;
+    FdoInt64   _lastInsertedIdx;
     
     // count of changes
     unsigned   _countChanges;
@@ -92,6 +96,11 @@ private:
     double     _offset[SI_DIM];
     bool       _haveOffset;
 
+    // used to link ID with SI id
+    LinkMap    _linkMap;
+    BackMap    _backMap;
+    unsigned   _positionIdx;
+
     //base name for spatial index disk-backed levels
     std::wstring _seedName;
 };
@@ -106,6 +115,8 @@ public:
     void Reset();
 
     bool NextRange(int& start, int& end);
+
+    FdoInt64 operator[](int fid);
 
 private:
 

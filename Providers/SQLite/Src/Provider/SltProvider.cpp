@@ -876,14 +876,14 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         //First, read the spatial iterator fully -- it will return results in sorted order
         if (siter)
         {
-            std::vector<int> srows;
+            std::vector<FdoInt64> srows;
             int start = -1;
             int end = -1;
 
             while (siter->NextRange(start, end))
             {
                 for (int i=start; i<=end; i++)
-                    srows.push_back(i);
+                    srows.push_back((*siter)[i]);
             }
 
             //Second, we will check for each result of the ordering query, if
@@ -954,7 +954,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                 while (siter->NextRange(start, end))
                 {
                     for (int i=start; i<=end; i++)
-                        rows->push_back(i);
+                        rows->push_back((*siter)[i]);
                 }
 
                 delete siter;
@@ -1244,7 +1244,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
             while (siter->NextRange(start, end))
             {
                 for (int i=start; i<=end; i++)
-                    rowids->push_back(i);
+                    rowids->push_back((*siter)[i]);
             }
             delete siter;
             if (rowids->size() == 0)
@@ -1434,7 +1434,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
             while (siter->NextRange(start, end))
             {
                 for (int i=start; i<=end; i++)
-                    rowids->push_back(i);
+                    rowids->push_back((*siter)[i]);
             }
             delete siter;
             if (rowids->size() == 0)
