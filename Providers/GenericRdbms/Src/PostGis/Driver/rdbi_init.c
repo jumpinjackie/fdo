@@ -35,6 +35,7 @@
 #include "get_msg.h"
 #include "null.h"
 #include "run_sql.h"
+#include "set_database.h"
 #include "sql.h"
 #include "term.h"
 #include "vndr_info.h"
@@ -96,7 +97,7 @@ int postgis_rdbi_init (void **contextp, rdbi_methods methods)
         methods->usr_exists   = NULL;
         methods->get_con_var  = NULL;
         methods->do_break     = NULL;
-        methods->set_schema   = NULL;
+        methods->set_schema   = (int (*)(void*, const char*))postgis_set_database;
         methods->set_schemaW  = NULL;
         methods->vndr_info    = (int (*)(void*, rdbi_vndr_info_def*))postgis_vndr_info;
         methods->geom_srid_set   = (int (*)(void*, char*, char*, long))postgis_geom_srid_set;

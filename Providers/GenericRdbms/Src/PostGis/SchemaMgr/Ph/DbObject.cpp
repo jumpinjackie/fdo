@@ -348,7 +348,8 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhPostGisDbObject::CreateBaseObjectReader
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhPostGisDbObject::CreateColumnReader()
 {
     FdoSmPhRdPostGisColumnReader* colReader = NULL;
-    colReader = new FdoSmPhRdPostGisColumnReader(GetManager(),
+    FdoSmPhOwnerP owner = FDO_SAFE_ADDREF(static_cast<FdoSmPhOwner*>(const_cast<FdoSmSchemaElement*>(GetParent())));
+    colReader = new FdoSmPhRdPostGisColumnReader(owner,
         FDO_SAFE_ADDREF(this));
 
     return colReader;

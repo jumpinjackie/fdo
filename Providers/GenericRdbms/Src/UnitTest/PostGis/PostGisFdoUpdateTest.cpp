@@ -223,3 +223,21 @@ FdoString* PostGisFdoUpdateTest::NoMetaSuffix()
     return noMetaSuffix;
 }
 
+FdoInt64 PostGisFdoUpdateTest::GetSrid( FdoInt64 srid ) 
+{
+    FdoInt64 outSrid;
+
+    switch (srid)
+    {
+    case 81989:
+        outSrid = 27700;   // British National Grid
+        break;
+    case 524288:
+        outSrid = 4326;
+        break;
+    default:
+        outSrid = srid;
+    }
+
+    return outSrid;
+}

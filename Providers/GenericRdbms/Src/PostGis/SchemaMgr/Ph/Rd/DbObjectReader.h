@@ -38,6 +38,9 @@ public:
     FdoSmPhRdPostGisDbObjectReader(FdoSmPhOwnerP owner,
         FdoStringP objectName = L"");
 
+    FdoSmPhRdPostGisDbObjectReader(FdoSmPhOwnerP owner,
+        FdoStringsP objectNames);
+
     /// \todo To be documented.
     FdoSmPhRdPostGisDbObjectReader(FdoSmPhOwnerP owner,
         FdoSmPhRdTableJoinP join);
@@ -74,12 +77,8 @@ protected:
     /// Instance of Physical Schema reader for a database object.
     ///
     FdoSmPhReaderP MakeQueryReader(FdoSmPhOwnerP owner,
-        FdoStringP objectName = L"",
+        FdoStringsP objectNames,
         FdoSmPhRdTableJoinP join = NULL);
-
-    /// \todo To be documented.
-    FdoSmPhRowP MakeBinds(FdoSmPhMgrP mgr, FdoStringP ownerName,
-        FdoStringP objectName);
 
     /// Creates a set of rows describing the fields for this
     /// reader.

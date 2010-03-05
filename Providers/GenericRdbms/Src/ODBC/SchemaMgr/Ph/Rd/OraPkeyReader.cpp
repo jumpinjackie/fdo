@@ -24,17 +24,23 @@ FdoSmPhRdOraOdbcPkeyReader::FdoSmPhRdOraOdbcPkeyReader(
     FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP    dbObject
 ) :
-    FdoSmPhRdPkeyReader(MakeReader(mgr,(const FdoSmPhOwner*)(dbObject->GetParent()), dbObject)),
+    FdoSmPhRdPkeyReader(),
     mDbObject(dbObject)
 {
+    SetSubReader(
+        MakeReader(mgr,(const FdoSmPhOwner*)(dbObject->GetParent()), (FdoSmPhDbObject*) NULL)
+    );
 }
 
 FdoSmPhRdOraOdbcPkeyReader::FdoSmPhRdOraOdbcPkeyReader(
     FdoSmPhMgrP mgr,
     FdoSmPhOwnerP    owner
 ) :
-    FdoSmPhRdPkeyReader(MakeReader(mgr,(FdoSmPhOwner*) owner, (FdoSmPhDbObject*) NULL))
+    FdoSmPhRdPkeyReader()
 {
+    SetSubReader(
+        MakeReader(mgr,(FdoSmPhOwner*) owner, (FdoSmPhDbObject*) NULL)
+    );
 }
 
 FdoSmPhRdOraOdbcPkeyReader::~FdoSmPhRdOraOdbcPkeyReader(void)

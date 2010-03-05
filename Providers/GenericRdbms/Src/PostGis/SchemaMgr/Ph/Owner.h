@@ -119,12 +119,17 @@ public:
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader(
         FdoStringP dbObject = L"") const;
 
+    /// Create a reader to get database objects this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringsP objectNames ) const;
+
     /// Create a reader to get all database objects for this join.
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader(
         FdoSmPhRdTableJoinP join) const;
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
+
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
 
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader(
@@ -147,8 +152,13 @@ public:
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
+    /// Create a reader to get primary keys for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader(  FdoStringsP objectNames ) const;
+
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader() const;
+
+    virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader(FdoStringsP objectNames) const;
 
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader(

@@ -117,6 +117,9 @@ protected:
     /// Set a boolean column value by name.
 	void SetBoolean( FdoStringP tableName, FdoStringP fieldName, bool bValue );
 
+    // Sets the row collection for this reader.
+    void SetRows( FdoSmPhRowsP rows );
+
     /// Setter:
     void SetSubReaderWriter(FdoPtr<FdoSmPhReadWrite> subReaderWriter);
 

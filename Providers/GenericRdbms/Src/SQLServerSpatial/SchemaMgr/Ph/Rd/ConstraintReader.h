@@ -77,8 +77,6 @@ private:
         FdoStringP constraintType
     );
 
-    FdoStringsP Table2Tables( FdoStringP tableName );
-
     FdoSmPhOwnerP mOwner;
     FdoStringP mConstraintName;
 	FdoStringP mTableName;

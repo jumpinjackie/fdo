@@ -1991,6 +1991,8 @@ void FdoUpdateTest::UpdateNoMeta()
         owner->SetPassword( L"test" );
         owner->Commit();
 
+        owner->SetCurrent();
+
         CreateExternalTable( owner, table_id_geom, true, m_hasGeom, m_hasAssoc );
         CreateExternalView( owner, L"view_id_geom", table_id_geom, true, m_hasGeom, false );
 
@@ -2011,17 +2013,18 @@ void FdoUpdateTest::UpdateNoMeta()
 
 //TODO: investigate why creating this view causes the SqlServer provider to hang when reading
 // feature schemas.
-#ifndef RDBI_DEF_SSQL
-        grdOwner->ActivateAndExecute(
-            FdoStringP::Format(
-                L"create view view_w_nullcol as select \"%ls\", \"%ls\", \"%ls\", null as nullcol from \"%ls\"",
-                (FdoString*) phMgr->GetDcColumnName(L"key1"),
-                (FdoString*) phMgr->GetDcColumnName(ValueColName()),
-                (FdoString*) phMgr->GetDcColumnName(Key2ColName()),
-                (FdoString*) phMgr->GetDcDbObjectName(table_id_geom)
-            )
-        );
-#endif
+        if ( CanHandleNullCol() ) {
+            grdOwner->ActivateAndExecute(
+                FdoStringP::Format(
+                    L"create view view_w_nullcol as select \"%ls\", \"%ls\", \"%ls\", null as nullcol from \"%ls\"",
+                    (FdoString*) phMgr->GetDcColumnName(L"key1"),
+                    (FdoString*) phMgr->GetDcColumnName(ValueColName()),
+                    (FdoString*) phMgr->GetDcColumnName(Key2ColName()),
+                    (FdoString*) phMgr->GetDcDbObjectName(table_id_geom).Replace(L".",L"\".\"")
+                )
+            );
+        }
+
         connection = UnitTestUtil::CreateConnection(
             false,
             false,
@@ -2042,7 +2045,7 @@ void FdoUpdateTest::UpdateNoMeta()
                         (FdoString*) phMgr->GetDcColumnName( Key2ColName() ),
                         (FdoString*) phMgr->GetDcColumnName( GeomColName() ),
                         (FdoString*) phMgr->GetDcColumnName( ValueColName() ),
-                        (FdoString*) phMgr->GetDcDbObjectName( table_id_geom )
+                        (FdoString*) phMgr->GetDcDbObjectName( table_id_geom ).Replace(L".",L"\".\"")
                     ),
                     connection 
                 );
@@ -2078,9 +2081,9 @@ void FdoUpdateTest::UpdateNoMeta()
         // Select and verify all data (post-update state).
         SelectNoMetaAll( connection, phMgr, table_id_geom, m_hasGeom, m_hasAssoc );
         SelectNoMetaAll( connection, phMgr, L"view_id_geom", m_hasGeom, false );
-#ifndef RDBI_DEF_SSQL
-        SelectNoMetaAll( connection, phMgr, L"view_w_nullcol", false, false, true );
-#endif
+        if ( CanHandleNullCol() ) 
+            SelectNoMetaAll( connection, phMgr, L"view_w_nullcol", false, false, true );
+
         if ( providerName != L"SQLServerSpatial" ) 
             SelectNoMetaAll( connection, phMgr, L"table_noid_geom", m_hasGeom, false );
 
@@ -2217,7 +2220,7 @@ FdoPtr<FdoSmPhScInfo> FdoUpdateTest::CreateScInfo( FdoStringP objectName )
 	scinfo = FdoSmPhScInfo::Create();
 
 	// The tables need to have the same SRID since this test is copying from one another
-	scinfo->mSrid = 81989; // British National Grid
+	scinfo->mSrid = GetSrid(81989); // British National Grid
 	scinfo->mCoordSysName = L"";
 
 	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
@@ -2228,7 +2231,7 @@ FdoPtr<FdoSmPhScInfo> FdoUpdateTest::CreateScInfo( FdoStringP objectName )
 	else if ( objectName == L"TABLE_ID_GEOM_LL" )
 	{
 		env = gf->CreateEnvelopeXY( -180, -90, 180, 90 );
-		scinfo->mSrid = 524288; // Longitude / Latitude (NAD 83) Datum 33
+		scinfo->mSrid = GetSrid(524288); // Longitude / Latitude (NAD 83) Datum 33
 	}
 	else if ( objectName == L"TABLE_ID_GEOM_XYZM" )
 	{
@@ -2718,4 +2721,9 @@ FdoPropertyValue* FdoUpdateTest::AddNewProperty( FdoPropertyValueCollection* pro
     }
 
     return propertyValue;
+}
+
+FdoInt64 FdoUpdateTest::GetSrid( FdoInt64 srid ) 
+{
+    return srid;
 }

@@ -125,7 +125,7 @@ FdoStringP FdoSmLpDataTypeMapper::Type2String( FdoDataType dataType )
 
 	throw FdoSchemaException::Create( 
         FdoSmError::NLSGetMessage(
-            FDO_NLSID(FDOSM_159), 
+            FDO_NLSID(FDOSM_160), 
         	dataType 
             )
 	);

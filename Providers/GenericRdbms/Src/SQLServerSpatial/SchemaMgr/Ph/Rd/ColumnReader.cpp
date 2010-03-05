@@ -27,24 +27,33 @@ FdoSmPhRdSqsColumnReader::FdoSmPhRdSqsColumnReader(
     FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP    dbObject
 ) :
-    FdoSmPhRdColumnReader(MakeQueryReader(mgr, (const FdoSmPhOwner*)(dbObject->GetParent()), DbObject2Objects(dbObject)), dbObject)
+    FdoSmPhRdColumnReader((FdoSmPhReader*) NULL, dbObject)
 {
+    SetSubReader(
+        MakeQueryReader(mgr, (const FdoSmPhOwner*)(dbObject->GetParent()), DbObject2Objects(dbObject))
+    );
 }
 
 FdoSmPhRdSqsColumnReader::FdoSmPhRdSqsColumnReader(
     FdoSmPhOwnerP owner,
     FdoStringsP objectNames
 ) :
-    FdoSmPhRdColumnReader(MakeQueryReader(owner->GetManager(), (FdoSmPhOwner*)owner, objectNames), (FdoSmPhDbObject*)NULL)
+    FdoSmPhRdColumnReader()
 {
+    SetSubReader(
+        MakeQueryReader(owner->GetManager(), (FdoSmPhOwner*)owner, objectNames)
+    );
 }
 
 FdoSmPhRdSqsColumnReader::FdoSmPhRdSqsColumnReader(
     FdoSmPhOwnerP owner,
     FdoSmPhRdTableJoinP join
 ) :
-    FdoSmPhRdColumnReader(MakeQueryReader(owner->GetManager(), (FdoSmPhOwner*)owner, DbObject2Objects((FdoSmPhDbObject*)NULL), join), (FdoSmPhDbObject*)NULL)
+    FdoSmPhRdColumnReader()
 {
+    SetSubReader(
+        MakeQueryReader(owner->GetManager(), (FdoSmPhOwner*)owner, DbObject2Objects((FdoSmPhDbObject*)NULL), join)
+    );
 }
 
 FdoSmPhRdSqsColumnReader::~FdoSmPhRdSqsColumnReader(void)
@@ -291,11 +300,3 @@ FdoSmPhColType FdoSmPhRdSqsColumnReader::GetType()
     return mColType;
 }
 
-FdoStringsP FdoSmPhRdSqsColumnReader::DbObject2Objects( FdoSmPhDbObjectP dbObject )
-{
-    FdoStringsP tableNames = FdoStringCollection::Create();
-    if ( dbObject ) 
-        tableNames->Add( dbObject->GetName() );
-
-    return tableNames;
-}

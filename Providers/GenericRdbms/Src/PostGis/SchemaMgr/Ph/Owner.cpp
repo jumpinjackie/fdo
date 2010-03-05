@@ -135,6 +135,19 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhPostGisOwner::CreateDbObjectReader(
 }
 
 FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhPostGisOwner::CreateDbObjectReader(
+    FdoStringsP objectNames) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisDbObjectReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisDbObjectReader(thisOwner, objectNames);
+    
+    return reader;
+}
+
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhPostGisOwner::CreateDbObjectReader(
     FdoSmPhRdTableJoinP join) const
 {
     FdoSmPhPostGisOwner* thisOwner = NULL;
@@ -152,6 +165,13 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhPostGisOwner::CreateBaseObjectReader() 
     FdoSmPhPostGisOwner* pOwner = (FdoSmPhPostGisOwner*) this;
 
     return new FdoSmPhRdPostGisBaseObjectReader( FDO_SAFE_ADDREF(pOwner) );
+}
+
+FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhPostGisOwner::CreateBaseObjectReader(FdoStringsP objectNames) const
+{
+    FdoSmPhPostGisOwner* pOwner = (FdoSmPhPostGisOwner*) this;
+
+    return new FdoSmPhRdPostGisBaseObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames );
 }
 
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhPostGisOwner::CreateConstraintReader(
@@ -230,8 +250,22 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhPostGisOwner::CreatePkeyReader() const
     FDO_SAFE_ADDREF(thisOwner);
 
     FdoSmPhRdPostGisPkeyReader* reader = NULL;
-    reader = new FdoSmPhRdPostGisPkeyReader(thisOwner->GetManager(),
-        thisOwner);
+    reader = new FdoSmPhRdPostGisPkeyReader(thisOwner, (FdoSmPhDbObject*) NULL);
+
+    return reader;
+}
+
+FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhPostGisOwner::CreatePkeyReader(  FdoStringsP objectNames ) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisPkeyReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisPkeyReader(
+        thisOwner,
+        objectNames
+        );
 
     return reader;
 }
@@ -243,7 +277,19 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhPostGisOwner::CreateColumnReader() const
     FDO_SAFE_ADDREF(thisOwner);
 
     FdoSmPhRdPostGisColumnReader* reader = NULL;
-    reader = new FdoSmPhRdPostGisColumnReader(thisOwner, NULL);
+    reader = new FdoSmPhRdPostGisColumnReader(thisOwner, (FdoSmPhDbObject*) NULL);
+
+    return reader;
+}
+
+FdoPtr<FdoSmPhRdColumnReader> FdoSmPhPostGisOwner::CreateColumnReader(FdoStringsP objectNames) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisColumnReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisColumnReader(thisOwner, objectNames);
 
     return reader;
 }
@@ -385,8 +431,8 @@ void FdoSmPhPostGisOwner::AddMetaSchema( FdoStringsP keywords, bool IsSystem)
 		CreateMetaClass();
 
         FdoStringP sqlStmt = FdoStringP::Format(
-            L"update f_schemainfo set description = '%ls' where upper(schemaname) = '%ls'",
-            GetDescription(),
+            L"update f_schemainfo set description = %ls where upper(schemaname) = '%ls'",
+            (FdoString*) mgr->FormatSQLVal(GetDescription(), FdoSmPhColType_String),
             (FdoString*) FdoStringP(GetName()).Upper()
         );
   

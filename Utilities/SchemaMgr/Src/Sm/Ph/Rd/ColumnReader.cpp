@@ -24,7 +24,7 @@ FdoSmPhRdColumnReader::FdoSmPhRdColumnReader(
     FdoSmPhReaderP      reader,
     FdoSmPhDbObjectP    dbObject
 ) :
-	FdoSmPhReader(reader),
+	FdoSmPhRdReader(reader),
     mDbObject(dbObject)
 {
 }
@@ -34,7 +34,7 @@ FdoSmPhRdColumnReader::FdoSmPhRdColumnReader(
     FdoSmPhRowsP        rows,
     FdoSmPhDbObjectP    dbObject
 ) :
-	FdoSmPhReader(mgr, rows),
+	FdoSmPhRdReader(mgr, rows),
     mDbObject(dbObject)
 {
 }

@@ -62,8 +62,6 @@ private:
         FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
     );
 
-    FdoStringsP DbObject2Objects( FdoSmPhDbObjectP dbObject );
-    
     FdoSmPhColType      mColType;
 };
 

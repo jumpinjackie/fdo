@@ -41,6 +41,13 @@ public:
         FdoStringP joinColumn // column from main table in select, that corresponds to join column.
     );
 
+    // Same as previous function but used by providers that have physical schemas.
+    // The join is done by schema and table name.
+    FdoStringP GetWhere( 
+        FdoSmPhMgrP mgr, 
+        FdoStringP schemaColumn, 
+        FdoStringP tableColumn 
+    );
     // Get the join column for this table join..
     FdoStringP GetJoinColumn();
 
