@@ -22,7 +22,7 @@
 FdoSmPhRdConstraintReader::FdoSmPhRdConstraintReader(
     FdoSmPhReaderP reader
 ) :
-	FdoSmPhReader(reader)
+	FdoSmPhRdReader(reader)
 {
 }
 
@@ -30,7 +30,7 @@ FdoSmPhRdConstraintReader::FdoSmPhRdConstraintReader(
     FdoSmPhMgrP         mgr,
     FdoSmPhRowsP        rows
 ) :
-	FdoSmPhReader(mgr, rows)
+	FdoSmPhRdReader(mgr, rows)
 {
 }
 

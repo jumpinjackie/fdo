@@ -35,6 +35,9 @@ public:
     void testForeignDataStore();
 
 protected:
+    virtual FdoInt64 GetSrid( FdoInt64 srid );
+    virtual bool CanHandleNullCol() {return false;};
+
     virtual FdoString* NoMetaSuffix();
 	static const wchar_t* mForeignPolygonTest[];
 };

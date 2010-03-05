@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * 
  */
-#include <Sm/Ph/Reader.h>
+#include <Sm/Ph/Rd/Reader.h>
 #include <Sm/Ph/RowCollection.h>
 #include <Sm/Ph/DbObjType.h>
 #include <Sm/Ph/Mgr.h>
@@ -27,7 +27,7 @@
 // A base object is a database object that another database object
 // depends on. Typically a view can be based on a table or another view.
 
-class FdoSmPhRdBaseObjectReader : public FdoSmPhReader
+class FdoSmPhRdBaseObjectReader : public FdoSmPhRdReader
 {
 public:
 

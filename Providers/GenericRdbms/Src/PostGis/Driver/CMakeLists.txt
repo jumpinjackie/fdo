@@ -28,6 +28,7 @@ set( postgisdr_STAT_SRCS
   rdbi_init.c
   run_sql.c
   set_err_msg.c
+  set_database.c
   sql.c
   stdafx.c
   term.c

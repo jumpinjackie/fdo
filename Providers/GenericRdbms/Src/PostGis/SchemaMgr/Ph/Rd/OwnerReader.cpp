@@ -139,10 +139,11 @@ FdoSmPhReaderP FdoSmPhRdPostGisOwnerReader::MakeHasMetaSchemaReader(
         // is case-sensitive. 
 
         sqlString = FdoStringP::Format(
-              L"select distinct table_schema as name \n"
+              L"select distinct '%ls' as name \n"
               L" from information_schema.tables T\n"
               L" where T.table_name = 'f_schemainfo' \n"
-              L"and T.table_schema = 'public'"
+              L"and T.table_schema = 'public'",
+              (FdoString*) ownerName
         );
 
         FdoSmPhRowsP rows = MakeRows( mgr );

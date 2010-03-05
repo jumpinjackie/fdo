@@ -129,6 +129,10 @@ public:
     // name prefix is removed if the schema is public.
     virtual FdoStringP DbObject2MetaSchemaName( FdoStringP objectName );
 
+    // Returns the name of the default physical schema.
+    // Returns L"public".
+    virtual FdoStringP GetDefaultPhysicalSchemaName();
+
     /// Formats placeholder for bind parameter.
     /// PostgreSQL refers to parameters  in query $1, $2, etc.
     /// \param

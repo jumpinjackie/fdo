@@ -534,6 +534,12 @@ public:
     /// pos is 0-based.
     virtual FdoStringP FormatBindField( int pos ) = 0;    
 
+    // Given two arguments, returns a SQL clause for concatenating them.
+    // Argument can be a column name or single quote delimited literal.
+    // returns "arg1 || arg2". Providers that don't handle this format must
+    // override this function.
+    virtual FdoStringP FormatConcatSql( FdoStringP arg1, FdoStringP arg2 ); 
+
     // Returns the provider-specific Coordinate system match level.
     // The default is Lax.
     virtual CoordinateSystemMatchLevel GetCoordinateSystemMatchLevel();
@@ -590,6 +596,12 @@ public:
     // have in the RDBMS.
     // returns the given name unaltered by default
     virtual FdoStringP GetRealDbObjectName( FdoStringP objectName );
+
+    // Returns the name of the default physical schema.
+    // This function assumes that the provider RDBMS does not have
+    // physical schemas, so it returns L"".
+    // Providers that do have physical schemas must override this function.
+    virtual FdoStringP GetDefaultPhysicalSchemaName();
 
     // Given a database object name, return the name as it appears in 
     // MetaSchema tables. 

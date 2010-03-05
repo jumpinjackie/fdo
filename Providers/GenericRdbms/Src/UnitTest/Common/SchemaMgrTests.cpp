@@ -142,6 +142,8 @@ void SchemaMgrTests::testGenDefault ()
 
         FdoSmPhOwnerP owner = UnitTestUtil::CreateDBNoMeta( mgr, datastore );
 
+        owner->SetCurrent();
+
         FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE1" ));
         SetLtLck(table, lt_mode);
         FdoSmPhColumnP column = table->CreateColumnInt32( L"ID", false );

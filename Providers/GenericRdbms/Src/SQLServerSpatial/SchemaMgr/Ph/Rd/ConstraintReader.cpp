@@ -26,10 +26,13 @@ FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
     FdoSmPhOwnerP owner,
     FdoStringP constraintName
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,constraintName)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintName),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,constraintName)
+    );
 }
 
 FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
@@ -37,11 +40,14 @@ FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
 	FdoStringP tableName,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,Table2Tables(tableName),(FdoSmPhRdTableJoin*) NULL,constraintType)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintType.Upper()),
 	mTableName(tableName),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,DbObjectName2Objects(tableName),(FdoSmPhRdTableJoin*) NULL,constraintType)
+    );
 }
 
 FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
@@ -49,10 +55,13 @@ FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
 	FdoStringsP tableNames,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,tableNames,(FdoSmPhRdTableJoin*) NULL,constraintType)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintType.Upper()),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,tableNames,(FdoSmPhRdTableJoin*) NULL,constraintType)
+    );
 }
 
 FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
@@ -60,10 +69,13 @@ FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
     FdoSmPhRdTableJoinP join,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,Table2Tables(L""),join,constraintType)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintType.Upper()),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,DbObjectName2Objects(L""),join,constraintType)
+    );
 }
 
 FdoSmPhRdSqsConstraintReader::~FdoSmPhRdSqsConstraintReader(void)
@@ -304,11 +316,3 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
     return( reader );
 }
 
-FdoStringsP FdoSmPhRdSqsConstraintReader::Table2Tables( FdoStringP tableName )
-{
-    FdoStringsP tableNames = FdoStringCollection::Create();
-    if ( tableName != L"" ) 
-        tableNames->Add( tableName );
-
-    return tableNames;
-}

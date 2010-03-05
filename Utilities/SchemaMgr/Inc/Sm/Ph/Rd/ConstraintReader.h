@@ -18,12 +18,12 @@
  * 
  */
 
-#include <Sm/Ph/Reader.h>
+#include <Sm/Ph/Rd/Reader.h>
 
 // This abstract class reads database constraints. Each provider must 
 // provide its own implementing class.
 
-class FdoSmPhRdConstraintReader : public FdoSmPhReader
+class FdoSmPhRdConstraintReader : public FdoSmPhRdReader
 {
 protected:
     //Unused constructor needed only to build on Linux
@@ -45,7 +45,7 @@ protected:
 
     /// Creates a set of rows describing the fields for this
     /// reader. There is one field per constraint attribute.
-    FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
+    virtual FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
 };
 
 typedef FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhRdConstraintReaderP;

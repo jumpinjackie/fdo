@@ -23,6 +23,7 @@ set( SmPhRd_SRCS
 	PkeyReader.cpp
 	PropertyReader.cpp
 	QueryReader.cpp
+	Reader.cpp
 	SchemaDbObjectBinds.cpp
 	SchemaReader.cpp
 	SpatialContextGeomReader.cpp

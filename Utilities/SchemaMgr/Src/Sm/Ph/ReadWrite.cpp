@@ -200,3 +200,9 @@ void FdoSmPhReadWrite::SetBoolean( FdoStringP tableName, FdoStringP fieldName, b
     SetString( tableName, fieldName, bValue ? L"1" : L"0" );
 }
 
+void FdoSmPhReadWrite::SetRows( FdoSmPhRowsP rows )
+{
+    mRows = rows;
+}
+
+

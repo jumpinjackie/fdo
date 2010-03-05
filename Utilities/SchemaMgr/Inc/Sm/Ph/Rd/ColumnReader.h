@@ -18,7 +18,7 @@
  * 
  */
 
-#include <Sm/Ph/Reader.h>
+#include <Sm/Ph/Rd/Reader.h>
 #include <Sm/Ph/Mgr.h>
 #include <Sm/Ph/RowCollection.h>
 #include <Sm/Ph/Coltype.h>
@@ -26,7 +26,7 @@
 // This abstract class reads all of the columns for a given database object
 // (table, view, etc.). Each provider must provide its own implementing class.
 
-class FdoSmPhRdColumnReader : public FdoSmPhReader
+class FdoSmPhRdColumnReader : public FdoSmPhRdReader
 {
 public:
     /// Get the type of the current column
@@ -56,7 +56,7 @@ protected:
 protected:
     /// Creates a set of rows describing the fields for this
     /// reader. There is one field per column attribute.
-    FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
+    virtual FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
 
 private:
 

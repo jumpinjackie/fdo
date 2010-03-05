@@ -26,9 +26,11 @@ FdoSmPhRdOdbcDbObjectReader::FdoSmPhRdOdbcDbObjectReader(
     FdoSmPhOwnerP owner,
     FdoStringP objectName
 ) :
-    FdoSmPhRdDbObjectReader(owner->GetManager(), MakeRows(owner->GetManager()), owner, objectName),
+    FdoSmPhRdDbObjectReader(owner->GetManager(), (FdoSmPhRowCollection*) NULL, owner, objectName),
     m_objectType(FdoSmPhDbObjType_Unknown)
 {
+    SetRows(MakeRows(owner->GetManager()));
+
     FdoStringP           ownerName = owner->GetName();
     FdoSmPhMgrP          mgr = owner->GetManager();
     FdoSmPhOdbcMgr*      pMgr = (FdoSmPhOdbcMgr*)(FdoSmPhMgr*)mgr;

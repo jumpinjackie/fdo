@@ -25,10 +25,11 @@ FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
     FdoSmPhOwnerP owner,
     FdoStringP constraintName
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,constraintName)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintName),
     mOwner(owner)
 {
+    SetSubReader(MakeReader(owner,constraintName));
 }
 
 FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
@@ -36,11 +37,14 @@ FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
 	FdoStringP tableName,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,tableName,(FdoSmPhRdTableJoin*) NULL,constraintType)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintType),
 	mTableName(tableName),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,tableName,(FdoSmPhRdTableJoin*) NULL,constraintType)
+    );
 }
 
 FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
@@ -48,10 +52,13 @@ FdoSmPhRdMySqlConstraintReader::FdoSmPhRdMySqlConstraintReader(
     FdoSmPhRdTableJoinP join,
     FdoStringP constraintType
 ) :
-    FdoSmPhRdConstraintReader(MakeReader(owner,L"",join,constraintType)),
+    FdoSmPhRdConstraintReader(),
     mConstraintName(constraintType.Upper()),
     mOwner(owner)
 {
+    SetSubReader(
+        MakeReader(owner,L"",join,constraintType)
+    );
 }
 
 FdoSmPhRdMySqlConstraintReader::~FdoSmPhRdMySqlConstraintReader(void)
