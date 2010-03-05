@@ -833,7 +833,7 @@ bool SltReader::ReadNext()
             //are we at the end of the current spatial iterator batch?
             if (m_si)
             {
-                m_curfid ++;
+                m_curfid++;
                 if (m_curfid >= m_siEnd)
                 {
                     int start;
@@ -863,7 +863,7 @@ bool SltReader::ReadNext()
                 //Note that this is not the same as sqlite_bind_int64, because
                 //the execution engine copies the variables from the statement into
                 //internal memory, which we are setting directly here.
-                v->aMem[1].u.i = m_curfid;
+                v->aMem[1].u.i = ((m_si == NULL) ? m_curfid : (*m_si)[(int)m_curfid]);
 
 
                 //now set the VDBE program counter to the instruction that
@@ -907,7 +907,7 @@ bool SltReader::ReadNext()
                 //situation where we have to reset the statement (SLOWwwwwWWWWwwWWWWw!)
                 //Should only happen the first time we execute ReadNext.
                 sqlite3_reset(m_pStmt);
-                sqlite3_bind_int64(m_pStmt, 1, m_curfid);
+                sqlite3_bind_int64(m_pStmt, 1, ((m_si == NULL) ? m_curfid : (*m_si)[(int)m_curfid]));
             }
 
             if (sqlite3_step(m_pStmt) == SQLITE_ROW)
