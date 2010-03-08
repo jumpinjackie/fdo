@@ -41,12 +41,6 @@ protected:
 
 public:
 
-	///<summary>Sets the flag to indicate whether to include or not include
-	///Non-FDO enabled datastores in the returned list. These are also
-	///referred to as “Foreign” datastores.</summary>
-	/// <returns>Returns nothing</returns>
-	virtual void SetIncludeNonFdoEnabledDatastores(bool include);
-
     /// <summary>Get the list of datastore names.</summary>
     /// <returns>Returns the list of datastores as a FeatureReader.</returns>
     virtual FdoRdbmsDataStoreNames* GetDataStoresNames();

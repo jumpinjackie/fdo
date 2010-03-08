@@ -71,9 +71,10 @@ FdoSmPhReaderP FdoSmPhRdPostGisOwnerReader::MakeQueryReader(
         );
         */
         sqlString = FdoStringP::Format(
-            L"SELECT d.datname AS name "
+            L"SELECT d.datname AS name, s.description as description "
             L"FROM pg_catalog.pg_database d "
             L"JOIN pg_catalog.pg_roles r ON d.datdba = r.oid "
+            L"LEFT OUTER JOIN pg_catalog.pg_shdescription s ON d.oid = s.objoid "
             L"WHERE d.datistemplate = 'f' "
             L" %ls "
             L"ORDER BY 1 ASC",
@@ -110,66 +111,9 @@ FdoSmPhReaderP FdoSmPhRdPostGisOwnerReader::MakeQueryReader(
 FdoSmPhReaderP FdoSmPhRdPostGisOwnerReader::MakeHasMetaSchemaReader(
     FdoSmPhDatabaseP database,
     FdoStringP ownerName 
-)
+) 
 {
-    bool                 owner_set = true;
-    FdoStringP           sqlString;
-    FdoSmPhMgrP          mgr = database->GetManager();
-    FdoSmPhPostGisMgr*   pMgr = (FdoSmPhPostGisMgr*)(FdoSmPhMgr*)mgr;
-
-    if (ownerName.GetLength() == 0 )
-        owner_set = false;
-
-    FdoSmPhReaderP reader;
-//TODO: cache the queries for performance
-/*
-    if ( object_set ) 
-        reader = pMgr->GetOwnerReader(dblink_set);
-    else
-        reader = pMgr->GetOwnersReader(dblink_set);
-*/
-    // TODO: create constant for F_SCHEMAINFO
-    if ( !reader ) {
-        // Generate sql statement if not already done
-
-        // information_schema tables use the utf8 character set with a 
-        // case-insensitive collation. This causes problems with MySQL instances
-        // on Linux, where database and table names are case-sensitive.
-        // The following query overrides the collations to utf8_bin, which
-        // is case-sensitive. 
-
-        sqlString = FdoStringP::Format(
-              L"select distinct '%ls' as name \n"
-              L" from information_schema.tables T\n"
-              L" where T.table_name = 'f_schemainfo' \n"
-              L"and T.table_schema = 'public'",
-              (FdoString*) ownerName
-        );
-
-        FdoSmPhRowsP rows = MakeRows( mgr );
-        FdoSmPhRowP row = rows->GetItem(0);
-
-        reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, NULL );
-/*
-        if ( object_set ) 
-            pMgr->SetOwnerReader(reader, dblink_set);
-        else
-            pMgr->SetOwnersReader(reader, dblink_set);
-*/
-    }
-    else {
-        // Re-executing so update bind variables first.
-        FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
-        FdoSmPhRowP binds = pReader->GetBinds();
-		FdoSmPhFieldsP	fields = binds->GetFields();
-
-        if ( owner_set ) 
-            FdoSmPhFieldP(fields->GetItem(L"owner_name"))->SetFieldValue(ownerName);
-
-        pReader->Execute();
-    }
-
-    return reader;
+    return new FdoSmPhReader(GetManager(), (FdoSmPhRowCollection*) NULL);
 }
 
 FdoSmPhRowP FdoSmPhRdPostGisOwnerReader::MakeBinds(FdoSmPhMgrP mgr,
@@ -189,36 +133,26 @@ FdoSmPhRowP FdoSmPhRdPostGisOwnerReader::MakeBinds(FdoSmPhMgrP mgr,
     return binds;
 }
 
+/// Returns true if current owner has MetaSchema tables.
+FdoBoolean FdoSmPhRdPostGisOwnerReader::GetHasMetaSchema()
+{
+    bool hasMetaSchema = false;
+
+    FdoStringP description = GetString(L"", L"description");
+
+    if ( description.Mid(0, 13) == L"FDO Enabled: ")
+        hasMetaSchema = true;
+
+    return hasMetaSchema;
+}
+
+
 FdoStringP FdoSmPhRdPostGisOwnerReader::GetDescription()
 {
-    FdoStringP ownerName(GetName());
+    FdoStringP description = GetString(L"", L"description");
 
-    FdoSmPhMgrP mgr(mDatabase->GetManager());
-    FdoSmPhRowP row(new FdoSmPhRow(mgr, L"fields")); 
-    FdoSmPhDbObjectP rowDbObj(row->GetDbObject());
-
-    FdoStringP sqlString = FdoStringP::Format(
-        L"SELECT description "
-        L"FROM %ls.f_schemainfo "
-        L"WHERE schemaname = '%ls'",
-        static_cast<FdoString*>(ownerName),
-        static_cast<FdoString*>(ownerName));
-
-    // Each field adds itself to the row.
-    FdoSmPhFieldP field(new FdoSmPhField(row, L"description",
-        row->CreateColumnDbObject(L"description", false)));
- 
-	FdoSmPhRowP binds(new FdoSmPhRow(mgr, L"Binds"));
-
-    FdoSmPhRdGrdQueryReaderP queryReader(
-        new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds));
-
-	FdoStringP	description;
-    
-    if (queryReader->ReadNext())
-    {
-		description = queryReader->GetString(L"", "description");
-    }
+    if ( description.Mid(0, 13) == L"FDO Enabled: ")
+        description = description.Mid(13, 9999);
 
     return description;
 }

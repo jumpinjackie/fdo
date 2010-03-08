@@ -41,11 +41,6 @@ FdoRdbmsPostGisGetDataStores::~FdoRdbmsPostGisGetDataStores (void)
 {
 }
 
-void FdoRdbmsPostGisGetDataStores::SetIncludeNonFdoEnabledDatastores(bool include)
-{
-	FdoRdbmsGetDataStores::SetIncludeNonFdoEnabledDatastores(true);
-}
-
 FdoRdbmsDataStoreNames* FdoRdbmsPostGisGetDataStores::GetDataStoresNames()
 {
     FdoRdbmsDataStoreNames *oDSNames = FdoRdbmsDataStoreNames::Create();

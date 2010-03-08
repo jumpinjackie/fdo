@@ -30,15 +30,15 @@ void PostGisFdoImportExportTest::set_provider()
 
 void PostGisFdoImportExportTest::AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion )
 {
-    _addMapping( writer, name, (providerVersion == 3) ? L"OSGeo.PostGIS.3.2" :
-        ((providerVersion == 2) ? L"OSGeo.PostGIS.2.1" : L"OSGeo.PostGIS.1.9"),L"http://fdoPostGis.osgeo.org/schemas");
+    _addMapping( writer, name, (providerVersion == 3) ? L"OSGeo.PostgreSQL.3.2" :
+        ((providerVersion == 2) ? L"OSGeo.PostgreSQL.2.1" : L"OSGeo.PostgreSQL.1.9"),L"http://fdoPostgreSQL.osgeo.org/schemas");
 }
 
 FdoStringP PostGisFdoImportExportTest::OverrideBend( FdoString* inFile )
 {
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile);
 
-    _overrideBend( inFile, outFile, L"OSGeo.PostGIS.3.2", L"http://fdopostgis.osgeo.org/schemas" );
+    _overrideBend( inFile, outFile, L"OSGeo.PostgreSQL.3.2", L"http://FdoPostgreSQL.osgeo.org/schemas" );
 
     return outFile;
 }

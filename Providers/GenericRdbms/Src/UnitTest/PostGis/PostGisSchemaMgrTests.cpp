@@ -38,8 +38,8 @@ FdoIoStream* PostGisSchemaMgrTests::OverrideBend( FdoIoStream* stream1, FdoStrin
     UnitTestUtil::OverrideBend( 
         stream1, 
         stream2, 
-        "OSGeo.PostGIS.3.2", 
-        "http://fdoPostGis.osgeo.org/schemas",
+        "OSGeo.PostgreSQL.3.2", 
+        "http://fdoPostgreSQL.osgeo.org/schemas",
         oldOwnerPrefix,
         newOwnerPrefix
     );

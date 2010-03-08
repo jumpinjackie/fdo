@@ -140,36 +140,39 @@ FdoBoolean FdoSmPhRdSqsOwnerReader::GetHasMetaSchema()
 
 FdoStringP FdoSmPhRdSqsOwnerReader::GetDescription()
 {
-    FdoStringP           sqlString;
-    FdoSmPhMgrP          mgr = mDatabase->GetManager();
+    FdoStringP	description;
 
-    FdoSmPhRowP			row = new FdoSmPhRow(mgr, L"fields"); 
-    FdoSmPhDbObjectP	 rowObj = row->GetDbObject();
+    if ( GetHasMetaSchema() ) {
+        FdoStringP           sqlString;
+        FdoSmPhMgrP          mgr = mDatabase->GetManager();
 
-    FdoStringP ownerName = this->GetName();
-	//FdoStringP qownerName = rowObj->GetDbQName(); CRASHES!
+        FdoSmPhRowP			row = new FdoSmPhRow(mgr, L"fields"); 
+        FdoSmPhDbObjectP	 rowObj = row->GetDbObject();
 
-    sqlString = FdoStringP::Format(
-            L"select T.description from %ls.dbo.f_schemainfo T \n"
-            L" where T.schemaname = '%ls'",
-			(FdoString*)ownerName,
-            (FdoString*)ownerName            
-    );
+        FdoStringP ownerName = this->GetName();
+	    //FdoStringP qownerName = rowObj->GetDbQName(); CRASHES!
 
-    // Each field adds itself to the row.
-    FdoSmPhFieldP pField = new FdoSmPhField(
-        row, 
-        L"description",
-        row->CreateColumnDbObject(L"description",false)
-    );
- 
-	FdoSmPhRowP binds = new FdoSmPhRow( mgr, L"Binds" );
+        sqlString = FdoStringP::Format(
+                L"select T.description from %ls.dbo.f_schemainfo T \n"
+                L" where T.schemaname = '%ls'",
+			    (FdoString*)ownerName,
+                (FdoString*)ownerName            
+        );
 
-    FdoSmPhRdGrdQueryReaderP pReader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds );
+        // Each field adds itself to the row.
+        FdoSmPhFieldP pField = new FdoSmPhField(
+            row, 
+            L"description",
+            row->CreateColumnDbObject(L"description",false)
+        );
+     
+	    FdoSmPhRowP binds = new FdoSmPhRow( mgr, L"Binds" );
 
-	FdoStringP	description;
-    if ( pReader->ReadNext() )
-		description = pReader->GetString(L"", "description");
+        FdoSmPhRdGrdQueryReaderP pReader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds );
+
+        if ( pReader->ReadNext() )
+		    description = pReader->GetString(L"", "description");
+    }
 
     return ( description );
 }

@@ -355,6 +355,34 @@ bool FdoSmPhPostGisOwner::Add()
    
     gdbiConn->ExecuteNonQuery(static_cast<const char*>(sqlStmt), true);
 
+    // Put datastore description into the database comments. 
+    // While listing datastores, it is not easy to look into each 
+    // database to find out if it has metaschema, and to extract the
+    // description. Putting description in the database comments makes
+    // it more readily available in this case.
+    //
+    // Another benefit is that descriptions, for datastores without metaschema,
+    // can be persisted.
+
+    FdoStringP description;
+
+    // Encode whether the datastore has metaschema into the description.
+    if ( GetHasMetaSchema() )
+        description = FdoStringP(L"FDO Enabled: ") + GetDescription();
+    else
+        description = GetDescription();
+
+    if ( description != L"" ) 
+    {
+        sqlStmt = FdoStringP::Format(
+            L"comment on database \"%ls\" is %ls",
+            GetName(),
+            (FdoString*) mgr->FormatSQLVal(description, FdoSmPhColType_String)
+        );
+      
+        gdbiConn->ExecuteNonQuery( (const char*) sqlStmt );
+    }
+
     if (GetHasMetaSchema())
     {
         FdoStringsP keywords(FdoStringCollection::Create());
