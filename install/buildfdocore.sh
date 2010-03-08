@@ -3,9 +3,8 @@
 #
 BUILDDIR=`pwd`
 BUILDLIST=${BUILDDIR}/filelist
-FDOBUILD=/root/fdo
+FDOBUILD=${BUILDDIR}/..
 FDOTARGET=/usr/local/fdo-3.5.0
-#FDOTARGET=/opt/osgeo/fdo-3.5.0
 
 # Clean original directory tree
 #
@@ -24,9 +23,8 @@ source ./setenvironment.sh
 # usage for build_thirdparty.sh
 # build_thirdparty.sh --w fdo/sdf/wfs/wms/gdal/ogr --a build/install --p prefix
 #
-#./build_thirdparty.sh --a build --p $FDOTARGET
-#./build_thirdparty.sh --a install --p $FDOTARGET
-./build_thirdparty.sh --p $FDOTARGET
+./build_thirdparty.sh --a build --p $FDOTARGET
+./build_thirdparty.sh --a install --p $FDOTARGET
 
 
 # Build core Fdo libraries
@@ -45,9 +43,9 @@ popd
 #
 pushd $FDOTARGET
 mkdir -p $BUILDLIST
-find . -type f -print > $BUILDLIST/temp.lst
-find . -type l -print >> $BUILDLIST/temp.lst
-sort $BUILDLIST/temp.lst > $BUILDLIST/fdocore.lst
-find . -type d -print | sort > $BUILDLIST/fdocoredir.lst
+find . -type f -print > ${BUILDLIST}/temp.lst
+find . -type l -print >> ${BUILDLIST}/temp.lst
+sort ${BUILDLIST}/temp.lst > ${BUILDLIST}/fdocore.lst
+find . -type d -print | sort > ${BUILDLIST}/fdocoredir.lst
 popd
 

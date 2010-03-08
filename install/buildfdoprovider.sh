@@ -4,15 +4,8 @@
 #
 BUILDDIR=`pwd`
 BUILDLIST=${BUILDDIR}/filelist
-FDOBUILD=/root/fdo
+FDOBUILD=${BUILDDIR}/..
 FDOTARGET=/usr/local/fdo-3.5.0
-#FDOTARGET=/opt/osgeo/fdo-3.5.0
-
-# Testing - Run buildfdocore.sh first to ensure clean tree every time
-# This will also check for cross provider dependencies which should probably
-# be included in fdocore.
-#
-#./buildfdocore.sh
 
 # Check for provider argument
 #
