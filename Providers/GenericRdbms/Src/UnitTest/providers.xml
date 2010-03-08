@@ -37,7 +37,7 @@
     <LibraryPath>.\OdbcProvider.dll</LibraryPath>
   </FeatureProvider>
   <FeatureProvider>
-    <Name>OSGeo.PostGIS.3.5</Name>
+    <Name>OSGeo.PostgreSQL.3.5</Name>
     <DisplayName>OSGeo FDO Provider for PostgreSQL with PostGIS</DisplayName>
     <Description>FDO Provider for PostGIS</Description>
     <IsManaged>False</IsManaged>
