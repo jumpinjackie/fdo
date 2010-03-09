@@ -66,7 +66,8 @@ c_KgOraGeometryCapabilities.cpp \
 c_KgOraInsert.cpp \
 c_KgOraGetSpatialContextsCommand.cpp\
 c_SDO_DIM_ELEMENT.cpp \
-c_SDO_GEOMETRY.cpp
+c_SDO_GEOMETRY.cpp \
+c_SdeGeom2AGF.cpp
 
 
 noinst_HEADERS = $(libKingOracleProviderSrc_la_SOURCES) \
@@ -115,6 +116,7 @@ FDO_31_Types.h \
 KgOraProvider.h \
 c_SDO_DIM_ELEMENT.h \
 c_SDO_GEOMETRY.h \
+c_SdeGeom2AGF.h
 stdafx.h
 
 libKingOracleProviderSrc_la_LDFLAGS = 
