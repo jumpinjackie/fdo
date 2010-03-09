@@ -125,7 +125,7 @@ INCLUDES = \
   -I../Message/Inc \
   -I../../../../Fdo/Unmanaged/Inc \
   -I../../../../Utilities/Common/Inc \
-  -I/usr/include/oracle/10.2.0.3/client \
+  -I/usr/include/oracle/11.2/client \
   -I$(FDOORACLE)/include
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -D_FDO_3_2 -D_FDO_3_5
