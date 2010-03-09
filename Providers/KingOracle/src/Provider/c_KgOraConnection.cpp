@@ -82,6 +82,8 @@ BOOL APIENTRY DllMain (HANDLE Module, DWORD Reason, LPVOID lpReserved)
 
     return (ret);
 }
+#else // _WIN32
+wchar_t* g_LogFileName = L"/tmp/kingora.log";
 #endif // _WIN32
 
 

@@ -23,7 +23,7 @@
 #ifdef _WIN32
 extern wchar_t g_LogFileName[MAX_PATH];
 #else
-extern wchar_t g_LogFileName[PATH_MAX];
+extern wchar_t* g_LogFileName;
 #endif
 
 FdoCommonThreadMutex c_LogAPI::m_Mutex;
