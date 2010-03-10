@@ -17,13 +17,13 @@
 //  
 
 #include "SltGeomUtils.h"
+#include "vectormf.h"
 
 //Each tree node will contain 2^BATCH_SHIFT bounding boxes
 #define BATCH_SHIFT 3
 #define BATCH_MASK ((~0) << BATCH_SHIFT)
 
 typedef std::map<FdoInt64, unsigned int> LinkMap;
-typedef std::vector<__int64> BackMap;
 
 //We will have up to this many levels
 //in the skip list hierarchy
@@ -98,7 +98,7 @@ private:
 
     // used to link ID with SI id
     LinkMap    _linkMap;
-    BackMap    _backMap;
+    VectorMF    _backMap;
     unsigned   _positionIdx;
 
     //base name for spatial index disk-backed levels

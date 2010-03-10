@@ -864,7 +864,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
-        std::vector<__int64>* rows = new std::vector<__int64>(); //accumulate ordered row ids here
+        VectorMF* rows = new VectorMF(); //accumulate ordered row ids here
 
         int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
 
@@ -947,7 +947,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
             //row list with the spatial result list
             if (siter)
             {
-                std::vector<__int64>* rows = new std::vector<__int64>;
+                VectorMF* rows = new VectorMF();
                 int start = -1;
                 int end = -1;
 
@@ -988,7 +988,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
 RowidIterator* SltConnection::GetScrollableIterator(SltReader* rdr)
 {
-    std::vector<__int64>* list = new std::vector<__int64>;
+    VectorMF* list = new VectorMF();
     while (rdr->ReadNext())
     {
         //With a default SltReader we know that rowID will
@@ -1237,23 +1237,23 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         else if (bbox.Intersects(total_ext))
         {
             SpatialIterator* siter = new SpatialIterator(bbox, si);
-            rowids = new std::vector<__int64>();
+            VectorMF* mfrowids = new VectorMF();
             int start = -1;
             int end = -1;
 
             while (siter->NextRange(start, end))
             {
                 for (int i=start; i<=end; i++)
-                    rowids->push_back((*siter)[i]);
+                    mfrowids->push_back((*siter)[i]);
             }
             delete siter;
-            if (rowids->size() == 0)
+            if (mfrowids->size() == 0)
             {
-                delete rowids;
+                delete mfrowids;
                 return 0;
             }
             else
-                ri = new RowidIterator(-1, rowids);
+                ri = new RowidIterator(-1, mfrowids);
         }
         else
             return 0; // enforce an empty result since result will be empty
@@ -1427,23 +1427,23 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
         else if (bbox.Intersects(total_ext))
         {
             SpatialIterator* siter = new SpatialIterator(bbox, si);
-            rowids = new std::vector<__int64>();
+            VectorMF* mfrowids = new VectorMF();
             int start = -1;
             int end = -1;
 
             while (siter->NextRange(start, end))
             {
                 for (int i=start; i<=end; i++)
-                    rowids->push_back((*siter)[i]);
+                    mfrowids->push_back((*siter)[i]);
             }
             delete siter;
-            if (rowids->size() == 0)
+            if (mfrowids->size() == 0)
             {
-                delete rowids;
+                delete mfrowids;
                 return 0;
             }
             else
-                ri = new RowidIterator(-1, rowids);
+                ri = new RowidIterator(-1, mfrowids);
         }
         else
             return 0; // enforce an empty result since result will be empty

@@ -306,10 +306,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\MappedFile.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\MappedFile.h"
 			>
 		</File>
@@ -435,6 +431,10 @@
 		</File>
 		<File
 			RelativePath=".\stdafx.h"
+			>
+		</File>
+		<File
+			RelativePath=".\VectorMF.h"
 			>
 		</File>
 	</Files>

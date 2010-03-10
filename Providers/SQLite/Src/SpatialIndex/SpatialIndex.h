@@ -23,7 +23,7 @@
 #define BATCH_MASK ((~0) << BATCH_SHIFT)
 
 typedef std::map<FdoInt64, unsigned int> LinkMap;
-typedef std::vector<__int64> BackMap;
+typedef std::vector<__int64> VectorMF;
 
 //We will have up to this many levels
 //in the skip list hierarchy
@@ -85,7 +85,7 @@ private:
 
     // used to link ID with SI id
     LinkMap    _linkMap;
-    BackMap    _backMap;
+    VectorMF    _backMap;
     unsigned   _positionIdx;
 };
 
