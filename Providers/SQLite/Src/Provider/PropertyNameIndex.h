@@ -275,6 +275,7 @@ public:
         m_root.InitSize();
     }
 
+#pragma warning (disable: 4127)
     int __forceinline GetIndex(const wchar_t* name)
     {
         Node* n = &m_root;

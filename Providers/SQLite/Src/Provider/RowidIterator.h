@@ -19,16 +19,35 @@
 #ifndef ROWIDITERATOR_H
 #define ROWIDITERATOR_H
 
+#ifndef _MSC_VER
+typedef std::vector<__int64> VectorMF;
+#else
+#include"VectorMF.h"
+#endif
+
 //Provides an interface for iterating back and forth
 //over a list of feature row ids. Can either iterate over
 //a given set if row ids, or over the implicit full set of sorted 
 //IDs.
 class RowidIterator
 {
-
 public:
+#ifdef _MSC_VER
+    RowidIterator(__int64 count, VectorMF* list = NULL)
+        : m_count(count),
+          m_mflist(list),
+          m_list(NULL),
+          m_current(0) //position one before the first item (1-based indexing)
+    {
+        if (m_mflist)
+            m_count = m_mflist->size();
+    }
+#endif
     RowidIterator(__int64 count, std::vector<__int64>* list = NULL)
         : m_count(count),
+#ifdef _MSC_VER
+          m_mflist(NULL),
+#endif
           m_list(list),
           m_current(0) //position one before the first item (1-based indexing)
     {
@@ -39,6 +58,9 @@ public:
     ~RowidIterator()
     {
         delete m_list;
+#ifdef _MSC_VER
+        delete m_mflist;
+#endif
     }
 
     __int64 Count() 
@@ -53,7 +75,11 @@ public:
 
     __int64 LastRowid() 
     { 
-        return m_list ? m_list->at((size_t)m_count-1) : m_count; 
+        return m_list ? m_list->at((size_t)m_count-1) :( 
+#ifdef _MSC_VER
+            m_mflist ? m_mflist->at((size_t)m_count-1) : 
+#endif
+            m_count); 
     }
 
     __int64 CurrentRowid()
@@ -67,6 +93,17 @@ public:
             else
                 return m_list->at((size_t)m_current-1);
         }
+#ifdef _MSC_VER
+        else if (m_mflist)
+        {
+            if (m_current < 1)
+                return m_mflist->at(0) - 1;
+            else if (m_current > m_count)
+                return m_mflist->at((size_t)m_count - 1) + 1;
+            else
+                return m_mflist->at((size_t)m_current-1);
+        }
+#endif
         else
         {
             return m_current;
@@ -104,6 +141,16 @@ public:
 
             return -1;
         }
+#ifdef _MSC_VER
+        else if (m_mflist)
+        {
+            for (size_t i=0; i<m_mflist->size(); i++)
+                if (rowid == m_mflist->at(i))
+                    return i + 1;
+
+            return -1;
+        }
+#endif
         else
         {
             return rowid;   
@@ -141,6 +188,9 @@ private:
     __int64 m_current;
     __int64 m_count;
     std::vector<__int64>*  m_list;
+#ifdef _MSC_VER
+    VectorMF*  m_mflist;
+#endif
 };
 
 

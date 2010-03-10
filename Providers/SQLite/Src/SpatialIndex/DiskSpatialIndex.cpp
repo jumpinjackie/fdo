@@ -35,6 +35,10 @@ void* _aligned_realloc(void* ptr, size_t size, size_t alignment)
 
 #endif
 
+#define MAPPED_BOUNDS_PERPAGE (64*1024)
+
+typedef MappedFile<Bounds, MAPPED_BOUNDS_PERPAGE> BoundsMappedFile;
+
 //====================================================================
 // This is a spatial skip list structure. 
 // It is built on the fly, and makes the assumption that
@@ -71,8 +75,8 @@ SpatialIndex::~SpatialIndex()
             _aligned_free(_levels[i]);
         else
         {
-            ((MappedFile*)_levels[i])->close();
-            delete (MappedFile*)_levels[i];
+            ((BoundsMappedFile*)_levels[i])->close();
+            delete (BoundsMappedFile*)_levels[i];
         }
     }
 }
@@ -109,7 +113,7 @@ void SpatialIndex::Insert(FdoInt64 dbId, DBounds& ext)
 {
     _linkMap[dbId] = _positionIdx;
     if (_positionIdx >= _backMap.size()) // allocate a bit more
-        _backMap.insert(_backMap.end(), _positionIdx-_backMap.size()+8, 0);
+        _backMap.setsize(_positionIdx, 0);
     _backMap[_positionIdx-1] = dbId;
 
     unsigned int fid = _positionIdx;
@@ -155,7 +159,7 @@ void SpatialIndex::Insert(unsigned int fid, Bounds& b)
         {
             _levelTypes[i] = 1;
             
-            MappedFile* mf = new MappedFile(sizeof(Bounds), sizeof(Bounds)*1024*64, 20);
+            BoundsMappedFile* mf = new BoundsMappedFile(20);
             wchar_t tmp[16];
             swprintf(tmp, sizeof(tmp), L"%d", i);
             if (_seedName.size() == 0)
@@ -195,7 +199,7 @@ void SpatialIndex::Insert(unsigned int fid, Bounds& b)
         }
         else //otherwise get a memory mapped pointer
         {
-            MappedFile* mf = (MappedFile*)levels[i];
+            BoundsMappedFile* mf = (BoundsMappedFile*)levels[i];
             IndexType oldsz = mf->numrecs();
 
             //fill any newly allocated sections with empty boxes
@@ -289,7 +293,7 @@ void SpatialIndex::Delete(FdoInt64 dbId)
         }
         else //otherwise get a memory mapped pointer
         {
-            MappedFile* mf = (MappedFile*)levels[0];
+            BoundsMappedFile* mf = (BoundsMappedFile*)levels[0];
             n = (Node*)mf->load_noaddref(index);
             n->b = EMPTY_BOX;
         }
@@ -326,7 +330,7 @@ void SpatialIndex::FullSpatialIndexUpdate()
         }
         else
         {
-            MappedFile* mf = (MappedFile*)levels[i];
+            BoundsMappedFile* mf = (BoundsMappedFile*)levels[i];
             for (unsigned int y = 0; y < counts[i]; y++)
             {
                 n = (Node*)mf->load_noaddref(y);
@@ -345,7 +349,7 @@ void SpatialIndex::FullSpatialIndexUpdate()
     }
     else
     {
-        MappedFile* mf = (MappedFile*)levels[0];
+        BoundsMappedFile* mf = (BoundsMappedFile*)levels[0];
         for (unsigned int y = 0; y < counts[0]; y++)
         {
             n = (Node*)mf->load_noaddref(y);
@@ -359,7 +363,7 @@ inline Node* SpatialIndex::GetNode(int level, int index)
     if (_levelTypes[level] == 0)
         return &((Node*)_levels[level])[index];
     else
-        return (Node*)((MappedFile*)_levels[level])->load_noaddref(index);
+        return (Node*)((BoundsMappedFile*)_levels[level])->load_noaddref(index);
 }
 
 
@@ -369,10 +373,8 @@ void SpatialIndex::ReOpen()
     {
         if (_levelTypes[i] == 1)
         {
-            MappedFile* mf = (MappedFile*)_levels[i];
-            const wchar_t* name =  mf->name().c_str();
-            mf->close();
-            mf->open(name);
+            BoundsMappedFile* mf = (BoundsMappedFile*)_levels[i];
+            mf->reopen();
         }
     }
 }

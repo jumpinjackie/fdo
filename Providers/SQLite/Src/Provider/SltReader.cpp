@@ -812,7 +812,7 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
 
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
-
+#pragma warning (disable: 4127)
 bool SltReader::ReadNext()
 {
     //clear the wide string row cache
