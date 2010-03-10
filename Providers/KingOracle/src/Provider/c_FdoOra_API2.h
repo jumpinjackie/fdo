@@ -50,7 +50,7 @@ protected:
 */                                              
   static bool DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection);
   //static void DescribeSchemaSQL(c_Oci_Connection * OciConn,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9 );
-  static void DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString ,bool BindOwner,const wchar_t* Owner,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9 );
+  static void DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString ,bool BindOwner,const wchar_t* ConnectionOraSchema,const wchar_t* Owner,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9 );
   static void DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* Owner ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum );
 };
 
