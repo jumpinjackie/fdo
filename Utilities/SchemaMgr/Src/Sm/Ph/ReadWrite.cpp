@@ -25,6 +25,12 @@
 using namespace std;
 
 
+FdoSmPhReadWrite::FdoSmPhReadWrite() :
+    mSubReadWrite(NULL),
+    mMgr(NULL)
+{
+}
+
 FdoSmPhReadWrite::FdoSmPhReadWrite(FdoPtr<FdoSmPhReadWrite> subReadWrite) :
     mSubReadWrite(subReadWrite),
     mMgr(NULL)
