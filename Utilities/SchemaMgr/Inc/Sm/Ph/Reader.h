@@ -32,6 +32,9 @@ typedef FdoPtr<FdoSmPhReader> FdoSmPhReaderP;
 class FdoSmPhReader : public FdoSmPhReadWrite
 {
 public:
+    // Create an empty reader
+    FdoSmPhReader();
+
     /// Create a telescoped reader (wraps around an inner reader)
 	FdoSmPhReader(FdoPtr<FdoSmPhReader> subReader);
 
@@ -55,8 +58,6 @@ public:
 	virtual void EndSelect();
 
 protected:
-    /// Unused constructor needed only to build on Linux
-    FdoSmPhReader() {}
 
     /// Set the before-first and after end indicators
 	void SetBOF(bool bBOF);
