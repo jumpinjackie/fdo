@@ -34,6 +34,9 @@ class PostGisSchemaMgrTests : public SchemaMgrTests
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual void VldGenGeom( FdoClassDefinitionP classDef );
     virtual void testConfigError(){};
+
+        virtual bool SupportsFkeyDoubleDecimal() {return false;};
+
 };
 
 #endif // PostGis_SCHEMAMGRTESTS_H

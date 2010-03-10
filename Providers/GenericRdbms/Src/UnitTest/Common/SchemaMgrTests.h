@@ -111,6 +111,7 @@ protected:
 
     virtual bool SupportsBaseObjects();
     virtual bool SupportsViewPkey();
+    virtual bool SupportsFkeyDoubleDecimal() {return true;};
 
     virtual FdoSmPhScInfoP CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol );
 

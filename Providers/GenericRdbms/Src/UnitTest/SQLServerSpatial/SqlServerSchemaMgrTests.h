@@ -53,6 +53,8 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
     virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );
     virtual FdoStringP table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName );
     virtual bool SupportsBaseObjects();
+    virtual bool SupportsFkeyDoubleDecimal() {return false;};
+
 
     virtual FdoInt64 GetSrid( int index );
 

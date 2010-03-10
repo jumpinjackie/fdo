@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2010 Refractions Research, Inc. 
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 2.1 of the GNU Lesser
@@ -16,28 +16,26 @@
  *
  */
 
-#ifndef POSTGIS_INSERTTESTS_H
-#define POSTGIS_INSERTTESTS_H
+#ifndef POSTGIS_GET_NEXT_SEQ_H
+#define POSTGIS_GET_NEXT_SEQ_H
 
-#include "FdoInsertTest.h"
+#ifdef _WIN32
+#pragma once
+#endif // _WIN32
 
-class PostGisFdoInsertTest : public FdoInsertTest
-{
-    CPPUNIT_TEST_SUB_SUITE (PostGisFdoInsertTest, FdoInsertTest);
-    CPPUNIT_TEST_SUITE_END ();
+#include "local.h"
 
-    void  set_provider();
-    void insertDate ();
-public:
-	virtual void conditionalInsert() { }
+/** 
+ * Gets the next value from a sequence
+ *
+ * @param context [in] - pointer to PostGIS session context.
+ * @param sequence_name [in] - the sequence
+ * @param id [out] - next value from the sequence.
+ * @return RDBI error code of operation state.
+ */
+int postgis_get_next_seq(
+    postgis_context_def* context,
+    const char* sequence_name,
+    long* id);
 
-protected:
-    virtual FdoFloat GetMinSingleValue();
-    virtual FdoDouble GetMinDoubleValue();
-    virtual FdoFloat GetMaxSingleValue();
-    virtual FdoDouble GetMaxDoubleValue();
-    virtual FdoFloat GetSmallestSingleValue();
-};
-
-
-#endif // PostGis_INSERTTESTS_H
+#endif /* POSTGIS_GET_NEXT_SEQ_H */

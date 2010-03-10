@@ -19,7 +19,7 @@ libpostgisdr_la_SOURCES = \
   fre_cursor.c \
   geom_srid.c \
   Geometry.c \
-  get_gen_id.c \
+  get_next_seq.c \
   desc_slct.c \
   pgresult_error.c \
   get_msg.c \

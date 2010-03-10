@@ -489,6 +489,17 @@ int rdbi_get_gen_idW(
 	    int  *id
 	    );
 
+int rdbi_get_next_seq(
+        rdbi_context_def  *context,
+	    const char *sequence_name,
+	    long  *id
+	    );
+int rdbi_get_next_seqW(
+        rdbi_context_def  *context,
+	    const wchar_t *sequence_name,
+	    long  *id
+	    );
+
 int rdbi_set_schema (rdbi_context_def *context, const char *schema_name);
 int rdbi_set_schemaW (rdbi_context_def *context, const wchar_t *schema_name);
 int rdbi_est_cursor_obj(rdbi_context_def *context, int *sqlid);

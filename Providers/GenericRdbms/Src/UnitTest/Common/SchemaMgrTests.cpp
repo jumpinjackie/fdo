@@ -247,39 +247,39 @@ void SchemaMgrTests::testGenDefault ()
         column = view3->CreateColumnInt16( L"INT16_COLUMN", true, false, L"INT16_COLUMN" );
         column = view3->CreateColumnGeom( L"GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, true, false, L"GEOM_COLUMN" );
 
-#ifndef RDBI_DEF_SSQL
-        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE5" ));
-        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
-        table->AddPkeyCol( column->GetName() );
-        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+        if ( SupportsFkeyDoubleDecimal() ) {
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE5" ));
+            column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+            table->AddPkeyCol( column->GetName() );
+            column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
-        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE5" ));
-        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
-        table->AddPkeyCol( column->GetName() );
-        FdoSmPhColumnP fkeyColumn5 = table->CreateColumnDouble( L"TABLE5_ID", false );
-        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE5" ));
+            column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+            table->AddPkeyCol( column->GetName() );
+            FdoSmPhColumnP fkeyColumn5 = table->CreateColumnDouble( L"TABLE5_ID", false );
+            column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
-        fkey = table->CreateFkey( "FK_RTABLE5_TABLE5", phMgr->GetDcDbObjectName("TABLE5" ));
-        fkey->AddFkeyColumn( fkeyColumn5, L"ID" );
+            fkey = table->CreateFkey( "FK_RTABLE5_TABLE5", phMgr->GetDcDbObjectName("TABLE5" ));
+            fkey->AddFkeyColumn( fkeyColumn5, L"ID" );
 
-        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE6" ));
-        column = table->CreateColumnDecimal( L"ID1", false, 10, 2 );
-        table->AddPkeyCol( column->GetName() );
-        column = table->CreateColumnChar( L"ID2", false, 50 );
-        table->AddPkeyCol( column->GetName() );
-        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE6" ));
+            column = table->CreateColumnDecimal( L"ID1", false, 10, 2 );
+            table->AddPkeyCol( column->GetName() );
+            column = table->CreateColumnChar( L"ID2", false, 50 );
+            table->AddPkeyCol( column->GetName() );
+            column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
-        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE6" ));
-        column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
-        table->AddPkeyCol( column->GetName() );
-        FdoSmPhColumnP fkeyColumn6a = table->CreateColumnDouble( L"TABLE6_ID1", false );
-        FdoSmPhColumnP fkeyColumn6b = table->CreateColumnChar( L"TABLE6_ID2", false, 50 );
-        column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE6" ));
+            column = table->CreateColumnDecimal( L"ID", false, 10, 2 );
+            table->AddPkeyCol( column->GetName() );
+            FdoSmPhColumnP fkeyColumn6a = table->CreateColumnDouble( L"TABLE6_ID1", false );
+            FdoSmPhColumnP fkeyColumn6b = table->CreateColumnChar( L"TABLE6_ID2", false, 50 );
+            column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
-        fkey = table->CreateFkey( "FK_RTABLE6_TABLE6", phMgr->GetDcDbObjectName("TABLE6" ));
-        fkey->AddFkeyColumn( fkeyColumn6a, L"ID1" );
-        fkey->AddFkeyColumn( fkeyColumn6b, L"ID2" );
-#endif
+            fkey = table->CreateFkey( "FK_RTABLE6_TABLE6", phMgr->GetDcDbObjectName("TABLE6" ));
+            fkey->AddFkeyColumn( fkeyColumn6a, L"ID1" );
+            fkey->AddFkeyColumn( fkeyColumn6b, L"ID2" );
+        }
 
         table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE7" ));
         column = table->CreateColumnInt64( L"ID", false, true);

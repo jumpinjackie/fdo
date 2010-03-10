@@ -85,6 +85,8 @@ static TypeEntry bpcharEntry(FdoSmPhColType_String, L"bpchar");
 static TypeEntry varcharEntry(FdoSmPhColType_String, L"varchar");
 // Note: 'cstring' is a pseudo-type and represents a null-terminated C string
 static TypeEntry cstringEntry(FdoSmPhColType_String, L"cstring");
+// Note: 'bit' is a bit string (sequence of '0's and '1's ).
+static TypeEntry bitEntry(FdoSmPhColType_String, L"bit");
 
 //
 // Boolean Type
@@ -156,6 +158,7 @@ TypeEntry* FdoSmPhPostGisColTypeMapper::mMap[] =
     &bpcharEntry,
     &varcharEntry,
     &cstringEntry,
+    &bitEntry,
     &boolEntry,
     &booleanEntry,
     &oidEntry,
@@ -199,22 +202,6 @@ FdoSmPhColType FdoSmPhPostGisColTypeMapper::String2Type(
     //
     // TODO: mloskot - Verify this mapping logic
     //
-
-    // The mapping of bit columns depends on the number of bits.
-
-    if (0 == FdoStringP(colTypeString).ICompare("bit"))
-    {
-        if (size <= 1) 
-            return FdoSmPhColType_Bool;
-        if (size <= 8) 
-            return FdoSmPhColType_Byte;
-        if (size <= 15) 
-            return FdoSmPhColType_Int16;
-        if (size <= 31) 
-            return FdoSmPhColType_Int32;
-    
-        return FdoSmPhColType_Int64;
-    }
 
     if ((0 == FdoStringP(colTypeString).ICompare("numeric")) && (size == 0))
     {
