@@ -760,7 +760,8 @@ if( OciConn->IsSdoTypes() )
         L" where t.owner = a.owner and t.table_name=a.table_name and t.column_name = a.column_name and t.owner = :1 "
         L" order by a.owner, a.table_name ";
         */
-        if( wcscmp(ConnectionOraSchema,UseOraSchema) == 0 )
+        //if( _wcsicmp(ConnectionOraSchema,UseOraSchema) == 0 )
+        if( FdoCommonOSUtil::wcsicmp(ConnectionOraSchema, UseOraSchema)==0 )
         {
           sqlquery=\
           L" select NULL, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
@@ -815,7 +816,8 @@ if( OciConn->IsSdoTypes() )
         L" order by a.owner, a.table_name ";
         */
         
-        if( wcscmp(ConnectionOraSchema,UseOraSchema) == 0 )
+        //if( wcscmp(ConnectionOraSchema,UseOraSchema) == 0 )
+        if( FdoCommonOSUtil::wcsicmp(ConnectionOraSchema, UseOraSchema)==0 )
         {
           sqlquery=\
           L" select NULL, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
@@ -850,7 +852,7 @@ if( OciConn->IsSdoTypes() )
 
   
     
-    c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlquery.c_str(),bind_owner,UseOraSchema,classes,phys_classes,sc_collection,aliasnum,isoracle9);
+    c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlquery.c_str(),bind_owner,ConnectionOraSchema,UseOraSchema,classes,phys_classes,sc_collection,aliasnum,isoracle9);
     
     
     
@@ -953,7 +955,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
     }
     
       
-    c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlstr.c_str(),false,NULL, classes,phys_classes,sc_collection,aliasnum,isoracle9);
+    c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlstr.c_str(),false,ConnectionOraSchema,NULL, classes,phys_classes,sc_collection,aliasnum,isoracle9);
     
     
   }
@@ -1121,7 +1123,8 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t*S
   
 */
 
-void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString,bool BindOwner,const wchar_t* Owner
+void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString,bool BindOwner
+            ,const wchar_t* ConnectionOraSchema,const wchar_t* Owner
             ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
             ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9      )
 {
@@ -1580,7 +1583,8 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
         }
         else
         {
-          if( BindOwner )
+          //if( BindOwner )
+          if( FdoCommonOSUtil::wcsicmp(ConnectionOraSchema, ora_tableowner.c_str()) != 0 )          
             c_OCI_API::GetTablePkeyColumns(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pcols);
           else
             c_OCI_API::GetTablePkeyColumns(OciConn,NULL,ora_tablename.c_str(),pcols);
