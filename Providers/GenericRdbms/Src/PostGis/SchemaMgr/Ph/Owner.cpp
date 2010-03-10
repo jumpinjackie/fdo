@@ -459,7 +459,7 @@ void FdoSmPhPostGisOwner::AddMetaSchema( FdoStringsP keywords, bool IsSystem)
 		CreateMetaClass();
 
         FdoStringP sqlStmt = FdoStringP::Format(
-            L"update f_schemainfo set description = %ls where upper(schemaname) = '%ls'",
+            L"update f_schemainfo set description = %ls where schemaname = '%ls'",
             (FdoString*) mgr->FormatSQLVal(GetDescription(), FdoSmPhColType_String),
             (FdoString*) FdoStringP(GetName()).Upper()
         );

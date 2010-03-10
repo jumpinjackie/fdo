@@ -71,11 +71,13 @@ void PostGisFdoInsertTest::insertDate ()
                 break;
 
             case 2:
-                wprintf(L"  > (3) Complete time, but no date specification: should work.\n");
+                // PostgreSQL timestamp must have date part. There doesn't appear to be a 
+                // type that can accept date, date/time, or just time.
+                wprintf(L"  > (3) Complete time, but no date specification: should fail.\n");
                 dateTime.hour    = 1;
                 dateTime.minute  = 11;
                 dateTime.seconds = 0;
-                exceptionExpected = false;
+                exceptionExpected = true;
                 break;
 
             case 3:
@@ -149,20 +151,7 @@ void PostGisFdoInsertTest::insertDate ()
                 throw ex;
             }
 
-            wchar_t expectedErrMsg[] = L"Incomplete date/time setting. ";
-            FdoString *excMsg = ex->GetExceptionMessage();
-            // eliminate a space from the end if is the case
-            if (excMsg[wcslen(excMsg) - 1] != L' ')
-                expectedErrMsg[wcslen(expectedErrMsg)-1] = L'\0';
-
-            if ((wcscmp(excMsg, expectedErrMsg)) != 0)
-            {
-                wprintf(L"    Unexpected Exception: %ls\n", ex->GetExceptionMessage());
-                connection->Close();
-                throw ex;
-            }
-            else
-                wprintf(L"    Expected Exception: %ls\n", ex->GetExceptionMessage());
+            FDO_SAFE_RELEASE(ex);
         }
 
         catch ( ... )
@@ -175,7 +164,7 @@ void PostGisFdoInsertTest::insertDate ()
     }
 
     wprintf(L"  > Test Verification.\n");
-    insertDateVerification(connection, 3);
+    insertDateVerification(connection, 2);
 
     wprintf(L"  > Test Cleanup.\n");
     FdoInsertTest::insertDateCleanUp(connection);
@@ -183,124 +172,32 @@ void PostGisFdoInsertTest::insertDate ()
     connection->Close();
 }
 
-void PostGisFdoInsertTest::insertBoundaryUnsigned()
+FdoFloat PostGisFdoInsertTest::GetMinSingleValue()
 {
-    StaticConnection* conn = new PostGisStaticConnection();
-
-    try {
-
-        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
-
-        conn->connect();
-
-        FdoSchemaManagerP mgr = conn->CreateSchemaManager();
-
-        FdoSmPhMgrP phMgr = mgr->GetPhysicalSchema();
-
-        FdoStringP datastore = phMgr->GetDcOwnerName(
-            FdoStringP::Format(
-                L"%hs",
-                (const char*) UnitTestUtil::GetEnviron("datastore", UNSIGNED_SUFFIX)
-            )
-        );
-
-        FdoSmPhDatabaseP database = phMgr->GetDatabase();
-
-        FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
-        if ( owner ) {
-            owner->SetElementState( FdoSchemaElementState_Deleted );
-            owner->Commit();
-        }
-
-        owner = database->CreateOwner(
-            datastore, 
-            false
-        );
-        owner->SetPassword( L"test" );
-
-        FdoStringP tableName = L"unsigned_test";
-            
-        FdoSmPhTableP table = owner->CreateTable( tableName );
-        table->SetPkeyName( tableName + L"_key" );
-        FdoSmPhColumnP column = table->CreateColumnInt32(
-            L"id",
-            false
-        );
-        table->AddPkeyCol( column->GetName() );
-        column = table->CreateColumnUnknown(
-            L"uint_column",
-            L"int unsigned",
-            false,
-            0,
-            0
-        );
-        owner->Commit();
-        
-        phMgr = NULL;
-        mgr = NULL;
-        conn->disconnect();
-        delete conn;
-
-        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(UNSIGNED_SUFFIX, false);
-        FdoPtr<FdoITransaction> featureTransaction = connection->BeginTransaction();
-        FdoIInsert *insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
-        insertCommand->SetFeatureClassName(tableName);
-        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
-
-        FdoPtr<FdoDataValue> dataValue;
-        dataValue = FdoDataValue::Create(L"1");
-        FdoPtr<FdoPropertyValue> propertyValue = AddNewProperty( propertyValues, L"id");
-        propertyValue->SetValue(dataValue);
-
-        dataValue = FdoDataValue::Create(L"0");
-        propertyValue = AddNewProperty( propertyValues, L"uint_column");
-        propertyValue->SetValue(dataValue);
-
-        FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
-
-        dataValue = FdoDataValue::Create(L"2");
-        propertyValue = AddNewProperty( propertyValues, L"id");
-        propertyValue->SetValue(dataValue);
-
-        dataValue = FdoDataValue::Create(L"4294967295");
-        propertyValue = AddNewProperty( propertyValues, L"uint_column");
-        propertyValue->SetValue(dataValue);
-
-        reader = insertCommand->Execute();
-
-        featureTransaction->Commit();
-        insertCommand->Release();
-
-        // check 
-    	FdoISelect* selectCmd = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
-	    selectCmd->SetFeatureClassName(tableName);
-
-    	FdoPtr<FdoIFeatureReader> featureReader = selectCmd->Execute();
-        FdoInt32 rowCount = 0;
-
-        while ( featureReader->ReadNext() ) {
-            rowCount++;
-
-            switch ( featureReader->GetInt32(L"id") ) {
-            case 1:
-                CPPUNIT_ASSERT ( featureReader->GetInt64(L"uint_column") == 0 );
-                break;
-
-            case 2:
-                CPPUNIT_ASSERT ( featureReader->GetInt64(L"uint_column") == 4294967295LL);
-                break;
-            }
-        }
-
-        CPPUNIT_ASSERT( rowCount == 2 );    
-    }
-    catch (FdoCommandException *ex)
-    {
-        UnitTestUtil::FailOnException(ex);
-    }
-    catch (FdoException *ex)
-    {
-        UnitTestUtil::FailOnException(ex);
-    }
+    // PostgreSQL real has only 6 digits of precision
+    return (FdoFloat) -3.40282e38;
 }
+
+FdoDouble PostGisFdoInsertTest::GetMinDoubleValue()
+{
+    return (FdoDouble) -1.7976931348623099e308;
+}
+
+FdoFloat PostGisFdoInsertTest::GetMaxSingleValue()
+{
+    // PostgreSQL real has only 6 digits of precision
+    return (FdoFloat) 3.40282e38;
+}
+
+FdoDouble PostGisFdoInsertTest::GetMaxDoubleValue()
+{
+    return (FdoDouble) 1.7976931348623099e308;
+}
+
+FdoFloat PostGisFdoInsertTest::GetSmallestSingleValue()
+{
+    // PostgreSQL real has only 6 digits of precision
+    return (FdoFloat) 1.17550e-38;
+}
+
 

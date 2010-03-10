@@ -124,6 +124,8 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->capabilities.supports_int64_binding = 1;
 
             methods->get_gen_id     = (int (*)(void*, const char*, int*))mysql_get_gen_id;
+            methods->get_next_seq   = NULL;
+            methods->get_next_seqW  = NULL;
 
             *contextp = context;
             ret = RDBI_SUCCESS;

@@ -645,6 +645,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\get_next_seq.c"
+				>
+			</File>
+			<File
 				RelativePath="get_size.c"
 				>
 			</File>

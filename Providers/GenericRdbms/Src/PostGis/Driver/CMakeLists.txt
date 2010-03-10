@@ -20,6 +20,7 @@ set( postgisdr_STAT_SRCS
   geom_srid.c
   Geometry.c
   get_msg.c
+  get_next_seq.c
   init.c
   null.c
   pgconn_status.c

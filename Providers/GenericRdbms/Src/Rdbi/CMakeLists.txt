@@ -29,6 +29,7 @@ set( rdbi_STAT_SRCS
    get_geoms_ext.c
    get_info.c
    get_msg.c
+   get_next_seq.c
    get_size.c
    id_len.c
    init.c

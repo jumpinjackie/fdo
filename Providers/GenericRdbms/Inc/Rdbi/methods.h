@@ -145,6 +145,8 @@ typedef struct rdbi_methods_def {
 	int  (*run_sqlW)(void*,const wchar_t*,int,int*);
     int  (*get_gen_id)(void*,const char*,int*);
     int  (*get_gen_idW)(void*,const wchar_t*,int*);
+    int  (*get_next_seq)(void*,const char*,long*);
+    int  (*get_next_seqW)(void*,const wchar_t*,long*);
 	int  (*autocommit_on)(void*);
 	int  (*autocommit_off)(void*);
 	int  (*autocommit_mode)(void*);

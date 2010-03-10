@@ -18,7 +18,7 @@ COMMENT ON TABLE f_schemainfo IS 'Definition of information properties for FDO m
 insert into f_schemainfo
 (schemaname, description, creationdate, owner, schemaversionid )
 values
-(current_schema(), 'System Metaschema', current_timestamp, current_user, 3.000);
+(current_database(), 'System Metaschema', current_timestamp, current_user, 3.000);
 
 insert into f_schemainfo
 (schemaname, description, creationdate, owner, schemaversionid )

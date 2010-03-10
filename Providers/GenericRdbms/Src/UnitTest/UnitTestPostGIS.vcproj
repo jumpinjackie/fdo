@@ -69,7 +69,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libpq.lib Rdbi.lib Gdbi_PostGis.lib schemamgrnew.lib PostGISDriver.lib ProvidersCommon.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
+				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libpq.lib Rdbi.lib Gdbi.lib schemamgrnew.lib PostGISDriver.lib ProvidersCommon.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../Lib\Win32\Debug;&quot;$(FDO)\Unmanaged\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
 				IgnoreDefaultLibraryNames="libcmtd.lib"
@@ -233,7 +233,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libpq.lib Rdbi.lib Gdbi_PostGis.lib schemamgrnew.lib PostGISDriver.lib ProvidersCommon.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
+				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libpq.lib Rdbi.lib Gdbi.lib schemamgrnew.lib PostGISDriver.lib ProvidersCommon.lib rdbmsoverrides.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				AdditionalLibraryDirectories="../../Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;;&quot;$(FDOPOSTGRESQL)\lib\ms&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;"
 				IgnoreDefaultLibraryNames="libc.lib"
 				RandomizedBaseAddress="1"

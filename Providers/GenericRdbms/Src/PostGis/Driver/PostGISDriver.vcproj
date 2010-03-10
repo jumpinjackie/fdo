@@ -1140,7 +1140,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\get_gen_id.c"
+				RelativePath=".\get_msg.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1176,7 +1176,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\get_msg.c"
+				RelativePath=".\get_next_seq.c"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -1204,6 +1204,38 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugDynamic|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDynamic|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="2"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseDynamic|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1925,11 +1957,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\get_gen_id.h"
+				RelativePath=".\get_msg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\get_msg.h"
+				RelativePath=".\get_next_seq.h"
 				>
 			</File>
 			<File
