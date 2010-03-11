@@ -1,0 +1,1669 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OSGeo">
+      <UniqueIdentifier>{480fb327-0dbc-4b9b-bc30-9872280bf035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO">
+      <UniqueIdentifier>{76c3df90-9681-407d-9304-7d2b08299cc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\ClientServices">
+      <UniqueIdentifier>{ffea7db6-000a-420b-b661-6f953149b436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Xml">
+      <UniqueIdentifier>{f4268431-e52e-4886-8126-c2711e584e20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands">
+      <UniqueIdentifier>{989d3022-0bbe-4448-9aac-9eb229d1d1e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\Feature">
+      <UniqueIdentifier>{f30195e8-3801-4d12-bd32-4c6d16762072}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\Locking">
+      <UniqueIdentifier>{06bf4f8b-9d6d-47d4-a40c-1cb36c3b930e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\LongTransaction">
+      <UniqueIdentifier>{377f04c5-933c-48a6-99c7-16e2a27375f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\Schema">
+      <UniqueIdentifier>{552b46b2-a49b-44e3-97a7-02e072fcb6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\SpatialContext">
+      <UniqueIdentifier>{275ffb95-7249-4fe9-9180-2d6a31e9300d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\SQL">
+      <UniqueIdentifier>{a15d2bd8-02c1-4b79-9776-3dceec0cd7e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\UnitOfMeasure">
+      <UniqueIdentifier>{4894c7f3-cfeb-4069-8940-42ba85c8fb51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Commands\DataStore">
+      <UniqueIdentifier>{64d20f63-cb40-468f-8196-0caadfe3e6a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Connections">
+      <UniqueIdentifier>{3f08417e-0a23-4866-a2b5-0fab04e40daa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Connections\Capabilities">
+      <UniqueIdentifier>{cba6936d-895c-4bca-9656-e2beb84da112}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Expression">
+      <UniqueIdentifier>{cad35d81-07f9-4961-a1d6-25328a983604}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Filter">
+      <UniqueIdentifier>{99e1a6bf-e388-42b5-907b-c8aca9bb6542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Raster">
+      <UniqueIdentifier>{e33ddf61-a4ce-497f-aa16-c4e45e896710}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\FDO\Schema">
+      <UniqueIdentifier>{f849639e-0499-4414-bc15-50fc32f4beb0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\OSGeo\FDO\mgFDO.rc">
+      <Filter>OSGeo\FDO</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgIConnectionManager.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgIConnectionManagerImp.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgIDisposableCollection.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgIProviderRegistry.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgIProviderRegistryImp.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\mgObjectFactory.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\resource.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\stdafx.h">
+      <Filter>OSGeo\FDO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgConnectionManager.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgFeatureAccessManager.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgProvider.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgProviderCollection.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgProviderNameTokens.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\ClientServices\mgProviderRegistry.h">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgIXmlDeserializable.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgIXmlSerializable.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlClassMapping.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlClassMappingCollection.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlContext.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlDeserializable.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlElementMapping.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlElementMappingCollection.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureContext.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureFlags.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureHandler.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeaturePropertyReader.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeaturePropertyWriter.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureReader.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureSerializer.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureWriter.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFlags.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlNameCollectionHandler.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSchemaMapping.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSerializable.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextFlags.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextReader.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextSerializer.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextWriter.h">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgBatchParameterValueCollection.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgCommandType.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgICommand.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgICommandImp.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgIdentifierCollection.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgIFeatureCommand.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgIFeatureCommandImp.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgOrderingOption.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgParameterDirection.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgParameterValue.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgParameterValueCollection.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgPropertyValue.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\mgPropertyValueCollection.h">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIBaseSelect.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIBaseSelectImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDataReader.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDataReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDelete.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDeleteImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelect.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelectImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIFeatureReader.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIFeatureReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIInsert.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIInsertImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIReader.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReader.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelect.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelectAggregates.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelectAggregatesImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelectImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIUpdate.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Feature\mgIUpdateImp.h">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgConflictType.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIAcquireLock.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIAcquireLockImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockedObjects.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockedObjectsImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockInfo.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockInfoImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockOwners.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockOwnersImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockConflictReader.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockConflictReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockedObjectReader.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockedObjectReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockOwnersReader.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockOwnersReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIReleaseLock.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgIReleaseLockImp.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgLockStrategy.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Locking\mgLockType.h">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLongTransactionCheckpoint.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionPrivileges.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionSet.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionSetImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICommitLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICommitLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransactionCheckpoint.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIDeactivateLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIDeactivateLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIFreezeLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIFreezeLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionCheckpoints.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionCheckpointsImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionPrivileges.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionPrivilegesImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactions.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionsImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionsInSet.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionsInSetImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionCheckpointReader.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionPrivilegeReader.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionReader.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionSetReader.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionSetReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumerator.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransaction.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransactionCheckpoint.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransactionImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgLongTransactionConflictResolution.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgLongTransactionFreezeOperations.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgLongTransactionPrivilegeOperations.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgLongTransactionPrivileges.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgLongTransactionSetOperations.h">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIApplySchema.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIApplySchemaImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchema.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchemaImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchemaMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchemaMappingImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDestroySchema.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDestroySchemaImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNames.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNamesImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNames.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNamesImp.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIPhysicalElementMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgIPhysicalPropertyMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalClassMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalElementMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalPropertyMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalSchemaMapping.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalSchemaMappingCollection.h">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIActivateSpatialContext.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIActivateSpatialContextImp.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgICreateSpatialContext.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgICreateSpatialContextImp.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIDestroySpatialContext.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIDestroySpatialContextImp.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIGetSpatialContexts.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIGetSpatialContextsImp.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgISpatialContextReader.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgISpatialContextReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgSpatialContextExtentType.h">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLCommand.h">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLCommandImp.h">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLDataReader.h">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLDataReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgBaseUnit.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgICreateMeasureUnit.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgICreateMeasureUnitImp.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIDestroyMeasureUnit.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIDestroyMeasureUnitImp.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIGetMeasureUnits.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIGetMeasureUnitsImp.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIMeasureUnitReader.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIMeasureUnitReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgICreateDataStore.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgICreateDataStoreImp.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStorePropertyDictionary.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStorePropertyDictionaryImp.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStoreReader.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStoreReaderImp.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDestroyDataStore.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDestroyDataStoreImp.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIListDataStores.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIListDataStoresImp.h">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgConnectionState.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnection.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnectionImp.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnectionInfo.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnectionInfoImp.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnectionPropertyDictionary.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgIConnectionPropertyDictionaryImp.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgITransaction.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgITransactionImp.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\mgProviderDatastoreType.h">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgArgumentDefinition.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgArgumentDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgFunctionCategoryType.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgFunctionDefinition.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgFunctionDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgICommandCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgICommandCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIConnectionCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIConnectionCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIExpressionCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIExpressionCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIFilterCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIFilterCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIGeometryCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIGeometryCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIRasterCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIRasterCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgISchemaCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgISchemaCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgITopologyCapabilities.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgITopologyCapabilitiesImp.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgReadOnlyArgDefColl.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgSchemaElementNameType.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgSignatureDefinition.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgThreadCapability.h">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgBinaryExpression.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgBinaryOperations.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgBLOBValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgBooleanValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgByteValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgCLOBValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgComputedIdentifier.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgDataValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgDataValueCollection.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgDateTimeValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgDecimalValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgDoubleValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgExpression.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgExpressionCollection.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgExpressionType.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgFunction.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgGeometryValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgIdentifier.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgIExpressionProcessor.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgIExpressionProcessorImp.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgInt16Value.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgInt32Value.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgInt64Value.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgLiteralValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgLiteralValueCollection.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgLiteralValueType.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgLOBValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgParameter.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgSingleValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgStringValue.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgUnaryExpression.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgUnaryOperations.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgValueExpression.h">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgBinaryLogicalOperations.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgBinaryLogicalOperator.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgComparisonCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgComparisonOperations.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgConditionType.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgDistanceCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgDistanceOperations.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgFilter.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgGeometricCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgIFilterProcessor.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgIFilterProcessorImp.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgInCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgLogicalOperator.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgNullCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgSearchCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgSpatialCondition.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgSpatialOperations.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgUnaryLogicalOperations.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgUnaryLogicalOperator.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgValueExpressionCollection.h">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgDataValueCollection.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgIRaster.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgIRasterImp.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgIRasterPropertyDictionary.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgIRasterPropertyDictionaryImp.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgRasterDataModel.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgRasterDataModelType.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgRasterDataOrganization.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Raster\mgRasterDataType.h">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgAssociationPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgClassCapabilities.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgClassCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgClassDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgClassType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgDataPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgDataPropertyDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgDataType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgDeleteRule.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgFeatureClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgFeatureClassCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgFeatureSchema.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgFeatureSchemaCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgGeometricPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgGeometricType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgNetworkClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgNetworkFeatureClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgNetworkLayerClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgNetworkLinkFeatureClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgNetworkNodeFeatureClass.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgObjectPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgObjectType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgOrderType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraint.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraintList.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraintRange.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraintType.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgRasterPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgReadOnlyDataPropertyDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgReadOnlyPropertyDefinitionCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgSchemaAttributeDictionary.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgSchemaElement.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgSchemaElementState.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgTopoFeaturePropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgTopoGeometryPropertyDefinition.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgTopology.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgUniqueConstraint.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\FDO\Schema\mgUniqueConstraintCollection.h">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\OSGeo\FDO\mgIConnectionManagerImp.cpp">
+      <Filter>OSGeo\FDO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\mgIDisposableCollection.cpp">
+      <Filter>OSGeo\FDO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\mgIProviderRegistryImp.cpp">
+      <Filter>OSGeo\FDO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\mgObjectFactory.cpp">
+      <Filter>OSGeo\FDO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\stdafx.cpp">
+      <Filter>OSGeo\FDO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgConnectionManager.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgFeatureAccessManager.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgProvider.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgProviderCollection.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgProviderNameTokens.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\ClientServices\mgProviderRegistry.cpp">
+      <Filter>OSGeo\FDO\ClientServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlClassMapping.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlClassMappingCollection.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlContext.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlDeserializable.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlElementMapping.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlElementMappingCollection.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureContext.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureFlags.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureHandler.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeaturePropertyReader.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeaturePropertyWriter.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureReader.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureSerializer.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureWriter.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlFlags.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlNameCollectionHandler.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSchemaMapping.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSerializable.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextFlags.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextReader.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextSerializer.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Xml\mgXmlSpatialContextWriter.cpp">
+      <Filter>OSGeo\FDO\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgBatchParameterValueCollection.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgICommandImp.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgIdentifierCollection.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgIFeatureCommandImp.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgParameterValue.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgParameterValueCollection.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgPropertyValue.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\mgPropertyValueCollection.cpp">
+      <Filter>OSGeo\FDO\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIBaseSelectImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDataReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIDeleteImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIExtendedSelectImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIFeatureReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIInsertImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIScrollableFeatureReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelectAggregatesImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgISelectImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Feature\mgIUpdateImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Feature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgIAcquireLockImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockedObjectsImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockInfoImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgIGetLockOwnersImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockConflictReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockedObjectReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgILockOwnersReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Locking\mgIReleaseLockImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Locking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIActivateLTCheckpointImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLongTransactionSetImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIChangeLTPrivilegesImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICommitLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgICreateLTCheckpointImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIDeactivateLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIFreezeLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionCheckpointsImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionPrivilegesImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionsImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIGetLongTransactionsInSetImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILongTransactionSetReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTCheckpointReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTConflictDirectiveEnumeratorImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgILTPrivilegeReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLongTransactionImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\LongTransaction\mgIRollbackLTCheckpointImp.cpp">
+      <Filter>OSGeo\FDO\Commands\LongTransaction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIApplySchemaImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchemaImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDescribeSchemaMappingImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIDestroySchemaImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetClassNamesImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgIGetSchemaNamesImp.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalClassMapping.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalElementMapping.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalPropertyMapping.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalSchemaMapping.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Schema\mgPhysicalSchemaMappingCollection.cpp">
+      <Filter>OSGeo\FDO\Commands\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIActivateSpatialContextImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgICreateSpatialContextImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIDestroySpatialContextImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgIGetSpatialContextsImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\SpatialContext\mgISpatialContextReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLCommandImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\Sql\mgISQLDataReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\SQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgICreateMeasureUnitImp.cpp">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIDestroyMeasureUnitImp.cpp">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIGetMeasureUnitsImp.cpp">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\UnitOfMeasure\mgIMeasureUnitReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\UnitOfMeasure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\DataStore\mgICreateDataStoreImp.cpp">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStorePropertyDictionaryImp.cpp">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDataStoreReaderImp.cpp">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIDestroyDataStoreImp.cpp">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Commands\DataStore\mgIListDataStoresImp.cpp">
+      <Filter>OSGeo\FDO\Commands\DataStore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\mgIConnectionImp.cpp">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\mgIConnectionInfoImp.cpp">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\mgIConnectionPropertyDictionaryImp.cpp">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\mgITransactionImp.cpp">
+      <Filter>OSGeo\FDO\Connections</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgArgumentDefinition.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgArgumentDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgFunctionDefinition.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgFunctionDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgICommandCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIConnectionCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIExpressionCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIFilterCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIGeometryCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgIRasterCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgISchemaCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgITopologyCapabilitiesImp.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgReadOnlyArgDefColl.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Connections\Capabilities\mgSignatureDefinition.cpp">
+      <Filter>OSGeo\FDO\Connections\Capabilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgBinaryExpression.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgBLOBValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgBooleanValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgByteValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgCLOBValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgComputedIdentifier.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDataValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDataValueCollection.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDateTimeValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDecimalValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDoubleValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgExpression.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgExpressionCollection.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgFunction.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgGeometryValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgIdentifier.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgIExpressionProcessorImp.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgInt16Value.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgInt32Value.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgInt64Value.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgLiteralValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgLiteralValueCollection.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgLOBValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgParameter.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgSingleValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgStringValue.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgUnaryExpression.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgValueExpression.cpp">
+      <Filter>OSGeo\FDO\Expression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgBinaryLogicalOperator.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgComparisonCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgDistanceCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgFilter.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgGeometricCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgIFilterProcessorImp.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgInCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgLogicalOperator.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgNullCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgSearchCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgSpatialCondition.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgUnaryLogicalOperator.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Filter\mgValueExpressionCollection.cpp">
+      <Filter>OSGeo\FDO\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Raster\mgDataValueCollection.cpp">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Raster\mgIRasterImp.cpp">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Raster\mgIRasterPropertyDictionaryImp.cpp">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Raster\mgRasterDataModel.cpp">
+      <Filter>OSGeo\FDO\Raster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgAssociationPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgClassCapabilities.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgClassCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgClassDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgDataPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgDataPropertyDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgFeatureClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgFeatureClassCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgFeatureSchema.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgFeatureSchemaCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgGeometricPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgNetworkClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgNetworkFeatureClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgNetworkLayerClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgNetworkLinkFeatureClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgNetworkNodeFeatureClass.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgObjectPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgPropertyDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraint.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraintList.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgPropertyValueConstraintRange.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgRasterPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgReadOnlyDataPropertyDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgReadOnlyPropertyDefinitionCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgSchemaAttributeDictionary.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgSchemaElement.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgTopoFeaturePropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgTopoGeometryPropertyDefinition.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgTopology.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgUniqueConstraint.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Schema\mgUniqueConstraintCollection.cpp">
+      <Filter>OSGeo\FDO\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\AssemblyVersion.cpp" />
+  </ItemGroup>
+</Project>
