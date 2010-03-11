@@ -1,0 +1,948 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0A3FF448-33ED-435F-8376-B28001F83391}</ProjectGuid>
+    <RootNamespace>Fdo</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Obj\Fdo\Win32\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Obj\Fdo\Win64\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Obj\Fdo\Win32\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Obj\Fdo\Win64\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FDO</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FDO</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FDO</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FDO</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;Src/Fdo;Src/Common;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;Src/Nls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WIN32;_USRDLL;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;XML_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_2D.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>Lib/Win32/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win32/Debug/FDO.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)$(ProjectName).dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;Src/Fdo;Src/Common;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;Src/Nls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;XML_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_2D.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>Lib/Win64/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win64/Debug/FDO.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)$(ProjectName).dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>Inc;Src/Fdo;Src/Common;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;Src/Nls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_USRDLL;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_2.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>Lib/Win32/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win32/Release/FDO.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)$(ProjectName).dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>Inc;Src/Fdo;Src/Common;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;Src/Nls;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_2.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>Lib/Win64/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win64/Release/FDO.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)$(ProjectName).dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Fdo\Fdo.cpp" />
+    <ClCompile Include="Src\Fdo\IDisposableCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\BinaryExpression.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\BLOBValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\BooleanValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\ByteValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\CLOBValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\ComputedIdentifier.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\DataValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\DataValueCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\DateTimeValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\DecimalValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\DoubleValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Expression.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\ExpressionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\ExpressionException.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\ExpressionInternal.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Function.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\GeometryValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Identifier.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Int16Value.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Int32Value.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Int64Value.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\IntBinValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\IntHexValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\LiteralValueCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\Parameter.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\SingleValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\StringValue.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\UnaryExpression.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\BinaryLogicalOperator.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\ComparisonCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\DistanceCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\Filter.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\FilterException.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\GeometricCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\InCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\NullCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\SpatialCondition.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\UnaryLogicalOperator.cpp" />
+    <ClCompile Include="Src\Fdo\Filter\ValueExpressionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\AssociationPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\AutogenerationException.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\Class.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ClassCapabilities.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ClassCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ClassDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\DataPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\DataPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\DataTypeMapper.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\FeatureClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\FeatureClassCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\FeatureSchema.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\FeatureSchemaCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\GeometricPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\MergeContext.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\NetworkClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\NetworkFeatureClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\NetworkLayerClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\NetworkLinkFeatureClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\NetworkNodeFeatureClass.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ObjectPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\PropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\PropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\PropertyValueConstraintList.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\PropertyValueConstraintRange.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\RasterPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ReadOnlyDataPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\ReadOnlyPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\SchemaAttributeDictionary.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\SchemaElement.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\SchemaException.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\TopoFeaturePropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\TopoGeometryPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\Topology.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\UniqueConstraint.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\UniqueConstraintCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\XmlContext.cpp" />
+    <ClCompile Include="Src\Fdo\Schema\XmlError.cpp" />
+    <ClCompile Include="Src\Fdo\Parse\Lex.cpp" />
+    <ClCompile Include="Src\Fdo\Parse\Parse.cpp" />
+    <ClCompile Include="Src\Fdo\Parse\yyExpressionWin.cpp" />
+    <ClCompile Include="Src\Fdo\Parse\yyFilterWin.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\ConnectionException.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\ArgumentDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\ArgumentDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\FunctionDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\FunctionDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\IExpressionCapabilities.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\ISchemaCapabilities.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\ReadOnlyArgumentDefinitionCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Connections\Capabilities\SignatureDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\BatchParameterValueCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\CommandException.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\IdentifierCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\ParameterValue.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\ParameterValueCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\PropertyValue.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\PropertyValueCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\Schema\PhysicalClassMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\Schema\PhysicalElementMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\Schema\PhysicalPropertyMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\Schema\PhysicalSchemaMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\Schema\PhysicalSchemaMappingCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Commands\SpatialContext\SpatialContextMismatchException.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\AssociationProperty.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Box.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\ClassMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\ClassMappingCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Context.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\CoordinateGroup.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\DataProperty.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Deserializable.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\ElementMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\ElementMappingCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureContext.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureFlags.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureHandler.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeaturePropertyReader.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeaturePropertyReaderImpl.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeaturePropertyWriter.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureReader.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureReaderImpl.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureSerializer.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\FeatureWriter.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Flags.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\GeometricProperty.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Geometry.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\GeometryHandler.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\GeometrySerializer.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LinearRing.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LineString.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LpClassDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LpGmlElementDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LpPropertyDefinition.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\LpSchema.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\MultiGeometry.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\MultiLineString.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\MultiPoint.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\MultiPolygon.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\NameCollectionHandler.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Point.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Polygon.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SchemaManager.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SchemaMapping.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SCReadHandler.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\Serializable.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SpatialContextFlags.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SpatialContextReader.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SpatialContextSerializer.cpp" />
+    <ClCompile Include="Src\Fdo\Xml\SpatialContextWriter.cpp" />
+    <ClCompile Include="Src\Fdo\Raster\RasterDataModel.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\ClientServiceException.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\ConnectionManager.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\FeatureAccessManager.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\Provider.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\ProviderCollection.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\ProviderNameTokens.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\ProviderRegistry.cpp" />
+    <ClCompile Include="Src\Fdo\ClientServices\RegistryUtility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Fdo\Expression\ExpressionInternal.h" />
+    <ClInclude Include="Inc\Fdo\Expression\IntBinValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\IntHexValue.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\FunctionCategoryType.h" />
+    <ClInclude Include="Src\Fdo\Xml\AssociationProperty.h" />
+    <ClInclude Include="Src\Fdo\Xml\BLOBProperty.h" />
+    <ClInclude Include="Src\Fdo\Xml\Box.h" />
+    <ClInclude Include="Src\Fdo\Xml\CoordinateGroup.h" />
+    <ClInclude Include="Src\Fdo\Xml\DataProperty.h" />
+    <ClInclude Include="Src\Fdo\Xml\FeaturePropertyReaderImpl.h" />
+    <ClInclude Include="Src\Fdo\Xml\FeatureReaderImpl.h" />
+    <ClInclude Include="Src\Fdo\Xml\GeometricProperty.h" />
+    <ClInclude Include="Src\Fdo\Xml\Geometry.h" />
+    <ClInclude Include="Src\Fdo\Xml\GeometryHandler.h" />
+    <ClInclude Include="Src\Fdo\Xml\GeometrySerializer.h" />
+    <ClInclude Include="Src\Fdo\Xml\LinearRing.h" />
+    <ClInclude Include="Src\Fdo\Xml\LineString.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpClassDefinition.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpCollection.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpGmlElementDefinition.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpPropertyDefinition.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpSchema.h" />
+    <ClInclude Include="Src\Fdo\Xml\LpSchemaElement.h" />
+    <ClInclude Include="Src\Fdo\Xml\MultiGeometry.h" />
+    <ClInclude Include="Src\Fdo\Xml\MultiLineString.h" />
+    <ClInclude Include="Src\Fdo\Xml\MultiPoint.h" />
+    <ClInclude Include="Src\Fdo\Xml\MultiPolygon.h" />
+    <ClInclude Include="Src\Fdo\Xml\Point.h" />
+    <ClInclude Include="Src\Fdo\Xml\Polygon.h" />
+    <ClInclude Include="Src\Fdo\Xml\SchemaManager.h" />
+    <ClInclude Include="Src\Fdo\ClientServices\ProviderDef.h" />
+    <ClInclude Include="Src\Fdo\ClientServices\RegistryUtility.h" />
+    <ClInclude Include="Inc\Fdo\Collection.h" />
+    <ClInclude Include="Inc\Fdo.h" />
+    <ClInclude Include="Inc\FdoStd.h" />
+    <ClInclude Include="Inc\Fdo\IDisposableCollection.h" />
+    <ClInclude Include="Inc\Fdo\ReadOnlyCollection.h" />
+    <ClInclude Include="Inc\Fdo\ReadOnlyUnnamedCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\AssociationPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\AutogenerationException.h" />
+    <ClInclude Include="Inc\Fdo\Schema\Class.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ClassCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ClassCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ClassDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ClassType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\DataPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\DataPropertyDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\DataType.h" />
+    <ClInclude Include="Src\Fdo\Schema\DataTypeMapper.h" />
+    <ClInclude Include="Inc\Fdo\Schema\DeleteRule.h" />
+    <ClInclude Include="Inc\Fdo\Schema\FeatureClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\FeatureClassCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\FeatureSchema.h" />
+    <ClInclude Include="Inc\Fdo\Schema\FeatureSchemaCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\GeometricPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\GeometricType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\MergeContext.h" />
+    <ClInclude Include="Inc\Fdo\Schema\NetworkClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\NetworkFeatureClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\NetworkLayerClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\NetworkLinkFeatureClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\NetworkNodeFeatureClass.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ObjectPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ObjectType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\OrderType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyValueConstraint.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyValueConstraintList.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyValueConstraintRange.h" />
+    <ClInclude Include="Inc\Fdo\Schema\PropertyValueConstraintType.h" />
+    <ClInclude Include="Inc\Fdo\Schema\RasterPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ReadOnlyDataPropertyDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\ReadOnlyPropertyDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\SchemaAttributeDictionary.h" />
+    <ClInclude Include="Inc\Fdo\Schema\SchemaCollection.h" />
+    <ClInclude Include="Inc\Fdo\Schema\SchemaElement.h" />
+    <ClInclude Include="Inc\Fdo\Schema\SchemaElementState.h" />
+    <ClInclude Include="Inc\Fdo\Schema\SchemaException.h" />
+    <CustomBuild Include="Src\Fdo\Schema\SchemaFromExternal.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Fdo/Schema/SchemaFromExternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)FeatureSchemaCollection.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Fdo/Schema/SchemaFromExternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FeatureSchemaCollection.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Fdo/Schema/SchemaFromExternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)FeatureSchemaCollection.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Fdo/Schema/SchemaFromExternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FeatureSchemaCollection.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Fdo\Schema\SchemaFromInternal.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Fdo/Schema/SchemaFromInternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)FeatureSchema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Fdo/Schema/SchemaFromInternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)FeatureSchema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Fdo/Schema/SchemaFromInternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)FeatureSchema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Fdo/Schema/SchemaFromInternal.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)FeatureSchema.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="Inc\Fdo\Schema\TopoFeaturePropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\TopoGeometryPropertyDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Schema\Topology.h" />
+    <ClInclude Include="Inc\Fdo\Schema\UniqueConstraint.h" />
+    <ClInclude Include="Inc\Fdo\Schema\UniqueConstraintCollection.h" />
+    <ClInclude Include="Src\Fdo\Schema\XmlContext.h" />
+    <ClInclude Include="Src\Fdo\Schema\XmlError.h" />
+    <ClInclude Include="Inc\Fdo\Expression\BinaryExpression.h" />
+    <ClInclude Include="Inc\Fdo\Expression\BinaryOperations.h" />
+    <ClInclude Include="Inc\Fdo\Expression\BLOBStreamReader.h" />
+    <ClInclude Include="Inc\Fdo\Expression\BLOBValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\BooleanValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ByteValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\CLOBValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ComputedIdentifier.h" />
+    <ClInclude Include="Inc\Fdo\Expression\DataValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\DataValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Expression\DateTimeValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\DecimalValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\DoubleValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Expression.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ExpressionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ExpressionException.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ExpressionType.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Function.h" />
+    <ClInclude Include="Inc\Fdo\Expression\GeometryValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Identifier.h" />
+    <ClInclude Include="Inc\Fdo\Expression\IExpressionProcessor.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Int16Value.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Int32Value.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Int64Value.h" />
+    <ClInclude Include="Inc\Fdo\Expression\LiteralValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\LiteralValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Expression\LiteralValueType.h" />
+    <ClInclude Include="Inc\Fdo\Expression\LOBValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\Parameter.h" />
+    <ClInclude Include="Inc\Fdo\Expression\SingleValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\StringValue.h" />
+    <ClInclude Include="Inc\Fdo\Expression\UnaryExpression.h" />
+    <ClInclude Include="Inc\Fdo\Expression\UnaryOperations.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ValueExpression.h" />
+    <ClInclude Include="Inc\Fdo\Filter\BinaryLogicalOperations.h" />
+    <ClInclude Include="Inc\Fdo\Filter\BinaryLogicalOperator.h" />
+    <ClInclude Include="Inc\Fdo\Filter\ComparisonCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\ComparisonOperations.h" />
+    <ClInclude Include="Inc\Fdo\Filter\ConditionType.h" />
+    <ClInclude Include="Inc\Fdo\Filter\DistanceCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\DistanceOperations.h" />
+    <ClInclude Include="Inc\Fdo\Filter\Filter.h" />
+    <ClInclude Include="Inc\Fdo\Filter\FilterException.h" />
+    <ClInclude Include="Inc\Fdo\Filter\GeometricCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\IFilterProcessor.h" />
+    <ClInclude Include="Inc\Fdo\Filter\InCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\LogicalOperator.h" />
+    <ClInclude Include="Inc\Fdo\Filter\NullCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\SearchCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\SpatialCondition.h" />
+    <ClInclude Include="Inc\Fdo\Filter\SpatialOperations.h" />
+    <ClInclude Include="Inc\Fdo\Filter\UnaryLogicalOperations.h" />
+    <ClInclude Include="Inc\Fdo\Filter\UnaryLogicalOperator.h" />
+    <ClInclude Include="Inc\Fdo\Filter\ValueExpressionCollection.h" />
+    <ClInclude Include="Src\Fdo\Parse\Lex.h" />
+    <ClInclude Include="Src\Fdo\Parse\Parse.h" />
+    <ClInclude Include="Src\Fdo\Parse\yyExpressionWin.h" />
+    <ClInclude Include="Src\Fdo\Parse\yyFilterWin.h" />
+    <ClInclude Include="Inc\Fdo\Connections\ConnectionException.h" />
+    <ClInclude Include="Inc\Fdo\Connections\ConnectionState.h" />
+    <ClInclude Include="Inc\Fdo\Connections\IConnection.h" />
+    <ClInclude Include="Inc\Fdo\Connections\IConnectionInfo.h" />
+    <ClInclude Include="Inc\Fdo\Connections\IConnectionPropertyDictionary.h" />
+    <ClInclude Include="Inc\Fdo\Connections\IPropertyDictionary.h" />
+    <ClInclude Include="Inc\Fdo\Connections\ITransaction.h" />
+    <ClInclude Include="Inc\Fdo\Connections\ProviderDatastoreType.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ArgumentDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ArgumentDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\FunctionDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\FunctionDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ICommandCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\IConnectionCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\IExpressionCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\IFilterCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\IGeometryCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\IRasterCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ISchemaCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ITopologyCapabilities.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ReadOnlyArgumentDefinitionCollection.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\SchemaElementNameType.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\SignatureDefinition.h" />
+    <ClInclude Include="Inc\Fdo\Connections\Capabilities\ThreadCapability.h" />
+    <ClInclude Include="Inc\Fdo\Commands\BatchParameterValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\CommandException.h" />
+    <ClInclude Include="Inc\Fdo\Commands\CommandType.h" />
+    <ClInclude Include="Inc\Fdo\Commands\ICommand.h" />
+    <ClInclude Include="Inc\Fdo\Commands\IdentifierCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\IFeatureCommand.h" />
+    <ClInclude Include="Inc\Fdo\Commands\OrderingOption.h" />
+    <ClInclude Include="Inc\Fdo\Commands\ParameterDirection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\ParameterValue.h" />
+    <ClInclude Include="Inc\Fdo\Commands\ParameterValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\PropertyValue.h" />
+    <ClInclude Include="Inc\Fdo\Commands\PropertyValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IBaseSelect.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IDataReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IDelete.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IExtendedSelect.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IFeatureReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IInsert.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IScrollableFeatureReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\ISelect.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\ISelectAggregates.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Feature\IUpdate.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IApplySchema.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IDescribeSchema.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IDescribeSchemaMapping.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IDestroySchema.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IGetClassNames.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\IGetSchemaNames.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalClassMapping.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalElementMapping.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalElementMappingCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalPropertyMapping.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalSchemaMapping.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Schema\PhysicalSchemaMappingCollection.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\ConflictType.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\IAcquireLock.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\IGetLockedObjects.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\IGetLockInfo.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\IGetLockOwners.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\ILockConflictReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\ILockedObjectReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\ILockOwnersReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\IReleaseLock.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\LockStrategy.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Locking\LockType.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\IActivateSpatialContext.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\ICreateSpatialContext.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\IDestroySpatialContext.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\IGetSpatialContexts.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\ISpatialContextReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\SpatialContextExtentType.h" />
+    <ClInclude Include="Inc\Fdo\Commands\SpatialContext\SpatialContextMismatchException.h" />
+    <ClInclude Include="Inc\Fdo\Commands\UnitOfMeasure\BaseUnit.h" />
+    <ClInclude Include="Inc\Fdo\Commands\UnitOfMeasure\ICreateMeasureUnit.h" />
+    <ClInclude Include="Inc\Fdo\Commands\UnitOfMeasure\IDestroyMeasureUnit.h" />
+    <ClInclude Include="Inc\Fdo\Commands\UnitOfMeasure\IGetMeasureUnits.h" />
+    <ClInclude Include="Inc\Fdo\Commands\UnitOfMeasure\IMeasureUnitReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IActivateLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IActivateLongTransactionCheckpoint.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IChangeLongTransactionPrivileges.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IChangeLongTransactionSet.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ICommitLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ICreateLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ICreateLongTransactionCheckpoint.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IDeactivateLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IFreezeLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IGetLongTransactionCheckpoints.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IGetLongTransactionPrivileges.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IGetLongTransactions.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IGetLongTransactionsInSet.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ILongTransactionCheckpointReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ILongTransactionPrivilegeReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ILongTransactionReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ILongTransactionSetReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\ILTConflictDirectiveEnumerator.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IRollbackLongTransaction.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\IRollbackLongTransactionCheckpoint.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionConflictResolution.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionConstants.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionFreezeOperations.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionPrivilegeOperations.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionPrivileges.h" />
+    <ClInclude Include="Inc\Fdo\Commands\LongTransaction\LongTransactionSetOperations.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Sql\ISQLCommand.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Sql\ISQLDataReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetwork.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkAllPaths.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkNearestNeighbors.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkPathReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkReachableNodes.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkReachingNodes.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkShortestPath.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkTSP.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Network\INetworkWithinCost.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IActivateTopologyArea.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IActivateTopologyInCommandResults.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IDeactivateTopologyArea.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IDeactivateTopologyInCommandResults.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IMoveTopoNode.h" />
+    <ClInclude Include="Inc\Fdo\Commands\Topology\IReconnectTopoEdge.h" />
+    <ClInclude Include="Inc\Fdo\Commands\DataStore\ICreateDataStore.h" />
+    <ClInclude Include="Inc\Fdo\Commands\DataStore\IDataStorePropertyDictionary.h" />
+    <ClInclude Include="Inc\Fdo\Commands\DataStore\IDataStoreReader.h" />
+    <ClInclude Include="Inc\Fdo\Commands\DataStore\IDestroyDataStore.h" />
+    <ClInclude Include="Inc\Fdo\Commands\DataStore\IListDataStores.h" />
+    <ClInclude Include="Inc\Fdo\Raster\DataValueCollection.h" />
+    <ClInclude Include="Inc\Fdo\Raster\IRaster.h" />
+    <ClInclude Include="Inc\Fdo\Raster\IRasterPropertyDictionary.h" />
+    <ClInclude Include="Inc\Fdo\Raster\RasterDataModel.h" />
+    <ClInclude Include="Inc\Fdo\Raster\RasterDataModelType.h" />
+    <ClInclude Include="Inc\Fdo\Raster\RasterDataOrganization.h" />
+    <ClInclude Include="Inc\Fdo\Raster\RasterDataType.h" />
+    <ClInclude Include="Inc\Fdo\Xml\ClassMapping.h" />
+    <ClInclude Include="Inc\Fdo\Xml\ClassMappingCollection.h" />
+    <ClInclude Include="Inc\Fdo\Xml\Context.h" />
+    <ClInclude Include="Inc\Fdo\Xml\Deserializable.h" />
+    <ClInclude Include="Inc\Fdo\Xml\ElementMapping.h" />
+    <ClInclude Include="Inc\Fdo\Xml\ElementMappingCollection.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureContext.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureFlags.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureHandler.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeaturePropertyReader.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeaturePropertyWriter.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureReader.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureSerializer.h" />
+    <ClInclude Include="Inc\Fdo\Xml\FeatureWriter.h" />
+    <ClInclude Include="Inc\Fdo\Xml\Flags.h" />
+    <ClInclude Include="Inc\Fdo\Xml\NameCollectionHandler.h" />
+    <ClInclude Include="Inc\Fdo\Xml\SchemaMapping.h" />
+    <ClInclude Include="Src\Fdo\Xml\SCReadHandler.h" />
+    <ClInclude Include="Inc\Fdo\Xml\Serializable.h" />
+    <ClInclude Include="Inc\Fdo\Xml\SpatialContextFlags.h" />
+    <ClInclude Include="Inc\Fdo\Xml\SpatialContextReader.h" />
+    <ClInclude Include="Inc\Fdo\Xml\SpatialContextSerializer.h" />
+    <ClInclude Include="Inc\Fdo\Xml\SpatialContextWriter.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ClientServiceException.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ClientServices.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ConnectionManager.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\FeatureAccessManager.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\Provider.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ProviderCollection.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ProviderNameTokens.h" />
+    <ClInclude Include="Inc\Fdo\ClientServices\ProviderRegistry.h" />
+    <ClInclude Include="Src\Fdo\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Src\Fdo\Schema\SchemaFromExternal.xslt">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Fdo/Schema/SchemaFromExternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Fdo/Schema/SchemaFromExternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Fdo/Schema/SchemaFromExternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\FileToHdr Src/Fdo/Schema/SchemaFromExternal.xslt Src/Fdo/Schema/SchemaFromExternal.h schemaFromExternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Fdo/Schema/SchemaFromExternal.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Fdo\Schema\SchemaFromInternal.xslt">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Fdo/Schema/SchemaFromInternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Fdo/Schema/SchemaFromInternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Fdo/Schema/SchemaFromInternal.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\FileToHdr Src/Fdo/Schema/SchemaFromInternal.xslt Src/Fdo/Schema/SchemaFromInternal.h schemaFromInternal
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Fdo/Schema/SchemaFromInternal.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Fdo\Parse\yyExpression.y">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">echo bison yyExpression.y
+bison -y -ldv Src\Fdo\Parse\yyExpression.y
+sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h
+del y.tab.h
+if not exist Src\Fdo\Win32\Debug md Src\Fdo\Win32\Debug
+copy y.output Src\Fdo\Win32\Debug\yyExpression.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">echo bison yyExpression.y
+bison -y -ldv Src\Fdo\Parse\yyExpression.y
+sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h
+del y.tab.h
+if not exist Src\Fdo\Win64\Debug md Src\Fdo\Win64\Debug
+copy y.output Src\Fdo\Win64\Debug\yyExpression.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">echo bison yyExpression.y
+bison -y -ldv Src\Fdo\Parse\yyExpression.y
+sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h
+del y.tab.h
+
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">echo bison yyExpression.y
+bison -y -ldv Src\Fdo\Parse\yyExpression.y
+sed -f Src\Fdo\Parse\script &lt; y.tab.c &gt;Src\Fdo\Parse\yyExpressionWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyExpressionWin.h
+del y.tab.h
+
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src\Fdo\Parse\yyExpressionWin.cpp;Src\Fdo\Parse\yyExpressionWin.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Fdo\Parse\yyFilter.y">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">echo bison yyFilter.y
+bison -y -ldv Src\Fdo\Parse\yyFilter.y
+sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h
+del y.tab.h
+if not exist Src\Fdo\Win32Debug md Src\Fdo\Win32\Debug
+copy y.output Src\Fdo\Win32\Debug\yyFilter.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">echo bison yyFilter.y
+bison -y -ldv Src\Fdo\Parse\yyFilter.y
+sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h
+del y.tab.h
+if not exist Src\Fdo\Win64\Debug md Src\Fdo\Win64\Debug
+copy y.output Src\Fdo\Win64\Debug\yyFilter.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">echo bison yyFilter.y
+bison -y -ldv Src\Fdo\Parse\yyFilter.y
+sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h
+del y.tab.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">echo bison yyFilter.y
+bison -y -ldv Src\Fdo\Parse\yyFilter.y
+sed -f Src\Fdo\Parse\script2&lt; y.tab.c &gt;Src\Fdo\Parse\yyFilterWin.cpp
+del y.tab.c
+sed -f Src\Fdo\Parse\script2_h &lt; y.tab.h &gt;Src\Fdo\Parse\yyFilterWin.h
+del y.tab.h
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src\Fdo\Parse\yyFilterWin.cpp;Src\Fdo\Parse\yyFilterWin.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Src\Fdo\Fdo.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Common.vcxproj">
+      <Project>{a28aca9a-8258-4169-b554-4f5d214055fb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Geometry.vcxproj">
+      <Project>{963bd148-9446-4600-bbbc-f37257278d1d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Spatial.vcxproj">
+      <Project>{44cabb29-0b72-48e7-8383-db4b040f3731}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
