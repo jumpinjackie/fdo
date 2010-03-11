@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A28ACA9A-8258-4169-B554-4F5D214055FB}</ProjectGuid>
+    <RootNamespace>Common</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Obj\Common\Win32\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Obj\Common\Win64\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Obj\Common\Win32\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Obj\Common\Win64\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FDOCommon</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FDOCommon</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FDOCommon</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FDOCommon</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_2.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release;.\Lib\Win32\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win32/Release/FDOCommon.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOCommon.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_2.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Release;.\Lib\Win64\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win64/Release/FDOCommon.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOCommon.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_2D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Debug;.\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>MSVCRT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win32/Debug/FDOCommon.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOCommon.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_2D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Debug;.\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib/Win64/Debug/FDOCommon.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOCommon.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Common\ArrayHelper.cpp" />
+    <ClCompile Include="Src\Common\CommonInternal.cpp" />
+    <ClCompile Include="Src\Common\Context.cpp" />
+    <ClCompile Include="Src\Common\ConvertUTF.cpp" />
+    <ClCompile Include="Src\Common\DictionaryElement.cpp" />
+    <ClCompile Include="Src\Common\Exception.cpp" />
+    <ClCompile Include="Src\Common\IDisposable.cpp" />
+    <ClCompile Include="Src\Common\Semaphore.cpp" />
+    <ClCompile Include="Src\Common\StringCollection.cpp" />
+    <ClCompile Include="Src\Common\StringP.cpp" />
+    <ClCompile Include="Src\Common\StringUtility.cpp" />
+    <ClCompile Include="Src\Common\utf8_.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Vector.cpp" />
+    <ClCompile Include="Src\Common\Io\BufferStream.cpp" />
+    <ClCompile Include="Src\Common\Io\ByteStreamReader.cpp" />
+    <ClCompile Include="Src\Common\Io\FileStream.cpp" />
+    <ClCompile Include="Src\Common\Io\MemoryStream.cpp" />
+    <ClCompile Include="Src\Common\Io\TextReader.cpp" />
+    <ClCompile Include="Src\Common\Io\TextWriter.cpp" />
+    <ClCompile Include="Src\Common\Xml\Attribute.cpp" />
+    <ClCompile Include="Src\Common\Xml\CharDataHandler.cpp" />
+    <ClCompile Include="Src\Common\Xml\CopyHandler.cpp" />
+    <ClCompile Include="Src\Common\Xml\Reader.cpp" />
+    <ClCompile Include="Src\Common\Xml\ReaderXrcs.cpp" />
+    <ClCompile Include="Src\Common\Xml\SaxContext.cpp" />
+    <ClCompile Include="Src\Common\Xml\SaxHandler.cpp" />
+    <ClCompile Include="Src\Common\Xml\UtilXrcs.cpp" />
+    <ClCompile Include="Src\Common\Xml\Writer.cpp" />
+    <ClCompile Include="Src\Common\Xml\WriterXrcs.cpp" />
+    <ClCompile Include="Src\Common\Xml\Xml.cpp" />
+    <ClCompile Include="Src\Common\Xml\XmlException.cpp" />
+    <ClCompile Include="Src\Common\Xsl\Transformer.cpp" />
+    <ClCompile Include="Src\Common\Xsl\TransformerXalan.cpp" />
+    <ClCompile Include="Src\Common\Xsl\XML885915Transcoder.cpp" />
+    <ClCompile Include="Src\Common\Gml212\Gml212.cpp" />
+    <ClCompile Include="Src\Common\Gml212\Schema.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Common\CommonInternal.h" />
+    <ClInclude Include="Src\Common\StringUtility.h" />
+    <ClInclude Include="Src\Common\Xml\ReaderXrcs.h" />
+    <ClInclude Include="Src\Common\Xml\WriterXrcs.h" />
+    <ClInclude Include="Src\Common\Xsl\XML885915Transcoder.h" />
+    <ClInclude Include="Inc\Common\Array.h" />
+    <ClInclude Include="Inc\Common\ArrayHelper.h" />
+    <ClInclude Include="Inc\Common\Collection.h" />
+    <ClInclude Include="Inc\Common\Compare.h" />
+    <ClInclude Include="Inc\Common\Context.h" />
+    <ClInclude Include="Inc\Common\Dictionary.h" />
+    <ClInclude Include="Inc\Common\DictionaryElement.h" />
+    <ClInclude Include="Inc\Common\Dimensionality.h" />
+    <ClInclude Include="Inc\Common\Disposable.h" />
+    <ClInclude Include="Inc\Common\Exception.h" />
+    <ClInclude Include="Inc\FdoCommon.h" />
+    <ClInclude Include="Inc\Common\FdoTypes.h" />
+    <ClInclude Include="Inc\Common\GeometryType.h" />
+    <ClInclude Include="Inc\Common\IDisposable.h" />
+    <ClInclude Include="Inc\Common\IStreamReader.h" />
+    <ClInclude Include="Inc\Common\IStreamReaderTmpl.h" />
+    <ClInclude Include="Inc\Common\NamedCollection.h" />
+    <ClInclude Include="Inc\Common\Ptr.h" />
+    <ClInclude Include="Inc\Common\ReadOnlyNamedCollection.h" />
+    <ClInclude Include="Inc\Common\RestrictedNamedCollection.h" />
+    <ClInclude Include="Inc\Common\Semaphore.h" />
+    <ClInclude Include="Inc\Common\Stack.h" />
+    <ClInclude Include="Inc\Common\Std.h" />
+    <ClInclude Include="Inc\Common\StringCollection.h" />
+    <ClInclude Include="Inc\Common\StringP.h" />
+    <ClInclude Include="Src\Common\utf8_.h" />
+    <ClInclude Include="Inc\Common\Vector.h" />
+    <ClInclude Include="Inc\Common\Io\BufferStream.h" />
+    <ClInclude Include="Inc\Common\Io\ByteStreamReader.h" />
+    <ClInclude Include="Inc\Common\Io\FileStream.h" />
+    <ClInclude Include="Inc\Common\Io\MemoryStream.h" />
+    <ClInclude Include="Inc\Common\Io\ObjectStreamReader.h" />
+    <ClInclude Include="Inc\Common\Io\Stream.h" />
+    <ClInclude Include="Inc\Common\Io\TextReader.h" />
+    <ClInclude Include="Inc\Common\Io\TextWriter.h" />
+    <ClInclude Include="Inc\Common\Xml\Attribute.h" />
+    <ClInclude Include="Inc\Common\Xml\AttributeCollection.h" />
+    <ClInclude Include="Inc\Common\Xml\CharDataHandler.h" />
+    <ClInclude Include="Inc\Common\Xml\CopyHandler.h" />
+    <ClInclude Include="Inc\Common\Xml\Reader.h" />
+    <ClInclude Include="Inc\Common\Xml\SaxContext.h" />
+    <ClInclude Include="Inc\Common\Xml\SaxHandler.h" />
+    <ClInclude Include="Inc\Common\Xml\SkipElementHandler.h" />
+    <ClInclude Include="Inc\Common\Xml\UtilXrcs.h" />
+    <ClInclude Include="Inc\Common\Xml\Writer.h" />
+    <ClInclude Include="Inc\Common\Xml\Xml.h" />
+    <ClInclude Include="Inc\Common\Xml\XmlException.h" />
+    <ClInclude Include="Inc\Common\Xsl\Transformer.h" />
+    <ClInclude Include="Inc\Common\Xsl\TransformerXalan.h" />
+    <CustomBuild Include="Src\Common\Gml212\feature.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/feature.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/feature.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/feature.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/feature.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\geometry.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="Inc\Common\Gml212\Gml212.h" />
+    <ClInclude Include="Inc\Common\Gml212\Schema.h" />
+    <CustomBuild Include="Src\Common\Gml212\xlinks.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/xlinks.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/xlinks.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/xlinks.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%40echo on
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/xlinks.xsd;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="Src\Common\resource.h" />
+    <ClInclude Include="xlinks.h">
+      <DependentUpon>xlinks.xsd</DependentUpon>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Src\Common\Gml212\feature.xsd">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/feature.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/feature.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/feature.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\FileToHdr Src/Common/Gml212/feature.xsd Src/Common\Gml212\feature.h feature
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/feature.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\geometry.xsd">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/geometry.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/geometry.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/geometry.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\FileToHdr Src/Common/Gml212/geometry.xsd Src/Common\Gml212\geometry.h geometry
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/geometry.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\xlinks.xsd">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src/Common/Gml212/xlinks.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src/Common/Gml212/xlinks.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src/Common/Gml212/xlinks.h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\FileToHdr Src/Common/Gml212/xlinks.xsd Src/Common\Gml212\xlinks.h xlinks
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/xlinks.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Src\Common\Common.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="FileToHdr.vcxproj">
+      <Project>{dd3b99d6-a68b-45d2-ad35-e087361c6653}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Message.vcxproj">
+      <Project>{128627bf-dc54-4180-b90e-08a3f4104352}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="Nls.vcxproj">
+      <Project>{d01e5461-1fac-4f5f-870a-0cf5b5528e14}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

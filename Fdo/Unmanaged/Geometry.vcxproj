@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{963BD148-9446-4600-BBBC-F37257278D1D}</ProjectGuid>
+    <RootNamespace>Geometry</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Obj/Geometry/Win32/Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Obj/Geometry/Win64/Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Obj/Geometry/Win32/Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Obj/Geometry/Win64/Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">FDOGeometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">FDOGeometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">FDOGeometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">FDOGeometry</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>Inc;Src/Common;Src/Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_GEOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib/Win32/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win32\Release/FDOGeometry.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOGeometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOGeometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>Inc;Src/Common;Src/Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_GEOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib/Win64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win64\Release/FDOGeometry.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOGeometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOGeometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;Src/Common;Src/Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_GEOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib/Win32/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win32\Debug/FDOGeometry.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOGeometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOGeometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>Inc;Src/Common;Src/Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_GEOM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Lib/Win64/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>NotSet</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win64\Debug/FDOGeometry.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning FDOGeometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOGeometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Geometry\Fgf\CircularArcSegment.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\CurvePolygon.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\CurveString.cpp" />
+    <ClCompile Include="Src\Geometry\DirectPositionImpl.cpp" />
+    <ClCompile Include="Src\Geometry\EnvelopeImpl.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\GeometryDll.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\GeometryFactory.cpp" />
+    <ClCompile Include="Src\Geometry\GeometryFactoryAbstract.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\GeometryThreadData.cpp" />
+    <ClCompile Include="Src\Geometry\GeometryUtility.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\LinearRing.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\LineString.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\LineStringSegment.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiCurvePolygon.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiCurveString.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiGeometry.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiLineString.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiPoint.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\MultiPolygon.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\Point.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\Polygon.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\Ring.cpp" />
+    <ClCompile Include="Src\Geometry\Fgf\Util.cpp" />
+    <ClCompile Include="Src\Geometry\Parse\LexFgft.cpp" />
+    <ClCompile Include="Src\Geometry\Parse\ParseFgft.cpp" />
+    <ClCompile Include="Src\Geometry\Parse\yyFgftWin.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Geometry\Fgf\CircularArcSegment.h" />
+    <ClInclude Include="Src\Geometry\Fgf\CurvePolygon.h" />
+    <ClInclude Include="Src\Geometry\Fgf\CurveString.h" />
+    <ClInclude Include="Src\Geometry\Fgf\GeometryFactory2.h" />
+    <ClInclude Include="Src\Geometry\GeometryImpl.h" />
+    <ClInclude Include="Src\Geometry\Fgf\GeometryImpl.h" />
+    <ClInclude Include="Src\Geometry\Fgf\GeometryThreadData.h" />
+    <ClInclude Include="Src\Geometry\GeometryUtility.h" />
+    <ClInclude Include="Src\Geometry\Fgf\LinearRing.h" />
+    <ClInclude Include="Src\Geometry\Fgf\LineString.h" />
+    <ClInclude Include="Src\Geometry\Fgf\LineStringSegment.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiCurvePolygon.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiCurveString.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiGeometry.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiLineString.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiPoint.h" />
+    <ClInclude Include="Src\Geometry\Fgf\MultiPolygon.h" />
+    <ClInclude Include="Src\Geometry\Fgf\Point.h" />
+    <ClInclude Include="Src\Geometry\Fgf\Polygon.h" />
+    <ClInclude Include="Src\Geometry\Fgf\Pool.h" />
+    <ClInclude Include="Src\Geometry\Fgf\Ring.h" />
+    <ClInclude Include="Src\Geometry\Fgf\Util.h" />
+    <ClInclude Include="Inc\Geometry\DirectPositionImpl.h" />
+    <ClInclude Include="Inc\Geometry\EnvelopeImpl.h" />
+    <ClInclude Include="Inc\FdoGeometry.h" />
+    <ClInclude Include="Inc\Geometry\GeometryFactoryAbstract.h" />
+    <ClInclude Include="Inc\Geometry\GeometryStd.h" />
+    <ClInclude Include="Inc\Geometry\GeometryStream\GeometryStreamFactory.h" />
+    <ClInclude Include="Inc\Geometry\GeometryStream\GeometryStreamReader.h" />
+    <ClInclude Include="Inc\Geometry\GeometryStream\GeometryStreamWriter.h" />
+    <ClInclude Include="Inc\Geometry\IArcSegmentAbstract.h" />
+    <ClInclude Include="Inc\Geometry\ICircularArcSegment.h" />
+    <ClInclude Include="Inc\Geometry\ICurveAbstract.h" />
+    <ClInclude Include="Inc\Geometry\ICurvePolygon.h" />
+    <ClInclude Include="Inc\Geometry\ICurveSegmentAbstract.h" />
+    <ClInclude Include="Inc\Geometry\ICurveString.h" />
+    <ClInclude Include="Inc\Geometry\IDirectPosition.h" />
+    <ClInclude Include="Inc\Geometry\IEnvelope.h" />
+    <ClInclude Include="Inc\Geometry\IGeometricAggregateAbstract.h" />
+    <ClInclude Include="Inc\Geometry\IGeometry.h" />
+    <ClInclude Include="Inc\Geometry\ILinearRing.h" />
+    <ClInclude Include="Inc\Geometry\ILineString.h" />
+    <ClInclude Include="Inc\Geometry\ILineStringSegment.h" />
+    <ClInclude Include="Inc\Geometry\IMultiCurvePolygon.h" />
+    <ClInclude Include="Inc\Geometry\IMultiCurveString.h" />
+    <ClInclude Include="Inc\Geometry\IMultiGeometry.h" />
+    <ClInclude Include="Inc\Geometry\IMultiLineString.h" />
+    <ClInclude Include="Inc\Geometry\IMultiPoint.h" />
+    <ClInclude Include="Inc\Geometry\IMultiPolygon.h" />
+    <ClInclude Include="Inc\Geometry\IPoint.h" />
+    <ClInclude Include="Inc\Geometry\IPolygon.h" />
+    <ClInclude Include="Inc\Geometry\IRing.h" />
+    <ClInclude Include="Inc\Geometry\IRingAbstract.h" />
+    <ClInclude Include="Inc\Geometry\ISurfaceAbstract.h" />
+    <ClInclude Include="Src\Geometry\Parse\LexFgft.h" />
+    <ClInclude Include="Src\Geometry\Parse\ParseFgft.h" />
+    <ClInclude Include="Src\Geometry\Parse\yyFgftWin.h" />
+    <ClInclude Include="Src\Geometry\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Src\Geometry\Geometry.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Src\Geometry\Parse\yyFgft.y">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">echo bison yyFgft.y
+bison -y -ldv Src\Geometry\Parse\yyFgft.y
+sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp
+del y.tab.c
+sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h
+del y.tab.h
+if not exist Src\Geometry\debug md Src\Geometry\debug
+copy y.output Src\Geometry\Debug\yyFgft.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgftWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">echo bison yyFgft.y
+bison -y -ldv Src\Geometry\Parse\yyFgft.y
+sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp
+del y.tab.c
+sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h
+del y.tab.h
+if not exist Src\Geometry\debug md Src\Geometry\debug
+copy y.output Src\Geometry\Debug\yyFgft.out
+del y.output
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgftWin.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">echo bison yyFgft.y
+bison -y -ldv Src\Geometry\Parse\yyFgft.y
+sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp
+del y.tab.c
+sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h
+del y.tab.h
+
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgfWint.h;%(Outputs)</Outputs>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">echo bison yyFgft.y
+bison -y -ldv Src\Geometry\Parse\yyFgft.y
+sed -f Src/Geometry/Parse/script&lt; y.tab.c &gt;Src\Geometry\Parse\yyFgftWin.cpp
+del y.tab.c
+sed -f Src/Geometry/Parse/script_h &lt; y.tab.h &gt;Src\Geometry\Parse\yyFgftWin.h
+del y.tab.h
+
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src\Geometry\Parse\yyFgftWin.cpp;Src\Geometry\Parse\yyFgfWint.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Common.vcxproj">
+      <Project>{a28aca9a-8258-4169-b554-4f5d214055fb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

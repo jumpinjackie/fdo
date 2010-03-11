@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b35d199c-6951-46f6-bcfe-ee8d0b2df7d6}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Io">
+      <UniqueIdentifier>{4b9d7f4b-f8a2-42aa-8ecf-decf247ff652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Xml">
+      <UniqueIdentifier>{00a3f6d3-ce4c-4b65-8b04-2bfb165b1e22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Xsl">
+      <UniqueIdentifier>{3d83a675-ffbc-4e4f-9e45-b2aef142282e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\temp">
+      <UniqueIdentifier>{d22ceeaf-23c4-4e70-b7a1-9bd78f92231f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gml212">
+      <UniqueIdentifier>{821d5647-9aac-44df-b5d7-a0d97b6de1f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{23751c41-0237-4587-9e6f-acb969729ddf}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Io">
+      <UniqueIdentifier>{e33eb405-4bcb-4534-9c70-c3f4bf7f4b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Xml">
+      <UniqueIdentifier>{d0334118-c816-44d6-a8bd-d6966c3f9dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Xsl">
+      <UniqueIdentifier>{a7e7bc53-c3c4-42dc-bd6a-7abacbd8be99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Gml212">
+      <UniqueIdentifier>{aaaa6547-9cf4-49b9-b3c2-d0fb2a10dd39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{72228087-fa9b-4639-96e9-3456e77da94a}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Common\ArrayHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\CommonInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Context.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\ConvertUTF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\DictionaryElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\IDisposable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Semaphore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\StringCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\StringP.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\StringUtility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\utf8_.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\BufferStream.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\ByteStreamReader.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\FileStream.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\MemoryStream.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\TextReader.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Io\TextWriter.cpp">
+      <Filter>Source Files\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\Attribute.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\CharDataHandler.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\CopyHandler.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\Reader.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\ReaderXrcs.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\SaxContext.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\SaxHandler.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\UtilXrcs.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\Writer.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\WriterXrcs.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\Xml.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xml\XmlException.cpp">
+      <Filter>Source Files\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xsl\Transformer.cpp">
+      <Filter>Source Files\Xsl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xsl\TransformerXalan.cpp">
+      <Filter>Source Files\Xsl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Xsl\XML885915Transcoder.cpp">
+      <Filter>Source Files\Xsl</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Gml212\Gml212.cpp">
+      <Filter>Source Files\Gml212</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Gml212\Schema.cpp">
+      <Filter>Source Files\Gml212</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Common\CommonInternal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\StringUtility.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\Xml\ReaderXrcs.h">
+      <Filter>Source Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\Xml\WriterXrcs.h">
+      <Filter>Source Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\Xsl\XML885915Transcoder.h">
+      <Filter>Source Files\Xsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\ArrayHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Compare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Dictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\DictionaryElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Dimensionality.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Disposable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\FdoCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\FdoTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\GeometryType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\IDisposable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\IStreamReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\IStreamReaderTmpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\NamedCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Ptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\ReadOnlyNamedCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\RestrictedNamedCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Semaphore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Stack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Std.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\StringCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\StringP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\utf8_.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\BufferStream.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\ByteStreamReader.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\FileStream.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\MemoryStream.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\ObjectStreamReader.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\Stream.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\TextReader.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Io\TextWriter.h">
+      <Filter>Header Files\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\Attribute.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\AttributeCollection.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\CharDataHandler.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\CopyHandler.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\Reader.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\SaxContext.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\SaxHandler.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\SkipElementHandler.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\UtilXrcs.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\Writer.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\Xml.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xml\XmlException.h">
+      <Filter>Header Files\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xsl\Transformer.h">
+      <Filter>Header Files\Xsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Xsl\TransformerXalan.h">
+      <Filter>Header Files\Xsl</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Gml212\Gml212.h">
+      <Filter>Header Files\Gml212</Filter>
+    </ClInclude>
+    <ClInclude Include="Inc\Common\Gml212\Schema.h">
+      <Filter>Header Files\Gml212</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xlinks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Src\Common\Common.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Src\Common\Gml212\feature.xsd">
+      <Filter>Source Files\Gml212</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\geometry.xsd">
+      <Filter>Source Files\Gml212</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\xlinks.xsd">
+      <Filter>Source Files\Gml212</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\feature.h">
+      <Filter>Header Files\Gml212</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\geometry.h">
+      <Filter>Header Files\Gml212</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Src\Common\Gml212\xlinks.h">
+      <Filter>Header Files\Gml212</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
