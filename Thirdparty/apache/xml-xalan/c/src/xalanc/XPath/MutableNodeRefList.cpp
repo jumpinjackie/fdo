@@ -59,6 +59,7 @@
 
 
 
+#include <iterator>
 #include <algorithm>
 #include <cassert>
 #include <functional>
