@@ -25,10 +25,5 @@
 #include "CommonNamespace.h"
 #include "CommonUtilities.h"
 
-#using <mscorlib.dll>
-#using <System.dll>
-
-#using <OSGeo.FDO.Common.dll>
-
 using namespace System;
 using namespace System::Collections;

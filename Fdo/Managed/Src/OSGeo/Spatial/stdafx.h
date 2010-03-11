@@ -24,12 +24,12 @@
 #include "CommonNamespace.h"
 #include "CommonUtilities.h"
 
-#using <mscorlib.dll>
-#using <System.dll>
+//#using <mscorlib.dll>
+//#using <System.dll>
 
-#using <OSGeo.FDO.Common.dll>
-#using <OSGeo.FDO.Geometry.dll>
-#using <OSGeo.FDO.dll>
+//#using <OSGeo.FDO.Common.dll>
+//#using <OSGeo.FDO.Geometry.dll>
+//#using <OSGeo.FDO.dll>
 
 using namespace System;
 using namespace System::Collections;
