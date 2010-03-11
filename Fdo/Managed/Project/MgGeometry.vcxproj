@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{00D27054-5167-4B39-BD0C-BC5D518E4E95}</ProjectGuid>
+    <RootNamespace>MgGeometry</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Obj\MgGeometry\Win32\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Obj\MgGeometry\Win64\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Obj\MgGeometry\Win32\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Obj\MgGeometry\Win64\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">OSGeo.FDO.Geometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">OSGeo.FDO.Geometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">OSGeo.FDO.Geometry</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">OSGeo.FDO.Geometry</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Geometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OSGeo.FDO.Geometry.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\Unmanaged\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDOCommon.dll; FDOGeometry.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ProgramDatabaseFile>$(TargetDir)\OSGeo.FDO.Geometry.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Geometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Geometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>_DEBUG;_WIN32;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Unmanaged\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDOCommon.dll; FDOGeometry.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Geometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Geometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Unmanaged\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDOCommon.dll; FDOGeometry.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Geometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Geometry.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\Geometry\AssemblyVersion.cpp -o ..\Src\OSGeo\Geometry\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>NDEBUG;_WIN32;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Unmanaged\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>FDOCommon.dll; FDOGeometry.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Geometry.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MgCommon.vcxproj">
+      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgDirectPositionImpl.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgEnvelopeImpl.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgFgfGeometryFactory.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgGeometryFactoryAbstract.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICircularArcSegmentImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurvePolygonImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveStringImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIDirectPositionImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIEnvelopeImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIGeometryImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILinearRingImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILineStringImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILineStringSegmentImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygonImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiCurveStringImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiGeometryImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiLineStringImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiPointImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiPolygonImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIPointImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIPolygonImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIRingAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIRingImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgISurfaceAbstractImp.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgObjectFactory.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\AssemblyVersion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgDirectPositionImpl.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgEnvelopeImpl.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgFgfGeometryFactory.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgGeometryFactoryAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICircularArcSegment.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICircularArcSegmentImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurvePolygon.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurvePolygonImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveString.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveStringImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIDirectPosition.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIDirectPositionImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIEnvelope.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIEnvelopeImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometry.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometryImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILinearRing.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILinearRingImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineString.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringSegment.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringSegmentImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygon.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygonImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurveString.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurveStringImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiGeometry.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiGeometryImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiLineString.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiLineStringImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPoint.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPointImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPolygon.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPolygonImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPoint.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPointImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPolygon.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPolygonImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRing.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgISurfaceAbstract.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgISurfaceAbstractImp.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgObjectFactory.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\resource.h" />
+    <ClInclude Include="..\Src\OSGeo\Geometry\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\OSGeo\Geometry\MgGeometry.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

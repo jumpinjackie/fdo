@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OSGeo">
+      <UniqueIdentifier>{6ed4f0fa-14cb-4bb8-8fcc-b9cedddeacec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Common">
+      <UniqueIdentifier>{dc3a0526-ded2-4bd6-ae7d-ecc2e1cedcc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Common\Io">
+      <UniqueIdentifier>{06e49ba7-44e6-4a2b-8d5d-376fc4714a97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Common\Xml">
+      <UniqueIdentifier>{0332c3ee-92e4-4b25-a538-81b449eb4629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Common\Xsl">
+      <UniqueIdentifier>{2411101a-2903-4f8b-aedf-bf9fcd276cd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Common\Gml212">
+      <UniqueIdentifier>{1615c1ad-5654-41ed-9cf0-de985e7ae2d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Runtime">
+      <UniqueIdentifier>{d2609736-b20c-4fce-8131-bf310e541249}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\OSGeo\Common\mgCollectionBase.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgDictionary.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgDictionaryElement.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgException.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgGeometryType.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgIStreamReader.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgIStreamReaderImp.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgObjectFactory.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgStringCollection.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\mgStringElement.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\resource.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\stdafx.h">
+      <Filter>OSGeo\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoByteStreamReader.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoCharStreamReader.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoFileStream.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoMemoryStream.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoStream.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoTextReader.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\mgIoTextWriter.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Io\VirtualFdoIoStream.h">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgIXmlSaxHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlAttribute.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlAttributeCollection.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlCharDataHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlCopyHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlReader.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlSaxContext.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlSaxHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlSkipElementHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\mgXmlWriter.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xml\VirtualSaxHandler.h">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Xsl\mgXslTransformer.h">
+      <Filter>OSGeo\Common\Xsl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Common\Gml212\mgSchema.h">
+      <Filter>OSGeo\Common\Gml212</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Runtime\Disposable.h">
+      <Filter>OSGeo\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Runtime\ProtocolExt.h">
+      <Filter>OSGeo\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\CommonNamespace.h" />
+    <ClInclude Include="..\Src\CommonUtilities.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\OSGeo\Common\MgCommon.rc">
+      <Filter>OSGeo\Common</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\OSGeo\Common\mgDictionary.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgDictionaryElement.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgException.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgIStreamReaderImp.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgObjectFactory.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgStringCollection.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\mgStringElement.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\stdafx.cpp">
+      <Filter>OSGeo\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoByteStreamReader.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoCharStreamReader.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoFileStream.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoMemoryStream.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoStream.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoTextReader.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\mgIoTextWriter.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Io\VirtualFdoIoStream.cpp">
+      <Filter>OSGeo\Common\Io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlAttribute.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlAttributeCollection.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlCharDataHandler.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlCopyHandler.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlReader.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlSaxContext.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlSaxHandler.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlSkipElementHandler.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\mgXmlWriter.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xml\VirtualSaxHandler.cpp">
+      <Filter>OSGeo\Common\Xml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Xsl\mgXslTransformer.cpp">
+      <Filter>OSGeo\Common\Xsl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\Gml212\mgSchema.cpp">
+      <Filter>OSGeo\Common\Gml212</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Runtime\Disposable.cpp">
+      <Filter>OSGeo\Runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Common\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Common\AssemblyVersion.cpp" />
+    <ClCompile Include="..\Src\CommonUtilities.cpp" />
+  </ItemGroup>
+</Project>

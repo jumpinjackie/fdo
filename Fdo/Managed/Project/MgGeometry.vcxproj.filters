@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="OSGeo">
+      <UniqueIdentifier>{adf7979a-60eb-4337-a74a-e975a6929a8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OSGeo\Geometry">
+      <UniqueIdentifier>{1270d8e5-e798-4410-91b2-b99fdfca78d6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgDirectPositionImpl.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgEnvelopeImpl.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgFgfGeometryFactory.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgGeometryFactoryAbstract.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICircularArcSegmentImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurvePolygonImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgICurveStringImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIDirectPositionImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIEnvelopeImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIGeometryImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILinearRingImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILineStringImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgILineStringSegmentImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygonImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiCurveStringImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiGeometryImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiLineStringImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiPointImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIMultiPolygonImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIPointImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIPolygonImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIRingAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgIRingImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgISurfaceAbstractImp.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\mgObjectFactory.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\stdafx.cpp">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\Geometry\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\OSGeo\Geometry\AssemblyVersion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgDirectPositionImpl.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgEnvelopeImpl.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgFgfGeometryFactory.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgGeometryFactoryAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIArcSegmentAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICircularArcSegment.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICircularArcSegmentImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurvePolygon.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurvePolygonImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveSegmentAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveString.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgICurveStringImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIDirectPosition.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIDirectPositionImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIEnvelope.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIEnvelopeImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometricAggregateAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometry.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIGeometryImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILinearRing.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILinearRingImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineString.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringSegment.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgILineStringSegmentImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygon.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurvePolygonImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurveString.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiCurveStringImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiGeometry.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiGeometryImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiLineString.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiLineStringImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPoint.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPointImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPolygon.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIMultiPolygonImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPoint.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPointImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPolygon.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIPolygonImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRing.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgIRingImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgISurfaceAbstract.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgISurfaceAbstractImp.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\mgObjectFactory.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\resource.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\OSGeo\Geometry\stdafx.h">
+      <Filter>OSGeo\Geometry</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\OSGeo\Geometry\MgGeometry.rc">
+      <Filter>OSGeo\Geometry</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
