@@ -33,6 +33,7 @@ set( CommonUnitTests_STAT_SRCS
 	FdoAssociationUpdateTest.cpp
 	FdoCapabilityTest.cpp
 	FdoConnectTest.cpp
+	FdoConnectionInfoTest.cpp
 	FdoConstraintsTest.cpp
 	FdoDatastoreTest.cpp
 	FdoDeleteTest.cpp
