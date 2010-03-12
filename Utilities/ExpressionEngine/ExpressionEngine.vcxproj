@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{34FF1437-0853-44D4-B786-48ACB3AACBB5}</ProjectGuid>
+    <RootNamespace>ExpressionEngine</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Obj\Win32\Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Bin/Win64/Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Obj/Win64/Debug\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin/Win32/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Obj/Win32/Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Bin/Win64/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Obj/Win64/Release\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ExpressionEngine</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ExpressionEngine</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ExpressionEngine</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ExpressionEngine</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc80.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist Lib\Win32\Debug mkdir Lib\Win32\Debug
+</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win32\Debug\ExpressionEngine.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.5.0.0%PROVIDERS_VERSION%" $(OutDir)ExpressionEngine.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ExpressionEngine.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist Lib\Win64\Debug mkdir Lib\Win64\Debug
+</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win64\Debug\ExpressionEngine.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.5.0.0%PROVIDERS_VERSION%" $(OutDir)ExpressionEngine.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc80.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist Lib\Win32\Release mkdir Lib\Win32\Release
+</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\release;$(FDOUTILITIES)\Common\Lib\Win32\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win32\Release\ExpressionEngine.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.5.0.0%PROVIDERS_VERSION%" $(OutDir)ExpressionEngine.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ExpressionEngine.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist Lib\Win64\Release mkdir Lib\Win64\Release
+</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\release;$(FDOUTILITIES)\Common\Lib\Win64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>Lib\Win64\Release\ExpressionEngine.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.5.0.0%PROVIDERS_VERSION%" $(OutDir)ExpressionEngine.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Src\ExpressionEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\ExpressionEngineInitializeClass.h" />
+    <ClInclude Include="Src\resource.h" />
+    <ClInclude Include="Src\stdafx.h" />
+    <ClInclude Include="Inc\ExpressionEngine.h" />
+    <ClInclude Include="inc\FdoExpressionEngine.h" />
+    <ClInclude Include="Inc\FdoExpressionEngineCopyFilter.h" />
+    <ClInclude Include="Inc\FdoExpressionEngineFilterProcessor.h" />
+    <ClInclude Include="inc\FdoExpressionEngineFunctionCollection.h" />
+    <ClInclude Include="inc\FdoExpressionEngineIAggregateFunction.h" />
+    <ClInclude Include="inc\FdoExpressionEngineIFunction.h" />
+    <ClInclude Include="inc\FdoExpressionEngineImp.h" />
+    <ClInclude Include="inc\FdoExpressionEngineINonAggregateFunction.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\CacheValue.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\CacheValueCollection.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionAvg.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionCount.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionMax.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionMedian.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionMin.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionSpatialExtents.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionStddev.h" />
+    <ClInclude Include="Inc\Functions\Aggregate\FdoFunctionSum.h" />
+    <ClInclude Include="Inc\Functions\Numeric\FdoFunctionCeil.h" />
+    <ClInclude Include="Inc\Functions\Numeric\FdoFunctionFloor.h" />
+    <ClInclude Include="Inc\Functions\Numeric\FdoFunctionRound.h" />
+    <ClInclude Include="Inc\Functions\Numeric\FdoFunctionSign.h" />
+    <ClInclude Include="Inc\Functions\Numeric\FdoFunctionTrunc.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionConcat.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionInstr.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionLength.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionLower.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionLpad.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionLtrim.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionRpad.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionRtrim.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionSoundex.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionSubstr.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionTranslate.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionTrim.h" />
+    <ClInclude Include="Inc\Functions\String\FdoFunctionUpper.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionAbs.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionAcos.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionAsin.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionAtan.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionAtan2.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionCos.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionExp.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionLn.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionLog.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionMod.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionPower.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionRemainder.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionSin.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionSqrt.h" />
+    <ClInclude Include="Inc\Functions\Math\FdoFunctionTan.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionAddMonths.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionCurrentDate.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionExtract.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionExtractToDouble.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionExtractToInt.h" />
+    <ClInclude Include="Inc\Functions\Date\FdoFunctionMonthsBetween.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionNullValue.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToDate.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToDouble.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToFloat.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToInt32.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToInt64.h" />
+    <ClInclude Include="Inc\Functions\Conversion\FdoFunctionToString.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionArea2D.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionLength2D.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionM.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionX.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionY.h" />
+    <ClInclude Include="Inc\Functions\Geometry\FdoFunctionZ.h" />
+    <ClInclude Include="Inc\Functions\Geometry\Util.h" />
+    <ClInclude Include="Inc\Util\FdoExpressionEngineUtilDataReader.h" />
+    <ClInclude Include="Inc\Util\FdoExpressionEngineUtilFeatureReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\FdoExpressionEngine.cpp" />
+    <ClCompile Include="Src\FdoExpressionEngineCopyFilter.cpp" />
+    <ClCompile Include="src\FdoExpressionEngineFunctionCollection.cpp" />
+    <ClCompile Include="src\FdoExpressionEngineImp.cpp" />
+    <ClCompile Include="src\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\Functions\Aggregate\CacheValue.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\CacheValueCollection.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionAvg.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionCount.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionMax.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionMedian.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionMin.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionSpatialExtents.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionStddev.cpp" />
+    <ClCompile Include="Src\Functions\Aggregate\FdoFunctionSum.cpp" />
+    <ClCompile Include="Src\Functions\Numeric\FdoFunctionCeil.cpp" />
+    <ClCompile Include="Src\Functions\Numeric\FdoFunctionFloor.cpp" />
+    <ClCompile Include="Src\Functions\Numeric\FdoFunctionRound.cpp" />
+    <ClCompile Include="Src\Functions\Numeric\FdoFunctionSign.cpp" />
+    <ClCompile Include="Src\Functions\Numeric\FdoFunctionTrunc.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionConcat.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionInstr.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionLength.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionLower.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionLpad.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionLtrim.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionRpad.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionRtrim.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionSoundex.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionSubstr.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionTranslate.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionTrim.cpp" />
+    <ClCompile Include="Src\Functions\String\FdoFunctionUpper.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionAbs.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionAcos.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionAsin.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionAtan.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionAtan2.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionCos.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionExp.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionLn.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionLog.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionMod.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionPower.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionRemainder.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionSin.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionSqrt.cpp" />
+    <ClCompile Include="Src\Functions\Math\FdoFunctionTan.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionAddMonths.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionCurrentDate.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionExtract.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionExtractToDouble.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionExtractToInt.cpp" />
+    <ClCompile Include="Src\Functions\Date\FdoFunctionMonthsBetween.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionNullValue.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToDate.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToDouble.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToFloat.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToInt32.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToInt64.cpp" />
+    <ClCompile Include="Src\Functions\Conversion\FdoFunctionToString.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionArea2D.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionLength2D.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionM.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionX.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionY.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\FdoFunctionZ.cpp" />
+    <ClCompile Include="Src\Functions\Geometry\Util.cpp" />
+    <ClCompile Include="Src\Util\FdoExpressionEngineUtilDataReader.cpp" />
+    <ClCompile Include="Src\Util\FdoExpressionEngineUtilFeatureReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
