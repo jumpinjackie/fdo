@@ -217,6 +217,7 @@ AC_CONFIG_FILES([com/Makefile \
                  Src/SchemaMgr/Ph/Rd/Makefile \
                  Src/UnitTest/Common/Makefile \
                  Src/UnitTest/MySql/Makefile \
+                 Src/UnitTest/PostGis/Makefile \
                  Src/UnitTest/Makefile \
                  Src/Util/Makefile])
 
