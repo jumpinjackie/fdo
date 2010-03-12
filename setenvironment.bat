@@ -32,8 +32,8 @@ goto usage
 SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="D:\Program Files\Microsoft Visual Studio 9.0\VC"
-if not exist %ACTIVEPATHCHECK% goto error 
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC"
+if exist %ACTIVEPATHCHECK% goto VSExist
 
 :VSExist
 call %ACTIVEPATHCHECK%\vcvarsall.bat %1
