@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{408e88c2-76f5-458d-ae33-5a7bdf7a5fa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Symbolic Targets">
+      <UniqueIdentifier>{44447fa6-ce0d-4b07-bde3-04f2f9bd709c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Others">
+      <UniqueIdentifier>{6be04a45-06c0-43e9-ab29-4b5ae4352830}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplySchemaTest.cpp" />
+    <ClCompile Include="ConstraintsTest.cpp" />
+    <ClCompile Include="DeleteTest.cpp" />
+    <ClCompile Include="FdoExpressionFunctionTest.cpp" />
+    <ClCompile Include="FdoMultiThreadTest.cpp" />
+    <ClCompile Include="InsertTest.cpp" />
+    <ClCompile Include="ReaderTest.cpp" />
+    <ClCompile Include="SelectTest.cpp" />
+    <ClCompile Include="SpatialContextTest.cpp" />
+    <ClCompile Include="SQLCmdTest.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="TransactionTest.cpp" />
+    <ClCompile Include="UnitTestUtil.cpp" />
+    <ClCompile Include="UpdateTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplySchemaTest.h" />
+    <ClInclude Include="ConstraintsTest.h" />
+    <ClInclude Include="DeleteTest.h" />
+    <ClInclude Include="FdoExpressionFunctionTest.h" />
+    <ClInclude Include="FdoMultiThreadTest.h" />
+    <ClInclude Include="InsertTest.h" />
+    <ClInclude Include="ReaderTest.h" />
+    <ClInclude Include="SelectTest.h" />
+    <ClInclude Include="SpatialContextTest.h" />
+    <ClInclude Include="SQLCmdTest.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TransactionTest.h" />
+    <ClInclude Include="UnitTestUtil.h" />
+    <ClInclude Include="UpdateTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="SchBooleanTest.xml">
+      <Filter>Others</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="SchConstraintsTest1.xml">
+      <Filter>Others</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="SchConstraintsTest2.xml">
+      <Filter>Others</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="SchPKTest.xml">
+      <Filter>Others</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
