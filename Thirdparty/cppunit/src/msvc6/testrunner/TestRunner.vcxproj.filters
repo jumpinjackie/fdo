@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{76e35efb-3526-427c-88d1-43f0330daad7}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="UserInterface">
+      <UniqueIdentifier>{c02055a2-67c5-401d-90cf-c34393ea5026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{9a41fa22-4d22-4035-a131-faab248c05aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NewFiles">
+      <UniqueIdentifier>{222f80e3-e96a-4ec4-9b9a-c739267f7f0a}</UniqueIdentifier>
+      <Extensions>*.cpp;*.h</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\errortype.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\test_type.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\TestRunner.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\tfwkui_r.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ListCtrlFormatter.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="ListCtrlSetter.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="MsDevCallerListCtrl.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressBar.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunnerApp.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunnerDlg.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeHierarchyDlg.cpp">
+      <Filter>UserInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="ActiveTest.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunner.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRunnerModel.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MostRecentTests.cpp">
+      <Filter>NewFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\include\msvc6\DSPlugIn\TestRunnerDSPlugin_i.c">
+      <Filter>NewFiles</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ListCtrlFormatter.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="ListCtrlSetter.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="MsDevCallerListCtrl.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressBar.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRunnerApp.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRunnerDlg.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeHierarchyDlg.h">
+      <Filter>UserInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="ActiveTest.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MfcSynchronizationObject.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\msvc6\testrunner\TestRunner.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\cppunitui\mfc\TestRunner.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRunnerModel.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MostRecentTests.h">
+      <Filter>NewFiles</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TestRunner.rc">
+      <Filter>UserInterface</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="TestRunner.def">
+      <Filter>UserInterface</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>
