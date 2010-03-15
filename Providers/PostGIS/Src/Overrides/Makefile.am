@@ -44,6 +44,6 @@ INCLUDES = \
   -I../../../../Fdo/Unmanaged/Inc \
   -I../../../../Utilities/Common/Inc \
   -I../../../../Thirdparty/pgsql/include \
-  -I../../../../Thirdparty/boost_1_32_0
+  -I../../../../Thirdparty/boost
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
