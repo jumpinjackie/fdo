@@ -29,9 +29,7 @@ FdoSmPhRdPostGisClassReader::FdoSmPhRdPostGisClassReader(
     FdoStringP owner
 
 ) :
-	FdoSmPhRdClassReader(froms, schemaName, className, mgr, classifyDefaultTypes, database, owner),
-    //BR - TODO - Base class should provide an accessor to schema name.
-    mPgSchemaName(schemaName)
+	FdoSmPhRdClassReader(froms, schemaName, className, mgr, classifyDefaultTypes, database, owner)
 {
 }
 
@@ -41,22 +39,39 @@ FdoSmPhRdPostGisClassReader::~FdoSmPhRdPostGisClassReader(void)
 
 bool FdoSmPhRdPostGisClassReader::ReadNext()
 {
-    mDbObject = NULL; 
-
     bool ret = FdoSmPhRdClassReader::ReadNext();
 
+    FdoSmPhDbObjectP dbObject = GetCurrDbObject();
+
     if ( ret ) {
-        // BR - TODO - base class should reset this
-        SetString( L"", L"parentclassname", L"" );
+        if ( dbObject) {
+            FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
 
-        if ( mDbObject ) {
-            FdoSmPhBaseObjectsP baseObjects = mDbObject->GetBaseObjects();
-            if ( baseObjects->GetCount() > 0 ) {
-                FdoSmPhDbObjectP baseObject = FdoSmPhBaseObjectP(baseObjects->GetItem(0))->GetDbObject();
+            if ( table ) {
+                FdoSmPhBaseObjectsP baseObjects = dbObject->GetBaseObjects();
+                if ( baseObjects->GetCount() > 0 ) {
+                    FdoSmPhDbObjectP baseObject = FdoSmPhBaseObjectP(baseObjects->GetItem(0))->GetDbObject();
 
-                if ( baseObject && (baseObject->GetParent()->GetQName() == mDbObject->GetParent()->GetQName()) ) {
-                    if ( (mPgSchemaName == L"") || (baseObject->GetBestSchemaName() == mPgSchemaName) ) {
-                        SetString( L"", L"parentclassname", baseObject->GetBestSchemaName() + L":" + baseObject->GetBestClassName() );
+                    if ( baseObject && (baseObject->GetParent()->GetQName() == dbObject->GetParent()->GetQName()) ) {
+                        if ( (GetSchemaName() == L"") || (baseObject->GetBestSchemaName() == GetSchemaName()) ) {
+                            // PostgreSQL allows a table with geometry to inherit from
+                            // a table without geometry. 
+                            // The Generic ClassReader classifies:
+                            //      - tables with geometry as feature classes
+                            //      - tables without geometry as non-feature classes
+                            // but FDO disallows a feature class from inheriting from a
+                            // non-feature class. 
+                            // Therefore, do not set base for FDO class if this class and
+                            // base class have different class types.
+
+                            FdoStringP classType = GetString( L"", L"classtype" );
+                            bool hasGeom         = (classType == L"2") ? true : false;
+                            bool baseHasGeom     = false;
+                            FindGeometryProperty( baseObject->GetColumns(), baseHasGeom );
+
+                            if ( hasGeom == baseHasGeom ) 
+                                SetString( L"", L"parentclassname", baseObject->GetBestSchemaName() + L":" + baseObject->GetBestClassName() );
+                        }
                     }
                 }
             }
@@ -65,15 +80,4 @@ bool FdoSmPhRdPostGisClassReader::ReadNext()
 
     return ret;
 }
-
-FdoStringP FdoSmPhRdPostGisClassReader::ClassifyObject( FdoSmPhDbObjectP dbObject )
-{
-    FdoStringP classifiedName = FdoSmPhRdClassReader::ClassifyObject( dbObject );
-
-    if ( classifiedName != L"" ) 
-        mDbObject = dbObject;
-
-    return classifiedName;
-}
-
 

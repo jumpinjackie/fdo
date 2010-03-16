@@ -59,6 +59,7 @@ enum enum_field_types
     PGSQL_TYPE_BOOL = 16, // bool
 
     PGSQL_TYPE_INT2 = 21, // int2, smallint
+    PGSQL_TYPE_INT2VECTOR = 22, // int2vector
     PGSQL_TYPE_INT4 = 23, // int4, integer
     PGSQL_TYPE_INT8 = 20, // int8, bigint
 

@@ -238,3 +238,28 @@ FdoStringP PostGisConnectionUtil::GetOutputFileName (FdoString* pBaseFileName)
 	newFileName += pBaseFileName;
 	return newFileName;
 }
+
+wchar_t PostGisConnectionUtil::GetNlsChar( int index )
+{
+    wchar_t ret = 0x00c1;
+
+    // The PostgreSQL provider can handle any unicode character, regardless of the 
+    // database character set. Therefore, try some Asian characters (30b0 and 30b1).
+    switch ( index ) 
+    {
+        case 1:
+            ret = 0x30b0;
+            break;
+        case 2:
+            ret = 0x30b1;
+            break;
+        case 3:
+            ret = 0x00e3;
+            break;
+        case 4:
+            ret = 0x00e4;
+            break;
+    }
+
+    return ret;
+}

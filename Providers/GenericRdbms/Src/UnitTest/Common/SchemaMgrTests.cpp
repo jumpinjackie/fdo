@@ -602,13 +602,18 @@ void SchemaMgrTests::testGenGeom ()
             UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
         );
 
-        FdoSmPhOwnerP fowner = UnitTestUtil::CreateDBNoMeta( mgr, fdatastore );
+        FdoSmPhOwnerP fowner;
+        
+        if ( SupportsCrossDatastoreDependencies() )
+            fowner = UnitTestUtil::CreateDBNoMeta( mgr, fdatastore );
 
         FdoStringP datastore = phMgr->GetDcOwnerName(
             UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
         );
 
         FdoSmPhOwnerP owner = UnitTestUtil::CreateDBNoMeta( mgr, datastore );
+
+        owner->SetCurrent();
 
         CreateMultiGeomTable( owner, L"INDEX_WINS1", 8, 0x01, 0xa3 );
         CreateMultiGeomTable( owner, L"INDEX_WINS2", 3, 0x02, 0x00 );
@@ -842,62 +847,64 @@ void SchemaMgrTests::testGenGeom ()
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
 
-        CreateMultiGeomView( fowner, L"F_INDEX_WINS1", owner, L"INDEX_WINS1", 8 );
-        CreateMultiGeomView( fowner, L"F_INDEX_WINS2", owner, L"INDEX_WINS2", 3 );
-        CreateMultiGeomView( fowner, L"F_INDEX_WINS3", owner, L"INDEX_WINS3", 3 );
-        CreateMultiGeomView( fowner, L"F_INDEX_WINS4", owner, L"INDEX_WINS4", 3 );
+        if ( SupportsCrossDatastoreDependencies() ) {
+            CreateMultiGeomView( fowner, L"F_INDEX_WINS1", owner, L"INDEX_WINS1", 8 );
+            CreateMultiGeomView( fowner, L"F_INDEX_WINS2", owner, L"INDEX_WINS2", 3 );
+            CreateMultiGeomView( fowner, L"F_INDEX_WINS3", owner, L"INDEX_WINS3", 3 );
+            CreateMultiGeomView( fowner, L"F_INDEX_WINS4", owner, L"INDEX_WINS4", 3 );
 
-        fowner->Commit();
+            fowner->Commit();
 
-        printf( "Reverse-engineering foreign datastore 1 ...\n" );
+            printf( "Reverse-engineering foreign datastore 1 ...\n" );
 
-        fdoConn = UnitTestUtil::CreateConnection(
-            false,
-            false,
-            DB_NAME_FOREIGN_SUFFIX
-        );
+            fdoConn = UnitTestUtil::CreateConnection(
+                false,
+                false,
+                DB_NAME_FOREIGN_SUFFIX
+            );
 
-        pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
-        fsc = pDescSchemaCmd->Execute();
-        schema = fsc->GetItem(0);
-        schemaName = schema->GetName();
-        classes = schema->GetClasses();
+            pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+            fsc = pDescSchemaCmd->Execute();
+            schema = fsc->GetItem(0);
+            schemaName = schema->GetName();
+            classes = schema->GetClasses();
 
-        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS1") );
-        VldGenGeom( fdoConn, classDef );
-        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS2") );
-        VldGenGeom( fdoConn, classDef );
-        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS3") );
-        VldGenGeom( fdoConn, classDef );
-        classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS4") );
-        VldGenGeom( fdoConn, classDef );
+            classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS1") );
+            VldGenGeom( fdoConn, classDef );
+            classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS2") );
+            VldGenGeom( fdoConn, classDef );
+            classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS3") );
+            VldGenGeom( fdoConn, classDef );
+            classDef = classes->FindItem( table2class(phMgr,L"F_INDEX_WINS4") );
+            VldGenGeom( fdoConn, classDef );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
+            UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
 
-        printf( "Reverse-engineering foreign datastore 1 one class at a time...\n" );
+            printf( "Reverse-engineering foreign datastore 1 one class at a time...\n" );
 
-        fdoConn = UnitTestUtil::CreateConnection(
-            false,
-            false,
-            DB_NAME_FOREIGN_SUFFIX
-        );
+            fdoConn = UnitTestUtil::CreateConnection(
+                false,
+                false,
+                DB_NAME_FOREIGN_SUFFIX
+            );
 
-        pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
-        fsc = pDescSchemaCmd->Execute();
-        schema = fsc->GetItem(0);
-        schemaName = schema->GetName();
-        classes = schema->GetClasses();
+            pDescSchemaCmd = (FdoIDescribeSchema*) fdoConn->CreateCommand(FdoCommandType_DescribeSchema);
+            fsc = pDescSchemaCmd->Execute();
+            schema = fsc->GetItem(0);
+            schemaName = schema->GetName();
+            classes = schema->GetClasses();
 
-        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS1"), fsc );
-        VldGenGeom( fdoConn, classDef );
-        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS2"), fsc );
-        VldGenGeom( fdoConn, classDef );
-        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS3"), fsc );
-        VldGenGeom( fdoConn, classDef );
-        classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS4"), fsc );
-        VldGenGeom( fdoConn, classDef );
+            classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS1"), fsc );
+            VldGenGeom( fdoConn, classDef );
+            classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS2"), fsc );
+            VldGenGeom( fdoConn, classDef );
+            classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS3"), fsc );
+            VldGenGeom( fdoConn, classDef );
+            classDef = TestCommonMiscUtil::DescribeClass( fdoConn, schemaName, table2class(phMgr,L"F_INDEX_WINS4"), fsc );
+            VldGenGeom( fdoConn, classDef );
 
-        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
+            UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_FOREIGN_SUFFIX );
+        }
 
         phMgr = NULL;
         mgr = NULL;
@@ -908,14 +915,20 @@ void SchemaMgrTests::testGenGeom ()
     }
     catch (FdoException* e ) 
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -981,24 +994,31 @@ void SchemaMgrTests::testGenConfig1 ()
         owner->Commit();
 
         FdoSmPhOwnerP fOwner = phMgr->FindOwner( fDatastore, L"", false );
-        if ( fOwner ) {
-            fOwner->SetElementState( FdoSchemaElementState_Deleted );
+
+        if ( SupportsCrossDatastoreDependencies() ) {
+            if ( fOwner ) {
+                fOwner->SetElementState( FdoSchemaElementState_Deleted );
+                fOwner->Commit();
+            }
+
+            fOwner = database->CreateOwner(
+                fDatastore, 
+                false
+            );
+            fOwner->SetPassword( L"test" );
             fOwner->Commit();
         }
 
-        fOwner = database->CreateOwner(
-            fDatastore, 
-            false
-        );
-        fOwner->SetPassword( L"test" );
-        owner->Commit();
+        owner->SetCurrent();
 
         CreateTableGroup( owner, L"AB_", 3, lt_mode );
         CreateTableGroup( owner, L"CD_", 5, lt_mode );
         CreateTableGroup( owner, L"EF_", 2, lt_mode );
         CreateTableGroup( owner, L"GH_", 8, lt_mode );
-        CreateTableGroup( fOwner, L"KL_", 1, lt_mode );
-        CreateTableGroup( fOwner, L"MN_", 1, lt_mode );
+        if ( SupportsCrossDatastoreDependencies() ) {
+            CreateTableGroup( fOwner, L"KL_", 1, lt_mode );
+            CreateTableGroup( fOwner, L"MN_", 1, lt_mode );
+        }
 
         CreateFkey( owner, L"CD_TABLE2", L"CD_TABLE1" );
         CreateFkey( owner, L"AB_TABLE2", L"AB_TABLE3" );
@@ -1018,9 +1038,11 @@ void SchemaMgrTests::testGenConfig1 ()
         owner->Commit();
         gdbiCommands->tran_end( "Owner" );
 
-        gdbiCommands->tran_begin( "FOwner" );
-        fOwner->Commit();
-        gdbiCommands->tran_end( "FOwner" );
+        if ( SupportsCrossDatastoreDependencies() ) {
+            gdbiCommands->tran_begin( "FOwner" );
+            fOwner->Commit();
+            gdbiCommands->tran_end( "FOwner" );
+        }
 
         phMgr = NULL;
         mgr = NULL;
@@ -1122,14 +1144,20 @@ void SchemaMgrTests::testGenConfig1 ()
     }
     catch (FdoException* e ) 
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -1184,6 +1212,7 @@ void SchemaMgrTests::testGenKeys ()
         );
         owner->SetPassword( L"test" );
         owner->Commit();
+        owner->SetCurrent();
     
         // Tests choosing primary key over index as the identity    
         FdoSmPhTableP table = CreateIxTable(owner, L"TABLE_IX1", lt_mode );
@@ -1446,7 +1475,7 @@ void SchemaMgrTests::testGenKeys ()
             idProps = featClass->GetIdentityProperties();
             CPPUNIT_ASSERT( idProps->GetCount() == 0 );
 
-            for ( pass = 0; pass < 3; pass++ ) {
+            for ( int pass2 = 0; pass2 < 3; pass2++ ) {
                 FdoStringP viewName = FdoStringP::Format( L"VIEW_IX3%c", 'B' + pass );
                 featClass = classes->GetItem( table2class(phMgr, viewName) );
                 idProps = featClass->GetIdentityProperties();
@@ -1486,28 +1515,29 @@ void SchemaMgrTests::testGenKeys ()
         phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
         database = phMgr->GetDatabase();
         owner = phMgr->FindOwner( datastore, L"", false );
+        owner->SetCurrent();
 
         table = owner->FindDbObject( phMgr->GetDcDbObjectName(L"TABLE_IX1") ).p->SmartCast<FdoSmPhTable>();
-        FdoSmPhIndexP index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"ALT_KEY1") );
+        FdoSmPhIndexP index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"ALT_KEY1") );
         index->SetElementState( FdoSchemaElementState_Deleted );
         AddIndex( table, false, L"IX_11", L"STRING_COL2" );
 
         table = owner->FindDbObject( phMgr->GetDcDbObjectName(L"TABLE_IX2") ).p->SmartCast<FdoSmPhTable>();
-        index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"IX_22") );
+        index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"IX_22") );
         CPPUNIT_ASSERT( index->GetIsUnique() );
         index->SetElementState( FdoSchemaElementState_Deleted );
         AddIndex( table, true, L"IX_23", L"STRING_COL2" );
 
         table = owner->FindDbObject( phMgr->GetDcDbObjectName(L"TABLE_IX4") ).p->SmartCast<FdoSmPhTable>();
-        index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"IX_41") );
+        index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"IX_41") );
         index->SetElementState( FdoSchemaElementState_Deleted );
-        index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"IX_42") );
+        index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"IX_42") );
         index->SetElementState( FdoSchemaElementState_Deleted );
-        index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"IX_43") );
+        index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"IX_43") );
         index->SetElementState( FdoSchemaElementState_Deleted );
 
         table = owner->FindDbObject( phMgr->GetDcDbObjectName(L"TABLE_IX7") ).p->SmartCast<FdoSmPhTable>();
-        index = table->GetIndexes()->GetItem( phMgr->GetDcColumnName(L"IX_72") );
+        index = table->GetIndexes()->GetItem( GetIndexName(phMgr, L"IX_72") );
         index->SetElementState( FdoSchemaElementState_Deleted );
 
         database->Commit();
@@ -1557,14 +1587,20 @@ void SchemaMgrTests::testGenKeys ()
     }
     catch (FdoException* e ) 
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -1618,6 +1654,7 @@ void SchemaMgrTests::testFKeys ()
 		);
 		owner->SetPassword( L"test" );
         owner->Commit();
+        owner->SetCurrent();
 
         // The following creates a table with 3 foreign keys. The table also
         // contains columns named the same as the foreign keys. This tests 
@@ -1702,14 +1739,20 @@ void SchemaMgrTests::testFKeys ()
     }
     catch (FdoException* e ) 
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -1768,6 +1811,7 @@ void SchemaMgrTests::testViews ()
         owner->Commit();
     
         FdoSmPhOwnerP fowner = phMgr->FindOwner( fdatastore, L"", false );
+
         if ( fowner ) {
             fowner->SetElementState( FdoSchemaElementState_Deleted );
             fowner->Commit();
@@ -1779,20 +1823,24 @@ void SchemaMgrTests::testViews ()
         );
         fowner->SetPassword( L"test" );
         fowner->Commit();
-    
+
+        owner->SetCurrent();
+
         FdoSmPhTableP tableA = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
         FdoSmPhColumnP column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
         tableA->AddPkeyCol( column->GetName() );
         column = tableA->CreateColumnInt32( phMgr->GetDcColumnName(L"PARENT_ID"), false );
         column = tableA->CreateColumnInt16( phMgr->GetDcColumnName(L"INT16_COL1"), false );
 
-        FdoSmPhTableP tableB = fowner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
+        FdoSmPhTableP tableB;
+        tableB = fowner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE1") );
         column = tableB->CreateColumnInt32( phMgr->GetDcColumnName(L"ID"), false );
         tableB->AddPkeyCol( column->GetName() );
         column = tableB->CreateColumnInt32( phMgr->GetDcColumnName(L"PARENT_ID"), false );
         column = tableB->CreateColumnInt16( phMgr->GetDcColumnName(L"INT16_COL1"), false );
 
         database->Commit();
+
 
         FdoSmPhGrdOwnerP grdOwner = fowner->SmartCast<FdoSmPhGrdOwner>();
 
@@ -1879,14 +1927,20 @@ void SchemaMgrTests::testViews ()
     }
     catch (FdoException* e ) 
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -1952,10 +2006,14 @@ void SchemaMgrTests::testConfigError ()
     }
     catch (CppUnit::Exception exception)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         throw exception;
     }
     catch (...)
     {
+        fdoConn = NULL;
+        if ( conn ) delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
@@ -2272,7 +2330,7 @@ void SchemaMgrTests::CreateTableGroup( FdoSmPhOwnerP owner, FdoStringP prefix, F
         column = table->CreateColumnDouble( L"DOUBLE_COLUMN", true );
 
         if ( (prefix.ICompare(L"gh_") == 0) && (i == 5) ) {
-            FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"double_check", L"DOUBLE_COLUMN", L"DOUBLE_COLUMN < 100.35" );
+            FdoSmPhCheckConstraintP constraint = new FdoSmPhCheckConstraint( L"double_check", L"DOUBLE_COLUMN", L"\"DOUBLE_COLUMN\" < 100.35" );
             table->AddCkeyCol( constraint );
 
         	FdoSmPhBatchColumnsP ukeys = table->GetUkeyColumns(); 
@@ -2600,6 +2658,11 @@ FdoSmPhScInfoP SchemaMgrTests::CreateSc( FdoInt64 srid, double minx, double miny
 FdoInt64 SchemaMgrTests::GetSrid( int index )
 {
     return 0;
+}
+
+FdoStringP SchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName )
+{
+    return mgr->GetDcColumnName( indexName );
 }
 
 SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty ()

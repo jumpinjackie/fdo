@@ -35,6 +35,16 @@ class PostGisFdoSqlCmdTest : public FdoSqlCmdTest
     {
         return L"CURRENT_TIMESTAMP"; // or "NOW() or NULL"
     }
+
+	wchar_t *get_datetime_type() 
+    { 
+        return L"timestamp"; 
+    }
+
+    wchar_t *get_datetime ()
+    {
+        return L"'1999-05-29 02:24:32'";
+    }
 };
 
 #endif // POSTGIS_FDOSQLCMDTEST_H

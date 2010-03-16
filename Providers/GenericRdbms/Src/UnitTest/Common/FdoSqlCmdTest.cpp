@@ -83,7 +83,7 @@ void FdoSqlCmdTest::CreateTable ()
             sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
 
             wchar_t *number_type = get_number_type();
-            FdoStringP sql = FdoStringP::Format(L"create table %ls (Name varchar(64) not null, id %ls(10,0), amount %ls(38,8), bool_val %ls(1), date_val %ls )", 
+            FdoStringP sql = FdoStringP::Format(L"create table \"%ls\" (Name varchar(64) not null, id %ls(10,0), amount %ls(38,8), bool_val %ls(1), date_val %ls )", 
                                 SQLCMD_TABLE_NAME, number_type, number_type, number_type, get_datetime_type());
             sqlCmd->SetSQLStatement( sql );
             sqlCmd->ExecuteNonQuery();
@@ -106,12 +106,12 @@ void FdoSqlCmdTest::BasicInsert ()
         {
             sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
 
-            FdoStringP sql = FdoStringP::Format(L"insert into %ls values ('name1',10,2000.3456,1, %ls)", SQLCMD_TABLE_NAME, get_datetime_sys());
+            FdoStringP sql = FdoStringP::Format(L"insert into \"%ls\" values ('name1',10,2000.3456,1, %ls)", SQLCMD_TABLE_NAME, get_datetime_sys());
             sqlCmd->SetSQLStatement( sql );
             sqlCmd->ExecuteNonQuery();
 
             // Need to use the following date format: "YYYY-MM-DD-HH24-MI-SS"
-            sql = FdoStringP::Format(L"insert into %ls values ('name3',10,2000.3456,1, %ls)", SQLCMD_TABLE_NAME, get_datetime());
+            sql = FdoStringP::Format(L"insert into \"%ls\" values ('name3',10,2000.3456,1, %ls)", SQLCMD_TABLE_NAME, get_datetime());
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             sqlCmd->ExecuteNonQuery();
         }
@@ -137,7 +137,7 @@ void FdoSqlCmdTest::Delete ()
         {
             sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
 
-            FdoStringP sql = FdoStringP::Format(L"delete from %ls where id > 0", SQLCMD_TABLE_NAME);
+            FdoStringP sql = FdoStringP::Format(L"delete from \"%ls\" where id > 0", SQLCMD_TABLE_NAME);
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             int colDeleted = sqlCmd->ExecuteNonQuery();
 
@@ -315,7 +315,7 @@ void FdoSqlCmdTest::DropTable ()
         try
         {
             sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
-            FdoStringP sql = FdoStringP::Format(L"drop table %ls", SQLCMD_TABLE_NAME);
+            FdoStringP sql = FdoStringP::Format(L"drop table \"%ls\"", SQLCMD_TABLE_NAME);
             sqlCmd->SetSQLStatement( (FdoString *)sql );
             sqlCmd->ExecuteNonQuery();
         }
@@ -411,7 +411,7 @@ void FdoSqlCmdTest::Query ()
         try
         {
             FdoPtr<FdoISQLCommand> selCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
-            FdoStringP sql = FdoStringP::Format(L"select * from %ls", SQLCMD_TABLE_NAME);
+            FdoStringP sql = FdoStringP::Format(L"select * from \"%ls\"", SQLCMD_TABLE_NAME);
             selCmd->SetSQLStatement( (FdoString *)sql );
             myReader = selCmd->ExecuteReader();
             selCmd = NULL;

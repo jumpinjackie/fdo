@@ -110,6 +110,11 @@ int postgis_to_rdbi_type(PGconn* conn, Oid typeoid, int size, int typemod)
         case PGSQL_TYPE_INT2:
             ret = RDBI_SHORT;
             break;
+        case PGSQL_TYPE_INT2VECTOR:
+            // pg_index.indkey is int2vector type. Handle as string and
+            // leave it to callers to parse out individual elements.
+            ret = RDBI_STRING;
+            break;
         case PGSQL_TYPE_INT4:
             ret = RDBI_INT;
             break;

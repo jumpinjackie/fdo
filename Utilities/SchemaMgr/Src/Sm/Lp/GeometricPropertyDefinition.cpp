@@ -134,7 +134,30 @@ void FdoSmLpGeometricPropertyDefinition::FixSpatialContextAssociation()
     	FdoStringP tableName = GetContainingDbObjectName();
 	    FdoStringP columnName = GetColumnName();
 		FdoSmLpSpatialContextGeomP scgeom = scMgr->FindSpatialContextGeom( tableName, columnName );
-		if ( scgeom.p != NULL )
+		
+        if ( scgeom.p == NULL )
+        {
+            // Property column has no SC geometry association. Check if 
+            // column has base column. If it does then get association
+            // from base column.
+            FdoSmPhDbObjectP dbObject = pPhysical->FindDbObject(tableName);
+            if ( dbObject ) 
+            {
+                FdoSmPhColumnP column = dbObject->GetColumns()->FindItem(columnName);
+
+                // Follow up the base column chain until an SC Geom
+                // association is found.
+                while ( column && !scgeom ) 
+                {
+                    column = column->GetRootColumn();
+
+                    if ( column )
+                        scgeom = scMgr->FindSpatialContextGeom( column->GetParent()->GetName(), column->GetName() );
+                }
+            }
+        }
+        
+        if ( scgeom.p != NULL )
 		{
 			mAssociatedScId  = scgeom->GetScId();
 			FdoSmLpSpatialContextP sc = scMgr->FindSpatialContext(mAssociatedScId);

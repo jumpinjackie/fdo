@@ -69,6 +69,7 @@ protected:
     virtual FdoStringP GetAddSql();
 
     FdoPtr<FdoSmPhSpatialIndex> CreateSpatialIndex( FdoStringP indexName = L"" );
+    virtual void RegenSpatialIndex();
 
     virtual bool Add();
 

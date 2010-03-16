@@ -46,6 +46,13 @@ public:
     /// Deactivates the query.
 	~FdoSmPhRdClassReader(void);
 
+    /// Get the schema name if this reader is restricted to reading a particular schema.
+    /// Returns L"" if all schemas being read.
+    FdoStringP GetSchemaName();
+
+    // Gets the current db object being read.
+    FdoSmPhDbObjectP GetCurrDbObject();
+
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 

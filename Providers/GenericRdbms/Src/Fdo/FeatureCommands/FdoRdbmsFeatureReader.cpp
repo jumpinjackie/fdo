@@ -1361,7 +1361,7 @@ FdoIFeatureReader* FdoRdbmsFeatureReader::GetFeatureObject( const wchar_t* prope
             const wchar_t* tmpVal = mAttrQueryCache[mAttrsQidIdx].query->GetString( (const wchar_t *)colName,NULL, NULL);
             selectString += targetTableName;
 			selectString += L".";
-			selectString += fkCols->RefItem(i)->GetName();
+			selectString += fkCols->RefItem(i)->GetDbName();
             selectString += L" = ";
 			selectString += mFdoConnection->GetBindString( i+1 );
 

@@ -393,7 +393,7 @@ protected:
     /// 	- the object has been reserved by ReserveDbObjectName
     /// 	- the object exists in this owner (datastore)
     /// 	- the object is referenced by the metaschema tables in the current datastore.
-	bool IsDbObjectNameReserved( FdoStringP objectName );
+	virtual bool IsDbObjectNameReserved( FdoStringP objectName );
 
     // Fetches and caches the given object plus some of the objects in the fetch candidates list.
     // This improves performance by fetching multiple objects at once.

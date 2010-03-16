@@ -95,6 +95,21 @@ FdoSmPhRdClassReader::~FdoSmPhRdClassReader(void)
 {
 }
 
+FdoStringP FdoSmPhRdClassReader::GetSchemaName()
+{
+    return mSchemaName;
+}
+
+FdoSmPhDbObjectP FdoSmPhRdClassReader::GetCurrDbObject()
+{
+    FdoSmPhDbObjectP dbObject;
+
+    if ( (mCurrDbObject) >= 0 && (mCurrDbObject < mDbObjects->GetCount()) ) 
+        dbObject = mDbObjects->GetItem(mCurrDbObject);
+
+    return dbObject;
+}
+
 bool FdoSmPhRdClassReader::ReadNext()
 {
     FdoStringP objectName;
@@ -178,6 +193,10 @@ bool FdoSmPhRdClassReader::ReadNext()
                             pField->SetFieldValue( geomPropName );
                         else
                             pField->SetFieldValue( L"" );
+
+                        // By default, no inheritance when no metaschema.
+                        pField = pFields->GetItem(L"parentclassname");
+                        pField->SetFieldValue( L"" );
                     }
 
                     // 2nd row has class type.

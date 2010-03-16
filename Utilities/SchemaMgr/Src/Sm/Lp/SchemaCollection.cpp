@@ -1239,7 +1239,7 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
     for (int iSchema=0; iSchema < GetCount(); iSchema++)
     {
         const FdoSmLpSchema*     pLpSchema = RefItem(iSchema);
-        FdoStringP schemaName = pLpSchema->GetName();
+        FdoStringP currSchemaName = pLpSchema->GetName();
 
         if (featureClassNames)
         {
@@ -1252,14 +1252,16 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
 
                 if ( ((const wchar_t*)tempName)[0] == '\0' )
                 {
-                    if ( ((const wchar_t*)className)[0] != '\0' && ((const wchar_t*)schemaName)[0] != '\0' )
+                    if ( ((const wchar_t*)className)[0] != '\0' && ((const wchar_t*)currSchemaName)[0] != '\0' )
                     {
-                        className = schemaName + L":" + className;
+                        if ( (schemaName != L"") && (schemaName != currSchemaName) ) 
+                            continue;
+                        className = currSchemaName + L":" + className;
                     }
                 }
                 else 
                 {
-                    if ( schemaName != className.Left(delimiter) ) 
+                    if ( currSchemaName != className.Left(delimiter) ) 
                         continue;
                 }
 

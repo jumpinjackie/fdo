@@ -37,6 +37,16 @@ FdoSmPhPostGisIndex::~FdoSmPhPostGisIndex()
     // idle
 }
 
+FdoStringP FdoSmPhPostGisIndex::GetDDLName() const
+{
+    FdoStringP name = GetName();
+    if ( name.Contains(L".") ) 
+        name = name.Right(L".");
+
+    return FdoStringP(L"\"") + name + L"\"";
+}
+
+
 FdoPtr<FdoSmPhRdColumnReader> FdoSmPhPostGisIndex::CreateColumnReader()
 {
     return FdoSmPhIndex::CreateColumnReader();
@@ -74,14 +84,9 @@ bool FdoSmPhPostGisIndex::Delete()
 
     FdoSmPhDbObjectP    dbObject = GetDbObject();
 
-    // XXX: mloskot - PostGIS uses extended syntax:
-    // "ALTER TABLE %ls drop index %ls", table->GetDbQName(), GetDbName()
-
-    // TODO: mloskot - What about CASCADE,RESTRICT modes?
-
     FdoStringP sqlStmt = FdoStringP::Format(
         L"DROP INDEX IF EXISTS %ls",
-        static_cast<FdoString*>(GetDbName()));
+        static_cast<FdoString*>(GetDDLName()));
 
     dbObject->ExecuteDDL( (const char*) sqlStmt, (FdoSmPhDbObject*) NULL, true );
 
