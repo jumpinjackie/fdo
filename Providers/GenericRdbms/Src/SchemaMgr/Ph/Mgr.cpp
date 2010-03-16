@@ -695,7 +695,6 @@ FdoSmPhGrdMgr::StringMap::StringMap()
     Insert( L"using" );
 
     Insert( L"validate" ); 
-    Insert( L"value" ); 
     Insert( L"values" ); 
     Insert( L"varchar" ); 
     Insert( L"varchar2" ); 

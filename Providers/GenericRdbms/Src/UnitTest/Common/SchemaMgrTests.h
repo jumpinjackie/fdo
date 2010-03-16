@@ -54,7 +54,7 @@ protected:
     // Also tests reverse-engineering foreign keys into Association properties for MySQL.
     virtual void testFKeys();
 
-    void testViews();
+    virtual void testViews();
 
     virtual void testConfigError();
     void testGeometricProperties();
@@ -112,10 +112,11 @@ protected:
     virtual bool SupportsBaseObjects();
     virtual bool SupportsViewPkey();
     virtual bool SupportsFkeyDoubleDecimal() {return true;};
-
+    virtual bool SupportsCrossDatastoreDependencies() {return true;};
     virtual FdoSmPhScInfoP CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol );
 
     virtual FdoInt64 GetSrid( int index );
+    virtual FdoStringP GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName );
 
     FdoPtr<FdoIConnection> GetDirectConnection (FdoIConnection *currentConnection);
 

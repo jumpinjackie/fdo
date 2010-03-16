@@ -49,14 +49,7 @@ protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhRdPostGisClassReader() {}
 
-    // Returns true if the given database object's corresponding class is in the Feature Schema
-    // for this class reader. 
-    // No checking is done against the object's type. This is performed by ClassifyObjectType()
-    virtual FdoStringP ClassifyObject( FdoSmPhDbObjectP dbObject );
-
 private:
-    FdoStringP mPgSchemaName;
-    FdoSmPhDbObjectP mDbObject;
 };
 
 // convenient smart pointer

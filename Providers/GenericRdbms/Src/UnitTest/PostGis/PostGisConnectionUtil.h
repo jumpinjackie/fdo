@@ -42,6 +42,7 @@ public:
     virtual SchemaOverrideUtilP NewSchemaOverrideUtil();
 	virtual FdoInsertTest* GetInsertTest();
 	virtual FdoStringP GetOutputFileName(FdoString* pBaseFileName);
+    virtual wchar_t GetNlsChar( int index );
 
 private:
 	FdoPtr<StringPropertiesDictionary> m_SetupValues;

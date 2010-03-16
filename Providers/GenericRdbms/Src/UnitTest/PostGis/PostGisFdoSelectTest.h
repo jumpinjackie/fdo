@@ -24,9 +24,13 @@
 class PostGisFdoSelectTest : public FdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (PostGisFdoSelectTest, FdoSelectTest);
+    CPPUNIT_TEST( spatial_query_defect813611 );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
+
+protected:
+    void spatial_query_defect813611() {}
 };
 
 #endif // PostGis_FDOSELECTTEST_H

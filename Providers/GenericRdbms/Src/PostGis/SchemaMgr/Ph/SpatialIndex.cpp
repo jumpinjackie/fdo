@@ -177,9 +177,8 @@ bool FdoSmPhPostGisSpatialIndex::Delete()
 
     // Index name must be qualified by table name.
     FdoStringP sqlStmt = FdoStringP::Format(
-        L"drop index %ls on %ls",
-        (FdoString*) GetDDLName(),
-        (FdoString*) dbObject->GetDbName()
+        L"DROP INDEX IF EXISTS %ls",
+        (FdoString*) GetDDLName()
     );
 
     // SqlServer does not allow qualified name for index to create.

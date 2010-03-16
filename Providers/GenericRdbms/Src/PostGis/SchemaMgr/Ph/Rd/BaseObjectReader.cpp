@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include "BaseObjectReader.h"
 #include <Sm/Ph/Rd/SchemaDbObjectBinds.h>
+#include <Sm/Ph/TableMergeReader.h>
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 #include "../Mgr.h"
 
@@ -72,12 +73,27 @@ FdoSmPhReaderP FdoSmPhRdPostGisBaseObjectReader::MakeQueryReader(
     FdoSmPhRdTableJoinP join
 )
 {
+    FdoSmPhReaderP reader1 = MakeInheritReader( owner, objectNames, join );
+    FdoSmPhReaderP reader2 = MakeViewDependReader( owner, objectNames, join );
+
+    // Merge the readers so that the merged results set is returned ordered by table name.
+    FdoSmPhReaderP reader = new FdoSmPhTableMergeReader( L"", L"name", reader1, reader2 );
+
+    return reader;
+}
+
+FdoSmPhReaderP FdoSmPhRdPostGisBaseObjectReader::MakeInheritReader(
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join
+)
+{
     FdoStringP           ownerName = owner->GetName();
     FdoSmPhMgrP          mgr = owner->GetManager();
     FdoSmPhPostGisMgrP   pgMgr = mgr->SmartCast<FdoSmPhPostGisMgr>();
 
     FdoStringP sqlString = FdoStringP::Format(
-        L"select %ls (NS.nspname || '.' || S.relname) as name, B.relname as base_name,\n"
+        L"select %ls (NS.nspname || '.' || S.relname) as name, (NB.nspname || '.' || B.relname) as base_name,\n"
         L" NB.nspname as base_schema, cast(null as varchar) as base_database, \n"
         L" cast('%ls' as varchar) as base_owner, "
         L" %ls as collate_schema_name, "
@@ -100,6 +116,45 @@ FdoSmPhReaderP FdoSmPhRdPostGisBaseObjectReader::MakeQueryReader(
         sqlString,
         L"NS.nspname",
         L"S.relname",
+        objectNames,
+        join
+    );
+
+    return reader;
+}
+
+FdoSmPhReaderP FdoSmPhRdPostGisBaseObjectReader::MakeViewDependReader(
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join
+)
+{
+    FdoStringP           ownerName = owner->GetName();
+    FdoSmPhMgrP          mgr = owner->GetManager();
+    FdoSmPhPostGisMgrP   pgMgr = mgr->SmartCast<FdoSmPhPostGisMgr>();
+
+    FdoStringP sqlString = FdoStringP::Format(
+        L"select %ls (VU.view_schema || '.' || VU.view_name) as name, \n"
+        L" (VU.table_schema || '.' || VU.table_name) as base_name,\n"
+        L" VU.table_schema as base_schema, cast(null as varchar) as base_database, \n"
+        L" cast('%ls' as varchar) as base_owner, "
+        L" %ls as collate_schema_name, "
+        L" %ls as collate_name "
+        L" from INFORMATION_SCHEMA.view_table_usage VU $(JOIN_FROM)\n"
+        L" $(WHERE) $(QUALIFICATION) \n"
+        L" order by collate_schema_name, collate_name asc",
+        join ? L"distinct" : L"",
+        (FdoString*) owner->GetName(),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"VU.view_schema"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"VU.view_name")
+    );
+
+    FdoSmPhReaderP reader = FdoSmPhRdBaseObjectReader::MakeQueryReader(
+        L"",
+        owner,
+        sqlString,
+        L"VU.view_schema",
+        L"VU.view_name",
         objectNames,
         join
     );

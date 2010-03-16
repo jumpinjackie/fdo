@@ -7,4 +7,3 @@
  Cannot delete geometric property 'Land:Parcel.Grading'; it is the geometry property for class 'Land:Parcel' 
  Column {USER_DS}_apply_schema.driveway.pav_d has conditional rows or rows with non-null values, cannot delete its property 
  Column {USER_DS}_apply_schema.a1_8_school.a_rooms has conditional rows or rows with non-null values, cannot delete its property 
- Cannot delete geometric property 'Land:Build'g.Geometry'; it is the geometry property for class 'Land:1-8 School' 

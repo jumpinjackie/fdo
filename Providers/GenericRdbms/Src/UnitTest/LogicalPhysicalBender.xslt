@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema" 
@@ -464,7 +464,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
         <xsl:when test="$inName='DATE1'">date1</xsl:when>
         <xsl:when test="$inName='GEOMETRY'">geometry</xsl:when>
         <xsl:when test="$inName='NUMBER1'">number1</xsl:when>
-        <xsl:when test="$inName='VALUE1'">value1</xsl:when>
+        <xsl:when test="$inName='VALUE1'">value</xsl:when>
         <xsl:when test="$inName='n/a'">n/a</xsl:when>
         <xsl:when test="$inName='CLASSID'">classid</xsl:when>
         <xsl:when test="$inName='CLASSNAME'">classname</xsl:when>
@@ -587,6 +587,7 @@ xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical"
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OVCL1'">ovclassc111_opc_table_hd_ovclassc111_featid</xsl:when>
 				<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OPID1'">ovclassc111_opc_table_hd_opid1</xsl:when>
 				<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_F1'">ovclassh_ftabled_ovclassh_featid</xsl:when>
+				<xsl:when test="$inName='VALUE1'">value</xsl:when>
 				<xsl:otherwise>
 
 					<xsl:call-template name="tolower">

@@ -156,7 +156,7 @@ bool PostGisFdoApplySchemaTest::CanApplyWithoutMetaSchema()
 
 bool PostGisFdoApplySchemaTest::CanCreateSchemaWithoutMetaSchema()
 {
-    return false;
+    return true;
 }
 
 FdoStringP PostGisFdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile )
@@ -188,3 +188,9 @@ FdoStringP PostGisFdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMas
     return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d%ls.txt",fileNum,
         (fileNum == 2 || fileNum == 3 || fileNum == 5 || fileNum == 6 || fileNum == 8 || fileNum == 9) ? L"M" : L"") );
 }
+
+FdoStringP PostGisFdoApplySchemaTest::GetDefaultSchemaName()
+{
+	return L"public";
+}
+

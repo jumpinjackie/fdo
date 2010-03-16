@@ -28,6 +28,7 @@
 #include "Rd/PkeyReader.h"
 #include "Rd/DbSchemaReader.h"
 #include "Rd/SpatialContextReader.h"
+#include <Sm/Ph/Rd/QueryReader.h>
 #include "Inc/Rdbi/proto.h"
 
 //
@@ -82,6 +83,35 @@ FdoStringP FdoSmPhPostGisOwner::GetKeyColumnUsageTable() const
 {
     return mKeyColumnUsageTable;
 }
+
+bool FdoSmPhPostGisOwner::IsDbObjectNameReserved( FdoStringP objectName )
+{
+    bool isReserved = FdoSmPhGrdOwner::IsDbObjectNameReserved( objectName );
+
+    // The PostGIS DbObjectReader does not currently pick up indexes so
+    // they are not cached in the owner's DbObject list and are thus not picked
+    // up by base IsDbObjectNameReserved.
+
+    // Do extra check against pg_class table to ensure objectName not currently
+    // used by an index.
+
+    if ( !isReserved ) {
+        FdoStringP sqlString = FdoStringP::Format(
+            L"select 1 from pg_catalog.pg_class C, pg_catalog.pg_namespace N "
+            L"where C.relnamespace = N.oid and upper(N.nspname || '.' || C.relname) = %ls", 
+            (FdoString*) GetManager()->FormatSQLVal(objectName.Upper(), FdoSmPhColType_String)
+        );
+
+        FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"GetObjectExists" );
+
+        FdoSmPhRdQueryReaderP reader = GetManager()->CreateQueryReader( row, sqlString );
+
+        isReserved = reader->ReadNext();
+    }
+
+    return isReserved;
+}
+
 
 void FdoSmPhPostGisOwner::SetCurrent()
 {
@@ -237,8 +267,19 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhPostGisOwner::CreateIndexReader() const
     FDO_SAFE_ADDREF(thisOwner);
 
     FdoSmPhRdPostGisIndexReader* reader = NULL;
-    reader = new FdoSmPhRdPostGisIndexReader(thisOwner->GetManager(),
-        thisOwner);
+    reader = new FdoSmPhRdPostGisIndexReader(thisOwner, (FdoSmPhDbObject*) NULL);
+
+    return reader;
+}
+
+FdoPtr<FdoSmPhRdIndexReader> FdoSmPhPostGisOwner::CreateIndexReader( FdoStringsP objectNames ) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisIndexReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisIndexReader(thisOwner, objectNames);
 
     return reader;
 }

@@ -24,7 +24,6 @@
 class PostGisFdoUpdateTest : public FdoUpdateTest
 {
     CPPUNIT_TEST_SUB_SUITE (PostGisFdoUpdateTest, FdoUpdateTest);
-    CPPUNIT_TEST( testForeignDataStore );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -32,7 +31,6 @@ class PostGisFdoUpdateTest : public FdoUpdateTest
 
 public:
 	virtual void ConditionalUpdate () { }
-    void testForeignDataStore();
 
 protected:
     virtual FdoInt64 GetSrid( FdoInt64 srid );

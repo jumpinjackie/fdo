@@ -321,3 +321,9 @@ FdoStringP SqlServerFdoApplySchemaTest::GetValueColumnName()
 {
 	return L"Value";
 }
+
+FdoStringP SqlServerFdoApplySchemaTest::GetDefaultSchemaName()
+{
+	return L"dbo";
+}
+

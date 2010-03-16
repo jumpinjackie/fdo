@@ -141,3 +141,14 @@ FdoStringP MySqlFdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaste
     return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d%ls.txt",fileNum,
         (fileNum == 2 || fileNum == 3 || fileNum == 5 || fileNum == 6 || fileNum == 8 || fileNum == 9) ? L"M" : L"") );
 }
+
+FdoStringP MySqlFdoApplySchemaTest::GetParcelFirstName()
+{
+	return L"first_name";
+}
+
+FdoStringP MySqlFdoApplySchemaTest::GetParcelLastName()
+{
+	return L"last_name";
+}
+

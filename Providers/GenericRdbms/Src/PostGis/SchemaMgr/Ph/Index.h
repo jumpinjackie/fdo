@@ -51,6 +51,9 @@ public:
 
 protected:
 
+    // Get unqualified index name for use in DDL statement
+    virtual FdoStringP GetDDLName() const;
+
     /// Override column reader creator to return empty reader.
     /// Parent table handles the adding of the right columns to each index.
     ///

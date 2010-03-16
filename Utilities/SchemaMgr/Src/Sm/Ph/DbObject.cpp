@@ -1350,21 +1350,26 @@ bool FdoSmPhDbObject::LoadIndexes( FdoSmPhTableIndexReaderP indexRdr, bool isSki
                 mIndexes->Add(index);
         }
 
-        FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
-        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
-
-        if ( column ) {
-            // Add the column to the current index.
-            index->AddColumn( column );
-        }
-        else {
-            // Index column must be in this table.
-            if ( GetElementState() != FdoSchemaElementState_Deleted )
-		        AddIndexColumnError( columnName );
-        }
+        LoadIndexColumn( indexRdr, index );
     }
 
     return ret;
+}
+
+void FdoSmPhDbObject::LoadIndexColumn( FdoSmPhTableIndexReaderP indexRdr, FdoSmPhIndexP index )
+{
+    FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
+    FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
+
+    if ( column ) {
+        // Add the column to the current index.
+        index->AddColumn( column );
+    }
+    else {
+        // Index column must be in this table.
+        if ( GetElementState() != FdoSchemaElementState_Deleted )
+	        AddIndexColumnError( columnName );
+    }
 }
 
 bool FdoSmPhDbObject::CacheIndexes( FdoSmPhRdIndexReaderP rdr )

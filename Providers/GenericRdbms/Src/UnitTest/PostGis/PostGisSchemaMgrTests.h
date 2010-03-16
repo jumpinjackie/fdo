@@ -24,19 +24,28 @@
 class PostGisSchemaMgrTests : public SchemaMgrTests
 {
     CPPUNIT_TEST_SUB_SUITE (PostGisSchemaMgrTests, SchemaMgrTests);
-//    CPPUNIT_TEST (testCharacterSets);
     CPPUNIT_TEST_SUITE_END ();
 
-//    void testCharacterSets();
-    
+    // TestViews N/A since tests views with cross-database dependencies.
+    virtual void testViews() {};
+    // TODO: re-add test when PostgreSQL provider handles foreign keys.
+    virtual void testFKeys() {};
+
 	virtual StaticConnection* CreateStaticConnection();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );
     virtual void AddProviderColumns( FdoSmPhTableP table );
     virtual void VldGenGeom( FdoClassDefinitionP classDef );
     virtual void testConfigError(){};
 
-        virtual bool SupportsFkeyDoubleDecimal() {return false;};
+    virtual bool SupportsFkeyDoubleDecimal() {return false;};
+    virtual bool SupportsCrossDatastoreDependencies() {return false;};
+    virtual bool SupportsBaseObjects() {return true;};
 
+    virtual FdoStringP table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName );
+
+    virtual FdoStringP table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName );
+    
+    virtual FdoStringP GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName );
 };
 
 #endif // PostGis_SCHEMAMGRTESTS_H

@@ -455,3 +455,19 @@ void PostGisSchemaMgrTests::VldGenGeom( FdoClassDefinitionP classDef )
     CPPUNIT_ASSERT( (className == L"NO_WIN") ? (geomPropName == L"" ) : true );
     CPPUNIT_ASSERT( (className == L"ONE_GEOM") ? (geomPropName == L"GEOM1" ) : true );
 }
+
+FdoStringP PostGisSchemaMgrTests::table2class( FdoSmPhGrdMgrP mgr, FdoStringP tableName )
+{
+    return mgr->GetDcDbObjectName( tableName ).Right(L".");
+}
+
+FdoStringP PostGisSchemaMgrTests::table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP datastoreName, FdoStringP tableName )
+{
+    return FdoStringP(L"public:") + table2class(mgr, tableName);
+}
+
+FdoStringP SchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr FdoStringP indexName )
+{
+    return mgr->GetDcDbOBjectName( indexName );
+}
+

@@ -71,6 +71,20 @@ protected:
         FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
     );
 
+    // Reader for inherited table to base table relationships
+    FdoSmPhReaderP MakeInheritReader(
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames,
+        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
+    );
+
+    // Reader for view to base table or view relationships.
+    FdoSmPhReaderP MakeViewDependReader(
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames,
+        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
+    );
+
 };
 
 typedef FdoPtr<FdoSmPhRdPostGisBaseObjectReader> FdoSmPhRdPostGisBaseObjectReaderP;

@@ -475,6 +475,9 @@ protected:
     bool LoadIndexes();
     bool LoadIndexes( FdoPtr<FdoSmPhTableIndexReader> indexRdr, bool isSkipAdd );
 	
+    // Load a column from a reader into an index.
+    virtual void LoadIndexColumn( FdoPtr<FdoSmPhTableIndexReader> indexRdr, FdoPtr<FdoSmPhIndex> index );
+
     /// Load Foreign Keys if not yet loaded
     void LoadFkeys();
     void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr, bool isSkipAdd );
@@ -488,7 +491,7 @@ protected:
     );
 
     /// Add an index from an index reader
-    FdoPtr<FdoSmPhIndex> CreateIndex(
+    virtual FdoPtr<FdoSmPhIndex> CreateIndex(
         FdoPtr<FdoSmPhTableIndexReader> rdr
     );
 

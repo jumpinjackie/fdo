@@ -217,8 +217,15 @@ int postgis_execute (
                 }
                 else
                 {
-                    if (NULL != rows_processed && PGRES_TUPLES_OK == PQresultStatus(curs->stmt_result))
-                        *rows_processed = PQntuples(curs->stmt_result);
+                    if (NULL != rows_processed)
+                    {
+                        if (PGRES_TUPLES_OK == PQresultStatus(curs->stmt_result))
+                            // # of rows retrieved by executing select command.
+                            *rows_processed = PQntuples(curs->stmt_result);
+                        else if (PGRES_COMMAND_OK == PQresultStatus(curs->stmt_result))
+                            // # of rows affected by update or delete command.
+                            *rows_processed = strtol(PQcmdTuples(curs->stmt_result),NULL,10);
+                    }
                 }
 
                 /*

@@ -35,6 +35,7 @@
 #include "ColumnUnknown.h"
 #include "Index.h"
 #include "SpatialIndex.h"
+#include <Sm/Ph/TableComponentReader.h>
 #include <FdoCommonStringUtil.h>
 
 FdoSmPhPostGisDbObject::FdoSmPhPostGisDbObject()
@@ -112,6 +113,51 @@ void FdoSmPhPostGisDbObject::ActivateOwnerAndExecute(FdoStringP sqlStmt)
 
     pgOwner->ActivateAndExecute(sqlStmt);
 }
+
+FdoPtr<FdoSmPhIndex> FdoSmPhPostGisDbObject::CreateIndex(
+    FdoPtr<FdoSmPhTableIndexReader> rdr
+)
+{
+    FdoSmPhIndexP index;
+    FdoSmPhColumnGeomP columnGeom;
+
+    // Determine index type. It's a spatial index if it has only one
+    // column and that column is geometric.
+
+    // Column name contains space-separated list of positions of index columns.
+    // Positions are 1-based.
+    FdoStringP columnPosition = rdr->GetString(L"",L"column_name");
+
+    if ( columnPosition.Right(L" ") == L"" ) {
+        // Index has only one column.
+        FdoInt32 columnIndex = columnPosition.ToLong();
+
+        if ( (columnIndex > 0) && (columnIndex <= GetColumns()->GetCount()) )
+            // Get the index column.
+            columnGeom = GetColumns()->GetItem(columnIndex - 1)->SmartCast<FdoSmPhColumnGeom>(true);
+    }
+
+    if  ( columnGeom ) {
+        // Index column is geometric, create a spatial index
+        index = NewSpatialIndex(
+            rdr->GetString(L"",L"index_name"), 
+            (rdr->GetString(L"",L"uniqueness") == L"UNIQUE") ? true : false,
+            FdoSchemaElementState_Unchanged
+        );
+    }
+    else {
+        // Otherwise, create regular index.
+        index = NewIndex(
+            rdr->GetString(L"",L"index_name"), 
+            (rdr->GetString(L"",L"uniqueness") == L"UNIQUE") ? true : false,
+            FdoSchemaElementState_Unchanged
+        );
+    }
+
+    return index;
+}
+
+
 
 FdoSmPhColumnP FdoSmPhPostGisDbObject::NewColumnBLOB(FdoStringP columnName,
     FdoSchemaElementState state,
@@ -362,11 +408,49 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhPostGisDbObject::CreateIndexReader() const
     thisTable = const_cast<FdoSmPhPostGisDbObject*>(this);
     FDO_SAFE_ADDREF(thisTable);
 
-    // Create foreign key reader
+    FdoSmPhOwner* owner = NULL;
+    owner = const_cast<FdoSmPhOwner*>((const FdoSmPhOwner*) GetParent());
+    FDO_SAFE_ADDREF(owner);
+
+    // Create index reader
     FdoSmPhRdPostGisIndexReader* reader = NULL;
     reader = new FdoSmPhRdPostGisIndexReader(
-        thisTable->GetManager(), thisTable);
+        owner, thisTable);
 
     return reader;
+}
+
+void FdoSmPhPostGisDbObject::LoadIndexColumn( FdoSmPhTableIndexReaderP indexRdr, FdoSmPhIndexP index )
+{
+
+    // columnName actually contains list of positions for index columns.
+    FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
+
+    // Parse the position list (space-separated elements).
+    FdoStringsP columnPositions = FdoStringCollection::Create( columnName, L" " );
+    FdoInt32 ix;
+    
+    for ( ix = 0; ix < columnPositions->GetCount(); ix++ ) {
+        FdoSmPhColumnP column;
+        FdoInt32 columnPosition = FdoStringP(columnPositions->GetString(ix)).ToLong();
+        
+        // Columnn position 1-based. Make sure it is in range and then retrieve
+        // column from table's column list.
+        if ( columnPosition > 0 ) {
+            if ( columnPosition <= GetColumns()->GetCount() ) {
+                column = GetColumns()->GetItem(columnPosition - 1);
+            }
+        }
+
+        if ( column ) {
+            // Add the column to the current index.
+            index->AddColumn( column );
+        }
+        else {
+            // Index column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+                AddIndexColumnError( index->GetName() );
+        }
+    }
 }
 

@@ -160,18 +160,34 @@ FdoSmPhSpatialIndexP FdoSmPhPostGisColumnGeom::CreateSpatialIndex( FdoStringP in
     return currIndex;
 }
 
+void FdoSmPhPostGisColumnGeom::RegenSpatialIndex()
+{
+    if ( GetElementState() != FdoSchemaElementState_Deleted ) {
+        FdoSmPhSpatialIndexP currIndex = GetSpatialIndex();
+
+        // If spatial index exists, delete and re-create it.
+        if ( currIndex && (currIndex->GetElementState() != FdoSchemaElementState_Deleted) ) {
+            currIndex->SetElementState( FdoSchemaElementState_Deleted );
+
+             CreateSpatialIndex();
+        }
+    }
+}
+
 bool FdoSmPhPostGisColumnGeom::Add()
 {
-    FdoSmPhPostGisMgrP mgr(GetManager()->SmartCast<FdoSmPhPostGisMgr>());
+    if ( dynamic_cast<FdoSmPhTable*>((FdoSmSchemaElement*) GetParent()) ) {
+        FdoSmPhPostGisMgrP mgr(GetManager()->SmartCast<FdoSmPhPostGisMgr>());
 
-    GdbiConnection* gdbiConn = NULL;
-    gdbiConn = mgr->GetGdbiConnection();
+        GdbiConnection* gdbiConn = NULL;
+        gdbiConn = mgr->GetGdbiConnection();
 
-    FdoStringP sqlStmt = GetAddSql();
+        FdoStringP sqlStmt = GetAddSql();
 
-    if ( sqlStmt != L"" ) {
-        gdbiConn->ExecuteNonQuery(
-            static_cast<const char*>(sqlStmt), true);
+        if ( sqlStmt != L"" ) {
+            gdbiConn->ExecuteNonQuery(
+                static_cast<const char*>(sqlStmt), true);
+        }
     }
 
     return true;

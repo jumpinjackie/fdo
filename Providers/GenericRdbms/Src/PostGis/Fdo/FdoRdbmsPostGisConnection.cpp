@@ -298,6 +298,7 @@ FdoConnectionState FdoRdbmsPostGisConnection::Open()
     {
         // Append the datastore name to the service string; the driver expects a <dbname>@<host>:<port> service format.
         FdoStringP service = datastoreProp->GetValue();
+
         service += "@";
         FdoPtr<ConnectionProperty> servprop = dict->FindProperty(FDO_RDBMS_CONNECTION_SERVICE);
         if (servprop == NULL ) 
@@ -308,8 +309,15 @@ FdoConnectionState FdoRdbmsPostGisConnection::Open()
                 true, false, false, false, false, false, false, 0, NULL); 
             dict->AddProperty(servprop);
         }
-        if( wcslen(servprop->GetValue()) !=0 )
-            service += servprop->GetValue();
+
+        FdoStringP servpropstr = servprop->GetValue();
+        // Remove any current datastore in service name.
+        // If re-opening, datastore would have been added by first open.
+        if ( servpropstr.Contains(L"@") ) 
+            servpropstr = servpropstr.Right(L"@");
+
+        if( servpropstr.GetLength() != 0 )
+            service += servpropstr;
         else
             service += L"localhost"; // defaults to localhost
 

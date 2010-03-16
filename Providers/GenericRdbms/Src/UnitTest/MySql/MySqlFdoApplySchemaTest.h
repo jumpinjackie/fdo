@@ -44,6 +44,9 @@ public:
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
+
+  	virtual FdoStringP GetParcelFirstName();
+	virtual FdoStringP GetParcelLastName();
 };
 
 

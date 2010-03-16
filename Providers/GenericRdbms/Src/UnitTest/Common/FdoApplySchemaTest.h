@@ -196,6 +196,10 @@ protected:
 
 	virtual FdoStringP GetValueColumnName();
 
+	virtual FdoStringP GetParcelFirstName();
+	virtual FdoStringP GetParcelLastName();
+    virtual FdoStringP GetDefaultSchemaName();
+
     void WriteXmlOverrides(
         FdoIConnection* connection,
         bool includeDefaults,

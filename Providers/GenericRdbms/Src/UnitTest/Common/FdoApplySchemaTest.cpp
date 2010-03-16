@@ -1850,6 +1850,8 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
 
 void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticConnection* staticConn )
 {
+    FdoStringP providerName = UnitTestUtil::GetEnviron("provider");
+
     FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts*) connection->CreateCommand( FdoCommandType_GetSpatialContexts );
     gscCmd->SetActiveOnly(false);
 
@@ -2019,6 +2021,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
     schemas->WriteXml(stream);
     stream->Reset();
 
+    FdoStringP masterFile = FdoStringP::Format( L"apply_no_meta_test1_%ls_master.xml", (FdoString*) providerName );
     FdoStringP resultsFile = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test1.xml" );
     FdoStringP masterFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2_master.xml" );
     FdoStringP resultsFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2.xml" );
@@ -2036,7 +2039,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
         stream = FdoIoMemoryStream::Create();
 
         FdoXslTransformerP tfmr = FdoXslTransformer::Create(
-            FdoXmlReaderP( FdoXmlReader::Create(L"apply_no_meta_test1_master.xml") ),
+            FdoXmlReaderP( FdoXmlReader::Create(masterFile) ),
             FdoXmlReaderP( FdoXmlReader::Create(stylesheetStream) ),
             FdoXmlWriterP( FdoXmlWriter::Create(stream, false) )
         );
@@ -2055,7 +2058,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
         UnitTestUtil::Config2SortedFile(stream, resultsFile2 );
     }
 
-    UnitTestUtil::CheckOutput( "apply_no_meta_test1_master.xml",(const char*) resultsFile );
+    UnitTestUtil::CheckOutput( masterFile,(const char*) resultsFile );
 
     if ( CanCreateSchemaWithoutMetaSchema() )
         UnitTestUtil::CheckOutput( (const char*) masterFile2,(const char*) resultsFile2 );
@@ -2770,10 +2773,24 @@ void FdoApplySchemaTest::CreateLandSchema( FdoIConnection* connection, bool hasM
     InsertObject(connection, false, pSchema->GetName(), L"Driveway", L"Pav'd", L"1", NULL );
 
     if ( hasMetaSchema ) {
-#ifdef RDBI_DEF_SSQL
-        UnitTestUtil::Sql2Db( L"insert into \"parcel_person\" ( \"first name\", \"last name\", \"parcel_province\", \"parcel_pin\" ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+#ifdef RDBI_DEF_ORA
+        UnitTestUtil::Sql2Db( 
+            FdoStringP::Format(
+                L"insert into parcel_person ( %ls, %ls, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )",
+                (FdoString*) GetParcelFirstName(),
+                (FdoString*) GetParcelLastName()
+            ),
+            connection 
+        );
 #else
-        UnitTestUtil::Sql2Db( L"insert into parcel_person ( first_name, last_name, parcel_province, parcel_pin ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )", connection );
+        UnitTestUtil::Sql2Db( 
+            FdoStringP::Format(
+                L"insert into \"parcel_person\" ( \"%ls\", \"%ls\", \"parcel_province\", \"parcel_pin\" ) values ( 'Fraser', 'Simon', 'Ontario', '1234-5678' )",
+                (FdoString*) GetParcelFirstName(),
+                (FdoString*) GetParcelLastName()
+            ),
+            connection 
+        );
 #endif
     }
 }
@@ -7053,8 +7070,12 @@ FdoStringP FdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaster )
 
 FdoStringP FdoApplySchemaTest::SchemaNoMetaErrFile( int fileNum, bool isMaster )
 {
-	if (isMaster)
-		return FdoStringP::Format( L"apply_no_meta_err%d%ls.txt", fileNum, L"_master");
+    FdoStringP providerName;
+    if ( (fileNum == 3) || (fileNum == 5) )
+        providerName = FdoStringP(L"_") + UnitTestUtil::GetEnviron("provider");
+
+    if (isMaster)
+		return FdoStringP::Format( L"apply_no_meta_err%d%ls%ls.txt", fileNum, (FdoString*) providerName, L"_master");
 	else
 		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_no_meta_err%d.txt", fileNum) );
 }
@@ -7171,7 +7192,7 @@ FdoFeatureSchemaP FdoApplySchemaTest::GetDefaultSchema( FdoIConnection* connecti
 
     CPPUNIT_ASSERT( schemas->GetCount() > 0 );
 
-    defSchema = schemas->FindItem(L"dbo");
+    defSchema = schemas->FindItem(GetDefaultSchemaName());
     if ( !defSchema ) 
         defSchema = schemas->GetItem(0);
 
@@ -7193,6 +7214,21 @@ bool FdoApplySchemaTest::CreateGeometrySICol()
 FdoStringP FdoApplySchemaTest::GetValueColumnName()
 {
 	return L"Value1";
+}
+
+FdoStringP FdoApplySchemaTest::GetParcelFirstName()
+{
+	return L"first name";
+}
+
+FdoStringP FdoApplySchemaTest::GetParcelLastName()
+{
+	return L"last name";
+}
+
+FdoStringP FdoApplySchemaTest::GetDefaultSchemaName()
+{
+	return L"";
 }
 
 FdoPtr<FdoIConnection> FdoApplySchemaTest::GetDirectConnection (FdoIConnection *currentConnection)

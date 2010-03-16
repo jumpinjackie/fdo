@@ -96,6 +96,8 @@ public:
     ///
     FdoStringP GetKeyColumnUsageTable() const;
 
+	virtual bool IsDbObjectNameReserved( FdoStringP objectName );
+
     // Removes a schema from the cache without dropping it from
     // the RDBMS.
     void DiscardSchema( FdoSmPhPostGisSchema* schema );
@@ -146,8 +148,11 @@ public:
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
-    /// \todo To be documented
+    // Create a reader to get all indexes (ordered by table) for this owner
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
+
+    /// Create a reader to get all indexes for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader( FdoStringsP objectNames ) const;
 
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
