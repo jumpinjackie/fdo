@@ -33,7 +33,10 @@ class FdoRdbmsDeleteCommand : public FdoRdbmsFeatureCommand<FdoIDelete>
       // DO NOT IMPLEMENT
       FdoRdbmsDeleteCommand(const FdoRdbmsDeleteCommand &right);
 
-      bool CheckLocks(bool placeTransactionLock, bool checkForConflicts);
+      // Perform lock checks needed before delete performed
+      virtual bool PreCheckLocks(bool placeTransactionLock, bool checkForConflicts, bool* lockConflictsChecked);
+      // Perform lock checks
+      virtual bool CheckLocks(bool placeTransactionLock, bool checkForConflicts);
       void GetDefaultLockConflictReader();
       FdoInt32  InternalExecute ();
 

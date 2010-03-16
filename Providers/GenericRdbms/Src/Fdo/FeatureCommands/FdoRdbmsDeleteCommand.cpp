@@ -348,12 +348,11 @@ FdoInt32 FdoRdbmsDeleteCommand::InternalExecute ()
         wcscpy( sqlFilter, tmpSelect);
         FDO_SAFE_RELEASE( sqlFilterProps );
        
-        if (!CheckLocks(true, true))
+        if (!PreCheckLocks(true, true, &lockConflictsChecked))
         {
             DELETE_CLEANUP;
             return count;
         }
-        lockConflictsChecked = true;
 
         count = DeleteRelatedObjects( NULL, currentClass, currentClass->RefIdentityProperties() );
         
@@ -372,22 +371,55 @@ FdoInt32 FdoRdbmsDeleteCommand::InternalExecute ()
 
     catch (FdoCommandException *ex)
     {
+        // If no lock conflict checking has been performed yet, the error may
+        // be caused by RDBMS detecting lock or version conflicts. If this
+        // would be the case no error needs to be thrown. Therefore, check if
+        // there are lock or version conflicts.
+        if (!lockConflictsChecked)
+            throw_exception = CheckLocks(false, true);
+
         ex;
         DELETE_CLEANUP;
-        throw;
+        if (throw_exception)
+            throw;
+        else
+            ex->Release();
     }
 
     catch (FdoException *ex)
     {
+        // If no lock conflict checking has been performed yet, the error may
+        // be caused by RDBMS detecting lock or version conflicts. If this
+        // would be the case no error needs to be thrown. Therefore, check if
+        // there are lock or version conflicts.
+        if (!lockConflictsChecked)
+            throw_exception = CheckLocks(false, true);
+
         DELETE_CLEANUP;
-        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
-        ex->Release();
-        throw exp;
+        if (throw_exception)
+        {
+            FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+            ex->Release();
+            throw exp;
+        }
+        else
+        {
+            ex->Release();
+        }
     }
 
     catch ( ... )
     {
+        // If no lock conflict checking has been performed yet, the error may
+        // be caused by RDBMS detecting lock or version conflicts. If this
+        // would be the case no error needs to be thrown. Therefore, check if
+        // there are lock or version conflicts.
+        if (!lockConflictsChecked)
+            throw_exception = CheckLocks(false, true);
+
         DELETE_CLEANUP;
+        if (throw_exception)
+            throw;
         throw;
     }
 
@@ -768,9 +800,17 @@ FdoInt32 FdoRdbmsDeleteCommand::DeleteRelatedObjects( const wchar_t* scope, cons
 
 // Depending on the given parameters the function applies a transaction lock on
 // the qualified objects and/or checks for version and lock conflicts.
-bool FdoRdbmsDeleteCommand::CheckLocks(bool placeTransactionLock, bool checkForConflicts)
+bool FdoRdbmsDeleteCommand::PreCheckLocks(bool placeTransactionLock, bool checkForConflicts, bool* lockConflictsChecked )
 {
+    (*lockConflictsChecked) = true;
 
+    return CheckLocks(placeTransactionLock, checkForConflicts);
+}
+
+// Depending on the given parameters the function applies a transaction lock on
+// the qualified objects and/or checks for version and lock conflicts.
+bool FdoRdbmsDeleteCommand::CheckLocks(bool placeTransactionLock, bool checkForConflicts )
+{
     bool lockConflicts = false;
     bool executionStatus = FALSE;
 
