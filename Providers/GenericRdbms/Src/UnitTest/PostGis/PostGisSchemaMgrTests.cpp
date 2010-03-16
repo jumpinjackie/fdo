@@ -466,8 +466,8 @@ FdoStringP PostGisSchemaMgrTests::table2qclass( FdoSmPhGrdMgrP mgr, FdoStringP d
     return FdoStringP(L"public:") + table2class(mgr, tableName);
 }
 
-FdoStringP SchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr FdoStringP indexName )
+FdoStringP PostGisSchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName )
 {
-    return mgr->GetDcDbOBjectName( indexName );
+    return mgr->GetDcDbObjectName( indexName );
 }
 
