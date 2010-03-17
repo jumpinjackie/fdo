@@ -162,6 +162,11 @@ int postgis_connect(postgis_context_def* context,
                     pch = PQerrorMessage(conn);
                     postgis_set_err_msg(context, pch);
                     
+                    /* If we have an error message, set return to GENERIC_ERROR
+                     * so that the error message will propogate up.
+                     */
+                    if ( strlen(pch) > 0 ) 
+                        ret = RDBI_GENERIC_ERROR;
                     PQfinish(conn);
                     conn = NULL;
                 }

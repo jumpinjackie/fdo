@@ -48,15 +48,34 @@ bool FdoSmPhRdPostGisClassReader::ReadNext()
     if ( ret ) {
         // BR - TODO - base class should reset this
         SetString( L"", L"parentclassname", L"" );
+        if ( mDbObject) {
+            FdoSmPhTableP table = mDbObject->SmartCast<FdoSmPhTable>();
 
-        if ( mDbObject ) {
-            FdoSmPhBaseObjectsP baseObjects = mDbObject->GetBaseObjects();
-            if ( baseObjects->GetCount() > 0 ) {
-                FdoSmPhDbObjectP baseObject = FdoSmPhBaseObjectP(baseObjects->GetItem(0))->GetDbObject();
+            if ( table ) {
+                FdoSmPhBaseObjectsP baseObjects = mDbObject->GetBaseObjects();
+                if ( baseObjects->GetCount() > 0 ) {
+                    FdoSmPhDbObjectP baseObject = FdoSmPhBaseObjectP(baseObjects->GetItem(0))->GetDbObject();
 
-                if ( baseObject && (baseObject->GetParent()->GetQName() == mDbObject->GetParent()->GetQName()) ) {
-                    if ( (mPgSchemaName == L"") || (baseObject->GetBestSchemaName() == mPgSchemaName) ) {
-                        SetString( L"", L"parentclassname", baseObject->GetBestSchemaName() + L":" + baseObject->GetBestClassName() );
+                    if ( baseObject && (baseObject->GetParent()->GetQName() == mDbObject->GetParent()->GetQName()) ) {
+                        if ( (mPgSchemaName == L"") || (baseObject->GetBestSchemaName() == mPgSchemaName) ) {
+                            // PostgreSQL allows a table with geometry to inherit from
+                            // a table without geometry. 
+                            // The Generic ClassReader classifies:
+                            //      - tables with geometry as feature classes
+                            //      - tables without geometry as non-feature classes
+                            // but FDO disallows a feature class from inheriting from a
+                            // non-feature class. 
+                            // Therefore, do not set base for FDO class if this class and
+                            // base class have different class types.
+
+                            FdoStringP classType = GetString( L"", L"classtype" );
+                            bool hasGeom         = (classType == L"2") ? true : false;
+                            bool baseHasGeom     = false;
+                            FindGeometryProperty( baseObject->GetColumns(), baseHasGeom );
+
+                            if ( hasGeom == baseHasGeom ) 
+                                SetString( L"", L"parentclassname", baseObject->GetBestSchemaName() + L":" + baseObject->GetBestClassName() );
+                        }
                     }
                 }
             }
@@ -75,5 +94,4 @@ FdoStringP FdoSmPhRdPostGisClassReader::ClassifyObject( FdoSmPhDbObjectP dbObjec
 
     return classifiedName;
 }
-
 
