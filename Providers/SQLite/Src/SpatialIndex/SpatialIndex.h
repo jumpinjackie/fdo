@@ -22,6 +22,10 @@
 #define BATCH_SHIFT 3
 #define BATCH_MASK ((~0) << BATCH_SHIFT)
 
+#ifndef __int64
+typedef long long int __int64;
+#endif
+
 typedef std::map<FdoInt64, unsigned int> LinkMap;
 typedef std::vector<__int64> VectorMF;
 
