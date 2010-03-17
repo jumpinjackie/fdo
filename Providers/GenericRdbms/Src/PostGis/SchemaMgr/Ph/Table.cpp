@@ -228,7 +228,11 @@ bool FdoSmPhPostGisTable::DeleteColumn( FdoSmPhColumnP column )
 {
     bool ret = true;
 
-    if ( !column->SmartCast<FdoSmPhPostGisColumn>()->GetBaseColumn() ) 
+    // Skip dropping inherited geometry columns. They are automatically
+    // dropped when the base column is dropped.
+    // However, other types of inherited columns do not go away unless 
+    // explicitly dropped.
+    if ( !column->SmartCast<FdoSmPhPostGisColumn>()->GetBaseColumn() || !column->SmartCast<FdoSmPhPostGisColumnGeom>() ) 
         ret = FdoSmPhGrdTable::DeleteColumn( column );
 
     return ret;
