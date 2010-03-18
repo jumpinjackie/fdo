@@ -1310,6 +1310,10 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
     int     numRecs = 0;
     long    bytesRead;
 
+    // validate the offset 
+    if ( ulStartOffset > m_nFileLength * WORD_SIZE_IN_BYTES )
+        throw FdoException::Create (NlsMsgGet(SHP_READ_FILE_ERROR, "Error occured reading file '%1$ls'.", FileName() ));
+
     ClearRowShapeCache();
 
     SHPRecordInfo *firstRecInfo = &m_ReadRecordsBuffer[0];
@@ -1318,6 +1322,11 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
     (void) ReadRecordInfo ( firstRecInfo );
     
     size_t  size = sizeof(SHPRecordHeader) + firstRecInfo->nContentLength * WORD_SIZE_IN_BYTES;
+
+    // ulStartOffset is read from shx file and corrupted shx file will result in unbelievable size value 
+    // Besides this, the corrupted shp file probably results in the same problem.
+    if ( size > ( m_nFileLength * WORD_SIZE_IN_BYTES - ulStartOffset) )
+        throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", firstRecInfo->nRecordNumber, FileName ()));
 
     if ( size < SHP_SHAPE_BUFFER_MIN_SIZE )
         size = SHP_SHAPE_BUFFER_MIN_SIZE;
