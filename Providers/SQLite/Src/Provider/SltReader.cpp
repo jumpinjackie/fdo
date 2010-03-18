@@ -81,7 +81,8 @@ m_useFastStepping(false),
 m_ri(NULL),
 m_filter(NULL),
 m_aPropNames(NULL),
-m_fromwhere()
+m_fromwhere(),
+m_isViewSelect(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
@@ -110,7 +111,8 @@ m_useFastStepping(false),
 m_ri(NULL),
 m_aPropNames(NULL),
 m_filter(NULL),
-m_fromwhere()
+m_fromwhere(),
+m_isViewSelect(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_class = FDO_SAFE_ADDREF(cls);
@@ -141,7 +143,8 @@ m_useFastStepping(useFastStepping),
 m_ri(ri),
 m_aPropNames(NULL),
 m_filter(NULL),
-m_fromwhere()
+m_fromwhere(),
+m_isViewSelect(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
@@ -170,7 +173,8 @@ m_useFastStepping(true),
 m_aPropNames(NULL),
 m_filter(NULL),
 m_fromwhere(),
-m_parmValues(NULL)
+m_parmValues(NULL),
+m_isViewSelect(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 }
@@ -242,6 +246,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         }
         else
         {
+            m_isViewSelect = true;
             m_useFastStepping = false;
             idClassProp = md->GetIdName();
             m_fromwhere.AppendDQuoted(fcname);
@@ -326,7 +331,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     }
 
     StringBuffer propName(30);
-    if (addPkOnly)
+    if (addPkOnly && !m_isViewSelect)
     {
         for (int i = 0; i < pdic->GetCount(); i++)
         {
@@ -340,7 +345,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     {
         //If the query is for a single feature, we will directly add all the properties
         //since in this case it is more likely for the caller to need them
-        if (maxIndex == -1 || (m_ri && m_ri->Count() == 1))
+        if (maxIndex == -1 || (m_ri && m_ri->Count() == 1) || m_isViewSelect)
             maxIndex = pdc->GetCount() - 1;
 
         for (int i=0; i<=maxIndex; i++)
@@ -509,7 +514,7 @@ void SltReader::Requery2()
     //to be safe for fast SQLite reading (no null termination
     //and memcopy for column values is needed), set a flag inidicating
     //that on the SQLite query execution engine
-    if (m_useFastStepping)
+    if (m_useFastStepping && !m_isViewSelect)
         ((Vdbe*)m_pStmt)->fdo = 1;
 }
 
@@ -813,6 +818,59 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 
 #pragma warning (disable: 4127)
+
+bool SltReader::ReadNextOnView()
+{
+    // we will use m_closeOpcode for read more than once from a view where ID=val
+    bool retVal = false;
+    do
+    {
+        if (m_curfid == 0 || m_closeOpcode == -1)
+        {
+            while (1)
+            {
+                //are we at the end of the current spatial iterator batch?
+                if (m_si)
+                {
+                    m_curfid++;
+                    if (m_curfid >= m_siEnd)
+                    {
+                        int start;
+                        bool ret = m_si->NextRange(start, m_siEnd);
+
+                        //spatial reader is done, so we are done
+                        if (!ret)
+                            return false;
+
+                        m_curfid = (sqlite3_int64)(start ? start : 1); //make sure we skip fid=0, which is not valid
+                    }
+                }
+                else if (m_ri) //or are we using a rowid iterator?
+                {
+                    bool res = m_ri->Next();
+
+                    if (res)
+                        m_curfid = m_ri->CurrentRowid();
+                    else
+                        return false; //scrolled past the end of the data
+                }
+                sqlite3_reset(m_pStmt);
+                sqlite3_bind_int64(m_pStmt, 1, ((m_si == NULL) ? m_curfid : (*m_si)[(int)m_curfid]));
+                if (sqlite3_step(m_pStmt) == SQLITE_ROW)
+                {
+                    m_closeOpcode = 0;
+                    return true;
+                }
+            }
+        }
+        retVal = (sqlite3_step(m_pStmt) == SQLITE_ROW);
+        if (!retVal)
+            m_closeOpcode = -1;
+    }while(!retVal);
+
+    return true;
+}
+
 bool SltReader::ReadNext()
 {
     //clear the wide string row cache
@@ -828,6 +886,8 @@ bool SltReader::ReadNext()
     //we get either a rowid iterator or a spatial iterator, but not both.
     if (m_si || m_ri)
     {
+        if (m_isViewSelect)
+            return ReadNextOnView();
         while (1)
         {
             //are we at the end of the current spatial iterator batch?
@@ -938,10 +998,7 @@ bool SltReader::ReadNext()
         //case where we are not using a spatial index
         //here we can simply step the statement and let
         //SQLite handle the work
-        if (sqlite3_step(m_pStmt) == SQLITE_ROW)
-        {
-		    return true;
-        }
+        return (sqlite3_step(m_pStmt) == SQLITE_ROW);
     }
 
     return false;
@@ -958,7 +1015,7 @@ void SltReader::Close()
     //NOTE: If Close() does not get called and the reader is left
     //dangling in this state, it spells ***CERTAIN DOOM*** for anybody trying to 
     //use the database connection thereafter! Consider yourself warned.
-    if (m_closeOpcode != -1)
+    if (m_closeOpcode != -1 && !m_isViewSelect)
     {
         Vdbe* v = (Vdbe*)m_pStmt;
         v->pc = m_closeOpcode;

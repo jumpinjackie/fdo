@@ -199,7 +199,7 @@ protected:
         void DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* where, bool addPkOnly = false);
 
     private:
-
+        bool ReadNextOnView();
         int GenerateUniqueName(const wchar_t* pname, FdoPropertyDefinition* prop, FdoPropertyDefinitionCollection* pcol);
         void ValidateIndex(sqlite3_stmt *pStmt, int index);
         const char* DecodeTableName(const char* name);
@@ -236,6 +236,7 @@ protected:
         int m_closeOpcode; //we need this to cleanly exit the SQL engine after messing with its bytecodes
         bool m_closeDB; //indicates the statement is based on a memory backed temporary database that we should close when done
         bool m_useFastStepping;
+        bool m_isViewSelect;
 
         //things cached/precomputed for speed
         FdoClassDefinition*         m_class;
