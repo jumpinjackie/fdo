@@ -45,7 +45,7 @@ libFdoPostgreSQL_la_LIBADD =  \
   Fdo/libFdoRdbms.la   \
   Rdbi/librdbi.la  \
   PostGis/Driver/libpostgisdr.la   \
-  Gdbi/libGdbi.la  \
+  PostGis/Custom/Gdbi/libGdbiCustom.la  \
   LongTransactionManager/libLTManager.la  \
   LockManager/libLockManager.la  \
   Util/libutil.la  \

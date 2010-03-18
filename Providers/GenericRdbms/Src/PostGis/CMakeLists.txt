@@ -1,5 +1,6 @@
 include_directories( BEFORE ${CMAKE_CURRENT_SOURCE_DIR} )
 
+add_subdirectory( Custom/Gdbi )
 add_subdirectory( Driver )
 add_subdirectory( Fdo )
 add_subdirectory( SchemaMgr )
@@ -17,7 +18,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 		FdoRdbms
 		rdbi
 		PostGisdr
-		Gdbi
+		GdbiCustom
 		LTManager
 		LockManager
 		genericrdbms_util
@@ -39,7 +40,7 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 		FdoRdbms
 		rdbi
 		PostGisdr
-		Gdbi
+		GdbiCustom
 		LTManager
 		LockManager
 		genericrdbms_util

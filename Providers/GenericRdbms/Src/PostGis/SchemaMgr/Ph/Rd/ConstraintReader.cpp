@@ -24,11 +24,13 @@
 FdoSmPhRdPostGisConstraintReader::FdoSmPhRdPostGisConstraintReader(
     FdoSmPhOwnerP owner,
     FdoStringP constraintName)
-    : FdoSmPhRdConstraintReader(MakeReader(owner, constraintName)),
+    : FdoSmPhRdConstraintReader((FdoSmPhReader*) NULL),
       mConstraintName(constraintName),
       mOwner(owner)
 {
-    // idle
+    SetSubReader(
+        MakeReader(owner, constraintName)
+    );
 }
 
 FdoSmPhRdPostGisConstraintReader::FdoSmPhRdPostGisConstraintReader(
@@ -36,23 +38,27 @@ FdoSmPhRdPostGisConstraintReader::FdoSmPhRdPostGisConstraintReader(
 	FdoStringP tableName,
     FdoStringP constraintType)
     : FdoSmPhRdConstraintReader(
-        MakeReader(owner, tableName, NULL, constraintType)),
+        (FdoSmPhReader*) NULL),
       mConstraintName(constraintType),
 	  mTableName(tableName),
       mOwner(owner)
 {
-    // idle
+    SetSubReader(
+        MakeReader(owner, tableName, NULL, constraintType)
+    );
 }
 
 FdoSmPhRdPostGisConstraintReader::FdoSmPhRdPostGisConstraintReader(
     FdoSmPhOwnerP owner,
     FdoSmPhRdTableJoinP join,
     FdoStringP constraintType)
-    : FdoSmPhRdConstraintReader(MakeReader(owner, L"", join, constraintType)),
+    : FdoSmPhRdConstraintReader((FdoSmPhReader*) NULL),
       mConstraintName(constraintType.Upper()),
       mOwner(owner)
 {
-    // idle
+    SetSubReader(
+        MakeReader(owner, L"", join, constraintType)
+    );
 }
 
 FdoSmPhRdPostGisConstraintReader::~FdoSmPhRdPostGisConstraintReader()

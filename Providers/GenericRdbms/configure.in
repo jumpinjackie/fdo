@@ -222,6 +222,7 @@ AC_CONFIG_FILES([com/Makefile \
 
 #PostGIS
 AC_CONFIG_FILES([Src/PostGis/Makefile \
+                 Src/PostGis/Custom/Gdbi/Makefile \
                  Src/PostGis/Driver/Makefile \
                  Src/PostGis/Fdo/Makefile \
                  Src/PostGis/SchemaMgr/Makefile \
