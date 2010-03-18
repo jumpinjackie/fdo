@@ -22,19 +22,23 @@
 
 FdoSmPhRdPostGisPkeyReader::FdoSmPhRdPostGisPkeyReader(FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP dbObject)
-    : FdoSmPhRdPkeyReader(MakeReader(mgr,
-        static_cast<const FdoSmPhOwner*>(dbObject->GetParent()), dbObject)),
+    : FdoSmPhRdPkeyReader((FdoSmPhReader*) NULL),
     mDbObject(dbObject)
 {
-    // idle
+    SetSubReader(
+        MakeReader(mgr,
+            static_cast<const FdoSmPhOwner*>(dbObject->GetParent()), dbObject)
+    );
 }
 
 FdoSmPhRdPostGisPkeyReader::FdoSmPhRdPostGisPkeyReader(FdoSmPhMgrP mgr,
     FdoSmPhOwnerP owner)
-    : FdoSmPhRdPkeyReader(MakeReader(mgr,
-        static_cast<FdoSmPhOwner*>(owner), NULL))
+    : FdoSmPhRdPkeyReader((FdoSmPhReader*) NULL)
 {
-    // idle
+    SetSubReader(
+        MakeReader(mgr,
+            static_cast<FdoSmPhOwner*>(owner), NULL)
+    );
 }
 
 FdoSmPhRdPostGisPkeyReader::~FdoSmPhRdPostGisPkeyReader()

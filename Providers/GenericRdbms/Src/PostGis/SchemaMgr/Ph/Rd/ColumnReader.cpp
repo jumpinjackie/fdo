@@ -26,19 +26,24 @@
 FdoSmPhRdPostGisColumnReader::FdoSmPhRdPostGisColumnReader(FdoSmPhMgrP mgr,
     FdoSmPhDbObjectP dbObject)
     : FdoSmPhRdColumnReader(
-        MakeQueryReader(mgr,
-            static_cast<const FdoSmPhOwner*>(dbObject->GetParent()),
-            dbObject),
+        (FdoSmPhReader*) NULL,
         dbObject)
 {
-    // idle
+    SetSubReader(
+        MakeQueryReader(mgr,
+            static_cast<const FdoSmPhOwner*>(dbObject->GetParent()),
+            dbObject)
+    );
 }
 
 FdoSmPhRdPostGisColumnReader::FdoSmPhRdPostGisColumnReader(FdoSmPhOwnerP owner,
     FdoSmPhRdTableJoinP join)
-    : FdoSmPhRdColumnReader(MakeQueryReader(owner->GetManager(), owner.p, NULL, join),
+    : FdoSmPhRdColumnReader( (FdoSmPhReader*) NULL,
     NULL)
 {
+    SetSubReader(
+        MakeQueryReader(owner->GetManager(), owner.p, NULL, join)
+    );
     // idle
 }
 
@@ -157,40 +162,6 @@ FdoSmPhReaderP FdoSmPhRdPostGisColumnReader::MakeQueryReader(FdoSmPhMgrP mgr,
             }
         }
 
-        // template_postgis=# \d information_schema.columns
-        //          Column          |     Type        | 
-        // -------------------------+-----------------+
-        // table_catalog            | sql_identifier  | <- Always the current database
-        // table_schema             | sql_identifier  | <- Schema in the current database
-        // table_name               | sql_identifier  |
-        // column_name              | sql_identifier  |
-        // ordinal_position         | cardinal_number | <- Count starts at 1
-        // column_default           | character_data  |
-        // is_nullable              | character_data  |
-        // data_type                | character_data  |
-        // character_maximum_length | cardinal_number | <- NULL for non-text/non-bit-string types 
-        // character_octet_length   | cardinal_number | <- NULL for non-text types 
-        // numeric_precision        | cardinal_number |
-        // numeric_precision_radix  | cardinal_number |
-        // numeric_scale            | cardinal_number |
-        // character_set_name       | sql_identifier  | <- Not avilable in PostgreSQL
-        // collation_name           | sql_identifier  | <- Not avilable in PostgreSQL
-        // is_updatable             | character_data  | <- YES always for BASE TABLE
-
-        // FDO needs a size (length) for types that become strings.
-        // For such types that don't allow size to be set, the following query
-        // returns the  max length for the type, as size.
-
-        // Length for bit columns is not stored in any of the lenght or precision
-        // fields so it is parsed out of column_type, which will have
-        // format of bit(n) where n is the number of bits.
-
-        // TODO: mloskot - Currently, if there is no length available for
-        // text types, 64 KB is assumed as max text size.
-        // Although, in PostgreSQL, the longest possible character string that
-        // can be stored is about 1 GB.
-
-        // $1 - name of table
 
         sql = FdoStringP::Format(
             L" SELECT %ls c.table_schema || '.' || c.table_name AS table_name, c.column_name AS name, 1 AS type,"

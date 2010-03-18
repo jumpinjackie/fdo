@@ -22,10 +22,12 @@
 FdoSmPhRdPostGisOwnerReader::FdoSmPhRdPostGisOwnerReader(
     FdoSmPhDatabaseP database,
     FdoStringP ownerName)
-    : FdoSmPhRdOwnerReader(MakeQueryReader(database, ownerName),
+    : FdoSmPhRdOwnerReader((FdoSmPhReader*) NULL,
         database, ownerName)
 {
-    // idle
+    SetSubReader(
+        MakeQueryReader(database, ownerName)
+    );
 }
 
 FdoSmPhRdPostGisOwnerReader::~FdoSmPhRdPostGisOwnerReader()

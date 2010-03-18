@@ -17,8 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = Driver Fdo SchemaMgr
-DIST_SUBDIRS = Driver Fdo SchemaMgr
+SUBDIRS = Custom/Gdbi Driver Fdo SchemaMgr
+DIST_SUBDIRS = Custom/Gdbi Driver Fdo SchemaMgr
 
 EXTRA_DIST = \
    PostGis.sln \
