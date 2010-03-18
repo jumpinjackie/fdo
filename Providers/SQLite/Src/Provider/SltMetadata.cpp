@@ -717,7 +717,27 @@ bool SltMetadata::ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapPropNam
                     std::string realPropName = std::string(propToSrc+stPropStr, lenPropStr);
                     if (pSelect->pEList->a[idx].zName == NULL)
                         name = realPropName.c_str();
-                    properties.push_back(std::make_pair(name, std::make_pair(alias, realPropName)));
+                    // do we have select * ?
+                    if (*name == '*' && realPropName.size() == 1)
+                    {
+                        SltMetadata* md = m_connection->GetMetadata(alias.c_str());
+                        if (md != NULL)
+                        {
+                            FdoPtr<FdoClassDefinition> fc = md->ToClass();
+                            if (fc != NULL)
+                            {
+                                FdoPtr<FdoPropertyDefinitionCollection> props = fc->GetProperties();
+                                for(int y = 0; y < props->GetCount(); y++)
+                                {
+                                    FdoPtr<FdoPropertyDefinition> pdata = props->GetItem(y);
+                                    std::string pdataName = W2A_SLOW(pdata->GetName());
+                                    properties.push_back(std::make_pair(pdataName, std::make_pair(alias, pdataName)));
+                                }
+                            }
+                        }
+                    }
+                    else
+                        properties.push_back(std::make_pair(name, std::make_pair(alias, realPropName)));
                 }
             }
             else

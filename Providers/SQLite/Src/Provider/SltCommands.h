@@ -768,7 +768,11 @@ class SltSql : public SltCommand<FdoISQLCommand>
             else 
             {
                 m_connection->EnableHooks(false, true);
-                throw FdoCommandException::Create(L"Failed to execute sql command.", rc);
+                const char* err = sqlite3_errmsg(db);
+                if (err != NULL)
+                    throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);                        
+                else
+                    throw FdoCommandException::Create(L"Failed to execute sql command.", rc);
             }
         }
 
