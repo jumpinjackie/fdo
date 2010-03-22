@@ -151,7 +151,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oraocci10.lib oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
