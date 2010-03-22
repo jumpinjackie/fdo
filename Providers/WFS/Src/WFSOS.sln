@@ -18,6 +18,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OWS", "..\..\..\Utilities\O
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcproj", "{34FF1437-0853-44D4-B786-48ACB3AACBB5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9037A345-04EB-418C-98D0-3D5B19FC9D55} = {9037A345-04EB-418C-98D0-3D5B19FC9D55}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
