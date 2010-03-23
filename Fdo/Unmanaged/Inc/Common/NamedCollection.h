@@ -135,13 +135,12 @@ public:
 
         if ( obj == NULL ) {
             // No map or map might be stale, so do linear search.
-            for ( FdoInt32 i = 0; i < FdoCollection<OBJ, EXC>::GetCount(); i++ ) {
-                OBJ* obj = GetItem(i);
+            for ( FdoInt32 i = 0; i < FdoCollection<OBJ, EXC>::m_size; i++ ) {
+                OBJ* obj2 = FdoCollection<OBJ, EXC>::m_list[i];
 
-                if ( Compare(name, obj->GetName()) == 0 )
-                    return(obj);
+                if ( obj2 && (Compare(name, obj2->GetName()) == 0) )
+                    return(FDO_SAFE_ADDREF(obj2));
 
-                FDO_SAFE_RELEASE(obj);
             }
         }
 

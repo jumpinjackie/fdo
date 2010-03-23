@@ -43,6 +43,10 @@ public:
     // Returns object name with user name part removed.
     virtual FdoStringP GetBestClassName() const;
 
+    // Given a 1-based position, return the column at this position
+    // from this object's column list.
+    FdoSmPhColumnP Position2Column( FdoInt32 position );
+
 protected:
 
     /// Default constructor.
@@ -195,6 +199,7 @@ protected:
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
+    virtual void LoadPkeyColumn( FdoPtr<FdoSmPhReader> pkeyRdr, FdoSmPhColumnsP pkeyColumns );
     virtual void LoadIndexColumn( FdoPtr<FdoSmPhTableIndexReader> indexRdr, FdoPtr<FdoSmPhIndex> index );
 
 

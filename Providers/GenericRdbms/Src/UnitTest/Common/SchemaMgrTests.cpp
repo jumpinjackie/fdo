@@ -132,6 +132,8 @@ void SchemaMgrTests::testGenDefault ()
 
         FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
 
+        FdoStringP masterSuffix = GetMasterSuffix( phMgr );
+
         FdoSmPhDatabaseP database = phMgr->GetDatabase();
 
         printf( "Predeleting schema ...\n" );
@@ -298,6 +300,34 @@ void SchemaMgrTests::testGenDefault ()
         table->CreateUkey();
     	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"TABLE7_ID12345678901234567890" );
 
+        // Test whether primary keys, unique and check constraints stay with their
+        // columns when 1st column removed from table.
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE_DELCOL1" ));
+        column = table->CreateColumnDouble( L"DELETE_COLUMN", true );
+        column = table->CreateColumnInt32( L"ID", false );
+        table->AddPkeyCol( column->GetName() );
+        column = table->CreateColumnInt64( L"UNIQUE_COLUMN", true );
+        table->CreateUkey();
+    	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"UNIQUE_COLUMN" );
+        column = table->CreateColumnChar( L"CHECK_COLUMN", false, 50 );
+#ifdef RDBI_DEF_ORA
+        constraint = new FdoSmPhCheckConstraint( L"CHECK_COLUMN_CHECK", L"CHECK_COLUMN", L"\"CHECK_COLUMN\" in ( ''a'', ''b'', ''c'')" );
+#else
+        constraint = new FdoSmPhCheckConstraint( L"CHECK_COLUMN_CHECK", L"CHECK_COLUMN", L"\"CHECK_COLUMN\" in ( 'a', 'b', 'c')" );
+#endif
+        table->AddCkeyCol( constraint );
+        column = table->CreateColumnChar( L"STRING_COLUMN", false, 20 );
+        column = table->CreateColumnSingle( L"SINGLE_COLUMN", true );
+
+        // Test whether indexes stay with their
+        // columns when 1st column removed from table.
+        table = owner->CreateTable( phMgr->GetDcDbObjectName(L"TABLE_DELCOL2" ));
+        column = table->CreateColumnDouble( L"DELETE_COLUMN", true );
+        column = table->CreateColumnInt32( L"ID", false );
+        FdoSmPhIndexP index = table->CreateIndex( L"TABLE_DELCOL2_IX", true );
+        index->AddColumn( column );
+        column = table->CreateColumnInt64( L"INT64_COLUMN", true );
+
         database->Commit();
 
         owner->DiscardDbObject(table);
@@ -319,6 +349,16 @@ void SchemaMgrTests::testGenDefault ()
         column = table->GetColumns()->GetItem( L"GEOM_COLUMN" );
         column->SetElementState( FdoSchemaElementState_Deleted );
         column = table->CreateColumnGeom( L"NEW_GEOM_COLUMN", (FdoSmPhScInfo*) NULL, true, false );
+        table->Commit();
+
+        table = owner->GetDbObject( phMgr->GetDcDbObjectName(L"TABLE_DELCOL1" ))->SmartCast<FdoSmPhTable>();
+        column = table->GetColumns()->GetItem( L"DELETE_COLUMN" );
+        column->SetElementState( FdoSchemaElementState_Deleted );
+        table->Commit();
+
+        table = owner->GetDbObject( phMgr->GetDcDbObjectName(L"TABLE_DELCOL2" ))->SmartCast<FdoSmPhTable>();
+        column = table->GetColumns()->GetItem( L"DELETE_COLUMN" );
+        column->SetElementState( FdoSchemaElementState_Deleted );
         table->Commit();
 
         printf( "Dumping original schema ...\n" );
@@ -445,44 +485,13 @@ void SchemaMgrTests::testGenDefault ()
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
-        // The generated XML file differs depending whether or not it is generated on a
-        // SQL Server 2000 or 2005 instance. The difference is with a table system property
-        // (text Filegroup) that is set in SQL Server 2000 when the test tables are created,
-        // but not in 2005. To compensate for this difference, the generated XML file will be
-        // checked against a second master file if the checking of the generated file against
-        // the first master file fails. An error will be issued only in case the second check
-        // fails. Since the content of the master files are identical with the exception of the
-        // system property mentioned above, an error caused by an implementation issue should
-        // be detected by both master files.
-
-        try
-        {
-	        UnitTestUtil::CheckOutput( 
-                FdoStringP::Format(L"gen_default1_%ls_master.txt", (FdoString*) providerName),
-                UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
-            );
-        }
-        catch (CppUnit::Exception exception)
-        {
-            // Only execute the second check if the provider is SQL Server. Otherwise issue the
-            // exception.
-            if ( providerName.ICompare(L"SqlServer") == 0 )
-                try {
-	                UnitTestUtil::CheckOutput( 
-                        FdoStringP::Format(L"gen_default1_%ls2008_master.txt", (FdoString*) providerName),
-                        UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
-                    );
-                }
-                catch (CppUnit::Exception exception)
-                {
-                    UnitTestUtil::CheckOutput( 
-                        FdoStringP::Format(L"gen_default1_%ls2005_master.txt", (FdoString*) providerName),
-                        UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
-                    );
-                }
-            else
-                throw exception;
-        }
+        UnitTestUtil::CheckOutput( 
+            FdoStringP::Format(L"gen_default1_%ls%ls_master.txt", 
+                (FdoString*) providerName,
+                (FdoString*) masterSuffix
+            ),
+            UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
+        );
 
         printf( "Opening original db with config doc ...\n" );
         fdoConn = UnitTestUtil::GetProviderConnectionObject();
@@ -2663,6 +2672,11 @@ FdoInt64 SchemaMgrTests::GetSrid( int index )
 FdoStringP SchemaMgrTests::GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName )
 {
     return mgr->GetDcColumnName( indexName );
+}
+
+FdoStringP SchemaMgrTests::GetMasterSuffix( FdoSmPhGrdMgrP mgr )
+{
+    return L"";
 }
 
 SchemaMgrTests::ExpectedClassGeometricProperty::ExpectedClassGeometricProperty ()

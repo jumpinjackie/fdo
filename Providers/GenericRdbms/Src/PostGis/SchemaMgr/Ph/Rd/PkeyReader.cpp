@@ -101,28 +101,30 @@ FdoSmPhReaderP FdoSmPhRdPostGisPkeyReader::MakeReader(
     //       On Linux, names are case-sensitive.
 
     FdoStringP sqlString = FdoStringP::Format(
-      L"select tc.constraint_name as constraint_name,\n"
-      L" tc.table_schema||'.'||tc.table_name as table_name, kcu.column_name as column_name\n"
-      L" from %ls tc, %ls kcu $(JOIN_FROM)\n"
-      L" where (tc.constraint_schema = kcu.constraint_schema\n"
-      L"     and tc.constraint_name = kcu.constraint_name\n"
-      L"     and tc.table_schema = kcu.table_schema\n"
-      L"     and tc.table_name = kcu.table_name\n"
-      L"     $(AND) $(QUALIFICATION)\n"
-      L"     and tc.constraint_type = 'PRIMARY KEY')\n"
-      L" order by %ls, %ls, kcu.ordinal_position",
-      (FdoString*) pgOwner->GetTableConstraintsTable(),
-      (FdoString*) pgOwner->GetKeyColumnUsageTable(),
-      (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_schema"),
-      (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_name")
+        L" SELECT %ls tc.conname AS constraint_name,"
+        L" ns.nspname ||'.'|| c.relname AS table_name,"
+        L" cast(tc.conkey as text) AS column_name, "
+        L" ns.nspname AS table_schema,"
+        L" %ls as collate_schema_name, "
+        L" %ls as collate_table_name, "
+        L" %ls as collate_constraint_name "
+        L" FROM pg_constraint tc,  pg_class c, pg_namespace ns $(JOIN_FROM) "
+        L" WHERE tc.contype = 'p' "
+        L" and c.oid = tc.conrelid and ns.oid = tc.connamespace "
+        L" $(AND) $(QUALIFICATION)\n"
+        L" ORDER BY collate_schema_name, collate_table_name, collate_constraint_name",
+        (join ? L"distinct" : L""),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"ns.nspname"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"c.relname"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.conname")
     );
 
     FdoSmPhReaderP reader = MakeQueryReader(
         L"",
         owner,
         sqlString,
-        L"tc.table_schema",
-        L"tc.table_name",
+        L"ns.nspname",
+        L"c.relname",
         objectNames,
         join
     );

@@ -135,6 +135,11 @@
 										</xsl:otherwise>
 									</xsl:choose>
 								</xsl:when>
+								<xsl:when test="$providerName = 'PostGIS'">
+									<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
+									<xsl:attribute name="length"><xsl:value-of select="@length"/></xsl:attribute>
+									<xsl:attribute name="scale">0</xsl:attribute>
+								</xsl:when>
 							</xsl:choose>
 						</xsl:when>
 						<xsl:when test="$propNode/@dataType = 'decimal'">
@@ -153,6 +158,9 @@
 								<xsl:when test="$providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">BIT</xsl:attribute>
 								</xsl:when>
+								<xsl:when test="$providerName = 'PostGIS'">
+									<xsl:attribute name="dataType">BOOL</xsl:attribute>
+								</xsl:when>
 							</xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>
 							<xsl:attribute name="scale">0</xsl:attribute>
@@ -164,6 +172,9 @@
 								</xsl:when>
 								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">TINYINT</xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$providerName = 'PostGIS'">
+									<xsl:attribute name="dataType">SMALLINT</xsl:attribute>
 								</xsl:when>
 							</xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>
@@ -182,6 +193,9 @@
 								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
 									<xsl:attribute name="dataType">FLOAT</xsl:attribute>
 								</xsl:when>
+								<xsl:when test="$providerName = 'PostGIS'">
+									<xsl:attribute name="dataType">DOUBLE PRECISION</xsl:attribute>
+								</xsl:when>
 							</xsl:choose>
 							<xsl:attribute name="length">0</xsl:attribute>
 							<xsl:attribute name="scale">0</xsl:attribute>
@@ -196,7 +210,7 @@
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:attribute name="dataType">INT</xsl:attribute>
 								</xsl:when>
-								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial'">
+								<xsl:when test="$providerName = 'SqlServer' or $providerName = 'SQLServerSpatial' or providerName = 'PostGIS'">
 									<xsl:attribute name="dataType">INTEGER</xsl:attribute>
 								</xsl:when>
 							</xsl:choose>
@@ -210,7 +224,7 @@
 						</xsl:when>
 						<xsl:when test="$propNode/@dataType = 'single'">
 							<xsl:choose>
-								<xsl:when test="$providerName = 'MySql'">
+								<xsl:when test="$providerName = 'MySql' or $providerName = 'PostGIS'">
 									<xsl:attribute name="dataType">FLOAT</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$providerName = 'SqlServer'">
@@ -251,7 +265,7 @@
 						<xsl:when test="$providerName = 'SqlServer'">
 							<xsl:attribute name="dataType">IMAGE</xsl:attribute>
 						</xsl:when>
-						<xsl:when test="$providerName = 'MySql' or $providerName = 'SQLServerSpatial'">
+						<xsl:when test="$providerName = 'MySql' or $providerName = 'SQLServerSpatial' or $providerName='PostGIS'">
 							<xsl:attribute name="dataType">geometry</xsl:attribute>
 						</xsl:when>
 					</xsl:choose>
@@ -480,6 +494,47 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
+			<xsl:when test="$providerName='PostGIS'">
+				<xsl:choose>
+					<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_ACDB1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
+					<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_SEQ'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
+					<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_ACDB1'">acdbhatch_polyline_acdbvertexdata_acdbhatch_polyline_featid</xsl:when>
+					<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_SEQ'">acdbhatch_polyline_acdbvertexdata_seq</xsl:when>
+					<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_POLY1'">polyline_acdbvertexdata_polyline_featid</xsl:when>
+					<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_SEQ'">polyline_acdbvertexdata_seq</xsl:when>
+					<xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIP1'">maintenance_history_description</xsl:when>
+					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_ELEC1'">electricdevice_maint_history_electricdevice_featid</xsl:when>
+					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1_DATE1'">electricdevice_maint_history_date1</xsl:when>
+					<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE1'">employee_a_address_employee_first_name</xsl:when>
+					<xsl:when test="$inName='EMPLOYEE_A_ADDRESS_EMPLOYEE2'">employee_a_address_employee_last_name</xsl:when>
+					<xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPA'">prefixa_prefixa_prefixa_opa</xsl:when>
+					<xsl:when test="$inName='REFIXA_PREFIXA_PREFIXA_OPB'">prefixa_prefixa_prefixa_opb</xsl:when>
+					<xsl:when test="$inName='BJECTA_PREFIXA_PREFIXA_OPA'">objecta_prefixa_prefixa_opa</xsl:when>
+					<xsl:when test="$inName='BJECTA_PREFIXA_PREFIXA_OPB'">objecta_prefixa_prefixa_opb</xsl:when>
+					<xsl:when test="$inName='A012345_PREFIXA_PREFIXA_OPA'">testverylongprefix012345_prefixa_prefixa_opa</xsl:when>
+					<xsl:when test="$inName='A012345_PREFIXA_PREFIXA_OPB'">testverylongprefix012345_prefixa_prefixa_opb</xsl:when>
+					<xsl:when test="$inName='NGPREFIX012345_PREFIXA_OPA'">testverylongprefix012345_prefixa_opa</xsl:when>
+					<xsl:when test="$inName='NGPREFIX012345_PREFIXA_OPB'">testverylongprefix012345_prefixa_opb</xsl:when>
+					<xsl:when test="$inName='STVERYLONGPREFIX012345_OPA'">testverylongprefix012345_opa</xsl:when>
+					<xsl:when test="$inName='STVERYLONGPREFIX012345_OPB'">testverylongprefix012345_opb</xsl:when>
+					<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OVCL1'">ovclassc111_opc_table_hd_ovclassc111_featid</xsl:when>
+					<xsl:when test="$inName='OVCLASSC111_OPC_TABLE1_OPID1'">ovclassc111_opc_table_hd_opid1</xsl:when>
+					<xsl:when test="$inName='OVCLASSH_FTABLED_OVCLASSH_F1'">ovclassh_ftabled_ovclassh_featid</xsl:when>
+					<xsl:when test="$inName='OV_COL_B'">ov_col_B</xsl:when>
+					<xsl:when test="$inName='OV_COL_D'">ov_col_D</xsl:when>
+					<xsl:when test="$inName='OV_COL_F'">ov_col_F</xsl:when>
+					<xsl:when test="$inName='OV_COL_H'">ov_col_H</xsl:when>
+					<xsl:when test="$inName='OV_GEOMCOL_A'">ov_geomcol_A</xsl:when>
+					<xsl:when test="$inName='OV_GEOMCOL_F'">ov_geomcol_F</xsl:when>
+					<xsl:when test="$inName='PARENTID'">ParentId</xsl:when>
+					<xsl:when test="$inName='VALUE1'">value</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="tolower">
+							<xsl:with-param name="inString" select="$inName"/>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:choose>
 					<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_ACDB1'">acdb3dpolyline_acdbvertexdata_acdb3dpolyline_featid</xsl:when>
@@ -521,6 +576,7 @@
 		<xsl:variable name="prefix">
 			<xsl:choose>
 				<xsl:when test="$providerName='SqlServer' or $providerName='SQLServerSpatial'">dbo.</xsl:when>
+				<xsl:when test="$providerName='SqlServer' or $providerName='PostGIS'">public.</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="bentName">

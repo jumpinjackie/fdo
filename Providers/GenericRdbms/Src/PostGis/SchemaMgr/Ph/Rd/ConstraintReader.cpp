@@ -158,11 +158,10 @@ FdoStringP FdoSmPhRdPostGisConstraintReader::GetString( FdoStringP tableName, Fd
     FdoStringP fieldValue;
 
     if ( fieldName == L"check_clause" )  {
-        // postgres return an IN condition is the form: "prop" = ANY (ARRAY[...]). The caller expect the IN clause.
-        // Also postgres add the data type to each element of the list. The constarint parser does not expect the type much less the
+        // postgres adds the data type to each element in the constraint. The constraint parser does not expect the type much less the
         // postgres types. We have to strip off any type qualifier from the list such as: ("PropList"::text = ANY (ARRAY['Str10'::character varying, 'Str50'::character varying]::text[]))
         FdoStringP defValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName ); 
-        if( defValue != NULL && (defValue.Contains(L"= ANY (ARRAY[") || defValue.Contains(L"= ANY ((ARRAY[") ) )
+        if( defValue != NULL  )
         {
             fieldValue = defValue.Replace(L"= ANY ((ARRAY[",L"IN (");
             fieldValue = fieldValue.Replace(L"= ANY (ARRAY[",L"IN (");
@@ -221,49 +220,45 @@ FdoSmPhReaderP FdoSmPhRdPostGisConstraintReader::MakeReader(
     if ( constraintType == L"C" ) 
     {
         sqlString = FdoStringP::Format(
-            L" SELECT %ls tc.constraint_name AS constraint_name,"
-            L" tc.table_schema ||'.'|| tc.table_name AS table_name,"
-            L" tc.column_name AS column_name, "
-            L" tc.table_schema AS table_schema,"
-            L" kcu.check_clause as check_clause, "
+            L" SELECT %ls tc.conname AS constraint_name,"
+            L" ns.nspname ||'.'|| c.relname AS table_name,"
+            L" tc.conkey[1] AS column_name, "
+            L" ns.nspname AS table_schema,"
+            L" substring(pg_get_constraintdef(tc.oid),7) as check_clause, "
             L" %ls as collate_schema_name, "
             L" %ls as collate_table_name, "
             L" %ls as collate_constraint_name "
-            L" FROM %ls AS tc, %ls AS kcu $(JOIN_FROM)"
-            L" WHERE (tc.table_schema = kcu.constraint_schema"
+            L" FROM pg_constraint tc, pg_class c, pg_namespace ns $(JOIN_FROM) "
+            L" WHERE tc.contype = 'c' "
+            L" and array_upper(tc.conkey,1) = 1 "
+            L" and c.oid = tc.conrelid and ns.oid = tc.connamespace "
             L" $(AND) $(QUALIFICATION)\n"
-            L" AND tc.constraint_name = kcu.constraint_name)"
             L" ORDER BY collate_schema_name, collate_table_name, collate_constraint_name",
             (join ? L"distinct" : L""),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_schema"),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_name"),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.constraint_name"),
-            L"information_schema.constraint_column_usage",
-            L"information_schema.check_constraints"
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"ns.nspname"),
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"c.relname"),
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.conname")
         );
     }
     else if ( constraintType == L"U" )
 	{
         sqlString = FdoStringP::Format(
-            L" SELECT %ls tc.constraint_name AS constraint_name,"
-            L" tc.table_schema ||'.'|| tc.table_name AS table_name,"
-            L" tc.column_name AS column_name, "
-            L" tc.table_schema AS table_schema,"
+            L" SELECT %ls tc.conname AS constraint_name,"
+            L" ns.nspname ||'.'|| c.relname AS table_name,"
+            L" cast(tc.conkey as text) AS column_name, "
+            L" ns.nspname AS table_schema,"
             L" %ls as collate_schema_name, "
             L" %ls as collate_table_name, "
             L" %ls as collate_constraint_name "
-            L" FROM %ls AS tc, %ls AS kcu $(JOIN_FROM)"
-            L" WHERE (tc.table_schema = kcu.constraint_schema"
-            L" AND kcu.constraint_type ='UNIQUE'"
+            L" FROM pg_constraint tc, pg_class c, pg_namespace ns $(JOIN_FROM) "
+            L" WHERE tc.contype = 'u' "
+            L" and c.oid = tc.conrelid and ns.oid = tc.connamespace "
             L" $(AND) $(QUALIFICATION)\n"
-            L" AND tc.constraint_name = kcu.constraint_name)"
             L" ORDER BY collate_schema_name, collate_table_name, collate_constraint_name",
             (join ? L"distinct" : L""),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_schema"),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.table_name"),
-            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.constraint_name"),
-            L"information_schema.constraint_column_usage",
-            L"information_schema.table_constraints"
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"ns.nspname"),
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"c.relname"),
+            (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.conname")
         );
     }
       
@@ -271,8 +266,8 @@ FdoSmPhReaderP FdoSmPhRdPostGisConstraintReader::MakeReader(
         L"",
         owner,
         sqlString,
-        L"tc.table_schema",
-        L"tc.table_name",
+        L"ns.nspname",
+        L"c.relname",
         tableNames,
         join
     );

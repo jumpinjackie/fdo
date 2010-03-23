@@ -687,6 +687,107 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="table_delcol1" type="dbo:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol1Key">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="table_delcol1Key_0">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:complexType name="table_delcol1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="CHECK_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+<xs:enumeration value="a"/>
+<xs:enumeration value="b"/>
+<xs:enumeration value="c"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="SINGLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="UNIQUE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="table_delcol2" type="dbo:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol2Key">
+<xs:selector xpath=".//table_delcol2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="table_delcol2Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="INT64_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="view1Key">
 <xs:selector xpath=".//view1"/>
@@ -1861,6 +1962,12 @@
 </complexType>
 <complexType name="table7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="ID">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table7" name="dbo.table7"/>
+</complexType>
+<complexType name="table_delcol1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table_delcol1" name="dbo.table_delcol1"/>
+</complexType>
+<complexType name="table_delcol2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table_delcol2" name="dbo.table_delcol2"/>
 </complexType>
 <complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_view1" name="dbo.view1"/>

@@ -1401,7 +1401,8 @@ void FdoApplySchemaTest::TestConfigDoc ()
             FdoStringP objName = rdr->GetString(L"", L"name");
 
             if ( (objName.Mid( 0, 2 ).ICompare(L"F_") == 0) ||
-                 (objName.Mid( 0, 6 ) == L"dbo.f_")
+                 (objName.Mid( 0, 6 ) == L"dbo.f_") ||
+                 (objName.Mid( 0, 9 ) == L"public.f_")
             ) {
                 FdoSmPhDbObjectP dbObject = owner->CacheDbObject(rdr); 
        

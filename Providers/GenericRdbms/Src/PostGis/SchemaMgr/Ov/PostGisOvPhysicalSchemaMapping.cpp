@@ -90,7 +90,7 @@ void FdoPostGISOvPhysicalSchemaMapping::_writeXmlAttributes(
 {
     xmlWriter->WriteAttribute(
         L"xmlns",
-        L"http://fdopostgis.osgeo.org/schemas");
+        L"http://fdopostgresql.osgeo.org/schemas");
 
     if (mOwner.GetLength() > 0)
         xmlWriter->WriteAttribute(L"owner", mOwner);

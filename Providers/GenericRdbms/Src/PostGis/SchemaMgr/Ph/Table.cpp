@@ -337,3 +337,68 @@ FdoStringP FdoSmPhPostGisTable::GetCkeyClause( FdoStringP columnName, FdoDataPro
 
 	return ckey;
 }
+
+void FdoSmPhPostGisTable::LoadCkeys( FdoSmPhReaderP ckeyRdr, bool isSkipAdd )
+{
+    FdoSmPhCheckConstraintP  ckeyCurr;
+
+    // read each check constraint column.
+    while (ckeyRdr && ckeyRdr->ReadNext() ) {
+
+        FdoStringP ckeyName			= ckeyRdr->GetString(L"", L"constraint_name");
+        FdoStringP columnName		= ckeyRdr->GetString(L"", L"column_name");
+    	FdoStringP clause			= ckeyRdr->GetString(L"", L"check_clause");
+
+		if ( clause == L"" || clause.Contains(L"NOT NULL"))
+			continue;
+
+        if ( isSkipAdd ) 
+            continue;
+
+        // PostGis constraint reader gets column_name as a 1-based column position.
+        FdoInt32 columnPosition = columnName.ToLong();
+        // Get the column based on this position
+        FdoSmPhColumnP ckeyColumn = Position2Column(columnPosition);
+
+        // Check column must be in this table.
+    	if ( ckeyColumn == NULL ) {
+		    if ( GetElementState() != FdoSchemaElementState_Deleted )
+		        AddCkeyColumnError( columnName );
+		}
+        else {
+            ckeyCurr = new FdoSmPhCheckConstraint( ckeyName, ckeyColumn->GetName(), clause );
+            this->AddCkeyCol( ckeyCurr );
+        }
+	}
+}
+
+bool FdoSmPhPostGisTable::LoadUkeyColumn( FdoSmPhReaderP ukeyRdr, FdoSmPhColumnsP ukey  )
+{
+    // PostGis unique key reader sets column_name to a list of 1-based positions (1 per
+    // unique key column,
+    FdoStringP columnName		= ukeyRdr->GetString(L"", L"column_name");
+    // Parse out enclosing {}
+    columnName                  = columnName.Mid( 1, columnName.GetLength() - 2 );
+    // Positions are comma separated
+    FdoStringsP columnPositions = FdoStringCollection::Create( columnName, L"," );
+
+    for ( FdoInt32 ix = 0; ix < columnPositions->GetCount(); ix++ ) {
+        FdoStringP columnPositionStr = columnPositions->GetString( ix );
+        FdoInt32 columnPosition = columnPositionStr.ToLong();
+
+        FdoSmPhColumnP ukeyColumn = Position2Column(columnPosition);;
+        
+        // Unique Key column must be in this table.
+        if ( ukeyColumn == NULL ) {
+	        if ( GetElementState() != FdoSchemaElementState_Deleted )
+	            AddUkeyColumnError( columnName );
+
+            return false;
+        }
+
+        ukey->Add( ukeyColumn );
+    }
+
+    return true;
+}
+

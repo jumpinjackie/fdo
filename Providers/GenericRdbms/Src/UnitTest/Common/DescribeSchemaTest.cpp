@@ -318,7 +318,7 @@ void DescribeSchemaTest::getClassNames()
         FdoPtr<FdoIGetClassNames>  pCmd = (FdoIGetClassNames*) connection->CreateCommand(FdoCommandType_GetClassNames);
         FdoPtr<FdoStringCollection> classNames = pCmd->Execute();
 
-        CPPUNIT_ASSERT( classNames->GetCount() == 25 );
+        CPPUNIT_ASSERT( classNames->GetCount() == 26 );
 
         for (int i = 0; i < classNames->GetCount(); i++)
         {
@@ -419,6 +419,40 @@ void DescribeSchemaTest::describeWithClassNames()
                 }
             }
         }
+
+        printf( "Closing Connection ... \n" );
+        UnitTestUtil::CloseConnection(
+            connection,
+            false,
+            L"_describeclasses"
+        );
+
+        printf( "Re-opening Connection ... \n" );
+        connection = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            L"_describeclasses",
+            NULL,
+            NULL,
+            0
+        );
+
+        printf( "Performing Describe with class name from 2 schemas\n" );
+        pDescSchemaCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+        pDescSchemaCmd->SetSchemaName( L"Postal" );
+        classNames = FdoStringCollection::Create();
+        classNames->Add(L"Customer");
+        pDescSchemaCmd->SetClassNames(classNames);
+        fsc = pDescSchemaCmd->Execute();
+
+        CPPUNIT_ASSERT( fsc->GetCount() == 1 );
+        FdoPtr<FdoFeatureSchema> schema = fsc->GetItem(0);
+        FdoClassesP classes = schema->GetClasses();
+        CPPUNIT_ASSERT( classes->GetCount() == 2 );
+        FdoPtr<FdoClassDefinition> classDef = classes->GetItem(0);
+        CPPUNIT_ASSERT( classDef->GetQualifiedName() == L"Postal:Customer" );
+        classDef = classes->GetItem(1);
+        CPPUNIT_ASSERT( classDef->GetQualifiedName() == L"Postal:Address" );
 
         printf( "Closing Connection ... \n" );
         UnitTestUtil::CloseConnection(
@@ -616,6 +650,11 @@ FdoString** DescribeSchemaTest::GetSchema()
     L"    SEQ                     INT NOT NULL,",
     L"    CUSTOMER_PROVINCE       VARCHAR(50) NOT NULL",
     L");",
+    L"create table customer_electric (",
+    L"    NAME                    VARCHAR(100) NOT NULL,",
+    L"    CENTRAL_OFFICE          VARCHAR(50) NOT NULL",
+    L");",
+    L"",
     NULL
     };
 
@@ -745,6 +784,10 @@ const wchar_t* DescribeSchemaTest::mData[] = {
     L"insert into f_classdefinition ( classid, classname, schemaname, tablename, ",
     L"classtype, description, isabstract, parentclassname ) values (125, 'Customer', ",
     L"'Postal', 'Customer', 1, null, 0, null );                                                            ",
+    L"",
+    L"insert into f_classdefinition ( classid, classname, schemaname, tablename, ",
+    L"classtype, description, isabstract, parentclassname ) values (126, 'Customer', ",
+    L"'Electric', 'CUSTOMER_ELECTRIC', 1, null, 0, null );                                                            ",
     L"",
     L"delete from f_attributedefinition where classid >= 100;       ",
     L"                                                                         ",
@@ -877,6 +920,11 @@ const wchar_t* DescribeSchemaTest::mData[] = {
     L"                                                                                ",
     L"insert into f_attributedefinition ( tablename, classid, columnname, ",
     L"attributename, columntype, columnsize, columnscale, attributetype, isnullable, isfeatid, ",
+    L"issystem, isreadonly, sequencename, owner, description, idposition ) values ( 'CUSTOMER_ELECTRIC', 126, ",
+    L"'CENTRAL_OFFICE', 'CENTRAL_OFFICE', 'VARCHAR2', 50, 0, 'string', 1, 0, 0, 0, null, null, null, 2 );             ",
+    L"                                                                                ",
+    L"insert into f_attributedefinition ( tablename, classid, columnname, ",
+    L"attributename, columntype, columnsize, columnscale, attributetype, isnullable, isfeatid, ",
     L"issystem, isreadonly, sequencename, owner, description, idposition ) values ( 'AddressAddId', ",
     L"122, 'province', 'Province', 'VARCHAR2', 50, 0, 'string', 1, 0, 0, 0, null, null, null, 4 );         ",
     L"                                                                                ",
@@ -894,6 +942,11 @@ const wchar_t* DescribeSchemaTest::mData[] = {
     L"attributename, columntype, columnsize, columnscale, attributetype, isnullable, isfeatid, ",
     L"issystem, isreadonly, sequencename, owner, description, idposition ) values ( 'Customer', ",
     L"125, 'Name', 'Name', 'VARCHAR2', 100, 0, 'string', 1, 0, 0, 0, null, null, null, 1 );                    ",
+    L"",
+    L"insert into f_attributedefinition ( tablename, classid, columnname, ",
+    L"attributename, columntype, columnsize, columnscale, attributetype, isnullable, isfeatid, ",
+    L"issystem, isreadonly, sequencename, owner, description, idposition ) values ( 'CUSTOMER_ELECTRIC', ",
+    L"126, 'Name', 'Name', 'VARCHAR2', 100, 0, 'string', 1, 0, 0, 0, null, null, null, 1 );                    ",
     L"",
     L"insert into f_attributedefinition ( tablename, classid, columnname, attributename",
     L", columntype, columnsize, columnscale, attributetype, isnullable, isfeatid, issystem, isread",
