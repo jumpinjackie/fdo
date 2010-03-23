@@ -110,12 +110,12 @@ int postgis_est_cursor_obj (postgis_context_def *context, char **cursor)
             // automatically replaced.It is an error if the statement name is
             // already defined in the current session.
 
-            sprintf (curs->stmt_name, "fdo%x",(unsigned long)&(curs->stmt_name));
 #ifdef _WIN32
             sprintf (curs->cursor_name, "fdo%I64d",getNextCursorId());
 #else
             sprintf (curs->cursor_name, "fdo%lld",getNextCursorId());
 #endif
+            strcpy (curs->stmt_name, curs->cursor_name);
 
             /* Initialize cursor members. */
             curs->sql = NULL;

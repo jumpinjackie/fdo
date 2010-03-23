@@ -78,16 +78,26 @@ FdoSmPhReaderP FdoSmPhRdReader::MakeQueryReader(
             objectNames
         );
 
+        // Determine syntax caller wants for the join:
+        //      useClause=true - use a JOIN clause.
+        //      useClause=false - add join table to from clause and join to where clause.
+        bool useClause = sqlString.Contains( L"$(JOIN_CLAUSE)" );
+
         // If joining to another table, generated from sub-clause for table.
         FdoStringP joinFrom;
-        if ( join != NULL ) 
-            joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+        FdoStringP joinClause;
+        if ( join != NULL ) {
+            if ( useClause ) 
+                joinClause = join->GetClause( mgr, schemaColumn,dbObjectColumn );
+            else
+                joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+        }
 
         // Get where clause for owner and object name binds.
         FdoStringP qualification = binds->GetSQL();
 
-        if ( join != NULL ) {
-            // If joining to another table, add join clause.
+        if ( (!useClause) && (join != NULL) ) {
+            // If joining to another table, but not generating join clause, add join to qualification.
             qualification += FdoStringP::Format( 
                 L"  %ls (%ls)\n", 
                 (qualification == L"") ? L"" : L"and",
@@ -96,7 +106,8 @@ FdoSmPhReaderP FdoSmPhRdReader::MakeQueryReader(
         }
 
         // Substitute join and qualification clauses into given SQL
-        finalSqlString = sqlString.Replace( L"$(JOIN_FROM)", joinFrom );
+        finalSqlString = sqlString.Replace( L"$(JOIN_CLAUSE)", joinClause );
+        finalSqlString = finalSqlString.Replace( L"$(JOIN_FROM)", joinFrom );
         finalSqlString = finalSqlString.Replace( L"$(QUALIFICATION)", qualification );
 
         // Handle qualification clause connectors.

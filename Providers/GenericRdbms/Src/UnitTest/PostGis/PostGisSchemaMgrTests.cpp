@@ -147,290 +147,151 @@ void PostGisSchemaMgrTests::testCharacterSets ()
 
 void PostGisSchemaMgrTests::AddProviderColumns( FdoSmPhTableP table )
 {
-#if 0
-    FdoSmPhColumnP column = table->CreateColumnInt64(
-        L"AUTOINCREMENT_COLUMN",
-        false,
-        true
+
+    FdoSmPhColumnP column = table->CreateColumnUnknown(
+        L"character_column",
+        L"character",
+        true,
+        15,
+        0
     );
 
-    FdoSmPhColumnsP ukeyColumns = new FdoSmPhColumnCollection();
-	table->GetUkeyColumns()->Add( ukeyColumns );
-    table->AddUkeyCol( 0, L"AUTOINCREMENT_COLUMN" );
-
-    table->CreateColumnUnknown(
-        L"BINARY_COLUMN",
-        L"binary",
+    column = table->CreateColumnUnknown(
+        L"character_column2",
+        L"character",
         true,
         0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"MEDIUMBLOB_COLUMN",
-        L"mediumblob",
+   column = table->CreateColumnUnknown(
+        L"character_varying_column",
+        L"character varying",
+        true,
+        45,
+        0
+    );
+
+    column = table->CreateColumnUnknown(
+        L"character_varying_column2",
+        L"character varying",
         true,
         0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"TINYBLOB_COLUMN",
-        L"tinyblob",
+    column = table->CreateColumnUnknown(
+        L"varchar_column",
+        L"varchar",
+        true,
+        60,
+        0
+    );
+
+    column = table->CreateColumnUnknown(
+        L"name_column",
+        L"name",
         true,
         0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"VARBINARY_COLUMN",
-        L"varbinary",
-        true,
-        100,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"DATE2_COLUMN",
-        L"date",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"TIMESTAMP_COLUMN",
-        L"timestamp",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"POINT_COLUMN",
-        L"point",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"LINESTRING_COLUMN",
-        L"linestring",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"POLGON_COLUMN",
-        L"polygon",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"GEOMETRYCOLLECTION_COLUMN",
-        L"geometrycollection",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"MULTIPOINT_COLUMN",
-        L"multipoint",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"MULTILINESTRING_COLUMN",
-        L"multilinestring",
-        true,
-        0,
-        0
-    );
-
-
-    table->CreateColumnUnknown(
-        L"MULTIPOLYGON_COLUMN",
-        L"multipolygon",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"MEDIUMINT_COLUMN",
-        L"mediumint",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"TINYINT_COLUMN",
-        L"tinyint",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"CHAR1_COLUMN",
-        L"char",
-        true,
-        1,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"CHAR5_COLUMN",
-        L"char",
-        true,
-        5,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"TEXT_COLUMN",
+    column = table->CreateColumnUnknown(
+        L"text_column",
         L"text",
         true,
         0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"LONGTEXT_COLUMN",
-        L"longtext",
+    column = table->CreateColumnUnknown(
+        L"char_column",
+        L"char",
         true,
-        0,
+        10,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"MEDIUMTEXT_COLUMN",
-        L"mediumtext",
+    column = table->CreateColumnUnknown(
+        L"bpchar_column",
+        L"bpchar",
         true,
-        0,
+        50,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"ENUM_COLUMN",
-        L"enum('0','1','2')",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"SET_COLUMN",
-        L"set('red','green','blue')",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"TIME_COLUMN",
-        L"time",
-        true,
-        0,
-        0
-    );
-    
-    table->CreateColumnUnknown(
-        L"YEAR_COLUMN",
-        L"year",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"UINT_COLUMN",
-        L"int unsigned",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"USMALLINT_COLUMN",
-        L"smallint unsigned",
-        true,
-        0,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"BIT1_COLUMN",
+    column = table->CreateColumnUnknown(
+        L"bit_column",
         L"bit",
         true,
-        1,
+        30,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT2_COLUMN",
+    column = table->CreateColumnUnknown(
+        L"bit_column2",
         L"bit",
         true,
-        2,
+        0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT8_COLUMN",
-        L"bit",
+    column = table->CreateColumnUnknown(
+        L"bit_varying_column",
+        L"bit varying",
+        true,
+        40,
+        0
+    );
+
+    column = table->CreateColumnUnknown(
+        L"bit_varying_column2",
+        L"bit varying",
+        true,
+        0,
+        0
+    );
+
+    column = table->CreateColumnUnknown(
+        L"numeric_column",
+        L"numeric",
         true,
         8,
+        3
+    );
+
+    column = table->CreateColumnUnknown(
+        L"numeric_column2",
+        L"numeric",
+        true,
+        11,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT9_COLUMN",
-        L"bit",
+    column = table->CreateColumnUnknown(
+        L"numeric_column3",
+        L"numeric",
         true,
-        9,
+        0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT15_COLUMN",
-        L"bit",
+    column = table->CreateColumnUnknown(
+        L"decimal_column2",
+        L"decimal",
         true,
-        15,
+        5,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT16_COLUMN",
-        L"bit",
+    column = table->CreateColumnUnknown(
+        L"decimal_column3",
+        L"decimal",
         true,
-        16,
+        0,
         0
     );
 
-    table->CreateColumnUnknown(
-        L"BIT31_COLUMN",
-        L"bit",
-        true,
-        31,
-        0
-    );
-
-    table->CreateColumnUnknown(
-        L"BIT32_COLUMN",
-        L"bit",
-        true,
-        32,
-        0
-    );
-#endif
 }
 
 void PostGisSchemaMgrTests::VldGenGeom( FdoClassDefinitionP classDef )

@@ -1285,18 +1285,25 @@ void FdoSmPhDbObject::LoadPkeys( FdoSmPhReaderP pkeyRdr, bool isSkipAdd )
     // read each primary key column.
     while (pkeyRdr->ReadNext() ) {
         mPkeyName = pkeyRdr->GetString(L"", L"constraint_name");
-        FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
 
-        FdoSmPhColumnP pkeyColumn = GetColumns()->FindItem( columnName );
+        if ( !isSkipAdd ) 
+            LoadPkeyColumn( pkeyRdr, mPkeyColumns );
+    }
+}
 
-        if ( pkeyColumn == NULL ) {
-            // Primary Key column must be in this table.
-            if ( GetElementState() != FdoSchemaElementState_Deleted )
-		        AddPkeyColumnError( columnName );
-	    }
-	    else if( ! isSkipAdd ) {
-	        mPkeyColumns->Add(pkeyColumn);
-	    }
+void FdoSmPhDbObject::LoadPkeyColumn( FdoSmPhReaderP pkeyRdr, FdoSmPhColumnsP pkeyColumns )
+{
+    FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
+
+    FdoSmPhColumnP pkeyColumn = GetColumns()->FindItem( columnName );
+
+    if ( pkeyColumn == NULL ) {
+        // Primary Key column must be in this table.
+        if ( GetElementState() != FdoSchemaElementState_Deleted )
+	        AddPkeyColumnError( columnName );
+    }
+    else  {
+        mPkeyColumns->Add(pkeyColumn);
     }
 }
 

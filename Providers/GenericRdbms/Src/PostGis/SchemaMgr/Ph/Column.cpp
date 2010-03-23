@@ -18,13 +18,16 @@
 #include "Column.h"
 #include "DbObject.h"
 
-FdoSmPhPostGisColumn::FdoSmPhPostGisColumn()
+FdoSmPhPostGisColumn::FdoSmPhPostGisColumn() :
+    mPosition(0)
 {
     // idle
 }
 
 FdoSmPhPostGisColumn::FdoSmPhPostGisColumn(FdoSmPhRdColumnReader* reader)
 {
+    if ( reader ) 
+        mPosition = reader->GetLong(L"", L"ordinal_position");
 }
 
 FdoSmPhPostGisColumn::~FdoSmPhPostGisColumn()
@@ -67,6 +70,11 @@ FdoSmPhColumnP FdoSmPhPostGisColumn::GetBaseColumn( FdoSmPhDbObjectP dbObject )
     }
 
     return baseColumn;
+}
+
+FdoInt32 FdoSmPhPostGisColumn::GetPosition()
+{
+    return mPosition;
 }
 
 void FdoSmPhPostGisColumn::SetElementState(FdoSchemaElementState elementState)

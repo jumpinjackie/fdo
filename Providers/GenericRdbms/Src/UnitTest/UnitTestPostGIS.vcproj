@@ -1093,6 +1093,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PostGis\PostGisDescribeSchemaTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisDescribeSchemaTest.h"
+				>
+			</File>
+			<File
 				RelativePath="PostGis\PostGisFdoApplySchemaTest.cpp"
 				>
 			</File>
@@ -1114,6 +1122,14 @@
 			</File>
 			<File
 				RelativePath="PostGis\PostGisFdoConnectTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoConstraintsTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoConstraintsTest.h"
 				>
 			</File>
 			<File

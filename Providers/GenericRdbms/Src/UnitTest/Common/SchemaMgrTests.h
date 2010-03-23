@@ -118,6 +118,8 @@ protected:
     virtual FdoInt64 GetSrid( int index );
     virtual FdoStringP GetIndexName( FdoSmPhMgrP mgr, FdoStringP indexName );
 
+    virtual FdoStringP GetMasterSuffix( FdoSmPhGrdMgrP mgr );
+
     FdoPtr<FdoIConnection> GetDirectConnection (FdoIConnection *currentConnection);
 
     static FdoString* DB_NAME_SUFFIX;

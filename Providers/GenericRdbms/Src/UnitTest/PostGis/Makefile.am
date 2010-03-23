@@ -24,9 +24,11 @@ noinst_LTLIBRARIES = libPostGisUnitTests.la
 libPostGisUnitTests_la_SOURCES = \
 PostGisConnectionUtil.cpp \
 PostGisConnectTests.cpp \
+PostGisDescribeSchemaTest.cpp \
 PostGisFdoApplySchemaTest.cpp \
 PostGisFdoConnectionInfoTest.cpp \
 PostGisFdoConnectTest.cpp \
+PostGisFdoConstraintsTest.cpp \
 PostGisFdoDatastoreTest.cpp \
 PostGisFdoDeleteTest.cpp \
 PostGisFdoImportExportTest.cpp \

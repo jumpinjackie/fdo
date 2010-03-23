@@ -68,6 +68,13 @@ public:
     const FdoSmLpClassDefinition* RefClassDefinition(FdoInt32 item) const;
     /// Note: name must be the qualified name of the class. 
     const FdoSmLpClassDefinition* RefClassDefinition(FdoString* name) const;
+
+    // Adds a class definition to the collection
+    virtual FdoInt32 AddClassDefinition( FdoSmLpClassDefinition* value);
+
+    // Returns true if this collection contains the given class definition
+    virtual bool ContainsClassDefinition( const FdoSmLpClassDefinition* value);
+
 };
 
 typedef FdoPtr<FdoSmLpQClassCollection> FdoSmLpQClassesP;

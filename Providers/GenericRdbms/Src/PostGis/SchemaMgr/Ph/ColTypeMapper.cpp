@@ -75,18 +75,20 @@ static TypeEntry float8Entry(FdoSmPhColType_Double, L"float8");
 //
 // Text
 //
-
-static TypeEntry characterEntry(FdoSmPhColType_String, L"character");
-static TypeEntry charactervaryingEntry(FdoSmPhColType_String, L"character varying");
-static TypeEntry nameEntry(FdoSmPhColType_String, L"name");
-static TypeEntry textEntry(FdoSmPhColType_String, L"text");
-static TypeEntry charEntry(FdoSmPhColType_String, L"char");
-static TypeEntry bpcharEntry(FdoSmPhColType_String, L"bpchar");
-static TypeEntry varcharEntry(FdoSmPhColType_String, L"varchar");
+// Default size for fixed character types is 1.
+// Default for varying types is unlimited. Set "practical" limit of 1Gb.
+static TypeEntry characterEntry(FdoSmPhColType_String, L"character", 1);
+static TypeEntry charactervaryingEntry(FdoSmPhColType_String, L"character varying", 1073741824);
+static TypeEntry nameEntry(FdoSmPhColType_String, L"name", 63);
+static TypeEntry textEntry(FdoSmPhColType_String, L"text", 1073741824);
+static TypeEntry charEntry(FdoSmPhColType_String, L"char", 1);
+static TypeEntry bpcharEntry(FdoSmPhColType_String, L"bpchar", 1);
+static TypeEntry varcharEntry(FdoSmPhColType_String, L"varchar", 1073741824);
 // Note: 'cstring' is a pseudo-type and represents a null-terminated C string
-static TypeEntry cstringEntry(FdoSmPhColType_String, L"cstring");
+static TypeEntry cstringEntry(FdoSmPhColType_String, L"cstring",1073741824);
 // Note: 'bit' is a bit string (sequence of '0's and '1's ).
-static TypeEntry bitEntry(FdoSmPhColType_String, L"bit");
+static TypeEntry bitEntry(FdoSmPhColType_String, L"bit",1);
+static TypeEntry bitVaryingEntry(FdoSmPhColType_String, L"varbit",1073741824);
 
 //
 // Boolean Type
@@ -159,6 +161,7 @@ TypeEntry* FdoSmPhPostGisColTypeMapper::mMap[] =
     &varcharEntry,
     &cstringEntry,
     &bitEntry,
+    &bitVaryingEntry,
     &boolEntry,
     &booleanEntry,
     &oidEntry,
@@ -172,9 +175,11 @@ TypeEntry* FdoSmPhPostGisColTypeMapper::mMap[] =
 
 FdoSmPhPostGisColTypeMapEntry::FdoSmPhPostGisColTypeMapEntry(
     FdoSmPhColType colType,
-    FdoString* colTypeString)
+    FdoString* colTypeString,
+    FdoInt32 defaultSize)
     : mColType(colType), 
-      mColTypeString(FdoStringP(colTypeString, false))
+      mColTypeString(FdoStringP(colTypeString, false)),
+      mDefaultSize(defaultSize)
 {
     // idle
 }
@@ -196,42 +201,52 @@ FdoSmPhPostGisColTypeMapper::~FdoSmPhPostGisColTypeMapper()
 
 FdoSmPhColType FdoSmPhPostGisColTypeMapper::String2Type(
     FdoString* colTypeString,
-    int size,
-    int scale)
+    int typmod,
+    FdoInt32& size,
+    FdoInt32& scale)
 {
-    //
-    // TODO: mloskot - Verify this mapping logic
-    //
+    size = 0;
+    scale = 0;
 
-    if ((0 == FdoStringP(colTypeString).ICompare("numeric")) && (size == 0))
+    // Make sure decimal types without defined precision become FDO double type 
+    // instead of FDO decimal
+    if ((0 == FdoStringP(colTypeString).ICompare("numeric")) && (typmod <= 0))
     {
         return FdoSmPhColType_Double;
     }
 
-    if ((0 == FdoStringP(colTypeString).ICompare("decimal")) && (size == 0))
+    if ((0 == FdoStringP(colTypeString).ICompare("decimal")) && (typmod <= 0))
     {
         return FdoSmPhColType_Double;
     }
 
-    // Do two passes through the map:
-    //  Pass 0 matches both type and unsigned setting.
-    //  Pass 1 is done only if pass 0 didn't find a match. It
-    //      just matches on type. For some Mysql numeric types
-    //      (e.g. double), they match to the same FDO type regardless
-    //      of the signage.
-    for (int pass = 0; pass < 2; pass++)
+    // Find the datatype enum facet in the map
+    for (int i = 0; mMap[i] != NULL; i++)
     {
-        // Find the datatype enum facet in the map
-        for (int i = 0; mMap[i] != NULL; i++)
+        TypeEntry* mapEntry = mMap[i];
+
+        if (mapEntry->mColTypeString == colTypeString)
         {
-            TypeEntry* mapEntry = mMap[i];
-
-            // pass 0 matches the sign, pass 1 does not.
-            if ((mapEntry->mColTypeString == colTypeString) && ((1 == pass)))
-            {
-                // found so return the string.
-                return mapEntry->mColType;
+            if ( (mapEntry->mColType == FdoSmPhColType_Decimal) && (typmod > 0)) {
+                // For decimal types, size (precision) is in high-order 16bits of typemod
+                size = typmod / 65536;
+                // For decimal types, scale is in lower 16 bits.
+                scale = typmod - (size * 65536) - 4;
             }
+            else if ( (mapEntry->mColType == FdoSmPhColType_String) && (typmod > 0) && (mapEntry->mColTypeString == L"bit" || mapEntry->mColTypeString == L"varbit") ) {
+                // For bit types, size is typmod
+                size = typmod;
+            }
+            else if ( (mapEntry->mColType == FdoSmPhColType_String) && (typmod > 4) ) {
+                // For other string types, need to subtract 4
+                size = typmod - 4;
+            }
+            else {
+                size = mapEntry->mDefaultSize;
+            }
+
+            // found so return the string.
+            return mapEntry->mColType;
         }
     }
 

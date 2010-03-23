@@ -470,6 +470,9 @@ protected:
     /// Load Primary Key if not yet loaded
     void LoadPkeys();
     void LoadPkeys( FdoPtr<FdoSmPhReader> pkeyRdr, bool isSkipAdd = false );
+    
+    // Load a primary key column from a reader.
+    virtual void LoadPkeyColumn( FdoPtr<FdoSmPhReader> pkeyRdr, FdoSmPhColumnsP pkeyColumns );
 
     /// Load Indexes if not yet loaded
     bool LoadIndexes();

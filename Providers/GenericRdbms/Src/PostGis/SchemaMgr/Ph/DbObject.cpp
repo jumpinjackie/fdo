@@ -102,6 +102,39 @@ FdoStringP FdoSmPhPostGisDbObject::GetBestClassName() const
     return objName.Replace(L":",L"_").Replace(L".",L"_");
 }
 
+FdoSmPhColumnP FdoSmPhPostGisDbObject::Position2Column( FdoInt32 position )
+{
+    FdoSmPhPostGisColumnP column;
+    FdoSmPhColumnsP columns = GetColumns();
+
+    if ( position > 0 ) {
+
+        // Do quick retrieval, assuming that column position in database matches that of the cache.
+        if ( position <= columns->GetCount() ) {
+            column = columns->GetItem( position - 1 )->SmartCast<FdoSmPhPostGisColumn>(true);
+        
+            // Verify that we go the column at the right position. If a column was deleted
+            // from this DbObject then we can end up with the wrong column. Deleted columns
+            // keep their positions in the database but they are not cached.
+            if ( column->GetPosition() != position ) 
+                column = NULL;
+        }
+
+        if ( !column ) {
+            // Quick retrieve didn't work, do a linear search.
+            for ( FdoInt32 ix = 0; ix < columns->GetCount(); ix++ ) {
+                FdoSmPhPostGisColumnP currColumn = columns->GetItem(ix)->SmartCast<FdoSmPhPostGisColumn>(true);
+                if ( currColumn->GetPosition() == position ) {
+                    column = currColumn;
+                    break;
+                }
+            }
+        }
+    }
+
+    return column;
+}
+
 void FdoSmPhPostGisDbObject::ActivateOwnerAndExecute(FdoStringP sqlStmt)
 {
     // Remove const-qualifier
@@ -420,9 +453,35 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhPostGisDbObject::CreateIndexReader() const
     return reader;
 }
 
+void FdoSmPhPostGisDbObject::LoadPkeyColumn( FdoSmPhReaderP pkeyRdr, FdoSmPhColumnsP pkeyColumns )
+{
+    // columnName actually contains list of positions for index columns.
+    FdoStringP columnName = pkeyRdr->GetString(L"",L"column_name");
+    // Strip out enclosing {}.
+    columnName = columnName.Mid( 1, columnName.GetLength() - 2 );
+
+    // Parse the position list (comma-separated elements).
+    FdoStringsP columnPositions = FdoStringCollection::Create( columnName, L"," );
+    FdoInt32 ix;
+    
+    for ( ix = 0; ix < columnPositions->GetCount(); ix++ ) {
+        FdoInt32 columnPosition = FdoStringP(columnPositions->GetString(ix)).ToLong();
+        
+        FdoSmPhColumnP column = Position2Column(columnPosition);
+ 
+        if ( column == NULL ) {
+            // Primary Key column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+	            AddPkeyColumnError( columnName );
+        }
+        else  {
+            mPkeyColumns->Add(column);
+        }
+    }
+}
+
 void FdoSmPhPostGisDbObject::LoadIndexColumn( FdoSmPhTableIndexReaderP indexRdr, FdoSmPhIndexP index )
 {
-
     // columnName actually contains list of positions for index columns.
     FdoStringP columnName = indexRdr->GetString(L"",L"column_name");
 
@@ -431,16 +490,8 @@ void FdoSmPhPostGisDbObject::LoadIndexColumn( FdoSmPhTableIndexReaderP indexRdr,
     FdoInt32 ix;
     
     for ( ix = 0; ix < columnPositions->GetCount(); ix++ ) {
-        FdoSmPhColumnP column;
         FdoInt32 columnPosition = FdoStringP(columnPositions->GetString(ix)).ToLong();
-        
-        // Columnn position 1-based. Make sure it is in range and then retrieve
-        // column from table's column list.
-        if ( columnPosition > 0 ) {
-            if ( columnPosition <= GetColumns()->GetCount() ) {
-                column = GetColumns()->GetItem(columnPosition - 1);
-            }
-        }
+        FdoSmPhColumnP column = Position2Column(columnPosition);
 
         if ( column ) {
             // Add the column to the current index.

@@ -38,7 +38,7 @@ FdoStringP PostGisFdoImportExportTest::OverrideBend( FdoString* inFile )
 {
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile);
 
-    _overrideBend( inFile, outFile, L"OSGeo.PostgreSQL.3.2", L"http://FdoPostgreSQL.osgeo.org/schemas" );
+    _overrideBend( inFile, outFile, L"OSGeo.PostgreSQL.3.5", L"http://fdopostgresql.osgeo.org/schemas" );
 
     return outFile;
 }

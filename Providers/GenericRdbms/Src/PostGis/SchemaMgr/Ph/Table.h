@@ -85,6 +85,10 @@ public:
     /// Returns a CHECK() clause, each provider must implement. It should be pure virtual.
 	virtual FdoStringP GetCkeyClause( FdoStringP columnName, FdoDataPropertyP fdoProp );
 
+protected:
+	virtual void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr, bool isSkipAdd );
+    virtual bool LoadUkeyColumn( FdoSmPhReaderP ukeyRdr, FdoSmPhColumnsP ukey  );
+
 private:
 
     /// Destructor is private.

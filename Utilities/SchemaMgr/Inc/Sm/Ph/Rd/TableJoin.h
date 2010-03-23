@@ -34,6 +34,14 @@ public:
         FdoStringP whereClause          // clause for qualifying the rows selected from the join table.
     );
 
+    // Returns a JOIN clause ("JOIN table alias on lcol = rcol" for adding this join 
+    // to a select.
+    FdoStringP GetClause( 
+        FdoSmPhMgrP mgr, 
+        FdoStringP schemaColumn, 
+        FdoStringP tableColumn 
+    );
+
     // returns a clause for adding this join to a where clause of a select.
     // Includes the whereClause passed into the constructor plus a join expressionsfor
     // joining the join table to the main table in the select.

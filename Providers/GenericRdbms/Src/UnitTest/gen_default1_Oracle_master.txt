@@ -946,6 +946,119 @@ geographic</gml:derivedCRSType>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
+<xs:element name="TABLE_DELCOL1" type="AutoGen:TABLE_DELCOL1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE_DELCOL1Key">
+<xs:selector xpath=".//TABLE_DELCOL1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="TABLE_DELCOL1Key_0">
+<xs:selector xpath=".//TABLE_DELCOL1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:complexType name="TABLE_DELCOL1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="CHECK_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+<xs:enumeration value="a"/>
+<xs:enumeration value="b"/>
+<xs:enumeration value="c"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="SINGLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="UNIQUE_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="TABLE_DELCOL2" type="AutoGen:TABLE_DELCOL2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE_DELCOL2Key">
+<xs:selector xpath=".//TABLE_DELCOL2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="TABLE_DELCOL2Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="INT64_COLUMN" minOccurs="0">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="20"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="VERTABLE1" type="AutoGen:VERTABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="VERTABLE1Key">
 <xs:selector xpath=".//VERTABLE1"/>

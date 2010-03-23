@@ -20,9 +20,11 @@ add_definitions( -DRDBI_STATIC )
 set( PostGisUnitTests_STAT_SRCS
 	PostGisConnectionUtil.cpp
 	PostGisConnectTests.cpp
+	PostGisDescribeSchemaTest.cpp
 	PostGisFdoApplySchemaTest.cpp
 	PostGisFdoConnectionInfoTest.cpp
 	PostGisFdoConnectTest.cpp
+	PostGisFdoConstraintsTest.cpp
 	PostGisFdoDatastoreTest.cpp
 	PostGisFdoDeleteTest.cpp
 	PostGisFdoImportExportTest.cpp

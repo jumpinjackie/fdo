@@ -33,9 +33,12 @@ public:
     /// colType [in] - enum facet.
     /// \param
     /// colTypeName [in] - corresponding string representation of type.
+    /// \param
+    /// defaultSize [in] - type's default size.
     ///
     FdoSmPhPostGisColTypeMapEntry(FdoSmPhColType colType,
-        FdoString* colTypeName);
+        FdoString* colTypeName,
+        FdoInt32 defaultSize = 0);
 
     /// Destructor.
     ~FdoSmPhPostGisColTypeMapEntry();
@@ -54,6 +57,7 @@ public:
     /// \todo To be documented.
     FdoStringP mColTypeString;
     
+    FdoInt32 mDefaultSize;
 }; // class FdoSmPhPostGisColTypeMapEntry
 
 inline FdoString* FdoSmPhPostGisColTypeMapEntry::GetName() const
@@ -79,10 +83,17 @@ public:
     ///
     /// \param
     /// colTypeString [in] - string of type mapped to enumerator.
+    /// \param
+    /// typmod [in] - native PostgreSQL size and scale indicator.
+    /// \param
+    /// size [out] - FDO size. derived from column type and typmod.
+    /// \param
+    /// scale [out] - FDO scale. derived from column type and typmod.
     ///
     static FdoSmPhColType String2Type(FdoString* colTypeString,
-        int size = 0,
-        int scale = 0);
+        int typmod,
+        FdoInt32& size,
+        FdoInt32& scale);
 
     /// Converts facet to string
     ///

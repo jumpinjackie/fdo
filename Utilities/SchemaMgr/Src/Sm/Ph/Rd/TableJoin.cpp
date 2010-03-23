@@ -37,6 +37,21 @@ FdoSmPhRdTableJoin::~FdoSmPhRdTableJoin(void)
 {
 }
 
+FdoStringP FdoSmPhRdTableJoin::GetClause( 
+    FdoSmPhMgrP mgr, 
+    FdoStringP schemaColumn, 
+    FdoStringP tableColumn 
+)
+{
+    FdoStringP clause = FdoStringP::Format(
+        L"JOIN %ls on %ls",
+        (FdoString*) GetFrom(),
+        (FdoString*) GetWhere(mgr, schemaColumn, tableColumn)
+    );
+
+    return clause;
+}
+
 FdoStringP FdoSmPhRdTableJoin::GetWhere( FdoStringP joinColumn )
 {
     // This join derivation has only one join column. Convert column

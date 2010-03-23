@@ -194,3 +194,8 @@ FdoStringP PostGisFdoApplySchemaTest::GetDefaultSchemaName()
 	return L"public";
 }
 
+FdoStringP PostGisFdoApplySchemaTest::GetValueColumnName()
+{
+	return L"value";
+}
+

@@ -81,26 +81,19 @@ bool FdoSmPhRdPostGisColumnReader::ReadNext()
 
     if (gotRow)
     {
-        bool isUnsigned = (GetLong(L"", L"isunsigned") != 0);
+        mSize = 0;
+        mScale = 0;
 
-        SetBoolean( L"", L"is_autoincremented", false );
-
-        FdoStringP GeomColType = GetString(L"", L"geom_type");
         FdoStringP colType = GetString(L"", L"type_string");
-        if ( GeomColType != L"" ) 
-            colType = GeomColType;
+        FdoInt32 typmod = GetLong(L"", L"typmod");
 
         mColType = FdoSmPhPostGisColTypeMapper::String2Type(
             colType,
-            GetLong(L"", L"size"), 
-            GetLong(L"", L"scale"));
+            typmod,
+            mSize,
+            mScale
+        );
 
-        if ( (GeomColType != L"") && (mColType == FdoSmPhColType_Unknown) ) {
-            mColType = FdoSmPhPostGisColTypeMapper::String2Type(
-                L"geometry",
-                GetLong(L"", L"size"), 
-                GetLong(L"", L"scale"));
-        }
     }
 
     return gotRow;
@@ -122,6 +115,12 @@ FdoStringP FdoSmPhRdPostGisColumnReader::GetString( FdoStringP tableName, FdoStr
                 fieldValue = L"";
         }
     }
+    else if ( fieldName == L"size" ) {
+        fieldValue = FdoStringP::Format( L"%d", mSize );
+    }
+    else if ( fieldName == L"scale" ) {
+        fieldValue = FdoStringP::Format( L"%d", mScale );
+    }
     else {
         fieldValue = FdoSmPhRdColumnReader::GetString( tableName, fieldName );        
     }
@@ -134,6 +133,9 @@ FdoSmPhReaderP FdoSmPhRdPostGisColumnReader::MakeQueryReader(
     FdoStringsP objectNames,
     FdoSmPhRdTableJoinP join)
 {
+    mSize = 0;
+    mScale = 0;
+
     FdoStringP sql;
 
     FdoStringP ownerName(owner->GetName());
@@ -182,28 +184,28 @@ FdoSmPhReaderP FdoSmPhRdPostGisColumnReader::MakeQueryReader(
     // $1 - name of table
 
     sql = FdoStringP::Format(
-        L" SELECT %ls c.table_schema || '.' || c.table_name AS table_name, c.column_name AS name, 1 AS type,"
-		L" COLUMN_DEFAULT as default_value, \n"
-        L" COALESCE(c.character_maximum_length, c.character_octet_length,"
-        L"         c.numeric_precision) AS size,"
-        L" c.numeric_scale AS scale  ,"
-        L" CASE WHEN c.is_nullable = 'YES' THEN 1 ELSE 0 END AS nullable,"
-        L" lower(c.data_type) AS type_string,"
-        L" 0 AS isunsigned,"
-        L" 0 AS is_autoincremented, "
-        L" (select d.typname from pg_type d, pg_attribute e, pg_class f, pg_namespace g "
-        L"    where c.table_schema = g.nspname and c.table_name = f.relname and c.column_name = e.attname"
-        L"    and d.typname = 'geometry' "
-        L"    and e.atttypid = d.oid and e.attrelid = f.oid and f.relnamespace = g.oid ) as geom_type,"
-        L" c.ordinal_position as ordinal_position, "
+        L" SELECT %ls n.nspname || '.' || r.relname AS table_name, c.attname AS name, 1 AS type,"
+	    L" d.adsrc as default_value, \n"
+        L" c.atttypmod AS typmod, "
+        L" CASE WHEN c.attnotnull THEN 0 ELSE 1 END AS nullable,"
+        L" 0 as is_autoincremented, "
+        L" lower(t.typname) AS type_string,"
+        L" cast (null as text) as geom_type,"
+        L" c.attnum as ordinal_position, "
         L" %ls as collate_schema_name, "
         L" %ls as collate_name "
-        L" FROM %ls AS c $(JOIN_FROM) "
-        L" $(WHERE) $(QUALIFICATION) "
-        L" ORDER BY collate_schema_name, collate_name, c.ordinal_position ASC",
+        L" FROM pg_catalog.pg_attribute as c "
+        L" JOIN pg_catalog.pg_class r on c.attrelid = r.oid "
+        L" JOIN pg_catalog.pg_namespace n on r.relnamespace = n.oid and n.nspname not in ('pg_catalog','information_schema','pg_toast','pg_temp1','pg_toast_temp1') "
+        L" JOIN pg_catalog.pg_type t on c.atttypid = t.oid "
+        L" $(JOIN_CLAUSE) "
+        L" LEFT JOIN pg_catalog.pg_attrdef d ON d.adrelid = r.oid and d.adnum = c.attnum "
+        L" where c.attnum > 0 "
+        L" $(AND) $(QUALIFICATION) "
+        L" ORDER BY collate_schema_name, collate_name, c.attnum ASC",
         (join ? L"distinct" : L""),
-        (FdoString*) pgMgr->FormatCollateColumnSql(L"c.table_schema"),
-        (FdoString*) pgMgr->FormatCollateColumnSql(L"c.table_name"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"n.nspname"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"r.relname"),
         static_cast<FdoString*>(columnsTableName)
     );
 
@@ -211,8 +213,8 @@ FdoSmPhReaderP FdoSmPhRdPostGisColumnReader::MakeQueryReader(
         L"",
         owner,
         sql,
-        L"c.table_schema",
-        L"c.table_name",
+        L"n.nspname",
+        L"r.relname",
         objectNames,
         join
     );
@@ -230,17 +232,13 @@ FdoSmPhRowsP FdoSmPhRdPostGisColumnReader::MakeRows( FdoSmPhMgrP mgr )
         L"type_string",
         row->CreateColumnDbObject(L"type_string", false)));
 
-    // Retrieve whether column is unsigned. This affects the valid
-    // value range and thus the corresponding FDO property type for the column.
-    field = new FdoSmPhField(row, L"isunsigned",
-        row->CreateColumnInt64(L"isunsigned", false));
-
-    field = new FdoSmPhField(row, L"isautoincremented",
-        row->CreateColumnInt64(L"isautoincremented", false));
+    field = new FdoSmPhField(row,
+        L"typmod",
+        row->CreateColumnInt32(L"typmod", true));
 
     field = new FdoSmPhField(row,
-        L"geom_type",
-        row->CreateColumnDbObject(L"geom_type", true));
+        L"ordinal_position",
+        row->CreateColumnInt32(L"ordinal_position", true));
 
     return( rows);
 }

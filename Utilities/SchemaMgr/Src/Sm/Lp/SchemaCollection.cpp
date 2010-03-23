@@ -320,7 +320,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
     ASSERT(pLpClassDef);
     FdoClassDefinition* pFdoClassDef = (FdoClassDefinition*) mMappingClass.Map(pLpClassDef);
 
-    if (!aReferenced.classes.Contains(pLpClassDef))
+    if (!aReferenced.classes.ContainsClassDefinition(pLpClassDef))
         aReferenced.classes   .AddReference((FdoSmLpClassDefinition*)pLpClassDef);
 
     if (!pFdoClassDef)
@@ -1269,7 +1269,7 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
                 if (pLpClassDef)
                 {
                     mFoundCount++;
-                    aTodo.classes.Add((FdoSmLpClassDefinition*)pLpClassDef);
+                    aTodo.classes.AddClassDefinition((FdoSmLpClassDefinition*)pLpClassDef);
                 }
             }
         }
@@ -1359,7 +1359,7 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
     {
         for (int iClass = 0; iClass < aTodo.classes.GetCount(); iClass++)
         {
-            const FdoSmLpClassDefinition* pLpClassDef = aTodo.classes.GetItem(iClass);
+            const FdoSmLpClassDefinition* pLpClassDef = aTodo.classes.RefClassDefinition(iClass);
             FdoFeatureSchema* pFdoFeatureSchema = ConvertSchema(pLpClassDef->RefLogicalPhysicalSchema(), pLpClassDef, aReferenced);
 
             if (pFdoFeatureSchema)

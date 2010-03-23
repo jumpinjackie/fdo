@@ -56,3 +56,16 @@ const FdoSmLpClassDefinition* FdoSmLpQClassCollection::RefClassDefinition(FdoStr
 
     return classDef;
 }
+
+FdoInt32 FdoSmLpQClassCollection::AddClassDefinition( FdoSmLpClassDefinition* value)
+{
+    FdoSmLpQClassDefinitionP qClassDef = new FdoSmLpQClassDefinition( value );
+    return Add(qClassDef);
+}
+
+bool FdoSmLpQClassCollection::ContainsClassDefinition( const FdoSmLpClassDefinition* value)
+{
+    FdoSmLpQClassDefinitionP qClassDef = FindItem( value->GetQName() );
+
+    return (qClassDef != NULL);
+}

@@ -207,14 +207,17 @@ protected:
 	virtual bool AddConstraint( FdoStringP constraint ) = 0;
 
 
-private:
     /// Load Unique Keys if not yet loaded
 	void LoadUkeys();
 	void LoadUkeys( FdoPtr<FdoSmPhReader> ukeyRdr, bool isSkipAdd );
+    
+    // Load a unique key column from a reader.
+    virtual bool LoadUkeyColumn( FdoPtr<FdoSmPhReader> ukeyRdr, FdoSmPhColumnsP ukey  );
+    
     /// Load Check Keys if not yet loaded
 	void LoadCkeys();
-	void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr, bool isSkipAdd );
-	
+	virtual void LoadCkeys( FdoPtr<FdoSmPhReader> ckeyRdr, bool isSkipAdd );
+
     // Create new unique constraint group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableUkeyReader( FdoPtr<FdoSmPhRdConstraintReader> rdr );
 
@@ -227,6 +230,7 @@ private:
 	void AddCkeyError(FdoStringP columnNames);
     void AddDeleteNotEmptyError(void);
 
+private:
 	FdoSmPhBatchColumnsP		mUkeysCollection;
 	FdoSmPhCheckConstraintsP	mCkeysCollection;
 	FdoStringsP					mDeletedConstraints;

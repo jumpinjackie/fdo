@@ -70,6 +70,8 @@ private:
 
     /// Type of physical column.
     FdoSmPhColType mColType;
+    FdoInt32 mSize;
+    FdoInt32 mScale;
 
 };
 
