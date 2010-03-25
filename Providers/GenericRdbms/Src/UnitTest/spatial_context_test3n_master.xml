@@ -469,7 +469,7 @@ geographic</gml:derivedCRSType>
 </xs:schema>
 <SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.5" name="dbo">
 <complexType name="ClassB1Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="Prop1">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_classb1" name="dbo.ClassB1"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_classb1" name="dbo.ClassB1"/>
 <element name="Prop1">
 <Column name="Prop1"/>
 </element>
@@ -490,7 +490,7 @@ geographic</gml:derivedCRSType>
 </element>
 </complexType>
 <complexType name="table1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table1" name="dbo.table1"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table1" name="dbo.table1"/>
 <element name="id">
 <Column name="id"/>
 </element>
@@ -502,7 +502,7 @@ geographic</gml:derivedCRSType>
 </element>
 </complexType>
 <complexType name="table2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table2" name="dbo.table2"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table2" name="dbo.table2"/>
 <element name="id">
 <Column name="id"/>
 </element>

@@ -886,37 +886,37 @@
 </xs:schema>
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.5" name="dbo">
 <complexType name="rtable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_rtable1" name="dbo.rtable1"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable1" name="dbo.rtable1"/>
 </complexType>
 <complexType name="rtable2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_rtable2" name="dbo.rtable2"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable2" name="dbo.rtable2"/>
 </complexType>
 <complexType name="rtable7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="TABLE7_ID12345678901234567890">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_rtable7" name="dbo.rtable7"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable7" name="dbo.rtable7"/>
 </complexType>
 <complexType name="table1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table1" name="dbo.table1"/>
+<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table1" name="dbo.table1"/>
 </complexType>
 <complexType name="table3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table3" name="dbo.table3"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table3" name="dbo.table3"/>
 </complexType>
 <complexType name="table4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table4" name="dbo.table4"/>
+<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table4" name="dbo.table4"/>
 </complexType>
 <complexType name="table7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="ID">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table7" name="dbo.table7"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table7" name="dbo.table7"/>
 </complexType>
 <complexType name="table_delcol1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table_delcol1" name="dbo.table_delcol1"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol1" name="dbo.table_delcol1"/>
 </complexType>
 <complexType name="table_delcol2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_table_delcol2" name="dbo.table_delcol2"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol2" name="dbo.table_delcol2"/>
 </complexType>
 <complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_view1" name="dbo.view1"/>
+<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view1" name="dbo.view1"/>
 </complexType>
 <complexType name="view3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_dbo_view3" name="dbo.view3"/>
+<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view3" name="dbo.view3"/>
 </complexType>
 </SchemaMapping>
 </fdo:DataStore>

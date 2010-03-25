@@ -141,6 +141,9 @@ public:
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader(
         FdoStringP tableName, FdoStringP constraintType) const;
 
+    virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( 
+        FdoStringsP objectNames, FdoStringP constraintType ) const;
+
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader(
         FdoSmPhRdTableJoinP join, FdoStringP constraintType) const;

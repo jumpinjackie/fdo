@@ -52,8 +52,6 @@ public:
         FdoPhysicalClassMapping* classOverrides,
         bool ignoreStates);
 
-    virtual FdoStringP DefaultDbObjectName();
-
     // The following return versions of the db object or root object names
     // that are good for building other names such as for object property
     // tables and columns. 

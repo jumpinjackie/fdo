@@ -452,7 +452,7 @@ FdoPtr<FdoSmPhRdViewReader> FdoSmPhOwner::CreateViewReader() const
     return (FdoSmPhRdViewReader*) NULL;
 }
 
-FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoStringsP ownerNames, FdoStringP constraintType ) const
+FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOwner::CreateConstraintReader( FdoStringsP objectNames, FdoStringP constraintType ) const
 {
     return (FdoSmPhRdConstraintReader*) NULL;
 }

@@ -47,6 +47,8 @@ public:
 
   	virtual FdoStringP GetParcelFirstName();
 	virtual FdoStringP GetParcelLastName();
+
+    virtual bool DelayNLSSchema() {return false;};
 };
 
 

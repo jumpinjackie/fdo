@@ -180,14 +180,23 @@ FdoStringP PostGisFdoApplySchemaTest::LogicalPhysicalFormat( FdoString* inFile )
 FdoStringP PostGisFdoApplySchemaTest::SchemaTestErrFile( int fileNum, bool isMaster ) 
 {
     if ( isMaster ) {
-        if ( (fileNum == 3) || (fileNum == 6) || (fileNum == 9) ) 
+        if ( (fileNum == 3) ) 
             return L"";
 		return FdoStringP::Format( L"apply_schema_err%d%ls%ls.txt", fileNum,
-			(fileNum == 2 || fileNum == 5 || fileNum == 8) ? L"M" : L"", L"_master");
+			(fileNum == 2 || fileNum == 5 || fileNum == 6 || fileNum == 8 || (fileNum == 9)) ? L"P" : L"", L"_master");
     }
     return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_err%d%ls.txt",fileNum,
-        (fileNum == 2 || fileNum == 3 || fileNum == 5 || fileNum == 6 || fileNum == 8 || fileNum == 9) ? L"M" : L"") );
+        (fileNum == 2 || fileNum == 3 || fileNum == 5 || fileNum == 6 || fileNum == 8 || fileNum == 9) ? L"P" : L"") );
 }
+
+FdoStringP PostGisFdoApplySchemaTest::SchemaOvErrFile( int fileNum, bool isMaster )
+{
+	if (isMaster)
+		return FdoStringP::Format( L"apply_schema_overrides_err%dP%ls.txt", fileNum, L"_master");
+	else
+		return UnitTestUtil::GetOutputFileName( FdoStringP::Format( L"apply_schema_overrides_err%dSP.txt", fileNum) );
+}
+
 
 FdoStringP PostGisFdoApplySchemaTest::GetDefaultSchemaName()
 {

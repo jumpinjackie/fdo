@@ -59,8 +59,10 @@ public:
 
     virtual bool CanApplyWithoutMetaSchema();
     virtual bool CanCreateSchemaWithoutMetaSchema();
+    virtual bool SupportsCrossDatastoreDependencies() {return false;};
 
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
+    virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
     virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 

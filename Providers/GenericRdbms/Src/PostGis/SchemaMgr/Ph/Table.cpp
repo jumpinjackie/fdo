@@ -207,7 +207,7 @@ bool FdoSmPhPostGisTable::AddColumn( FdoSmPhColumnP column )
 {
     bool ret = true;
 
-    FdoSmPhColumnP baseColumn = column->SmartCast<FdoSmPhPostGisColumn>()->GetBaseColumn();
+    FdoSmPhColumnP baseColumn = dynamic_cast<FdoSmPhPostGisColumn*>(column.p)->GetBaseColumn();
 
     if ( (!baseColumn) || (baseColumn->GetElementState() == FdoSchemaElementState_Deleted) ) {
         FdoSmPhPostGisColumnGeomP columnGeom = column->SmartCast<FdoSmPhPostGisColumnGeom>();
@@ -233,7 +233,8 @@ bool FdoSmPhPostGisTable::DeleteColumn( FdoSmPhColumnP column )
     // dropped when the base column is dropped.
     // However, other types of inherited columns do not go away unless 
     // explicitly dropped.
-    if ( !column->SmartCast<FdoSmPhPostGisColumn>()->GetBaseColumn() || !column->SmartCast<FdoSmPhPostGisColumnGeom>() ) 
+
+    if ( !dynamic_cast<FdoSmPhPostGisColumn*>(column.p)->GetBaseColumn() || !dynamic_cast<FdoSmPhPostGisColumnGeom*>(column.p) ) 
         ret = FdoSmPhGrdTable::DeleteColumn( column );
 
     return ret;

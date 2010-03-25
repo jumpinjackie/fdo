@@ -662,6 +662,14 @@ FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemasEx( FdoStringP schemaName, Fdo
 {
     try
     {
+        FdoSmPhOwnerP owner = GetPhysicalSchema()->GetOwner();
+        if ( (!owner) || !(owner->GetHasMetaSchema()) ) {
+            // When no metaschema, need to bulk load pkeys (for identity properties)
+            // and fkeys (for association properties).
+            owner->SetBulkLoadPkeys(true);
+            owner->SetBulkLoadFkeys(true);
+        }
+
         // Load all constraints in one select, for performance.
         GetPhysicalSchema()->SetBulkLoadConstraints(true);
         if (classNames != NULL && classNames->GetCount() > 0)

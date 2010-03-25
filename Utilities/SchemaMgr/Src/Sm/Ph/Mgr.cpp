@@ -814,6 +814,9 @@ FdoPtr<FdoDataValue> FdoSmPhMgr::ParseSQLVal( FdoStringP stringValue )
             // Expression must specifically be an FDO data value.
             parsedValue = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
         }
+        catch ( FdoException* ex ) {
+            ex->Release();
+        }
         catch ( ... ) {
         }
 

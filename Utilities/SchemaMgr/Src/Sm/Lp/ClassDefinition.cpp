@@ -1534,7 +1534,9 @@ void FdoSmLpClassBase::SetDbObjectName( FdoStringP objectName )
 
 FdoStringP FdoSmLpClassBase::DefaultDbObjectName()
 {
-    return GetName();
+    FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+
+    return pPhysical->ClassName2DbObjectName(GetLogicalPhysicalSchema()->GetName(), GetName());
 }
 
 void FdoSmLpClassBase::Finalize()

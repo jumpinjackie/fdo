@@ -232,6 +232,20 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhPostGisOwner::CreateConstraintReader(
     return reader;
 }
 
+FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhPostGisOwner::CreateConstraintReader( FdoStringsP objectNames, FdoStringP constraintType ) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisConstraintReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisConstraintReader(thisOwner,
+        objectNames, constraintType);
+
+    return reader;
+}
+
+
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhPostGisOwner::CreateConstraintReader(
     FdoSmPhRdTableJoinP join,
     FdoStringP constraintType) const
