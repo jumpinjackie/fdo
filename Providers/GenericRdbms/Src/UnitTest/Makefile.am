@@ -94,7 +94,7 @@ EXTRA_DIST = \
   LogicalPhysicalSorter.xslt \
   OverrideBender.xslt
 
-noinst_PROGRAMS = UnitTestMySql UnitTestOdbc UnitTestPostGis
+noinst_PROGRAMS = UnitTestMySql UnitTestOdbc 
 
 #MySql
 UnitTestMySql_SOURCES = MySqlTestRegister.cpp
