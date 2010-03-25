@@ -62,7 +62,7 @@ FdoSmPhRdClassReader::FdoSmPhRdClassReader(
         if( ((const wchar_t*)className)[0] != '\0' )
         {
             // Reading a single class. Assume class table has same name.
-            pObject = mOwner->FindDbObject( className );
+            pObject = mOwner->FindDbObject( mgr->ClassName2DbObjectName(schemaName, className) );
             if ( pObject ) {
                 mDbObjects = new FdoSmPhDbObjectCollection(NULL);
                 mDbObjects->Add( pObject );

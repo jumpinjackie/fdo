@@ -195,6 +195,21 @@ FdoStringP FdoSmPhPostGisMgr::GetDefaultPhysicalSchemaName()
     return L"public";
 }
 
+FdoStringP FdoSmPhPostGisMgr::ClassName2DbObjectName(FdoStringP schemaName, FdoStringP className)
+{
+    // Qualify default db object name by schema
+
+    FdoSmPhOwnerP owner = GetOwner();
+    bool hasMetaSchema = owner ? owner->GetHasMetaSchema() : false;
+
+    if ( hasMetaSchema || (schemaName == L"") ) 
+        // Use default schema when not specified or there is a metaschema.
+        return GetDefaultPhysicalSchemaName() + L"." + className;
+
+    // Otherwise, default user is the feature schema name.
+    return schemaName + L"." + className;
+}
+
 FdoStringP FdoSmPhPostGisMgr::FormatDefaultedField(FdoStringP fieldName,
     FdoStringP colName,
     FdoStringP defaultValue,

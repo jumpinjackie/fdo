@@ -133,6 +133,8 @@ public:
     // Returns L"public".
     virtual FdoStringP GetDefaultPhysicalSchemaName();
 
+    virtual FdoStringP ClassName2DbObjectName(FdoStringP schemaName, FdoStringP className);
+
     /// Formats placeholder for bind parameter.
     /// PostgreSQL refers to parameters  in query $1, $2, etc.
     /// \param

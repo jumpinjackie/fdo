@@ -64,22 +64,6 @@ FdoSmLpPostGisClassDefinition::~FdoSmLpPostGisClassDefinition()
     // idle
 }
 
-FdoStringP FdoSmLpPostGisClassDefinition::DefaultDbObjectName()
-{
-    FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-    FdoSmPhOwnerP pOwner = pPhysical->GetOwner();
-    bool hasMetaSchema = pOwner ? pOwner->GetHasMetaSchema() : false;
-
-    // Qualify default db object name by user.
-
-    if ( hasMetaSchema ) 
-        // When datastore has MetaSchema, default user is dbo.
-        return FdoStringP(L"public.") + GetName();
-    else
-        // Otherwise, default user is the feature schema name.
-        return FdoStringP(GetLogicalPhysicalSchema()->GetName()) + L"." + GetName();
-}
-
 FdoStringP FdoSmLpPostGisClassDefinition::GetSubstDbObjectName( FdoStringP dbObjectName ) const
 {
     FdoStringP substObjName = FdoSmLpClassBase::GetSubstDbObjectName( dbObjectName );

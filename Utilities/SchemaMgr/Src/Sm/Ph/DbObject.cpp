@@ -460,11 +460,17 @@ FdoStringP FdoSmPhDbObject::GetAddPkeySql()
 
     if ( pkeyColumns->GetCount() > 0 ) {
         FdoStringsP pkColNames = GetKeyColsSql( pkeyColumns );
-        
+
+        FdoStringP pkeyName = this->GenPkeyName();
+
+        // Remove qualification by physical schema if present.
+        if ( pkeyName.Contains(L".") ) 
+            pkeyName = mPkeyName.Right( L"." );
+
         pkeySql = FdoStringP::Format( 
             L"constraint %ls%ls%ls primary key ( %ls )",
             ansiQuotes ? L"\"" : L"",
-            (FdoString*) this->GenPkeyName(),
+            (FdoString*) pkeyName,
             ansiQuotes ? L"\"" : L"",
             (FdoString*) pkColNames->ToString()
         );
@@ -1678,7 +1684,13 @@ FdoStringP FdoSmPhDbObject::GenPkeyName()
 {
     if ( mPkeyName == L"" ) {
         FdoSmPhOwner* pOwner = dynamic_cast<FdoSmPhOwner*>((FdoSmPhSchemaElement*) GetParent());
-        mPkeyName = pOwner->UniqueDbObjectName( FdoStringP(L"pk_") + FdoStringP(GetName()) ).Replace(L".",L"_");
+        FdoStringP PkeyName = GetName();
+        if ( PkeyName.Contains(L".") ) 
+            PkeyName = PkeyName.Replace( L".", L".pk_" );
+        else
+            PkeyName = FdoStringP(L"pk_") + PkeyName;
+
+        mPkeyName = pOwner->UniqueDbObjectName( PkeyName );
     }
 
     return mPkeyName;
