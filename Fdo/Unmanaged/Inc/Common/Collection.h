@@ -28,7 +28,7 @@
 /// standard collection access for all collection classes.
 template <class OBJ, class EXC> class FdoCollection : public FdoIDisposable
 {
-template <class OBJ, class EXC> friend class FdoNamedCollection;
+template <class OBJ2, class EXC2> friend class FdoNamedCollection;
 protected:
     static const FdoInt32 INIT_CAPACITY = 10;
 
