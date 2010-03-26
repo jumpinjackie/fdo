@@ -23,7 +23,7 @@
 #include <libpq-fe.h>
 #include <assert.h>
 
-int postgis_pgresult_clear (PGresult* result)
+int postgis_pgresult_clear (PGresult*& result)
 {
     int ret;
 

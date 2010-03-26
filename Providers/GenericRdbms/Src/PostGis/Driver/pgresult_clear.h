@@ -27,6 +27,6 @@
  * @param conn [in] - pointer to PGresult.
  * @return Returns RDBI_SUCCESS.
  */
-int postgis_pgresult_clear(PGresult* result);
+int postgis_pgresult_clear(PGresult*& result);
 
 #endif /* POSTGIS_PGRESULT_CLEAR_H */

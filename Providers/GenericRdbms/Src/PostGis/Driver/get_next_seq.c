@@ -20,6 +20,7 @@
 
 #include "get_next_seq.h"
 #include "conn_status.h"
+#include "pgresult_clear.h"
 #include <libpq-fe.h>
 
 #include <assert.h>
@@ -66,7 +67,7 @@ int postgis_get_next_seq(
             }
         }
 
-        PQclear(pgresult);
+        postgis_pgresult_clear(pgresult);
 
         ret = RDBI_SUCCESS;
     }
