@@ -39,6 +39,7 @@ typedef struct tag_PGSQL_BIND
     int   buffer_length;    /**< Data format: text (put a zero in the array) or binary (put a one in the array). */
     int   buffer_format;    /**< Data length, ignored for null parameters and text-format parameters. */
     void* buffer;           /**< Pointer to buffer where bind or statement data value is stored. */
+    void* geometry;         /**< Geometry to be deleted, since the client won't */
     char* is_null;
 } PGSQL_BIND;
 
@@ -61,17 +62,6 @@ typedef struct tag_postgis_context_def
 } postgis_context_def;
 
 /**
- * Geometry translation structure.
- */
-typedef struct tag_postgis_redefine_def
-{
-    void *original;
-    void *substitution;
-    void *geometry;      /**< Geometry to be deleted, since the client won't */
-    int   orig_type;
-} postgis_define_def;
-
-/**
  * Cursor to control statement operations.
  */
 typedef struct tag_postgis_cursor_def
@@ -87,8 +77,6 @@ typedef struct tag_postgis_cursor_def
     PGSQL_BIND* defines;
     int         bind_count;
     PGSQL_BIND* binds;
-    postgis_define_def* redefines; /* array of size define_count, NULL entries for non-geometries */
-    postgis_define_def* rebinds;   /* array of size bind_count, NULL entries for non-geometries */
 	int	  *srids; /* array of SRIDs, 0 if not explicitly set and for non-geometries */
     Oid         geometry_oid;
 } postgis_cursor_def;

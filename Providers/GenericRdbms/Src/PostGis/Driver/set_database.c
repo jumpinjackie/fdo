@@ -45,7 +45,6 @@ int postgis_set_database(postgis_context_def *context, const char* database_name
 {
     PGconn* newConn = NULL;
     PGconn* newConn2 = NULL;
-    PGresult* pgresult = NULL;
     long conn_index = 0;
     long conn_index2 = 0;
     int ret = RDBI_GENERIC_ERROR;
