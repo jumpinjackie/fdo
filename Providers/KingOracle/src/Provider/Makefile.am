@@ -116,7 +116,7 @@ FDO_31_Types.h \
 KgOraProvider.h \
 c_SDO_DIM_ELEMENT.h \
 c_SDO_GEOMETRY.h \
-c_SdeGeom2AGF.h
+c_SdeGeom2AGF.h \
 stdafx.h
 
 libKingOracleProviderSrc_la_LDFLAGS = 
