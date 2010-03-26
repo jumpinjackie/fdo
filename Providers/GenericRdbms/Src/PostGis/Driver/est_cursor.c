@@ -125,8 +125,6 @@ int postgis_est_cursor_obj (postgis_context_def *context, char **cursor)
             curs->defines = NULL;
             curs->bind_count = 0;
             curs->binds = NULL;
-            curs->redefines = NULL;
-            curs->rebinds = NULL;
             curs->geometry_oid = -1;
             curs->isSelect = 0;
             *cursor = (char*)curs;

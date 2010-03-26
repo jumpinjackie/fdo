@@ -32,36 +32,18 @@ void postgis_fre_binds (postgis_cursor_def* cursor)
 
     assert(NULL != cursor);
 
-    if (NULL != cursor->redefines)
-    {
-        for (i = 0; i < cursor->define_count; i++)
-        {
-            if (NULL != cursor->redefines[i].geometry)
-            {
-                FreeGeometry (cursor->redefines[i].geometry);
-                cursor->redefines[i].geometry = NULL;
-            }
-        }
-        free (cursor->redefines);
-        cursor->redefines = NULL;
-    }
-
-    if (NULL != cursor->rebinds)
-    {
-        for (i = 0; i < cursor->bind_count; i++)
-        {
-            if (NULL != cursor->rebinds[i].substitution)
-            {
-                free (cursor->rebinds[i].substitution);
-                cursor->rebinds[i].substitution = NULL;
-            }
-        }
-        free (cursor->rebinds);
-        cursor->rebinds = NULL;
-    }
-
     if (NULL != cursor->defines)
     {
+        if (cursor->geometry_oid != -1)
+        {
+            for (i = 0; i < cursor->define_count; i++)
+            {
+                if (cursor->defines[i].buffer_type == cursor->geometry_oid ) 
+                    FreeGeometry( cursor->defines[i].geometry );
+            }
+
+        }
+
         free (cursor->defines);
         cursor->define_count = 0;
         cursor->defines = NULL;

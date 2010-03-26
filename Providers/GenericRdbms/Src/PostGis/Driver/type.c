@@ -19,6 +19,7 @@
 #include "stdafx.h"
 
 #include "type.h"
+#include "pgresult_clear.h"
 #include <assert.h>
 #include <limits.h> /* LONG_MIN, LONG_MAX */
 #include <stdlib.h> /* strtol */
@@ -231,7 +232,7 @@ Oid postgis_get_geometry_oid(PGconn* conn)
         }
     }
 
-    PQclear(pgresult);
+    postgis_pgresult_clear(pgresult);
 
     /*
      * 0 - failure
@@ -267,7 +268,7 @@ int postgis_get_name_length(PGconn* conn)
         }
     }
 
-    PQclear(pgresult);
+    postgis_pgresult_clear(pgresult);
 
     /*
      * 0 - failure

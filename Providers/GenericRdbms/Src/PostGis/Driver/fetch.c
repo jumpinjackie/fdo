@@ -53,7 +53,6 @@ int postgis_fetch (postgis_context_def *context,
     int nfields = 0;
     int ret = RDBI_GENERIC_ERROR;
 
-
     if (NULL != rows_processed)
         *rows_processed = 0;
 
@@ -213,7 +212,7 @@ int postgis_fetch (postgis_context_def *context,
                                 curs->geometry_oid = postgis_get_geometry_oid(postgis);
 
                             if ( (curs->geometry_oid != -1) && (curs->geometry_oid == curs->defines[i].buffer_type) ) {
-                                FreeGeometry( *(void**)(curs->defines[i].buffer) );
+                                FreeGeometry( curs->defines[i].geometry );
                                 int defcount = strlen(fvalue);
                                 // TODO - 3D geometries and proper checking of hasSrid flag.
                                 bool hasSrid = false;
@@ -231,8 +230,10 @@ int postgis_fetch (postgis_context_def *context,
                                     if ( (!hasSrid) || j < 10 || j > 17 )
                                         buffer[k++] = ((fvalue[j] - (fvalue[j] >= 'A' ? ('A' - 10) : '0')) * 16) + (fvalue[j+1] - (fvalue[j+1] >= 'A' ? ('A' - 10) : '0'));
                                 }
-                                void* geomPtr = GeometryFromWkb ( buffer, k );
-                                memcpy(curs->defines[i].buffer, &geomPtr, sizeof(void*));
+
+                                curs->defines[i].geometry = GeometryFromWkb ( buffer, k );
+                                memcpy(curs->defines[i].buffer, &(curs->defines[i].geometry), sizeof(void*));
+
                                 delete[] buffer;
                             }
                             else {
@@ -262,7 +263,8 @@ int postgis_fetch (postgis_context_def *context,
                 {
                     // Make sure to rollback the transaction that we started for this cursor. Otherwise the server
                     // will go in an out of synch state.
-                    PQexec(postgis, "rollback");
+                    PGresult* pgresult = PQexec(postgis, "rollback");
+                    postgis_pgresult_clear(pgresult);
                     context->postgis_in_transaction[context->postgis_current_connect] = -1;
                     curs->isSelect = 0; // prevents a possible commit.
                 }

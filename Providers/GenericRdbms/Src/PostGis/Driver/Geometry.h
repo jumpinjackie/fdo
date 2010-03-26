@@ -25,6 +25,6 @@
 
 extern void* GeometryFromWkb (void *wkb, unsigned long size);
 extern char* WkbFromGeometry (void *geometry, int* size);
-extern void FreeGeometry (void *geometry);
+extern void FreeGeometry (void*& geometry);
 
 #endif /* POSTGIS_GEOMETRY_H */

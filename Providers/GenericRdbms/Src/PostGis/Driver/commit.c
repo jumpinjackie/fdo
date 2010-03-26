@@ -20,6 +20,7 @@
 
 #include "commit.h"
 #include "pgconn_status.h"
+#include "pgresult_clear.h"
 #include "pgresult_status.h"
 #include <assert.h>
 
@@ -62,6 +63,8 @@ int postgis_commit (
                     context->postgis_in_transaction[context->postgis_current_connect] = -1;
                     ret = RDBI_SUCCESS;
                 }
+
+                postgis_pgresult_clear(pgresult);
             }
         }
     }
@@ -105,6 +108,8 @@ int postgis_trans_begin(
                     context->postgis_in_transaction[context->postgis_current_connect] = 0;
                     ret = RDBI_SUCCESS;
                 }
+
+                postgis_pgresult_clear(pgresult);
             }
         }
     }
