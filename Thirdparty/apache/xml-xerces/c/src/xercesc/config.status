@@ -2,7 +2,7 @@
 # Generated automatically by configure.
 # Run this file to recreate the current configuration.
 # This directory was configured as follows,
-# on host otwpdtux1:
+# on host localhost.localdomain:
 #
 # ./configure 
 #
@@ -59,7 +59,7 @@ s%@oldincludedir@%/usr/include%g
 s%@infodir@%${prefix}/info%g
 s%@mandir@%${prefix}/man%g
 s%@CC@%gcc%g
-s%@CXX@%g++%g
+s%@CXX@%c++%g
 s%@INSTALL_PROGRAM@%${INSTALL}%g
 s%@INSTALL_SCRIPT@%${INSTALL_PROGRAM}%g
 s%@INSTALL_DATA@%${INSTALL} -m 644%g
@@ -71,7 +71,7 @@ s%@host_cpu@%i686%g
 s%@host_vendor@%pc%g
 s%@host_os@%linux-gnu%g
 s%@platform@%LINUX%g
-s%@cxx@%g++%g
+s%@cxx@%c++%g
 s%@GXX@%yes%g
 s%@cc@%gcc%g
 s%@GCC@%yes%g
