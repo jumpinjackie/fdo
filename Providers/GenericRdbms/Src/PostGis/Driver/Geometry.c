@@ -43,7 +43,7 @@ void *GeometryFromWkb (void *wkb, unsigned long size)
     return (void *)g;
 }
 
-void FreeGeometry (void *geometry)
+void FreeGeometry (void*& geometry)
 {
 	FdoIGeometry *g = (FdoIGeometry *)geometry;
 

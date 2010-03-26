@@ -21,6 +21,7 @@
 #include "define.h"
 #include "type.h"
 #include "pgconn_status.h"
+#include "pgresult_clear.h"
 #include "pgresult_status.h"
 #include <limits.h> /* LONG_MIN, LONG_MAX */
 #include <stdlib.h>
@@ -125,8 +126,7 @@ int postgis_define (
                         }
                     }
 
-                    if ( pgres != NULL )
-                        PQclear(pgres);
+                    postgis_pgresult_clear(pgres);
                 } /* if (NULL != curs->stmt_name) */
             }
         }
