@@ -1768,9 +1768,9 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       sde_geom_coord_dim = stm->IsColumnNull(8) ? 0 : stm->GetLong(8);
 
       sde_full_geometry_table_name = sde_geom_owner + L"." + sde_geom_table;
-      FdoStringP temp2 = FdoStringP::Format(L"S%ld",sde_layer_id);
+      FdoStringP temp2 = FdoStringP::Format(L"%s.S%ld",sde_geom_owner.c_str(),sde_layer_id);
       sde_full_index_table_name = temp2;
-      sde_full_index_table_name = sde_geom_owner + L".S" + sde_full_index_table_name;
+      //sde_full_index_table_name = sde_geom_owner + sde_full_index_table_name;
 
       sde_srid = stm->IsColumnNull(9) ? 0 : stm->GetLong(9);
       sde_coord_sys_wktext = stm->IsColumnNull(10) ? L"" : stm->GetString(10);

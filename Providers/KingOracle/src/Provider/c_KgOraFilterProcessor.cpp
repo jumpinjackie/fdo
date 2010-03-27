@@ -258,17 +258,66 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
   FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
   if (geomval)
   {
+  
+    // SELECT /*+ LEADING INDEX(S_ S2008_IX1) INDEX(SHAPE F2008_UK1) INDEX(MMY_AREA
+    // A2008_IX1) */  OID,  TOID,  FEATCODE,  VERSION,  VERDATE,  THEME,  CALCAREA,
+    // CHANGE,  DESCGROUP,  DESCTERM,  MAKE,  PHYSLEVEL,  PHYSPRES,  BROKEN, 
+    // LOADDATE,  SHAPE  ,S_.eminx,S_.eminy,S_.emaxx,S_.emaxy ,SHAPE.fid,
+    // SHAPE.numofpts,SHAPE.entity,SHAPE.points,SHAPE.rowid 
+    // FROM
+    //  (SELECT  /*+ INDEX(SP_ S2008_IX1) */ DISTINCT sp_fid, eminx, eminy, emaxx,
+    //  emaxy FROM OSMASTERMAP.S2008 SP_  WHERE SP_.gx >= :1 AND SP_.gx <= :2 AND
+    //  SP_.gy >= :3 AND SP_.gy <= :4 AND SP_.eminx <= :5 AND SP_.eminy <= :6 AND
+    //  SP_.emaxx >= :7 AND SP_.emaxy >= :8) S_ ,  
+    //  OSMASTERMAP.MMY_AREA ,
+    // OSMASTERMAP.F2008 SHAPE  WHERE S_.sp_fid = SHAPE.fid AND S_.sp_fid =
+    // OSMASTERMAP.MMY_AREA.SHAPE
+    
+    
+    
+    // create select statement for spatial index
+    
+    
     FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
     FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
     FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
-
     double minx = envelope->GetMinX();
     double miny = envelope->GetMinY();
 
     double maxx = envelope->GetMaxX();
     double maxy = envelope->GetMaxY();
+    
+    // convert min max to sde integers
+    minx = (minx - m_OraSridDesc.m_SDE_FalseX) * m_OraSridDesc.m_SDE_XYUnit;
+    maxx = (maxx - m_OraSridDesc.m_SDE_FalseX) * m_OraSridDesc.m_SDE_XYUnit;
+    
+    miny = (miny - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
+    maxy = (maxy - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
+    
+    wstring indexname = m_ClassDef->GetSdeIndexTableName();
+    indexname += L"_IX1";
+    
+    // this goes into FROM part of SQL
+    FdoStringP sbuff = FdoStringP::Format(L"(SELECT  /*+ INDEX(SP_ %s) */ DISTINCT sp_fid, eminx, eminy, emaxx,"
+        L" emaxy FROM %s SP_  WHERE "
+        L" SP_.gx >= 0 AND SP_.gx >= 0"
+        L" AND SP_.eminx <= %.0lf AND SP_.eminy <= %.0lf AND"
+        L" SP_.emaxx >= %.0lf AND SP_.emaxy >= %.0lf) S_",indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
+        ,maxx,maxy,minx,miny
+       );
+       
+    m_SDE_SelectSpatialIndex = sbuff;   
 
+
+    // this goes into WHERE part of SQL
+    sbuff = FdoStringP::Format(L"S_.sp_fid = %s.fid",m_ClassDef->GetSdeGeomTableAlias());
+    m_SDE_WhereSpatialIndex = sbuff;
+    
+    AppendString(L"1=1"); // just to satisfy boolean operator. Spatial condition can be combined with other filters and 
+                          // filter processor will generate some boolean operators
+    
+    /*
     FdoStringP buff;
 
     AppendString(D_FILTER_OPEN_PARENTH);
@@ -302,7 +351,8 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     AppendString((FdoString*)buff);
 
     AppendString(D_FILTER_CLOSE_PARENTH);        
-    AppendString(D_FILTER_CLOSE_PARENTH);        
+    AppendString(D_FILTER_CLOSE_PARENTH);       
+    */ 
   }    
   return;
 }

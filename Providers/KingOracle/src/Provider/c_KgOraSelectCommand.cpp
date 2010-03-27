@@ -374,6 +374,9 @@ std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& Filte
             sql_select_columns_part += sep + sdegeom_table_alias + "." + "ENTITY" + " as " + "SDE_ENTITY";  sep = ",";
             SqlColumns->Add(L"SDE_ENTITY");
             
+            sql_select_columns_part += sep + sdegeom_table_alias + "." + "fid";  sep = ",";
+            SqlColumns->Add(L"fid");
+            
             
             
             
@@ -426,27 +429,84 @@ std::wstring c_KgOraSelectCommand::CreateSqlString(c_KgOraFilterProcessor& Filte
 
     
     {
-    FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+    
     
     if( phys_class->GetIsSdeClass() )
     {
+        // SELECT /*+ LEADING INDEX(S_ S2008_IX1) INDEX(SHAPE F2008_UK1) INDEX(MMY_AREA
+        // A2008_IX1) */  OID,  TOID,  FEATCODE,  VERSION,  VERDATE,  THEME,  CALCAREA,
+        // CHANGE,  DESCGROUP,  DESCTERM,  MAKE,  PHYSLEVEL,  PHYSPRES,  BROKEN, 
+        // LOADDATE,  SHAPE  ,S_.eminx,S_.eminy,S_.emaxx,S_.emaxy ,SHAPE.fid,
+        // SHAPE.numofpts,SHAPE.entity,SHAPE.points,SHAPE.rowid 
+        // FROM
+        //  (SELECT  /*+ INDEX(SP_ S2008_IX1) */ DISTINCT sp_fid, eminx, eminy, emaxx,
+        //  emaxy FROM OSMASTERMAP.S2008 SP_  WHERE SP_.gx >= :1 AND SP_.gx <= :2 AND
+        //  SP_.gy >= :3 AND SP_.gy <= :4 AND SP_.eminx <= :5 AND SP_.eminy <= :6 AND
+        //  SP_.emaxx >= :7 AND SP_.emaxy >= :8) S_ ,  
+        //  OSMASTERMAP.MMY_AREA ,
+        // OSMASTERMAP.F2008 SHAPE  WHERE S_.sp_fid = SHAPE.fid AND S_.sp_fid =
+        // OSMASTERMAP.MMY_AREA.SHAPE
+    
+      FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      sqlstr = (FdoString*)sbuff;
+      
+      // add select for table for spatial index
+      if( FilterProc.m_SDE_SelectSpatialIndex.length() > 0 )
+      {
+        sqlstr += L",";
+        sqlstr += FilterProc.m_SDE_SelectSpatialIndex;
+      }
+      
+      
+      // add geometry table
+      FdoStringP sbuffjoin = FdoStringP::Format(L", %s %s",(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias);
+      sqlstr += (const wchar_t*)sbuffjoin;
+      
+      
+      // add WHERE
+      sqlstr += L" WHERE ";
+      
+      // table for spatial index
+      if( FilterProc.m_SDE_WhereSpatialIndex.length() > 0 )
+      {
+        sqlstr += FilterProc.m_SDE_WhereSpatialIndex;        
+        sqlstr += L" AND ";
+      }
+      
+      // link geometry table to main table
+      sbuffjoin = FdoStringP::Format(L"%s.%s=%s.%s",(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+                                                    ,(const wchar_t*)sdegeom_table_alias,L"fid"); 
+      
+      
+      
+      sqlstr += (const wchar_t*)sbuffjoin;
+      
       // select a1.shape, g1.points, g1.eminx from UNISDETRAIN.UFRM_LICASE_POLY a1 LEFT JOIN UNISDETRAIN.F323 g1 ON a1.shape = g1.fid 
+      /*
       FdoStringP sbuffjoin = FdoStringP::Format(L" LEFT JOIN %s %s ON %s.%s=%s.%s"
                           ,(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias
                           ,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
                           ,(const wchar_t*)sdegeom_table_alias,L"fid"
                           );     
       sbuff = sbuff + sbuffjoin;                       
+      */
+      
+      if( filtertext && *filtertext )
+      {        
+        sqlstr += L" AND ";
+        sqlstr += filtertext;
+      }
     }
-    
-    sqlstr = (FdoString*)sbuff;
-    if( filtertext && *filtertext )
+    else
     {
-      sqlstr += L" WHERE ";
-      //sqlstr += wherestr;
-      sqlstr += filtertext;
+      FdoStringP sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      sqlstr = (FdoString*)sbuff;
+      if( filtertext && *filtertext )
+      {
+        sqlstr += L" WHERE ";
+        sqlstr += filtertext;
+      }
     }
-
     }
     
     FdoPtr<FdoIdentifierCollection> order_ident_col = GetOrdering();

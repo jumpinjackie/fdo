@@ -377,24 +377,42 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
             
             GeomSqlColumnIndex=ind;
             
-            if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+            if( phys_class->GetIsSdeClass() )
             {
-            // this is geometry created as point from numeric columns
-              
-              FdoStringP pointstr;
-              if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
-                pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
-              else
-                pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
-                        
-              sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+              sql_select_columns_part += sep + sdegeom_table_alias + "." + "POINTS" + " as " + propname;  sep = ",";
+
+              sql_select_columns_part += sep + sdegeom_table_alias + "." + "NUMOFPTS" + " as " + "SDE_NUMOFPTS";  sep = ",";
+              SqlColumns->Add(L"SDE_NUMOFPTS");
+
+              sql_select_columns_part += sep + sdegeom_table_alias + "." + "ENTITY" + " as " + "SDE_ENTITY";  sep = ",";
+              SqlColumns->Add(L"SDE_ENTITY");
+
+              sql_select_columns_part += sep + sdegeom_table_alias + "." + "fid";  sep = ",";
+              SqlColumns->Add(L"fid");
+
               sep = ",";
             }
             else
-            {
-            // this is normal geomerty property - oracle column
-            // add just property name in select
-              sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+            { 
+              if( phys_class->GetIsPointGeometry() && (FdoCommonOSUtil::wcsicmp(propname,phys_class->GetPoinGeometryPropertyName())==0) )
+              {
+              // this is geometry created as point from numeric columns
+                
+                FdoStringP pointstr;
+                if( phys_class->GetPointZOraColumn() && (wcslen(phys_class->GetPointZOraColumn()) > 0) )
+                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,%s),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),phys_class->GetPointZOraColumn(),propname);
+                else
+                  pointstr = pointstr.Format(L" SDO_GEOMETRY(2001,NULL,SDO_POINT_TYPE(%s,%s,NULL),NULL,NULL) as %s ",phys_class->GetPointXOraColumn(),phys_class->GetPointYOraColumn(),propname);
+                          
+                sql_select_columns_part += sep + pointstr;  // this is for just column -> sql_select_columns_part += sep + table_alias + "." + propname;  
+                sep = ",";
+              }
+              else
+              {
+              // this is normal geomerty property - oracle column
+              // add just property name in select
+                sql_select_columns_part += sep + table_alias + "." + propname;  sep = ",";
+              }
             }
           }
           else
@@ -420,33 +438,93 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
     }
     else filtertext = NULL;
 
-    
-    
-    FdoStringP sbuff;
-    if( GetDistinct() ) 
-      sbuff = FdoStringP::Format(L"SELECT DISTINCT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
-    else
-      sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
-    
     if( phys_class->GetIsSdeClass() )
     {
-      // select a1.shape, g1.points, g1.eminx from UNISDETRAIN.UFRM_LICASE_POLY a1 LEFT JOIN UNISDETRAIN.F323 g1 ON a1.shape = g1.fid 
-      FdoStringP sbuffjoin = FdoStringP::Format(L" LEFT JOIN %s %s ON %s.%s=%s.%s"
-        ,(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias
-        ,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
-        ,(const wchar_t*)sdegeom_table_alias,L"fid"
-        );     
-      sbuff = sbuff + sbuffjoin;                       
-    }
+        // SELECT /*+ LEADING INDEX(S_ S2008_IX1) INDEX(SHAPE F2008_UK1) INDEX(MMY_AREA
+        // A2008_IX1) */  OID,  TOID,  FEATCODE,  VERSION,  VERDATE,  THEME,  CALCAREA,
+        // CHANGE,  DESCGROUP,  DESCTERM,  MAKE,  PHYSLEVEL,  PHYSPRES,  BROKEN, 
+        // LOADDATE,  SHAPE  ,S_.eminx,S_.eminy,S_.emaxx,S_.emaxy ,SHAPE.fid,
+        // SHAPE.numofpts,SHAPE.entity,SHAPE.points,SHAPE.rowid 
+        // FROM
+        //  (SELECT  /*+ INDEX(SP_ S2008_IX1) */ DISTINCT sp_fid, eminx, eminy, emaxx,
+        //  emaxy FROM OSMASTERMAP.S2008 SP_  WHERE SP_.gx >= :1 AND SP_.gx <= :2 AND
+        //  SP_.gy >= :3 AND SP_.gy <= :4 AND SP_.eminx <= :5 AND SP_.eminy <= :6 AND
+        //  SP_.emaxx >= :7 AND SP_.emaxy >= :8) S_ ,  
+        //  OSMASTERMAP.MMY_AREA ,
+        // OSMASTERMAP.F2008 SHAPE  WHERE S_.sp_fid = SHAPE.fid AND S_.sp_fid =
+        // OSMASTERMAP.MMY_AREA.SHAPE
     
-    sqlstr = (FdoString*)sbuff;
-    if( filtertext && *filtertext )
-    {
+      FdoStringP sbuff;
+      if( GetDistinct() )
+        sbuff = FdoStringP::Format(L"SELECT DISTINCT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      else
+        sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      sqlstr = (FdoString*)sbuff;
+      
+      // add select for table for spatial index
+      if( FilterProc.m_SDE_SelectSpatialIndex.length() > 0 )
+      {
+        sqlstr += L",";
+        sqlstr += FilterProc.m_SDE_SelectSpatialIndex;
+      }
+      
+      
+      // add geometry table
+      FdoStringP sbuffjoin = FdoStringP::Format(L", %s %s",(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias);
+      sqlstr += (const wchar_t*)sbuffjoin;
+      
+      
+      // add WHERE
       sqlstr += L" WHERE ";
-      //sqlstr += wherestr;
-      sqlstr += filtertext;
+      
+      // table for spatial index
+      if( FilterProc.m_SDE_WhereSpatialIndex.length() > 0 )
+      {
+        sqlstr += FilterProc.m_SDE_WhereSpatialIndex;        
+        sqlstr += L" AND ";
+      }
+      
+      // link geometry table to main table
+      sbuffjoin = FdoStringP::Format(L"%s.%s=%s.%s",(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+                                                    ,(const wchar_t*)sdegeom_table_alias,L"fid"); 
+      
+      
+      
+      sqlstr += (const wchar_t*)sbuffjoin;
+      
+      // select a1.shape, g1.points, g1.eminx from UNISDETRAIN.UFRM_LICASE_POLY a1 LEFT JOIN UNISDETRAIN.F323 g1 ON a1.shape = g1.fid 
+      /*
+      FdoStringP sbuffjoin = FdoStringP::Format(L" LEFT JOIN %s %s ON %s.%s=%s.%s"
+                          ,(const wchar_t*)sdegeom_fultablename,(const wchar_t*)sdegeom_table_alias
+                          ,(const wchar_t*)table_alias,(const wchar_t*)sde_featurekey_column
+                          ,(const wchar_t*)sdegeom_table_alias,L"fid"
+                          );     
+      sbuff = sbuff + sbuffjoin;                       
+      */
+      
+      if( filtertext && *filtertext )
+      {        
+        sqlstr += L" AND ";
+        sqlstr += filtertext;
+      }
     }
-    
+    else
+    {    
+      FdoStringP sbuff;
+      if( GetDistinct() ) 
+        sbuff = FdoStringP::Format(L"SELECT DISTINCT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      else
+        sbuff = FdoStringP::Format(L"SELECT %s FROM %s %s",(const wchar_t*)sql_select_columns_part,(const wchar_t*)fultablename,(const wchar_t*)table_alias);
+      
+            
+      sqlstr = (FdoString*)sbuff;
+      if( filtertext && *filtertext )
+      {
+        sqlstr += L" WHERE ";
+        //sqlstr += wherestr;
+        sqlstr += filtertext;
+      }
+    }
     if( m_Grouping.p && m_Grouping->GetCount()>0 )
     {
       FdoStringP sql_groupby_columns;
