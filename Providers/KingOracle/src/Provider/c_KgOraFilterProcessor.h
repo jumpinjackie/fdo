@@ -47,6 +47,15 @@ protected:
   
   int m_OracleMainVersion;
   
+public:  
+  std::wstring m_SDE_SelectSpatialIndex; // this is where select sql is stored for spatial index when filter encounters spatial condition 
+                                        // (SELECT  /*+ INDEX(SP_ S2008_IX1) */ DISTINCT sp_fid, eminx, eminy, emaxx,
+                                        //  emaxy FROM OSMASTERMAP.S2008 SP_  WHERE SP_.gx >= :1 AND SP_.gx <= :2 AND
+                                        //  SP_.gy >= :3 AND SP_.gy <= :4 AND SP_.eminx <= :5 AND SP_.eminy <= :6 AND
+                                        //  SP_.emaxx >= :7 AND SP_.emaxy >= :8) S_
+                                        
+  std::wstring m_SDE_WhereSpatialIndex;                                        
+  
 public:
     /// \brief
     /// Processes the FdoBinaryLogicalOperator passed in as an argument.
