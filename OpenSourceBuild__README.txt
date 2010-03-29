@@ -65,8 +65,8 @@ II. Build Notes
         SET FDO=[FDO OpenSource]\Fdo
         SET FDOUTILITIES=[FDO OpenSource]\Utilities
         SET FDOTHIRDPARTY=[FDO OpenSource]\ThirdParty
-        SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
-        SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
+        SET XALANROOT=%FDOTHIRDPARTY%\apache\xalan
+        SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xerces
         SET NLSDIR=%XALANROOT%\Src\xalanc\NLS
 
   4. In order to build all FDO Windows components, ensure that the Microsoft

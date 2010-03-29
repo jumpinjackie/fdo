@@ -54,9 +54,9 @@ SET ACTIVEPATHCHECK=%FDOTHIRDPARTY%
 SET ACTIVENAMECHECK="FDO Thirdparty"
 if not exist "%FDOTHIRDPARTY%" goto error
 
-SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
-SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
-SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
+SET XALANROOT=%FDOTHIRDPARTY%\apache\xalan
+SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xerces
+SET NLSDIR=%FDOTHIRDPARTY%\apache\xalan\src\xalanc\NLS
 
 if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
 if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
