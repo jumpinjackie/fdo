@@ -99,7 +99,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WIN32;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -114,8 +114,8 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_2.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Release;.\Lib\Win32\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_3.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xalan/build/win32/VC9/Release;$(FDOTHIRDPARTY)/apache/xerces/build/win32/VC9/Release;.\Lib\Win32\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -138,7 +138,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -153,8 +153,8 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_2.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Release;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Release;.\Lib\Win64\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xalan-C_1.lib;Xerces-C_3.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Release;$(FDOTHIRDPARTY)/apache/xerces/build/Win64/VC9/Release;.\Lib\Win64\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -173,7 +173,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -187,8 +187,8 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_2D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/win32/VC9/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/win32/VC9/Debug;.\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_3D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xalan/build/win32/VC9/Debug;$(FDOTHIRDPARTY)/apache/xerces/build/win32/VC9/Debug;.\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>MSVCRT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
@@ -211,7 +211,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xml-xalan/c/src;$(FDOTHIRDPARTY)/apache/xml-xerces/c/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -225,8 +225,8 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_2D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xml-xalan/c/build/Win64/VC9/Debug;$(FDOTHIRDPARTY)/apache/xml-xerces/c/build/Win64/VC9/Debug;.\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Xalan-C_1D.lib;Xerces-C_3D.lib;FDONLS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Debug;$(FDOTHIRDPARTY)/apache/xerces/build/Win64/VC9/Debug;.\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>

@@ -26,10 +26,10 @@ void FdoXmlUtilXrcs::Initialize()
     // does nothing now... see TransformerXalan
 }
 
-FdoStringP FdoXmlUtilXrcs::Xrcs2Unicode( const XMLCh* chars, const unsigned int length )
+FdoStringP FdoXmlUtilXrcs::Xrcs2Unicode( const XMLCh* chars, const XMLSize_t length )
 {
     FdoStringP outString;
-    unsigned int localLength = length;
+    XMLSize_t localLength = length;
 
 #ifdef _WIN32
 

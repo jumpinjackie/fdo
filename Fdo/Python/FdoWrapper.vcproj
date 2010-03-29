@@ -419,8 +419,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="mkdir .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll .\UnitTest\Bin\Win32\Debug&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>
@@ -430,8 +430,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying thirdparty dlls"
-						CommandLine="mkdir .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\Xalan-C_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\VC9\Release\XalanMessages_1_7_0.dll;$(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll"
+						CommandLine="mkdir .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll .\UnitTest\Bin\Win32\Release&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyThirdparty.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll"
 						Outputs="$(OutDir)\CopyThirdparty.ilk"
 					/>
 				</FileConfiguration>

@@ -134,18 +134,16 @@ void FdoXmlFeaturePropertyWriter::WriteProperty(FdoString* name, FdoLOBValue* va
         m_writer->WriteStartElement(name);
     
     FdoPtr<FdoByteArray> v = value->GetData();
-    unsigned int encodedLen;
+    XMLSize_t encodedLen;
     const XMLByte* const inputData = v->GetData();
     const unsigned int   inputLength = v->GetCount();
     XMLByte* encoded = XERCES_CPP_NAMESPACE::Base64::encode(inputData, inputLength, &encodedLen);
     std::string encoded1((char*)encoded, encodedLen);
     m_writer->WriteCharacters((FdoString*)FdoStringP((const char*)encoded1.c_str()));
-    XERCES_CPP_NAMESPACE::XMLString::release(&encoded);
-
+	delete encoded;
 
     if (!valueOnly)
         m_writer->WriteEndElement();
-
 }
 
 template<typename T> void Stream2Base64(FdoIStreamReaderTmpl<T>* stream, std::basic_string<T>& b64) {
@@ -180,11 +178,11 @@ void FdoXmlFeaturePropertyWriter::WriteProperty(FdoString* name, FdoIStreamReade
         valueLen = v1.size() * sizeof(wchar_t);
     }
 
-    unsigned int encodedLen;
+    XMLSize_t encodedLen;
     XMLByte* encoded = XERCES_CPP_NAMESPACE::Base64::encode(value, (const unsigned int)valueLen, &encodedLen);
     std::string encoded1((char*)encoded, encodedLen);
     m_writer->WriteCharacters((FdoString*)FdoStringP(encoded1.c_str()));
-    XERCES_CPP_NAMESPACE::XMLString::release(&encoded);
+	delete encoded;
 
     if (!valueOnly)
         m_writer->WriteEndElement();

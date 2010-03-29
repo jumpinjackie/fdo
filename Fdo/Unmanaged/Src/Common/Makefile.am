@@ -77,8 +77,8 @@ noinst_HEADERS = $(libFDOCommon_la_SOURCES) \
 
 INCLUDES = \
   -I../../Inc \
-  -I$(FDOTHIRDPARTY)/apache/xml-xalan/c/src \
-  -I$(FDOTHIRDPARTY)/apache/xml-xerces/c/src 
+  -I$(FDOTHIRDPARTY)/apache/xalan/src \
+  -I$(FDOTHIRDPARTY)/apache/xerces/src 
 
 libFDOCommon_la_LDFLAGS = 
 

@@ -34,7 +34,7 @@ public:
 
     /// Converts Xerces wide char string to FDO wide chars.
     /// 
-    FDO_API_COMMON static FdoStringP Xrcs2Unicode( const XMLCh* chars, const unsigned int length = 0 );
+    FDO_API_COMMON static FdoStringP Xrcs2Unicode( const XMLCh* chars, const XMLSize_t length = 0 );
     /// Converts FDO wide char string to Xerces wide chars.
     /// Caller is responsible for freeing returned string. The string must be freed using
     /// XERCES_CPP_NAMESPACE::XMLString::release().
