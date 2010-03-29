@@ -142,9 +142,9 @@ goto study_params
 	SET FDO=%cd%\Fdo
 	SET FDOUTILITIES=%cd%\Utilities
 	SET FDOTHIRDPARTY=%cd%\Thirdparty
-	SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
-	SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
-	SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
+	SET XALANROOT=%FDOTHIRDPARTY%\apache\xalan
+	SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xerces
+	SET NLSDIR=%FDOTHIRDPARTY%\apache\xalan\src\xalanc\NLS
 	popd
 	
 :start_build_debug
