@@ -160,9 +160,9 @@ goto study_params
 
 :start_build
 if ("%FDOTHIRDPARTY%")==("") SET FDOTHIRDPARTY=%cd%
-if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xml-xalan\c
-if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xml-xerces\c
-if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xml-xalan\c\Src\xalanc\NLS
+if ("%XALANROOT%")==("") SET XALANROOT=%cd%\apache\xalan
+if ("%XERCESCROOT%")==("") SET XERCESCROOT=%cd%\apache\xerces
+if ("%NLSDIR%")==("") SET NLSDIR=%cd%\apache\xalan\Src\xalanc\NLS
 
 if "%PLATFORMTHR%"=="Win32" SET INTERMEDIATEDIR=Win32
 if "%PLATFORMTHR%"=="x64" SET INTERMEDIATEDIR=Win64
@@ -210,9 +210,9 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_fdo
 rem # Install all Thirdparty Files
 :install_all_files
 echo copy %TYPEBUILDTHR% Thirdparty files
-copy /y "apache\xml-xalan\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xalan\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xerces\c\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_11_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xerces\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_3_1%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal17.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-vc90-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
@@ -234,9 +234,9 @@ if "%TYPEACTIONTHR%"=="clean" goto rebuild_sdf
 rem # Install FDO API Thirdparty Files
 :install_fdo_files
 echo copy %TYPEBUILDTHR% Thirdparty files
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\Xalan-C_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xalan\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\XalanMessages_1_7_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xml-xerces\c\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\xerces-c_2_5_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xalan\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\Xalan-C_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xalan\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\XalanMessages_1_11_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xerces\Build\%PLATFORMTHR%\vc9\%PLATFORMTHR%\xerces-c_3_1%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 
 rem # Build SDF Provider Thirdparty Files
 :rebuild_sdf
