@@ -231,8 +231,8 @@ void  FdoXmlReaderXrcs::startElement (
         mFdoAttrs = FdoXmlAttributeCollection::Create();
     }
 
-    unsigned int i;
-    unsigned int attrCount = attrs.getLength();
+    XMLSize_t i;
+    XMLSize_t attrCount = attrs.getLength();
 
     // Convert each Xerces XML attribute to a FDO XML attribute.
     for ( i = 0; i < attrCount; i++ ) {
@@ -377,7 +377,7 @@ void  FdoXmlReaderXrcs::endPrefixMapping (
     );
 }
 
-void  FdoXmlReaderXrcs::characters (const XMLCh *const chars, const unsigned int length)
+void  FdoXmlReaderXrcs::characters (const XMLCh *const chars, const XMLSize_t length)
 {
 
     // Call our element content handler.
@@ -395,17 +395,17 @@ FdoXmlReaderXrcs::InputStream::InputStream( FdoIoStream* stream )
     mStream = stream;
 }
 
-unsigned int FdoXmlReaderXrcs::InputStream::curPos()  const
+XMLFilePos FdoXmlReaderXrcs::InputStream::curPos()  const
 {
-    return( (unsigned int) mStream->GetIndex() );
+    return( (XMLFilePos) mStream->GetIndex() );
 }
 
-unsigned int FdoXmlReaderXrcs::InputStream::readBytes( 
+XMLSize_t FdoXmlReaderXrcs::InputStream::readBytes( 
     XMLByte *const  toFill,  
-    const unsigned int  maxToRead 
+    const XMLSize_t  maxToRead 
 )
 {
-    return (unsigned int)(( mStream->Read( toFill, maxToRead ) ));
+    return (XMLSize_t)(( mStream->Read( toFill, maxToRead ) ));
 }
 
 

@@ -20,6 +20,7 @@
 //
 
 #include <FdoCommon.h>
+#include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 #include <xercesc/sax/InputSource.hpp>
@@ -62,12 +63,14 @@ protected:
 
         // from BinInputStream interface
 
-        virtual unsigned int curPos()  const;
+        virtual XMLFilePos curPos()  const;
 
-        virtual unsigned int readBytes( 
+        virtual XMLSize_t readBytes( 
             XMLByte *const  toFill,  
-            const unsigned int  maxToRead 
+            const XMLSize_t  maxToRead 
         );
+
+        virtual const XMLCh* getContentType() const {return 0;}
 
     private:
         FdoIoStreamP mStream;
@@ -115,7 +118,7 @@ protected:
     virtual void endPrefixMapping (
         const XMLCh *const prefix
     );
-    virtual void  characters (const XMLCh *const chars, const unsigned int length);
+    virtual void  characters (const XMLCh *const chars, const XMLSize_t length);
 
 // The following are part of the SAX2 callback interface but are currently not used
 // by FDO.

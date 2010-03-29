@@ -305,14 +305,14 @@ FdoXslTransformerXalan::InputSource::InputStream::InputStream( FdoXmlReader* rea
     mReader = reader;
 }
 
-unsigned int FdoXslTransformerXalan::InputSource::InputStream::curPos()  const
+XMLFilePos FdoXslTransformerXalan::InputSource::InputStream::curPos()  const
 {
     return( (unsigned int) FdoIoStreamP(mReader->GetStream())->GetIndex() );
 }
 
-unsigned int FdoXslTransformerXalan::InputSource::InputStream::readBytes( 
+XMLSize_t FdoXslTransformerXalan::InputSource::InputStream::readBytes( 
     XMLByte *const  toFill,  
-    const unsigned int  maxToRead 
+    const XMLSize_t  maxToRead 
 )
 {
     return (unsigned int)(( FdoIoStreamP(mReader->GetStream())->Read( toFill, maxToRead ) ));
@@ -325,14 +325,47 @@ void FdoXslTransformerXalan::setPrintWriter(XALAN_CPP_NAMESPACE::PrintWriter*		p
 }
 
 void FdoXslTransformerXalan::problem(
-			eProblemSource				                    where,
+        eSource                                         source,
+        eClassification                                 classification,
+        const XALAN_CPP_NAMESPACE::XalanDOMString&      msg,
+        const XERCES_CPP_NAMESPACE::Locator*            locator,
+        const XALAN_CPP_NAMESPACE::XalanNode*           sourceNode)
+{
+    this->problem(source,
+                  classification,
+                  sourceNode,
+                  NULL,             // NOT USED -- syle NODE
+                  msg,
+                  NULL,             // OPTIONAL -- URI
+                  locator ? locator->getLineNumber() : -1,
+                  locator ? locator->getColumnNumber() : -1);
+}
+
+void FdoXslTransformerXalan::problem(
+        eSource                                        source,
+        eClassification                                classification,
+        const XALAN_CPP_NAMESPACE::XalanDOMString&     msg,
+        const XALAN_CPP_NAMESPACE::XalanNode*          sourceNode)
+{
+    this->problem(source,
+                  classification,
+                  sourceNode,
+                  NULL,             // NOT USED -- syle NODE
+                  msg,
+                  NULL,             // OPTIONAL -- URI
+                  -1,               // OPTIONAL -- lineno
+                  -1);              // OPTIONAL -- charOffset
+}
+
+void FdoXslTransformerXalan::problem(
+			eSource				                            where,
 			eClassification				                    classification,
-			const XALAN_CPP_NAMESPACE::XalanNode*			sourceNode,
-			const XALAN_CPP_NAMESPACE::ElemTemplateElement*	styleNode,
+			const XALAN_CPP_NAMESPACE::XalanNode*			sourceNode, // OPTIONAL
+			const XALAN_CPP_NAMESPACE::ElemTemplateElement*	styleNode, // NOT USED
 			const XALAN_CPP_NAMESPACE::XalanDOMString&		msg,
-			const XALAN_CPP_NAMESPACE::XalanDOMChar*		uri,
-			int							                    lineNo,
-			int							                    charOffset)
+			const XALAN_CPP_NAMESPACE::XalanDOMChar*		uri, // OPTIONAL
+			XALAN_CPP_NAMESPACE::XalanFileLoc               lineNo,  // OPTIONAL
+			XALAN_CPP_NAMESPACE::XalanFileLoc               charOffset)  // OPTIONAL
 {
     FdoIoTextWriterP pLog = GetLog();
     FdoIoFileStreamP pFileStream;
@@ -420,7 +453,8 @@ void FdoXslTransformerXalan::problem(
         pLog->Write(XalanDomStringToUnicode(msg));
 
         // Output stylesheet/etc location where message was issued from:
-        pLog->WriteLine(FdoStringP::Format(L", %ls", FdoException::NLSGetMessage(FDO_122_XSL_ATURI, "at URI '%1$ls' (line %2$d, column %3$d)", uri ? uri : L"", lineNo, charOffset)));
+        if (lineNo != -1 && charOffset != -1)
+            pLog->WriteLine(FdoStringP::Format(L", %ls", FdoException::NLSGetMessage(FDO_122_XSL_ATURI, "at URI '%1$ls' (line %2$ld, column %3$ld)", uri ? uri : L"", lineNo, charOffset)));
     }
 }
 

@@ -61,7 +61,7 @@ static char* pBadStylesheet =
 </stylesheet>";
 
 static char* pExpectedOut = 
-"<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Dog colour=\"Rouge\" size=\"Moyen\"/>";
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?><Dog xmlns=\"http://www.w3.org/1999/XSL/Transform\" colour=\"Rouge\" size=\"Moyen\"/>";
 
 CPPUNIT_TEST_SUITE_REGISTRATION (XmlTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (XmlTest, "XmlTest");

@@ -28,6 +28,8 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/util/TransService.hpp>
+
 XERCES_CPP_NAMESPACE_USE;
 
 
@@ -66,7 +68,7 @@ private:
         DOMDocument** doc, 
         XMLTranscoder** transcoder, 
         XercesDOMParser** parser,
-        DOMWriter** serializer,
+        DOMLSSerializer** serializer,
         XMLFormatTarget** target
     );
 };

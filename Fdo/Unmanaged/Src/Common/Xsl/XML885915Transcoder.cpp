@@ -69,8 +69,8 @@
 // ---------------------------------------------------------------------------
 //  XML885915Transcoder: Constructors and Destructor
 // ---------------------------------------------------------------------------
-XML885915Transcoder::XML885915Transcoder( const   XMLCh* const    encodingName
-                                        , const unsigned int    blockSize
+XML885915Transcoder::XML885915Transcoder( const XMLCh* const    encodingName
+                                        , const XMLSize_t       blockSize
                                         , XERCES_CPP_NAMESPACE::MemoryManager* const  manager) :
 
     XMLTranscoder(encodingName, blockSize, manager)
@@ -102,24 +102,20 @@ static const int ISO88591ReplacementsCount = sizeof(ISO88591ReplacementsCount) /
 // ---------------------------------------------------------------------------
 //  XML885915Transcoder: Implementation of the transcoder API
 // ---------------------------------------------------------------------------
-unsigned int
-XML885915Transcoder::transcodeFrom(  const   XMLByte* const       srcData
-                                    , const unsigned int         srcCount
-                                    ,       XMLCh* const         toFill
-                                    , const unsigned int         maxChars
-                                    ,       unsigned int&        bytesEaten
-                                    ,       unsigned char* const charSizes)
+XMLSize_t
+XML885915Transcoder::transcodeFrom(
+        const   XMLByte* const          srcData
+        , const XMLSize_t               srcCount
+        ,       XMLCh* const            toFill
+        , const XMLSize_t               maxChars
+        ,       XMLSize_t&              bytesEaten
+        ,       unsigned char* const    charSizes)
 {
-    // If debugging, make sure that the block size is legal
-    #if defined(XERCES_DEBUG)
-    checkBlockSize(maxChars);
-    #endif
-
     //
     //  Calculate the max chars we can do here. Its the lesser of the
     //  max output chars and the number of bytes in the source.
     //
-    const unsigned int countToDo = srcCount < maxChars ? srcCount : maxChars;
+    const XMLSize_t countToDo = srcCount < maxChars ? srcCount : maxChars;
 
     //
     //  Loop through the bytes to do and convert over each byte. Its just
@@ -154,24 +150,21 @@ XML885915Transcoder::transcodeFrom(  const   XMLByte* const       srcData
 }
 
 
-unsigned int
-XML885915Transcoder::transcodeTo(const   XMLCh* const    srcData
-                                , const unsigned int    srcCount
-                                ,       XMLByte* const  toFill
-                                , const unsigned int    maxBytes
-                                ,       unsigned int&   charsEaten
-                                , const UnRepOpts       options)
+XMLSize_t
+XML885915Transcoder::transcodeTo(
+        const   XMLCh* const    srcData
+        , const XMLSize_t       srcCount
+        ,       XMLByte* const  toFill
+        , const XMLSize_t       maxBytes
+        ,       XMLSize_t&      charsEaten
+        , const UnRepOpts       options
+	)
 {
-    // If debugging, make sure that the block size is legal
-    #if defined(XERCES_DEBUG)
-    checkBlockSize(maxBytes);
-    #endif
-
     //
     //  Calculate the max chars we can do here. Its the lesser of the
     //  max output bytes and the number of chars in the source.
     //
-    const unsigned int countToDo = srcCount < maxBytes ? srcCount : maxBytes;
+    const XMLSize_t countToDo = srcCount < maxBytes ? srcCount : maxBytes;
 
     //
     //  Loop through the bytes to do and convert over each byte. Its just
@@ -230,7 +223,10 @@ XML885915Transcoder::transcodeTo(const   XMLCh* const    srcData
 }
 
 
-bool XML885915Transcoder::canTranscodeTo(const unsigned int toCheck) const
+bool XML885915Transcoder::canTranscodeTo
+(
+    const   unsigned int    toCheck
+)
 {
     return (toCheck < 256);
 }
