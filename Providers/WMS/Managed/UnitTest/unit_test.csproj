@@ -92,22 +92,22 @@
       Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.dll .\
       Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_3_1.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_3_1.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.pdb .\
 
-      Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_34_1.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_34_1.pdb .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_34_1.pdb .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal14.dll .\
+      Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal17.dll .\
 
       Copy  ..\..\..\..\..\..\Utilities\OWS\bin\win32\debug\OWS.dll .\
 

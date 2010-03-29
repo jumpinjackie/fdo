@@ -103,14 +103,14 @@
       Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\ShpOverrides.dll .\
       Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\ShpOverrides.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_2_5_0.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\Xalan-C_1_7_0.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.pdb .\
 
-      Copy  $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xalan\c\Build\Win32\vc9\Release\XalanMessages_1_7_0.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.pdb .\
 
       Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
       Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
