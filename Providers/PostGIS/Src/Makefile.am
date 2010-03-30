@@ -51,8 +51,8 @@ libPostGISProvider_la_LIBADD =  \
   libPostGISOverrides.la \
   ../../../Utilities/Common/libProvidersCommon.la \
   ../../../Fdo/Unmanaged/Src/libFDO.la \
-  ../../../Thirdparty/boost/stage/lib/libboost_thread-mt.a \
-  ../../../Thirdparty/boost/stage/lib/libboost_date_time-mt.a \
+  ../../../Thirdparty/boost/stage/lib/libboost_thread.a \
+  ../../../Thirdparty/boost/stage/lib/libboost_date_time.a \
   -lpq
 
 libPostGISProvider_la_LDFLAGS = \
