@@ -31,6 +31,6 @@ cd ..
 cd xalan
 ./runConfigure -p linux -P "$XALANCROOT"
 make
-make install
+##make install
 cd ..
 
