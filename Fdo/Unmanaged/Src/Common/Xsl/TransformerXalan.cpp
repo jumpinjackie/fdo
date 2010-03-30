@@ -454,7 +454,7 @@ void FdoXslTransformerXalan::problem(
 
         // Output stylesheet/etc location where message was issued from:
         if (lineNo != -1 && charOffset != -1)
-            pLog->WriteLine(FdoStringP::Format(L", %ls", FdoException::NLSGetMessage(FDO_122_XSL_ATURI, "at URI '%1$ls' (line %2$ld, column %3$ld)", uri ? uri : L"", lineNo, charOffset)));
+            pLog->WriteLine(FdoStringP::Format(L", %ls", FdoException::NLSGetMessage(FDO_122_XSL_ATURI, "at URI '%1$ls' (line %2$ld, column %3$ld)", uri ? (FdoString*)uri : L"", lineNo, charOffset)));
     }
 }
 

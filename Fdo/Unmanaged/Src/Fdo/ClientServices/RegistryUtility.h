@@ -29,6 +29,7 @@
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <xercesc/util/TransService.hpp>
+#include <xercesc/dom/DOMLSSerializer.hpp>
 
 XERCES_CPP_NAMESPACE_USE;
 
