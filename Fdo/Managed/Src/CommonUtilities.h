@@ -122,12 +122,15 @@ inline System::DateTime FdoDateTimeToDateTime(FdoDateTime& date)
     if ( date.hour == -1 ) 
     	return System::DateTime(date.year, date.month, date.day);
     else
-        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, System::Int32(date.seconds));
+    {
+        int seconds = System::Int32(date.seconds);
+        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, seconds, (date.seconds-System::Single(seconds))*1000.0f);
+    }
 }
 
 inline FdoDateTime SystemDateToFdoDateTime(System::DateTime date)
 {
-	return FdoDateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, FdoFloat(date.Second));
+    return FdoDateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, FdoFloat(date.Second) + FdoFloat(date.Millisecond)/1000.0f);
 }
 
 /// \endcond
