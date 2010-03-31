@@ -347,6 +347,8 @@ protected:
         TI val,                             // input scalar value for obj
         TO min,                             // minimum value for TO type
         TO max,                             // maximum value for TO type
+        TI maxPlusOne,                      // trouble maker when converting floating point
+                                            // to integral.
         TI round,                           // amount for rounding 
         FdoBoolean nullIfIncompatible,      // see FdoDataValue::Create()
         FdoBoolean shift,                   // see FdoDataValue::Create()
@@ -359,7 +361,7 @@ protected:
         TO          out;
 
         // First, truncate the value to be between output type min and max.
-        Truncate<TI,TO>( val, out, isNull, min, max, nullIfIncompatible, truncate, sTO );
+        Truncate<TI,TO>( val, out, isNull, min, max, maxPlusOne, round, nullIfIncompatible, truncate, sTO );
                 
         if ( isNull ) 
         {
@@ -367,6 +369,18 @@ protected:
             ret = CO::Create();
         }
         else if ( (val < min) || (val > max) ) 
+        {
+            // value was truncated. Wrap it in FdoDataValue.
+            ret = CO::Create(out);
+        }
+        // When (round != 0) we're converting floating point to integral.
+        //  If val = max + 1 and the floating 
+        //  point type is sometimes less precise that the integral type then sometimes
+        //  (val > max) evaluates to false but (val == max) evaluates to true. 
+        //  The following handles this case:
+        //    (round != 0): converting from floating point to integral
+        //    (val == maxPlusOne): value was truncated by Truncate().
+        else if ( (round != 0) && (val == maxPlusOne) ) 
         {
             // value was truncated. Wrap it in FdoDataValue.
             ret = CO::Create(out);
@@ -403,7 +417,7 @@ protected:
         TO          out;
 
         // First, truncate the value to be between output type min and max.
-        Truncate<TI, TO>( val, out, isNull, min, max, nullIfIncompatible, truncate, sTO );
+        Truncate<TI, TO>( val, out, isNull, min, max, 0, 0, nullIfIncompatible, truncate, sTO );
                 
         if ( isNull ) 
             // Output determined to be null
@@ -427,6 +441,8 @@ protected:
                                     // truncate=false and nullIfIncompatible=true
         TO min,                     // minimum value for TO type
         TO max,                     // maximum value for TO type
+        TI maxPlusOne,              // trouble maker when converting floating point to integral.
+        TI round,
         bool nullIfIncompatible,    // see FdoDataValue::Create()
         bool truncate,              // see FdoDataValue::Create()
         FdoString* sTO              // TO in string format; for exception messages.
@@ -440,8 +456,13 @@ protected:
 
         if ( in < min ) 
             success = Truncate<TI, TO>( in, out, isNull, min, nullIfIncompatible, truncate );   
-        else if ( in > max ) 
+        else if ( in > max ) {
             success = Truncate<TI, TO>( in, out, isNull, max, nullIfIncompatible, truncate );
+        }
+        // This test handles a precision problem. See note in Compare().
+        else if ( (round != 0) && (in == maxPlusOne) ) {
+            success = Truncate<TI, TO>( in, out, isNull, max, nullIfIncompatible, truncate );
+        }
 
         if ( !success )
             throw FdoExpressionException::Create(
