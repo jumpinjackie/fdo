@@ -59,6 +59,10 @@ II. Build Notes
   2. Install ActiveState Perl, available from:
      
         http://www.activestate.com/ActivePerl
+		
+  2a. Install NASM, available from:
+  
+        http://www.nasm.us/
 
   3. Ensure that the Windows Environment Variables are set as follows:
 
