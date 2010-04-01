@@ -3283,18 +3283,22 @@ void FdoExpressionEngineImp::ValidateFilter( FdoClassDefinition *cls, FdoFilter 
         }
         virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
 		{  
-			FdoSpatialOperations	op = filter.GetOperation();
-			bool					found = false;
-			int						numSpatialOps;
+            // Nothing to validate here if no filter capabilities supplied
+            if ( m_filterCapabilities ) 
+            {
+			    FdoSpatialOperations	op = filter.GetOperation();
+			    bool					found = false;
+			    int						numSpatialOps;
 
-			FdoSpatialOperations	*supportedSpatialOps = m_filterCapabilities->GetSpatialOperations( numSpatialOps );
+			    FdoSpatialOperations	*supportedSpatialOps = m_filterCapabilities->GetSpatialOperations( numSpatialOps );
 
-			for ( int i =0; i < numSpatialOps && !found; i++ )
-			{
-				found = ( op == supportedSpatialOps[i] );
-			}
-			if ( !found )
-				throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_105_UNSUPPORTED_SPATIAL_OPERATION)));
+			    for ( int i =0; i < numSpatialOps && !found; i++ )
+			    {
+				    found = ( op == supportedSpatialOps[i] );
+			    }
+			    if ( !found )
+				    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_105_UNSUPPORTED_SPATIAL_OPERATION)));
+            }
 		}
 
         virtual void ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
