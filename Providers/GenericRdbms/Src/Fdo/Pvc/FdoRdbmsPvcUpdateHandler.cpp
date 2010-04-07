@@ -934,6 +934,12 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
 				((values[i].type != FdoRdbmsDataType_Geometry) && 
 				(values[i].type != FdoDataType_BLOB)))
                 delete[] (char*)values[i].value.strvalue;
+
+            if ( values[i].type == FdoRdbmsDataType_Geometry )
+            {
+                FdoIDisposable* disp = (FdoIDisposable*)(values[i].value.strvalue);
+                FDO_SAFE_RELEASE( disp );
+            }
         }
         delete[] values;
 
