@@ -61,7 +61,7 @@ int local_odbcdr_execute_direct(
 {
 	odbcdr_connData_def		*connData;
 	SQLRETURN				rc;
-	SQLHSTMT                hStmt;
+	SQLHSTMT                hStmt = NULL;
 	int 					rdbi_status = RDBI_GENERIC_ERROR;
 
 	debug_on("odbcdr_execute_direct");
@@ -91,6 +91,8 @@ int local_odbcdr_execute_direct(
 	}
 
 the_exit:
+    if ( hStmt ) 
+        SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
 	debug_return(NULL, rdbi_status );
 }
 
