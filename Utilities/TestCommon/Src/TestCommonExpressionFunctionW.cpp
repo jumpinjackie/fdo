@@ -14060,11 +14060,13 @@ void TestCommonExpressionFunctionW::TestSubstrFunction ()
     catch (FdoException *exp) {
 
       exp_err_msg = FdoStringP::Format(
-                       L"%ls '%ls' %ls ",
+                       L"%ls '%ls' %ls",
                        L"One or more arguments for function",
                        L"Substr",
                        L"did not match the expected argument types.");
-      ret_err_msg = exp->GetExceptionMessage();
+      ret_err_msg = TestCommonMiscUtil::Trim(exp->GetExceptionMessage());
+
+
 
       if (exp_err_msg.ICompare(ret_err_msg) == 0) {
 

@@ -105,6 +105,8 @@ public:
     // check that 2 doubles are roughly equal:
     static bool FuzzyEqual (const double d1, const double d2);
 
+    // Trim trailing blanks from a string.
+    static FdoStringP Trim( FdoStringP in );
 
 protected:
 
