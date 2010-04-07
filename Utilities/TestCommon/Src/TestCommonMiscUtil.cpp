@@ -422,3 +422,16 @@ FdoClassDefinition* TestCommonMiscUtil::DescribeClass( FdoIConnection* fdoConn, 
     return classDef;
 }
 
+FdoStringP TestCommonMiscUtil::Trim( FdoStringP in )
+{
+    FdoStringP out = in;
+    wchar_t* outStr = (wchar_t*) (FdoString*) out;
+
+    int posn;
+    for ( posn = (wcslen(outStr) - 1); (posn >= 0) && (outStr[posn] == ' '); posn-- );
+
+    out = out.Mid(0, posn + 1);
+
+    return out;
+}
+

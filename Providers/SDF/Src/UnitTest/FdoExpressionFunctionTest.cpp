@@ -895,7 +895,7 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest2 ()
                 "1893670.6807 458090.2237 0," 
                 "1889298.3991 457671.4451 0"
                 "))') "
-                "Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
+                "AND Geometry INTERSECTS GeomFromText('POLYGON XYZ (( "
                 "1892048.0272 456421.0618 0," 
                 "1891678.7365 455964.5416 0," 
                 "1891805.4093 455391.1828 0," 
