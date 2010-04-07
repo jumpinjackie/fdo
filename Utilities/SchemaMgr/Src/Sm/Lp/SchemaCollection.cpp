@@ -1309,7 +1309,8 @@ FdoFeatureSchemasP FdoSmLpSchemaCollection::GetFdoSchemasEx(FdoStringP schemaNam
         // Compare the collection of found names with the requested schema names
         for (schemaIndex = 0; schemaIndex < schemaNames->GetCount(); schemaIndex++)
         {
-            FdoStringP requestedSchemaName = schemaNames->GetItem(schemaIndex)->GetString();
+            FdoStringElementP schemaElement = schemaNames->GetItem(schemaIndex);
+            FdoStringP requestedSchemaName = schemaElement->GetString();
             if (foundSchemaNames->IndexOf(requestedSchemaName) == -1)
             {
                 // The requested schema does not exist
