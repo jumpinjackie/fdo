@@ -33,6 +33,7 @@ set( PostGisUnitTests_STAT_SRCS
 	PostGisFdoSelectTest.cpp
 	PostGisFdoSqlCmdTest.cpp
 	PostGisFdoUpdateTest.cpp
+	PostGisGeometryTests.cpp
 	PostGisSchemaMgrTests.cpp
 	PostGisSchemaOverrideUtil.cpp
 )

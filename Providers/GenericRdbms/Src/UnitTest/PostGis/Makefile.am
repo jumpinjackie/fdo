@@ -37,6 +37,7 @@ PostGisFdoMultiThreadTest.cpp \
 PostGisFdoSelectTest.cpp \
 PostGisFdoSqlCmdTest.cpp \
 PostGisFdoUpdateTest.cpp \
+PostGisGeometryTests.cpp \
 PostGisSchemaMgrTests.cpp \
 PostGisSchemaOverrideUtil.cpp
 
@@ -54,6 +55,7 @@ PostGisFdoMultiThreadTest.h \
 PostGisFdoSelectTest.h \
 PostGisFdoSqlCmdTest.h \
 PostGisFdoUpdateTest.h \
+PostGisGeometryTests.h \
 PostGisSchemaMgrTests.h \
 PostGisSchemaOverrideUtil.h
 
