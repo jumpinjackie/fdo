@@ -214,24 +214,14 @@ int postgis_fetch (postgis_context_def *context,
                             if ( (curs->geometry_oid != -1) && (curs->geometry_oid == curs->defines[i].buffer_type) ) {
                                 FreeGeometry( curs->defines[i].geometry );
                                 int defcount = strlen(fvalue);
-                                // TODO - 3D geometries and proper checking of hasSrid flag.
-                                bool hasSrid = false;
-                                if ( defcount >= 10 ) {
-                                    if ( fvalue[8] != '0' || fvalue[9] != '0' )
-                                        hasSrid = true;
-                                    fvalue[8] = '0';
-                                    fvalue[9] = '0';
-                                }
                                 char* buffer = new char[(size_t)(defcount/2)];
                                 int j;
                                 int k = 0;
                                 for ( j = 0; j < defcount; j+=2 ) {
-                                    // skip SRID.
-                                    if ( (!hasSrid) || j < 10 || j > 17 )
-                                        buffer[k++] = ((fvalue[j] - (fvalue[j] >= 'A' ? ('A' - 10) : '0')) * 16) + (fvalue[j+1] - (fvalue[j+1] >= 'A' ? ('A' - 10) : '0'));
+                                    buffer[k++] = ((fvalue[j] - (fvalue[j] >= 'A' ? ('A' - 10) : '0')) * 16) + (fvalue[j+1] - (fvalue[j+1] >= 'A' ? ('A' - 10) : '0'));
                                 }
 
-                                curs->defines[i].geometry = GeometryFromWkb ( buffer, k );
+                                curs->defines[i].geometry = GeometryFromExtendedWkb ( buffer, k );
                                 memcpy(curs->defines[i].buffer, &(curs->defines[i].geometry), sizeof(void*));
 
                                 delete[] buffer;

@@ -35,19 +35,22 @@ private:
     CPPUNIT_TEST (ddl);
     CPPUNIT_TEST (define);
     CPPUNIT_TEST (bind);
+    CPPUNIT_TEST( RoundTripGeometries );
     CPPUNIT_TEST_SUITE_END ();
 
 public:
     GeometryTests (void);
     virtual ~GeometryTests (void);
-	void setUp ();
-	void tearDown ();
+	virtual void setUp ();
+	virtual void tearDown ();
 
 protected:
-	void ddl ();
-	void define ();
-	void bind ();
+	virtual void ddl ();
+	virtual void define ();
+	virtual void bind ();
 	void describe ();
+    virtual void    RoundTripGeometries();
+
     int rdbi_sql_Ex( rdbi_context_def *context, int sqlid, FdoStringP sql );
 
     virtual void set_provider() {  CPPUNIT_FAIL ("naked set_provider() called"); };
@@ -59,6 +62,60 @@ protected:
     virtual char *get_geometry_type ();
     virtual char *get_geometry_text (FdoIGeometry *geometry);
     virtual int  do_insert_geometry( int cursor, FdoInt32 *featId, FdoIGeometry **geometry );
+
+    void    createDb();
+    void    deleteDb();
+
+    void    RoundTripGeometry_Point();
+    void    RoundTripGeometry_MultiPoint();
+
+    void    RoundTripGeometry_LineString();
+    void    RoundTripGeometry_MultiLineString();
+
+    void    RoundTripGeometry_CurveString();
+    void    RoundTripGeometry_MultiCurveString();
+
+    void    RoundTripGeometry_Polygon();
+    void    RoundTripGeometry_MultiPolygon();
+    void    RoundTripGeometry_RectangularMultiPolygon();
+
+    void    RoundTripGeometry_CurvePolygon();
+    void    RoundTripGeometry_MultiCurvePolygon();
+
+    void            connect ();
+    void            disconnect ();
+
+    void            fetch_geom( FdoGeometryType geom_type, long feat_num, int num_ords );
+    void            set_geom_feat_fgf( int operation, FdoGeometryType geom_type, int num_ords, long* feat_num, FdoIGeometry * specialGeom = NULL );
+    void            create_feat_fgf( FdoGeometryType geom_type, int num_ords, long *feat_num, FdoIGeometry * specialGeom = NULL );
+    void            update_feat_fgf( FdoGeometryType geom_type, long feat_num, int num_ords, FdoIGeometry * specialGeom = NULL );
+    void            RoundTripGeometry( FdoGeometryType geomType, FdoIGeometry * specialGeom = NULL );
+    void            check_geom( long feat_num, FdoByteArray *in_ba );
+
+    void    updateSpatialContext_0();
+    FdoICurveString * createCurveString( FdoFgfGeometryFactory * gf, int num_ords, double * line_points );
+    char *geometryType2char( FdoGeometryType geomType );
+
+private:
+    FdoPtr<FdoIConnection> mConn;
+    static const char*  mTraceFilePath;
+
+    long            mFeatNum1;
+
+    int             mFdoDimensionality;  // xy, xyz, xym, xyzm
+    int             mNumPointOrdinates;  // 2, 3, 4
+
+    int             mNumLINE1_ORDINATES;
+
+    double         *mLINE1_POINTS;       // 2D, 3D, 4D
+    double         *mLINE2_POINTS;       // 2D, 3D, 4D
+ 
+    double         *mRING1_POINTS;
+    double         *mRING2_POINTS;
+    double         *mRING3_POINTS;
+    double         *mRING4_POINTS;
+
+
 };
 
 #endif // CPP_UNIT_GEOMETRYTESTS_H
