@@ -73,7 +73,7 @@ void FdoDeleteTest::FeatureDelete ()
         // indefinitely.
 
 		FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
-        selCmd->SetFeatureClassName(L"Länd:Parcel");
+        selCmd->SetFeatureClassName(L"L\x00e4nd:Parcel");
         FdoPtr<FdoIFeatureReader>myReader = selCmd->Execute();
 
         int limit = 5000;
@@ -88,7 +88,7 @@ void FdoDeleteTest::FeatureDelete ()
         if ( featCount >= limit ) 
         {
     	    deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-            deleteCommand->SetFeatureClassName(L"Länd:Parcel");
+            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Parcel");
             deleteCommand->Execute();
         }
     }
