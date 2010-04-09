@@ -24,7 +24,7 @@
 #ifndef _WIN32
 #include <unistd.h>
 #endif
-#define LOCATION L"..\\..\\TestData\\TestingReader\\"
+#define LOCATION L"../../TestData/TestingReader/"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ReaderTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( ReaderTest, "ReaderTest");
