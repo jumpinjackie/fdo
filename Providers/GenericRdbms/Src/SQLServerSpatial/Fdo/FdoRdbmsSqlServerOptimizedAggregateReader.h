@@ -44,7 +44,7 @@ public:
 	virtual	FdoString*		GetPropertyName(FdoInt32 index);
 	virtual	FdoDataType		GetDataType(FdoString* idName);
 	virtual	FdoPropertyType GetPropertyType(FdoString* idName);
-
+    virtual FdoString*      GetPropertyNameForDataReader(FdoInt32 index);
     // Overriden FdoIReader methods:
     virtual bool			ReadNext();
 	virtual void			Close();
