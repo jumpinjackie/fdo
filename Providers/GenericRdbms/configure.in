@@ -217,7 +217,6 @@ AC_CONFIG_FILES([com/Makefile \
                  Src/SchemaMgr/Ph/Rd/Makefile \
                  Src/UnitTest/Common/Makefile \
                  Src/UnitTest/MySql/Makefile \
-                 Src/UnitTest/PostGis/Makefile \
                  Src/UnitTest/Makefile \
                  Src/Util/Makefile])
 
@@ -229,7 +228,8 @@ AC_CONFIG_FILES([Src/PostGis/Makefile \
                  Src/PostGis/SchemaMgr/Lp/Makefile \
                  Src/PostGis/SchemaMgr/Ov/Makefile \
                  Src/PostGis/SchemaMgr/Ph/Makefile \
-                 Src/PostGis/SchemaMgr/Ph/Rd/Makefile])
+                 Src/PostGis/SchemaMgr/Ph/Rd/Makefile \
+                 Src/UnitTest/PostGis/Makefile])
 
 #ODBCDriver
 AC_CONFIG_FILES([Src/ODBCDriver/Makefile])
