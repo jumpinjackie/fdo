@@ -33,7 +33,7 @@ class PostGisGeometryTests : public GeometryTests
 	char *get_geometry_text (FdoIGeometry *geometry);
 	int do_insert_geometry( int cursor, FdoInt32 *featId, FdoIGeometry **geometry );
     
-    char *get_bind_var (int n){ return (n != 2 ? "?" : "geometry::STGeomFromWKB(?, 0)");}
+    char *get_bind_var (int n){ return (mVar[n]);}
     char *get_geom_conv () { return ".STAsBinary()"; };
     char *get_geometry_type (){return ("Geometry");}
 
@@ -43,6 +43,9 @@ class PostGisGeometryTests : public GeometryTests
     virtual void ddl () {}
     virtual void define () {}
     virtual void bind () {}
+
+private:
+    static char *mVar[];
 };
 
 #endif // PostGis_GEOMETRYTESTS_H
