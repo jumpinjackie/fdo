@@ -407,74 +407,6 @@ LOCAL_CS["Non-Earth Metre",UNIT["Metre",1]]</fdo:WKT>
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="South">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.001000</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.001000</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:remarks>
-For testing only</gml:remarks>
-<gml:srsName>
-South</gml:srsName>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-10.000000 10.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
-<gml:srsName>
-Australian Antarctic</gml:srsName>
-<fdo:WKT>
-GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
-<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
-geographic</gml:derivedCRSType>
-<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
-</gml:DerivedCRS>
-<gml:DerivedCRS gml:id="South-x20-Duplicate">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.001000</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.001000</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:remarks>
-For testing only</gml:remarks>
-<gml:srsName>
-South Duplicate</gml:srsName>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-10.000000 10.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
-<gml:srsName>
-Australian Antarctic</gml:srsName>
-<fdo:WKT>
-GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
-<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
-geographic</gml:derivedCRSType>
-<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
-</gml:DerivedCRS>
 <gml:DerivedCRS gml:id="sc_1">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -536,6 +468,74 @@ sc_2</gml:srsName>
 Puerto Rico</gml:srsName>
 <fdo:WKT>
 GEOGCS["Puerto Rico", DATUM["Puerto Rico", ELLIPSOID["Clarke 1866", 6378206.4, 294.978698213898]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+South</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
+<gml:srsName>
+Australian Antarctic</gml:srsName>
+<fdo:WKT>
+GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South-x20-Duplicate">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+For testing only</gml:remarks>
+<gml:srsName>
+South Duplicate</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+10.000000 10.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Australian-x20-Antarctic">
+<gml:srsName>
+Australian Antarctic</gml:srsName>
+<fdo:WKT>
+GEOGCS["Australian Antarctic", DATUM["Australian Antarctic Datum 1998", ELLIPSOID["GRS 1980", 6378137, 298.257222101]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>

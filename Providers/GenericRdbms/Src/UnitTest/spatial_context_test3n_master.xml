@@ -211,44 +211,6 @@ LOCAL_CS["Non-Earth Metre",UNIT["Metre",1]]</fdo:WKT>
 geographic</gml:derivedCRSType>
 <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
 </gml:DerivedCRS>
-<gml:DerivedCRS gml:id="South">
-<gml:remarks>
-Spatial context from SqlServer metadata</gml:remarks>
-<gml:srsName>
-South</gml:srsName>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
--180.000000 -90.000000</gml:pos>
-<gml:pos>
-180.000000 90.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
-<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
-<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
-geographic</gml:derivedCRSType>
-<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
-</gml:DerivedCRS>
-<gml:DerivedCRS gml:id="South-x20-Duplicate">
-<gml:remarks>
-Spatial context from SqlServer metadata</gml:remarks>
-<gml:srsName>
-South Duplicate</gml:srsName>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
--180.000000 -90.000000</gml:pos>
-<gml:pos>
-180.000000 90.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
-<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
-<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
-geographic</gml:derivedCRSType>
-<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
-</gml:DerivedCRS>
 <gml:DerivedCRS gml:id="sc_1">
 <gml:remarks>
 Spatial context from SqlServer metadata</gml:remarks>
@@ -327,6 +289,44 @@ sc_4</gml:srsName>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#SouthGeorgia1968.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+South</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="South-x20-Duplicate">
+<gml:remarks>
+Spatial context from SqlServer metadata</gml:remarks>
+<gml:srsName>
+South Duplicate</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-180.000000 -90.000000</gml:pos>
+<gml:pos>
+180.000000 90.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#Antarctic98.LL"/>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
 <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
 geographic</gml:derivedCRSType>
