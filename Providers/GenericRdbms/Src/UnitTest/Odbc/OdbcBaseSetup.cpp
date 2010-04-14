@@ -203,7 +203,7 @@ const wchar_t* OdbcBaseSetup::mMySqlAcadTest[] = {
 	L"",
     L"insert into acdb3dpolyline (layer, color, double1, single1, segcount, classid, revisionnumber, featid ) values ('TestLayer2', '156', 3, 4, 10, 11, 0, 8);",
 	L"",
-	L"create table testClass (",
+	L"create table testclass (",
 	L"age int NOT NULL,",
 	L"firstname varchar(32) NOT NULL,",
 	L"lastname varchar(32) NOT NULL,",
