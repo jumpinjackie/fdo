@@ -31,8 +31,6 @@ int postgis_set_err_msg (
 
     if (NULL != context && NULL != msg)
     {
-        assert(strlen(msg) < RDBI_MSG_SIZE);
-
         memset(context->postgis_last_err_msg, '\0', RDBI_MSG_SIZE);
         strncpy(context->postgis_last_err_msg, msg, RDBI_MSG_SIZE);
         context->postgis_last_err_msg[RDBI_MSG_SIZE - 1] = '\0';

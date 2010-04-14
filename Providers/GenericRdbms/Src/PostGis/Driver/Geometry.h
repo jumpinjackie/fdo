@@ -23,10 +23,14 @@
 #pragma once
 #endif // _WIN32
 
+#include <Fdo.h>
+#include <Geometry/Fgf/Factory.h>
+
 extern void* GeometryFromWkb (void *wkb, unsigned long size);
 extern char* WkbFromGeometry (void *geometry, int* size);
 extern void FreeGeometry (void*& geometry);
 
 extern void* GeometryFromExtendedWkb(void *ewkb, unsigned long size);
+extern FdoByteArray *ExtendedWkbFromGeometry (void *geometry, unsigned long srid);
 
 #endif /* POSTGIS_GEOMETRY_H */

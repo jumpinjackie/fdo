@@ -985,7 +985,7 @@ void GeometryTests::RoundTripGeometry_MultiCurvePolygon()
 // Validates a geometry: fetch the geometry and compare it against
 // the one used for creation
 //////////////////////////////////////////////////////////////////////////////////////////////
-void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba)
+void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba, FdoStringP geomPropName)
 {
     FdoIGeometry            *in_gba = 0;
     FdoIGeometry            *out_gba = 0;
@@ -1011,7 +1011,7 @@ void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba)
         FdoPtr<FdoIdentifierCollection> names = selCmd->GetPropertyNames();
 
         FdoPtr<FdoIdentifier> name;
-        name = FdoIdentifier::Create(L"Geometry");
+        name = FdoIdentifier::Create(geomPropName);
         names->Add(name);
 
         FdoPtr<FdoFilter> filter = FdoComparisonCondition::Create(
@@ -1026,7 +1026,7 @@ void GeometryTests::check_geom(long feat_num, FdoByteArray *in_ba)
         if( myReader != NULL && myReader->ReadNext() )
         {
             not_found = false;
-            out_ba = myReader->GetGeometry(L"Geometry");
+            out_ba = myReader->GetGeometry(geomPropName);
         }
 
         if (not_found) 
@@ -1087,9 +1087,13 @@ void GeometryTests::fetch_geom(FdoGeometryType geom_type, long feat_num, int num
 {
      try
      {
-        long    act_plan = 0; /* TODO mDbiConn->dbi_plan_active_get(); */
-        long    act_ver = 0; // mDbiConn->dbi_version_active_get();
         int     geom_ok = FALSE;
+
+        FdoStringP geomPropName = FdoStringP::Format(
+            L"Geometry%ls%ls",
+            (mFdoDimensionality & FdoDimensionality_Z) ? L"Z" : L"",
+            (mFdoDimensionality & FdoDimensionality_M) ? L"M" : L""
+        );
 
         // Create a byte array 
   	    FdoFgfGeometryFactory * gf = FdoFgfGeometryFactory::GetInstance();
@@ -1186,7 +1190,7 @@ void GeometryTests::fetch_geom(FdoGeometryType geom_type, long feat_num, int num
         gf->Release();
       
         ///////////////////////////////////
-        check_geom(feat_num, byteArray);
+        check_geom(feat_num, byteArray, geomPropName);
         //////////////////////////////////
 
         byteArray->Release();
@@ -1195,7 +1199,7 @@ void GeometryTests::fetch_geom(FdoGeometryType geom_type, long feat_num, int num
         gf = NULL;
         byteArray = NULL;
 
-        printf(". fetch/check fn %ld plan %ld vers %ld - SUCCESS\n", feat_num, act_plan, act_ver);
+        printf(". fetch/check fn %ld - SUCCESS\n", feat_num);
     } 
     catch (FdoException *ex)
     {
@@ -1241,7 +1245,22 @@ void GeometryTests::createDb ()
 
 	        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
 	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+	        pGeometryClass1->GetProperties()->Add( pGeomProp );
+
+	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZ", L"location and shape" );
+	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
             pGeomProp->SetHasElevation( true );
+	        pGeometryClass1->GetProperties()->Add( pGeomProp );
+
+	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryM", L"location and shape" );
+	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp->SetHasMeasure( true );
+	        pGeometryClass1->GetProperties()->Add( pGeomProp );
+
+	        pGeomProp = FdoGeometricPropertyDefinition::Create( L"GeometryZM", L"location and shape" );
+	        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve | FdoGeometricType_Surface );
+            pGeomProp->SetHasElevation( true );
+            pGeomProp->SetHasMeasure( true );
 	        pGeometryClass1->GetProperties()->Add( pGeomProp );
 
 	        FdoClassesP(pSchema->GetClasses())->Add( pGeometryClass1 );
@@ -1626,6 +1645,12 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
         gf->Release();
         gf = NULL;
 
+        FdoStringP geomPropName = FdoStringP::Format(
+            L"Geometry%ls%ls",
+            (mFdoDimensionality & FdoDimensionality_Z) ? L"Z" : L"",
+            (mFdoDimensionality & FdoDimensionality_M) ? L"M" : L""
+        );
+
         // Create a new feature 
         if ( operation == OP_FEAT_NEW )
         {
@@ -1635,7 +1660,7 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
             insertCommand->SetFeatureClassName(L"GeometryClass1");
 	        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
             FdoPtr<FdoPropertyValue> propertyValue =  FdoPropertyValue::Create();
-            propertyValue->SetName( L"Geometry" );
+            propertyValue->SetName( geomPropName );
             propertyValues->Add( propertyValue );
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
 	        propertyValue->SetValue(geometryValue);
@@ -1662,7 +1687,7 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
 
             FdoPtr<FdoPropertyValueCollection> propertyValues = updateCommand->GetPropertyValues();
             FdoPtr<FdoPropertyValue> propertyValue =  FdoPropertyValue::Create();
-            propertyValue->SetName( L"Geometry" );
+            propertyValue->SetName( geomPropName );
             propertyValues->Add( propertyValue );
             FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
 	        propertyValue->SetValue(geometryValue);
@@ -1677,7 +1702,7 @@ void GeometryTests::set_geom_feat_fgf(int operation, FdoGeometryType geom_type, 
         }
 
         // Check results 
-        check_geom( *feat_num, byteArray);
+        check_geom( *feat_num, byteArray, geomPropName);
       
         geom->Release();
         geom = NULL;
