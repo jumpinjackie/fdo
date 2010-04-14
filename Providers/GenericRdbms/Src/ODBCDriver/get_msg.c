@@ -75,10 +75,14 @@ void local_odbcdr_get_msg(odbcdr_context_def  *context, rdbi_string_def *buffer)
 
 	if ( rs == RDBI_NOT_CONNECTED )
 	{
-        if (context->odbcdr_UseUnicode)
-            wcscpy(buffer->wString, ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database."));
-        else
-            strcpy(buffer->cString, FdoStringP(ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database.")));
+            if (context->odbcdr_last_err_msg[0] != L'\0') 
+            {
+                ODBCDRV_STRING_COPY_LST( buffer, context->odbcdr_last_err_msg );        
+            }
+            else if (context->odbcdr_UseUnicode)
+                wcscpy(buffer->wString, ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database."));
+            else
+                strcpy(buffer->cString, FdoStringP(ocdcdr_nls_msg_get(FDORDBMS_506, "No current open database.")));
 	}
 	else if ( rs == RDBI_SUCCESS )
 	{

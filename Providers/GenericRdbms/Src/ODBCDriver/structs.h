@@ -177,7 +177,7 @@ typedef struct connData_def {			/* Logon Data Area Definition	*/
     else \
         strcat(pStr1, pStr2);
 
-#define ODBCDRV_STRING_EMPTY(pStr1) (NULL == (pStr1)->cwString || (context->odbcdr_UseUnicode ? *(pStr1)->cwString == L'\0' : *(pStr1)->ccString == '\0'))
+#define ODBCDRV_STRING_EMPTY(pStr1) ((context->odbcdr_UseUnicode ? (NULL == (pStr1)->cwString || *(pStr1)->cwString == L'\0') : (NULL == (pStr1)->ccString || *(pStr1)->ccString == '\0')))
 
 #define ODBCDRV_STRING_COMPARE_NOCASE_CST(pStr1, pStr2, sz) (context->odbcdr_UseUnicode ? \
     _wcsnicmp((pStr1)->cwString, pStr2##W, sz) : \
