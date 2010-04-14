@@ -90,7 +90,7 @@ protected:
     void            create_feat_fgf( FdoGeometryType geom_type, int num_ords, long *feat_num, FdoIGeometry * specialGeom = NULL );
     void            update_feat_fgf( FdoGeometryType geom_type, long feat_num, int num_ords, FdoIGeometry * specialGeom = NULL );
     void            RoundTripGeometry( FdoGeometryType geomType, FdoIGeometry * specialGeom = NULL );
-    void            check_geom( long feat_num, FdoByteArray *in_ba );
+    void            check_geom( long feat_num, FdoByteArray *in_ba, FdoStringP geomPropName );
 
     void    updateSpatialContext_0();
     FdoICurveString * createCurveString( FdoFgfGeometryFactory * gf, int num_ords, double * line_points );

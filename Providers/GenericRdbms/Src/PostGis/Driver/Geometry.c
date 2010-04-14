@@ -19,8 +19,6 @@
 //#include "stdafx.h"
 #include "Geometry.h"
 
-#include <Fdo.h>
-#include <Geometry/Fgf/Factory.h>
 
 /// Enumeration of possible byte orders.
 enum ByteOrder
@@ -44,6 +42,21 @@ static void FgfFromExtendedWkb(FdoByteArray*& fgfBytes,
                                        unsigned char* ewkb,
                                        unsigned long size,
                                        unsigned long& currentByte);
+
+static void ExtendedWkbFromFgf(FdoByteArray*& ewkbBytes,
+                                       FdoByte* fgf,
+                                       unsigned long size,
+                                       unsigned long srid,
+                                       unsigned long& currentByte,
+                                       unsigned long& totalDims);
+
+static void CopyGeom(FdoByteArray*& dest,
+                                       FdoByte* src,
+                                       unsigned long size,
+                                       unsigned long& currentByte,
+                                       unsigned long geomType,
+                                       unsigned long geomDim);
+ 
 
 void *GeometryFromWkb (void *wkb, unsigned long size)
 {
@@ -208,57 +221,176 @@ void FgfFromExtendedWkb(FdoByteArray*& fgfBytes,
         {
             fgfBytes = FdoByteArray::Append(fgfBytes, sizeof(geomDim), (FdoByte*)&geomDim);
 
-            // Valid combinations: X,Y or X,Y,Z or X,Y,M or X,Y,Z,M
-            unsigned long ordinateSize =
-                sizeof(double) * GetOrdinatesFromDimension(geomDim);
-
-            switch (geomType)
-            {
-            case FdoGeometryType_Point:
-                {
-                    fgfBytes = FdoByteArray::Append(fgfBytes, ordinateSize, &ewkb[currentByte]);
-                    currentByte += ordinateSize;
-                }
-                break;
-            case FdoGeometryType_LineString:
-                {
-                    unsigned long numCoords = *(unsigned long*)(&ewkb[currentByte]);
-                    fgfBytes = FdoByteArray::Append(fgfBytes, sizeof(numCoords), (FdoByte*)&numCoords);
-                    currentByte += sizeof(numCoords);
-
-                    unsigned long ordinatesSize =
-                        numCoords * ordinateSize;
-                    fgfBytes = FdoByteArray::Append(fgfBytes, ordinatesSize, &ewkb[currentByte]);
-                    currentByte += ordinatesSize;
-
-                    //TODO: Add post-condition
-                }
-                break;
-            case FdoGeometryType_Polygon:
-                {
-                    unsigned long numRings = *(unsigned long*)(&ewkb[currentByte]);
-                    fgfBytes = FdoByteArray::Append(fgfBytes, sizeof(numRings), (FdoByte*)&numRings);
-                    currentByte += sizeof(numRings);
-
-                    for (unsigned long i = 0;  i < numRings && currentByte < size;  i++)
-                    {
-                        unsigned long numCoords = *(unsigned long*)(&ewkb[currentByte]);
-                        fgfBytes = FdoByteArray::Append(fgfBytes, sizeof(numCoords), (FdoByte*)&numCoords);
-                        currentByte += sizeof(numCoords);
-
-                        unsigned long ordinatesSize =
-                            numCoords * ordinateSize;
-                        fgfBytes = FdoByteArray::Append(fgfBytes, ordinatesSize, &ewkb[currentByte]);
-                        currentByte += ordinatesSize;
-                    }
-
-                }
-                break;
-            default:
-                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_10_UNSUPPORTEDGEOMETRYTYPE)));
-            }
+            CopyGeom(fgfBytes, ewkb, size, currentByte, geomType, geomDim );
         }
         break;
+    }
+}
+
+FdoByteArray *ExtendedWkbFromGeometry (void *geometry, unsigned long srid)
+{
+    FdoPtr<FdoFgfGeometryFactory> factory;
+    FdoPtr<FdoByteArray> fgfBytes;
+    unsigned long currentByte = 0;
+    unsigned long totalDims = 0;
+    FdoByteArray* ewkbBytes = NULL;
+	
+    if ( geometry == NULL )
+		return ewkbBytes;
+
+    factory = FdoFgfGeometryFactory::GetInstance ();
+    fgfBytes = factory->GetFgf((FdoIGeometry *)geometry);
+
+    // Make ewkb buffer a bit longer to account for endian flag and srid.
+    // Might not be enough for multi geometry types but the Byte array will
+    // grow if needed.
+    ewkbBytes = FdoByteArray::Create(fgfBytes->GetCount() + 20);
+    FdoByte* fgfData = fgfBytes->GetData();
+    ExtendedWkbFromFgf(ewkbBytes, fgfData, fgfBytes->GetCount(), srid, currentByte, totalDims);
+    
+    return ewkbBytes;
+}
+
+void ExtendedWkbFromFgf(FdoByteArray*& ewkbBytes,
+                                       FdoByte* fgf,
+                                       unsigned long size,
+                                       unsigned long srid,
+                                       unsigned long& currentByte,
+                                       unsigned long& totalDims)
+{
+    unsigned long geomType = *(unsigned long*)(&fgf[currentByte]);
+    currentByte += sizeof(geomType);
+
+    unsigned long geomFlags = geomType;
+
+    if ( srid > 0 ) 
+        geomFlags = (geomFlags | eWkbFlagSrid);
+
+    unsigned char endianByte = eWkbNDR;
+    ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(unsigned char), (FdoByte*)&endianByte);
+
+    // Processing:
+    // - for simple geometries types, just copy the array
+    // - for multi-geometries, process sub-geometries recursively
+    //
+    switch(geomType)
+    {
+    case FdoGeometryType_MultiPoint:
+    case FdoGeometryType_MultiGeometry:
+    case FdoGeometryType_MultiLineString:
+    case FdoGeometryType_MultiPolygon:
+        {
+            unsigned long numSubGeoms = *(unsigned long*)(&fgf[currentByte]);
+            currentByte += sizeof(numSubGeoms);
+
+            FdoInt32 flagsPosn = ewkbBytes->GetCount();
+            
+            ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(geomFlags), (FdoByte*)&geomFlags);
+
+            if ( srid > 0 ) 
+                ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(srid), (FdoByte*)&srid);
+
+            ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(numSubGeoms), (FdoByte*)&numSubGeoms);
+
+            unsigned long subTotalDims = 0;
+
+            for (unsigned long i = 0;  i < numSubGeoms && currentByte < size;  i++)
+            {
+                // Recurse on sub-geometry.
+                ExtendedWkbFromFgf(ewkbBytes, fgf, size, srid, currentByte, subTotalDims);
+            }
+
+            FdoByte* ewkbData = ewkbBytes->GetData();
+
+            geomFlags = (geomFlags | subTotalDims);
+
+            *(unsigned long*)(&ewkbData[flagsPosn]) = geomFlags;
+        }
+        break;
+    default:
+        {
+            unsigned long geomDim = *(unsigned long*)(&fgf[currentByte]);
+            currentByte += sizeof(geomDim);
+
+            // Dimensionality
+            if ( geomDim & FdoDimensionality_Z )
+            {
+                geomFlags = (geomFlags | eWkbFlagZ);
+                totalDims = (totalDims | eWkbFlagZ);
+            }
+
+            if ( geomDim & FdoDimensionality_M )
+            {
+                geomFlags = (geomFlags | eWkbFlagM);
+                totalDims = (totalDims | eWkbFlagM);
+            }
+
+            ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(geomFlags), (FdoByte*)&geomFlags);
+
+            if ( srid > 0 ) 
+                ewkbBytes = FdoByteArray::Append(ewkbBytes, sizeof(srid), (FdoByte*)&srid);
+
+            CopyGeom(ewkbBytes, fgf, size, currentByte, geomType, geomDim );
+        }
+        break;
+    }
+}
+
+void CopyGeom(FdoByteArray*& dest,
+                                       FdoByte* src,
+                                       unsigned long size,
+                                       unsigned long& currentByte,
+                                       unsigned long geomType,
+                                       unsigned long geomDim)
+{
+    // Valid combinations: X,Y or X,Y,Z or X,Y,M or X,Y,Z,M
+    unsigned long ordinateSize =
+        sizeof(double) * GetOrdinatesFromDimension(geomDim);
+
+    switch (geomType)
+    {
+    case FdoGeometryType_Point:
+        {
+            dest = FdoByteArray::Append(dest, ordinateSize, &src[currentByte]);
+            currentByte += ordinateSize;
+        }
+        break;
+    case FdoGeometryType_LineString:
+        {
+            unsigned long numCoords = *(unsigned long*)(&src[currentByte]);
+            dest = FdoByteArray::Append(dest, sizeof(numCoords), (FdoByte*)&numCoords);
+            currentByte += sizeof(numCoords);
+
+            unsigned long ordinatesSize =
+                numCoords * ordinateSize;
+            dest = FdoByteArray::Append(dest, ordinatesSize, &src[currentByte]);
+            currentByte += ordinatesSize;
+
+            //TODO: Add post-condition
+        }
+        break;
+    case FdoGeometryType_Polygon:
+        {
+            unsigned long numRings = *(unsigned long*)(&src[currentByte]);
+            dest = FdoByteArray::Append(dest, sizeof(numRings), (FdoByte*)&numRings);
+            currentByte += sizeof(numRings);
+
+            for (unsigned long i = 0;  i < numRings && currentByte < size;  i++)
+            {
+                unsigned long numCoords = *(unsigned long*)(&src[currentByte]);
+                dest = FdoByteArray::Append(dest, sizeof(numCoords), (FdoByte*)&numCoords);
+                currentByte += sizeof(numCoords);
+
+                unsigned long ordinatesSize =
+                    numCoords * ordinateSize;
+                dest = FdoByteArray::Append(dest, ordinatesSize, &src[currentByte]);
+                currentByte += ordinatesSize;
+            }
+
+        }
+        break;
+    default:
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_10_UNSUPPORTEDGEOMETRYTYPE)));
     }
 }
 

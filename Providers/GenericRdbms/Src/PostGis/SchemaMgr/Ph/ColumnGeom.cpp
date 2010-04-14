@@ -114,13 +114,28 @@ FdoStringP FdoSmPhPostGisColumnGeom::GetAddSql()
                 schemaName = objName.Left(L".");
                 tableName = objName.Right(L".");
             }
+
+            FdoStringP geomType = L"GEOMETRY";
+            FdoInt32 dimensions = 2;
+
+            if ( GetHasElevation() ) 
+            {
+                dimensions++;
+            }
+
+            if ( GetHasMeasure() )
+            {
+                dimensions++;
+            }
+
             sqlString = FdoStringP::Format(
-                L"select AddGeometryColumn( %ls, %ls, %ls, %ls, 'GEOMETRY', %d)",
+                L"select AddGeometryColumn( %ls, %ls, %ls, %ls, '%ls', %d)",
                 (FdoString*) mgr->FormatSQLVal((FdoString*)schemaName, FdoSmPhColType_String),
                 (FdoString*) mgr->FormatSQLVal((FdoString*)tableName, FdoSmPhColType_String),
                 (FdoString*) mgr->FormatSQLVal(GetName(), FdoSmPhColType_String),
                 (FdoString*) FdoCommonStringUtil::Int64ToString(GetSRID()),
-                GetHasElevation() ? 3 : 2
+                (FdoString*) geomType,
+                dimensions
             );
         }
     }
