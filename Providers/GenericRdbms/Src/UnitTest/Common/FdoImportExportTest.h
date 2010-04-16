@@ -88,6 +88,8 @@ protected:
     virtual FdoStringP GetWKT( FdoString* coordSys );
     virtual FdoStringP OverrideBend( FdoString* inFile );
 
+    virtual bool XYOnly() {return false;}
+
 	static FdoPropertyValue* AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name );
 protected:
 };

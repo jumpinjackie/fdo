@@ -607,8 +607,11 @@ void FdoImportExportTest::AddSchema( FdoXmlWriter* writer, FdoInt32 idx )
 
 	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
 	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
-    pGeomProp->SetHasElevation((idx % 2) ? true : false);
-    pGeomProp->SetHasMeasure((idx % 2) ? false : true);
+    if (!XYOnly() ) 
+    {
+        pGeomProp->SetHasElevation((idx % 2) ? true : false);
+        pGeomProp->SetHasMeasure((idx % 2) ? false : true);
+    }
     FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
 	pClass->SetGeometryProperty( pGeomProp );
 
@@ -763,6 +766,31 @@ char* OneAutoIncrementString =
 "</xsl:template>"
 "</stylesheet>";
 
+char* Force2dString = 
+"<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+"<stylesheet version=\"1.0\" "
+"xmlns=\"http://www.w3.org/1999/XSL/Transform\" " 
+"xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" " 
+"xmlns:gml=\"http://www.opengis.net/gml\" "
+"xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" " 
+"xmlns:fdo=\"http://fdo.osgeo.org/schemas\" "
+"xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" "
+"xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" "
+"xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\" "
+">"
+"<xsl:template match=\"@fdo:hasElevation\">"
+"  <xsl:attribute name=\"fdo:hasElevation\">false</xsl:attribute>"
+"</xsl:template>"
+"<xsl:template match=\"@fdo:hasMeasure\">"
+"  <xsl:attribute name=\"fdo:hasMeasure\">false</xsl:attribute>"
+"</xsl:template>"
+"<xsl:template match=\"@*|node()\">"
+"  <xsl:copy>"
+"    <xsl:apply-templates select=\"@*|node()\"/>"
+"  </xsl:copy>"
+"</xsl:template>"
+"</stylesheet>";
+
 void FdoImportExportTest::_overrideBend( 
     FdoString* inFile, 
     FdoString* outFile, 
@@ -774,6 +802,9 @@ void FdoImportExportTest::_overrideBend(
 {
     FdoIoFileStreamP stream1 = FdoIoFileStream::Create( inFile, L"rt" );
     FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
+    FdoIoMemoryStreamP stream3;
+    FdoIoMemoryStreamP stream4;
+
     UnitTestUtil::OverrideBend( 
         stream1, 
         stream2, 
@@ -787,7 +818,7 @@ void FdoImportExportTest::_overrideBend(
     stream2->Reset();
 
     if ( oneAutoIncrement ) {
-        FdoIoMemoryStreamP stream3 = FdoIoMemoryStream::Create();
+        stream3 = FdoIoMemoryStream::Create();
 
         FdoIoMemoryStreamP stylesheetStream = FdoIoMemoryStream::Create();
         stylesheetStream->Write( (FdoByte*) OneAutoIncrementString, strlen(OneAutoIncrementString) );
@@ -801,12 +832,32 @@ void FdoImportExportTest::_overrideBend(
 
         tfmr->Transform();
         stream3->Reset();
-
-        UnitTestUtil::Stream2File( stream3, outFile );
     }
     else {
-        UnitTestUtil::Stream2File( stream2, outFile );
+        stream3 = stream2;
     }
+
+    if ( XYOnly() ) {
+        stream4 = FdoIoMemoryStream::Create();
+
+        FdoIoMemoryStreamP stylesheetStream = FdoIoMemoryStream::Create();
+        stylesheetStream->Write( (FdoByte*) Force2dString, strlen(Force2dString) );
+        stylesheetStream->Reset();
+
+        FdoXslTransformerP tfmr = FdoXslTransformer::Create(
+            FdoXmlReaderP( FdoXmlReader::Create(stream3) ),
+            FdoXmlReaderP( FdoXmlReader::Create(stylesheetStream) ),
+            FdoXmlWriterP( FdoXmlWriter::Create(stream4, false) )
+        );
+
+        tfmr->Transform();
+        stream4->Reset();
+    }
+    else {
+        stream4 = stream3;
+    }
+
+    UnitTestUtil::Stream2File( stream4, outFile );
 }
 
 FdoStringP FdoImportExportTest::OverrideBend( FdoString* inFile )

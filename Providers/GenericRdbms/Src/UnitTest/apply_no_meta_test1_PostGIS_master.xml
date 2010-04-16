@@ -589,7 +589,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<xs:element name="Geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -642,7 +642,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="Geometry-x27-" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<xs:element name="Geometry-x27-" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -868,7 +868,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="グケ" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<xs:element name="グケ" type="gml:AbstractGeometryType" fdo:hasMeasure="true" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>

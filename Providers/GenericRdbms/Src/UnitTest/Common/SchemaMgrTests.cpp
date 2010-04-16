@@ -1056,6 +1056,7 @@ void SchemaMgrTests::testGenConfig1 ()
         phMgr = NULL;
         mgr = NULL;
         delete conn;
+        conn = NULL;
 
         printf( "Getting Feature Schemas using config doc ...\n" );
 
