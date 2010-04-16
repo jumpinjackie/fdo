@@ -32,6 +32,9 @@ public:
 protected:
     virtual void AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion );
     virtual FdoStringP OverrideBend( FdoString* inFile );
+        virtual bool XYOnly() {return true;}
+
+
 };
 
 #endif // PostGis_FDOIMPORTEXPORTTEST_H

@@ -68,12 +68,17 @@ FdoStringP FdoSmPhRdPostGisSpatialContextReader::GetGeomColumnName()
 
 bool FdoSmPhRdPostGisSpatialContextReader::GetHasElevation()
 {
-	return (mDimension > 2);
+    // Has elevation if 4D or if 3D and no measure dimension.
+	return (mDimension > 3) || ((mDimension == 3) && !GetHasMeasure());
 }
 
 bool FdoSmPhRdPostGisSpatialContextReader::GetHasMeasure()
 {
-	return (mDimension > 3);
+    FdoStringP geomType = FdoSmPhReader::GetString(L"", L"geomtype");
+    FdoStringP lastChar = geomType.Mid( geomType.GetLength() - 1, 1 );
+
+    // Has measure if 4D or if 3D and geometry type is one of the XYM types.
+	return (mDimension > 3) || ((mDimension == 3) && (lastChar == L"M"));
 }
 
 FdoInt32 FdoSmPhRdPostGisSpatialContextReader::GetGeometryType()
