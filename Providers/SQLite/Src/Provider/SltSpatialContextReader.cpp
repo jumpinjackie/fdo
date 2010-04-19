@@ -30,7 +30,7 @@ SltSpatialContextReader::SltSpatialContextReader(SltConnection* conn)
     m_connection = conn;
     m_connection->AddRef();
 
-    sqlite3* db = m_connection->GetDbRead();
+    sqlite3* db = m_connection->GetDbConnection();
 
     //We will attempt two ways to get the info -- one is in case
     //there is an sr_name column (i.e. data was created by FDO),
@@ -143,7 +143,7 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
     }
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
-    if (sqlite3_prepare_v2(m_connection->GetDbRead(), sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_connection->GetDbConnection(), sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
         {

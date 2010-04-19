@@ -31,7 +31,7 @@ public:
         m_sGetRow(NULL),
         m_bAutoDelSi(true)
     {
-        sqlite3* db = conn->GetDbRead();
+        sqlite3* db = conn->GetDbConnection();
         StringBuffer sb;
         sb.Append("SELECT * FROM ", 14);
         sb.AppendDQuoted(table);

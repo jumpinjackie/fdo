@@ -92,7 +92,6 @@ SltConnection::SltConnection() : m_refCount(1)
         g_fdo2sql_map[FdoDataType_String] =     "TEXT";
     }
 
-    m_dbRead = NULL;
     m_dbWrite = NULL;
     m_pSchema = NULL;
     m_mProps = new std::map<std::wstring, std::wstring>();
@@ -260,7 +259,7 @@ void SltConnection::SetConnectionString(FdoString* value)
 //connection string and connection property dictionary.
 void SltConnection::CreateDatabase()
 {
-    if (m_dbRead || m_connState != FdoConnectionState_Closed)
+    if (m_dbWrite || m_connState != FdoConnectionState_Closed)
     {
         throw FdoCommandException::Create(L"Cannot create data store while connection is in open state.");
     }
@@ -383,28 +382,17 @@ FdoConnectionState SltConnection::Open()
     if (rc != SQLITE_OK)
         fprintf(stderr, "Failed to enable shared cache.\n");
     //Open the Read connection
-    if( (rc = sqlite3_open(file.c_str(), &m_dbRead)) != SQLITE_OK )
-    {
-        m_dbRead = NULL;
-        std::wstring err = std::wstring(L"Failed to open ") + dsw;
-        throw FdoConnectionException::Create(err.c_str(), rc);
-    }
-
-    rc = sqlite3_exec(m_dbRead, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
-
-    //Open the Write connection
     if( (rc = sqlite3_open(file.c_str(), &m_dbWrite)) != SQLITE_OK )
     {
-        sqlite3_close(m_dbRead);
-        m_dbRead = m_dbWrite = NULL;
+        m_dbWrite = NULL;
         std::wstring err = std::wstring(L"Failed to open ") + dsw;
         throw FdoConnectionException::Create(err.c_str(), rc);
     }
 
+    rc = sqlite3_exec(m_dbWrite, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
+
     //Register the extra SQL functions we would like to support
-    RegisterExtensions(m_dbRead);
     RegisterExtensions(m_dbWrite);
-    rc = sqlite3_exec(m_dbRead, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
     rc = sqlite3_exec(m_dbWrite, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
 
     //in case we have a FDO metadata use it since we can make things out of sync by mixing things.
@@ -412,7 +400,7 @@ FdoConnectionState SltConnection::Open()
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
     m_bHasFdoMetadata = false;
-    rc = sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail); 
+    rc = sqlite3_prepare_v2(m_dbWrite, tables_sql, -1, &pstmt, &pzTail); 
     if (rc == SQLITE_OK)
     {
         while (sqlite3_step(pstmt) == SQLITE_ROW)
@@ -431,7 +419,6 @@ FdoConnectionState SltConnection::Open()
     m_connState = FdoConnectionState_Open;
     
     m_connDet = new ConnInfoDetails(this);
-    m_dbRead->pUserArg = m_connDet;
     m_dbWrite->pUserArg = m_connDet;
 
 #ifdef _WIN32
@@ -479,13 +466,6 @@ void SltConnection::Close()
     delete[] m_wkbBuffer;
     m_wkbBuffer = NULL;
     m_wkbBufferLen = 0;
-
-    if (m_dbRead)
-    {
-        m_dbRead->pUserArg = NULL;
-        if(sqlite3_close(m_dbRead) != SQLITE_BUSY)
-            m_dbRead = NULL;
-    }
 
     if (m_dbWrite)
     {
@@ -650,7 +630,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
         return makeACopy ? FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(m_pSchema, NULL) : FDO_SAFE_ADDREF(m_pSchema);
     }
 
-    if (!m_dbRead)
+    if (!m_dbWrite)
         return NULL;
 
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
@@ -666,7 +646,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     sqlite3_stmt* pstmt = NULL;
     const char* pzTail = NULL;
     int rc;
-    if ((rc = sqlite3_prepare_v2(m_dbRead, tables_sql, -1, &pstmt, &pzTail)) == SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_dbWrite, tables_sql, -1, &pstmt, &pzTail)) == SQLITE_OK)
     {
         sqlite3_bind_text(pstmt, 1, "table", 5, SQLITE_STATIC);
         while (sqlite3_step(pstmt) == SQLITE_ROW)
@@ -674,7 +654,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     }
     else
     {
-        const char* err = sqlite3_errmsg(m_dbRead);
+        const char* err = sqlite3_errmsg(m_dbWrite);
         if (err != NULL)
             throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
         else
@@ -866,7 +846,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         const char* tail = NULL;
         VectorMF* rows = new VectorMF(); //accumulate ordered row ids here
 
-        int rc = sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail);
+        int rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail);
 
         //If there is also a spatial filter, we need to compute the intersection
         //of the ordering with the spatial filter -- the SltReader cannot handle both
@@ -882,7 +862,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
             while (siter->NextRange(start, end))
             {
-                for (int i=start; i<=end; i++)
+                for (int i=start; i<end; i++)
                     srows.push_back((*siter)[i]);
             }
 
@@ -953,7 +933,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
                 while (siter->NextRange(start, end))
                 {
-                    for (int i=start; i<=end; i++)
+                    for (int i=start; i<end; i++)
                         rows->push_back((*siter)[i]);
                 }
 
@@ -1243,7 +1223,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
 
             while (siter->NextRange(start, end))
             {
-                for (int i=start; i<=end; i++)
+                for (int i=start; i<end; i++)
                     mfrowids->push_back((*siter)[i]);
             }
             delete siter;
@@ -1433,7 +1413,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
 
             while (siter->NextRange(start, end))
             {
-                for (int i=start; i<=end; i++)
+                for (int i=start; i<end; i++)
                     mfrowids->push_back((*siter)[i]);
             }
             delete siter;
@@ -1837,8 +1817,8 @@ int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
        
-        if ((rc = sqlite3_prepare_v2(m_dbRead, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
-            if ((rc = sqlite3_prepare_v2(m_dbRead, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+        if ((rc = sqlite3_prepare_v2(m_dbWrite, sql1.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
+            if ((rc = sqlite3_prepare_v2(m_dbWrite, sql2.c_str(), -1, &stmt, &tail)) != SQLITE_OK)
                 return (!valIfNotFound) ? 0 : valIfNotFound;
 
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
@@ -1860,7 +1840,7 @@ int SltConnection::GetDefaultSpatialContext()
     sqlite3_stmt* stmt = NULL;
     const char* tail = NULL;
    
-    if ((rc = sqlite3_prepare_v2(m_dbRead, "SELECT srid FROM spatial_ref_sys;", -1, &stmt, &tail)) != SQLITE_OK)
+    if ((rc = sqlite3_prepare_v2(m_dbWrite, "SELECT srid FROM spatial_ref_sys;", -1, &stmt, &tail)) != SQLITE_OK)
         return m_defSpatialContextId;
 
     // avoid some lock issues in case there is a opened transaction tables can be locked 
@@ -3252,7 +3232,7 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
     sb.AppendDQuoted(table);
     sb.Append(";", 1);
 
-    if (sqlite3_prepare_v2(m_dbRead, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail) == SQLITE_OK)
     {
         int rc = sqlite3_step(stmt);
         int count = sqlite3_column_int(stmt, 0);
@@ -3266,11 +3246,11 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
 // Do not use it in other functions than GetCachedParsedStatement
 // Statement is not cached -- make one, and also add an entry for it
 // into the cache table
-#define SQL_PREPARE_CACHEPARSEDSTM(db) {                                           \
+#define SQL_PREPARE_CACHEPARSEDSTM() {                                           \
     const char* tail = NULL;                                                       \
-    int rc = sqlite3_prepare_v2(((NULL==db)?m_dbRead:db), sql, -1, &ret, &tail);   \
+    int rc = sqlite3_prepare_v2(m_dbWrite, sql, -1, &ret, &tail);   \
     if (rc != SQLITE_OK || ret == NULL){                                           \
-        const char* err = sqlite3_errmsg(((NULL==db)?m_dbRead:db));                \
+        const char* err = sqlite3_errmsg(m_dbWrite);                \
         if (err != NULL)                                                           \
             throw FdoException::Create(A2W_SLOW(err).c_str(), rc);                 \
         else                                                                       \
@@ -3279,7 +3259,7 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
 }                                                                                  \
 
 
-sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql, sqlite3* db)
+sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
@@ -3304,25 +3284,22 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql, sqlite3* 
             QueryCacheRec& rec = lst[i];
             if (!rec.inUse)
             {
-                if (db == NULL || (db == sqlite3_db_handle(rec.stmt)))
-                {
-                    rec.inUse = true;
-                    ret = rec.stmt;
-                    break;
-                }
+                rec.inUse = true;
+                ret = rec.stmt;
+                break;
             }
         }
         if (ret == NULL)
         {
             // to avoid a m_mCachedQueries.find() we will clone this small part
-            SQL_PREPARE_CACHEPARSEDSTM(db);
+            SQL_PREPARE_CACHEPARSEDSTM();
             lst.push_back(QueryCacheRec(ret));
         }
     }
     else
     {
         // to avoid a m_mCachedQueries.find() we will clone this small part
-        SQL_PREPARE_CACHEPARSEDSTM(db);
+        SQL_PREPARE_CACHEPARSEDSTM();
         m_mCachedQueries[_strdup(sql)].push_back(QueryCacheRec(ret));
     }
     if (ret == NULL)
@@ -3419,7 +3396,7 @@ bool SltConnection::SupportsDetailedGeomType()
     if (m_cSupportsDetGeomType == -1)
     {
         m_cSupportsDetGeomType = 0;
-        Table* table = sqlite3FindTable(m_dbRead, "geometry_columns", 0);
+        Table* table = sqlite3FindTable(m_dbWrite, "geometry_columns", 0);
         if( table )
         {
             for(int idx = 0; idx < table->nCol; idx++)
@@ -3583,7 +3560,7 @@ void SltConnection::CacheViewContent(const char* viewName)
     StringBuffer sb;
     sb.Append("$view", 5);
     sb.Append(viewName);
-    Table* table = sqlite3FindTable(m_dbRead, sb.Data(), 0);
+    Table* table = sqlite3FindTable(m_dbWrite, sb.Data(), 0);
     if (table == NULL)
     {
         sb.Reset();
@@ -3593,7 +3570,7 @@ void SltConnection::CacheViewContent(const char* viewName)
         sb.Append("\" AS SELECT * FROM ", 19);
         sb.AppendDQuoted(viewName);
         sb.Append(";", 1);
-        sqlite3_exec(m_dbRead, sb.Data(), NULL, NULL, NULL);
+        sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
     }
 }
 
@@ -3699,14 +3676,14 @@ void SltConnection::EnableHooks(bool enable, bool enforceRollback)
 
 bool SltConnection::IsCoordSysLatLong()
 {
-    if (m_dbRead == NULL)
+    if (m_dbWrite == NULL)
         return false;
 
     const char* sql = "SELECT srid FROM spatial_ref_sys WHERE srtext LIKE '%GEOGCS%' AND srtext NOT LIKE '%PROJCS%';";
     sqlite3_stmt* pStmt = NULL;
     const char* zTail = NULL;
     bool retVal = false;
-    if (sqlite3_prepare_v2(m_dbRead, sql, -1, &pStmt, &zTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sql, -1, &pStmt, &zTail) == SQLITE_OK)
     {
         retVal = (sqlite3_step(pStmt) == SQLITE_ROW);
         sqlite3_finalize(pStmt);
