@@ -88,12 +88,11 @@ protected:
 
 	static FdoFilter* CreateFilter();
 
-private:
-
     void read_feature_data( FdoIFeatureReader *myReader, bool subset = false );
     void read_non_feature_data( FdoIFeatureReader *myReader, bool subset = false );
     void read_feature_data2( FdoIFeatureReader *myReader );
 
+private:
     wchar_t mSuffix[12];
 };
 
