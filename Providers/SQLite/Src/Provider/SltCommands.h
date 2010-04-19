@@ -291,7 +291,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
               m_bInTransaction(false)
         {
             m_properties = FdoPropertyValueCollection::Create();
-            m_db = m_connection->GetDbWrite();
+            m_db = m_connection->GetDbConnection();
         }
 
     protected:
@@ -398,7 +398,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             m_properties = FdoPropertyValueCollection::Create();
             m_pCompiledSQL = NULL;
 			m_idProp = NULL;
-            m_db = m_connection->GetDbWrite();
+            m_db = m_connection->GetDbConnection();
             m_geomFormat = eFGF; //eFGF by default, we will get the correct 
                               //format later when we know the feature class
         }
@@ -721,7 +721,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             int count = 0;
             int rc = SQLITE_OK;
 
-            sqlite3* db = m_connection->GetDbWrite();
+            sqlite3* db = m_connection->GetDbConnection();
             sqlite3_stmt* pStmt = m_pCompiledSQL;
             if (NULL != pStmt)
             {
@@ -749,7 +749,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
                     BindPropVals(m_pParmeterValues, m_pCompiledSQL, false, eFGF /* with raw SQL we don't know what it really is, so assume FGF */);
                 }
                 else
-                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
+                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data());
             }
 
             m_connection->EnableHooks();
@@ -782,8 +782,7 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (m_sb.Length() == 0)
                 throw FdoCommandException::Create(L"Invalid empty SQL statement.");
             
-            sqlite3* db = m_connection->GetDbWrite();
-            sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data(), db);
+            sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data());
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
                 BindPropVals(m_pParmeterValues, pStmt, false, eFGF /* with SQL command we don't know the precise geom type, so assume FGF */ );
             return new SltReader(m_connection, pStmt, false, NULL, NULL);
@@ -925,7 +924,7 @@ public:
             sb.Append(";", 1);
         }
 
-        rc = sqlite3_exec(m_connection->GetDbWrite(), sb.Data(), NULL, NULL, &zerr);
+        rc = sqlite3_exec(m_connection->GetDbConnection(), sb.Data(), NULL, NULL, &zerr);
         if (rc != SQLITE_OK)
             FdoCommandException::Create(L"Failed to create spatial context.");
     }

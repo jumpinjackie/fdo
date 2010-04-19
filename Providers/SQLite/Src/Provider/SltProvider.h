@@ -215,15 +215,14 @@ public:
 
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 
-    sqlite3*        GetDbRead() { return m_dbRead; }
-    sqlite3*        GetDbWrite() { return m_dbWrite; }
+    sqlite3*        GetDbConnection() { return m_dbWrite; }
     SpatialIndex*   GetSpatialIndex(const char* table);
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter);
     FdoInt64        GetFeatureCount(const char* table);
     
-    sqlite3_stmt*   GetCachedParsedStatement(const char* sql, sqlite3* db = NULL);
+    sqlite3_stmt*   GetCachedParsedStatement(const char* sql);
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
     void            ClearQueryCache();
     
@@ -272,7 +271,7 @@ private :
     bool                                    m_changesAvailable;
     bool                                    m_isReadOnlyConnection;
 
-    sqlite3*                                m_dbRead;
+    //sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;
 
     std::map<std::wstring, std::wstring>*   m_mProps;

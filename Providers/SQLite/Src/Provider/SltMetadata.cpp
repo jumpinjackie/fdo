@@ -70,7 +70,7 @@ FdoClassDefinition* SltMetadata::ToClass()
         return FDO_SAFE_ADDREF(m_fc);
     }
 
-    sqlite3* db = m_connection->GetDbRead();
+    sqlite3* db = m_connection->GetDbConnection();
 
     char* zErr = NULL;
     Table* pTable = NULL;
@@ -370,7 +370,7 @@ FdoClassDefinition* SltMetadata::ToClass()
                 case FdoDataType_String:
                 case FdoDataType_BLOB:
                 case FdoDataType_CLOB:
-                    dpd->SetLength(sqlite3_limit(m_connection->GetDbRead(), SQLITE_LIMIT_LENGTH, -1));
+                    dpd->SetLength(sqlite3_limit(m_connection->GetDbConnection(), SQLITE_LIMIT_LENGTH, -1));
                     break;
                 case FdoDataType_Boolean:
                 case FdoDataType_Byte:
@@ -600,7 +600,7 @@ void SltMetadata::ProcessViewProperties(Table* pTable)
                             sb.Append("' AND f_column_name='", 21);
                             sb.Append(idProp->GetName());
                             sb.Append("';", 2);
-                            if (sqlite3_prepare_v2(m_connection->GetDbRead(), sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
+                            if (sqlite3_prepare_v2(m_connection->GetDbConnection(), sb.Data(), -1, &pstmt, &pzTail) == SQLITE_OK)
                             {
                                 if (sqlite3_step(pstmt) == SQLITE_ROW)
                                 {
@@ -1021,7 +1021,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 		const char* tail = NULL;
 		//NOTE: This should fail around here if the column sr_name
 		//does not exist -- we'll deal with that 
-		if ((rc = sqlite3_prepare_v2(m_connection->GetDbRead(), sql, -1, &stmt, &tail)) == SQLITE_OK)
+		if ((rc = sqlite3_prepare_v2(m_connection->GetDbConnection(), sql, -1, &stmt, &tail)) == SQLITE_OK)
 		{
 			do
 			{
