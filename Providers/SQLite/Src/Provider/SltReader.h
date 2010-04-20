@@ -54,6 +54,13 @@ struct StringRec
 	}
 };
 
+enum ReaderCloseType
+{
+    ReaderCloseType_None,        // no close
+    ReaderCloseType_CloseDb,     // close statement and database 
+    ReaderCloseType_CloseStmtOnly // close statement only
+};
+
 //feature reader -- returned when executing a select command
 class SltReader :   public FdoIScrollableFeatureReader, 
                     public FdoIDataReader, 
@@ -66,7 +73,7 @@ class SltReader :   public FdoIScrollableFeatureReader,
 
         SltReader(  SltConnection*              connection, 
                     sqlite3_stmt*               stmt,
-                    bool closeDB,
+                    ReaderCloseType closeDB,
                     FdoClassDefinition* cls,
                     FdoParameterValueCollection*  parmValues);
 
@@ -234,7 +241,7 @@ protected:
         StringBuffer  m_sql;  //the SQL query corresponding to this reader
         sqlite3_stmt* m_pStmt; //the SQL statement corresponding to this reader
         int m_closeOpcode; //we need this to cleanly exit the SQL engine after messing with its bytecodes
-        bool m_closeDB; //indicates the statement is based on a memory backed temporary database that we should close when done
+        ReaderCloseType m_closeDB;  //indicates the statement is based on a memory backed temporary database that we should close when done
         bool m_useFastStepping;
         bool m_isViewSelect;
 

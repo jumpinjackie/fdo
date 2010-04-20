@@ -3207,7 +3207,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             props->RemoveAt(0);
             props->Add(cntProp);
         }
-        return new SltReader(this, stmt, true, cls, NULL);        
+        return new SltReader(this, stmt, ReaderCloseType_CloseDb, cls, NULL);        
     }
     else
     {
