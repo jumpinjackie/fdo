@@ -731,34 +731,17 @@ class SltSql : public SltCommand<FdoISQLCommand>
             }
             else
             {
-                if (m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0)
-                {
-                    //parse the SQL statement
-                    const char* tail = NULL;
-                    int rc;
-                    if ((rc = sqlite3_prepare_v2(db, m_sb.Data(), -1, &m_pCompiledSQL, &tail)) != SQLITE_OK)
-                    {
-                        const char* err = sqlite3_errmsg(db);
-                        if (err != NULL)
-                            throw FdoCommandException::Create(A2W_SLOW(err).c_str(), rc);                        
-                        else
-                            throw FdoCommandException::Create(L"Failed to parse SQL statement.", rc);
-                    }
+                m_pCompiledSQL = GetCachedParsedStatement(db, m_sb.Data());
+                pStmt = m_pCompiledSQL;
 
-                    pStmt = m_pCompiledSQL;
+                if (m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0)
                     BindPropVals(m_pParmeterValues, m_pCompiledSQL, false, eFGF /* with raw SQL we don't know what it really is, so assume FGF */);
-                }
-                else
-                    pStmt = m_connection->GetCachedParsedStatement(m_sb.Data());
             }
 
             m_connection->EnableHooks();
             while ((rc = sqlite3_step(pStmt)) == SQLITE_ROW);
             if( rc == SQLITE_DONE )
                 count = sqlite3_changes(db);
-
-            if (NULL == m_pCompiledSQL)
-                m_connection->ReleaseParsedStatement(m_sb.Data(), pStmt);
 
             if (rc == SQLITE_DONE)
             {
@@ -785,7 +768,23 @@ class SltSql : public SltCommand<FdoISQLCommand>
             sqlite3_stmt* pStmt = m_connection->GetCachedParsedStatement(m_sb.Data());
             if( m_pParmeterValues != NULL && m_pParmeterValues->GetCount() != 0 )
                 BindPropVals(m_pParmeterValues, pStmt, false, eFGF /* with SQL command we don't know the precise geom type, so assume FGF */ );
-            return new SltReader(m_connection, pStmt, false, NULL, NULL);
+            return new SltReader(m_connection, pStmt, ReaderCloseType_CloseStmtOnly, NULL, NULL);
+        }
+
+        sqlite3_stmt* GetCachedParsedStatement(sqlite3* db, const char* sql)
+        {
+            sqlite3_stmt* ret = NULL;
+            const char* tail = NULL;
+            int rc = sqlite3_prepare_v2(db, sql, -1, &ret, &tail);
+            if (rc != SQLITE_OK || ret == NULL)
+            {
+                const char* err = sqlite3_errmsg(db);
+                if (err != NULL)
+                    throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoException::Create(L"Failed to parse SQL statement", rc);
+            }
+            return ret;
         }
 
     private:

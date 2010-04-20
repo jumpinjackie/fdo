@@ -76,7 +76,7 @@ m_nMaxProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
-m_closeDB(false),
+m_closeDB(ReaderCloseType_None),
 m_useFastStepping(false),
 m_ri(NULL),
 m_filter(NULL),
@@ -96,7 +96,7 @@ m_isViewSelect(false)
 //Same as above, but this one takes a sqlite3 statement pointer rather than
 //a string. This means that it is a statement based on an ephemeral database
 //which this reader will close once it is done being read.
-SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, bool closeDB, FdoClassDefinition* cls, FdoParameterValueCollection*  parmValues)
+SltReader::SltReader(SltConnection* connection, sqlite3_stmt* stmt, ReaderCloseType closeDB, FdoClassDefinition* cls, FdoParameterValueCollection*  parmValues)
 : m_refCount(1),
 m_sql(""),
 m_sprops(NULL),
@@ -138,7 +138,7 @@ m_nMaxProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
-m_closeDB(false),
+m_closeDB(ReaderCloseType_None),
 m_useFastStepping(useFastStepping),
 m_ri(ri),
 m_aPropNames(NULL),
@@ -168,7 +168,7 @@ m_nMaxProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
-m_closeDB(false),
+m_closeDB(ReaderCloseType_None),
 m_useFastStepping(true),
 m_aPropNames(NULL),
 m_filter(NULL),
@@ -1026,15 +1026,12 @@ void SltReader::Close()
         m_closeOpcode = -1;
     }
 
-    //remember the underlying ephemeral database, 
-    //before killing the statement, so that we can free it,
-    //after we commit it... Phew.
     sqlite3* db = sqlite3_db_handle(m_pStmt); 
 
     //Finalize the statemenet, in case of ephemeral db, or release it to cache otherwise
     //We must do this before committing the transaction, in case we are being Closed()
     //before we were done calling ReadNext()
-    if (m_closeDB)
+    if (m_closeDB != ReaderCloseType_None)
     {
         sqlite3_finalize(m_pStmt);
     }
@@ -1043,7 +1040,7 @@ void SltReader::Close()
 
     //Close the database as well, if it was an ephemeral database
     //used to return computed data
-    if (m_closeDB)
+    if (m_closeDB == ReaderCloseType_CloseDb)
         sqlite3_close(db);
 
 	m_pStmt = NULL;
