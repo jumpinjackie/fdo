@@ -15419,7 +15419,7 @@ void FdoExpressionFunctionTest::ExecuteTestExtractFunction (
     catch (FdoException *exp) {
 
       exp_err_msg = GetExpectedErrorMessage(EXTRACT_TEST_CASE_CODE_1);
-      ret_err_msg = exp->GetExceptionMessage();
+      ret_err_msg = TestCommonMiscUtil::Trim(exp->GetExceptionMessage());
       if (IsExpectedErrorMessage(exp_err_msg,
                                  ret_err_msg,
                                  EXTRACT_TEST_CASE_CODE_1)) {
@@ -15835,7 +15835,7 @@ void FdoExpressionFunctionTest::ExecuteTestExtractToDoubleFunction (
     catch (FdoException *exp) {
 
       exp_err_msg = GetExpectedErrorMessage(EXTRACTTODOUBLE_TEST_CASE_CODE_1);
-      ret_err_msg = exp->GetExceptionMessage();
+      ret_err_msg = TestCommonMiscUtil::Trim(exp->GetExceptionMessage());
       if (IsExpectedErrorMessage(exp_err_msg,
                                  ret_err_msg,
                                  EXTRACTTODOUBLE_TEST_CASE_CODE_1)) {
@@ -16252,7 +16252,7 @@ void FdoExpressionFunctionTest::ExecuteTestExtractToIntFunction (
     catch (FdoException *exp) {
 
       exp_err_msg = GetExpectedErrorMessage(EXTRACTTOINT_TEST_CASE_CODE_1);
-      ret_err_msg = exp->GetExceptionMessage();
+      ret_err_msg = TestCommonMiscUtil::Trim(exp->GetExceptionMessage());
       if (IsExpectedErrorMessage(exp_err_msg,
                                  ret_err_msg,
                                  EXTRACTTOINT_TEST_CASE_CODE_1)) {
@@ -17773,15 +17773,15 @@ FdoStringP FdoExpressionFunctionTest::GetExpectedErrorMessage (
     switch (test_case_id) {
 
       case EXTRACT_TEST_CASE_CODE_1:
-        exp_err_message = L"One or more arguments for function 'Extract' did not match the expected argument types. ";
+        exp_err_message = L"One or more arguments for function 'Extract' did not match the expected argument types.";
         break;
 
       case EXTRACTTODOUBLE_TEST_CASE_CODE_1:
-        exp_err_message = L"One or more arguments for function 'ExtractToDouble' did not match the expected argument types. ";
+        exp_err_message = L"One or more arguments for function 'ExtractToDouble' did not match the expected argument types.";
         break;
 
       case EXTRACTTOINT_TEST_CASE_CODE_1:
-        exp_err_message = L"One or more arguments for function 'ExtractToInt' did not match the expected argument types. ";
+        exp_err_message = L"One or more arguments for function 'ExtractToInt' did not match the expected argument types.";
         break;
 
       default:
