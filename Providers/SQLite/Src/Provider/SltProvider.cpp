@@ -439,6 +439,19 @@ void SltConnection::Close()
         free(iter->first); //was allocated using strdup
     }
 
+    for (MaxRecordInfoCache::iterator iter = m_mTableRecInfo.begin();
+         iter != m_mTableRecInfo.end(); iter++)
+    {
+        if (iter->second != NULL)
+        {
+            iter->second->SetReleased(true);
+            iter->second->Release();
+        }
+        free(iter->first); //was allocated using strdup
+    }
+    
+
+    m_mTableRecInfo.clear();
     m_mNameToSpatialIndex.clear();
 
     //clear the cached schema metadata
@@ -1665,6 +1678,20 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     if (!autodel)
         return si;
 
+    SpatialIndexMaxRecordInfo* imax = NULL;
+    MaxRecordInfoCache::iterator itmx = m_mTableRecInfo.find((char*)table);
+    if (itmx == m_mTableRecInfo.end())
+    {
+        imax = new SpatialIndexMaxRecordInfo(spDesc);
+        m_mTableRecInfo[_strdup(table)] = imax; //Note the memory allocation
+    }
+    else
+    {
+        imax = itmx->second;
+        imax->SetSpatialIndexDescriptor(spDesc);// ensure we have the right SI
+    }
+    spDesc->SetMaxRecordInfo(imax);
+
     //we will need the ID and the geometry when we build the spatial index, so add them to the query
     FdoPtr<FdoIdentifierCollection> idcol = FdoIdentifierCollection::Create();
     FdoPtr<FdoIdentifier> idid = FdoIdentifier::Create(L"rowid");
@@ -1910,6 +1937,32 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
          free(iter->first); //was allocated using strdup
          m_mNameToSpatialIndex.erase(iter);
     }
+
+    MaxRecordInfoCache::iterator itmx = m_mTableRecInfo.find((char*)table.c_str());
+    if (itmx != m_mTableRecInfo.end())
+    {
+         if (itmx->second != NULL)
+         {
+             itmx->second->SetReleased(true);
+             itmx->second->Release();
+         }
+         free(itmx->first); //was allocated using strdup
+         m_mTableRecInfo.erase(itmx);
+    }
+}
+
+SpatialIndexMaxRecordInfo* SltConnection::GetSpatialIndexMaxRecordInfo(const char* table)
+{
+    SpatialIndexMaxRecordInfo* retVal = NULL;
+    MaxRecordInfoCache::iterator itmx = m_mTableRecInfo.find((char*)table);
+    if (itmx == m_mTableRecInfo.end())
+    {
+        retVal = new SpatialIndexMaxRecordInfo();
+        m_mTableRecInfo[_strdup(table)] = retVal; //Note the memory allocation
+    }
+    else
+        retVal = itmx->second;
+    return FDO_SAFE_ADDREF(retVal);
 }
 
 void SltConnection::AddClassToSchema(FdoClassCollection* classes, FdoClassDefinition* fc)
@@ -2182,12 +2235,22 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         std::string tempClassNameA = W2A_SLOW(tempClassName.c_str());
         std::string originalClassNameA = W2A_SLOW(originalClassName.c_str());
         SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*) tempClassNameA.c_str());
+        SpatialIndexDescriptor* desc = NULL;
         if (iter != m_mNameToSpatialIndex.end())
         {
              m_mNameToSpatialIndex.erase(iter);
-             SpatialIndexDescriptor* desc = new SpatialIndexDescriptor(this, originalClassNameA.c_str(), iter->second->DetachSpatialIndex());
+             desc = new SpatialIndexDescriptor(this, originalClassNameA.c_str(), iter->second->DetachSpatialIndex());
              free(iter->first); //was allocated using strdup
              m_mNameToSpatialIndex[_strdup(originalClassNameA.c_str())] = desc; //Note the memory allocation
+        }
+
+        MaxRecordInfoCache::iterator itermx = m_mTableRecInfo.find((char*) tempClassNameA.c_str());
+        if (itermx != m_mTableRecInfo.end())
+        {
+            itermx->second->SetSpatialIndexDescriptor(desc);
+            m_mTableRecInfo.erase(itermx);
+            free(itermx->first); //was allocated using strdup
+            m_mTableRecInfo[_strdup(originalClassNameA.c_str())] = itermx->second; //Note the memory allocation
         }
         // reset class name
         fc->SetName(originalClassName.c_str());
@@ -3602,7 +3665,18 @@ void SltConnection::update_hook(void* caller, int action, char const* database,
             }
         }
         break;
-    //case SQLITE_INSERT:
+        // this even can be fired ONLY by SQL commands and it will process only id < last id inserted
+    case SQLITE_INSERT:
+        {
+            SltConnection* conn = static_cast<SltConnection*>(caller);
+            SpatialIndexCache::iterator iter = conn->m_mNameToSpatialIndex.find((char*)tablename);
+            if (iter != conn->m_mNameToSpatialIndex.end() &&
+                (id < iter->second->GetSpatialIndex()->GetLastInsertedIdx()))
+            {
+                iter->second->AddRowIdToInsertList(id);
+                conn->m_changesAvailable = true;
+            }
+        }
     default:
         // in this case we do not do anything since
         // insert is handled in a different way performance reasons

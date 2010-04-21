@@ -14,6 +14,7 @@ set( SQLiteProvider_SRCS
 	SltQueryTranslator.cpp
 	SltReader.cpp
 	SltSpatialContextReader.cpp
+	SpatialIndexDescriptor.cpp
 	SQLiteSchemaMergeContext.cpp
 	) 
 

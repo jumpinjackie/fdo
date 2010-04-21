@@ -22,6 +22,7 @@
 #include "StringUtil.h"
 #include "SltMetadata.h"
 #include "RowidIterator.h"
+#include "SpatialIndexDescriptor.h"
 
 //When performing bulk inserts or updates, we commit the transaction 
 //once every so many features
@@ -398,6 +399,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             m_properties = FdoPropertyValueCollection::Create();
             m_pCompiledSQL = NULL;
 			m_idProp = NULL;
+            m_siMxreci = NULL;
             m_db = m_connection->GetDbConnection();
             m_geomFormat = eFGF; //eFGF by default, we will get the correct 
                               //format later when we know the feature class
@@ -409,6 +411,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             FlushSQL();
 			FDO_SAFE_RELEASE(m_idProp);
             FDO_SAFE_RELEASE(m_properties);
+            FDO_SAFE_RELEASE(m_siMxreci);
         }
 
     //-------------------------------------------------------
@@ -427,6 +430,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         {
 			m_fcname.clear();
 			FDO_SAFE_RELEASE(m_idProp);
+            FDO_SAFE_RELEASE(m_siMxreci);
             if (value)
             {
 				// since applications will use only one command to insert multiple rows this 
@@ -447,6 +451,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 						m_idProp = FDO_SAFE_ADDREF(pdi.p);
 				}				
             }
+            m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(m_fcname.c_str());
 
             //if the feature class changes, any precompiled SQL is no longer valid
             FlushSQL();
@@ -497,7 +502,17 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             BindPropVals(m_properties, m_pCompiledSQL, m_geomFormat);
 
-            int rc = sqlite3_step(m_pCompiledSQL);
+            int rc = SQLITE_OK;
+            // avoid having hooks enabled during a normal insert
+            // all inserts done by SQL commands will be 'detected' by hooks
+            if (m_connection->HooksEnabled())
+            {
+                m_connection->EnableHooks(false);
+                rc = sqlite3_step(m_pCompiledSQL);
+                m_connection->EnableHooks(true);
+            }
+            else
+                rc = sqlite3_step(m_pCompiledSQL);
 
             if (rc != SQLITE_DONE)
             {
@@ -541,6 +556,17 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             //get the ID of the last inserted feature
             sqlite3_int64 id = sqlite3_last_insert_rowid(m_db);
+
+            // refresh SpatialIndexMaxRecordInfo in case was released
+            if (m_siMxreci->IsReleased())
+            {
+                FDO_SAFE_RELEASE(m_siMxreci);
+                m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(m_fcname.c_str());
+            }
+            // to avoid any performance loss use this trick to update low id's inserts
+            FdoInt64 lastId = m_siMxreci->GetLastInsertedIdx();
+            if (lastId != -1 && id < lastId) // we insert a lower id
+                m_siMxreci->ForceInsertRowIdToSI(id);
             
             //return the new feature
             //IMPORTANT: use a transaction-less reader so that
@@ -634,6 +660,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         int                         m_execCount;
         std::vector<std::wstring>   m_propNames;
         int                         m_geomFormat;
+        SpatialIndexMaxRecordInfo*  m_siMxreci;
 };
 
 
