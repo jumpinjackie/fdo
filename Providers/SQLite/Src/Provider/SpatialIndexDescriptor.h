@@ -16,80 +16,58 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
+#ifndef SLT_SID_H
+#define SLT_SID_H
+
+class DBounds;
+class SpatialIndex;
+class SpatialIndexDescriptor;
+class SltConnection;
+
 typedef std::vector<FdoInt64> RowIdList;
 typedef std::vector<std::pair<FdoInt64, DBounds> > RowIdxUpdateList;
+
+class SpatialIndexMaxRecordInfo : public FdoIDisposable
+{
+private:
+    bool m_IsReleased;
+    SpatialIndexDescriptor* m_spIndexDesc;
+public:
+    SpatialIndexMaxRecordInfo(SpatialIndexDescriptor* spIndexDesc = NULL): 
+      m_spIndexDesc(spIndexDesc), m_IsReleased(false)
+    {
+        
+    }
+    virtual ~SpatialIndexMaxRecordInfo()
+    {
+    }
+    //-------------------------------------------------------
+    // FdoIDisposable implementation
+    //-------------------------------------------------------
+
+    SLT_IMPLEMENT_REFCOUNTING
+
+    //-------------------------------------------------------
+    // FdoIConnection implementation
+    //-------------------------------------------------------
+public:
+    bool IsReleased(){return m_IsReleased;}
+    void SetReleased(bool value){m_IsReleased = value;}
+    void SetSpatialIndexDescriptor(SpatialIndexDescriptor* value){m_spIndexDesc = value;}
+    FdoInt64 GetLastInsertedIdx();
+    void ForceInsertRowIdToSI(FdoInt64 id);
+};
 
 class SpatialIndexDescriptor
 {
 public:
-    // for classes only
-    SpatialIndexDescriptor(SltConnection* conn, const char* table, SpatialIndex* spIndex)
-        : m_spIndex(spIndex),
-        m_conn(conn),
-        m_sRows(NULL),
-        m_sMaxRow(NULL),
-        m_sGetRow(NULL),
-        m_bAutoDelSi(true)
-    {
-        sqlite3* db = conn->GetDbConnection();
-        StringBuffer sb;
-        sb.Append("SELECT * FROM ", 14);
-        sb.AppendDQuoted(table);
-        sb.Append(" WHERE ROWID>?;", 15);
-        const char* tail = NULL;
-        int rc = sqlite3_prepare_v2(db, sb.Data(), -1, &m_sRows, &tail);
-        sb.Reset();
-        
-        sb.Append("SELECT * FROM ", 14);
-        sb.AppendDQuoted(table);
-        sb.Append(" WHERE ROWID=?;", 15);
-        tail = NULL;
-        rc = sqlite3_prepare_v2(db, sb.Data(), -1, &m_sGetRow, &tail);
-        sb.Reset();
-        
-        sb.Append("SELECT MAX(ROWID) FROM ", 23);
-        sb.AppendDQuoted(table);
-        sb.Append(";", 1);
-        rc = sqlite3_prepare_v2(db, sb.Data(), -1, &m_sMaxRow, &tail);
-    }
-    // for views only
-    SpatialIndexDescriptor(SpatialIndex* spIndex, bool bAutoDelSi = true)
-        : m_spIndex(spIndex),
-        m_sRows(NULL),
-        m_sMaxRow(NULL),
-        m_sGetRow(NULL),
-        m_bAutoDelSi(bAutoDelSi)
-    {
-    }
+    SpatialIndexDescriptor(SltConnection* conn, const char* table, SpatialIndex* spIndex); // for classes only
+    SpatialIndexDescriptor(SpatialIndex* spIndex, bool bAutoDelSi = true); // for views only
+    ~SpatialIndexDescriptor();
 
-    ~SpatialIndexDescriptor()
-    {
-        if (NULL != m_sRows)
-            sqlite3_finalize(m_sRows);
-        if (NULL != m_sMaxRow)
-            sqlite3_finalize(m_sMaxRow);
-        if (NULL != m_sGetRow)
-            sqlite3_finalize(m_sGetRow);
-        if (m_bAutoDelSi)
-            delete m_spIndex;
-    }
-
-    FdoInt64 GetFeatureCount()
-    {
-        sqlite3_reset(m_sMaxRow);
-        if (sqlite3_step(m_sMaxRow) == SQLITE_ROW)
-            return sqlite3_column_int64(m_sMaxRow, 0);
-        return -1;
-    }
-
+    FdoInt64 GetFeatureCount();
     // do not call sqlite3_finalize on this stmt or cache it
-    sqlite3_stmt* GetNewFeatures(FdoInt64 lastKnownId)
-    {
-        sqlite3_reset(m_sRows);
-        sqlite3_bind_int64(m_sRows, 1, lastKnownId);
-
-        return m_sRows;
-    }
+    sqlite3_stmt* GetNewFeatures(FdoInt64 lastKnownId);
     
     inline bool IsView()
     {
@@ -108,52 +86,14 @@ public:
         return retval;
     }
 
-    void AddRowIdToDeleteList(FdoInt64 id)
-    {
-        m_delRows.push_back(id);
-    }
-    
-    void AddRowIdToUpdateList(FdoInt64 id)
-    {
-        DBounds ext;
-        sqlite3_reset(m_sGetRow);
-        sqlite3_bind_int64(m_sGetRow, 1, id);
-        
-        if (sqlite3_step(m_sGetRow) == SQLITE_ROW)
-        {
-            FdoInt64 idToAdd = sqlite3_column_int64(m_sGetRow, 0);
-            const unsigned char* ptr = (const unsigned char*)sqlite3_column_blob(m_sGetRow, 1);
-            int len = sqlite3_column_bytes(m_sGetRow, 1);
-            m_conn->GetGeometryExtent(ptr, len, &ext);
-        }
-
-        m_updRows.push_back(std::make_pair(id, ext));
-    }
-    
-    void CommitChanges()
-    {
-        for(RowIdList::iterator it = m_delRows.begin(); it < m_delRows.end(); it++)
-        {
-            m_spIndex->Delete((unsigned)*it);
-        }
-        m_delRows.clear();
-        for(RowIdxUpdateList::iterator it = m_updRows.begin(); it < m_updRows.end(); it++)
-        {
-            m_spIndex->Update((unsigned)it->first, it->second);
-        }
-        m_updRows.clear();
-    }
-
-    void RollbackChanges()
-    {
-        m_delRows.clear();
-        m_updRows.clear();
-    }
-    
-    bool ChangesAvailable()
-    {
-        return (m_delRows.size() != 0 || m_updRows.size() != 0);
-    }
+    void AddRowIdToDeleteList(FdoInt64 id);
+    void AddRowIdToUpdateList(FdoInt64 id);
+    void AddRowIdToInsertList(FdoInt64 id);
+    void CommitChanges();
+    void RollbackChanges();
+    bool ChangesAvailable();
+    SpatialIndexMaxRecordInfo* GetMaxRecordInfo();
+    void SetMaxRecordInfo(SpatialIndexMaxRecordInfo* recInfo);
 
 private:
     sqlite3_stmt* m_sRows;
@@ -162,7 +102,10 @@ private:
     bool m_bAutoDelSi;
     SpatialIndex* m_spIndex;
     RowIdxUpdateList m_updRows;
+    RowIdxUpdateList m_spInsRows;
     RowIdList m_delRows;
     SltConnection* m_conn;
+    FdoPtr<SpatialIndexMaxRecordInfo> m_recInfo;
 };
 
+#endif

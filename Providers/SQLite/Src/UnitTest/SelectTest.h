@@ -41,6 +41,8 @@ class SelectTest : public CppUnit::TestCase
   CPPUNIT_TEST(TestComplexWithBindSelect);
   CPPUNIT_TEST(BooleanDataTest);  
   CPPUNIT_TEST(TestAggregatesSelect);  
+  CPPUNIT_TEST(TestSelectInsertLowerId);  
+  CPPUNIT_TEST(TestSelectInsertLowerIdSQL);  
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -56,6 +58,8 @@ public:
     void TestComplexWithBindSelect();
     void BooleanDataTest ();
     void TestAggregatesSelect ();
+    void TestSelectInsertLowerId ();
+    void TestSelectInsertLowerIdSQL ();
 };
 
 #endif

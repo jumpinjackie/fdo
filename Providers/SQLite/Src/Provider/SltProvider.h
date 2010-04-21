@@ -29,6 +29,7 @@ class StringBuffer;
 class SpatialIndexDescriptor;
 struct DBounds;
 class ConnInfoDetails;
+class SpatialIndexMaxRecordInfo;
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -70,6 +71,8 @@ typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
 typedef std::map<FdoString*, FdoUniqueConstraint*, wstring_less> UniqueConstraints;
 
 typedef std::map<char*, SpatialIndexDescriptor*, string_less> SpatialIndexCache;
+
+typedef std::map<char*, SpatialIndexMaxRecordInfo*, string_less> MaxRecordInfoCache;
 
 class SltConnection : public FdoIConnection, 
                       public FdoIConnectionInfo,
@@ -233,6 +236,7 @@ public:
     int RollbackTransaction(bool isUserTrans = false);
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
     void CacheViewContent(const char* viewName);
+    bool HooksEnabled() {return m_updateHookEnabled;}
     void EnableHooks(bool enable = true, bool enforceRollback = false);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong();
@@ -242,6 +246,7 @@ public:
     int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
     int GetDefaultSpatialContext();
 	FdoClassDefinition* GetFdoClassDefinition(const char* table);
+    SpatialIndexMaxRecordInfo* GetSpatialIndexMaxRecordInfo(const char* table);
 
 private :
 
@@ -281,6 +286,7 @@ private :
 
     MetadataCache                           m_mNameToMetadata;
     SpatialIndexCache                       m_mNameToSpatialIndex;
+    MaxRecordInfoCache                      m_mTableRecInfo;
     QueryCache                              m_mCachedQueries;
 
     SltCapabilities*                        m_caps;

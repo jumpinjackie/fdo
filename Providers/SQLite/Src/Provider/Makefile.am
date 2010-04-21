@@ -30,6 +30,7 @@ libSQLiteProviderSrc_la_SOURCES = \
    SltQueryTranslator.cpp \
    SltReader.cpp \
    SltSpatialContextReader.cpp \
+   SpatialIndexDescriptor.cpp \
    SQLiteSchemaMergeContext.cpp
 
 noinst_HEADERS = $(libSQLiteProviderSrc_la_SOURCES) \

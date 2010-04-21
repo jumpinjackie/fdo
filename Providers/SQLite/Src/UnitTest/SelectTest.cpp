@@ -487,3 +487,201 @@ void SelectTest::TestAggregatesSelect ()
    	}
 	printf( "Done\n" );
 }
+
+void SelectTest::TestSelectInsertLowerId ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        FdoPtr<FdoFilter> qfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.2946747590295 43.7578741868765 0, 7.2946747590295 43.7391013130616 0, 7.33112234364711 43.7391013130616 0, 7.33112234364711 43.7578741868765 0, 7.2946747590295 43.7578741868765 0))\')");
+	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    selectCmd->SetFeatureClassName(L"DaKlass");
+        selectCmd->SetFilter(qfilter);
+
+        // step (1) how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (I): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 616);
+        }
+        FdoPtr<FdoFilter> outfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.32293365332046 43.7431125935668 0, 7.31362107201967 43.7362131560892 0, 7.33337016667614 43.7291532665027 0, 7.32919556122942 43.7431125935668 0, 7.32518151743022 43.7431125935668 0, 7.32293365332046 43.7431125935668 0))\')");
+        FdoSpatialCondition* outsp = static_cast<FdoSpatialCondition*>(outfilter.p);
+        FdoPtr<FdoGeometryValue> out_geom_value = static_cast<FdoGeometryValue*>(outsp->GetGeometry());
+
+        FdoPtr<FdoFilter> infilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.32084638976835 43.7546651639026 0, 7.31747455597957 43.7480866303767 0, 7.32084638976835 43.7448776074028 0, 7.32534216815341 43.7490493571394 0, 7.32309427896089 43.7516165622715 0, 7.32084638976835 43.7546651639026 0))\')");
+        FdoSpatialCondition* insp = static_cast<FdoSpatialCondition*>(infilter.p);
+        FdoPtr<FdoGeometryValue> in_geom_value = static_cast<FdoGeometryValue*>(insp->GetGeometry());
+
+        // step (2) insert outside geometry and test again after
+        {
+            FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
+            FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+            insCmd->SetFeatureClassName(L"DaKlass");
+            FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+            
+            FdoPtr<FdoInt32Value> int32Value = FdoInt32Value::Create(35525);
+            FdoPtr<FdoPropertyValue> idProp = FdoPropertyValue::Create(L"FeatId", int32Value);
+            vals->Add(idProp);            
+            FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Data2", out_geom_value);
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            tr->Commit();
+        }
+        // step (3) again how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (II): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 616); // should remain the same since new geom added is outside of spatial query
+        }
+        // step (3) insert inside geometry and test again after
+        {
+            FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
+            FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+            insCmd->SetFeatureClassName(L"DaKlass");
+            FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+            
+            FdoPtr<FdoInt32Value> int32Value = FdoInt32Value::Create(35521);
+            FdoPtr<FdoPropertyValue> idProp = FdoPropertyValue::Create(L"FeatId", int32Value);
+            vals->Add(idProp);            
+            FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Data2", in_geom_value);
+            vals->Add(propGeomIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+            CPPUNIT_ASSERT(rdr->ReadNext());
+            tr->Commit();
+        }
+        // step (3) again how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (III): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 617); // should increase with one since new geom added is outside of spatial query
+        }
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSelectInsertLowerIdSQL ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        FdoPtr<FdoFilter> qfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.2946747590295 43.7578741868765 0, 7.2946747590295 43.7391013130616 0, 7.33112234364711 43.7391013130616 0, 7.33112234364711 43.7578741868765 0, 7.2946747590295 43.7578741868765 0))\')");
+	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    selectCmd->SetFeatureClassName(L"DaKlass");
+        selectCmd->SetFilter(qfilter);
+
+        // step (1) how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (I): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 616);
+        }
+        FdoPtr<FdoFilter> outfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.32293365332046 43.7431125935668 0, 7.31362107201967 43.7362131560892 0, 7.33337016667614 43.7291532665027 0, 7.32919556122942 43.7431125935668 0, 7.32518151743022 43.7431125935668 0, 7.32293365332046 43.7431125935668 0))\')");
+        FdoSpatialCondition* outsp = static_cast<FdoSpatialCondition*>(outfilter.p);
+        FdoPtr<FdoGeometryValue> out_geom_value = static_cast<FdoGeometryValue*>(outsp->GetGeometry());
+
+        FdoPtr<FdoFilter> infilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.32084638976835 43.7546651639026 0, 7.31747455597957 43.7480866303767 0, 7.32084638976835 43.7448776074028 0, 7.32534216815341 43.7490493571394 0, 7.32309427896089 43.7516165622715 0, 7.32084638976835 43.7546651639026 0))\')");
+        FdoSpatialCondition* insp = static_cast<FdoSpatialCondition*>(infilter.p);
+        FdoPtr<FdoGeometryValue> in_geom_value = static_cast<FdoGeometryValue*>(insp->GetGeometry());
+
+        // step (2) insert outside geometry and test again after
+        {
+            FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
+            FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+            sqlCmd->SetSQLStatement(L"insert into DaKlass (FeatId,Data2) values (?,?)");
+            FdoPtr<FdoParameterValueCollection> parmVals = sqlCmd->GetParameterValues();
+            
+            FdoPtr<FdoInt32Value> int32Value = FdoInt32Value::Create(35525);
+            FdoPtr<FdoParameterValue> idProp = FdoParameterValue::Create(L"FeatId", int32Value);
+            parmVals->Add(idProp);            
+            FdoPtr<FdoParameterValue> propGeomIns = FdoParameterValue::Create(L"Data2", out_geom_value);
+            parmVals->Add(propGeomIns);
+            CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
+            tr->Commit();
+        }
+        // step (3) again how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (II): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 616); // should remain the same since new geom added is outside of spatial query
+        }
+        // step (3) insert inside geometry and test again after
+        {
+            FdoPtr<FdoITransaction> tr = conn->BeginTransaction();
+            FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+            sqlCmd->SetSQLStatement(L"insert into DaKlass (FeatId,Data2) values (?,?)");
+            FdoPtr<FdoParameterValueCollection> parmVals = sqlCmd->GetParameterValues();
+            
+            FdoPtr<FdoInt32Value> int32Value = FdoInt32Value::Create(35521);
+            FdoPtr<FdoParameterValue> idProp = FdoParameterValue::Create(L"FeatId", int32Value);
+            parmVals->Add(idProp);            
+            FdoPtr<FdoParameterValue> propGeomIns = FdoParameterValue::Create(L"Data2", in_geom_value);
+            parmVals->Add(propGeomIns);
+            CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
+            tr->Commit();
+        }
+        // step (3) again how many objects are there
+        {
+            FdoPtr<FdoIFeatureReader>reader = selectCmd->Execute();
+            int rez = 0;
+            while(reader->ReadNext())rez++;
+            reader->Close();
+            printf ("Selectd features step (III): %d\n", rez);
+            CPPUNIT_ASSERT(rez == 617); // should increase with one since new geom added is outside of spatial query
+        }
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
