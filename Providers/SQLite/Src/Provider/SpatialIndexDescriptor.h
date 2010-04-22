@@ -34,7 +34,7 @@ private:
     SpatialIndexDescriptor* m_spIndexDesc;
 public:
     SpatialIndexMaxRecordInfo(SpatialIndexDescriptor* spIndexDesc = NULL): 
-      m_spIndexDesc(spIndexDesc), m_IsReleased(false)
+      m_spIndexDesc(spIndexDesc), m_IsReleased(false), m_refCount(1)
     {
         
     }

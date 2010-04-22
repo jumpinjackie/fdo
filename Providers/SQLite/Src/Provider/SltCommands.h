@@ -233,6 +233,7 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
             m_grouping->Release();
             m_ordering->Release();
             m_properties->Release();
+            FDO_SAFE_RELEASE(m_grfilter);
         }
         
     //-------------------------------------------------------
