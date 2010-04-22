@@ -17,3 +17,21 @@
 //  
 
 #include "stdafx.h"
+/*
+   This is to call sqlite3_initialize/sqlite3_shutdown methods when the provider library is loaded/unloaded.
+*/
+class InitClass
+{
+public:
+    InitClass()
+    {
+        sqlite3_initialize();
+    };
+    ~InitClass()
+    {
+        sqlite3_shutdown();
+    };
+};
+
+static InitClass initClass;
+

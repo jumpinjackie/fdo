@@ -369,8 +369,6 @@ FdoConnectionState SltConnection::Open()
     if (sUseMeta != NULL && _wcsicmp(sUseMeta, L"true") == 0)
         m_bUseFdoMetadata = true;
 
-    sqlite3_initialize();
-
     //We will use two connections to the database -- one for reading and one for writing.
     //This will help us with concurrent reads and writes (to different tables).
     //If we use the same SQLite connection, we will get problems with transaction nesting
