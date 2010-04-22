@@ -4524,26 +4524,35 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMeta
 	    FdoClassesP(pSchema->GetClasses())->Add( pStClass );
     }
 
-	pClass = (FdoFeatureClass*) FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
+    FdoPtr<FdoGeometricPropertyDefinition> pGeomProp;
+    FdoClassDefinitionP classDef = FdoClassesP(pSchema->GetClasses())->GetItem( L"Transformer" );
+        
+    // PostgreSQL provider handles class inheritance when there is no metaschema.
+    // This means that deleting ElectricDevice.Geometry also removes Geometry from Transformer,
+    // meaning that it will turn into a non-feature class. Skip re-adding geometry in this 
+    // case since geometry can't be added to non-feature class.
+    if ( classDef->GetClassType() == FdoClassType_FeatureClass ) {
+        pClass = (FdoFeatureClass*) FDO_SAFE_ADDREF(classDef.p);
 
-	// Re-add deleted geometry
+        // Re-add deleted geometry
 
-	FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
-    // When MetaSchema, delete of ElectricDevice.Geometry causes delete of Transformer.Geometry.
-    // When no MetaSchema, inheritance not preserved so Transformer.Geometry not deleted and
-    // still exists at this point.
-    if ( hasMetaSchema && CanDropCol() ) {
-	    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+        pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
+        pGeomProp->SetGeometryTypes( FdoGeometricType_Surface );
+        // When MetaSchema, delete of ElectricDevice.Geometry causes delete of Transformer.Geometry.
+        // When no MetaSchema, inheritance not preserved so Transformer.Geometry not deleted and
+        // still exists at this point.
+        if ( hasMetaSchema && CanDropCol() ) {
+            FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+        }
+        else {
+            FdoClassDefinitionP baseClass = pClass->GetBaseClass();
+            if ( baseClass )
+                pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(baseClass->GetProperties())->FindItem(L"Geometry");
+            else
+                pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->FindItem(L"Geometry");
+        }
+        pClass->SetGeometryProperty( pGeomProp );
     }
-    else {
-        FdoClassDefinitionP baseClass = pClass->GetBaseClass();
-        if ( baseClass )
-            pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(baseClass->GetProperties())->FindItem(L"Geometry");
-        else
-            pGeomProp = (FdoGeometricPropertyDefinition*) FdoPropertiesP(pClass->GetProperties())->FindItem(L"Geometry");
-    }
-    pClass->SetGeometryProperty( pGeomProp );
 
     if ( hasMetaSchema ) {
         // Try geometry with similar name but different case (should get different column.
