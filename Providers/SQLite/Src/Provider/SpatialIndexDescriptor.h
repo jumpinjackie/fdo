@@ -19,7 +19,7 @@
 #ifndef SLT_SID_H
 #define SLT_SID_H
 
-class DBounds;
+struct DBounds;
 class SpatialIndex;
 class SpatialIndexDescriptor;
 class SltConnection;
