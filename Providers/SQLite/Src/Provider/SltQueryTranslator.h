@@ -297,7 +297,7 @@ public:
     SltExpressionTranslator(FdoIdentifierCollection* props = NULL, FdoClassDefinition* classDef = NULL)
     {
         m_props = FDO_SAFE_ADDREF(props);
-        m_fc = classDef;
+        m_fc = FDO_SAFE_ADDREF(classDef);
     }
     virtual ~SltExpressionTranslator()
     {}
@@ -342,7 +342,7 @@ public:
 
 protected:
     ConvReqOperationStack           m_convReqStack;
-    FdoClassDefinition*             m_fc;
+    FdoPtr<FdoClassDefinition>      m_fc;
     FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;
     char m_useConv[256];
