@@ -2022,9 +2022,13 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
     stream->Reset();
 
     FdoStringP masterFile = FdoStringP::Format( L"apply_no_meta_test1_%ls_master.xml", (FdoString*) providerName );
+    FdoStringP sortedMasterFile = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test1_master.xml" );
     FdoStringP resultsFile = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test1.xml" );
     FdoStringP masterFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2_master.xml" );
     FdoStringP resultsFile2 = UnitTestUtil::GetOutputFileName( L"apply_no_meta_test2.xml" );
+
+    FdoIoFileStreamP masterStream = FdoIoFileStream::Create(masterFile, L"r");
+    UnitTestUtil::Config2SortedFile(masterStream, sortedMasterFile );
 
     UnitTestUtil::Config2SortedFile(stream, resultsFile );
 
@@ -2058,7 +2062,7 @@ void FdoApplySchemaTest::ApplyNoMetaSuccess( FdoIConnection* connection, StaticC
         UnitTestUtil::Config2SortedFile(stream, resultsFile2 );
     }
 
-    UnitTestUtil::CheckOutput( masterFile,(const char*) resultsFile );
+    UnitTestUtil::CheckOutput( sortedMasterFile,(const char*) resultsFile );
 
     if ( CanCreateSchemaWithoutMetaSchema() )
         UnitTestUtil::CheckOutput( (const char*) masterFile2,(const char*) resultsFile2 );
@@ -4570,7 +4574,7 @@ void FdoApplySchemaTest::ReAddElements( FdoIConnection* connection, bool hasMeta
 	    pProp = FdoDataPropertyDefinition::Create( L"Volume", L"" );
 	    pProp->SetDataType( FdoDataType_Int64 );
 	    pProp->SetNullable(true);
-	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+	    FdoPropertiesP(classDef->GetProperties())->Add( pProp );
     }
 
     if ( hasMetaSchema ) {
