@@ -102,18 +102,35 @@ bool FdoSmPhRdPostGisColumnReader::ReadNext()
 FdoStringP FdoSmPhRdPostGisColumnReader::GetString( FdoStringP tableName, FdoStringP fieldName )
 {
     FdoStringP fieldValue;
-
-    if ( fieldName == L"default_value" && GetType() == FdoSmPhColType_Date )  {
-        // reformat the string to the Fdo expected DateTime default format
+   if ( fieldName == L"default_value" ) {
         FdoStringP defValue = FdoSmPhRdColumnReader::GetString( tableName, fieldName ); // '2001-10-01 00:00:00'::timestamp without time zone
-        if( defValue != NULL && defValue.GetLength() != 0 )
-        {
-            fieldValue = defValue = defValue.Left(L"::");  
-            if( fieldValue != NULL && fieldValue.GetLength() != 0 )
-                fieldValue = FdoStringP(L"TIMESTAMP ") + defValue;
-            else
-                fieldValue = L"";
-        }
+       if( defValue != NULL && defValue.GetLength() != 0 ) {
+            if ( GetType() == FdoSmPhColType_Date )  {
+                // reformat the string to the Fdo expected DateTime default format
+                fieldValue = defValue = defValue.Left(L"::");  
+                if( fieldValue != NULL && fieldValue.GetLength() != 0 )
+                    fieldValue = FdoStringP(L"TIMESTAMP ") + defValue;
+                else
+                    fieldValue = L"";
+            }
+            else {
+                // Remove any type casting at the end of the default value.
+                FdoString* defPtr = (FdoString*) defValue;
+                for ( int i = (wcslen(defPtr) - 1); i > 0; i-- ) {
+                    // Don't remove anything inside brackets or quote delimiters
+                    if ( (defPtr[i] == ')')|| (defPtr[i] == '\'') )
+                        break;
+ 
+                    // type casting part starts with ::
+                    if ( wcsncmp(&defPtr[i], L"::", 2) == 0 ) {
+                        defValue = defValue.Mid(0,i);
+                        break;
+                    }
+                }
+
+                fieldValue = defValue;
+            }
+        } 
     }
     else if ( fieldName == L"size" ) {
         fieldValue = FdoStringP::Format( L"%d", mSize );
