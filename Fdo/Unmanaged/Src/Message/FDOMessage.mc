@@ -939,22 +939,22 @@ String does not represent a valid value expression.
 MessageId=2021
 SymbolicName=EXPRESSION_21_VALUETRUNCATED
 Language=English
-Cannot convert value %1$s to %2$ls; it is outside the range [%3$s, %4$s]
+Cannot convert value %1$ls to %2$ls; it is outside the range [%3$s, %4$s]
 .
 MessageId=2022
 SymbolicName=EXPRESSION_22_INCOMPATIBLEDATATYPES
 Language=English
-Cannot convert value %1$s from %2$ls to %3$ls; incompatible data types
+Cannot convert value %1$ls from %2$ls to %3$ls; incompatible data types
 .
 MessageId=2023
 SymbolicName=EXPRESSION_23_VALUESHIFTED
 Language=English
-Cannot convert value %1$s to %2$ls without loss of precision
+Cannot convert value %1$ls to %2$ls without loss of precision
 .
 MessageId=2024
 SymbolicName=EXPRESSION_24_BOOLEANTRUNCATED
 Language=English
-Cannot convert value %1$s to boolean; it must be 0 or 1
+Cannot convert value %1$ls to boolean; it must be 0 or 1
 .
 
 MessageId=3001
