@@ -355,11 +355,15 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 	double dxM = fabs(shpFile->GetBoundingBoxMaxX() - box.xMax);
 	double dyM = fabs(shpFile->GetBoundingBoxMaxY() - box.yMax);
 
+    // Take the maximum 
+    double dx = max(dxm, dxM);
+    double dy = max(dym, dyM);
+
 	// Enlarge the search area.
-    searchArea.xMin = searchArea.xMin - xyRes - dxm;
-    searchArea.yMin = searchArea.yMin - xyRes - dym;
-    searchArea.xMax = searchArea.xMax + xyRes + dxM;
-    searchArea.yMax = searchArea.yMax + xyRes + dyM;
+    searchArea.xMin = searchArea.xMin - xyRes - dx;
+    searchArea.yMin = searchArea.yMin - xyRes - dy;
+    searchArea.xMax = searchArea.xMax + xyRes + dx;
+    searchArea.yMax = searchArea.yMax + xyRes + dy;
 
     if (m_RTree)
     {
