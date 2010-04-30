@@ -260,6 +260,6 @@ const CHAR END_OF_FILE = (CHAR)0x1a;
 // NOTE: The algorithm for nesting check is expensive and it might affect the performance
 //       on reading the polygons.
 
-#define RELATE_NESTED_RINGS    true
+#define RELATE_NESTED_RINGS    false
 
 #endif  // CONSTANTS_H
