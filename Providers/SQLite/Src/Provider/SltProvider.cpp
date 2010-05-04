@@ -632,8 +632,25 @@ FdoString* SltConnection::GetLocalizedName(FdoString* name)
 //Maps sqlite table descriptions to an FDO schema
 FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* classNames, bool makeACopy)
 {
-    //TODO: Take into account the classNames collection -- not required, but
-    //can potentially speed things up in some use cases
+    if (classNames && classNames->GetCount() != 0)
+    {
+        FdoPtr<FdoFeatureSchemaCollection> pSchema = FdoFeatureSchemaCollection::Create(NULL);
+        FdoPtr<FdoFeatureSchema> sch = FdoFeatureSchema::Create(L"Default", L"");
+        pSchema->Add(sch);
+        FdoPtr<FdoClassCollection> clss = sch->GetClasses();
+        for(int i = 0; i < classNames->GetCount(); i++)
+        {
+            FdoPtr<FdoIdentifier> idClass = FdoIdentifier::Create(classNames->GetString(i));
+            std::string clsName = W2A_SLOW(idClass->GetName());
+            SltMetadata* md = GetMetadata(clsName.c_str());
+            FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
+            if (fc)
+                clss->Add(fc);
+            else
+                throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.");
+        }
+        return FDO_SAFE_ADDREF(pSchema.p);
+    }
 
     if (m_pSchema)
     {
@@ -1142,10 +1159,6 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
     bool geomPropIsUpdated = false;
     int geomFormat = eFGF;
 
-    sb.Append("UPDATE ", 7);
-    sb.AppendDQuoted(fcname->GetName());
-    sb.Append(" SET ", 5);
-
     const wchar_t* wfc = fcname->GetName();
     size_t wlen = wcslen(wfc);
     size_t clen = 4 * wlen+1;
@@ -1161,9 +1174,32 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
     }
     geomFormat = md->GetGeomFormat();    
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    sb.Append("UPDATE ", 7);
     // don't update views
     if (md->IsView())
-        throw FdoException::Create(L"Views cannot be updated");
+    {
+        // views well defined can be modified
+        if (md->GetIdName() == NULL)
+            throw FdoException::Create(L"Views cannot be updated");
+        sb.AppendDQuoted(md->GetMainViewTable());
+        md = GetMetadata(md->GetMainViewTable());
+        fc = (md) ? md->ToClass() : NULL;
+        if (fc == NULL)
+        {
+            std::wstring errVal(L"Class '");
+            errVal.append(wfc);
+            errVal.append(L"' is not found");
+            throw FdoException::Create(errVal.c_str(), 1);
+        }
+        // TODO: in case is needed handle filter with secondary properties
+        // now we just support filters for update with primary properties
+        // we need to select PK from view using the filter create a rowid list
+        // and pass RowidIterator* to the update statement.
+    }
+    else // we have a table
+        sb.AppendDQuoted(fcname->GetName());
+
+    sb.Append(" SET ", 5);
 
     FdoString* geomPropName = NULL;
     if (fc->GetClassType() == FdoClassType_FeatureClass)
@@ -1172,15 +1208,16 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         FdoPtr<FdoGeometricPropertyDefinition> geomProp = fcl->GetGeometryProperty();
         geomPropName = geomProp->GetName();
     }
-
+    
     for (int i=0; i<propvals->GetCount(); i++)
     {
-        if (i) sb.Append(",", 1); 
-
         FdoPtr<FdoPropertyValue> pv = propvals->GetItem(i);
         FdoPtr<FdoIdentifier> id = pv->GetName();
         FdoString* propName = id->GetName();
-        
+
+        if (i)
+            sb.Append(",", 1); 
+
         if (geomPropName != NULL && wcscmp(geomPropName, propName) == 0)
             geomPropIsUpdated = true;
 
@@ -1356,24 +1393,33 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
 {
     StringBuffer sb;
 
-    sb.Append("DELETE FROM ", 12);
-    sb.AppendDQuoted(fcname->GetName());
-
     std::vector<__int64>* rowids = NULL;
     StringBuffer strWhere((size_t)0);
     DBounds bbox;
     char* mbfc = NULL;
-    //Translate the filter from FDO to SQLite where clause.
-    //Also detect if there is a BBOX query that we can accelerate
-    //by using the spatial index.
-    if (filter)
+    const wchar_t* wfc = fcname->GetName();
+    size_t wlen = wcslen(wfc);
+    size_t clen = 4 * wlen+1;
+    mbfc = (char*)alloca(4*wlen+1);
+    W2A_FAST(mbfc, clen, wfc, wlen);
+    SltMetadata* md = GetMetadata(mbfc);
+    if (md == NULL)
     {
-        const wchar_t* wfc = fcname->GetName();
-        size_t wlen = wcslen(wfc);
-        size_t clen = 4 * wlen+1;
-        mbfc = (char*)alloca(4*wlen+1);
-        W2A_FAST(mbfc, clen, wfc, wlen);
-        SltMetadata* md = GetMetadata(mbfc);
+        std::wstring errVal(L"Class '");
+        errVal.append(wfc);
+        errVal.append(L"' is not found");
+        throw FdoException::Create(errVal.c_str(), 1);
+    }
+    FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    sb.Append("DELETE FROM ", 12);
+    // don't update views
+    if (md->IsView())
+    {
+        // views well defined can be modified
+        if (md->GetIdName() == NULL)
+            throw FdoException::Create(L"Views cannot be updated");
+        sb.AppendDQuoted(md->GetMainViewTable());
+        md = GetMetadata(md->GetMainViewTable());
         if (md == NULL)
         {
             std::wstring errVal(L"Class '");
@@ -1381,10 +1427,20 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
             errVal.append(L"' is not found");
             throw FdoException::Create(errVal.c_str(), 1);
         }
-        FdoPtr<FdoClassDefinition> fc = md->ToClass();
-        // don't update views
-        if (md->IsView())
-            throw FdoException::Create(L"Views cannot be updated");
+        fc = md->ToClass();
+        // TODO: in case is needed handle filter with secondary properties
+        // now we just support filters for delete with primary properties
+        // we need to select PK from view using the filter create a rowid list
+        // and pass RowidIterator* to the delete statement.
+    }
+    else // we have a table
+        sb.AppendDQuoted(fcname->GetName());
+
+    //Translate the filter from FDO to SQLite where clause.
+    //Also detect if there is a BBOX query that we can accelerate
+    //by using the spatial index.
+    if (filter)
+    {
 
         SltQueryTranslator qt(fc);
         filter->Process(&qt);
@@ -1566,12 +1622,6 @@ SltMetadata* SltConnection::GetMetadata(const char* table)
     }
 
     return ret;
-}
-
-FdoClassDefinition* SltConnection::GetFdoClassDefinition(const char* table)
-{
-	SltMetadata* md = GetMetadata(table);
-	return (md) ? md->ToClass() : NULL;
 }
 
 void SltConnection::GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext)
