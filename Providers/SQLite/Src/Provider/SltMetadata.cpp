@@ -511,6 +511,8 @@ FdoClassDefinition* SltMetadata::ToClass()
                 idpdc->Add(dpd);
             }
         }
+        else
+            caps->SetSupportsWrite(true);
     }
 
     if (pTable->pSelect == NULL && pTable->pIndex != NULL)
@@ -570,16 +572,17 @@ void SltMetadata::ProcessViewProperties(Table* pTable)
             break;
         }
     }
+    FdoPtr<FdoClassDefinition> mainfc;
     FdoPtr<FdoDataPropertyDefinition> idProp;
     if (geomClassName.size() != 0)
     {
         SltMetadata* md = m_connection->GetMetadata(geomClassName.c_str());
         if (md != NULL)
         {
-            FdoPtr<FdoClassDefinition> fc = md->ToClass();
-            if (fc != NULL)
+            mainfc = md->ToClass();
+            if (mainfc != NULL)
             {
-                FdoPtr<FdoDataPropertyDefinitionCollection> pIdColl = fc->GetIdentityProperties();
+                FdoPtr<FdoDataPropertyDefinitionCollection> pIdColl = mainfc->GetIdentityProperties();
                 if (pIdColl->GetCount() == 1)
                 {
                     idProp = pIdColl->GetItem(0);
@@ -643,6 +646,31 @@ void SltMetadata::ProcessViewProperties(Table* pTable)
                     }
                     m_tablename = geomClassName;
                     break;
+                }
+            }
+            if (mainfc != NULL)
+            {
+                // we have a well defined view let's mark read-only properties.
+                FdoPtr<FdoPropertyDefinitionCollection> propsColl = m_fc->GetProperties();
+                FdoPtr<FdoPropertyDefinitionCollection> propsMainColl = mainfc->GetProperties();
+                for (int i = 0; i < propsColl->GetCount(); i++)
+                {
+                    FdoPtr<FdoPropertyDefinition> propCls = propsColl->GetItem(i);
+                    FdoPtr<FdoPropertyDefinition> propMainCls = propsMainColl->FindItem(propCls->GetName());
+                    if (propMainCls == NULL) // is sec prop
+                    {
+                        FdoPropertyType ptype = propCls->GetPropertyType();
+                        if (FdoPropertyType_DataProperty == ptype)
+                        {
+                            FdoDataPropertyDefinition* pDataCls = static_cast<FdoDataPropertyDefinition*>(propCls.p);
+                            pDataCls->SetReadOnly(true);
+                        }
+                        else if (FdoPropertyType_GeometricProperty == ptype)
+                        {
+                            FdoGeometricPropertyDefinition* pGeomCls = static_cast<FdoGeometricPropertyDefinition*>(propCls.p);
+                            pGeomCls->SetReadOnly(true);
+                        }
+                    }
                 }
             }
         }

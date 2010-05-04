@@ -419,6 +419,10 @@ class SltInsert : public SltCommand<FdoIInsert>
     // FdoIInsert implementation
     //-------------------------------------------------------
 
+        inline const char* FeatureClassName()
+        {
+            return (m_fcmainname.size()) ? m_fcmainname.c_str() : m_fcname.c_str();
+        }
     public:
         virtual FdoIdentifier* GetFeatureClassName()
 		{
@@ -429,6 +433,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 		}
         virtual void SetFeatureClassName(FdoIdentifier* value)
         {
+            m_fcmainname.clear();
 			m_fcname.clear();
 			FDO_SAFE_RELEASE(m_idProp);
             FDO_SAFE_RELEASE(m_siMxreci);
@@ -437,12 +442,20 @@ class SltInsert : public SltCommand<FdoIInsert>
 				// since applications will use only one command to insert multiple rows this 
 				// should not add any performance loss
 				m_fcname = W2A_SLOW(value->GetName());
-				FdoPtr<FdoClassDefinition> updClass = m_connection->GetFdoClassDefinition(m_fcname.c_str());
+                SltMetadata* md = m_connection->GetMetadata(m_fcname.c_str());
+				FdoPtr<FdoClassDefinition> updClass = (md) ? md->ToClass() : NULL;
 				if (!updClass)
 				{
 					m_fcname.clear();
 					throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 				}
+                if (md->IsView() && md->GetMainViewTable() != NULL)
+                {
+                    m_fcmainname = md->GetMainViewTable();
+                    md = m_connection->GetMetadata(m_fcmainname.c_str());
+                    if (!md)
+                        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
+                }
 
 				FdoPtr<FdoDataPropertyDefinitionCollection> pdic = updClass->GetIdentityProperties();
 				if (pdic->GetCount() == 1)
@@ -452,7 +465,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 						m_idProp = FDO_SAFE_ADDREF(pdi.p);
 				}				
             }
-            m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(m_fcname.c_str());
+            m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(FeatureClassName());
 
             //if the feature class changes, any precompiled SQL is no longer valid
             FlushSQL();
@@ -562,7 +575,7 @@ class SltInsert : public SltCommand<FdoIInsert>
             if (m_siMxreci->IsReleased())
             {
                 FDO_SAFE_RELEASE(m_siMxreci);
-                m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(m_fcname.c_str());
+                m_siMxreci = m_connection->GetSpatialIndexMaxRecordInfo(FeatureClassName());
             }
             // to avoid any performance loss use this trick to update low id's inserts
             FdoInt64 lastId = m_siMxreci->GetLastInsertedIdx();
@@ -606,30 +619,35 @@ class SltInsert : public SltCommand<FdoIInsert>
         void PrepareSQL()
         {
             StringBuffer sb;
+            StringBuffer sbval;
             sb.Append("INSERT INTO ");
-            sb.AppendDQuoted(m_fcname.c_str());
+            sb.AppendDQuoted(FeatureClassName());
             sb.Append(" (");
+
+            sbval.Append(") VALUES(");
 
             for (int i=0; i<m_properties->GetCount(); i++)
             {
-                if (i)
-                    sb.Append(",");
-                
                 FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
                 FdoPtr<FdoIdentifier> id = pv->GetName();
 
                 m_propNames.push_back(id->GetName()); //build up a list of the property names (see Execute() for why this is needed)
+
+                if (i)
+                {
+                    sb.Append(",", 1);
+                    sbval.Append(",?", 2);
+                }
+                else
+                    sbval.Append("?", 1);
+
                 sb.AppendDQuoted(id->GetName());
             }
 
-            //set up parametrized insert values
-            sb.Append(") VALUES(");
-            for (int i=0; i<m_properties->GetCount(); i++)
-                (i) ? sb.Append(",?") : sb.Append("?");
-
+            sb.Append(sbval.Data(), sbval.Length());
             sb.Append(");");
 
-            SltMetadata* md = m_connection->GetMetadata(m_fcname.c_str());
+            SltMetadata* md = m_connection->GetMetadata(FeatureClassName());
 
             if (md)
                 m_geomFormat = md->GetGeomFormat();
@@ -656,6 +674,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         FdoPropertyValueCollection* m_properties;
 
         std::string                 m_fcname;
+        std::string                 m_fcmainname;
         sqlite3*                    m_db;
         sqlite3_stmt*               m_pCompiledSQL;
         int                         m_execCount;
