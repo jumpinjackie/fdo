@@ -645,7 +645,10 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
             SltMetadata* md = GetMetadata(clsName.c_str());
             FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
             if (fc)
-                clss->Add(fc);
+            {
+                FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(fc);
+                clss->Add(fc_copy);
+            }
             else
                 throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.");
         }
