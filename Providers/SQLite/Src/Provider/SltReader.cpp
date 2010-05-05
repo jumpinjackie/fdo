@@ -733,7 +733,7 @@ FdoByteArray* SltReader::GetGeometry(int index)
 {
 	int len = 0;
     const void* ptr = SltReader::GetGeometry(index, &len);
-	return FdoByteArray::Create((unsigned char*)ptr, len);
+    return (len) ? FdoByteArray::Create((unsigned char*)ptr, len) : NULL;
 }
 FdoByteArray* SltReader::GetGeometry(FdoString* propertyName)
 {
@@ -770,7 +770,8 @@ const FdoByte* SltReader::GetGeometry(int i, FdoInt32* len)
     }
 
     //is geometry null?
-    if (!*len) return NULL;
+    if (!*len)
+        return NULL;
 
     if (m_eGeomFormat == eFGF)
         return geom;
