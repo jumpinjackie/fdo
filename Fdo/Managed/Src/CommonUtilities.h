@@ -124,7 +124,7 @@ inline System::DateTime FdoDateTimeToDateTime(FdoDateTime& date)
     else
     {
         int seconds = System::Int32(date.seconds);
-        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, seconds, (date.seconds-System::Single(seconds))*1000.0f);
+        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, seconds, System::Int32((date.seconds-System::Single(seconds))*1000.0f));
     }
 }
 
