@@ -207,7 +207,7 @@ FdoInt64Value* FdoInt64Value::Create(
                     src2->GetSingle(), 
                     FdoInt64Min, 
                     FdoInt64Max, 
-                    pow((double)2, (double)63),
+                    (FdoFloat)pow((double)2, (double)63),
                     (FdoFloat) 0.5,
                     nullIfIncompatible, 
                     shift,

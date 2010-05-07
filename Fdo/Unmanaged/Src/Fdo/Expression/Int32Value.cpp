@@ -212,7 +212,7 @@ FdoInt32Value* FdoInt32Value::Create(
                     src2->GetSingle(), 
                     LONG_MIN, 
                     LONG_MAX,
-                    pow((double)2, (double)31),
+                    (FdoFloat)pow((double)2, (double)31),
                     (FdoFloat) 0.5,
                     nullIfIncompatible, 
                     shift,
