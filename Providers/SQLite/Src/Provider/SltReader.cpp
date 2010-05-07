@@ -1100,12 +1100,25 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 					? ((FdoFeatureClass*)origfc.p)->GetGeometryProperty() : NULL;
 
 				const wchar_t* pname = m_propNames[i];
+                const char* origin_name = NULL;
 
 				FdoPtr<FdoPropertyDefinition> srcprop = pdc->FindItem(pname);
+                if (!srcprop.p)
+                {
+                    origin_name = sqlite3_column_origin_name(m_pStmt, i);
+                    if (origin_name)
+                    {
+                        std::wstring worigin_name = A2W_SLOW(origin_name);
+                        srcprop = pdc->FindItem(worigin_name.c_str());
+                    }
+                }
 
                 if (srcprop.p)
                 {
                     FdoPtr<FdoPropertyDefinition> clonedprop = FdoCommonSchemaUtil::DeepCopyFdoPropertyDefinition(srcprop);
+                    if (origin_name)
+                        clonedprop->SetName(pname);
+
                     propFound = true;
                     if (dstpdc->Contains(pname))
                     {
