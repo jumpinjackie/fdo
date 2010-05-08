@@ -6,13 +6,13 @@
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
 #   fdocore/ - directory to build FDO Base libs package
-#     usr/local/fdo-3.5.0/ - copied tree for core fdo libs
+#     usr/local/fdo-3.6.0/ - copied tree for core fdo libs
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
 BUILDROOT=`pwd`
-FDOBUILD=3.5.0
+FDOBUILD=3.6.0
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdocore
 TREE=${BUILDROOT}/debian
@@ -169,7 +169,7 @@ END-OF-CHANGELOG
 
 
 # Pull copyright file from Subversion vault 
-wget http://svn.osgeo.org/fdo/branches/3.5/License_README.txt -O tmp/copyright
+wget http://svn.osgeo.org/fdo/branches/3.6/License_README.txt -O tmp/copyright
 iconv -f ISO-8859-1 -t UTF-8 tmp/copyright > debian/copyright
 
 # Blow away old build directory

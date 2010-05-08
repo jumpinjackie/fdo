@@ -87,7 +87,7 @@
       </xs:complexContent>
     </xs:complexType>
   </xs:schema>
-  <SchemaMapping provider="OSGeo.WMS.3.5" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+  <SchemaMapping provider="OSGeo.WMS.3.6" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
     <complexType name="railType">
       <RasterDefinition name="Image">
         <Format>PNG</Format>

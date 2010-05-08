@@ -34,7 +34,7 @@ SET SQLITEENABLE=yes
 SET ZIPTESTDATA=yes
 SET SHOWHELP=no
 SET FDOTARZIPFOLDER=OpenSource_FDO
-SET FDOBUILDNUMBER=D00X
+SET FDOBUILDNUMBER=F00X
 SET FDOSVNROOT=%cd%
 
 :study_params
@@ -191,8 +191,8 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdo-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdo-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdo-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdo-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdo-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdo-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_shp
 if "%SHPENABLE%"=="no" goto start_zip_sdf
@@ -202,8 +202,8 @@ if "%SHPENABLE%"=="no" goto start_zip_sdf
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoshp-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoshp-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoshp-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdoshp-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoshp-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoshp-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_sdf
 if "%SDFENABLE%"=="no" goto start_zip_wfs
@@ -213,8 +213,8 @@ if "%SDFENABLE%"=="no" goto start_zip_wfs
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdosdf-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosdf-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdosdf-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdosdf-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosdf-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosdf-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_wfs
 if "%WFSENABLE%"=="no" goto start_zip_wms
@@ -223,8 +223,8 @@ if "%WFSENABLE%"=="no" goto start_zip_wms
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdowfs-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowfs-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdowfs-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdowfs-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowfs-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdowfs-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_wms
 if "%WMSENABLE%"=="no" goto start_zip_arcsde
@@ -233,8 +233,8 @@ if "%WMSENABLE%"=="no" goto start_zip_arcsde
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdowms-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowms-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdowms-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdowms-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdowms-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdowms-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_arcsde
 if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
@@ -244,8 +244,8 @@ if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoarcsde-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoarcsde-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoarcsde-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdoarcsde-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoarcsde-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoarcsde-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_rdbms
 if "%RDBMSENABLE%"=="no" goto start_zip_gdal
@@ -254,8 +254,8 @@ if "%RDBMSENABLE%"=="no" goto start_zip_gdal
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdordbms-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdordbms-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdordbms-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdordbms-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdordbms-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdordbms-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_gdal
 if "%GDALENABLE%"=="no" goto start_zip_king_oracle
@@ -265,8 +265,8 @@ if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdogdal-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdogdal-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdogdal-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdogdal-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdogdal-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdogdal-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_king_oracle
 if "%KINGORACLEENABLE%"=="no" goto start_zip_king_spatial
@@ -275,8 +275,8 @@ if "%KINGORACLEENABLE%"=="no" goto start_zip_king_spatial
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdokingoracle-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingoracle-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdokingoracle-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_king_spatial
 if "%KINGSPATILENABLE%"=="no" goto start_zip_postgis
@@ -285,8 +285,8 @@ if "%KINGSPATILENABLE%"=="no" goto start_zip_postgis
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdokingspatial-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingspatial-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdokingspatial-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_postgis
 if "%POSTGISENABLE%"=="no" goto start_zip_ogr
@@ -295,8 +295,8 @@ if "%POSTGISENABLE%"=="no" goto start_zip_ogr
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdopostgis-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdopostgis-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdopostgis-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_ogr
 if "%OGRENABLE%"=="no" goto start_zip_sqlite
@@ -305,8 +305,8 @@ if "%OGRENABLE%"=="no" goto start_zip_sqlite
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoogr-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoogr-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoogr-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdoogr-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdoogr-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoogr-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_sqlite
 if "%SQLITEENABLE%"=="no" goto start_zip_testdata
@@ -315,8 +315,8 @@ if "%SQLITEENABLE%"=="no" goto start_zip_testdata
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdosqlite-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosqlite-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdosqlite-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdosqlite-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdosqlite-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosqlite-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_testdata
 if "%ZIPTESTDATA%"=="no" goto end
@@ -326,8 +326,8 @@ if "%ZIPTESTDATA%"=="no" goto end
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoarcsde-testdata-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f fdoarcsde-testdata-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoarcsde-testdata-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdoarcsde-testdata-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f fdoarcsde-testdata-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoarcsde-testdata-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
    mkdir "%FDOTARZIPFOLDER%\Providers\GDAL\TestData"
@@ -336,8 +336,8 @@ if "%ZIPTESTDATA%"=="no" goto end
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdogdal-testdata-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f fdogdal-testdata-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdogdal-testdata-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdogdal-testdata-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f fdogdal-testdata-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdogdal-testdata-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
    mkdir "%FDOTARZIPFOLDER%\Providers\SDF\TestData"
@@ -346,8 +346,8 @@ if "%ZIPTESTDATA%"=="no" goto end
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdosdf-testdata-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f fdosdf-testdata-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdosdf-testdata-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdosdf-testdata-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f fdosdf-testdata-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdosdf-testdata-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
    mkdir "%FDOTARZIPFOLDER%\Providers\SHP\TestData"
@@ -356,8 +356,8 @@ if "%ZIPTESTDATA%"=="no" goto end
    pushd "%FDOTARZIPFOLDER%"
    if exist .svn del /q /f /s .svn
    popd
-   if exist "fdoshp-testdata-3.5.0_%FDOBUILDNUMBER%.zip" del /q /f fdoshp-testdata-3.5.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdoshp-testdata-3.5.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
+   if exist "fdoshp-testdata-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f fdoshp-testdata-3.6.0_%FDOBUILDNUMBER%.zip"
+   7z a -airy -bd -tzip "fdoshp-testdata-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 
 :end

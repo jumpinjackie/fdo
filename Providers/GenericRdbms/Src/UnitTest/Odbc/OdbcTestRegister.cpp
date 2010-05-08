@@ -30,4 +30,4 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MessageTest, "OdbcExcelTests");
 
 static OdbcConnectionUtil pOdbcConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pOdbcConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.ODBC.3.5";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.ODBC.3.6";

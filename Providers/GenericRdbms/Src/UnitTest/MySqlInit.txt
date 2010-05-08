@@ -1,1 +1,1 @@
-provider=MySql;service=acrdmapdb1;username=root;password=111111;clean=true;
+provider=MySql;service=localhost;username=root;password=fdotest;clean=false;

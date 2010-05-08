@@ -6,7 +6,7 @@
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
 #   fdo[provider]/ - directory to build FDO Provider
-#     usr/local/fdo-3.5.0/ - copied tree for core fdo libs
+#     usr/local/fdo-3.6.0/ - copied tree for core fdo libs
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
@@ -63,7 +63,7 @@ esac
 
 
 BUILDROOT=`pwd`
-FDOBUILD=3.5.0
+FDOBUILD=3.6.0
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdo${PROVIDER}
 CPROOT=${ROOT}/${FDO}

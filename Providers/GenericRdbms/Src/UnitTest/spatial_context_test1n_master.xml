@@ -347,7 +347,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:schema>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.5" name="dbo">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.6" name="dbo">
 <complexType name="ClassB1Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="Prop1">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_classb1" name="dbo.ClassB1"/>
 <element name="Prop1">

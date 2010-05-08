@@ -252,7 +252,7 @@ class TypeMapTest(unittest.TestCase):
 		for index in range(providers.GetCount()):
 			provider = providers.GetItem(index)
 
-			if string.find(provider.GetName(), "OSGeo.SDF.3.5") > -1:
+			if string.find(provider.GetName(), "OSGeo.SDF.3.6") > -1:
 				retVal = provider
 				break
 	

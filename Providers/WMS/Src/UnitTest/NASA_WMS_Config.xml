@@ -46,7 +46,7 @@
    			</xs:complexContent>
 		</xs:complexType>
 	</xs:schema>
-    <SchemaMapping provider="OSGeo.WMS.3.5" name="Itasca_Demo" xmlns="http://fdowms.osgeo.org/schemas">
+    <SchemaMapping provider="OSGeo.WMS.3.6" name="Itasca_Demo" xmlns="http://fdowms.osgeo.org/schemas">
 	    <complexType name="global_mosaicType">
 		    <RasterDefinition name="Image">
 			    <Format>PNG</Format>

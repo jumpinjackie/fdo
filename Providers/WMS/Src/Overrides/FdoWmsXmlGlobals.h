@@ -25,7 +25,7 @@
 
 namespace FdoWmsXmlGlobals
 {
-    static FdoString* g_WmsProviderName					    = L"OSGeo.WMS.3.5";
+    static FdoString* g_WmsProviderName					    = L"OSGeo.WMS.3.6";
     static FdoString* g_WmsSchemaMapping                    = L"SchemaMapping";
     static FdoString* g_WmsClassDefinitionElement           = L"complexType";
     static FdoString* g_WmsRasterDefinition                 = L"RasterDefinition";
