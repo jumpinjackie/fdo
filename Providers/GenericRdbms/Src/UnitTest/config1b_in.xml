@@ -108,7 +108,7 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:schema>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_GH">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_GH">
 		<complexType xmlns:rdb="http://fdordbms.osgeo.org/schemas" name="TABLE5Type">
 			<Table pkeyName="PK_GH_TABLE5" name="GH_TABLE5"/>
 			<element name="FRGN_COLUMN">

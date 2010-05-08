@@ -5,7 +5,7 @@
 BUILDDIR=`pwd`
 BUILDLIST=${BUILDDIR}/filelist
 FDOBUILD=${BUILDDIR}/..
-FDOTARGET=/usr/local/fdo-3.5.0
+FDOTARGET=/usr/local/fdo-3.6.0
 
 # Check for provider argument
 #

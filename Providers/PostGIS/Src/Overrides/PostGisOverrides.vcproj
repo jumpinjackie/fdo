@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -183,7 +183,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>
@@ -266,7 +266,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -349,7 +349,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning PostGISOverrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.5.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; &quot;$(OutDir)\PostGISOverrides.dll&quot;"
 				ExcludedFromBuild="true"
 			/>
 		</Configuration>

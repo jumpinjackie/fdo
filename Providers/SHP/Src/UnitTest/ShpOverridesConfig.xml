@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<SchemaMapping provider="OSGeo.SHP.3.5" name="Hydrographic" xmlns="http://fdoshp.osgeo.org/schemas">
+<SchemaMapping provider="OSGeo.SHP.3.6" name="Hydrographic" xmlns="http://fdoshp.osgeo.org/schemas">
 	<complexType name="SoundingType" shapeFile="d:/hydrographic/soundings.shp">
 		<element name="SoundingDate">
 			<Column name="SNDG_DATE"/>

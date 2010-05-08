@@ -1,4 +1,6 @@
 provider=Odbc;clean=true;
-serviceOracle=oraserver;usernameOracle=xxxx;passwordOracle=xxxx;DSNOracle=ORACLE;
 serviceMySql=mysqlserver;usernameMySql=root;passwordMySql=xxxx;DSNMySql=MySQL;
 serviceSqlServer=sqlserver;usernameSqlServer=xxxx;passwordSqlServer=xxxx;DSNSqlServer=SqlServer;
+serviceOracle=brent10;usernameOracle=br;passwordOracle=test;DSNOracle=ora_brent;
+serviceMySql=localhost;usernameMySql=root;passwordMySql=fdotest;DSNMySql=MySQL;
+serviceSqlServer=otwmetro1a;usernameSqlServer=sa;passwordSqlServer=SaPass2008;DSNSqlServer=SqlServer;

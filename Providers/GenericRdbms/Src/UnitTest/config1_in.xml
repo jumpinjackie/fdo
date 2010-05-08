@@ -108,7 +108,7 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:schema>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_AB">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_AB">
 		<AutoGeneration geomTypeMaxRows="0" tablePrefix="ab_">
 			<TableList>
 				<Name>CD_TABLEWILD</Name>
@@ -118,13 +118,13 @@
 			</TableList>
 		</AutoGeneration>
 	</SchemaMapping>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_CD">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_CD">
 		<AutoGeneration geomTypeMaxRows="-1" tablePrefix="cd_" removeTablePrefix="false"/>
 	</SchemaMapping>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_EF">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_EF">
 		<AutoGeneration geomTypeMaxRows="0" tablePrefix="ef_" removeTablePrefix="true"/>
 	</SchemaMapping>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_GH">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_GH">
 		<AutoGeneration geomTypeMaxRows="0" tablePrefix="gh_" removeTablePrefix="false"/>
 		<complexType xmlns:rdb="http://fdordbms.osgeo.org/schemas" name="TABLE5Type">
 			<Table pkeyName="PK_GH_TABLE5" name="GH_TABLE5"/>
@@ -133,8 +133,8 @@
 			</element>
 		</complexType>
 	</SchemaMapping>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_IJ"/>
-	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.5" name="Schema_KL" owner="(user)_SCHEMA_MGR_F">
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_IJ"/>
+	<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.3.6" name="Schema_KL" owner="(user)_SCHEMA_MGR_F">
 		<AutoGeneration geomTypeMaxRows="0"/>
 	</SchemaMapping>
 </fdo:DataStore>

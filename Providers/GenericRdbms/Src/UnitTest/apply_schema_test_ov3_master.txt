@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.5" name="Electric-x27-l">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.6" name="Electric-x27-l">
 <complexType name="-x27-AddressType" tableMapping="Concrete">
 <Table name="A_ADDRESS"/>
 <element name="Number">

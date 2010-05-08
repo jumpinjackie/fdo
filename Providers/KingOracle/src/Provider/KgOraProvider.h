@@ -22,9 +22,9 @@
 #define KGORAPROVIDER_H
 
 
-#define D_KGORA_PROVIDER_NAME					L"King.Oracle.3.5"
-#define D_KGORA_PROVIDER_VERSION				L"3.5.0.0"
-#define D_KGORA_FDO_VERSION						L"3.5.0.0"
+#define D_KGORA_PROVIDER_NAME					L"King.Oracle.3.6"
+#define D_KGORA_PROVIDER_VERSION				L"3.6.0.0"
+#define D_KGORA_FDO_VERSION						L"3.6.0.0"
 
 #define D_KGORA_PROVIDER_DEFAULT_DISPLAY_NAME	"FDO Provider for Oracle"
 #define D_KGORA_PROVIDER_DEFAULT_DESCRIPTION	"Read/write access to spatial and attribute data in an Oracle Spatial."

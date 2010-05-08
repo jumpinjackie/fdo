@@ -589,7 +589,7 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.5" name="AutoGen">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" provider="Autodesk.Oracle.3.6" name="AutoGen">
 <complexType name="TABLE1Type">
 <Table pkeyName="PK_TABLE1" name="TABLE1"/>
 <element name="ID">

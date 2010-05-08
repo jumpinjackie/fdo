@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" database="ISD" tableMapping="Base" provider="Autodesk.Oracle.3.5" name="Acad-x20-">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" database="ISD" tableMapping="Base" provider="Autodesk.Oracle.3.6" name="Acad-x20-">
 <complexType name="AcDbEntityType" tableMapping="Concrete">
 <Table name="Entity"/>
 <element name="Colour-x20-Name">
@@ -31,7 +31,7 @@
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" owner="Region1" provider="Autodesk.Oracle.3.5" name="Electric">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" owner="Region1" provider="Autodesk.Oracle.3.6" name="Electric">
 <complexType name="TransformerType">
 <element name="Geometry">
 <GeometricColumn name="TransGeom"/>

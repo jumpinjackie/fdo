@@ -190,8 +190,8 @@ location and shape</xs:documentation>
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.5" name="Schema1"/>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.5" name="Schema2"/>
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.6" name="Schema1"/>
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" tablespace="USERS" tableMapping="Base" provider="Autodesk.Oracle.3.6" name="Schema2"/>
 <gml:FeatureCollection>
 <gml:featureMember>
 <ClassB1>

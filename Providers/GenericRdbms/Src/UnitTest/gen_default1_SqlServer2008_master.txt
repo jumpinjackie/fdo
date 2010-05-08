@@ -1941,7 +1941,7 @@
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.5" name="dbo">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.6" name="dbo">
 <complexType name="rtable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable1" name="dbo.rtable1"/>
 </complexType>
@@ -1976,7 +1976,7 @@
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view3" name="dbo.view3"/>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.5" name="guest">
+<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.6" name="guest">
 <complexType name="vertable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable1" name="guest.vertable1"/>
 <element name="id1">

@@ -20,10 +20,10 @@
 
 // Provider Registry Information
 
-#define RDBMS_ODBC_PROVIDER_NAME          L"OSGeo.ODBC.3.5"
+#define RDBMS_ODBC_PROVIDER_NAME          L"OSGeo.ODBC.3.6"
 #define RDBMS_ODBC_PROVIDER_DEFAULT_DISPLAY_NAME   "OSGeo FDO Provider for ODBC"
 #define RDBMS_ODBC_PROVIDER_DEFAULT_DESCRIPTION   "Read/write access to ODBC-based data store. Supports XYZ point features."
-#define RDBMS_ODBC_PROVIDER_VERSION       L"3.5.0.0"
-#define RDBMS_ODBC_FDO_VERSION    L"3.5.0.0"
+#define RDBMS_ODBC_PROVIDER_VERSION       L"3.6.0.0"
+#define RDBMS_ODBC_FDO_VERSION    L"3.6.0.0"
 
 #endif

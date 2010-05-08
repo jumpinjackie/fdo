@@ -60,7 +60,7 @@ class ClientServicesTest(unittest.TestCase):
 			self.assert_( provider.__class__.__name__ == 'FdoProvider')
 			
 			# Unable to load the SDF provider for some reason.
-			if name == "OSGeo.SDF.3.5":
+			if name == "OSGeo.SDF.3.6":
 				connection = manager.CreateConnection(name)
 				self.assert_(connection.__class__.__name__ == 'FdoIConnection')
 				self.assert_(connection.Release() == 0)
@@ -71,6 +71,6 @@ class ClientServicesTest(unittest.TestCase):
 					
 				# Check if the library exists in the path
 				path = provider.GetLibraryPath()
-				if path != '.\SDFProvider.dll' and path != '/usr/local/fdo-3.5.0/lib/libSDFProvider.so':
+				if path != '.\SDFProvider.dll' and path != '/usr/local/fdo-3.6.0/lib/libSDFProvider.so':
 					self.fail("Invalid provider.GetLibraryPath()")
 				

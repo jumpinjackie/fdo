@@ -70,7 +70,7 @@ echo "NOTE: The setenvironment.sh script sets the installation location for "
 echo "the GDAL SDK files to $FDOTHIRDPARTY/gdal. "
 echo "If this value remains unchanged, the FDO build process will"
 echo "build the version of GDAL located in Thirdparty/gdal and will "
-echo "install the resulting libraries in /usr/local/fdo-3.5.0. The FDO build"
+echo "install the resulting libraries in /usr/local/fdo-3.6.0. The FDO build"
 echo "process will then use that location when building the GDAL and"
 echo "WMS providers. If you wish to build the FDO GDAL or WMS Providers"
 echo "using a previously installed version of GDAL, modify the setenvironment.sh "
@@ -137,7 +137,7 @@ fi
 # $ source ./setenvironment.sh --noinstall
 if test ! $# -eq 1; then
 
-	mkdir -p "/usr/local/fdo-3.5.0/lib"
+	mkdir -p "/usr/local/fdo-3.6.0/lib"
 
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.5.0/lib:$SDEHOME/lib
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.6.0/lib:$SDEHOME/lib
 fi
