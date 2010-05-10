@@ -641,7 +641,7 @@ FdoString* SltReader::GetString(int index)
 		else if(textmem->type == SQLITE_FLOAT)
 		{
 			m_sprops[i].EnsureSize(256);
-			swprintf(m_sprops[i].data, 256, L"%g", textmem->r);
+			swprintf(m_sprops[i].data, 256, L"%.16g", textmem->r);
 			m_sprops[i].valid = 1;
 		}
 		else if(textmem->type == SQLITE_NULL)
