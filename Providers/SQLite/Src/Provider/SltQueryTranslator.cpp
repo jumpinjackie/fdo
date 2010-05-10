@@ -811,7 +811,7 @@ void SltQueryTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
     {
         m_sb.Reset();
         char* ptr = m_sb.Data();
-        _snprintf(ptr, 256, "%g", expr.GetDecimal());
+        _snprintf(ptr, 256, "%.16g", expr.GetDecimal());
         EnsureNoIsLocalIndep(ptr);
         m_evalStack.push_back(CreateBaseFilterChunk(ptr, strlen(ptr)));
     }
@@ -825,7 +825,7 @@ void SltQueryTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
     {
         m_sb.Reset();
         char* ptr = m_sb.Data();
-        _snprintf(ptr, 256, "%g", expr.GetDouble());
+        _snprintf(ptr, 256, "%.16g", expr.GetDouble());
         EnsureNoIsLocalIndep(ptr);
         m_evalStack.push_back(CreateBaseFilterChunk(ptr, strlen(ptr)));
     }
@@ -1281,7 +1281,7 @@ void SltExpressionTranslator::ProcessDecimalValue(FdoDecimalValue& expr)
 {
     if (!expr.IsNull())
     {
-        _snprintf(m_useConv, 256, "%g", expr.GetDecimal());
+        _snprintf(m_useConv, 256, "%.16g", expr.GetDecimal());
 
         EnsureNoIsLocalIndep(m_useConv);
         m_expr.Append(m_useConv, strlen(m_useConv));
@@ -1294,7 +1294,7 @@ void SltExpressionTranslator::ProcessDoubleValue(FdoDoubleValue& expr)
 {
     if (!expr.IsNull())
     {
-        _snprintf(m_useConv, 256, "%g", expr.GetDouble());
+        _snprintf(m_useConv, 256, "%.16g", expr.GetDouble());
 
         EnsureNoIsLocalIndep(m_useConv);
         m_expr.Append(m_useConv, strlen(m_useConv));
