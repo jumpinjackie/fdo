@@ -1053,6 +1053,9 @@ void SltQueryTranslator::Reset()
         m_restoreChunk = NULL;
         m_optimizedChunk = NULL;
     }
+    IFilterChunk* main = (m_evalStack.size() == 0) ? NULL : m_evalStack[0];
+    if (main)
+        main->m_canOmit = false;
 }
 
 IFilterChunk* SltQueryTranslator::CreateBaseFilterChunk(const char* str, size_t len)
