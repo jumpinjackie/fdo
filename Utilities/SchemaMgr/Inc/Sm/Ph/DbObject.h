@@ -484,6 +484,9 @@ protected:
     /// Load Foreign Keys if not yet loaded
     void LoadFkeys();
     void LoadFkeys( FdoPtr<FdoSmPhReader> fkeyRdr, bool isSkipAdd );
+    // Load a foreign key column from a reader.
+    virtual void LoadFkeyColumn( FdoPtr<FdoSmPhReader> fkeyRdr, FdoSmPhFkeyP fkey );
+
 
     // Create new base object group reader
     virtual FdoPtr<FdoSmPhTableComponentReader> NewTableBaseReader( FdoPtr<FdoSmPhRdBaseObjectReader> rdr );
@@ -692,6 +695,8 @@ protected:
     virtual void Discard();
 
     virtual void AddPkeyColumnError(FdoStringP columnName);
+
+    virtual void AddFkeyColumnCountError(FdoStringP fkeyName);
 
     virtual void AddIndexColumnError(FdoStringP columnName);
 

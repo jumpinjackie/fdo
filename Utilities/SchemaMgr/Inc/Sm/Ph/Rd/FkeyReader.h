@@ -18,13 +18,14 @@
  * 
  */
 
-#include <Sm/Ph/Reader.h>
+#include <Sm/Ph/Rd/Reader.h>
+
 
 // This abstract class reads foreign key objects. It retrieves one row per 
 // foreignKey-column combination. Each provider must provide its own 
 // implementing class.
 
-class FdoSmPhRdFkeyReader : public FdoSmPhReader
+class FdoSmPhRdFkeyReader : public FdoSmPhRdReader
 {
 protected:
     //Unused constructor needed only to build on Linux

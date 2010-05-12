@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "Sm/Ph/Mgr.h"
 #include "Fkey.h"
+#include "Table.h"
 
 FdoSmPhPostGisFkey::FdoSmPhPostGisFkey(FdoStringP name,
     const FdoSmPhTable* fkeyTable,
@@ -32,3 +33,23 @@ FdoSmPhPostGisFkey::~FdoSmPhPostGisFkey()
 {
     // idle
 }
+
+FdoSmPhColumnP FdoSmPhPostGisFkey::FindPkeyColumn( FdoSmPhTableP pkTable, FdoStringP columnName )
+{
+    FdoSmPhColumnP column;
+    FdoSmPhPostGisTableP pgPkTable = pkTable->SmartCast<FdoSmPhPostGisTable>();
+
+    // For existing foreign keys, PostgreSQL provider tracks referenced column as 1-base position in referenced table.
+    if ( columnName.IsNumber() )
+    {
+        FdoInt32 columnPosition = columnName.ToLong();
+        column = pgPkTable->Position2Column(columnPosition);
+    }
+    else
+    {
+        column = pgPkTable->GetColumns()->FindItem(columnName);
+    }
+
+    return column;
+}
+

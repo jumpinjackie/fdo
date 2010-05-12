@@ -709,7 +709,12 @@ FdoAssociationPropertyDefinition* FdoSmLpSchemaCollection::ConvertAssociationPro
             const FdoStringsP identProps = pLpAssocPropDef->GetIdentityProperties();
             for(int i=0; i<identProps->GetCount(); i++ )
             {
-                FdoPtr<FdoDataPropertyDefinition> fdoProp = (FdoDataPropertyDefinition*)FdoPtr<FdoPropertyDefinitionCollection>(pFdoAssocClassDef->GetProperties())->GetItem( (const wchar_t *)identProps->GetString(i) );
+                FdoPtr<FdoDataPropertyDefinition> fdoProp = (FdoDataPropertyDefinition*)FdoPtr<FdoPropertyDefinitionCollection>(pFdoAssocClassDef->GetProperties())->FindItem( (const wchar_t *)identProps->GetString(i) );
+                if ( !fdoProp ) 
+                {
+                    // Property might be inherited, check base properties
+                    fdoProp = (FdoDataPropertyDefinition*)FdoPtr<FdoReadOnlyPropertyDefinitionCollection>(pFdoAssocClassDef->GetBaseProperties())->GetItem( (const wchar_t *)identProps->GetString(i) );
+                }
                 if( fdoProp )
                     FdoPtr<FdoDataPropertyDefinitionCollection>(pFdoAssocPropDef->GetIdentityProperties())->Add( fdoProp );
             }

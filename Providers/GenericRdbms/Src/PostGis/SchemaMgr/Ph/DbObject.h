@@ -199,6 +199,7 @@ protected:
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader();
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
+    virtual void LoadFkeyColumn( FdoPtr<FdoSmPhReader> fkeyRdr, FdoSmPhFkeyP fkey );
     virtual void LoadPkeyColumn( FdoPtr<FdoSmPhReader> pkeyRdr, FdoSmPhColumnsP pkeyColumns );
     virtual void LoadIndexColumn( FdoPtr<FdoSmPhTableIndexReader> indexRdr, FdoPtr<FdoSmPhIndex> index );
 

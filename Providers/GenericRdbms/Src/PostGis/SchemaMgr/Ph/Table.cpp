@@ -105,8 +105,9 @@ FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhPostGisTable::CreateFkeyReader() const
 
     // Create foreign key reader
     FdoSmPhRdPostGisFkeyReader* reader = NULL;
+    FdoSmPhOwnerP owner = FDO_SAFE_ADDREF(static_cast<FdoSmPhOwner*>(const_cast<FdoSmSchemaElement*>(GetParent())));
     reader = new FdoSmPhRdPostGisFkeyReader(
-        thisTable->GetManager(), thisTable);
+        owner, thisTable);
 
     return reader;
 }

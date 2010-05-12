@@ -120,7 +120,7 @@ FdoSmPhReaderP FdoSmPhRdPostGisDbObjectReader::MakeQueryReader(
         L" WHERE t.table_schema not in ( 'information_schema' ,'pg_catalog') "           
         L" $(AND) $(QUALIFICATION)"
         L" AND t.table_type IN ('BASE TABLE','VIEW') "
-        L" AND t.table_name not in ( 'geometry_columns' ,'spatial_ref_sys') "
+        L" AND t.table_name not in ( 'geometry_columns', 'geography_columns','spatial_ref_sys') "
         L" ORDER BY collate_schema_name, collate_table_name ASC ",
         (join ? L"distinct" : L""),
         (FdoString*) pgMgr->FormatCollateColumnSql(L"t.table_schema"),

@@ -28,8 +28,6 @@ class PostGisSchemaMgrTests : public SchemaMgrTests
 
     // TestViews N/A since tests views with cross-database dependencies.
     virtual void testViews() {};
-    // TODO: re-add test when PostgreSQL provider handles foreign keys.
-    virtual void testFKeys() {};
 
 	virtual StaticConnection* CreateStaticConnection();
     virtual FdoIoStream* OverrideBend( FdoIoStream* stream1, FdoStringP oldOwnerPrefix, FdoStringP newOwnerPrefix );

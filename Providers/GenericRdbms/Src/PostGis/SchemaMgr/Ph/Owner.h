@@ -151,6 +151,9 @@ public:
     /// \todo To be documented
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
+    /// Create a reader to get foreign keys for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader(  FdoStringsP objectNames ) const;
+
     // Create a reader to get all indexes (ordered by table) for this owner
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 

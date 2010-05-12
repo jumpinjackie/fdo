@@ -291,7 +291,7 @@ void SchemaMgrTests::testGenDefault ()
         table = owner->CreateTable( phMgr->GetDcDbObjectName(L"RTABLE7" ));
         column = table->CreateColumnInt64( L"ID", false);
         table->AddPkeyCol( column->GetName() );
-        FdoSmPhColumnP fkeyColumn7 = table->CreateColumnInt64( L"TABLE7_ID12345678901234567890", false, true);
+        FdoSmPhColumnP fkeyColumn7 = table->CreateColumnInt64( L"TABLE7_ID12345678901234567890", false);
         column = table->CreateColumnChar( L"STRING_COLUMN", false, 50 );
 
         fkey = table->CreateFkey( "FK_RTABLE7_TABLE7", phMgr->GetDcDbObjectName("TABLE7" ));
