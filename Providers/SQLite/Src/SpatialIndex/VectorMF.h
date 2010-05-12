@@ -63,7 +63,7 @@ public:
     }
     void setsize(size_t sz, const _Ty& defaultVal)
     {
-        if (sizeof(_Ty)*sz > MAPPED_RECS_PERPAGE)
+        if ((sizeof(_Ty)*sz) > (8*MAPPED_RECS_PERPAGE))
         {
             if (_mapFile == NULL)
             {
