@@ -1444,23 +1444,29 @@ void FdoSmPhDbObject::LoadFkeys( FdoSmPhReaderP fkeyRdr, bool isSkipAdd  )
                 mFkeysUp->Add(fkey);
         }
 
-        // Add the column to the foreign key
-        FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
-        FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
-
-        if ( fkey && column ) {
-            fkey->AddFkeyColumn( 
-                column,
-                fkeyRdr->GetString(L"", "r_column_name")
-            );
-        }
-        else {
-            // Foreign Key column must be in this table.
-	        if ( GetElementState() != FdoSchemaElementState_Deleted )
-		        AddFkeyColumnError( columnName );
-        }
+        LoadFkeyColumn(fkeyRdr, fkey);
     }
 }
+
+void FdoSmPhDbObject::LoadFkeyColumn( FdoSmPhReaderP fkeyRdr, FdoSmPhFkeyP fkey )
+{
+    // Add the column to the foreign key
+    FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
+    FdoSmPhColumnP column = GetColumns()->FindItem(columnName);
+
+    if ( fkey && column ) {
+        fkey->AddFkeyColumn( 
+            column,
+            fkeyRdr->GetString(L"", "r_column_name")
+        );
+    }
+    else {
+        // Foreign Key column must be in this table.
+        if ( GetElementState() != FdoSchemaElementState_Deleted )
+	        AddFkeyColumnError( columnName );
+    }
+}
+
 
 FdoPtr<FdoSmPhTableComponentReader> FdoSmPhDbObject::NewTableBaseReader( FdoSmPhRdBaseObjectReaderP rdr )
 {
@@ -1739,6 +1745,18 @@ void FdoSmPhDbObject::AddPkeyColumnError(FdoStringP columnName)
                 FDO_NLSID(FDOSM_217), 
 				(FdoString*) columnName, 
 				(FdoString*) GetQName()
+            )
+        )
+	);
+}
+
+void FdoSmPhDbObject::AddFkeyColumnCountError(FdoStringP fkeyName)
+{
+	GetErrors()->Add( FdoSmErrorType_Other, 
+        FdoSchemaException::Create(
+            FdoSmError::NLSGetMessage(
+                FDO_NLSID(FDOSM_383), 
+				(FdoString*) fkeyName 
             )
         )
 	);

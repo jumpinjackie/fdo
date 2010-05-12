@@ -453,6 +453,44 @@ FdoPtr<FdoSmPhRdIndexReader> FdoSmPhPostGisDbObject::CreateIndexReader() const
     return reader;
 }
 
+void FdoSmPhPostGisDbObject::LoadFkeyColumn( FdoSmPhReaderP fkeyRdr, FdoSmPhFkeyP fkey )
+{
+    // columnName actually contains list of positions for index columns.
+    FdoStringP columnName = fkeyRdr->GetString(L"",L"column_name");
+    FdoStringP rColumnName = fkeyRdr->GetString(L"",L"r_column_name");
+    // Strip out enclosing {}.
+    columnName = columnName.Mid( 1, columnName.GetLength() - 2 );
+    rColumnName = rColumnName.Mid( 1, rColumnName.GetLength() - 2 );
+
+    // Parse the position list (comma-separated elements).
+    FdoStringsP columnPositions = FdoStringCollection::Create( columnName, L"," );
+    FdoStringsP rColumnPositions = FdoStringCollection::Create( rColumnName, L"," );
+    
+    // Must have same number of columns and related columns in the foreign key.
+    if ( columnPositions->GetCount() != rColumnPositions->GetCount() )
+    {
+        AddFkeyColumnCountError( fkey->GetName() );
+        return;
+    }
+
+    FdoInt32 ix;
+    
+    for ( ix = 0; ix < columnPositions->GetCount(); ix++ ) {
+        FdoInt32 columnPosition = FdoStringP(columnPositions->GetString(ix)).ToLong();
+        
+        FdoSmPhColumnP column = Position2Column(columnPosition);
+ 
+        if ( column == NULL ) {
+            // Primary Key column must be in this table.
+            if ( GetElementState() != FdoSchemaElementState_Deleted )
+	            AddPkeyColumnError( columnName );
+        }
+        else  {
+            fkey->AddFkeyColumn( column, rColumnPositions->GetString(ix) );
+        }
+    }
+}
+
 void FdoSmPhPostGisDbObject::LoadPkeyColumn( FdoSmPhReaderP pkeyRdr, FdoSmPhColumnsP pkeyColumns )
 {
     // columnName actually contains list of positions for index columns.

@@ -268,8 +268,22 @@ FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhPostGisOwner::CreateFkeyReader() const
     FDO_SAFE_ADDREF(thisOwner);
 
     FdoSmPhRdPostGisFkeyReader* reader = NULL;
-    reader = new FdoSmPhRdPostGisFkeyReader(thisOwner->GetManager(),
-        thisOwner);
+    reader = new FdoSmPhRdPostGisFkeyReader(thisOwner, (FdoSmPhDbObject*) NULL);
+
+    return reader;
+}
+
+FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhPostGisOwner::CreateFkeyReader(  FdoStringsP objectNames ) const
+{
+    FdoSmPhPostGisOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhPostGisOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdPostGisFkeyReader* reader = NULL;
+    reader = new FdoSmPhRdPostGisFkeyReader(
+        thisOwner,
+        objectNames
+        );
 
     return reader;
 }

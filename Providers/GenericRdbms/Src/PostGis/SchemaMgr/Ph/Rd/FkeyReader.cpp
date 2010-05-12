@@ -18,23 +18,32 @@
 #include "FkeyReader.h"
 #include "../Mgr.h"
 #include "../Owner.h"
+#include <Sm/Ph/Rd/SchemaDbObjectBinds.h>
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 
-FdoSmPhRdPostGisFkeyReader::FdoSmPhRdPostGisFkeyReader(FdoSmPhMgrP mgr,
+FdoSmPhRdPostGisFkeyReader::FdoSmPhRdPostGisFkeyReader(FdoSmPhOwnerP owner,
     FdoSmPhDbObjectP dbObject)
-    : FdoSmPhRdFkeyReader(MakeReader(mgr,
-        static_cast<const FdoSmPhOwner*>(dbObject->GetParent()), dbObject)),
-      mDbObject(dbObject)
+    : FdoSmPhRdFkeyReader(),
+    mDbObject(dbObject)
 {
-    // idle
+    SetSubReader(
+        MakeReader(
+            owner,
+            DbObject2Objects(dbObject)
+        )
+    );
 }
 
-FdoSmPhRdPostGisFkeyReader::FdoSmPhRdPostGisFkeyReader(FdoSmPhMgrP mgr,
-    FdoSmPhOwnerP owner)
-    : FdoSmPhRdFkeyReader(MakeReader(mgr,
-        static_cast<FdoSmPhOwner*>(owner), NULL))
+FdoSmPhRdPostGisFkeyReader::FdoSmPhRdPostGisFkeyReader(FdoSmPhOwnerP owner,
+    FdoStringsP objectNames)
+    : FdoSmPhRdFkeyReader()
 {
-    // idle
+    SetSubReader(
+        MakeReader(
+            owner,
+            objectNames
+        )
+    );
 }
 
 FdoSmPhRdPostGisFkeyReader::~FdoSmPhRdPostGisFkeyReader()
@@ -42,75 +51,53 @@ FdoSmPhRdPostGisFkeyReader::~FdoSmPhRdPostGisFkeyReader()
     // idle
 }
 
-FdoSmPhReaderP FdoSmPhRdPostGisFkeyReader::MakeReader(FdoSmPhMgrP mgr,
-    const FdoSmPhOwner* owner,
-    FdoSmPhDbObjectP dbObject)
+FdoSmPhReaderP FdoSmPhRdPostGisFkeyReader::MakeReader(
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join)
 {
-    return (FdoSmPhReader*) NULL;
-
+    FdoSmPhMgrP mgr = owner->GetManager();
     FdoSmPhPostGisMgrP   pgMgr = mgr->SmartCast<FdoSmPhPostGisMgr>();
-    // NOTE: mloskot - We need to remove const qualifier first,
-    // then cast to specialized type.
-    FdoSmPhPostGisOwner* pgOwner = 
-        static_cast<FdoSmPhPostGisOwner*>(
-            const_cast<FdoSmPhOwner*>(owner));
-
-    FdoStringP objectName = (dbObject ? dbObject->GetName() : L"");
-    FdoStringP ownerName = owner->GetName();
+    FdoSmPhPostGisOwnerP pgOwner = owner->SmartCast<FdoSmPhPostGisOwner>();
 
     //
     // Generate SQL statement to get foreign keys
     //
-    FdoStringP sql = FdoStringP::Format(
-	    L"select R.constraint_name, K1.table_name, K1.column_name,\n"
-	    L" R.unique_constraint_schema as r_owner_name,\n"
-	    L" K2.table_name as r_table_name,\n"
-	    L" K2.column_name as r_column_name\n"
-	    L" from INFORMATION_SCHEMA.referential_constraints R,\n"
-	    L" INFORMATION_SCHEMA.key_column_usage K1,\n"
-	    L" INFORMATION_SCHEMA.key_column_usage K2\n"
-	    L" where R.constraint_catalog = K1.constraint_catalog\n"
-	    L"   and R.constraint_schema = K1.constraint_schema\n"
-	    L"   and R.constraint_name = K1.constraint_name\n"
-	    L"   and R.unique_constraint_catalog = K2.constraint_catalog\n"
-	    L"   and R.unique_constraint_schema = K2.constraint_schema\n"
-	    L"   and R.unique_constraint_name = K2.constraint_name\n"
-	    L"   and K1.ordinal_position = K2.ordinal_position\n"
-	    L"   and R.constraint_schema = $1\n"
-	    L"%ls"
-	    L" order by %ls, %ls, %ls, K1.ordinal_position",
-        dbObject ? L"   and K1.table_name = $2\n" : L"",
-        (FdoString*) pgMgr->FormatCollateColumnSql(L"K1.table_schema"),
-        (FdoString*) pgMgr->FormatCollateColumnSql(L"K1.table_name"),
-        (FdoString*) pgMgr->FormatCollateColumnSql(L"R.constraint_name")
+
+    FdoStringP sqlString = FdoStringP::Format(
+        L" SELECT %ls tc.conname AS constraint_name,"
+        L" ns.nspname ||'.'|| c.relname AS table_name,"
+        L" cast(tc.conkey as text) AS column_name, "
+        L" ns.nspname AS table_schema,"
+        L" cast('%ls' as varchar) as r_owner_name, "
+        L" nr.nspname ||'.'|| r.relname AS r_table_name,"
+        L" cast(tc.confkey as text) AS r_column_name, "
+        L" %ls as collate_schema_name, "
+        L" %ls as collate_table_name, "
+        L" %ls as collate_constraint_name "
+        L" FROM pg_constraint tc,  pg_class c, pg_namespace ns, "
+        L"    pg_class r, pg_namespace nr $(JOIN_FROM) "
+        L" WHERE tc.contype = 'f' "
+        L" and c.oid = tc.conrelid and ns.oid = tc.connamespace "
+        L" and r.oid = tc.confrelid and nr.oid = r.relnamespace "
+        L" $(AND) $(QUALIFICATION)\n"
+        L" ORDER BY collate_schema_name, collate_table_name, collate_constraint_name",
+        (join ? L"distinct" : L""),
+        (FdoString*) owner->GetName(),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"ns.nspname"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"c.relname"),
+        (FdoString*) pgMgr->FormatCollateColumnSql(L"tc.conname")
     );
 
-
-    // Create a field object for each field in the select list
-    FdoSmPhRowsP rows = MakeRows(mgr);
-
-    // Create and set the bind variables
-    FdoSmPhRowP binds(new FdoSmPhRow(mgr, L"Binds"));
-    FdoSmPhDbObjectP rowObj(binds->GetDbObject());
-
-    FdoSmPhFieldP field(new FdoSmPhField(binds,
-        L"constraint_schema",
-        rowObj->CreateColumnDbObject(L"constraint_schema", false)));
-
-    field->SetFieldValue(ownerName);
-
-    if (dbObject)
-    {
-        field = new FdoSmPhField(binds, L"table_name",
-            rowObj->CreateColumnDbObject(L"table_name", false));
-
-        field->SetFieldValue(objectName);
-    }
-
-    //TODO: cache this query to make full use of the binds.
-    FdoSmPhRdGrdQueryReader* reader = NULL;
-    reader = new FdoSmPhRdGrdQueryReader(
-        FdoSmPhRowP(rows->GetItem(0)), sql, mgr, binds);
+    FdoSmPhReaderP reader = MakeQueryReader(
+        L"",
+        owner,
+        sqlString,
+        L"ns.nspname",
+        L"c.relname",
+        objectNames,
+        join
+    );
 
     return reader;
 }

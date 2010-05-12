@@ -104,6 +104,9 @@ protected:
 
 	~FdoSmPhFkey(void);
 
+    // Given a primary key (referenced) column name, find the column in the primary key (referenced) table.
+    virtual FdoSmPhColumnP FindPkeyColumn( FdoPtr<FdoSmPhTable> pkTable, FdoStringP columnName );
+
 private:
 
     /// Retrieve and cache the primary table.

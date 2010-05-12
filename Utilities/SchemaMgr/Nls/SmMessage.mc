@@ -1141,6 +1141,11 @@ SymbolicName=FDOSM_382
 Language=English
 Association property '%1$ls' is missing the associated class
 .
+MessageId=2607
+SymbolicName=FDOSM_383
+Language=English
+Foreign key '%ls' has different number of columns and related columns.
+.
 MessageId=2615
 SymbolicName=FDOSM_391
 Language=English
