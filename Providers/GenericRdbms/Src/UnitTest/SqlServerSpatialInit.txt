@@ -1,1 +1,1 @@
-provider=SQLServerSpatial;service=otw12373150;username=sa;password=SaPass2008;clean=false;
+provider=SQLServerSpatial;service=otworestxp;password=test;clean=false;
