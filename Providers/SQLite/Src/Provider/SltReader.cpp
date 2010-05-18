@@ -32,6 +32,7 @@
 #include "FdoCommonMiscUtil.h"
 #include "vdbeInt.h"
 #include "SltQueryTranslator.h"
+#include "SltBLOBStreamReader.h"
 
 /*
 ** Check to see if column iCol of the given statement is valid.  If
@@ -682,8 +683,22 @@ FdoString* SltReader::GetString(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoLOBValue* SltReader::GetLOB(int index)
 {
-    //TODO: do something similar to GetGeometry
-	throw FdoException::Create(L"Not Implemented.");
+    ValidateIndex(m_pStmt, index);
+    FdoByte* vblob = NULL;
+    int len = 0;
+    if (((Vdbe*)m_pStmt)->fdo)
+    {
+        Mem* blob = columnMem(m_pStmt, index);
+        len = blob->n;
+        vblob = (unsigned char*)blob->z;
+    }
+    else
+    {
+	    const void* ptr = sqlite3_column_blob(m_pStmt, index);
+	    len = sqlite3_column_bytes(m_pStmt, index);
+    	vblob = (unsigned char*)ptr;    
+    }
+    return (vblob) ? (FdoLOBValue*)FdoDataValue::Create(vblob, len, FdoDataType_BLOB) : NULL;
 }
 FdoLOBValue* SltReader::GetLOB(FdoString* propertyName)
 {
@@ -692,7 +707,8 @@ FdoLOBValue* SltReader::GetLOB(FdoString* propertyName)
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 FdoIStreamReader* SltReader::GetLOBStreamReader(int index)
 {
-	throw FdoException::Create(L"Not Implemented.");
+    FdoPtr<FdoLOBValue> blob = GetLOB(index);
+    return new SltBLOBStreamReader(blob); 
 }
 FdoIStreamReader* SltReader::GetLOBStreamReader(FdoString* propertyName )
 {

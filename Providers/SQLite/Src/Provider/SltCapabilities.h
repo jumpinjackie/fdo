@@ -168,7 +168,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
                                                                             FdoDataType_Int64,
                                                                             FdoDataType_Single,
                                                                             FdoDataType_String,
-                                                                //          FdoDataType_BLOB,
+                                                                            FdoDataType_BLOB,
                                                                 //          FdoDataType_CLOB,
                                                                 //          FdoDataType_UniqueID
         };

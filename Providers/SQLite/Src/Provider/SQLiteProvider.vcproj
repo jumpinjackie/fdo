@@ -427,6 +427,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SltBLOBStreamReader.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SltBLOBStreamReader.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SltCapabilities.h"
 			>
 		</File>
