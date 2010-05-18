@@ -256,6 +256,7 @@
     <ClInclude Include="SltProvider.h" />
     <ClInclude Include="SltQueryTranslator.h" />
     <ClInclude Include="SltReader.h" />
+    <ClInclude Include="SltBLOBStreamReader.h" />
     <ClInclude Include="SltSpatialContextReader.h" />
     <ClInclude Include="SltTransaction.h" />
     <ClInclude Include="SpatialIndexDescriptor.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="SltProvider.cpp" />
     <ClCompile Include="SltQueryTranslator.cpp" />
     <ClCompile Include="SltReader.cpp" />
+    <ClCompile Include="SltBLOBStreamReader.cpp" />
     <ClCompile Include="SltSpatialContextReader.cpp" />
     <ClCompile Include="SQLiteSchemaMergeContext.cpp" />
   </ItemGroup>
