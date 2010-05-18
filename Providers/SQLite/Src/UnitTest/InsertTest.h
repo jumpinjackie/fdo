@@ -34,6 +34,7 @@ class InsertTest : public TestCommonInsert
     CPPUNIT_TEST( TestConstraints2 );
     CPPUNIT_TEST( TestCompPK );
     CPPUNIT_TEST( TestNoPK );
+    CPPUNIT_TEST( TestInsBLOBTypes );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +49,7 @@ public:
     void TestConstraints2 ();
     void TestCompPK ();
     void TestNoPK ();
+    void TestInsBLOBTypes ();
 protected:
     virtual FdoString* GetDefaultSchemaName(void);
 

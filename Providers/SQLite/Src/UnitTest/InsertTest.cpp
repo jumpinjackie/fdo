@@ -865,3 +865,112 @@ FdoDataType InsertTest::GetAutoIncrementType()
 {
     return FdoDataType_Int32;
 }
+
+#define SZ_TXT_BLOB (27*sizeof(wchar_t))
+#define VAL_TXT_BLOB L"My Blob String\0Second Value"
+
+void InsertTest::TestInsBLOBTypes()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+		 
+        //apply schema
+		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
+        schColl->ReadXml(L"SchConstraintsTest1.xml");
+        CPPUNIT_ASSERT(schColl->GetCount() == 1);
+        
+        FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
+        FdoPtr<FdoClassCollection> clsColl = schema->GetClasses();
+        FdoPtr<FdoClassDefinition> clsChg = clsColl->GetItem(L"TestRange");
+        FdoPtr<FdoPropertyDefinitionCollection> propsToAdd = clsChg->GetProperties();
+        FdoPtr<FdoDataPropertyDefinition> blobProp = FdoDataPropertyDefinition::Create(L"BlobTest", L"");
+        blobProp->SetDataType(FdoDataType_BLOB);
+        propsToAdd->Add(blobProp);
+
+		applyschema->SetFeatureSchema(schema);
+		applyschema->Execute();
+
+        {
+        FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+        FdoPtr<FdoPropertyValue> propIns;
+        
+		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+		double coords[] = { 7.2068, 43.7556, 
+							7.2088, 43.7556, 
+							7.2088, 43.7574, 
+							7.2068, 43.7574, 
+							7.2068, 43.7556 }; 
+		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+
+        FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
+        vals->Add(propGeomIns);
+        
+        FdoString* testValBlob = VAL_TXT_BLOB;
+        FdoPtr<FdoByteArray> bArray = FdoByteArray::Create((FdoByte*)testValBlob, SZ_TXT_BLOB);
+        FdoPtr<FdoBLOBValue> blobv = FdoBLOBValue::Create(bArray);
+        FdoPtr<FdoPropertyValue> propBlobIns = FdoPropertyValue::Create(L"BlobTest", blobv);
+        vals->Add(propBlobIns);
+
+        insCmd->SetFeatureClassName(L"TestRange");        
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        CPPUNIT_ASSERT(rdr->ReadNext());
+        
+        FdoDateTime expVal(2009, 7, 7, 0, 0, 0);
+        CPPUNIT_ASSERT(TestForDateValue(conn, L"TestRange", L"PropDT", rdr->GetInt32(L"FeatId"), &expVal));
+        rdr->Close();
+        }
+
+	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    selectCmd->SetFeatureClassName(L"TestRange");
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        CPPUNIT_ASSERT(reader->ReadNext());
+
+        FdoPtr<FdoLOBValue> bValRet = reader->GetLOB(L"BlobTest");
+        if (bValRet)
+        {
+            FdoPtr<FdoByteArray> arrDataRet = bValRet->GetData();
+            CPPUNIT_ASSERT(arrDataRet->GetCount() == SZ_TXT_BLOB);
+        }
+        else
+            CPPUNIT_FAIL("\nInvalid BLOB value [NULL] ");
+
+        FdoPtr<FdoIStreamReader> fdoStream = reader->GetLOBStreamReader(L"BlobTest");
+        if (fdoStream.p)
+        {
+            CPPUNIT_ASSERT(FdoStreamReaderType_Byte == fdoStream->GetType());
+            FdoBLOBStreamReader* stream = static_cast<FdoBLOBStreamReader*>(fdoStream.p);
+            CPPUNIT_ASSERT(stream->GetLength() == SZ_TXT_BLOB);
+            wchar_t buff[21];
+            buff[20] = L'\0';
+            int sz = stream->ReadNext((FdoByte*)buff, SZ_TXT_BLOB);
+            CPPUNIT_ASSERT(sz == SZ_TXT_BLOB);
+        }
+        else
+            CPPUNIT_FAIL("\nInvalid BLOB stream value [NULL] ");
+
+        reader->Close();
+    }
+    catch(FdoException* exc)
+    {
+        UnitTestUtil::PrintException(exc);
+        exc->Release();
+        CPPUNIT_FAIL("\nUnexpected exception: ");
+    }
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
