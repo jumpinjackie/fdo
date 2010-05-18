@@ -16,6 +16,7 @@ set( SQLiteProvider_SRCS
 	SltSpatialContextReader.cpp
 	SpatialIndexDescriptor.cpp
 	SQLiteSchemaMergeContext.cpp
+	SltBLOBStreamReader.cpp
 	) 
 
 if( UNIX )
