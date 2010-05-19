@@ -112,13 +112,16 @@ bool InsertTest::TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoS
     return false;
 }
 
-void InsertTest::TestConstraints1 ()
+void InsertTest::TestConstraints1WithOption (FdoBoolean inMemConn)
 {
     FdoPtr<FdoIConnection> conn;
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+        if (inMemConn)
+            conn = UnitTestUtil::OpenMemoryConnection();
+        else
+		    conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
 		 
         //apply schema
 		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
@@ -298,6 +301,11 @@ void InsertTest::TestConstraints1 ()
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
 	printf( "Done\n" );
+}
+
+void InsertTest::TestConstraints1 ()
+{
+    TestConstraints1WithOption ();
 }
 
 void InsertTest::TestConstraints2 ()
@@ -973,4 +981,10 @@ void InsertTest::TestInsBLOBTypes()
    		CPPUNIT_FAIL ("caught unexpected exception");
    	}
 	printf( "Done\n" );
+}
+
+
+void InsertTest::TestConstraints1InMemConn ()
+{
+    TestConstraints1WithOption (true);
 }

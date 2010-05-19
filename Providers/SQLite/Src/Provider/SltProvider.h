@@ -266,6 +266,7 @@ private :
     void AddComplexUniqueConstraints(FdoUniqueConstraintCollection* uniqueConstr, FdoClassDefinition* fc, StringBuffer& sb);
     std::wstring GenerateValidConstrName(FdoString* name);
     RowidIterator* GetScrollableIterator(SltReader* rdr);
+    static int PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool isInMemory = false);
 
     static void update_hook(void* caller, int action, char const* database, char const* tablename, sqlite3_int64 id);
     static int commit_hook(void* caller);

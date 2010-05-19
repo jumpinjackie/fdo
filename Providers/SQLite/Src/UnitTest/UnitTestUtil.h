@@ -42,6 +42,8 @@ public:
 	static FdoIConnection* CreateConnection();
     
     static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create, bool add_spc = true, FdoIConnection  *inConn = NULL );
+    
+    static FdoIConnection* OpenMemoryConnection( bool add_spc = true, FdoIConnection  *inConn = NULL );
 
     static void ExportDb (FdoIConnection* connection, FdoIoStream* stream, FdoXmlSpatialContextFlags* flags = NULL );
 

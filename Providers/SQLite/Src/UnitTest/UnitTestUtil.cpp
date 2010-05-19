@@ -117,6 +117,32 @@ FdoIConnection* UnitTestUtil::CreateConnection()
     return (manager->CreateConnection (L"OSGeo.SQLite"));
 }
 
+FdoIConnection* UnitTestUtil::OpenMemoryConnection( bool add_spc, FdoIConnection  *inConn)
+{
+    FdoIConnection *conn = inConn;
+	if( conn == NULL )
+		conn = UnitTestUtil::CreateConnection();
+	// Open the connection
+    std::wstring connStr = L"File=\":memory:\";UseFdoMetadata=TRUE;";
+	conn->SetConnectionString(connStr.c_str());
+	FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
+	FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
+	conn->Open();
+
+    if (add_spc)
+    {
+	    // Create spatial context
+	    FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+	    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
+	    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+	    pCreateCreateSpatialContext->SetName( L"LL84" );
+	    pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
+	    pCreateCreateSpatialContext->SetZTolerance(3.14159);
+	    pCreateCreateSpatialContext->Execute();
+    }
+	return conn;
+}
+
 FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_create, bool add_spc, FdoIConnection *inConn )
 {
 #ifdef _WIN32
