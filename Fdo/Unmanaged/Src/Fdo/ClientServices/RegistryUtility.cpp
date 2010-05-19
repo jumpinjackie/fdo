@@ -320,7 +320,7 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
                                 }
                                 if (bEqual == true)          
                                 {
-                                    for (int k=0; k<numberProperties; k++)
+                                    for (XMLSize_t k=0; k<numberProperties; k++)
                                     {
                                         DOMNode *prop = properties->item(k);
 									    FdoStringP pProp = FdoXmlUtilXrcs::Xrcs2Unicode(prop->getNodeName());
