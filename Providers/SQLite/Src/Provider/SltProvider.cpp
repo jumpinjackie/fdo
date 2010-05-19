@@ -264,26 +264,48 @@ void SltConnection::CreateDatabase()
         throw FdoCommandException::Create(L"Cannot create data store while connection is in open state.");
     }
 
-    const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
-    
-    std::string file = W2A_SLOW(dsw);
-
+    FdoString* dsw = GetProperty(PROP_NAME_FILENAME);
     sqlite3* tmpdb = NULL;
+    
+    if (!dsw || *dsw == '\0')
+        throw FdoCommandException::Create(L"Invalid or empty data store name.");
+
+    if (dsw && _wcsicmp(dsw, L":memory:") == 0)
+        throw FdoCommandException::Create(L"Cannot create in-memory data store, try direct open connection.");
 
     //create the database
     //TODO: this will also work if the database exists -- in which 
     //case it will open it.
     int rc;
+    std::string file = W2A_SLOW(dsw);
     if((rc = sqlite3_open(file.c_str(), &tmpdb)) != SQLITE_OK )
     {
         std::wstring err = std::wstring(L"Failed to open or create: ") + dsw;
         throw FdoCommandException::Create(err.c_str(), rc);
     }
+    dsw = GetProperty(PROP_NAME_FDOMETADATA);
+    bool useFdoMetadata = (dsw && _wcsicmp(dsw, L"true") == 0);
 
+    rc = SltConnection::PrepareSpatialDatabase(tmpdb, useFdoMetadata);
+
+    //close the database -- CreateDataStore itself does not 
+    //open the FDO connection, subsequent call to Open() does.
+    sqlite3_close(tmpdb);
+
+    if (rc)
+        throw FdoCommandException::Create(L"Failed to create SQLite database.", rc);
+}
+
+int SltConnection::PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool isInMemory)
+{
+    int rc = SQLITE_OK;
     //first things first -- set big page size for better
     //performance. Must be done on an empty db to have effect.
-    rc = sqlite3_exec(tmpdb, "PRAGMA page_size=32768;", NULL, NULL, NULL);
-    rc = sqlite3_exec(tmpdb, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
+    if (isInMemory) // use less memory in case we have an in-memory connection
+        rc += sqlite3_exec(db, "PRAGMA page_size=8192;", NULL, NULL, NULL);
+    else
+        rc += sqlite3_exec(db, "PRAGMA page_size=32768;", NULL, NULL, NULL);
+    rc += sqlite3_exec(db, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
     
     //create the spatial_ref_sys table
     //Note the sr_name field is not in the spec, we are adding it in order to 
@@ -298,7 +320,7 @@ void SltConnection::CreateDatabase()
                           ");";
 
     char* zerr = NULL;
-    rc = sqlite3_exec(tmpdb, srs_sql, NULL, NULL, &zerr);
+    rc += sqlite3_exec(db, srs_sql, NULL, NULL, &zerr);
 
     //create the geometry_columns table
     const char* gc_sql = "CREATE TABLE geometry_columns "
@@ -310,13 +332,10 @@ void SltConnection::CreateDatabase()
                          "srid INTEGER,"
                          "geometry_format TEXT);";  
 
-    int rc2 = sqlite3_exec(tmpdb, gc_sql, NULL, NULL, &zerr);
+    rc += sqlite3_exec(db, gc_sql, NULL, NULL, &zerr);
 
     //Check if we should create the FDO metadata table as well
-    dsw = GetProperty(PROP_NAME_FDOMETADATA);
-    int rc3 = 0;
-
-    if (dsw && _wcsicmp(dsw, L"true") == 0)
+    if (useFdoMetadata)
     {
         const char* fc_sql = "CREATE TABLE fdo_columns "
                              "(f_table_name TEXT,"
@@ -328,17 +347,9 @@ void SltConnection::CreateDatabase()
                              "fdo_data_precision INTEGER,"
                              "fdo_data_scale INTEGER);";  
 
-        rc3 = sqlite3_exec(tmpdb, fc_sql, NULL, NULL, &zerr);
+        rc += sqlite3_exec(db, fc_sql, NULL, NULL, &zerr);
     }
-
-    //close the database -- CreateDataStore itself does not 
-    //open the FDO connection, subsequent call to Open() does.
-    sqlite3_close(tmpdb);
-
-    if (rc || rc2 || rc3)
-    {
-        throw FdoCommandException::Create(L"Failed to create SQLite database.", rc ? rc : rc2 ? rc2 : rc3);
-    }
+    return rc;
 }
 
 FdoConnectionState SltConnection::Open()
@@ -347,21 +358,30 @@ FdoConnectionState SltConnection::Open()
         return m_connState;
 
     const wchar_t* dsw = GetProperty(PROP_NAME_FILENAME);
-    
+    if (!dsw || *dsw == '\0')
+        throw FdoCommandException::Create(L"Invalid or empty data store name.");
+
     std::string file = W2A_SLOW(dsw);
+    bool isInMemory = (_wcsicmp(dsw, L":memory:") == 0);
 
 #ifdef _WIN32
     struct _stat statInfo;
-    if (0 != _wstat (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
-        throw FdoConnectionException::Create(L"File does not exist!");
-    if ((statInfo.st_mode&_S_IREAD) == 0)
-        throw FdoConnectionException::Create(L"File cannot be accessed!");
+    if (!isInMemory)
+    {
+        if (0 != _wstat (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
+            throw FdoConnectionException::Create(L"File does not exist!");
+        if ((statInfo.st_mode&_S_IREAD) == 0)
+            throw FdoConnectionException::Create(L"File cannot be accessed!");
+    }
 #else 
     struct stat statInfo;
-    if (0 != stat (file.c_str(), &statInfo) || (statInfo.st_mode&S_IFREG) == 0)
-        throw FdoConnectionException::Create(L"File does not exist!");
-    if ((statInfo.st_mode&S_IREAD) == 0)
-        throw FdoConnectionException::Create(L"File cannot be accessed!");
+    if (!isInMemory)
+    {
+        if (0 != stat (file.c_str(), &statInfo) || (statInfo.st_mode&S_IFREG) == 0)
+            throw FdoConnectionException::Create(L"File does not exist!");
+        if ((statInfo.st_mode&S_IREAD) == 0)
+            throw FdoConnectionException::Create(L"File cannot be accessed!");
+    }
 #endif
 
     const wchar_t* sUseMeta = GetProperty(PROP_NAME_FDOMETADATA);
@@ -369,22 +389,27 @@ FdoConnectionState SltConnection::Open()
     if (sUseMeta != NULL && _wcsicmp(sUseMeta, L"true") == 0)
         m_bUseFdoMetadata = true;
 
-    //We will use two connections to the database -- one for reading and one for writing.
-    //This will help us with concurrent reads and writes (to different tables).
-    //If we use the same SQLite connection, we will get problems with transaction nesting
-    //due to interleaved reads and writes.
-
     //Allow sharing of memory caches between the reading and writing connections
-    int rc = sqlite3_enable_shared_cache(1);
+    int rc = SQLITE_OK;
+    if (!isInMemory)
+        rc = sqlite3_enable_shared_cache(1);
 
     if (rc != SQLITE_OK)
         fprintf(stderr, "Failed to enable shared cache.\n");
+
     //Open the Read connection
     if( (rc = sqlite3_open(file.c_str(), &m_dbWrite)) != SQLITE_OK )
     {
         m_dbWrite = NULL;
         std::wstring err = std::wstring(L"Failed to open ") + dsw;
         throw FdoConnectionException::Create(err.c_str(), rc);
+    }
+
+    if (isInMemory)
+    {
+        rc = SltConnection::PrepareSpatialDatabase(m_dbWrite, m_bUseFdoMetadata, isInMemory);
+        if (rc)
+            throw FdoCommandException::Create(L"Failed to create SQLite database.", rc);
     }
 
     rc = sqlite3_exec(m_dbWrite, "PRAGMA read_uncommitted=1;", NULL, NULL, NULL);
@@ -420,9 +445,9 @@ FdoConnectionState SltConnection::Open()
     m_dbWrite->pUserArg = m_connDet;
 
 #ifdef _WIN32
-    m_isReadOnlyConnection = ((statInfo.st_mode&_S_IWRITE)==0);
+    m_isReadOnlyConnection = (isInMemory) ? false : ((statInfo.st_mode&_S_IWRITE)==0);
 #else // _WIN32
-    m_isReadOnlyConnection = ((statInfo.st_mode&S_IWRITE)==0);
+    m_isReadOnlyConnection = (isInMemory) ? false : ((statInfo.st_mode&S_IWRITE)==0);
 #endif // _WIN32
     return m_connState;
 }

@@ -31,6 +31,7 @@ class InsertTest : public TestCommonInsert
 	CPPUNIT_TEST_SUB_SUITE( InsertTest, TestCommonInsert );
     CPPUNIT_TEST( TestInsInvalidGeomTypes );
     CPPUNIT_TEST( TestConstraints1 );
+    CPPUNIT_TEST( TestConstraints1InMemConn );
     CPPUNIT_TEST( TestConstraints2 );
     CPPUNIT_TEST( TestCompPK );
     CPPUNIT_TEST( TestNoPK );
@@ -44,12 +45,12 @@ public:
 	void tearDown ();
 
     void TestInsInvalidGeomTypes ();
-
     void TestConstraints1 ();
     void TestConstraints2 ();
     void TestCompPK ();
     void TestNoPK ();
     void TestInsBLOBTypes ();
+    void TestConstraints1InMemConn ();
 protected:
     virtual FdoString* GetDefaultSchemaName(void);
 
@@ -61,6 +62,7 @@ protected:
 private:
     bool TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoString* propName, FdoInt32 id, FdoDateTime* expVal = NULL);
     void TestInsertData(FdoIConnection* conn, FdoString* className, FdoInt32 expectedProps = -1, FdoIdentifierCollection* propNames = NULL);
+    void TestConstraints1WithOption (FdoBoolean inMemConn = false);
 };
 
 #endif	//INSERTTEST_H
