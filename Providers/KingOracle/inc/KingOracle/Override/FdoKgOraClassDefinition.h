@@ -44,14 +44,21 @@ public:
     FDOKGORA_API const wchar_t* GetOraTableAlias() { return  m_OraTableAlias; };
     FDOKGORA_API const wchar_t* GetSdeGeomTableAlias() { return  m_SdeGeomTableAlias; };
 	
-	
-    FDOKGORA_API void SetSdeClass(bool IsSde,FdoString * SdeFeatureKeyColumn,FdoString * SdeGeometryTableName,int SdeGeometryType,FdoString * SdeIndexTableName) 
+
+	// 1SPATIAL START
+	//FDOKGORA_API void SetSdeClass(bool IsSde,FdoString * SdeFeatureKeyColumn,FdoString * SdeGeometryTableName,int SdeGeometryType,FdoString * SdeIndexTableName) 
+	FDOKGORA_API void SetSdeClass(bool IsSde,FdoString * SdeFeatureKeyColumn,FdoString * SdeGeometryTableName,int SdeGeometryType,FdoString * SdeIndexTableName, double GSize1) 
+	// 1SPATIAL END
     { 
       m_IsClassSDE = IsSde;
       m_SdeFeatureKeyColumn = SdeFeatureKeyColumn;
       m_SdeGeometryTableName=SdeGeometryTableName; 
       m_SdeGeometryType = SdeGeometryType;
       m_SdeIndexTableName = SdeIndexTableName; 
+
+		// 1SPATIAL START
+		m_SDE_GSize1 = GSize1;
+		// 1SPATIAL END
     }
     FDOKGORA_API bool GetIsSdeClass() { return m_IsClassSDE; }
     FDOKGORA_API FdoString* GetSdeFeatureKeyColumn() { return m_SdeFeatureKeyColumn; };
@@ -59,6 +66,10 @@ public:
     FDOKGORA_API int GetSdeGeometryType() { return m_SdeGeometryType; };
     
     FDOKGORA_API FdoString* GetSdeIndexTableName() { return m_SdeIndexTableName; };
+
+	// 1SPATIAL START
+	FDOKGORA_API double GetSdeGSize1() { return m_SDE_GSize1; }
+	// 1SPATIAL END
 
     FDOKGORA_API void SetPointGeometry(FdoString *GeomPropertyName, FdoString *X_OraColumn, FdoString *Y_OraColumn, FdoString *Z_OraColumn )
     {
@@ -121,6 +132,10 @@ private:
 	  FdoStringP m_Sdo_Root_MBR; // root mbr from spatial index metadata; written as oracle geometry
 	  
     FdoKgOraPropertyDefinitionCollectionP m_Properties;
+
+	// 1SPATIAL START
+	double m_SDE_GSize1;
+	// 1SPATIAL START
 };
 
 typedef FdoPtr<FdoKgOraClassDefinition> FdoKgOraClassDefinitionP;

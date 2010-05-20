@@ -372,6 +372,202 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
   return true;
 }//end of c_FdoOra_API2::SetOracleStatementData
 
+bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,const wchar_t*SqlParamName,FdoDataValue* DataValue)
+{
+
+  switch( DataValue->GetDataType() )
+  {
+  case FdoDataType_Boolean:
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindString(SqlParamName,NULL);
+      else
+      {
+        FdoBooleanValue * boolval = (FdoBooleanValue*)DataValue;
+        string val;
+        if( boolval->GetBoolean() )
+          Statement->BindStringValue(SqlParamName,L"1");          
+        else
+          Statement->BindStringValue(SqlParamName,L"0");
+
+
+      }
+    }
+    break;
+
+    /// Represents unsigned 8-bit integers with values between 0 and 255.
+  case FdoDataType_Byte:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindString(SqlParamName,NULL);
+      else
+      {
+        FdoByteValue * byteval = (FdoByteValue*)DataValue;
+        wchar_t chstr[2];
+        chstr[0] = byteval->GetByte();
+        chstr[1] = 0;
+
+        Statement->BindStringValue(SqlParamName,chstr);
+      }
+    }  
+    break;
+
+    /// Represents a date and time value.
+  case FdoDataType_DateTime:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindDate(SqlParamName,NULL);
+      else
+      {
+        FdoDateTimeValue * dateval = (FdoDateTimeValue*)DataValue;
+
+        FdoDateTime date = dateval->GetDateTime();
+        OCIDate val;
+        val.OCIDateYYYY = date.year;
+        val.OCIDateMM = date.month;
+        val.OCIDateDD = date.day;
+        val.OCIDateTime.OCITimeHH = date.hour;
+        val.OCIDateTime.OCITimeMI = date.minute;
+        val.OCIDateTime.OCITimeSS = (ub1)date.seconds;
+
+        Statement->BindDateValue(SqlParamName,val);
+      }
+    }
+    break;
+
+    /// Represents values ranging from 1.0 x 10^-28 to approximately 7.9 x 10^28
+    /// with 28-29 significant digits.
+  case FdoDataType_Decimal:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindDouble(SqlParamName,NULL);
+      else
+      {
+        FdoDecimalValue * dval = (FdoDecimalValue*)DataValue;
+
+        Statement->BindDoubleValue(SqlParamName,dval->GetDecimal());
+      }
+    }
+    break;
+
+    /// Represents a floating point value ranging from approximately 5.0 
+    /// x 10^-324 to 1.7 x 10^308 with a precision of 15-16 digits.
+  case FdoDataType_Double:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindDouble(SqlParamName,NULL);
+      else
+      {
+        FdoDoubleValue * dval = (FdoDoubleValue*)DataValue;                        
+        Statement->BindDoubleValue(SqlParamName,dval->GetDouble());
+      }
+    }
+    break;
+
+    /// Represents signed 16-bit integers with values between -32768 and 32767.
+  case FdoDataType_Int16:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindInt(SqlParamName,NULL);
+      else
+      {
+        FdoInt16Value * dval = (FdoInt16Value*)DataValue;                        
+        Statement->BindIntValue(SqlParamName,dval->GetInt16());
+      }
+    }
+    break;
+
+    /// Represents signed 32-bit integers with values between -2147483648 
+    /// and 2147483647.
+  case FdoDataType_Int32:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindInt(SqlParamName,NULL);
+      else
+      {
+        FdoInt32Value * dval = (FdoInt32Value*)DataValue;                        
+        Statement->BindIntValue(SqlParamName,dval->GetInt32());
+      }
+    }
+    break;
+
+    /// Represents signed 64-bit integers with values 
+    /// between -9223372036854775808 and 9223372036854775807.
+  case FdoDataType_Int64:
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindLong(SqlParamName,NULL);
+      else
+      {
+        FdoInt64Value * dval = (FdoInt64Value*)DataValue;                        
+
+        //long dval
+
+        Statement->BindLongValue(SqlParamName,(long)dval->GetInt64());
+      }
+    }
+    break;
+
+    /// Represents floating point values ranging from approximately 1.5 x 10^-45
+    /// to 3.4 x 10^38, with a precision of 7 digits. 
+  case FdoDataType_Single:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindDouble(SqlParamName,NULL);
+      else
+      {
+        FdoSingleValue * dval = (FdoSingleValue*)DataValue;                        
+        Statement->BindDoubleValue(SqlParamName,dval->GetSingle());
+      }
+    }
+    break;
+
+    /// Represents a Unicode character strings.
+  case FdoDataType_String:      
+    {
+
+      if( DataValue->IsNull() )
+        Statement->BindString(SqlParamName,NULL);
+      else
+      {
+        FdoStringValue * dval = (FdoStringValue*)DataValue;                        
+
+        Statement->BindString(SqlParamName,dval->GetString());
+      }
+    }
+    break;
+
+    /// Represents a binary large object stored as a collection of bytes.
+  case FdoDataType_BLOB:
+    {
+      Statement->BindBlob(SqlParamName,NULL,0);
+    }
+    break;
+
+    /// Represents a character large object stored as a collection of
+    /// characters.
+  case FdoDataType_CLOB:
+    {
+      Statement->BindClob(SqlParamName,NULL,0);
+    }
+    break;
+
+  default:
+    return false;
+    break;    
+  }
+
+  return true;
+}//end of c_FdoOra_API2::SetOracleStatementData
 
 bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Length,FdoDataType & FdoType)
 {
@@ -1687,6 +1883,9 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
     L"SELECT l.layer_id, l.owner, l.table_name, l.spatial_column"
     L" ,g.g_table_schema,g.g_table_name,g.geometry_type,g.coord_dimension"
     L" ,r.srid,r.srtext,r.falsex,r.falsey,r.xyunits,r.falsez,r.zunits,r.falsem,r.munits" 
+	// 1SPATIAL START
+	L" ,l.gsize1"
+	// 1SPATIAL END
     L" FROM sde.layers l INNER JOIN (sde.geometry_columns g INNER JOIN sde.spatial_references r ON g.srid = r.srid)" 
     L" ON l.table_name = g.f_table_name and l.owner = g.f_table_schema";
 
@@ -1701,6 +1900,14 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
     stm = OciConn->CreateStatement();
     stm->Prepare(sqlquery.c_str());
     
+
+	// 1SPATIAL START
+	#ifdef _KGORA_EXTENDED_LOG 
+		FdoStringP szSQLQuery = sqlquery.c_str();
+		D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSDE.Execute SQL: '%s'",(const char*)szSQLQuery);        
+	#endif
+	// 1SPATIAL END
+
     
     stm->ExecuteSelectAndDefine();
 
@@ -1786,8 +1993,12 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       sde_zunits = stm->IsColumnNull(15) ? 1 : stm->GetDouble(15);
       
       sde_falsem = stm->IsColumnNull(16) ? 0 : stm->GetDouble(16);
-      sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(16);
       
+		// 1SPATIAL START
+      //sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(16);
+		sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(17);
+		double gsize1 = stm->IsColumnNull(18) ? 1 : stm->GetDouble(18);
+		// 1SPATIAL END
       
 
       
@@ -1808,9 +2019,6 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       orasriddesc.m_SDE_ZUnit = sde_zunits;
       orasriddesc.m_SDE_FalseM = sde_falsem;
       orasriddesc.m_SDE_MUnit = sde_munits;
-      
-      
-
 
       // Test for coordinate system if exists and 
       FdoPtr<c_KgOraSpatialContext> spatial_context;
@@ -1909,8 +2117,11 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
         phys_class->SetOracleFullTableName( FdoStringP(ora_fullname.c_str()) );
         AliasNum++;
         phys_class->SetOraTableAliasNum( AliasNum );
-        
-        phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str());
+      
+		// 1SPATIAL START
+        //phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str());
+		phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str(), gsize1);
+		// 1SPATIAL END
 
         FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
 

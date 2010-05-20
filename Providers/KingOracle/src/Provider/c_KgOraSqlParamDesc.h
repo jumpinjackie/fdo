@@ -68,7 +68,7 @@ public:
   void SetUserParamName(FdoString* Name);
    
   void ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,int SqlParamNum);
-
+  void ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,const wchar_t* SqlParamName);
 protected:
   void SetNull();  
     

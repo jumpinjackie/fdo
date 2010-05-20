@@ -592,25 +592,49 @@ c_SDO_DIM_ARRAY c_Oci_Statement::GetSdoDimArray( int ColNumber )
   return c_SDO_DIM_ARRAY(m_OciConn->m_OciHpEnvironment,m_OciConn->m_OciHpError,coldata->GetSdoDimArray());  
 }
 
-void c_Oci_Statement::BindInt( int ColNumber,int* ValuePtr )
+void c_Oci_Statement::Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType )
 {
   OCIBind  *bnd1p; 
   if( ValuePtr )
   {
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) sizeof(int), SQLT_INT, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub4)ColNumber, (dvoid *) ValuePtr,
+      ValueSize, DataType, (dvoid *) 0,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
   }            
   else
   { 
     OCIInd ind=OCI_IND_NULL;
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_INT, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+      (ub4)ColNumber, (dvoid *) 0,
+      (sword) 0, DataType, (dvoid *) &ind,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
   }
+}
 
+void c_Oci_Statement::Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType )
+{
+  OCIBind  *bnd1p; 
+  if( ValuePtr )
+  {
+    m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError
+      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) ValuePtr
+      ,ValueSize, DataType, (dvoid *) 0,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+  }            
+  else
+  { 
+    OCIInd ind=OCI_IND_NULL;
+    m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
+      ,(OraText*)Name,wcslen(Name), (dvoid *) 0,
+      (sword) 0, DataType, (dvoid *) &ind,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+  }
+}
+
+void c_Oci_Statement::BindInt( int ColNumber,int* ValuePtr )
+{
+  Bind(ColNumber,ValuePtr,sizeof(int),SQLT_INT);
 }
 void c_Oci_Statement::BindIntValue( int ColNumber,int  Value )
 {
@@ -621,26 +645,23 @@ void c_Oci_Statement::BindIntValue( int ColNumber,int  Value )
  
 
 }//end of c_Oci_Statement::BindIntValue
+void c_Oci_Statement::BindInt( const wchar_t* Name,int* ValuePtr )
+{
+  Bind(Name,ValuePtr,sizeof(int),SQLT_INT);
+}
+void c_Oci_Statement::BindIntValue( const wchar_t* Name,int  Value )
+{
+  c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
+  m_VectorBindValue.push_back(newbuffer);
+
+  BindInt(Name,&newbuffer->m_Int);  
+
+
+}//end of c_Oci_Statement::BindIntValue
 
 void c_Oci_Statement::BindLong( int ColNumber,long* ValuePtr )
 {
- OCIBind  *bnd1p; 
-  if( ValuePtr )
-  {
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) sizeof(long), SQLT_INT, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }            
-  else
-  { 
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_INT, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
-
+  Bind(ColNumber,ValuePtr,sizeof(long),SQLT_INT);
 }
 void c_Oci_Statement::BindLongValue( int ColNumber,long  Value )
 {
@@ -652,42 +673,46 @@ void c_Oci_Statement::BindLongValue( int ColNumber,long  Value )
 
 }//end of c_Oci_Statement::BindLongValue
 
+void c_Oci_Statement::BindLong( const wchar_t* Name,long* ValuePtr )
+{
+  Bind(Name,ValuePtr,sizeof(long),SQLT_INT);
+}
+void c_Oci_Statement::BindLongValue( const wchar_t* Name,long  Value )
+{
+  c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
+  m_VectorBindValue.push_back(newbuffer);
+
+  BindLong(Name,&newbuffer->m_Long);  
+
+
+}//end of c_Oci_Statement::BindLongValue
+
+
+
 
 void c_Oci_Statement::BindOciNumber( int ColNumber,OCINumber* ValuePtr )
 {
-  OCIBind  *bnd1p; 
-  if( ValuePtr )
-  {
-    
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) sizeof(OCINumber), SQLT_VNU, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }            
-  else
-  { 
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_VNU, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
+  Bind(ColNumber,ValuePtr,sizeof(OCINumber),SQLT_VNU);    
 }
+
+void c_Oci_Statement::BindOciNumber( const wchar_t* Name,OCINumber* ValuePtr )
+{
+  Bind(Name,ValuePtr,sizeof(OCINumber),SQLT_VNU);
+ 
+}
+
+
+
 
 void c_Oci_Statement::BindDouble( int ColNumber,double* ValuePtr )
 {
-  OCIBind  *bnd1p; 
   if( ValuePtr )
   {
     BindDoubleValue( ColNumber,*ValuePtr );    
   }            
   else
-  { 
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_VNU, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+  {     
+    Bind(ColNumber,NULL,0,SQLT_VNU);               
   }
 }
 void c_Oci_Statement::BindDoubleValue( int ColNumber,double  Value )
@@ -701,27 +726,46 @@ void c_Oci_Statement::BindDoubleValue( int ColNumber,double  Value )
     
   BindOciNumber(ColNumber,&newbuffer->m_OciNumber);  
  
+}//end of c_Oci_Statement::BindDoubleValue
+
+void c_Oci_Statement::BindDouble( const wchar_t* Name,double* ValuePtr )
+{
+  if( ValuePtr )
+  {
+    BindDoubleValue( Name,*ValuePtr );    
+  }            
+  else
+  {     
+    Bind(Name,NULL,0,SQLT_VNU);               
+  }
+}
+void c_Oci_Statement::BindDoubleValue( const wchar_t* Name,double  Value )
+{
+  OCINumber oci_number;
+
+  m_OciConn->OciCheckError( OCINumberFromReal(m_OciConn->m_OciHpError, (dvoid *)&Value,(uword)sizeof(double), &oci_number));
+
+  c_BindValueBuffer* newbuffer = new c_BindValueBuffer(oci_number);
+  m_VectorBindValue.push_back(newbuffer);
+
+  BindOciNumber(Name,&newbuffer->m_OciNumber);  
 
 }//end of c_Oci_Statement::BindDoubleValue
 
+
+
+
 void c_Oci_Statement::BindString( int ColNumber,const wchar_t* ValuePtr )
 {
-  OCIBind  *bnd1p; 
   if( ValuePtr )
   {
     int bytesize = wcslen(ValuePtr)*sizeof(wchar_t)+sizeof(wchar_t); // + one more for zero value
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) bytesize, SQLT_STR, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    Bind(ColNumber,(void*)ValuePtr,bytesize,SQLT_STR);
+    
   }
   else
   {
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_STR, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    Bind(ColNumber,NULL,0,SQLT_STR);    
   }
 
 }//end of c_Oci_Statement::BindString
@@ -740,26 +784,39 @@ void c_Oci_Statement::BindStringValue( int ColNumber,const wchar_t* ValuePtr )
   }
 
 }//end of c_Oci_Statement::BindStringValue
-
-void c_Oci_Statement::BindDate( int ColNumber,OCIDate* ValuePtr )
+void c_Oci_Statement::BindString( const wchar_t* Name,const wchar_t* ValuePtr )
 {
-  OCIBind  *bnd1p; 
   if( ValuePtr )
   {
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) sizeof(OCIDate), SQLT_ODT, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    int bytesize = wcslen(ValuePtr)*sizeof(wchar_t)+sizeof(wchar_t); // + one more for zero value
+    Bind(Name,(void*)ValuePtr,bytesize,SQLT_STR);
+
   }
   else
   {
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_ODT, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    Bind(Name,NULL,0,SQLT_STR);    
   }
 
+}//end of c_Oci_Statement::BindString
+void c_Oci_Statement::BindStringValue( const wchar_t* Name,const wchar_t* ValuePtr )
+{
+  if( ValuePtr )
+  {
+    c_BindValueBuffer* newbuffer = new c_BindValueBuffer(ValuePtr);
+    m_VectorBindValue.push_back(newbuffer);
+
+    BindString(Name,newbuffer->m_String);  
+  }
+  else
+  {
+    BindString(Name,NULL);  
+  }
+
+}//end of c_Oci_Statement::BindStringValue
+
+void c_Oci_Statement::BindDate( int ColNumber,OCIDate* ValuePtr )
+{
+  Bind(ColNumber,ValuePtr,sizeof(OCIDate),SQLT_ODT);
 }
 void c_Oci_Statement::BindDateValue( int ColNumber,OCIDate Value )
 {
@@ -768,6 +825,20 @@ void c_Oci_Statement::BindDateValue( int ColNumber,OCIDate Value )
     
    BindDate(ColNumber,&newbuffer->m_Date);  
  
+
+}//end of c_Oci_Statement::BindDateValue
+
+void c_Oci_Statement::BindDate( const wchar_t* Name,OCIDate* ValuePtr )
+{
+  Bind(Name,ValuePtr,sizeof(OCIDate),SQLT_ODT);
+}
+void c_Oci_Statement::BindDateValue( const wchar_t* Name,OCIDate Value )
+{
+  c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
+  m_VectorBindValue.push_back(newbuffer);
+
+  BindDate(Name,&newbuffer->m_Date);  
+
 
 }//end of c_Oci_Statement::BindDateValue
 
@@ -786,12 +857,33 @@ void c_Oci_Statement::BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr )
   }
   
 }
+void c_Oci_Statement::BindSdoGeom( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr )
+{
+  OCIBind  *bnd1p; 
+  //if( ValuePtr )
+  {
+
+    m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
+      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
+      (sword) 0, SQLT_NTY, (dvoid *) 0,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
+      m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0));               
+  }
+
+}
 
 void c_Oci_Statement::BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value )
 {
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
   m_VectorBindValue.push_back(newbuffer);  
   BindSdoGeom(ColNumber,newbuffer->m_SdoGeom);  
+}
+void c_Oci_Statement::BindSdoGeomValue( const wchar_t* Name,c_SDO_GEOMETRY* Value )
+{
+  c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
+  m_VectorBindValue.push_back(newbuffer);  
+  BindSdoGeom(Name,newbuffer->m_SdoGeom);  
 }
 
 void c_Oci_Statement::BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr )
@@ -809,45 +901,43 @@ void c_Oci_Statement::BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValueP
   }
   
 }
+void c_Oci_Statement::BindSdoDimElement( const wchar_t* Name,c_SDO_DIM_ELEMENT* ValuePtr )
+{
+  OCIBind  *bnd1p; 
+  //if( ValuePtr )
+  {
+
+    m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
+      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
+      (sword) 0, SQLT_NTY, (dvoid *) 0,
+      (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
+    m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
+      m_OciConn->m_OciType_SdoDimElement,  (void**)&ValuePtr->m_Dim_Element,0,(void**)&ValuePtr->m_Dim_Element_Ind,0));               
+  }
+
+}
 
 void c_Oci_Statement::BindBlob( int ColNumber,const char* ValuePtr,long Size )
 {
-  OCIBind  *bnd1p; 
-  if( ValuePtr )
-  {
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) Size, SQLT_BLOB, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
-  else
-  {
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_BLOB, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
+  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_BLOB);
+ 
+}//end of c_Oci_Statement::BindBlob
+
+void c_Oci_Statement::BindBlob( const wchar_t* Name,const char* ValuePtr,long Size )
+{
+  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_BLOB);
 
 }//end of c_Oci_Statement::BindBlob
 
 void c_Oci_Statement::BindClob( int ColNumber,const char* ValuePtr,long Size )
 {
-  OCIBind  *bnd1p; 
-  if( ValuePtr )
-  {
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) ValuePtr,
-              (sword) Size, SQLT_CLOB, (dvoid *) 0,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
-  else
-  {
-    OCIInd ind=OCI_IND_NULL;
-    m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
-              (ub4)ColNumber, (dvoid *) 0,
-              (sword) 0, SQLT_CLOB, (dvoid *) &ind,
-               (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
-  }
+  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_CLOB);
+  
+  
+}//end of c_Oci_Statement::BindClob
+
+void c_Oci_Statement::BindClob( const wchar_t* Name,const char* ValuePtr,long Size )
+{
+  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_CLOB);
 
 }//end of c_Oci_Statement::BindClob

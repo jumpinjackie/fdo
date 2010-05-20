@@ -96,30 +96,45 @@ class c_Oci_Statement
     
 
     void BindInt( int ColNumber,int* ValuePtr );
+    void BindInt( const wchar_t* Name,int* ValuePtr );
     void BindIntValue( int ColNumber,int Value );
-    
-    void BindLong( int ColNumber,long* ValuePtr );
-    void BindLongValue( int ColNumber,long Value );
-    
-    void BindOciNumber( int ColNumber,OCINumber* ValuePtr );
-    
-    void BindDouble( int ColNumber,double* ValuePtr );
-    void BindDoubleValue( int ColNumber,double Value );
-    
-    void BindString( int ColNumber,const wchar_t* ValuePtr );
-    void BindStringValue( int ColNumber,const wchar_t* Value );
-    
-    void BindDate( int ColNumber,OCIDate* ValuePtr );
-    void BindDateValue( int ColNumber,OCIDate Value );
-    
-    void BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr ); // pointer will not be deleted, caller is responsible for pointer
-    void BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value ); // pointer will be deleted by statement
-    
-    void BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr );
-    
-    void BindClob( int ColNumber,const char* ValuePtr,long Size );
-    void BindBlob( int ColNumber,const char* ValuePtr,long Size );
+    void BindIntValue( const wchar_t* Name,int Value );
 
+    void BindLong( int ColNumber,long* ValuePtr );
+    void BindLong( const wchar_t* Name,long* ValuePtr );
+    void BindLongValue( int ColNumber,long Value );
+    void BindLongValue( const wchar_t* Name,long Value );
+
+    void BindOciNumber( int ColNumber,OCINumber* ValuePtr );
+    void BindOciNumber( const wchar_t* Name,OCINumber* ValuePtr );
+
+    void BindDouble( int ColNumber,double* ValuePtr );
+    void BindDouble( const wchar_t* Name,double* ValuePtr );
+    void BindDoubleValue( int ColNumber,double Value );
+    void BindDoubleValue( const wchar_t* Name,double Value );
+
+    void BindString( int ColNumber,const wchar_t* ValuePtr );
+    void BindString( const wchar_t* Name,const wchar_t* ValuePtr );
+    void BindStringValue( int ColNumber,const wchar_t* Value );
+    void BindStringValue( const wchar_t* Name,const wchar_t* ValuePtr );
+
+    void BindDate( int ColNumber,OCIDate* ValuePtr );
+    void BindDate( const wchar_t* Name,OCIDate* ValuePtr );
+    void BindDateValue( int ColNumber,OCIDate Value );
+    void BindDateValue( const wchar_t* Name,OCIDate Value );
+
+    void BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr ); // pointer will not be deleted, caller is responsible for pointer
+    void BindSdoGeom( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr );
+    void BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value ); // pointer will be deleted by statement
+    void BindSdoGeomValue( const wchar_t* Name,c_SDO_GEOMETRY* Value );
+
+    void BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr );
+    void BindSdoDimElement( const wchar_t* Name,c_SDO_DIM_ELEMENT* ValuePtr );
+
+    void BindClob( int ColNumber,const char* ValuePtr,long Size );
+    void BindClob( const wchar_t* Name,const char* ValuePtr,long Size );
+    void BindBlob( int ColNumber,const char* ValuePtr,long Size );
+    void BindBlob( const wchar_t* Name,const char* ValuePtr,long Size );
     int ExecuteNonQuery(int ExecMode = OCI_COMMIT_ON_SUCCESS);  // OCI_COMMIT_ON_SUCCESS , OCI_DEFAULT
     
     
@@ -207,15 +222,8 @@ protected:
       m_ColumnDataSize++;
     }
     void DeleteBindValues();
-    
-
-
-
-
-
-
-
-
+    void Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
+    void Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
 
 
 
