@@ -275,12 +275,17 @@ public:
   void ApplySqlParameters(c_Oci_Statement* OciStm,bool IsGeodeticCS,long OraSrid,int ParamOffest=0);
   int GetSqlParametersCount();
   
+  // adds parameter into list of parameters to be applied
+  // and returns string to be used for that parameter in SQL, example return: ":1" or ":5" etc..
+  FdoStringP PushParameter(FdoDataValue& Value);
+  
 protected:
   
   void AddAsParameter(FdoDataValue& Value);
   void ProcessExpresion( FdoExpression* Expr);
   void AppendString(const wchar_t *Str);
   void PrependString(const wchar_t *Str);
+  
 };
 
 #endif

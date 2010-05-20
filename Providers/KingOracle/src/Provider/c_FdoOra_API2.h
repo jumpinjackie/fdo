@@ -42,7 +42,8 @@ public:
   //static bool FdoDataTypeToOraDataType(FdoDataType DataTape,oracle::occi::Type& OraType);
   
   static bool SetOracleStatementData(c_Oci_Statement* Statement,int SqlParamNum,FdoDataValue* DataValue);
-  
+  static bool SetOracleStatementData(c_Oci_Statement* Statement,const wchar_t*SqlParamName,FdoDataValue* DataValue);
+
 protected:
 /*
   static void c_FdoOra_API2::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::occi::Statement* OraStm

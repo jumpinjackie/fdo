@@ -20,6 +20,10 @@
 #include "c_FgfToSdoGeom.h"
 #include "c_Ora_API2.h"
 
+// 1SPATIAL START
+#include "math.h"
+// 1SPATIAL END
+
 
 #define D_FILTER_OPEN_PARENTH L" ( "
 #define D_FILTER_CLOSE_PARENTH L" ) "
@@ -294,17 +298,63 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     
     miny = (miny - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
     maxy = (maxy - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
-    
+
+	// 1SPATIAL START
+	// for index
+	double gxmin = floor( minx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
+	double gxmax = floor( maxx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
+	double gymin = floor( miny / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
+	double gymax = floor( maxy / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
+	// 1SPATIAL END
+
     wstring indexname = m_ClassDef->GetSdeIndexTableName();
     indexname += L"_IX1";
+    
+    
+    FdoPtr<FdoDoubleValue> fval_gxmin = FdoDoubleValue::Create(gxmin);
+    FdoStringP param_gxmin = m_ExpressionProcessor.PushParameter(*fval_gxmin);
+    
+    FdoPtr<FdoDoubleValue> fval_gxmax = FdoDoubleValue::Create(gxmax);
+    FdoStringP param_gxmax = m_ExpressionProcessor.PushParameter(*fval_gxmax);
+    
+    FdoPtr<FdoDoubleValue> fval_gymin = FdoDoubleValue::Create(gymin);
+    FdoStringP param_gymin = m_ExpressionProcessor.PushParameter(*fval_gymin);
+    
+    FdoPtr<FdoDoubleValue> fval_gymax = FdoDoubleValue::Create(gymax);
+    FdoStringP param_gymax = m_ExpressionProcessor.PushParameter(*fval_gymax);
+    
+    FdoPtr<FdoDoubleValue> fval_maxx = FdoDoubleValue::Create(maxx);
+    FdoStringP param_maxx = m_ExpressionProcessor.PushParameter(*fval_maxx);
+    
+    FdoPtr<FdoDoubleValue> fval_maxy = FdoDoubleValue::Create(maxy);
+    FdoStringP param_maxy = m_ExpressionProcessor.PushParameter(*fval_maxy);
+    
+    FdoPtr<FdoDoubleValue> fval_minx = FdoDoubleValue::Create(minx);
+    FdoStringP param_minx = m_ExpressionProcessor.PushParameter(*fval_minx);
+    
+    FdoPtr<FdoDoubleValue> fval_miny = FdoDoubleValue::Create(miny);
+    FdoStringP param_miny = m_ExpressionProcessor.PushParameter(*fval_miny);
+    
     
     // this goes into FROM part of SQL
     FdoStringP sbuff = FdoStringP::Format(L"(SELECT  /*+ INDEX(SP_ %s) */ DISTINCT sp_fid, eminx, eminy, emaxx,"
         L" emaxy FROM %s SP_  WHERE "
-        L" SP_.gx >= 0 AND SP_.gx >= 0"
-        L" AND SP_.eminx <= %.0lf AND SP_.eminy <= %.0lf AND"
-        L" SP_.emaxx >= %.0lf AND SP_.emaxy >= %.0lf) S_",indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
-        ,maxx,maxy,minx,miny
+		// 1SPATIAL START
+       // L" SP_.gx >= 0 AND SP_.gy >= 0"
+		L" SP_.gx >= %s AND SP_.gx <= %s"
+		L" AND SP_.gy >= %s AND SP_.gy <= %s"
+		L" /* XYUnit=%.0lf  GSize1=%.0lf */"
+		// 1SPATIAL END
+        L" AND SP_.eminx <= %s AND SP_.eminy <= %s AND"
+        L" SP_.emaxx >= %s AND SP_.emaxy >= %s) S_",
+		indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
+		// 1SPATIAL START
+        // ,maxx,maxy,minx,miny
+		// ,minx,maxx,miny,maxy,maxx,maxy,minx,miny
+		,(const wchar_t*)param_gxmin,(const wchar_t*)param_gxmax,(const wchar_t*)param_gymin,(const wchar_t*)param_gymax
+		,m_OraSridDesc.m_SDE_XYUnit,m_ClassDef->GetSdeGSize1()
+		,(const wchar_t*)param_maxx,(const wchar_t*)param_maxy,(const wchar_t*)param_minx,(const wchar_t*)param_miny
+		// 1SPATIAL END
        );
        
     m_SDE_SelectSpatialIndex = sbuff;   
@@ -567,7 +617,12 @@ switch( Filter.GetOperation() )
     else
     {    
       AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString(L"SDO_ANYINTERACT(");
+
+	  // 1SPATIAL START
+      // AppendString(L"SDO_ANYINTERACT(");
+	  AppendString(L"SDO_FILTER(");
+	  // 1SPATIAL END
+
       ProcessExpresion( geomprop );
       AppendString(L",");
       
@@ -622,7 +677,11 @@ switch( Filter.GetOperation() )
       */
       
       
-      AppendString(L")='TRUE'");
+	  // 1SPATIAL START
+      // AppendString(L")='TRUE'");
+	  AppendString(L", 'querytype = WINDOW') = 'TRUE'");
+	  // 1SPATIAL END
+
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
   }

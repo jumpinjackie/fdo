@@ -214,3 +214,86 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
   }
 }//end of  c_KgOraSqlParamDesc::ApplySqlParameters
 
+void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,const wchar_t* SqlParamName) 
+{ 
+  switch( m_ParamType )
+  {
+  case e_Geometry:
+    {
+      if( m_ParamGeometry )
+      {
+
+        c_SDO_GEOMETRY * sdogeom = c_SDO_GEOMETRY::Create(OraStm->m_OciConn);
+
+        c_FgfToSdoGeom fgftosdo;
+
+        if( fgftosdo.ToSdoGeom((int*)m_ParamGeometry->GetData(),OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
+        {
+          OraStm->BindSdoGeomValue(SqlParamName,sdogeom);  
+        }
+        else
+        {
+          delete sdogeom;
+          OraStm->BindSdoGeom(SqlParamName,NULL);  
+        }
+
+#ifdef _KGORA_EXTENDED_LOG
+        {
+          char* buff = c_Ora_API2::SdoGeomToString(sdogeom);
+          FdoStringP sval(SqlParamName); 
+          
+          D_KGORA_ELOG_WRITE2("SQL Param %s Geometry='%s'",(const char*)sval,buff);
+          delete [] buff;
+        }
+#endif
+
+      }
+      else
+      {
+        OraStm->BindSdoGeom( SqlParamName,NULL );
+#ifdef _KGORA_EXTENDED_LOG
+        {
+          FdoStringP sval(SqlParamName); 
+          D_KGORA_ELOG_WRITE1("SQL Param %s Geometry=NULL",(const char*)sval);
+
+        }
+#endif
+      }
+    }
+    break;
+  case e_OptimizedRect:
+    {
+      c_SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(OraStm->m_OciConn,IsGeodeticCS,OraSrid,m_OptimizedRect.m_MinX,m_OptimizedRect.m_MinY,m_OptimizedRect.m_MaxX,m_OptimizedRect.m_MaxY);
+      OraStm->BindSdoGeomValue(SqlParamName,sdorect);   
+#ifdef _KGORA_EXTENDED_LOG
+      {
+        FdoStringP sval(SqlParamName); 
+        char* buff = c_Ora_API2::SdoGeomToString(sdorect);
+        D_KGORA_ELOG_WRITE2("SQL Param %s  OptimizedRect='%s'",(const char*)sval,buff);
+        delete [] buff;
+      }
+#endif     
+    }
+    break;
+
+  case e_DataValue:
+    {
+
+
+      if( c_FdoOra_API2::SetOracleStatementData(OraStm,SqlParamName,m_ParamDataValue) )
+      {
+      }
+
+#ifdef _KGORA_EXTENDED_LOG
+      {
+        FdoStringP sval(SqlParamName); 
+        FdoStringP fdostr = m_ParamDataValue->ToString();
+        D_KGORA_ELOG_WRITE2("SQL Param %s Data='%s'",(const char*)SqlParamName,(const char*)fdostr);
+
+      }
+#endif
+    }
+    break;  
+  }
+}//end of  c_KgOraSqlParamDesc::ApplySqlParameters
+
