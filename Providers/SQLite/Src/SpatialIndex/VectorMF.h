@@ -63,17 +63,13 @@ public:
     }
     void setsize(size_t sz, const _Ty& defaultVal)
     {
-        if ((sizeof(_Ty)*sz) > (8*MAPPED_RECS_PERPAGE))
+        if (sizeof(_Ty)*sz > MAPPED_RECS_PERPAGE)
         {
             if (_mapFile == NULL)
             {
                 std::wstring seed = L"vector";
                 _mapFile = new VectorMappedFile(MAPPED_CNT_PAGES);
-                wchar_t tmp[16];
-                time_t tmv = clock();
-                swprintf(tmp, sizeof(tmp), L"%ld", tmv);
-                seed.append(tmp);
-                _mapFile->create(seed.c_str(), true);
+                _mapFile->createTempFile(seed);
                 for (size_t idx = 0; idx<_vector->size(); idx++)
                 {
                     _Ty* node = (_Ty*)_mapFile->load_newrec(idx);
