@@ -433,16 +433,35 @@ void FdoWmsCapabilities::_processGeographicDataLayer(FdoWmsLayer* layer, FdoBool
                     parentBox = _SearchParentBoundingBox(layer, defaultSRS);
 
                     pBox = FdoWmsBoundingBox::Create();
-                    pBox->SetCRS(defaultSRS);
                     if (parentBox)
                     {
                         // add parent bounding box 
+                        pBox->SetCRS(defaultSRS);
                         pBox->SetMinY(parentBox->GetMinY ());
                         pBox->SetMinX(parentBox->GetMinX ());
                         pBox->SetMaxX(parentBox->GetMaxX ());
                         pBox->SetMaxY(parentBox->GetMaxY ());
                         boundingBoxes->Add(pBox);
-                   }
+                    }
+                    else if (geoBox != NULL)
+                    {
+                        // we do have a GeographicBoundingBox and we should use it since no other SRS was found.
+                        // with a valid BoundingBox
+                        pBox->SetCRS(FdoWmsGlobals::DefaultEPSGCode);
+
+                        // generate a new one using default SRS and GeographicBoundingBox
+                        pBox->SetMinY(geoBox->GetSouthBoundLatitude ());
+                        pBox->SetMinX(geoBox->GetWestBoundLongitude ());
+                        pBox->SetMaxX(geoBox->GetEastBoundLongitude ());
+                        pBox->SetMaxY(geoBox->GetNorthBoundLatitude ());
+
+                        boundingBoxes->Add(pBox);
+                        
+                        // add DefaultEPSGCode to the supported list
+                        FdoStringsP crsNames = layer->GetCoordinateReferenceSystems();
+	                    if (crsNames != NULL && (crsNames->IndexOf (FdoWmsGlobals::DefaultEPSGCode) == -1))
+                            crsNames->Add(FdoWmsGlobals::DefaultEPSGCode);
+                    }
                 }
             }
         }
