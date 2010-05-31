@@ -91,7 +91,7 @@ FdoInt32 SltBLOBStreamReader::ReadNext( FdoByte* buffer,
     if (NULL==buffer)
         throw FdoCommandException::Create(L"A required argument was set to NULL.");
 
-    FdoInt64 len = GetLength();
+    FdoInt32 len = (FdoInt32)GetLength();
     // Update count2:
     if ((-1 == count2) || (count2 > (len - m_BlobIndex)))
         count2 = (len - m_BlobIndex);
@@ -138,7 +138,7 @@ FdoInt32 SltBLOBStreamReader::ReadNext(  FdoArray<FdoByte> * &buffer,
     if (NULL==buffer)
         throw FdoCommandException::Create(L"A required argument was set to NULL.");
 
-    FdoInt64 len = GetLength();
+    FdoInt32 len = (FdoInt32)GetLength();
 
     // Update count:
     if ((-1 == count2) || (count2 > (len - m_BlobIndex)))
