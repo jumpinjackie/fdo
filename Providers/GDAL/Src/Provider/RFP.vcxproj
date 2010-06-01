@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GRFPProvider</ProjectName>
+    <ProjectGuid>{29B27872-1EF9-4E49-A0FA-E8F75076D8D2}</ProjectGuid>
+    <RootNamespace>RFPProvider</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOGDAL)\include;..\..\Inc;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>FDORFP.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;gdal_i.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)GRFPProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\debug;$(FDOUTILITIES)\Common\Lib\Win32\debug;$(FDOGDAL)\lib\win32\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)GRFPProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\GRFPProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)GRFPProvider.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>Versioning GRFPProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)GRFPProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOGDAL)\include;..\..\Inc;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>FDORFP.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;gdal_i.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)GRFPProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\debug;$(FDOUTILITIES)\Common\Lib\Win64\debug;$(FDOGDAL)\lib\win64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)GRFPProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\GRFPProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)GRFPProvider.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>Versioning GRFPProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)GRFPProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOGDAL)\include;..\..\Inc;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>FDORFP.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;gdal_i.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)GRFPProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOGDAL)\lib\win32\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)GRFPProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\GRFPProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)GRFPProvider.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>Versioning GRFPProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)GRFPProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDOUTILITIES)\Common\Inc;$(FDOGDAL)\include;..\..\Inc;..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOGRFP_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>FDORFP.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;gdal_i.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)GRFPProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOGDAL)\lib\win64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)GRFPProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\GRFPProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <Bscmake>
+      <OutputFile>$(OutDir)GRFPProvider.bsc</OutputFile>
+    </Bscmake>
+    <PostBuildEvent>
+      <Message>Versioning GRFPProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)GRFPProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="FDORFP.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="FdoRfpBandRaster.cpp" />
+    <ClCompile Include="FdoRfpClassData.cpp" />
+    <ClCompile Include="FdoRfpCommandCapabilities.cpp" />
+    <ClCompile Include="FdoRfpConnection.cpp" />
+    <ClCompile Include="FdoRfpConnectionCapabilities.cpp" />
+    <ClCompile Include="FdoRfpConnectionInfo.cpp" />
+    <ClCompile Include="FdoRfpDataReader.cpp" />
+    <ClCompile Include="FdoRfpDatasetCache.cpp" />
+    <ClCompile Include="FdoRfpDescribeSchemaCommand.cpp" />
+    <ClCompile Include="FdoRfpDescribeSchemaMapping.cpp" />
+    <ClCompile Include="FdoRfpExpressionCapabilities.cpp" />
+    <ClCompile Include="FdoRfpFeatureReader.cpp" />
+    <ClCompile Include="FdoRfpFilterCapabilities.cpp" />
+    <ClCompile Include="FdoRfpFilterEvaluator.cpp" />
+    <ClCompile Include="FdoRfpGeoBandRaster.cpp" />
+    <ClCompile Include="FdoRfpGeoBandRasterImp.cpp" />
+    <ClCompile Include="FdoRfpGeoRaster.cpp" />
+    <ClCompile Include="FdoRfpGeoRasterExtractor.cpp" />
+    <ClCompile Include="FdoRfpGeoreference.cpp" />
+    <ClCompile Include="FdoRfpGetSpatialContexts.cpp" />
+    <ClCompile Include="FdoRfpImage.cpp" />
+    <ClCompile Include="FdoRfpKeyColor.cpp" />
+    <ClCompile Include="FdoRfpLinux.cpp" />
+    <ClCompile Include="FdoRfpQueryExecutor.cpp" />
+    <ClCompile Include="FdoRfpRaster.cpp" />
+    <ClCompile Include="FdoRfpRasterCapabilities.cpp" />
+    <ClCompile Include="FdoRfpRasterPropertyDictionary.cpp" />
+    <ClCompile Include="FdoRfpRasterUtil.cpp" />
+    <ClCompile Include="FdoRfpRect.cpp" />
+    <ClCompile Include="FdoRfpSchemaCapabilities.cpp" />
+    <ClCompile Include="FdoRfpSchemaData.cpp" />
+    <ClCompile Include="FdoRfpSelectAggregate.cpp" />
+    <ClCompile Include="FdoRfpSelectCommand.cpp" />
+    <ClCompile Include="FdoRfpSpatialContext.cpp" />
+    <ClCompile Include="FdoRfpSpatialContextReader.cpp" />
+    <ClCompile Include="FdoRfpStreamReaderByTile.cpp" />
+    <ClCompile Include="FdoRfpStreamReaderRGB24.cpp" />
+    <ClCompile Include="FdoRfpVariant.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FDORFP.h" />
+    <ClInclude Include="FdoRfpBandRaster.h" />
+    <ClInclude Include="FdoRfpClassData.h" />
+    <ClInclude Include="inc\RasterFile\Override\FdoRfpClassDefinition.h" />
+    <ClInclude Include="FdoRfpCommand.h" />
+    <ClInclude Include="FdoRfpCommandCapabilities.h" />
+    <ClInclude Include="FdoRfpCommonReader.h" />
+    <ClInclude Include="FdoRfpConnection.h" />
+    <ClInclude Include="FdoRfpConnectionCapabilities.h" />
+    <ClInclude Include="FdoRfpConnectionInfo.h" />
+    <ClInclude Include="FdoRfpDataReader.h" />
+    <ClInclude Include="FdoRfpDatasetCache.h" />
+    <ClInclude Include="FdoRfpDefaultSchema.h" />
+    <ClInclude Include="..\FdoRfpDefines.h" />
+    <ClInclude Include="FdoRfpDescribeSchemaCommand.h" />
+    <ClInclude Include="FdoRfpDescribeSchemaMapping.h" />
+    <ClInclude Include="FdoRfpEnvelope.h" />
+    <ClInclude Include="FdoRfpExpressionCapabilities.h" />
+    <ClInclude Include="FdoRfpFeatureCommand.h" />
+    <ClInclude Include="FdoRfpFeatureReader.h" />
+    <ClInclude Include="FdoRfpFilterCapabilities.h" />
+    <ClInclude Include="FdoRfpFilterEvaluator.h" />
+    <ClInclude Include="FdoRfpGeoBandRaster.h" />
+    <ClInclude Include="FdoRfpGeoBandRasterImp.h" />
+    <ClInclude Include="FdoRfpGeoRaster.h" />
+    <ClInclude Include="FdoRfpGeoRasterExtractor.h" />
+    <ClInclude Include="FdoRfpGeoreference.h" />
+    <ClInclude Include="FdoRfpGetSpatialContexts.h" />
+    <ClInclude Include="..\FdoRfpGlobals.h" />
+    <ClInclude Include="FdoRfpImage.h" />
+    <ClInclude Include="FdoRfpImageDescriptor.h" />
+    <ClInclude Include="FdoRfpImageFactory.h" />
+    <ClInclude Include="FdoRfpKeyColor.h" />
+    <ClInclude Include="inc\RasterFile\Override\FdoRfpPhysicalSchemaMapping.h" />
+    <ClInclude Include="inc\RasterFile\FdoRfpProvider.h" />
+    <ClInclude Include="FdoRfpQueryExecutor.h" />
+    <ClInclude Include="FdoRfpQueryResult.h" />
+    <ClInclude Include="fdorfpraster.h" />
+    <ClInclude Include="FdoRfpRasterCapabilities.h" />
+    <ClInclude Include="inc\RasterFile\Override\FdoRfpRasterDefinition.h" />
+    <ClInclude Include="inc\RasterFile\Override\FdoRfpRasterImageDefinition.h" />
+    <ClInclude Include="inc\RasterFile\Override\FdoRfpRasterLocation.h" />
+    <ClInclude Include="FdoRfpRasterPropertyDictionary.h" />
+    <ClInclude Include="FdoRfpRasterUtil.h" />
+    <ClInclude Include="..\FdoRfpRect.h" />
+    <ClInclude Include="FdoRfpSchemaCapabilities.h" />
+    <ClInclude Include="FdoRfpSchemaData.h" />
+    <ClInclude Include="FdoRfpSelectAggregate.h" />
+    <ClInclude Include="FdoRfpSelectCommand.h" />
+    <ClInclude Include="FdoRfpSpatialContext.h" />
+    <ClInclude Include="FdoRfpSpatialContextReader.h" />
+    <ClInclude Include="FdoRfpStreamReaderByTile.h" />
+    <ClInclude Include="FdoRfpStreamReaderRGB24.h" />
+    <ClInclude Include="..\FdoRfpUtil.h" />
+    <ClInclude Include="FdoRfpVariant.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RFPProvider.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Message\RFPMessage.vcxproj">
+      <Project>{95757c41-965c-4b6d-8a41-f492bbb73ae9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Overrides\RFPOverrides.vcxproj">
+      <Project>{0a982097-4896-4f2b-81ec-43100004311d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

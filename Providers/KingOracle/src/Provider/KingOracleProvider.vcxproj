@@ -1,0 +1,806 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_FDO_3_4|Win32">
+      <Configuration>Debug_FDO_3_4</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_FDO_3_4|x64">
+      <Configuration>Debug_FDO_3_4</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_FDO_3_5|Win32">
+      <Configuration>Debug_FDO_3_5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_FDO_3_5|x64">
+      <Configuration>Debug_FDO_3_5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_FDO_3_4|Win32">
+      <Configuration>Release_FDO_3_4</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_FDO_3_4|x64">
+      <Configuration>Release_FDO_3_4</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_FDO_3_5|Win32">
+      <Configuration>Release_FDO_3_5</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_FDO_3_5|x64">
+      <Configuration>Release_FDO_3_5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A8CAD4E4-5C05-4D3F-B8CC-96D862110278}</ProjectGuid>
+    <RootNamespace>KingOracleProvider</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\Provider\Win32\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\Provider\Win32\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'">$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'">..\..\Bin\Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;$(FDOORACLE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;$(FDOORACLE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oraocci10.lib;oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;$(FDOORACLE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;$(FDOORACLE)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\Lib\Win64\Release\;..\..\..\..\Utilities\Common\Lib\Win64\Release\;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\oracle\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>copy /y $(OutDir)*.dll D:\Development\Fdo2Fdo\v1.2\bin\Debug\
+copy /y $(OutDir)*.pdb D:\Development\Fdo2Fdo\v1.2\bin\Debug\
+copy /y $(OutDir)*.dll ..\UnitTest\$(Configuration)\
+copy /y $(OutDir)*.pdb ..\UnitTest\$(Configuration)\
+call KingStampVersion $(OutDir)
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>call KingStampVersion $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;..\..\oracle\instantclient_10_2\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\Release;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>copy /y $(OutDir)*.dll D:\Development\Fdo2Fdo\v1.2\bin\Release\
+call KingStampVersion $(OutDir)
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win64\Release;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>call KingStampVersion $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\oracle\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\debug;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>oraocci10.lib;oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression;..\..\oracle\instantclient_10_2\sdk\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\Release;..\..\lib\Win32\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\Win32\$(Configuration) mkdir ..\..\lib\Win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\Release;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\Win64\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="KgOraProvider.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="c_KgOraCommandCapabilities.h" />
+    <ClInclude Include="c_KgOraConnectionCapabilities.h" />
+    <ClInclude Include="c_KgOraExpressionCapabilities.h" />
+    <ClInclude Include="c_KgOraFilterCapabilities.h" />
+    <ClInclude Include="c_KgOraGeometryCapabilities.h" />
+    <ClInclude Include="c_KgOraRasterCapabilities.h" />
+    <ClInclude Include="c_KgOraSchemaCapabilities.h" />
+    <ClInclude Include="c_KgOraTopologyCapabilities.h" />
+    <ClInclude Include="c_KgOraConnection.h" />
+    <ClInclude Include="c_KgOraConnectionInfo.h" />
+    <ClInclude Include="c_KgOraDataReader.h" />
+    <ClInclude Include="c_KgOraFeatureReader.h" />
+    <ClInclude Include="c_KgOraSelectAggregates.h" />
+    <ClInclude Include="c_KgOraSelectCommand.h" />
+    <ClInclude Include="c_KgOraDescribeSchemaCommand.h" />
+    <ClInclude Include="c_KgOraGetSpatialContextsCommand.h" />
+    <ClInclude Include="c_KgOraSpatialContext.h" />
+    <ClInclude Include="c_KgOraSpatialContextReader.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="c_OCI_API.h" />
+    <ClInclude Include="c_Oci_ColumnData.h" />
+    <ClInclude Include="c_Oci_Statement.h" />
+    <ClInclude Include="c_FdoOra_API2.h" />
+    <ClInclude Include="c_FdoSde_API.h" />
+    <ClInclude Include="c_FgfToSdoGeom.h" />
+    <ClInclude Include="c_FilterStringBuffer.h" />
+    <ClInclude Include="c_KgOraApplySchema.h" />
+    <ClInclude Include="c_KgOraCreateDataStore.h" />
+    <ClInclude Include="c_KgOraCreateSpatialContext.h" />
+    <ClInclude Include="c_KgOraDelete.h" />
+    <ClInclude Include="c_KgOraExpressionProcessor.h" />
+    <ClInclude Include="c_KgOraFdoCommand.h" />
+    <ClInclude Include="c_KgOraFdoFeatureCommand.h" />
+    <ClInclude Include="c_KgOraFeatureReaderInsert.h" />
+    <ClInclude Include="c_KgOraFilterProcessor.h" />
+    <ClInclude Include="c_KgOraInsert.h" />
+    <ClInclude Include="c_KgOraReader.h" />
+    <ClInclude Include="c_KgOraSchemaDesc.h" />
+    <ClInclude Include="c_KgOraSchemaPool.h" />
+    <ClInclude Include="c_KgOraSQLCommand.h" />
+    <ClInclude Include="c_KgOraSQLDataReader.h" />
+    <ClInclude Include="c_KgOraSqlParamDesc.h" />
+    <ClInclude Include="c_KgOraSridDesc.h" />
+    <ClInclude Include="c_KgOraUpdate.h" />
+    <ClInclude Include="c_LogAPI.h" />
+    <ClInclude Include="c_Ora_API2.h" />
+    <ClInclude Include="c_SdeGeom2AGF.h" />
+    <ClInclude Include="c_SDO_DIM_ELEMENT.h" />
+    <ClInclude Include="c_SDO_GEOMETRY.h" />
+    <ClInclude Include="c_SdoGeomToAGF2.h" />
+    <ClInclude Include="FDO_31_Types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_5|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_4|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="c_KgOraCommandCapabilities.cpp" />
+    <ClCompile Include="c_KgOraConnectionCapabilities.cpp" />
+    <ClCompile Include="c_KgOraExpressionCapabilities.cpp" />
+    <ClCompile Include="c_KgOraFilterCapabilities.cpp" />
+    <ClCompile Include="c_KgOraGeometryCapabilities.cpp" />
+    <ClCompile Include="c_KgOraRasterCapabilities.cpp" />
+    <ClCompile Include="c_KgOraSchemaCapabilities.cpp" />
+    <ClCompile Include="c_KgOraTopologyCapabilities.cpp" />
+    <ClCompile Include="c_KgOraConnection.cpp" />
+    <ClCompile Include="c_KgOraConnectionInfo.cpp" />
+    <ClCompile Include="c_KgOraDataReader.cpp" />
+    <ClCompile Include="c_KgOraFeatureReader.cpp" />
+    <ClCompile Include="c_KgOraSelectAggregates.cpp" />
+    <ClCompile Include="c_KgOraSelectCommand.cpp" />
+    <ClCompile Include="c_KgOraDescribeSchemaCommand.cpp" />
+    <ClCompile Include="c_KgOraGetSpatialContextsCommand.cpp" />
+    <ClCompile Include="c_KgOraSpatialContext.cpp" />
+    <ClCompile Include="c_KgOraSpatialContextReader.cpp" />
+    <ClCompile Include="c_OCI_API.cpp" />
+    <ClCompile Include="c_Oci_ColumnData.cpp" />
+    <ClCompile Include="c_Oci_Statement.cpp" />
+    <ClCompile Include="c_FdoOra_API2.cpp" />
+    <ClCompile Include="c_FdoSde_API.cpp" />
+    <ClCompile Include="c_FgfToSdoGeom.cpp" />
+    <ClCompile Include="c_FilterStringBuffer.cpp" />
+    <ClCompile Include="c_KgOraApplySchema.cpp" />
+    <ClCompile Include="c_KgOraCreateDataStore.cpp" />
+    <ClCompile Include="c_KgOraCreateSpatialContext.cpp" />
+    <ClCompile Include="c_KgOraDelete.cpp" />
+    <ClCompile Include="c_KgOraExpressionProcessor.cpp" />
+    <ClCompile Include="c_KgOraFeatureReaderInsert.cpp" />
+    <ClCompile Include="c_KgOraFilterProcessor.cpp" />
+    <ClCompile Include="c_KgOraInsert.cpp" />
+    <ClCompile Include="c_KgOraReader.cpp" />
+    <ClCompile Include="c_KgOraSchemaDesc.cpp" />
+    <ClCompile Include="c_KgOraSchemaPool.cpp" />
+    <ClCompile Include="c_KgOraSQLCommand.cpp" />
+    <ClCompile Include="c_KgOraSQLDataReader.cpp" />
+    <ClCompile Include="c_KgOraSqlParamDesc.cpp" />
+    <ClCompile Include="c_KgOraSridDesc.cpp" />
+    <ClCompile Include="c_KgOraUpdate.cpp" />
+    <ClCompile Include="c_LogAPI.cpp" />
+    <ClCompile Include="c_Ora_API2.cpp" />
+    <ClCompile Include="c_SdeGeom2AGF.cpp" />
+    <ClCompile Include="c_SDO_DIM_ELEMENT.cpp" />
+    <ClCompile Include="c_SDO_GEOMETRY.cpp" />
+    <ClCompile Include="c_SdoGeomToAGF2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KgOraProvider.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Comments on MG and FDO.txt" />
+    <None Include="TODO.txt" />
+    <None Include="Versions.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Message\KingOracleMessage.vcxproj">
+      <Project>{655d105c-2c30-484d-80f8-556772000572}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Overrides\KingOracleOverrides.vcxproj">
+      <Project>{5b5f49a3-7760-4171-9f3c-47bb775ec4fe}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F40C3E7C-1A1B-42D4-BD5A-24AADD5D77F1}</ProjectGuid>
+    <RootNamespace>Fdo</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProjectName>FdoGeneric</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../Lib/Win32/Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../../Lib/Win64/Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../../Lib/Win32/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../../Lib/Win64/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)FdoGeneric.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)FdoGeneric.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)FdoGeneric.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc/fdo;../../inc;./Other;./Capability;./Connection;./Custom;./FeatureCommands;./Filter;./Lock;./Lt;./Schema;./SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged/src/geometry;$(FDOUTILITIES)\SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\LockManager;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_LIB;FULLPROTO;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)FdoGeneric.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsCommandCapabilities.cpp" />
+    <ClCompile Include="Capability\FdoRdbmsConnectionCapabilities.cpp" />
+    <ClCompile Include="Capability\FdoRdbmsExpressionCapabilities.cpp" />
+    <ClCompile Include="Capability\FdoRdbmsFilterCapabilities.cpp" />
+    <ClCompile Include="Capability\FdoRdbmsSchemaCapabilities.cpp" />
+    <ClCompile Include="Capability\FdoRdbmsTopologyCapabilities.cpp" />
+    <ClCompile Include="Custom\FdoRdbmsCreateSpatialIndex.cpp" />
+    <ClCompile Include="Custom\FdoRdbmsDestroySpatialIndex.cpp" />
+    <ClCompile Include="Custom\FdoRdbmsGetSpatialIndexes.cpp" />
+    <ClCompile Include="Custom\FdoRdbmsSpatialIndexReader.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsActivateLongTransaction.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsCommitLongTransaction.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsCreateLongTransaction.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsDeactivateLongTransaction.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsGetLongTransactions.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsLongTransactionConflictDirectiveEnumerator.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsLongTransactionReader.cpp" />
+    <ClCompile Include="Lt\FdoRdbmsRollbackLongTransaction.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsAcquireLock.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsGetLockedObjects.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsGetLockInfo.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsGetLockOwners.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsLockConflictReader.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsLockConflicts.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsLockedObjectsReader.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsLockInfoReader.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsLockOwnersReader.cpp" />
+    <ClCompile Include="Lock\FdoRdbmsReleaseLock.cpp" />
+    <ClCompile Include="Lock\LockUtility.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsApplySchemaCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsDescribeSchemaCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsDescribeSchemaMappingCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsDestroySchemaCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsGetClassNamesCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsGetSchemaNamesCommand.cpp" />
+    <ClCompile Include="Schema\FdoRdbmsSchemaUtil.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsDeleteCommand.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureInfoReader.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureReader.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsInsertCommand.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsSelectAggregates.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsSelectCommand.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsUpdateCommand.cpp" />
+    <ClCompile Include="SpatialContext\FdoRdbmsActivateSpatialContext.cpp" />
+    <ClCompile Include="SpatialContext\FdoRdbmsCreateSpatialContext.cpp" />
+    <ClCompile Include="SpatialContext\FdoRdbmsDestroySpatialContext.cpp" />
+    <ClCompile Include="SpatialContext\FdoRdbmsGetSpatialContexts.cpp" />
+    <ClCompile Include="SpatialContext\FdoRdbmsSpatialContextReader.cpp" />
+    <ClCompile Include="Other\FdoRdbmsBLOBStreamReader.cpp" />
+    <ClCompile Include="Other\FdoRdbmsException.cpp" />
+    <ClCompile Include="Other\FdoRdbmsFeatureTransaction.cpp" />
+    <ClCompile Include="Other\FdoRdbmsLobUtility.cpp" />
+    <ClCompile Include="Other\FdoRdbmsPrimaryKey.cpp" />
+    <ClCompile Include="Other\FdoRdbmsPrimaryKeyColumn.cpp" />
+    <ClCompile Include="Other\FdoRdbmsSQLCommand.cpp" />
+    <ClCompile Include="Other\FdoRdbmsSQLDataReader.cpp" />
+    <ClCompile Include="Other\FdoRdbmsUtil.cpp" />
+    <ClCompile Include="Connection\DbiConnection.cpp" />
+    <ClCompile Include="Connection\FdoRdbmsConnection.cpp" />
+    <ClCompile Include="Connection\FdoRdbmsConnectionPropertyDictionary.cpp" />
+    <ClCompile Include="Filter\FdoRdbmsFilterProcessor.cpp" />
+    <ClCompile Include="Filter\FdoRdbmsFilterUtil.cpp" />
+    <ClCompile Include="DataStore\FdoRdbmsDataStoreReader.cpp" />
+    <ClCompile Include="DataStore\FdoRdbmsGetDataStores.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPvcHandler.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPvcInsertHandler.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPvcOperation.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPvcProcessor.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPvcUpdateHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Capability\FdoRdbmsCommandCapabilities.h" />
+    <ClInclude Include="Capability\FdoRdbmsConnectionCapabilities.h" />
+    <ClInclude Include="Capability\FdoRdbmsExpressionCapabilities.h" />
+    <ClInclude Include="Capability\FdoRdbmsFilterCapabilities.h" />
+    <ClInclude Include="Capability\FdoRdbmsGeometryCapabilities.h" />
+    <ClInclude Include="Capability\FdoRdbmsTopologyCapabilities.h" />
+    <ClInclude Include="Custom\FdoRdbmsCreateSpatialContext.h" />
+    <ClInclude Include="Custom\FdoRdbmsDestroySpatialIndex.h" />
+    <ClInclude Include="Custom\FdoRdbmsGetSpatialIndexes.h" />
+    <ClInclude Include="Custom\FdoRdbmsSpatialIndexReader.h" />
+    <ClInclude Include="Lt\FdoRdbmsActivateLongTransaction.h" />
+    <ClInclude Include="Lt\FdoRdbmsCommitLongTransaction.h" />
+    <ClInclude Include="Lt\FdoRdbmsCreateLongTransaction.h" />
+    <ClInclude Include="Lt\FdoRdbmsDeactivateLongTransaction.h" />
+    <ClInclude Include="Lt\FdoRdbmsGetLongTransactions.h" />
+    <ClInclude Include="Lt\FdoRdbmsLongTransactionConflictDirectiveEnumerator.h" />
+    <ClInclude Include="Lt\FdoRdbmsLongTransactionReader.h" />
+    <ClInclude Include="Lt\FdoRdbmsRollbackLongTransaction.h" />
+    <ClInclude Include="Lock\FdoRdbmsAcquireLock.h" />
+    <ClInclude Include="Lock\FdoRdbmsGetLockedObjects.h" />
+    <ClInclude Include="Lock\FdoRdbmsGetLockInfo.h" />
+    <ClInclude Include="Lock\FdoRdbmsGetLockOwners.h" />
+    <ClInclude Include="Lock\FdoRdbmsLockConflictReader.h" />
+    <ClInclude Include="Lock\FdoRdbmsLockConflicts.h" />
+    <ClInclude Include="Lock\FdoRdbmsLockedObjectsReader.h" />
+    <ClInclude Include="Lock\FdoRdbmsLockInfoReader.h" />
+    <ClInclude Include="Lock\FdoRdbmsLockOwnersReader.h" />
+    <ClInclude Include="Lock\FdoRdbmsReleaseLock.h" />
+    <ClInclude Include="Lock\LockUtility.h" />
+    <ClInclude Include="Schema\FdoRdbmsApplySchemaCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsDescribeSchemaCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsDescribeSchemaMappingCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsDestroySchemaCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsGetClassNamesCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsGetSchemaNamesCommand.h" />
+    <ClInclude Include="Schema\FdoRdbmsSchemaUtil.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsDataReader.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsDeleteCommand.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureCommand.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureInfoReader.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureReader.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsInsertCommand.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsSelectAggregates.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsSelectCommand.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsUpdateCommand.h" />
+    <ClInclude Include="SpatialContext\FdoRdbmsActivateSpatialContext.h" />
+    <ClInclude Include="SpatialContext\FdoRdbmsCreateSpatialContext.h" />
+    <ClInclude Include="SpatialContext\FdoRdbmsDestroySpatialContext.h" />
+    <ClInclude Include="SpatialContext\FdoRdbmsGetSpatialContexts.h" />
+    <ClInclude Include="SpatialContext\FdoRdbmsSpatialContextReader.h" />
+    <ClInclude Include="Other\Collection.h" />
+    <ClInclude Include="Other\Disposable.h" />
+    <ClInclude Include="Other\FdoRdbms.h" />
+    <ClInclude Include="Other\FdoRdbmsBLOBStreamReader.h" />
+    <ClInclude Include="Other\FdoRdbmsException.h" />
+    <ClInclude Include="Other\FdoRdbmsFeatureTransaction.h" />
+    <ClInclude Include="Other\FdoRdbmsLobUtility.h" />
+    <ClInclude Include="Other\FdoRdbmsPrimaryKey.h" />
+    <ClInclude Include="Other\FdoRdbmsPrimaryKeyColumn.h" />
+    <ClInclude Include="Other\FdoRdbmsSQLCommand.h" />
+    <ClInclude Include="Other\FdoRdbmsSQLDataReader.h" />
+    <ClInclude Include="Other\FdoRdbmsUtil.h" />
+    <ClInclude Include="Connection\DbiConnection.h" />
+    <ClInclude Include="Connection\FdoRdbmsConnection.h" />
+    <ClInclude Include="Connection\FdoRdbmsConnectionPropertyDictionary.h" />
+    <ClInclude Include="Filter\FdoRdbmsBaseFilterProcessor.h" />
+    <ClInclude Include="Filter\FdoRdbmsFilterProcessor.h" />
+    <ClInclude Include="Filter\FdoRdbmsFilterUtil.h" />
+    <ClInclude Include="DataStore\FdoRdbmsCreateDatastore.h" />
+    <ClInclude Include="DataStore\FdoRdbmsDataStoreReader.h" />
+    <ClInclude Include="DataStore\FdoRdbmsDeleteDataStore.h" />
+    <ClInclude Include="DataStore\FdoRdbmsGetDataStores.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPvcHandler.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPvcInsertHandler.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPvcOperation.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPvcProcessor.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPvcUpdateHandler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcxproj">
+      <Project>{34ff1437-0853-44d4-b786-48acb3aacbb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nls\fdordbms.vcxproj">
+      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LockManager\LockManager.vcxproj">
+      <Project>{080c612a-c598-476e-a0cc-5d98fa48b738}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LongTransactionManager\LongTransactionManager.vcxproj">
+      <Project>{a97744c0-dcc5-4d58-91b5-7db006bd40c1}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DD12E36F-088F-4FFD-8919-D6A787139844}</ProjectGuid>
+    <RootNamespace>PostGISSchemaMgr</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\Lib\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\PostGISSchemaMgr\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\Lib\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64\PostGISSchemaMgr\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\Lib\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\PostGISSchemaMgr\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\Lib\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64\PostGISSchemaMgr\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>-Zm111 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\..;..\..\..\Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)PostGISSchemaMgr.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>-Zm111 %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\..;..\..\..\Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)PostGISSchemaMgr.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\..;..\..\..\Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)PostGISSchemaMgr.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\..;..\..\..\Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)PostGISSchemaMgr.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="SchemaManager.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Lp\AssociationPropertyDefinition.cpp" />
+    <ClCompile Include="Lp\Class.cpp" />
+    <ClCompile Include="Lp\ClassDefinition.cpp" />
+    <ClCompile Include="Lp\DataPropertyDefinition.cpp" />
+    <ClCompile Include="Lp\FeatureClass.cpp" />
+    <ClCompile Include="Lp\GeometricPropertyDefinition.cpp" />
+    <ClCompile Include="Lp\ObjectPropertyClass.cpp" />
+    <ClCompile Include="Lp\ObjectPropertyDefinition.cpp" />
+    <ClCompile Include="Lp\Schema.cpp" />
+    <ClCompile Include="Lp\SchemaCollection.cpp" />
+    <ClCompile Include="Ph\ColTypeMapper.cpp" />
+    <ClCompile Include="Ph\Column.cpp" />
+    <ClCompile Include="Ph\ColumnBLOB.cpp" />
+    <ClCompile Include="Ph\ColumnBool.cpp" />
+    <ClCompile Include="Ph\ColumnByte.cpp" />
+    <ClCompile Include="Ph\ColumnChar.cpp" />
+    <ClCompile Include="Ph\ColumnDate.cpp" />
+    <ClCompile Include="Ph\ColumnDecimal.cpp" />
+    <ClCompile Include="Ph\ColumnDouble.cpp" />
+    <ClCompile Include="Ph\ColumnGeom.cpp" />
+    <ClCompile Include="Ph\ColumnInt16.cpp" />
+    <ClCompile Include="Ph\ColumnInt32.cpp" />
+    <ClCompile Include="Ph\ColumnInt64.cpp" />
+    <ClCompile Include="Ph\ColumnSingle.cpp" />
+    <ClCompile Include="Ph\ColumnUnknown.cpp" />
+    <ClCompile Include="Ph\Database.cpp" />
+    <ClCompile Include="Ph\DbObject.cpp" />
+    <ClCompile Include="Ph\Fkey.cpp" />
+    <ClCompile Include="Ph\Index.cpp" />
+    <ClCompile Include="Ph\Mgr.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+    </ClCompile>
+    <ClCompile Include="Ph\Owner.cpp" />
+    <ClCompile Include="Ph\SpatialContextGroupWriter.cpp" />
+    <ClCompile Include="Ph\SpatialIndex.cpp" />
+    <ClCompile Include="Ph\Table.cpp" />
+    <ClCompile Include="Ph\TempObject.cpp" />
+    <ClCompile Include="Ph\View.cpp" />
+    <ClCompile Include="Ph\Rd\BaseObjectReader.cpp" />
+    <ClCompile Include="Ph\Rd\ClassReader.cpp" />
+    <ClCompile Include="Ph\Rd\ColumnReader.cpp">
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ShowIncludes>
+      <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ShowIncludes>
+    </ClCompile>
+    <ClCompile Include="Ph\Rd\ConstraintReader.cpp" />
+    <ClCompile Include="Ph\Rd\DbObjectReader.cpp" />
+    <ClCompile Include="Ph\Rd\DbSchemaReader.cpp" />
+    <ClCompile Include="Ph\Rd\FkeyReader.cpp" />
+    <ClCompile Include="Ph\Rd\IndexReader.cpp" />
+    <ClCompile Include="Ph\Rd\OwnerReader.cpp" />
+    <ClCompile Include="Ph\Rd\PkeyReader.cpp" />
+    <ClCompile Include="Ph\Rd\SchemaReader.cpp" />
+    <ClCompile Include="Ph\Rd\SpatialContextReader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SchemaManager.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Lp\AssociationPropertyDefinition.h" />
+    <ClInclude Include="Lp\Class.h" />
+    <ClInclude Include="Lp\ClassDefinition.h" />
+    <ClInclude Include="Lp\DataPropertyDefinition.h" />
+    <ClInclude Include="Lp\FeatureClass.h" />
+    <ClInclude Include="Lp\GeometricPropertyDefinition.h" />
+    <ClInclude Include="Lp\ObjectPropertyClass.h" />
+    <ClInclude Include="Lp\ObjectPropertyDefinition.h" />
+    <ClInclude Include="Lp\Schema.h" />
+    <ClInclude Include="Lp\SchemaCollection.h" />
+    <ClInclude Include="Ph\ColTypeMapper.h" />
+    <ClInclude Include="Ph\Column.h" />
+    <ClInclude Include="Ph\ColumnBLOB.h" />
+    <ClInclude Include="Ph\ColumnBool.h" />
+    <ClInclude Include="Ph\ColumnByte.h" />
+    <ClInclude Include="Ph\ColumnChar.h" />
+    <ClInclude Include="Ph\ColumnDate.h" />
+    <ClInclude Include="Ph\ColumnDecimal.h" />
+    <ClInclude Include="Ph\ColumnDouble.h" />
+    <ClInclude Include="Ph\ColumnGeom.h" />
+    <ClInclude Include="Ph\ColumnInt16.h" />
+    <ClInclude Include="Ph\ColumnInt32.h" />
+    <ClInclude Include="Ph\ColumnInt64.h" />
+    <ClInclude Include="Ph\ColumnSingle.h" />
+    <ClInclude Include="Ph\ColumnUnknown.h" />
+    <ClInclude Include="Ph\Database.h" />
+    <ClInclude Include="Ph\DbObject.h" />
+    <ClInclude Include="Ph\Fkey.h" />
+    <ClInclude Include="Ph\Index.h" />
+    <ClInclude Include="Ph\Mgr.h" />
+    <ClInclude Include="Ph\Owner.h" />
+    <ClInclude Include="Ph\Schema.h" />
+    <ClInclude Include="Ph\SchemaCollection.h" />
+    <ClInclude Include="Ph\SpatialContextGroupWriter.h" />
+    <ClInclude Include="Ph\SpatialIndex.h" />
+    <ClInclude Include="Ph\Table.h" />
+    <ClInclude Include="Ph\TempObject.h" />
+    <ClInclude Include="Ph\View.h" />
+    <ClInclude Include="Ph\Rd\BaseObjectReader.h" />
+    <ClInclude Include="Ph\Rd\ClassReader.h" />
+    <ClInclude Include="Ph\Rd\ColumnReader.h" />
+    <ClInclude Include="Ph\Rd\ConstraintReader.h" />
+    <ClInclude Include="Ph\Rd\DbObjectReader.h" />
+    <ClInclude Include="Ph\Rd\DbSchemaReader.h" />
+    <ClInclude Include="Ph\Rd\FkeyReader.h" />
+    <ClInclude Include="Ph\Rd\IndexReader.h" />
+    <ClInclude Include="Ph\Rd\OwnerReader.h" />
+    <ClInclude Include="Ph\Rd\PkeyReader.h" />
+    <ClInclude Include="Ph\Rd\SchemaReader.h" />
+    <ClInclude Include="Ph\Rd\SpatialContextReader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Utilities\SchemaMgr\SchemaMgr.vcxproj">
+      <Project>{f5346f00-c869-4b51-a947-fc097288c625}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Utilities\SchemaMgr\SmMessage.vcxproj">
+      <Project>{11793e23-75e5-4407-af82-be0fc6994ebd}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Nls\fdordbms.vcxproj">
+      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="PostGISOverrides.vcxproj">
+      <Project>{c7c93492-5656-42d9-a576-67c1ca628af5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

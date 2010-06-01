@@ -1,0 +1,987 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug91Only|Win32">
+      <Configuration>Debug91Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug91Only|x64">
+      <Configuration>Debug91Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug92Only|Win32">
+      <Configuration>Debug92Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug92Only|x64">
+      <Configuration>Debug92Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release91Only|Win32">
+      <Configuration>Release91Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release91Only|x64">
+      <Configuration>Release91Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release92Only|Win32">
+      <Configuration>Release92Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release92Only|x64">
+      <Configuration>Release92Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>ArcSDEProvider91</ProjectName>
+    <ProjectGuid>{79FCD9D7-26AD-458E-821B-64D343D7247E}</ProjectGuid>
+    <RootNamespace>ArcSDEProvider91</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Win32\Debug91\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Win64\Debug91\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Win64\Debug91\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Win32\Release91\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Win64\Release91\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Win64\Release91\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$PlatformName)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDO)\Unmanaged\inc\Fdo\Expression;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient931\Win64\include;$(SDEHOME)\include;..\..\inc;$(FDO)\Unmanaged\inc\Fdo\Expression;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;SDE_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde.lib;pe.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient931\Win64\lib;$(SDEHOME)\lib;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc\Fdo\Expression;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient931\Win64\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc\Fdo\Expression;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde.lib;pe.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient931\Win64\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)ArcSDEProvider91.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\include;$(SDEHOME)\include;..\..\inc;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ARCSDEPROVIDER_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sde91.lib;pe91.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)ArcSDEProvider91.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\ESRI\ArcSDEClient91\Windows\lib;$(SDEHOME)\lib;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ModuleDefinitionFile>ArcSDEProvider91.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>sde91.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)ArcSDEProvider91.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\ArcSDEProvider91.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning ArcSDEProvider91.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="ArcSDECommand.h" />
+    <ClInclude Include="ArcSDEProvider.h" />
+    <ClInclude Include="ArcSDETransaction.h" />
+    <ClInclude Include="ArcSDEUtils.h" />
+    <ClInclude Include="FdoSde.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ArcSDECommandCapabilities.h" />
+    <ClInclude Include="ArcSDEConnectionCapabilities.h" />
+    <ClInclude Include="ArcSDEExpressionCapabilities.h" />
+    <ClInclude Include="ArcSDEFilterCapabilities.h" />
+    <ClInclude Include="ArcSDESchemaCapabilities.h" />
+    <ClInclude Include="ArcSDEConnection.h" />
+    <ClInclude Include="ArcSDEConnectionInfo.h" />
+    <ClInclude Include="ArcSDEBLOBStreamReader.h" />
+    <ClInclude Include="ArcSDEDataReader.h" />
+    <ClInclude Include="ArcSDEDeleteCommand.h" />
+    <ClInclude Include="ArcSDEFeatureCommand.h" />
+    <ClInclude Include="ArcSDEFeatureInfoReader.h" />
+    <ClInclude Include="ArcSDEFeatureReader.h" />
+    <ClInclude Include="ArcSDEFilterToSql.h" />
+    <ClInclude Include="ArcSDEFunctionArea2D.h" />
+    <ClInclude Include="ArcSDEFunctionLength2D.h" />
+    <ClInclude Include="ArcSDEInsertCommand.h" />
+    <ClInclude Include="ArcSDEReader.h" />
+    <ClInclude Include="ArcSDESelectAggregatesCommand.h" />
+    <ClInclude Include="ArcSDESelectCommand.h" />
+    <ClInclude Include="ArcSDESQLCommand.h" />
+    <ClInclude Include="ArcSDESQLDataReader.h" />
+    <ClInclude Include="ArcSDEUpdateCommand.h" />
+    <ClInclude Include="ArcSDEApplySchemaCommand.h" />
+    <ClInclude Include="ArcSDEDescribeSchemaCommand.h" />
+    <ClInclude Include="ArcSDEDestroySchemaCommand.h" />
+    <ClInclude Include="ArcSDESchemaManager.h" />
+    <ClInclude Include="ArcSDEActivateSpatialContext.h" />
+    <ClInclude Include="ArcSDECreateSpatialContext.h" />
+    <ClInclude Include="ArcSDEDestroySpatialContext.h" />
+    <ClInclude Include="ArcSDEGetSpatialContexts.h" />
+    <ClInclude Include="ArcSDESpatialContextReader.h" />
+    <ClInclude Include="ArcSDESpatialContextSQLReader.h" />
+    <ClInclude Include="ArcSDESpatialContextUtility.h" />
+    <ClInclude Include="ArcSDEActivateLongTransactionCommand.h" />
+    <ClInclude Include="ArcSDECommitLongTransactionCommand.h" />
+    <ClInclude Include="ArcSDECreateLongTransactionCommand.h" />
+    <ClInclude Include="ArcSDEDeactivateLongTransactionCommand.h" />
+    <ClInclude Include="ArcSDEGetLongTransactionsCommand.h" />
+    <ClInclude Include="ArcSDELongTransactionConflictDirectiveEnumerator.h" />
+    <ClInclude Include="ArcSDELongTransactionReader.h" />
+    <ClInclude Include="ArcSDELongTransactionUtility.h" />
+    <ClInclude Include="ArcSDERollbackLongTransactionCommand.h" />
+    <ClInclude Include="ArcSDEAcquireLockCommand.h" />
+    <ClInclude Include="ArcSDEGetLockedObjectsCommand.h" />
+    <ClInclude Include="ArcSDEGetLockInfoCommand.h" />
+    <ClInclude Include="ArcSDEGetLockOwnersCommand.h" />
+    <ClInclude Include="ArcSDELockConflictReader.h" />
+    <ClInclude Include="ArcSDELockedObjectReader.h" />
+    <ClInclude Include="ArcSDELockOwnersReader.h" />
+    <ClInclude Include="ArcSDELockUtility.h" />
+    <ClInclude Include="ArcSDEReleaseLockCommand.h" />
+    <ClInclude Include="..\..\..\inc\fdo\ArcSDE\Override\FdoArcSDEClassMapping.h" />
+    <ClInclude Include="..\..\..\inc\fdo\ArcSDE\Override\FdoArcSDEIndexMapping.h" />
+    <ClInclude Include="..\..\..\inc\fdo\ArcSDE\Override\FdoArcSDEPropertyMapping.h" />
+    <ClInclude Include="..\..\..\inc\fdo\ArcSDE\Override\FdoArcSDESchemaMapping.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="ArcSDEDataStoreReader.h" />
+    <ClInclude Include="ArcSDEListDataStores.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ArcSDEProvider.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="ArcSDETransaction.cpp" />
+    <ClCompile Include="ArcSDEUtils.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ArcSDECommandCapabilities.cpp" />
+    <ClCompile Include="ArcSDEConnectionCapabilities.cpp" />
+    <ClCompile Include="ArcSDEExpressionCapabilities.cpp" />
+    <ClCompile Include="ArcSDEFilterCapabilities.cpp" />
+    <ClCompile Include="ArcSDESchemaCapabilities.cpp" />
+    <ClCompile Include="ArcSDEConnection.cpp">
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Async</ExceptionHandling>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4652;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ClCompile Include="ArcSDEConnectionInfo.cpp" />
+    <ClCompile Include="ArcSDEBLOBStreamReader.cpp" />
+    <ClCompile Include="ArcSDEDataReader.cpp" />
+    <ClCompile Include="ArcSDEDeleteCommand.cpp" />
+    <ClCompile Include="ArcSDEFeatureInfoReader.cpp" />
+    <ClCompile Include="ArcSDEFeatureReader.cpp" />
+    <ClCompile Include="ArcSDEFilterToSql.cpp" />
+    <ClCompile Include="ArcSDEFunctionArea2D.cpp" />
+    <ClCompile Include="ArcSDEFunctionLength2D.cpp" />
+    <ClCompile Include="ArcSDEInsertCommand.cpp" />
+    <ClCompile Include="ArcSDEReader.cpp" />
+    <ClCompile Include="ArcSDESelectAggregatesCommand.cpp" />
+    <ClCompile Include="ArcSDESelectCommand.cpp" />
+    <ClCompile Include="ArcSDESQLCommand.cpp" />
+    <ClCompile Include="ArcSDESQLDataReader.cpp" />
+    <ClCompile Include="ArcSDEUpdateCommand.cpp" />
+    <ClCompile Include="ArcSDEApplySchemaCommand.cpp" />
+    <ClCompile Include="ArcSDEDescribeSchemaCommand.cpp" />
+    <ClCompile Include="ArcSDEDestroySchemaCommand.cpp" />
+    <ClCompile Include="ArcSDESchemaManager.cpp" />
+    <ClCompile Include="ArcSDEActivateSpatialContext.cpp" />
+    <ClCompile Include="ArcSDECreateSpatialContext.cpp" />
+    <ClCompile Include="ArcSDEDestroySpatialContext.cpp" />
+    <ClCompile Include="ArcSDEGetSpatialContexts.cpp" />
+    <ClCompile Include="ArcSDESpatialContextReader.cpp" />
+    <ClCompile Include="ArcSDESpatialContextSQLReader.cpp" />
+    <ClCompile Include="ArcSDESpatialContextUtility.cpp" />
+    <ClCompile Include="ArcSDEActivateLongTransactionCommand.cpp" />
+    <ClCompile Include="ArcSDECommitLongTransactionCommand.cpp" />
+    <ClCompile Include="ArcSDECreateLongTransactionCommand.cpp" />
+    <ClCompile Include="ArcSDEDeactivateLongTransactionCommand.cpp" />
+    <ClCompile Include="ArcSDEGetLongTransactionsCommand.cpp" />
+    <ClCompile Include="ArcSDELongTransactionConflictDirectiveEnumerator.cpp" />
+    <ClCompile Include="ArcSDELongTransactionReader.cpp" />
+    <ClCompile Include="ArcSDELongTransactionUtility.cpp" />
+    <ClCompile Include="ArcSDERollbackLongTransactionCommand.cpp" />
+    <ClCompile Include="ArcSDEAcquireLockCommand.cpp" />
+    <ClCompile Include="ArcSDEGetLockedObjectsCommand.cpp" />
+    <ClCompile Include="ArcSDEGetLockInfoCommand.cpp" />
+    <ClCompile Include="ArcSDEGetLockOwnersCommand.cpp" />
+    <ClCompile Include="ArcSDELockConflictReader.cpp" />
+    <ClCompile Include="ArcSDELockedObjectReader.cpp" />
+    <ClCompile Include="ArcSDELockOwnersReader.cpp" />
+    <ClCompile Include="ArcSDELockUtility.cpp" />
+    <ClCompile Include="ArcSDEReleaseLockCommand.cpp" />
+    <ClCompile Include="ArcSDEClassMapping.cpp" />
+    <ClCompile Include="ArcSDEIndexMapping.cpp" />
+    <ClCompile Include="ArcSDEPropertyMapping.cpp" />
+    <ClCompile Include="ArcSDESchemaMapping.cpp" />
+    <ClCompile Include="ArcSDEDataStoreReader.cpp" />
+    <ClCompile Include="ArcSDEListDataStores.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ArcSDEProvider91.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcxproj">
+      <Project>{34ff1437-0853-44d4-b786-48acb3aacbb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Message\ArcSDEMessage.vcxproj">
+      <Project>{b840e617-c94f-4e23-beba-4a9f3fbd92db}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

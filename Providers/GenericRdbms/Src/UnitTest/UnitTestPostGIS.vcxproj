@@ -1,0 +1,650 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D2EF6A19-4817-4978-8D61-066A694A6A34}</ProjectGuid>
+    <RootNamespace>UnitTestPostGIS</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\PostGIS\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\PostGIS\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpq.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpqdll.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOTHIRDPARTY)\postgres\lib\ms\Win64;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpq.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpqdll.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOTHIRDPARTY)\postgres\lib\ms\Win64;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="Common\ConnectionUtil.cpp" />
+    <ClCompile Include="Common\ConnectTests.cpp" />
+    <ClCompile Include="Common\DataTypeTests.cpp" />
+    <ClCompile Include="Common\DescribeSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoAdvancedSelectTest.cpp" />
+    <ClCompile Include="Common\FdoApplySchemaTest.cpp" />
+    <ClCompile Include="Common\FdoAssociationDeleteTest.cpp" />
+    <ClCompile Include="Common\FdoAssociationInsertTest.cpp" />
+    <ClCompile Include="Common\FdoAssociationSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoAssociationSelectTest.cpp" />
+    <ClCompile Include="Common\FdoAssociationUpdateTest.cpp" />
+    <ClCompile Include="Common\FdoCapabilityTest.cpp" />
+    <ClCompile Include="Common\FdoConnectionInfoTest.cpp" />
+    <ClCompile Include="Common\FdoConnectTest.cpp" />
+    <ClCompile Include="Common\FdoConstraintsTest.cpp" />
+    <ClCompile Include="Common\FdoDatastoreTest.cpp" />
+    <ClCompile Include="Common\FdoDeleteTest.cpp" />
+    <ClCompile Include="Common\FdoForeignSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoImportExportTest.cpp" />
+    <ClCompile Include="Common\FdoInsertTest.cpp" />
+    <ClCompile Include="Common\FdoMultiThreadTest.cpp" />
+    <ClCompile Include="Common\FdoSchemaRollbackTest.cpp" />
+    <ClCompile Include="Common\FdoSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoSelectTest.cpp" />
+    <ClCompile Include="Common\FdoSqlCmdTest.cpp" />
+    <ClCompile Include="Common\FdoUpdateTest.cpp" />
+    <ClCompile Include="Common\GeometryTests.cpp" />
+    <ClCompile Include="Common\MessageTest.cpp" />
+    <ClCompile Include="Common\SchemaMgrTests.cpp" />
+    <ClCompile Include="PostGis\PostGisConnectionUtil.cpp" />
+    <ClCompile Include="PostGis\PostGisSchemaOverrideUtil.cpp" />
+    <ClCompile Include="PostGis\PostGisTestRegister.cpp" />
+    <ClCompile Include="Common\SchemaOverrideUtil.cpp" />
+    <ClCompile Include="Common\UnitTestUtil.cpp" />
+    <ClCompile Include="Common\XmlFormatter.cpp" />
+    <ClCompile Include="PostGis\PostGisConnectTests.cpp" />
+    <ClCompile Include="PostGis\PostGisDescribeSchemaTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoApplySchemaTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoConnectionInfoTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoConnectTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoConstraintsTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoDatastoreTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoDeleteTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoImportExportTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoInsertTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoMultiThreadTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoSelectTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoSqlCmdTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoUpdateTest.cpp" />
+    <ClCompile Include="PostGis\PostGisGeometryTests.cpp" />
+    <ClCompile Include="PostGis\PostGisSchemaMgrTests.cpp" />
+    <ClCompile Include="Common\Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
+    <ClInclude Include="Common\Pch.h" />
+    <ClInclude Include="Common\ConnectionUtil.h" />
+    <ClInclude Include="Common\ConnectTests.h" />
+    <ClInclude Include="Common\DataTypeTests.h" />
+    <ClInclude Include="Common\DescribeSchemaTest.h" />
+    <ClInclude Include="Common\FdoAdvancedSelectTest.h" />
+    <ClInclude Include="Common\FdoApplySchemaTest.h" />
+    <ClInclude Include="Common\FdoAssociationDeleteTest.h" />
+    <ClInclude Include="Common\FdoAssociationInsertTest.h" />
+    <ClInclude Include="Common\FdoAssociationSchemaTest.h" />
+    <ClInclude Include="Common\FdoAssociationSelectTest.h" />
+    <ClInclude Include="Common\FdoAssociationUpdateTest.h" />
+    <ClInclude Include="Common\FdoCapabilityTest.h" />
+    <ClInclude Include="Common\FdoConnectionInfoTest.h" />
+    <ClInclude Include="Common\FdoConnectTest.h" />
+    <ClInclude Include="Common\FdoConstraintsTest.h" />
+    <ClInclude Include="Common\FdoDatastoreTest.h" />
+    <ClInclude Include="Common\FdoDeleteTest.h" />
+    <ClInclude Include="Common\FdoForeignSchemaTest.h" />
+    <ClInclude Include="Common\FdoImportExportTest.h" />
+    <ClInclude Include="Common\FdoInsertTest.h" />
+    <ClInclude Include="Common\FdoMultiThreadTest.h" />
+    <ClInclude Include="Common\FdoSchemaRollbackTest.h" />
+    <ClInclude Include="Common\FdoSchemaTest.h" />
+    <ClInclude Include="Common\FdoSelectTest.h" />
+    <ClInclude Include="Common\FdoSqlCmdTest.h" />
+    <ClInclude Include="Common\FdoUpdateTest.h" />
+    <ClInclude Include="Common\GeometryTests.h" />
+    <ClInclude Include="Common\MessageTest.h" />
+    <ClInclude Include="Common\SchemaMgrTests.h" />
+    <ClInclude Include="PostGis\PostGisConnectionUtil.h" />
+    <ClInclude Include="PostGis\PostGisSchemaOverrideUtil.h" />
+    <ClInclude Include="Common\SchemaOverrideUtil.h" />
+    <ClInclude Include="Common\StringPropertiesDictionary.h" />
+    <ClInclude Include="Common\UnitTestUtil.h" />
+    <ClInclude Include="Common\XmlFormatter.h" />
+    <ClInclude Include="PostGis\PostGisConnectTests.h" />
+    <ClInclude Include="PostGis\PostGisDescribeSchemaTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoApplySchemaTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoConnectionInfoTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoConnectTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoConstraintsTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoDatastoreTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoDeleteTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoImportExportTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoInsertTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoMultiThreadTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoSelectTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoSqlCmdTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoUpdateTest.h" />
+    <ClInclude Include="PostGis\PostGisGeometryTests.h" />
+    <ClInclude Include="PostGis\PostGisSchemaMgrTests.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libpq.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\comerr32.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libintl-8.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libiconv-2.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\krb5_32.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\k5sprt32.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\gssapi32.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\postgres\bin\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\comerr32.dll;$(FDOTHIRDPARTY)\postgres\bin\libintl-8.dll;$(FDOTHIRDPARTY)\postgres\bin\libiconvl-2.dll;$(FDOTHIRDPARTY)\postgres\bin\k5sprt32.dll;$(FDOTHIRDPARTY)\postgres\bin\gssapi32.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOPOSTGRESQL)\bin\libpq.dll;$(FDOPOSTGRESQL)\bin\comerr32.dll;$(FDOPOSTGRESQL)\bin\libintl-8.dll;$(FDOPOSTGRESQL)\bin\libiconvl-2.dll;$(FDOPOSTGRESQL)\bin\krb5_32.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libpq.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\postgres\bin\libpq.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy providers.xml $(OutDir)
+copy PostGisInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\postgis*.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win32\Debug\RdbmsOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\PostgreSQLOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\PostgreSQLProvider.dll $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\Debug\ExpressionEngine.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win32\Debug\SmMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">providers.xml;PostGisInit.txt;g_coords.txt;polyAttr.txt;..\..\com\postgis_fdo_sys.sql;..\..\com\postgis_fdo_sys_idx.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;gen_default1_PostGIS_master.txt;gen_default1_Oracle_master.txt;gen_default1_SqlServer_master.txt;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Debug\RdbmsOverrides.dll;..\..\Bin\Win32\Debug\PostgreSQLOverrides.dll;..\..\Bin\Win32\Debug\PostgreSQLProvider.dll;$(FDOUTILITIES)\ExpressionEngine\bin\win32\Debug\ExpressionEngine.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win32\Debug\SmMessage.dll;OverrideBender.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy providers.xml $(OutDir)
+copy PostGisInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\postgis*.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win64\Debug\RdbmsOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\PostgreSQLOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\PostgreSQLProvider.dll $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\Win64\Debug\ExpressionEngine.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">providers.xml;PostGisInit.txt;g_coords.txt;polyAttr.txt;..\..\com\postgis_fdo_sys.sql;..\..\com\postgis_fdo_sys_idx.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;gen_default1_PostGIS_master.txt;gen_default1_Oracle_master.txt;gen_default1_SqlServer_master.txt;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Debug\RdbmsOverrides.dll;..\..\Bin\Win32\Debug\PostgreSQLOverrides.dll;..\..\Bin\Win32\Debug\PostgreSQLProvider.dll;$(FDOUTILITIES)\ExpressionEngine\bin\Win64\Debug\ExpressionEngine.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll;OverrideBender.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy providers.xml $(OutDir)
+copy PostGisInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy com\postgis*.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win32\Release\RdbmsOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\PostgreSQLOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\PostgreSQLProvider.dll $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\Release\ExpressionEngine.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">providers.xml;PostGisInit.txt;g_coords.txt;polyAttr.txt;..\..\com\postgis_fdo_sys.sql;..\..\com\postgis_fdo_sys_idx.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Release\RdbmsOverrides.dll;..\..\Bin\Win32\Release\PostgreSQLOverrides.dll;..\..\Bin\Win32\Release\PostgreSQLProvider.dll;$(FDOUTILITIES)\ExpressionEngine\bin\win32\Release\ExpressionEngine.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll;OverrideBender.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy providers.xml $(OutDir)
+copy PostGisInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy com\postgis*sql $(OutDir)com
+copy Oracle\com\storage.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy..\..\ Bin\Win64\Release\RdbmsOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\PostgreSQLOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\PostgreSQLProvider.dll $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\Win64\Release\ExpressionEngine.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">providers.xml;PostGisInit.txt;g_coords.txt;..\..\com\postgis_fdo_sys.sql;..\..\com\postgis_fdo_sys_idx.sql;polyAttr.txt;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win64\Release\RdbmsOverrides.dll;..\..\Bin\Win64\Release\PostgreSQLOverrides.dll;..\..\Bin\Win64\Release\PostgreSQLProvider.dll;$(FDOUTILITIES)\ExpressionEngine\bin\Win64\Release\ExpressionEngine.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll;OverrideBender.xslt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <None Include="providers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\TestCommon\TestCommon.vcxproj">
+      <Project>{31607a09-f8ca-43b3-9195-c1d5fb18e0d7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nls\fdordbms.vcxproj">
+      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Gdbi\Gdbi.vcxproj">
+      <Project>{531ac4ee-b2bf-4fc9-8a03-ef272dcaeab3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LockManager\LockManager.vcxproj">
+      <Project>{080c612a-c598-476e-a0cc-5d98fa48b738}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LongTransactionManager\LongTransactionManager.vcxproj">
+      <Project>{a97744c0-dcc5-4d58-91b5-7db006bd40c1}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\PostGis\Driver\PostGISDriver.vcxproj">
+      <Project>{69d1e6e5-9391-40fe-a989-b9bebe3ee305}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\PostGis\PostGIS.vcxproj">
+      <Project>{44f93112-3496-498a-9b98-856995520807}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\PostGis\SchemaMgr\PostGISOverrides.vcxproj">
+      <Project>{c7c93492-5656-42d9-a576-67c1ca628af5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\PostGis\SchemaMgr\PostGISSchemaMgr.vcxproj">
+      <Project>{dd12e36f-088f-4ffd-8919-d6a787139844}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\SchemaMgr\GrdSchemaMgr.vcxproj">
+      <Project>{e3307244-0639-4f87-a21b-b4369c0fd93f}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\util.vcxproj">
+      <Project>{001b698f-66ff-4486-ad57-53318cf47a4a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

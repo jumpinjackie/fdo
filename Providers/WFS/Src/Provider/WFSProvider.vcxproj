@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>Provider</ProjectName>
+    <ProjectGuid>{F82F3825-6C35-49E4-8753-6C14B3E42056}</ProjectGuid>
+    <RootNamespace>WFSProvider</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WFS$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WFS$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WFS$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">WFS$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;..\..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;WFS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONLS.lib;ProvidersCommon.lib;OWS.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)WFSProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\libcurl\lib\Debug;$(FDOUTILITIES)\OWS\Lib\Win32\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\WFSProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning WFSProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)WFSProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;..\..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;WFS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <BrowseInformation>
+      </BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONLS.lib;ProvidersCommon.lib;OWS.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)WFSProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\libcurl\lib\Debug64;$(FDOUTILITIES)\OWS\Lib\Win64\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\WFSProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning WFSProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)WFSProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;..\..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WFS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;OWS.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)WFSProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\libcurl\lib\Release;$(FDOUTILITIES)\OWS\Lib\Win32\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\WFSProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning WFSProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)WFSProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>.\;$(FDO)\Unmanaged\inc;..\..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\OWS\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WFS_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;OWS.lib;FDOSpatial.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)WFSProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\libcurl\lib\Release64;$(FDOUTILITIES)\OWS\Lib\Win64\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)WFSProvider.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\WFSProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning WFSProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)WFSProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="FdoWfsGlobals.h" />
+    <ClInclude Include="FdoWfsProvider.h" />
+    <ClInclude Include="FdoWfsUtils.h" />
+    <ClInclude Include="feature.h" />
+    <ClInclude Include="geometry.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="xlinks.h" />
+    <ClInclude Include="FdoWfsCapabilitiesSaxContext.h" />
+    <ClInclude Include="FdoWfsCommandCapabilities.h" />
+    <ClInclude Include="FdoWfsConnectionCapabilities.h" />
+    <ClInclude Include="FdoWfsExpressionCapabilities.h" />
+    <ClInclude Include="FdoWfsFeatureType.h" />
+    <ClInclude Include="FdoWfsFeatureTypeList.h" />
+    <ClInclude Include="FdoWfsFilterCapabilities.h" />
+    <ClInclude Include="FdoWfsGeometryCapabilities.h" />
+    <ClInclude Include="FdoWfsOgcFilterCapabilities.h" />
+    <ClInclude Include="FdoWfsOgcScalarCapabilities.h" />
+    <ClInclude Include="FdoWfsOgcSpatialCapabilities.h" />
+    <ClInclude Include="FdoWfsOperations.h" />
+    <ClInclude Include="FdoWfsRasterCapabilities.h" />
+    <ClInclude Include="FdoWfsSchemaCapabilities.h" />
+    <ClInclude Include="FdoWfsServiceMetadata.h" />
+    <ClInclude Include="FdoWfsTopologyCapabilities.h" />
+    <ClInclude Include="FdoWfsConnection.h" />
+    <ClInclude Include="FdoWfsConnectionInfo.h" />
+    <ClInclude Include="FdoWfsFeatureReader.h" />
+    <ClInclude Include="FdoWfsSelectAggregatesCommand.h" />
+    <ClInclude Include="FdoWfsSelectCommand.h" />
+    <ClInclude Include="FdoWfsSpatialExtentsAggregateReader.h" />
+    <ClInclude Include="FdoWfsDescribeSchemaCommand.h" />
+    <ClInclude Include="FdoWfsGetSpatialContexts.h" />
+    <ClInclude Include="FdoWfsSpatialContextReader.h" />
+    <ClInclude Include="FdoWfsDelegate.h" />
+    <ClInclude Include="FdoWfsDescribeFeatureType.h" />
+    <ClInclude Include="FdoWfsGetFeature.h" />
+    <ClInclude Include="FdoWfsNamedIoStream.h" />
+    <ClInclude Include="FdoWfsSchemaCopyHandler.h" />
+    <ClInclude Include="FdoWfsSchemaMerger.h" />
+    <ClInclude Include="FdoWfsSchemaRefHandler.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FdoWfsUtils.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="FdoWfsCommandCapabilities.cpp" />
+    <ClCompile Include="FdoWfsConnectionCapabilities.cpp" />
+    <ClCompile Include="FdoWfsExpressionCapabilities.cpp" />
+    <ClCompile Include="FdoWfsFeatureType.cpp" />
+    <ClCompile Include="FdoWfsFeatureTypeList.cpp" />
+    <ClCompile Include="FdoWfsFilterCapabilities.cpp" />
+    <ClCompile Include="FdoWfsGeometryCapabilities.cpp" />
+    <ClCompile Include="FdoWfsOgcFilterCapabilities.cpp" />
+    <ClCompile Include="FdoWfsOgcScalarCapabilities.cpp" />
+    <ClCompile Include="FdoWfsOgcSpatialCapabilities.cpp" />
+    <ClCompile Include="FdoWfsRasterCapabilities.cpp" />
+    <ClCompile Include="FdoWfsSchemaCapabilities.cpp" />
+    <ClCompile Include="FdoWfsServiceMetadata.cpp" />
+    <ClCompile Include="FdoWfsTopologyCapabilities.cpp" />
+    <ClCompile Include="FdoWfsConnection.cpp" />
+    <ClCompile Include="FdoWfsConnectionInfo.cpp" />
+    <ClCompile Include="FdoWfsFeatureReader.cpp" />
+    <ClCompile Include="FdoWfsSelectAggregatesCommand.cpp" />
+    <ClCompile Include="FdoWfsSelectCommand.cpp" />
+    <ClCompile Include="FdoWfsSpatialExtentsAggregateReader.cpp" />
+    <ClCompile Include="FdoWfsDescribeSchemaCommand.cpp" />
+    <ClCompile Include="FdoWfsGetSpatialContexts.cpp" />
+    <ClCompile Include="FdoWfsSpatialContextReader.cpp" />
+    <ClCompile Include="FdoWfsDelegate.cpp" />
+    <ClCompile Include="FdoWfsDescribeFeatureType.cpp" />
+    <ClCompile Include="FdoWfsGetFeature.cpp" />
+    <ClCompile Include="FdoWfsSchemaCopyHandler.cpp" />
+    <ClCompile Include="FdoWfsSchemaMerger.cpp" />
+    <ClCompile Include="FdoWfsSchemaRefHandler.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FdoWfsProvider.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcxproj">
+      <Project>{34ff1437-0853-44d4-b786-48acb3aacbb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\OWS\OWS.vcxproj">
+      <Project>{1fb43343-5e93-4eba-8cae-8a713f5f3702}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Message\WFSMessage.vcxproj">
+      <Project>{92975ad6-7504-44ab-85b9-87237095098a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AE480E7A-BD42-4C15-83C6-13E486A6AC94}</ProjectGuid>
+    <RootNamespace>RdbmsOverrides</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+    <ProjectName>OSGeo.FDO.Providers.Rdbms.Overrides</ProjectName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Obj\MgFdoRdbmsOverrides\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Bin\Debug64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Obj\MgFdoRdbmsOverrides\Debug64\</IntDir>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreBuildEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Obj\MgFdoRdbmsOverrides\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Bin\Release64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Obj\MgFdoRdbmsOverrides\Release64\</IntDir>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreBuildEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalOptions>/AI"$(FDO)\Managed\output" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win32\Debug;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;$(FDO)\Unmanaged\Lib\Win32\Debug\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;..\..\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ProgramDatabaseFile>$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoRdbmsOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/AI"$(FDO)\Managed\output" %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win64\Debug;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;$(FDO)\Unmanaged\Lib\Win64\Debug\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;..\..\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ProgramDatabaseFile>$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoRdbmsOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win32\Release;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;$(FDO)\Unmanaged\Lib\Win32\Release\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;..\..\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoRdbmsOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp -o ..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win64\Release;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;$(FDO)\Unmanaged\Lib\Win64\Release\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;..\..\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)\OSGeo.FDO.Providers.Rdbms.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoRdbmsOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.Rdbms.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgIOvPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgIOvPropertyMappingDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgIOvPropertyMappingRelation.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgObjectFactory.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvAssociationPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvClassCollection.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvClassDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvColumn.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvDataPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricColumn.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricColumnType.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricContentType.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvObjectPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPhysicalSchemaMapping.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingClass.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingConcrete.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingDefinition.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingRelation.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingSingle.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvReadOnlyClassCollection.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvReadOnlyPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvSchemaAutoGeneration.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvTable.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvTableMappingType.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\Namespace.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\resource.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgObjectFactory.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvAssociationPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvClassCollection.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvClassDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvColumn.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvDataPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricColumn.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvGeometricPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvObjectPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPhysicalSchemaMapping.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingClass.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingConcrete.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingDefinition.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingRelation.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvPropertyMappingSingle.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvReadOnlyClassCollection.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvReadOnlyPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvSchemaAutoGeneration.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\mgOvTable.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\AssemblyVersion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\MgRdbmsOverrides.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Src\SchemaMgr\RdbmsOverrides.vcxproj">
+      <Project>{4d87353a-981a-4b99-9262-516d4f677535}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="MgRdbms.vcxproj">
+      <Project>{d672727a-c93b-42cb-9b06-7a1638efa7e4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

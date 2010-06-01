@@ -1,0 +1,552 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{02AF5684-A940-41EE-A372-E1639768414A}</ProjectGuid>
+    <RootNamespace>UnitTest</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Debug64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release64\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>SHPRead.lib;SHPSpatialIndex.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;SHPOverrides.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>mfc80.lib;mfcs80.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>SHPRead.lib;SHPSpatialIndex.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;SHPOverrides.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;..\..\Lib\Win64\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>mfc80.lib;mfcs80.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>SHPRead.lib;SHPSpatialIndex.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;SHPOverrides.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\Common\inc;..\ShpRead;..\ShpSpatialIndex;..\..\inc;..\Provider;$(FDOUTILITIES)\TestCommon\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>SHPRead.lib;SHPSpatialIndex.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;SHPOverrides.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;..\..\Lib\Win64\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BigPerformanceTests.cpp" />
+    <ClCompile Include="ComparisonTests.cpp" />
+    <ClCompile Include="ConnectionInfoTests.cpp" />
+    <ClCompile Include="ConnectTests.cpp" />
+    <ClCompile Include="DeleteTests.cpp" />
+    <ClCompile Include="ExtendedSelectTests.cpp" />
+    <ClCompile Include="FdoExpressionFunctionTest.cpp" />
+    <ClCompile Include="FidelityTests.cpp" />
+    <ClCompile Include="FileAccessTests.cpp" />
+    <ClCompile Include="FilterTests.cpp" />
+    <ClCompile Include="IndexTests.cpp" />
+    <ClCompile Include="InsertTests.cpp" />
+    <ClCompile Include="InsertTests2.cpp" />
+    <ClCompile Include="OverridesTest.cpp" />
+    <ClCompile Include="Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PerformanceTests.cpp" />
+    <ClCompile Include="ReaderTest.cpp" />
+    <ClCompile Include="ReadOnlyTests.cpp" />
+    <ClCompile Include="SchemaTests.cpp" />
+    <ClCompile Include="SelectAggregatesTests.cpp" />
+    <ClCompile Include="SelectTests.cpp" />
+    <ClCompile Include="ShpTests.cpp" />
+    <ClCompile Include="SpatialFilterTests.cpp" />
+    <ClCompile Include="UpdateTests.cpp" />
+    <ClCompile Include="XmlFormatter.cpp" />
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ReaderTest.h" />
+    <ClInclude Include="BigPerformanceTests.h" />
+    <ClInclude Include="ComparisonTests.h" />
+    <ClInclude Include="ConnectionInfoTests.h" />
+    <ClInclude Include="ConnectTests.h" />
+    <ClInclude Include="DeleteTests.h" />
+    <ClInclude Include="ExtendedSelectTests.h" />
+    <ClInclude Include="FdoExpressionFunctionTest.h" />
+    <ClInclude Include="FidelityTests.h" />
+    <ClInclude Include="FileAccessTests.h" />
+    <ClInclude Include="FilterTests.h" />
+    <ClInclude Include="IndexTests.h" />
+    <ClInclude Include="InsertTests.h" />
+    <ClInclude Include="InsertTests2.h" />
+    <ClInclude Include="OverridesTest.h" />
+    <ClInclude Include="Pch.h" />
+    <ClInclude Include="PerformanceTests.h" />
+    <ClInclude Include="ReadOnlyTests.h" />
+    <ClInclude Include="SchemaTests.h" />
+    <ClInclude Include="SelectAggregatesTests.h" />
+    <ClInclude Include="SelectTests.h" />
+    <ClInclude Include="ShpTests.h" />
+    <ClInclude Include="SpatialFilterTests.h" />
+    <ClInclude Include="UpdateTests.h" />
+    <ClInclude Include="XmlFormatter.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyProvider">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying provider files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy ShpOverridesConfig.xml $(OutDir)
+copy ShpSchemaConfig.xml $(OutDir)
+copy ShpEmptySchemaConfig.xml $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyProvider.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Provider\Dbg\ShpProvider.dll;..\Message\Dbg\ShpMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyProvider.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying provider files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy ShpOverridesConfig.xml $(OutDir)
+copy ShpSchemaConfig.xml $(OutDir)
+copy ShpEmptySchemaConfig.xml $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyProvider.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\bin\Win64\ShpProvider.dll;..\bin\Win64\ShpMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyProvider.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying provider files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy ShpOverridesConfig.xml $(OutDir)
+copy ShpSchemaConfig.xml $(OutDir)
+copy ShpEmptySchemaConfig.xml $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyProvider.ilk
+
+
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Provider\Rel\ShpProvider.dll;..\Message\Rel\ShpMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyProvider.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying provider files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy ShpOverridesConfig.xml $(OutDir)
+copy ShpSchemaConfig.xml $(OutDir)
+copy ShpEmptySchemaConfig.xml $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyProvider.ilk
+
+
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\bin\win64\ShpProvider.dll;..\bin\win64\ShpMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyProvider.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win364\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy providers.xml $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">providers.xml;$(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy providers.xml $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">providers.xml;$(FDOUTILITIES)\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy providers.xml $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">providers.xml;$(FDOUTILITIES)\ExpressionEngine\bin\win32\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy providers.xml $(OutDir)
+copy $(FDOUTILITIES)\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">providers.xml;$(FDOUTILITIES)\ExpressionEngine\bin\win64\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFakeInstall.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\TestCommon\TestCommon.vcxproj">
+      <Project>{31607a09-f8ca-43b3-9195-c1d5fb18e0d7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Overrides\ShpOverrides.vcxproj">
+      <Project>{0a982097-4896-4f2b-81ec-43100004311d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Provider\ShpProvider.vcxproj">
+      <Project>{4164fe65-7ab4-45d0-8975-70465e0248a5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ShpRead\ShpRead.vcxproj">
+      <Project>{b1774502-83c9-41d5-ba1d-b53509dbe76d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ShpSpatialIndex\ShpSpatialIndex.vcxproj">
+      <Project>{7c94a70e-9e83-4553-90b1-b47c1961edbb}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

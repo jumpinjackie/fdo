@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Fdo_3_1|Win32">
+      <Configuration>Debug_Fdo_3_1</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_Fdo_3_2|Win32">
+      <Configuration>Debug_Fdo_3_2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="D_Fdo_3_2_2|Win32">
+      <Configuration>D_Fdo_3_2_2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Fdo_3_1|Win32">
+      <Configuration>Release_Fdo_3_1</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Fdo_3_2|Win32">
+      <Configuration>Release_Fdo_3_2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="R_Fdo_3_2_2|Win32">
+      <Configuration>R_Fdo_3_2_2</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7EBD6213-6ACF-4FE9-B2FA-215E90BDB167}</ProjectGuid>
+    <RootNamespace>KingMssProvider</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">..\..\Bin\Win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\win32\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\win32\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\obj\win32\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\inc;.\;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\Fdo\Unmanaged\Lib\Win32\Debug\;..\..\..\..\Utilities\Common\Lib\Win32\Debug;..\Overrides\Dbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>call KingStampVersion $(OutDir)
+call copy /y "$(OutDir)*.dll"  "..\UnitTest\DebuG_FDO_3_2\"
+call copy /y "$(OutDir)*.pdb"  "..\UnitTest\DebuG_FDO_3_2\"
+call CopyDebug_FDO_3_2.bat
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\inc;.\;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;..\Overrides\Rel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>call KingStampVersion $(OutDir)
+call CopyRelease_FDO_3_2.bat
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\inc;..\..\inc;.\;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Fdo.lib;GisCommon.lib;GisGeometry.lib;GisSpatial.lib;GisNls.lib;FdoCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\release;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\release;..\Overrides\Rel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>KingStampVersion $(OutDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;..\..\inc;.\;$(FDO)\Unmanaged\inc\fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>Fdo.lib;GisCommon.lib;GisGeometry.lib;GisSpatial.lib;GisNls.lib;FdoCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\fdo\Unmanaged\lib\iwins\debug;D:\Development\MapGuide OpenSource\v1.0.2\OpenSource_FDO\providers\FdoCommon\lib\iwins\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>call KingStampVersion $(OutDir)
+call copy /y "$(OutDir)*.dll"  "..\UnitTest\DebuG_FDO_3_2\"
+call copy /y "$(OutDir)*.pdb"  "..\UnitTest\DebuG_FDO_3_2\"
+call CopyDebug_FDO_3_2.bat
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\Inc;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\Inc;.\;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\Inc\Fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release\;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\lib\win32\release\;..\Overrides\Rel;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>call KingStampVersion $(OutDir)
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\Inc;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\Inc;.\;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\Inc\Fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Fdo\Unmanaged\lib\win32\debug\;D:\Development\MapGuide_OS\mapguide-1.2.0rc2\mapguide-1.2.0\OpenSource_FDO\Utilities\Common\lib\win32\debug\;..\Overrides\Dbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>call KingStampVersion $(OutDir)
+call copy /y "$(OutDir)*.dll"  "..\UnitTest\DebuG_FDO_3_2\"
+call copy /y "$(OutDir)*.pdb"  "..\UnitTest\DebuG_FDO_3_2\"
+call CopyDebug_FDO_3_2.bat
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\win32\$(Configuration) mkdir ..\..\lib\win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc;.\;..\..\..\..\Fdo\Unmanaged\Inc\Fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>if not exist ..\..\lib\win32\$(Configuration) mkdir ..\..\lib\win32\$(Configuration)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc;.\;..\..\..\..\Fdo\Unmanaged\Inc\Fdo\Expression;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGMSS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\..\Fdo\Unmanaged\lib\win32\release;..\..\..\..\Utilities\Common\lib\win32\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\lib\win32\$(Configuration)\$(TargetName).lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="c_FdoMss_API.cpp" />
+    <ClCompile Include="c_FilterStringBuffer.cpp" />
+    <ClCompile Include="c_KgMssApplySchema.cpp" />
+    <ClCompile Include="c_KgMssCommandCapabilities.cpp" />
+    <ClCompile Include="c_KgMssConnection.cpp" />
+    <ClCompile Include="c_KgMssConnectionCapabilities.cpp" />
+    <ClCompile Include="c_KgMssConnectionInfo.cpp" />
+    <ClCompile Include="c_KgMssCreateDataStore.cpp" />
+    <ClCompile Include="c_KgMssCreateSpatialContext.cpp" />
+    <ClCompile Include="c_KgMssDelete.cpp" />
+    <ClCompile Include="c_KgMssDescribeSchemaCommand.cpp" />
+    <ClCompile Include="c_KgMssExpressionCapabilities.cpp" />
+    <ClCompile Include="c_KgMssExpressionProcessor.cpp" />
+    <ClCompile Include="c_KgMssFeatureReader.cpp" />
+    <ClCompile Include="c_KgMssFeatureReaderInsert.cpp" />
+    <ClCompile Include="c_KgMssFilterCapabilities.cpp" />
+    <ClCompile Include="c_KgMssFilterProcessor.cpp" />
+    <ClCompile Include="c_KgMssGeometryCapabilities.cpp" />
+    <ClCompile Include="c_KgMssGetSpatialContextsCommand.cpp" />
+    <ClCompile Include="c_KgMssInsert.cpp" />
+    <ClCompile Include="c_KgMssOverClassCollection.cpp" />
+    <ClCompile Include="c_KgMssOverClassDefinition.cpp" />
+    <ClCompile Include="c_KgMssOverColumnDefinition.cpp" />
+    <ClCompile Include="c_KgMssOverPhysicalSchemaMapping.cpp" />
+    <ClCompile Include="c_KgMssOverPropertyDefinition.cpp" />
+    <ClCompile Include="c_KgMssOverPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="c_KgMssRasterCapabilities.cpp" />
+    <ClCompile Include="c_KgMssReader.cpp" />
+    <ClCompile Include="c_KgMssSchemaCapabilities.cpp" />
+    <ClCompile Include="c_KgMssSchemaDesc.cpp" />
+    <ClCompile Include="c_KgMssSchemaPool.cpp" />
+    <ClCompile Include="c_KgMssSelectCommand.cpp" />
+    <ClCompile Include="c_KgMssSpatialContext.cpp" />
+    <ClCompile Include="c_KgMssSpatialContextReader.cpp" />
+    <ClCompile Include="c_KgMssSQLCommand.cpp" />
+    <ClCompile Include="c_KgMssSQLDataReader.cpp" />
+    <ClCompile Include="c_KgMssSqlParamDesc.cpp" />
+    <ClCompile Include="c_KgMssSridDesc.cpp" />
+    <ClCompile Include="c_KgMssTopologyCapabilities.cpp" />
+    <ClCompile Include="c_KgMssUpdate.cpp" />
+    <ClCompile Include="c_KgOtl.cpp" />
+    <ClCompile Include="c_KgOtlStreamReader.cpp" />
+    <ClCompile Include="c_LogAPI.cpp" />
+    <ClCompile Include="KingMssProvider.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='D_Fdo_3_2_2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_1|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_Fdo_3_2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='R_Fdo_3_2_2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_1|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Fdo_3_2|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="c_FdoMss_API.h" />
+    <ClInclude Include="c_FilterStringBuffer.h" />
+    <ClInclude Include="c_KgMssApplySchema.h" />
+    <ClInclude Include="c_KgMssCommandCapabilities.h" />
+    <ClInclude Include="c_KgMssConnection.h" />
+    <ClInclude Include="c_KgMssConnectionCapabilities.h" />
+    <ClInclude Include="c_KgMssConnectionInfo.h" />
+    <ClInclude Include="c_KgMssCreateDataStore.h" />
+    <ClInclude Include="c_KgMssCreateSpatialContext.h" />
+    <ClInclude Include="c_KgMssDelete.h" />
+    <ClInclude Include="c_KgMssDescribeSchemaCommand.h" />
+    <ClInclude Include="c_KgMssExpressionCapabilities.h" />
+    <ClInclude Include="c_KgMssExpressionProcessor.h" />
+    <ClInclude Include="c_KgMssFdoCommand.h" />
+    <ClInclude Include="c_KgMssFdoFeatureCommand.h" />
+    <ClInclude Include="c_KgMssFeatureReader.h" />
+    <ClInclude Include="c_KgMssFeatureReaderInsert.h" />
+    <ClInclude Include="c_KgMssFilterCapabilities.h" />
+    <ClInclude Include="c_KgMssFilterProcessor.h" />
+    <ClInclude Include="c_KgMssGeometryCapabilities.h" />
+    <ClInclude Include="c_KgMssGetSpatialContextsCommand.h" />
+    <ClInclude Include="c_KgMssInsert.h" />
+    <ClInclude Include="c_KgMssOverClassCollection.h" />
+    <ClInclude Include="c_KgMssOverClassDefinition.h" />
+    <ClInclude Include="c_KgMssOverColumnDefinition.h" />
+    <ClInclude Include="c_KgMssOverPhysicalSchemaMapping.h" />
+    <ClInclude Include="c_KgMssOverPropertyDefinition.h" />
+    <ClInclude Include="c_KgMssOverPropertyDefinitionCollection.h" />
+    <ClInclude Include="c_KgMssOverXmlGlobals.h" />
+    <ClInclude Include="c_KgMssRasterCapabilities.h" />
+    <ClInclude Include="c_KgMssReader.h" />
+    <ClInclude Include="c_KgMssSchemaCapabilities.h" />
+    <ClInclude Include="c_KgMssSchemaDesc.h" />
+    <ClInclude Include="c_KgMssSchemaPool.h" />
+    <ClInclude Include="c_KgMssSelectCommand.h" />
+    <ClInclude Include="c_KgMssSpatialContext.h" />
+    <ClInclude Include="c_KgMssSpatialContextReader.h" />
+    <ClInclude Include="c_KgMssSQLCommand.h" />
+    <ClInclude Include="c_KgMssSQLDataReader.h" />
+    <ClInclude Include="c_KgMssSqlParamDesc.h" />
+    <ClInclude Include="c_KgMssSridDesc.h" />
+    <ClInclude Include="c_KgMssTopologyCapabilities.h" />
+    <ClInclude Include="c_KgMssUpdate.h" />
+    <ClInclude Include="c_KgOtl.h" />
+    <ClInclude Include="c_KgOtlStreamReader.h" />
+    <ClInclude Include="c_LogAPI.h" />
+    <ClInclude Include="FdoKgMssProvider.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KingMssProvider.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="TODO.txt" />
+    <None Include="Versions.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

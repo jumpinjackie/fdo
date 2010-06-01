@@ -1,0 +1,1459 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug91Only|Win32">
+      <Configuration>Debug91Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug91Only|x64">
+      <Configuration>Debug91Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug92Only|Win32">
+      <Configuration>Debug92Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug92Only|x64">
+      <Configuration>Debug92Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release91Only|Win32">
+      <Configuration>Release91Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release91Only|x64">
+      <Configuration>Release91Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release92Only|Win32">
+      <Configuration>Release92Only</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release92Only|x64">
+      <Configuration>Release92Only</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{02AF5684-A940-41EE-A372-E1639768414A}</ProjectGuid>
+    <RootNamespace>UnitTest</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Win32\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Win64\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\Win32\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Win64\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Win64\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Win64\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)UnitTest.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\Provider;$(SDEHOME)\include;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_SDEVER_ARCUNITTEST=$(SDEVER_ARCUNITTEST);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FdoSpatial.lib;ProvidersCommon.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)UnitTest.exe</OutputFile>
+      <AdditionalLibraryDirectories>$(SDEHOME)\lib;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="ABasicOpenTests.cpp" />
+    <ClCompile Include="ArcSDETests.cpp" />
+    <ClCompile Include="BasicArcSDETests.cpp" />
+    <ClCompile Include="BasicConnectionTests.cpp" />
+    <ClCompile Include="BasicDeleteTests.cpp" />
+    <ClCompile Include="BasicInsertTests.cpp" />
+    <ClCompile Include="BasicSchemaTests.cpp" />
+    <ClCompile Include="BasicTransactionTests.cpp" />
+    <ClCompile Include="BasicUpdateTests.cpp" />
+    <ClCompile Include="ExpressionFunction.cpp" />
+    <ClCompile Include="LockTests.cpp" />
+    <ClCompile Include="LongTransactionExternalTests.cpp" />
+    <ClCompile Include="LongTransactionTests.cpp" />
+    <ClCompile Include="Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RecommitTest.cpp" />
+    <ClCompile Include="SelectAggregatesTests.cpp" />
+    <ClCompile Include="SelectTests.cpp" />
+    <ClCompile Include="SpatialContextTests.cpp" />
+    <ClCompile Include="SQLTests.cpp" />
+    <ClCompile Include="ThreadingTests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ABasicOpenTests.h" />
+    <ClInclude Include="ArcSDETests.h" />
+    <ClInclude Include="BasicArcSDETests.h" />
+    <ClInclude Include="BasicConnectionTests.h" />
+    <ClInclude Include="BasicDeleteTests.h" />
+    <ClInclude Include="BasicInsertTests.h" />
+    <ClInclude Include="BasicSchemaTests.h" />
+    <ClInclude Include="BasicTransactionTests.h" />
+    <ClInclude Include="BasicUpdateTests.h" />
+    <ClInclude Include="ExpressionFunction.h" />
+    <ClInclude Include="LockTests.h" />
+    <ClInclude Include="LongTransactionExternalTests.h" />
+    <ClInclude Include="LongTransactionTests.h" />
+    <ClInclude Include="Pch.h" />
+    <ClInclude Include="RecommitTest.h" />
+    <ClInclude Include="SelectAggregatesTests.h" />
+    <ClInclude Include="SelectTests.h" />
+    <ClInclude Include="SpatialContextTests.h" />
+    <ClInclude Include="SQLTests.h" />
+    <ClInclude Include="ThreadingTests.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyArcSDE">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying ESRI files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">if exist "$(SDEHOME)\bin\pe91.dll" copy "$(SDEHOME)\bin\pe91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde91.dll" copy "$(SDEHOME)\bin\sde91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg91.dll" copy "$(SDEHOME)\bin\sg91.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\pe.dll" copy "$(SDEHOME)\bin\pe.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sde.dll" copy "$(SDEHOME)\bin\sde.dll" $(OutDir)
+if exist "$(SDEHOME)\bin\sg.dll" copy "$(SDEHOME)\bin\sg.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyArcSDE.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyArcSDE.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyFdo">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Win64\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
+copy "$(FDO)"\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug92Only|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release91Only|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release92Only|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy providers.xml $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">providers.xml;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\TestCommon\TestCommon.vcxproj">
+      <Project>{31607a09-f8ca-43b3-9195-c1d5fb18e0d7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Message\ArcSDEMessage.vcxproj">
+      <Project>{b840e617-c94f-4e23-beba-4a9f3fbd92db}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Provider\ArcSDEProvider.vcxproj">
+      <Project>{6c04ef62-a3c2-4c4c-9bab-30be6afc5762}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Provider\ArcSDEProvider91.vcxproj">
+      <Project>{79fcd9d7-26ad-458e-821b-64d343d7247e}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Provider\ArcSDEProvider92.vcxproj">
+      <Project>{f427cd47-243b-4770-b25b-366445061e35}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

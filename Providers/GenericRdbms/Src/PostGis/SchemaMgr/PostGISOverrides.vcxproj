@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C7C93492-5656-42D9-A576-67C1CA628AF5}</ProjectGuid>
+    <RootNamespace>PostGISOverrides</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProjectName>PostgreSQLOverrides</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\PostGISOverrides\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64\PostGISOverrides\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\PostGISOverrides\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64\PostGISOverrides\</IntDir>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;..\..\..\inc;$(FDOUTILITIES)\SchemaMgr\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;FDOPOSTGIS_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc70.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\..\Lib\Win32\Debug mkdir ..\..\..\Lib\Win32\Debug</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>$(FDO)\Unmanaged\Lib\Win32\Debug\FDO.lib;FDOGeometry.lib;FDOSpatial.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)PostgreSQLOverrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)PostgreSQLOverrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\..\Lib\Win32\Debug\PostgreSQLOverrides.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)PostgreSQLOverrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;..\..\..\inc;$(FDOUTILITIES)\SchemaMgr\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;FDOPOSTGIS_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc70.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\..\Lib\Win64\Debug mkdir ..\..\..\Lib\Win64\Debug</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>$(FDO)\Unmanaged\Lib\Win64\Debug\FDO.lib;FDOGeometry.lib;FDOSpatial.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)PostgreSQLOverrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)PostgreSQLOverrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\..\Lib\Win64\Debug\PostgreSQLOverrides.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)PostgreSQLOverrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;..\..\..\Inc;$(FDOUTILITIES)\SchemaMgr\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;FDOPOSTGIS_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc70.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\..\Lib\Win32\Release mkdir ..\..\..\Lib\Win32\Release</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOGeometry.lib;FDOSpatial.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)PostgreSQLOverrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)PostgreSQLOverrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\..\Lib\Win32\Release\PostgreSQLOverrides.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)PostgreSQLOverrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;..\..\..\Inc;$(FDOUTILITIES)\SchemaMgr\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;FDOPOSTGIS_OV_EXPORTS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)vc70.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\..\Lib\Win64\Release mkdir ..\..\..\Lib\Win64\Release</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOGeometry.lib;FDOSpatial.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)PostgreSQLOverrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)PostgreSQLOverrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\..\Lib\Win64\Release\PostgreSQLOverrides.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning $(ProjectName).dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)PostgreSQLOverrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Ov\PostGisOvAssociationPropertyDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvClassCollection.cpp" />
+    <ClCompile Include="Ov\PostGisOvClassDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvColumn.cpp" />
+    <ClCompile Include="Ov\PostGisOvDataPropertyDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvDataPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Ov\PostGisOvGeometricColumn.cpp" />
+    <ClCompile Include="Ov\PostGisOvGeometricPropertyDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvObjectPropertyDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvPhysicalSchemaMapping.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyMappingClass.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyMappingConcrete.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyMappingDefinition.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyMappingRelation.cpp" />
+    <ClCompile Include="Ov\PostGisOvPropertyMappingSingle.cpp" />
+    <ClCompile Include="Ov\PostGisOvTable.cpp" />
+    <ClCompile Include="Ov\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Inc\Rdbms\FdoPostGis.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOv.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvAssociationPropertyDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvClassCollection.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvClassDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvColumn.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvDataPropertyDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvDataPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvGeometricColumn.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvGeometricPropertyDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvObjectPropertyDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPhysicalSchemaMapping.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyMappingClass.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyMappingConcrete.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyMappingDefinition.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyMappingRelation.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvPropertyMappingSingle.h" />
+    <ClInclude Include="..\..\..\Inc\Rdbms\Override\PostGIS\PostGisOvTable.h" />
+    <ClInclude Include="Ov\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PostGISOverrides.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Utilities\SchemaMgr\Overrides.vcxproj">
+      <Project>{2cff7b5c-2cc5-435b-8e8e-c4ac3acfef83}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\Utilities\SchemaMgr\SmMessage.vcxproj">
+      <Project>{11793e23-75e5-4407-af82-be0fc6994ebd}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Nls\fdordbms.vcxproj">
+      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SchemaMgr\RdbmsOverrides.vcxproj">
+      <Project>{4d87353a-981a-4b99-9262-516d4f677535}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
