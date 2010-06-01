@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6C684FFF-8DBD-4ACA-B02C-7058B8CE53FB}</ProjectGuid>
+    <RootNamespace>OracleOverrides</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+    <ProjectName>Autodesk.Gis.Fdo.Providers.Oracle.Overrides</ProjectName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Obj\MgFdoOracleOverrides\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Bin\Debug64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Obj\MgFdoOracleOverrides\Debug64\</IntDir>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PreBuildEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\Obj\MgFdoOracleOverrides\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Bin\Release64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Obj\MgFdoOracleOverrides\Release64\</IntDir>
+    <PreBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreBuildEventUseInBuild>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp -o ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\Oracle;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win32\Debug;..\Bin\Debug;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;OracleOverrides.lib;$(FDO)\Unmanaged\Lib\Win32\Debug\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;..\..\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ProgramDatabaseFile>$(TargetDir)\Autodesk.Gis.Fdo.Providers.Oracle.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoOracleOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp -o ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\Oracle;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win64\Debug;..\Bin\Debug64;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;OracleOverrides.lib;$(FDO)\Unmanaged\Lib\Win64\Debug\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;..\..\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>true</AssemblyDebug>
+      <ProgramDatabaseFile>$(TargetDir)\Autodesk.Gis.Fdo.Providers.Oracle.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoOracleOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp -o ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\Oracle;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win32\Release;..\Bin\Release;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;OracleOverrides.lib;$(FDO)\Unmanaged\Lib\Win32\Release\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;..\..\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)\Autodesk.Gis.Fdo.Providers.Oracle.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoOracleOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Updating Assembly Version Information for $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\UpdateVersion\bin\UpdateVersion.exe -b BuildDay -r Fixed -i ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp -o ..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Managed\Src;$(FDO)\Managed\Src\OSGeo;$(FDOUTILITIES)\SchemaMgr\Inc;..\..\Inc;..\..\Inc\Rdbms\Override;..\..\Inc\Rdbms\Override\Oracle;..\Src;..\Src\Autodesk\Gis;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>$(FDO)\Managed\Bin\Win64\Release;..\Bin\Release64;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>RdbmsOverrides.lib;OracleOverrides.lib;$(FDO)\Unmanaged\Lib\Win64\Release\FDO.lib;FDOCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;..\..\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(TargetDir)\Autodesk.Gis.Fdo.Providers.Oracle.Overrides.pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning MgFdoOracleOverrides.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)Autodesk.Gis.Fdo.Providers.Oracle.Overrides.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgIOvPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgIOvPropertyMappingDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgIOvPropertyMappingRelation.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgObjectFactory.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvAssociationPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvClassCollection.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvClassDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvColumn.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvDataPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvDataPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvGeometricColumn.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvGeometricPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvIndexCollection.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvIndexDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvObjectPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPhysicalSchemaMapping.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyDefinitionCollection.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingClass.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingConcrete.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingRelation.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingSingle.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvTable.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvUniqueKeyCollection.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvUniqueKeyDefinition.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\Namespace.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\resource.h" />
+    <ClInclude Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgObjectFactory.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvAssociationPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvClassCollection.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvClassDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvColumn.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvDataPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvDataPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvGeometricColumn.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvGeometricPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvIndexCollection.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvIndexDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvObjectPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPhysicalSchemaMapping.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyDefinitionCollection.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingClass.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingConcrete.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingRelation.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvPropertyMappingSingle.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvTable.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvUniqueKeyCollection.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\mgOvUniqueKeyDefinition.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\AssemblyInfo.cpp" />
+    <ClCompile Include="..\Src\Autodesk\Gis\Fdo\Providers\Rdbms\Override\Oracle\AssemblyVersion.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\Src\Autodesk\Gis\FDO\Providers\Rdbms\Override\Oracle\MgOracleOverrides.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Src\Oracle\SchemaMgr\OracleOverrides.vcxproj">
+      <Project>{dd0a78a7-5967-42f3-b32f-46fe5a9de19c}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="MgRdbmsOverrides.vcxproj">
+      <Project>{ae480e7a-bd42-4c15-83c6-13e486a6ac94}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

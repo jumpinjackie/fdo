@@ -1,0 +1,682 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D413E013-4597-4220-B8CE-9A4A3E5E1E60}</ProjectGuid>
+    <RootNamespace>UnitTestOdbc</RootNamespace>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\Odbc\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Dbg64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Dbg64\Odbc\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\Odbc\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Rel64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Rel64\Odbc\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="Common\ConnectionUtil.cpp" />
+    <ClCompile Include="Common\DescribeSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoAdvancedSelectTest.cpp" />
+    <ClCompile Include="Common\FdoConnectionInfoTest.cpp" />
+    <ClCompile Include="Common\FdoConnectTest.cpp" />
+    <ClCompile Include="Common\FdoDeleteTest.cpp" />
+    <ClCompile Include="Common\FdoInsertTest.cpp" />
+    <ClCompile Include="Common\FdoMultiThreadTest.cpp" />
+    <ClCompile Include="Common\FdoSchemaTest.cpp" />
+    <ClCompile Include="Common\FdoSelectTest.cpp" />
+    <ClCompile Include="Common\FdoSqlCmdTest.cpp" />
+    <ClCompile Include="Common\FdoUpdateTest.cpp" />
+    <ClCompile Include="Common\MessageTest.cpp" />
+    <ClCompile Include="Common\ReaderTest.cpp" />
+    <ClCompile Include="Odbc\OdbcConnectionUtil.cpp" />
+    <ClCompile Include="Odbc\OdbcTestRegister.cpp" />
+    <ClCompile Include="Common\Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Common\SchemaOverrideUtil.cpp" />
+    <ClCompile Include="Common\UnitTestUtil.cpp" />
+    <ClCompile Include="Common\XmlFormatter.cpp" />
+    <ClCompile Include="Odbc\OdbcBaseSetup.cpp" />
+    <ClCompile Include="Odbc\OdbcDescribeSchemaTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoAdvancedSelectTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoConnectionInfoTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoConnectTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoDeleteTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoInsertTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoMultiThreadTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoSchemaTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoSelectTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoSqlCmdTest.cpp" />
+    <ClCompile Include="Odbc\OdbcFdoUpdateTest.cpp" />
+    <ClCompile Include="Odbc\OdbcReaderTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
+    <ClInclude Include="Common\ConnectionUtil.h" />
+    <ClInclude Include="Common\DescribeSchemaTest.h" />
+    <ClInclude Include="Common\FdoAdvancedSelectTest.h" />
+    <ClInclude Include="Common\FdoConnectionInfoTest.h" />
+    <ClInclude Include="Common\FdoConnectTest.h" />
+    <ClInclude Include="Common\FdoDeleteTest.h" />
+    <ClInclude Include="Common\FdoInsertTest.h" />
+    <ClInclude Include="Common\FdoMultiThreadTest.h" />
+    <ClInclude Include="Common\FdoSchemaTest.h" />
+    <ClInclude Include="Common\FdoSelectTest.h" />
+    <ClInclude Include="Common\FdoSqlCmdTest.h" />
+    <ClInclude Include="Common\FdoUpdateTest.h" />
+    <ClInclude Include="Common\MessageTest.h" />
+    <ClInclude Include="Common\ReaderTest.h" />
+    <ClInclude Include="Odbc\OdbcConnectionUtil.h" />
+    <ClInclude Include="Common\Pch.h" />
+    <ClInclude Include="Common\SchemaOverrideUtil.h" />
+    <ClInclude Include="Common\StringPropertiesDictionary.h" />
+    <ClInclude Include="Common\UnitTestUtil.h" />
+    <ClInclude Include="Common\XmlFormatter.h" />
+    <ClInclude Include="Odbc\OdbcBaseSetup.h" />
+    <ClInclude Include="Odbc\OdbcDescribeSchemaTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoAdvancedSelectTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoConnectionInfoTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoConnectTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoDeleteTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoInsertTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoMultiThreadTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoSchemaTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoSelectTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoSqlCmdTest.h" />
+    <ClInclude Include="Odbc\OdbcFdoUpdateTest.h" />
+    <ClInclude Include="Odbc\OdbcReaderTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy ..\..\..\Oracle\com\* $(OutDir)com
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy ..\..\..\Oracle\com\* $(OutDir)com
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy $(FDO)\Unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11Debug.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy providers.xml $(OutDir)
+copy OdbcInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\fdo_sys.sql $(OutDir)com
+copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
+copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win32\Debug\RdbmsOverrides.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win32\Debug\SmMessage.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\ODBCOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\ODBCProvider.dll $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\OracleOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Debug\OracleProvider.dll $(OutDir)
+mkdir $(OutDir)Odbc
+copy MSTest.mdb $(OutDir)
+attrib -R $(OutDir)MSTest.mdb
+copy Country-Text.txt $(OutDir)Odbc
+copy MsTest.xls $(OutDir)
+attrib -R $(OutDir)MsTest.xls
+copy Lidar.mdb $(OutDir)
+attrib -R $(OutDir)Lidar.mdb
+copy *.dbf $(OutDir)
+attrib -R $(OutDir)*.dbf
+copy *.inf $(OutDir)
+attrib -R $(OutDir)*.inf
+copy *.mdx $(OutDir)
+attrib -R $(OutDir)*.mdx
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">providers.xml;OdbcInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;..\..\..\Oracle\com\storage.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;gen_default1_MySQL_master.txt;gen_default1_Oracle_master.txt;gen_default1_SqlServer_master.txt;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Debug\RdbmsOverrides.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win32\Debug\SmMessage.dll;..\..\Bin\Win32\Debug\ODBCOverrides.dll;..\..\Bin\Win32\Debug\ODBCProvider.dll;..\..\Bin\Win32\Debug\OracleOverrides.dll;..\..\Bin\Win32\Debug\OracleProvider.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy providers.xml $(OutDir)
+copy OdbcInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\fdo_sys.sql $(OutDir)com
+copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
+copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win64\Debug\RdbmsOverrides.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\ODBCOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\ODBCProvider.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\OracleOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Debug\OracleProvider.dll $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll $(OutDir)
+mkdir $(OutDir)Odbc
+copy MSTest.mdb $(OutDir)
+attrib -R $(OutDir)MSTest.mdb
+copy Country-Text.txt $(OutDir)Odbc
+copy MsTest.xls $(OutDir)
+attrib -R $(OutDir)MsTest.xls
+copy Lidar.mdb $(OutDir)
+attrib -R $(OutDir)Lidar.mdb
+copy *.dbf $(OutDir)
+attrib -R $(OutDir)*.dbf
+copy *.inf $(OutDir)
+attrib -R $(OutDir)*.inf
+copy *.mdx $(OutDir)
+attrib -R $(OutDir)*.mdx
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">providers.xml;OdbcInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;..\..\..\Oracle\com\storage.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;gen_default1_MySQL_master.txt;gen_default1_Oracle_master.txt;gen_default1_SqlServer_master.txt;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win64\Debug\RdbmsOverrides.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Debug\SmMessage.dll;..\..\Bin\Win64\Debug\ODBCOverrides.dll;..\..\Bin\Win64\Debug\ODBCProvider.dll;..\..\Bin\Win64\Debug\OracleOverrides.dll;..\..\Bin\Win64\Debug\OracleProvider.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win64\debug\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy providers.xml $(OutDir)
+copy OdbcInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\fdo_sys.sql $(OutDir)com
+copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
+copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy ..\..\..\Oracle\com\storage.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win32\Release\RdbmsOverrides.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\ODBCOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\ODBCProvider.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\OracleOverrides.dll $(OutDir)
+copy ..\..\Bin\Win32\Release\OracleProvider.dll $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll $(OutDir)
+mkdir $(OutDir)Odbc
+copy MSTest.mdb $(OutDir)
+attrib -R $(OutDir)MSTest.mdb
+copy Country-Text.txt $(OutDir)Odbc
+copy MsTest.xls $(OutDir)
+attrib -R $(OutDir)MsTest.xls
+copy Lidar.mdb $(OutDir)
+attrib -R $(OutDir)Lidar.mdb
+copy *.dbf $(OutDir)
+attrib -R $(OutDir)*.dbf
+copy *.inf $(OutDir)
+attrib -R $(OutDir)*.inf
+copy *.mdx $(OutDir)
+attrib -R $(OutDir)*.mdx
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">providers.xml;OdbcInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win32\Release\RdbmsOverrides.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win32\Release\SmMessage.dll;..\..\Bin\Win32\Release\ODBCOverrides.dll;..\..\Bin\Win32\Release\ODBCProvider.dll;..\..\Bin\Win32\Release\OracleOverrides.dll;..\..\Bin\Win32\Release\OracleProvider.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win32\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy providers.xml $(OutDir)
+copy OdbcInit.txt $(OutDir)
+copy g_coords.txt $(OutDir)
+copy polyAttr.txt $(OutDir)
+mkdir $(OutDir)com
+copy ..\..\com\fdo_sys.sql $(OutDir)com
+copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
+copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy ..\..\..\Oracle\com\storage.sql $(OutDir)com
+copy *.xml $(OutDir)
+del /F $(OutDir)*_master.txt
+copy *_master.txt $(OutDir)
+del /F $(OutDir)*_in.xml
+copy *_in.xml $(OutDir)
+del /F $(OutDir)*.xslt
+copy *.xslt $(OutDir)
+copy ..\..\Bin\Win64\Release\RdbmsOverrides.dll $(OutDir)
+copy $(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\ODBCOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\ODBCProvider.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\OracleOverrides.dll $(OutDir)
+copy ..\..\Bin\Win64\Release\OracleProvider.dll $(OutDir)
+copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll $(OutDir)
+mkdir $(OutDir)Odbc
+copy MSTest.mdb $(OutDir)
+attrib -R $(OutDir)MSTest.mdb
+copy Country-Text.txt $(OutDir)Odbc
+copy MsTest.xls $(OutDir)
+attrib -R $(OutDir)MsTest.xls
+copy Lidar.mdb $(OutDir)
+attrib -R $(OutDir)Lidar.mdb
+copy *.dbf $(OutDir)
+attrib -R $(OutDir)*.dbf
+copy *.inf $(OutDir)
+attrib -R $(OutDir)*.inf
+copy *.mdx $(OutDir)
+attrib -R $(OutDir)*.mdx
+echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">providers.xml;OdbcInit.txt;g_coords.txt;polyAttr.txt;..\..\com\fdo_sys.sql;..\..\com\fdo_sys_idx.sql;..\..\com\fdosys_sys.sql;describeSchemas.xml;FdoSchemaTest_SqlServerOutput.xml;impexp_err1_master.txt;impexp_err7_master.txt;impexp2a_master.txt;impexp2b_master.txt;SchemaOverrideAll.xml;SchemaOverrideAll2.xml;SchemaOverrideErr.xml;smtables_logical.xml;smtables_physical.xml;temp_out.xml;apply_schema_err1_master.txt;apply_schema_err2_master.txt;apply_schema_err2M_master.txt;apply_schema_err3_master.txt;apply_schema_err3S_master.txt;apply_schema_err3M_master.txt;apply_schema_err4_master.txt;apply_schema_err5_master.txt;apply_schema_err5M_master.txt;apply_schema_err6_master.txt;apply_schema_err6S_master.txt;apply_schema_err7_master.txt;apply_schema_err8_master.txt;apply_schema_err8M_master.txt;apply_schema_err9_master.txt;apply_schema_overrides_out1.xml;apply_schema_overrides_out2.xml;apply_schema_test1_master.txt;apply_schema_test2_master.txt;apply_schema_test3_master.txt;apply_schema_test_ov1_master.txt;apply_schema_test_ov2_master.txt;apply_schema_test_ov3_master.txt;SchemaOverrideAll2_master.txt;SchemaOverrideErrHigh_master.txt;SchemaOverrideErrLow_master.txt;SchemaOverrideErrNormal_master.txt;apply_schema_overrides3_master.txt;apply_schema_overrides_out1_master.txt;apply_schema_overrides_out2_master.txt;schemaGenConfig1_master.txt;apply_schema_overrides1_master.txt;apply_schema_overrides2_master.txt;temp_in.xml;config1_in.xml;schema_rb_nnyn_master.txt;..\..\Bin\Win64\Release\RdbmsOverrides.dll;$(FDOUTILITIES)\SchemaMgr\Bin\Win64\Release\SmMessage.dll;..\..\Bin\Win64\Release\ODBCOverrides.dll;..\..\Bin\Win64\Release\ODBCProvider.dll;..\..\Bin\Win64\Release\OracleOverrides.dll;..\..\Bin\Win64\Release\OracleProvider.dll;OverrideBender.xslt;..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\SchemaMgr\SchemaMgr.vcxproj">
+      <Project>{f5346f00-c869-4b51-a947-fc097288c625}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\TestCommon\TestCommon.vcxproj">
+      <Project>{31607a09-f8ca-43b3-9195-c1d5fb18e0d7}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nls\fdordbms.vcxproj">
+      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Gdbi\Gdbi.vcxproj">
+      <Project>{531ac4ee-b2bf-4fc9-8a03-ef272dcaeab3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LockManager\LockManager.vcxproj">
+      <Project>{080c612a-c598-476e-a0cc-5d98fa48b738}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\LongTransactionManager\LongTransactionManager.vcxproj">
+      <Project>{a97744c0-dcc5-4d58-91b5-7db006bd40c1}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ODBCDriver\odbcdr.vcxproj">
+      <Project>{b7a43628-39d8-4127-bdbf-254cdc12df57}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ODBC\Odbc.vcxproj">
+      <Project>{ffeabf23-6bd8-4377-bd4c-66ea94f63134}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ODBC\SchemaMgr\OdbcOverrides.vcxproj">
+      <Project>{24301e71-2ade-4969-bbf5-3bcdb42f5541}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\ODBC\SchemaMgr\OdbcSchemaMgr.vcxproj">
+      <Project>{04db2f81-cd63-4f4a-8a97-bdb51d6868dc}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\SchemaMgr\RdbmsOverrides.vcxproj">
+      <Project>{4d87353a-981a-4b99-9262-516d4f677535}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\util.vcxproj">
+      <Project>{001b698f-66ff-4486-ad57-53318cf47a4a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="UnitTestMySql.vcxproj">
+      <Project>{15f6a280-879f-4f7a-bdd9-7d1235d7066a}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

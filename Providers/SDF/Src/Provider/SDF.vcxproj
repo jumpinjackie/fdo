@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>SDFProvider</ProjectName>
+    <ProjectGuid>{C8A43164-7819-4EDE-805F-7C02097B3B99}</ProjectGuid>
+    <RootNamespace>SDFProvider</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Obj\Provider\Win32\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Obj\Provider\Win64\Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</PostBuildEventUseInBuild>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Obj\Provider\Win32\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Obj\Provider\Win64\Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PostBuildEventUseInBuild>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOUtils.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;SQLiteInterface.lib;Sqlite3.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)SDFProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;..\..\Lib\Win32\Debug;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win32\Debug;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)SDFProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Debug\SDFProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning SDFProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)SDFProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>FDOUtils.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;SQLiteInterface.lib;Sqlite3.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)SDFProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug\;$(FDOUTILITIES)\Common\Lib\Win64\Debug;..\..\Lib\Win64\Debug;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Debug;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)SDFProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Debug\SDFProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning SDFProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)SDFProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDOUtils.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;SQLiteInterface.lib;Sqlite3.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)SDFProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;..\..\Lib\Win32\Release;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win32\Release;$(FDOUTILITIES)\SQLiteInterface\Lib\Win32\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)SDFProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win32\Release\SDFProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning SDFProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)SDFProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <PreLinkEvent>
+      <Command>if not exist ..\..\Lib\Win64\Release mkdir ..\..\Lib\Win64\Release</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalDependencies>FDOUtils.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;FDOSpatial.lib;SQLiteInterface.lib;Sqlite3.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)SDFProvider.dll</OutputFile>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release\;$(FDOUTILITIES)\Common\Lib\Win64\Release;..\..\Lib\Win64\Release;$(FDOTHIRDPARTY)\Sqlite3.3.13\Win64\Release;$(FDOUTILITIES)\SQLiteInterface\Lib\Win64\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)SDFProvider.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>..\..\Lib\Win64\Release\SDFProvider.lib</ImportLibrary>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+    <PostBuildEvent>
+      <Message>Versioning SDFProvider.dll</Message>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)SDFProvider.dll</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="RTree.cpp" />
+    <ClCompile Include="BinaryReader.cpp" />
+    <ClCompile Include="BinaryWriter.cpp" />
+    <ClCompile Include="DataDb.cpp" />
+    <ClCompile Include="DataIO.cpp" />
+    <ClCompile Include="ExInfoDb.cpp" />
+    <ClCompile Include="KeyDb.cpp" />
+    <ClCompile Include="PhysName.cpp" />
+    <ClCompile Include="SchemaDb.cpp" />
+    <ClCompile Include="SdfSchemaMergeContext.cpp" />
+    <ClCompile Include="TableReformatter.cpp" />
+    <ClCompile Include="utf8_.cpp" />
+    <ClCompile Include="SdfApplySchema.cpp" />
+    <ClCompile Include="SdfCommandCapabilities.cpp" />
+    <ClCompile Include="SdfCompareHandler.cpp" />
+    <ClCompile Include="SdfConnection.cpp" />
+    <ClCompile Include="SdfConnectionCapabilities.cpp" />
+    <ClCompile Include="SdfConnectionInfo.cpp" />
+    <ClCompile Include="SdfCreateDataStore.cpp" />
+    <ClCompile Include="SdfCreateSDFFile.cpp" />
+    <ClCompile Include="SdfCreateSpatialContext.cpp" />
+    <ClCompile Include="SdfDataValidator.cpp" />
+    <ClCompile Include="SdfDelete.cpp" />
+    <ClCompile Include="SdfDeleteDataStore.cpp" />
+    <ClCompile Include="SdfDeletingFeatureReader.cpp" />
+    <ClCompile Include="SdfDescribeSchema.cpp" />
+    <ClCompile Include="SdfExpressionCapabilities.cpp" />
+    <ClCompile Include="SdfFilterCapabilities.cpp" />
+    <ClCompile Include="SdfGeometryCapabilities.cpp" />
+    <ClCompile Include="SdfGetSpatialContexts.cpp" />
+    <ClCompile Include="SdfImpExtendedSelect.cpp" />
+    <ClCompile Include="SdfIndexedScrollableFeatureReader.cpp" />
+    <ClCompile Include="SdfInsert.cpp" />
+    <ClCompile Include="SdfRasterCapabilities.cpp" />
+    <ClCompile Include="SdfSchemaCapabilities.cpp" />
+    <ClCompile Include="SdfScrollableFeatureReader.cpp" />
+    <ClCompile Include="SdfSelect.cpp" />
+    <ClCompile Include="SdfSelectAggregates.cpp" />
+    <ClCompile Include="SdfSelectAggregatesCommand.cpp" />
+    <ClCompile Include="SdfSimpleFeatureReader.cpp" />
+    <ClCompile Include="SdfSpatialContextReader.cpp" />
+    <ClCompile Include="SdfTopologyCapabilities.cpp" />
+    <ClCompile Include="SdfUpdate.cpp" />
+    <ClCompile Include="SdfUpdatingFeatureReader.cpp" />
+    <ClCompile Include="SdfDataReader.cpp" />
+    <ClCompile Include="SdfDistinctDataReader.cpp" />
+    <ClCompile Include="SdfQueryOptimizer.cpp" />
+    <ClCompile Include="SdfSpatialExtentsAggregateReader.cpp" />
+    <ClCompile Include="SDF.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RTree.h" />
+    <ClInclude Include="RTreeInfrastructure.h" />
+    <ClInclude Include="BinaryReader.h" />
+    <ClInclude Include="BinaryWriter.h" />
+    <ClInclude Include="DataDb.h" />
+    <ClInclude Include="DataIO.h" />
+    <ClInclude Include="ExInfoDb.h" />
+    <ClInclude Include="KeyDb.h" />
+    <ClInclude Include="PhysName.h" />
+    <ClInclude Include="SchemaDb.h" />
+    <ClInclude Include="SdfSchemaMergeContext.h" />
+    <ClInclude Include="TableReformatter.h" />
+    <ClInclude Include="utf8_.h" />
+    <ClInclude Include="SdfApplySchema.h" />
+    <ClInclude Include="SdfCommand.h" />
+    <ClInclude Include="SdfCommandCapabilities.h" />
+    <ClInclude Include="SdfConnection.h" />
+    <ClInclude Include="SdfConnectionCapabilities.h" />
+    <ClInclude Include="SdfConnectionInfo.h" />
+    <ClInclude Include="SdfCreateDatastore.h" />
+    <ClInclude Include="SdfCreateSDFFile.h" />
+    <ClInclude Include="SdfCreateSpatialContext.h" />
+    <ClInclude Include="SdfDataValidator.h" />
+    <ClInclude Include="SdfDelete.h" />
+    <ClInclude Include="SdfDeleteDataStore.h" />
+    <ClInclude Include="SdfDeletingFeatureReader.h" />
+    <ClInclude Include="SdfDescribeSchema.h" />
+    <ClInclude Include="SdfExpressionCapabilities.h" />
+    <ClInclude Include="SdfExtendedSelect.h" />
+    <ClInclude Include="SdfExtHashMap.h" />
+    <ClInclude Include="SdfFeatureCommand.h" />
+    <ClInclude Include="SdfFilterCapabilities.h" />
+    <ClInclude Include="SdfGeometryCapabilities.h" />
+    <ClInclude Include="SdfGetSpatialContexts.h" />
+    <ClInclude Include="SdfImpExtendedSelect.h" />
+    <ClInclude Include="SdfImpScrollableFeatureReader.h" />
+    <ClInclude Include="SdfIndexedScrollableFeatureReader.h" />
+    <ClInclude Include="SdfInsert.h" />
+    <ClInclude Include="SdfRasterCapabilities.h" />
+    <ClInclude Include="SdfSchemaCapabilities.h" />
+    <ClInclude Include="SdfScrollableFeatureReader.h" />
+    <ClInclude Include="SdfSelect.h" />
+    <ClInclude Include="SdfSelectAggregates.h" />
+    <ClInclude Include="SdfSimpleFeatureReader.h" />
+    <ClInclude Include="SdfSpatialContextReader.h" />
+    <ClInclude Include="SdfTopologyCapabilities.h" />
+    <ClInclude Include="SdfUpdate.h" />
+    <ClInclude Include="SdfDataReader.h" />
+    <ClInclude Include="SdfDistinctDataReader.h" />
+    <ClInclude Include="SdfQueryOptimizer.h" />
+    <ClInclude Include="SdfSpatialExtentsAggregateReader.h" />
+    <ClInclude Include="SdfUpdatingFeatureReader.h" />
+    <ClInclude Include="inc\Fdo\ICreateSDFFile.h" />
+    <ClInclude Include="..\..\Inc\SDF\IExtendedSelect.h" />
+    <ClInclude Include="..\..\Inc\SDF\IScrollableFeatureReader.h" />
+    <ClInclude Include="inc\Fdo\SdfCommandType.h" />
+    <ClInclude Include="..\..\Inc\SDF\SdfCompareHandler.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="SDF.h" />
+    <ClInclude Include="SDFProvider.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SDF.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
+      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\ExpressionEngine\ExpressionEngine.vcxproj">
+      <Project>{34ff1437-0853-44d4-b786-48acb3aacbb5}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Utilities\SQLiteInterface\SQLiteInterface.vcxproj">
+      <Project>{c196e844-e8b2-4226-b949-5898007e3a34}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Message\SDFMessage.vcxproj">
+      <Project>{b840e617-c94f-4e23-beba-4a9f3fbd92db}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\FDOUtils.vcxproj">
+      <Project>{45604865-d231-47bf-8e23-86d694af3ba3}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

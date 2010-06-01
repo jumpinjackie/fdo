@@ -22,27 +22,32 @@
     <ProjectGuid>{5C2E3117-B005-4FFE-8B59-2AD734BAF536}</ProjectGuid>
     <RootNamespace>UnitTest</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -344,13 +349,9 @@ copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOMessage.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Debug\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDO)\unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
@@ -358,39 +359,27 @@ copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOMessage.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Debug\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDO)\unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDO)\unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
-copy $(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="CopyThirdparty">
@@ -398,41 +387,41 @@ echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\XalanMessages_1_11_0D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\XalanMessages_1_11_0D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\XalanMessages_1_11_0D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\XalanMessages_1_11_0D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\XalanMessages_1_11_0.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\XalanMessages_1_11_0.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC7\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\XalanMessages_1_11_0.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\XalanMessages_1_11_0.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="FakeInstall">

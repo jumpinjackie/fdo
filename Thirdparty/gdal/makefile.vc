@@ -4,7 +4,7 @@ GDAL_ROOT = .
 
 ##############################################################################
 # We need to add vb6 support if STDCALL is defined. 
-!IF DEFINED(STDCALL) && $(MSVC_VER) < 1500
+!IF DEFINED(STDCALL) && $(MSVC_VER) < 1600
 VB6_OBJ = vb6\vb6_support.obj
 VB6_TARGET = vb6_dir
 !ENDIF
@@ -39,7 +39,7 @@ OGR_INCLUDE =	$(OGR_BASE_INCLUDE)
 
 !IF DEFINED(STDCALL) && !DEFINED(WIN64)
 
-!IF $(MSVC_VER) < 1500
+!IF $(MSVC_VER) < 1600
 VB6_SAFEARRAYSYM =	/INCLUDE:_vbSafeArrayToPtr@16
 !ENDIF
 

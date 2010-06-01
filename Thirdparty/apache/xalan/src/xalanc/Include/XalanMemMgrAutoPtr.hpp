@@ -54,7 +54,7 @@ public:
     public:
 
         MemMgrAutoPtrData():
-            AutoPtrPairType(0,0)
+            AutoPtrPairType((MemoryManager*)0,(Type*)0)
         {
         }
 

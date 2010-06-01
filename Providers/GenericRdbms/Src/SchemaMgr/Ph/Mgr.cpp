@@ -707,7 +707,7 @@ FdoSmPhGrdMgr::StringMap::StringMap()
 
 void FdoSmPhGrdMgr::StringMap::Insert( FdoString* resString)
 {
-    insert( std::pair<FdoStringP,void*>(FdoStringP(resString,true), NULL) );            
+    insert( std::pair<FdoStringP,void*>(FdoStringP(resString,true), (void*)NULL) );            
 }
 
 bool FdoSmPhGrdMgr::StringMap::IsReserved( FdoStringP checkString)
