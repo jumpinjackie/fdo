@@ -481,15 +481,21 @@ void SchemaMgrTests::testGenDefault ()
             L"AutoGen"
         );
 
-        UnitTestUtil::Stream2File( stream2, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
+        UnitTestUtil::Config2SortedFile( stream2, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 
+        FdoStringP masterFileName = FdoStringP::Format( 
+            L"gen_default1_%ls%ls_master.txt", 
+            (FdoString*) providerName,
+            (FdoString*) masterSuffix
+        );
+        FdoStringP sortedMasterFile = UnitTestUtil::GetOutputFileName(masterFileName);
+        FdoIoFileStreamP masterStream = FdoIoFileStream::Create( masterFileName, L"rt" );
+        UnitTestUtil::Config2SortedFile( masterStream, sortedMasterFile );
+
         UnitTestUtil::CheckOutput( 
-            FdoStringP::Format(L"gen_default1_%ls%ls_master.txt", 
-                (FdoString*) providerName,
-                (FdoString*) masterSuffix
-            ),
+            sortedMasterFile,
             UnitTestUtil::GetOutputFileName( L"gen_default1.xml" )
         );
 
@@ -533,8 +539,7 @@ void SchemaMgrTests::testGenDefault ()
 
         UnitTestUtil::Config2SortedFile( stream3, UnitTestUtil::GetOutputFileName(L"gen_default2.xml") );
 
-        FdoStringP masterFileName = FdoStringP::Format( L"gen_default1_%ls_master.txt", (FdoString*) providerName );
-        FdoIoFileStreamP masterStream = FdoIoFileStream::Create( masterFileName, L"rt" );
+        masterStream = FdoIoFileStream::Create( masterFileName, L"rt" );
         UnitTestUtil::Config2SortedFile( masterStream, UnitTestUtil::GetOutputFileName(masterFileName) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
