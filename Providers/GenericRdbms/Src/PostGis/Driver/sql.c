@@ -74,7 +74,7 @@ int postgis_sql (postgis_context_def *context,
                     postgis_pgresult_error(context, pgresult);
                     ret = RDBI_GENERIC_ERROR;
                 }
-                if( strcmp(verb,"select") == 0 )
+                else if( strcmp(verb,"select") == 0 )
                 {
                     postgis_trans_begin(context); // Postgres cursor requires a transaction
                     curs->sql = (char*)malloc(strlen(format)+strlen(sql)+strlen(curs->cursor_name)+1);

@@ -828,14 +828,6 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessConcatFunction(FdoFunction& expr)
     AppendString(CLOSE_PARENTH);
 }
 
-bool FdoRdbmsSqlServerFilterProcessor::IsDataValue (FdoExpression *expr)
-{
-    if (dynamic_cast<FdoDataValue *>(expr) != NULL)
-        return true;
-
-    return false;
-}
-
 //
 // Function to map an expression function name to the corresponding SQL Server
 // function name. If the name does not needs to be mapped, the provided name is

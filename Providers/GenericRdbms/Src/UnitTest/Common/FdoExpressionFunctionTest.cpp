@@ -1685,6 +1685,11 @@ void FdoExpressionFunctionTest::TestSpatialExtents ()
             max_z = envelope->GetMaxZ();
 
         }  //  if (dimensionality == 3) ...
+        else
+        {
+            min_z = GetNaNOrdinate();
+            max_z = GetNaNOrdinate();
+        }
 
       }  //  while (feature_reader->ReadNext()) ...
 
@@ -13098,7 +13103,7 @@ void FdoExpressionFunctionTest::TestLengthFunction ()
       func_call   = L"(Length(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18);
+      CheckReader64(data_reader, true, 9, 18);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -13139,7 +13144,7 @@ void FdoExpressionFunctionTest::TestLengthFunction ()
       func_call   = L"(LeNgTh(str2_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(
                                         L"exfct_c1", filter, true, func_call);
-      CheckReader(data_reader, true, 9, 18);
+      CheckReader64(data_reader, true, 9, 18);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
