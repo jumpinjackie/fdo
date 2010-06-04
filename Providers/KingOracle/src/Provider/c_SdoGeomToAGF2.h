@@ -83,9 +83,12 @@ protected:
   bool AGF_Get_GType2_CurveOrLine(int& ElemInfo_Index,bool ForceCurve=false);
   bool AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,bool ForceCurve=false);
   
+  bool AGF_GetType4_MultiGeometry(int& ElemInfo_Index);
+  
   bool AGF_GetType5_Multi_Point(int& ElemInfo_Index);
   bool AGF_Get_GType6_Multi_LineOrCurve(int& ElemInfo_Index);
   bool AGF_Get_GType7_Multi_PolygonOrCurvePolygon(int& ElemInfo_Index);
+  
   
   // subelements
   bool AGF_Get_LinearRings_Etype2003(int& ElemInfo_Index,int& NumRings,bool& IsLinear);

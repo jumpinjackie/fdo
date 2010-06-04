@@ -56,6 +56,8 @@ protected:
   void PushPoint(const int *& FgfBuff);
   void AddElemInfo(int Offset,int Etype,int Interp);
   
+  c_FgfToSdoGeom::e_TransformResult FgfGeomToSdoGeom(const int*& FGFbuff);
+
  
   
   c_SDO_GEOMETRY* m_SdoGeom;  
