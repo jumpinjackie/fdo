@@ -423,35 +423,18 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
       AppendString(CLOSE_PARENTH);
       processArgs = false;
     }
-    else if (0 == name.ICompare(FDO_FUNCTION_COUNT))
-    {
-        AppendString(L"Count");
-        argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_AVG))
-    {
-        AppendString(L"Avg");
-        argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_MAX))
-    {
-        AppendString(L"Max");
-        argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_MIN))
-    {
-        AppendString(L"Min");
-        argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_SUM))
-    {
-        AppendString(L"Sum");
-        argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_STDDEV))
-    {
-        AppendString(L"stddev");
-        argSep = sepComma;
+    else if ( (0 == name.ICompare(FDO_FUNCTION_COUNT)) ||
+              (0 == name.ICompare(FDO_FUNCTION_AVG))   ||
+              (0 == name.ICompare(FDO_FUNCTION_MAX))   ||
+              (0 == name.ICompare(FDO_FUNCTION_MIN))   ||
+              (0 == name.ICompare(FDO_FUNCTION_SUM))   ||
+              (0 == name.ICompare(FDO_FUNCTION_STDDEV))
+    ) {
+        // The aggregate functions have optional 1st argument "DISTINCT" or "ALL", which is space-separated
+        // from the argument being aggregated. ProcessAggregateFunction prevents optional 
+        // argument from being quote delimited.
+        ProcessAggregateFunction(expr);
+        processArgs = false;
     }
     else if (0 == name.ICompare(FDO_FUNCTION_SPATIALEXTENTS))
     {
@@ -475,25 +458,6 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
     {
         AppendString(L"Strpos");
         argSep = sepComma;
-    }
-    else if (0 == name.ICompare(FDO_FUNCTION_REMAINDER))
-    {
-        //Remainder(34.5,3) = 34.5 - Round(34.5/3) * 3
-        processArgs = false;
-        FdoPtr<FdoExpression> arg1Expr(args->GetItem(0));
-        FdoStringP strArg1(arg1Expr->ToString());
-        FdoPtr<FdoExpression> arg2Expr(args->GetItem(1));
-        FdoStringP strArg2(arg2Expr->ToString());
-
-        AppendString(OPEN_PARENTH);
-        AppendString(static_cast<char const*>(strArg1));
-        AppendString(L" - Round(");
-        AppendString(static_cast<char const*>(strArg1));
-        AppendString(L" / ");
-        AppendString(static_cast<char const*>(strArg2));
-        AppendString(L") * ");
-        AppendString(static_cast<char const*>(strArg2));
-        AppendString(CLOSE_PARENTH);
     }
     else if (0 == name.ICompare(FDO_FUNCTION_TODATE))
     {
@@ -533,13 +497,27 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
     }
     else if (0 == name.ICompare(FDO_FUNCTION_TOINT32))
     {
-        AppendString(L"Cast");
-        argCast = " as int4 ";
+        // Fdo toint32 truncates non-integral values while
+        // PosgreSQL cast rounds them. Add trunc function to get
+        // FDO behaviour.
+        processArgs = false;
+        FdoPtr<FdoExpression> expr(args->GetItem(0));
+        // Inner cast to numeric handles string argument.
+        AppendString(L"cast(trunc(cast((");
+        expr->Process(this);
+        AppendString(L") as numeric)) as int4)");
     }
     else if (0 == name.ICompare(FDO_FUNCTION_TOINT64))
     {
-        AppendString(L"Cast");
-        argCast = " as int8 ";
+        // Fdo toint64 truncates non-integral values while
+        // PosgreSQL cast rounds them. Add trunc function to get
+        // FDO behaviour.
+        processArgs = false;
+        FdoPtr<FdoExpression> expr(args->GetItem(0));
+        // Inner cast to numeric handles string argument.
+        AppendString(L"cast(trunc(cast((");
+        expr->Process(this);
+        AppendString(L") as numeric)) as int8)");
     }
     else if (0 == name.ICompare(FDO_FUNCTION_CURRENTDATE))
     {
@@ -586,16 +564,16 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
         FdoPtr<FdoExpression> date2Expr(args->GetItem(1));
 
         AppendString(L"date_part('Month',age(");
-        date1Expr->Process(this);
-        AppendString(sepComma);
         date2Expr->Process(this);
+        AppendString(sepComma);
+        date1Expr->Process(this);
         AppendString(CLOSE_PARENTH);
         AppendString(CLOSE_PARENTH);
 
         AppendString(L" + ");
 
         AppendString(L"date_part('Year',age(");
-        date1Expr->Process(this);
+        date2Expr->Process(this);
         AppendString(sepComma);
         date2Expr->Process(this);
         AppendString(CLOSE_PARENTH);
@@ -605,9 +583,7 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
     //Math function with 2 args that only accept numeric 
     else if ((nbArgs == 2) &&
              (0 == name.ICompare(FDO_FUNCTION_LOG) ||
-              0 == name.ICompare(FDO_FUNCTION_MOD) ||
-              0 == name.ICompare(FDO_FUNCTION_ROUND) ||
-              0 == name.ICompare(FDO_FUNCTION_TRUNC)))
+              0 == name.ICompare(FDO_FUNCTION_MOD)))
             
     {
         //Round(double,1) -> Round(cast(double as numeric) , 1)
@@ -619,9 +595,77 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
         numExpr1->Process(this);
         AppendString(L" as numeric)");
         AppendString(sepComma);
+        AppendString(L"Cast(");
         FdoPtr<FdoExpression> numExpr2(args->GetItem(1));
         numExpr2->Process(this);
+        AppendString(L" as numeric)");
         AppendString(CLOSE_PARENTH);
+    }
+    
+    //Math function with 2 args that only accept numeric 
+    else if ((nbArgs == 2) &&
+              (0 == name.ICompare(FDO_FUNCTION_ROUND)))
+    {
+        //Round(double,1) -> Round(cast(double as numeric) , 1)
+        processArgs = false;
+        AppendString(static_cast<char const*>(name));
+        AppendString(OPEN_PARENTH);
+        AppendString(L"Cast(");
+        FdoPtr<FdoExpression> numExpr1(args->GetItem(0));
+        numExpr1->Process(this);
+        AppendString(L" as numeric)");
+        AppendString(sepComma);
+        AppendString(L"Cast(Round(Cast(");
+        FdoPtr<FdoExpression> numExpr2(args->GetItem(1));
+        numExpr2->Process(this);
+        AppendString(L" as numeric)) as int)");
+        AppendString(CLOSE_PARENTH);
+    }
+    else if ((nbArgs == 2) &&
+               (0 == name.ICompare(FDO_FUNCTION_TRUNC)))
+    {
+        FdoPtr<FdoExpression> numExpr1(args->GetItem(0));
+        FdoPtr<FdoExpression> numExpr2(args->GetItem(1));
+        bool dateTrunc = false;
+        
+        // Check the data type for precision:
+        //     If numeric then assume truncating a number
+        //     If string then assume truncating a datetime to 'year', 'month', or 'day', etc.
+        //     If precision is not a simple data type then fall back to processing 
+        //     through Expression Engine (See HasNativeSupportedFunctionArgument()). 
+        FdoStringValue* precisionVal  = dynamic_cast<FdoStringValue*>(numExpr2.p);
+        if ( precisionVal && !precisionVal->IsNull()) 
+        {
+            FdoStringP precisionStr = precisionVal->GetString();
+            if ( !precisionStr.IsNumber() )
+                dateTrunc = true;
+        }
+
+        processArgs = false;
+        if ( dateTrunc )
+        {
+            //Trunc(datetime,str) -> Trunc(str, datetime)
+            AppendString(L"date_trunc");
+            AppendString(OPEN_PARENTH);
+            numExpr2->Process(this);
+            AppendString(sepComma);
+            numExpr1->Process(this);
+            AppendString(CLOSE_PARENTH);
+        }
+        else
+        {
+            //Trunc(double,1) -> Trunc(cast(double as numeric) , 1)
+            AppendString(static_cast<char const*>(name));
+            AppendString(OPEN_PARENTH);
+            AppendString(L"Cast(");
+            numExpr1->Process(this);
+            AppendString(L" as numeric)");
+            AppendString(sepComma);
+            AppendString(L"Cast(Round(Cast(");
+            numExpr2->Process(this);
+            AppendString(L" as numeric)) as int)");
+            AppendString(CLOSE_PARENTH);
+        }
     }
     
     else
@@ -665,8 +709,35 @@ bool FdoRdbmsPostGisFilterProcessor::IsNotNativeSupportedFunction(FdoString *wFu
 // The function checks whether or not the function has a correct set of arguments.
 bool FdoRdbmsPostGisFilterProcessor::HasNativeSupportedFunctionArguments(FdoFunction& expr) const
 {
+    bool ret = true;
     // If the function needs argument checking, execute the verification and return
     // the result back to the calling routine. Otherwise, the arguments are always 
     // deemed valid and the corresponding indication is returned.
-    return true;;
+
+    if ( FdoStringP(expr.GetName(),false).ICompare(FDO_FUNCTION_TRUNC) == 0 )
+    {
+        // Truncate function maps onto a different PostgreSQL function, depending on
+        // whether truncating a numeric or datetime.
+        FdoPtr<FdoExpressionCollection> args(expr.GetArguments());
+        FdoInt32 nbArgs = args->GetCount();
+
+        if ( nbArgs == 2 ) 
+        {
+            // 2nd argument is a string when truncating a datetime and a number when
+            // truncating a number. If 2nd argument is a DataValue then we can easily
+            // determine its type ( see ProcessFunction() ).
+            FdoPtr<FdoExpression> subExpr(args->GetItem(1));
+            FdoDataValue* dv = dynamic_cast<FdoDataValue*>(subExpr.p);
+
+            if ( !dv ) 
+                // 2nd argument is a more complex expression so we don't know whether
+                // to translate to PostgreSQL trunc() or date_trunc() function.
+                // Fall back to processing through Expression Engine.
+                // TODO: Add the ability to determine resulting type of an expression
+                // so that trunc can always be handled natively.
+                ret = false;
+        }
+    }
+
+    return ret;
 }

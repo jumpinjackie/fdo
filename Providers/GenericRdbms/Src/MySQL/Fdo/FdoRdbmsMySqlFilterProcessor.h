@@ -73,13 +73,12 @@ protected:
                             const FdoSmLpGeometricPropertyDefinition *pGeomProp,
                             bool                                      bChangeFilter = false);
     void ProcessFunction (FdoFunction &expr);
-    void ProcessAggregateFunction (FdoFunction& expr);
+    virtual void ProcessAggregateFunction (FdoFunction& expr);
     void ProcessToDoubleFloatFunction (FdoFunction& expr);
     void ProcessToInt32Int64Function (FdoFunction& expr);
     void ProcessCurrentDateFunction (FdoFunction& expr);
     void ProcessTrimFunction (FdoFunction& expr);
     void ProcessFunctionName (FdoFunction &expr);
-    bool IsDataValue (FdoExpression *expr);
     virtual bool IsAggregateFunctionName (FdoString *wFunctionName) const;
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const;
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const;

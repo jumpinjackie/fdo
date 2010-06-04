@@ -295,6 +295,8 @@ protected:
     //
     // Process expressions
     //
+    virtual void ProcessAggregateFunction (FdoFunction& expr);
+    
     virtual void ProcessBinaryExpression(FdoBinaryExpression& expr);
 
     virtual void ProcessUnaryExpression(FdoUnaryExpression& expr);
@@ -357,6 +359,7 @@ protected:
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const = 0;
     virtual FdoStringP GetGeometryString( FdoString* columnName, bool inSelectList );
     virtual FdoStringP GetGeometryTableString( FdoString* tableName );
+    bool IsDataValue (FdoExpression *expr);
 
 public:
 	virtual void GetLtTableExpression( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltJoin, FdoStringP &ltTableExp, FdoCommandType callerFdoCommand );

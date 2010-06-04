@@ -60,7 +60,9 @@ static wchar_t* PostGisSupportedFunctions[] = {
     FDO_FUNCTION_LOG,
     FDO_FUNCTION_MOD,       
     //FDO_FUNCTION_POWER,                                  
-    FDO_FUNCTION_REMAINDER,  
+    //FDO_FUNCTION_REMAINDER, The remainder calculation includes a rounding operation that
+    //                        differs from the usual rounding function in that if the fractional
+    //                        part is exactly 0.5 then the number is rounded down.
     //FDO_FUNCTION_SIN,        
     //FDO_FUNCTION_SQRT,       
     //FDO_FUNCTION_TAN,        

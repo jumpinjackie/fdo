@@ -933,6 +933,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoExpressionFunctionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoExpressionFunctionTest.h"
+				>
+			</File>
+			<File
 				RelativePath="Common\FdoForeignSchemaTest.cpp"
 				>
 			</File>
@@ -1146,6 +1154,14 @@
 			</File>
 			<File
 				RelativePath="PostGis\PostGisFdoDeleteTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoExpressionFunctionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoExpressionFunctionTest.h"
 				>
 			</File>
 			<File

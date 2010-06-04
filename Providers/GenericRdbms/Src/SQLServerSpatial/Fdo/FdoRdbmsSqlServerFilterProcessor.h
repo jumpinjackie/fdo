@@ -93,7 +93,7 @@ protected:
     FdoStringP GetGeometryColumnNameForProperty( const FdoSmLpGeometricPropertyDefinition *pGeomProp, bool bChangeFilter = false);
 
     virtual void ProcessFunction(FdoFunction& expr);
-    void ProcessAggregateFunction(FdoFunction& expr);
+    virtual void ProcessAggregateFunction(FdoFunction& expr);
     void ProcessNullValueFunction (FdoFunction& expr);
     void ProcessToDoubleFunction (FdoFunction& expr);
     void ProcessToFloatFunction (FdoFunction& expr);
@@ -113,7 +113,6 @@ protected:
     virtual bool CanOptimizeRelationQuery( const FdoSmLpClassDefinition* pClass, const FdoSmLpPropertyDefinition* propertyDefinition );
 
     virtual bool IsAggregateFunctionName(FdoString* wFunctionName) const;
-    bool IsDataValue (FdoExpression *expr);
     virtual bool IsNotNativeSupportedFunction(FdoString* wFunctionName) const;
     virtual bool HasNativeSupportedFunctionArguments(FdoFunction& expr) const;
 

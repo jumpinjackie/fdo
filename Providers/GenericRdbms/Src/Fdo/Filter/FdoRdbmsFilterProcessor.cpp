@@ -357,6 +357,40 @@ bool FdoRdbmsFilterProcessor::CanSelectDistinctObjectProperties()
     return false;
 }
 
+//
+// Aggregate functions require special processing because of the optional
+// first parameter. The value of this parameter may be ALL or DISTINCT.
+void FdoRdbmsFilterProcessor::ProcessAggregateFunction (FdoFunction& expr)
+{
+    // Append the function name and the opening bracket.
+    ProcessFunctionName(expr);
+	AppendString( "( " );
+
+    // Process the arguments. This is where the special processing is required as
+    // it is required to have the parameters listed sequentially without a comma
+    // between them.
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    for (int i=0; i<exprCol->GetCount(); i++)
+    {
+        FdoPtr<FdoExpression>exp = exprCol->GetItem(i);
+        if ((i == 0) && (IsDataValue(exp)))
+        {
+            FdoDataValue *dataValue = (static_cast<FdoDataValue *>(exp.p));
+            if (dataValue->GetDataType() == FdoDataType_String)
+            {
+                FdoStringValue *stringValue = static_cast<FdoStringValue *>(dataValue);
+                AppendString(stringValue->GetString());
+                AppendString(L" ");	
+            }
+            else
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_29, "Unsupported FDO type in expression"));
+        }
+        else
+            HandleExpr(exp);
+	}
+    AppendString(" )");
+}
+
 void FdoRdbmsFilterProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
 {
     FdoPtr<FdoExpression>lftExpr = expr.GetLeftExpression();
@@ -2370,3 +2404,12 @@ FdoInt64 FdoRdbmsFilterProcessor::BoundGeometry::GetSrid()
 FdoRdbmsFilterProcessor::BoundGeometry::~BoundGeometry(void)
 {
 }
+
+bool FdoRdbmsFilterProcessor::IsDataValue (FdoExpression *expr)
+{
+    if (dynamic_cast<FdoDataValue *>(expr) != NULL)
+        return true;
+
+    return false;
+}
+
