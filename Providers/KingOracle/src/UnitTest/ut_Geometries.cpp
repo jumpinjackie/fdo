@@ -227,3 +227,187 @@ catch(FdoException* ex)
 }
 
 }//end of ut_Geometries::TestPolygons3D
+
+void ut_Geometries::TestHasElevation()
+{
+try
+{
+  FdoStringP tablename = L"TESTLINESTRING";
+  
+  FdoStringP fdoclass_name = L"UNITTEST~TESTLINESTRING~GEOM";
+  bool elevation = false;
+  
+ try
+ {
+ 
+  c_OCI_API::OciInit();
+  c_Oci_Connection* ociconn = c_OCI_API::CreateConnection(D_CONN_USERNAME,D_CONN_PASS,D_CONN_SERVICE);
+  ut_OCI::PrepareTable3D(ociconn,tablename);
+  
+  c_Oci_Statement* stm = ociconn->CreateStatement();
+  FdoStringP sql_insert;
+  
+  sql_insert = L"INSERT INTO TESTLINESTRING(fid,geom) VALUES(2,MDSYS.SDO_GEOMETRY(3002,null,null,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(10,500,10,70,10,400)))";
+  stm->Prepare(sql_insert);
+  stm->ExecuteNonQuery();
+  
+  sql_insert = L"INSERT INTO TESTLINESTRING(fid,geom) VALUES(3,MDSYS.SDO_GEOMETRY(3002,null,null,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1),MDSYS.SDO_ORDINATE_ARRAY(5,10,1,800,900,100)))";
+  stm->Prepare(sql_insert);
+  stm->ExecuteNonQuery();
+  
+  
+  ociconn->TerminateStatement(stm);
+  c_OCI_API::CloseConnection(ociconn);
+ } 
+ catch (c_Oci_Exception* ex)
+ {
+  FdoStringP str = ex->GetErrorText();
+  delete ex;
+  CPPUNIT_FAIL( (const char*)str );  
+ } 
+  
+  
+  
+  FdoPtr<FdoIConnection> conn  = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  c_KgOraConnection* kingora_conn = (c_KgOraConnection*)conn.p;
+  kingora_conn->ClearCachedSchemaDesc();
+  
+  FdoPtr<FdoIDescribeSchema> comm_fdoschema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+  FdoPtr<FdoFeatureSchemaCollection> coll_schema = comm_fdoschema->Execute();
+  
+  FdoPtr<FdoIDisposableCollection> class_col = coll_schema->FindClass(fdoclass_name);
+  FdoPtr<FdoClassDefinition> classdef;
+  if( class_col->GetCount() > 0 ) classdef = (FdoClassDefinition*)class_col->GetItem(0);
+  
+  CPPUNIT_ASSERT( classdef.p );
+  
+  FdoPtr<FdoPropertyDefinitionCollection> props = classdef->GetProperties ();
+  FdoPtr<FdoPropertyDefinition> prop = props->FindItem (L"GEOM");
+  FdoGeometricPropertyDefinition* dp = (FdoGeometricPropertyDefinition*)prop.p;
+
+  if(dp->GetHasElevation())
+  {
+    elevation = true;
+  }
+  else
+  {
+    CPPUNIT_FAIL( "No Elevation");
+  }
+ /* FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
+  comm_select->SetFeatureClassName(fdoclass_name);
+  //comm_select->SetFilter(L"fid=1");
+  
+  FdoPtr<FdoIFeatureReader> reader = comm_select->Execute();
+  if( reader->ReadNext() )
+  {
+    do 
+    {
+      FdoPtr<FdoByteArray> fgf = reader->GetGeometry(L"GEOM");
+      FdoPtr<FdoGeometryValue> geomval = FdoGeometryValue::Create( fgf );
+      FdoString *strval=geomval->ToString();
+    } while (reader->ReadNext());
+    
+  
+    
+    
+  }
+  else
+  {
+    CPPUNIT_FAIL( "Empty Reader" );
+  }
+  
+  
+  reader->Close();
+  
+  */  
+  conn->Close();
+}
+catch(FdoException* ex)
+{
+  FdoStringP str = ex->GetExceptionMessage();
+  ex->Release();
+  CPPUNIT_FAIL( (const char*)str );
+}
+
+}//end of ut_Geometries::TestHasElevation
+
+
+void ut_Geometries::TestGeometryCollection()
+{
+try
+{
+  FdoStringP tablename = L"TESTGEOMCOLLECTION";
+  
+  FdoStringP fdoclass_name = L"UNITTEST~TESTGEOMCOLLECTION~GEOM";
+  bool elevation = false;
+  
+ try
+ {
+ 
+  c_OCI_API::OciInit();
+  c_Oci_Connection* ociconn = c_OCI_API::CreateConnection(D_CONN_USERNAME,D_CONN_PASS,D_CONN_SERVICE);
+  ut_OCI::PrepareTable2D(ociconn,tablename);
+  
+  c_Oci_Statement* stm = ociconn->CreateStatement();
+  FdoStringP sql_insert;
+  
+  sql_insert = L"INSERT INTO TESTGEOMCOLLECTION(fid,geom) VALUES(2,MDSYS.SDO_GEOMETRY(2004,null,null,MDSYS.SDO_ELEM_INFO_ARRAY(1,2,1,5,1003,1),MDSYS.SDO_ORDINATE_ARRAY(893387.1279764,530499.1798361,893387.2056353,530499.1405861,893371.6056161,530536.2878878,893359.8797596,530513.1144291,893381.936952,530501.8403549,893386.3799577,530510.5328853,893391.6481135,530507.8401773,893387.2056353,530499.1405861,893388.317921,530498.5784176,893418.2134005,530483.2911693,893427.7218373,530501.8030188,893423.6081282,530503.9056561,893426.9076444,530510.3610015,893389.362765,530529.5512911,893388.414628,530527.6963068,893371.6056161,530536.2878878)))";
+  stm->Prepare(sql_insert);
+  stm->ExecuteNonQuery();
+
+  ociconn->TerminateStatement(stm);
+  c_OCI_API::CloseConnection(ociconn);
+ } 
+ catch (c_Oci_Exception* ex)
+ {
+  FdoStringP str = ex->GetErrorText();
+  delete ex;
+  CPPUNIT_FAIL( (const char*)str );  
+ } 
+  
+  
+  
+  FdoPtr<FdoIConnection> conn  = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  c_KgOraConnection* kingora_conn = (c_KgOraConnection*)conn.p;
+  kingora_conn->ClearCachedSchemaDesc();
+  
+  FdoPtr<FdoIDescribeSchema> comm_fdoschema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+  FdoPtr<FdoFeatureSchemaCollection> coll_schema = comm_fdoschema->Execute();
+  
+  FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
+  comm_select->SetFeatureClassName(fdoclass_name);
+  //comm_select->SetFilter(L"fid=1");
+  
+  FdoPtr<FdoIFeatureReader> reader = comm_select->Execute();
+  if( reader->ReadNext() )
+  {
+    do 
+    {
+      FdoPtr<FdoByteArray> fgf = reader->GetGeometry(L"GEOM");
+      FdoPtr<FdoGeometryValue> geomval = FdoGeometryValue::Create( fgf );
+      FdoString *strval=geomval->ToString();
+    } while (reader->ReadNext());
+    
+  
+    
+    
+  }
+  else
+  {
+    CPPUNIT_FAIL( "Empty Reader" );
+  }
+  
+  
+  reader->Close();
+  
+  
+  conn->Close();
+}
+catch(FdoException* ex)
+{
+  FdoStringP str = ex->GetExceptionMessage();
+  ex->Release();
+  CPPUNIT_FAIL( (const char*)str );
+}
+
+}//end of ut_Geometries::TestGeometryCollection

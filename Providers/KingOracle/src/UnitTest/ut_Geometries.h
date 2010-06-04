@@ -6,6 +6,8 @@ class ut_Geometries : public CppUnit::TestFixture
     CPPUNIT_TEST( GeometryTypes );    
     CPPUNIT_TEST( TestCurvedSegment );  
     CPPUNIT_TEST( TestPolygons3D );  
+    CPPUNIT_TEST( TestHasElevation );
+    CPPUNIT_TEST( TestGeometryCollection ); 
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -18,6 +20,8 @@ public:
   
   void TestCurvedSegment();
   void TestPolygons3D();
+  void TestHasElevation();
+  void TestGeometryCollection();
 };
 
 

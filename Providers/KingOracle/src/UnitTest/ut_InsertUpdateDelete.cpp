@@ -434,14 +434,18 @@ void ut_InsertUpdateDelete::InsertMultiPoint()
   FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
   
   PrepareTables(conn);
-
+  
+  // reopen connection to clear schema cache
+  conn->Close();
+  conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  
   FdoPtr<FdoISQLCommand> sqlcomm = (FdoISQLCommand*)conn->CreateCommand( FdoCommandType_SQLCommand );
   
   
   
 try
 {
-  FdoStringP src_classname = L"TEST~UT_IUD~GEOM";
+  FdoStringP src_classname = L"UNITTEST~UT_IUD~GEOM";
  
 // Execute insert  
 {  
@@ -514,6 +518,150 @@ catch(FdoException* ex)
 }
 
 }//end of ut_InsertUpdateDelete::InsertUpdateDelete()
+
+
+//
+// Test geometry transform from sdo_geometry to FDF fromat and back to sdo_geometry
+//
+void ut_InsertUpdateDelete::InsertMultiGeometry()
+{
+
+  FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+
+  PrepareTables(conn);
+
+  // reopen connection to clear schema cache
+  conn->Close();
+  conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+
+  FdoPtr<FdoISQLCommand> sqlcomm = (FdoISQLCommand*)conn->CreateCommand( FdoCommandType_SQLCommand );
+
+  FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
+
+  try
+  {
+    FdoStringP src_classname = L"UNITTEST~UT_IUD~GEOM";
+
+    // Execute insert  
+    {  
+      FdoPtr<FdoIInsert> comm_insert = (FdoIInsert*)conn->CreateCommand( FdoCommandType_Insert );    
+      comm_insert->SetFeatureClassName( src_classname );
+
+      FdoPtr<FdoPropertyValueCollection> propcol = comm_insert->GetPropertyValues();
+
+      // Fid property
+      FdoPtr<FdoDataValue> fid_val=  FdoDataValue::Create(1);
+      // FdoPtr<FdoDataValue> fid_val = FdoDataValue::Create(FdoDataType_Int32);
+
+      FdoPtr<FdoPropertyValue> propval_fid = FdoPropertyValue::Create(L"FID",fid_val);
+      propcol->Add(propval_fid);
+
+      // Name string property
+      FdoPtr<FdoStringValue> name_val=  (FdoStringValue*)FdoDataValue::Create(L"Name1");
+      FdoPtr<FdoPropertyValue> propval_name = FdoPropertyValue::Create(L"NAME",name_val);
+
+      propcol->Add(propval_name);
+
+      // Geometry property
+      
+
+      FdoPtr<FdoGeometryCollection> geoms = FdoGeometryCollection::Create();
+      
+      // create and add point
+      double ord_point[2] = { 10 , 11};
+      FdoPtr<FdoIPoint> point = fgf->CreatePoint(0,ord_point);
+      geoms->Add(point);
+      
+      // create and add line
+      double ord_line[6] = {7.57596377226628,6.42242229267311, 1.00668318024867, 2.24612559045716, 9.43394215307453, 1.20205141490317 }; 
+      FdoPtr<FdoILineString> line = fgf->CreateLineString(0,6,ord_line);
+      geoms->Add(line);
+      
+      // create and add polygon
+      FdoPtr<FdoIGeometry> polygon = fgf->CreateGeometry(L"CURVEPOLYGON ((757057.98399999994 245592.943 (LINESTRINGSEGMENT(757058.40300000005 245594.383, 757034.647 245610.43299999999),\
+                                                          CIRCULARARCSEGMENT (757032.81790019607 245607.87801543999,\
+                                                          757030.73199999996 245605.52800000002), LINESTRINGSEGMENT(757018.41400000011 245592.943, 757038.57400000002 245573.158,757057.98399999994 245592.943))))");
+                                                          
+      geoms->Add(polygon);
+      
+      FdoPtr<FdoIMultiGeometry> mgeom = fgf->CreateMultiGeometry(geoms);
+      
+      
+      FdoPtr<FdoByteArray> barray = fgf->GetFgf(mgeom);
+
+      FdoPtr<FdoGeometryValue> geom_val=  FdoGeometryValue::Create(barray);
+
+      FdoPtr<FdoPropertyValue> propval_geom = FdoPropertyValue::Create(L"GEOM",geom_val);
+
+
+      propcol->Add(propval_geom);
+
+      FdoPtr<FdoIFeatureReader> insreader = comm_insert->Execute();
+    
+    
+    // test select
+      FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );    
+      comm_select->SetFeatureClassName( src_classname);
+
+
+      FdoPtr<FdoIFeatureReader> freader = comm_select->Execute();
+
+      CPPUNIT_ASSERT_MESSAGE( "FdoISelect:Execute returns NULL reader" , freader );
+
+      unsigned long previd;
+      bool isfirst=true;
+
+      while( freader->ReadNext() )
+      {
+        FdoPtr<FdoByteArray> bytes = freader->GetGeometry(L"GEOM");      
+        FdoPtr<FdoIGeometry> geom = fgf->CreateGeometryFromFgf(bytes);
+        if( geom->GetDerivedType() != FdoGeometryType_MultiGeometry )        
+          CPPUNIT_FAIL( "FdoISelect:Wrong Geometry type!" );
+        
+        
+        FdoIMultiGeometry *mgeom = (FdoIMultiGeometry *)geom.p;
+        if( mgeom->GetCount() != 3 )
+        {
+          CPPUNIT_FAIL( "FdoISelect:Wrong number of geometries in MultiGeometry!" );
+        }
+        
+        FdoPtr<FdoIGeometry> geom1 = mgeom->GetItem(0);
+        if( geom1->GetDerivedType() != FdoGeometryType_Point )        
+          CPPUNIT_FAIL( "FdoISelect:Wrong Geometry type of first geomtry!" );
+        
+        if( FdoCommonOSUtil::wcsicmp(geom1->GetText(),point->GetText()) != 0 ) 
+          CPPUNIT_FAIL( "Point is not equal!" );
+          
+        FdoPtr<FdoIGeometry> geom2 = mgeom->GetItem(1);
+        if( geom2->GetDerivedType() != FdoGeometryType_LineString )        
+          CPPUNIT_FAIL( "FdoISelect:Wrong Geometry type of second geomtry!" );
+        if( FdoCommonOSUtil::wcsicmp(geom2->GetText(),line->GetText()) != 0 ) 
+          CPPUNIT_FAIL( "Line is not equal!" );  
+                  
+          
+        FdoPtr<FdoIGeometry> geom3 = mgeom->GetItem(2);
+        if( geom3->GetDerivedType() != FdoGeometryType_CurvePolygon)        
+          CPPUNIT_FAIL( "FdoISelect:Wrong Geometry type of third geometry!" );
+        if( FdoCommonOSUtil::wcsicmp(geom3->GetText(),polygon->GetText()) != 0 ) 
+          CPPUNIT_FAIL( "Polygon is not equal!" );
+          
+        isfirst=true;
+      }
+    }
+
+
+
+    conn->Close();
+  }  
+
+  catch(FdoException* ex)
+  {
+    FdoStringP str = ex->GetExceptionMessage();
+    ex->Release();
+    CPPUNIT_FAIL( (const char*)str );
+  }
+
+}//end of ut_InsertUpdateDelete::InsertMultiGeometry()
 
 void ut_InsertUpdateDelete::Update_BLDG_POLYGON()
 {

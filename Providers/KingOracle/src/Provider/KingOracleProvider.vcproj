@@ -1491,6 +1491,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\c_OciString.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_OciString.h"
+			>
+		</File>
+		<File
 			RelativePath=".\c_Ora_API2.cpp"
 			>
 		</File>

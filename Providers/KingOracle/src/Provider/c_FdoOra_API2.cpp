@@ -1707,6 +1707,24 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
         {
           FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create(FdoStringP(ora_geom_colname.c_str()), L"");                        
         
+        // set if Class has Z or M coordinate values
+          if( ora_dimlist.GetSize() >2 )
+          {
+            if( ora_dimlist.GetSize() == 3 )
+            {
+              c_SDO_DIM_ELEMENT dimelem = ora_dimlist.GetDimElement(2);
+              std::wstring dimname;
+              if( !dimelem.IsNullDimName() && (FdoCommonOSUtil::wcsicmp(dimelem.GetDimName(),L"M") == 0) )
+                gpd->SetHasMeasure(true);
+              else
+                gpd->SetHasElevation(true);  
+            }
+            else
+            {
+              gpd->SetHasElevation(true);
+              gpd->SetHasMeasure(true);
+            }
+          }
           gpd->SetGeometryTypes(fdo_geom_type);  
           
           if( spatial_context )

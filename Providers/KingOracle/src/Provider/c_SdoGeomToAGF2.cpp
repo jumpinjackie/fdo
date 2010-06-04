@@ -252,6 +252,15 @@ int c_SdoGeomToAGF2::ToAGF()
     }  
     break;
     
+    case 4: // multigeometry
+    {
+      int eleminfo_ind=0; // starting poit fro reading subelements of polygon
+      AGF_WriteGeometryType(FdoGeometryType_MultiGeometry);
+
+      AGF_GetType4_MultiGeometry(eleminfo_ind);
+    }
+    break;
+    
     case 5:   // Multipoint      
     {
       int eleminfo_ind=0; // starting poit fro reading subelements of polygon
@@ -1571,6 +1580,70 @@ bool c_SdoGeomToAGF2::AGF_Get_GType7_Multi_PolygonOrCurvePolygon(int& ElemInfo_I
   
 }//end of c_SdoGeomToAGF2::AGF_Get_GType7_Multi_PolygonOrCurvePolygon
 
+
+bool c_SdoGeomToAGF2::AGF_GetType4_MultiGeometry(int& ElemInfo_Index)
+{
+  int num_geoms = 0;
+  int ptr_num_geoms_buffpos = m_BuffLen;
+
+  AGF_WriteInt(0); // number of geometries
+
+ 
+
+  // read as MultiCurve - MultiCurveString
+  int elen=0;
+  bool repeat = true;
+  while( (ElemInfo_Index < m_ElemInfoSize) && repeat )
+  {
+    int elem_etype = GetSdoElemInfo(ElemInfo_Index+1);
+    switch( elem_etype )
+    {
+      case 1: // Point
+      {
+        AGF_WriteGeometryType(FdoGeometryType_Point);
+        AGF_WriteDimensionality();
+
+        repeat = AGF_Get_GType1_Point(ElemInfo_Index);   
+      }
+      break;
+
+      case 2: // Line
+      {
+        
+        bool islinear = true;
+
+        repeat = AGF_Get_GType2_CurveOrLine(ElemInfo_Index);  
+      }
+      break;  
+      
+      case 1003: // exterior ring
+      {
+        repeat = AGF_Get_GType3_PolygonOrCurvePolygon(ElemInfo_Index);
+      }
+      break;
+      
+      
+      case 1005: // exterior complex ring
+      {
+        repeat = AGF_Get_GType3_PolygonOrCurvePolygon(ElemInfo_Index);
+      }
+      break;
+      
+          
+      default:
+      {
+        return 0;
+      }
+      break;   
+    }
+    
+    num_geoms++;
+  }
+
+  AGF_UpdateInt(ptr_num_geoms_buffpos,num_geoms);
+
+  return true;
+}//end of c_SdoGeomToAGF2::AGF_GetType4_MultiGeometry
 //
 // This function will read linear rings from ordinates 1003.
 // It will read more than one ring.

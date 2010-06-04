@@ -168,359 +168,90 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
   
   const int* fbuff = FGFbuff;
   
-  int fgf_coorddim;
-  
-  int fgf_gtype = *fbuff++;
+  int fgf_gtype = *fbuff;
   
   
-  switch( fgf_gtype )
+  if( fgf_gtype == FdoGeometryType_MultiGeometry )
   {
-    case FdoGeometryType_Point:
+    fbuff ++ ;
+    ora_gtype_tt = 4;
+    int numgeoms = *fbuff++;  
+    bool repeat=true;    
+    while(numgeoms--)
     {
-      ora_gtype_tt = 1;
-      fgf_coorddim = *fbuff++;      
-      OraDim(fgf_coorddim);   
-      
-      AddOrdinates(fbuff,1,1,1); // Etype 1 Interp 0        
-    }  
-    break;
-    
-    case FdoGeometryType_LineString:
-    {
-      ora_gtype_tt = 2;
-      
-      fgf_coorddim = *fbuff++;      
-      OraDim(fgf_coorddim);   
-      
-      size_t numpts = *fbuff++;      
-      
-      AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
+      repeat = FgfGeomToSdoGeom(fbuff) != e_UknownFGFtype;
     }
-    break;
-    
-    case FdoGeometryType_CurveString:
-    {
-      ora_gtype_tt = 2;
-      
-      fgf_coorddim = *fbuff++;      
-      OraDim(fgf_coorddim); 
-      
-      
-      // get first point
-      PushPoint(fbuff);
-      
-            
-      // number of elements
-      size_t numelems = *fbuff++;    
-      
-      // add number of elements
-      AddElemInfo(m_LastOrdOffset,4,numelems);  // offset ==1; Etype==4 compound' Interp=numelems number of subelements
-      
-      int etype;
-      for(size_t ind =0;ind<numelems;ind++)
-      {
-      // now it is int for element type 1==line 2==arc
-        etype = *fbuff++;
-        switch(etype)
-        {
-          case FdoGeometryComponentType_LineStringSegment:
-          {
-            size_t numpts = *fbuff++;
-            m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-            AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
-          }
-          break;
-          case FdoGeometryComponentType_CircularArcSegment:
-          {
-            m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-            AddOrdinates(fbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
-          }
-          break;
-          default:
-            return e_UknownFGFtype;
-          break;
-        }
-      }
-    }
-    break;
-    
-    case FdoGeometryType_Polygon:
-    {
-      ora_gtype_tt = 3;
-      
-      fgf_coorddim = *fbuff++;      
-      OraDim(fgf_coorddim);   
-      
-      size_t numrings = *fbuff++;
-      
-      // firt one is exterior etype,interp = 1003,1 - others 2003,1
-      size_t numpts = *fbuff++;
-      AddOrdinates(fbuff,numpts,1003,1);         
-      
-      numrings--;
-      for(size_t ind =0;ind<numrings;ind++)
-      {
-        size_t numpts = *fbuff++;
-        AddOrdinates(fbuff,numpts,2003,1);         
-      }
-    }
-    break;
-    
-    case FdoGeometryType_CurvePolygon:
-    {
-      ora_gtype_tt = 3;
-      
-      fgf_coorddim = *fbuff++;      
-      OraDim(fgf_coorddim);   
-      
-      size_t numrings = *fbuff++;
-      
-      //numrings--;
-      for(size_t ind =0;ind<numrings;ind++)
-      {
-        // get first point
-        PushPoint(fbuff);
-        
-        // number of elements
-        size_t numelems = *fbuff++;    
-        
-        // add number of elements
-        if( ind==0 )
-          AddElemInfo(m_LastOrdOffset,1005,numelems);  // offset ==1; Etype==1005 interiour compound polygon' Interp=numelems number of subelements
-        else
-          AddElemInfo(m_LastOrdOffset,2005,numelems);  // offset ==1; Etype==2005 exteriour compund polygon' Interp=numelems number of subelements
-        
-        int etype;
-        for(size_t ind =0;ind<numelems;ind++)
-        {
-        // now it is int for element type 1==line 2==arc
-          etype = *fbuff++;
-          switch(etype)
-          {
-            case FdoGeometryComponentType_LineStringSegment:
-            {
-              size_t numpts = *fbuff++;
-              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-              AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
-            }
-            break;
-            case FdoGeometryComponentType_CircularArcSegment:
-            {
-              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-              AddOrdinates(fbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
-            }
-            break;
-            default:
-              return e_UknownFGFtype;
-            break;
-          }
-        }
-      }
-      
-    }
-    break;
-    
-    case FdoGeometryType_MultiPoint:
-    {
-      ora_gtype_tt = 5;
-      m_PointSize = 2;
-      // number of line strings
-      int numpoints = *fbuff++; 
-      if( numpoints > 0 )
-      {
-      // add first point which will add eleminfo with correct number of points
-        *fbuff++;
-        *fbuff++;
-        
-        AddOrdinates(fbuff,1,1,numpoints); // one point, Etype==1, Interp==numpoints
-        //AddOrdinates(fbuff,1,1,1); // one point, Etype==1, Interp==numpoints
-        numpoints--;      
-        while(numpoints--)
-        {
-      
-          // Geometry type - it has to be point
-         *fbuff++; // skip it    
-         *fbuff++;  // skip it OraDim(fgf_coorddim);   
-         //AddOrdinates(fbuff,1,1,1); 
-         PushPoint(fbuff); // just add point ot ordiantes list
-        }
-      }
-    }
-    break;
-    
-    case FdoGeometryType_MultiLineString:
-    {
-      ora_gtype_tt = 6;
-      
-      // number of line strings
-      int numlines = *fbuff++;      
-      while(numlines--)
-      {
-        // Geometry type - it has to be line
-        int geomtype = *fbuff++;
-      
-        fgf_coorddim = *fbuff++;      
-        OraDim(fgf_coorddim);   
-        
-        size_t numpts = *fbuff++;      
-        
-        AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
-      }
-    }
-    break;
-    
-    case FdoGeometryType_MultiCurveString:
-    {
-      ora_gtype_tt = 6;
-      long numcurves = *fbuff++;
-      while(numcurves--)
-      {
-        // Geometry type - it has to be curve string
-        int geomtype = *fbuff++;
-        
-        fgf_coorddim = *fbuff++;      
-        OraDim(fgf_coorddim);         
-        
-        // get first point
-        PushPoint(fbuff);
-              
-        // number of elements
-        size_t numelems = *fbuff++;    
-        
-        // add number of elements
-        AddElemInfo(m_LastOrdOffset,4,numelems);  // offset ==1; Etype==4 compound' Interp=numelems number of subelements
-        
-        int etype;
-        for(size_t ind =0;ind<numelems;ind++)
-        {
-        // now it is int for element type 1==line 2==arc
-          etype = *fbuff++;
-          switch(etype)
-          {
-            case FdoGeometryComponentType_LineStringSegment:
-            {
-              size_t numpts = *fbuff++;
-              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-              AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
-            }
-            break;
-            case FdoGeometryComponentType_CircularArcSegment:
-            {
-              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-              AddOrdinates(fbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
-            }
-            break;
-            default:
-              return e_UknownFGFtype;
-            break;
-          }
-        }  
-      }
-      
-    }
-    break;
-    
-    case FdoGeometryType_MultiPolygon:
-    {  
-      ora_gtype_tt = 7;
-      
-      int fgf_coorddim;
-      size_t numrings,numpts;
-      long numpolygons = *fbuff++;
-      
-      while( numpolygons-- )
-      {
-      // Geometry type - it has to be polygon skipit
-        int geomtype = *fbuff++;
-      
-      // Coordinate Dimensionality
-        fgf_coorddim = *fbuff++;      
-        OraDim(fgf_coorddim);   
-        
-        numrings = *fbuff++;
-        
-        // firt one is exterior etype,interp = 1003,1 - others 2003,1
-        numpts = *fbuff++;
-        AddOrdinates(fbuff,numpts,1003,1);         
-        
-        numrings--;
-        for(size_t ind =0;ind<numrings;ind++)
-        {
-          size_t numptsring = *fbuff++;
-          AddOrdinates(fbuff,numptsring,2003,1);         
-        }
-      }
-    }
-    break;
-    
-    case FdoGeometryType_MultiCurvePolygon:
-    {
-      ora_gtype_tt = 7;
-      
-      long numpolygons = *fbuff++;
-      while( numpolygons-- )
-      {
-        // Geometry type - it has to be curvepolygon
-        int geomtype = *fbuff++;
-        
-        fgf_coorddim = *fbuff++;      
-        OraDim(fgf_coorddim);   
-        
-        size_t numrings = *fbuff++;
-        
-        numrings--;
-        for(size_t ind =0;ind<numrings;ind++)
-        {
-          // get first point
-          PushPoint(fbuff);
-          
-          // number of elements
-          size_t numelems = *fbuff++;    
-          
-          // add number of elements
-          if( ind==0 )
-            AddElemInfo(m_LastOrdOffset,1005,numelems);  // offset ==1; Etype==1005 interiour compound polygon' Interp=numelems number of subelements
-          else
-            AddElemInfo(m_LastOrdOffset,2005,numelems);  // offset ==1; Etype==2005 exteriour compund polygon' Interp=numelems number of subelements
-          
-          int etype;
-          for(size_t ind =0;ind<numelems;ind++)
-          {
-          // now it is int for element type 1==line 2==arc
-            etype = *fbuff++;
-            switch(etype)
-            {
-              case FdoGeometryComponentType_LineStringSegment:
-              {
-                size_t numpts = *fbuff++;
-                m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-                AddOrdinates(fbuff,numpts,2,1);     // Etype 2 Interp 1
-              }
-              break;
-              case FdoGeometryComponentType_CircularArcSegment:
-              {
-                m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
-                AddOrdinates(fbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
-              }
-              break;
-              default:
-                return e_UknownFGFtype;
-              break;
-            }
-          }
-        }
-      }
-    }
-    break;
-    
-    case FdoGeometryType_MultiGeometry:
-      ora_gtype_tt = 4;
-    break;    
-    
-    default:
-      return e_UknownFGFtype;
-    break;
+  }
+  else
+  {
   
+    switch( fgf_gtype )
+    {
+      case FdoGeometryType_Point:
+      {
+        ora_gtype_tt = 1;        
+      }  
+      break;
+      
+      case FdoGeometryType_LineString:
+      {
+        ora_gtype_tt = 2;              
+      }
+      break;
+      
+      case FdoGeometryType_CurveString:
+      {
+        ora_gtype_tt = 2;        
+      }  
+      break;
+      
+      case FdoGeometryType_Polygon:
+      {
+        ora_gtype_tt = 3;            
+      }
+      break;
+      
+      case FdoGeometryType_CurvePolygon:
+      {
+        ora_gtype_tt = 3;        
+      }
+      break;
+      
+      case FdoGeometryType_MultiPoint:
+      {
+        ora_gtype_tt = 5;       
+      }
+      break;
+      case FdoGeometryType_MultiLineString:
+      {
+        ora_gtype_tt = 6;  
+      }
+      break;
+      
+      case FdoGeometryType_MultiCurveString:
+      {
+        ora_gtype_tt = 6;
+      }
+      break;
+      
+      case FdoGeometryType_MultiPolygon:
+      {  
+        ora_gtype_tt = 7; 
+      }
+      break;
+      
+      case FdoGeometryType_MultiCurvePolygon:
+      {
+        ora_gtype_tt = 7;           
+      }
+      break;        
+      
+      default:
+        return e_UknownFGFtype;
+      break;    
+    }
+    
+    FgfGeomToSdoGeom(fbuff);
   }
   
   
@@ -548,6 +279,363 @@ c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::ToSdoGeom(const int* FGFbuff,l
   }
   #endif
     
+  return e_Ok;
+}//end of c_FgfToSdoGeom::ToSdoGeom
+
+
+c_FgfToSdoGeom::e_TransformResult c_FgfToSdoGeom::FgfGeomToSdoGeom(const int*& FGFbuff)
+{
+  int fgf_coorddim;
+
+  int fgf_gtype = *FGFbuff++;
+
+
+  switch( fgf_gtype )
+  {
+    case FdoGeometryType_Point:
+    {
+      fgf_coorddim = *FGFbuff++;      
+      OraDim(fgf_coorddim);   
+
+      AddOrdinates(FGFbuff,1,1,1); // Etype 1 Interp 0        
+    }  
+    break;
+
+    case FdoGeometryType_LineString:
+    {
+      
+      fgf_coorddim = *FGFbuff++;      
+      OraDim(fgf_coorddim);   
+
+      size_t numpts = *FGFbuff++;      
+
+      AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+    }
+    break;
+
+  case FdoGeometryType_CurveString:
+    {
+
+      fgf_coorddim = *FGFbuff++;      
+      OraDim(fgf_coorddim); 
+
+
+      // get first point
+      PushPoint(FGFbuff);
+
+
+      // number of elements
+      size_t numelems = *FGFbuff++;    
+
+      // add number of elements
+      AddElemInfo(m_LastOrdOffset,4,numelems);  // offset ==1; Etype==4 compound' Interp=numelems number of subelements
+
+      int etype;
+      for(size_t ind =0;ind<numelems;ind++)
+      {
+        // now it is int for element type 1==line 2==arc
+        etype = *FGFbuff++;
+        switch(etype)
+        {
+        case FdoGeometryComponentType_LineStringSegment:
+          {
+            size_t numpts = *FGFbuff++;
+            m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+            AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+          }
+          break;
+        case FdoGeometryComponentType_CircularArcSegment:
+          {
+            m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+            AddOrdinates(FGFbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
+          }
+          break;
+        default:
+          return e_UknownFGFtype;
+          break;
+        }
+      }
+    }
+    break;
+
+  case FdoGeometryType_Polygon:
+    {
+      fgf_coorddim = *FGFbuff++;      
+      OraDim(fgf_coorddim); 
+            
+      size_t numrings = *FGFbuff++;
+
+      // firt one is exterior etype,interp = 1003,1 - others 2003,1
+      size_t numpts = *FGFbuff++;
+      AddOrdinates(FGFbuff,numpts,1003,1);         
+
+      numrings--;
+      for(size_t ind =0;ind<numrings;ind++)
+      {
+        size_t numpts = *FGFbuff++;
+        AddOrdinates(FGFbuff,numpts,2003,1);         
+      }
+    }
+    break;
+
+  case FdoGeometryType_CurvePolygon:
+    {
+      fgf_coorddim = *FGFbuff++;      
+      OraDim(fgf_coorddim); 
+      
+      size_t numrings = *FGFbuff++;
+
+      //numrings--;
+      for(size_t ind =0;ind<numrings;ind++)
+      {
+        // get first point
+        PushPoint(FGFbuff);
+
+        // number of elements
+        size_t numelems = *FGFbuff++;    
+
+        // add number of elements
+        if( ind==0 )
+          AddElemInfo(m_LastOrdOffset,1005,numelems);  // offset ==1; Etype==1005 interiour compound polygon' Interp=numelems number of subelements
+        else
+          AddElemInfo(m_LastOrdOffset,2005,numelems);  // offset ==1; Etype==2005 exteriour compund polygon' Interp=numelems number of subelements
+
+        int etype;
+        for(size_t ind =0;ind<numelems;ind++)
+        {
+          // now it is int for element type 1==line 2==arc
+          etype = *FGFbuff++;
+          switch(etype)
+          {
+          case FdoGeometryComponentType_LineStringSegment:
+            {
+              size_t numpts = *FGFbuff++;
+              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+              AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+            }
+            break;
+          case FdoGeometryComponentType_CircularArcSegment:
+            {
+              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+              AddOrdinates(FGFbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
+            }
+            break;
+          default:
+            return e_UknownFGFtype;
+            break;
+          }
+        }
+      }
+
+    }
+    break;
+
+  case FdoGeometryType_MultiPoint:
+    {
+      m_PointSize = 2;
+      // number of line strings
+      int numpoints = *FGFbuff++; 
+      if( numpoints > 0 )
+      {
+        // add first point which will add eleminfo with correct number of points
+        *FGFbuff++; // skip geomtry type
+        *FGFbuff++; // skip dimensionality
+
+        AddOrdinates(FGFbuff,1,1,numpoints); // one point, Etype==1, Interp==numpoints
+        //AddOrdinates(fbuff,1,1,1); // one point, Etype==1, Interp==numpoints
+        numpoints--;      
+        while(numpoints--)
+        {
+
+          // Geometry type - it has to be point
+          *FGFbuff++; // skip it    
+          *FGFbuff++;  // skip it OraDim(fgf_coorddim);   
+          //AddOrdinates(fbuff,1,1,1); 
+          PushPoint(FGFbuff); // just add point ot ordiantes list
+        }
+      }
+    }
+    break;
+
+    case FdoGeometryType_MultiGeometry:
+    {
+      int numgeoms = *FGFbuff++;      
+      while(numgeoms--)
+      {
+        FgfGeomToSdoGeom(FGFbuff);
+      }
+    }
+    break;
+
+    case FdoGeometryType_MultiLineString:
+    {
+      
+      // number of line strings
+      int numlines = *FGFbuff++;      
+      while(numlines--)
+      {
+        // Geometry type - it has to be line
+        int geomtype = *FGFbuff++;
+
+        fgf_coorddim = *FGFbuff++;      
+        OraDim(fgf_coorddim);   
+
+        size_t numpts = *FGFbuff++;      
+
+        AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+      }
+    }
+    break;
+
+  case FdoGeometryType_MultiCurveString:
+    {
+      long numcurves = *FGFbuff++;
+      while(numcurves--)
+      {
+        // Geometry type - it has to be curve string
+        int geomtype = *FGFbuff++;
+
+        fgf_coorddim = *FGFbuff++;      
+        OraDim(fgf_coorddim);         
+
+        // get first point
+        PushPoint(FGFbuff);
+
+        // number of elements
+        size_t numelems = *FGFbuff++;    
+
+        // add number of elements
+        AddElemInfo(m_LastOrdOffset,4,numelems);  // offset ==1; Etype==4 compound' Interp=numelems number of subelements
+
+        int etype;
+        for(size_t ind =0;ind<numelems;ind++)
+        {
+          // now it is int for element type 1==line 2==arc
+          etype = *FGFbuff++;
+          switch(etype)
+          {
+          case FdoGeometryComponentType_LineStringSegment:
+            {
+              size_t numpts = *FGFbuff++;
+              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+              AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+            }
+            break;
+          case FdoGeometryComponentType_CircularArcSegment:
+            {
+              m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+              AddOrdinates(FGFbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
+            }
+            break;
+          default:
+            return e_UknownFGFtype;
+            break;
+          }
+        }  
+      }
+
+    }
+    break;
+
+  case FdoGeometryType_MultiPolygon:
+    {  
+      
+      int fgf_coorddim;
+      size_t numrings,numpts;
+      long numpolygons = *FGFbuff++;
+
+      while( numpolygons-- )
+      {
+        // Geometry type - it has to be polygon skipit
+        int geomtype = *FGFbuff++;
+
+        // Coordinate Dimensionality
+        fgf_coorddim = *FGFbuff++;      
+        OraDim(fgf_coorddim);   
+
+        numrings = *FGFbuff++;
+
+        // firt one is exterior etype,interp = 1003,1 - others 2003,1
+        numpts = *FGFbuff++;
+        AddOrdinates(FGFbuff,numpts,1003,1);         
+
+        numrings--;
+        for(size_t ind =0;ind<numrings;ind++)
+        {
+          size_t numptsring = *FGFbuff++;
+          AddOrdinates(FGFbuff,numptsring,2003,1);         
+        }
+      }
+    }
+    break;
+
+  case FdoGeometryType_MultiCurvePolygon:
+    {
+      
+      long numpolygons = *FGFbuff++;
+      while( numpolygons-- )
+      {
+        // Geometry type - it has to be curvepolygon
+        int geomtype = *FGFbuff++;
+
+        fgf_coorddim = *FGFbuff++;      
+        OraDim(fgf_coorddim);   
+
+        size_t numrings = *FGFbuff++;
+
+        numrings--;
+        for(size_t ind =0;ind<numrings;ind++)
+        {
+          // get first point
+          PushPoint(FGFbuff);
+
+          // number of elements
+          size_t numelems = *FGFbuff++;    
+
+          // add number of elements
+          if( ind==0 )
+            AddElemInfo(m_LastOrdOffset,1005,numelems);  // offset ==1; Etype==1005 interiour compound polygon' Interp=numelems number of subelements
+          else
+            AddElemInfo(m_LastOrdOffset,2005,numelems);  // offset ==1; Etype==2005 exteriour compund polygon' Interp=numelems number of subelements
+
+          int etype;
+          for(size_t ind =0;ind<numelems;ind++)
+          {
+            // now it is int for element type 1==line 2==arc
+            etype = *FGFbuff++;
+            switch(etype)
+            {
+            case FdoGeometryComponentType_LineStringSegment:
+              {
+                size_t numpts = *FGFbuff++;
+                m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+                AddOrdinates(FGFbuff,numpts,2,1);     // Etype 2 Interp 1
+              }
+              break;
+            case FdoGeometryComponentType_CircularArcSegment:
+              {
+                m_LastOrdOffset = m_NextOrdOffset - m_PointSize;
+                AddOrdinates(FGFbuff,2,2,2);     // numpts==2 Etype==2 Interp==2 arc            
+              }
+              break;
+            default:
+              return e_UknownFGFtype;
+              break;
+            }
+          }
+        }
+      }
+    }
+    break;
+
+
+  default:
+    return e_UknownFGFtype;
+    break;
+
+  }
+
+
   return e_Ok;
 }//end of c_FgfToSdoGeom::ToSdoGeom
 
