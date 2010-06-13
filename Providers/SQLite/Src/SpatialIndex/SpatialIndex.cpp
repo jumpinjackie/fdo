@@ -63,7 +63,7 @@ SpatialIndex::~SpatialIndex()
 
 static Bounds EMPTY_BOX(true);
 
-void SpatialIndex::Insert(FdoInt64 dbId, DBounds& ext)
+void SpatialIndex::Insert(__int64 dbId, DBounds& ext)
 {
     _linkMap[dbId] = _positionIdx;
     if (_positionIdx >= _backMap.size()) // allocate a bit more
@@ -172,7 +172,7 @@ void SpatialIndex::Insert(unsigned int fid, Bounds& b)
     }
 }
 
-void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
+void SpatialIndex::Update(__int64 dbId, DBounds& ext)
 {
     LinkMap::iterator it = _linkMap.find(dbId);
     if (it == _linkMap.end())
@@ -185,7 +185,7 @@ void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
         FullSpatialIndexUpdate();
 }
 
-void SpatialIndex::Delete(FdoInt64 dbId)
+void SpatialIndex::Delete(__int64 dbId)
 {
     LinkMap::iterator it = _linkMap.find(dbId);
     if (it == _linkMap.end())
@@ -208,7 +208,7 @@ void SpatialIndex::Delete(FdoInt64 dbId)
     _linkMap.erase(it);
 }
 
-FdoInt64 SpatialIndex::operator[](int fid)
+__int64 SpatialIndex::operator[](int fid)
 {
     return _backMap[fid-1];
 }
@@ -393,7 +393,7 @@ done:
     }
 }
 
-FdoInt64 SpatialIterator::operator[](int fid)
+__int64 SpatialIterator::operator[](int fid)
 {
     return (*_si)[fid];
 }

@@ -22,8 +22,12 @@
 #define BATCH_SHIFT 3
 #define BATCH_MASK ((~0) << BATCH_SHIFT)
 
-typedef std::map<FdoInt64, unsigned int> LinkMap;
-typedef std::vector<FdoInt64> VectorMF;
+#ifndef __int64
+    typedef long long int __int64;
+#endif
+
+typedef std::map<__int64, unsigned int> LinkMap;
+typedef std::vector<__int64> VectorMF;
 
 //We will have up to this many levels
 //in the skip list hierarchy
@@ -47,21 +51,21 @@ public:
     SpatialIndex(const wchar_t*); //argument unused, for compatibility with disk backed implementation only
     ~SpatialIndex();
     
-    void Insert(FdoInt64 dbId, DBounds& ext);
-    void Update(FdoInt64 dbId, DBounds& ext);
-    void Delete(FdoInt64 dbId);
+    void Insert(__int64 dbId, DBounds& ext);
+    void Update(__int64 dbId, DBounds& ext);
+    void Delete(__int64 dbId);
     void GetTotalExtent(DBounds& ext);
     void ReOpen(); //for API compatibility with disk-backed index
-    FdoInt64 GetLastInsertedIdx() { return _lastInsertedIdx; }
+    __int64 GetLastInsertedIdx() { return _lastInsertedIdx; }
 
-    FdoInt64 operator[](int fid);
+    __int64 operator[](int fid);
 private:
     void FullSpatialIndexUpdate();
     void Insert(unsigned fid, Bounds& b);
 private:
 
     // last inserted index
-    FdoInt64   _lastInsertedIdx;
+    __int64   _lastInsertedIdx;
 
     // count of changes
     unsigned   _countChanges;
@@ -100,7 +104,7 @@ public:
 
     bool NextRange(int& start, int& end);
 
-    FdoInt64 operator[](int fid);
+    __int64 operator[](int fid);
 
 private:
 
