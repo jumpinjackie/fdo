@@ -4,7 +4,7 @@ include_directories(
 	)
 
 INSTALL(
-	DIRECTORY GDAL
+	DIRECTORY GdalFile
         DESTINATION include
         PATTERN *.h
 		PATTERN .svn EXCLUDE
