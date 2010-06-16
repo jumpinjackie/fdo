@@ -257,7 +257,8 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     //if we are not in create SDF mode, check if the file client 
     //is trying to connect to exists and can be opened in the 
     //requested mode (read or read/write).
-    if (m_bCreate == false && strcmp(m_mbsFullPath,":memory:") != 0 )
+    bool inMemoryConnection = (strcmp(m_mbsFullPath,":memory:") == 0);
+    if (m_bCreate == false && !inMemoryConnection)
     {
 #ifdef _WIN32
         FILE* f = _wfopen((const wchar_t*)FdoStringP(m_mbsFullPath), m_bReadOnly ? L"rb" : L"rb+");
@@ -312,7 +313,7 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     {
         //get the SDF schema. It could be empty..., but we still have an object for it
         //since things like SDF version are stored in there
-        m_dbSchema = new SchemaDb(m_env, m_mbsFullPath, m_bReadOnly, m_bCreate);
+        m_dbSchema = new SchemaDb(m_env, m_mbsFullPath, m_bReadOnly, (m_bCreate||inMemoryConnection));
     }
     catch (FdoException* e)
     {
