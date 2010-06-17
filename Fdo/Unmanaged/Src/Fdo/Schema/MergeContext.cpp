@@ -137,7 +137,7 @@ FdoPtr<FdoFeatureSchemaCollection> FdoSchemaMergeContext::GetUpdSchemas() const
 void FdoSchemaMergeContext::SetUpdSchemas( FdoFeatureSchemaCollection* schemas )
 {
     mUpdSchema = NULL;
-    mUpdSchemas = schemas;
+    mUpdSchemas = FDO_SAFE_ADDREF(schemas);
 }
 
 void FdoSchemaMergeContext::SetUpdSchema( FdoFeatureSchema* schema )
