@@ -246,7 +246,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     FdoStringP spatialClause;
     FdoPtr<FdoExpression> geomExpr = filter.GetGeometry();
     FdoGeometryValue *geom = dynamic_cast<FdoGeometryValue*>(geomExpr.p);
-    FdoByteArray            *geomfgf = NULL;
+    FdoPtr<FdoByteArray>    geomfgf;
     FdoIGeometry            *geometryObj = NULL;
 
     FdoStringP buf(L"");
