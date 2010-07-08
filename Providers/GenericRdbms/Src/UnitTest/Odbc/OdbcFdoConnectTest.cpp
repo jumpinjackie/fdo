@@ -19,7 +19,10 @@
 #include "Pch.h"
 #include "OdbcFdoConnectTest.h"
 #include "UnitTestUtil.h"
+#include "OdbcConnectionUtil.h"
 #include "OdbcBaseSetup.h"
+
+extern OdbcConnectionUtil pOdbcConnectionUtil;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoConnectTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoConnectTest, "FdoConnectTest");
@@ -781,7 +784,8 @@ void OdbcAccessFdoConnectTest::OpenTest()
 
 #ifdef _WIN32
         // try opening the connection
-        connection->SetConnectionString(L"ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        FdoStringP connectionString = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\"", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         connection->Close();
 
@@ -816,22 +820,25 @@ void OdbcAccessFdoConnectTest::OpenTest()
         connection->Close();
 
         // try opening the connection
-        connection->SetConnectionString(L"DataSourceName=;UserId=;Password=;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        connectionString = FdoStringP::Format(L"DataSourceName=;UserId=;Password=;ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\"", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         connection->Close();
 
         // try opening the connection
-        connection->SetConnectionString(L"ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\";DataSourceName=;UserId=;Password=;");
+        connectionString = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\";DataSourceName=;UserId=;Password=;", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         connection->Close();
 
         // try opening the connection
-        connection->SetConnectionString(L"DataSourceName=;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\";UserId=;Password=;");
+        connectionString = FdoStringP::Format(L"DataSourceName=;ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\";UserId=;Password=;", pOdbcConnectionUtil.GetAccessODBCDriverName());
         connection->Open();
         connection->Close();
 
         // try opening the connection
-        connection->SetConnectionString(L"DataSourceName=; ConnectionString = \"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\" ; UserId=;Password=;");
+        connectionString = FdoStringP::Format(L"DataSourceName=; ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\" ; UserId=;Password=;", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         if (!HasGeometry(connection, L"TABLE1"))
             CPPUNIT_FAIL("FAILED - TABLE1 is missing its Geometry property\n");
@@ -840,7 +847,8 @@ void OdbcAccessFdoConnectTest::OpenTest()
         connection->Close();
 
         // Try the connection with default geometry property generation specified as "true".
-        connection->SetConnectionString(L"ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\";GenerateDefaultGeometryProperty=true");
+        connectionString = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\";GenerateDefaultGeometryProperty=true", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         if (!HasGeometry(connection, L"TABLE1"))
             CPPUNIT_FAIL("FAILED - TABLE1 is missing its Geometry property\n");
@@ -849,7 +857,8 @@ void OdbcAccessFdoConnectTest::OpenTest()
         connection->Close();
 
         // Try the connection with default geometry property generation specified as "false".
-        connection->SetConnectionString(L"ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\";GenerateDefaultGeometryProperty=false");
+        connectionString = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\";GenerateDefaultGeometryProperty=false", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(connectionString);
         connection->Open();
         if (HasGeometry(connection, L"TABLE1"))
             CPPUNIT_FAIL("FAILED - TABLE1 should not have a Geometry property when GenerateDefaultGeometryProperty=false\n");
@@ -1132,7 +1141,7 @@ void OdbcAccessFdoConnectTest::InfoTest()
         FdoStringP strDSN                   = L"MsTest";
         FdoStringP strUID                   = L"GregB";
         FdoStringP strPWD                   = L"test";
-        FdoStringP strConnectionString      = L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb";
+        FdoStringP strConnectionString = FdoStringP::Format(L"Driver={%ls};DBQ=.\\MSTest.mdb", pOdbcConnectionUtil.GetAccessODBCDriverName());
 
         connProps->SetProperty(L"DataSourceName", strDSN);
         connProps->SetProperty(L"UserId", strUID);
@@ -1170,8 +1179,8 @@ void OdbcAccessFdoConnectTest::InfoTest()
         // ------------------------------------------------
         // test updating of connection info properties
         // ------------------------------------------------
-
-        connection->SetConnectionString(L"DataSourceName=MsTest;UserId=Tester;Password=Test2;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        FdoStringP temp = FdoStringP::Format(L"DataSourceName=MsTest;UserId=Tester;Password=Test2;ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\"", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection->SetConnectionString(temp);
 
         strDSN = connProps->GetProperty(L"DataSourceName");
         strUID = connProps->GetProperty(L"UserId");
@@ -1180,11 +1189,11 @@ void OdbcAccessFdoConnectTest::InfoTest()
 
         // These next two tests are coded out until Defect 742563 is fixed.  The generic RDBMS code -- it never
         // updates connection property dictionary as a result of a connection string assignment.
-
+        temp = FdoStringP::Format(L"Driver={%ls};DBQ=.\\MsTest.mdb", pOdbcConnectionUtil.GetAccessODBCDriverName());
         if (wcscmp(strDSN, L"MsTest") != 0 ||
             wcscmp(strUID, L"Tester") != 0 ||
             wcscmp(strPWD, L"Test2")  != 0 ||
-            wcscmp(strConnectionString, L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb")  != 0)
+            wcscmp(strConnectionString, temp)  != 0)
         {
             CPPUNIT_FAIL("FAILED - connection string did not update ConnectionInfo as expected\n");
         }
@@ -1197,7 +1206,8 @@ void OdbcAccessFdoConnectTest::InfoTest()
         if (connection2 == NULL)
             CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 
-        connection2->SetConnectionString(L"DataSourceName=MsTest;UserId=Tester2;Password=Test3;ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb\"");
+        temp = FdoStringP::Format(L"DataSourceName=MsTest;UserId=Tester2;Password=Test3;ConnectionString=\"Driver={%ls};DBQ=.\\MsTest.mdb\"", pOdbcConnectionUtil.GetAccessODBCDriverName());
+        connection2->SetConnectionString(temp);
         FdoPtr<FdoIConnectionInfo> connInfo2 = connection2->GetConnectionInfo();
         FdoPtr<FdoIConnectionPropertyDictionary> connProps2 = connInfo2->GetConnectionProperties();
 
@@ -1206,10 +1216,11 @@ void OdbcAccessFdoConnectTest::InfoTest()
         strPWD = connProps2->GetProperty(L"Password");
         strConnectionString = connProps->GetProperty(L"ConnectionString");
 
+        temp = FdoStringP::Format(L"Driver={%ls};DBQ=.\\MsTest.mdb", pOdbcConnectionUtil.GetAccessODBCDriverName());
         if (wcscmp(strDSN, L"MsTest") != 0 ||
             wcscmp(strUID, L"Tester2") != 0 ||
             wcscmp(strPWD, L"Test3")  != 0 ||
-            wcscmp(strConnectionString, L"Driver={Microsoft Access Driver (*.mdb)};DBQ=MSTest.mdb")  != 0)
+            wcscmp(strConnectionString, temp)  != 0)
         {
             CPPUNIT_FAIL("FAILED - ConnectionInfo not initialized from connection string as expected\n");
         }

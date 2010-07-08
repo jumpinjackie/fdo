@@ -39,10 +39,15 @@ public:
 class OdbcConnectionUtil : public ConnectionUtil
 {
 private:
-	FdoPtr<StringPropertiesDictionary> m_SetupValues;
-	FdoStringP m_IdTest;
-	FdoStringP m_ProviderActive;
-	char theOracleDriverName[1024];
+    FdoPtr<StringPropertiesDictionary> m_SetupValues;
+    FdoStringP m_IdTest;
+    FdoStringP m_ProviderActive;
+    char theOracleDriverName[1024];
+    FdoStringP ACCESS_ODBC_DRIVER_NAME;
+    FdoStringP EXCEL_ODBC_DRIVER_NAME;
+    FdoStringP TEXT_ODBC_DRIVER_NAME;
+    FdoStringP DBASE_ODBC_DRIVER_NAME;
+    FdoStringP MYSQL_ODBC_DRIVER_NAME;
 
 public:
 	OdbcConnectionUtil(void);
@@ -56,6 +61,17 @@ public:
 	virtual wchar_t* GetConnectionString(StringConnTypeRequest pTypeReq = Connection_WithDatastore, FdoString *suffix = L"", bool bAddExtraneousSpaces = false);
 	virtual const char* GetSuffixTest(){return "_odbc";};
 
+public:
+    FdoString* GetAccessODBCDriverName() {return ACCESS_ODBC_DRIVER_NAME;};
+    FdoString* GetExcelODBCDriverName() {return EXCEL_ODBC_DRIVER_NAME;};
+    FdoString* GetTextODBCDriverName() {return TEXT_ODBC_DRIVER_NAME;};
+    FdoString* GetDbaseODBCDriverName() {return DBASE_ODBC_DRIVER_NAME;};
+    FdoString* GetMySQLODBCDriverName() {return MYSQL_ODBC_DRIVER_NAME;};
+
+#ifdef _WIN32
+    const char* GetTestDataPath();
+#endif
+
 protected:
 	void CleanFiles(std::vector<std::wstring>& files, FdoStringP& pTypeName);
 #ifdef _WIN32
@@ -66,6 +82,7 @@ protected:
 	bool m_SetupSqlServerDSNdone;
 	bool m_SetupMySqlDSNdone;
 	bool m_SetupOracleDSNdone;
+	char m_testDataPath[MAX_PATH];
 
 	void SetupTextDSN();
 	void SetupAccessDSN();

@@ -20,6 +20,7 @@
 #include "OdbcFdoInsertTest.h"
 #include "UnitTestUtil.h"
 #include "OdbcBaseSetup.h"
+#include "OdbcConnectionUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoInsertTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoInsertTest, "FdoInsertTest");
@@ -358,6 +359,14 @@ void OdbcBaseFdoInsertTest::insertTable1()
 
 #ifdef _WIN32
 
+extern OdbcConnectionUtil pOdbcConnectionUtil;
+FdoString* OdbcAccessFdoInsertTest::GetConnectStringLidar() 
+{
+    FdoStringP path = pOdbcConnectionUtil.GetTestDataPath();
+    m_connectStringLidar = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};DBQ=%ls/Lidar.mdb;ReadOnly=False\"", pOdbcConnectionUtil.GetAccessODBCDriverName(), (FdoString*)path);
+    return m_connectStringLidar;
+}
+
 void OdbcAccessFdoInsertTest::insertLidar()
 {
 	clock_t start, finish;
@@ -421,6 +430,13 @@ void OdbcAccessFdoInsertTest::insertLidar()
     {
         TestCommonFail (ex);
     }
+}
+
+FdoString* OdbcExcelFdoInsertTest::GetConnectString()
+{
+    FdoStringP path = pOdbcConnectionUtil.GetTestDataPath();
+    m_connectStringExcelInsert = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};Dbq=%ls/MsTest.xls;ReadOnly=False\"", pOdbcConnectionUtil.GetExcelODBCDriverName(), (FdoString*)path);
+    return m_connectStringExcelInsert;
 }
 
 void OdbcExcelFdoInsertTest::insertTable1()

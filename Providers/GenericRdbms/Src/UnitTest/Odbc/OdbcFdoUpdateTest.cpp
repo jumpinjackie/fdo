@@ -20,6 +20,7 @@
 #include "OdbcFdoUpdateTest.h"
 #include "UnitTestUtil.h"
 #include "OdbcBaseSetup.h"
+#include "OdbcConnectionUtil.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoUpdateTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoUpdateTest, "FdoUpdateTest");
@@ -604,6 +605,14 @@ void OdbcExcelFdoUpdateTest::updateTable1()
     {
         TestCommonFail (ex);
     }
+}
+
+extern OdbcConnectionUtil pOdbcConnectionUtil;
+FdoString* OdbcExcelFdoUpdateTest::GetConnectString() 
+{
+    FdoStringP path = pOdbcConnectionUtil.GetTestDataPath();
+    m_connectStringExcelUpdate = FdoStringP::Format(L"ConnectionString=\"Driver={%ls};Dbq=%ls/MsTest.xls;ReadOnly=False\"", pOdbcConnectionUtil.GetExcelODBCDriverName(), (FdoString*)path);
+    return m_connectStringExcelUpdate;
 }
 
 #endif
