@@ -123,9 +123,11 @@ class OdbcAccessFdoInsertTest : public OdbcBaseFdoInsertTest
     void insertLidar();
 
     // Some values that can vary by target datastore...
-    FdoString * GetConnectStringLidar() {return L"ConnectionString=\"Driver={Microsoft Access Driver (*.mdb)};DBQ=Dbg/Lidar.mdb;ReadOnly=False\"";}
+    FdoString * GetConnectStringLidar();
     FdoString * GetConfigFile() {return L"MsTestConfig.xml";}
     FdoString * GetConfigFile2() {return L"MsTestNoGeometry.xml";}
+private:
+    FdoStringP m_connectStringLidar;
 };
 
 class OdbcExcelFdoInsertTest : public OdbcBaseFdoInsertTest
@@ -142,8 +144,10 @@ class OdbcExcelFdoInsertTest : public OdbcBaseFdoInsertTest
     void insertPoints();
 
     // Some values that can vary by target datastore...
-    FdoString * GetConnectString() {return L"ConnectionString=\"Driver={Microsoft Excel Driver (*.xls)};Dbq=Dbg/MsTest.xls;ReadOnly=False\"";}
+    FdoString * GetConnectString();
     FdoString * GetConfigFile() {return L"MsTestXlsConfig.xml";}
+private:
+    FdoStringP m_connectStringExcelInsert;
 };
 
 #else

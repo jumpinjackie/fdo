@@ -19,6 +19,9 @@
 #include "Pch.h"
 #include "OdbcFdoConnectionInfoTest.h"
 #include "UnitTestUtil.h"
+#include "OdbcConnectionUtil.h"
+
+extern OdbcConnectionUtil pOdbcConnectionUtil;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OdbcMySqlFdoConnectionInfoTest);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION(OdbcMySqlFdoConnectionInfoTest, "FdoConnectionInfoTest");
@@ -220,9 +223,8 @@ void OdbcAccessFdoConnectionInfoTest::SetExpectedFileList ()
 void OdbcAccessFdoConnectionInfoTest::TestProviderInfo ()
 {
 
-    FdoStringP connectionStringDriver =
-                                L"Driver={Microsoft Access Driver (*.mdb)}";
-    FdoStringP connectionStringDbq = L"DBQ=MsTest.mdb";
+    FdoStringP connectionStringDriver = FdoStringP::Format(L"Driver={%ls}", pOdbcConnectionUtil.GetAccessODBCDriverName());
+    FdoStringP connectionStringDbq = L"DBQ=.\\MsTest.mdb";
     FdoStringP userConnectionString;
 
     try {

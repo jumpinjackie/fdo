@@ -113,7 +113,14 @@ OdbcConnectionUtil::OdbcConnectionUtil(void)
 	m_SetupTextDSNdone = m_SetupAccessDSNdone = m_SetupExcelDSNdone = false;
     m_SetupSqlServerDSNdone = m_SetupMySqlDSNdone = m_SetupOracleDSNdone = false;
     m_SetupDbaseDSNdone = false;
+    m_testDataPath[0] = '\0';
 #endif
+
+    ACCESS_ODBC_DRIVER_NAME = L"Microsoft Access Driver (*.mdb)";
+    EXCEL_ODBC_DRIVER_NAME = L"Microsoft Excel Driver (*.xls)";
+    TEXT_ODBC_DRIVER_NAME = L"Microsoft Text Driver (*.txt; *.csv)";
+    DBASE_ODBC_DRIVER_NAME = L"Microsoft dBase Driver (*.dbf)";
+    MYSQL_ODBC_DRIVER_NAME = L"MySQL ODBC 3.51 Driver";
 }
 
 void OdbcConnectionUtil::LoadInitializeFile()
@@ -203,23 +210,51 @@ void OdbcConnectionUtil::LoadInitializeFile()
 			m_SetupValues->SetProperty( L"enableOracleSetup", L"true");
 		
         // Access
-		if (!m_SetupValues->PropertyExist( L"DSNAccess" ))
-			m_SetupValues->SetProperty( L"DSNAccess", ODBCACCESS_DSN_DEFAULT);
+        if (!m_SetupValues->PropertyExist( L"DSNAccess" ))
+            m_SetupValues->SetProperty( L"DSNAccess", ODBCACCESS_DSN_DEFAULT);
+        if (m_SetupValues->PropertyExist( L"AccessDriverVersion" ))
+        {
+            FdoStringP strVersion = m_SetupValues->GetPropertyValue(L"AccessDriverVersion");
+            double dVersion = strVersion.ToDouble();
+            if (dVersion >= 12)
+                ACCESS_ODBC_DRIVER_NAME = L"Microsoft Access Driver (*.mdb, *.accdb)";
+        }
 
         // dBASE
-		if (!m_SetupValues->PropertyExist( L"DSNDbase" ))
-			m_SetupValues->SetProperty( L"DSNDbase", ODBCDBASE_DSN_DEFAULT);
+        if (!m_SetupValues->PropertyExist( L"DSNDbase" ))
+            m_SetupValues->SetProperty( L"DSNDbase", ODBCDBASE_DSN_DEFAULT);
+        if (m_SetupValues->PropertyExist( L"DbaseDriverVersion" ))
+        {
+            FdoStringP strVersion = m_SetupValues->GetPropertyValue(L"DbaseDriverVersion");
+            double dVersion = strVersion.ToDouble();
+            if (dVersion >= 12)
+                DBASE_ODBC_DRIVER_NAME = L"Microsoft Access dBASE Driver (*.dbf, *.ndx, *.mdx)";
+        }
 
-		// Excel
-		if (!m_SetupValues->PropertyExist( L"DSNExcel" ))
-			m_SetupValues->SetProperty( L"DSNExcel", ODBCEXCEL_DSN_DEFAULT);
-		
-		// Text
-		if (!m_SetupValues->PropertyExist( L"DSNText" ))
-			m_SetupValues->SetProperty( L"DSNText", ODBCTEXT_DSN_DEFAULT);
+        // Excel
+        if (!m_SetupValues->PropertyExist( L"DSNExcel" ))
+            m_SetupValues->SetProperty( L"DSNExcel", ODBCEXCEL_DSN_DEFAULT);
+        if (m_SetupValues->PropertyExist( L"ExcelDriverVersion" ))
+        {
+            FdoStringP strVersion = m_SetupValues->GetPropertyValue(L"ExcelDriverVersion");
+            double dVersion = strVersion.ToDouble();
+            if (dVersion >= 12)
+                EXCEL_ODBC_DRIVER_NAME = L"Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)";
+        }
+        
+        // Text
+        if (!m_SetupValues->PropertyExist( L"DSNText" ))
+            m_SetupValues->SetProperty( L"DSNText", ODBCTEXT_DSN_DEFAULT);
+        if (m_SetupValues->PropertyExist( L"TextDriverVersion" ))
+        {
+            FdoStringP strVersion = m_SetupValues->GetPropertyValue(L"TextDriverVersion");
+            double dVersion = strVersion.ToDouble();
+            if (dVersion >= 12)
+                TEXT_ODBC_DRIVER_NAME = L"Microsoft Access Text Driver (*.txt, *.csv)";
+        }
 
-		if (!m_SetupValues->PropertyExist( L"clean" ))
-			m_SetupValues->SetProperty( L"clean", L"true");
+        if (!m_SetupValues->PropertyExist( L"clean" ))
+            m_SetupValues->SetProperty( L"clean", L"true");
 	}
 	catch(...){}
 }
@@ -449,7 +484,8 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 				swprintf( 
                     connectString, 
                     sizeof(connectString)/sizeof(wchar_t), 
-                    L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%ls;DATABASE=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    L"ConnectionString=\"DRIVER=%ls;SERVER=%ls;DATABASE=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    (FdoString*) MYSQL_ODBC_DRIVER_NAME,
                     (FdoString*) service, 
                     (FdoString*) datastore, 
                     (FdoString*) username, 
@@ -517,7 +553,8 @@ wchar_t *OdbcConnectionUtil::GetConnectionString(StringConnTypeRequest pTypeReq,
 				swprintf( 
                     connectString, 
                     sizeof(connectString)/sizeof(wchar_t), 
-                    L"ConnectionString=\"DRIVER={MySQL ODBC 3.51 Driver};SERVER=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    L"ConnectionString=\"DRIVER=%ls;SERVER=%ls;USER=%ls;PASSWORD=%ls;OPTION=3;\"", 
+                    (FdoString*)MYSQL_ODBC_DRIVER_NAME,
                     (FdoString*)service, 
                     (FdoString*)username, 
                     (FdoString*)password
@@ -682,93 +719,95 @@ FdoStringP OdbcConnectionUtil::GetOutputFileName (FdoString* pBaseFileName)
 }
 
 #ifdef _WIN32
+
+const char* OdbcConnectionUtil::GetTestDataPath()
+{
+    if (m_testDataPath[0] == '\0')
+    {
+        DWORD nchars;
+        char* last;
+        nchars = GetModuleFileName (NULL, m_testDataPath, MAX_PATH);
+        if (0 != nchars)
+        {   
+            // scan the string for the last occurrence of a slash
+            last = strrchr (m_testDataPath, '\\');
+            if (NULL != last)
+            {
+                last++; // move past the slash
+                *last = '\0'; // null terminate it there
+            }
+        }
+    }
+    return m_testDataPath;
+}
+
 void OdbcConnectionUtil::SetupTextDSN()
 {
-    char module[MAX_PATH];
-    char teststr[1024];
-    DWORD nchars;
-    char* last;
-    m_SetupTextDSNdone = true;
-    nchars = GetModuleFileName (NULL, module, MAX_PATH);
-    if (0 != nchars)
-    {   
-        // scan the string for the last occurrence of a slash
-        last = strrchr (module, '\\');
-        if (NULL != last)
-        {
-            last++; // move past the slash
-            *last = '\0'; // null terminate it there
-			sprintf (teststr, "DSN=%s%cDescription=Test Text datastore for FDO ODBC provider%cDefaultDir=%s%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNText" )
-				, '\0', '\0', module, "/Odbc", '\0', '\0');
-            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "Microsoft Text Driver (*.txt; *.csv)", teststr))
-			{
-                DWORD error;
-                WORD count;
-                SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
-                printf (teststr);
-                throw FdoException::Create (L"Text DSN setup failed");
-			}
+    const char* module = GetTestDataPath();
+	if (module != NULL && module[0] != '\0')
+	{
+		char teststr[1024];
+		m_SetupTextDSNdone = true;
+
+		sprintf (teststr, "DSN=%s%cDescription=Test Text datastore for FDO ODBC provider%cDefaultDir=%s%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNText" )
+			, '\0', '\0', module, "/Odbc", '\0', '\0');
+        if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)TEXT_ODBC_DRIVER_NAME, teststr))
+		{
+            DWORD error;
+            WORD count;
+            SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
+            printf (teststr);
+            throw FdoException::Create (L"Text DSN setup failed");
 		}
 	}
 }
 
 void OdbcConnectionUtil::SetupAccessDSN()
 {
-    char module[MAX_PATH];
-    char teststr[1024];
-    DWORD nchars;
-    char* last;
-    m_SetupAccessDSNdone = true;
-    nchars = GetModuleFileName (NULL, module, MAX_PATH);
-    if (0 != nchars)
-    {   
-        // scan the string for the last occurrence of a slash
-        last = strrchr (module, '\\');
-        if (NULL != last)
-        {
-            last++; // move past the slash
-            *last = '\0'; // null terminate it there
-            sprintf (teststr, "DSN=%s%cDescription=Test Access datastore for FDO ODBC provider%cDBQ=%sMSTest.mdb%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNAccess" ), 
-				'\0', '\0', module, '\0', '\0');
-            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb)", teststr))
-			{
-                DWORD error;
-                WORD count;
-                SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
-                printf (teststr);
-                throw FdoException::Create (L"Access DSN setup failed");
-			}
+    const char* module = GetTestDataPath();
+	if (module != NULL && module[0] != '\0')
+	{
+        char teststr[1024];
+        m_SetupAccessDSNdone = true;
+        sprintf (teststr, "DSN=%s%cDescription=Test Access datastore for FDO ODBC provider%cDBQ=%sMSTest.mdb%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNAccess" ), 
+            '\0', '\0', module, '\0', '\0');
+        if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)ACCESS_ODBC_DRIVER_NAME, teststr))
+		{
+            DWORD error;
+            WORD count;
+            SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
+            printf (teststr);
+            throw FdoException::Create (L"Access DSN setup failed");
 		}
 	}
 }
 
 void OdbcConnectionUtil::SetupDbaseDSN()
 {
-    char module[MAX_PATH];
-    char teststr[1024];
-    DWORD nchars;
-    char* last;
-    m_SetupDbaseDSNdone = true;
-    nchars = GetModuleFileName (NULL, module, MAX_PATH);
-    if (0 != nchars)
-    {   
-        // scan the string for the last occurrence of a slash
-        last = strrchr (module, '\\');
-        if (NULL != last)
+    const char* module = GetTestDataPath();
+	if (module != NULL && module[0] != '\0')
+	{
+        // Remove the slash at the end of string
+        char newModule[MAX_PATH];
+        strcpy(newModule, module);
+        int nLen = strlen(newModule);
+        if (nLen > 0 && newModule[nLen-1] == '\\')
+            newModule[nLen-1] = '\0';
+
+        char teststr[1024];
+        m_SetupDbaseDSNdone = true;
+
+        FdoStringP dsnNameP = m_SetupValues->GetPropertyValue( L"DSNDbase" );
+        const char * dsnName = (const char*)dsnNameP;
+        sprintf (teststr, "DSN=%s%cDescription=Test dBASE datastore for FDO ODBC provider%cDefaultDir=%s%c%c", dsnName, 
+            '\0', '\0', newModule, '\0', '\0');
+        if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)DBASE_ODBC_DRIVER_NAME, teststr))
         {
-            *last = '\0'; // null terminate it there
-            FdoStringP dsnNameP = m_SetupValues->GetPropertyValue( L"DSNDbase" );
-            const char * dsnName = (const char*)dsnNameP;
-            sprintf (teststr, "DSN=%s%cDescription=Test dBASE datastore for FDO ODBC provider%cDefaultDir=%s%c%c", dsnName, 
-				'\0', '\0', module, '\0', '\0');
-            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "Microsoft dBase Driver (*.dbf)", teststr))
-			{
-                DWORD error;
-                WORD count;
-                SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
-                printf (teststr);
-                throw FdoException::Create (L"dBASE DSN setup failed");
-			}
+            DWORD error;
+            WORD count;
+            SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
+            printf (teststr);
+            throw FdoException::Create (L"dBASE DSN setup failed");
 		}
 	}
 }
@@ -791,7 +830,7 @@ void OdbcConnectionUtil::SetupExcelDSN()
             *last = '\0'; // null terminate it there
             sprintf (teststr, "DSN=%s%cDescription=Test Excel datastore for FDO ODBC provider%cDBQ=%sMSTest.xls%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ),
 				'\0', '\0', module, '\0', '\0');
-            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "Microsoft Excel Driver (*.xls)", teststr))
+            if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)EXCEL_ODBC_DRIVER_NAME, teststr))
 			{
                 DWORD error;
                 WORD count;
@@ -817,23 +856,6 @@ void OdbcConnectionUtil::SetupSqlServerDSN()
         printf (teststr);
         throw FdoException::Create (L"SqlServer DSN setup failed");
     }
-}
-
-void OdbcConnectionUtil::SetupMySqlDSN()
-{
-    char teststr[1024];
-    sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%ls%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
-		'\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', (FdoString*)(UnitTestUtil::GetEnviron("datastore", L"")), '\0', '\0', '\0');
-    m_SetupMySqlDSNdone = true;
-    if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, "MySQL ODBC 3.51 Driver", teststr))
-    {
-        DWORD error;
-        WORD count;
-        SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
-        printf (teststr);
-        throw FdoException::Create (L"MySql DSN setup failed");
-    }
-
 }
 
 #define SQLRETURN_OK(rc)    (SQL_SUCCESS == rc || SQL_SUCCESS_WITH_INFO == rc)
@@ -937,13 +959,68 @@ void OdbcConnectionUtil::SetupOracleDSN()
         throw FdoException::Create (L"Oracle DSN setup failed");
 }
 
+void OdbcConnectionUtil::SetupMySqlDSN()
+{
+    // Get the name of MySQL ODBC Driver
+    char driverDesc[1024];
+    char driverAttrs[1024];
+    char theMySQLDriverName[1024] = "";
+    BOOL ret = false;
+    SQLRETURN rc = SQL_ERROR;
+
+    SQLHENV sqlenv = SQL_NULL_HENV;
+    rc = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &sqlenv);
+    if ( SQLRETURN_OK(rc) )
+        rc = SQLSetEnvAttr(sqlenv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER);
+
+    if ( SQLRETURN_OK(rc) )
+    {
+        SQLUSMALLINT direction = SQL_FETCH_FIRST;
+        SQLSMALLINT driverDescLength = 0;
+        SQLSMALLINT driverAttrsLength = 0;
+        do
+        {
+            driverDescLength = 0;
+            driverAttrsLength = 0;
+            rc = SQLDrivers(sqlenv, direction, (SQLCHAR *) driverDesc, (SQLSMALLINT) sizeof(driverDesc), &driverDescLength,
+                (SQLCHAR *) driverAttrs, (SQLSMALLINT) sizeof(driverAttrs), &driverAttrsLength);
+            if (SQLRETURN_OK(rc))
+            {
+                if (NULL != strstr(driverDesc, "MySQL"))
+                    strcpy(theMySQLDriverName, driverDesc);
+            }
+            direction = SQL_FETCH_NEXT;
+        }
+        while ( SQLRETURN_OK(rc) && SQL_NO_DATA != rc && '\0' == theMySQLDriverName[0] );
+    }
+
+    if (sqlenv != SQL_NULL_HENV)
+        SQLFreeHandle(SQL_HANDLE_ENV, sqlenv);
+
+    if ('\0' != theMySQLDriverName[0])
+        MYSQL_ODBC_DRIVER_NAME = theMySQLDriverName;
+
+    char teststr[1024];
+    sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%ls%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
+        '\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', (FdoString*)(UnitTestUtil::GetEnviron("datastore", L"")), '\0', '\0', '\0');
+    m_SetupMySqlDSNdone = true;
+    if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)MYSQL_ODBC_DRIVER_NAME, teststr))
+    {
+        DWORD error;
+        WORD count;
+        SQLInstallerError (1, &error, teststr, sizeof (teststr), &count);
+        printf (teststr);
+        throw FdoException::Create (L"MySql DSN setup failed");
+    }
+}
+
 void OdbcConnectionUtil::TeardownAccessDSN()
 {
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
 	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNAccess" ), '\0', '\0');
-    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Access Driver (*.mdb)", pString))
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, (const char*)ACCESS_ODBC_DRIVER_NAME, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
 		printf ("\nAccess DSN teardown failed:\n");
@@ -959,7 +1036,7 @@ void OdbcConnectionUtil::TeardownDbaseDSN()
     FdoStringP dsnNameP = m_SetupValues->GetPropertyValue( L"DSNDbase" );
     const char * dsnName = (const char*)dsnNameP;
 	sprintf( pString, "DSN=%s%c%c", dsnName, '\0', '\0');
-    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft dBase Driver (*.dbf)", pString))
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, (const char*)DBASE_ODBC_DRIVER_NAME, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
 		printf ("\ndBASE DSN teardown failed:\n");
@@ -973,7 +1050,7 @@ void OdbcConnectionUtil::TeardownExcelDSN()
     DWORD error;
     WORD count;
 	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNExcel" ), '\0', '\0' );
-    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Excel Driver (*.xls)", pString))
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, (const char*)EXCEL_ODBC_DRIVER_NAME, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
 		printf ("\nExcel DSN teardown failed:\n");
@@ -987,7 +1064,7 @@ void OdbcConnectionUtil::TeardownTextDSN()
     DWORD error;
     WORD count;
 	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNText" ), '\0', '\0');
-    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "Microsoft Text Driver (*.txt; *.csv)", pString))
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, (const char*)TEXT_ODBC_DRIVER_NAME, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
 		printf ("\nText DSN teardown failed:\n");
@@ -1014,11 +1091,11 @@ void OdbcConnectionUtil::TeardownMySqlDSN()
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
-	sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), '\0', '\0');
-    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, "MySQL ODBC 3.51 Driver", pString))
+    sprintf( pString, "DSN=%s%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), '\0', '\0');
+    if (!SQLConfigDataSource (NULL, ODBC_REMOVE_DSN, (const char*)MYSQL_ODBC_DRIVER_NAME, pString))
     {
         SQLInstallerError (1, &error, pString, sizeof (pString), &count);
-		printf ("\nMySql DSN teardown failed:\n");
+        printf ("\nMySql DSN teardown failed:\n");
         printf (pString);
     }
 }

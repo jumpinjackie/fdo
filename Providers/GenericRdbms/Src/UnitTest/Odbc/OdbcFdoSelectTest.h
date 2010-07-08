@@ -268,7 +268,6 @@ class OdbcExcelFdoSelectTest : public OdbcFdoSelectTest
     void CityTest();
 
     // Some values that can vary by target datastore...
-    //FdoString * GetConnectString() {return L"ConnectionString=\"Driver={Microsoft Excel Driver (*.xls)};Dbq=Dbg/MsTest.xls;\"";}
     FdoString * GetConnectString() {return L"DataSourceName=MsTestXls;UserId=;Password=;";}
     FdoString * GetConfigFile() {return L"MsTestXlsConfig.xml";}
     FdoString * GetConfigFile2() {return L"MsTestXlsConfigNoIdent.xml";}
