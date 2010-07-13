@@ -3606,7 +3606,13 @@ int SltConnection::StartTransaction(bool isUserTrans)
         if (rc == SQLITE_OK)
             m_transactionState = SQLiteActiveTransactionType_User;
         else
-            throw FdoException::Create(L"SQLite begin transaction failed!", rc);
+        {
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+            else
+                throw FdoException::Create(L"SQLite begin transaction failed!", rc);
+        }
     }
     return rc;
 }
@@ -3644,7 +3650,13 @@ int SltConnection::CommitTransaction(bool isUserTrans)
             if (rc == SQLITE_OK)
                 m_transactionState = SQLiteActiveTransactionType_None;
             else
-                throw FdoException::Create(L"SQLite commit transaction failed!", rc);
+            {
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoException::Create(L"SQLite commit transaction failed!", rc);
+            }
             
             if (!m_updateHookEnabled && m_changesAvailable)
                 SltConnection::commit_hook(this);
@@ -3682,7 +3694,18 @@ int SltConnection::RollbackTransaction(bool isUserTrans)
         {
             // commit internal transaction and open an user transaction
             rc = sqlite3_exec(m_dbWrite, "ROLLBACK;", NULL, NULL, NULL);
-
+#if 0
+            // should we throw an exception?
+            // how an application can recover from this point?
+            if (rc != SQLITE_OK)
+            {
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoException::Create(L"SQLite commit transaction failed!", rc);
+            }
+#endif
             m_transactionState = SQLiteActiveTransactionType_None;
             
             if (!m_updateHookEnabled && m_changesAvailable)
