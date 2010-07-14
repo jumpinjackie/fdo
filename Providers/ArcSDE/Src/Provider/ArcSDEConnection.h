@@ -76,6 +76,10 @@ protected:
     LONG mCachedSpatialRefListCount;
     bool mCachedSpatialRefListCreatedByUs;
 
+	bool mIsSchemaClassNameCached;
+	typedef std::map<FdoStringP, FdoStringsP> SchemaClassMap;
+	SchemaClassMap mCachedSchemaClassNames; 
+
     /**
      * Cached schema mapping information.
      */
@@ -128,6 +132,12 @@ protected:
 	 * Set if the generator object is initialized
 	 */
 	bool m_uuidGeneratorCreated;
+
+private:
+	/*
+	 * Get the registered table names from server and cached them in the connection.
+	 */
+	void GetRegisteredTableNames();
 
 public:
 
@@ -281,6 +291,13 @@ public:
 
     // Returns the current schema.
     FdoFeatureSchemaCollection* GetSchemaCollection (FdoIdentifier* name = NULL, bool bAutoLoad = true, bool* bIsFullyLoaded=NULL);
+
+	// Return the schema names.
+	FdoStringCollection* GetSchemaNames();
+
+	// Return all the qualified feature class names of a specified schema.
+	// If the schema name is not specified, all the qualified feature class names are returned.
+	FdoStringCollection* GetFeatureClassNames(FdoStringP schemaName);
 
     // Stores the schema collection as the current schema collection.
     void SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection, bool bFullyLoaded);

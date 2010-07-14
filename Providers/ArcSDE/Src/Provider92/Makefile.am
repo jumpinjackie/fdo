@@ -36,7 +36,9 @@ libArcSDEProvider92_la_SOURCES = \
   ../Provider/ArcSDEFeatureInfoReader.cpp \
   ../Provider/ArcSDEFunctionLength2D.cpp \
   ../Provider/ArcSDEFunctionArea2D.cpp \
+  ../Provider/ArcSDEGetClassNamesCommand.cpp \
   ../Provider/ArcSDEGetLongTransactionsCommand.cpp \
+  ../Provider/ArcSDEGetSchemaNamesCommand.cpp \
   ../Provider/ArcSDEGetSpatialContexts.cpp \
   ../Provider/ArcSDEIndexMapping.cpp \
   ../Provider/ArcSDEInsertCommand.cpp \
@@ -111,10 +113,12 @@ noinst_HEADERS = $(libArcSDEProvider92_la_SOURCES) \
    ../Provider/ArcSDEFilterToSql.h \
    ../Provider/ArcSDEFunctionLength2D.h \
    ../Provider/ArcSDEFunctionArea2D.h \
+   ../Provider/ArcSDEGetClassNamesCommand.h \   
    ../Provider/ArcSDEGetLockedObjectsCommand.h \
    ../Provider/ArcSDEGetLockInfoCommand.h \
    ../Provider/ArcSDEGetLockOwnersCommand.h \
    ../Provider/ArcSDEGetLongTransactionsCommand.h \
+   ../Provider/ArcSDEGetSchemaNamesCommand.h \
    ../Provider/ArcSDEGetSpatialContexts.h \
    ../Provider/ArcSDEInsertCommand.h \
    ../Provider/ArcSDEListDataStores.h \
