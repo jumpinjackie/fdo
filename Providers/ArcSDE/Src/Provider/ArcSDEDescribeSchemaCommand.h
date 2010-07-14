@@ -28,7 +28,7 @@ class ArcSDEDescribeSchemaCommand :
 
 private:
     wchar_t* mSchemaName;
-    FdoStringCollection* mClassNames;
+    FdoStringsP mClassNames;
 	FdoPtr<FdoIdentifier> mFdoClassIdToLoad;
 
 private:

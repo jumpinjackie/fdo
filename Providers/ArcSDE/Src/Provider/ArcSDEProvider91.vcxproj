@@ -785,6 +785,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ArcSDECommand.h" />
+    <ClInclude Include="ArcSDEGetClassNamesCommand.h" />
+    <ClInclude Include="ArcSDEGetSchemaNamesCommand.h" />
     <ClInclude Include="ArcSDEProvider.h" />
     <ClInclude Include="ArcSDETransaction.h" />
     <ClInclude Include="ArcSDEUtils.h" />
@@ -851,6 +853,8 @@
     <ClInclude Include="ArcSDEListDataStores.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArcSDEGetClassNamesCommand.cpp" />
+    <ClCompile Include="ArcSDEGetSchemaNamesCommand.cpp" />
     <ClCompile Include="ArcSDEProvider.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug91Only|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

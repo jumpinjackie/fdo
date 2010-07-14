@@ -23,8 +23,7 @@
 
 ArcSDEDescribeSchemaCommand::ArcSDEDescribeSchemaCommand (FdoIConnection *connection, FdoIdentifier* fdoClassIdToLoad) :
     ArcSDECommand<FdoIDescribeSchema> (connection),
-    mSchemaName (NULL),
-    mClassNames (NULL)
+    mSchemaName (NULL)
 {
 	mFdoClassIdToLoad = FDO_SAFE_ADDREF(fdoClassIdToLoad);
 }
@@ -80,7 +79,7 @@ void ArcSDEDescribeSchemaCommand::SetSchemaName (const wchar_t* value)
 /// <returns>Returns the collection of class names</returns>
 FdoStringCollection* ArcSDEDescribeSchemaCommand::GetClassNames()
 {
-    return mClassNames;
+    return FDO_SAFE_ADDREF(mClassNames.p);
 }
 
 /// <summary>Sets the name of the classes to retrieve. This is optional, if not
@@ -94,9 +93,7 @@ FdoStringCollection* ArcSDEDescribeSchemaCommand::GetClassNames()
 /// <returns>Returns nothing</returns>
 void ArcSDEDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
 {
-    // Do nothing.
-    // This method is not implemented.  DescribeSchema command
-    // will describe all classes.
+	mClassNames = FDO_SAFE_ADDREF(value);
 }
 
 FdoDataType ArcSDEDescribeSchemaCommand::MetadataValueToFDOType(CHAR* value)

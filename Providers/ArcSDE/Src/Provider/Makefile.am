@@ -45,7 +45,9 @@ libArcSDEProvider91_la_SOURCES = \
   ArcSDEFeatureInfoReader.cpp \
   ArcSDEFunctionLength2D.cpp \
   ArcSDEFunctionArea2D.cpp \
+  ArcSDEGetClassNamesCommand.cpp \
   ArcSDEGetLongTransactionsCommand.cpp \
+  ArcSDEGetSchemaNamesCommand.cpp \
   ArcSDEGetSpatialContexts.cpp \
   ArcSDEIndexMapping.cpp \
   ArcSDEInsertCommand.cpp \
@@ -120,10 +122,12 @@ noinst_HEADERS = $(libArcSDEProvider91_la_SOURCES) \
    ArcSDEFilterToSql.h \
    ArcSDEFunctionLength2D.h \
    ArcSDEFunctionArea2D.h \
+   ArcSDEGetClassNamesCommand.h \
    ArcSDEGetLockedObjectsCommand.h \
    ArcSDEGetLockInfoCommand.h \
    ArcSDEGetLockOwnersCommand.h \
    ArcSDEGetLongTransactionsCommand.h \
+   ArcSDEGetSchemaNamesCommand.h \
    ArcSDEGetSpatialContexts.h \
    ArcSDEInsertCommand.h \
    ArcSDEListDataStores.h \
