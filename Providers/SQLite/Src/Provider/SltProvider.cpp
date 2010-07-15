@@ -1733,6 +1733,13 @@ SpatialIndex* SltConnection::GetSpatialIndex(const char* table)
     SltMetadata* md = GetMetadata(table);
     if(md == NULL || md->IsView())
     {
+        if (md == NULL)
+        {
+            std::wstring errVal(L"Class '");
+            errVal.append(A2W_SLOW(table));
+            errVal.append(L"' is not found");
+            throw FdoException::Create(errVal.c_str(), 1);
+        }
         if(md != NULL && md->GetIdName() != NULL)
         {
             si = GetSpatialIndex(md->GetMainViewTable());
