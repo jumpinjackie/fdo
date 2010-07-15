@@ -513,7 +513,8 @@ void ReaderTest::TestExceptionalCase()
         select1->SetFeatureClassName(L"SHP_Schema:bayarea_cities");
 
         FdoPtr<FdoIdentifierCollection> props = select1->GetPropertyNames();
-        props->Add(FdoIdentifier::Create(L"CITY"));
+        FdoPtr<FdoIdentifier> propIfd = FdoIdentifier::Create(L"CITY");
+        props->Add(propIfd);
 
         FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"CITY='ALAMEDA'");
         select1->SetGroupingFilter(groupingFilter);
