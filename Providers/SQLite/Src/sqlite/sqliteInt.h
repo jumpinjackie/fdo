@@ -850,6 +850,10 @@ struct sqlite3 {
   sqlite3 *pNextBlocked;        /* Next in list of all blocked connections */
 #endif
   void* pUserArg;               /* Custom user data used to share data over connection */
+  void* (*xSpIndexCallback)(void*,char const*,int*);
+  void (*xUpdSpIndexCallback)(void*,void*,int,sqlite3_int64,const void*,int);
+  void (*xRelSpIndexCallback)(void*,const char*);
+  void *pSpIndexArg;
 };
 
 /*
@@ -1151,6 +1155,8 @@ struct Table {
   Trigger *pTrigger;   /* List of triggers stored in pSchema */
   Schema *pSchema;     /* Schema that contains this table */
   Table *pNextZombie;  /* Next on the Parse.pZombieTab list */
+  void  *pSpIndex;     /* Spatial index of this table in case it was created. */
+  int nGeomColIdx;     /* Geometry column number of in this table 0 based */
 };
 
 /*
@@ -2416,7 +2422,7 @@ void sqlite3CreateView(Parse*,Token*,Token*,Token*,Select*,int,int);
 #endif
 
 void sqlite3DropTable(Parse*, SrcList*, int, int);
-void sqlite3DeleteTable(Table*);
+void sqlite3DeleteTable(sqlite3*, Table*);
 void sqlite3Insert(Parse*, SrcList*, ExprList*, Select*, IdList*, int);
 void *sqlite3ArrayAllocate(sqlite3*,void*,int,int,int*,int*,int*);
 IdList *sqlite3IdListAppend(sqlite3*, IdList*, Token*);

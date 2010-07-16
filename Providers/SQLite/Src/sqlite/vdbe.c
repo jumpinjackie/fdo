@@ -3721,6 +3721,7 @@ case OP_NewRowid: {           /* out2-prerelease */
 ** for indices is OP_IdxInsert.
 */
 case OP_Insert: {
+  Table* pTable;
   Mem *pData = &p->aMem[pOp->p2];
   Mem *pKey = &p->aMem[pOp->p3];
 
@@ -3785,10 +3786,26 @@ case OP_Insert: {
   pC->deferredMoveto = 0;
   pC->cacheStatus = CACHE_STALE;
 
+  pTable = (pOp->p4.p && pOp->p4type==P4_VPOINTER) ? (Table*)pOp->p4.p : 0;
+  // do we have accest to data to be inserted/updated?
+  if (pTable && (pOp-1)->opcode == OP_MakeRecord && pTable->pSpIndex){
+    int op = ((pOp->p5 & OPFLAG_ISUPDATE) ? SQLITE_UPDATE : SQLITE_INSERT);
+    // access the geometry value to avoid an extra query in order to do that
+    // we need to get the position in memory of data from previous operation
+    // we do that to avoid later extra queries
+    Mem* pGeom = &p->aMem[(pOp-1)->p1 + pTable->nGeomColIdx];
+    assert(db->xUpdSpIndexCallback!=0);
+    if (pGeom->flags&MEM_Null) // we have null geom
+      db->xUpdSpIndexCallback(db->pSpIndexArg, pTable->pSpIndex, op, iKey, 0, 0);
+    else if (pGeom->type==SQLITE_BLOB && pGeom->flags&MEM_Blob) // we have the geometry
+      db->xUpdSpIndexCallback(db->pSpIndexArg, pTable->pSpIndex, op, iKey, pGeom->z, pGeom->n);
+    else // could not get the geometry (pass size -1)
+      db->xUpdSpIndexCallback(db->pSpIndexArg, pTable->pSpIndex, op, iKey, 0, -1);
+  }
   /* Invoke the update-hook if required. */
-  if( rc==SQLITE_OK && db->xUpdateCallback && pOp->p4.z ){
+  if( rc==SQLITE_OK && db->xUpdateCallback && pTable ){
     const char *zDb = db->aDb[pC->iDb].zName;
-    const char *zTbl = pOp->p4.z;
+    const char *zTbl = pTable->zName;
     int op = ((pOp->p5 & OPFLAG_ISUPDATE) ? SQLITE_UPDATE : SQLITE_INSERT);
     assert( pC->isTable );
     db->xUpdateCallback(db->pUpdateArg, op, zDb, zTbl, iKey);
@@ -3818,6 +3835,7 @@ case OP_Insert: {
 ** using OP_NotFound prior to invoking this opcode.
 */
 case OP_Delete: {
+  Table* pTable;
   int i = pOp->p1;
   i64 iKey = 0;
   VdbeCursor *pC;
@@ -3842,10 +3860,17 @@ case OP_Delete: {
   rc = sqlite3BtreeDelete(pC->pCursor);
   pC->cacheStatus = CACHE_STALE;
 
+  pTable = (pOp->p4.p && pOp->p4type==P4_VPOINTER) ? (Table*)pOp->p4.p : 0;
+  // callback to inform we deleted a feature in case we have a SI
+  if (pTable && pTable->pSpIndex){
+      assert(db->xUpdSpIndexCallback!=0);
+      db->xUpdSpIndexCallback(db->pSpIndexArg, pTable->pSpIndex, SQLITE_DELETE, iKey, 0, 0);
+  }
+
   /* Invoke the update-hook if required. */
-  if( rc==SQLITE_OK && db->xUpdateCallback && pOp->p4.z ){
+  if( rc==SQLITE_OK && db->xUpdateCallback && pTable){
     const char *zDb = db->aDb[pC->iDb].zName;
-    const char *zTbl = pOp->p4.z;
+    const char *zTbl = pTable->zName;
     db->xUpdateCallback(db->pUpdateArg, SQLITE_DELETE, zDb, zTbl, iKey);
     assert( pC->iDb>=0 );
   }

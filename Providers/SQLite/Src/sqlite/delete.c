@@ -26,7 +26,7 @@ Table *sqlite3SrcListLookup(Parse *pParse, SrcList *pSrc){
   Table *pTab;
   assert( pItem && pSrc->nSrc==1 );
   pTab = sqlite3LocateTable(pParse, 0, pItem->zName, pItem->zDatabase);
-  sqlite3DeleteTable(pItem->pTab);
+  sqlite3DeleteTable(pParse->db, pItem->pTab);
   pItem->pTab = pTab;
   if( pTab ){
     pTab->nRef++;
@@ -523,7 +523,7 @@ void sqlite3GenerateRowDelete(
   sqlite3GenerateRowIndexDelete(pParse, pTab, iCur, 0);
   sqlite3VdbeAddOp2(v, OP_Delete, iCur, (count?OPFLAG_NCHANGE:0));
   if( count ){
-    sqlite3VdbeChangeP4(v, -1, pTab->zName, P4_STATIC);
+    sqlite3VdbeChangeP4(v, -1, (const char *)pTab, P4_VPOINTER);
   }
   sqlite3VdbeJumpHere(v, addr);
 }

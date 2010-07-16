@@ -3819,6 +3819,22 @@ void *sqlite3_update_hook(
   void*
 );
 
+void *sqlite3_spatial_index_hook(
+  sqlite3*, 
+  void* (*)(void*,const char*,int*),
+  void*
+);
+
+void sqlite3_update_spatial_index_hook(
+  sqlite3*, 
+  void (*)(void*,void*,int,sqlite3_int64,const void*,int)
+);
+
+void sqlite3_release_spatial_index_hook(
+  sqlite3*,
+  void (*)(void*,const char*)
+);
+
 /*
 ** CAPI3REF: Enable Or Disable Shared Pager Cache {H10330} <S30900>
 ** KEYWORDS: {shared cache} {shared cache mode}

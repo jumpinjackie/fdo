@@ -1696,6 +1696,19 @@ static void freeTempSpace(BtShared *pBt){
   pBt->pTmpSpace = 0;
 }
 
+int sqlite3BtreeIsShared(Btree *p){
+  BtShared *pBt = (p)?p->pBt:0;
+  int retVal = -1;
+  if (!pBt)
+    return -1;
+  assert( sqlite3_mutex_held(p->db->mutex) );
+  sqlite3BtreeEnter(p);
+  if (sqlite3GlobalConfig.sharedCacheEnabled && p->sharable && pBt)
+    retVal = pBt->nRef;
+  sqlite3BtreeLeave(p);
+  return retVal;
+}
+
 /*
 ** Close an open database and invalidate all cursors.
 */

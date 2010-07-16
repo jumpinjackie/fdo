@@ -112,6 +112,7 @@ typedef struct VdbeOpList VdbeOpList;
 */
 #define P4_KEYINFO_HANDOFF (-16)
 #define P4_KEYINFO_STATIC  (-17)
+#define P4_VPOINTER (-18) /* P4 is a pointer to a store a custom value */
 
 /*
 ** The Vdbe.aColName array contains 5n Mem structures, where n is the 

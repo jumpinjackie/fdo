@@ -100,6 +100,7 @@ void *sqlite3BtreeSchema(Btree *, int, void(*)(void *));
 int sqlite3BtreeSchemaLocked(Btree *);
 int sqlite3BtreeLockTable(Btree *, int, u8);
 int sqlite3BtreeSavepoint(Btree *, int, int);
+int sqlite3BtreeIsShared(Btree*);// ret < 2 = no; ret >= 2  = yes
 
 const char *sqlite3BtreeGetFilename(Btree *);
 const char *sqlite3BtreeGetJournalname(Btree *);

@@ -423,7 +423,7 @@ void sqlite3SchemaFree(void *p){
   for(pElem=sqliteHashFirst(&temp1); pElem; pElem=sqliteHashNext(pElem)){
     Table *pTab = sqliteHashData(pElem);
     assert( pTab->dbMem==0 );
-    sqlite3DeleteTable(pTab);
+    sqlite3DeleteTable(pSchema->db, pTab);
   }
   sqlite3HashClear(&temp1);
   pSchema->pSeqTab = 0;

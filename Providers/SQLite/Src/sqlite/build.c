@@ -414,7 +414,11 @@ void sqlite3ResetInternalSchema(sqlite3 *db, int iDb){
     Db *pDb = &db->aDb[i];
     if( pDb->pSchema ){
       assert(i==1 || (pDb->pBt && sqlite3BtreeHoldsMutex(pDb->pBt)));
-      sqlite3SchemaFree(pDb->pSchema);
+      if (sqlite3BtreeIsShared(pDb->pBt) < 2){
+        pDb->pSchema->db=db;
+        sqlite3SchemaFree(pDb->pSchema);
+      }
+      pDb->pSchema->db=0;
     }
     if( iDb>0 ) return;
   }
@@ -493,7 +497,7 @@ static void sqliteResetColumnNames(Table *pTable){
 ** memory structures of the indices and foreign keys associated with 
 ** the table.
 */
-void sqlite3DeleteTable(Table *pTable){
+void sqlite3DeleteTable(sqlite3* dbOwner, Table *pTable){
   Index *pIndex, *pNext;
   FKey *pFKey, *pNextFKey;
   sqlite3 *db;
@@ -514,6 +518,10 @@ void sqlite3DeleteTable(Table *pTable){
     pNext = pIndex->pNext;
     assert( pIndex->pSchema==pTable->pSchema );
     sqlite3DeleteIndex(pIndex);
+  }
+
+  if (pTable->pSpIndex && dbOwner&& dbOwner->xRelSpIndexCallback){
+    dbOwner->xRelSpIndexCallback(pTable->pSpIndex, pTable->zName);
   }
 
 #ifndef SQLITE_OMIT_FOREIGN_KEY
@@ -551,7 +559,7 @@ void sqlite3UnlinkAndDeleteTable(sqlite3 *db, int iDb, const char *zTabName){
   pDb = &db->aDb[iDb];
   p = sqlite3HashInsert(&pDb->pSchema->tblHash, zTabName,
                         sqlite3Strlen30(zTabName),0);
-  sqlite3DeleteTable(p);
+  sqlite3DeleteTable(db, p);
   db->flags |= SQLITE_InternChanges;
 }
 
@@ -820,7 +828,7 @@ void sqlite3StartTable(
   pTable->pSchema = db->aDb[iDb].pSchema;
   pTable->nRef = 1;
   pTable->dbMem = db->lookaside.bEnabled ? db : 0;
-  if( pParse->pNewTable ) sqlite3DeleteTable(pParse->pNewTable);
+  if( pParse->pNewTable ) sqlite3DeleteTable(db, pParse->pNewTable);
   pParse->pNewTable = pTable;
 
   /* If this is the magic sqlite_sequence table used by autoincrement,
@@ -1608,7 +1616,7 @@ void sqlite3EndTable(
         p->aCol = pSelTab->aCol;
         pSelTab->nCol = 0;
         pSelTab->aCol = 0;
-        sqlite3DeleteTable(pSelTab);
+        sqlite3DeleteTable(db, pSelTab);
       }
     }
 
@@ -1845,7 +1853,7 @@ int sqlite3ViewGetColumnNames(Parse *pParse, Table *pTable){
       pTable->aCol = pSelTab->aCol;
       pSelTab->nCol = 0;
       pSelTab->aCol = 0;
-      sqlite3DeleteTable(pSelTab);
+      sqlite3DeleteTable(db, pSelTab);
       pTable->pSchema->flags |= DB_UnresetViews;
     }else{
       pTable->nCol = 0;
@@ -3213,7 +3221,7 @@ void sqlite3SrcListDelete(sqlite3 *db, SrcList *pList){
     sqlite3DbFree(db, pItem->zName);
     sqlite3DbFree(db, pItem->zAlias);
     sqlite3DbFree(db, pItem->zIndex);
-    sqlite3DeleteTable(pItem->pTab);
+    sqlite3DeleteTable(db, pItem->pTab);
     sqlite3SelectDelete(db, pItem->pSelect);
     sqlite3ExprDelete(db, pItem->pOn);
     sqlite3IdListDelete(db, pItem->pUsing);

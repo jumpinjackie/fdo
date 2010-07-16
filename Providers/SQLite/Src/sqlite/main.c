@@ -1148,6 +1148,44 @@ void *sqlite3_update_hook(
 }
 
 /*
+** Register a callback to be invoked by the spatial filters,
+** when SQL statements are optimized.
+*/
+
+void* sqlite3_spatial_index_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  void* (*xCallback)(void*,const char*,int*),
+  void* pArg
+){
+  void *pRet;
+  sqlite3_mutex_enter(db->mutex);
+  pRet = db->pSpIndexArg;
+  db->xSpIndexCallback = xCallback;
+  db->pSpIndexArg = pArg;
+  sqlite3_mutex_leave(db->mutex);
+  return pRet;
+}
+
+void sqlite3_update_spatial_index_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  void (*xCallback)(void*,void*,int,sqlite3_int64,const void*,int)
+){
+  sqlite3_mutex_enter(db->mutex);
+  db->xUpdSpIndexCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
+void sqlite3_release_spatial_index_hook(
+  sqlite3 *db,
+  void (*xCallback)(void*,const char*)
+  )
+{
+  sqlite3_mutex_enter(db->mutex);
+  db->xRelSpIndexCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
+/*
 ** Register a callback to be invoked each time a transaction is rolled
 ** back by this database connection.
 */
