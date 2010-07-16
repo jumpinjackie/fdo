@@ -581,7 +581,7 @@ int sqlite3_declare_vtab(sqlite3 *db, const char *zCreateTable){
   if( sParse.pVdbe ){
     sqlite3VdbeFinalize(sParse.pVdbe);
   }
-  sqlite3DeleteTable(sParse.pNewTable);
+  sqlite3DeleteTable(db, sParse.pNewTable);
   sParse.pNewTable = 0;
 
   assert( (rc&0xff)==rc );

@@ -29,7 +29,6 @@ class StringBuffer;
 class SpatialIndexDescriptor;
 struct DBounds;
 class ConnInfoDetails;
-class SpatialIndexMaxRecordInfo;
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -70,9 +69,7 @@ typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
 
 typedef std::map<FdoString*, FdoUniqueConstraint*, wstring_less> UniqueConstraints;
 
-typedef std::map<char*, SpatialIndexDescriptor*, string_less> SpatialIndexCache;
-
-typedef std::map<char*, SpatialIndexMaxRecordInfo*, string_less> MaxRecordInfoCache;
+typedef std::map<const char*, SpatialIndexDescriptor*, string_less> SpatialIndexCache;
 
 class SltConnection : public FdoIConnection, 
                       public FdoIConnectionInfo,
@@ -236,8 +233,6 @@ public:
     int RollbackTransaction(bool isUserTrans = false);
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
     void CacheViewContent(const char* viewName);
-    bool HooksEnabled() {return m_updateHookEnabled;}
-    void EnableHooks(bool enable = true, bool enforceRollback = false);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong();
     bool IsReadOnlyConnection();
@@ -245,7 +240,6 @@ public:
     // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
     int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
     int GetDefaultSpatialContext();
-    SpatialIndexMaxRecordInfo* GetSpatialIndexMaxRecordInfo(const char* table);
 
 private :
 
@@ -267,16 +261,18 @@ private :
     std::wstring GenerateValidConstrName(FdoString* name);
     RowidIterator* GetScrollableIterator(SltReader* rdr);
     static int PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool isInMemory = false);
+    SpatialIndexDescriptor* GetSpatialIndexDescriptor(const char* table, int* geomIdx = NULL);
 
-    static void update_hook(void* caller, int action, char const* database, char const* tablename, sqlite3_int64 id);
     static int commit_hook(void* caller);
     static void rollback_hook(void* caller);
 
-    bool                                    m_updateHookEnabled;
+    static void* sqlite3_spatial_index(void* caller, const char* tablename, int* geomIdx);
+    static void  sqlite3_update_spatial_index(void* caller, void* sid, int action, sqlite3_int64 id, const void* blob, int szBlob);
+    static void  sqlite3_release_spatial_index(void* sid, const char* zTableName);
+
     bool                                    m_changesAvailable;
     bool                                    m_isReadOnlyConnection;
 
-    //sqlite3*                                m_dbRead;
     sqlite3*                                m_dbWrite;
 
     std::map<std::wstring, std::wstring>*   m_mProps;
@@ -286,7 +282,6 @@ private :
 
     MetadataCache                           m_mNameToMetadata;
     SpatialIndexCache                       m_mNameToSpatialIndex;
-    MaxRecordInfoCache                      m_mTableRecInfo;
     QueryCache                              m_mCachedQueries;
 
     SltCapabilities*                        m_caps;

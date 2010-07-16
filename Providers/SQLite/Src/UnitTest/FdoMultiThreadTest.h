@@ -51,7 +51,7 @@ struct FunctionInfo {
 class FdoMultiThreadTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoMultiThreadTest );
-  //CPPUNIT_TEST( QueryTest );
+  CPPUNIT_TEST( QueryTest );
   CPPUNIT_TEST( InsertQueryTest );
   CPPUNIT_TEST_SUITE_END();
 

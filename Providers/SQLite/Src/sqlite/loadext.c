@@ -329,6 +329,13 @@ static const sqlite3_api_routines sqlite3Apis = {
   sqlite3_next_stmt,
   sqlite3_sql,
   sqlite3_status,
+
+  /*
+  ** Added for 3.6.0 SI
+  */
+  sqlite3_spatial_index_hook,
+  sqlite3_update_spatial_index_hook,
+  sqlite3_release_spatial_index_hook
 };
 
 /*

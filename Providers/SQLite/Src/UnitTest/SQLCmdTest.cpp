@@ -448,6 +448,8 @@ void SQLCmdTest::TestSelectWithTrans()
             tr1->Commit();
         }
 
+        rdr->Close();
+
         // test if we can open a new transaction
         FdoPtr<FdoITransaction> tr2 = conn->BeginTransaction();
     }

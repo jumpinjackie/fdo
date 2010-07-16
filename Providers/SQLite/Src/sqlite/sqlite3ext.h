@@ -193,6 +193,9 @@ struct sqlite3_api_routines {
   sqlite3_stmt *(*next_stmt)(sqlite3*,sqlite3_stmt*);
   const char *(*sql)(sqlite3_stmt*);
   int (*status)(int,int*,int*,int);
+  void* (*spatial_index)(sqlite3*, void* (*)(void*,const char*,int*), void*);
+  void (*update_spatial_index)(sqlite3*, void (*)(void*,void*,int,sqlite3_int64,const void*,int));
+  void (*release_spatial_index)(sqlite3*, void (*)(void*,const char*));
 };
 
 /*
@@ -372,6 +375,9 @@ struct sqlite3_api_routines {
 #define sqlite3_next_stmt              sqlite3_api->next_stmt
 #define sqlite3_sql                    sqlite3_api->sql
 #define sqlite3_status                 sqlite3_api->status
+#define sqlite3_spatial_index_hook     sqlite3_api->spatial_index
+#define sqlite3_update_spatial_index_hook  sqlite3_api->update_spatial_index
+#define sqlite3_release_spatial_index_hook  sqlite3_api->release_spatial_index
 #endif /* SQLITE_CORE */
 
 #define SQLITE_EXTENSION_INIT1     const sqlite3_api_routines *sqlite3_api = 0;

@@ -61,9 +61,6 @@ void* StartQuery( void *lpParameter)
 
 		select->SetFeatureClassName(L"Parcel");
 
-        // after we will fix spatial index at update time this code will be re-enabled
-        // for now use a normal filter
-#if 0
 		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 		double coords[] = { 7.2068, 43.7556, 
 							7.2088, 43.7556, 
@@ -75,9 +72,7 @@ void* StartQuery( void *lpParameter)
 		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
 		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
-#else
-        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID >= 10000");
-#endif
+
 		select->SetFilter(filter);
 	    int count2 = 0;
 		for( int i=0; i<select_loop_count; i++ )

@@ -33,17 +33,23 @@
 
 class SelectTest : public CppUnit::TestCase
 {
-  CPPUNIT_TEST_SUITE( SelectTest );
-  CPPUNIT_TEST( TestSimpleSelect );
-  CPPUNIT_TEST( TestBindSelect );
-  CPPUNIT_TEST( TestSpatialSelect );
-  CPPUNIT_TEST( TestComplexSelect );
-  CPPUNIT_TEST(TestComplexWithBindSelect);
-  CPPUNIT_TEST(BooleanDataTest);  
-  CPPUNIT_TEST(TestAggregatesSelect);  
-  CPPUNIT_TEST(TestSelectInsertLowerId);  
-  CPPUNIT_TEST(TestSelectInsertLowerIdSQL);  
-  CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE( SelectTest );
+    CPPUNIT_TEST( TestSimpleSelect );
+    CPPUNIT_TEST( TestBindSelect );
+    CPPUNIT_TEST( TestSpatialSelect );
+    CPPUNIT_TEST( TestComplexSelect );
+    CPPUNIT_TEST(TestComplexWithBindSelect);
+    CPPUNIT_TEST(BooleanDataTest);  
+    CPPUNIT_TEST(TestAggregatesSelect);  
+    CPPUNIT_TEST(TestSelectInsertLowerId);  
+    CPPUNIT_TEST(TestSelectInsertLowerIdSQL);
+    CPPUNIT_TEST(TestDualConnection);
+    CPPUNIT_TEST_SUITE_END();
+
+private:
+    int SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* clsName = NULL);
+    void InsertValue(FdoIConnection* conn, FdoString* valTxtFlt);
+    void CreateSchoolSchema(FdoIConnection* conn);
 
 public:
     SelectTest(void);
@@ -60,6 +66,7 @@ public:
     void TestAggregatesSelect ();
     void TestSelectInsertLowerId ();
     void TestSelectInsertLowerIdSQL ();
+    void TestDualConnection ();
 };
 
 #endif

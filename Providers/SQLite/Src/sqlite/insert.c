@@ -1392,7 +1392,7 @@ void sqlite3CompleteInsertion(
   }
   sqlite3VdbeAddOp3(v, OP_Insert, baseCur, regRec, regRowid);
   if( !pParse->nested ){
-    sqlite3VdbeChangeP4(v, -1, pTab->zName, P4_STATIC);
+    sqlite3VdbeChangeP4(v, -1, (const char *)pTab, P4_VPOINTER);
   }
   sqlite3VdbeChangeP5(v, pik_flags);
 }
