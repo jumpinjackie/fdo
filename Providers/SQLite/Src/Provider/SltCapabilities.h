@@ -235,7 +235,7 @@ class SltCapabilities  : public FdoIConnectionCapabilities,
     virtual bool SupportsSelectExpressions()                        { return true;  }
     virtual bool SupportsSelectFunctions()                          { return true;  }
     virtual bool SupportsSelectDistinct()                           { return true;  }
-    virtual bool SupportsSelectOrdering()                           { return true; }
+    virtual bool SupportsSelectOrdering()                           { return false; }
     virtual bool SupportsSelectGrouping()                           { return false; }
 
 
