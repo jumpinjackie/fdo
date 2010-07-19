@@ -587,6 +587,10 @@ void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
             //property. FDO makes this a little ugly...
             pd = dynamic_cast<FdoGeometricPropertyDefinition*>(pdc->FindItem(geomname));
 
+            // Set vertex order and strictness rule for geometry property
+            classcaps->SetPolygonVertexOrderRule(geomname, FdoPolygonVertexOrderRule_CCW);
+            classcaps->SetPolygonVertexOrderStrictness(geomname, false);
+
             //if we could not find it in the class properties, look in the inherited properties
             //if it's not there, the class does not have a geometry property
             if (pd == NULL)

@@ -365,7 +365,7 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
             for (int i=0; i<count; i++)
             {
                 OGRLayer* layer = m_poDS->GetLayer(i);
-                FdoPtr<FdoClassDefinition> fc = OgrFdoUtil::ConvertClass(layer);
+                FdoPtr<FdoClassDefinition> fc = OgrFdoUtil::ConvertClass(this, layer);
                 classes->Add(fc);
             }
         }
@@ -761,7 +761,7 @@ FdoClassDefinition* OgrFeatureReader::GetClassDefinition()
     //TODO: cache the result of this
     //also this always returns all properties regardless
     //of what was given in the select command
-    return OgrFdoUtil::ConvertClass(m_poLayer, m_props);
+    return OgrFdoUtil::ConvertClass(m_connection, m_poLayer, m_props);
 }
 
 FdoInt32 OgrFeatureReader::GetDepth()

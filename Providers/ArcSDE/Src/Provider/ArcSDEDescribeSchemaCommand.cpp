@@ -350,6 +350,10 @@ void ArcSDEDescribeSchemaCommand::addClass (ArcSDEConnection* connection, FdoFea
                 ((FdoFeatureClass*)newFdoClass.p)->SetGeometryProperty (geometry_definition);
                 properties = newFdoClass->GetProperties ();
                 properties->Add (geometry_definition);
+
+                // Set vertex order and strictness rule for geometry property
+                classCapabilities->SetPolygonVertexOrderRule(fdoPropertyName, FdoPolygonVertexOrderRule_CCW);
+                classCapabilities->SetPolygonVertexOrderStrictness(fdoPropertyName, false);
             }
             else  // not a shape column
             {
