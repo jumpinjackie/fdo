@@ -97,7 +97,8 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
 
         SltExtendedSelect(SltConnection* connection)
             : SltFeatureCommand<FdoIExtendedSelect>(connection),
-              m_orderingProps(NULL)
+              m_orderingProps(NULL),
+              m_option(FdoOrderingOption_Ascending)
         {
             m_properties = FdoIdentifierCollection::Create();
         }
@@ -126,7 +127,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 for (int i=0; i<m_orderingProps->GetCount(); i++)
                 {
                     FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
-                    ordering.push_back(NameOrderingPair(id.p, m_orderingOptions[id->GetName()])); 
+                    ordering.push_back(NameOrderingPair(id.p, (m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
                 }
             }
 
@@ -148,8 +149,8 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         virtual void                        SetLockStrategy(FdoLockStrategy value) { };
         virtual FdoIFeatureReader*          ExecuteWithLock()               { return NULL; }
         virtual FdoILockConflictReader*     GetLockConflicts()              { return NULL; }
-        virtual void                        SetOrderingOption(FdoOrderingOption option) {}
-        virtual FdoOrderingOption           GetOrderingOption()             { return FdoOrderingOption_Ascending; }
+        virtual void                        SetOrderingOption(FdoOrderingOption option) {m_option=option;}
+        virtual FdoOrderingOption           GetOrderingOption()             { return m_option; }
 
     public:
 
@@ -186,7 +187,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 for (int i=0; i<m_orderingProps->GetCount(); i++)
                 {
                     FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
-                    ordering.push_back(NameOrderingPair(id.p, m_orderingOptions[id->GetName()])); 
+                    ordering.push_back(NameOrderingPair(id.p, (m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
                 }
             }
 
@@ -201,6 +202,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
             FdoIdentifierCollection* m_orderingProps;
             FdoIdentifierCollection* m_properties;
             std::map<std::wstring, FdoOrderingOption> m_orderingOptions;
+            FdoOrderingOption m_option;
 };
 
 
