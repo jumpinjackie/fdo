@@ -101,18 +101,9 @@ FdoString* FdoUnaryLogicalOperator::ToStringInternal( FdoIdentifierCollection *p
         throw pExcept;
     }
 
-    const wchar_t*    szOp;
-    switch (GetOperation())
-    {
-    default:
-    case FdoUnaryLogicalOperations_Not:
-        szOp = L"NOT ";
-        break;
-    }
-
     try
     {
-        m_toString = FdoStringUtility::MakeString(szOp, pOperand->ToStringInternal(pIdCol));
+        m_toString = FdoStringUtility::MakeString(L"NOT (", pOperand->ToStringInternal(pIdCol), L")");
     }
     catch (FdoException* pExcept)
     {
