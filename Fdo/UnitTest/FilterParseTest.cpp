@@ -170,7 +170,7 @@ void FilterParseTest::test()
 
     // Example from Vinay.  Identifier were only returning their name, not 
     // the fully qualified text.
-    ParseFilter(L"NOT Entity.Color NULL");
+    ParseFilter(L"NOT (Entity.Color NULL)");
     ParseFilter(L"Entity.Color IN ('Red', 'Blue', 'Green')");
 
 	// Examples from FDO Expressions and FiltersRpt.doc
