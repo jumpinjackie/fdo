@@ -21,6 +21,7 @@
 
 #include <Spatial/SpatialGeometryValidity.h>
 #include <Fdo/Filter/SpatialCondition.h>
+#include <Fdo/Schema/PolygonVertexOrderRule.h>
 
 typedef struct RingArea_def
 {
@@ -239,6 +240,8 @@ public:
 
     FDO_SPATIAL_API static bool LinearRingIsClockwise(FdoILinearRing* ring);
 
+    static bool RingIsClockwise(FdoIRing* ring);
+
     /// \brief
     /// Computes the area of a ring.
     /// 
@@ -296,6 +299,41 @@ public:
     /// 
     FDO_SPATIAL_API static bool IsCircularArcValid( FdoICircularArcSegment *arc, double tolerance );
 
+    /// \brief
+    /// Checks whether the vertex order of the input polygon follows the specified
+    /// vertex order rule. If not, fix it.
+    ///
+    /// \param geometry
+    /// Input the polygon geometry to be fixed. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    ///
+    /// \return
+    /// Returns the modified polygon.  
+    ///
+    FDO_SPATIAL_API static FdoIGeometry* FixPolygonVertexOrder (FdoIGeometry * geometry, FdoPolygonVertexOrderRule vertexOrderRule );
+
+    /// \brief
+    /// Reverses the vertex order of the input polygon.
+    ///
+    /// \param geometry
+    /// Input the polygon geometry to be reversed. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    ///
+    /// \return
+    /// Returns the modified polygon. 
+    ///
+    FDO_SPATIAL_API static FdoIGeometry* ReversePolygonVertexOrder ( FdoIGeometry * geometry );
+
+    /// \brief
+    /// Gets the vertex order of the input polygon.
+    ///
+    /// \param geometry
+    /// Input geometry to be checked. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    /// \return
+    /// Returns the vertex order of the input polygon.
+    /// 
+    FDO_SPATIAL_API static FdoPolygonVertexOrderRule CheckPolygonVertexOrder(FdoIGeometry* geometry);
 
 private:
     static bool pt_is_on_line(
@@ -414,7 +452,21 @@ private:
 
     static int  CompareByArea( const void* elem1, const void* elem2 );
 
+    static FdoILinearRing* ReverseLinearRingVertexOrder( FdoILinearRing* linearRing );
 
+    static FdoIRing* ReverseRingVertexOrder(FdoIRing* ring);
+
+    static FdoIPolygon* ReversePolygonVertexOrder(FdoIPolygon* polygon);
+
+    static FdoICurvePolygon* ReversePolygonVertexOrder(FdoICurvePolygon* polygon);
+
+    static FdoPolygonVertexOrderRule CheckPolygonVertexOrder(FdoIPolygon* polygon);
+
+    static FdoPolygonVertexOrderRule CheckPolygonVertexOrder(FdoICurvePolygon* polygon);
+
+    static FdoIPolygon* FixPolygonVertexOrder( FdoIPolygon * polygon, FdoPolygonVertexOrderRule vertexOrderRule );
+
+    static FdoICurvePolygon* FixPolygonVertexOrder( FdoICurvePolygon * polygon, FdoPolygonVertexOrderRule vertexOrderRule );
 };
 #endif // FdoSpatialUtility___H
 

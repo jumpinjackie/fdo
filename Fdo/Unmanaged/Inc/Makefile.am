@@ -291,6 +291,7 @@ EXTRA_DIST = \
     Fdo/Schema/ObjectPropertyDefinition.h \
     Fdo/Schema/ObjectType.h \
     Fdo/Schema/OrderType.h \
+	Fdo/Schema/PolygonVertexOrderRule.h \
     Fdo/Schema/PropertyDefinition.h \
     Fdo/Schema/PropertyDefinitionCollection.h \
     Fdo/Schema/PropertyType.h \

@@ -573,20 +573,15 @@ void FdoCommonSchemaUtil::DeepCopyFdoClassCapabilitiesAndConstraints(FdoClassDef
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
         }
 
+        FdoPtr<FdoStringCollection> geomtryNames = GetGeometryNames(sourceClass);
+        CopyClassCapabilities(sourceCapabilities, newCapabilities, geomtryNames);
+
         FdoBoolean readOnlyClassCapabilitiesEnabled = localSchemaContext->ReadOnlyClassCapabilitiesEnabled();
         if (readOnlyClassCapabilitiesEnabled) {
             newCapabilities->SetSupportsLocking(false);
             newCapabilities->SetLockTypes(NULL, 0);
             newCapabilities->SetSupportsLongTransactions(false);
             newCapabilities->SetSupportsWrite(false);
-        }
-        else {
-            newCapabilities->SetSupportsLocking(sourceCapabilities->SupportsLocking());
-            FdoInt32 lockTypeCount = 0;
-            FdoLockType *lockTypes = sourceCapabilities->GetLockTypes(lockTypeCount);
-            newCapabilities->SetLockTypes(lockTypes, lockTypeCount);
-            newCapabilities->SetSupportsLongTransactions(sourceCapabilities->SupportsLongTransactions());
-            newCapabilities->SetSupportsWrite(sourceCapabilities->SupportsWrite());
         }
 
         copyClass->SetCapabilities(newCapabilities);
@@ -1573,5 +1568,62 @@ void FdoCommonSchemaUtil::ThrowDefaultValueError( FdoString* propName, FdoDataTy
                 FdoCommonMiscUtil::FdoDataTypeToString(dataType)
             )
         );
+    }
+}
+
+FdoStringCollection* FdoCommonSchemaUtil::GetGeometryNames(FdoClassDefinition * classDef)
+{
+    FdoStringCollection* geometryNames = FdoStringCollection::Create();
+    
+    if(classDef == NULL)
+        return geometryNames;
+
+    FdoInt32 idx;
+    FdoPtr<FdoClassDefinition> temp = classDef;
+    FDO_SAFE_ADDREF(classDef);
+
+    for (; temp != NULL ; temp = temp->GetBaseClass ())
+    {
+        FdoPtr<FdoPropertyDefinitionCollection> propdsc = temp->GetProperties ();
+        for (idx = 0; idx < propdsc->GetCount(); idx ++) {
+            FdoPtr<FdoPropertyDefinition> prop = propdsc->GetItem(idx);
+            if (prop->GetPropertyType () == FdoPropertyType_GeometricProperty)
+                geometryNames->Add(prop->GetName ());
+        }
+    }
+
+    return geometryNames;
+}
+
+void FdoCommonSchemaUtil::CopyClassCapabilities(
+    FdoClassCapabilities* source, 
+    FdoClassCapabilities* target,
+    FdoStringCollection* geometryNames)
+{
+    if (NULL == source || NULL == target)
+        return;
+
+    target->SetSupportsLocking(source->SupportsLocking());
+    FdoInt32 lockTypeCount = 0;
+    FdoLockType *lockTypes = source->GetLockTypes(lockTypeCount);
+    target->SetLockTypes(lockTypes, lockTypeCount);
+    target->SetSupportsLongTransactions(source->SupportsLongTransactions());
+    target->SetSupportsWrite(source->SupportsWrite());
+
+    if (NULL != geometryNames)
+    {
+        for (FdoInt32 i = 0; i < geometryNames->GetCount(); ++i)
+        {
+            try
+            {
+                FdoString* name = geometryNames->GetString(i);
+                target->SetPolygonVertexOrderRule(name, source->GetPolygonVertexOrderRule(name));
+                target->SetPolygonVertexOrderStrictness(name, source->GetPolygonVertexOrderStrictness(name));
+            }
+            catch(FdoException* pException)
+            {
+                FDO_SAFE_RELEASE(pException);
+            }
+        }
     }
 }

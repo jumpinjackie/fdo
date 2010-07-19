@@ -258,3 +258,33 @@ System::Boolean NAMESPACE_OSGEO_SPATIAL::SpatialUtility::IsCircularArcValid( NAM
 
 	return ret;
 }
+
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_SPATIAL::SpatialUtility::FixPolygonVertexOrder (NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule vertexOrderRule )
+{
+	FdoIGeometry* unobj;
+	if (nullptr != geometry)
+	{
+		EXCEPTION_HANDLER(unobj = FdoSpatialUtility::FixPolygonVertexOrder((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(geometry)->UnmanagedObject.ToPointer())), static_cast<FdoPolygonVertexOrderRule>(vertexOrderRule)))
+	}
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(unobj), true);
+}
+
+NAMESPACE_OSGEO_GEOMETRY::IGeometry^ NAMESPACE_OSGEO_SPATIAL::SpatialUtility::ReversePolygonVertexOrder ( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry )
+{
+	FdoIGeometry* unobj;
+	if (nullptr != geometry)
+	{
+		EXCEPTION_HANDLER(unobj = FdoSpatialUtility::ReversePolygonVertexOrder((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(geometry)->UnmanagedObject.ToPointer()))))
+	}
+	return NAMESPACE_OSGEO_GEOMETRY::ObjectFactory::CreateIGeometry(IntPtr(unobj), true);
+}
+
+NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule NAMESPACE_OSGEO_SPATIAL::SpatialUtility::CheckPolygonVertexOrder(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry)
+{
+	FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_None;
+	if (nullptr != geometry)
+	{
+		EXCEPTION_HANDLER(vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder((static_cast<FdoIGeometry*>(static_cast<NAMESPACE_OSGEO_GEOMETRY::IGeometryImp^>(geometry)->UnmanagedObject.ToPointer()))))
+	}
+	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule>(vertexOrderRule);
+}

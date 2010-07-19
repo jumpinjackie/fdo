@@ -215,6 +215,12 @@ protected:
     // Utility function for throwing data property default value errors.
     static void ThrowDefaultValueError(FdoString* propName, FdoDataType dataType, FdoString* defaultValue);
 
+    // Get geometry property name in the specified class
+    static FdoStringCollection* GetGeometryNames(FdoClassDefinition * classDef);
+
+    // Copy class capabilities from source to target.
+    static void CopyClassCapabilities(FdoClassCapabilities* source, FdoClassCapabilities* target, FdoStringCollection* geometryNames = NULL);
+
 };
 
 #endif // FdoCommonSchemaUtil___H

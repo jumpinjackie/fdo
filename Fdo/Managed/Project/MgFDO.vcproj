@@ -2533,6 +2533,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Src\OSGeo\FDO\Schema\mgPolygonVertexOrderRule.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Src\OSGeo\FDO\Schema\mgPropertyDefinition.cpp"
 						>
 					</File>

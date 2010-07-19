@@ -267,6 +267,7 @@
 #include <Fdo/Schema/Topology.h>
 #include <Fdo/Schema/UniqueConstraint.h>
 #include <Fdo/Schema/UniqueConstraintCollection.h>
+#include <Fdo/Schema/PolygonVertexOrderRule.h>
 #include <Fdo/Schema/PropertyValueConstraint.h>
 #include <Fdo/Schema/PropertyValueConstraintList.h>
 #include <Fdo/Schema/PropertyValueConstraintRange.h>

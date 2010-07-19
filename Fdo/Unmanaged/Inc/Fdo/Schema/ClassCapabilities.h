@@ -24,6 +24,7 @@
 
 #include <FdoStd.h>
 #include <Fdo/Schema/SchemaElement.h>
+#include <Fdo/Schema/PolygonVertexOrderRule.h>
 #include <Fdo/Commands/Locking/LockType.h>
 
 class FdoClassDefinition;
@@ -83,6 +84,25 @@ public:
     FDO_API FdoClassDefinition* GetParent();
 
     /// \brief
+    /// Gets the vertex order rule of the specified geometry property.
+    ///
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \return
+    /// Returns the vertex order rule that the specified geometry property follows.
+    ///
+    FDO_API FdoPolygonVertexOrderRule GetPolygonVertexOrderRule( FdoString* geometryPropName );
+
+    /// \brief
+    /// Gets the vertex order strictness of the specified geometry property.
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \return
+    /// Returns true if the vertex order strictness of the specified geometry property is enforced. 
+    ///
+    FDO_API FdoBoolean GetPolygonVertexOrderStrictness(FdoString* geometryPropName );
+
+    /// \brief
     /// Constructs an FdoClassCapabilities instance. This function
     /// should only be called from an FDO Provider.
     /// 
@@ -136,6 +156,25 @@ public:
     /// 
     FDO_API void SetSupportsWrite(FdoBoolean value);
 
+    /// \brief
+    /// Sets the vertex order rule of the specified geometry property.
+    ///
+    /// \param geometryPropName
+    /// Input the geometry property name to set vertex order rule
+    /// \param vertexOrderRule
+    /// Input vertex order rule that the specified geometry follows.
+    ///
+    FDO_API void SetPolygonVertexOrderRule( FdoString* geometryPropName, FdoPolygonVertexOrderRule vertexOrderRule );
+
+    /// \brief
+    /// Sets the vertex order strictness of the specified geometry property.
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \param value
+    /// Input trure if the vertex order of the specified geometry property is enforced. Or input false. 
+    ///  
+    FDO_API void SetPolygonVertexOrderStrictness( FdoString* geometryPropName, FdoBoolean value );
+
 private:
     FdoBoolean          m_supportsLocking;
     FdoBoolean          m_supportsLongTransactions;
@@ -143,7 +182,8 @@ private:
     FdoClassDefinition* m_parent;
     FdoLockType*        m_lockTypes;
     FdoInt32            m_lockTypeCount;
-
+    std::map<FdoStringP, FdoPolygonVertexOrderRule> m_polygonVertexOrderRuleMap;
+    std::map<FdoStringP, FdoBoolean> m_polygonVertexOrderStrictnessMap;
 };
 
 /// \ingroup (typedefs)

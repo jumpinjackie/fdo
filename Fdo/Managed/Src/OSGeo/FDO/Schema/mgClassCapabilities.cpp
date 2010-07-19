@@ -117,3 +117,31 @@ System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::SupportsWrite::ge
 
 	return result;
 }
+
+NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::PolygonVertexOrderRule::get(System::String^ geometryPropName)
+{
+	FdoPolygonVertexOrderRule result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetPolygonVertexOrderRule(StringToUni(geometryPropName)))
+
+	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule>(result);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::PolygonVertexOrderRule::set(System::String^ geometryPropName, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule vertexOrderRule)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetPolygonVertexOrderRule(StringToUni(geometryPropName), static_cast<FdoPolygonVertexOrderRule>(vertexOrderRule)))
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::PolygonVertexOrderStrictness::get(System::String^ geometryPropName)
+{
+	System::Boolean result;
+
+	EXCEPTION_HANDLER(result = !!GetImpObj()->GetPolygonVertexOrderStrictness(StringToUni(geometryPropName)))
+
+	return result;
+}
+
+System::Void NAMESPACE_OSGEO_FDO_SCHEMA::ClassCapabilities::PolygonVertexOrderStrictness::set(System::String^ geometryPropName, System::Boolean value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetPolygonVertexOrderStrictness(StringToUni(geometryPropName), value))
+}
