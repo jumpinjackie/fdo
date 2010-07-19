@@ -3811,7 +3811,88 @@ double FdoSpatialUtility::ComputeLinearRingLength( FdoILinearRing* ring )
 
 bool FdoSpatialUtility::LinearRingIsClockwise( FdoILinearRing* ring )
 {
-    return ( ComputeLinearRingArea( ring ) < 0.0);
+    return ( ComputeLinearRingArea( ring ) > 0.0);
+}
+
+bool FdoSpatialUtility::RingIsClockwise( FdoIRing* ring )
+{
+    double area = 0.0;
+    double x1(0.0), y1(0.0), x2(0.0), y2(0.0);
+
+    FdoInt32 count = ring->GetCount ();
+    for ( int i =  0; i < count; i++ )
+    {
+        FdoPtr<FdoICurveSegmentAbstract> curveSegment = ring->GetItem(i);
+        FdoGeometryComponentType geoComponentType = curveSegment->GetDerivedType();
+        if (geoComponentType == FdoGeometryComponentType_CircularArcSegment)
+        {
+            FdoIArcSegmentAbstract* arcSegment = dynamic_cast<FdoIArcSegmentAbstract*>(curveSegment.p);
+            FdoPtr<FdoIDirectPosition> pos1 = arcSegment->GetStartPosition();
+            FdoPtr<FdoIDirectPosition> pos2 = arcSegment->GetMidPoint();
+            FdoPtr<FdoIDirectPosition> pos3 = arcSegment->GetEndPosition();
+            double p1x = pos1->GetX();
+            double p1y = pos1->GetY();
+            double p2x = pos2->GetX();
+            double p2y = pos2->GetY();
+            double p3x = pos3->GetX();
+            double p3y = pos3->GetY();
+            
+            if (i > 0)
+                area += (p1x - x1) * (p1x + y1);
+            area += (p2x - p1x) * (p2y + p1y) + (p3x - p2x) * (p3y + p2y);
+
+            x1 = p3x;
+            y1 = p3y;
+        }
+        else if (geoComponentType == FdoGeometryComponentType_LineStringSegment)
+        {
+            FdoILineStringSegment* lineStringSegment = dynamic_cast<FdoILineStringSegment*>(curveSegment.p);
+            FdoInt32 count = lineStringSegment->GetCount ();
+            FdoInt32 dimensionality = lineStringSegment->GetDimensionality();
+            const double* data = lineStringSegment->GetOrdinates();
+
+            FdoInt32 num = 0;
+            if ( dimensionality == FdoDimensionality_XY )
+                num = 2;
+            else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z ) )
+                num = 3;
+            else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_M ) )
+                num = 3;
+            else if ( dimensionality == ( FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M ) )
+                num = 4;
+
+            int pos = 0;
+            if (i == 0)
+            {
+                x1 = data[0];
+                y1 = data[1];
+                pos = num;
+                for ( int j = 1; j < count; j++ )
+                {
+                    x2 = data[pos];
+                    y2 = data[pos + 1];
+                    area += (x2 - x1) * (y2 + y1);
+                    x1 = x2;
+                    y1 = y2;
+                    pos += num;
+                }
+            }
+            else
+            {
+                for ( int j =  0; j < count; j++ )
+                {
+                    x2 = data[pos];
+                    y2 = data[pos + 1];
+                    area += (x2 - x1) * (y2 + y1);
+                    x1 = x2;
+                    y1 = y2;
+                    pos += num;
+                }
+            }
+        }
+    }
+
+    return (area > 0.0);
 }
 
 FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollection* rings, bool relateRings )
@@ -4134,5 +4215,414 @@ bool FdoSpatialUtility::IsCircularArcValid( FdoICircularArcSegment *arc, double 
                                        tolerance);
 
     return ( distance >= tolerance ); 
+}
+
+FdoILinearRing* FdoSpatialUtility::ReverseLinearRingVertexOrder(FdoILinearRing* linearRing)
+{
+    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
+
+    FdoInt32 count = linearRing->GetCount ();
+    for ( int i =  count -1; i >= 0; i-- )
+    {
+        FdoPtr<FdoIDirectPosition> position = linearRing->GetItem(i);
+        positions->Add(position);
+    }
+
+    FdoPtr<FdoILinearRing> newLinearRing = factory->CreateLinearRing(positions);
+    return FDO_SAFE_ADDREF(newLinearRing.p);
+}
+
+FdoIRing* FdoSpatialUtility::ReverseRingVertexOrder(FdoIRing* ring)
+{
+    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoCurveSegmentCollection> curveSegments = FdoCurveSegmentCollection::Create();
+
+    FdoInt32 segCount = ring->GetCount ();
+    for ( FdoInt32 i =  segCount -1; i >= 0; i-- )
+    {
+        FdoPtr<FdoICurveSegmentAbstract> oldCurveSegment = ring->GetItem(i);
+        FdoGeometryComponentType geoComponentType = oldCurveSegment->GetDerivedType();
+        if (geoComponentType == FdoGeometryComponentType_CircularArcSegment)
+        {
+            FdoIArcSegmentAbstract* arcSegment = dynamic_cast<FdoIArcSegmentAbstract*>(oldCurveSegment.p);
+            FdoPtr<FdoIDirectPosition> endPos = arcSegment->GetEndPosition();
+            FdoPtr<FdoIDirectPosition> midPos = arcSegment->GetMidPoint();
+            FdoPtr<FdoIDirectPosition> startPos = arcSegment->GetStartPosition();
+            FdoPtr<FdoICurveSegmentAbstract> newCurveSegment = factory->CreateCircularArcSegment(endPos, midPos, startPos);
+            curveSegments->Add(newCurveSegment);
+        }
+        else if (geoComponentType == FdoGeometryComponentType_LineStringSegment)
+        {
+            FdoILineStringSegment* lineStringSegment = dynamic_cast<FdoILineStringSegment*>(oldCurveSegment.p);
+            FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
+            FdoInt32 posCount = lineStringSegment->GetCount ();
+            for ( FdoInt32 j =  posCount -1; j >= 0; j-- )
+            {
+                FdoPtr<FdoIDirectPosition> position = lineStringSegment->GetItem(j);
+                positions->Add(position);
+            }
+            FdoPtr<FdoILineStringSegment> newLineStringSegment = factory->CreateLineStringSegment(positions);
+            curveSegments->Add(newLineStringSegment);
+        }
+    }
+
+    FdoPtr<FdoIRing> newRing = factory->CreateRing(curveSegments);
+    return FDO_SAFE_ADDREF(newRing.p);
+}
+
+FdoIPolygon* FdoSpatialUtility::ReversePolygonVertexOrder(FdoIPolygon* polygon)
+{
+    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoILinearRing> exteriorRing = polygon->GetExteriorRing();
+    FdoPtr<FdoILinearRing> newExteriorRing = ReverseLinearRingVertexOrder(exteriorRing);
+
+    FdoPtr<FdoLinearRingCollection> newInteriorRings = FdoLinearRingCollection::Create();
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoILinearRing> interiorRing = polygon->GetInteriorRing(i);
+        FdoPtr<FdoILinearRing> newInteriorRing = ReverseLinearRingVertexOrder(interiorRing);
+        newInteriorRings->Add(newInteriorRing);
+    }
+    return factory->CreatePolygon(newExteriorRing, newInteriorRings);
+}
+
+FdoICurvePolygon* FdoSpatialUtility::ReversePolygonVertexOrder(FdoICurvePolygon* polygon)
+{
+    FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIRing> exteriorRing = polygon->GetExteriorRing();
+    FdoPtr<FdoIRing> newExteriorRing = ReverseRingVertexOrder(exteriorRing);
+
+    FdoPtr<FdoRingCollection> newInteriorRings = FdoRingCollection::Create();
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoIRing> interiorRing = polygon->GetInteriorRing(i);
+        FdoPtr<FdoIRing> newInteriorRing = ReverseRingVertexOrder(interiorRing);
+        newInteriorRings->Add(newInteriorRing);
+    }
+    return factory->CreateCurvePolygon(newExteriorRing, newInteriorRings);
+}
+
+FdoIPolygon* FdoSpatialUtility::FixPolygonVertexOrder (
+    FdoIPolygon * polygon, 
+    FdoPolygonVertexOrderRule vertexOrderRule )
+{
+    // Check vertex order of exterior ring
+    FdoPtr<FdoILinearRing> exteriorRing = polygon->GetExteriorRing();
+    bool bClockwise = LinearRingIsClockwise(exteriorRing);
+    bool bRevertExteriorRing = (bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CCW) ||
+                       (!bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // It is safer to check interior rings too because they may have
+    // wrong vertex order too.
+    bool bFixPolygon = bRevertExteriorRing;
+    std::vector<bool> revertInteriorRings;
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoILinearRing> interiorRing = polygon->GetInteriorRing(i);
+        bClockwise = LinearRingIsClockwise(interiorRing);
+        bool bRevertInteriorRing = (!bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CCW) ||
+                                  (bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+        revertInteriorRings.push_back(bRevertInteriorRing);
+        bFixPolygon = bRevertInteriorRing || bFixPolygon;
+    }
+
+    if (bFixPolygon)
+    {
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoILinearRing> newExteriorRing;
+        if (bRevertExteriorRing)
+            newExteriorRing = ReverseLinearRingVertexOrder(exteriorRing);
+        else
+            newExteriorRing = exteriorRing;
+
+        FdoPtr<FdoLinearRingCollection> newInteriorRings = FdoLinearRingCollection::Create();
+        for (size_t i = 0; i < revertInteriorRings.size(); i++)
+        {
+            FdoPtr<FdoILinearRing> interiorRing = polygon->GetInteriorRing(i);
+            if (revertInteriorRings[i])
+            {
+                FdoPtr<FdoILinearRing> newInteriorRing = ReverseLinearRingVertexOrder(interiorRing);
+                newInteriorRings->Add(newInteriorRing);
+            }
+            else
+                newInteriorRings->Add(interiorRing);
+        }
+
+        return factory->CreatePolygon(newExteriorRing, newInteriorRings);
+    }
+    return NULL;
+}
+
+FdoICurvePolygon* FdoSpatialUtility::FixPolygonVertexOrder (
+    FdoICurvePolygon * polygon, 
+    FdoPolygonVertexOrderRule vertexOrderRule )
+{
+    // Check vertex order of exterior ring
+    FdoPtr<FdoIRing> exteriorRing = polygon->GetExteriorRing();
+    bool bClockwise = RingIsClockwise(exteriorRing);
+    bool bRevertExteriorRing = (bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CCW) ||
+                       (!bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // It is safer to check interior rings too because they may have
+    // wrong vertex order too.
+    bool bFixPolygon = bRevertExteriorRing;
+    std::vector<bool> revertInteriorRings;
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoIRing> interiorRing = polygon->GetInteriorRing(i);
+        bClockwise = RingIsClockwise(interiorRing);
+        bool bRevertInteriorRing = (!bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CCW) ||
+                                  (bClockwise && vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+        revertInteriorRings.push_back(bRevertInteriorRing);
+        bFixPolygon = bRevertInteriorRing || bFixPolygon;
+    }
+
+    if (bFixPolygon)
+    {
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoIRing> newExteriorRing;
+        if (bRevertExteriorRing)
+            newExteriorRing = ReverseRingVertexOrder(exteriorRing);
+        else
+            newExteriorRing = exteriorRing;
+
+        FdoPtr<FdoRingCollection> newInteriorRings = FdoRingCollection::Create();
+        for (size_t i = 0; i < revertInteriorRings.size(); i++)
+        {
+            FdoPtr<FdoIRing> interiorRing = polygon->GetInteriorRing(i);
+            if (revertInteriorRings[i])
+            {
+                FdoPtr<FdoIRing> newInteriorRing = ReverseRingVertexOrder(interiorRing);
+                newInteriorRings->Add(newInteriorRing);
+            }
+            else
+                newInteriorRings->Add(interiorRing);
+        }
+
+        return factory->CreateCurvePolygon(newExteriorRing, newInteriorRings);
+    }
+    return NULL;
+}
+
+FdoIGeometry* FdoSpatialUtility::FixPolygonVertexOrder (
+    FdoIGeometry * geometry, 
+    FdoPolygonVertexOrderRule vertexOrderRule )
+{
+    if (vertexOrderRule == FdoPolygonVertexOrderRule_None)
+        return NULL;
+
+    FdoGeometryType geomType = geometry->GetDerivedType();
+    if (geomType == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* polygon = dynamic_cast<FdoIPolygon*>(geometry);
+        return FixPolygonVertexOrder(polygon, vertexOrderRule);
+    }
+    else if (geomType == FdoGeometryType_MultiPolygon)
+    {
+        FdoIMultiPolygon* multiPolygon = dynamic_cast<FdoIMultiPolygon*>(geometry);
+        
+        bool bToBeBixed = false;
+        FdoPtr<FdoPolygonCollection> polygons = FdoPolygonCollection::Create();
+        for (FdoInt32 i = 0; i < multiPolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoIPolygon> oldPolygon = multiPolygon->GetItem(i);
+            FdoPtr<FdoIPolygon> newPolygon = FixPolygonVertexOrder(oldPolygon, vertexOrderRule);
+            if (newPolygon == NULL)
+                polygons->Add(oldPolygon);
+            else
+            {
+                polygons->Add(newPolygon);
+                bToBeBixed = true;
+            }
+        }
+
+        if (bToBeBixed)
+        {
+            FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+            return factory->CreateMultiPolygon(polygons);
+        }
+    }
+    else if (geomType == FdoGeometryType_CurvePolygon)
+    {
+        FdoICurvePolygon* curvePolygon = dynamic_cast<FdoICurvePolygon*>(geometry);
+        return FixPolygonVertexOrder(curvePolygon, vertexOrderRule);
+    }
+    else if (geomType == FdoGeometryType_MultiCurvePolygon)
+    {
+        FdoIMultiCurvePolygon* multiCurvePolygon = dynamic_cast<FdoIMultiCurvePolygon*>(geometry);
+        
+        bool bToBeBixed = false;
+        FdoPtr<FdoCurvePolygonCollection> curvePolygons = FdoCurvePolygonCollection::Create();
+        for (FdoInt32 i = 0; i < multiCurvePolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoICurvePolygon> oldCurvePolygon = multiCurvePolygon->GetItem(i);
+            FdoPtr<FdoICurvePolygon> newCurvePolygon = FixPolygonVertexOrder(oldCurvePolygon, vertexOrderRule);
+            if (newCurvePolygon == NULL)
+                curvePolygons->Add(oldCurvePolygon);
+            else
+            {
+                curvePolygons->Add(newCurvePolygon);
+                bToBeBixed = true;
+            }
+        }
+
+        if (bToBeBixed)
+        {
+            FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+            return factory->CreateMultiCurvePolygon(curvePolygons);
+        }
+    }
+    return NULL;
+}
+
+FdoIGeometry* FdoSpatialUtility::ReversePolygonVertexOrder ( FdoIGeometry * geometry )
+{
+    FdoGeometryType geomType = geometry->GetDerivedType();
+    if (geomType == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* polygon = dynamic_cast<FdoIPolygon*>(geometry);
+        return ReversePolygonVertexOrder(polygon);
+    }
+    else if (geomType == FdoGeometryType_MultiPolygon)
+    {
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+        FdoIMultiPolygon* multiPolygon = dynamic_cast<FdoIMultiPolygon*>(geometry);
+
+        FdoPtr<FdoPolygonCollection> polygons = FdoPolygonCollection::Create();
+        for (FdoInt32 i = 0; i < multiPolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoIPolygon> oldPolygon = multiPolygon->GetItem(i);
+            FdoPtr<FdoIPolygon> newPolygon = ReversePolygonVertexOrder(oldPolygon);
+            polygons->Add(newPolygon);
+        }
+        return factory->CreateMultiPolygon(polygons);
+    }
+    else if (geomType == FdoGeometryType_CurvePolygon)
+    {
+        FdoICurvePolygon* curvePolygon = dynamic_cast<FdoICurvePolygon*>(geometry);
+        return ReversePolygonVertexOrder(curvePolygon);
+    }
+    else if (geomType == FdoGeometryType_MultiCurvePolygon)
+    {
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+        FdoIMultiCurvePolygon* multiCurvePolygon = dynamic_cast<FdoIMultiCurvePolygon*>(geometry);
+        
+        FdoPtr<FdoCurvePolygonCollection> curvePolygons = FdoCurvePolygonCollection::Create();
+        for (FdoInt32 i = 0; i < multiCurvePolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoICurvePolygon> oldCurvePolygon = multiCurvePolygon->GetItem(i);
+            FdoPtr<FdoICurvePolygon> newCurvePolygon = ReversePolygonVertexOrder(oldCurvePolygon);
+            curvePolygons->Add(newCurvePolygon);
+        }
+        return factory->CreateMultiCurvePolygon(curvePolygons);
+    }
+    return NULL;
+}
+
+FdoPolygonVertexOrderRule FdoSpatialUtility::CheckPolygonVertexOrder(FdoIPolygon* polygon)
+{
+    FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_None;
+
+    // Check vertex order of exterior ring
+    FdoPtr<FdoILinearRing> exteriorRing = polygon->GetExteriorRing();
+    bool bExteriorRingClockwise = LinearRingIsClockwise(exteriorRing);
+    vertexOrderRule = bExteriorRingClockwise ? FdoPolygonVertexOrderRule_CW : FdoPolygonVertexOrderRule_CCW;
+
+    // Check vertex order of interior rings
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoILinearRing> interiorRing = polygon->GetInteriorRing(i);
+        bool bInteriorRingClockwise = LinearRingIsClockwise(interiorRing);
+        if ( bExteriorRingClockwise == bInteriorRingClockwise)
+        {
+            vertexOrderRule = FdoPolygonVertexOrderRule_None;
+            break;
+        }
+    }
+
+    return vertexOrderRule;
+}
+
+FdoPolygonVertexOrderRule FdoSpatialUtility::CheckPolygonVertexOrder(FdoICurvePolygon* polygon)
+{
+    FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_None;
+
+    // Check vertex order of exterior ring
+    FdoPtr<FdoIRing> exteriorRing = polygon->GetExteriorRing();
+    bool bExteriorRingClockwise = RingIsClockwise(exteriorRing);
+    vertexOrderRule = bExteriorRingClockwise ? FdoPolygonVertexOrderRule_CW : FdoPolygonVertexOrderRule_CCW;
+
+    // Check vertex order of interior rings
+    for (FdoInt32 i = 0; i < polygon->GetInteriorRingCount(); i++)
+    {
+        FdoPtr<FdoIRing> interiorRing = polygon->GetInteriorRing(i);
+        bool bInteriorRingClockwise = RingIsClockwise(interiorRing);
+        if ( bExteriorRingClockwise == bInteriorRingClockwise)
+        {
+            vertexOrderRule = FdoPolygonVertexOrderRule_None;
+            break;
+        }
+    }
+
+    return vertexOrderRule;
+}
+
+FdoPolygonVertexOrderRule FdoSpatialUtility::CheckPolygonVertexOrder(FdoIGeometry* geometry)
+{
+    FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_None;
+    FdoGeometryType geomType = geometry->GetDerivedType();
+    if (geomType == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* polygon = dynamic_cast<FdoIPolygon*>(geometry);
+        vertexOrderRule = CheckPolygonVertexOrder(polygon);
+    }
+    else if (geomType == FdoGeometryType_MultiPolygon)
+    {
+        FdoIMultiPolygon* multiPolygon = dynamic_cast<FdoIMultiPolygon*>(geometry);
+        FdoInt32 count = multiPolygon->GetCount();
+        if (count > 0)
+        {
+            FdoPtr<FdoIPolygon> polygon = multiPolygon->GetItem(0);
+            vertexOrderRule = CheckPolygonVertexOrder(polygon);
+        }
+
+        for (FdoInt32 i = 1; i < multiPolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoIPolygon> polygon = multiPolygon->GetItem(i);
+            if (vertexOrderRule != CheckPolygonVertexOrder(polygon))
+            {
+                vertexOrderRule = FdoPolygonVertexOrderRule_None;
+                break;
+            }
+        }
+    }
+    else if (geomType == FdoGeometryType_CurvePolygon)
+    {
+        FdoICurvePolygon* curvePolygon = dynamic_cast<FdoICurvePolygon*>(geometry);
+        vertexOrderRule = CheckPolygonVertexOrder(curvePolygon);
+    }
+    else if (geomType == FdoGeometryType_MultiCurvePolygon)
+    {
+        FdoIMultiCurvePolygon* multiCurvePolygon = dynamic_cast<FdoIMultiCurvePolygon*>(geometry);
+        FdoInt32 count = multiCurvePolygon->GetCount();
+        if (count > 0)
+        {
+            FdoPtr<FdoICurvePolygon> curvePolygon = multiCurvePolygon->GetItem(0);
+            vertexOrderRule = CheckPolygonVertexOrder(curvePolygon);
+        }
+
+        FdoPtr<FdoCurvePolygonCollection> curvePolygons = FdoCurvePolygonCollection::Create();
+        for (FdoInt32 i = 1; i < multiCurvePolygon->GetCount(); i++)
+        {
+            FdoPtr<FdoICurvePolygon> curvePolygon = multiCurvePolygon->GetItem(i);
+            if (vertexOrderRule != CheckPolygonVertexOrder(curvePolygon))
+            {
+                vertexOrderRule = FdoPolygonVertexOrderRule_None;
+                break;
+            }
+        }
+    }
+    return vertexOrderRule;
 }
 

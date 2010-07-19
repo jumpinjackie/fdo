@@ -110,5 +110,41 @@ void FdoClassCapabilities::SetSupportsWrite(FdoBoolean value)
     m_supportsWrite = value;
 }
 
+FdoPolygonVertexOrderRule FdoClassCapabilities::GetPolygonVertexOrderRule( FdoString* geometryPropName )
+{
+    if (NULL == geometryPropName || geometryPropName[0] == L'\0')
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
 
+    if (m_polygonVertexOrderRuleMap.find(geometryPropName) == m_polygonVertexOrderRuleMap.end())
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_6_OBJECTNOTFOUND)));
+
+    return m_polygonVertexOrderRuleMap[geometryPropName];
+}
+
+void FdoClassCapabilities::SetPolygonVertexOrderRule( FdoString* geometryPropName, FdoPolygonVertexOrderRule vertexOrderRule )
+{
+    if (NULL == geometryPropName || geometryPropName[0] == L'\0')
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+
+    m_polygonVertexOrderRuleMap[geometryPropName] = vertexOrderRule;
+}
+
+FdoBoolean FdoClassCapabilities::GetPolygonVertexOrderStrictness(FdoString* geometryPropName )
+{
+    if (NULL == geometryPropName || geometryPropName[0] == L'\0')
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+
+    if (m_polygonVertexOrderStrictnessMap.find(geometryPropName) == m_polygonVertexOrderStrictnessMap.end())
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_6_OBJECTNOTFOUND)));
+
+    return m_polygonVertexOrderStrictnessMap[geometryPropName];
+}
+
+void FdoClassCapabilities::SetPolygonVertexOrderStrictness( FdoString* geometryPropName, FdoBoolean value )
+{
+    if (NULL == geometryPropName || geometryPropName[0] == L'\0')
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+
+    m_polygonVertexOrderStrictnessMap[geometryPropName] = value;
+}
 

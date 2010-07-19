@@ -19,6 +19,7 @@
 #pragma  once
 
 #include "FDO\Commands\Locking\mgLockType.h"
+#include "FDO\Schema\mgPolygonVertexOrderRule.h"
 
 class FdoClassCapabilities;
 
@@ -121,6 +122,48 @@ public:
     property System::Boolean SupportsWrite
     {
         System::Boolean get();
+    }
+
+    /// \brief
+    /// Gets the vertex order rule of the specified geometry property.
+    ///
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \return
+    /// Returns the vertex order rule that the specified geometry property follows.
+    ///
+    /// \brief
+    /// Sets the vertex order rule of the specified geometry property.
+    ///
+    /// \param geometryPropName
+    /// Input the geometry property name to set vertex order rule
+    /// \param vertexOrderRule
+    /// Input vertex order rule that the specified geometry follows.
+    ///
+    property NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule PolygonVertexOrderRule[System::String^]
+    {
+        NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule get(System::String^ geometryPropName);
+        System::Void set(System::String^ geometryPropName, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule vertexOrderRule);
+    }
+
+    /// \brief
+    /// Gets the vertex order strictness of the specified geometry property.
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \return
+    /// Returns true if the vertex order strictness of the specified geometry property is enforced. 
+    ///
+    /// \brief
+    /// Sets the vertex order strictness of the specified geometry property.
+    /// \param geometryPropName
+    /// Input the geometry property name
+    /// \param value
+    /// Input trure if the vertex order of the specified geometry property is enforced. Or input false. 
+    ///
+    property System::Boolean PolygonVertexOrderStrictness[System::String^]
+    {
+        System::Boolean get(System::String^ geometryPropName);
+        System::Void set(System::String^ geometryPropName, System::Boolean value);
     }
 
 internal:

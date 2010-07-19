@@ -688,6 +688,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Inc\Fdo\Schema\PolygonVertexOrderRule.h"
+					>
+				</File>
+				<File
 					RelativePath="Src\Fdo\Schema\PropertyDefinition.cpp"
 					>
 				</File>

@@ -290,6 +290,42 @@ public:
     /// 
 	static System::Boolean IsCircularArcValid( NAMESPACE_OSGEO_GEOMETRY::ICircularArcSegment^ arc, System::Double tolerance );
 
+    /// \brief
+    /// Checks whether the vertex order of the input polygon follows the specified
+    /// vertex order rule. If not, fix it.
+    ///
+    /// \param geometry
+    /// Input the polygon geometry to be fixed. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    ///
+    /// \return
+    /// Returns the modified polygon.  
+    ///
+    static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ FixPolygonVertexOrder ( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule vertexOrderRule );
+
+    /// \brief
+    /// Reverses the vertex order of the input polygon.
+    ///
+    /// \param geometry
+    /// Input the polygon geometry to be reversed. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    ///
+    /// \return
+    /// Returns the modified polygon. 
+    ///
+    static NAMESPACE_OSGEO_GEOMETRY::IGeometry^ ReversePolygonVertexOrder ( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry );
+
+    /// \brief
+    /// Gets the vertex order of the input polygon.
+    ///
+    /// \param geometry
+    /// Input geometry to be checked. It can be a polygon, multipolygon,
+    /// curvepolygon, or multicurvepolygon.
+    /// \return
+    /// Returns the vertex order of the input polygon.
+    /// 
+    static NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule CheckPolygonVertexOrder(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry);
+
 private:
 	SpatialUtility(){}
 };

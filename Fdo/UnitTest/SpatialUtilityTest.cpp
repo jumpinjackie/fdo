@@ -2712,3 +2712,322 @@ void SpatialUtilityTest::testGetExtentsMalformed()
         }
     }
 }
+
+void SpatialUtilityTest::testFixPolygonVertexOrder()
+{
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> oldGeom;
+    FdoPtr<FdoIGeometry> newGeom;
+
+    /*************************** Test Polygon *************************/
+    FdoStringP correctFgfTextWithCouterClockwiseOrder = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    FdoStringP correctFgfTextWithClockwiseOrder = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+    FdoStringP wrongFgfText;
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    /*************************** Test MultiPolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    correctFgfTextWithClockwiseOrder = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    /*************************** Test CurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    /*************************** Test MultiCurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW) == NULL);
+    CPPUNIT_ASSERT_MESSAGE("Faild to fix polygon!", FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_None) == NULL);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+    oldGeom = gf->CreateGeometry(wrongFgfText);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+}
+
+void SpatialUtilityTest::testReversePolygonVertexOrder()
+{
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> oldGeom;
+    FdoPtr<FdoIGeometry> newGeom;
+
+    /*************************** Test Polygon *************************/
+    FdoStringP correctFgfTextWithCouterClockwiseOrder = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    FdoStringP correctFgfTextWithClockwiseOrder = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    /*************************** Test MultiPolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    correctFgfTextWithClockwiseOrder = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    /*************************** Test CurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+
+    /*************************** Test MultiCurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
+
+    oldGeom = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    newGeom = FdoSpatialUtility::ReversePolygonVertexOrder(oldGeom);
+    CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
+}
+
+void SpatialUtilityTest::testCheckPolygonVertexOrder()
+{
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> geometry;
+    FdoPolygonVertexOrderRule vertexOrderRule;
+    FdoStringP wrongFgfText;
+
+    /*************************** Test Polygon *************************/
+    FdoStringP correctFgfTextWithCouterClockwiseOrder = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    FdoStringP correctFgfTextWithClockwiseOrder = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+
+    geometry = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CCW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CCW);
+
+    geometry = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    /*************************** Test MultiPolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    correctFgfTextWithClockwiseOrder = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+
+    geometry = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CCW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CCW);
+
+    geometry = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    /*************************** Test CurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    geometry = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CCW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CCW);
+
+    geometry = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    /*************************** Test MultiCurvePolygon *************************/
+    correctFgfTextWithCouterClockwiseOrder = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    correctFgfTextWithClockwiseOrder = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+
+    geometry = gf->CreateGeometry(correctFgfTextWithCouterClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CCW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CCW);
+
+    geometry = gf->CreateGeometry(correctFgfTextWithClockwiseOrder);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
+
+    // Exterior ring and interior rings are all clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (LINESTRINGSEGMENT (0 200), CIRCULARARCSEGMENT (100 220, 200 200), LINESTRINGSEGMENT (200 0), CIRCULARARCSEGMENT (100 -20, 0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+
+    // Exterior ring and interior rings are couter clock wise.
+    wrongFgfText = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (LINESTRINGSEGMENT (100 50), CIRCULARARCSEGMENT (75 75, 50 50))), (120 60 (LINESTRINGSEGMENT (140 60), CIRCULARARCSEGMENT (130 70, 120 60))))";
+    geometry = gf->CreateGeometry(wrongFgfText);
+    vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
+    CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+}
