@@ -18,6 +18,7 @@
 
 #include "stdafx.h"
 #include "OgrFdoUtil.h"
+#include "OgrProvider.h"
 
 void tilde2dot(std::string& mbfc)
 {
@@ -39,7 +40,7 @@ void dot2tilde(std::wstring& wname)
     }
 }
 
-FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps)
+FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* requestedProps)
 {
     OGRFeatureDefn* fdefn = layer->GetLayerDefn();
 
@@ -52,6 +53,32 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
     printf ("Feature class name: %s\n", name);
 #endif
     FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname.c_str(), L"");
+    FdoPtr<FdoClassCapabilities> classCapabilities = FdoClassCapabilities::Create(*fc.p);
+    classCapabilities->SetSupportsLocking(false);
+    classCapabilities->SetSupportsLongTransactions(false);
+    classCapabilities->SetSupportsWrite(false);
+    fc->SetCapabilities(classCapabilities);
+
+    FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_CCW;
+    bool bStrictness = false;
+    OGRDataSource* dataStore = connection->GetOGRDataSource();
+    if (NULL != dataStore)
+    {
+        OGRSFDriver* driver = dataStore->GetDriver();
+        if (NULL != driver)
+        {
+            const char* name = driver->GetName();
+
+            // As far as I know, ESRI Shapefile is the only feature source that uses
+            // clockwise vertex order. I assume other feature sources use counterclockwise
+            // vertex order.
+            if (strcmp(name, "ESRI Shapefile") == 0)
+            {
+                vertexOrderRule = FdoPolygonVertexOrderRule_CW;
+                bStrictness = true;
+            }
+        }
+    }
 
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
 
@@ -137,8 +164,11 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
             gpd->SetSpatialContextAssociation(wname.c_str());
             pdc->Add(gpd);
             fc->SetGeometryProperty(gpd);
-        }
 
+            // Set vertex order and strictness rule for geometry property
+            classCapabilities->SetPolygonVertexOrderRule(gpd->GetName(), vertexOrderRule);
+            classCapabilities->SetPolygonVertexOrderStrictness(gpd->GetName(), bStrictness);
+        }
     }
 
     //identity property
@@ -170,7 +200,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
         //set the ID property of the feature class
         FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = fc->GetIdentityProperties();
         idpdc->Add(fid);
-    }  
+    }
 
     return FDO_SAFE_ADDREF(fc.p);
 }

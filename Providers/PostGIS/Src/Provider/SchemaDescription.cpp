@@ -199,6 +199,10 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
     PgTablesReader::Ptr stReader(new PgTablesReader(mConn.p));
     stReader->Open();
 
+    FdoPtr<FdoIConnectionCapabilities> connCaps = conn->GetConnectionCapabilities();
+    FdoInt32 lockTypeCount;
+    const FdoLockType* lockTypes = connCaps->GetLockTypes( lockTypeCount );
+
     while (stReader->ReadNext())
     {
         ////////////////// CALCULATE SPATIAL EXTENT //////////////////
@@ -230,6 +234,12 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
               FDOLOG_WRITE(L"Created class: %ls", static_cast<FdoString*>(fdoClassName));
           }
           
+          FdoPtr<FdoClassCapabilities> caps = FdoClassCapabilities::Create(*xClass);
+          caps->SetSupportsLocking(connCaps->SupportsLocking());
+          caps->SetSupportsLongTransactions(connCaps->SupportsLongTransactions());
+          caps->SetSupportsWrite(connCaps->SupportsWrite());
+          caps->SetLockTypes( lockTypes, lockTypeCount );
+          xClass->SetCapabilities(caps);
 
           FdoPtr<FdoPropertyDefinitionCollection> pdc = xClass->GetProperties();
 
@@ -302,6 +312,9 @@ void SchemaDescription::DescribeSchema(Connection* conn, FdoString* schemaName)
             FDOLOG_WRITE(L"+ geometric property: %ls",
                 static_cast<FdoString*>(geomColumn->GetName()));
 
+            // Set vertex order and strictness rule for geometry property
+            caps->SetPolygonVertexOrderRule(geomPropDef->GetName(), FdoPolygonVertexOrderRule_CCW);
+            caps->SetPolygonVertexOrderStrictness(geomPropDef->GetName(), false);
           } //if stReader->IsSpatialTable()
 
           ////////////////// CREATE DATA PROPERTIES //////////////////

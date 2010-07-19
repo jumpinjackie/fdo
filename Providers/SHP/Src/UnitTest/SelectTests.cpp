@@ -462,6 +462,8 @@ void SelectTests::get_class_definition ()
         FdoPtr<FdoClassCapabilities> caps = definition->GetCapabilities ();
         CPPUNIT_ASSERT_MESSAGE ("supports locking?", !caps->SupportsLocking ());
         CPPUNIT_ASSERT_MESSAGE ("supports long transactions?", !caps->SupportsLongTransactions ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong polygon vertex order rule", caps->GetPolygonVertexOrderRule (L"Geometry") == FdoPolygonVertexOrderRule_CW);
+        CPPUNIT_ASSERT_MESSAGE ("wrong polygon vertex order strictness rule", caps->GetPolygonVertexOrderStrictness (L"Geometry") == true);
         FdoPtr<FdoDataPropertyDefinitionCollection> identities = definition->GetIdentityProperties ();
         CPPUNIT_ASSERT_MESSAGE ("too many id properties", 1 == identities->GetCount ());
         FdoPtr<FdoDataPropertyDefinition> id = identities->GetItem (0);

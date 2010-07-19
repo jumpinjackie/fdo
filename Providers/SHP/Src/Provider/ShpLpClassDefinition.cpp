@@ -152,6 +152,10 @@ void ShpLpClassDefinition::ConvertPhysicalToLogical(
             FdoFeatureClass *logicalFeatureClass = static_cast<FdoFeatureClass*>(m_logicalClassDefinition.p);
             logicalFeatureClass->SetGeometryProperty(logicalGeomProp);
         }
+
+        // Set vertex order and strictness rule for geometry property
+        classCapabilities->SetPolygonVertexOrderRule(logicalGeomProp->GetName(), FdoPolygonVertexOrderRule_CW);
+        classCapabilities->SetPolygonVertexOrderStrictness(logicalGeomProp->GetName(), true);
     }
 
     // Create & add the identity property (always exactly one identity property):
