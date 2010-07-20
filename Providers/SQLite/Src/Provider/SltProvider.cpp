@@ -1909,7 +1909,6 @@ int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
         std::string sql2 = "SELECT srid FROM spatial_ref_sys WHERE srid=" + mbname + ";";
 
         int rc;
-        int ret = 0;
         sqlite3_stmt* stmt = NULL;
         const char* tail = NULL;
        
@@ -1918,7 +1917,7 @@ int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
                 return (!valIfNotFound) ? 0 : valIfNotFound;
 
         if ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
-            ret = sqlite3_column_int(stmt, 0);
+            retVal = sqlite3_column_int(stmt, 0);
 
         sqlite3_finalize(stmt);
     }
