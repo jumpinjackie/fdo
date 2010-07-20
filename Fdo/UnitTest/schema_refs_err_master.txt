@@ -25,3 +25,5 @@ Error reading Feature Schemas from XML; identity property 'NodeProperty1' is not
 Error reading Feature Schemas from XML; identity property 'LinkProperty1' is not a property in class 'Reference Schema 4:TestNetworkLink'. 
 Error reading Feature Schemas from XML; object property 'Reference Schema 4:Concrete Class.Object Property 4' has no class; cannot resolve its identity property. 
 Error reading Feature Schemas from XML; class 'Reference Schema 3:TestLayer' for network layer property 'Reference Schema 4:TestNetwork' not found. 
+Association property 'Reference Schema 5:Concrete Class.Association Property 5' is missing the associated class 
+Association property 'Reference Schema 4:Concrete Class.Association Property 4' is missing the associated class 

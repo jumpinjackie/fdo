@@ -188,6 +188,7 @@ protected:
     FdoFeatureSchema* createAcadSchema();
     FdoFeatureSchema* createElectricSchema( FdoFeatureSchema* pAcadSchema );
     FdoFeatureSchema* createRefSchema( FdoInt32 idx, FdoFeatureSchema* pBaseSchema = NULL );
+    FdoFeatureSchema* createAssocSchema( FdoInt32 idx, FdoFeatureSchema* pBaseSchema = NULL );
 
 
     template< class T> FdoPtr<FdoDataPropertyDefinition> AddRangeProperty(

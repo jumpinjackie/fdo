@@ -1204,15 +1204,13 @@ void FdoSchemaMergeContext::MergeSchema( FdoFeatureSchema* newSchema )
 
 void FdoSchemaMergeContext::CheckReferences()
 {
-    if ( !GetIgnoreStates() ) {
-        FdoInt32 idx;
-        FdoFeatureSchemasP schemas = GetSchemas();
+    FdoInt32 idx;
+    FdoFeatureSchemasP schemas = GetSchemas();
 
-        // Check references for each schema class.
-        for ( idx = 0; idx < schemas->GetCount(); idx++ ) {
-            FdoFeatureSchemaP schema = schemas->GetItem( idx );
-            schema->CheckReferences( this );
-        }
+    // Check references for each schema class.
+    for ( idx = 0; idx < schemas->GetCount(); idx++ ) {
+        FdoFeatureSchemaP schema = schemas->GetItem( idx );
+        schema->CheckReferences( this );
     }
 }
 
