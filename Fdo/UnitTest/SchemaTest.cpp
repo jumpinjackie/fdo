@@ -2895,11 +2895,58 @@ void SchemaTest::testRefErrors()
         if ( !bFailed  ) 
             CPPUNIT_FAIL( "WriteXml of schema collection should have failed" );
 
+        // Test the case where an association identity property is changed so 
+        // that its data type no longer matches the data type for the 
+        // corresponding reverse identity property
+        schema1 = createAssocSchema(1);
+        schema2 = createAssocSchema(2, schema1);
+
+        schemas = FdoFeatureSchemaCollection::Create(NULL);
+        schemas->Add(schema1);
+        schemas->Add(schema2);
+
+        // Write the "original" schemas
+        FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
+        schemas->WriteXml(stream2);
+        stream2->Reset();
+
+        // Change the association identity property data type
+        classes = schema1->GetClasses();
+        FdoClassDefinitionP classDef = classes->GetItem(L"Reference Class");
+        FdoDataPropertiesP props = classDef->GetIdentityProperties();
+        FdoDataPropertyP prop = props->GetItem(0);
+        prop->SetDataType(FdoDataType_String);
+
+        // Write the updates
+        FdoIoMemoryStreamP stream1 = FdoIoMemoryStream::Create();
+        schemas->WriteXml(stream1);
+        stream1->Reset();
+
+        // Read the "original" schemas
+        schemas = FdoFeatureSchemaCollection::Create(NULL);
+        schemas->ReadXml(stream2);
+
+        bFailed = false;
+        try {
+            // Read the update that introduces the association property
+            // inconsistency.
+            schemas->ReadXml( stream1 );
+        }
+        catch ( FdoException* e ) {
+            UnitTestUtil::PrintException( e, "schema_ref_err3.txt", true );
+            bFailed = true;
+            e->Release ();
+        }
+
+        if ( !bFailed  ) 
+            CPPUNIT_FAIL( "ReadXml of schema1 should have failed" );
+
 //Todo: get this working on linux
 #ifdef _WIN32
         // Compare output against expected results.
         UnitTestUtil::CheckOutput( "schema_ref_err1_master.txt", "schema_ref_err1.txt" );
         UnitTestUtil::CheckOutput( "schema_ref_err2_master.txt", "schema_ref_err2.txt" );
+        UnitTestUtil::CheckOutput( "schema_ref_err3_master.txt", "schema_ref_err3.txt" );
 #endif
     }
     catch ( FdoException* e ) {
@@ -3984,8 +4031,7 @@ FdoFeatureSchema* SchemaTest::createRefSchema( FdoInt32 idx, FdoFeatureSchema* p
         );
 
         pAssocProp->SetAssociatedClass( pBaseClass );
-	    FdoPropertiesP(pClass->GetProperties())->Add( pAssocProp );
-
+        FdoPropertiesP(pClass->GetProperties())->Add( pAssocProp );
     }
 
 	FdoClassesP(pSchema->GetClasses())->Add( pClass );
@@ -4107,6 +4153,76 @@ FdoFeatureSchema* SchemaTest::createRefSchema( FdoInt32 idx, FdoFeatureSchema* p
 	    FdoPtr<FdoDataPropertyDefinitionCollection>(networkLink->GetIdentityProperties())->Add( pProp );
     }
 	FdoClassesP(pSchema->GetClasses())->Add( networkLink );
+
+    return( pSchema );
+}
+
+FdoFeatureSchema* SchemaTest::createAssocSchema( FdoInt32 idx, FdoFeatureSchema* pBaseSchema )
+{
+	FdoClassDefinitionP pRefClass;
+	FdoFeatureClassP pClass;
+    
+    if ( pBaseSchema ) {
+        pRefClass = FdoClassesP(pBaseSchema->GetClasses())->GetItem( L"Reference Class" );
+    }
+
+	FdoFeatureSchema* pSchema = FdoFeatureSchema::Create( 
+        (FdoString*) FdoStringP::Format( L"Reference Schema %d", idx ), 
+        L"" 
+    );
+
+	pClass = FdoFeatureClass::Create( L"Reference Class", L"" );
+	pClass->SetIsAbstract(false);
+
+    FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create(
+        FdoStringP::Format(L"Prop %d", idx), 
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+	FdoClassesP(pSchema->GetClasses())->Add( pClass );
+
+	pClass = FdoFeatureClass::Create( L"Concrete Class", L"" );
+	pClass->SetIsAbstract(false);
+
+    pProp = FdoDataPropertyDefinition::Create(
+        FdoStringP::Format(L"Prop %d", idx), 
+        L"" 
+    );
+	pProp->SetDataType( FdoDataType_Int64 );
+	pProp->SetNullable(false);
+	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+  	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+
+    if ( pRefClass != NULL ) {
+        pProp = FdoDataPropertyDefinition::Create(
+            FdoStringP::Format(L"Prop %dB", idx), 
+            L"" 
+        );
+	    pProp->SetDataType( FdoDataType_Int64 );
+	    pProp->SetNullable(false);
+	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+
+        FdoAssociationPropertyP pAssocProp = FdoAssociationPropertyDefinition::Create(
+            FdoStringP::Format(L"Association Property %d", idx), 
+            L"" 
+        );
+
+        pAssocProp->SetAssociatedClass( pRefClass );
+        FdoDataPropertiesP assocId = pAssocProp->GetReverseIdentityProperties();
+        assocId->Add(pProp);
+        assocId = pRefClass->GetIdentityProperties();
+        pProp = assocId->GetItem(0);
+        assocId = pAssocProp->GetIdentityProperties();
+        assocId->Add(pProp);
+
+        FdoPropertiesP(pClass->GetProperties())->Add( pAssocProp );
+    }
+
+	FdoClassesP(pSchema->GetClasses())->Add( pClass );
 
     return( pSchema );
 }

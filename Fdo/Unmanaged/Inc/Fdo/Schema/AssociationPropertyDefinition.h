@@ -305,6 +305,8 @@ public:
 
 private:
     void CheckIdentityReferences( FdoSchemaMergeContext* pContext, FdoDataPropertyDefinitionCollection* idProps, long messageId );
+    void Validate( FdoSchemaMergeContext* pContext = NULL );
+    void ValidateError( FdoSchemaMergeContext* pContext, FdoSchemaException* pException );
     
     wchar_t*                                m_reverseName;
     FdoClassDefinition*                     m_associatedClass;

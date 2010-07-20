@@ -1,0 +1,1 @@
+Association Property 'Reference Schema 2:Concrete Class.Association Property 2' has type or number missmatch between the identity properties and the reverse identity properties.  
