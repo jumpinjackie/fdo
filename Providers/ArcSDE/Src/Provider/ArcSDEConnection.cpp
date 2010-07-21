@@ -32,6 +32,42 @@ extern "C" FDOSDE_API FdoIConnection* CreateConnection ()
    return (new ArcSDEConnection ());
 }
 
+class TableRegistry
+{
+public:
+	//
+	// Constructor.
+	TableRegistry(SE_REGINFO* registration, CHAR* qTableName)
+	{
+		this->registration = registration;
+		qualified_table_name = qTableName;
+	}
+
+	// Deconstructor. 
+	~ TableRegistry()
+	{
+		if (qualified_table_name != NULL)
+			delete [] qualified_table_name;
+
+		qualified_table_name = NULL;
+	}
+
+	// Return the registry info pointer.
+	const SE_REGINFO* GetRegistryInfo()
+	{
+		return registration;
+	}
+
+	CHAR* GetQualifiedTableName()
+	{
+		return qualified_table_name;
+	}
+
+private:
+	SE_REGINFO* registration;
+	CHAR* qualified_table_name;
+};
+
 ArcSDEConnection::ArcSDEConnection (void) :
     mConnectionString ((wchar_t*)NULL),
     mConnection (NULL),
@@ -88,6 +124,14 @@ ArcSDEConnection::~ArcSDEConnection (void)
             mTransaction->SetConnection (NULL);
             mTransaction->Release ();
         }
+
+	// Free up the cached sde table qualified names.
+	NamedTableRegistry::const_iterator citer = mCachedTableRegistryInfo.begin();
+	while (citer != mCachedTableRegistryInfo.end())
+	{
+		delete citer->second;
+		++citer;
+	}
 
     // Free up geometry-conversion buffers;
     // NOTE: we don't need to free up these buffers on Close() since they are not database-specific:
@@ -797,7 +841,7 @@ FdoStringCollection* ArcSDEConnection::GetSchemaNames()
 	return FDO_SAFE_ADDREF(ret.p);
 }
 
-FdoStringCollection* ArcSDEConnection::GetFeatureClassNames(FdoStringP schemaName)
+FdoStringCollection* ArcSDEConnection::GetFeatureClassNames(FdoString* schemaName)
 {
 	// The method can only be called after the connection has been set up.
 	if (GetConnectionState() != FdoConnectionState_Open)	
@@ -811,7 +855,7 @@ FdoStringCollection* ArcSDEConnection::GetFeatureClassNames(FdoStringP schemaNam
 	FdoPtr<FdoStringCollection> ret = FdoStringCollection::Create();
 	int count = mCachedSchemaClassNames.size();
 	// Want the feature class names belonging to a specified schema.
-	if (schemaName != L"")
+	if (schemaName != NULL && schemaName[0] != L'\0')
 	{
 		SchemaClassMap::const_iterator iter = mCachedSchemaClassNames.find(schemaName);
 		if (iter != mCachedSchemaClassNames.end())
@@ -819,7 +863,7 @@ FdoStringCollection* ArcSDEConnection::GetFeatureClassNames(FdoStringP schemaNam
 			FdoStringsP classNames = iter->second;
 			for (FdoInt32 i = 0; i < classNames->GetCount(); ++i)
 			{
-				FdoStringP qualifiedClassName = schemaName + L":";
+				FdoStringP qualifiedClassName = FdoStringP(schemaName) + L":";
 				qualifiedClassName += classNames->GetString(i);
 				ret->Add(qualifiedClassName);
 			}
@@ -849,12 +893,16 @@ FdoStringCollection* ArcSDEConnection::GetFeatureClassNames(FdoStringP schemaNam
 // Get the registered table names from server and cached them in the connection.
 void ArcSDEConnection::GetRegisteredTableNames()
 {
+	// The method can only be called after the connection has been set up.
+	if (GetConnectionState() != FdoConnectionState_Open)	
+		throw FdoException::Create (NlsMsgGet(ARCSDE_CONNECTION_NOT_ESTABLISHED, "Connection not established (NULL)."));
+
 	SE_REGINFO* registrations;
 	LONG count;
 	GetArcSDERegistrationList(&registrations, &count);
 	for (LONG i = 0; i < count; ++i)
 	{
-		CHAR qualified_table_name[SE_QUALIFIED_TABLE_NAME+1];
+		CHAR *qualified_table_name = new CHAR[SE_QUALIFIED_TABLE_NAME+1];
 		CHAR owner[SE_MAX_OWNER_LEN+1];
 		CHAR table_name[SE_MAX_TABLE_LEN];
 		CHAR database_name[SE_MAX_DATABASE_LEN+1];
@@ -907,16 +955,16 @@ void ArcSDEConnection::GetRegisteredTableNames()
 		CHAR value[SE_MAX_METADATA_VALUE_LEN];
 		CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
 		GetArcSDEMetadataList(&metadata_list, &num);
-		for (int i = 0; i < num; i++)
+		for (int j = 0; j < num; j++)
 		{
-			result = SE_metadatainfo_get_object_name (metadata_list[i], metadata_qual_table);
+			result = SE_metadatainfo_get_object_name (metadata_list[j], metadata_qual_table);
 			handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
 			if (0==sde_strcmp(sde_pcus2wc(metadata_qual_table), sde_pcus2wc(qualified_table_name)))
 			{
-				result = SE_metadatainfo_get_classname (metadata_list[i], classname);
+				result = SE_metadatainfo_get_classname (metadata_list[j], classname);
 				handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
 
-				result = SE_metadatainfo_get_value (metadata_list[i], value);
+				result = SE_metadatainfo_get_value (metadata_list[j], value);
 				handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
 
 				if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSSCHEMA)))
@@ -936,6 +984,12 @@ void ArcSDEConnection::GetRegisteredTableNames()
 		}
 #endif
 
+		// Store the overrides always:
+		FdoPtr<ArcSDEClassMapping> classMapping = GetClassMapping(fdoSchemaName, fdoClassName, false);
+		classMapping->SetDatabaseName(wdatabase_name);
+		classMapping->SetOwnerName(wowner);
+		classMapping->SetTableName(wtable);
+
 		FdoStringsP classNames;
 		if (mCachedSchemaClassNames[fdoSchemaName] == NULL)
 		{
@@ -948,10 +1002,51 @@ void ArcSDEConnection::GetRegisteredTableNames()
 		if (classNames->IndexOf(fdoClassName) == -1)
 		{
 			classNames->Add(fdoClassName);
+
+			// Insert the table registry info and the qualified table name in the cache.
+			FdoStringP qualifiedFeatureClassName = fdoSchemaName + ":" + fdoClassName;
+			TableRegistry* sdeTableRefistry = new TableRegistry(&registrations[i], qualified_table_name);
+			mCachedTableRegistryInfo[qualifiedFeatureClassName] = sdeTableRefistry;
 		}
 	}
 	// Set the flag to indicate we already cached the schema/class names.
 	mIsSchemaClassNameCached = true;
+}
+
+// Return the relevant SDE table registry from cache by a qualified feature class name.
+// If the information is not cached yet, return null.
+const SE_REGINFO* ArcSDEConnection::GetCachedTableRegistryInfo(FdoStringP featureClassName)
+{
+	NamedTableRegistry::iterator iter = mCachedTableRegistryInfo.find(featureClassName);
+	if (iter != mCachedTableRegistryInfo.end())
+	{
+		TableRegistry* tableRegistry = iter->second;
+		if (tableRegistry != NULL)
+			return tableRegistry->GetRegistryInfo();
+	}
+
+	return NULL;	
+}
+
+// Return the relevant SDE qualified table name from cache by a qualified feature class name.
+// If the information is not cached yet, return null.
+CHAR* ArcSDEConnection::GetCachedSDEQualifiedTableName(FdoStringP featureClassName)
+{
+	NamedTableRegistry::iterator iter = mCachedTableRegistryInfo.find(featureClassName);
+	if (iter != mCachedTableRegistryInfo.end())
+	{
+		TableRegistry* tableRegistry = iter->second;
+		if (tableRegistry != NULL)
+			return tableRegistry->GetQualifiedTableName();
+	}
+
+	return NULL;	
+}
+
+// Indicate if the schema/class names cached yet.
+bool ArcSDEConnection::IsSchemaClassNamesCached()
+{
+	return mIsSchemaClassNameCached;
 }
 
 void ArcSDEConnection::ClassToTable (CHAR* table, FdoClassDefinition* classDef)
