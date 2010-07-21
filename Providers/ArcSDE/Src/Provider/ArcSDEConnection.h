@@ -25,6 +25,7 @@
 #include <sdetype.h>
 
 class ArcSDETransaction;
+class TableRegistry;
 
 class ArcSDEConnection : public FdoIConnection
 {
@@ -80,6 +81,9 @@ protected:
 	typedef std::map<FdoStringP, FdoStringsP> SchemaClassMap;
 	SchemaClassMap mCachedSchemaClassNames; 
 
+	typedef std::map<FdoStringP, TableRegistry*> NamedTableRegistry;
+	NamedTableRegistry mCachedTableRegistryInfo;
+
     /**
      * Cached schema mapping information.
      */
@@ -133,7 +137,7 @@ protected:
 	 */
 	bool m_uuidGeneratorCreated;
 
-private:
+public:
 	/*
 	 * Get the registered table names from server and cached them in the connection.
 	 */
@@ -297,7 +301,18 @@ public:
 
 	// Return all the qualified feature class names of a specified schema.
 	// If the schema name is not specified, all the qualified feature class names are returned.
-	FdoStringCollection* GetFeatureClassNames(FdoStringP schemaName);
+	FdoStringCollection* GetFeatureClassNames(FdoString* schemaName);
+
+	// Return the relevant SDE table registry from cache by a qualified feature class name.
+	// If the information is not cached yet, return null.
+	const SE_REGINFO* GetCachedTableRegistryInfo(FdoStringP featureClassName);
+
+	// Return the relevant SDE qualified table name from cache by a qualified feature class name.
+	// If the information is not cached yet, return null.
+	CHAR* GetCachedSDEQualifiedTableName(FdoStringP featureClassName);
+
+	// Indicate if the schema/class names cached yet.
+	bool IsSchemaClassNamesCached();
 
     // Stores the schema collection as the current schema collection.
     void SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection, bool bFullyLoaded);
