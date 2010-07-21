@@ -3145,6 +3145,9 @@ int sqlite3_create_function16(
   void (*xFinal)(sqlite3_context*)
 );
 
+#define SQLITE_SPEVAL_FUNCTION    0xC0
+#define SQLITE_SPCALC_FUNCTION    0xA0
+
 /*
 ** CAPI3REF: Text Encodings {H10267} <S50200> <H16100>
 **
@@ -3833,6 +3836,11 @@ void sqlite3_update_spatial_index_hook(
 void sqlite3_release_spatial_index_hook(
   sqlite3*,
   void (*)(void*,const char*)
+);
+
+void sqlite3_spatial_context_hook(
+  sqlite3*, 
+  char (*)(void*,const char*,const char*)
 );
 
 /*

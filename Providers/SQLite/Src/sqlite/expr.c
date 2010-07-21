@@ -2298,6 +2298,26 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
       pDef = sqlite3FindFunction(db, zId, nId, nFarg, enc, 0);
       assert( pDef!=0 );
       if( pFarg ){
+        if (db->xSpIndexCallback && ((long)pDef->pUserData&SQLITE_SPEVAL_FUNCTION)==SQLITE_SPEVAL_FUNCTION && nFarg==2){
+            Table* pTab = pFarg->a->pExpr->pTab;
+            if (pTab && !pTab->pSpIndex){
+              pTab->nGeomColIdx = pFarg->a->pExpr->iColumn;
+              pTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pTab->zName, &pTab->nGeomColIdx);
+            }
+        }else{
+          if (db->xSpContextCallback && ((long)pDef->pUserData&SQLITE_SPCALC_FUNCTION)==SQLITE_SPCALC_FUNCTION && nFarg==1){
+            Expr *pNew;
+            Table* pTab = pFarg->a->pExpr->pTab;
+            if (pTab && !pTab->nSpContextType){
+                pTab->nSpContextType = db->xSpContextCallback(db->pSpIndexArg, pTab->zName, pTab->aCol[pFarg->a->pExpr->iColumn].zName);
+            }
+              pNew = sqlite3PExpr(pParse, TK_INTEGER, 0, 0, 0);
+              nFarg++;
+              pNew->flags |= EP_IntValue;
+              pNew->iTable = (int)(pTab->nSpContextType == 1);
+              sqlite3ExprListAppend(pParse, pFarg, pNew, 0);
+          }
+        }
         r1 = sqlite3GetTempRange(pParse, nFarg);
         sqlite3ExprCodeExprList(pParse, pFarg, r1, 1);
       }else{

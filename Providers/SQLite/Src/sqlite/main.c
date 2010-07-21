@@ -1185,6 +1185,16 @@ void sqlite3_release_spatial_index_hook(
   sqlite3_mutex_leave(db->mutex);
 }
 
+void sqlite3_spatial_context_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  char (*xCallback)(void*,const char*,const char*)
+  )
+{
+  sqlite3_mutex_enter(db->mutex);
+  db->xSpContextCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
 /*
 ** Register a callback to be invoked each time a transaction is rolled
 ** back by this database connection.

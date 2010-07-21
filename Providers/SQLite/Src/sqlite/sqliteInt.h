@@ -849,10 +849,10 @@ struct sqlite3 {
   void (*xUnlockNotify)(void **, int);  /* Unlock notify callback */
   sqlite3 *pNextBlocked;        /* Next in list of all blocked connections */
 #endif
-  void* pUserArg;               /* Custom user data used to share data over connection */
   void* (*xSpIndexCallback)(void*,char const*,int*);
   void (*xUpdSpIndexCallback)(void*,void*,int,sqlite3_int64,const void*,int);
   void (*xRelSpIndexCallback)(void*,const char*);
+  char (*xSpContextCallback)(void*,char const*,char const*);
   void *pSpIndexArg;
 };
 
@@ -1157,6 +1157,7 @@ struct Table {
   Table *pNextZombie;  /* Next on the Parse.pZombieTab list */
   void  *pSpIndex;     /* Spatial index of this table in case it was created. */
   int nGeomColIdx;     /* Geometry column number of in this table 0 based */
+  char nSpContextType; /* Spatial Context type used in evaluation: 0=not set; 1 = Lat/Long; 2 = other*/
 };
 
 /*
