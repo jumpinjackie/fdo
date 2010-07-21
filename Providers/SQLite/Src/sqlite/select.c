@@ -3472,30 +3472,6 @@ static void updateAccumulator(Parse *pParse, AggInfo *pAggInfo){
   pAggInfo->directMode = 0;
   sqlite3ExprCacheClear(pParse);
 }
-void sqlite3LoadSiExpr(sqlite3 *db, Select *p, Expr* expr)
-{
-  if (expr->pLeft){
-    sqlite3LoadSiExpr(db, p, expr->pLeft);
-  }
-  if (expr->pRight){
-    sqlite3LoadSiExpr(db, p, expr->pRight);
-  }
-  if( ExprHasProperty(expr, EP_xIsSelect)){
-    if (expr->x.pSelect->pWhere){
-      sqlite3LoadSiExpr(db, expr->x.pSelect, expr->x.pSelect->pWhere);
-    }
-  }else{
-    // not TK_CONST_FUNC and count of parameters is 2
-    if (expr->op==TK_FUNCTION && expr->x.pList->nExpr == 2 &&
-      0==sqlite3StrNICmp((char*)expr->token.z, "geom_", 5)){
-        Table* pTab = expr->x.pList->a->pExpr->pTab;
-        if (pTab && !pTab->pSpIndex){
-          pTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pTab->zName, &pTab->nGeomColIdx);
-          pTab->nGeomColIdx = expr->x.pList->a->pExpr->iColumn;
-        }
-    }
-  }
-}
 
 /*
 ** Generate code for the SELECT statement given in the p argument.  
@@ -3612,10 +3588,6 @@ int sqlite3Select(
   */
   if( IgnorableOrderby(pDest) ){
     pOrderBy = 0;
-  }
-
-  if (p->pWhere && db->xSpIndexCallback){
-    sqlite3LoadSiExpr(db, p, p->pWhere);
   }
 
   /* Begin generating code.

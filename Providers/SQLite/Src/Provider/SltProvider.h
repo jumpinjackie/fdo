@@ -28,7 +28,6 @@ struct NameOrderingPair;
 class StringBuffer;
 class SpatialIndexDescriptor;
 struct DBounds;
-class ConnInfoDetails;
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -234,7 +233,7 @@ public:
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
     void CacheViewContent(const char* viewName);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
-    bool IsCoordSysLatLong();
+    bool IsCoordSysLatLong(const char* tablename, const char* columnname);
     bool IsReadOnlyConnection();
     
     // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
@@ -269,6 +268,7 @@ private :
     static void* sqlite3_spatial_index(void* caller, const char* tablename, int* geomIdx);
     static void  sqlite3_update_spatial_index(void* caller, void* sid, int action, sqlite3_int64 id, const void* blob, int szBlob);
     static void  sqlite3_release_spatial_index(void* sid, const char* zTableName);
+    static char  sqlite3_spatial_context(void* caller, const char* tablename, const char* columnname);
 
     bool                                    m_changesAvailable;
     bool                                    m_isReadOnlyConnection;
@@ -293,20 +293,5 @@ private :
     // geometry conversion buffer
     unsigned char*                          m_wkbBuffer;
     int                                     m_wkbBufferLen;
-    ConnInfoDetails*                        m_connDet;
     int                                     m_defSpatialContextId;
-};
-
-class ConnInfoDetails
-{
-public:
-    ConnInfoDetails(SltConnection* conn);
-    bool IsCoordSysLatLong();
-
-private:
-    // don't use add ref here
-    SltConnection* m_conn;
-    bool m_isInitialized;
-    bool m_isCoordSysLatLong; // specify if connection is based on a lat/long CS
-    // other parameters needed to pass thru sqlite connection
 };

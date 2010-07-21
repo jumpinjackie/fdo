@@ -106,7 +106,6 @@ SltConnection::SltConnection() : m_refCount(1)
     m_wkbBuffer = NULL;
     m_wkbBufferLen = 0;
     m_changesAvailable = false;
-    m_connDet = NULL;
     m_defSpatialContextId = 0;
     m_isReadOnlyConnection = true;
 }
@@ -440,12 +439,10 @@ FdoConnectionState SltConnection::Open()
 
     m_connState = FdoConnectionState_Open;
     
-    m_connDet = new ConnInfoDetails(this);
-    m_dbWrite->pUserArg = m_connDet;
-
     sqlite3_spatial_index_hook(m_dbWrite, SltConnection::sqlite3_spatial_index, this);
     sqlite3_update_spatial_index_hook(m_dbWrite, SltConnection::sqlite3_update_spatial_index);
     sqlite3_release_spatial_index_hook(m_dbWrite, SltConnection::sqlite3_release_spatial_index);
+    sqlite3_spatial_context_hook(m_dbWrite, SltConnection::sqlite3_spatial_context);
     sqlite3_commit_hook(m_dbWrite, SltConnection::commit_hook, this);
     sqlite3_rollback_hook(m_dbWrite, SltConnection::rollback_hook, this);
 
@@ -496,7 +493,6 @@ void SltConnection::Close()
 
     if (m_dbWrite)
     {
-        m_dbWrite->pUserArg = NULL;
         if(sqlite3_close(m_dbWrite) != SQLITE_BUSY)
             m_dbWrite = NULL;
     }
@@ -507,9 +503,6 @@ void SltConnection::Close()
 
     m_changesAvailable = false;
     m_isReadOnlyConnection = true;
-
-    delete m_connDet;
-    m_connDet = NULL;
 }
 
 FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
@@ -3775,16 +3768,46 @@ void SltConnection::sqlite3_release_spatial_index(void* sid, const char* zTableN
     sidVal->Release();
 }
 
-bool SltConnection::IsCoordSysLatLong()
+char SltConnection::sqlite3_spatial_context(void* caller, const char* tablename, const char* columnname)
 {
-    if (m_dbWrite == NULL)
-        return false;
+    SltConnection* conn = static_cast<SltConnection*>(caller);
+    return conn->IsCoordSysLatLong(tablename, columnname) ? 1 : 2;
+}
 
-    const char* sql = "SELECT srid FROM spatial_ref_sys WHERE srtext LIKE '%GEOGCS%' AND srtext NOT LIKE '%PROJCS%';";
+bool SltConnection::IsCoordSysLatLong(const char* tablename, const char* columnname)
+{
+    bool retVal = false;
+    if (m_dbWrite == NULL)
+        return retVal;
+    
+    int spContext = 0;
+    SltMetadata* md = GetMetadata(tablename);
+    FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
+    if (fc)
+    {
+        FdoPtr<FdoPropertyDefinitionCollection> props = fc->GetProperties();
+        std::wstring colName = A2W_SLOW(columnname);
+        FdoPtr<FdoPropertyDefinition> pdef = props->FindItem(colName.c_str());
+        if (pdef != NULL)
+        {
+            if(pdef->GetPropertyType() == FdoPropertyType_GeometricProperty)
+            {
+                FdoGeometricPropertyDefinition* propGeom = static_cast<FdoGeometricPropertyDefinition*>(pdef.p);
+                int dval = 0;
+                spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation(), dval);
+            }
+        }
+    }
+    if (!spContext)
+        return retVal;
+
+    StringBuffer sb;
+    sb.Append("SELECT srid FROM spatial_ref_sys WHERE srtext LIKE '%GEOGCS%' AND srtext NOT LIKE '%PROJCS%' AND srid=", 102);
+    sb.Append(spContext);
+    sb.Append(";", 1);
     sqlite3_stmt* pStmt = NULL;
     const char* zTail = NULL;
-    bool retVal = false;
-    if (sqlite3_prepare_v2(m_dbWrite, sql, -1, &pStmt, &zTail) == SQLITE_OK)
+    if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &pStmt, &zTail) == SQLITE_OK)
     {
         retVal = (sqlite3_step(pStmt) == SQLITE_ROW);
         sqlite3_finalize(pStmt);
@@ -3795,21 +3818,4 @@ bool SltConnection::IsCoordSysLatLong()
 bool SltConnection::IsReadOnlyConnection()
 {
     return m_isReadOnlyConnection;
-}
-
-ConnInfoDetails::ConnInfoDetails(SltConnection* conn)
-{
-    m_isInitialized = m_isCoordSysLatLong = false;
-    m_conn = conn;
-}
-
-bool ConnInfoDetails::IsCoordSysLatLong()
-{
-    if (!m_isInitialized)
-    {
-        // cache the result to avoid multiple callsto execute
-        m_isInitialized = true;
-        m_isCoordSysLatLong = m_conn->IsCoordSysLatLong();
-    }
-    return m_isCoordSysLatLong;
 }

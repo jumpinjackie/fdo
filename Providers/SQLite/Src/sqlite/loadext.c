@@ -335,7 +335,8 @@ static const sqlite3_api_routines sqlite3Apis = {
   */
   sqlite3_spatial_index_hook,
   sqlite3_update_spatial_index_hook,
-  sqlite3_release_spatial_index_hook
+  sqlite3_release_spatial_index_hook,
+  sqlite3_spatial_context_hook
 };
 
 /*
