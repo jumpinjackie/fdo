@@ -206,6 +206,9 @@ protected:
     /// Deep-copy a single type of FDO property in a collection.
     static void DeepCopyFdoPropertyType(FdoPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoPropertyType propertyType, FdoCommonSchemaCopyContext * schemaContext = NULL);
 
+    /// Deep-copy a single type of FDO base property in a collection.
+    static void DeepCopyFdoPropertyType(FdoReadOnlyPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoPropertyType propertyType, FdoCommonSchemaCopyContext * schemaContext = NULL);
+
     /// Deep-copy FDO Data Property Definitions.
     static void DeepCopyFdoPropertyType(FdoDataPropertyDefinitionCollection *properties, FdoPropertyDefinitionCollection *newProperties, FdoCommonSchemaCopyContext * schemaContext);
 
