@@ -423,7 +423,7 @@ const FdoByte* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoString* prop
 
 FdoIFeatureReader* FdoExpressionEngineUtilFeatureReader::GetFeatureObject (FdoString* propertyName)
 {
-    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_70_PROPERTY_TYPE_NOT_SUPPORTED), L"Object property"));
+    return m_reader->GetFeatureObject(propertyName);
 }
 
 const FdoByte* FdoExpressionEngineUtilFeatureReader::GetGeometry(FdoInt32 index, FdoInt32 * count)
