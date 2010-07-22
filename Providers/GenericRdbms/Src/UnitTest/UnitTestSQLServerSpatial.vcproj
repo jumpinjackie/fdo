@@ -44,6 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL"
@@ -126,6 +127,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL"
@@ -208,6 +210,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL"
 				RuntimeLibrary="2"
@@ -283,6 +286,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="$(FDOUTILITIES)\SchemaMgr\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\Common\inc;$(FDO)\Unmanaged\inc;$(FDOTHIRDPARTY)\cppunit\include;..\LockManager;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\..;..\..\inc;..\..\inc\fdo;../;..\LongTransactionManager;Common;;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;RDBI_DEF_SSQL"
 				RuntimeLibrary="2"

@@ -45,6 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
@@ -130,6 +131,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
@@ -213,6 +215,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -288,6 +291,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="-Zm120"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\Fdo\Lt;..\Fdo\Other;..\Fdo\Connection;..\Fdo\FeatureCommands;..\Fdo\SpatialContext;..\LongTransactionManager;..\..;..\..\inc;..\..\inc\fdo;../;..\LockManager;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
