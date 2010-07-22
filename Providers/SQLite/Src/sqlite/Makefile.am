@@ -88,7 +88,13 @@ libSqlite3Engine_la_SOURCES = \
   vdbemem.c \
   vtab.c \
   walker.c \
-  where.c
+  where.c \
+  vdbetrace.c \
+  ctime.c \
+  fkey.c \
+  fts3_snippet.c \
+  fts3_write.c \
+  wal.c
 
 noinst_HEADERS = $(libSqlite3Engine_la_SOURCES) \
   btree.h \
@@ -114,6 +120,8 @@ noinst_HEADERS = $(libSqlite3Engine_la_SOURCES) \
   sqliteInt.h \
   sqliteLimit.h \
   vdbe.h \
+  fts3Int.h \
+  wal.h \
   vdbeInt.h
 
 INCLUDES = \

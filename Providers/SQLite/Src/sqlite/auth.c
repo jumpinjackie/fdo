@@ -13,8 +13,6 @@
 ** API.  This facility is an optional feature of the library.  Embedded
 ** systems that do not need this facility may omit it by recompiling
 ** the library with -DSQLITE_OMIT_AUTHORIZATION=1
-**
-** $Id: auth.c,v 1.31 2009/05/04 18:01:40 drh Exp $
 */
 #include "sqliteInt.h"
 
@@ -92,6 +90,39 @@ static void sqliteAuthBadReturnCode(Parse *pParse){
 }
 
 /*
+** Invoke the authorization callback for permission to read column zCol from
+** table zTab in database zDb. This function assumes that an authorization
+** callback has been registered (i.e. that sqlite3.xAuth is not NULL).
+**
+** If SQLITE_IGNORE is returned and pExpr is not NULL, then pExpr is changed
+** to an SQL NULL expression. Otherwise, if pExpr is NULL, then SQLITE_IGNORE
+** is treated as SQLITE_DENY. In this case an error is left in pParse.
+*/
+int sqlite3AuthReadCol(
+  Parse *pParse,                  /* The parser context */
+  const char *zTab,               /* Table name */
+  const char *zCol,               /* Column name */
+  int iDb                         /* Index of containing database. */
+){
+  sqlite3 *db = pParse->db;       /* Database handle */
+  char *zDb = db->aDb[iDb].zName; /* Name of attached database */
+  int rc;                         /* Auth callback return code */
+
+  rc = db->xAuth(db->pAuthArg, SQLITE_READ, zTab,zCol,zDb,pParse->zAuthContext);
+  if( rc==SQLITE_DENY ){
+    if( db->nDb>2 || iDb!=0 ){
+      sqlite3ErrorMsg(pParse, "access to %s.%s.%s is prohibited",zDb,zTab,zCol);
+    }else{
+      sqlite3ErrorMsg(pParse, "access to %s.%s is prohibited", zTab, zCol);
+    }
+    pParse->rc = SQLITE_AUTH;
+  }else if( rc!=SQLITE_IGNORE && rc!=SQLITE_OK ){
+    sqliteAuthBadReturnCode(pParse);
+  }
+  return rc;
+}
+
+/*
 ** The pExpr should be a TK_COLUMN expression.  The table referred to
 ** is in pTabList or else it is the NEW or OLD table of a trigger.  
 ** Check to see if it is OK to read this particular column.
@@ -107,42 +138,38 @@ void sqlite3AuthRead(
   SrcList *pTabList     /* All table that pExpr might refer to */
 ){
   sqlite3 *db = pParse->db;
-  int rc;
   Table *pTab = 0;      /* The table being read */
   const char *zCol;     /* Name of the column of the table */
   int iSrc;             /* Index in pTabList->a[] of table being read */
-  const char *zDBase;   /* Name of database being accessed */
-  TriggerStack *pStack; /* The stack of current triggers */
   int iDb;              /* The index of the database the expression refers to */
+  int iCol;             /* Index of column in table */
 
   if( db->xAuth==0 ) return;
-  assert( pExpr->op==TK_COLUMN );
   iDb = sqlite3SchemaToIndex(pParse->db, pSchema);
   if( iDb<0 ){
     /* An attempt to read a column out of a subquery or other
     ** temporary table. */
     return;
   }
-  if( pTabList ){
-    for(iSrc=0; ALWAYS(iSrc<pTabList->nSrc); iSrc++){
-      if( pExpr->iTable==pTabList->a[iSrc].iCursor ) break;
-    }
-    assert( iSrc<pTabList->nSrc );
-    pTab = pTabList->a[iSrc].pTab;
+
+  assert( pExpr->op==TK_COLUMN || pExpr->op==TK_TRIGGER );
+  if( pExpr->op==TK_TRIGGER ){
+    pTab = pParse->pTriggerTab;
   }else{
-    pStack = pParse->trigStack;
-    if( ALWAYS(pStack) ){
-      /* This must be an attempt to read the NEW or OLD pseudo-tables
-      ** of a trigger.
-      */
-      assert( pExpr->iTable==pStack->newIdx || pExpr->iTable==pStack->oldIdx );
-      pTab = pStack->pTab;
+    assert( pTabList );
+    for(iSrc=0; ALWAYS(iSrc<pTabList->nSrc); iSrc++){
+      if( pExpr->iTable==pTabList->a[iSrc].iCursor ){
+        pTab = pTabList->a[iSrc].pTab;
+        break;
+      }
     }
   }
+  iCol = pExpr->iColumn;
   if( NEVER(pTab==0) ) return;
-  if( pExpr->iColumn>=0 ){
-    assert( pExpr->iColumn<pTab->nCol );
-    zCol = pTab->aCol[pExpr->iColumn].zName;
+
+  if( iCol>=0 ){
+    assert( iCol<pTab->nCol );
+    zCol = pTab->aCol[iCol].zName;
   }else if( pTab->iPKey>=0 ){
     assert( pTab->iPKey<pTab->nCol );
     zCol = pTab->aCol[pTab->iPKey].zName;
@@ -150,21 +177,8 @@ void sqlite3AuthRead(
     zCol = "ROWID";
   }
   assert( iDb>=0 && iDb<db->nDb );
-  zDBase = db->aDb[iDb].zName;
-  rc = db->xAuth(db->pAuthArg, SQLITE_READ, pTab->zName, zCol, zDBase, 
-                 pParse->zAuthContext);
-  if( rc==SQLITE_IGNORE ){
+  if( SQLITE_IGNORE==sqlite3AuthReadCol(pParse, pTab->zName, zCol, iDb) ){
     pExpr->op = TK_NULL;
-  }else if( rc==SQLITE_DENY ){
-    if( db->nDb>2 || iDb!=0 ){
-      sqlite3ErrorMsg(pParse, "access to %s.%s.%s is prohibited", 
-         zDBase, pTab->zName, zCol);
-    }else{
-      sqlite3ErrorMsg(pParse, "access to %s.%s is prohibited",pTab->zName,zCol);
-    }
-    pParse->rc = SQLITE_AUTH;
-  }else if( rc!=SQLITE_OK ){
-    sqliteAuthBadReturnCode(pParse);
   }
 }
 

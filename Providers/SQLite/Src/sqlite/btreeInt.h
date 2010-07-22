@@ -9,8 +9,6 @@
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** $Id: btreeInt.h,v 1.46 2009/03/20 14:18:52 danielk1977 Exp $
-**
 ** This file implements a external (disk-based) database using BTrees.
 ** For a detailed discussion of BTrees, refer to
 **
@@ -48,9 +46,9 @@
 **
 ** The file is divided into pages.  The first page is called page 1,
 ** the second is page 2, and so forth.  A page number of zero indicates
-** "no such page".  The page size can be anything between 512 and 65536.
-** Each page can be either a btree page, a freelist page or an overflow
-** page.
+** "no such page".  The page size can be any power of 2 between 512 and 32768.
+** Each page can be either a btree page, a freelist page, an overflow
+** page, or a pointer-map page.
 **
 ** The first page is always a btree page.  The first 100 bytes of the first
 ** page contain a special header (the "file header") that describes the file.
@@ -70,6 +68,17 @@
 **     32       4     First freelist page
 **     36       4     Number of freelist pages in the file
 **     40      60     15 4-byte meta values passed to higher layers
+**
+**     40       4     Schema cookie
+**     44       4     File format of schema layer
+**     48       4     Size of page cache
+**     52       4     Largest root-page (auto/incr_vacuum)
+**     56       4     1=UTF-8 2=UTF16le 3=UTF16be
+**     60       4     User version
+**     64       4     Incremental vacuum mode
+**     68       4     unused
+**     72       4     unused
+**     76       4     unused
 **
 ** All of the integer values are big-endian (most significant byte first).
 **
@@ -291,6 +300,24 @@ struct MemPage {
 */
 #define EXTRA_SIZE sizeof(MemPage)
 
+/*
+** A linked list of the following structures is stored at BtShared.pLock.
+** Locks are added (or upgraded from READ_LOCK to WRITE_LOCK) when a cursor 
+** is opened on the table with root page BtShared.iTable. Locks are removed
+** from this list when a transaction is committed or rolled back, or when
+** a btree handle is closed.
+*/
+struct BtLock {
+  Btree *pBtree;        /* Btree handle holding this lock */
+  Pgno iTable;          /* Root page of table */
+  u8 eLock;             /* READ_LOCK or WRITE_LOCK */
+  BtLock *pNext;        /* Next in BtShared.pLock list */
+};
+
+/* Candidate values for BtLock.eLock */
+#define READ_LOCK     1
+#define WRITE_LOCK    2
+
 /* A Btree handle
 **
 ** A database connection contains a pointer to an instance of
@@ -300,8 +327,8 @@ struct MemPage {
 ** this structure.
 **
 ** For some database files, the same underlying database cache might be 
-** shared between multiple connections.  In that case, each contection
-** has it own pointer to this object.  But each instance of this object
+** shared between multiple connections.  In that case, each connection
+** has it own instance of this object.  But each instance of this object
 ** points to the same BtShared object.  The database cache and the
 ** schema associated with the database file are all contained within
 ** the BtShared object.
@@ -322,6 +349,9 @@ struct Btree {
   int nBackup;       /* Number of backup operations reading this btree */
   Btree *pNext;      /* List of other sharable Btrees from the same db */
   Btree *pPrev;      /* Back pointer of the same list */
+#ifndef SQLITE_OMIT_SHARED_CACHE
+  BtLock lock;       /* Object used to lock page 1 */
+#endif
 };
 
 /*
@@ -377,6 +407,8 @@ struct BtShared {
   MemPage *pPage1;      /* First page of the database */
   u8 readOnly;          /* True if the underlying file is readonly */
   u8 pageSizeFixed;     /* True if the page size can no longer be changed */
+  u8 secureDelete;      /* True if secure_delete is enabled */
+  u8 initiallyEmpty;    /* Database is empty at start of transaction */
 #ifndef SQLITE_OMIT_AUTOVACUUM
   u8 autoVacuum;        /* True if auto-vacuum is enabled */
   u8 incrVacuum;        /* True if incr-vacuum is enabled */
@@ -388,7 +420,9 @@ struct BtShared {
   u16 maxLeaf;          /* Maximum local payload in a LEAFDATA table */
   u16 minLeaf;          /* Minimum local payload in a LEAFDATA table */
   u8 inTransaction;     /* Transaction state */
+  u8 doNotUseWAL;       /* If true, do not open write-ahead-log file */
   int nTransaction;     /* Number of open transactions (read + write) */
+  u32 nPage;            /* Number of pages in the database */
   void *pSchema;        /* Pointer to space allocated by sqlite3BtreeSchema() */
   void (*xFreeSchema)(void*);  /* Destructor for BtShared.pSchema */
   sqlite3_mutex *mutex; /* Non-recursive mutex required to access this struct */
@@ -439,7 +473,7 @@ struct CellInfo {
 ** The entry is identified by its MemPage and the index in
 ** MemPage.aCell[] of the entry.
 **
-** When a single database file can shared by two more database connections,
+** A single database file can shared by two more database connections,
 ** but cursors cannot be shared.  Each cursor is associated with a
 ** particular database connection identified BtCursor.pBtree.db.
 **
@@ -460,13 +494,10 @@ struct BtCursor {
   u8 eState;                /* One of the CURSOR_XXX constants (see below) */
   void *pKey;      /* Saved key that was cursor's last known position */
   i64 nKey;        /* Size of pKey, or last integer key */
-  int skip;        /* (skip<0) -> Prev() is a no-op. (skip>0) -> Next() is */
+  int skipNext;    /* Prev() is noop if negative. Next() is noop if positive */
 #ifndef SQLITE_OMIT_INCRBLOB
   u8 isIncrblobHandle;      /* True if this cursor is an incr. io handle */
   Pgno *aOverflow;          /* Cache of overflow page locations */
-#endif
-#ifndef NDEBUG
-  u8 pagesShuffled;         /* True if Btree pages are rearranged by balance()*/
 #endif
   i16 iPage;                            /* Index of current page in apPage */
   MemPage *apPage[BTCURSOR_MAX_DEPTH];  /* Pages from root to current page */
@@ -507,24 +538,6 @@ struct BtCursor {
 ** The database page the PENDING_BYTE occupies. This page is never used.
 */
 # define PENDING_BYTE_PAGE(pBt) PAGER_MJ_PGNO(pBt)
-
-/*
-** A linked list of the following structures is stored at BtShared.pLock.
-** Locks are added (or upgraded from READ_LOCK to WRITE_LOCK) when a cursor 
-** is opened on the table with root page BtShared.iTable. Locks are removed
-** from this list when a transaction is committed or rolled back, or when
-** a btree handle is closed.
-*/
-struct BtLock {
-  Btree *pBtree;        /* Btree handle holding this lock */
-  Pgno iTable;          /* Root page of table */
-  u8 eLock;             /* READ_LOCK or WRITE_LOCK */
-  BtLock *pNext;        /* Next in BtShared.pLock list */
-};
-
-/* Candidate values for BtLock.eLock */
-#define READ_LOCK     1
-#define WRITE_LOCK    2
 
 /*
 ** These macros define the location of the pointer-map entry for a 
@@ -627,15 +640,3 @@ struct IntegrityCk {
 #define put2byte(p,v) ((p)[0] = (u8)((v)>>8), (p)[1] = (u8)(v))
 #define get4byte sqlite3Get4byte
 #define put4byte sqlite3Put4byte
-
-/*
-** Internal routines that should be accessed by the btree layer only.
-*/
-int sqlite3BtreeGetPage(BtShared*, Pgno, MemPage**, int);
-int sqlite3BtreeInitPage(MemPage *pPage);
-void sqlite3BtreeParseCellPtr(MemPage*, u8*, CellInfo*);
-void sqlite3BtreeParseCell(MemPage*, int, CellInfo*);
-int sqlite3BtreeRestoreCursorPosition(BtCursor *pCur);
-void sqlite3BtreeGetTempCursor(BtCursor *pCur, BtCursor *pTempCur);
-void sqlite3BtreeReleaseTempCursor(BtCursor *pCur);
-void sqlite3BtreeMoveToParent(BtCursor *pCur);

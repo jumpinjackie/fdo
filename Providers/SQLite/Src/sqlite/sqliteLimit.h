@@ -11,8 +11,6 @@
 *************************************************************************
 ** 
 ** This file defines various limits of what SQLite can process.
-**
-** @(#) $Id: sqliteLimit.h,v 1.10 2009/01/10 16:15:09 danielk1977 Exp $
 */
 
 /*
@@ -104,10 +102,18 @@
 ** table and for temporary tables.  The SQLITE_DEFAULT_CACHE_SIZE
 */
 #ifndef SQLITE_DEFAULT_CACHE_SIZE
-# define SQLITE_DEFAULT_CACHE_SIZE  1
+# define SQLITE_DEFAULT_CACHE_SIZE  2000
 #endif
 #ifndef SQLITE_DEFAULT_TEMP_CACHE_SIZE
 # define SQLITE_DEFAULT_TEMP_CACHE_SIZE  500
+#endif
+
+/*
+** The default number of frames to accumulate in the log file before
+** checkpointing the database in WAL mode.
+*/
+#ifndef SQLITE_DEFAULT_WAL_AUTOCHECKPOINT
+# define SQLITE_DEFAULT_WAL_AUTOCHECKPOINT  1000
 #endif
 
 /*
@@ -187,4 +193,15 @@
 */
 #ifndef SQLITE_MAX_LIKE_PATTERN_LENGTH
 # define SQLITE_MAX_LIKE_PATTERN_LENGTH 50000
+#endif
+
+/*
+** Maximum depth of recursion for triggers.
+**
+** A value of 1 means that a trigger program will not be able to itself
+** fire any triggers. A value of 0 means that no trigger programs at all 
+** may be executed.
+*/
+#ifndef SQLITE_MAX_TRIGGER_DEPTH
+# define SQLITE_MAX_TRIGGER_DEPTH 1000
 #endif

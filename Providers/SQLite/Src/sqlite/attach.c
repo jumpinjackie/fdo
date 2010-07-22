@@ -10,8 +10,6 @@
 **
 *************************************************************************
 ** This file contains code used to implement the ATTACH and DETACH commands.
-**
-** $Id: attach.c,v 1.90 2009/05/01 06:19:21 danielk1977 Exp $
 */
 #include "sqliteInt.h"
 
@@ -41,7 +39,7 @@ static int resolveAttachExpr(NameContext *pName, Expr *pExpr)
     if( pExpr->op!=TK_ID ){
       rc = sqlite3ResolveExprNames(pName, pExpr);
       if( rc==SQLITE_OK && !sqlite3ExprIsConstant(pExpr) ){
-        sqlite3ErrorMsg(pName->pParse, "invalid name: \"%T\"", &pExpr->span);
+        sqlite3ErrorMsg(pName->pParse, "invalid name: \"%s\"", pExpr->u.zToken);
         return SQLITE_ERROR;
       }
     }else{
@@ -145,13 +143,18 @@ static void attachFunc(
     }
     pPager = sqlite3BtreePager(aNew->pBt);
     sqlite3PagerLockingMode(pPager, db->dfltLockMode);
-    sqlite3PagerJournalMode(pPager, db->dfltJournalMode);
+    sqlite3BtreeSecureDelete(aNew->pBt,
+                             sqlite3BtreeSecureDelete(db->aDb[0].pBt,-1) );
   }
-  aNew->zName = sqlite3DbStrDup(db, zName);
   aNew->safety_level = 3;
+  aNew->zName = sqlite3DbStrDup(db, zName);
+  if( rc==SQLITE_OK && aNew->zName==0 ){
+    rc = SQLITE_NOMEM;
+  }
 
-#if SQLITE_HAS_CODEC
-  {
+
+#ifdef SQLITE_HAS_CODEC
+  if( rc==SQLITE_OK ){
     extern int sqlite3CodecAttach(sqlite3*, int, const void*, int);
     extern void sqlite3CodecGetKey(sqlite3*, int, void**, int*);
     int nKey;
@@ -168,13 +171,13 @@ static void attachFunc(
       case SQLITE_BLOB:
         nKey = sqlite3_value_bytes(argv[2]);
         zKey = (char *)sqlite3_value_blob(argv[2]);
-        sqlite3CodecAttach(db, db->nDb-1, zKey, nKey);
+        rc = sqlite3CodecAttach(db, db->nDb-1, zKey, nKey);
         break;
 
       case SQLITE_NULL:
         /* No key specified.  Use the key from the main database */
         sqlite3CodecGetKey(db, 0, (void**)&zKey, &nKey);
-        sqlite3CodecAttach(db, db->nDb-1, zKey, nKey);
+        rc = sqlite3CodecAttach(db, db->nDb-1, zKey, nKey);
         break;
     }
   }
@@ -186,11 +189,9 @@ static void attachFunc(
   ** we found it.
   */
   if( rc==SQLITE_OK ){
-    (void)sqlite3SafetyOn(db);
     sqlite3BtreeEnterAll(db);
     rc = sqlite3Init(db, &zErrDyn);
     sqlite3BtreeLeaveAll(db);
-    (void)sqlite3SafetyOff(db);
   }
   if( rc ){
     int iDb = db->nDb - 1;
@@ -286,7 +287,7 @@ detach_error:
 static void codeAttach(
   Parse *pParse,       /* The parser context */
   int type,            /* Either SQLITE_ATTACH or SQLITE_DETACH */
-  FuncDef *pFunc,      /* FuncDef wrapper for detachFunc() or attachFunc() */
+  FuncDef const *pFunc,/* FuncDef wrapper for detachFunc() or attachFunc() */
   Expr *pAuthArg,      /* Expression to pass to authorization callback */
   Expr *pFilename,     /* Name of database file */
   Expr *pDbname,       /* Name of the database to use internally */
@@ -297,21 +298,6 @@ static void codeAttach(
   Vdbe *v;
   sqlite3* db = pParse->db;
   int regArgs;
-
-#ifndef SQLITE_OMIT_AUTHORIZATION
-  assert( db->mallocFailed || pAuthArg );
-  if( pAuthArg ){
-    char *zAuthArg = sqlite3NameFromToken(db, &pAuthArg->span);
-    if( !zAuthArg ){
-      goto attach_end;
-    }
-    rc = sqlite3AuthCheck(pParse, type, zAuthArg, 0, 0);
-    sqlite3DbFree(db, zAuthArg);
-    if(rc!=SQLITE_OK ){
-      goto attach_end;
-    }
-  }
-#endif /* SQLITE_OMIT_AUTHORIZATION */
 
   memset(&sName, 0, sizeof(NameContext));
   sName.pParse = pParse;
@@ -324,6 +310,20 @@ static void codeAttach(
     pParse->nErr++;
     goto attach_end;
   }
+
+#ifndef SQLITE_OMIT_AUTHORIZATION
+  if( pAuthArg ){
+    char *zAuthArg = pAuthArg->u.zToken;
+    if( NEVER(zAuthArg==0) ){
+      goto attach_end;
+    }
+    rc = sqlite3AuthCheck(pParse, type, zAuthArg, 0, 0);
+    if(rc!=SQLITE_OK ){
+      goto attach_end;
+    }
+  }
+#endif /* SQLITE_OMIT_AUTHORIZATION */
+
 
   v = sqlite3GetVdbe(pParse);
   regArgs = sqlite3GetTempRange(pParse, 4);
@@ -357,7 +357,7 @@ attach_end:
 **     DETACH pDbname
 */
 void sqlite3Detach(Parse *pParse, Expr *pDbname){
-  static FuncDef detach_func = {
+  static const FuncDef detach_func = {
     1,                /* nArg */
     SQLITE_UTF8,      /* iPrefEnc */
     0,                /* flags */
@@ -378,7 +378,7 @@ void sqlite3Detach(Parse *pParse, Expr *pDbname){
 **     ATTACH p AS pDbname KEY pKey
 */
 void sqlite3Attach(Parse *pParse, Expr *p, Expr *pDbname, Expr *pKey){
-  static FuncDef attach_func = {
+  static const FuncDef attach_func = {
     3,                /* nArg */
     SQLITE_UTF8,      /* iPrefEnc */
     0,                /* flags */
@@ -487,7 +487,7 @@ int sqlite3FixExpr(
   Expr *pExpr        /* The expression to be fixed to one database */
 ){
   while( pExpr ){
-    if( ExprHasAnyProperty(pExpr, EP_TokenOnly|EP_SpanToken) ) break;
+    if( ExprHasAnyProperty(pExpr, EP_TokenOnly) ) break;
     if( ExprHasProperty(pExpr, EP_xIsSelect) ){
       if( sqlite3FixSelect(pFix, pExpr->x.pSelect) ) return 1;
     }else{

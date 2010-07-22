@@ -14,8 +14,6 @@
 ** an SQLite instance.  Shared libraries that intend to be loaded
 ** as extensions by SQLite should #include this file instead of 
 ** sqlite3.h.
-**
-** @(#) $Id: sqlite3ext.h,v 1.25 2008/10/12 00:27:54 shane Exp $
 */
 #ifndef _SQLITE3EXT_H_
 #define _SQLITE3EXT_H_
@@ -380,7 +378,6 @@ struct sqlite3_api_routines {
 #define sqlite3_update_spatial_index_hook  sqlite3_api->update_spatial_index
 #define sqlite3_release_spatial_index_hook  sqlite3_api->release_spatial_index
 #define sqlite3_spatial_context_hook  sqlite3_api->spatial_context
-
 #endif /* SQLITE_CORE */
 
 #define SQLITE_EXTENSION_INIT1     const sqlite3_api_routines *sqlite3_api = 0;

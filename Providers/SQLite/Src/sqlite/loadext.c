@@ -11,8 +11,6 @@
 *************************************************************************
 ** This file contains code used to dynamically load extensions into
 ** the SQLite library.
-**
-** $Id: loadext.c,v 1.58 2009/01/20 16:53:40 danielk1977 Exp $
 */
 
 #ifndef SQLITE_CORE
@@ -329,10 +327,6 @@ static const sqlite3_api_routines sqlite3Apis = {
   sqlite3_next_stmt,
   sqlite3_sql,
   sqlite3_status,
-
-  /*
-  ** Added for 3.6.0 SI
-  */
   sqlite3_spatial_index_hook,
   sqlite3_update_spatial_index_hook,
   sqlite3_release_spatial_index_hook,
@@ -362,6 +356,9 @@ static int sqlite3LoadExtension(
   int (*xInit)(sqlite3*,char**,const sqlite3_api_routines*);
   char *zErrmsg = 0;
   void **aHandle;
+  const int nMsg = 300;
+
+  if( pzErrMsg ) *pzErrMsg = 0;
 
   /* Ticket #1863.  To avoid a creating security problems for older
   ** applications that relink against newer versions of SQLite, the
@@ -383,12 +380,14 @@ static int sqlite3LoadExtension(
   handle = sqlite3OsDlOpen(pVfs, zFile);
   if( handle==0 ){
     if( pzErrMsg ){
-      char zErr[256];
-      zErr[sizeof(zErr)-1] = '\0';
-      sqlite3_snprintf(sizeof(zErr)-1, zErr, 
-          "unable to open shared library [%s]", zFile);
-      sqlite3OsDlError(pVfs, sizeof(zErr)-1, zErr);
-      *pzErrMsg = sqlite3DbStrDup(0, zErr);
+      zErrmsg = sqlite3StackAllocZero(db, nMsg);
+      if( zErrmsg ){
+        sqlite3_snprintf(nMsg, zErrmsg, 
+            "unable to open shared library [%s]", zFile);
+        sqlite3OsDlError(pVfs, nMsg-1, zErrmsg);
+        *pzErrMsg = sqlite3DbStrDup(0, zErrmsg);
+        sqlite3StackFree(db, zErrmsg);
+      }
     }
     return SQLITE_ERROR;
   }
@@ -396,12 +395,14 @@ static int sqlite3LoadExtension(
                    sqlite3OsDlSym(pVfs, handle, zProc);
   if( xInit==0 ){
     if( pzErrMsg ){
-      char zErr[256];
-      zErr[sizeof(zErr)-1] = '\0';
-      sqlite3_snprintf(sizeof(zErr)-1, zErr,
-          "no entry point [%s] in shared library [%s]", zProc,zFile);
-      sqlite3OsDlError(pVfs, sizeof(zErr)-1, zErr);
-      *pzErrMsg = sqlite3DbStrDup(0, zErr);
+      zErrmsg = sqlite3StackAllocZero(db, nMsg);
+      if( zErrmsg ){
+        sqlite3_snprintf(nMsg, zErrmsg,
+            "no entry point [%s] in shared library [%s]", zProc,zFile);
+        sqlite3OsDlError(pVfs, nMsg-1, zErrmsg);
+        *pzErrMsg = sqlite3DbStrDup(0, zErrmsg);
+        sqlite3StackFree(db, zErrmsg);
+      }
       sqlite3OsDlClose(pVfs, handle);
     }
     return SQLITE_ERROR;
@@ -437,6 +438,7 @@ int sqlite3_load_extension(
   int rc;
   sqlite3_mutex_enter(db->mutex);
   rc = sqlite3LoadExtension(db, zFile, zProc, pzErrMsg);
+  rc = sqlite3ApiExit(db, rc);
   sqlite3_mutex_leave(db->mutex);
   return rc;
 }
@@ -573,20 +575,21 @@ void sqlite3_reset_auto_extension(void){
 
 /*
 ** Load all automatic extensions.
+**
+** If anything goes wrong, set an error in the database connection.
 */
-int sqlite3AutoLoadExtensions(sqlite3 *db){
+void sqlite3AutoLoadExtensions(sqlite3 *db){
   int i;
   int go = 1;
-  int rc = SQLITE_OK;
   int (*xInit)(sqlite3*,char**,const sqlite3_api_routines*);
 
   wsdAutoextInit;
   if( wsdAutoext.nExt==0 ){
     /* Common case: early out without every having to acquire a mutex */
-    return SQLITE_OK;
+    return;
   }
   for(i=0; go; i++){
-    char *zErrmsg = 0;
+    char *zErrmsg;
 #if SQLITE_THREADSAFE
     sqlite3_mutex *mutex = sqlite3MutexAlloc(SQLITE_MUTEX_STATIC_MASTER);
 #endif
@@ -599,13 +602,12 @@ int sqlite3AutoLoadExtensions(sqlite3 *db){
               wsdAutoext.aExt[i];
     }
     sqlite3_mutex_leave(mutex);
+    zErrmsg = 0;
     if( xInit && xInit(db, &zErrmsg, &sqlite3Apis) ){
       sqlite3Error(db, SQLITE_ERROR,
             "automatic extension loading failed: %s", zErrmsg);
       go = 0;
-      rc = SQLITE_ERROR;
-      sqlite3_free(zErrmsg);
     }
+    sqlite3_free(zErrmsg);
   }
-  return rc;
 }

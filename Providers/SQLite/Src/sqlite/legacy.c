@@ -13,8 +13,6 @@
 ** implement the programmer interface to the library.  Routines in
 ** other files are for internal use by SQLite and should not be
 ** accessed by users of the library.
-**
-** $Id: legacy.c,v 1.33 2009/05/05 20:02:48 drh Exp $
 */
 
 #include "sqliteInt.h"
@@ -43,6 +41,7 @@ int sqlite3_exec(
   int nRetry = 0;             /* Number of retry attempts */
   int callbackIsInit;         /* True if callback data is initialized */
 
+  if( !sqlite3SafetyCheckOk(db) ) return SQLITE_MISUSE_BKPT;
   if( zSql==0 ) zSql = "";
 
   sqlite3_mutex_enter(db->mutex);
@@ -132,6 +131,9 @@ exec_out:
     *pzErrMsg = sqlite3Malloc(nErrMsg);
     if( *pzErrMsg ){
       memcpy(*pzErrMsg, sqlite3_errmsg(db), nErrMsg);
+    }else{
+      rc = SQLITE_NOMEM;
+      sqlite3Error(db, SQLITE_NOMEM, 0);
     }
   }else if( pzErrMsg ){
     *pzErrMsg = 0;
