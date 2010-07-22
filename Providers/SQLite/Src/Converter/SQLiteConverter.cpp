@@ -87,7 +87,7 @@ FdoIConnection* GetFdoCon(const wchar_t* srcfile, bool open)
         provider = L"ShpProvider";
         connstr = std::wstring(L"DefaultFileLocation=") + srcfile + std::wstring(L";");
     }
-    else if (_wcsicmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0)
+    else if (_wcsicmp(ext.c_str(), L".sdx") == 0 || wcscmp(ext.c_str(), L".db") == 0 || wcscmp(ext.c_str(), L".sqlite") == 0)
     {
         provider = L"SQLiteProvider";
         connstr = std::wstring(L"File=") + srcfile + std::wstring(L";UseFdoMetadata=true;");

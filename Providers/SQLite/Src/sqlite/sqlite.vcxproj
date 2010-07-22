@@ -227,6 +227,12 @@
     <ClCompile Include="vtab.c" />
     <ClCompile Include="walker.c" />
     <ClCompile Include="where.c" />
+    <ClCompile Include="vdbetrace.c" />
+    <ClCompile Include="ctime.c" />
+    <ClCompile Include="fkey.c" />
+    <ClCompile Include="fts3_snippet.c" />
+    <ClCompile Include="fts3_write.c" />
+    <ClCompile Include="wal.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="btree.h" />
@@ -250,6 +256,8 @@
     <ClInclude Include="sqliteLimit.h" />
     <ClInclude Include="vdbe.h" />
     <ClInclude Include="vdbeInt.h" />
+    <ClInclude Include="wal.h" />
+    <ClInclude Include="fts3Int.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

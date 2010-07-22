@@ -23,6 +23,23 @@
 #include "StringUtil.h"
 #include "FdoCommonOSUtil.h"
 
+static std::string GetExprValue(Expr *pExpr)
+{
+    if (pExpr->flags & EP_IntValue)
+    {
+        char tmp[30];
+#ifdef _WIN32
+        _itoa(pExpr->u.iValue, tmp, 10);
+#else
+        _snprintf(tmp, 30, "%d", pExpr->u.iValue);
+#endif
+        return tmp;
+    }
+    else if (pExpr->u.zToken != NULL)
+        return pExpr->u.zToken;
+    return "";
+}
+
 static FdoDataType ConvertDataType(const char* type)
 {
     if (StringContains(type, "INT") >= 0)
@@ -77,7 +94,6 @@ FdoClassDefinition* SltMetadata::ToClass()
 
     sqlite3_mutex_enter(db->mutex);
 
-    (void)sqlite3SafetyOn(db);
     sqlite3BtreeEnterAll(db);
     int rc = sqlite3Init(db, &zErr);
 
@@ -87,7 +103,6 @@ FdoClassDefinition* SltMetadata::ToClass()
         if (zErr) 
             sqlite3DbFree(db, zErr);
         sqlite3BtreeLeaveAll(db);
-        (void)sqlite3SafetyOff(db);
         sqlite3_mutex_leave(db->mutex);
         return NULL;
     }
@@ -548,7 +563,6 @@ FdoClassDefinition* SltMetadata::ToClass()
         sqlite3_finalize(pfdostmt);
 
     sqlite3BtreeLeaveAll(db);
-    (void)sqlite3SafetyOff(db);
     sqlite3_mutex_leave(db->mutex);
 
     return FDO_SAFE_ADDREF(m_fc);
@@ -717,9 +731,7 @@ bool SltMetadata::ExtractViewDetailsInfo(StlMapNamesList& sources, StlMapPropNam
     for(int idx = 0; idx < pSelect->pEList->nExpr; idx++)
     {
         const char* name = pSelect->pEList->a[idx].zName;
-        std::string value;
-        if (pSelect->pEList->a[idx].pExpr->span.n)
-            value = std::string((const char*)pSelect->pEList->a[idx].pExpr->span.z, pSelect->pEList->a[idx].pExpr->span.n);
+        std::string value = GetExprValue(pSelect->pEList->a[idx].pExpr);
         // TODO study the resulted name for un-named expression 
         // e.g. select at.p1 + bt.p1 from at, bt;
         if (name == NULL && value.size() != 0)
@@ -973,35 +985,35 @@ bool SltMetadata::ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& 
             valid = ExtractConstraints(node->pRight, result);
         break;
     case TK_STRING:
-        if(node->token.n != 0)
         {
+            std::string val = GetExprValue(node);
             StringBuffer sb;
-            const char* pValue = (const char*)node->token.z;
-            if (*pValue == '\'' && *(pValue + node->token.n - 1) == '\'')
-                sb.Append(pValue + 1, node->token.n - 2);
+            const char* pValue = val.c_str();
+            if (*pValue == '\'' && *(pValue + val.size() - 1) == '\'')
+                sb.Append(pValue + 1, val.size() - 2);
             else
-                sb.Append(pValue, node->token.n);
+                sb.Append(pValue, val.size());
             result.back().values.push_back(A2W_SLOW(sb.Data()));
         }
         break;
     case TK_INTEGER:
     case TK_FLOAT:
-        if(node->token.n != 0)
         {
+            std::string val = GetExprValue(node);
             StringBuffer sb;
-            sb.Append((const char*)node->token.z, node->token.n);
+            sb.Append(val.c_str(), val.size());
             result.back().values.push_back(A2W_SLOW(sb.Data()));
         }
         break;
     case TK_COLUMN:
-        if(node->token.n != 0)
         {
+            std::string val = GetExprValue(node);
             StringBuffer sb;
-            const char* pName = (const char*)node->token.z;
+            const char* pName = val.c_str();
             if (*pName == '\"')
-                sb.Append(pName + 1, node->token.n - 2);
+                sb.Append(pName + 1, val.size() - 2);
             else
-                sb.Append(pName, node->token.n);
+                sb.Append(pName, val.size());
             result.back().name = A2W_SLOW(sb.Data());
         }
         break;
