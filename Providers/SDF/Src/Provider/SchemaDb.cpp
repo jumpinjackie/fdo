@@ -213,6 +213,10 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
 	// Fix any missing cross-references between schema elements
 	PostReadSchema( schema );
 
+    // Set all schema elements to unchanged and generate any readonly
+    // association properties
+    schema->AcceptChanges();
+
 	// This method(SchemaDb::ReadSchema) gets call just opening the FdoIConnection.
 	// The following closes any open cursors so inserting features would work. 
 	CloseCursor();
