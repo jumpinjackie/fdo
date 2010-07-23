@@ -29,6 +29,28 @@
 
 #include <vector>
 
+///////////// Ported from SDFPlus provider //////////////////////////////////
+
+//those numbers are very small and provide
+//the tolerance needed for "exact" computations,
+//i.e. CAD  style non-FDO geometry intersection.
+#define EPSILON 1e-10
+#define NEGEPSILON -EPSILON
+#define SQREPSILON 1e-20
+
+//relative fraction to be used for curve tesselation approximation
+//This fraction is relative to the biggest dimension of the bounding box 
+//of the curve.
+#define CURVE_APPROX_FACTOR 1e-3
+
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 FdoIGeometry * FdoSpatialUtility::ApproximateGeometryWithLineStrings(
     FdoIGeometry * geometry, 
     double maxSpacing,
@@ -742,27 +764,6 @@ FdoSpatialGeometryValidity FdoSpatialUtility::ValidateGeometryByType(
     return validity;
 }
 
-///////////// Ported from SDFPlus provider //////////////////////////////////
-
-//those numbers are very small and provide
-//the tolerance needed for "exact" computations,
-//i.e. CAD  style non-FDO geometry intersection.
-#define EPSILON 1e-10
-#define NEGEPSILON -EPSILON
-#define SQREPSILON 1e-20
-
-//relative fraction to be used for curve tesselation approximation
-//This fraction is relative to the biggest dimension of the bounding box 
-//of the curve.
-#define CURVE_APPROX_FACTOR 1e-3
-
-#ifndef max
-#define max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef min
-#define min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
 
 
 #define GET_POSITION(p, xptr, yptr, dimptr) \
@@ -795,7 +796,8 @@ bool FdoSpatialUtility::pt_is_on_line(
     double      PtX,
     double      PtY,
     bool *      IsAtLinePt1_O,
-    bool *      IsAtLinePt2_O )
+    bool *      IsAtLinePt2_O,
+    double      toleranceXY)
 {
     bool        IsOnLine = false;
 
@@ -803,13 +805,13 @@ bool FdoSpatialUtility::pt_is_on_line(
     *IsAtLinePt2_O = false;
 
     /* If point is same as line's first point... */
-    if ( fabs(PtX-LineX1) <= EPSILON && fabs(PtY-LineY1) <= EPSILON ) {
+    if ( fabs(PtX-LineX1) <= toleranceXY && fabs(PtY-LineY1) <= toleranceXY ) {
 
         IsOnLine = true;
         *IsAtLinePt1_O = true;
 
     /* Else if point is same as line's second point... */
-    } else if ( fabs(PtX-LineX2) <= EPSILON && fabs(PtY-LineY2) <= EPSILON ) {
+    } else if ( fabs(PtX-LineX2) <= toleranceXY && fabs(PtY-LineY2) <= toleranceXY ) {
 
         IsOnLine = true;
         *IsAtLinePt2_O = true;
@@ -827,7 +829,7 @@ bool FdoSpatialUtility::pt_is_on_line(
             double  PtToLineDist = Numerator2 / Len;
 
             /* If the given point is on the second line... */
-            if ( fabs(PtToLineDist) <= EPSILON ) {
+            if ( fabs(PtToLineDist) <= toleranceXY ) {
 
                 IsOnLine = true;
             }
@@ -843,7 +845,8 @@ bool FdoSpatialUtility::pt_is_on_line2(
     double      LineX2,
     double      LineY2,
     double      PtX,
-    double      PtY )
+    double      PtY,
+    double      toleranceXY)
 {
     double      Dx = (LineX2 - LineX1);
     double      Dy = (LineY2 - LineY1);
@@ -856,7 +859,8 @@ bool FdoSpatialUtility::pt_is_on_line2(
     /* If the point is on the first line... */
     return pt_is_on_line( LineX1, LineY1, LineX2, LineY2, Dx, Dy,
                         Length, LengthSq, PtX, PtY, 
-                        &DummyBool, &DummyBool );
+                        &DummyBool, &DummyBool,
+                        toleranceXY);
 }
 
 int FdoSpatialUtility::find_xsect_seg_seg(
@@ -873,7 +877,8 @@ int FdoSpatialUtility::find_xsect_seg_seg(
     int *       IsInterp1_O,
     double *    xi2_O,
     double *    yi2_O,
-    int *       IsInterp2_O )
+    int *       IsInterp2_O,
+    double      toleranceXY)
 {
     double      dx1 = x12 - x11;
     double      dy1 = y12 - y11;
@@ -881,8 +886,8 @@ int FdoSpatialUtility::find_xsect_seg_seg(
     double      dy2 = y22 - y21;
     double      x11x21 = x11 - x21;
     double      y11y21 = y11 - y21;
-    bool        IsDegenerate1 = ( fabs(dx1) <= EPSILON && fabs(dy1) <= EPSILON);
-    bool        IsDegenerate2 = ( fabs(dx2) <= EPSILON && fabs(dy2) <= EPSILON);
+    bool        IsDegenerate1 = ( fabs(dx1) <= toleranceXY && fabs(dy1) <= toleranceXY);
+    bool        IsDegenerate2 = ( fabs(dx2) <= toleranceXY && fabs(dy2) <= toleranceXY);
     double      r, s;
     double      numerator1, numerator2;
     double      denominator;
@@ -903,7 +908,7 @@ int FdoSpatialUtility::find_xsect_seg_seg(
     if ( IsDegenerate1 && IsDegenerate2 ) {
 
         /* If the points are the same... */
-        if ( fabs(x11x21) <= EPSILON && fabs(y11y21) <= EPSILON ) {
+        if ( fabs(x11x21) <= toleranceXY && fabs(y11y21) <= toleranceXY ) {
 
             /* Just use the first point. */
             NumIntersections = 1;
@@ -920,7 +925,7 @@ int FdoSpatialUtility::find_xsect_seg_seg(
         /* If the point is on the second line... */
         if ( pt_is_on_line( x21, y21, x22, y22, dx2, dy2,
                             Length, LengthSq, x11, y11, 
-                            &DummyBool, &DummyBool ) ) {
+                            &DummyBool, &DummyBool, toleranceXY ) ) {
 
             /* Just use the point. */
             NumIntersections = 1;
@@ -937,7 +942,7 @@ int FdoSpatialUtility::find_xsect_seg_seg(
         /* If the point is on the first line... */
         if ( pt_is_on_line( x11, y11, x12, y12, dx1, dy1,
                             Length, LengthSq, x21, y21, 
-                            &DummyBool, &DummyBool ) ) {
+                            &DummyBool, &DummyBool, toleranceXY ) ) {
 
             /* Just use the point. */
             NumIntersections = 1;
@@ -967,22 +972,22 @@ int FdoSpatialUtility::find_xsect_seg_seg(
 
         Pt11IsOnLine2 = pt_is_on_line( x21, y21, x22, y22, dx2, dy2,
                                        Length, LengthSq, x11, y11, 
-                                       &Pt11IsOnLine2Pt1, &Pt11IsOnLine2Pt2 );
+                                       &Pt11IsOnLine2Pt1, &Pt11IsOnLine2Pt2, toleranceXY );
 
         Pt12IsOnLine2 = pt_is_on_line( x21, y21, x22, y22, dx2, dy2,
                                        Length, LengthSq, x12, y12,
-                                       &Pt12IsOnLine2Pt1, &Pt12IsOnLine2Pt2 );
+                                       &Pt12IsOnLine2Pt1, &Pt12IsOnLine2Pt2, toleranceXY );
 
         LengthSq = ( dx1 * dx1 ) + ( dy1 * dy1 );
         Length = sqrt(LengthSq);
 
         Pt21IsOnLine1 = pt_is_on_line( x11, y11, x12, y12, dx1, dy1,
                                        Length, LengthSq, x21, y21, 
-                                       &Pt21IsOnLine1Pt1, &Pt21IsOnLine1Pt2 );
+                                       &Pt21IsOnLine1Pt1, &Pt21IsOnLine1Pt2, toleranceXY );
 
         Pt22IsOnLine1 = pt_is_on_line( x11, y11, x12, y12, dx1, dy1,
                                        Length, LengthSq, x22, y22, 
-                                       &Pt22IsOnLine1Pt1, &Pt22IsOnLine1Pt2 );
+                                       &Pt22IsOnLine1Pt1, &Pt22IsOnLine1Pt2, toleranceXY );
 
         if ( Pt11IsOnLine2 && Pt12IsOnLine2 ) {
 
@@ -1108,7 +1113,7 @@ int FdoSpatialUtility::find_xsect_seg_seg(
             numerator1 = (y11y21 * dx2) - (x11x21 * dy2);
             denominator = (dx1 * dy2) - (dy1 * dx2);
 
-            AreParallel = ( fabs(denominator) < EPSILON);
+            AreParallel = ( fabs(denominator) < toleranceXY);
 
             /* If the lines are not parallel... */
             if ( !AreParallel ) {
@@ -1169,7 +1174,8 @@ int FdoSpatialUtility::find_xsect_seg_seg(
 int FdoSpatialUtility::line_segment_intersect(
                            double* line0, //4 doubles
                            double* line1, //4 doubles
-                           double* ret)   //4 doubles
+                           double* ret,   //4 doubles
+                           double  toleranceXY)
 {
     int         xflag;
     int         yflag;
@@ -1195,7 +1201,8 @@ int FdoSpatialUtility::line_segment_intersect(
                             line0[0], line0[1], line0[2], line0[3],
                             line1[0], line1[1], line1[2], line1[3],
                             &ret[0], &ret[1], NULL,
-                            &ret[2], &ret[3], NULL);
+                            &ret[2], &ret[3], NULL, 
+                            toleranceXY);
     }
 
     return numItersections;
@@ -1205,8 +1212,9 @@ int FdoSpatialUtility::line_segment_intersect(
 
 //returns true if line1 overlaps line2 and does not go beyond its
 //endpoints, false otherwise
-bool FdoSpatialUtility::line_contains_line(double* line0, double* line1)
+bool FdoSpatialUtility::line_contains_line(double* line0, double* line1, double toleranceXY)
 {
+    double sqrEpsilon = toleranceXY*toleranceXY;
     double d0x = line0[2] - line0[0];
     double d0y = line0[3] - line0[1];
 
@@ -1223,7 +1231,7 @@ bool FdoSpatialUtility::line_contains_line(double* line0, double* line1)
 
     double sqrkross = kross * kross;
 
-    if (sqrkross > SQREPSILON * sqrLen0 * sqrLen1)
+    if (sqrkross > sqrEpsilon * sqrLen0 * sqrLen1)
     {
         //lines are not parallel
         return false;
@@ -1234,7 +1242,7 @@ bool FdoSpatialUtility::line_contains_line(double* line0, double* line1)
     kross = ex * d0y - ey * d0x;
     double sqrKross = kross * kross;
 
-    if (sqrKross >= SQREPSILON * sqrLen0 * sqrLen1)
+    if (sqrKross >= sqrEpsilon * sqrLen0 * sqrLen1)
     {
         //lines of the segments are not the same
         return false;
@@ -1260,22 +1268,36 @@ bool FdoSpatialUtility::line_contains_line(double* line0, double* line1)
 //
 //-----------------------------------------------------------------------------
 
-
 bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2)
 {
+    return Evaluate(g1, op, g2, EPSILON);
+}
+
+bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, double toleranceXY)
+{
+    return Evaluate(g1, op, g2, toleranceXY, EPSILON);
+}
+
+bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, double toleranceXY, double toleranceZ)
+{
+    if (toleranceXY <= 0.0)
+        toleranceXY = EPSILON;
+    if (toleranceZ <= 0.0)
+        toleranceZ = EPSILON;
+
     switch (op)
     {
-    case FdoSpatialOperations_Contains:     return Contains(g1, g2); 
-    case FdoSpatialOperations_Crosses:      return Crosses(g1, g2);
-    case FdoSpatialOperations_Disjoint:     return Disjoint(g1, g2);
-    case FdoSpatialOperations_Equals:       return Equals(g1, g2); 
-    case FdoSpatialOperations_Intersects:   return Intersects(g1, g2);
-    case FdoSpatialOperations_Overlaps:     return Overlaps(g1, g2);
-    case FdoSpatialOperations_Touches:      return Touches(g1, g2); 
-    case FdoSpatialOperations_Within:       return Within(g1, g2); 
-    case FdoSpatialOperations_CoveredBy:    return CoveredBy(g1, g2); 
-    case FdoSpatialOperations_Inside:       return Inside(g1, g2);
-    case FdoSpatialOperations_EnvelopeIntersects: return EnvelopeIntersects(g1, g2);
+    case FdoSpatialOperations_Contains:     return Contains(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_Crosses:      return Crosses(g1, g2, toleranceXY);
+    case FdoSpatialOperations_Disjoint:     return Disjoint(g1, g2, toleranceXY);
+    case FdoSpatialOperations_Equals:       return Equals(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_Intersects:   return Intersects(g1, g2, toleranceXY);
+    case FdoSpatialOperations_Overlaps:     return Overlaps(g1, g2, toleranceXY);
+    case FdoSpatialOperations_Touches:      return Touches(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_Within:       return Within(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_CoveredBy:    return CoveredBy(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_Inside:       return Inside(g1, g2, toleranceXY);
+    case FdoSpatialOperations_EnvelopeIntersects: return EnvelopeIntersects(g1, g2, toleranceXY);
     default: break;
     }
 
@@ -1287,23 +1309,23 @@ bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoI
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     switch (g1->GetDerivedType())
     {
     case FdoGeometryType_Point: 
-        return PointIntersects((FdoIPoint*)g1, g2);
+        return PointIntersects((FdoIPoint*)g1, g2, toleranceXY);
     case FdoGeometryType_LineString : 
-        return LineStringIntersects((FdoILineString*)g1, g2);
+        return LineStringIntersects((FdoILineString*)g1, g2, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonIntersects((FdoIPolygon*)g1, g2);
+        return PolygonIntersects((FdoIPolygon*)g1, g2, toleranceXY);
     
     case FdoGeometryType_MultiPoint : 
-        return MultiPointIntersects((FdoIMultiPoint*)g1, g2);
+        return MultiPointIntersects((FdoIMultiPoint*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiLineString : 
-        return MultiLineStringIntersects((FdoIMultiLineString*)g1, g2);
+        return MultiLineStringIntersects((FdoIMultiLineString*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonIntersects((FdoIMultiPolygon*)g1, g2);
+        return MultiPolygonIntersects((FdoIMultiPolygon*)g1, g2, toleranceXY);
 
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1311,7 +1333,7 @@ bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2)
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(g1);
-            return Intersects(flatgeom, g2);
+            return Intersects(flatgeom, g2, toleranceXY);
         }
     default : break;
     }
@@ -1321,68 +1343,68 @@ bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2)
     return false;
 }
 
-bool FdoSpatialUtility::Overlaps(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     throw FdoException::Create(L"Spatial operation not supported");
     return false;
 }
 
-bool FdoSpatialUtility::Touches(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     throw FdoException::Create(L"Spatial operation not supported");
     return false;
 }
 
 
-bool FdoSpatialUtility::Crosses(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     throw FdoException::Create(L"Spatial operation not supported");
     return false;
 }
 
-bool FdoSpatialUtility::Equals(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Equals(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     throw FdoException::Create(L"Spatial operation not supported");
     return false;
 }
 
-bool FdoSpatialUtility::Within(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     return Contains(g2, g1, false);
 }
 
-bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     throw FdoException::Create(L"Spatial operation not supported");
     return false;
 }
 
-bool FdoSpatialUtility::Inside(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
      return Contains(g2, g1, true);
 }
 
-bool FdoSpatialUtility::Disjoint(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
-    return !Intersects(g1, g2);
+    return !Intersects(g1, g2, toleranceXY);
 }
 
-bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, bool strictInside)
+bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside)
 {
     switch (g1->GetDerivedType())
     {
     case FdoGeometryType_Point: 
         return false;
     case FdoGeometryType_LineString : 
-        return LineStringContains((FdoILineString*)g1, g2);
+        return LineStringContains((FdoILineString*)g1, g2, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonContains((FdoIPolygon*)g1, g2, strictInside);
+        return PolygonContains((FdoIPolygon*)g1, g2, toleranceXY, strictInside);
     case FdoGeometryType_MultiPoint : 
-        return MultiPointContains((FdoIMultiPoint*)g1, g2);
+        return MultiPointContains((FdoIMultiPoint*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiLineString : 
-        return MultiLineStringContains((FdoIMultiLineString*)g1, g2);
+        return MultiLineStringContains((FdoIMultiLineString*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonContains((FdoIMultiPolygon*)g1, g2);
+        return MultiPolygonContains((FdoIMultiPolygon*)g1, g2, toleranceXY);
     
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1390,7 +1412,7 @@ bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, bool strict
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(g1);
-            return Contains(flatgeom, g2);
+            return Contains(flatgeom, g2, toleranceXY);
         }
     default : break;
     }
@@ -1399,7 +1421,7 @@ bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, bool strict
     return false;
 }
 
-bool FdoSpatialUtility::EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2)
+bool FdoSpatialUtility::EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
     FdoPtr<FdoIEnvelope> e1 = g1->GetEnvelope();
     FdoPtr<FdoIEnvelope> e2 = g2->GetEnvelope();
@@ -1432,7 +1454,7 @@ bool FdoSpatialUtility::EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2)
 //-----------------------------------------------------------------------------
 
 
-bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom)
+bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY)
 {
     switch(geom->GetDerivedType())
     {
@@ -1442,19 +1464,19 @@ bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom)
             double x, y;
             int dim;
             GET_POSITION(pt, &x, &y, &dim);
-            return PointInPolygon(poly, x, y);
+            return PointInPolygon(poly, x, y, toleranceXY);
         }
     case FdoGeometryType_LineString : 
-        return PolygonIntersectsLineString(poly, (FdoILineString*)geom);
+        return PolygonIntersectsLineString(poly, (FdoILineString*)geom, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonsIntersect(poly, (FdoIPolygon*)geom);
+        return PolygonsIntersect(poly, (FdoIPolygon*)geom, toleranceXY);
 
     case FdoGeometryType_MultiPoint : 
-        return MultiPointIntersects((FdoIMultiPoint*)geom, poly);
+        return MultiPointIntersects((FdoIMultiPoint*)geom, poly, toleranceXY);
     case FdoGeometryType_MultiLineString : 
-        return MultiLineStringIntersects((FdoIMultiLineString*)geom, poly);
+        return MultiLineStringIntersects((FdoIMultiLineString*)geom, poly, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, poly);
+        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, poly, toleranceXY);
     
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1462,7 +1484,7 @@ bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom)
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return PolygonIntersects(poly, flatgeom);
+            return PolygonIntersects(poly, flatgeom, toleranceXY);
         }
     
     default : break;
@@ -1472,7 +1494,7 @@ bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom)
 }
 
 
-bool FdoSpatialUtility::LineStringIntersects(FdoILineString* line, FdoIGeometry* geom)
+bool FdoSpatialUtility::LineStringIntersects(FdoILineString* line, FdoIGeometry* geom, double toleranceXY)
 {
     switch(geom->GetDerivedType())
     {
@@ -1483,19 +1505,19 @@ bool FdoSpatialUtility::LineStringIntersects(FdoILineString* line, FdoIGeometry*
             double x, y;
             int dim;
             GET_POSITION(pt, &x, &y, &dim);
-            return PointOnLine(line, x, y);
+            return PointOnLine(line, x, y, toleranceXY);
         }
     case FdoGeometryType_LineString : 
-        return LineStringsIntersect(line, (FdoILineString*)geom);
+        return LineStringsIntersect(line, (FdoILineString*)geom, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonIntersectsLineString((FdoIPolygon*)geom, line);
+        return PolygonIntersectsLineString((FdoIPolygon*)geom, line, toleranceXY);
 
     case FdoGeometryType_MultiPoint : 
-        return MultiPointIntersects((FdoIMultiPoint*)geom, line);
+        return MultiPointIntersects((FdoIMultiPoint*)geom, line, toleranceXY);
     case FdoGeometryType_MultiLineString : 
-        return MultiLineStringIntersects((FdoIMultiLineString*)geom, line);
+        return MultiLineStringIntersects((FdoIMultiLineString*)geom, line, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, line);
+        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, line, toleranceXY);
     
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1503,7 +1525,7 @@ bool FdoSpatialUtility::LineStringIntersects(FdoILineString* line, FdoIGeometry*
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return LineStringIntersects(line, flatgeom);
+            return LineStringIntersects(line, flatgeom, toleranceXY);
         }
 
     default : break;
@@ -1513,7 +1535,7 @@ bool FdoSpatialUtility::LineStringIntersects(FdoILineString* line, FdoIGeometry*
 }
 
 
-bool FdoSpatialUtility::PointIntersects(FdoIPoint* point, FdoIGeometry* geom)
+bool FdoSpatialUtility::PointIntersects(FdoIPoint* point, FdoIGeometry* geom, double toleranceXY)
 {
     switch(geom->GetDerivedType())
     {
@@ -1536,22 +1558,22 @@ bool FdoSpatialUtility::PointIntersects(FdoIPoint* point, FdoIGeometry* geom)
             double x, y;
             int dim;
             GET_POSITION(point, &x, &y, &dim);
-            return PointOnLine((FdoILineString*)geom, x, y);
+            return PointOnLine((FdoILineString*)geom, x, y, toleranceXY);
         }
     case FdoGeometryType_Polygon : 
         {
             double x, y;
             int dim;
             GET_POSITION(point, &x, &y, &dim);
-            return PointInPolygon((FdoIPolygon*)geom, x, y);
+            return PointInPolygon((FdoIPolygon*)geom, x, y, toleranceXY);
         }
 
     case FdoGeometryType_MultiPoint : 
-        return MultiPointIntersects((FdoIMultiPoint*)geom, point);
+        return MultiPointIntersects((FdoIMultiPoint*)geom, point, toleranceXY);
     case FdoGeometryType_MultiLineString : 
-        return MultiLineStringIntersects((FdoIMultiLineString*)geom, point);
+        return MultiLineStringIntersects((FdoIMultiLineString*)geom, point, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, point);
+        return MultiPolygonIntersects((FdoIMultiPolygon*)geom, point, toleranceXY);
 
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1559,7 +1581,7 @@ bool FdoSpatialUtility::PointIntersects(FdoIPoint* point, FdoIGeometry* geom)
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return PointIntersects(point, flatgeom);
+            return PointIntersects(point, flatgeom, toleranceXY);
         }
 
     
@@ -1577,7 +1599,7 @@ bool FdoSpatialUtility::PointIntersects(FdoIPoint* point, FdoIGeometry* geom)
 //-----------------------------------------------------------------------------
 
 
-bool FdoSpatialUtility::MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeometry* geom, double toleranceXY)
 {
     FdoPtr<FdoIPolygon> poly;
 
@@ -1587,14 +1609,14 @@ bool FdoSpatialUtility::MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeom
     {
         poly = mpoly->GetItem(i);
 
-        if (PolygonIntersects(poly, geom))
+        if (PolygonIntersects(poly, geom, toleranceXY))
             return true;
     }
 
     return false;
 }
 
-bool FdoSpatialUtility::MultiPointIntersects(FdoIMultiPoint* mpoint, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiPointIntersects(FdoIMultiPoint* mpoint, FdoIGeometry* geom, double toleranceXY)
 {
     FdoPtr<FdoIPoint> pt;
     FdoPtr<FdoIDirectPosition> pos;
@@ -1605,14 +1627,14 @@ bool FdoSpatialUtility::MultiPointIntersects(FdoIMultiPoint* mpoint, FdoIGeometr
     {
         pt = mpoint->GetItem(i);
 
-        if (PointIntersects(pt, geom))
+        if (PointIntersects(pt, geom, toleranceXY))
             return true;
     }
 
     return false;
 }
 
-bool FdoSpatialUtility::MultiLineStringIntersects(FdoIMultiLineString* mlines, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiLineStringIntersects(FdoIMultiLineString* mlines, FdoIGeometry* geom, double toleranceXY)
 {
     FdoPtr<FdoILineString> ls;
 
@@ -1622,7 +1644,7 @@ bool FdoSpatialUtility::MultiLineStringIntersects(FdoIMultiLineString* mlines, F
     {
         ls = mlines->GetItem(i);
 
-        if (LineStringIntersects(ls, geom))
+        if (LineStringIntersects(ls, geom, toleranceXY))
             return true;
     }
 
@@ -1635,7 +1657,7 @@ bool FdoSpatialUtility::MultiLineStringIntersects(FdoIMultiLineString* mlines, F
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, bool strictInside)
+bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY, bool strictInside)
 {
     switch (geom->GetDerivedType())
     {
@@ -1648,7 +1670,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
             GET_POSITION(pt, &x, &y, &dim);
 
             bool isOnExtBoundary = false;
-            bool isInside = PointInPolygon(poly, x, y, &isOnExtBoundary);
+            bool isInside = PointInPolygon(poly, x, y, toleranceXY, &isOnExtBoundary);
             if (isOnExtBoundary)
                 isInside = !strictInside;
             return isInside;
@@ -1673,7 +1695,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
 
                 GET_POSITION(pt, &x, &y, &dim);
 
-                if (!PointInPolygon(poly, x, y))
+                if (!PointInPolygon(poly, x, y, toleranceXY))
                     return false;
             }
         }
@@ -1690,7 +1712,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
             {
                 ls = mlines->GetItem(i);
 
-                if (!PolygonContainsLineString(poly, ls))
+                if (!PolygonContainsLineString(poly, ls, toleranceXY))
                     return false;
             }
         }
@@ -1731,7 +1753,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, b
 }
 
 
-bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* geom)
+bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* geom, double toleranceXY)
 {
     switch (geom->GetDerivedType())
     {
@@ -1743,10 +1765,10 @@ bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* g
             int dim;
             GET_POSITION(pt, &x, &y, &dim);
 
-            return PointOnLine(line, x, y);
+            return PointOnLine(line, x, y, toleranceXY);
         }
     case FdoGeometryType_LineString : 
-        return LineStringContainsLineString(line, (FdoILineString*)geom);
+        return LineStringContainsLineString(line, (FdoILineString*)geom, toleranceXY);
     case FdoGeometryType_Polygon : 
         return false;
     case FdoGeometryType_MultiPoint : 
@@ -1765,7 +1787,7 @@ bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* g
 
                 GET_POSITION(pt, &x, &y, &dim);
 
-                if (!PointOnLine(line, x, y))
+                if (!PointOnLine(line, x, y, toleranceXY))
                     return false;
             }
 
@@ -1783,7 +1805,7 @@ bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* g
             {
                 ls = mls->GetItem(i);
 
-                if (!LineStringContainsLineString(line, ls))
+                if (!LineStringContainsLineString(line, ls, toleranceXY))
                     return false;
             }
 
@@ -1798,7 +1820,7 @@ bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* g
     case FdoGeometryType_MultiCurveString :
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return LineStringContains(line, flatgeom);
+            return LineStringContains(line, flatgeom, toleranceXY);
         }
 
     default : break;
@@ -1809,7 +1831,7 @@ bool FdoSpatialUtility::LineStringContains(FdoILineString* line, FdoIGeometry* g
 }
 
 
-bool FdoSpatialUtility::PointContains(FdoIPoint* point, FdoIGeometry* geom)
+bool FdoSpatialUtility::PointContains(FdoIPoint* point, FdoIGeometry* geom, double toleranceXY)
 {
     switch (geom->GetDerivedType())
     {
@@ -1878,7 +1900,7 @@ bool FdoSpatialUtility::PointContains(FdoIPoint* point, FdoIGeometry* geom)
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeometry* geom, double toleranceXY)
 {
     switch(geom->GetDerivedType())
     {
@@ -1898,7 +1920,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 poly = mpoly->GetItem(i);
 
-                if (PointInPolygon(poly, x, y))
+                if (PointInPolygon(poly, x, y, toleranceXY))
                     return true;
             }
         }
@@ -1915,7 +1937,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 poly = mpoly->GetItem(i);
 
-                if (PolygonContainsLineString(poly, line))
+                if (PolygonContainsLineString(poly, line, toleranceXY))
                     return true;
             }
         }
@@ -1932,7 +1954,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 poly = mpoly->GetItem(i);
 
-                if (PolygonContainsPolygon(poly, poly2))
+                if (PolygonContainsPolygon(poly, poly2, toleranceXY))
                     return true;
             }
         }
@@ -1949,7 +1971,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 pt = mp->GetItem(i);
 
-                if (!MultiPolygonContains(mpoly, pt))
+                if (!MultiPolygonContains(mpoly, pt, toleranceXY))
                     return false;
             }
         }
@@ -1966,7 +1988,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 ls = ml->GetItem(i);
 
-                if (!MultiPolygonContains(mpoly, ls))
+                if (!MultiPolygonContains(mpoly, ls, toleranceXY))
                     return false;
             }
         }
@@ -1983,7 +2005,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
             {
                 poly = mp->GetItem(i);
 
-                if (!MultiPolygonContains(mpoly, poly))
+                if (!MultiPolygonContains(mpoly, poly, toleranceXY))
                     return false;
             }
         }
@@ -1995,7 +2017,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return MultiPolygonContains(mpoly, flatgeom);
+            return MultiPolygonContains(mpoly, flatgeom, toleranceXY);
         }
 
     default : break;
@@ -2007,7 +2029,7 @@ bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeomet
 }
 
 
-bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoIGeometry* geom, double toleranceXY)
 {
     switch (geom->GetDerivedType())
     {
@@ -2023,7 +2045,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
             {
                 ls = mline->GetItem(i);
 
-                if (LineStringContains(ls, pt))
+                if (LineStringContains(ls, pt, toleranceXY))
                     return true;
             }
         }
@@ -2040,7 +2062,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
             {
                 ls = mline->GetItem(i);
 
-                if (LineStringContainsLineString(ls, line))
+                if (LineStringContainsLineString(ls, line, toleranceXY))
                     return true;
             }
         }
@@ -2059,7 +2081,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
             {
                 pt = mp->GetItem(i);
 
-                if (!MultiLineStringContains(mline, pt))
+                if (!MultiLineStringContains(mline, pt, toleranceXY))
                     return false;
             }
         }
@@ -2076,7 +2098,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
             {
                 ls = ml->GetItem(i);
 
-                if (!MultiLineStringContains(mline, ls))
+                if (!MultiLineStringContains(mline, ls, toleranceXY))
                     return false;
             }
         }
@@ -2088,7 +2110,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
     case FdoGeometryType_MultiCurveString :
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return MultiLineStringContains(mline, flatgeom);
+            return MultiLineStringContains(mline, flatgeom, toleranceXY);
         }
 
     case FdoGeometryType_CurvePolygon : 
@@ -2102,7 +2124,7 @@ bool FdoSpatialUtility::MultiLineStringContains(FdoIMultiLineString* mline, FdoI
     return false;
 }
 
-bool FdoSpatialUtility::MultiPointContains(FdoIMultiPoint* mpoint, FdoIGeometry* geom)
+bool FdoSpatialUtility::MultiPointContains(FdoIMultiPoint* mpoint, FdoIGeometry* geom, double toleranceXY)
 {
     switch (geom->GetDerivedType())
     {
@@ -2146,7 +2168,7 @@ bool FdoSpatialUtility::MultiPointContains(FdoIMultiPoint* mpoint, FdoIGeometry*
             {
                 pt2 = mp2->GetItem(i);
 
-                if (!MultiPointContains(mpoint, pt2))
+                if (!MultiPointContains(mpoint, pt2, toleranceXY))
                     return false;
             }
         }
@@ -2174,7 +2196,7 @@ bool FdoSpatialUtility::MultiPointContains(FdoIMultiPoint* mpoint, FdoIGeometry*
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::LineStringsIntersect(FdoILineString* line1, FdoILineString* line2)
+bool FdoSpatialUtility::LineStringsIntersect(FdoILineString* line1, FdoILineString* line2, double toleranceXY)
 {
     int numpts1 = line1->GetCount();
     int numpts2 = line2->GetCount();
@@ -2210,7 +2232,7 @@ bool FdoSpatialUtility::LineStringsIntersect(FdoILineString* line1, FdoILineStri
             pts[6] = x3;
             pts[7] = y3;
 
-            if (line_segment_intersect(pts, pts+4, pts+8) > 0)
+            if (line_segment_intersect(pts, pts+4, pts+8, toleranceXY) > 0)
                 return true;
 
             x2 = x3;
@@ -2225,7 +2247,7 @@ bool FdoSpatialUtility::LineStringsIntersect(FdoILineString* line1, FdoILineStri
 }
 
 
-bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2)
+bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY)
 {
 
     FdoPtr<FdoILinearRing> ring1;
@@ -2260,7 +2282,7 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
         {
             GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
 
-            if (PointInPolygon(poly2, x0, y0))
+            if (PointInPolygon(poly2, x0, y0, toleranceXY))
                 return true;
         }
     }
@@ -2279,7 +2301,7 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
         {
             GET_ITEM(ring2, j, &x0, &y0, &dim_ring2);
 
-            if (PointInPolygon(poly1, x0, y0))
+            if (PointInPolygon(poly1, x0, y0, toleranceXY))
                 return true;
         }
     }
@@ -2323,7 +2345,7 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
                     pts[6] = x3;
                     pts[7] = y3;
 
-                    if (line_segment_intersect(pts, pts+4, pts+8) > 0)
+                    if (line_segment_intersect(pts, pts+4, pts+8, toleranceXY) > 0)
                         return true;
                 }
             }
@@ -2336,7 +2358,7 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
 // Change the value for performance tests. 
 #define CHECK_JUST_ONE_POINT_INSIDE_POLY true
 
-bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, bool strictInside)
+bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, double toleranceXY, bool strictInside)
 {
     //  CHECK_JUST_ONE_POINT_INSIDE_POLY=false
     //Here is the algorithm we are using here:
@@ -2375,7 +2397,7 @@ bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineStr
         GET_ITEM(line, j, &x0, &y0, &dim_line);
 
         // This checks the interior rings as well
-        pt_inside = PointInPolygon( poly, x0, y0, &pt_on_ext, &pt_on_int);
+        pt_inside = PointInPolygon( poly, x0, y0, toleranceXY, &pt_on_ext, &pt_on_int);
 
         // If the check is strict...
         if ( pt_inside && strictInside && ( pt_on_ext || pt_on_int ) )
@@ -2419,7 +2441,7 @@ bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineStr
                 pts[6] = x3;
                 pts[7] = y3;
 
-                int numIntersections = line_segment_intersect(pts, pts+4, pts+8);
+                int numIntersections = line_segment_intersect(pts, pts+4, pts+8, toleranceXY);
 
                 // The line segments found intersecting?
                 if ( numIntersections > 0 && strictInside )
@@ -2430,17 +2452,17 @@ bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineStr
                     if ( numIntersections == 1 )
                     {
                         // Both end points should be inside polygon
-                        pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x2, y2, &pt1_on_ring );
+                        pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x2, y2, &pt1_on_ring, toleranceXY );
 
                         if ( pt_inside )
-                            pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x3, y3, &pt2_on_ring );
+                            pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x3, y3, &pt2_on_ring, toleranceXY );
 
                         // Ambiguous case: line segment with both end points of the ring.
                         // Decide by checking the midpoint 
                         if ( pt_inside && pt1_on_ring && pt2_on_ring )
                         {
                             pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, 
-                                                        (x2+x3)/2.0, (y2+y3)/2.0, &pt2_on_ring );  
+                                                        (x2+x3)/2.0, (y2+y3)/2.0, &pt2_on_ring, toleranceXY );  
 
                             // Imagine a "S" shape polygon: (start, mid, end) points are on the
                             // boundary. This makes the segment "outside".
@@ -2465,7 +2487,7 @@ bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineStr
     return true;
 }
 
-bool FdoSpatialUtility::PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, bool strictInside)
+bool FdoSpatialUtility::PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY, bool strictInside)
 {
     bool    poly2_inside = true;
     int     numContours2 = poly2->GetInteriorRingCount() + 1;
@@ -2488,7 +2510,7 @@ bool FdoSpatialUtility::PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* 
     return poly2_inside;
 }
 
-bool FdoSpatialUtility::PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineString* line)
+bool FdoSpatialUtility::PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineString* line, double toleranceXY)
 {
     //Here is the algorithm we are using here:
     //1. check if any points of line are inside poly
@@ -2510,7 +2532,7 @@ bool FdoSpatialUtility::PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineS
     {
         GET_ITEM(line, j, &x0, &y0, &dim_line);
 
-        if (PointInPolygon(poly, x0, y0))
+        if (PointInPolygon(poly, x0, y0, toleranceXY))
             return true;
     }
 
@@ -2546,7 +2568,7 @@ bool FdoSpatialUtility::PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineS
                 pts[6] = x3;
                 pts[7] = y3;
 
-                if (line_segment_intersect(pts, pts+4, pts+8) > 0)
+                if (line_segment_intersect(pts, pts+4, pts+8, toleranceXY) > 0)
                     return true;
 
                 x2 = x3;
@@ -2559,7 +2581,7 @@ bool FdoSpatialUtility::PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineS
 }
 
 
-bool FdoSpatialUtility::LineStringContainsLineString(FdoILineString* line1, FdoILineString* line2)
+bool FdoSpatialUtility::LineStringContainsLineString(FdoILineString* line1, FdoILineString* line2, double toleranceXY)
 {
     //does line1 contain line2?
     
@@ -2601,7 +2623,7 @@ bool FdoSpatialUtility::LineStringContainsLineString(FdoILineString* line1, FdoI
             pts[2] = x1;
             pts[3] = y1;
 
-            if (line_contains_line(pts, pts+4))
+            if (line_contains_line(pts, pts+4, toleranceXY))
             {
                 flag = true;
                 break;
@@ -2623,7 +2645,7 @@ bool FdoSpatialUtility::LineStringContainsLineString(FdoILineString* line1, FdoI
 
 
 
-bool FdoSpatialUtility::PointOnLine(FdoILineString* line, double x, double y)
+bool FdoSpatialUtility::PointOnLine(FdoILineString* line, double x, double y, double toleranceXY)
 {
     double pts[12];
 
@@ -2649,7 +2671,7 @@ bool FdoSpatialUtility::PointOnLine(FdoILineString* line, double x, double y)
         pts[6] = x1;
         pts[7] = y1;
 
-        if (line_segment_intersect(pts, pts+4, pts+8) > 0)
+        if (line_segment_intersect(pts, pts+4, pts+8, toleranceXY) > 0)
             return true;
        
         x0 = x1;
@@ -2671,7 +2693,8 @@ bool FdoSpatialUtility::point_in_ring(
     double          x, 
     double          y, 
     bool            strict, 
-    bool*           isOnBoundary)
+    bool*           isOnBoundary,
+    double          toleranceXY)
 {
     int                      loop_p2_i;
     double                   pt1x, pt1y;             /* current pts in loop  */
@@ -2689,7 +2712,7 @@ bool FdoSpatialUtility::point_in_ring(
   
     isIn = false;
  
-    if( outcode( x, y, extent ) == 0 ) {
+    if( outcode( x, y, extent, toleranceXY ) == 0 ) {
  
         /* `cross_count' counts how many times a horizontal ray cast to the
          * right from the test point would cross loop.
@@ -2717,7 +2740,7 @@ bool FdoSpatialUtility::point_in_ring(
                             pt1x, pt1y, pt2x, pt2y,
                             dx, dy, len, lenSq,
                             x, y,
-                            EPSILON,
+                            toleranceXY,
                             &isOn, &isLeft, &isAtLinePt1, &isAtLinePt2 );
 
             if ( isOn && isOnBoundary )
@@ -2760,17 +2783,18 @@ bool FdoSpatialUtility::point_in_ring(
 int FdoSpatialUtility::outcode( 
     double			x,		
     double			y,		
-    FdoIEnvelope*   extent	
+    FdoIEnvelope*   extent,
+    double          toleranceXY
 )
 {
 	int 	outcode = 0;	/* outcode to be returned	*/
 
 	if ( extent )
     { 		
-	    if ((extent->GetMaxY() - y) < NEGEPSILON) outcode |= SU_ABOVE;
-	    if ((y - extent->GetMinY()) < NEGEPSILON) outcode |= SU_BELOW;
-	    if ((extent->GetMaxX() - x) < NEGEPSILON) outcode |= SU_RIGHT;
-	    if ((x - extent->GetMinX()) < NEGEPSILON) outcode |= SU_LEFT;
+	    if ((extent->GetMaxY() - y) < -toleranceXY) outcode |= SU_ABOVE;
+	    if ((y - extent->GetMinY()) < -toleranceXY) outcode |= SU_BELOW;
+	    if ((extent->GetMaxX() - x) < -toleranceXY) outcode |= SU_RIGHT;
+	    if ((x - extent->GetMinX()) < -toleranceXY) outcode |= SU_LEFT;
     }
 	return (outcode);
 }
@@ -2781,15 +2805,16 @@ int FdoSpatialUtility::outcode2(
     double          xmin,
     double          ymin,
     double          xmax,
-    double          ymax
+    double          ymax,
+    double          toleranceXY
 )
 {
 	int 	outcode = 0;	/* outcode to be returned	*/
 
-	if ((ymax - y) < NEGEPSILON) outcode |= SU_ABOVE;
-	if ((y - ymin) < NEGEPSILON) outcode |= SU_BELOW;
-	if ((xmax - x) < NEGEPSILON) outcode |= SU_RIGHT;
-	if ((x - xmin) < NEGEPSILON) outcode |= SU_LEFT;
+	if ((ymax - y) < -toleranceXY) outcode |= SU_ABOVE;
+	if ((y - ymin) < -toleranceXY) outcode |= SU_BELOW;
+	if ((xmax - x) < -toleranceXY) outcode |= SU_RIGHT;
+	if ((x - xmin) < -toleranceXY) outcode |= SU_LEFT;
 
     return (outcode);
 }
@@ -2952,9 +2977,15 @@ bool FdoSpatialUtility::PtIsOnOrLeftOfLineTol(
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 #define USE_point_in_ring false  // apparently point_in_ring() variant is slower by aprox. 50%
-
 bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, double x, double y, bool* isOnExtBoundary, bool* isOnIntBoundary)
 {
+    return PointInPolygon(poly, x, y, EPSILON, isOnExtBoundary, isOnIntBoundary);
+}
+
+bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, double x, double y, double toleranceXY, bool* isOnExtBoundary, bool* isOnIntBoundary)
+{
+    if (toleranceXY <= 0.0)
+        toleranceXY = EPSILON;
     int numContours = poly->GetInteriorRingCount() + 1;
 
     bool ext_inside_flag = false;
@@ -2966,9 +2997,9 @@ bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, double x, double y, bo
     FdoPtr<FdoILinearRing> ring = poly->GetExteriorRing();
     
     if ( USE_point_in_ring )
-        ext_inside_flag = point_in_ring( ring, x, y, false, &on_ext_boundary );
+        ext_inside_flag = point_in_ring( ring, x, y, false, &on_ext_boundary, toleranceXY );
     else
-        ext_inside_flag = PointInRing( ring, x, y, &on_ext_boundary );
+        ext_inside_flag = PointInRing( ring, x, y, toleranceXY, &on_ext_boundary );
 
     // The point should be inside the exterior ring and outside any interior ring
     if ( ext_inside_flag )
@@ -2978,9 +3009,9 @@ bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, double x, double y, bo
             FdoPtr<FdoILinearRing> ring = poly->GetInteriorRing(i);
     
             if ( USE_point_in_ring )
-                int_inside_flag = point_in_ring( ring, x, y, true, &on_ring_flag );
+                int_inside_flag = point_in_ring( ring, x, y, true, &on_ring_flag, toleranceXY );
             else
-                int_inside_flag = PointInRing( ring, x, y, &on_ring_flag );
+                int_inside_flag = PointInRing( ring, x, y, toleranceXY, &on_ring_flag );
 
             if ( on_ring_flag )
                 on_int_boundary = true;
@@ -2999,7 +3030,13 @@ bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, double x, double y, bo
 /////////////////////////////////////////////////////////////////////////////////////////////////
 bool FdoSpatialUtility::PointInRing(FdoILinearRing* ring, double x, double y, bool* isOnBoundary)
 {
+    return PointInRing(ring, x, y, EPSILON, isOnBoundary);
+}
 
+bool FdoSpatialUtility::PointInRing(FdoILinearRing* ring, double x, double y, double toleranceXY, bool* isOnBoundary)
+{
+    if (toleranceXY <= 0.0)
+        toleranceXY = EPSILON;
     bool yflag0, yflag1;
     double vtx0X, vtx0Y, vtx1X, vtx1Y;
     int dim_ring;
@@ -3025,9 +3062,9 @@ bool FdoSpatialUtility::PointInRing(FdoILinearRing* ring, double x, double y, bo
         // Check if the point is on the vertex. If so, the test is done.
         if ( j != 0 && outcode2( x, y, 
                                  min(vtx0X, vtx1X), min(vtx0Y, vtx1Y),
-                                 max(vtx0X, vtx1X), max(vtx0Y, vtx1Y)) == 0 )
+                                 max(vtx0X, vtx1X), max(vtx0Y, vtx1Y), toleranceXY) == 0 )
         {
-            bool  isOn = pt_is_on_line2( vtx0X, vtx0Y, vtx1X, vtx1Y, x, y );
+            bool  isOn = pt_is_on_line2( vtx0X, vtx0Y, vtx1X, vtx1Y, x, y, toleranceXY );
 
             if ( isOnBoundary != NULL && isOn )
                 *isOnBoundary = true;
@@ -3075,11 +3112,11 @@ bool FdoSpatialUtility::PointInRing(FdoILinearRing* ring, double x, double y, bo
 ////////////////////////////////////////////////////////////////////////////////
 // Wrapper over PointInRing()
 //
-bool FdoSpatialUtility::PointInRing2( FdoILinearRing* ring, bool exteriorRing, bool strictInside, double x, double y, bool* pt_on_ring )
+bool FdoSpatialUtility::PointInRing2( FdoILinearRing* ring, bool exteriorRing, bool strictInside, double x, double y, bool* pt_on_ring, double toleranceXY )
 {
     bool    pt_inside_ring;
 
-    pt_inside_ring = PointInRing( ring, x, y, pt_on_ring );
+    pt_inside_ring = PointInRing( ring, x, y, toleranceXY, pt_on_ring );
 
     // If point is within an interior ring (or on its boundary), then it is considered to be
     // strictly outside the poly, and this test fails:
@@ -3099,7 +3136,7 @@ bool FdoSpatialUtility::PointInRing2( FdoILinearRing* ring, bool exteriorRing, b
 // Optimized it for speed by skipping the "on boundary" test because 
 // a) it is expensive and b) we assume the chosen point is not on the ring.
 
-bool FdoSpatialUtility::PointInRingFast(FdoILinearRing* ring, double x, double y)
+bool FdoSpatialUtility::PointInRingFast(FdoILinearRing* ring, double x, double y, double toleranceXY)
 {
     bool yflag0, yflag1;
     double vtx0X, vtx0Y, vtx1X, vtx1Y;
@@ -3994,7 +4031,7 @@ FdoIGeometry* FdoSpatialUtility::CreateGeometryFromRings( FdoLinearRingCollectio
                 bool isInside = (x <= extent2->GetMaxX() && x >= extent2->GetMinX() && y <= extent2->GetMaxY() && y >= extent2->GetMinY());
 
                 if (isInside)
-                    isInside = FdoSpatialUtility::PointInRingFast(ring2, x, y);
+                    isInside = FdoSpatialUtility::PointInRingFast(ring2, x, y, EPSILON);
 
                 if (isInside) 
                 {

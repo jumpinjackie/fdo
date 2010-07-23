@@ -156,7 +156,71 @@ protected:
 
 public:
 
+    /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other 
+    /// based on a user supplied spatial operator. For example: Contains, Crosses, 
+    /// Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, 
+    /// EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// 
+    /// \return
+    /// Returns the evaluation of spatial operation.
     FDO_SPATIAL_API static bool Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2);
+
+    /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other 
+    /// based on a user supplied spatial operator. For example: Contains, Crosses, 
+    /// Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, 
+    /// EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// 
+    /// \param toleranceXY
+    /// Input XY tolerance to evaluate the spatial condition
+    /// Default tolerance used is 1e-10. Valid range is >0 
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns the evaluation of spatial operation.
+    FDO_SPATIAL_API static bool Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, double toleranceXY); 
+
+    /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other 
+    /// based on a user supplied spatial operator. For example: Contains, Crosses, 
+    /// Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, 
+    /// EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// 
+    /// \param toleranceXY
+    /// Input XY tolerance to evaluate the spatial condition
+    /// Default tolerance used is 1e-10. Valid range is >0 
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \param toleranceZ
+    /// Input Z tolerance to evaluate the spatial condition in case we have 3D geometries
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns the evaluation of spatial operation.
+    FDO_SPATIAL_API static bool Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, double toleranceXY, double toleranceZ); 
 
     FDO_SPATIAL_API static FdoIGeometry* TesselateCurve(FdoIGeometry* curve);
 
@@ -167,35 +231,35 @@ public:
     static void AdjustExtentsForCurves(FdoIGeometry * geometry, double& minx, double& miny, double& maxx, double& maxy);
     static void AdjustExtentsForCurves(FdoCurveSegmentCollection * csc, double& minx, double& miny, double& maxx, double& maxy);
 
-    static bool Intersects(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Disjoint(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Overlaps(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Touches(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Contains(FdoIGeometry* g1, FdoIGeometry* g2, bool strictInside = false);
-    static bool Crosses(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Equals(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Within(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool Inside(FdoIGeometry* g1, FdoIGeometry* g2);
-    static bool EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2);
+    static bool Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside = false);
+    static bool Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Equals(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
 
     //Intersects
-    static bool MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeometry* geom);
-    static bool MultiLineStringIntersects(FdoIMultiLineString* mline, FdoIGeometry* geom);
-    static bool MultiPointIntersects(FdoIMultiPoint* mpoint, FdoIGeometry* geom);
+    static bool MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeometry* geom, double toleranceXY);
+    static bool MultiLineStringIntersects(FdoIMultiLineString* mline, FdoIGeometry* geom, double toleranceXY);
+    static bool MultiPointIntersects(FdoIMultiPoint* mpoint, FdoIGeometry* geom, double toleranceXY);
 
-    static bool PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom);
-    static bool LineStringIntersects(FdoILineString* line, FdoIGeometry* geom);
-    static bool PointIntersects(FdoIPoint* point, FdoIGeometry* geom);
+    static bool PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY);
+    static bool LineStringIntersects(FdoILineString* line, FdoIGeometry* geom, double toleranceXY);
+    static bool PointIntersects(FdoIPoint* point, FdoIGeometry* geom, double toleranceXY);
 
     //Contains
-    static bool MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeometry* geom);
-    static bool MultiLineStringContains(FdoIMultiLineString* mline, FdoIGeometry* geom);
-    static bool MultiPointContains(FdoIMultiPoint* mpoly, FdoIGeometry* geom);
+    static bool MultiPolygonContains(FdoIMultiPolygon* mpoly, FdoIGeometry* geom, double toleranceXY);
+    static bool MultiLineStringContains(FdoIMultiLineString* mline, FdoIGeometry* geom, double toleranceXY);
+    static bool MultiPointContains(FdoIMultiPoint* mpoly, FdoIGeometry* geom, double toleranceXY);
 
-    static bool PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, bool strictInside = false);
-    static bool LineStringContains(FdoILineString* line, FdoIGeometry* geom);
-    static bool PointContains(FdoIPoint* point, FdoIGeometry* geom);
+    static bool PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY, bool strictInside = false);
+    static bool LineStringContains(FdoILineString* line, FdoIGeometry* geom, double toleranceXY);
+    static bool PointContains(FdoIPoint* point, FdoIGeometry* geom, double toleranceXY);
 
     //Utils
 
@@ -215,6 +279,25 @@ public:
     FDO_SPATIAL_API static bool PointInRing(FdoILinearRing* ring, double x, double y, bool* isOnBoundary = NULL);
 
     /// \brief
+    /// Tests whether a point is within a ring or not.
+    /// 
+    /// \param ring 
+    /// Input Ring to test
+    /// \param x 
+    /// Input X ordinate.
+    /// \param y 
+    /// Input Y ordinate.
+    /// \param toleranceXY
+    /// Input XY tolerance to evaluate the spatial condition
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
+    /// 
+    FDO_SPATIAL_API static bool PointInRing(FdoILinearRing* ring, double x, double y, double toleranceXY, bool* isOnBoundary = NULL);
+
+    /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
     /// 
     /// \param poly 
@@ -229,14 +312,33 @@ public:
     /// 
     FDO_SPATIAL_API static bool PointInPolygon(FdoIPolygon* poly, double x, double y, bool* isOnExtBoundary = NULL, bool* isOnIntBoundary = NULL);
 
-    static bool PointOnLine(FdoILineString* line, double x, double y);
-    static bool PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2);
-    static bool LineStringsIntersect(FdoILineString* line1, FdoILineString* line2);
-    static bool PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineString* line);
-    static bool PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, bool strictInside = false);
-    static bool PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, bool strictInside = false);
-    static bool LineStringContainsLineString(FdoILineString* line1, FdoILineString* line2);
-    static bool PointInRingFast(FdoILinearRing* ring, double x, double y);
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param poly 
+    /// Input Polygon to test
+    /// \param x 
+    /// Input X ordinate.
+    /// \param y 
+    /// Input Y ordinate.
+    /// \param toleranceXY
+    /// Input XY tolerance to evaluate the spatial condition
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    FDO_SPATIAL_API static bool PointInPolygon(FdoIPolygon* poly, double x, double y, double toleranceXY, bool* isOnExtBoundary = NULL, bool* isOnIntBoundary = NULL);
+
+    static bool PointOnLine(FdoILineString* line, double x, double y, double toleranceXY);
+    static bool PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY);
+    static bool LineStringsIntersect(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
+    static bool PolygonIntersectsLineString(FdoIPolygon* poly, FdoILineString* line, double toleranceXY);
+    static bool PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, double toleranceXY, bool strictInside = false);
+    static bool PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY, bool strictInside = false);
+    static bool LineStringContainsLineString(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
+    static bool PointInRingFast(FdoILinearRing* ring, double x, double y, double toleranceXY);
 
     FDO_SPATIAL_API static bool LinearRingIsClockwise(FdoILinearRing* ring);
 
@@ -348,7 +450,8 @@ private:
                 double      PtX,
                 double      PtY,
                 bool *      IsAtLinePt1_O,
-                bool *      IsAtLinePt2_O );
+                bool *      IsAtLinePt2_O,
+                double      toleranceXY);
 
     static bool pt_is_on_line2(
                 double      LineX1,
@@ -356,7 +459,8 @@ private:
                 double      LineX2,
                 double      LineY2,
                 double      PtX,
-                double      PtY );
+                double      PtY,
+                double      toleranceXY);
 
     static int find_xsect_seg_seg(
                 double      x11,
@@ -372,16 +476,19 @@ private:
                 int *       IsInterp1_O,
                 double *    xi2_O,
                 double *    yi2_O,
-                int *       IsInterp2_O );
+                int *       IsInterp2_O,
+                double      toleranceXY);
 
     static int line_segment_intersect(
                 double* line0, 
                 double* line1,  
-                double* ret);
+                double* ret,
+                double toleranceXY);
 
     static bool line_contains_line(
                 double* line0, 
-                double* line1);
+                double* line1,
+                double toleranceXY);
 
     static double pt_dist_to_seg(
                 double      PtX,
@@ -390,14 +497,15 @@ private:
                 double      LineY1,
                 double      LineX2,
                 double      LineY2,
-                double      tolerance);
+                double      toleranceXY);
 
     static bool point_in_ring(
                 FdoILinearRing* ring, 
                 double      x, 
                 double      y, 
                 bool        strict, 
-                bool*       isOnBoundary);
+                bool*       isOnBoundary,
+                double      toleranceXY);
 
     static bool PointInRing2( 
                 FdoILinearRing* ring, 
@@ -405,12 +513,14 @@ private:
                 bool            strictInside,
                 double          x, 
                 double          y, 
-                bool*           pt_on_ring );
+                bool*           pt_on_ring,
+                double          toleranceXY);
 
     static  int outcode( 
                 double			x,		
                 double			y,		
-                FdoIEnvelope*   extent);	
+                FdoIEnvelope*   extent,
+                double          toleranceXY);	
     
     static  int outcode2( 
                 double			x,		
@@ -418,7 +528,8 @@ private:
 	            double		LineX1,
 	            double		LineY1,
 	            double		LineX2,
-	            double		LineY2);	
+	            double		LineY2,
+                double      toleranceXY);	
 
     static bool check_xtnt_tol (
                 double      xmin1,
