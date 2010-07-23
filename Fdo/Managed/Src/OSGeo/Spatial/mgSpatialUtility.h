@@ -104,6 +104,50 @@ public:
 	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2);
 
     /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other based on a user supplied spatial operator.
+    /// For example: Contains, Crosses, Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns The tesselated Geometry.
+    /// 
+	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2, double toleranceXY);
+
+        /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other based on a user supplied spatial operator.
+    /// For example: Contains, Crosses, Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// \param toleranceZ
+    /// Input tolerance to used to compare Z coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns The tesselated Geometry.
+    /// 
+	static System::Boolean Evaluate(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g1, NAMESPACE_OSGEO_FDO_FILTER::SpatialOperations op, NAMESPACE_OSGEO_GEOMETRY::IGeometry^ g2, double toleranceXY, double toleranceZ);
+
+    /// \brief
     /// Tesselates a curve geometry into a set of line strings that approximate the curve geometry.
     /// 
     /// \param curve 
@@ -168,6 +212,28 @@ public:
 	static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY, System::Boolean% isOnBoundary);
 
     /// \brief
+    /// 
+    /// Tests whether a point is within a ring or not.
+    /// 
+    /// \param ring 
+    /// Input Ring to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// \param isOnBoundary 
+    /// Output Specifies if the specified point is on the boundary of the ring.
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY, double toleranceXY, System::Boolean% isOnBoundary);
+
+    /// \brief
     /// Tests whether a point is within a ring or not.
     /// 
     /// \param ring 
@@ -181,6 +247,26 @@ public:
     /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
     /// 
     static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY);
+
+    /// \brief
+    /// 
+    /// Tests whether a point is within a ring or not.
+    /// 
+    /// \param ring 
+    /// Input Ring to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within ring or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInRing( NAMESPACE_OSGEO_GEOMETRY::ILinearRing^ ring, System::Double coordinateX, System::Double coordinateY, double toleranceXY);
 
     /// \brief
     /// Tests whether a point is within a polygon (including its islands) or not.
@@ -210,6 +296,30 @@ public:
     /// Input X ordinate.
     /// \param coordinateY 
     /// Input Y ordinate.
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// \param isOnExtBoundary 
+    /// Output Specifies if the specified point is on the exterior boundary of the polygon.
+    /// \param isOnInBoundary 
+    /// Output Specifies if the specified point is on the interior boundary of the polygon.
+    /// 
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, double toleranceXY, System::Boolean% isOnExtBoundary, System::Boolean% isOnInBoundary);
+
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param polygon 
+    /// Input Polygon to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
     /// \param isOnExtBoundary 
     /// Output Specifies if the specified point is on the exterior boundary of the polygon.
     /// 
@@ -227,11 +337,51 @@ public:
     /// Input X ordinate.
     /// \param coordinateY 
     /// Input Y ordinate.
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// \param isOnExtBoundary 
+    /// Output Specifies if the specified point is on the exterior boundary of the polygon.
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, double toleranceXY, System::Boolean% isOnExtBoundary);
+
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param polygon 
+    /// Input Polygon to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
     /// 
     /// \return
     /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
     /// 
     static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY);
+
+    /// \brief
+    /// Tests whether a point is within a polygon (including its islands) or not.
+    /// 
+    /// \param polygon 
+    /// Input Polygon to test
+    /// \param coordinateX 
+    /// Input X ordinate.
+    /// \param coordinateY 
+    /// Input Y ordinate.
+    /// \param toleranceXY 
+    /// Input tolerance to used to compare XY coordinates
+    /// Default tolerance used is 1e-10. Valid range is >0
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns TRUE if the point is within polygon or on its boundary, FALSE otherwise.
+    /// 
+    static System::Boolean PointInPolygon(NAMESPACE_OSGEO_GEOMETRY::IPolygon^ polygon, System::Double coordinateX, System::Double coordinateY, double toleranceXY);
 
     /// \brief
     /// Computes the area of a ring.
