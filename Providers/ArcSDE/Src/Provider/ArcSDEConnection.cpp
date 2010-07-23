@@ -468,7 +468,7 @@ void ArcSDEConnection::Close ()
     m_sCachedRdbmsSystemTablePrefix = L"";
     m_mbDatabaseName[0] = '\0';
     m_mbUserName[0] = '\0';
-    SetTransaction (NULL);
+    SetTransaction (NULL);	
 
     // Clear the Datastore connection property's enumerated list of datastores:
 	FdoPtr<FdoIConnectionInfo> info = GetConnectionInfo ();
@@ -1852,6 +1852,18 @@ void ArcSDEConnection::DecacheSchema()
     mSchemaCollection = NULL;
 	mSchemaCollectionFullyLoaded = false;
     mSchemaMappingCollection = NULL;
+
+	// Clean up the cached sde schema/classs names.
+	mCachedSchemaClassNames.clear();
+	mIsSchemaClassNameCached = false;
+	// Clean up the cached sde table qualified names.
+	NamedTableRegistry::const_iterator citer = mCachedTableRegistryInfo.begin();
+	while (citer != mCachedTableRegistryInfo.end())
+	{
+		delete citer->second;
+		++citer;
+	}
+	mCachedTableRegistryInfo.clear();
 }
 
 

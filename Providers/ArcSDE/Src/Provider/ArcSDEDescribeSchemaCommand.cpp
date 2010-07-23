@@ -656,11 +656,6 @@ void ArcSDEDescribeSchemaCommand::addTable (
 FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 {
     FdoPtr<ArcSDEConnection> connection;
-    //SE_REGINFO *registrations = NULL;
-    //LONG count = 0L;
-    //LONG result = 0L;
-    //const wchar_t* name = NULL;
-    //int size = 0;
     FdoPtr<FdoFeatureSchemaCollection> ret;
 
     // verify the connection
@@ -683,30 +678,93 @@ FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 	// If both schema name and class names are not set in this command, 
 	// the collection will contain all the qualified feature class names.
 	FdoStringsP qFeatureClassNames = FdoStringCollection::Create();
-	constructRequestedClassNames(qFeatureClassNames, &bIsFullyLoaded);
+	// The flag indicate if a full describing is requested.
+	bool bIsAllRequested = false;
+	constructRequestedClassNames(qFeatureClassNames, &bIsAllRequested);
 
-	// Construct the requested schema/feature class.
-	FdoInt32 count = qFeatureClassNames->GetCount();
+	// If the schema collection is already loaded fully, we don't need try to construct it again.
+	if (!bIsFullyLoaded)
+	{
+		// Construct the requested schema/feature class.
+		FdoInt32 count = qFeatureClassNames->GetCount();
+		for (FdoInt32 i = 0; i < count; ++i)
+		{
+			addTable(connection, cachedSchemas, qFeatureClassNames->GetString(i));
+		}
+
+		// Mark all schemas as "unchanged":
+		int size = cachedSchemas->GetCount ();
+		for (int i = 0; i < size; i++)
+		{
+			FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem (i);
+			schema->AcceptChanges ();
+		}
+
+		// Cache these schemas on this connection:
+		connection->SetSchemaCollection (cachedSchemas, bIsAllRequested);
+	}
+
+	// clone the relevant schemas from the cached schema collection.
+	if (bIsAllRequested)
+		// If this is fully describing schema, clone the entire schema collection.
+		ret = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(cachedSchemas, NULL);
+	else
+	{
+		// Just clone the requested schema/class.
+		ret = FdoFeatureSchemaCollection::Create(NULL);
+		cloneClassDefinitions(qFeatureClassNames, ret, cachedSchemas);
+	}
+	
+    return (FDO_SAFE_ADDREF(ret.p));
+}
+
+void ArcSDEDescribeSchemaCommand::cloneClassDefinitions(FdoStringCollection* qFCNames, FdoFeatureSchemaCollection* retSchemaCol, FdoFeatureSchemaCollection* schemaCol)
+{
+	FdoInt32 count = qFCNames->GetCount();
 	for (FdoInt32 i = 0; i < count; ++i)
 	{
-		addTable(connection, cachedSchemas, qFeatureClassNames->GetString(i));
+		FdoStringP qualifiedClassName = qFCNames->GetString(i);
+		FdoStringP schemaName = qualifiedClassName.Left(L":");
+		FdoStringP className = qualifiedClassName.Right(L":");
+
+		
+		// It's possible that the requested schema doesn't exist due to some reasons. See defect 613177.01.
+		if (!schemaCol->Contains(schemaName))
+			continue;
+		FdoPtr<FdoFeatureSchema> schema = schemaCol->GetItem(schemaName);
+
+		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+		if (classes == NULL) // it's needed to do the check?
+			continue;
+
+		// It's possible that the requested schema doesn't exist due to some reasons. See defect 613177.01.
+		if (!classes->Contains(className))
+			continue;
+		FdoPtr<FdoClassDefinition> classDef = classes->GetItem(className);
+
+		FdoPtr<FdoFeatureSchema> retSchema;
+		if (!retSchemaCol->Contains(schema->GetName()))
+		{
+			retSchema = FdoFeatureSchema::Create(schema->GetName(), schema->GetDescription());
+			retSchemaCol->Add(retSchema);
+		}
+		else
+			retSchema = retSchemaCol->GetItem(schema->GetName());
+
+		classes = retSchema->GetClasses();
+        // At this point, classes should be check to see if it already contains the current class. 
+		// The deep copy and adding of the class can be skipped if it already is. This can happen 
+		// if the client puts a duplicate entry in mClassNames, or if a class in qFCNames is the 
+		// base class of a class appearing earlier on in qFCNames. 
+		if (classes->Contains(classDef->GetName()))
+			continue;
+
+		classDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(classDef, NULL);
+		FDO_SAFE_ADDREF(classDef.p);
+		classes->Add(classDef);
+
+		retSchema->AcceptChanges();
 	}
-
-	// Mark all schemas as "unchanged":
-	int size = cachedSchemas->GetCount ();
-	for (int i = 0; i < size; i++)
-	{
-		FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem (i);
-		schema->AcceptChanges ();
-	}
-
-	// Cache these schemas on this connection:
-	connection->SetSchemaCollection (cachedSchemas, bIsFullyLoaded);
-
-    // clone the relevant schemas from the cached schema collection:
-    ret = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(cachedSchemas, GetSchemaName());
-
-    return (FDO_SAFE_ADDREF(ret.p));
 }
 
 void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollection* qFeatureClassNames, bool* isFullyLoaded)

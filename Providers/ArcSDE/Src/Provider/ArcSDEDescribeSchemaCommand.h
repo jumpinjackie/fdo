@@ -62,6 +62,9 @@ protected:
 	// Construct the requested qualified feature class name collection.
 	void constructRequestedClassNames(FdoStringCollection* qualifiedClassNames, bool *isFullyLoaded);
 
+	// Clone the requested class definitions.
+	void cloneClassDefinitions(FdoStringCollection* qFCNames, FdoFeatureSchemaCollection* retSchemaCol, FdoFeatureSchemaCollection* schemaCol);
+
 public:
     //
     // Prevent the use of the Assignment Operation by defining it and not implementing it.
