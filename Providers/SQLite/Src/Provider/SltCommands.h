@@ -127,7 +127,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 for (int i=0; i<m_orderingProps->GetCount(); i++)
                 {
                     FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
-                    ordering.push_back(NameOrderingPair(id.p, (m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
+                    ordering.push_back(NameOrderingPair(id.p, ((int)m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
                 }
             }
 
@@ -187,7 +187,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 for (int i=0; i<m_orderingProps->GetCount(); i++)
                 {
                     FdoPtr<FdoIdentifier> id = m_orderingProps->GetItem(i);
-                    ordering.push_back(NameOrderingPair(id.p, (m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
+                    ordering.push_back(NameOrderingPair(id.p, ((int)m_orderingOptions.size() != m_orderingProps->GetCount()) ? m_option : m_orderingOptions[id->GetName()])); 
                 }
             }
 
