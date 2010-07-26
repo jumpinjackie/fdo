@@ -534,13 +534,17 @@ void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
 
         switch(type)
         {
-            case FdoPropertyType_DataProperty: ReadDataPropertyDefinition(rdr, pdc);
+            case FdoPropertyType_DataProperty:
+                ReadDataPropertyDefinition(rdr, pdc);
                 break;
-            case FdoPropertyType_GeometricProperty: ReadGeometricPropertyDefinition(rdr, pdc);
+            case FdoPropertyType_GeometricProperty:
+                ReadGeometricPropertyDefinition(rdr, pdc, classcaps);
                 break;
-            case FdoPropertyType_ObjectProperty: ReadObjectPropertyDefinition(rdr, pdc);
+            case FdoPropertyType_ObjectProperty:
+                ReadObjectPropertyDefinition(rdr, pdc);
                 break;
-			case FdoPropertyType_AssociationProperty: ReadAssociationPropertyDefinition(rdr, pdc);
+            case FdoPropertyType_AssociationProperty:
+                ReadAssociationPropertyDefinition(rdr, pdc);
                 break;
             default:
                 throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_21_UNKNOWN_PROPERTY_TYPE)));
@@ -590,10 +594,6 @@ void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
             //get a property definition from the collection and cast it to a geometric 
             //property. FDO makes this a little ugly...
             pd = dynamic_cast<FdoGeometricPropertyDefinition*>(pdc->FindItem(geomname));
-
-            // Set vertex order and strictness rule for geometry property
-            classcaps->SetPolygonVertexOrderRule(geomname, FdoPolygonVertexOrderRule_CCW);
-            classcaps->SetPolygonVertexOrderStrictness(geomname, false);
 
             //if we could not find it in the class properties, look in the inherited properties
             //if it's not there, the class does not have a geometry property
@@ -742,7 +742,10 @@ void SchemaDb::ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefiniti
     pdc->Add(dpd);
 }
 
-void SchemaDb::ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
+void SchemaDb::ReadGeometricPropertyDefinition(
+    BinaryReader& rdr,
+    FdoPropertyDefinitionCollection* pdc,
+    FdoClassCapabilities* classcaps)
 {
     //create property
     FdoPtr<FdoGeometricPropertyDefinition> gpd = FdoGeometricPropertyDefinition::Create();
@@ -761,6 +764,10 @@ void SchemaDb::ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDef
 
     //add property to collection
     pdc->Add(gpd);
+
+    // Set vertex order and strictness rule for geometry property
+    classcaps->SetPolygonVertexOrderRule(gpd->GetName(), FdoPolygonVertexOrderRule_CCW);
+    classcaps->SetPolygonVertexOrderStrictness(gpd->GetName(), false);
 }
 
 void SchemaDb::ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
