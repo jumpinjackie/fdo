@@ -74,6 +74,7 @@ m_sprops(NULL),
 m_closeOpcode(-1),
 m_si(NULL),
 m_nMaxProps(0),
+m_nTotalProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
@@ -118,7 +119,7 @@ m_isViewSelect(false)
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_class = FDO_SAFE_ADDREF(cls);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
-
+    m_nTotalProps = sqlite3_column_count(stmt);
     m_pStmt = stmt;
 	InitPropIndex(m_pStmt);
 }
@@ -136,6 +137,7 @@ m_sprops(NULL),
 m_closeOpcode(-1),
 m_si(si),
 m_nMaxProps(0),
+m_nTotalProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
@@ -166,6 +168,7 @@ m_closeOpcode(-1),
 m_si(NULL),
 m_ri(NULL),
 m_nMaxProps(0),
+m_nTotalProps(0),
 m_eGeomFormat(eFGF),
 m_wkbBuffer(NULL),
 m_wkbBufferLen(0),
@@ -225,7 +228,8 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             id->Process(&exTrans);
             StringBuffer* exp = exTrans.GetExpression();
             m_reissueProps.Add(exp->Data(), exp->Length());
-		}
+        }
+        m_nTotalProps = nProps;
 	}
     else
     {
@@ -301,7 +305,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     //Caller passed empty property list -- assume the
     //resulting feature class is identical to the one in the schema.
     m_class = md->ToClass();
-
+    
 	//we have created the class definition -- now we can add the
     //columns from the feature class in the same order as they appear in it
     //We will speculatively add only the columns up to the geometry,
@@ -313,6 +317,8 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     int maxIndex = md->GetGeomIndex();
     if (maxIndex < md->GetIDIndex())
         maxIndex = md->GetIDIndex();
+
+    m_nTotalProps = pdc->GetCount();
     
     FdoPtr<FdoDataPropertyDefinitionCollection> pdic = m_class->GetIdentityProperties();
     bool addRowId = true;
@@ -1581,14 +1587,27 @@ unsigned int SltReader::IndexOf(FdoPropertyValueCollection* key)
 //-------------------------------------------------------
 
 void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
-{
-    int count = sqlite3_column_count(pStmt);
-    if (index < 0 || index >= count)
+{    
+    if (index < 0 || index >= m_nTotalProps)
     {
 		wchar_t tmp[15];
 		swprintf(tmp, 15, L"%d", index);
         throw FdoCommandException::Create((std::wstring(L"Property index \'") + tmp + L"\' is out of bounds.").c_str());
     }
+
+    //Trying to access a property that is theoretically available
+    //but was not queried in the initial query (which only assumes ID and geom)
+    int count = sqlite3_column_count(pStmt);
+    if (index >= count)
+    {
+        FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
+        for (int i=count; i<index; i++)
+        {
+            FdoPtr<FdoPropertyDefinition> pv = pdc->GetItem(i);
+            AddColumnToQuery(pv->GetName());
+        }
+    }
+
 }
 
 const char* SltReader::DecodeTableName(const char* name)
