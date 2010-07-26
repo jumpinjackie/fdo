@@ -232,7 +232,8 @@ protected:
         SltConnection* m_connection;
         
 		StringRec* m_sprops; //cache of unicode string values of columns in the current row
-        int m_nMaxProps; //maximum number of columns that could be returned
+        int m_nMaxProps; //maximum number of columns that are currently queried
+        int m_nTotalProps; //number of properties in the feature class (total that can be queried after Requery())
 		
         int             m_eGeomFormat; //indicates encoding of geometry
         unsigned char*  m_wkbBuffer; //geometry conversion buffer
