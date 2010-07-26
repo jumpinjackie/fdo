@@ -70,7 +70,7 @@ private:
     void RollbackPhysical( SdfSchemaMergeContextP mergeContext );
 
     void ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema);
-    void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
+    void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc, FdoClassCapabilities* classcaps);
     void ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
     void ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
 	void ReadAssociationPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
