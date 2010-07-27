@@ -842,6 +842,7 @@ public:
         : SltCommand<FdoICreateSpatialContext>(connection)
     {
         m_updateExisting = false;
+        m_XYTolerance = m_ZTolerance = 0.0;
     }
 
 protected:
@@ -871,10 +872,10 @@ public:
     virtual void            SetExtentType(FdoSpatialContextExtentType value) { }
     virtual FdoByteArray*   GetExtent()                             { return NULL; }
     virtual void            SetExtent(FdoByteArray* value)          { }
-    virtual const double    GetXYTolerance()                        { return 0; }
-    virtual void            SetXYTolerance(const double value)      { }
-    virtual const double    GetZTolerance()                         { return 0; }
-    virtual void            SetZTolerance(const double value)       { }
+    virtual const double    GetXYTolerance()                        { return m_XYTolerance; }
+    virtual void            SetXYTolerance(const double value)      { m_XYTolerance = value; }
+    virtual const double    GetZTolerance()                         { return m_ZTolerance; }
+    virtual void            SetZTolerance(const double value)       { m_ZTolerance = value; }
     virtual const bool      GetUpdateExisting()                     { return m_updateExisting; }
     virtual void            SetUpdateExisting(const bool value)     { m_updateExisting = value; }
     virtual void            Execute()
@@ -883,13 +884,23 @@ public:
         int rc;
         char* zerr = NULL;
         int idToUpdate = -1;
+        if (m_connection->IsReadOnlyConnection())
+            FdoCommandException::Create(L"Connection is read-only and do not support write operations.");
+
         if (m_updateExisting && m_scName.size() != 0)
             idToUpdate = m_connection->FindSpatialContext(m_scName.c_str(), -1);
+
+        bool tolsupp = m_connection->SupportsTolerance();
+        if (!tolsupp && m_XYTolerance > 0.0)
+            tolsupp = m_connection->AddSupportForTolerance();
 
         // caller should ensure the SC is not already created
         if (idToUpdate == -1)
         {
-            sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
+            if (!tolsupp || m_XYTolerance <= 0.0)
+                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
+            else
+                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext,sr_xytol,sr_ztol) VALUES(");
 
             if (m_scName.empty())
                 sb.Append("NULL", 4);
@@ -909,6 +920,17 @@ public:
                 sb.Append("NULL", 4);
             else
                 sb.AppendSQuoted(m_coordSysWkt.c_str());
+
+            if (tolsupp && m_XYTolerance > 0.0)
+            {
+                sb.Append(",", 1);
+                sb.Append(m_XYTolerance, "%.16g");
+                sb.Append(",", 1);
+                if (m_ZTolerance > 0.0)
+                    sb.Append(m_ZTolerance, "%.16g");
+                else
+                    sb.Append("NULL", 4);
+            }
 
             sb.Append(");", 2);
         }
@@ -935,6 +957,20 @@ public:
             else
                 sb.AppendSQuoted(m_coordSysWkt.c_str());
 
+            if (tolsupp)
+            {
+                sb.Append(",sr_xytol=", 10);
+                if (m_XYTolerance > 0.0)
+                    sb.Append(m_XYTolerance, "%.16g");
+                else
+                    sb.Append("NULL");
+                sb.Append(",sr_ztol=", 9);
+                if (m_ZTolerance > 0.0)
+                    sb.Append(m_ZTolerance, "%.16g");
+                else
+                    sb.Append("NULL");
+            }
+
             sb.Append(" WHERE srid=");
             sb.Append(idToUpdate);
             sb.Append(";", 1);
@@ -942,7 +978,12 @@ public:
 
         rc = sqlite3_exec(m_connection->GetDbConnection(), sb.Data(), NULL, NULL, &zerr);
         if (rc != SQLITE_OK)
-            FdoCommandException::Create(L"Failed to create spatial context.");
+        {
+            if (idToUpdate == -1)
+                FdoCommandException::Create(L"Failed to create spatial context.");
+            else
+                FdoCommandException::Create(L"Failed to update spatial context.");
+        }
     }
 
     //-------------------------------------------------------
@@ -959,6 +1000,8 @@ private:
     FdoInt32                        m_extentLength;
 
     bool                            m_updateExisting;
+    double                          m_XYTolerance;
+    double                          m_ZTolerance;
 };
 
 

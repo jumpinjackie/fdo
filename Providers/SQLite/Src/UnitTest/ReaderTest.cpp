@@ -516,6 +516,9 @@ void ReaderTest::TestExceptionalCase()
         FdoPtr<FdoIdentifier> propIfd = FdoIdentifier::Create(L"CITY");
         props->Add(propIfd);
 
+        FdoPtr<FdoIdentifierCollection> gprops = select1->GetGrouping();
+        gprops->Add(propIfd);
+
         FdoPtr<FdoFilter> groupingFilter = FdoFilter::Parse(L"CITY='ALAMEDA'");
         select1->SetGroupingFilter(groupingFilter);
 

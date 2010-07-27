@@ -1806,7 +1806,15 @@ case OP_Function: {
   ** immediately call the destructor for any non-static values.
   */
   if( u.ag.ctx.pVdbeFunc ){
-    sqlite3VdbeDeleteAuxData(u.ag.ctx.pVdbeFunc, pOp->p1);
+    long userData = 0;
+    userData = (u.ag.ctx.pVdbeFunc->pFunc == 0) ? 0 : (long)u.ag.ctx.pVdbeFunc->pFunc->pUserData;
+    /* In case we have spatial functions avoid Avoid clear AuxData used by each evaluation*/
+    if (((userData&(~(long)0x0F))==SQLITE_SPEVAL_FUNCTION) ||
+      ((userData&(~(long)0x0F))==SQLITE_SPCALC_FUNCTION)) {
+      /* Avoid clear AuxData since for this type of functions we need to preserve it */
+    }else{
+      sqlite3VdbeDeleteAuxData(u.ag.ctx.pVdbeFunc, pOp->p1);
+    }
     pOp->p4.pVdbeFunc = u.ag.ctx.pVdbeFunc;
     pOp->p4type = P4_VDBEFUNC;
   }

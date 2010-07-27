@@ -706,14 +706,17 @@ int SelectTest::SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* c
     return cnt;
 }
 
-void SelectTest::InsertValue(FdoIConnection* conn, FdoString* valTxtFlt)
+void SelectTest::InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt)
 {
     FdoPtr<FdoFilter> filter = FdoFilter::Parse(valTxtFlt);
     FdoSpatialCondition* spFlt = static_cast<FdoSpatialCondition*>(filter.p);
     FdoPtr<FdoGeometryValue> gv = static_cast<FdoGeometryValue*>(spFlt->GetGeometry());
     
     FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
-    sqlCmd->SetSQLStatement(L"INSERT INTO TestClass (Geometry) VALUES(:GVAL);");
+    std::wstring sql(L"INSERT INTO ");
+    sql.append(className);
+    sql.append(L" (Geometry) VALUES(:GVAL);");
+    sqlCmd->SetSQLStatement(sql.c_str());
     
     FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
     FdoPtr<FdoParameterValue> param = FdoParameterValue::Create(L":GVAL", gv);
@@ -721,15 +724,16 @@ void SelectTest::InsertValue(FdoIConnection* conn, FdoString* valTxtFlt)
     sqlCmd->ExecuteNonQuery();
 }
 
-void SelectTest::CreateSchoolSchema(FdoIConnection* conn)
+void SelectTest::CreateFeatureClass(FdoIConnection* conn, FdoString* className, FdoString* scName)
 {
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
-    FdoPtr<FdoFeatureClass> clas = FdoFeatureClass::Create(L"TestClass",L"");
+    FdoPtr<FdoFeatureClass> clas = FdoFeatureClass::Create(className,L"");
     FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
     FdoPtr<FdoPropertyDefinitionCollection> properties = clas->GetProperties();
     
     FdoPtr<FdoGeometricPropertyDefinition> geometry = FdoGeometricPropertyDefinition::Create(L"Geometry", L"");
     geometry->SetGeometryTypes(7); // Point, Line, Polygon
+    geometry->SetSpatialContextAssociation(scName);
     properties->Add(geometry);
     clas->SetGeometryProperty(geometry);
     FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"FeatId", L"");
@@ -739,6 +743,7 @@ void SelectTest::CreateSchoolSchema(FdoIConnection* conn)
     FdoPtr<FdoDataPropertyDefinitionCollection>(clas->GetIdentityProperties())->Add(dpd);
     
     FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+    applyschema->SetIgnoreStates(true);
     applyschema->SetFeatureSchema(schema);
     applyschema->Execute();
 }
@@ -753,7 +758,7 @@ void SelectTest::TestDualConnection ()
             FdoCommonFile::Delete(SC_TEST_FILE, true);
 
         conn1 = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true );
-        CreateSchoolSchema(conn1);
+        CreateFeatureClass(conn1, L"TestClass", L"LL84");
         conn2 = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
 	    
         FdoPtr<FdoIDescribeSchema> decrCmd1 = (FdoIDescribeSchema*)conn1->CreateCommand(FdoCommandType_DescribeSchema); 
@@ -762,31 +767,96 @@ void SelectTest::TestDualConnection ()
 	    FdoPtr<FdoIDescribeSchema> decrCmd2 = (FdoIDescribeSchema*)conn2->CreateCommand(FdoCommandType_DescribeSchema); 
         FdoPtr<FdoFeatureSchemaCollection> schColl2 = decrCmd2->Execute();
 
-        InsertValue(conn1, L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.2727843079006 39.0938931173285 0)')");
+        InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.2727843079006 39.0938931173285 0)')");
         int cnt1 = SelectObjects(conn1, L"conn1");
         int cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
 
-        InsertValue(conn1, L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.2727843079006 39.0651450294108 0)')");
+        InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.2727843079006 39.0651450294108 0)')");
         cnt1 = SelectObjects(conn1, L"conn1");
         cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
 
-        InsertValue(conn2, L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3544138327724 39.0938931173285 0)')");
+        InsertValue(conn2, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3544138327724 39.0938931173285 0)')");
         cnt1 = SelectObjects(conn1, L"conn1");
         cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
 
-        InsertValue(conn1, L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3464596345164 39.0575513745066 0)')");
+        InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3464596345164 39.0575513745066 0)')");
         cnt1 = SelectObjects(conn1, L"conn1");
         cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
 
-        InsertValue(conn2, L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3544138327724 39.0575513745066 0)')");
+        InsertValue(conn2, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3544138327724 39.0575513745066 0)')");
         conn2->Close();
         cnt1 = SelectObjects(conn1, L"conn1");
         CPPUNIT_ASSERT(cnt1 == (cnt2+1));
         conn1->Close();
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSelectMultipleCS ()
+{
+    FdoPtr<FdoIConnection> conn;
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true );
+        {
+	        FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+	        pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"PROJCS[\"CA83IIIF\",GEOGCS[\"LL83\",DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",6561666.667],PARAMETER[\"false_northing\",1640416.667],PARAMETER[\"central_meridian\",-120.50000000000000],PARAMETER[\"latitude_of_origin\",36.50000000000000],PARAMETER[\"standard_parallel_1\",38.43333333333333],PARAMETER[\"standard_parallel_2\",37.06666666666666],UNIT[\"Foot_US\",0.30480060960122]]");
+	        pCreateCreateSpatialContext->SetDescription(L"CA83IIIF Coordinate System" );
+	        pCreateCreateSpatialContext->SetName( L"CA83IIIF" );
+	        pCreateCreateSpatialContext->Execute();
+        }
+        CreateFeatureClass(conn, L"TestClassLL84", L"LL84");
+        CreateFeatureClass(conn, L"TestClassCA83IIIF", L"CA83IIIF");
+
+        InsertValue(conn, L"TestClassCA83IIIF", L"Geometry INSIDE GeomFromText('POLYGON ((5990102.49997365 2107167.50006662, 5990296.00007366 2102409.50006628, 5984903.49997329 2102225.00016627, 5984902.00007329 2102264.50006628, 5984740.00007328 2107065.0001666, 5990100.49997365 2107250.25006663, 5990102.49997365 2107167.50006662))')");
+        InsertValue(conn, L"TestClassLL84", L"Geometry INSIDE GeomFromText('POLYGON XYZ ((-73.9089788473758 44.7028354893831 0, -73.9089788473758 44.4642768507282 0, -73.5090664079954 44.4642768507282 0, -73.5090664079954 44.7028354893831 0, -73.9089788473758 44.7028354893831 0))')");
+        
+        {
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"TestClassLL84");
+        FdoPtr<FdoIdentifierCollection> props =  selCmd->GetPropertyNames();
+        props->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"area", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Area2D(Geometry)")))));
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        while(reader->ReadNext())
+        {
+            CPPUNIT_ASSERT(TestCommonMiscUtil::FuzzyEqual(reader->GetDouble(L"area"),840286918.3210836));
+            break;
+        }
+        reader->Close();
+        }
+
+        {
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"TestClassCA83IIIF");
+        FdoPtr<FdoIdentifierCollection> props =  selCmd->GetPropertyNames();
+        props->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"area", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Area2D(Geometry)")))));
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        while(reader->ReadNext())
+        {
+            CPPUNIT_ASSERT(TestCommonMiscUtil::FuzzyEqual(reader->GetDouble(L"area"), 26054613.81218502));
+            break;
+        }
+        reader->Close();
+        }
     }
     catch ( FdoException* e )
 	{

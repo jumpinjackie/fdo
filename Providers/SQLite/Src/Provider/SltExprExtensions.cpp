@@ -6,6 +6,7 @@
 #include "FdoCommonOSUtil.h"
 #include "StringUtil.h"
 #include "SltProvider.h"
+#include "SpatialIndexDescriptor.h"
 #include <math.h>
 #include <algorithm>
 #include <limits>       // For quiet_NaN()
@@ -1619,11 +1620,24 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
         return;
     }
 
-    //retrieve the spatial op
-    FdoSpatialOperations spatialOp = (FdoSpatialOperations)((~SQLITE_SPEVAL_FUNCTION)&(long)sqlite3_user_data(context));
+    SpatialIndexDescriptor* sidVal = static_cast<SpatialIndexDescriptor*>(sqlite3_get_auxdata(context, 0));
 
+    //retrieve the spatial op
+    FdoSpatialOperations spatialOp = (FdoSpatialOperations)(0x0F&(long)sqlite3_user_data(context));
+
+    bool res = false;
     //call the spatial utility to eval the spatial op
-    bool res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1]);
+    if (sidVal != NULL && sidVal->SupportsTolerance())
+    {
+        double xyTol = sidVal->GetXYTolerance();
+        double zTol = sidVal->GetZTolerance();
+        if (zTol > 0.0)
+            res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1], xyTol, zTol);
+        else
+            res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1], xyTol);
+    }
+    else
+        res = FdoSpatialUtility::Evaluate(fg[0], spatialOp, fg[1]);
 
     sqlite3_result_int(context, res ? 1 : 0);
 }
@@ -1715,10 +1729,10 @@ static void xyzmFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 //Implementation of the Lenght(), Area() functions for geometries
 static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
-    assert(argc == 1 || argc == 2);
+    assert(argc == 1);
 
     //extract operation type 1 = len, 2 = area
-    long optype = ((~SQLITE_SPCALC_FUNCTION)&(long)sqlite3_user_data(context));
+    long optype = (0x0F & (long)sqlite3_user_data(context));
 
     FdoPtr<FdoFgfGeometryFactory> gf;
     FdoPtr<FdoIGeometry> fg;
@@ -1774,7 +1788,8 @@ static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     if (geom == NULL) // enforce a null return
         optype = 0;
 
-    bool computeGeodetic = (argc!=2) ? false : (sqlite3_value_int(argv[1]) == 1);
+    
+    bool computeGeodetic = ((int)sqlite3_get_auxdata(context, 0) == 1);
 
     switch(optype)
     {
@@ -1957,7 +1972,7 @@ void RegisterExtensions (sqlite3* db)
     static const struct {
         const char *zName;
         signed char nArg;
-        u8 argType;           /* ff: db   1: 0, 2: 1, 3: 2,...  N:  N-1. */
+        u32 argType;           /* ff: db   1: 0, 2: 1, 3: 2,...  N:  N-1. */
         u8 eTextRep;          /* 1: UTF-16.  0: UTF-8 */
         u8 needCollSeq;
         void (*xFunc)(sqlite3_context*,int,sqlite3_value **);
@@ -2020,9 +2035,7 @@ void RegisterExtensions (sqlite3* db)
         { "M",                  1, 4, SQLITE_UTF8,     0, xyzmFunc },
 
         { "Length2D",           1, (SQLITE_SPCALC_FUNCTION|1), SQLITE_UTF8,     0, geomFunc },
-        { "Length2D",           2, (SQLITE_SPCALC_FUNCTION|1), SQLITE_UTF8,     0, geomFunc },
         { "Area2D",             1, (SQLITE_SPCALC_FUNCTION|2), SQLITE_UTF8,     0, geomFunc },
-        { "Area2D",             2, (SQLITE_SPCALC_FUNCTION|2), SQLITE_UTF8,     0, geomFunc },
 
         { "GeomFromText",       1, 0, SQLITE_UTF8, 0, GeomFromText },
 
@@ -2043,7 +2056,7 @@ void RegisterExtensions (sqlite3* db)
     static const struct {
         const char *zName;
         signed char nArg;
-        u8 argType;
+        u32 argType;
         u8 needCollSeq;
         void (*xStep)(sqlite3_context*,int,sqlite3_value**);
         void (*xFinalize)(sqlite3_context*);
@@ -2059,7 +2072,7 @@ void RegisterExtensions (sqlite3* db)
     for(i=0; i<sizeof(aFuncs)/sizeof(aFuncs[0]); i++)
     {
         void *pArg;
-        u8 argType = aFuncs[i].argType;
+        u32 argType = aFuncs[i].argType;
         if( argType==0xff )
         {
             pArg = db;

@@ -616,6 +616,18 @@ static void freeP4(sqlite3 *db, int p4type, void *p4){
   }
 }
 
+/*function used to convert a normal function into a VBE function having one auxiliary parameter*/
+void* sqlite3CreateVdbeFuncWithAuxData(sqlite3* db, FuncDef* pFunc, void* pAux, void (*xDelete)(void *))
+{
+  int nMalloc = sizeof(VdbeFunc) + sizeof(struct AuxData);
+  VdbeFunc* pVdbeFunc = sqlite3DbRealloc(db, 0, nMalloc);
+  pVdbeFunc->pFunc = pFunc;
+  pVdbeFunc->nAux = 1;
+  pVdbeFunc->apAux->pAux = pAux;
+  pVdbeFunc->apAux->xDelete = xDelete;
+  return pVdbeFunc;
+}
+
 /*
 ** Free the space allocated for aOp and any p4 values allocated for the
 ** opcodes contained within. If aOp is not NULL it is assumed to contain 

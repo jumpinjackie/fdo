@@ -32,7 +32,9 @@ SpatialIndexDescriptor::SpatialIndexDescriptor(const char* tableName, SpatialInd
     m_refCount(1),
     m_bHasUpdates(false),
     m_IsReleased(false),
-    m_bAutoDelSi(bAutoDelSi)
+    m_bAutoDelSi(bAutoDelSi),
+    m_xyTolerance(0.0),
+    m_zTolerance(0.0)
 {
 }
 

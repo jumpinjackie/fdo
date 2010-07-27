@@ -3343,8 +3343,12 @@ SQLITE_API int sqlite3_create_function16(
   void (*xFinal)(sqlite3_context*)
 );
 
-#define SQLITE_SPEVAL_FUNCTION    0xC0
-#define SQLITE_SPCALC_FUNCTION    0xA0
+/*
+** Flags used to make a difference between normal functions and 
+** spatial one without using string compare
+*/
+#define SQLITE_SPEVAL_FUNCTION    0x1090C0
+#define SQLITE_SPCALC_FUNCTION    0x1090A0
 
 /*
 ** CAPI3REF: Text Encodings
