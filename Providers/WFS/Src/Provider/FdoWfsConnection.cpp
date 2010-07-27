@@ -602,6 +602,17 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                     classCaps->SetSupportsLocking(false);
                     classCaps->SetSupportsLongTransactions(false);
                     classCaps->SetSupportsWrite(false);
+
+                    FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
+                    for (int k = props->GetCount() - 1; k >= 0; k--)
+                    {
+                        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(k);
+                        if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+                        {
+                            classCaps->SetPolygonVertexOrderRule(prop->GetName(), FdoPolygonVertexOrderRule_CCW);
+                            classCaps->SetPolygonVertexOrderStrictness(prop->GetName(), false);
+                        }
+                    }
                     
                     // Set the class capabilities
                     classDef->SetCapabilities(classCaps);

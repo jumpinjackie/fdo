@@ -305,7 +305,7 @@ FdoClassDefinition* SltMetadata::ToClass()
             pdc->Add(gpd);
 
             // Set vertex order and strictness rule for geometry property
-            caps->SetPolygonVertexOrderRule(gpd->GetName(), FdoPolygonVertexOrderRule_CCW);
+            caps->SetPolygonVertexOrderRule(gpd->GetName(), FdoPolygonVertexOrderRule_None);
             caps->SetPolygonVertexOrderStrictness(gpd->GetName(), false);
         }
         else
