@@ -92,6 +92,7 @@ m_isViewSelect(false)
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
 
 	InitPropIndex(m_pStmt);
+    m_nTotalProps = sqlite3_column_count(m_pStmt);
 }
 
 //constructor taking a general sql statement, which we will step through
