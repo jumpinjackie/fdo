@@ -1748,8 +1748,10 @@ FdoClassDefinition* SltIdReader::GetClassDefinition()
 	{
 		m_cls = FdoFeatureClass::Create(L"GenClass", L"Id class");
 		FdoPtr<FdoPropertyDefinitionCollection> props = m_cls->GetProperties();
+        FdoPtr<FdoDataPropertyDefinitionCollection> pidtcoll = m_cls->GetIdentityProperties();
 		FdoPtr<FdoDataPropertyDefinition> idProp = FdoDataPropertyDefinition::Create(m_idProp->GetName(), L"Id");
 		idProp->SetDataType(m_idProp->GetDataType());
+        pidtcoll->Add(idProp);
 		props->Add(idProp);
 	}
     return FDO_SAFE_ADDREF(m_cls);
