@@ -394,6 +394,16 @@ const FdoLockType* FdoSmPhDbObject::GetLockTypes(FdoInt32& size) const
 	return NULL;
 }
 
+FdoPolygonVertexOrderRule FdoSmPhDbObject::GetPolygonVertexOrderRule(FdoString*) const
+{
+    return FdoPolygonVertexOrderRule_CCW;
+}
+
+FdoBoolean FdoSmPhDbObject::GetPolygonVertexOrderStrictness(FdoString*) const
+{
+    return false;
+}
+
 FdoBoolean FdoSmPhDbObject::IsUkeyPkey( FdoSmPhColumnsP ukeyColumns )
 {
     FdoBoolean      isUkeyPkey  = false;

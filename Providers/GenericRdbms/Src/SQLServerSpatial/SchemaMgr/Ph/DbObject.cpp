@@ -129,6 +129,24 @@ FdoStringP FdoSmPhSqsDbObject::GetBestClassName() const
     return objName.Replace(L":",L"_").Replace(L".",L"_");
 }
 
+FdoBoolean FdoSmPhSqsDbObject::GetPolygonVertexOrderStrictness(FdoString* propName) const
+{
+    const FdoSmPhColumnCollection* columns = RefColumns();
+    const FdoSmPhColumn* column = columns->RefItem(propName);
+    if ( NULL != column && FdoSmPhColType_Geom == column->GetType())
+    {
+        // SQL Server 2008 Spatial has two data types that support geometry. 
+        // They are Geometry and Geography. Both of these support polygons 
+        // but the Geography type has a constraint that the vertex order 
+        // around loops must be counterclockwise for outer loops and clockwise 
+        // for inner loops. Polygons that fail this test will be rejected. 
+        FdoStringP typeName = column->GetTypeName();
+        if (typeName == L"geography")
+            return true;
+    }
+    return false;
+}
+
 void FdoSmPhSqsDbObject::ActivateOwnerAndExecute( FdoStringP sqlStmt )
 {
     FdoSmPhSqsOwner*        objOwner       = static_cast<FdoSmPhSqsOwner*>((FdoSmPhSchemaElement*) GetParent());

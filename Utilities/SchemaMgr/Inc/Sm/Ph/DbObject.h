@@ -187,6 +187,14 @@ public:
     /// Returns NULL when size is 0.
 	virtual const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
+    /// Get the current polygon vertex order rule. Different geometry type may have 
+    /// different polygon vertex order rule.
+    virtual FdoPolygonVertexOrderRule GetPolygonVertexOrderRule(FdoString* propName) const;
+
+    /// Get the current polygon vertex order strictness rule. Different geometry type
+    /// may have different rule.
+    virtual FdoBoolean GetPolygonVertexOrderStrictness(FdoString* propName) const;
+
     // Returns true if the given unique key has the same columns as the primary key.
     FdoBoolean IsUkeyPkey( FdoSmPhColumnsP ukeyColumns );
 
