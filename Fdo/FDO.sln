@@ -255,8 +255,8 @@ Global
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Debug|x64.Build.0 = Debug|x64
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|Win32.ActiveCfg = Release|Win32
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|Win32.Build.0 = Release|Win32
-		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|x64.ActiveCfg = Release Static|x64
-		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|x64.Build.0 = Release Static|x64
+		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|x64.ActiveCfg = Release|x64
+		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release Unmanaged|x64.Build.0 = Release|x64
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release|Win32.ActiveCfg = Release|Win32
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release|Win32.Build.0 = Release|Win32
 		{44CABB29-0B72-48E7-8383-DB4B040F3731}.Release|x64.ActiveCfg = Release|x64
