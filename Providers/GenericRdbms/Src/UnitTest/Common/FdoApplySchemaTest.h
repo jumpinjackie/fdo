@@ -103,7 +103,7 @@ protected:
 /*
 	void GetJoinTree( FdoRdbmsSchemaManager* sm );
 */
-    virtual void GetClassCapabilities( FdoIConnection* connection );
+    virtual void GetClassCapabilities( FdoIConnection* connection, FdoString* schema, FdoStringCollection* classes);
     void CheckBaseProperties( FdoIConnection* connection );
     void CheckNonNumericForeignClass( FdoIConnection* connection );
 

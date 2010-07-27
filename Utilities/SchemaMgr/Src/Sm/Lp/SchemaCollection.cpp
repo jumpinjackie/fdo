@@ -552,6 +552,16 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
             // capabilities->SetSupportsWrite(true); // TODO - Capability: How to determine whether true or false is to be set.
             capabilities->SetSupportsWrite( pLpCap->SupportsWrite() );
 
+            PolygonVertexOrderRuleMap::const_iterator iter1;
+            PolygonVertexOrderRuleMap vertexOrderRuleMap = pLpCap->GetPolygonVertexOrderRule();
+            for (iter1 = vertexOrderRuleMap.begin(); iter1 != vertexOrderRuleMap.end(); iter1++)
+                capabilities->SetPolygonVertexOrderRule(iter1->first, iter1->second);
+
+            PolygonVertexOrderStrictnessMap::const_iterator iter2;
+            PolygonVertexOrderStrictnessMap vertexOrderStrictnessMap = pLpCap->GetPolygonVertexOrderStrictness();
+            for (iter2 = vertexOrderStrictnessMap.begin(); iter2 != vertexOrderStrictnessMap.end(); iter2++)
+                capabilities->SetPolygonVertexOrderStrictness(iter2->first, iter2->second);
+
             pFdoClassDef->SetCapabilities( capabilities );
         }
 

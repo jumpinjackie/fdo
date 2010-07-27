@@ -42,6 +42,10 @@ public:
     // Returns object name with user name part removed.
     virtual FdoStringP GetBestClassName() const;
 
+    /// Get the current polygon vertex order strictness rule. Different geometry type
+    /// may have different rule.
+    virtual FdoBoolean GetPolygonVertexOrderStrictness(FdoString* propName) const;
+
     // Getters/Setters for overrides:
     FdoString* GetTableFilegroup() const  { return mTableFilegroup; };
     FdoString* GetTextFilegroup() const   { return mTextFilegroup; };

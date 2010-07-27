@@ -110,6 +110,17 @@ void MySqlFdoApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, Fdo
     FdoLockType* lockTypes = cc->GetLockTypes( lockTypeCount );
 
     CPPUNIT_ASSERT( lockTypeCount == 0 );
+
+    FdoPtr<FdoPropertyDefinitionCollection> props = pClass->GetProperties();
+    for ( FdoInt32 i = 0; i < props->GetCount(); i++ )
+    {
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+        {
+            CPPUNIT_ASSERT( cc->GetPolygonVertexOrderRule(prop->GetName()) == FdoPolygonVertexOrderRule_CCW );
+            CPPUNIT_ASSERT( !cc->GetPolygonVertexOrderStrictness(prop->GetName()) );
+        }
+    }
 }
 
 FdoStringP MySqlFdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile )

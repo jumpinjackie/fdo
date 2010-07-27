@@ -38,6 +38,9 @@
 #include <Sm/Ph/ClassWriter.h>
 #include <Utilities/SchemaMgr/Overrides/TableMappingType.h>
 
+typedef std::map<FdoStringP, FdoPolygonVertexOrderRule> PolygonVertexOrderRuleMap;
+typedef std::map<FdoStringP, FdoBoolean> PolygonVertexOrderStrictnessMap;
+
 class FdoSmLpSchemaCollection;
 
 // ClassBase is the virtual abstract base class for FdoSmLpClassDefinition and
@@ -72,12 +75,20 @@ public:
 
         const FdoLockType* GetLockTypes(FdoInt32& size) const;
 
+        PolygonVertexOrderRuleMap GetPolygonVertexOrderRule() const;
+        PolygonVertexOrderStrictnessMap GetPolygonVertexOrderStrictness() const;
+
+        PolygonVertexOrderRuleMap& GetPolygonVertexOrderRule();
+        PolygonVertexOrderStrictnessMap& GetPolygonVertexOrderStrictness();
+
     private:
         bool                    mSupportsWrite;
         bool                    mSupportsLocking;
         bool                    mSupportsLongTransactions;
         FdoLockType*            mLockTypes;
         FdoInt32                mLockTypeCount;
+        PolygonVertexOrderRuleMap mPolygonVertexOrderRuleMap;
+        PolygonVertexOrderStrictnessMap mPolygonVertexOrderStrictnessMap;
     };
 
     ~FdoSmLpClassBase(void);
@@ -260,7 +271,7 @@ public:
 	const FdoSmLpDataPropertyDefinition* RefFeatIdProperty() const;
 	FdoSmLpDataPropertyP GetFeatIdProperty();
 
-    const Capabilities* GetCapabilities() const;
+    virtual const Capabilities* GetCapabilities() const;
 
     bool GetIsDbObjectCreator() const 
     {

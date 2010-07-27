@@ -222,3 +222,12 @@ void FdoSmLpOdbcClassDefinition::PostFinalize()
 void FdoSmLpOdbcClassDefinition::GetOverridesFromClass(FdoSmPhOdbcTable* phTable)
 {
 }
+
+const FdoSmLpClassBase::Capabilities* FdoSmLpOdbcClassDefinition::GetCapabilities() const
+{
+    FdoSmLpClassBase::Capabilities* cap = const_cast<FdoSmLpClassBase::Capabilities*>(FdoSmLpClassBase::GetCapabilities());
+    PolygonVertexOrderRuleMap& vertexOrderRuleMap = cap->GetPolygonVertexOrderRule();
+    for (PolygonVertexOrderRuleMap::const_iterator iter = vertexOrderRuleMap.begin(); iter != vertexOrderRuleMap.end(); iter++)
+        vertexOrderRuleMap[iter->first] = FdoPolygonVertexOrderRule_None;
+    return cap;
+}

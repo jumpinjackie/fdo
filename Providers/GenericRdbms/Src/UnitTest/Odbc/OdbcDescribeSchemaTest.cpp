@@ -338,6 +338,11 @@ void OdbcAccessDescribeSchemaTest::describe()
                         FdoGeometryType* specGeomTypes = geomProp->GetSpecificGeometryTypes( specGeomCount );
                         CPPUNIT_ASSERT( specGeomCount == 1 );
                         CPPUNIT_ASSERT( specGeomTypes[0] == FdoGeometryType_Point );
+
+                        FdoClassCapabilitiesP cc = classDef->GetCapabilities();
+                        CPPUNIT_ASSERT( cc != NULL );
+                        CPPUNIT_ASSERT( cc->GetPolygonVertexOrderRule(geomProp->GetName()) == FdoPolygonVertexOrderRule_None );
+                        CPPUNIT_ASSERT( cc->GetPolygonVertexOrderStrictness(geomProp->GetName()) == false );
                     }
                 }
             }

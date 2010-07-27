@@ -51,6 +51,9 @@ public:
 	// Copy overrides from this class to given table:
 	void GetOverridesFromClass(FdoSmPhOdbcTable* phTable);
 
+    // Set polygon vertex order rule to FdoPolygonVertexOrderRule_None
+    virtual const FdoSmLpClassBase::Capabilities* GetCapabilities() const;
+
 protected:
     // Constructs an instance of a ClassDefinition from a class reader
     FdoSmLpOdbcClassDefinition(FdoSmPhClassReaderP classReader, FdoSmLpSchemaElement* parent);

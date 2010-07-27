@@ -137,6 +137,12 @@ void FdoApplySchemaTest::TestSchema ()
 
 		printf( "Creating Land Schema ... \n" );
 		CreateLandSchema( connection );
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add( L"Person" );
+        classNames->Add( L"Parcel" );
+        classNames->Add( L"Zoning" );
+        classNames->Add( L"County" );
+		GetClassCapabilities( connection, L"Land", classNames );
 
         printf( "Deleting Properties with data ... \n" );
 		DelPropertyError( connection );
@@ -219,7 +225,10 @@ void FdoApplySchemaTest::TestSchema ()
 */
 
 		printf( "Testing Class Capabilities ... \n" );
-		GetClassCapabilities( connection );
+        classNames->Clear();
+        classNames->Add( L"AcDbEntity" );
+        classNames->Add( L"AcXData" );
+		GetClassCapabilities( connection, L"Acad", classNames );
 
 		printf( "Testing Base Properties ... \n" );
 		CheckBaseProperties( connection );
@@ -5004,18 +5013,18 @@ void FdoApplySchemaTest::GetJoinTree( FdoRdbmsSchemaManager* sm )
 }
 #endif
 
-void FdoApplySchemaTest::GetClassCapabilities( FdoIConnection* connection )
+void FdoApplySchemaTest::GetClassCapabilities( FdoIConnection* connection, FdoString* schema, FdoStringCollection* classes)
 {
 	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-	pDescCmd->SetSchemaName( L"Acad" );
+	pDescCmd->SetSchemaName( schema );
 	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
-    FdoFeatureSchemaP pSchema = pSchemas->GetItem( L"Acad" );
+    FdoFeatureSchemaP pSchema = pSchemas->GetItem( schema );
 
-    FdoClassDefinitionP pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( L"AcDbEntity" );
-    VldClassCapabilities( 0, 0, pClass );
-
-    pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( L"AcXData" );
-    VldClassCapabilities( 0, 0, pClass );
+    for ( FdoInt32 i = 0; i < classes->GetCount(); ++i )
+    {
+        FdoClassDefinitionP pClass = FdoClassesP( pSchema->GetClasses() )->GetItem( classes->GetString(i) );
+        VldClassCapabilities( 0, 0, pClass );
+    }
 }
 
 void FdoApplySchemaTest::CheckBaseProperties( FdoIConnection* connection )
@@ -6799,6 +6808,18 @@ void FdoApplySchemaTest::VldClassCapabilities( int ltMode, int lckMode, FdoClass
 
     for ( i = 0; i < expLockCount; i++ )
         CPPUNIT_ASSERT( lockArray[i] );
+
+
+    FdoPtr<FdoPropertyDefinitionCollection> props = pClass->GetProperties();
+    for ( i = 0; i < props->GetCount(); i++ )
+    {
+        FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
+        if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+        {
+            CPPUNIT_ASSERT( cc->GetPolygonVertexOrderRule(prop->GetName()) == FdoPolygonVertexOrderRule_CCW );
+            CPPUNIT_ASSERT( !cc->GetPolygonVertexOrderStrictness(prop->GetName()) );
+        }
+    }
 }
 
 void FdoApplySchemaTest::WriteXmlOverrides(
