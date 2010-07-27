@@ -379,9 +379,9 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
     FdoPtr<FdoClassCapabilities> caps = cdef->GetCapabilities();
     CPPUNIT_ASSERT(caps->SupportsLocking() == false);
     CPPUNIT_ASSERT(caps->SupportsLongTransactions() == false);
-    CPPUNIT_ASSERT (caps->GetPolygonVertexOrderRule (L"Data") == FdoPolygonVertexOrderRule_CCW);
+    CPPUNIT_ASSERT (caps->GetPolygonVertexOrderRule (L"Data") == FdoPolygonVertexOrderRule_None);
     CPPUNIT_ASSERT (caps->GetPolygonVertexOrderStrictness (L"Data") == false);
-    CPPUNIT_ASSERT (caps->GetPolygonVertexOrderRule (L"Data2") == FdoPolygonVertexOrderRule_CCW);
+    CPPUNIT_ASSERT (caps->GetPolygonVertexOrderRule (L"Data2") == FdoPolygonVertexOrderRule_None);
     CPPUNIT_ASSERT (caps->GetPolygonVertexOrderStrictness (L"Data2") == false);
     
 	FdoPtr<FdoPropertyDefinition> gpd = pdc->GetItem(L"Data2");
