@@ -2573,6 +2573,7 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
       int i;                 /* Loop counter */
       u8 enc = ENC(db);      /* The text encoding used by this database */
       CollSeq *pColl = 0;    /* A collating sequence */
+      void *pVdbeFunc = 0;
 
       assert( !ExprHasProperty(pExpr, EP_xIsSelect) );
       testcase( op==TK_CONST_FUNC );
@@ -2613,24 +2614,24 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
 
 
       if( pFarg ){
-        if (db->xSpIndexCallback && ((long)pDef->pUserData&SQLITE_SPEVAL_FUNCTION)==SQLITE_SPEVAL_FUNCTION && nFarg==2){
+        /* Get Spatial Index in case we use a spatial function and pass it as an auxiliary parameter */
+        if (db->xSpIndexCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPEVAL_FUNCTION && nFarg==2){
           Table* pTab = pFarg->a->pExpr->pTab;
           if (pTab && !pTab->pSpIndex){
             pTab->nGeomColIdx = pFarg->a->pExpr->iColumn;
             pTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pTab->zName, &pTab->nGeomColIdx);
           }
+          if (pTab) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
+            pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, pTab->pSpIndex, 0);
         }else{
-          if (db->xSpContextCallback && ((long)pDef->pUserData&SQLITE_SPCALC_FUNCTION)==SQLITE_SPCALC_FUNCTION && nFarg==1){
-            Expr *pNew;
+          /* Get Spatial Context in case we use a spatial function (e.g. Area) and pass it as an auxiliary parameter */
+          if (db->xSpContextCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPCALC_FUNCTION && nFarg==1){
             Table* pTab = pFarg->a->pExpr->pTab;
             if (pTab && !pTab->nSpContextType){
               pTab->nSpContextType = db->xSpContextCallback(db->pSpIndexArg, pTab->zName, pTab->aCol[pFarg->a->pExpr->iColumn].zName);
             }
-            pNew = sqlite3PExpr(pParse, TK_INTEGER, 0, 0, 0);
-            nFarg++;
-            pNew->flags |= EP_IntValue;
-            pNew->iTable = (int)(pTab->nSpContextType == 1);
-            sqlite3ExprListAppend(pParse, pFarg, pNew);
+            if (pTab) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
+              pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, (void*)pTab->nSpContextType, 0);
           }
         }
         r1 = sqlite3GetTempRange(pParse, nFarg);
@@ -2671,8 +2672,14 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
         if( !pColl ) pColl = db->pDfltColl; 
         sqlite3VdbeAddOp4(v, OP_CollSeq, 0, 0, 0, (char *)pColl, P4_COLLSEQ);
       }
-      sqlite3VdbeAddOp4(v, OP_Function, constMask, r1, target,
+      /* In case we have a VBE function pass the VBE function because it might have auxiliary parameters */
+      if (pVdbeFunc == 0) {
+        sqlite3VdbeAddOp4(v, OP_Function, constMask, r1, target,
                         (char*)pDef, P4_FUNCDEF);
+      }else{
+        sqlite3VdbeAddOp4(v, OP_Function, constMask, r1, target,
+                        (char*)pVdbeFunc, P4_VDBEFUNC);
+      }
       sqlite3VdbeChangeP5(v, (u8)nFarg);
       if( nFarg ){
         sqlite3ReleaseTempRange(pParse, r1, nFarg);

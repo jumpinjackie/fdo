@@ -212,6 +212,8 @@ void sqlite3VdbeSetVarmask(Vdbe*, int);
 UnpackedRecord *sqlite3VdbeRecordUnpack(KeyInfo*,int,const void*,char*,int);
 void sqlite3VdbeDeleteUnpackedRecord(UnpackedRecord*);
 int sqlite3VdbeRecordCompare(int,const void*,UnpackedRecord*);
+/*function used to convert a normal function into a VBE function having one auxiliary parameter*/
+void* sqlite3CreateVdbeFuncWithAuxData(sqlite3*, FuncDef*, void*, void(*)(void*));
 
 
 #ifndef NDEBUG

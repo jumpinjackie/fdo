@@ -67,5 +67,6 @@ class SltSpatialContextReader : public FdoISpatialContextReader
         std::wstring    m_cs;
         std::wstring    m_name;
         bool            m_bHasScName;
+        bool            m_bToleranceSupp;
 };
 

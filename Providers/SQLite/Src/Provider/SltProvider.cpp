@@ -103,6 +103,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_bHasFdoMetadata = false;
     m_transactionState = SQLiteActiveTransactionType_None;
     m_cSupportsDetGeomType = -1;
+    m_cSupportsTolerance = -1;
     m_wkbBuffer = NULL;
     m_wkbBufferLen = 0;
     m_changesAvailable = false;
@@ -1732,6 +1733,18 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
         si = new SpatialIndex(NULL);
         spDesc = new SpatialIndexDescriptor(table, si);
     }
+
+    if (SupportsTolerance())
+    {
+        double xyTolerance = 0.0;
+        double zTolerance = 0.0;
+        if (GetCSTolerances(table, xyTolerance, zTolerance))
+        {
+            spDesc->SetXYTolerance(xyTolerance);
+            spDesc->SetXYTolerance(zTolerance);
+        }
+    }
+
     m_mNameToSpatialIndex[spDesc->GetTableName()] = spDesc; //Note the memory allocation
 
     // SI already built return it
@@ -2275,6 +2288,8 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
         {
             iter->second->SetReleased(true);
             desc = new SpatialIndexDescriptor(originalClassNameA.c_str(), iter->second->DetachSpatialIndex());
+            desc->SetXYTolerance(iter->second->GetXYTolerance());
+            desc->SetZTolerance(iter->second->GetZTolerance());
             iter->second->Release();
             m_mNameToSpatialIndex.erase(iter);
             m_mNameToSpatialIndex[desc->GetTableName()] = desc; //Note the memory allocation
@@ -3818,4 +3833,84 @@ bool SltConnection::IsCoordSysLatLong(const char* tablename, const char* columnn
 bool SltConnection::IsReadOnlyConnection()
 {
     return m_isReadOnlyConnection;
+}
+
+bool SltConnection::SupportsTolerance()
+{
+    if (m_cSupportsTolerance == -1)
+    {
+        m_cSupportsTolerance = 0;
+        Table* table = sqlite3FindTable(m_dbWrite, "spatial_ref_sys", 0);
+        if (table)
+        {
+            for (int idx = 0; idx < table->nCol; idx++)
+            {
+                if (sqlite3StrICmp((table->aCol+idx)->zName, "sr_xytol") == 0)
+                {
+                    m_cSupportsTolerance = 1;
+                    break;
+                }
+            }
+        }
+    }
+    return (m_cSupportsTolerance != 0);
+}
+
+bool SltConnection::AddSupportForTolerance()
+{
+    StringBuffer sb;
+    int rc;
+    sb.Append("ALTER TABLE spatial_ref_sys ADD COLUMN sr_xytol REAL;", 53);
+    rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
+    if (rc == SQLITE_OK)
+    {
+        sb.Reset();
+        sb.Append("ALTER TABLE spatial_ref_sys ADD COLUMN sr_ztol REAL;", 52);
+        rc = sqlite3_exec(m_dbWrite, sb.Data(), NULL, NULL, NULL);
+    }
+    if (rc != SQLITE_OK)
+    {
+        FdoException* baseExc = NULL;
+        const char* err = sqlite3_errmsg(m_dbWrite);
+        if (err != NULL)
+            baseExc = FdoException::Create(A2W_SLOW(err).c_str(), rc);
+        std::wstring errorMsg = std::wstring(L"Failed to update spatial context"); 
+        throw FdoException::Create(errorMsg.c_str(), baseExc, rc);
+    }
+    return true;
+}
+
+bool SltConnection::GetCSTolerances(const char* tablename, double& xyTolerance, double& zTolerance)
+{
+    int spContext = 0;
+    SltMetadata* md = GetMetadata(tablename);
+    FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
+    if (fc && fc->GetClassType() == FdoClassType_FeatureClass)
+    {
+        FdoFeatureClass* fcDef = static_cast<FdoFeatureClass*>(fc.p);
+        FdoPtr<FdoGeometricPropertyDefinition> propGeom = fcDef->GetGeometryProperty();
+        if (propGeom != NULL)
+        {
+            int dval = 0;
+            spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation(), dval);
+        }
+    }
+    if (!spContext)
+        return false;
+    StringBuffer sb;
+    sb.Append("SELECT sr_xytol,sr_ztol FROM spatial_ref_sys WHERE srid=", 56);
+    sb.Append(spContext);
+    sb.Append(";", 1);
+    sqlite3_stmt* pStmt = NULL;
+    const char* zTail = NULL;
+    if (sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &pStmt, &zTail) == SQLITE_OK)
+    {
+        if(sqlite3_step(pStmt) == SQLITE_ROW)
+        {
+            xyTolerance = sqlite3_column_double(pStmt, 0);
+            zTolerance = sqlite3_column_double(pStmt, 1);
+        }
+        sqlite3_finalize(pStmt);
+    }
+    return (xyTolerance > 0.0);
 }

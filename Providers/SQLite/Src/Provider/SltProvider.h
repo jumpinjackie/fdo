@@ -234,11 +234,14 @@ public:
     void CacheViewContent(const char* viewName);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong(const char* tablename, const char* columnname);
+    bool GetCSTolerances(const char* tablename, double& xyTolerance, double& zTolerance);
     bool IsReadOnlyConnection();
     
     // when SC not found: if valIfNotFound = 0 the default SC will be returned else that value will be returned.
     int FindSpatialContext(const wchar_t* name, int valIfNotFound = 0);
     int GetDefaultSpatialContext();
+    bool SupportsTolerance();
+    bool AddSupportForTolerance();
 
 private :
 
@@ -294,4 +297,5 @@ private :
     unsigned char*                          m_wkbBuffer;
     int                                     m_wkbBufferLen;
     int                                     m_defSpatialContextId;
+    char                                    m_cSupportsTolerance; // -1 = not init; 0=false; 1=true
 };

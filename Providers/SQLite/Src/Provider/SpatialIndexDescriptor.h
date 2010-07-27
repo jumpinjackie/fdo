@@ -52,12 +52,22 @@ public:
     inline void SetReleased(bool value){m_IsReleased = value;}
     inline bool IsDeletedAfterRelease() {return (m_refCount==1);};
 
+    inline double GetXYTolerance() { return m_xyTolerance; }
+    inline void SetXYTolerance(double xyTolerance) { m_xyTolerance = xyTolerance; }
+    
+    inline double GetZTolerance() { return m_zTolerance; }
+    inline void SetZTolerance(double zTolerance) { m_zTolerance = zTolerance; }
+
+    inline bool SupportsTolerance() { return (m_xyTolerance>0.0); }
+
 private:
     bool m_bAutoDelSi;
     SpatialIndex* m_spIndex;
     bool m_bHasUpdates;
     bool m_IsReleased;
     std::string m_tablename;
+    double m_xyTolerance;
+    double m_zTolerance;
 };
 
 #endif

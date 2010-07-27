@@ -185,11 +185,9 @@ FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_creat
         {
 		    // Create spatial context
 		    FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-		    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
+		    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
 		    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
 		    pCreateCreateSpatialContext->SetName( L"LL84" );
-		    pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
-		    pCreateCreateSpatialContext->SetZTolerance(3.14159);
 		    pCreateCreateSpatialContext->Execute();
         }
 		return conn;
