@@ -1824,17 +1824,30 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     sb.Append(",'FGF',", 7); 
 
     int gtype = gpd->GetGeometryTypes();
-    //if gdettype remains 0 at this points, it will be treated as "All" types
-    //of geometry
+    int len = 0;
+    FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
+    switch (gtype)
+    {
+    // In case we have simple type just get the first type supported
+    case FdoGeometricType_Point:
+    case FdoGeometricType_Curve:
+    case FdoGeometricType_Surface:
+    case FdoGeometricType_Solid:
+        if (len)
+            gtype = *gtypes; // get the first type
+        break;
+    default:
+        //if gdettype remains 0 at this points, it will be treated as "All" types of geometry
+        gtype = 0;
+        break;
+    }
+
     sb.Append(gtype);
     sb.Append(",", 1);
 
-    int len = 0;
     int gdettype = 0;
-
     if (supDetGeom)
     {
-        FdoGeometryType* gtypes = gpd->GetSpecificGeometryTypes(len);
         for (int idx = 0; idx < len; idx++)
         {
             if (*(gtypes + idx) == FdoGeometryType_None)
@@ -1845,11 +1858,9 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
         sb.Append(",", 1);
     }
 
-    int dim = 0x00;
-    if (gpd->GetHasElevation())
-        dim = 0x01;
-    if (gpd->GetHasMeasure())
-        dim |= 0x02;
+    int dim = 2;
+    if (gpd->GetHasElevation()) dim++;
+    if (gpd->GetHasMeasure()) dim++;
     
     sb.Append(dim); //coord_dimension
     sb.Append(",", 1);
