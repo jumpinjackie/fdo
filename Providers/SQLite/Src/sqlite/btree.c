@@ -1734,7 +1734,11 @@ int sqlite3BtreeOpen(
       sqlite3_mutex_enter(mutexShared);
       for(pBt=GLOBAL(BtShared*,sqlite3SharedCacheList); pBt; pBt=pBt->pNext){
         assert( pBt->nRef>0 );
+#if defined(_WIN32) || defined(WIN32)
+        if( 0==_stricmp(zFullPathname, sqlite3PagerFilename(pBt->pPager))
+#else
         if( 0==strcmp(zFullPathname, sqlite3PagerFilename(pBt->pPager))
+#endif
                  && sqlite3PagerVfs(pBt->pPager)==pVfs ){
           int iDb;
           for(iDb=db->nDb-1; iDb>=0; iDb--){

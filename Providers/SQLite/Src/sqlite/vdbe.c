@@ -4373,7 +4373,7 @@ case OP_InsertInt: {
     assert(db->xUpdSpIndexCallback!=0);
     if (u.bf.pGeom->flags&MEM_Null) // we have null geom
       db->xUpdSpIndexCallback(db->pSpIndexArg, u.bf.pTable->pSpIndex, u.bf.op, u.bf.iKey, 0, 0);
-    else if (u.bf.pGeom->type==SQLITE_BLOB && u.bf.pGeom->flags&MEM_Blob) // we have the geometry
+    else if (u.bf.pGeom->type==SQLITE_BLOB || u.bf.pGeom->flags&MEM_Blob) // we have the geometry
       db->xUpdSpIndexCallback(db->pSpIndexArg, u.bf.pTable->pSpIndex, u.bf.op, u.bf.iKey, u.bf.pGeom->z, u.bf.pGeom->n);
     else // could not get the geometry (pass size -1)
       db->xUpdSpIndexCallback(db->pSpIndexArg, u.bf.pTable->pSpIndex, u.bf.op, u.bf.iKey, 0, -1);

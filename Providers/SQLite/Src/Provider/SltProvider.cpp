@@ -462,6 +462,7 @@ void SltConnection::Close()
          iter != m_mNameToSpatialIndex.end(); iter++)
     {
         iter->second->Release();
+        free((char*)iter->first); //it was created via strdup, must use free()
     }
 
     m_mNameToSpatialIndex.clear();
@@ -1663,8 +1664,8 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
     {
         if (iter->second->IsReleased())
         {
-            char* tableName = (char*)iter->first;
             iter->second->Release();
+            free((char*)iter->first); //it was created via strdup, must use free()
             m_mNameToSpatialIndex.erase(iter);
             pTable = sqlite3FindTable(m_dbWrite, table, 0);
             if (pTable && pTable->pSpIndex)
@@ -1673,7 +1674,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
                 if (!spDesc->IsReleased())
                 {
                     spDesc->AddRef();
-                    m_mNameToSpatialIndex[spDesc->GetTableName()] = spDesc; //Note the memory allocation
+                    m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
                     return spDesc;
                 }
                 else
@@ -1704,10 +1705,24 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
             errVal.append(L"' is not found");
             throw FdoException::Create(errVal.c_str(), 1);
         }
-        if(md != NULL && md->GetIdName() != NULL)
+        if (md != NULL && md->GetIdName() != NULL)
         {
-            si = GetSpatialIndex(md->GetMainViewTable());
-            autodel = (si==NULL);
+            spDesc = GetSpatialIndexDescriptor(md->GetMainViewTable());
+            if (spDesc)
+            {
+                // The table has already a SI?
+                if (pTable == NULL)
+                    pTable = sqlite3FindTable(m_dbWrite, table, 0);
+                if (pTable && !pTable->pSpIndex)
+                {
+                    spDesc->AddRef();
+                    pTable->pSpIndex = spDesc;
+                }
+                spDesc->AddRef();
+                m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
+                return spDesc;
+            }
+            autodel = (spDesc==NULL);
         }
         if (autodel)
             si = new SpatialIndex(NULL);
@@ -1725,7 +1740,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
             if (!spDesc->IsReleased())
             {
                 spDesc->AddRef();
-                m_mNameToSpatialIndex[spDesc->GetTableName()] = spDesc; //Note the memory allocation
+                m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
                 return spDesc;
             }
         }
@@ -1745,7 +1760,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
         }
     }
 
-    m_mNameToSpatialIndex[spDesc->GetTableName()] = spDesc; //Note the memory allocation
+    m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
 
     // SI already built return it
     if (!autodel)
@@ -2020,6 +2035,7 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
     {
         iter->second->SetReleased(true);
         iter->second->Release();
+        free((char*)iter->first); //it was created via strdup, must use free()
         m_mNameToSpatialIndex.erase(iter);
     }
 }
@@ -2302,8 +2318,9 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
             desc->SetXYTolerance(iter->second->GetXYTolerance());
             desc->SetZTolerance(iter->second->GetZTolerance());
             iter->second->Release();
+            free((char*)iter->first); //it was created via strdup, must use free()
             m_mNameToSpatialIndex.erase(iter);
-            m_mNameToSpatialIndex[desc->GetTableName()] = desc; //Note the memory allocation
+            m_mNameToSpatialIndex[_strdup(desc->GetTableName())] = desc; //Note the memory allocation
         }
 
         // reset class name
@@ -3729,6 +3746,7 @@ void SltConnection::rollback_hook(void* caller)
             {
                 iter->second->SetReleased(true);
                 iter->second->Release();
+                free((char*)iter->first); //it was created via strdup, must use free()
                 conn->m_mNameToSpatialIndex.erase(iter);
                 // we will get a crash in case we do not set it back
                 iter = conn->m_mNameToSpatialIndex.begin();
