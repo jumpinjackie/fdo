@@ -265,7 +265,11 @@ void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
 {
     LinkMap::iterator it = _linkMap.find(dbId);
     if (it == _linkMap.end())
+    {
+        // avoid out-of-sync in case user update rowid only
+        Insert(dbId, ext);
         return;
+    }
     // we can use insert, however we need to count number of changes 
     // and later force a rebuild when the number of changes becomes too high
     Insert(it->second, ext);

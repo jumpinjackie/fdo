@@ -45,7 +45,10 @@ class SltDescribeSchema : public SltCommand<FdoIDescribeSchema>
                                                                 { }
 
     protected:
-        virtual ~SltDescribeSchema()                            { }
+        virtual ~SltDescribeSchema()
+        {
+            FDO_SAFE_RELEASE(m_classNames); 
+        }
 
     //-------------------------------------------------------
     // FdoIDescribeSchema implementation
