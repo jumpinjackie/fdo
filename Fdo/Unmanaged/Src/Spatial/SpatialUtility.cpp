@@ -1370,7 +1370,7 @@ bool FdoSpatialUtility::Equals(FdoIGeometry* g1, FdoIGeometry* g2, double tolera
 
 bool FdoSpatialUtility::Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
-    return Contains(g2, g1, false);
+    return Contains(g2, g1, toleranceXY, false);
 }
 
 bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
@@ -1381,7 +1381,7 @@ bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double tol
 
 bool FdoSpatialUtility::Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
 {
-     return Contains(g2, g1, true);
+     return Contains(g2, g1, toleranceXY, true);
 }
 
 bool FdoSpatialUtility::Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
@@ -1676,9 +1676,9 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, d
             return isInside;
         }
     case FdoGeometryType_LineString : 
-        return PolygonContainsLineString(poly, (FdoILineString*)geom, strictInside);
+        return PolygonContainsLineString(poly, (FdoILineString*)geom, toleranceXY, strictInside);
     case FdoGeometryType_Polygon : 
-        return PolygonContainsPolygon(poly, (FdoIPolygon*)geom, strictInside);
+        return PolygonContainsPolygon(poly, (FdoIPolygon*)geom, toleranceXY, strictInside);
     case FdoGeometryType_MultiPoint : 
         {
             FdoIMultiPoint* mp = (FdoIMultiPoint*)geom;
@@ -1729,7 +1729,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, d
             {
                 p = mpoly->GetItem(i);
 
-                if (!PolygonContains(poly, p, strictInside))
+                if (!PolygonContains(poly, p, toleranceXY, strictInside))
                     return false;
             }
         }
@@ -1741,7 +1741,7 @@ bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly, FdoIGeometry* geom, d
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(geom);
-            return PolygonContains(poly, flatgeom, strictInside);
+            return PolygonContains(poly, flatgeom, toleranceXY, strictInside);
         }
 
     default : break;
@@ -2504,7 +2504,7 @@ bool FdoSpatialUtility::PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* 
         FdoPtr<FdoDirectPositionCollection> pos2 = ring2->GetPositions();
         FdoPtr<FdoILineString> line2 = gf->CreateLineString( pos2 );
 
-        poly2_inside = PolygonContainsLineString( poly1, line2, strictInside );
+        poly2_inside = PolygonContainsLineString( poly1, line2, toleranceXY, strictInside );
     }
 
     return poly2_inside;
