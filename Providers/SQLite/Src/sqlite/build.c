@@ -2641,10 +2641,10 @@ Index *sqlite3CreateIndex(
       zExtra += nColl;
       nExtra -= nColl;
     }else{
-      zColl = pTab->aCol[j].zColl;
-      if( !zColl ){
-        zColl = db->pDfltColl->zName;
+      if( !pTab->aCol[j].zColl ){
+        pTab->aCol[j].zColl = sqlite3DbStrDup(db, db->pDfltColl->zName);
       }
+      zColl = pTab->aCol[j].zColl;
     }
     if( !db->init.busy && !sqlite3LocateCollSeq(pParse, zColl) ){
       goto exit_create_index;
