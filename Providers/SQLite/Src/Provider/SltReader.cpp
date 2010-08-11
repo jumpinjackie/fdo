@@ -244,20 +244,15 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
         m_fromwhere.AppendDQuoted(fcname);
     else
     {
-        if (md->GetIdName() == NULL)
-        {
-            m_connection->CacheViewContent(fcname);
-            m_fromwhere.Append("\"$view");
-            m_fromwhere.Append(fcname);
-            m_fromwhere.Append("\"");
-        }
-        else
+        if (md->GetIdName() != NULL)
         {
             m_isViewSelect = true;
             m_useFastStepping = false;
             idClassProp = md->GetIdName();
             m_fromwhere.AppendDQuoted(fcname);
         }
+        else
+            throw FdoCommandException::Create(L"Requested feature class cannot use this select type.");
     }
 
     //construct the where clause and 
@@ -669,6 +664,27 @@ FdoString* SltReader::GetString(int index)
     }
     else
     {
+        int type = sqlite3_column_type(m_pStmt, i);
+        if (type == SQLITE_INTEGER)
+        {
+            FdoInt64 val = sqlite3_column_int64(m_pStmt, i);
+			m_sprops[i].EnsureSize(32);
+#ifdef _WIN32
+			_i64tow_s(val, m_sprops[i].data, 32, 10);
+#else
+		    swprintf(m_sprops[i].data, 256, L"%lld", (long long int)val);
+#endif
+			m_sprops[i].valid = 1;
+            return m_sprops[i].data;;
+        }
+        else if (type == SQLITE_FLOAT)
+        {
+            double val = sqlite3_column_double(m_pStmt, i);
+			m_sprops[i].EnsureSize(256);
+			swprintf(m_sprops[i].data, 256, L"%.16g", val);
+			m_sprops[i].valid = 1;
+            return m_sprops[i].data;;
+        }
         const char* text = (const char*)sqlite3_column_text(m_pStmt, i);
 
         if (!text)
@@ -1089,8 +1105,6 @@ FdoClassDefinition* SltReader::GetClassDefinition()
         //in case is a temp table filled with a view content use the view name
         if (NULL == tableName)
             tableName = "GeneratedClass";
-        else
-            tableName = DecodeTableName(tableName);
 
         std::wstring wtable = A2W_SLOW(tableName);
 		//find source feature class metadata
@@ -1109,7 +1123,6 @@ FdoClassDefinition* SltReader::GetClassDefinition()
 			bool propFound = false;
 			//get name of table that is the source for this column
 			const char* table = sqlite3_column_table_name(m_pStmt, i);
-            table = DecodeTableName(table);
 
 			//find source feature class metadata
             SltMetadata* md = (table == NULL)? NULL : m_connection->GetMetadata(table);
@@ -1609,16 +1622,6 @@ void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
         }
     }
 
-}
-
-const char* SltReader::DecodeTableName(const char* name)
-{
-    if (name != NULL)
-    {
-        int pos = StringContains(name, "$view");
-        return (pos == 0) ? (name+5) : name;
-    }
-    return name;
 }
 
 // function supports following formats (note a+b is just a sample - it can be any expression)

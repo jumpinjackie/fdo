@@ -212,8 +212,20 @@ void sqlite3VdbeSetVarmask(Vdbe*, int);
 UnpackedRecord *sqlite3VdbeRecordUnpack(KeyInfo*,int,const void*,char*,int);
 void sqlite3VdbeDeleteUnpackedRecord(UnpackedRecord*);
 int sqlite3VdbeRecordCompare(int,const void*,UnpackedRecord*);
-/*function used to convert a normal function into a VBE function having one auxiliary parameter*/
-void* sqlite3CreateVdbeFuncWithAuxData(sqlite3*, FuncDef*, void*, void(*)(void*));
+/*function used to convert a normal function into a VBE function having auxiliary parameters*/
+void* sqlite3CreateVdbeFuncWithAuxData(sqlite3*, FuncDef*, void*, void*);
+/*function used to set the spatial iterator, this is already initialized*/
+void sqlite3SetVdbeSpatialIterator(Vdbe*, void*);
+/*function used to set the spatial index and index of the variable used to initialize
+** the spatial iterator. This function is needed when caller uses a varaible (parameter)
+** value which is bind later at execute time.*/
+void sqlite3SetVdbeDynSpatialIndex(Vdbe*, void*, void*);
+/*function used to disable SI optimization*/
+u8 sqlite3VdbeDisableSpatialIndex(Vdbe*, u8);
+/*function used to set table ID used in SI optimization*/
+void sqlite3SetVdbeTableInfo(Vdbe*, int);
+/*function used to get id we found a way already to optimize the query*/
+u8 sqlite3VdbeSpatialIndexIsSet(Vdbe*);
 
 
 #ifndef NDEBUG

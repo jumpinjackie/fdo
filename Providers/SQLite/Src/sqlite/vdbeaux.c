@@ -616,16 +616,62 @@ static void freeP4(sqlite3 *db, int p4type, void *p4){
   }
 }
 
-/*function used to convert a normal function into a VBE function having one auxiliary parameter*/
-void* sqlite3CreateVdbeFuncWithAuxData(sqlite3* db, FuncDef* pFunc, void* pAux, void (*xDelete)(void *))
+/*function used to convert a normal function into a VBE function having auxiliary parameters
+** in case pAux2==NULL is not added to the list, however pAux1 is added anyway */
+void* sqlite3CreateVdbeFuncWithAuxData(sqlite3* db, FuncDef* pFunc, void* pAux1, void* pAux2)
 {
-  int nMalloc = sizeof(VdbeFunc) + sizeof(struct AuxData);
+  struct AuxData *pAuxData;
+  int cnt = 1 + (int)(pAux2 != 0);
+  int nMalloc = sizeof(VdbeFunc) + sizeof(struct AuxData)*cnt;
   VdbeFunc* pVdbeFunc = sqlite3DbRealloc(db, 0, nMalloc);
+  memset(&pVdbeFunc->apAux[0], 0, sizeof(struct AuxData)*cnt);
   pVdbeFunc->pFunc = pFunc;
-  pVdbeFunc->nAux = 1;
-  pVdbeFunc->apAux->pAux = pAux;
-  pVdbeFunc->apAux->xDelete = xDelete;
+  pVdbeFunc->nAux = cnt;
+  pAuxData = &pVdbeFunc->apAux[0];
+  pAuxData->pAux = pAux1;
+  if (pAux2)
+  {
+      pAuxData = &pVdbeFunc->apAux[1];
+      pAuxData->pAux = pAux2;
+  }
   return pVdbeFunc;
+}
+
+void sqlite3SetVdbeSpatialIterator(Vdbe* v, void* pSit)
+{
+  sqlite3* db = v->db;
+  if (v->pSpIterator)
+    db->xSpIteratorRelCallback(v->pSpIterator);
+  v->pSpIterator = pSit;
+}
+
+u8 sqlite3VdbeSpatialIndexIsSet(Vdbe* v)
+{
+  return ((v->pSpIterator) || (v->pSpIndex && v->u.pParam>0));
+}
+
+void sqlite3SetVdbeDynSpatialIndex(Vdbe* v, void* pSi, void* param)
+{
+  sqlite3* db = v->db;
+  if (v->pSpIterator)
+    db->xSpIteratorRelCallback(v->pSpIterator);
+  v->pSpIterator = 0;
+  v->lowerRowId = 0;
+  v->pSpIndex = pSi;
+  v->u.pParam = param;
+}
+
+u8 sqlite3VdbeDisableSpatialIndex(Vdbe* v, u8 val)
+{
+  u8 ret = v->siDisabled;
+  if (val != (u8)-1)
+    v->siDisabled = val;
+  return ret;
+}
+
+void sqlite3SetVdbeTableInfo(Vdbe* v, int tnum)
+{
+  v->siTnum = tnum;
 }
 
 /*
@@ -1481,6 +1527,10 @@ void sqlite3VdbeMakeReady(
     }
   }
 #endif
+  /*At reset time try to get a new SI iterator in case we have a pointer to a blob values used in SI*/
+  if (p->u.iVarIndex > SQLITE_MAX_VARIABLE_NUMBER && p->pSpIterator && p->pSpIndex){
+    sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
+  }
 }
 
 /*
@@ -2310,6 +2360,16 @@ int sqlite3VdbeReset(Vdbe *p){
     }
   }
 #endif
+  if (p->u.iVarIndex > 0 && p->u.iVarIndex < SQLITE_MAX_VARIABLE_NUMBER && p->pSpIterator && p->pSpIndex){
+    /* Force VM to get a new iterator since geometry could be changed */ 
+    db->xSpIteratorRelCallback(p->pSpIterator);
+    p->pSpIterator = 0; /* Force VM to get a new iterator*/ 
+  }
+  if (p->pSpIterator){
+    /* Force VM to reset the iterator since we reset the statement */ 
+    db->xSpIteratorResetCallback(p->pSpIterator);
+  }
+  p->lowerRowId = 0;
   p->magic = VDBE_MAGIC_INIT;
   return p->rc & db->errMask;
 }
@@ -2364,6 +2424,12 @@ void sqlite3VdbeDelete(Vdbe *p){
   if( p->pNext ){
     p->pNext->pPrev = p->pPrev;
   }
+  /*Release the SI iterator if we have one*/
+  if (p->pSpIterator && db->xSpIteratorRelCallback)
+    db->xSpIteratorRelCallback(p->pSpIterator);
+  p->pSpIterator = 0;
+  p->pSpIndex = 0;
+
   releaseMemArray(p->aVar, p->nVar);
   releaseMemArray(p->aColName, p->nResColumn*COLNAME_N);
   vdbeFreeOpArray(db, p->aOp, p->nOp);

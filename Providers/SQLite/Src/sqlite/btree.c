@@ -3578,6 +3578,10 @@ int sqlite3BtreeCursorIsValid(BtCursor *pCur){
 }
 #endif /* NDEBUG */
 
+int sqlite3BtreeRootTableCursor(BtCursor *pCur){
+  return (pCur)? pCur->pgnoRoot : -1;
+}
+
 /*
 ** Set *pSize to the size of the buffer needed to hold the value of
 ** the key for the current entry.  If the cursor is not pointing

@@ -195,6 +195,10 @@ struct sqlite3_api_routines {
   void (*update_spatial_index)(sqlite3*, void (*)(void*,void*,int,sqlite3_int64,const void*,int));
   void (*release_spatial_index)(sqlite3*, void (*)(void*,const char*));
   void (*spatial_context)(sqlite3*, char (*)(void*,const char*,const char*));
+  void (*spatial_iterator)(sqlite3*, void* (*)(void*,const void*,int));
+  void (*spatial_iterator_readnext)(sqlite3*, sqlite3_int64 (*)(void*));
+  void (*spatial_iterator_release)(sqlite3*, void (*)(void*));
+  void (*spatial_iterator_reset)(sqlite3*, void (*)(void*));
 };
 
 /*
@@ -378,6 +382,10 @@ struct sqlite3_api_routines {
 #define sqlite3_update_spatial_index_hook  sqlite3_api->update_spatial_index
 #define sqlite3_release_spatial_index_hook  sqlite3_api->release_spatial_index
 #define sqlite3_spatial_context_hook  sqlite3_api->spatial_context
+#define sqlite3_spatial_iterator_hook  sqlite3_api->spatial_iterator
+#define sqlite3_spatial_iterator_readnext_hook  sqlite3_api->spatial_iterator_readnext
+#define sqlite3_spatial_iterator_release_hook  sqlite3_api->spatial_iterator_release
+#define sqlite3_spatial_iterator_reset_hook  sqlite3_api->spatial_iterator_reset
 #endif /* SQLITE_CORE */
 
 #define SQLITE_EXTENSION_INIT1     const sqlite3_api_routines *sqlite3_api = 0;

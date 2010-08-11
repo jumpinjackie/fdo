@@ -2617,12 +2617,55 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
         /* Get Spatial Index in case we use a spatial function and pass it as an auxiliary parameter */
         if (db->xSpIndexCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPEVAL_FUNCTION && nFarg==2){
           Table* pTab = pFarg->a->pExpr->pTab;
+          u8 isDisabled;
+          int wasEval;
+          /*If we already have a SI iterator avoid getting a second one*/
+          u8 isIteratorSet = sqlite3VdbeSpatialIndexIsSet(v);
           if (pTab && !pTab->pSpIndex){
             pTab->nGeomColIdx = pFarg->a->pExpr->iColumn;
             pTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pTab->zName, &pTab->nGeomColIdx);
           }
+          /*check if SI optimization is disable because of some OR/NOT operators*/
+          isDisabled = sqlite3VdbeDisableSpatialIndex(v, -1);
+          /*function do not need to be re-evaluated in case we have envelope intersects=0x0A*/
+          wasEval = (int)(((long)pDef->pUserData&0x0F)==0x0A && !isDisabled && !isIteratorSet);
           if (pTab) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
-            pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, pTab->pSpIndex, 0);
+            pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, pTab->pSpIndex, (void*)wasEval);
+
+          /*Disjoint = 0x02, avoid trying to optimize this*/
+          if (pTab && pTab->pSpIndex && !isDisabled && !isIteratorSet && (((long)pDef->pUserData&0x0F)!=0x02)){
+            Expr* pExpr = pFarg->a[1].pExpr;
+            int szBlob = -1;
+            void* zBlob = 0;
+            if (pExpr->op == TK_INTEGER || (pExpr->flags&EP_IntValue)){
+              /*This is a pointer to a blob value*/
+              zBlob = (void*)pExpr->u.iValue;
+              /*Remember this value for cases when caller uses reset*/
+              sqlite3SetVdbeDynSpatialIndex(v, pTab->pSpIndex, (void*)zBlob);
+            }else if (pExpr->op == TK_BLOB){
+              /*We have a BLOB value as text and we need to extract the binary value from it*/
+              const char *z;
+              assert( !ExprHasProperty(pExpr, EP_IntValue) );
+              assert( pExpr->u.zToken[0]=='x' || pExpr->u.zToken[0]=='X' );
+              assert( pExpr->u.zToken[1]=='\'' );
+              z = &pExpr->u.zToken[2];
+              szBlob = sqlite3Strlen30(z) - 1;
+              assert( z[szBlob]=='\'' );
+              zBlob = sqlite3HexToBlob(db, z, szBlob);
+              szBlob = szBlob/2;
+            }else if (pExpr->op == TK_VARIABLE){
+              /*We have a variable which will be bind before execution, keep the variable index*/
+              sqlite3SetVdbeDynSpatialIndex(v, pTab->pSpIndex, (void*)pExpr->iColumn);
+            }
+            if (zBlob){
+              /*If possible get a SI iterator based on the blob value*/
+              sqlite3SetVdbeSpatialIterator(v, db->xSpIteratorCallback(pTab->pSpIndex, zBlob, szBlob));
+              if (szBlob > 0)
+                sqlite3DbFree(db, zBlob);
+            }
+            /*Remember table root id*/
+            sqlite3SetVdbeTableInfo(v, pTab->tnum);
+          }
         }else{
           /* Get Spatial Context in case we use a spatial function (e.g. Area) and pass it as an auxiliary parameter */
           if (db->xSpContextCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPCALC_FUNCTION && nFarg==1){
@@ -3233,14 +3276,22 @@ void sqlite3ExprIfTrue(Parse *pParse, Expr *pExpr, int dest, int jumpIfNull){
       break;
     }
     case TK_OR: {
+      // disable SI optimization when NOT is used
+      u8 isDisabled = sqlite3VdbeDisableSpatialIndex(v, 1);
       testcase( jumpIfNull==0 );
       sqlite3ExprIfTrue(pParse, pExpr->pLeft, dest, jumpIfNull);
       sqlite3ExprIfTrue(pParse, pExpr->pRight, dest, jumpIfNull);
+      // restore old value
+      sqlite3VdbeDisableSpatialIndex(v, isDisabled);
       break;
     }
     case TK_NOT: {
+      // disable SI optimization when NOT is used
+      u8 isDisabled = sqlite3VdbeDisableSpatialIndex(v, 1);
       testcase( jumpIfNull==0 );
       sqlite3ExprIfFalse(pParse, pExpr->pLeft, dest, jumpIfNull);
+      // restore old value
+      sqlite3VdbeDisableSpatialIndex(v, isDisabled);
       break;
     }
     case TK_LT:
@@ -3378,6 +3429,8 @@ void sqlite3ExprIfFalse(Parse *pParse, Expr *pExpr, int dest, int jumpIfNull){
       break;
     }
     case TK_OR: {
+      // disable SI optimization when NOT is used
+      u8 isDisabled = sqlite3VdbeDisableSpatialIndex(v, 1);
       int d2 = sqlite3VdbeMakeLabel(v);
       testcase( jumpIfNull==0 );
       sqlite3ExprCachePush(pParse);
@@ -3385,11 +3438,17 @@ void sqlite3ExprIfFalse(Parse *pParse, Expr *pExpr, int dest, int jumpIfNull){
       sqlite3ExprIfFalse(pParse, pExpr->pRight, dest, jumpIfNull);
       sqlite3VdbeResolveLabel(v, d2);
       sqlite3ExprCachePop(pParse, 1);
+      // restore old value
+      sqlite3VdbeDisableSpatialIndex(v, isDisabled);
       break;
     }
     case TK_NOT: {
+      // disable SI optimization when NOT is used
+      u8 isDisabled = sqlite3VdbeDisableSpatialIndex(v, 1);
       testcase( jumpIfNull==0 );
       sqlite3ExprIfTrue(pParse, pExpr->pLeft, dest, jumpIfNull);
+      // restore old value
+      sqlite3VdbeDisableSpatialIndex(v, isDisabled);
       break;
     }
     case TK_LT:

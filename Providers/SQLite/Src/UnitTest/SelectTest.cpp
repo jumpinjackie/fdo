@@ -23,10 +23,12 @@
 #ifdef _WIN32
 static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.sqlite";
+static const wchar_t* SRC_VIEW_TEST_FILE = L"..\\..\\TestData\\ViewTests.sqlite";
 #else
 #include <unistd.h>
 static const wchar_t* SC_TEST_FILE = L"../../TestData/SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.sqlite";
+static const wchar_t* SRC_VIEW_TEST_FILE = L"../../TestData/ViewTests.sqlite";
 #endif
 
 
@@ -857,6 +859,66 @@ void SelectTest::TestSelectMultipleCS ()
         }
         reader->Close();
         }
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+int SelectTest::SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id)
+{
+    int cnt = 0;
+    FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    selCmd->SetFeatureClassName(clsName);
+    selCmd->SetFilter(filter);
+    FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+    while(reader->ReadNext())
+    {
+        reader->GetInt32(id);
+        cnt++;
+    }
+    reader->Close();
+    return cnt;
+}
+
+void SelectTest::TestViewSelects ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        FdoPtr<FdoFilter> filter1 = FdoFilter::Parse(L"Geom INSIDE GeomFromText('POLYGON XYZ ((-77.0856930537741 38.9299833022685 0, -77.0856930537741 38.8861160395816 0, -77.0212774526814 38.8861160395816 0, -77.0212774526814 38.9299833022685 0, -77.0856930537741 38.9299833022685 0))')");
+        FdoPtr<FdoFilter> filter2 = FdoFilter::Parse(L"Geom INSIDE GeomFromText('POLYGON XYZ ((-77.055464531456 39.0044139935043 0, -77.0972087408102 38.9533553301582 0, -77.0579835749826 38.9303429256581 0, -77.0266755220682 38.9781654635581 0, -77.0219972091465 38.9199153995527 0, -76.9910489303633 38.9619849333397 0, -76.9568618515887 38.9378938526949 0, -76.9978863044778 38.9141623954396 0, -76.9471456598165 38.89079036755 0, -76.9532632774659 38.9932673176318 0, -77.0122810173743 39.0098074712398 0, -77.055464531456 39.0044139935043 0))') ");
+
+        int cnt11 = SelectObjects(conn, filter1, L"ViewNotWellDefined", L"id");
+        int cnt12 = SelectObjects(conn, filter2, L"ViewNotWellDefined", L"id");
+        CPPUNIT_ASSERT(cnt11 == 5);
+        CPPUNIT_ASSERT(cnt12 == 0);
+        
+        int cnt21 = SelectObjects(conn, filter1, L"ViewWellDefined", L"id");
+        int cnt22 = SelectObjects(conn, filter2, L"ViewWellDefined", L"id");
+
+        CPPUNIT_ASSERT(cnt11 == cnt21);
+        CPPUNIT_ASSERT(cnt12 == cnt22);
     }
     catch ( FdoException* e )
 	{
