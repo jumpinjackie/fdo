@@ -491,72 +491,6 @@ switch( Filter.GetOperation() )
       }
       AppendString(D_FILTER_CLOSE_PARENTH);
     
-    
-    /*
-      AppendString(D_FILTER_OPEN_PARENTH);
-      AppendString(L"SDO_FILTER(");
-      ProcessExpresion( geomprop );
-      AppendString(L",");
-      
-      // Here I need spatial case of processing becase i want to create
-      // optimezed rect (not polygons) for  this query - needed for geodetic data 
-      FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
-      if (geomval)
-      {
-        FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
-        FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
-
-        double minx = envelope->GetMinX();
-        double miny = envelope->GetMinY();
-        
-        double maxx = envelope->GetMaxX();
-        double maxy = envelope->GetMaxY();
-
-        if( m_OraSridDesc.m_IsGeodetic )
-        {
-        // if it is geodetic data I need to check boundaries
-        // that will not go over 180 and 90
-        // MapGuide will send bigger and than oracle wan't return geometries
-        // so this is workarround for it
-        
-        
-          if( minx < - 180 ) minx = -180.0;
-          if( maxx > 180 ) maxx = 180.0;
-          
-          if( maxx < minx ) { minx=-180; maxx=180; }
-          
-          if( miny < -90.0 ) miny = -90.0;
-          if( maxy > 90.0 ) maxy = 90;
-          
-          if( maxy < miny ) { miny=-90; maxy=90; }
-          if( maxx < minx ) { minx=-180; maxx=180; }
-        
-        }
-
-      // create optimize rect
-        SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
-        char * buff = c_Ora_API2::SdoGeomToString(sdorect);
-      
-        if( buff )
-        {
-          AppendString( buff );
-          delete [] buff;
-        }
-        
-        delete sdorect;
-      }
-      else
-      {
-        ProcessExpresion( geomexp,true );
-      }
-      
-      
-      AppendString(L")='TRUE'");
-      AppendString(D_FILTER_CLOSE_PARENTH);
-    
-    */
     }    
   }
   break;
@@ -618,69 +552,34 @@ switch( Filter.GetOperation() )
     {    
       AppendString(D_FILTER_OPEN_PARENTH);
 
-	  // 1SPATIAL START
-      // AppendString(L"SDO_ANYINTERACT(");
-	  AppendString(L"SDO_FILTER(");
-	  // 1SPATIAL END
-
+	    
+      if( m_OracleMainVersion >= 10 )
+      {
+        
+        AppendString(L"SDO_ANYINTERACT(");
+      }
+      else
+      {
+        AppendString(L"SDO_RELATE(");
+      }
+      
+	  
       ProcessExpresion( geomprop );
       AppendString(L",");
       
       ProcessExpresion( geomexp,true );
-      /*
-      // Here I need spatial case of processing becase i want to create
-      // optimezed rect (not polygons) for  this query - needed for geodetic data 
-      FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
-      if (geomval)
-      {
-        FdoPtr<FdoByteArray> fgf = geomval->GetGeometry();
-        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-        FdoPtr<FdoIGeometry> fgfgeom = gf->CreateGeometryFromFgf(fgf);
-        FdoPtr<FdoIEnvelope> envelope = fgfgeom->GetEnvelope();
-
-        double minx = envelope->GetMinX();
-        double miny = envelope->GetMinY();
-        
-        double maxx = envelope->GetMaxX();
-        double maxy = envelope->GetMaxY();
-
-        if( m_OraSridDesc.m_IsGeodetic )
-        {
-        // if it is geodetic data I need to check boundaries
-        // that will not go over 180 and 90
-        // MapGuide will send bigger and than oracle wan't return geometries
-        // so this is workarround for it
-          if( minx < - 180 ) minx = -180.0;
-          if( maxx > 180 ) maxx = 180.0;
-          
-          if( miny < -90.0 ) miny = -90.0;
-          if( maxy > 90.0 ) maxy = 90;
-        }
-
-      // create optimize rect
-        SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
-        char * buff = c_Ora_API2::SdoGeomToString(sdorect);
       
-        if( buff )
-        {
-          AppendString( buff );
-          delete [] buff;
-        }
-        
-        delete sdorect;
-        
+      
+      if( m_OracleMainVersion >= 10 )
+      {
+        AppendString(L")='TRUE'");
       }
       else
       {
-        ProcessExpresion( geomexp,true );
+        AppendString(L",'mask=ANYINTERACT')='TRUE'");
       }
-      */
       
-      
-	  // 1SPATIAL START
-      // AppendString(L")='TRUE'");
-	  AppendString(L", 'querytype = WINDOW') = 'TRUE'");
-	  // 1SPATIAL END
+	 
 
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
@@ -723,7 +622,7 @@ switch( Filter.GetOperation() )
     ProcessExpresion( geomprop );
     AppendString(L",");
     ProcessExpresion( geomexp,true );
-    AppendString(L",'mask=DISJOINT')='TRUE'");
+    AppendString(L",'mask=ANYINTERACT')='FALSE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
   break;
