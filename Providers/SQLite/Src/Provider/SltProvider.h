@@ -211,6 +211,11 @@ public:
                                                 FdoFilter*                  filter,
                                                 FdoParameterValueCollection*  parmValues);
 
+    SltReader*          SelectView             (FdoClassDefinition* fc,
+                                                FdoIdentifierCollection* props,
+                                                StringBuffer& strWhere,
+                                                FdoParameterValueCollection*  parmValues,
+                                                const std::vector<NameOrderingPair>& ordering);
 
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 
@@ -231,7 +236,6 @@ public:
     int CommitTransaction(bool isUserTrans = false);
     int RollbackTransaction(bool isUserTrans = false);
     bool IsTransactionStarted() { return (m_transactionState != SQLiteActiveTransactionType_None); }
-    void CacheViewContent(const char* viewName);
     void GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext);
     bool IsCoordSysLatLong(const char* tablename, const char* columnname);
     bool GetCSTolerances(const char* tablename, double& xyTolerance, double& zTolerance);
@@ -272,6 +276,10 @@ private :
     static void  sqlite3_update_spatial_index(void* caller, void* sid, int action, sqlite3_int64 id, const void* blob, int szBlob);
     static void  sqlite3_release_spatial_index(void* sid, const char* zTableName);
     static char  sqlite3_spatial_context(void* caller, const char* tablename, const char* columnname);
+    static void* sqlite3_spatial_iterator(void* si, const void* blob, int szBlob);
+    static sqlite3_int64 sqlite3_spatial_iterator_readnext(void* siit);
+    static void sqlite3_spatial_iterator_release(void* siit);
+    static void sqlite3_spatial_iterator_reset(void* siit);
 
     bool                                    m_changesAvailable;
     bool                                    m_isReadOnlyConnection;

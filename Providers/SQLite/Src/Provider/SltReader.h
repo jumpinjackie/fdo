@@ -209,7 +209,6 @@ protected:
         bool ReadNextOnView();
         int GenerateUniqueName(const wchar_t* pname, FdoPropertyDefinition* prop, FdoPropertyDefinitionCollection* pcol);
         void ValidateIndex(sqlite3_stmt *pStmt, int index);
-        const char* DecodeTableName(const char* name);
         std::wstring ExtractExpression(const wchar_t* exp, const wchar_t* propName);
 		void InitPropIndex(sqlite3_stmt* pStmt);
         int AddColumnToQuery(const wchar_t* name);

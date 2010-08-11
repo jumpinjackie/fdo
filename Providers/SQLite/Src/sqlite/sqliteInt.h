@@ -893,6 +893,10 @@ struct sqlite3 {
   void (*xUpdSpIndexCallback)(void*,void*,int,sqlite3_int64,const void*,int);
   void (*xRelSpIndexCallback)(void*,const char*);
   char (*xSpContextCallback)(void*,char const*,char const*);
+  void* (*xSpIteratorCallback)(void*,const void*,int);
+  sqlite3_int64 (*xSpIteratorReadNextCallback)(void*);
+  void (*xSpIteratorRelCallback)(void*);
+  void (*xSpIteratorResetCallback)(void*);
   void *pSpIndexArg;
 };
 

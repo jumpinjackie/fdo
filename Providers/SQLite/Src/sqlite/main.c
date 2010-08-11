@@ -1231,6 +1231,42 @@ void sqlite3_spatial_context_hook(
   sqlite3_mutex_leave(db->mutex);
 }
 
+void sqlite3_spatial_iterator_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  void* (*xCallback)(void*,const void*,int)
+){
+  sqlite3_mutex_enter(db->mutex);
+  db->xSpIteratorCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
+void sqlite3_spatial_iterator_readnext_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  sqlite3_int64 (*xCallback)(void*)
+){
+  sqlite3_mutex_enter(db->mutex);
+  db->xSpIteratorReadNextCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
+void sqlite3_spatial_iterator_release_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  void (*xCallback)(void*)
+){
+  sqlite3_mutex_enter(db->mutex);
+  db->xSpIteratorRelCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
+void sqlite3_spatial_iterator_reset_hook(
+  sqlite3 *db,              /* Attach the hook to this database */
+  void (*xCallback)(void*)
+){
+  sqlite3_mutex_enter(db->mutex);
+  db->xSpIteratorResetCallback = xCallback;
+  sqlite3_mutex_leave(db->mutex);
+}
+
 #ifndef SQLITE_OMIT_WAL
 /*
 ** The sqlite3_wal_hook() callback registered by sqlite3_wal_autocheckpoint().

@@ -250,12 +250,8 @@ public:
     virtual void ProcessGeometryValue           (FdoGeometryValue& expr);
 
 public:
-
-    void GetBBOX(DBounds& ext);
     const char* GetFilter();
     bool CanUseFastStepping();
-    recno_list* DetachIDList();
-    void Reset();
     bool MustKeepFilterAlive();
 
 private:
@@ -268,22 +264,17 @@ private:
 private:
     
     FilterChunkList             m_evalStack;
-    // this chunk needs to be restore in case we cannot optimize filter
-    // or we find a better chunk
-    ComplexFilterChunk*         m_optimizedChunk;
-    // in case we need to replace m_optimizedChunk this value will be restored with
-    IFilterChunk*                m_restoreChunk;
-    // will tell us in case we have conditions against text properties or spatial filters
-    int                        m_strgeomOperations;
     FdoClassDefinition*         m_fc;
-    short                       m_geomCount;
-
     // list used to destroy the allocated objects at the end
     FilterChunkList             m_allocatedObjects;
     // used as cache string operations
     StringBuffer                m_sb;
     // used to convert float/doubles on demand
     ConvReqOperationStack       m_convReqStack;
+    int                         m_strgeomOperations;
+    bool                        m_mustKeepFilterAlive;
+    bool                        m_canUseFastStepping;
+    bool                        m_foundEnvInt;
 };
 
 //Translates an FDO Expression to a SQLite expression

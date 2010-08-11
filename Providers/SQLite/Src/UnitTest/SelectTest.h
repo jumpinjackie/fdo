@@ -45,12 +45,14 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestSelectInsertLowerIdSQL);
     CPPUNIT_TEST(TestDualConnection);
     CPPUNIT_TEST(TestSelectMultipleCS);
+    CPPUNIT_TEST(TestViewSelects);
     CPPUNIT_TEST_SUITE_END();
 
 private:
     int SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* clsName = NULL);
     void InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt);
     void CreateFeatureClass(FdoIConnection* conn, FdoString* className, FdoString* scName);
+    int SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id);
 
 public:
     SelectTest(void);
@@ -69,6 +71,7 @@ public:
     void TestSelectInsertLowerIdSQL ();
     void TestDualConnection ();
     void TestSelectMultipleCS ();
+    void TestViewSelects ();
 };
 
 #endif

@@ -326,7 +326,16 @@ struct Vdbe {
   VdbeFrame *pFrame;      /* Parent frame */
   int nFrame;             /* Number of frames in pFrame list */
   u32 expmask;            /* Binding to these vars invalidates VM */
-  int fdo; /* true if used from inside an FDO feature reader */
+  int fdo;                /* true if used from inside an FDO feature reader */
+  void *pSpIterator;      /* Free this when deleting the vdbe */
+  union {
+    u64 iVarIndex;          /* Index of variable to init pSpIterator based on pSpIndex */
+    void* pParam;           /* Parameter used to re-init pSpIterator based on pSpIndex */
+  } u;
+  void *pSpIndex;         /* This is just a copy of the pointer used only when iVarIndex>=1 */
+  u8 siDisabled;          /* True to disable spatial index optimization during code generation */
+  i64 lowerRowId;         /* Minimum rowid allowed to be returned by SI in case there is one */
+  int siTnum;             /* Root BTree node for table used by SI to avoid using SI on other tables*/
 };
 
 /*

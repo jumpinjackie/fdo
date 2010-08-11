@@ -1543,6 +1543,13 @@ static void nullvalueFunc(sqlite3_context *context, int argc, sqlite3_value **ar
 
 static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
 {
+    // in case we have set 1 to aux arg the we have return since function was already evaluated
+    if((int)sqlite3_get_auxdata(context, 1) == 1)
+    {
+        sqlite3_result_int(context, 1);
+        return;
+    }
+
     assert(argc == 2);
 
     //args must be both blobs or text -- else fail.

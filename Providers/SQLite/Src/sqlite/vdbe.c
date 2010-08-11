@@ -171,6 +171,35 @@ void sqlite3VdbeMemStoreType(Mem *pMem){
 }
 
 /*
+** Return a SI iterator from a memory value in case it's possible
+*/
+void* sqlite3GetVdbeSpatialIndex(Vdbe* p, Mem* mem)
+{
+  int szBlob = -1;
+  void* zBlob = 0;
+  char* z = 0;
+  sqlite3 *db = p->db;
+  if (mem->type == SQLITE_INTEGER || (mem->flags&MEM_Int)){
+    zBlob = (void*)mem->u.i;
+  }else if (mem->type == SQLITE_BLOB || (mem->flags&MEM_Blob)){
+    zBlob = mem->z;
+    szBlob = mem->n;
+  }else if (mem->type == SQLITE_TEXT || (mem->flags&MEM_Str)){
+    assert( mem->z[0]=='x' || mem->z[0]=='X' );
+    assert( mem->z[1]=='\'' );
+    z = &mem->z[2];
+    szBlob = sqlite3Strlen30(z) - 1;
+    assert( z[szBlob]=='\'' );
+    zBlob = sqlite3HexToBlob(db, z, szBlob);
+    szBlob = szBlob/2;
+  }
+  p->pSpIterator = (zBlob)? db->xSpIteratorCallback(p->pSpIndex, zBlob, szBlob):0;
+  if (z)
+    sqlite3DbFree(db, zBlob);
+  return p->pSpIterator;
+}
+
+/*
 ** Allocate VdbeCursor number iCur.  Return a pointer to it.  Return NULL
 ** if we run out of memory.
 */
@@ -3713,6 +3742,7 @@ case OP_SeekGt: {       /* jump, in3 */
   i64 iKey;      /* The rowid we are to seek to */
 #endif /* local variables moved into u.az */
 
+  u8 avoidMoveNext = 0;
   assert( pOp->p1>=0 && pOp->p1<p->nCursor );
   assert( pOp->p2!=0 );
   u.az.pC = p->apCsr[pOp->p1];
@@ -3774,6 +3804,27 @@ case OP_SeekGt: {       /* jump, in3 */
           if( pIn3->r < (double)u.az.iKey ) u.az.iKey--;
         }
       }
+      /* For OP_SeekGe & OP_SeekGt engine will move to the first row in database we need to avoid that and move to the first key from SI*/
+      if ((u.az.oc==OP_SeekGe || u.az.oc==OP_SeekGt) && (u.az.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.az.pC->pCursor) == p->siTnum) && (p->pSpIterator || p->pSpIndex)){
+        i64 siKey;
+        i64 siStKey = (u64)u.az.iKey + (i64)(u.az.oc==OP_SeekGt);
+        if (!p->pSpIterator && p->u.iVarIndex){
+          assert( p->u.iVarIndex <= p->nVar );
+          sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+        }
+        p->lowerRowId = siStKey;
+        assert( p->pSpIterator );
+        /* In case we have a max value ensure key returned by SI is lower than it*/
+        do{
+          siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+        }while(siKey != -1 && siKey < siStKey);
+        if (siKey == -1){
+          pc = pOp->p2 - 1;
+          break;
+        }
+        u.az.iKey = siKey;
+        avoidMoveNext = 1;
+      }
       rc = sqlite3BtreeMovetoUnpacked(u.az.pC->pCursor, 0, (u64)u.az.iKey, 0, &u.az.res);
       if( rc!=SQLITE_OK ){
         goto abort_due_to_error;
@@ -3816,7 +3867,8 @@ case OP_SeekGt: {       /* jump, in3 */
     sqlite3_search_count++;
 #endif
     if( u.az.oc>=OP_SeekGe ){  assert( u.az.oc==OP_SeekGe || u.az.oc==OP_SeekGt );
-      if( u.az.res<0 || (u.az.res==0 && u.az.oc==OP_SeekGt) ){
+      /* avoid MoveNext in case we already have moved using the SI*/
+      if( u.az.res<0 || (u.az.res==0 && u.az.oc==OP_SeekGt && !avoidMoveNext) ){
         rc = sqlite3BtreeNext(u.az.pC->pCursor, &u.az.res);
         if( rc!=SQLITE_OK ) goto abort_due_to_error;
         u.az.pC->rowidIsValid = 0;
@@ -4705,11 +4757,29 @@ case OP_Rewind: {        /* jump */
   assert( u.bl.pC!=0 );
   u.bl.res = 1;
   if( (u.bl.pCrsr = u.bl.pC->pCursor)!=0 ){
-    rc = sqlite3BtreeFirst(u.bl.pCrsr, &u.bl.res);
-    u.bl.pC->atFirst = u.bl.res==0 ?1:0;
+    /* In case we can use SI move to the first row returned by SI */
+    if ((u.bl.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bl.pC->pCursor) == p->siTnum) && (p->pSpIterator || p->pSpIndex)){
+      i64 siKey;
+      if (!p->pSpIterator && p->u.iVarIndex){
+        assert( p->u.iVarIndex <= p->nVar );
+        sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+      }
+      assert( p->pSpIterator );
+      /* Call read next on SI */
+      siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+      if (siKey == -1)
+          u.bl.res = 1;
+      else /* Move to the row pointed by SI */
+          rc = sqlite3BtreeMovetoUnpacked(u.bl.pCrsr, 0, siKey, 0, &u.bl.res);
+      u.bl.pC->lastRowid = siKey;
+      u.bl.pC->rowidIsValid = u.bl.res==0 ?1:0;
+    }else{
+      rc = sqlite3BtreeFirst(u.bl.pCrsr, &u.bl.res);
+      u.bl.pC->atFirst = u.bl.res==0 ?1:0;
+      u.bl.pC->rowidIsValid = 0;
+    }
     u.bl.pC->deferredMoveto = 0;
     u.bl.pC->cacheStatus = CACHE_STALE;
-    u.bl.pC->rowidIsValid = 0;
   }
   u.bl.pC->nullRow = (u8)u.bl.res;
   assert( pOp->p2>0 && pOp->p2<p->nOp );
@@ -4766,9 +4836,31 @@ case OP_Next: {        /* jump */
     break;
   }
   u.bm.res = 1;
-  assert( u.bm.pC->deferredMoveto==0 );
-  rc = pOp->opcode==OP_Next ? sqlite3BtreeNext(u.bm.pCrsr, &u.bm.res) :
-                              sqlite3BtreePrevious(u.bm.pCrsr, &u.bm.res);
+  /* In case we can use SI move to the next row returned by SI */
+  if ((u.bm.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bm.pCrsr) == p->siTnum) && pOp->opcode==OP_Next && (p->pSpIterator || p->pSpIndex)){
+    i64 siKey;
+    if (!p->pSpIterator && p->u.iVarIndex){
+      assert( p->u.iVarIndex <= p->nVar );
+      sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+    }
+    assert( p->pSpIterator );
+    /* In case we have a max key ensure SI will provide lower keys */
+    do{
+      siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+    }while(siKey != -1 && siKey < p->lowerRowId);
+    if (siKey == -1)
+      u.bm.res = 1;
+    else
+      rc = sqlite3BtreeMovetoUnpacked(u.bm.pCrsr, 0, siKey, 0, &u.bm.res);
+    u.bm.pC->lastRowid = siKey;
+    u.bm.pC->rowidIsValid = u.bm.res==0 ?1:0;
+    u.bm.pC->deferredMoveto = 0;
+  }else{
+    assert( u.bm.pC->deferredMoveto==0 );
+    rc = pOp->opcode==OP_Next ? sqlite3BtreeNext(u.bm.pCrsr, &u.bm.res) :
+                                sqlite3BtreePrevious(u.bm.pCrsr, &u.bm.res);
+    u.bm.pC->rowidIsValid = 0;
+  }
   u.bm.pC->nullRow = (u8)u.bm.res;
   u.bm.pC->cacheStatus = CACHE_STALE;
   if( u.bm.res==0 ){
@@ -4778,7 +4870,6 @@ case OP_Next: {        /* jump */
     sqlite3_search_count++;
 #endif
   }
-  u.bm.pC->rowidIsValid = 0;
   break;
 }
 

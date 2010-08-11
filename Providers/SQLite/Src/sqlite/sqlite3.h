@@ -4060,6 +4060,26 @@ void sqlite3_spatial_context_hook(
   char (*)(void*,const char*,const char*)
 );
 
+void sqlite3_spatial_iterator_hook(
+  sqlite3*, 
+  void* (*)(void*,const void*,int)
+);
+
+void sqlite3_spatial_iterator_readnext_hook(
+  sqlite3*, 
+  sqlite3_int64 (*)(void*)
+);
+
+void sqlite3_spatial_iterator_release_hook(
+  sqlite3*, 
+  void (*)(void*)
+);
+
+void sqlite3_spatial_iterator_reset_hook(
+  sqlite3*, 
+  void (*)(void*)
+);
+
 /*
 ** CAPI3REF: Enable Or Disable Shared Pager Cache
 ** KEYWORDS: {shared cache}
