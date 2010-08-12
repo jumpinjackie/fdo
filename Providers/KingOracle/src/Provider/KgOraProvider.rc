@@ -65,8 +65,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,8,19,0
- PRODUCTVERSION 0,8,19,0
+ FILEVERSION 0,8,20,0
+ PRODUCTVERSION 0,8,20,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -89,7 +89,7 @@ BEGIN
             VALUE "LegalCopyright", "Copyright SL-King© 2010"
             VALUE "OriginalFilename", "KingOracleProvider.dll"
             VALUE "ProductName", "Feature Data Objects"
-            VALUE "ProductVersion", "0.8.19.0"
+            VALUE "ProductVersion", "0.8.20.0"
         END
     END
     BLOCK "VarFileInfo"
