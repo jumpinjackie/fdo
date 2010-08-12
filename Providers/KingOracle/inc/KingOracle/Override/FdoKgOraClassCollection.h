@@ -17,9 +17,6 @@
 #ifndef FDOKGORACLASSCOLLECTION_H
 #define FDOKGORACLASSCOLLECTION_H
 
-#ifdef _WIN32
-#pragma once
-#endif //_WIN32
 
 #include <KingOracle/Override/FdoKgOraClassDefinition.h>
 
