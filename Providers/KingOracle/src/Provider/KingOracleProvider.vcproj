@@ -129,7 +129,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -150,7 +150,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="oraocci10.lib oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
 				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -290,7 +290,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
+				PreprocessorDefinitions="_WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -615,7 +615,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.4\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.4\Utilities\Common\inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\inc\fdo\Expression"
-				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
+				PreprocessorDefinitions="_WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				StructMemberAlignment="0"
 				TreatWChar_tAsBuiltInType="true"
@@ -780,8 +780,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
+				AdditionalIncludeDirectories="&quot;..\..\oracle\instantclient_11_2 Win64\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression"
+				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -802,8 +802,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="oraocci10.lib oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
+				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
+				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient_11_2 Win64\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
@@ -941,8 +941,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;..\..\oracle\\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
+				AdditionalIncludeDirectories="&quot;..\..\oracle\instantclient_11_2 Win64\sdk\include&quot;;.\;..\..\inc;..\..\..\..\..\branches\3.5\FDO\Unmanaged\inc;..\..\..\..\..\branches\3.5\Utilities\Common\inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\inc\fdo\Expression"
+				PreprocessorDefinitions="_WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
@@ -962,7 +962,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient-basic-win-x86-64-10.2.0.3.0\instantclient_10_2\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\Release;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\oracle\instantclient_11_2 Win64\sdk\lib\msvc&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win64\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win64\Release;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"

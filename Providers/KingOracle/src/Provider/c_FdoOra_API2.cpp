@@ -25,6 +25,11 @@
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
 
+
+#define D_CLASSNAME_DELIMITER L"~"
+//#define D_CLASSNAME_DELIMITER L"_"
+
+
 c_FdoOra_API2::c_FdoOra_API2(void)
 {
 }
@@ -592,8 +597,9 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"CHAR") == 0 )
   {            
-    if( Length==1 ) FdoType = FdoDataType_Byte;
-    else FdoType = FdoDataType_String;
+    //if( Length==1 ) FdoType = FdoDataType_Byte;
+    //else FdoType = FdoDataType_String;
+    FdoType = FdoDataType_String;
     isfdotype=true;
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"BINARY_FLOAT") == 0 )
@@ -828,8 +834,6 @@ if( OciConn->IsSdoTypes() )
   FdoPtr<FdoClassCollection> classes = schema->GetClasses();
   
   FdoPtr<FdoKgOraClassCollection> phys_classes = phschema->GetClasses();
-  
-  
   
   try
   {
@@ -1625,7 +1629,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       else
         ora_fullname = ora_tablename;
       
-      ora_fdo_classname = ora_tableowner + L"~" + ora_tablename + L"~" + ora_geom_colname;
+      ora_fdo_classname = ora_tableowner + D_CLASSNAME_DELIMITER + ora_tablename + D_CLASSNAME_DELIMITER + ora_geom_colname;
       
       FdoStringP w_fdo_classname = ora_fdo_classname.c_str();
       
@@ -1641,7 +1645,31 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       if( !FdoClasses->FindItem( w_fdo_classname ) )
       {
       
-        FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(w_fdo_classname, L"");      
+        FdoPtr<FdoFeatureClass> fc_geom;
+        FdoPtr<FdoClass> fc_nogeom;
+        FdoClassDefinition* fc;
+        
+        if( (ora_geom_colname.length() >  0) 
+            || ( (override_point_x_col.length() > 0) && (override_point_y_col.length() > 0) )
+          )
+        {
+          fc_geom = FdoFeatureClass::Create(w_fdo_classname, L"");      
+          fc = fc_geom.p;
+        }
+        else
+        {
+          fc_nogeom = FdoClass::Create(w_fdo_classname, L"");      
+          fc = fc_nogeom.p;
+        }
+        
+        
+        // set class capabilities
+        // sde class is read-only and no locking
+        FdoPtr<FdoClassCapabilities> capab = FdoClassCapabilities::Create(*fc);
+        capab->SetSupportsWrite(true);
+        capab->SetSupportsLocking(false);
+        capab->SetSupportsLongTransactions(false);
+        fc->SetCapabilities(capab);
         
         FdoPtr<FdoKgOraClassDefinition> phys_class  = FdoKgOraClassDefinition::Create();
         
@@ -1734,7 +1762,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
           
           pdc->Add(gpd);
           
-          fc->SetGeometryProperty(gpd);
+          if( fc_geom.p ) fc_geom->SetGeometryProperty(gpd);
         }
         else
         {
@@ -1754,12 +1782,16 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
             
             pdc->Add(gpd);
             
-            fc->SetGeometryProperty(gpd);
+            if( fc_geom.p ) fc_geom->SetGeometryProperty(gpd);
             
             FdoStringP xcol = override_point_x_col.c_str();
             FdoStringP ycol = override_point_y_col.c_str();
             FdoStringP zcol = override_point_z_col.c_str();
             phys_class->SetPointGeometry(pointproperty,xcol,ycol,zcol);
+          }
+          else
+          {
+          // it is non-feature class
           }
         }
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -2098,7 +2130,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       else
         ora_fullname = ora_tablename;
 
-      ora_fdo_classname = ora_tableowner + L"~" + ora_tablename + L"~" + ora_geom_colname;
+      ora_fdo_classname = ora_tableowner + D_CLASSNAME_DELIMITER + ora_tablename + D_CLASSNAME_DELIMITER + ora_geom_colname;
 
       FdoStringP w_fdo_classname = ora_fdo_classname.c_str();
 
@@ -2111,6 +2143,13 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       {
 
         FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(w_fdo_classname, L"");      
+        // set class capabillities
+        // sde class is read-only and no locking
+        FdoPtr<FdoClassCapabilities> capab = FdoClassCapabilities::Create(*fc);
+        capab->SetSupportsWrite(false);
+        capab->SetSupportsLocking(false);
+        capab->SetSupportsLongTransactions(false);
+        fc->SetCapabilities(capab);
 
         FdoPtr<FdoKgOraClassDefinition> phys_class  = FdoKgOraClassDefinition::Create();
 

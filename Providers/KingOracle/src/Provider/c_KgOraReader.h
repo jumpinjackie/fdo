@@ -187,7 +187,7 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
     /// \return
     /// Returns a pointer to the byte array in AGF format.
     /// 
-    FDOKGORA_API virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
+    virtual const FdoByte * GetGeometry(FdoString* propertyName, FdoInt32 * count);
 
     /// \brief
     /// Gets the geometry value of the specified property as a byte array in 
@@ -200,7 +200,7 @@ template <class FDO_READER> class c_KgOraReader : public FDO_READER
     /// \return
     /// Returns the byte array in AGF format.
     /// 
-    FDOKGORA_API virtual FdoByteArray* GetGeometry(FdoString* propertyName);
+    virtual FdoByteArray* GetGeometry(FdoString* propertyName);
 
    
 
@@ -538,19 +538,6 @@ template <class FDO_READER> FdoIStreamReader* c_KgOraReader<FDO_READER>::GetLOBS
 }
 
 
-template <class FDO_READER> FdoByteArray* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName)
-{
-    int len = 0;
-    const void* ptr = GetGeometry(propertyName, &len);
-    
-    if( len > 0 )
-      return FdoByteArray::Create((const FdoByte*)ptr, len);
-    else
-      throw FdoException::Create(L"c_KgOraReader::GetGeometry Invalid Geometry !");
-}
-
-
-
 
 template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName, FdoInt32* len)
 {
@@ -622,6 +609,17 @@ template <class FDO_READER> const FdoByte* c_KgOraReader<FDO_READER>::GetGeometr
   
   
   return (const unsigned char*)m_SdoAgfConv.GetBuff();
+}
+
+template <class FDO_READER> FdoByteArray* c_KgOraReader<FDO_READER>::GetGeometry(FdoString* propertyName)
+{
+  int len = 0;
+  const void* ptr = GetGeometry(propertyName, &len);
+
+  if( len > 0 )
+    return FdoByteArray::Create((const FdoByte*)ptr, len);
+  else
+    throw FdoException::Create(L"c_KgOraReader::GetGeometry Invalid Geometry !");
 }
 
 /*
