@@ -14,7 +14,10 @@ FdoIConnection* c_KgOraUtil::OpentConnection(wchar_t* ConnString)
 try
 {
   FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
-  FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"King.Oracle.0.1.1");
+  FdoPtr<FdoIConnection> conn = manager->CreateConnection (L"King.Oracle");
+  
+  if( !conn.p ) 
+    CPPUNIT_FAIL("Unable to create FDO connection to King.Oracle provider.");
   //conn->SetConnectionString(L"UserName=ose;Password=ose;ServiceName=temp");
   //conn->SetConnectionString(L"Username=test;Password=test;Service=//192.168.0.23/xe;OracleSchema=UNITTEST");
   conn->SetConnectionString(ConnString);
