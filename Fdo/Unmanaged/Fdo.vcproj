@@ -532,6 +532,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Src\Fdo\Expression\JoinCriteria.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\JoinCriteriaCollection.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Src\Fdo\Expression\LiteralValueCollection.cpp"
 					>
 				</File>
@@ -545,6 +553,10 @@
 				</File>
 				<File
 					RelativePath="Src\Fdo\Expression\StringValue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Src\Fdo\Expression\SubSelectExpression.cpp"
 					>
 				</File>
 				<File
@@ -1753,6 +1765,22 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Inc\Fdo\Expression\ExpressionItemType.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\JoinCriteria.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\JoinCriteriaCollection.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\JoinType.h"
+					>
+				</File>
+				<File
 					RelativePath="Inc\Fdo\Expression\LiteralValue.h"
 					>
 				</File>
@@ -1778,6 +1806,10 @@
 				</File>
 				<File
 					RelativePath="Inc\Fdo\Expression\StringValue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Fdo\Expression\SubSelectExpression.h"
 					>
 				</File>
 				<File

@@ -45,12 +45,20 @@ static FdoKeyWord g_aKeyWords[] =
   L"IN",             FdoToken_IN,			// ConditionType
   L"INSIDE",	     FdoToken_INSIDE,		// SpatialOperations
   L"INTERSECTS",     FdoToken_INTERSECTS,	// SpatialOperations
+  L"JOIN",           FdoToken_JOIN,           // Join Operator
+  L"JOINCROSS",      FdoToken_JOINCROSS,      // Join Type Cross
+  L"JOINFULLOUTER",  FdoToken_JOINFULLOUTER,  // Join Type Full Outer
+  L"JOININNER",      FdoToken_JOININNER,      // Join Type Inner
+  L"JOINLEFTOUTER",  FdoToken_JOINLEFTOUTER,  // Join Type Left Outer
+  L"JOINNONE",       FdoToken_JOINNONE,       // Join Type None
+  L"JOINRIGHTOUTER", FdoToken_JOINRIGHTOUTER, // Join Type Right Outer
   L"LIKE",           FdoToken_LIKE,			// ConditionType
   L"NOT",            FdoToken_NOT,			// UnaryLogicalOperations
   L"NULL",           FdoToken_NULL,			// ConditionType
   L"OR",             FdoToken_OR,			// BinaryLogicalOperations
   L"OVERLAPS",       FdoToken_OVERLAPS,		// SpatialOperations
   L"RELATE",         FdoToken_RELATE,	 	// future use
+  L"SELECT",         FdoToken_SELECT,         // Select Operator
   L"TIME",           FdoToken_TIME,			// DateTime
   L"TIMESTAMP",      FdoToken_TIMESTAMP,	// DateTime
   L"TOUCHES",        FdoToken_TOUCHES,		// SpatialOperations
@@ -362,16 +370,55 @@ start:;
                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
             }
             if (FdoStringUtility::StringLength(wordOnHeap) == 0) 
-			{
+            {
                delete[] wordOnHeap;
                throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_9_WRONGTOKEN)));
             }
+
+            *wordOnStack = '\0';
+            FdoStringUtility::StringConcatenate(wordOnStack, wordOnHeap);
+            delete[] wordOnHeap;
+
+            while (m_ch == '.')
+			{
+				FdoInt32 iLen = (FdoInt32)FdoStringUtility::StringLength(wordOnStack);
+				wordOnStack[iLen] = m_ch;
+				wordOnStack[iLen+1] = CHR_NULL;
+				m_ch = if_getch(pParse);
+				wchar_t	nextword[maxCharLength];
+				if (iswalpha(m_ch))
+                {
+					getword(pParse, nextword, sizeof(nextword)/sizeof(wchar_t));
+    				FdoStringUtility::StringConcatenate(wordOnStack, nextword);
+                }
+                else if (m_ch == '\"')
+                {
+#ifdef _WIN32
+        			if (!get_string(pParse, wordOnHeap, m_ch == '\"' ? '\"' : 8221)) 
+#else
+		        	if (!get_string(pParse, wordOnHeap, m_ch == '\"' ? '\"' : 148)) 
+#endif
+                    {
+                       // Error !!! Wrong string format
+                       delete[] wordOnHeap;
+                       throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
+                    }
+                    if (FdoStringUtility::StringLength(wordOnHeap) == 0) 
+                    {
+                       delete[] wordOnHeap;
+                       throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_9_WRONGTOKEN)));
+                    }
+
+                    FdoStringUtility::StringConcatenate(wordOnStack, wordOnHeap);
+                    delete[] wordOnHeap;
+                }
+			}
+
 			// SetDelimited() need to keep track if it's quoted then it
 			// is case sensitive and can't be a keyword
 			FDO_SAFE_RELEASE(m_data);
-			m_data = FdoStringValue::Create(wordOnHeap);
+			m_data = FdoStringValue::Create(wordOnStack);
             m_token = m_prevToken = FdoToken_IDENTIFIER;
-            delete[] wordOnHeap;  // TODO: we could optimize this by somehow giving FdoStringValue the ownership of 'wordOnHeap' instead of copying it unnecessarily.
             return m_token;
         }
 
@@ -548,6 +595,27 @@ start:;
   						getword(pParse, nextword, sizeof(nextword)/sizeof(wchar_t));
   						FdoStringUtility::StringConcatenate(wordOnStack, nextword);
 					}
+                    else if (m_ch == '\"')
+                    {
+#ifdef _WIN32
+        			    if (!get_string(pParse, wordOnHeap, m_ch == '\"' ? '\"' : 8221)) 
+#else
+		        	    if (!get_string(pParse, wordOnHeap, m_ch == '\"' ? '\"' : 148)) 
+#endif
+                        {
+                           // Error !!! Wrong string format
+                           delete[] wordOnHeap;
+                           throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_4_STRINGINCORRECTLYFORMATTED)));
+                        }
+                        if (FdoStringUtility::StringLength(wordOnHeap) == 0) 
+                        {
+                           delete[] wordOnHeap;
+                           throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_9_WRONGTOKEN)));
+                        }
+
+                        FdoStringUtility::StringConcatenate(wordOnStack, wordOnHeap);
+                        delete[] wordOnHeap;
+                    }
 				}
 
 				// This is non-quoted identifier!!!

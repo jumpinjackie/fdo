@@ -123,6 +123,14 @@ public:
     FDO_API FdoString* ToString();
 
     /// \brief
+    /// Returns the type of the expression as geometry value
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    /// 
+    FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_GeometryValue; };
+
+    /// \brief
     /// Gets the literal value type of the FdoGeometryValue.
     /// 
     /// \return

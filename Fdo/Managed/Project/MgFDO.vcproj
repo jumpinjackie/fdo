@@ -2097,6 +2097,30 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgExpressionItemType.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgJoinCriteria.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgJoinCriteria.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgJoinCriteriaCollection.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgJoinCriteriaCollection.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgJoinType.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Src\OSGeo\FDO\Expression\mgLiteralValue.cpp"
 						>
 					</File>
@@ -2146,6 +2170,14 @@
 					</File>
 					<File
 						RelativePath="..\Src\OSGeo\FDO\Expression\mgStringValue.h"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgSubSelectExpression.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgSubSelectExpression.h"
 						>
 					</File>
 					<File

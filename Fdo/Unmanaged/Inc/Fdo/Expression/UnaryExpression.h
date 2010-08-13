@@ -128,6 +128,14 @@ public:
     FDO_API FdoString* ToString();
 
     /// \brief
+    /// Returns the type of the expression in this case UnaryExpression
+    /// 
+    /// \return
+    /// Returns the type of the expression.
+    /// 
+    FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_UnaryExpression; };
+
+    /// \brief
     /// This is an internal method. It returns the well defined text representation of the expression. 
     /// 
     /// \param pIdCol 

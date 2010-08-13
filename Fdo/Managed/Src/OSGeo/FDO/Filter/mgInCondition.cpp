@@ -24,6 +24,7 @@
 
 #include "FDO\Filter\mgInCondition.h"
 #include "FDO\Expression\mgIdentifier.h"
+#include "FDO\Expression\mgSubSelectExpression.h"
 #include "FDO\Filter\mgIFilterProcessorImp.h"
 #include "FDO\Commands\mgIdentifierCollection.h"
 #include "FDO\Filter\mgValueExpressionCollection.h"
@@ -85,6 +86,12 @@ NAMESPACE_OSGEO_FDO_FILTER::InCondition::InCondition(NAMESPACE_OSGEO_FDO_EXPRESS
 	Attach(IntPtr(obj), true); 
 }
 
+NAMESPACE_OSGEO_FDO_FILTER::InCondition::InCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ propertyName, NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ subSel) : SearchCondition(IntPtr::Zero, false)
+{
+	FdoInCondition* obj = FdoInCondition::Create(propertyName->GetImpObj(), subSel->GetImpObj());
+	Attach(IntPtr(obj), true); 
+}
+
 NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_FILTER::InCondition::PropertyName::get()
 {
 	FdoIdentifier* result;
@@ -102,6 +109,18 @@ NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection^ NAMESPACE_OSGEO_FDO_FILTE
 	FdoValueExpressionCollection* result;
 	EXCEPTION_HANDLER(result = GetImpObj()->GetValues())
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateValueExpressionCollection(IntPtr(result), true);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ NAMESPACE_OSGEO_FDO_FILTER::InCondition::SubSelect::get()
+{
+	FdoSubSelectExpression* result;
+    EXCEPTION_HANDLER(result = GetImpObj()->GetSubSelect())
+	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSubSelectExpression(IntPtr(result), true);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_FILTER::InCondition::SubSelect::set(NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ value)
+{
+    EXCEPTION_HANDLER(GetImpObj()->SetSubSelect((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
 System::Void NAMESPACE_OSGEO_FDO_FILTER::InCondition::Process(NAMESPACE_OSGEO_FDO_FILTER::IFilterProcessor^ processor)

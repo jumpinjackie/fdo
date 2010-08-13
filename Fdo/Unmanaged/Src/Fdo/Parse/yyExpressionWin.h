@@ -36,54 +36,62 @@
      FdoToken_TIME = 262,
      FdoToken_TIMESTAMP = 263,
      FdoToken_GEOMFROMTEXT = 264,
-     FdoToken_AND = 265,
-     FdoToken_OR = 266,
-     FdoToken_NOT = 267,
-     FdoToken_LIKE = 268,
-     FdoToken_IN = 269,
-     FdoToken_BEYOND = 270,
-     FdoToken_WITHINDISTANCE = 271,
-     FdoToken_CONTAINS = 272,
-     FdoToken_COVEREDBY = 273,
-     FdoToken_CROSSES = 274,
-     FdoToken_DISJOINT = 275,
-     FdoToken_ENVELOPEINTERSECTS = 276,
-     FdoToken_EQUALS = 277,
-     FdoToken_INTERSECTS = 278,
-     FdoToken_INSIDE = 279,
-     FdoToken_OVERLAPS = 280,
-     FdoToken_TOUCHES = 281,
-     FdoToken_WITHIN = 282,
-     FdoToken_RELATE = 283,
-     FdoToken_IDENTIFIER = 284,
-     FdoToken_PARAMETER = 285,
-     FdoToken_STRING = 286,
-     FdoToken_INTEGER = 287,
-     FdoToken_INT64 = 288,
-     FdoToken_INTHEX = 289,
-     FdoToken_INTBIN = 290,
-     FdoToken_DOUBLE = 291,
-     FdoToken_DATETIME = 292,
-     FdoToken_BLOB = 293,
-     FdoToken_CLOB = 294,
-     FdoToken_Add = 295,
-     FdoToken_Subtract = 296,
-     FdoToken_Multiply = 297,
-     FdoToken_Divide = 298,
-     FdoToken_Negate = 299,
-     FdoToken_EQ = 300,
-     FdoToken_NE = 301,
-     FdoToken_GT = 302,
-     FdoToken_GE = 303,
-     FdoToken_LT = 304,
-     FdoToken_LE = 305,
-     FdoToken_LeftParenthesis = 306,
-     FdoToken_RightParenthesis = 307,
-     FdoToken_Comma = 308,
-     FdoToken_Dot = 309,
-     FdoToken_Colon = 310,
-     FdoToken_AS = 311,
-     FdoToken_BETWEEN = 312
+     FdoToken_JOINNONE = 265,
+     FdoToken_JOININNER = 266,
+     FdoToken_JOINRIGHTOUTER = 267,
+     FdoToken_JOINLEFTOUTER = 268,
+     FdoToken_JOINFULLOUTER = 269,
+     FdoToken_JOINCROSS = 270,
+     FdoToken_AND = 271,
+     FdoToken_OR = 272,
+     FdoToken_NOT = 273,
+     FdoToken_LIKE = 274,
+     FdoToken_IN = 275,
+     FdoToken_SELECT = 276,
+     FdoToken_JOIN = 277,
+     FdoToken_BEYOND = 278,
+     FdoToken_WITHINDISTANCE = 279,
+     FdoToken_CONTAINS = 280,
+     FdoToken_COVEREDBY = 281,
+     FdoToken_CROSSES = 282,
+     FdoToken_DISJOINT = 283,
+     FdoToken_ENVELOPEINTERSECTS = 284,
+     FdoToken_EQUALS = 285,
+     FdoToken_INTERSECTS = 286,
+     FdoToken_INSIDE = 287,
+     FdoToken_OVERLAPS = 288,
+     FdoToken_TOUCHES = 289,
+     FdoToken_WITHIN = 290,
+     FdoToken_RELATE = 291,
+     FdoToken_IDENTIFIER = 292,
+     FdoToken_PARAMETER = 293,
+     FdoToken_STRING = 294,
+     FdoToken_INTEGER = 295,
+     FdoToken_INT64 = 296,
+     FdoToken_INTHEX = 297,
+     FdoToken_INTBIN = 298,
+     FdoToken_DOUBLE = 299,
+     FdoToken_DATETIME = 300,
+     FdoToken_BLOB = 301,
+     FdoToken_CLOB = 302,
+     FdoToken_Add = 303,
+     FdoToken_Subtract = 304,
+     FdoToken_Multiply = 305,
+     FdoToken_Divide = 306,
+     FdoToken_Negate = 307,
+     FdoToken_EQ = 308,
+     FdoToken_NE = 309,
+     FdoToken_GT = 310,
+     FdoToken_GE = 311,
+     FdoToken_LT = 312,
+     FdoToken_LE = 313,
+     FdoToken_LeftParenthesis = 314,
+     FdoToken_RightParenthesis = 315,
+     FdoToken_Comma = 316,
+     FdoToken_Dot = 317,
+     FdoToken_Colon = 318,
+     FdoToken_AS = 319,
+     FdoToken_BETWEEN = 320
    };
 #endif
 #define FdoToken_NULL 258
@@ -93,54 +101,62 @@
 #define FdoToken_TIME 262
 #define FdoToken_TIMESTAMP 263
 #define FdoToken_GEOMFROMTEXT 264
-#define FdoToken_AND 265
-#define FdoToken_OR 266
-#define FdoToken_NOT 267
-#define FdoToken_LIKE 268
-#define FdoToken_IN 269
-#define FdoToken_BEYOND 270
-#define FdoToken_WITHINDISTANCE 271
-#define FdoToken_CONTAINS 272
-#define FdoToken_COVEREDBY 273
-#define FdoToken_CROSSES 274
-#define FdoToken_DISJOINT 275
-#define FdoToken_ENVELOPEINTERSECTS 276
-#define FdoToken_EQUALS 277
-#define FdoToken_INTERSECTS 278
-#define FdoToken_INSIDE 279
-#define FdoToken_OVERLAPS 280
-#define FdoToken_TOUCHES 281
-#define FdoToken_WITHIN 282
-#define FdoToken_RELATE 283
-#define FdoToken_IDENTIFIER 284
-#define FdoToken_PARAMETER 285
-#define FdoToken_STRING 286
-#define FdoToken_INTEGER 287
-#define FdoToken_INT64 288
-#define FdoToken_INTHEX 289
-#define FdoToken_INTBIN 290
-#define FdoToken_DOUBLE 291
-#define FdoToken_DATETIME 292
-#define FdoToken_BLOB 293
-#define FdoToken_CLOB 294
-#define FdoToken_Add 295
-#define FdoToken_Subtract 296
-#define FdoToken_Multiply 297
-#define FdoToken_Divide 298
-#define FdoToken_Negate 299
-#define FdoToken_EQ 300
-#define FdoToken_NE 301
-#define FdoToken_GT 302
-#define FdoToken_GE 303
-#define FdoToken_LT 304
-#define FdoToken_LE 305
-#define FdoToken_LeftParenthesis 306
-#define FdoToken_RightParenthesis 307
-#define FdoToken_Comma 308
-#define FdoToken_Dot 309
-#define FdoToken_Colon 310
-#define FdoToken_AS 311
-#define FdoToken_BETWEEN 312
+#define FdoToken_JOINNONE 265
+#define FdoToken_JOININNER 266
+#define FdoToken_JOINRIGHTOUTER 267
+#define FdoToken_JOINLEFTOUTER 268
+#define FdoToken_JOINFULLOUTER 269
+#define FdoToken_JOINCROSS 270
+#define FdoToken_AND 271
+#define FdoToken_OR 272
+#define FdoToken_NOT 273
+#define FdoToken_LIKE 274
+#define FdoToken_IN 275
+#define FdoToken_SELECT 276
+#define FdoToken_JOIN 277
+#define FdoToken_BEYOND 278
+#define FdoToken_WITHINDISTANCE 279
+#define FdoToken_CONTAINS 280
+#define FdoToken_COVEREDBY 281
+#define FdoToken_CROSSES 282
+#define FdoToken_DISJOINT 283
+#define FdoToken_ENVELOPEINTERSECTS 284
+#define FdoToken_EQUALS 285
+#define FdoToken_INTERSECTS 286
+#define FdoToken_INSIDE 287
+#define FdoToken_OVERLAPS 288
+#define FdoToken_TOUCHES 289
+#define FdoToken_WITHIN 290
+#define FdoToken_RELATE 291
+#define FdoToken_IDENTIFIER 292
+#define FdoToken_PARAMETER 293
+#define FdoToken_STRING 294
+#define FdoToken_INTEGER 295
+#define FdoToken_INT64 296
+#define FdoToken_INTHEX 297
+#define FdoToken_INTBIN 298
+#define FdoToken_DOUBLE 299
+#define FdoToken_DATETIME 300
+#define FdoToken_BLOB 301
+#define FdoToken_CLOB 302
+#define FdoToken_Add 303
+#define FdoToken_Subtract 304
+#define FdoToken_Multiply 305
+#define FdoToken_Divide 306
+#define FdoToken_Negate 307
+#define FdoToken_EQ 308
+#define FdoToken_NE 309
+#define FdoToken_GT 310
+#define FdoToken_GE 311
+#define FdoToken_LT 312
+#define FdoToken_LE 313
+#define FdoToken_LeftParenthesis 314
+#define FdoToken_RightParenthesis 315
+#define FdoToken_Comma 316
+#define FdoToken_Dot 317
+#define FdoToken_Colon 318
+#define FdoToken_AS 319
+#define FdoToken_BETWEEN 320
 
 
 
@@ -163,7 +179,6 @@ typedef union _FDO_EXPRESSION_YYSTYPE
 # define FDO_EXPRESSION_YYSTYPE_IS_DECLARED 1
 # define FDO_EXPRESSION_YYSTYPE_IS_TRIVIAL 1
 #endif
-
 
 
 

@@ -55,8 +55,9 @@
 %token FdoToken_TRUE FdoToken_FALSE
 %token FdoToken_DATE FdoToken_TIME FdoToken_TIMESTAMP
 %token FdoToken_GEOMFROMTEXT
+%token FdoToken_JOINNONE FdoToken_JOININNER FdoToken_JOINRIGHTOUTER FdoToken_JOINLEFTOUTER FdoToken_JOINFULLOUTER FdoToken_JOINCROSS
 // ... operators
-%token FdoToken_AND FdoToken_OR FdoToken_NOT FdoToken_LIKE FdoToken_IN
+%token FdoToken_AND FdoToken_OR FdoToken_NOT FdoToken_LIKE FdoToken_IN FdoToken_SELECT FdoToken_JOIN
 // ... distance operations
 %token FdoToken_BEYOND FdoToken_WITHINDISTANCE
 // ... spatial operations
@@ -81,22 +82,23 @@
 
 // expression
 %type <m_node>		BinaryExpression DataValue Expression ExpressionCollection
-%type <m_node>		Function GeometryValue Identifier
+%type <m_node>		Function GeometryValue Identifier SubSelectExpression JoinCriteria ComputedIdentifier ComputedIdentifierOnly ComputedIdentifier3
 %type <m_node>		ValueExpression LiteralValue Parameter UnaryExpression
 // filter
 %type <m_node>		BinaryLogicalOperator ComparisonCondition DistanceCondition
 %type <m_node>		Filter GeometricCondition InCondition
-%type <m_node>		LogicalOperator NullCondition ValueExpressionCollection 
+%type <m_node>		LogicalOperator NullCondition ValueExpressionCollection JoinCriteriaCollection
 %type <m_node>		SearchCondition SpatialCondition UnaryLogicalOperator
 %type <m_id>		SpatialOperations // UnaryLogicalOperations BinaryLogicalOperations 
-%type <m_id>		ComparisonOperations DistanceOperations
-%type <m_node>		FdoToken_IN FdoToken_AND FdoToken_OR FdoToken_LIKE FdoToken_NOT
+%type <m_id>		ComparisonOperations DistanceOperations JoinOperations
+%type <m_node>		FdoToken_IN FdoToken_SELECT FdoToken_JOIN FdoToken_AND FdoToken_OR FdoToken_LIKE FdoToken_NOT
 %type <m_node>		FdoToken_BEYOND FdoToken_WITHINDISTANCE
 %type <m_node>		FdoToken_CONTAINS FdoToken_CROSSES
 %type <m_node>		FdoToken_DISJOINT FdoToken_ENVELOPEINTERSECTS FdoToken_EQUALS FdoToken_INTERSECTS FdoToken_INSIDE
 %type <m_node>		FdoToken_OVERLAPS FdoToken_TOUCHES FdoToken_WITHIN FdoToken_COVEREDBY
 %type <m_node>		FdoToken_EQ FdoToken_NE FdoToken_GT FdoToken_GE FdoToken_LT FdoToken_LE
 %type <m_node>		distance
+%type <m_node>		FdoToken_JOINNONE FdoToken_JOININNER FdoToken_JOINRIGHTOUTER FdoToken_JOINLEFTOUTER FdoToken_JOINFULLOUTER FdoToken_JOINCROSS
 // both
 %type <m_node>		double string boolean FdoToken_Negate
 %type <m_node>		FdoToken_BLOB FdoToken_CLOB FdoToken_TRUE FdoToken_FALSE
@@ -240,6 +242,25 @@ ComputedIdentifier2 :
             Node_Add(L"ComputedIdentifier", id);
             pParse->AddCompIdentifier(id);
         }
+     ;
+ ComputedIdentifierOnly :
+    '(' Identifier ')' FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2));}
+     | Identifier FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1));}
+     ;
+ 
+ ComputedIdentifier3 :
+     '(' Identifier ')' FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2));}
+     | Identifier FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1));}
+     | Identifier
+            {$$ = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(((FdoIdentifier*)$1)->GetName()));}
+     | '(' Expression ')' FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2));}
+     | Expression FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1));}
      ;    
  	
 ValueExpression :
@@ -286,9 +307,40 @@ ValueExpressionCollection :
 										{((FdoValueExpressionCollection*)$$)->Add((FdoValueExpression*)$3); Node_Trace(L"ValueExpression n");}
 	;
 	
+JoinCriteria :
+    FdoToken_JOIN '(' Identifier ',' JoinOperations ')'
+         {$$=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create((FdoIdentifier*)$3, (FdoJoinType)$5));}
+    | FdoToken_JOIN '(' Identifier ',' JoinOperations ',' Filter ')'
+         {$$=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create((FdoIdentifier*)$3, (FdoJoinType)$5, (FdoFilter*)$7));}
+    | FdoToken_JOIN '(' ComputedIdentifierOnly ',' JoinOperations ')'
+         {$$=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)$3)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)$3)->GetExpression())), (FdoJoinType)$5));}
+    | FdoToken_JOIN '(' ComputedIdentifierOnly ',' JoinOperations ',' Filter ')'
+         {$$=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)$3)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)$3)->GetExpression())), (FdoJoinType)$5, (FdoFilter*)$7));}
+    ;
+
+JoinCriteriaCollection :
+    JoinCriteria
+         {$$=pParse->AddNodeToDelete(FdoJoinCriteriaCollection::Create()); ((FdoJoinCriteriaCollection*)$$)->Add((FdoJoinCriteria*)$1); Node_Trace(L"JoinCriteria 1");}
+    | JoinCriteriaCollection ',' JoinCriteria
+         {((FdoJoinCriteriaCollection*)$$)->Add((FdoJoinCriteria*)$3); Node_Trace(L"JoinCriteria n");}
+    ;
+
+SubSelectExpression :
+    FdoToken_SELECT '(' Identifier ',' ComputedIdentifier3 ')'
+        {$$=Node_Add(L"JoinCriteria", FdoSubSelectExpression::Create((FdoIdentifier*)$3, (FdoIdentifier*)$5));}
+    | FdoToken_SELECT '(' Identifier ',' ComputedIdentifier3 ',' Filter ')'
+        {$$=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)$3, (FdoIdentifier*)$5, (FdoFilter*)$7));}
+    | FdoToken_SELECT '(' Identifier ',' ComputedIdentifier3 ',' JoinCriteriaCollection ')'
+        {$$=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)$3, (FdoIdentifier*)$5, (FdoJoinCriteriaCollection*)$7));}
+    | FdoToken_SELECT '(' Identifier ',' ComputedIdentifier3 ',' Filter ',' JoinCriteriaCollection ')'
+        {$$=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)$3, (FdoIdentifier*)$5, (FdoFilter*)$7, (FdoJoinCriteriaCollection*)$9));}
+    ;
+
 InCondition :
 	Identifier FdoToken_IN '(' ValueExpressionCollection ')'
 				{$$=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)$1, (FdoValueExpressionCollection*)$4));}
+    | Identifier FdoToken_IN '(' SubSelectExpression ')'
+                {$$=Node_Add(L"SubSelectExpression", FdoInCondition::Create((FdoIdentifier*)$1, (FdoSubSelectExpression*)$4));}
 	;
 	
 NullCondition :
@@ -334,6 +386,15 @@ ComparisonOperations :
 	| FdoToken_LE		{$$=FdoComparisonOperations_LessThanOrEqualTo; Node_Trace(L"LE");}
 	| FdoToken_LIKE		{$$=FdoComparisonOperations_Like; Node_Trace(L"LIKE");}
 	;
+
+JoinOperations :
+    FdoToken_JOINNONE           {$$=FdoJoinType_None; Node_Trace(L"NONE");}
+    | FdoToken_JOININNER        {$$=FdoJoinType_Inner; Node_Trace(L"INNER");}
+    | FdoToken_JOINRIGHTOUTER   {$$=FdoJoinType_RightOuter; Node_Trace(L"RIGHTOUTER");}
+    | FdoToken_JOINLEFTOUTER    {$$=FdoJoinType_LeftOuter; Node_Trace(L"LEFTOUTER");}
+    | FdoToken_JOINFULLOUTER    {$$=FdoJoinType_FullOuter; Node_Trace(L"FULLOUTER");}
+    | FdoToken_JOINCROSS        {$$=FdoJoinType_Cross; Node_Trace(L"CROSS");}
+    ;
 
 DistanceOperations :
 	FdoToken_BEYOND				{$$=FdoDistanceOperations_Beyond; Node_Trace(L"BEYOND");}

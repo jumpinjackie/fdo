@@ -147,6 +147,14 @@ public:
     FDO_API FdoString* ToString();
 
     /// \brief
+    /// Returns the type of the expression as binary expression
+    /// 
+    /// \return
+    /// Returns the type of the expression.
+    /// 
+    FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_BinaryExpression; };
+
+    /// \brief
     /// This is an internal method. It returns the well defined text representation of the expression. 
     /// 
     /// \param pIdCol 

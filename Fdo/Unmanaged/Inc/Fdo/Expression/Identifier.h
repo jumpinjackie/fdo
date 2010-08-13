@@ -137,6 +137,14 @@ public:
     /// 
     FDO_API virtual FdoString* ToString();
 
+    /// \brief
+    /// Returns the type of the expression as identifier
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    /// 
+    FDO_API virtual FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_Identifier; };
+
 private:
     wchar_t*    m_text;
     wchar_t*    m_name;

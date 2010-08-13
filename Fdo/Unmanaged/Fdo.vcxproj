@@ -326,6 +326,9 @@
     <ClCompile Include="Src\Fdo\Expression\SingleValue.cpp" />
     <ClCompile Include="Src\Fdo\Expression\StringValue.cpp" />
     <ClCompile Include="Src\Fdo\Expression\UnaryExpression.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\JoinCriteria.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\JoinCriteriaCollection.cpp" />
+    <ClCompile Include="Src\Fdo\Expression\SubSelectExpression.cpp" />
     <ClCompile Include="Src\Fdo\Filter\BinaryLogicalOperator.cpp" />
     <ClCompile Include="Src\Fdo\Filter\ComparisonCondition.cpp" />
     <ClCompile Include="Src\Fdo\Filter\DistanceCondition.cpp" />
@@ -615,6 +618,11 @@
     <ClInclude Include="Inc\Fdo\Expression\UnaryExpression.h" />
     <ClInclude Include="Inc\Fdo\Expression\UnaryOperations.h" />
     <ClInclude Include="Inc\Fdo\Expression\ValueExpression.h" />
+    <ClInclude Include="Inc\Fdo\Expression\JoinCriteria.h" />
+    <ClInclude Include="Inc\Fdo\Expression\JoinCriteriaCollection.h" />
+    <ClInclude Include="Inc\Fdo\Expression\JoinType.h" />
+    <ClInclude Include="Inc\Fdo\Expression\SubSelectExpression.h" />
+    <ClInclude Include="Inc\Fdo\Expression\ExpressionItemType.h" />
     <ClInclude Include="Inc\Fdo\Filter\BinaryLogicalOperations.h" />
     <ClInclude Include="Inc\Fdo\Filter\BinaryLogicalOperator.h" />
     <ClInclude Include="Inc\Fdo\Filter\ComparisonCondition.h" />

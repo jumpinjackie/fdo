@@ -146,6 +146,33 @@ public:
     /// Returns true if the provider or datastore can support the flush function.
     ///
     System::Boolean SupportsFlush();
+
+    /// \brief
+    /// Determines if the provider can support Joins
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support joins.
+    ///
+    System::Boolean SupportsJoins();
+
+    /// \brief
+    /// Gets the FdoJoinType values supported by the provider (by default FdoJoinType_None).
+    /// 
+    /// \return
+    /// Returns the join types
+    /// 
+    property System::Int32 JoinTypes
+    {
+        System::Int32 get();
+    }
+
+    /// \brief
+    /// Determines if the provider can support SubSelects
+    ///
+    /// \return
+    /// Returns true if the provider or datastore can support SubSelects.
+    ///
+    System::Boolean SupportsSubSelects();
 };
 
 END_NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES

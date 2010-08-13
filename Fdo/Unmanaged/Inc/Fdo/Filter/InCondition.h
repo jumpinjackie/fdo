@@ -27,6 +27,7 @@
 #include <Fdo/Filter/ValueExpressionCollection.h>
 #include <Fdo/Expression/Identifier.h>
 #include <Fdo/Filter/SearchCondition.h>
+#include <Fdo/Expression/SubSelectExpression.h>
 
 /// \brief
 /// The FdoInCondition class derives from FdoSearchCondition and can be used to test
@@ -44,6 +45,8 @@ protected:
 
     /// Constructs an instance of an FdoInCondition using the specified arguments.
     FdoInCondition(FdoIdentifier* propertyName, FdoString** values, FdoInt32 length);
+
+    FdoInCondition(FdoIdentifier* propertyName, FdoSubSelectExpression* subSel);
 
     virtual ~FdoInCondition();
 
@@ -103,6 +106,19 @@ public:
     FDO_API static FdoInCondition* Create(FdoIdentifier* propertyName, FdoValueExpressionCollection* pCollection);
 
     /// \brief
+    /// Constructs an instance of an FdoInCondition using the specified arguments.
+    /// 
+    /// \param propertyName 
+    /// Input property name
+    /// \param subSel 
+    /// Input a sub-select expression that specifies the values for the IN condition
+    /// 
+    /// \return
+    /// Returns FdoInCondition
+    /// 
+    FDO_API static FdoInCondition* Create(FdoIdentifier* propertyName, FdoSubSelectExpression* subSel);
+
+    /// \brief
     /// Gets the name of the data property.
     /// 
     /// \return
@@ -130,6 +146,24 @@ public:
     FDO_API FdoValueExpressionCollection* GetValues();
 
     /// \brief
+    /// Sub-select is used as source for IN condition.
+    /// It depends of the provider implementation how it is used.
+    ///  Gets the sub-select expression.
+    /// 
+    /// \return
+    /// Returns FdoSubSelectExpression
+    /// 
+    FDO_API FdoSubSelectExpression* GetSubSelect();
+
+    /// \brief
+    ///  Sets the sub-select expression.
+    /// 
+    /// \return
+    /// Returns FdoSubSelectExpression
+    /// 
+    FDO_API void SetSubSelect(FdoSubSelectExpression* value);
+    
+    /// \brief
     /// Overrides FdoFilter.Process to pass the FdoInCondition to the appropriate
     /// filter processor operation.
     /// 
@@ -152,6 +186,7 @@ public:
 private:
     FdoIdentifier*                  m_propertyName;
     FdoValueExpressionCollection*   m_values;
+    FdoSubSelectExpression*         m_subSel;
 };
 #endif
 

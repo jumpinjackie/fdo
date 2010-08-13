@@ -525,6 +525,11 @@
     <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgUnaryExpression.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgUnaryOperations.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgValueExpression.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgExpressionItemType.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgJoinCriteria.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgJoinType.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgJoinCriteriaCollection.h" />
+    <ClInclude Include="..\Src\OSGeo\FDO\Expression\mgSubSelectExpression.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgBinaryLogicalOperations.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgBinaryLogicalOperator.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Filter\mgComparisonCondition.h" />
@@ -735,6 +740,9 @@
     <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgCLOBValue.cpp" />
     <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgComputedIdentifier.cpp" />
     <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDataValue.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgJoinCriteria.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgJoinCriteriaCollection.cpp" />
+    <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgSubSelectExpression.cpp" />
     <ClCompile Include="..\Src\OSGeo\FDO\Expression\mgDataValueCollection.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>

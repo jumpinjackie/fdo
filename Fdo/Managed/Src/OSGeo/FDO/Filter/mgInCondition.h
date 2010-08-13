@@ -25,6 +25,7 @@ class FdoInCondition;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 ref class Identifier;
+ref class SubSelectExpression;
 END_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
@@ -91,6 +92,19 @@ public:
 	InCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ propertyName, NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection^ collection);
 
     /// \brief
+    /// Constructs an instance of an InCondition using the specified arguments.
+    /// 
+    /// \param propertyName 
+    /// Input property name
+    /// \param subSel
+    /// Input sub select
+    /// 
+    /// \return
+    /// Returns InCondition
+    /// 
+	InCondition(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ propertyName, NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ subSel);
+
+    /// \brief
     /// Gets the name of the data property.
     /// 
     /// \return
@@ -120,6 +134,27 @@ public:
     property NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection^ Values
     {
         NAMESPACE_OSGEO_FDO_FILTER::ValueExpressionCollection^ get();
+    }
+
+    /// \brief
+    /// Gets the sub-select expression.
+    /// 
+    /// \return
+    /// Returns the sub-select expression
+    /// 
+    /// \brief
+    /// Sets the sub-select expression.
+    /// 
+    /// \param value 
+    /// Input sub-select expression
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ SubSelect
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ get();
+        System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ value);
     }
 
     /// \brief

@@ -235,6 +235,13 @@ void FilterParseTest::test()
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, perimeter > 100 AND perimeter < 1000");
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, ( Width*Length ) AS Area, Area > 1000 OR perimeter < 100");
     ParseFilter(L"( (Width+Length)*2 ) AS perimeter, ( Width*Length ) AS Area, Area > perimeter");
+
+	ParseFilter(L"FeatId IN ( SELECT (CLS, (PROP*30) AS P1, P1 >= 45, JOIN(CLS2 AS CC, JOININNER, CLS.P1=CC.P2), JOIN(CLS2 AS CC2, JOINRIGHTOUTER, CLS.P1=CC2.P2)) )",
+        L"FeatId IN (SELECT(CLS,( PROP*30 ) AS P1,P1 >= 45,JOIN(CLS2 AS CC,JOININNER,CLS.P1 = CC.P2),JOIN(CLS2 AS CC2,JOINRIGHTOUTER,CLS.P1 = CC2.P2)))");
+	ParseFilter(L"FeatId IN ( SELECT (CLS, (PROP*30) AS P1, P1=45))",
+        L"FeatId IN (SELECT(CLS,( PROP*30 ) AS P1,P1 = 45))");
+	ParseFilter(L"FeatId IN ( SELECT (CLS, (CLS.PROP*30 + \"CLS\".P0+ CLS.\"P2\") AS P1, \"CLS\".\"P1\"=45))",
+        L"FeatId IN (SELECT(CLS,( CLS.PROP*30+CLS.P0+CLS.P2 ) AS P1,CLS.P1 = 45))");
 }
 
 void FilterParseTest::testBoundaryValues()

@@ -297,6 +297,14 @@ FdoInt32 FdoParse::GetLexeme(FdoParse *pParse, void* pyylval)
 	case FdoToken_WITHIN:
 	case FdoToken_WITHINDISTANCE:
 	case FdoToken_BETWEEN:
+	case FdoToken_SELECT:
+    case FdoToken_JOIN:
+    case FdoToken_JOINNONE:
+    case FdoToken_JOININNER:
+    case FdoToken_JOINRIGHTOUTER:
+    case FdoToken_JOINLEFTOUTER:
+    case FdoToken_JOINFULLOUTER:
+    case FdoToken_JOINCROSS:
 		return iToken;
 	default:
 		printf("!ERROR! Unknown token=%d\n", iToken);

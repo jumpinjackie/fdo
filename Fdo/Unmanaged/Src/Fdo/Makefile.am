@@ -74,6 +74,9 @@ libFDOSrc_la_SOURCES = \
   Expression/UnaryExpression.cpp \
   Expression/DataValueCollection.cpp \
   Expression/LiteralValueCollection.cpp \
+  Expression/SubSelectExpression.cpp \
+  Expression/JoinCriteria.cpp \
+  Expression/JoinCriteriaCollection.cpp \
   Filter/BinaryLogicalOperator.cpp \
   Filter/ComparisonCondition.cpp \
   Filter/DistanceCondition.cpp \

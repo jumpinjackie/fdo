@@ -156,6 +156,38 @@ public:
     ///
     FDO_API virtual bool SupportsFlush() = 0;
 
+    /// \brief
+    /// Determines if the provider supports joins.
+    /// 
+    /// \return
+    /// Returns true if the provider supports joins.
+    /// 
+    FDO_API virtual bool SupportsJoins() const
+    {
+        return false;
+    }
+
+    /// \brief
+    /// Gets the FdoJoinType values supported by the provider (by default FdoJoinType_None).
+    /// 
+    /// \return
+    /// Returns the join types
+    /// 
+    FDO_API virtual FdoInt32 GetJoinTypes() const
+    {
+        return 0;
+    }
+
+    /// \brief
+    /// Determines if the provider supports sub-selects.
+    /// 
+    /// \return
+    /// Returns true if the provider supports sub-selects.
+    /// 
+    FDO_API virtual bool SupportsSubSelects() const
+    {
+        return false;
+    }
 };
 #endif
 
