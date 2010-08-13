@@ -1,6 +1,6 @@
 /*
  * 
-* Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2011  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -2103,4 +2103,64 @@ void FdoCommonMiscUtil::GetExpressionType(FdoFunctionDefinitionCollection *funct
         if (!bFound)
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", function->GetName()));
     }
+}
+
+
+void FdoCommonMiscUtil::GetExpressionIdentifiers(FdoFunctionDefinitionCollection *functionDefinitions, 
+                                                 FdoClassDefinition *originalClassDef, 
+                                                 FdoExpression *expression,
+                                                 FdoIdentifierCollection *identifiers)
+{
+    VALIDATE_ARGUMENT(functionDefinitions);
+    VALIDATE_ARGUMENT(originalClassDef);
+    VALIDATE_ARGUMENT(expression);
+    VALIDATE_ARGUMENT(identifiers);
+
+    FdoIdentifier* identifier = dynamic_cast<FdoIdentifier*>(expression);
+    if (NULL != identifier)
+    {
+        FdoPtr<FdoIdentifier> id = identifiers->FindItem(identifier->GetName());
+        if (!id) 
+        {
+            identifiers->Add(identifier);
+        }
+
+        return;
+    }
+
+    FdoComputedIdentifier* computedIdentifier = dynamic_cast<FdoComputedIdentifier*>(expression);
+    if (NULL != computedIdentifier)
+    {
+        return GetExpressionIdentifiers(functionDefinitions, originalClassDef, FdoPtr<FdoExpression>(computedIdentifier->GetExpression()), identifiers);
+    }
+
+    FdoFunction* function = dynamic_cast<FdoFunction*>(expression);
+    if (NULL != function)
+    {
+        FdoPtr<FdoExpressionCollection> args = function->GetArguments();
+        FdoInt32 numArgs = args->GetCount();
+
+        for (FdoInt32 i=0; i<numArgs; i++)
+        {
+            GetExpressionIdentifiers(functionDefinitions, originalClassDef, FdoPtr<FdoExpression>(args->GetItem(i)), identifiers);
+        }
+
+        return;
+    }
+
+    FdoUnaryExpression* unaryExpr = dynamic_cast<FdoUnaryExpression*>(expression);
+    if (NULL != unaryExpr)
+    {
+        return GetExpressionIdentifiers(functionDefinitions, originalClassDef, FdoPtr<FdoExpression>(unaryExpr->GetExpression()), identifiers);
+    }
+
+    FdoBinaryExpression* binaryExpr = dynamic_cast<FdoBinaryExpression*>(expression);
+    if (NULL != binaryExpr)
+    {
+        GetExpressionIdentifiers(functionDefinitions, originalClassDef, FdoPtr<FdoExpression>(binaryExpr->GetLeftExpression()), identifiers);
+        GetExpressionIdentifiers(functionDefinitions, originalClassDef, FdoPtr<FdoExpression>(binaryExpr->GetRightExpression()), identifiers);
+        return;
+    }
+
+    return;
 }

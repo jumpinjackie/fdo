@@ -1,6 +1,6 @@
 /*
  * 
-* Copyright (C) 2004-2007  Autodesk, Inc.
+* Copyright (C) 2004-2011  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -3682,9 +3682,9 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
         void OptimizeSubSet(FilterList& lst)
         {
             FilterList lstEnvInt, lstSpatCond, lstOtherCond;
-            int cnt = lst.size();
+            size_t cnt = lst.size();
             bool invalidFilter = false;
-            for (int i = 0; i < cnt; i++)
+            for (size_t i = 0; i < cnt; i++)
             {
                 if (lst[i].first == OptFilterType_SpaCond)
                 {
@@ -3703,7 +3703,7 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
             if (cnt > 1)
             {
                 // try optimize all EnvelopeIntersects in case we have more
-                for (int i = 0; i < cnt; i++)
+                for (size_t i = 0; i < cnt; i++)
                 {
                     if ((i + 1) < cnt)
                     {
@@ -3733,12 +3733,12 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
                     }
                 }
             }
-            int cntSec = lstSpatCond.size();
+            size_t cntSec = lstSpatCond.size();
             if (cntSec > 1)
             {
                 // rare case when two spatial condition are in the same query
                 // try optimize all spatial cond in case we have more
-                for (int i = 0; i < cntSec; i++)
+                for (size_t i = 0; i < cntSec; i++)
                 {
                     if ((i + 1) < cntSec)
                     {
@@ -3772,9 +3772,9 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
             if (cnt > 0 && cntSec > 0)
             {
                 // not nice but I do not see other way
-                for (int i = 0; i < cnt; i++)
+                for (size_t i = 0; i < cnt; i++)
                 {
-                    for (int y = 0; y < cntSec; y++)
+                    for (size_t y = 0; y < cntSec; y++)
                     {
                         if ((i >= 0 && i < cnt) && (y >= 0 && y < cntSec))
                         {
@@ -3832,10 +3832,10 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
         {
             FdoPtr<FdoBinaryLogicalOperator> blof = FdoBinaryLogicalOperator::Create();
             FdoFilter* filter = FDO_SAFE_ADDREF(blof.p);
-            int cnt = lst.size();
+            size_t cnt = lst.size();
 
             FdoFilter* tmp = NULL;
-            for (int i = 0; i < cnt; i++)
+            for (size_t i = 0; i < cnt; i++)
             {
                 if ((i + 2) >= cnt)
                 {
@@ -4672,4 +4672,49 @@ void FdoExpressionEngineImp::PopulateFunctions()
         mutex.Leave();
         throw;
     }
+}
+
+void FdoExpressionEngineImp::GetExpressionIdentifiers(FdoFunctionDefinitionCollection *functionDefinitions, 
+                                                      FdoClassDefinition* originalClassDef, 
+                                                      FdoExpression *expression, 
+                                                      FdoIdentifierCollection* identifiers)
+{
+    return FdoCommonMiscUtil::GetExpressionIdentifiers(functionDefinitions, originalClassDef, expression, identifiers);
+}
+
+void FdoExpressionEngineImp::GetExpressionIdentifiers(FdoClassDefinition* originalClassDef,
+                                                      FdoExpression *expression, 
+                                                      FdoIdentifierCollection* identifiers)
+{
+    try
+    {
+        mutex.Enter();
+
+        FdoPtr<FdoExpressionEngineFunctionCollection> functions = initFunction.GetAllFunctions();
+        FdoPtr<FdoFunctionDefinitionCollection> functionDefinitions = FdoFunctionDefinitionCollection::Create();
+
+        for (int i=0; i<functions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> function = functions->GetItem(i);
+            FdoPtr<FdoFunctionDefinition> functionDefinition = function->GetFunctionDefinition();
+            functionDefinitions->Add(functionDefinition);
+        }
+
+        FdoCommonMiscUtil::GetExpressionIdentifiers(functionDefinitions, originalClassDef, expression, identifiers);
+
+        functions = NULL;
+        mutex.Leave();
+    }
+    catch (FdoException *)
+    {
+        mutex.Leave();
+        throw;
+    }
+    catch (...)
+    {
+        mutex.Leave();
+        throw;
+    }
+
+    return;
 }

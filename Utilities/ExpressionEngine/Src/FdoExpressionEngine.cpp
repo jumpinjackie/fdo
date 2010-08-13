@@ -1,6 +1,6 @@
 /*
  * 
-* Copyright (C) 2004-2007  Autodesk, Inc.
+* Copyright (C) 2004-2011  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -15,7 +15,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 * 
- */
+*/
 
 #include <stdafx.h>
 #include <FdoExpressionEngine.h>
@@ -36,20 +36,19 @@
 
 
 FdoExpressionEngine* FdoExpressionEngine::Create(FdoIReader* reader, 
-		FdoClassDefinition* classDef, FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+        FdoClassDefinition* classDef, FdoExpressionEngineFunctionCollection *userDefinedFunctions)
 {
-	return new FdoExpressionEngine(reader, classDef, NULL, userDefinedFunctions);
+    return new FdoExpressionEngine(reader, classDef, NULL, userDefinedFunctions);
 }
 
 FdoExpressionEngine* FdoExpressionEngine::Create(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* identifiers,
-		FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+        FdoExpressionEngineFunctionCollection *userDefinedFunctions)
 {
-	return new FdoExpressionEngine(reader, classDef, identifiers, userDefinedFunctions);
+    return new FdoExpressionEngine(reader, classDef, identifiers, userDefinedFunctions);
 }
 
-
 FdoExpressionEngine::FdoExpressionEngine(FdoIReader* reader, FdoClassDefinition* classDef, FdoIdentifierCollection* compIdents,
-		FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+        FdoExpressionEngineFunctionCollection *userDefinedFunctions)
 {
     mEngine = FdoExpressionEngineImp::Create(reader, classDef, compIdents, userDefinedFunctions);
 }
@@ -60,7 +59,7 @@ FdoExpressionEngine::FdoExpressionEngine()
 
 FdoExpressionEngine::~FdoExpressionEngine()
 {
-	mEngine->Release();
+    mEngine->Release();
 }
 
 void FdoExpressionEngine::Dispose()
@@ -70,7 +69,7 @@ void FdoExpressionEngine::Dispose()
 
 FdoLiteralValue* FdoExpressionEngine::Evaluate(FdoExpression *expression)
 {
-	return mEngine->Evaluate(expression);
+    return mEngine->Evaluate(expression);
 }
 
 FdoLiteralValue* FdoExpressionEngine::Evaluate(FdoString* name)
@@ -85,7 +84,7 @@ FdoLiteralValue* FdoExpressionEngine::Evaluate(FdoIdentifier& expr)
 
 FdoPropertyValueCollection* FdoExpressionEngine::RunQuery()
 {
-	return mEngine->RunQuery();
+    return mEngine->RunQuery();
 }
 
 bool FdoExpressionEngine::ProcessFilter(FdoFilter *filter)
@@ -118,7 +117,6 @@ bool FdoExpressionEngine::IsAggregateFunction(FdoFunctionDefinitionCollection *f
     return FdoExpressionEngineImp::IsAggregateFunction(funcDefs, name);
 }
 
-
 void FdoExpressionEngine::GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType)
 {
     FdoExpressionEngineImp::GetExpressionType(functionDefinitions, originalClassDef, expr, retPropType, retDataType);
@@ -129,8 +127,17 @@ void FdoExpressionEngine::GetExpressionType(FdoClassDefinition* originalClassDef
     FdoExpressionEngineImp::GetExpressionType(originalClassDef, expr, retPropType, retDataType);
 }
 
-
 void FdoExpressionEngine::RegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions)
 {
     FdoExpressionEngineImp::RegisterFunctions(userDefinedFunctions);
+}
+
+void FdoExpressionEngine::GetExpressionIdentifiers(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expression, FdoIdentifierCollection* identifiers)
+{
+    FdoExpressionEngineImp::GetExpressionIdentifiers(functionDefinitions, originalClassDef, expression, identifiers);
+}
+
+void FdoExpressionEngine::GetExpressionIdentifiers(FdoClassDefinition* originalClassDef, FdoExpression *expression, FdoIdentifierCollection* identifiers)
+{
+    FdoExpressionEngineImp::GetExpressionIdentifiers(originalClassDef, expression, identifiers);
 }
