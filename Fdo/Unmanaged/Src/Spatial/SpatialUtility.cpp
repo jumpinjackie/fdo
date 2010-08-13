@@ -4663,3 +4663,98 @@ FdoPolygonVertexOrderRule FdoSpatialUtility::CheckPolygonVertexOrder(FdoIGeometr
     return vertexOrderRule;
 }
 
+FdoPolygonVertexOrderAction FdoSpatialUtility::GetPolygonVertexOrderAction(
+    FdoPolygonVertexOrderRule sourceVertexOrderRule,
+    FdoBoolean sourceStrictnessRule,
+    FdoPolygonVertexOrderRule targetVertexOrderRule,
+    FdoBoolean targetStrictnessRule)
+{
+    static FdoPolygonVertexOrderAction table[36] = {
+                                                     // From Order    From Strict    To Order    To Strict     NonSense
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CCW           Enforced       CCW         Enforced
+        FdoPolygonVertexOrderAction_None,            // CCW           Enforced       CCW         Not enforced
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CCW           Enforced       CW          Enforced
+        FdoPolygonVertexOrderAction_Reverse,         // CCW           Enforced       CW          Not enforced
+        FdoPolygonVertexOrderAction_None,            // CCW           Enforced       None        Enforced      True
+        FdoPolygonVertexOrderAction_None,            // CCW           Enforced       None        Not enforced
+
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CCW           Not enforced   CCW         Enforce
+        FdoPolygonVertexOrderAction_None,            // CCW           Not enforced   CCW         Not enforced
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CCW           Not enforced   CW          Enforced
+        FdoPolygonVertexOrderAction_Reverse,         // CCW           Not enforced   CW          Not enforced
+        FdoPolygonVertexOrderAction_None,            // CCW           Not enforced   None        Enforced      True
+        FdoPolygonVertexOrderAction_None,            // CCW           Not enforced   None        Not enforced
+
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CW            Enforced       CCW         Enforced
+        FdoPolygonVertexOrderAction_Reverse,         // CW            Enforced       CCW         Not enforced
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CW            Enforced       CW          Enforced
+        FdoPolygonVertexOrderAction_None,            // CW            Enforced       CW          Not enforced
+        FdoPolygonVertexOrderAction_None,            // CW            Enforced       None        Enforced      True
+        FdoPolygonVertexOrderAction_None,            // CW            Enforced       None        Not enforced
+
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CW            Not enforced   CCW         Enforced
+        FdoPolygonVertexOrderAction_Reverse,         // CW            Not enforced   CCW         Not enforced
+        FdoPolygonVertexOrderAction_CheckAndReverse, // CW            Not enforced   CW          Enforced
+        FdoPolygonVertexOrderAction_None,            // CW            Not enforced   CW          Not enforced
+        FdoPolygonVertexOrderAction_None,            // CW            Not enforced   None        Enforced      True
+        FdoPolygonVertexOrderAction_None,            // CW            Not enforced   None        Not enforced
+
+        FdoPolygonVertexOrderAction_CheckAndReverse, // None          Enforced       CCW         Enforced      True
+        FdoPolygonVertexOrderAction_None,            // None          Enforced       CCW         Not enforced  True
+        FdoPolygonVertexOrderAction_CheckAndReverse, // None          Enforced       CW          Enforced      True
+        FdoPolygonVertexOrderAction_None,            // None          Enforced       CW          Not enforced  True
+        FdoPolygonVertexOrderAction_None,            // None          Enforced       None        Enforced      True
+        FdoPolygonVertexOrderAction_None,            // None          Enforced       None        Not enforced  True
+
+        FdoPolygonVertexOrderAction_CheckAndReverse, // None          Not enforced   CCW         Enforced
+        FdoPolygonVertexOrderAction_None,            // None          Not enforced   CCW         Not enforced
+        FdoPolygonVertexOrderAction_CheckAndReverse, // None          Not enforced   CW          Enforced
+        FdoPolygonVertexOrderAction_None,            // None          Not enforced   CW          Not enforced
+        FdoPolygonVertexOrderAction_None,            // None          Not enforced   None        Enforced      True
+        FdoPolygonVertexOrderAction_None             // None          Not enforced   None        Not enforced
+    };
+
+    int nFactor1(0), nFactor2(0), nFactor3(0), nFactor4(0);
+    switch(sourceVertexOrderRule)
+    {
+        case FdoPolygonVertexOrderRule_CCW:
+            nFactor1 = 0;
+            break;
+        case FdoPolygonVertexOrderRule_CW:
+            nFactor1 = 1;
+            break;
+        default:
+            nFactor1 = 2;
+            break;
+    }
+    nFactor2 = sourceStrictnessRule ? 0 : 1;
+
+    switch(targetVertexOrderRule)
+    {
+        case FdoPolygonVertexOrderRule_CCW:
+            nFactor3 = 0;
+            break;
+        case FdoPolygonVertexOrderRule_CW:
+            nFactor3 = 1;
+            break;
+        default:
+            nFactor3 = 2;
+            break;
+    }
+    nFactor4 = targetStrictnessRule ? 0 : 1;
+
+    // You can consider array table[36] as array[3][2][3][2].
+    // The first dimension is the source vertex order rule.
+    // The second dimension is the source strictness rule.
+    // The third dimension is the target vertex order rule.
+    // The forth dimension is the target strictness rule.
+    // The following formula is equivalent to array[nFactor1][nFactor2][nFactor3][nFactor4].
+    // nFactor1 is the index value of the source vertex order rule.
+    // nFactor2 is the index value of the source strictness rule.
+    // nFactor3 is the index value of the target vertex order rule.
+    // nFactor4 is the index value of the target strictness rule.
+    int nIndex = nFactor1*12 + nFactor2*6 + nFactor3*2 + nFactor4;
+    return table[nIndex];
+
+}
+
