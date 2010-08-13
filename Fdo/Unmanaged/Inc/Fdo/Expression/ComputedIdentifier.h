@@ -121,6 +121,13 @@ public:
     FDO_API FdoString* ToString();
 
     /// \brief
+    /// Returns the type of the expression as computed identifier
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_ComputedIdentifier; };
+
+    /// \brief
     /// This is an internal method. It returns the well defined text representation of the expression. 
     /// 
     /// \param pIdCol 

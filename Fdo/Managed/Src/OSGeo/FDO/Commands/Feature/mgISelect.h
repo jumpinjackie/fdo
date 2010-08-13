@@ -26,6 +26,10 @@ BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 interface class ILockConflictReader;
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING
 
+BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
+ref class JoinCriteriaCollection;
+END_NAMESPACE_OSGEO_FDO_EXPRESSION
+
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE
 interface class IFeatureReader;
 
@@ -118,6 +122,39 @@ public:
     property NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ LockConflicts
     {
         NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ get();
+    }
+
+    /// \brief
+    /// Add join criteria definitions to define join selects.
+    /// This function throws an exception in case is not supported by the data provider
+    /// 
+    /// \return
+    /// Returns a join criteria collection or throws an exception.
+    /// 
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ JoinCriteria
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ get();
+    }
+
+    /// \brief
+    /// Gets the alias of the class in join definition.
+    /// 
+    /// \return
+    /// Returns the alias or null value.
+    /// 
+    /// \brief
+    /// Sets the alias of the class in join definition.
+    /// 
+    /// \param value 
+    /// Input the alias value.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    property System::String^ Alias
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
     }
 };
 

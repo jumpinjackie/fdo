@@ -24,6 +24,7 @@
 #endif
 
 #include <FdoStd.h>
+#include <Fdo/Expression/ExpressionItemType.h>
 
 class FdoIExpressionProcessor;
 class FdoIdentifierCollection;
@@ -77,6 +78,14 @@ public:
     /// Returns the well defined text string
     /// 
     FDO_API virtual FdoString* ToString() = 0;
+
+    /// \brief
+    /// Abstract operation that returns the type of the expression
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    /// 
+    FDO_API virtual FdoExpressionItemType GetExpressionType() = 0;
 
     /// \brief
     /// This is an internal method. It returns the well defined text representation of the expression. 

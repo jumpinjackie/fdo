@@ -221,6 +221,11 @@ EXTRA_DIST = \
     Fdo/Expression/ExpressionCollection.h \
     Fdo/Expression/ExpressionException.h \
     Fdo/Expression/ExpressionType.h \
+    Fdo/Expression/JoinCriteria.h \
+    Fdo/Expression/JoinCriteriaCollection.h \
+    Fdo/Expression/JoinType.h \
+    Fdo/Expression/SubSelectExpression.h \
+    Fdo/Expression/ExpressionItemType.h \
     Fdo/Expression/Function.h \
     Fdo/Expression/GeometryValue.h \
     Fdo/Expression/Identifier.h \

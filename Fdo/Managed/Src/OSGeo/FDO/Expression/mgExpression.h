@@ -18,11 +18,14 @@
 
 #pragma once
 
+#include "FDO\Expression\mgExpressionItemType.h"
+
 class FdoExpression;
 
 BEGIN_NAMESPACE_OSGEO_FDO_EXPRESSION
 
 interface class IExpressionProcessor;
+enum class ExpressionItemType;
 
 /// \ingroup (OSGeoFDOExpression)
 /// \brief
@@ -80,6 +83,17 @@ public:
     /// once it no longer referenced.
     /// 
 	Expression(System::IntPtr unmanaged, System::Boolean autoDelete);
+
+    /// \brief
+    /// return the type of the expression
+    /// 
+    /// \return
+    /// Returns ExpressionItemType
+    /// 
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionItemType ExpressionType
+    {
+        NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionItemType get();
+    }
 
 internal:
 	inline FdoExpression* GetImpObj();

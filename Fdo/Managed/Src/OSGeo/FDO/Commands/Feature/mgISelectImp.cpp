@@ -94,3 +94,24 @@ NAMESPACE_OSGEO_FDO_COMMANDS_LOCKING::ILockConflictReader^ NAMESPACE_OSGEO_FDO_C
 
     return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateILockConflictReader(IntPtr(result), true);
 }
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::JoinCriteria::get()
+{
+	FdoJoinCriteriaCollection* result;
+
+	EXCEPTION_HANDLER(result = GetImpObj()->GetJoinCriteria())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^>(ObjectFactory::CreateJoinCriteriaCollection(IntPtr(result), true));
+}
+
+System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::Alias::get()
+{
+	FdoString* unstr;
+    EXCEPTION_HANDLER(unstr = GetImpObj()->GetAlias())
+	return CHECK_STRING(unstr);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::ISelectImp::Alias::set(System::String^ value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetAlias(StringToUni(value)))
+}

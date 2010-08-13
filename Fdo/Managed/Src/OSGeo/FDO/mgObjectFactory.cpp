@@ -1,6 +1,6 @@
 /*
 * 
-* Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2011  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -227,6 +227,9 @@
 #include "FDO\Expression\mgSingleValue.h"
 #include "FDO\Expression\mgStringValue.h"
 #include "FDO\Expression\mgDataValueCollection.h"
+#include "FDO\Expression\mgJoinCriteria.h"
+#include "FDO\Expression\mgJoinCriteriaCollection.h"
+#include "FDO\Expression\mgSubSelectExpression.h"
 
 #include "FDO\Filter\mgFilter.h"
 #include "FDO\Filter\mgBinaryLogicalOperator.h"
@@ -899,6 +902,30 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO::ObjectFactory::
     if (wrap = CHECK<FdoComputedIdentifier, NAMESPACE_OSGEO_FDO_EXPRESSION::ComputedIdentifier>(p, autoDispose)) return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^>(wrap);
 
     return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteria^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateJoinCriteria(System::IntPtr ptr, System::Boolean autoDispose)
+{
+    if (ptr == IntPtr::Zero)
+	    return nullptr;
+
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteria(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateJoinCriteriaCollection(System::IntPtr ptr, System::Boolean autoDispose)
+{
+    if (ptr == IntPtr::Zero)
+	    return nullptr;
+
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection(ptr, autoDispose);
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateSubSelectExpression(System::IntPtr ptr, System::Boolean autoDispose)
+{
+    if (ptr == IntPtr::Zero)
+	    return nullptr;
+
+    return gcnew NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression(ptr, autoDispose);
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::LiteralValue^ NAMESPACE_OSGEO_FDO::ObjectFactory::CreateLiteralValue(System::IntPtr ptr, System::Boolean autoDispose)

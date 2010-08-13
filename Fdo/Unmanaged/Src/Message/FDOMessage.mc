@@ -3100,3 +3100,18 @@ SymbolicName=FDO_185_READ_FILE_ERROR
 Language=English
 Error occured reading file '%1$ls'.
 .
+MessageId=9190
+SymbolicName=FDO_JOIN_INCOMPLETE_DEFINITION
+Language=English
+Join definition '%1$ls' is incomplete .
+.
+MessageId=9191
+SymbolicName=FDO_JOIN_CANNOTHAVE_FILTER
+Language=English
+Cross join '%1$ls' cannot have a filter defined.
+.
+MessageId=9192
+SymbolicName=FDO_JOIN_MUSTHAVE_FILTER
+Language=English
+Join '%1$ls' must have a filter defined.
+.

@@ -62,3 +62,10 @@ System::String^ NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ToString()
 
 	return CHECK_STRING(unstr);
 }
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionItemType NAMESPACE_OSGEO_FDO_EXPRESSION::Expression::ExpressionType::get()
+{
+	FdoExpressionItemType ret;
+    EXCEPTION_HANDLER(ret = GetImpObj()->GetExpressionType())
+	return static_cast<NAMESPACE_OSGEO_FDO_EXPRESSION::ExpressionItemType>(ret);
+}

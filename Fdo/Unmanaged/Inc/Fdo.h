@@ -193,6 +193,10 @@
 #include <Fdo/Expression/UnaryExpression.h>
 #include <Fdo/Expression/UnaryOperations.h>
 #include <Fdo/Expression/ValueExpression.h>
+#include <Fdo/Expression/ExpressionItemType.h>
+#include <Fdo/Expression/JoinCriteria.h>
+#include <Fdo/Expression/JoinCriteriaCollection.h>
+#include <Fdo/Expression/SubSelectExpression.h>
 
 ////////////////////////////////////////////////////////////////
 // Filter

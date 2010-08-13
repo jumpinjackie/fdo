@@ -113,6 +113,39 @@ public:
         System::Void set(NAMESPACE_OSGEO_FDO_FILTER::Filter^ value);
     }
 
+    /// \brief
+    /// Add join criteria definitions to define join selects.
+    /// This function throws an eception in case is not supported by the data provider
+    /// 
+    /// \return
+    /// Returns a join criteria collection or throws an exception.
+    /// 
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ JoinCriteria
+    {
+        virtual NAMESPACE_OSGEO_FDO_EXPRESSION::JoinCriteriaCollection^ get();
+    }
+
+    /// \brief
+    /// Gets the alias of the class in join definition.
+    /// 
+    /// \return
+    /// Returns the alias or null value.
+    /// 
+    /// \brief
+    /// Sets the alias of the class in join definition.
+    /// 
+    /// \param value 
+    /// Input the alias value.
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    virtual property System::String^ Alias
+    {
+        System::String^ get();
+        System::Void set(System::String^ value);
+    }
+
 internal:
 	ISelectAggregatesImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS_FEATURE::IBaseSelectImp(unmanaged, autoDelete)
 	{

@@ -272,6 +272,14 @@ public:
     /// 
    	FDO_API virtual FdoLiteralValueType GetLiteralValueType () const;
 
+    /// \brief
+    /// Returns the type of the expression as data value
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    /// 
+   	FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_DataValue; };
+
 	static FdoDataValue* Create(FdoString* value, FdoDataType dataType);
 
     // Get the value as an XML format string.

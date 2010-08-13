@@ -3,7 +3,7 @@
 // 
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2011  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -33,6 +33,7 @@
 #include <Fdo/Commands/IdentifierCollection.h>
 #include <Fdo/Commands/OrderingOption.h>
 #include <Fdo/Commands/Feature/IBaseSelect.h>
+#include <Fdo/Expression/JoinCriteriaCollection.h>
 
 /// \brief
 /// The FdoISelect interface defines the Select command, which queries for features
@@ -117,6 +118,37 @@ public:
     /// Returns a lock conflict reader.
     /// 
     FDO_API virtual FdoILockConflictReader* GetLockConflicts() = 0;
+
+    /// \brief
+    /// Gets the join criteria collection used to define a join.
+    /// In case this is not supported by the provider an exception will be thrown
+    /// 
+    /// \return
+    /// Returns join collection or will throw an exception.
+    /// 
+    FDO_API virtual FdoJoinCriteriaCollection* GetJoinCriteria()
+    {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_3_NOTIMPLEMENTED)));
+    }
+
+    /// \brief
+    /// Gets the alias used for the main feature class.
+    /// 
+    /// \return
+    /// Returns the text representing the alias value.
+    /// 
+    FDO_API virtual FdoString* GetAlias() { return NULL; }
+
+    /// \brief
+    /// Sets the alias used for the main feature class.
+    /// 
+    /// \param alias
+    /// Alias value for the main feature class
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    FDO_API virtual void SetAlias(FdoString* /*alias*/) { }
 };
 #endif
 

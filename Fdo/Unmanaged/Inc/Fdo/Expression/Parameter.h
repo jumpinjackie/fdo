@@ -110,6 +110,14 @@ public:
     /// 
     FDO_API FdoString* ToString();
 
+    /// \brief
+    /// Returns the type of the expression as parameter
+    /// 
+    /// \return
+    /// Returns FdoExpressionItemType
+    /// 
+    FDO_API FdoExpressionItemType GetExpressionType() { return FdoExpressionItemType_Parameter; };
+
 private:
     wchar_t*    m_name;
 };

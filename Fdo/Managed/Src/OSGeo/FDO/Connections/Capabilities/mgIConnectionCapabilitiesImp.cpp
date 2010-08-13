@@ -132,3 +132,24 @@ System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabil
 	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsFlush())
 	return rv;
 }
+
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::SupportsJoins()
+{
+	System::Boolean rv;
+	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsJoins())
+	return rv;
+}
+
+System::Int32 NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::JoinTypes::get()
+{
+	System::Int32 ret;
+	EXCEPTION_HANDLER(ret = GetImpObj()->GetJoinTypes())
+	return ret;
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::SupportsSubSelects()
+{
+	System::Boolean rv;
+	EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSubSelects())
+	return rv;
+}
