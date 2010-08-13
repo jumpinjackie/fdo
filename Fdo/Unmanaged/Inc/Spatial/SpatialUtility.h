@@ -30,6 +30,24 @@ typedef struct RingArea_def
     double      area;
 } RingArea_def;
 
+/// \ingroup (enums)
+/// \brief
+/// FdoFixPolygonVertexOrderAction is an enumeration of the action taken 
+/// when copying polygon from a source provider to a target provider.
+///
+enum FdoPolygonVertexOrderAction
+{
+    /// No processing.
+    FdoPolygonVertexOrderAction_None = 0,
+
+    /// Reverse polygon vertex.
+    FdoPolygonVertexOrderAction_Reverse = 1,
+
+    /// Check polygon vertex order and reverse it if necessary.
+    FdoPolygonVertexOrderAction_CheckAndReverse = 2
+};
+
+
 /// \brief
 /// Spatial utility class.
 class FdoSpatialUtility
@@ -436,6 +454,30 @@ public:
     /// Returns the vertex order of the input polygon.
     /// 
     FDO_SPATIAL_API static FdoPolygonVertexOrderRule CheckPolygonVertexOrder(FdoIGeometry* geometry);
+
+    /// \brief
+    /// Given the vertex order and strictness rule of the source and the target,
+    /// get the action taken when copying polygon from a source provider to 
+    /// a target provider.
+    ///
+    /// \param sourceVertexOrderRule
+    /// Input the vertex order rule of the source.
+    /// \param sourceStrictnessRule
+    /// Input the vertex order strictness rule of the source.
+    /// \param targetVertexOrderRule
+    /// Input the vertex order rule of the target.
+    /// \param targetStrictnessRule
+    /// Input the vertex order strictness rule of the target.
+    /// 
+    /// \return
+    /// Returns the action taken when copying polygon from a source provider 
+    /// to a target provider.
+    /// 
+    FDO_SPATIAL_API static FdoPolygonVertexOrderAction GetPolygonVertexOrderAction(
+        FdoPolygonVertexOrderRule sourceVertexOrderRule,
+        FdoBoolean sourceStrictnessRule,
+        FdoPolygonVertexOrderRule targetVertexOrderRule,
+        FdoBoolean targetStrictnessRule);
 
 private:
     static bool pt_is_on_line(

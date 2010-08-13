@@ -40,6 +40,11 @@ void dot2tilde(std::wstring& wname)
     }
 }
 
+FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps)
+{
+    return ConvertClass(NULL, layer, requestedProps);
+}
+
 FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* requestedProps)
 {
     OGRFeatureDefn* fdefn = layer->GetLayerDefn();
@@ -52,30 +57,35 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
 #if DEBUG
     printf ("Feature class name: %s\n", name);
 #endif
-    FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname.c_str(), L"");
-    FdoPtr<FdoClassCapabilities> classCapabilities = FdoClassCapabilities::Create(*fc.p);
-    classCapabilities->SetSupportsLocking(false);
-    classCapabilities->SetSupportsLongTransactions(false);
-    classCapabilities->SetSupportsWrite(false);
-    fc->SetCapabilities(classCapabilities);
 
+    FdoPtr<FdoFeatureClass> fc = FdoFeatureClass::Create(wname.c_str(), L"");
+    FdoPtr<FdoClassCapabilities> classCapabilities;
     FdoPolygonVertexOrderRule vertexOrderRule = FdoPolygonVertexOrderRule_CCW;
     bool bStrictness = false;
-    OGRDataSource* dataStore = connection->GetOGRDataSource();
-    if (NULL != dataStore)
+    if (connection)
     {
-        OGRSFDriver* driver = dataStore->GetDriver();
-        if (NULL != driver)
-        {
-            const char* name = driver->GetName();
+        classCapabilities = FdoClassCapabilities::Create(*fc.p);
+        classCapabilities->SetSupportsLocking(false);
+        classCapabilities->SetSupportsLongTransactions(false);
+        classCapabilities->SetSupportsWrite(true);
+        fc->SetCapabilities(classCapabilities);
 
-            // As far as I know, ESRI Shapefile is the only feature source that uses
-            // clockwise vertex order. I assume other feature sources use counterclockwise
-            // vertex order.
-            if (strcmp(name, "ESRI Shapefile") == 0)
+        OGRDataSource* dataStore = connection->GetOGRDataSource();
+        if (NULL != dataStore)
+        {
+            OGRSFDriver* driver = dataStore->GetDriver();
+            if (NULL != driver)
             {
-                vertexOrderRule = FdoPolygonVertexOrderRule_CW;
-                bStrictness = true;
+                const char* name = driver->GetName();
+
+                // As far as I know, ESRI Shapefile is the only feature source that uses
+                // clockwise vertex order. I assume other feature sources use counterclockwise
+                // vertex order.
+                if (strcmp(name, "ESRI Shapefile") == 0)
+                {
+                    vertexOrderRule = FdoPolygonVertexOrderRule_CW;
+                    bStrictness = true;
+                }
             }
         }
     }
@@ -165,9 +175,12 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
             pdc->Add(gpd);
             fc->SetGeometryProperty(gpd);
 
-            // Set vertex order and strictness rule for geometry property
-            classCapabilities->SetPolygonVertexOrderRule(gpd->GetName(), vertexOrderRule);
-            classCapabilities->SetPolygonVertexOrderStrictness(gpd->GetName(), bStrictness);
+            if (classCapabilities != NULL)
+            {
+                // Set vertex order and strictness rule for geometry property
+                classCapabilities->SetPolygonVertexOrderRule(gpd->GetName(), vertexOrderRule);
+                classCapabilities->SetPolygonVertexOrderStrictness(gpd->GetName(), bStrictness);
+            }
         }
     }
 

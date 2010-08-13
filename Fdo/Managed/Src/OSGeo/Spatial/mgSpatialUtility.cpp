@@ -382,3 +382,10 @@ NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule NAMESPACE_OSGEO_SPATIAL::Spat
 	}
 	return static_cast<NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule>(vertexOrderRule);
 }
+
+NAMESPACE_OSGEO_SPATIAL::PolygonVertexOrderAction NAMESPACE_OSGEO_SPATIAL::SpatialUtility::GetPolygonVertexOrderAction( NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule sourceVertexOrderRule, System::Boolean sourceStrictnessRule, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule targetVertexOrderRule, System::Boolean targetStrictnessRule )
+{
+    FdoPolygonVertexOrderAction action = FdoPolygonVertexOrderAction_None;
+	EXCEPTION_HANDLER(action = FdoSpatialUtility::GetPolygonVertexOrderAction(static_cast<FdoPolygonVertexOrderRule>(sourceVertexOrderRule), sourceStrictnessRule, static_cast<FdoPolygonVertexOrderRule>(targetVertexOrderRule), targetStrictnessRule ))
+	return static_cast<NAMESPACE_OSGEO_SPATIAL::PolygonVertexOrderAction>(action);;
+}

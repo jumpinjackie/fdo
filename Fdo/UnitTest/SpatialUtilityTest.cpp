@@ -2738,8 +2738,8 @@ void SpatialUtilityTest::testFixPolygonVertexOrder()
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
     CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
 
-    // Exterior ring and interior rings are all clock wise.
-    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+    // Exterior ring and interior rings are clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
     oldGeom = gf->CreateGeometry(wrongFgfText);
 
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
@@ -2748,8 +2748,8 @@ void SpatialUtilityTest::testFixPolygonVertexOrder()
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
     CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
 
-    // Exterior ring and interior rings are couter clock wise.
-    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    // Exterior ring and interior rings are all couter clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
     oldGeom = gf->CreateGeometry(wrongFgfText);
 
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
@@ -2776,8 +2776,8 @@ void SpatialUtilityTest::testFixPolygonVertexOrder()
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
     CheckFGFT(newGeom, correctFgfTextWithCouterClockwiseOrder);
 
-    // Exterior ring and interior rings are all clock wise.
-    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    // Exterior ring and interior rings are clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
     oldGeom = gf->CreateGeometry(wrongFgfText);
 
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
@@ -2786,8 +2786,8 @@ void SpatialUtilityTest::testFixPolygonVertexOrder()
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CW);
     CheckFGFT(newGeom, correctFgfTextWithClockwiseOrder);
 
-    // Exterior ring and interior rings are couter clock wise.
-    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+    // Exterior ring and interior rings are all couter clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
     oldGeom = gf->CreateGeometry(wrongFgfText);
 
     newGeom = FdoSpatialUtility::FixPolygonVertexOrder(oldGeom, FdoPolygonVertexOrderRule_CCW);
@@ -2947,14 +2947,14 @@ void SpatialUtilityTest::testCheckPolygonVertexOrder()
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
 
-    // Exterior ring and interior rings are all clock wise.
-    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
+    // Exterior ring and interior rings are clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
     geometry = gf->CreateGeometry(wrongFgfText);
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
 
-    // Exterior ring and interior rings are couter clock wise.
-    wrongFgfText = L"POLYGON ((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+    // Exterior ring and interior rings are all couter clock wise.
+    wrongFgfText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3))";
     geometry = gf->CreateGeometry(wrongFgfText);
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
@@ -2971,14 +2971,14 @@ void SpatialUtilityTest::testCheckPolygonVertexOrder()
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("CW vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_CW);
 
-    // Exterior ring and interior rings are all clock wise.
-    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+    // Exterior ring and interior rings are clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
     geometry = gf->CreateGeometry(wrongFgfText);
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
 
-    // Exterior ring and interior rings are couter clock wise.
-    wrongFgfText = L"MULTIPOLYGON (((0 0, 0 5, 5 5, 5 0, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 10 10, 20 10, 20 0, 10 0)))";
+    // Exterior ring and interior rings are all couter clock wise.
+    wrongFgfText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 1, 2 2, 1 1), (3 3, 4 3, 4 4, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
     geometry = gf->CreateGeometry(wrongFgfText);
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
@@ -3030,4 +3030,29 @@ void SpatialUtilityTest::testCheckPolygonVertexOrder()
     geometry = gf->CreateGeometry(wrongFgfText);
     vertexOrderRule = FdoSpatialUtility::CheckPolygonVertexOrder(geometry);
     CPPUNIT_ASSERT_MESSAGE("None vertex order is expected!", vertexOrderRule == FdoPolygonVertexOrderRule_None);
+}
+
+void SpatialUtilityTest::testGetPolygonVertexOrderAction()
+{
+    FdoPolygonVertexOrderAction action;
+    action = FdoSpatialUtility::GetPolygonVertexOrderAction(
+            FdoPolygonVertexOrderRule_CW,
+            false,
+            FdoPolygonVertexOrderRule_CW,
+            false);
+    CPPUNIT_ASSERT_MESSAGE("Action None is expected!",  action == FdoPolygonVertexOrderAction_None);
+
+    action = FdoSpatialUtility::GetPolygonVertexOrderAction(
+            FdoPolygonVertexOrderRule_CCW,
+            false,
+            FdoPolygonVertexOrderRule_CW,
+            false);
+    CPPUNIT_ASSERT_MESSAGE("Action Reverse is expected!",  action == FdoPolygonVertexOrderAction_Reverse);
+
+    action = FdoSpatialUtility::GetPolygonVertexOrderAction(
+            FdoPolygonVertexOrderRule_CW,
+            false,
+            FdoPolygonVertexOrderRule_CW,
+            true);
+    CPPUNIT_ASSERT_MESSAGE("Action CheckAndFix is expected!",  action == FdoPolygonVertexOrderAction_CheckAndReverse);
 }

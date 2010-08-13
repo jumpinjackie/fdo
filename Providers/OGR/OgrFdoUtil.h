@@ -25,6 +25,7 @@ class OgrFdoUtil
 {
 public:
     static FdoClassDefinition* ConvertClass(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* requestedProps = NULL);
+    static FdoClassDefinition* ConvertClass(OGRLayer* layer, FdoIdentifierCollection* requestedProps = NULL);
     static void ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst, OGRLayer* layer);
     static void ApplyFilter(OGRLayer* layer, FdoFilter* filter);
     static int Fgf2Wkb(const unsigned char* fgf, unsigned char* wkb);

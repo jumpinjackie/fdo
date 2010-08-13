@@ -35,6 +35,23 @@ BEGIN_NAMESPACE_OSGEO_SPATIAL
 
 /// \ingroup (OSGeoFDOSpatial)
 /// \brief
+/// PolygonVertexOrderAction is an enumeration of the action taken 
+/// when copying polygon from a source provider to a target provider.
+///
+public enum class PolygonVertexOrderAction
+{
+    /// No processing.
+    PolygonVertexOrderAction_None = FdoPolygonVertexOrderAction_None,
+
+    /// Reverse polygon vertex.
+    PolygonVertexOrderAction_Reverse = FdoPolygonVertexOrderAction_Reverse,
+
+    /// Check polygon vertex order and fix it if necessary.
+    PolygonVertexOrderAction_CheckAndFix = FdoPolygonVertexOrderAction_CheckAndReverse
+};
+
+/// \ingroup (OSGeoFDOSpatial)
+/// \brief
 /// A Spatial utility class.
 public ref class SpatialUtility sealed
 {
@@ -474,7 +491,27 @@ public:
     /// \return
     /// Returns the vertex order of the input polygon.
     /// 
-    static NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule CheckPolygonVertexOrder(NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry);
+    static NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule CheckPolygonVertexOrder( NAMESPACE_OSGEO_GEOMETRY::IGeometry^ geometry);
+
+    /// \brief
+    /// Given the vertex order and strictness rule of the source and the target,
+    /// get the action taken when copying polygon from a source provider to 
+    /// a target provider.
+    ///
+    /// \param sourceVertexOrderRule
+    /// Input the vertex order rule of the source.
+    /// \param sourceStrictnessRule
+    /// Input the vertex order strictness rule of the source.
+    /// \param targetVertexOrderRule
+    /// Input the vertex order rule of the target.
+    /// \param targetStrictnessRule
+    /// Input the vertex order strictness rule of the target.
+    /// 
+    /// \return
+    /// Returns the action taken when copying polygon from a source provider 
+    /// to a target provider.
+    /// 
+    static PolygonVertexOrderAction GetPolygonVertexOrderAction( NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule sourceVertexOrderRule, System::Boolean sourceStrictnessRule, NAMESPACE_OSGEO_FDO_SCHEMA::PolygonVertexOrderRule targetVertexOrderRule, System::Boolean targetStrictnessRule );
 
 private:
 	SpatialUtility(){}
