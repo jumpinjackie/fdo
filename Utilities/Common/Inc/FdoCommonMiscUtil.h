@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+ * Copyright (C) 2004-2011  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,7 +17,7 @@
  */
 
 #ifndef FDOCOMMONMISCUTIL___H
-#define FDOCOMMONMISCUTIL___H	1
+#define FDOCOMMONMISCUTIL___H    1
 
 #ifdef _WIN32
 #pragma once
@@ -85,7 +85,6 @@ public:
     /// \brief
     /// Serialize FdoGeometryType to FdoString*:
     static FdoStringP FdoGeometryTypeToString (FdoGeometryType geomType);
-
 
     /// brief
     /// Compares two FdoDateTime instances
@@ -181,8 +180,11 @@ public:
     /// \return
     /// Returns nothing
     /// 
-
-	static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, FdoClassDefinition* originalClassDef, FdoExpression *expr, FdoPropertyType &retPropType, FdoDataType &retDataType);
+    static void GetExpressionType(FdoFunctionDefinitionCollection *functionDefinitions, 
+                                  FdoClassDefinition* originalClassDef, 
+                                  FdoExpression *expr, 
+                                  FdoPropertyType &retPropType, 
+                                  FdoDataType &retDataType);
 
     /// \brief
     /// Check if the data values are equal
@@ -196,7 +198,7 @@ public:
     /// \return
     /// Returns true if the data values are equal
     /// 
-	static bool IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight);
+    static bool IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight);
 
     /// \brief
     /// Check if the first argument is less than the second argument
@@ -210,7 +212,7 @@ public:
     /// \return
     /// Returns true if first argument is less than the second argument
     /// 
-	static bool IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRight);
+    static bool IsLessThan (FdoDataValue* argLeft, FdoDataValue* argRight);
 
     /// \brief
     /// Check if the first argument is greater than the second argument
@@ -224,9 +226,31 @@ public:
     /// \return
     /// Returns true if first argument is greater than the second argument
     /// 
-
     static bool IsGreaterThan (FdoDataValue* argLeft, FdoDataValue* argRight);
 
+    /// \brief
+    /// Returns the list of class identifiers referenced by an expression
+    /// 
+    /// \param functions
+    /// Input a list of functions to be used when processing function type expressions
+    ///
+    /// \param originalClassDef
+    /// Input the class definition applicable to the expression being evaluated
+    ///
+    /// \param expression
+    /// Input the expression to be evaluated
+    ///
+    /// \param identifiers
+    /// Output the IdentifierCollection that will be populated with the list of class 
+    /// identifiers referenced by the expression
+    ///
+    /// \return
+    /// Returns nothing
+    /// 
+    static void GetExpressionIdentifiers(FdoFunctionDefinitionCollection *functionDefinitions, 
+                                         FdoClassDefinition *originalClassDef, 
+                                         FdoExpression *expression,
+                                         FdoIdentifierCollection *identifiers);
 };
 
 
