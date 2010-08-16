@@ -95,12 +95,12 @@ void FdoSubSelectExpression::Dispose()
     delete this;
 }
 
-FdoIdentifier* FdoSubSelectExpression::GetClassName()
+FdoIdentifier* FdoSubSelectExpression::GetFeatureClassName()
 {
 	return FDO_SAFE_ADDREF( m_className.p );
 }
 
-void FdoSubSelectExpression::SetClassName(FdoIdentifier* value)
+void FdoSubSelectExpression::SetFeatureClassName(FdoIdentifier* value)
 {
     m_className = FDO_SAFE_ADDREF( value );
 }

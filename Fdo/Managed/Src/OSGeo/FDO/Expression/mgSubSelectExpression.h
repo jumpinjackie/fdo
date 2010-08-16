@@ -124,7 +124,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ ClassName
+    property NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ FeatureClassName
     {
         NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ get();
         System::Void set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value);

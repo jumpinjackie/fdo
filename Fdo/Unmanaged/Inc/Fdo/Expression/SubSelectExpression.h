@@ -131,7 +131,7 @@ public:
     /// \return
     /// Returns the name of the class as identifier
     /// 
-    FDO_API FdoIdentifier* GetClassName();
+    FDO_API FdoIdentifier* GetFeatureClassName();
 
     /// \brief
     /// Sets the name of the main join class to be operated upon as an identifier.
@@ -142,7 +142,7 @@ public:
     /// \return
     /// Returns nothing
     /// 
-    FDO_API void SetClassName(FdoIdentifier* value);
+    FDO_API void SetFeatureClassName(FdoIdentifier* value);
 
     /// \brief
     /// Gets the name of the property to be selected by sub-select. 
