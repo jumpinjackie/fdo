@@ -46,6 +46,7 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestDualConnection);
     CPPUNIT_TEST(TestSelectMultipleCS);
     CPPUNIT_TEST(TestViewSelects);
+    CPPUNIT_TEST(TestJoinViewSelects);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -72,6 +73,7 @@ public:
     void TestDualConnection ();
     void TestSelectMultipleCS ();
     void TestViewSelects ();
+    void TestJoinViewSelects ();
 };
 
 #endif
