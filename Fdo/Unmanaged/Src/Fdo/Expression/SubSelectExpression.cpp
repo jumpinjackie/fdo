@@ -22,6 +22,7 @@
 #include <Fdo/Expression/SubSelectExpression.h>
 #include "StringUtility.h"
 #include <Fdo/Expression/IExpressionProcessor.h>
+#include <string>
 
 /// Constructs a default instance of an FdoSubSelectExpression.
 FdoSubSelectExpression::FdoSubSelectExpression()
