@@ -71,16 +71,16 @@ IntPtr NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::GetDisposableObject(
     return IntPtr(static_cast<FdoIDisposable*>(GetImpObj()));
 }
 
-NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::ClassName::get()
+NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::FeatureClassName::get()
 {
 	FdoIdentifier* result;
-    EXCEPTION_HANDLER(result = NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::GetImpObj()->GetClassName())
+    EXCEPTION_HANDLER(result = NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::GetImpObj()->GetFeatureClassName())
 	return NAMESPACE_OSGEO_FDO::ObjectFactory::CreateIdentifier(IntPtr(result), true);
 }
 
-System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::ClassName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
+System::Void NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::FeatureClassName::set(NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ value)
 {
-    EXCEPTION_HANDLER(NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::GetImpObj()->SetClassName((value == nullptr ? nullptr : value->GetImpObj())))
+    EXCEPTION_HANDLER(NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::GetImpObj()->SetFeatureClassName((value == nullptr ? nullptr : value->GetImpObj())))
 }
 
 NAMESPACE_OSGEO_FDO_EXPRESSION::Identifier^ NAMESPACE_OSGEO_FDO_EXPRESSION::SubSelectExpression::PropertyName::get()
