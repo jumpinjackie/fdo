@@ -183,7 +183,22 @@ void SpatialIndex::Update(__int64 dbId, DBounds& ext)
     }
     // we can use insert, however we need to count number of changes 
     // and later force a rebuild when the number of changes becomes too high
-    Insert(it->second, ext);
+    unsigned int fid = it->second;
+    //check if we have got a local offset
+    //If not yet, then use the given bounds
+    //to set it up
+    if (!_haveOffset)
+    {
+        for (int i=0; i<SI_DIM; i++)
+            _offset[i] = ext.min[i];
+
+        _haveOffset = true;
+    }
+
+    //translate the given bounds to local space
+    Bounds b;
+    TranslateBounds(&ext, _offset, &b);
+    Insert(fid, b);
     _countChanges++;
     if ((10*_countChanges) > _positionIdx)
         FullSpatialIndexUpdate();
