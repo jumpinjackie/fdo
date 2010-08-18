@@ -130,7 +130,7 @@ m_isViewSelect(false)
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* strWhere, SpatialIterator* si, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* strWhere, SpatialIterator* si, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues, const char* strOrderBy)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -152,7 +152,7 @@ m_isViewSelect(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
-    DelayedInit(props, fcname, strWhere);
+    DelayedInit(props, fcname, strWhere, strOrderBy);
 }
 
 //Same as above but does not initialize the reader.
@@ -205,7 +205,7 @@ void SltReader::SetInternalFilter(FdoFilter* filter)
     m_filter = FDO_SAFE_ADDREF(filter);
 }
 
-void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, bool addPkOnly)
+void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, const char* strOrderBy, bool addPkOnly)
 {
     int rc = 0;
 
@@ -267,7 +267,14 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             m_fromwhere.Append("=?;", 3);
         }
         else
+        {
+            if (*strOrderBy)
+            {
+                m_fromwhere.Append(" ORDER BY ", 10);
+                m_fromwhere.Append(strOrderBy);
+            }
             m_fromwhere.Append(";", 1);
+        }
     }
     else
     {
@@ -281,7 +288,13 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
         m_fromwhere.Append("(", 1);
         m_fromwhere.Append(strWhere);
-        m_fromwhere.Append(");", 2);
+        m_fromwhere.Append(")", 1);
+        if (*strOrderBy)
+        {
+            m_fromwhere.Append(" ORDER BY ", 10);
+            m_fromwhere.Append(strOrderBy);
+        }
+        m_fromwhere.Append(";", 1);
     }
 
     //remember the geometry encoding format
@@ -1707,7 +1720,7 @@ bool DelayedInitReader::ReadNext()
 {
     if (!m_bInit)
     {
-        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), true);
+        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), "", true);
         m_bInit = true;
     }
 
@@ -1718,7 +1731,7 @@ FdoClassDefinition* DelayedInitReader::GetClassDefinition()
 {
     if (!m_bInit)
     {
-        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), true);
+        DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), "", true);
         m_bInit = true;
     }
 

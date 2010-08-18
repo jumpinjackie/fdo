@@ -328,6 +328,7 @@ struct Vdbe {
   u32 expmask;            /* Binding to these vars invalidates VM */
   int fdo;                /* true if used from inside an FDO feature reader */
   void *pSpIterator;      /* Free this when deleting the vdbe */
+  u8 spIndexDisabled;     /* We cannot use SI since we can have performance loss */
   union {
     u64 iVarIndex;          /* Index of variable to init pSpIterator based on pSpIndex */
     void* pParam;           /* Parameter used to re-init pSpIterator based on pSpIndex */

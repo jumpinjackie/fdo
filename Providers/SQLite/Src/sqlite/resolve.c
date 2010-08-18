@@ -337,11 +337,11 @@ static int lookupName(
   ** Because no reference was made to outer contexts, the pNC->nRef
   ** fields are not changed in any context.
   */
-  if( cnt==0 && zTab==0 && ExprHasProperty(pExpr,EP_DblQuoted) ){
-    pExpr->op = TK_STRING;
-    pExpr->pTab = 0;
-    return WRC_Prune;
-  }
+  //if( cnt==0 && zTab==0 && ExprHasProperty(pExpr,EP_DblQuoted) ){
+  //  pExpr->op = TK_STRING;
+  //  pExpr->pTab = 0;
+  //  return WRC_Prune;
+  //}
 
   /*
   ** cnt==0 means there was not match.  cnt>1 means there were two or
