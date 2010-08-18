@@ -825,7 +825,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
 
     DBounds bbox;
     std::vector<__int64>* rowids = NULL;
-    StringBuffer strWhere((size_t)0);
+    StringBuffer strWhere("");
     bool canFastStep = true;
     bool mustKeepFilterAlive = false;
 
@@ -873,62 +873,16 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         return rdrRet;
     }
 
-    SpatialIterator* siter = NULL;
     RowidIterator* ri = NULL;
 
-
-    //if we have a query by specific ID, it will take precedence over spatial query
-    if (rowids && ordering.empty())
-    {
-        ri = new RowidIterator(-1, rowids);
-    }
-    else if (!bbox.IsEmpty())
-    {
-        //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfcname);
-
-        DBounds total_ext;
-        si->GetTotalExtent(total_ext);
-
-        if (bbox.Contains(total_ext))
-        {
-            //only use spatial iterator if the search bounds does not
-            //fully contain the data bounds
-        }
-        else if (bbox.Intersects(total_ext))
-        {
-            siter = new SpatialIterator(bbox, si);
-        }
-        else
-        {
-            // enforce an empty result since result will be empty
-            rowids = new std::vector<__int64>();
-            ri = new RowidIterator(-1, rowids);
-        }
-    }
-
-    //Now process any ordering options .
-    //Our strategy here is to perform any ordering without evaluating the where
-    //clause. Then we will pass the ordered list of IDs to the feature reader
-    //which will process the where clause (filter) in the same way regardless of ordering,
-    //or at least we hope it does.
-    //This approach may or may not be slower, it needs some experimentation to see if
-    //it's better to also perform the where clause here.
-
+    StringBuffer sbOrderBy("");
     if (!ordering.empty())
     {
-        StringBuffer sb;
-        sb.Append("SELECT ", 7);
-        sb.AppendDQuoted(idClassProp);
-        sb.Append(" FROM ", 6);
-        sb.AppendDQuoted(mbfc);
-        sb.Append(" ORDER BY ", 10);
-
         SltExtractExpressionTranslator exTrans(props);
         for (size_t i=0; i<ordering.size(); i++)
         {
             if (i)
-                sb.Append(",", 1);
+                sbOrderBy.Append(",", 1);
 
             // identifiers for order are provided as identifiers even are calculations.
             // so in order to get the "expression" we need to look for them in the select list
@@ -941,140 +895,32 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
                 {
                     idfadd->Process(&exTrans);
                     StringBuffer* exp = exTrans.GetExpression();
-                    sb.Append(exp->Data(), exp->Length());
+                    sbOrderBy.Append(exp->Data(), exp->Length());
                     exTrans.Reset();
                 }
             }
             // in case it's a property not present in selection list just add it
             if (idfadd == NULL)
-                sb.Append(idfto->ToString());
+                sbOrderBy.Append(idfto->ToString());
 
             if (ordering[i].option == FdoOrderingOption_Ascending)
-                sb.Append(" ASC", 4);
+                sbOrderBy.Append(" ASC", 4);
             else
-                sb.Append(" DESC", 5);
-        }
-
-        sb.Append(";", 1);
-
-        sqlite3_stmt* stmt = NULL;
-        const char* tail = NULL;
-        VectorMF* rows = new VectorMF(); //accumulate ordered row ids here
-
-        int rc = sqlite3_prepare_v2(m_dbWrite, sb.Data(), -1, &stmt, &tail);
-
-        //If there is also a spatial filter, we need to compute the intersection
-        //of the ordering with the spatial filter -- the SltReader cannot handle both
-        //a row id iterator and a spatial iterator, so we have to precompute this
-        //and pass it the intersected row id iterator.
-        
-        //First, read the spatial iterator fully -- it will return results in sorted order
-        if (siter)
-        {
-            std::vector<FdoInt64> srows;
-            int start = -1;
-            int end = -1;
-
-            while (siter->NextRange(start, end))
-            {
-                for (int i=start; i<end; i++)
-                    srows.push_back((*siter)[i]);
-            }
-
-            //Second, we will check for each result of the ordering query, if
-            //it exists in the spatial query results, and add it to a new list 
-            //if it does
-
-            // we need to get all rows
-            while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
-            {
-                __int64 id = sqlite3_column_int64(stmt, 0);
-                //TODO: resolve rowid type issue (__int64 vs. int)
-                if (std::binary_search(srows.begin(), srows.end(), (int)id))
-                    rows->push_back(id);
-            }
-
-            //get rid of the spatial iterator -- we are done with it here
-            delete siter;
-            siter = NULL;
-        }
-        else
-        {
-            // we need to get all rows
-            while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
-                rows->push_back(sqlite3_column_int64(stmt, 0));
-        }
-        rc = sqlite3_finalize(stmt);
-
-        ri = new RowidIterator(-1, rows);
-
-        if (strWhere.Length()>0 && scrollable)
-        {
-            FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
-            collidf->Add(rowIdIdf);
-            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
-            ri = GetScrollableIterator(rdrSc);
-            delete rdrSc;
-            siter = NULL;
-            strWhere.Reset();
-            canFastStep = true;
+                sbOrderBy.Append(" DESC", 5);
         }
     }
-    else if (scrollable) //if we want the reader to be scrollable without ordering, we also need a rowid iterator
+    if (scrollable)
     {
-        if (strWhere.Length()>0 && scrollable)
-        {
-            FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-            FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
-            collidf->Add(rowIdIdf);
-            SltReader* rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
-            ri = GetScrollableIterator(rdrSc);
-            delete rdrSc;
-            siter = NULL;
-            strWhere.Reset();
-            canFastStep = true;
-        }
-        else
-        {
-            //again, if we also have a spatial iterator, we need
-            //to eliminate it from the picture by intersecting the 
-            //row list with the spatial result list
-            if (siter)
-            {
-                VectorMF* rows = new VectorMF();
-                int start = -1;
-                int end = -1;
-
-                while (siter->NextRange(start, end))
-                {
-                    for (int i=start; i<end; i++)
-                        rows->push_back((*siter)[i]);
-                }
-
-                delete siter;
-                siter = NULL;
-
-                ri = new RowidIterator(-1, rows);
-            }
-            else if (!ri)
-            {
-                // TODO: can we find a different way to get all items in scrollable reader?
-                // Issues to solve without this change: data store with 3 rows and max count=100
-                // since the other 97 rows were deleted. The returned count is 100, so Move to will not work.
-                // in case we run Count(rowid) and set the count will not work either since we could have:
-                // Feat1Id=40, Feat2Id=50 and Feat3Id=100, how can we implement move to, e.g MoveTo(2)!?
-                FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
-                FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
-                collidf->Add(rowIdIdf);
-                SltReader* rdrSc = new SltReader(this, collidf, mbfcname, "", NULL, canFastStep, NULL, NULL);
-                ri = GetScrollableIterator(rdrSc);
-                delete rdrSc;
-                canFastStep = true;
-            }
-        }
+        FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
+        FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
+        collidf->Add(rowIdIdf);
+        FdoPtr<SltReader> rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), NULL, canFastStep, ri, parmValues, sbOrderBy.Data());
+        ri = GetScrollableIterator(rdrSc.p);
+        strWhere.Reset();
+        sbOrderBy.Reset();
+        canFastStep = true;
     }
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), NULL, canFastStep, ri, parmValues, sbOrderBy.Data());
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
@@ -3876,13 +3722,13 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
     DBounds total_ext;
     SpatialIndex* si = sidVal->GetSpatialIndex();
     si->GetTotalExtent(total_ext);
-    //if (bbox.Contains(total_ext))
-    //{
-    //    //only use spatial iterator if the search bounds does not
-    //    //fully contain the data bounds
-    //}
-    //else
-    if (ext.Intersects(total_ext))
+    if (ext.Contains(total_ext))
+    {
+        //only use spatial iterator if the search bounds does not
+        //fully contain the data bounds
+        return (void*)-1; // we do not have to use SI
+    }
+    else if (ext.Intersects(total_ext))
         siter = new SpatialIterator(ext, si);
 
     return new SpatialIteratorStep(siter);

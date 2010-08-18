@@ -642,12 +642,18 @@ void sqlite3SetVdbeSpatialIterator(Vdbe* v, void* pSit)
   sqlite3* db = v->db;
   if (v->pSpIterator)
     db->xSpIteratorRelCallback(v->pSpIterator);
-  v->pSpIterator = pSit;
+  if (pSit == (void*)-1)
+  {
+      v->pSpIterator = 0;
+      v->spIndexDisabled = 1;
+  }
+  else
+      v->pSpIterator = pSit;
 }
 
 u8 sqlite3VdbeSpatialIndexIsSet(Vdbe* v)
 {
-  return ((v->pSpIterator) || (v->pSpIndex && v->u.pParam>0));
+  return (v->spIndexDisabled || v->pSpIterator || (v->pSpIndex && v->u.pParam>0));
 }
 
 void sqlite3SetVdbeDynSpatialIndex(Vdbe* v, void* pSi, void* param)
@@ -658,6 +664,7 @@ void sqlite3SetVdbeDynSpatialIndex(Vdbe* v, void* pSi, void* param)
   v->pSpIterator = 0;
   v->lowerRowId = 0;
   v->pSpIndex = pSi;
+  v->spIndexDisabled = 0;
   v->u.pParam = param;
 }
 
@@ -1528,7 +1535,7 @@ void sqlite3VdbeMakeReady(
   }
 #endif
   /*At reset time try to get a new SI iterator in case we have a pointer to a blob values used in SI*/
-  if (p->u.iVarIndex > SQLITE_MAX_VARIABLE_NUMBER && p->pSpIterator && p->pSpIndex){
+  if (p->u.iVarIndex > SQLITE_MAX_VARIABLE_NUMBER && p->pSpIndex){
     sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
   }
 }
@@ -2364,10 +2371,12 @@ int sqlite3VdbeReset(Vdbe *p){
     /* Force VM to get a new iterator since geometry could be changed */ 
     db->xSpIteratorRelCallback(p->pSpIterator);
     p->pSpIterator = 0; /* Force VM to get a new iterator*/ 
+    p->spIndexDisabled = 0;
   }
   if (p->pSpIterator){
     /* Force VM to reset the iterator since we reset the statement */ 
     db->xSpIteratorResetCallback(p->pSpIterator);
+    p->spIndexDisabled = 0;
   }
   p->lowerRowId = 0;
   p->magic = VDBE_MAGIC_INIT;

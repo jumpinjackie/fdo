@@ -2616,6 +2616,7 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
       if( pFarg ){
         /* Get Spatial Index in case we use a spatial function and pass it as an auxiliary parameter */
         if (db->xSpIndexCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPEVAL_FUNCTION && nFarg==2){
+          Expr* pExpr = pFarg->a[1].pExpr;
           Table* pTab = pFarg->a->pExpr->pTab;
           u8 isDisabled;
           int wasEval;
@@ -2628,16 +2629,15 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
           /*check if SI optimization is disable because of some OR/NOT operators*/
           isDisabled = sqlite3VdbeDisableSpatialIndex(v, -1);
           /*function do not need to be re-evaluated in case we have envelope intersects=0x0A*/
-          wasEval = (int)(((long)pDef->pUserData&0x0F)==0x0A && !isDisabled && !isIteratorSet);
+          wasEval = (int)(((long)pDef->pUserData&0x0F)==0x0A && !isDisabled && !isIteratorSet && pExpr->op != TK_COLUMN);
           if (pTab) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
             pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, pTab->pSpIndex, (void*)wasEval);
 
           /*Disjoint = 0x02, avoid trying to optimize this*/
           if (pTab && pTab->pSpIndex && !isDisabled && !isIteratorSet && (((long)pDef->pUserData&0x0F)!=0x02)){
-            Expr* pExpr = pFarg->a[1].pExpr;
             int szBlob = -1;
             void* zBlob = 0;
-            if (pExpr->op == TK_INTEGER || (pExpr->flags&EP_IntValue)){
+            if (pExpr->op == TK_INTEGER || ExprHasProperty(pExpr, EP_IntValue)){
               /*This is a pointer to a blob value*/
               zBlob = (void*)pExpr->u.iValue;
               /*Remember this value for cases when caller uses reset*/
@@ -2656,6 +2656,8 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
             }else if (pExpr->op == TK_VARIABLE){
               /*We have a variable which will be bind before execution, keep the variable index*/
               sqlite3SetVdbeDynSpatialIndex(v, pTab->pSpIndex, (void*)pExpr->iColumn);
+            }else if (pExpr->op == TK_COLUMN){
+              /*We have a column which will be bind before execution, keep the information index*/
             }
             if (zBlob){
               /*If possible get a SI iterator based on the blob value*/
