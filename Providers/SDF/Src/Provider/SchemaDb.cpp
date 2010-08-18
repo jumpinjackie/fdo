@@ -766,7 +766,7 @@ void SchemaDb::ReadGeometricPropertyDefinition(
     pdc->Add(gpd);
 
     // Set vertex order and strictness rule for geometry property
-    classcaps->SetPolygonVertexOrderRule(gpd->GetName(), FdoPolygonVertexOrderRule_CCW);
+    classcaps->SetPolygonVertexOrderRule(gpd->GetName(), FdoPolygonVertexOrderRule_None);
     classcaps->SetPolygonVertexOrderStrictness(gpd->GetName(), false);
 }
 
