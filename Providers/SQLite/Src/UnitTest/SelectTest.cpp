@@ -978,3 +978,50 @@ void SelectTest::TestJoinViewSelects ()
    	}
 	printf( "Done\n" );
 }
+
+
+void SelectTest::TestSubSelect ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        int cnt = 0;
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"MainTable");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"FeatId IN (SELECT(MainTable, FeatId as FID, GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.0856930537741 38.9299833022685 0, -77.0856930537741 38.8861160395816 0, -77.0212774526814 38.8861160395816 0, -77.0212774526814 38.9299833022685 0, -77.0856930537741 38.9299833022685 0))')))");
+        selCmd->SetFilter(filter);
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        while(reader->ReadNext())
+        {
+            reader->GetInt32(L"FeatId");
+            cnt++;
+        }
+        reader->Close();
+        printf ("\nCnt = %d\n", cnt);
+        CPPUNIT_ASSERT(cnt == 5);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
