@@ -47,6 +47,7 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestSelectMultipleCS);
     CPPUNIT_TEST(TestViewSelects);
     CPPUNIT_TEST(TestJoinViewSelects);
+    CPPUNIT_TEST(TestSubSelect);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -74,6 +75,7 @@ public:
     void TestSelectMultipleCS ();
     void TestViewSelects ();
     void TestJoinViewSelects ();
+    void TestSubSelect ();
 };
 
 #endif
