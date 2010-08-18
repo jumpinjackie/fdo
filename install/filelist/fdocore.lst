@@ -255,6 +255,11 @@
 ./include/Fdo/Expression/UnaryExpression.h
 ./include/Fdo/Expression/UnaryOperations.h
 ./include/Fdo/Expression/ValueExpression.h
+./include/Fdo/Expression/ExpressionItemType.h
+./include/Fdo/Expression/SubSelectExpression.h
+./include/Fdo/Expression/JoinType.h
+./include/Fdo/Expression/JoinCriteriaCollection.h
+./include/Fdo/Expression/JoinCriteria.h
 ./include/Fdo/Filter/BinaryLogicalOperations.h
 ./include/Fdo/Filter/BinaryLogicalOperator.h
 ./include/Fdo/Filter/ComparisonCondition.h
