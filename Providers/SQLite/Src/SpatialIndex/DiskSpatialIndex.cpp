@@ -287,7 +287,7 @@ void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
     //translate the given bounds to local space
     Bounds b;
     TranslateBounds(&ext, _offset, &b);
-    Insert(fid, ext);
+    Insert(fid, b);
     _countChanges++;
     if ((10*_countChanges) > _positionIdx)
         FullSpatialIndexUpdate();
