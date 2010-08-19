@@ -727,6 +727,15 @@
 					</File>
 				</File>
 			</Filter>
+					<Filter
+				Name="Gml311"
+				>
+				<File
+					RelativePath="Src\Common\Gml311\Gml311.cpp"
+					>
+				</File>
+			</Filter>	
+			
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1084,6 +1093,14 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="Gml311"
+				>
+				<File
+					RelativePath="Inc\Common\Gml311\Gml311.h"
+				>
+			</File>	
+			</Filter>	
 		</Filter>
 		<Filter
 			Name="Resource Files"

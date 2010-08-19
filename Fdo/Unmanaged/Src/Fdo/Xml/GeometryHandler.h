@@ -40,7 +40,7 @@ class FdoXmlGeometryHandler :
 
 public:
 
-	static FdoXmlGeometryHandler * Create();
+	static FdoXmlGeometryHandler * Create(FdoXmlFeatureFlags* flags = NULL);
 	
 	virtual FdoXmlSaxHandler* XmlStartElement(FdoXmlSaxContext*, FdoString*, FdoString* name, FdoString*, FdoXmlAttributeCollection*);
 	virtual FdoBoolean XmlEndElement(FdoXmlSaxContext*, FdoString*, FdoString*, FdoString*);
@@ -50,6 +50,7 @@ public:
 
 protected:
 	FdoXmlGeometryHandler();
+	FdoXmlGeometryHandler(FdoXmlFeatureFlags *flags);
 	virtual ~FdoXmlGeometryHandler();
 
     virtual void Dispose ()
@@ -73,6 +74,12 @@ protected:
 		GmlGeometryType_X,
 		GmlGeometryType_Y,
 		GmlGeometryType_Z,
+
+		//GML 3 elements
+		GmlGeometryType_LowerCorner, 
+		GmlGeometryType_UpperCorner,
+		//end of GML 3 elements
+
 		GmlGeometryType_Unknown
 	};
 	enum ParsingState{
@@ -88,6 +95,8 @@ protected:
 		ParsingState_MultiGeometry,
 		ParsingState_GeometryAssociation,
 		ParsingState_Coordinates,
+		ParsingState_LowerCorner,
+		ParsingState_UpperCorner,
 		ParsingState_Coord,
 		ParsingState_X,
 		ParsingState_Y,
@@ -107,6 +116,8 @@ private:
 	std::vector<FdoXmlGeometry*> m_geometryStack;
 
 	bool m_isMultiGeometry;
+
+	FdoGmlVersion m_gmlVersion;
 	
 	//temp store for parsed objects
 	FdoPtr<FdoXmlGeometryHandler> m_nestedHandler;
@@ -114,7 +125,24 @@ private:
 	//std::vector<double> m_coordinates;
 	FdoPtr<FdoXmlCoordinateGroup> m_coordinates;
 
-    void SetExpectedGmlGeometry(GmlGeometryType typeGeomExpected){m_typeGeomExpected = typeGeomExpected;};
+
+	// handle multi gemoetry in GML3
+	// in GML3 the multi geometry is defined like below, while geometry is a PointArrayPropertyType
+	// <geometry>
+	//	<gml:Point>
+	//  </gml:Point>
+	//	<gml:Point>
+	//  </gml:Point>
+	//	<gml:Point>
+	//  </gml:Point>
+	// </geometry>
+	// we can only know it by the definition in schema, which is passed in as typeGeomExpected
+	// so, we need to define a new logic to handle it, and the following two methods is used for it.
+	//
+	void StartHandleGML3MultiGeometry();
+	void EndHandleGML3MultiGeometry();
+
+    void SetExpectedGmlGeometry(GmlGeometryType typeGeomExpected);
     GmlGeometryType m_typeGeomExpected;
     FdoXmlSaxHandler* SkipFirstParseStep();
     void RunLastParseStep(FdoString* name, GmlGeometryType typeGeomExpected);

@@ -200,7 +200,43 @@ void FdoXmlFeaturePropertyWriter::WriteGeometricProperty(
 
 	FdoPtr<FdoFgfGeometryFactory> geoFactory = FdoFgfGeometryFactory::GetInstance();
 	FdoPtr<FdoIGeometry> geometry = geoFactory->CreateGeometryFromFgf(value, count);
-	FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, L"EPSG:4326");	
+
+	FdoString* scName = L"EPSG:4326";
+	if (m_classDef != NULL)
+	{
+		FdoPtr<FdoPropertyDefinitionCollection> props = m_classDef->GetProperties();
+		FdoPtr<FdoPropertyDefinition> prop = (props->FindItem(name));
+
+		if (prop == NULL) // not found? try to look the base properties
+		{
+			FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseClassBaseProps = m_classDef->GetBaseProperties();
+			
+			// FdoReadOnlyPropertyDefinitionCollection doesn't provide FindItem method, 
+			// Instead the GetItem throws an invalid argument exception if an item with 
+			// the specified name does not exist in the collection
+			// we just try to find it and will provide default value if not found
+			// so catch the exception and continue
+			try
+			{
+				prop = (baseClassBaseProps->GetItem(name));
+			}
+			catch (FdoException *e)
+			{
+				e->Release();
+			}
+		}
+		if (prop != NULL && prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+		{
+			FdoPtr<FdoGeometricPropertyDefinition> geoProp = static_cast<FdoGeometricPropertyDefinition*>(FDO_SAFE_ADDREF(prop.p));
+			if (geoProp)
+				scName = geoProp->GetSpatialContextAssociation();
+		}
+	}
+
+	if (m_flags != NULL)
+		FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, scName,m_flags->GetGmlVersion());	
+	else
+		FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, scName,FdoGmlVersion_212);	
 
     if (!valueOnly)
         m_writer->WriteEndElement();

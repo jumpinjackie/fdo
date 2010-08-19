@@ -299,6 +299,7 @@
     <ClCompile Include="Src\Common\Xsl\XML885915Transcoder.cpp" />
     <ClCompile Include="Src\Common\Gml212\Gml212.cpp" />
     <ClCompile Include="Src\Common\Gml212\Schema.cpp" />
+	<ClCompile Include="Src\Common\Gml311\Gml311.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\CommonInternal.h" />
@@ -391,6 +392,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
     </CustomBuild>
+	<ClInclude Include="Inc\Common\Gml311\Gml311.h" />
     <ClInclude Include="Inc\Common\Gml212\Gml212.h" />
     <ClInclude Include="Inc\Common\Gml212\Schema.h" />
     <CustomBuild Include="Src\Common\Gml212\xlinks.h">

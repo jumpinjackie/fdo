@@ -793,6 +793,7 @@
     <ClInclude Include="Inc\Fdo\Xml\ElementMappingCollection.h" />
     <ClInclude Include="Inc\Fdo\Xml\FeatureContext.h" />
     <ClInclude Include="Inc\Fdo\Xml\FeatureFlags.h" />
+	<ClInclude Include="Inc\Fdo\Xml\GmlVersion.h" />
     <ClInclude Include="Inc\Fdo\Xml\FeatureHandler.h" />
     <ClInclude Include="Inc\Fdo\Xml\FeaturePropertyReader.h" />
     <ClInclude Include="Inc\Fdo\Xml\FeaturePropertyWriter.h" />

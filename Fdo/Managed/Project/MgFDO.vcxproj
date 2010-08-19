@@ -298,6 +298,7 @@
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureSerializer.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureWriter.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFlags.h" />
+	<ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlVersion.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlNameCollectionHandler.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSchemaMapping.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSerializable.h" />

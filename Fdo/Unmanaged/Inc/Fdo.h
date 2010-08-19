@@ -326,6 +326,8 @@
 #include <Fdo/Xml/SpatialContextReader.h>
 #include <Fdo/Xml/SpatialContextSerializer.h>
 #include <Fdo/Xml/SpatialContextWriter.h>
+#include <Fdo/Xml/GmlVersion.h>
+
 
 #endif
 
