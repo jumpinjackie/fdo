@@ -50,6 +50,7 @@
 ./include/Common/GeometryType.h
 ./include/Common/Gml212/Gml212.h
 ./include/Common/Gml212/Schema.h
+./include/Common/Gml311/Gml311.h
 ./include/Common/IDisposable.h
 ./include/Common/Io/BufferStream.h
 ./include/Common/Io/ByteStreamReader.h
@@ -357,6 +358,7 @@
 ./include/Fdo/Xml/FeatureSerializer.h
 ./include/Fdo/Xml/FeatureWriter.h
 ./include/Fdo/Xml/Flags.h
+./include/Fdo/Xml/GmlVersion.h
 ./include/Fdo/Xml/NameCollectionHandler.h
 ./include/Fdo/Xml/SchemaMapping.h
 ./include/Fdo/Xml/Serializable.h
