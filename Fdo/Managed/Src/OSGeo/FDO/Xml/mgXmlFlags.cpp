@@ -126,6 +126,20 @@ System::Boolean NAMESPACE_OSGEO_FDO_XML::XmlFlags::UseGmlId::get()
 	return result;
 }
 
+System::Void NAMESPACE_OSGEO_FDO_XML::XmlFlags::GmlVersion::set(NAMESPACE_OSGEO_FDO_XML::GmlVersion value)
+{
+	EXCEPTION_HANDLER(GetImpObj()->SetGmlVersion(static_cast<FdoGmlVersion>(value)))
+}
+
+NAMESPACE_OSGEO_FDO_XML::GmlVersion NAMESPACE_OSGEO_FDO_XML::XmlFlags::GmlVersion::get()
+{
+	FdoGmlVersion result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetGmlVersion())
+
+	return static_cast<NAMESPACE_OSGEO_FDO_XML::GmlVersion>(result);
+}
+
 System::Void NAMESPACE_OSGEO_FDO_XML::XmlFlags::SchemaMappings::set(NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA::PhysicalSchemaMappingCollection^ mappings)
 {
     EXCEPTION_HANDLER(GetImpObj()->SetSchemaMappings((nullptr == mappings ? nullptr : mappings->GetImpObj())))

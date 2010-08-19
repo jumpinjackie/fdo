@@ -51,6 +51,19 @@ FdoXmlGeometryHandler::FdoXmlGeometryHandler()
     m_typeGeomExpected = GmlGeometryType_Unknown;
 }
 
+FdoXmlGeometryHandler::FdoXmlGeometryHandler(FdoXmlFeatureFlags *flags)
+{
+	m_parsingStateStack.push_back(ParsingState_Start);
+
+	m_gmlVersion = FdoGmlVersion_212;
+
+	if (flags != NULL)
+		m_gmlVersion = flags->GetGmlVersion();
+
+	m_isMultiGeometry = false;
+    m_typeGeomExpected = GmlGeometryType_Unknown;
+}
+
 FdoXmlGeometryHandler::~FdoXmlGeometryHandler()
 {
 	while(!m_geometryStack.empty()){
@@ -59,9 +72,9 @@ FdoXmlGeometryHandler::~FdoXmlGeometryHandler()
 	}
 }
 
-FdoXmlGeometryHandler * FdoXmlGeometryHandler::Create()
+FdoXmlGeometryHandler * FdoXmlGeometryHandler::Create(FdoXmlFeatureFlags* flags)
 {
-	return new FdoXmlGeometryHandler();
+	return new FdoXmlGeometryHandler(flags);
 }
 
 
@@ -196,7 +209,17 @@ FdoXmlSaxHandler* FdoXmlGeometryHandler::XmlStartElement(
 		m_parsingStateStack.push_back(ParsingState_Coordinates);
 		m_dataProperty = L"";
 		break;
-	
+
+	case GmlGeometryType_LowerCorner:
+		m_parsingStateStack.push_back(ParsingState_LowerCorner);
+		m_dataProperty = L"";
+		break;
+
+	case GmlGeometryType_UpperCorner:
+		m_parsingStateStack.push_back(ParsingState_UpperCorner);
+		m_dataProperty = L"";
+		break;
+
 	//Coord
 	case GmlGeometryType_Coord:
 		m_parsingStateStack.push_back(ParsingState_Coord);
@@ -248,7 +271,8 @@ FdoBoolean FdoXmlGeometryHandler::XmlEndElement(
 	{
 	//Point
 	case ParsingState_Point:
-
+		if (m_gmlVersion == FdoGmlVersion_311 && m_isMultiGeometry)
+			EndHandleGML3MultiGeometry();
 		break;
 
 	//Box
@@ -258,17 +282,20 @@ FdoBoolean FdoXmlGeometryHandler::XmlEndElement(
 
 	//Polygon
 	case ParsingState_Polygon:
-
+		if (m_gmlVersion == FdoGmlVersion_311 && m_isMultiGeometry)
+			EndHandleGML3MultiGeometry();
 		break;
 
 	//LinearRing
 	case ParsingState_LinearRing:
-
+		if (m_gmlVersion == FdoGmlVersion_311 && m_isMultiGeometry)
+			EndHandleGML3MultiGeometry();
 		break;
 
 	//LineString
 	case ParsingState_LineString:
-
+		if (m_gmlVersion == FdoGmlVersion_311 && m_isMultiGeometry)
+			EndHandleGML3MultiGeometry();
 		break;
 
 	//MultiPoint
@@ -307,6 +334,8 @@ FdoBoolean FdoXmlGeometryHandler::XmlEndElement(
 
 	//Coordinates
 	case ParsingState_Coordinates:
+	case ParsingState_LowerCorner:
+	case ParsingState_UpperCorner:
 		if(m_coordinates != NULL)
 			m_coordinates->AddCoordinate(m_dataProperty);
 		break;
@@ -424,6 +453,29 @@ FdoXmlGeometryHandler::GmlGeometryType FdoXmlGeometryHandler::getGmlGeometryType
 	else if (wcscmp( name, L"Z" ) == 0){
 		geoType = GmlGeometryType_Z;
 	}
+	// GML 3
+	else if (wcscmp( name, L"Envelope" ) == 0){
+		geoType = GmlGeometryType_Box;
+	}
+	else if (wcscmp( name,L"lowerCorner") == 0){
+		geoType = GmlGeometryType_LowerCorner;
+	}
+	else if (wcscmp( name,L"upperCorner") == 0){
+		geoType = GmlGeometryType_UpperCorner;
+	}
+	else if (wcscmp (name, L"pos") == 0){
+		geoType = GmlGeometryType_Coordinates;
+	}
+	else if (wcscmp( name, L"posList") ==0 ){
+		geoType = GmlGeometryType_Coordinates;
+	}
+	else if (wcscmp( name, L"exterior" ) == 0){
+		geoType = GmlGeometryType_GeometryAssociation;
+	}
+	else if (wcscmp( name, L"interior" ) == 0){
+		geoType = GmlGeometryType_GeometryAssociation;
+	}
+	// end of GML 3 elements
 	else
     {
 	    geoType  = GmlGeometryType_Unknown;
@@ -557,4 +609,82 @@ void FdoXmlGeometryHandler::RunLastParseStep(FdoString* name, GmlGeometryType ty
 			curGeometry->AddGeometricProperty(name, nestedGeometry);
 		}
     }
+}
+
+void FdoXmlGeometryHandler::SetExpectedGmlGeometry(GmlGeometryType typeGeomExpected)
+{
+	m_typeGeomExpected = typeGeomExpected;
+	
+	// handle GML 3 multi geometry
+	// because we only know its type here
+	if (m_gmlVersion == FdoGmlVersion_311 &&
+		(m_typeGeomExpected == GmlGeometryType_MultiPoint ||
+		 m_typeGeomExpected == GmlGeometryType_MultiLineString ||
+		 m_typeGeomExpected == GmlGeometryType_MultiPolygon ||
+		 m_typeGeomExpected == GmlGeometryType_MultiGeometry))
+		StartHandleGML3MultiGeometry();
+};
+
+void FdoXmlGeometryHandler::StartHandleGML3MultiGeometry()
+{
+	FdoXmlGeometry* newGeometry = NULL;
+	switch(m_typeGeomExpected)
+	{
+	//MultiPoint
+	case GmlGeometryType_MultiPoint:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiPoint::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiLineString
+	case GmlGeometryType_MultiLineString:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiLineString::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+
+	//MultiPolygon
+	case GmlGeometryType_MultiPolygon:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiPolygon::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;	
+
+	//MultiGeometry
+	case GmlGeometryType_MultiGeometry:
+		m_isMultiGeometry = true;
+
+		newGeometry = FdoXmlMultiGeometry::Create();
+		m_geometryStack.push_back(newGeometry);
+
+		break;
+	}
+}
+
+
+void FdoXmlGeometryHandler::EndHandleGML3MultiGeometry()
+{
+	// add the current geomerty to the current Multi geometry, which is stored in previous item.
+	FdoXmlGeometry* curGeometry = NULL;
+
+	FdoXmlGeometry* curMultiGeometry = NULL;
+	if(!m_geometryStack.empty())
+	{
+		curGeometry = m_geometryStack.back();
+		m_geometryStack.pop_back();
+	}
+
+	// the previous item is the multi geometry
+	if(!m_geometryStack.empty())
+		curMultiGeometry = m_geometryStack.back();
+
+	if (curMultiGeometry != NULL)
+		curMultiGeometry->AddGeometryMember(curGeometry);
 }

@@ -2601,6 +2601,10 @@
 					>
 				</File>
 				<File
+					RelativePath="Inc\Fdo\Xml\GmlVersion.h"
+					>
+				</File>		
+				<File
 					RelativePath="Inc\Fdo\Xml\NameCollectionHandler.h"
 					>
 				</File>

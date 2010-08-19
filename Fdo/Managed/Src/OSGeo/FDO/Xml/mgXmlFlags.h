@@ -19,6 +19,7 @@
 #pragma once
 
 #include <Fdo/Xml/Flags.h>
+#include "FDO\Xml\mgXmlGmlVersion.h"
 
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 ref class PhysicalSchemaMappingCollection;
@@ -26,6 +27,7 @@ END_NAMESPACE_OSGEO_FDO_COMMANDS_SCHEMA
 
 BEGIN_NAMESPACE_OSGEO_FDO_XML
 ref class PhysicalElementMapping;
+enum class GmlVersion;
 
 /// \ingroup (OSGeoFDOXml)
 /// \brief
@@ -226,6 +228,25 @@ public:
         System::Boolean get();
         System::Void set(System::Boolean id);
     }
+
+    /// \brief
+    /// Sets the Use GML version.
+    /// 
+    /// \param gmlVersion 
+    /// input the GML version
+    /// 
+    /// 
+    /// \brief
+	/// Gets the GML version (GML 2, GML 3).
+    /// 
+    /// \return
+    /// Returns the Used GML version.
+    ///  
+	property NAMESPACE_OSGEO_FDO_XML::GmlVersion GmlVersion
+	{
+		NAMESPACE_OSGEO_FDO_XML::GmlVersion get();
+		System::Void set(NAMESPACE_OSGEO_FDO_XML::GmlVersion value);
+	}
 
     /// \brief
     /// Sets the Schema Mapping Overrides for translating schemas 

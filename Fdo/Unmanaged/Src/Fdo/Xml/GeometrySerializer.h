@@ -32,56 +32,57 @@ public:
 	/// <param name="geometry">An instance of geometry.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the geometry.</param>
 	/// <param name="srsName">SRS name.</param>
+	/// <param name="version">GML version.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeGeometry(FdoIGeometry* geometry, FdoXmlWriter* writer, FdoString* srsName);
+	static void SerializeGeometry(FdoIGeometry* geometry, FdoXmlWriter* writer, FdoString* srsName,FdoGmlVersion gmlversion);
 
 	/// <summary>Serialzies the point object to OGC format.</summary>
 	/// <param name="point">An instance of the point type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the point.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializePoint(FdoIPoint* point, FdoXmlWriter* writer);
+	static void SerializePoint(FdoIPoint* point, FdoXmlWriter* writer,FdoGmlVersion gmlversion);
 
 	/// <summary>Serializes the line string object to OGC format.</summary>
 	/// <param name="lineString">An instance of the line string type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the line string.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeLineString(FdoILineString* lineString, FdoXmlWriter* writer);
+	static void SerializeLineString(FdoILineString* lineString, FdoXmlWriter* writer,FdoGmlVersion gmlversion);
 
 	/// <summary>Serializes the linear ring object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the linear ring type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the linear ring.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer);
+	static void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer,FdoGmlVersion gmlversion);
 
 	/// <summary>Serializes the polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the polygon.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName);
+	static void SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName,FdoGmlVersion gmlversion);
 	
 	/// <summary>Serializes the multipoint object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multipoint type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the multipoint.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeMultiPoint(FdoIMultiPoint* multiPoint, FdoXmlWriter* writer, FdoString* srsName);
+	static void SerializeMultiPoint(FdoIMultiPoint* multiPoint, FdoXmlWriter* writer, FdoString* srsName,FdoGmlVersion gmlversion);
 	
 	/// <summary>Serializes the multi line string object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi line string type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi line string.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer);
+	static void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer,FdoGmlVersion gmlversion);
 	
 	/// <summary>Serializes the multi polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi polygon.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeMultiPolygon(FdoIMultiPolygon*, FdoXmlWriter* writer, FdoString* srsName);
+	static void SerializeMultiPolygon(FdoIMultiPolygon*, FdoXmlWriter* writer, FdoString* srsName,FdoGmlVersion gmlversion);
 	
 	/// <summary>Serializes the multi geometry object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi geometry type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi geometry.</param>
 	/// <returns>Returns nothing</returns>
-	static void SerializeMultiGeometry(FdoIMultiGeometry*, FdoXmlWriter* writer, FdoString* srsName);
+	static void SerializeMultiGeometry(FdoIMultiGeometry*, FdoXmlWriter* writer, FdoString* srsName,FdoGmlVersion gmlversion);
 
 private:
 	/// <summary>Gets the coordinates of the FdoIDirectPosition object.</summary>

@@ -1247,7 +1247,7 @@ bool FdoLex::get_timestamp(
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}
 
-	if (m_ch != ' ') {
+	if (m_ch != ' ' && m_ch != 'T') {
 		// Error !!! Wrong format
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(PARSE_2_INVALIDDATETIME)));
 	}
