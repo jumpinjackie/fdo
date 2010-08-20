@@ -1210,7 +1210,7 @@ NULL Pointer
 MessageId=7004
 SymbolicName=CLNT_4_PROVIDERNOTREGISTERED
 Language=English
-FDO Provider Not Registered
+FDO Provider '%1$ls' Not Registered
 .
 MessageId=7005
 SymbolicName=CLNT_5_OUTOFMEMORY
@@ -1230,7 +1230,7 @@ Action Failed
 MessageId=7008
 SymbolicName=CLNT_8_UNABLE_TO_LOAD_LIBRARY
 Language=English
-Unable to load the FDO Provider: %1$s
+Unable to load the FDO Provider library '%1$ls': %2$s
 .
 MessageId=7009
 SymbolicName=CLNT_9_INVALID_PROVIDER_ENTRY_POINT

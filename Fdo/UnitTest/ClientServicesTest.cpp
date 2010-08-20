@@ -160,6 +160,79 @@ void ClientServicesTest::TestServices ()
 
         // Note: the actual connection creation is 
         // tested by the SDK installation/build/execute.
+        // A few error cases are tested here
+
+        bool failed = false;
+        try
+        {
+            FdoPtr<FdoIConnection> conn = connectionMgr->CreateConnection(L"OSGeo.NoProvider.1.0");
+        }
+        catch ( FdoException* ex ) 
+        {
+#ifdef _WIN32
+            CPPUNIT_ASSERT( wcsstr(ex->GetExceptionMessage(), L"FDO Provider 'OSGeo.NoProvider.1.0' Not Registered") );
+#endif
+            FDO_SAFE_RELEASE(ex);
+            failed = true;
+        }
+        CPPUNIT_ASSERT(failed);
+
+        failed = false;
+        try
+        {
+            FdoPtr<FdoIConnection> conn = connectionMgr->CreateConnection(
+#ifdef _WIN32
+                L"NoExist.dll"
+#else
+                L"NoExist.so"
+#endif
+            );
+        }
+        catch ( FdoException* ex ) 
+        {
+#ifdef _WIN32
+            CPPUNIT_ASSERT( wcsstr(ex->GetExceptionMessage(), L"Unable to load the FDO Provider library 'NoExist.dll'") );
+#endif
+            FDO_SAFE_RELEASE(ex);
+            failed = true;
+        }
+        CPPUNIT_ASSERT(failed);
+
+        failed = false;
+        try
+        {
+            FdoPtr<FdoIConnection> conn = connectionMgr->CreateConnection(
+#ifdef _WIN32
+                L"e:/dir1/dir2/NoExist.dll"
+#else
+                L"/user/local/NoExist.so.1.0"
+#endif
+            );
+        }
+        catch ( FdoException* ex ) 
+        {
+#ifdef _WIN32
+            CPPUNIT_ASSERT( wcsstr(ex->GetExceptionMessage(), L"Unable to load the FDO Provider library 'e:/dir1/dir2/NoExist.dll'") );
+#endif
+            FDO_SAFE_RELEASE(ex);
+            failed = true;
+        }
+        CPPUNIT_ASSERT(failed);
+
+        failed = false;
+        try
+        {
+            FdoPtr<FdoIConnection> conn = connectionMgr->CreateConnection(L"TestData2");
+        }
+        catch ( FdoException* ex ) 
+        {
+#ifdef _WIN32
+            CPPUNIT_ASSERT( wcsstr(ex->GetExceptionMessage(), L"Unable to load the FDO Provider library 'c:\\Test2\\test2.dll'") );
+#endif
+            FDO_SAFE_RELEASE(ex);
+            failed = true;
+        }
+        CPPUNIT_ASSERT(failed);
 
         registry->UnregisterProvider(dt2->m_name.c_str());
         registry->UnregisterProvider(dt3->m_name.c_str());

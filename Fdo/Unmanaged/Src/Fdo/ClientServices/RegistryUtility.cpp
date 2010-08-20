@@ -158,7 +158,7 @@ bool FdoRegistryUtility::FileExists (const wchar_t* filePath)
 }
 
 // Gets a Provider's library path for a provider based on the provider name
-void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::wstring &libraryLocation)
+bool FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::wstring &libraryLocation)
 {
     if (providerName == NULL) {
         throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_1_NULLINPUTPOINTER)));
@@ -359,8 +359,7 @@ void FdoRegistryUtility::GetLibraryLocation(const wchar_t* providerName, std::ws
 
     XMLPlatformUtils::Terminate();
 
-    if (bFound == false)
-        throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_4_PROVIDERNOTREGISTERED)));
+    return bFound;
 }
 
 void FdoRegistryUtility::GetProviderCollection(std::vector<FdoProvider*> &providerCollection)
@@ -627,7 +626,7 @@ void FdoRegistryUtility::UnregisterProvider(const wchar_t * providerName)
         bool bDeleted = DeleteProvider(doc, providerName);
         if (bDeleted == false)
         {
-            throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_4_PROVIDERNOTREGISTERED)));
+            throw FdoClientServiceException::Create(FdoClientServiceException::NLSGetMessage(FDO_NLSID(CLNT_4_PROVIDERNOTREGISTERED),providerName));
         }
 
         // check if there are any providers left, delete the file if not
