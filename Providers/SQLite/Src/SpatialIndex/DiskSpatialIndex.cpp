@@ -263,6 +263,14 @@ void SpatialIndex::Insert(unsigned int fid, Bounds& b)
 
 void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
 {
+    // avoid getting NaN added to the SI when we update a geometry to null
+    if (ext.IsEmpty())
+    {
+        // since we set geometry to null we can delete the item
+        Delete(dbId);
+        return;
+    }
+
     LinkMap::iterator it = _linkMap.find(dbId);
     if (it == _linkMap.end())
     {
@@ -289,7 +297,8 @@ void SpatialIndex::Update(FdoInt64 dbId, DBounds& ext)
     TranslateBounds(&ext, _offset, &b);
     Insert(fid, b);
     _countChanges++;
-    if ((10*_countChanges) > _positionIdx)
+    unsigned int tproc = (unsigned int)(_positionIdx/10.0);
+    if (tproc && _countChanges > tproc)
         FullSpatialIndexUpdate();
 }
 
@@ -317,7 +326,8 @@ void SpatialIndex::Delete(FdoInt64 dbId)
             n->b = EMPTY_BOX;
         }
         _countChanges++;
-        if ((10*_countChanges) > _positionIdx)
+        unsigned int tproc = (unsigned int)(_positionIdx/10.0);
+        if (tproc && _countChanges > tproc)
             FullSpatialIndexUpdate();
         else if (index == (_positionIdx-1))
             _positionIdx = (index <= 1) ? 1 : (index-1);
