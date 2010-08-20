@@ -3673,10 +3673,12 @@ void SltConnection::sqlite3_update_spatial_index(void* caller, void* sid, int ac
         {
             DBounds ext;
             if (blob != NULL && szBlob > 0) // handle szBlob==-1 when geometry could not be obtained
+            {
                 GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
-            sidVal->GetSpatialIndex()->Insert(id, ext);
-            sidVal->SetChangesAvailable(true);
-            conn->m_changesAvailable = true;
+                sidVal->GetSpatialIndex()->Insert(id, ext);
+                sidVal->SetChangesAvailable(true);
+                conn->m_changesAvailable = true;
+            }
         }
         break;
     case SQLITE_UPDATE:
