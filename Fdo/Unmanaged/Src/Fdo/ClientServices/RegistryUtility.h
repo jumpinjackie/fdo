@@ -39,8 +39,9 @@ XERCES_CPP_NAMESPACE_USE;
 class FdoRegistryUtility
 {
 public:
-	// Gets a provider's library path for a provider based on the provider name
-    static void GetLibraryLocation(const wchar_t* providerName, std::wstring &libraryLocation);
+	// Gets a provider's library path for a provider based on the provider name.
+    // Returns true if the provider is registered, false otherwise.
+    static bool GetLibraryLocation(const wchar_t* providerName, std::wstring &libraryLocation);
 
     // Fills a collection object with a list of valid providers defined in the registry
     static void GetProviderCollection(std::vector<FdoProvider*> &providers);
