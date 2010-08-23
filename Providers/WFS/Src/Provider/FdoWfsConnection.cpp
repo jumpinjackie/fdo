@@ -26,6 +26,7 @@
 #include "FdoWfsServiceMetadata.h"
 #include <OWS/FdoOwsCapabilities.h>
 #include <OWS/FdoOwsRequestMetadata.h>
+#include <OWS/FdoOwsOperationsMetadata.h>
 #include "FdoWfsOgcFilterCapabilities.h"
 #include "FdoWfsFeatureTypeList.h"
 #include "FdoWfsFeatureType.h"
@@ -212,15 +213,27 @@ FdoConnectionState FdoWfsConnection::Open ()
     if (parser.HasInvalidProperties(dictionary))
         throw FdoException::Create (NlsMsgGet(WFS_INVALID_CONNECTION_PROPERTY_NAME, "Invalid connection property name '%1$ls'", parser.GetFirstInvalidPropertyName (dictionary)));
 
+	// get the version parameter in the request string if set
+	FdoStringP version = _getRequestWFSVersion(mFeatureServer);
+
     // set up the WFS delegate
     mDelegate = FdoWfsDelegate::Create(mFeatureServer, mUserName, mPassword);
 
     // try to get the service metadata
-    mServiceMetadata = mDelegate->GetCapabilities();
-    FdoPtr<FdoOwsRequestMetadataCollection> requestMetadatas = 
-        FdoPtr<FdoOwsCapabilities>(mServiceMetadata->GetCapabilities())->GetRequestMetadatas();
-    mDelegate->SetRequestMetadatas(requestMetadatas);
-    
+    mServiceMetadata = mDelegate->GetCapabilities(version);
+
+	if (wcscmp(GetVersion(),FdoWfsGlobals::WfsVersion) == 0)
+	{
+		FdoPtr<FdoOwsRequestMetadataCollection> requestMetadatas = 
+			FdoPtr<FdoOwsCapabilities>(mServiceMetadata->GetCapabilities())->GetRequestMetadatas();
+		mDelegate->SetRequestMetadatas(requestMetadatas);
+	}
+	else // in 1.1.0 and later version, we assume it uses OperationsMetadata defined in OWS
+	{
+		FdoPtr<FdoOwsOperationCollection> operationMetadatas = 
+			FdoPtr<FdoOwsOperationsMetadata>(mServiceMetadata->GetOperationsMetadata())->GetOperations();
+		mDelegate->SetOperationMetadatas(operationMetadatas);
+	}
 
     return (GetConnectionState ());
 }
@@ -308,8 +321,12 @@ FdoBoolean FdoWfsConnection::IsSchemaLoadedFromServer()
 FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
 {
     if (mSchemas == NULL) {
+
+		//get wfs version
+		FdoStringP version = this->GetVersion();
+
         // First get the raw schemas from the schema document from the server
-        mSchemas = mDelegate->DescribeFeatureType(NULL);
+        mSchemas = mDelegate->DescribeFeatureType(NULL,version);
 
         // And then we have to make some adjustments to the raw schemas
         // to make the schema more user friendly.
@@ -682,5 +699,45 @@ void FdoWfsConnection::_setClassDescription (FdoClassDefinition* clsdef)
             clsdef->SetDescription (abstraction);
         }
     }
+}
+
+FdoString* FdoWfsConnection::GetVersion()
+{
+	return this->GetServiceMetadata()->GetVersion();
+}
+
+FdoStringP FdoWfsConnection::_getRequestWFSVersion(FdoString* str)
+{
+    FdoStringP retStr;
+    wchar_t tmpBuf[21];
+    FdoString* version = L"version=";
+    if (str == NULL)
+        return retStr;
+    int idx = 0, idxVers = 0, idxResPos = -1;
+    while(*(str+idx) != L'\0' && *(version+idxVers) != L'\0')
+    {
+        if (towlower(*(str+idx)) == *(version+idxVers))
+        {
+            idxResPos = (idxResPos == -1) ? idx : idxResPos;
+            idxVers++;
+        }
+        else
+        {
+            idxVers = 0;
+            idx = (idxResPos != -1) ? idxResPos : idx;
+            idxResPos = -1;
+        }
+        idx++;
+    }
+    if (idxResPos == -1)
+        return retStr;
+
+    idx = idxResPos+8;
+    while (*(str+idx) != L'\0' && *(str+idx) != L'&') idx++;
+    int szcopy = (20 < idx-idxResPos-8) ? (20) : (idx-idxResPos-8);
+    wcsncpy(tmpBuf, str+idxResPos+8, szcopy );
+    tmpBuf[szcopy] = L'\0';
+    retStr = tmpBuf;
+    return retStr;
 }
 

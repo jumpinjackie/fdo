@@ -64,6 +64,7 @@ FdoXmlSaxHandler* FdoWfsFeatureType::XmlStartElement(
             {
                 if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Name) == 0 ||
                     FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0 ||
+					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0 || 
                     FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Title) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Abstract) == 0 ||
 					FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Keywords) == 0 ||
@@ -102,6 +103,15 @@ FdoXmlSaxHandler* FdoWfsFeatureType::XmlStartElement(
                         bbox->SetNorthBoundLatitude (atof((const char*)value));
                     }
                 }
+				// handle the WGS84BoundingBox element defined in 1.1.0 version
+    			else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::WGS84BoundingBox) == 0)
+				{
+					FdoPtr<FdoOwsGeographicBoundingBox> bbox = FdoOwsGeographicBoundingBox::Create ();
+					bbox->InitFromXml(context, atts);
+					m_SRSExtents->Add (bbox);	
+					pRet = bbox.p;
+				}
+
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Operations) == 0)
                     myContext->SetStateFeatureType(1);
                 else
@@ -162,7 +172,8 @@ FdoBoolean FdoWfsFeatureType::XmlEndElement(FdoXmlSaxContext* context, FdoString
                 {
                     if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Name) == 0)
                         m_name = charDataHandler->GetString();
-                    else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0)
+                    else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SRS) == 0
+						|| FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::DefaultSRS) == 0)
                     {
                         m_srs = charDataHandler->GetString();
                         m_srs = m_srs.Upper();

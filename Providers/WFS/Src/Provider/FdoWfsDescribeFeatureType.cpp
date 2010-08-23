@@ -34,13 +34,27 @@ FdoWfsDescribeFeatureType::FdoWfsDescribeFeatureType(FdoStringCollection* typeNa
     FDO_SAFE_ADDREF(m_typeNames.p);
 }
 
+FdoWfsDescribeFeatureType::FdoWfsDescribeFeatureType(FdoStringCollection* typeNames,FdoString* version) :
+    FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::DescribeFeatureType),
+        m_typeNames(typeNames)
+{
+	FdoOwsRequest::SetVersion (version ? version : FdoWfsGlobals::WfsVersion);
+    FDO_SAFE_ADDREF(m_typeNames.p);
+}
+
 FdoWfsDescribeFeatureType::~FdoWfsDescribeFeatureType()
 {
+	
 }
 
 FdoWfsDescribeFeatureType* FdoWfsDescribeFeatureType::Create(FdoStringCollection* typeNames)
 {
     return new FdoWfsDescribeFeatureType(typeNames);
+}
+
+FdoWfsDescribeFeatureType* FdoWfsDescribeFeatureType::Create(FdoStringCollection* typeNames,FdoString* version)
+{
+    return new FdoWfsDescribeFeatureType(typeNames,version);
 }
 
 FdoStringP FdoWfsDescribeFeatureType::EncodeKVP()

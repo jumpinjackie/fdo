@@ -18,6 +18,7 @@
 
 #include <stdafx.h>
 #include <OWS/FdoOwsRequestMetadata.h>
+#include <OWS/FdoOwsOperationsMetadata.h>
 #include "FdoOwsUrlResolver.h"
 
 FdoOwsUrlResolver::FdoOwsUrlResolver()
@@ -30,6 +31,12 @@ FdoOwsUrlResolver::FdoOwsUrlResolver(FdoOwsRequestMetadataCollection* requestMet
     FDO_SAFE_ADDREF(requestMetadatas);
 }
 
+FdoOwsUrlResolver::FdoOwsUrlResolver(FdoOwsOperationCollection* operationMetadatas) :
+                                m_operationMetadatas(operationMetadatas)
+{
+    FDO_SAFE_ADDREF(operationMetadatas);
+}
+
 FdoOwsUrlResolver::~FdoOwsUrlResolver()
 {
 }
@@ -39,27 +46,61 @@ FdoOwsUrlResolver* FdoOwsUrlResolver::Create(FdoOwsRequestMetadataCollection* re
     return new FdoOwsUrlResolver(requestMetadatas);
 }
 
+FdoOwsUrlResolver* FdoOwsUrlResolver::Create(FdoOwsOperationCollection* operationMetadatas)
+{
+    return new FdoOwsUrlResolver(operationMetadatas);
+}
+
 FdoStringP FdoOwsUrlResolver::GetUrl(bool& bGet, FdoString* requestName)
 {
     FdoStringP ret;
-    int cnt = m_requestMetadatas->GetCount();
-    for (int i=0; i<cnt; i++)
-    {
-        FdoPtr<FdoOwsRequestMetadata> metadata = m_requestMetadatas->GetItem(i);
-        if (FdoCommonOSUtil::wcsicmp(metadata->GetName (), requestName) == 0)
-        {
-            FdoStringsP urls;
-            if (bGet)
-                urls = metadata->GetHttpGetUrls();
-            else
-                urls = metadata->GetHttpPostUrls();
+	if(m_requestMetadatas != NULL)
+	{
+		int cnt = m_requestMetadatas->GetCount();
+		for (int i=0; i<cnt; i++)
+		{
+			FdoPtr<FdoOwsRequestMetadata> metadata = m_requestMetadatas->GetItem(i);
+			if (FdoCommonOSUtil::wcsicmp(metadata->GetName (), requestName) == 0)
+			{
+				FdoStringsP urls;
+				if (bGet)
+					urls = metadata->GetHttpGetUrls();
+				else
+					urls = metadata->GetHttpPostUrls();
 
-            // If there are more than one URL, use the first one as default.
-            if (urls->GetCount() > 0)
-                ret = urls->GetString (0);
-            break;
-        }
-    }
+				// If there are more than one URL, use the first one as default.
+				if (urls->GetCount() > 0)
+					ret = urls->GetString (0);
+				break;
+			}
+		}
+	}
+	else if (m_operationMetadatas != NULL)
+	{
+		int cnt = m_operationMetadatas->GetCount();
+		for (int i=0; i<cnt; i++)
+		{
+			FdoPtr<FdoOwsOperation> metadata = m_operationMetadatas->GetItem(i);
+			if (FdoCommonOSUtil::wcsicmp(metadata->GetName (), requestName) == 0)
+			{
+				FdoStringP url;
+				FdoOwsDcpP dcp = metadata->GetDcp();
+				FdoOwsHttpP http;
+				FdoOwsXLinkP xlink;
+				if (bGet)
+				{
+					xlink = http->GetHttpGetXLink();
+					url = xlink->GetHref();
+				}
+				else
+				{
+					xlink = http->GetHttpPostXLink();
+					url = xlink->GetHref();
+				}
+				break;
+			}
+		}
+	}
 
     return ret;
 }

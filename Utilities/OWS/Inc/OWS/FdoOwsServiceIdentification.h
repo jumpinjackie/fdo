@@ -35,6 +35,9 @@ private:
     FdoStringP m_url;
     FdoStringP m_fees;
     FdoStringP m_accessConstrains;
+	FdoStringP m_serviceType;
+	FdoStringP m_serviceTypeVersion;
+
 
 protected:
     FdoOwsServiceIdentification();
@@ -51,6 +54,8 @@ public:
     FDOOWS_API FdoString* GetUrl() const;
     FDOOWS_API FdoString* GetFees() const;
     FDOOWS_API FdoString* GetAccessConstrains() const;
+	FDOOWS_API FdoString* GetServiceType() const;
+    FDOOWS_API FdoString* GetServiceTypeVersion() const ;
 
 	FDOOWS_API virtual void InitFromXml(FdoXmlSaxContext* pContext, FdoXmlAttributeCollection* attrs);
     FDOOWS_API virtual FdoXmlSaxHandler* XmlStartElement(

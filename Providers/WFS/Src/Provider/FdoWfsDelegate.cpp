@@ -42,10 +42,13 @@ FdoWfsDelegate* FdoWfsDelegate::Create(FdoString* defaultUrl, FdoString* userNam
     return new FdoWfsDelegate(defaultUrl, userName, passwd);
 }
 
-FdoWfsServiceMetadata* FdoWfsDelegate::GetCapabilities()
+FdoWfsServiceMetadata* FdoWfsDelegate::GetCapabilities(FdoString* version)
 {
     FdoPtr<FdoOwsGetCapabilities> request = FdoOwsGetCapabilities::Create(FdoWfsGlobals::WFS);
-    request->SetVersion(FdoWfsGlobals::WfsVersion);
+    if (version == NULL || wcslen(version) == 0)
+        request->SetVersion(FdoWfsGlobals::WfsVersion);
+    else
+        request->SetVersion(version, false); // version already in URL.
 
     FdoPtr<FdoOwsResponse> response = Invoke(request);
     FdoPtr<FdoIoStream> stream = response->GetStream();
@@ -55,10 +58,9 @@ FdoWfsServiceMetadata* FdoWfsDelegate::GetCapabilities()
     return FDO_SAFE_ADDREF(rv.p);
 }
 
-FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollection* typeNames)
+FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollection* typeNames, FdoString* version)
 {
-    FdoPtr<FdoWfsDescribeFeatureType> request = FdoWfsDescribeFeatureType::Create(typeNames);
-    request->SetVersion(FdoWfsGlobals::WfsVersion);
+    FdoPtr<FdoWfsDescribeFeatureType> request = FdoWfsDescribeFeatureType::Create(typeNames,version);
 
     FdoPtr<FdoOwsResponse> response = Invoke(request);
     FdoPtr<FdoIoStream> stream = response->GetStream();
@@ -82,14 +84,16 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                               FdoStringCollection* propertiesToSelect,
                                               FdoString* from,
                                               FdoFilter* where,
-                                              FdoString* schemaName)
+                                              FdoString* schemaName,
+											  FdoString* version)
 {
     FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, 
                                                                 srsName, 
                                                                 propertiesToSelect, 
                                                                 from, 
                                                                 where,
-                                                                schemaName);
+                                                                schemaName,
+																version);
     FdoPtr<FdoOwsResponse> response;
     FdoException* exc1 = NULL;
     try
