@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<gml:DerivedCRS/>
+<xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:element name="rtable1" type="dbo:rtable1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="rtable1Key">
 <xs:selector xpath=".//rtable1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable2" type="dbo:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable2Key">
+<xs:selector xpath=".//rtable2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable7" type="dbo:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable7Key">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="rtable7Key_0">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="TABLE7_ID12345678901234567890"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol1" type="dbo:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol1Key">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="table_delcol1Key_0">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol2" type="dbo:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol2Key">
+<xs:selector xpath=".//table_delcol2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table1Key">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable1AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable2AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table3Key">
+<xs:selector xpath=".//table3"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+<xs:key name="table3_rtable2AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+</xs:element>
+<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table7" type="dbo:table7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table7Key">
+<xs:selector xpath=".//table7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:key name="table7_rtable7AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view1Key">
+<xs:selector xpath=".//view1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="view3" type="dbo:view3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view3Key">
+<xs:selector xpath=".//view3"/>
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
@@ -68,12 +155,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable2" type="dbo:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable2Key">
-<xs:selector xpath=".//rtable2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -186,16 +267,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable7" type="dbo:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable7Key">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="rtable7Key_0">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="TABLE7_ID12345678901234567890"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="rtable7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -254,20 +325,91 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table1Key">
-<xs:selector xpath=".//table1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable1AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable2AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
+<xs:complexType name="table_delcol1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="CHECK_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+<xs:enumeration value="a"/>
+<xs:enumeration value="b"/>
+<xs:enumeration value="c"/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="SINGLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="UNIQUE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table_delcol2Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="INT64_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:complexType name="table1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -364,6 +506,14 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+<xs:element name="INT_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="INT16_COLUMN345678901234567890" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int16">
@@ -385,14 +535,6 @@
 <xs:element name="INT64_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="INT_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -571,18 +713,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table3Key">
-<xs:selector xpath=".//table3"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-<xs:key name="table3_rtable2AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -622,12 +752,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table4Key">
-<xs:selector xpath=".//table4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table4Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -673,16 +797,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table7" type="dbo:table7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table7Key">
-<xs:selector xpath=".//table7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:key name="table7_rtable7AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -712,113 +826,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table_delcol1" type="dbo:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol1Key">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="table_delcol1Key_0">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="UNIQUE_COLUMN"/>
-</xs:unique>
-</xs:element>
-<xs:complexType name="table_delcol1Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="CHECK_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="50"/>
-<xs:enumeration value="a"/>
-<xs:enumeration value="b"/>
-<xs:enumeration value="c"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="SINGLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="STRING_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="20"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="UNIQUE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="table_delcol2" type="dbo:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol2Key">
-<xs:selector xpath=".//table_delcol2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="table_delcol2Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="INT64_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view1Key">
-<xs:selector xpath=".//view1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -857,12 +864,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="view3" type="dbo:view3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view3Key">
-<xs:selector xpath=".//view3"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -909,39 +910,4 @@
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SqlServerProvider" textInRow="NotInRow" provider="Autodesk.SqlServer.3.6" name="dbo">
-<complexType name="rtable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable1" name="dbo.rtable1"/>
-</complexType>
-<complexType name="rtable2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable2" name="dbo.rtable2"/>
-</complexType>
-<complexType name="rtable7Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable7" name="dbo.rtable7"/>
-</complexType>
-<complexType name="table1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table1" name="dbo.table1"/>
-</complexType>
-<complexType name="table3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table3" name="dbo.table3"/>
-</complexType>
-<complexType name="table4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table4" name="dbo.table4"/>
-</complexType>
-<complexType name="table7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="ID">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table7" name="dbo.table7"/>
-</complexType>
-<complexType name="table_delcol1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol1" name="dbo.table_delcol1"/>
-</complexType>
-<complexType name="table_delcol2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol2" name="dbo.table_delcol2"/>
-</complexType>
-<complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view1" name="dbo.view1"/>
-</complexType>
-<complexType name="view3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view3" name="dbo.view3"/>
-</complexType>
-</SchemaMapping>
 </fdo:DataStore>

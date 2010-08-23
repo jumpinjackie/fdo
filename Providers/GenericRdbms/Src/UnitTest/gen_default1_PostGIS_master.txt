@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/public" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:public="http://fdo.osgeo.org/schemas/feature/public" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<gml:DerivedCRS/>
+<xs:schema xmlns:public="http://fdo.osgeo.org/schemas/feature/public" targetNamespace="http://fdo.osgeo.org/schemas/feature/public" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:element name="rtable1" type="public:rtable1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="rtable1Key">
 <xs:selector xpath=".//rtable1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable2" type="public:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable2Key">
+<xs:selector xpath=".//rtable2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable7" type="public:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable7Key">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="rtable7Key_0">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="TABLE7_ID12345678901234567890"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol1" type="public:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol1Key">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="table_delcol1Key_0">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol2" type="public:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol2Key">
+<xs:selector xpath=".//table_delcol2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table1" type="public:table1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table1Key">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable1AKey">
+<xs:selector xpath=".//public"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable2AKey">
+<xs:selector xpath=".//public"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="table3" type="public:table3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table3Key">
+<xs:selector xpath=".//table3"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+<xs:key name="table3_rtable2AKey">
+<xs:selector xpath=".//public"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+</xs:element>
+<xs:element name="table4" type="public:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table7" type="public:table7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table7Key">
+<xs:selector xpath=".//table7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:key name="table7_rtable7AKey">
+<xs:selector xpath=".//public"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="view1" type="public:view1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view1Key">
+<xs:selector xpath=".//view1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="view3" type="public:view3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view3Key">
+<xs:selector xpath=".//view3"/>
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
@@ -68,12 +155,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable2" type="public:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable2Key">
-<xs:selector xpath=".//rtable2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -186,16 +267,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable7" type="public:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable7Key">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="rtable7Key_0">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="TABLE7_ID12345678901234567890"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="rtable7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -254,16 +325,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table_delcol1" type="public:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol1Key">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="table_delcol1Key_0">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="UNIQUE_COLUMN"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="table_delcol1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -322,12 +383,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table_delcol2" type="public:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol2Key">
-<xs:selector xpath=".//table_delcol2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table_delcol2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -355,20 +410,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table1" type="public:table1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table1Key">
-<xs:selector xpath=".//table1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable1AKey">
-<xs:selector xpath=".//public"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable2AKey">
-<xs:selector xpath=".//public"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table1Type" abstract="false" fdo:geometryName="NEW_GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -592,10 +633,24 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="numeric_column" minOccurs="0">
 <xs:annotation>
@@ -679,18 +734,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table3" type="public:table3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table3Key">
-<xs:selector xpath=".//table3"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-<xs:key name="table3_rtable2AKey">
-<xs:selector xpath=".//public"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -730,12 +773,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table4" type="public:table4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table4Key">
-<xs:selector xpath=".//table4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -743,10 +780,24 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
@@ -778,16 +829,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table7" type="public:table7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table7Key">
-<xs:selector xpath=".//table7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:key name="table7_rtable7AKey">
-<xs:selector xpath=".//public"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -817,12 +858,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="view1" type="public:view1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view1Key">
-<xs:selector xpath=".//view1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -861,12 +896,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="view3" type="public:view3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view3Key">
-<xs:selector xpath=".//view3"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -874,10 +903,24 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
