@@ -24,20 +24,24 @@
 #endif // _WIN32
 
 class FdoOwsRequestMetadataCollection;
+class FdoOwsOperationCollection;
 
 class FdoOwsUrlResolver : public FdoIDisposable
 {
 private:
     FdoPtr<FdoOwsRequestMetadataCollection> m_requestMetadatas;
+	FdoPtr<FdoOwsOperationCollection> m_operationMetadatas;
 
 protected:
     FdoOwsUrlResolver();
     FdoOwsUrlResolver(FdoOwsRequestMetadataCollection* requestMetadatas);
+	FdoOwsUrlResolver(FdoOwsOperationCollection* operationMetadatas);
     virtual ~FdoOwsUrlResolver();
     virtual void Dispose() { delete this; }
 
 public:
     static FdoOwsUrlResolver* Create(FdoOwsRequestMetadataCollection* requestMetadatas);
+	static FdoOwsUrlResolver* Create(FdoOwsOperationCollection* operationMetadatas);
 
     FdoStringP GetUrl(bool& bGet, FdoString* requestName);
 };

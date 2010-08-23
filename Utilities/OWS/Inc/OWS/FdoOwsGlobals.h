@@ -25,6 +25,47 @@
 
 namespace FdoOwsGlobals
 {
+	//ServiceIdentification
+    static FdoString* ServiceIdentification                 = L"ServiceIdentification";
+	static FdoString* Abstract								= L"Abstract";
+	static FdoString* AcessConstraints						= L"AcessConstraints";
+	static FdoString* OWSOperation							= L"Operation";
+	static FdoString* ServiceProvider                       = L"ServiceProvider";
+
+	static FdoString* ServiceType							= L"ServiceType";
+	static FdoString* ServiceTypeVersion					= L"ServiceTypeVersion";
+	static FdoString* Fees									= L"Fees";
+	static FdoString* Keyword								= L"Keyword";
+
+	//ServiceProvider
+	static FdoString* ProviderName							= L"ProviderName";
+	static FdoString* ProviderSite							= L"ProviderSite";
+	static FdoString* ServiceContact						= L"ServiceContact";
+
+	//ServiceContact
+	static FdoString* IndividualName						= L"IndividualName";
+	static FdoString* PositionName							= L"PositionName";
+	static FdoString* ContactInfo							= L"ContactInfo";
+
+	//ContactInfo
+	static FdoString* Voice									= L"Voice";
+	static FdoString* Facsimile								= L"Facsimile";
+	static FdoString* DeliveryPoint							= L"DeliveryPoint";
+	static FdoString* City									= L"City";
+	static FdoString* AdministrativeArea					= L"AdministrativeArea";
+	static FdoString* PostalCode							= L"PostalCode";
+	static FdoString* Country								= L"Country";
+	static FdoString* ElectronicMailAddress					= L"ElectronicMailAddress";
+	static FdoString* HoursOfService						= L"HoursOfService";
+	static FdoString* ContactInstructions					= L"ContactInstructions";
+	
+	//OperationsMetadata
+    static FdoString* OperationsMetadata                    = L"OperationsMetadata";
+	static FdoString* Operation								= L"Operation";
+	static FdoString* Parameter								= L"Parameter";
+	static FdoString* Value									= L"Value";
+	static FdoString* DCP									= L"DCP";
+
 	static FdoString* GetCapabilities					    = L"GetCapabilities";
 	static FdoString* DescribeFeatureType                   = L"DescribeFeatureType";
     static FdoString* Request                               = L"Request";
@@ -45,6 +86,7 @@ namespace FdoOwsGlobals
     static FdoString* WMT_MS_Capabilities                   = L"WMT_MS_Capabilities";
     static FdoString* WMS_Capabilities                      = L"WMS_Capabilities";
     static FdoString* href                                  = L"http://www.w3.org/1999/xlink:href";
+	static FdoString* type									= L"http://www.w3.org/1999/xlink:type";
     static FdoString* ServiceExceptionReport                = L"ServiceExceptionReport";
     static FdoString* ServiceException                      = L"ServiceException";
     static FdoString* code                                  = L"code";
@@ -146,6 +188,9 @@ namespace FdoOwsGlobals
     static const FdoString *CapabilitiesLatLonBoundingBoxEBL    = L"maxx";
     static const FdoString *CapabilitiesLatLonBoundingBoxNBL    = L"maxy";
     static const FdoString *CapabilitiesLatLonBoundingBoxSBL    = L"miny";
+
+	static const FdoString *LowerCorner    = L"LowerCorner";
+	static const FdoString *UpperCorner    = L"UpperCorner";
 }
 
 

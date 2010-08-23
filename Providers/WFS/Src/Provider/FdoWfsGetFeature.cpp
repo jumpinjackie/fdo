@@ -28,13 +28,14 @@ FdoWfsGetFeature::FdoWfsGetFeature(FdoString* targetNamespace, FdoString* srsNam
                                     FdoStringCollection* propertiesToSelect,
                                     FdoString* from,
                                     FdoFilter* where,
-                                    FdoString* schemaName) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
+                                    FdoString* schemaName,
+									FdoString* version) : FdoOwsRequest(FdoWfsGlobals::WFS, FdoWfsGlobals::GetFeature),
                                     m_targetNamespace(targetNamespace), m_srsName(srsName),
                                     m_propertiesToSelect(propertiesToSelect),
                                     m_from(from), m_where(where), m_schemaName(schemaName)
 {
     m_encodeWithClassName = false;
-    SetVersion(FdoWfsGlobals::WfsVersion);
+	FdoOwsRequest::SetVersion (version ? version : FdoWfsGlobals::WfsVersion);
     FDO_SAFE_ADDREF(propertiesToSelect);
     FDO_SAFE_ADDREF(where);
 }
@@ -44,9 +45,9 @@ FdoWfsGetFeature::~FdoWfsGetFeature()
 }
 
 FdoWfsGetFeature* FdoWfsGetFeature::Create(FdoString* targetNamespace, FdoString* srsName, FdoStringCollection* propertiesToSelect,
-                            FdoString* from, FdoFilter* where, FdoString* schemaName)
+                            FdoString* from, FdoFilter* where, FdoString* schemaName,FdoString* version)
 {
-    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName);
+    return new FdoWfsGetFeature(targetNamespace, srsName, propertiesToSelect, from, where, schemaName,version);
 }
 
 FdoStringP FdoWfsGetFeature::EncodeKVP()

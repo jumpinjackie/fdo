@@ -89,7 +89,10 @@ FdoXmlSaxHandler* FdoOwsGeographicBoundingBox::XmlStartElement(FdoXmlSaxContext*
             if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxWBL) == 0 ||
 			    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxEBL) == 0 ||
 			    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxNBL) == 0 ||
-			    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxSBL) == 0) 
+			    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxSBL) == 0 ||
+				FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::LowerCorner) == 0 ||
+				FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::UpperCorner) == 0
+				) 
             {
                 mXmlContentHandler = FdoXmlCharDataHandler::Create();
                 pRet = mXmlContentHandler;
@@ -113,7 +116,7 @@ FdoBoolean FdoOwsGeographicBoundingBox::XmlEndElement(FdoXmlSaxContext* context,
         VALIDATE_ARGUMENT(context);
 
         if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxWBL) == 0) {
-            SetWestBoundLongitude(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
+			SetWestBoundLongitude(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxEBL) == 0) {
             SetEastBoundLongitude(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
@@ -123,6 +126,31 @@ FdoBoolean FdoOwsGeographicBoundingBox::XmlEndElement(FdoXmlSaxContext* context,
         }
         else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::CapabilitiesExGeoBoundingBoxSBL) == 0) {
             SetSouthBoundLatitude(FdoCommonOSUtil::wtof(mXmlContentHandler->GetString()));
+        }
+		// handle LowerCorner and UpperCorner format defined in OWS
+        else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::LowerCorner) == 0) {
+            FdoStringsP coords = FdoStringCollection::Create(mXmlContentHandler->GetString(), L" ");
+            if (coords->GetCount() < 2) {
+				throw FdoException::Create(FdoException::NLSGetMessage(
+                                        FDO_NLSID(FDO_52_BADSUBELEMENT), 
+                                        "Error reading from XML, unexpected element %1$ls inside '%2$ls'.", 
+                                        name, FdoOwsGlobals::OWS_Capabilities));
+            }
+
+			SetWestBoundLongitude(FdoCommonOSUtil::wtof(FdoStringElementP(coords->GetItem(0))->GetString()));
+			SetSouthBoundLatitude(FdoCommonOSUtil::wtof(FdoStringElementP(coords->GetItem(1))->GetString()));
+        }
+        else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::UpperCorner) == 0) {
+            FdoStringsP coords = FdoStringCollection::Create(mXmlContentHandler->GetString(), L" ");
+            if (coords->GetCount() < 2) {
+				throw FdoException::Create(FdoException::NLSGetMessage(
+                                        FDO_NLSID(FDO_52_BADSUBELEMENT), 
+                                        "Error reading from XML, unexpected element %1$ls inside '%2$ls'.", 
+                                        name, FdoOwsGlobals::OWS_Capabilities));
+            }
+
+			SetEastBoundLongitude(FdoCommonOSUtil::wtof(FdoStringElementP(coords->GetItem(0))->GetString()));
+			SetNorthBoundLatitude(FdoCommonOSUtil::wtof(FdoStringElementP(coords->GetItem(1))->GetString()));
         }
 
         FDO_SAFE_RELEASE(mXmlContentHandler.p);

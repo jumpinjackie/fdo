@@ -21,8 +21,11 @@
 #include <OWS/FdoOwsServiceMetadata.h>
 #include <OWS/FdoOwsCapabilities.h>
 #include <OWS/FdoOwsServiceIdentification.h>
+#include <OWS/FdoOwsServiceProvider.h>
+#include <OWS/FdoOwsOperationsMetadata.h>
 #include <OWS/FdoOwsXmlSaxContext.h>
 #include <OWS/FdoOwsGlobals.h>
+
 
 FdoOwsServiceMetadata::FdoOwsServiceMetadata()
 {
@@ -46,6 +49,14 @@ FdoOwsCapabilities* FdoOwsServiceMetadata::OnCreateCapabilities()
 {
     return FdoOwsCapabilities::Create();
 }
+FdoOwsServiceProvider* FdoOwsServiceMetadata::OnCreateServiceProvider()
+{
+	return FdoOwsServiceProvider::Create();
+}
+FdoOwsOperationsMetadata* FdoOwsServiceMetadata::OnCreateOperationsMeatadata()
+{
+	return FdoOwsOperationsMetadata::Create();
+}
 
 
 FdoString* FdoOwsServiceMetadata::GetVersion() const
@@ -65,6 +76,14 @@ FdoOwsServiceIdentification* FdoOwsServiceMetadata::GetServiceIdentification() c
 FdoOwsCapabilities* FdoOwsServiceMetadata::GetCapabilities() const
 {
     return FDO_SAFE_ADDREF(m_capabilities.p);
+}
+FdoOwsServiceProvider* FdoOwsServiceMetadata::GetServiceProvider() const
+{
+	return FDO_SAFE_ADDREF(m_serviceprovider.p);
+}
+FdoOwsOperationsMetadata* FdoOwsServiceMetadata::GetOperationsMetadata() const
+{
+	return FDO_SAFE_ADDREF(m_operationsMetadata.p);
 }
 
 FdoXmlSaxHandler* FdoOwsServiceMetadata::XmlStartElement(
@@ -110,7 +129,8 @@ FdoXmlSaxHandler* FdoOwsServiceMetadata::XmlStartElement(
     // <Service/> and <Capability/>
     case 1:
         {
-            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Service) == 0)
+            if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Service) == 0 ||
+                FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceIdentification) == 0)
             {
                 m_serviceId = OnCreateServiceIdentification();
                 m_serviceId->InitFromXml(context, atts);
@@ -122,6 +142,18 @@ FdoXmlSaxHandler* FdoOwsServiceMetadata::XmlStartElement(
                 m_capabilities->InitFromXml(context, atts);
                 pRet = m_capabilities.p;
             }
+			else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceProvider) ==0)
+			{
+				m_serviceprovider = OnCreateServiceProvider();
+				m_serviceprovider->InitFromXml(context,atts);
+				pRet = m_serviceprovider.p;
+			}
+			else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OperationsMetadata) ==0)
+			{
+				m_operationsMetadata = OnCreateOperationsMeatadata();
+				m_operationsMetadata->InitFromXml(context,atts);
+				pRet = m_operationsMetadata.p;
+			}
             else
                 pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
 

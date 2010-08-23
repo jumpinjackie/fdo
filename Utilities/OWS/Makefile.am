@@ -49,6 +49,8 @@ EXTRA_DIST = \
   Inc/OWS/FdoOwsIEncodable.h \
   Inc/OWS/FdoOwsXmlSaxContext.h \
   Inc/OWS/FdoOwsIHttpHandler.h
+  Inc/OWS/FdoOwsOperationsMetadata.h \
+  Inc/OWS/FdoOwsServiceProvider.h 
 
 ##building libFdoOws.so
 lib_LTLIBRARIES = libFdoOws.la

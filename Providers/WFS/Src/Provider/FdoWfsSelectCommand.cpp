@@ -26,6 +26,7 @@
 #include <FdoExpressionEngine.h>
 #include <Util/FdoExpressionEngineUtilDataReader.h>
 #include <Util/FdoExpressionEngineUtilFeatureReader.h>
+#include <FdoCommonStringUtil.h>
 
 #include <malloc.h>
 
@@ -252,6 +253,12 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
             UpdateFilter(mFilter.p, sPropAlias, sPropName);
     }
 
+	// Get the WFS version
+	FdoString* version = mConnection->GetVersion();
+	
+	if (version != NULL && FdoCommonStringUtil::StringLength(version) == 0)
+		version = NULL;	
+
 	// yeah, all the parameters that WfsDeleget::GetFeature needs are ready
 	FdoPtr<FdoWfsDelegate> delegate = mConnection->GetWfsDelegate();
 	FdoPtr<FdoIFeatureReader> ret = delegate->GetFeature(
@@ -262,7 +269,8 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
         bHasComputedProperties ? FdoPtr<FdoStringCollection>() : props, // Computed properties may reference other properties so retrieve all of them.
         featureTypeName, 
         mFilter, 
-        schemaFeatureName
+        schemaFeatureName,
+		version
     );
 
 	FdoWfsFeatureReader* reader = dynamic_cast<FdoWfsFeatureReader *>(ret.p);

@@ -446,6 +446,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\FdoOwsServiceProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\FdoOwsOperationsMetadata.cpp"
+				>
+			</File>		
+			<File
 				RelativePath=".\src\FdoOwsUrlResolver.cpp"
 				>
 			</File>
@@ -563,6 +571,14 @@
 				RelativePath=".\inc\Ows\FdoOwsServiceMetadata.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Inc\OWS\FdoOwsOperationsMetadata.h"
+				>
+			</File>			
+			<File
+				RelativePath=".\Inc\OWS\FdoOwsServiceProvider.h"
+				>
+			</File>	
 			<File
 				RelativePath=".\inc\Ows\FdoOwsXmlSaxContext.h"
 				>

@@ -185,10 +185,14 @@ public: // FdoWfsConnection specific functions
 	FdoFeatureSchemaCollection* GetSchemas();
     FdoBoolean IsSchemaLoadedFromServer();
 
+	FdoString* GetVersion();
+
 private: // FdoWfsConnection specific functions
 
     /// <summary>Helper function to set the class description.</summary>
     void _setClassDescription (FdoClassDefinition* clsdef);
+	// Gets the version from client request
+    FdoStringP _getRequestWFSVersion(FdoString* str);
 };
 
 #endif // FDOWFSCONNECTION_H

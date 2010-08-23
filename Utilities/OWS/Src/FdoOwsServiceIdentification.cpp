@@ -64,6 +64,14 @@ FdoString* FdoOwsServiceIdentification::GetAccessConstrains() const
 {
     return (FdoString*)m_accessConstrains;
 }
+FdoString* FdoOwsServiceIdentification::GetServiceType() const
+{
+    return (FdoString*)m_serviceType;
+}
+FdoString* FdoOwsServiceIdentification::GetServiceTypeVersion() const
+{
+    return (FdoString*)m_serviceTypeVersion;
+}
 
 void FdoOwsServiceIdentification::InitFromXml(FdoXmlSaxContext* pContext, FdoXmlAttributeCollection* attrs)
 {
@@ -86,7 +94,13 @@ FdoXmlSaxHandler* FdoOwsServiceIdentification::XmlStartElement(
         FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
         if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Name) == 0 ||
             FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Title) == 0 ||
-            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OnlineResource) == 0)
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OnlineResource) == 0 ||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Abstract) == 0 ||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::AcessConstraints) == 0 ||
+		    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceType) == 0 ||
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceTypeVersion) == 0 ||
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Fees) == 0||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Keyword) == 0)
         {
             // find out whether the url exists in href attribute
             FdoPtr<FdoXmlAttribute> href;
@@ -123,7 +137,13 @@ FdoBoolean FdoOwsServiceIdentification::XmlEndElement(FdoXmlSaxContext* context,
 
         if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Name) == 0 ||
             FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Title) == 0 ||
-            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OnlineResource) == 0)
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OnlineResource) == 0 ||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Abstract) == 0 ||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::AcessConstraints) == 0 ||
+		    FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceType) == 0 ||
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceTypeVersion) == 0 ||
+            FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Fees) == 0 ||
+			FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Keyword) == 0)
         {
             FdoPtr<FdoXmlCharDataHandler> handler = myContext->ServiceIdCharDataHandler();
             if (handler != NULL)
@@ -135,8 +155,21 @@ FdoBoolean FdoOwsServiceIdentification::XmlEndElement(FdoXmlSaxContext* context,
                     m_title = value;
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::OnlineResource) == 0)
                     m_url = value;
+                else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Abstract) == 0)
+                    m_abstract = value;
+                else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::AcessConstraints) == 0)
+                    m_accessConstrains = value;
+				else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceType) == 0)
+                    m_serviceType = value;
+				else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::ServiceTypeVersion) == 0)
+                    m_serviceTypeVersion = value;
+				else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Fees) == 0)
+                    m_fees = value;
+				else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Keyword) == 0)
+                    m_keywords->Add(value);
 
                 myContext->SetServiceIdCharDataHandler(NULL);
+
             }
         }
         else

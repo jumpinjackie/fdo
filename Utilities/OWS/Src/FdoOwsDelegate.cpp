@@ -22,6 +22,7 @@
 #include <OWS/FdoOwsResponse.h>
 #include <OWS/FdoOwsRequest.h>
 #include <OWS/FdoOwsRequestMetadata.h>
+#include <OWS/FdoOwsOperationsMetadata.h>
 #include <OWS/FdoOwsDelegate.h>
 #include "FdoOwsUrlResolver.h"
 #include "FdoOwsHttpHandler.h"
@@ -45,6 +46,11 @@ void FdoOwsDelegate::SetRequestMetadatas(FdoOwsRequestMetadataCollection* reques
     m_requestMetadatas = FDO_SAFE_ADDREF(requestMetadatas);
 }
 
+void FdoOwsDelegate::SetOperationMetadatas(FdoOwsOperationCollection* operationMetadatas)
+{
+	m_operationMetadatas = FDO_SAFE_ADDREF(operationMetadatas);
+}
+
 FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
 {
     bool bGet = true;
@@ -53,10 +59,15 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
     FdoStringP url = m_defaultUrl;
 
     // If possible, try and resolve the URL address
-    if (m_requestMetadatas != NULL)
+    if (m_requestMetadatas != NULL || m_operationMetadatas != NULL)
     {
         if (m_urlResolver == NULL)
-            m_urlResolver = FdoOwsUrlResolver::Create(m_requestMetadatas);
+		{
+			if (m_requestMetadatas != NULL)
+	            m_urlResolver = FdoOwsUrlResolver::Create(m_requestMetadatas);
+			else if (m_operationMetadatas != NULL)
+				m_urlResolver = FdoOwsUrlResolver::Create(m_operationMetadatas);
+		}
         FdoStringP rv = m_urlResolver->GetUrl(bGet, request->GetRequest ());
         if (rv != NULL)
             url = rv;

@@ -32,11 +32,13 @@ private:
 protected:
     FdoWfsDescribeFeatureType();
     FdoWfsDescribeFeatureType(FdoStringCollection* typeNames);
+	FdoWfsDescribeFeatureType(FdoStringCollection* typeNames,FdoString* version);
     virtual ~FdoWfsDescribeFeatureType();
     virtual void Dispose() { delete this; }
 
 public:
     static FdoWfsDescribeFeatureType* Create(FdoStringCollection* typeNames);
+	static FdoWfsDescribeFeatureType* Create(FdoStringCollection* typeNames,FdoString* version);
 
     virtual FdoStringP EncodeKVP();
     virtual FdoStringP EncodeXml();
