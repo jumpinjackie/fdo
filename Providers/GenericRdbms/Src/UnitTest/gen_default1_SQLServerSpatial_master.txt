@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<gml:DerivedCRS/>
+<xs:schema xmlns:dbo="http://fdo.osgeo.org/schemas/feature/dbo" targetNamespace="http://fdo.osgeo.org/schemas/feature/dbo" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:element name="rtable1" type="dbo:rtable1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="rtable1Key">
 <xs:selector xpath=".//rtable1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable2" type="dbo:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable2Key">
+<xs:selector xpath=".//rtable2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable7" type="dbo:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable7Key">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="rtable7Key_0">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="TABLE7_ID12345678901234567890"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol1" type="dbo:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol1Key">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="table_delcol1Key_0">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol2" type="dbo:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol2Key">
+<xs:selector xpath=".//table_delcol2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table1Key">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable1AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:key name="table1_rtable2AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table3Key">
+<xs:selector xpath=".//table3"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+<xs:key name="table3_rtable2AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+</xs:element>
+<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table7" type="dbo:table7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table7Key">
+<xs:selector xpath=".//table7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:key name="table7_rtable7AKey">
+<xs:selector xpath=".//dbo"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view1Key">
+<xs:selector xpath=".//view1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+</xs:element>
+<xs:element name="view3" type="dbo:view3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view3Key">
+<xs:selector xpath=".//view3"/>
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
@@ -68,12 +155,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable2" type="dbo:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable2Key">
-<xs:selector xpath=".//rtable2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -186,16 +267,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable7" type="dbo:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable7Key">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="rtable7Key_0">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="TABLE7_ID12345678901234567890"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="rtable7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -254,20 +325,91 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table1" type="dbo:table1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table1Key">
-<xs:selector xpath=".//table1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable1AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:key name="table1_rtable2AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
+<xs:complexType name="table_delcol1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="CHECK_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+<xs:enumeration value="a"/>
+<xs:enumeration value="b"/>
+<xs:enumeration value="c"/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="SINGLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:float"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="UNIQUE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table_delcol2Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="INT64_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:complexType name="table1Type" abstract="false" fdo:geometryName="NEW_GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -364,6 +506,14 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+<xs:element name="INT_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="INT16_COLUMN345678901234567890" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int16">
@@ -385,14 +535,6 @@
 <xs:element name="INT64_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="INT_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -429,10 +571,24 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="NTEXT_COLUMN" minOccurs="0">
 <xs:annotation>
@@ -588,18 +744,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table3" type="dbo:table3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table3Key">
-<xs:selector xpath=".//table3"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-<xs:key name="table3_rtable2AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -639,12 +783,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table4" type="dbo:table4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table4Key">
-<xs:selector xpath=".//table4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -652,10 +790,24 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
@@ -687,16 +839,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table7" type="dbo:table7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table7Key">
-<xs:selector xpath=".//table7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:key name="table7_rtable7AKey">
-<xs:selector xpath=".//dbo"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -726,113 +868,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table_delcol1" type="dbo:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol1Key">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="table_delcol1Key_0">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="UNIQUE_COLUMN"/>
-</xs:unique>
-</xs:element>
-<xs:complexType name="table_delcol1Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="CHECK_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="50"/>
-<xs:enumeration value="a"/>
-<xs:enumeration value="b"/>
-<xs:enumeration value="c"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="SINGLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:float"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="STRING_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="20"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="UNIQUE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="table_delcol2" type="dbo:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol2Key">
-<xs:selector xpath=".//table_delcol2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="table_delcol2Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="INT64_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view1Key">
-<xs:selector xpath=".//view1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -871,12 +906,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="view3" type="dbo:view3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view3Key">
-<xs:selector xpath=".//view3"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="view3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -884,10 +913,24 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
@@ -920,7 +963,7 @@
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:guest="http://fdo.osgeo.org/schemas/feature/guest" targetNamespace="http://fdo.osgeo.org/schemas/feature/guest" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -933,6 +976,188 @@
 <xs:selector xpath=".//vertable1"/>
 <xs:field xpath="name"/>
 </xs:unique>
+</xs:element>
+<xs:element name="vertable2" type="guest:vertable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertable2Key">
+<xs:selector xpath=".//vertable2"/>
+<xs:field xpath="id1"/>
+</xs:key>
+<xs:unique name="vertable2Key_0">
+<xs:selector xpath=".//vertable2"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertable3" type="guest:vertable3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertable3Key">
+<xs:selector xpath=".//vertable3"/>
+<xs:field xpath="id1"/>
+</xs:key>
+<xs:unique name="vertable3Key_0">
+<xs:selector xpath=".//vertable3"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertable4" type="guest:vertable4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertable4Key">
+<xs:selector xpath=".//vertable4"/>
+<xs:field xpath="id1"/>
+</xs:key>
+<xs:unique name="vertable4Key_0">
+<xs:selector xpath=".//vertable4"/>
+<xs:field xpath="name"/>
+</xs:unique>
+<xs:unique name="vertable4Key_1">
+<xs:selector xpath=".//vertable4"/>
+<xs:field xpath="id2"/>
+<xs:field xpath="idb1"/>
+<xs:field xpath="idb2"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertable5" type="guest:vertable5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertable5Key">
+<xs:selector xpath=".//vertable5"/>
+<xs:field xpath="id1"/>
+</xs:key>
+<xs:unique name="vertable5Key_0">
+<xs:selector xpath=".//vertable5"/>
+<xs:field xpath="name"/>
+</xs:unique>
+<xs:unique name="vertable5Key_1">
+<xs:selector xpath=".//vertable5"/>
+<xs:field xpath="id2"/>
+<xs:field xpath="idb1"/>
+<xs:field xpath="idb2"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookup1" type="guest:vertablelookup1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookup1Key">
+<xs:selector xpath=".//vertablelookup1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookup1_vertable1AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:unique name="vertablelookup1Key_0">
+<xs:selector xpath=".//vertablelookup1"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookup2" type="guest:vertablelookup2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookup2Key">
+<xs:selector xpath=".//vertablelookup2"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookup2_vertable2AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:unique name="vertablelookup2Key_0">
+<xs:selector xpath=".//vertablelookup2"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookup3" type="guest:vertablelookup3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookup3Key">
+<xs:selector xpath=".//vertablelookup3"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookup3_vertable3AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:unique name="vertablelookup3Key_0">
+<xs:selector xpath=".//vertablelookup3"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookup4" type="guest:vertablelookup4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookup4Key">
+<xs:selector xpath=".//vertablelookup4"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookup4_vertable4AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:unique name="vertablelookup4Key_0">
+<xs:selector xpath=".//vertablelookup4"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookup5" type="guest:vertablelookup5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookup5Key">
+<xs:selector xpath=".//vertablelookup5"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookup5_vertable5AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:unique name="vertablelookup5Key_0">
+<xs:selector xpath=".//vertablelookup5"/>
+<xs:field xpath="name"/>
+</xs:unique>
+</xs:element>
+<xs:element name="vertablelookupb1" type="guest:vertablelookupb1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookupb1Key">
+<xs:selector xpath=".//vertablelookupb1"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookupb1_vertable1AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+</xs:element>
+<xs:element name="vertablelookupb2" type="guest:vertablelookupb2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookupb2Key">
+<xs:selector xpath=".//vertablelookupb2"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookupb2_vertable2AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+</xs:element>
+<xs:element name="vertablelookupb3" type="guest:vertablelookupb3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookupb3Key">
+<xs:selector xpath=".//vertablelookupb3"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookupb3_vertable3AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+</xs:element>
+<xs:element name="vertablelookupb4" type="guest:vertablelookupb4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookupb4Key">
+<xs:selector xpath=".//vertablelookupb4"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookupb4_vertable4AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+</xs:element>
+<xs:element name="vertablelookupb5" type="guest:vertablelookupb5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="vertablelookupb5Key">
+<xs:selector xpath=".//vertablelookupb5"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="vertablelookupb5_vertable5AKey">
+<xs:selector xpath=".//guest"/>
+<xs:field xpath="id1"/>
+<xs:field xpath="id2"/>
+</xs:key>
 </xs:element>
 <xs:complexType name="vertable1Type" abstract="false">
 <xs:annotation>
@@ -1040,16 +1265,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertable2" type="guest:vertable2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertable2Key">
-<xs:selector xpath=".//vertable2"/>
-<xs:field xpath="id1"/>
-</xs:key>
-<xs:unique name="vertable2Key_0">
-<xs:selector xpath=".//vertable2"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertable2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1156,16 +1371,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertable3" type="guest:vertable3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertable3Key">
-<xs:selector xpath=".//vertable3"/>
-<xs:field xpath="id1"/>
-</xs:key>
-<xs:unique name="vertable3Key_0">
-<xs:selector xpath=".//vertable3"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertable3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1272,22 +1477,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertable4" type="guest:vertable4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertable4Key">
-<xs:selector xpath=".//vertable4"/>
-<xs:field xpath="id1"/>
-</xs:key>
-<xs:unique name="vertable4Key_0">
-<xs:selector xpath=".//vertable4"/>
-<xs:field xpath="name"/>
-</xs:unique>
-<xs:unique name="vertable4Key_1">
-<xs:selector xpath=".//vertable4"/>
-<xs:field xpath="id2"/>
-<xs:field xpath="idb1"/>
-<xs:field xpath="idb2"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertable4Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1394,22 +1583,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertable5" type="guest:vertable5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertable5Key">
-<xs:selector xpath=".//vertable5"/>
-<xs:field xpath="id1"/>
-</xs:key>
-<xs:unique name="vertable5Key_0">
-<xs:selector xpath=".//vertable5"/>
-<xs:field xpath="name"/>
-</xs:unique>
-<xs:unique name="vertable5Key_1">
-<xs:selector xpath=".//vertable5"/>
-<xs:field xpath="id2"/>
-<xs:field xpath="idb1"/>
-<xs:field xpath="idb2"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertable5Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1516,20 +1689,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookup1" type="guest:vertablelookup1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookup1Key">
-<xs:selector xpath=".//vertablelookup1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookup1_vertable1AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:unique name="vertablelookup1Key_0">
-<xs:selector xpath=".//vertablelookup1"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertablelookup1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1559,20 +1718,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookup2" type="guest:vertablelookup2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookup2Key">
-<xs:selector xpath=".//vertablelookup2"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookup2_vertable2AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:unique name="vertablelookup2Key_0">
-<xs:selector xpath=".//vertablelookup2"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertablelookup2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1602,20 +1747,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookup3" type="guest:vertablelookup3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookup3Key">
-<xs:selector xpath=".//vertablelookup3"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookup3_vertable3AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:unique name="vertablelookup3Key_0">
-<xs:selector xpath=".//vertablelookup3"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertablelookup3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1645,20 +1776,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookup4" type="guest:vertablelookup4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookup4Key">
-<xs:selector xpath=".//vertablelookup4"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookup4_vertable4AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:unique name="vertablelookup4Key_0">
-<xs:selector xpath=".//vertablelookup4"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertablelookup4Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1688,20 +1805,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookup5" type="guest:vertablelookup5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookup5Key">
-<xs:selector xpath=".//vertablelookup5"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookup5_vertable5AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:unique name="vertablelookup5Key_0">
-<xs:selector xpath=".//vertablelookup5"/>
-<xs:field xpath="name"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="vertablelookup5Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1731,18 +1834,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookupb1" type="guest:vertablelookupb1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookupb1Key">
-<xs:selector xpath=".//vertablelookupb1"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookupb1_vertable1AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="vertablelookupb1Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1780,18 +1871,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookupb2" type="guest:vertablelookupb2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookupb2Key">
-<xs:selector xpath=".//vertablelookupb2"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookupb2_vertable2AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="vertablelookupb2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1829,18 +1908,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookupb3" type="guest:vertablelookupb3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookupb3Key">
-<xs:selector xpath=".//vertablelookupb3"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookupb3_vertable3AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="vertablelookupb3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1878,18 +1945,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookupb4" type="guest:vertablelookupb4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookupb4Key">
-<xs:selector xpath=".//vertablelookupb4"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookupb4_vertable4AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="vertablelookupb4Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1927,18 +1982,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="vertablelookupb5" type="guest:vertablelookupb5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="vertablelookupb5Key">
-<xs:selector xpath=".//vertablelookupb5"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-<xs:key name="vertablelookupb5_vertable5AKey">
-<xs:selector xpath=".//guest"/>
-<xs:field xpath="id1"/>
-<xs:field xpath="id2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="vertablelookupb5Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -1977,236 +2020,4 @@
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.6" name="dbo">
-<complexType name="rtable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable1" name="dbo.rtable1"/>
-</complexType>
-<complexType name="rtable2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable2" name="dbo.rtable2"/>
-</complexType>
-<complexType name="rtable7Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_rtable7" name="dbo.rtable7"/>
-</complexType>
-<complexType name="table1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table1" name="dbo.table1"/>
-</complexType>
-<complexType name="table3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table3" name="dbo.table3"/>
-</complexType>
-<complexType name="table4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table4" name="dbo.table4"/>
-</complexType>
-<complexType name="table7Type" identityIsGloballyUnique="false" identitySeed="1" identityIncrement="1" identityPropertyName="ID">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table7" name="dbo.table7"/>
-</complexType>
-<complexType name="table_delcol1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol1" name="dbo.table_delcol1"/>
-</complexType>
-<complexType name="table_delcol2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_table_delcol2" name="dbo.table_delcol2"/>
-</complexType>
-<complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view1" name="dbo.view1"/>
-</complexType>
-<complexType name="view3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_view3" name="dbo.view3"/>
-</complexType>
-</SchemaMapping>
-<SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.6" name="guest">
-<complexType name="vertable1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable1" name="guest.vertable1"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="idb1">
-<Column name="idb1"/>
-</element>
-<element name="idb2">
-<Column name="idb2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertable2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable2" name="guest.vertable2"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="idb1">
-<Column name="idb1"/>
-</element>
-<element name="idb2">
-<Column name="idb2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertable3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable3" name="guest.vertable3"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="idb1">
-<Column name="idb1"/>
-</element>
-<element name="idb2">
-<Column name="idb2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertable4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable4" name="guest.vertable4"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="idb1">
-<Column name="idb1"/>
-</element>
-<element name="idb2">
-<Column name="idb2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertable5Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertable5" name="guest.vertable5"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="idb1">
-<Column name="idb1"/>
-</element>
-<element name="idb2">
-<Column name="idb2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookup1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookup1" name="guest.vertablelookup1"/>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookup2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookup2" name="guest.vertablelookup2"/>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookup3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookup3" name="guest.vertablelookup3"/>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookup4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookup4" name="guest.vertablelookup4"/>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookup5Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookup5" name="guest.vertablelookup5"/>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookupb1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookupb1" name="guest.vertablelookupb1"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookupb2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookupb2" name="guest.vertablelookupb2"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookupb3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookupb3" name="guest.vertablelookupb3"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookupb4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookupb4" name="guest.vertablelookupb4"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-<complexType name="vertablelookupb5Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_vertablelookupb5" name="guest.vertablelookupb5"/>
-<element name="id1">
-<Column name="id1"/>
-</element>
-<element name="id2">
-<Column name="id2"/>
-</element>
-<element name="name">
-<Column name="name"/>
-</element>
-</complexType>
-</SchemaMapping>
 </fdo:DataStore>

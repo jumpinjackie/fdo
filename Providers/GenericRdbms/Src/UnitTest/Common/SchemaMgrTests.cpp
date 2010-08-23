@@ -51,7 +51,9 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
     <xsl:copy>\
         <xsl:apply-templates select=\"@*\"/>\
         <xsl:apply-templates select=\"gml:DerivedCRS\"/>\
-        <xsl:apply-templates select=\"xs:schema\"/>\
+        <xsl:apply-templates select=\"xs:schema\">\
+            <xsl:sort select=\"@targetNamespace\" />\
+        </xsl:apply-templates>\
         <xsl:apply-templates select=\"ora:SchemaMapping\"/>\
     </xsl:copy>\
 </xsl:template>\
@@ -62,8 +64,20 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
     <xsl:copy>\
         <xsl:apply-templates select=\"@*\"/>\
         <xsl:apply-templates select=\"xs:annotation\"/>\
-        <xsl:apply-templates select=\"xs:element\"/>\
-        <xsl:apply-templates select=\"xs:complexType\"/>\
+        <xsl:apply-templates select=\"xs:element\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+        <xsl:apply-templates select=\"xs:complexType\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
+    </xsl:copy>\
+</xsl:template>\
+<xsl:template match=\"xs:sequence\">\
+    <xsl:copy>\
+        <xsl:apply-templates select=\"@*\"/>\
+        <xsl:apply-templates select=\"xs:element\">\
+            <xsl:sort select=\"@name\" />\
+        </xsl:apply-templates>\
     </xsl:copy>\
 </xsl:template>\
 <xsl:template match=\"xs:element[@fdo:srsName]\">\
@@ -472,16 +486,25 @@ void SchemaMgrTests::testGenDefault ()
 
         FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
 
+        FdoXmlSpatialContextFlagsP flags = 
+            FdoXmlSpatialContextFlags::Create(  
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlSpatialContextFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+
         UnitTestUtil::ExportDb( 
             fdoConn, 
             stream2, 
-            NULL, 
+            flags, 
             false, 
             FdoStringP(L"Fdo") + datastore,
             L"AutoGen"
         );
 
-        UnitTestUtil::Config2SortedFile( stream2, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ) );
+        UnitTestUtil::Config2SortedFile( stream2, UnitTestUtil::GetOutputFileName( L"gen_default1.xml" ), pSortScConfigSheet );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_COPY_SUFFIX );
 

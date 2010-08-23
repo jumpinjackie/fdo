@@ -48,14 +48,6 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
@@ -151,6 +143,14 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -162,14 +162,6 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
@@ -210,6 +202,14 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -221,14 +221,6 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
@@ -258,6 +250,14 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -269,14 +269,6 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
@@ -306,6 +298,14 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -317,14 +317,6 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:validArea>
 <gml:boundingBox>
@@ -346,6 +338,14 @@ GEOGCS["Greek", DATUM["Greek", ELLIPSOID["Bessel 1841", 6377397.155, 299.1528128
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#-x31-000"/>
+</xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>

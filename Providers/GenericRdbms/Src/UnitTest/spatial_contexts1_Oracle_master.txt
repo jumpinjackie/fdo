@@ -52,17 +52,6 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -269,17 +258,6 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLE2Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -291,6 +269,17 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE2Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -369,17 +358,6 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLE3Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -391,6 +369,17 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE3Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -443,17 +432,6 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLE4Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -465,6 +443,17 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE4Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -517,17 +506,6 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLE5Type" abstract="false" fdo:hasGeometry="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -539,6 +517,17 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE5Type" abstract="false" fdo:hasGeometry="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="GEOM_COLUMN1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <gml:metaDataProperty>
 <gml:GenericMetaData>
@@ -583,6 +572,17 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
 </xs:sequence>
 </xs:extension>

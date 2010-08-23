@@ -1,12 +1,99 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/AutoGen" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:AutoGen="http://fdo.osgeo.org/schemas/feature/AutoGen" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<gml:DerivedCRS/>
+<xs:schema xmlns:AutoGen="http://fdo.osgeo.org/schemas/feature/AutoGen" targetNamespace="http://fdo.osgeo.org/schemas/feature/AutoGen" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:element name="rtable1" type="AutoGen:rtable1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="rtable1Key">
 <xs:selector xpath=".//rtable1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable2" type="AutoGen:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable2Key">
+<xs:selector xpath=".//rtable2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable5" type="AutoGen:rtable5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable5Key">
+<xs:selector xpath=".//rtable5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable6" type="AutoGen:rtable6Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable6Key">
+<xs:selector xpath=".//rtable6"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="rtable7" type="AutoGen:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="rtable7Key">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="rtable7Key_0">
+<xs:selector xpath=".//rtable7"/>
+<xs:field xpath="TABLE7_ID12345678901234567890"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol1" type="AutoGen:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol1Key">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+<xs:unique name="table_delcol1Key_0">
+<xs:selector xpath=".//table_delcol1"/>
+<xs:field xpath="UNIQUE_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table_delcol2" type="AutoGen:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table_delcol2Key">
+<xs:selector xpath=".//table_delcol2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table1" type="AutoGen:table1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table1Key">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="ID3456789012345678901234567890"/>
+</xs:key>
+<xs:unique name="table1Key_0">
+<xs:selector xpath=".//table1"/>
+<xs:field xpath="AUTOINCREMENT_COLUMN"/>
+</xs:unique>
+</xs:element>
+<xs:element name="table3" type="AutoGen:table3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table3Key">
+<xs:selector xpath=".//table3"/>
+<xs:field xpath="KEY1"/>
+<xs:field xpath="KEY2"/>
+</xs:key>
+</xs:element>
+<xs:element name="table4" type="AutoGen:table4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table4Key">
+<xs:selector xpath=".//table4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table5" type="AutoGen:table5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table5Key">
+<xs:selector xpath=".//table5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="table6" type="AutoGen:table6Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table6Key">
+<xs:selector xpath=".//table6"/>
+<xs:field xpath="ID1"/>
+<xs:field xpath="ID2"/>
+</xs:key>
+</xs:element>
+<xs:element name="table7" type="AutoGen:table7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="table7Key">
+<xs:selector xpath=".//table7"/>
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
@@ -47,12 +134,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable2" type="AutoGen:rtable2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable2Key">
-<xs:selector xpath=".//rtable2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable2Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -110,12 +191,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable5" type="AutoGen:rtable5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable5Key">
-<xs:selector xpath=".//rtable5"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable5Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -156,12 +231,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable6" type="AutoGen:rtable6Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable6Key">
-<xs:selector xpath=".//rtable6"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="rtable6Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -212,16 +281,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="rtable7" type="AutoGen:rtable7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="rtable7Key">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="rtable7Key_0">
-<xs:selector xpath=".//rtable7"/>
-<xs:field xpath="TABLE7_ID12345678901234567890"/>
-</xs:unique>
-</xs:element>
 <xs:complexType name="rtable7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -259,16 +318,88 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table1" type="AutoGen:table1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table1Key">
-<xs:selector xpath=".//table1"/>
-<xs:field xpath="ID3456789012345678901234567890"/>
-</xs:key>
-<xs:unique name="table1Key_0">
-<xs:selector xpath=".//table1"/>
-<xs:field xpath="AUTOINCREMENT_COLUMN"/>
-</xs:unique>
+<xs:complexType name="table_delcol1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="CHECK_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="SINGLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:float"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="UNIQUE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="table_delcol2Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:simpleType>
+<xs:restriction base="fdo:int32"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="INT64_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="fdo:int64"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:complexType name="table1Type" abstract="false" fdo:hasGeometry="false">
 <xs:annotation>
 <xs:documentation/>
@@ -292,6 +423,14 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
+<xs:element name="BIT1_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:boolean"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="BIT15_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int16"/>
@@ -303,14 +442,6 @@
 <xs:element name="BIT16_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="BIT1_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:boolean"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -437,10 +568,24 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="GEOMETRYCOLLECTION_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="multigeometry ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOMETRYCOLLECTION_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="multigeometry ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID3456789012345678901234567890">
 <xs:simpleType>
@@ -484,10 +629,24 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="LINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="curve " fdo:geometryTypes="linestring ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="LINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:geometryTypes="linestring ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="MEDIUMBLOB_COLUMN" minOccurs="0">
 <xs:simpleType>
@@ -505,25 +664,81 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="MULTILINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="curve " fdo:geometryTypes="multilinestring ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="MULTILINESTRING_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:geometryTypes="multilinestring ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
-<xs:element name="MULTIPOINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point " fdo:geometryTypes="multipoint ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="MULTIPOINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point " fdo:geometryTypes="multipoint ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
-<xs:element name="MULTIPOLYGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="surface " fdo:geometryTypes="multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="MULTIPOLYGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface " fdo:geometryTypes="multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
-<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="NEW_GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="OBJECT_NAME" minOccurs="0">
 <xs:annotation>
@@ -535,15 +750,43 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="POINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point " fdo:geometryTypes="point ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="POINT_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point " fdo:geometryTypes="point ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
-<xs:element name="POLGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="surface " fdo:geometryTypes="polygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="POLGON_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface " fdo:geometryTypes="polygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="SET_COLUMN" minOccurs="0">
 <xs:annotation>
@@ -583,7 +826,7 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="TIMESTAMP_COLUMN" minOccurs="0">
+<xs:element name="TIME_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:dateTime"/>
 </xs:simpleType>
@@ -591,7 +834,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="TIME_COLUMN" minOccurs="0">
+<xs:element name="TIMESTAMP_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:dateTime"/>
 </xs:simpleType>
@@ -651,13 +894,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table3" type="AutoGen:table3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table3Key">
-<xs:selector xpath=".//table3"/>
-<xs:field xpath="KEY1"/>
-<xs:field xpath="KEY2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table3Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -697,12 +933,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table4" type="AutoGen:table4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table4Key">
-<xs:selector xpath=".//table4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -710,10 +940,24 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="Default" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring polygon multipolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.001000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.001000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+-2000000.000000 -2000000.000000</gml:pos>
+<gml:pos>
+2000000.000000 2000000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
@@ -745,12 +989,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table5" type="AutoGen:table5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table5Key">
-<xs:selector xpath=".//table5"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table5Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -783,13 +1021,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table6" type="AutoGen:table6Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table6Key">
-<xs:selector xpath=".//table6"/>
-<xs:field xpath="ID1"/>
-<xs:field xpath="ID2"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table6Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -832,12 +1063,6 @@
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="table7" type="AutoGen:table7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table7Key">
-<xs:selector xpath=".//table7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:complexType name="table7Type" abstract="false">
 <xs:annotation>
 <xs:documentation/>
@@ -862,104 +1087,6 @@
 <xs:maxLength value="50"/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="table_delcol1" type="AutoGen:table_delcol1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol1Key">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-<xs:unique name="table_delcol1Key_0">
-<xs:selector xpath=".//table_delcol1"/>
-<xs:field xpath="UNIQUE_COLUMN"/>
-</xs:unique>
-</xs:element>
-<xs:complexType name="table_delcol1Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="CHECK_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="50"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="SINGLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:float"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="STRING_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="20"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="UNIQUE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="table_delcol2" type="AutoGen:table_delcol2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="table_delcol2Key">
-<xs:selector xpath=".//table_delcol2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="table_delcol2Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:simpleType>
-<xs:restriction base="fdo:int32"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="INT64_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="fdo:int64"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>

@@ -5,772 +5,10 @@
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
 <gml:DerivedCRS/>
-<xs:schema xmlns:Schema_GH="http://fdo.osgeo.org/schemas/feature/Schema_GH" xmlns:Schema_AB="http://fdo.osgeo.org/schemas/feature/Schema_AB" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema_GH" elementFormDefault="qualified" attributeFormDefault="unqualified">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:element name="AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILD" type="Schema_AB:GH_TABLEWILDType" abstract="true">
-<xs:unique name="AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILDKey">
-<xs:selector xpath=".//FK_GH_TABLE1_GH_TABLEWILD"/>
-<xs:field xpath="ID"/>
-</xs:unique>
-</xs:element>
-<xs:element name="AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILD" type="Schema_AB:CD_TABLEWILDType" abstract="true">
-<xs:unique name="AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILDKey">
-<xs:selector xpath=".//FK_GH_TABLE2_CD_TABLEWILD"/>
-<xs:field xpath="ID"/>
-</xs:unique>
-</xs:element>
-<xs:element name="TABLE5" type="Schema_GH:TABLE5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="TABLE5Key">
-<xs:selector xpath=".//TABLE5"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="CD_TABLE4" type="Schema_GH:CD_TABLE4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="CD_TABLE4Key">
-<xs:selector xpath=".//CD_TABLE4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE1" type="Schema_GH:GH_TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE1Key">
-<xs:selector xpath=".//GH_TABLE1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE2" type="Schema_GH:GH_TABLE2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE2Key">
-<xs:selector xpath=".//GH_TABLE2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE3" type="Schema_GH:GH_TABLE3Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE3Key">
-<xs:selector xpath=".//GH_TABLE3"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE4" type="Schema_GH:GH_TABLE4Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE4Key">
-<xs:selector xpath=".//GH_TABLE4"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE6" type="Schema_GH:GH_TABLE6Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE6Key">
-<xs:selector xpath=".//GH_TABLE6"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE7" type="Schema_GH:GH_TABLE7Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE7Key">
-<xs:selector xpath=".//GH_TABLE7"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_TABLE8" type="Schema_GH:GH_TABLE8Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_TABLE8Key">
-<xs:selector xpath=".//GH_TABLE8"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="GH_VIEW1" type="Schema_GH:GH_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="GH_VIEW1Key">
-<xs:selector xpath=".//GH_VIEW1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="TABLE5Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Longitude-x20--x2f--x20-Latitude-x20--x28-NAD-x20-83-x29--x20-Datum-x20-33">
-<gml:srsName>
-Longitude / Latitude (NAD 83) Datum 33</gml:srsName>
-<fdo:WKT>
-GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FRGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="CD_TABLE4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1000.000000 1000.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
-<gml:srsName>
-Quebec MTM Zone 4 (NAD 83)</gml:srsName>
-<fdo:WKT>
-PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE1Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
-<gml:srsName>
-Quebec MTM Zone 4 (NAD 83)</gml:srsName>
-<fdo:WKT>
-PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="FK_GH_TABLE1_GH_TABLEWILD" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexType>
-<xs:sequence>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:complexType>
-<xs:keyref name="Schema_GH_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILD" refer="Schema_GH:AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILDKey">
-<xs:selector xpath=".//GH_TABLE1"/>
-<xs:field xpath="ID"/>
-</xs:keyref>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Equal-Area-x20-Projection-x20--x28-Australia-x29-">
-<gml:srsName>
-Equal-Area Projection (Australia)</gml:srsName>
-<fdo:WKT>
-PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", SPHEROID ["WGS 84", 6378137, 298.257223563]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Albers Conical Equal Area"], PARAMETER ["Standard_Parallel_1", -21.500000], PARAMETER ["Standard_Parallel_2", -33.500000], PARAMETER ["Central_Meridian", 132.500000], PARAMETER ["Latitude_Of_Origin", -10.000000], UNIT ["Mile", 1609.344000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="FK_GH_TABLE2_CD_TABLEWILD" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexType>
-<xs:sequence>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:complexType>
-<xs:keyref name="Schema_GH_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILD" refer="Schema_GH:AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILDKey">
-<xs:selector xpath=".//GH_TABLE2"/>
-<xs:field xpath="ID"/>
-</xs:keyref>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
-<gml:srsName>
-UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
-<fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
-<gml:srsName>
-Quebec MTM Zone 4 (NAD 83)</gml:srsName>
-<fdo:WKT>
-PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE6Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
-<gml:srsName>
-UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
-<fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE7Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
-<gml:srsName>
-UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
-<fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_TABLE8Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
-<gml:srsName>
-UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
-<fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="GH_VIEW1Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-</xs:schema>
 <xs:schema xmlns:Schema_AB="http://fdo.osgeo.org/schemas/feature/Schema_AB" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema_AB" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
-<xs:element name="TABLE1" type="Schema_AB:TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="TABLE1Key">
-<xs:selector xpath=".//TABLE1"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="TABLE2" type="Schema_AB:TABLE2Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="TABLE2Key">
-<xs:selector xpath=".//TABLE2"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
 <xs:element name="AB_TABLE3" type="Schema_AB:AB_TABLE3Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="AB_TABLE3Key">
 <xs:selector xpath=".//AB_TABLE3"/>
@@ -778,18 +16,6 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 </xs:key>
 <xs:key name="AB_TABLE3_TABLE2AKey">
 <xs:selector xpath=".//Schema_AB"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="TABLEWILD" type="Schema_AB:TABLEWILDType" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="TABLEWILDKey">
-<xs:selector xpath=".//TABLEWILD"/>
-<xs:field xpath="ID"/>
-</xs:key>
-</xs:element>
-<xs:element name="VIEW1" type="Schema_AB:VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="VIEW1Key">
-<xs:selector xpath=".//VIEW1"/>
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
@@ -811,164 +37,30 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:field xpath="ID"/>
 </xs:key>
 </xs:element>
-<xs:complexType name="TABLE1Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
+<xs:element name="TABLE1" type="Schema_AB:TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE1Key">
+<xs:selector xpath=".//TABLE1"/>
+<xs:field xpath="ID"/>
+</xs:key>
 </xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
-<gml:srsName>
-Quebec MTM Zone 4 (NAD 83)</gml:srsName>
-<fdo:WKT>
-PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<gml:metaDataProperty>
-<gml:GenericMetaData>
-<fdo:XYTolerance>
-0.033300</fdo:XYTolerance>
-<fdo:ZTolerance>
-0.011100</fdo:ZTolerance>
-</gml:GenericMetaData>
-</gml:metaDataProperty>
-<gml:validArea>
-<gml:boundingBox>
-<gml:pos>
-0.000000 0.000000</gml:pos>
-<gml:pos>
-1.000000 1.000000</gml:pos>
-</gml:boundingBox>
-</gml:validArea>
-<gml:baseCRS>
-<fdo:WKTCRS gml:id="Equal-Area-x20-Projection-x20--x28-Australia-x29-">
-<gml:srsName>
-Equal-Area Projection (Australia)</gml:srsName>
-<fdo:WKT>
-PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", SPHEROID ["WGS 84", 6378137, 298.257223563]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Albers Conical Equal Area"], PARAMETER ["Standard_Parallel_1", -21.500000], PARAMETER ["Standard_Parallel_2", -33.500000], PARAMETER ["Central_Meridian", 132.500000], PARAMETER ["Latitude_Of_Origin", -10.000000], UNIT ["Mile", 1609.344000000000]]</fdo:WKT>
-</fdo:WKTCRS>
-</gml:baseCRS>
-</xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="FK_AB_TABLE2_AB_TABLE3" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexType>
-<xs:sequence>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:complexType>
-<xs:keyref name="Schema_AB_TABLE2_FK_AB_TABLE2_AB_TABLE3" refer="Schema_AB:AB_TABLE3_TABLE2AKey">
+<xs:element name="TABLE2" type="Schema_AB:TABLE2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE2Key">
 <xs:selector xpath=".//TABLE2"/>
 <xs:field xpath="ID"/>
-</xs:keyref>
+</xs:key>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
+<xs:element name="TABLEWILD" type="Schema_AB:TABLEWILDType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLEWILDKey">
+<xs:selector xpath=".//TABLEWILD"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="VIEW1" type="Schema_AB:VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="VIEW1Key">
+<xs:selector xpath=".//VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
 <xs:complexType name="AB_TABLE3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
 <xs:annotation>
 <xs:documentation/>
@@ -976,7 +68,15 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1013,36 +113,6 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="TABLEWILDType" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -1053,46 +123,6 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="STRING_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="50"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="VIEW1Type" abstract="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="fdo:ClassType">
-<xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1137,6 +167,14 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:complexContent>
 <xs:extension base="fdo:ClassType">
 <xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -1147,14 +185,6 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1185,6 +215,226 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:simpleType>
 <xs:restriction base="xs:string">
 <xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE1Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
+<gml:srsName>
+Quebec MTM Zone 4 (NAD 83)</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FK_AB_TABLE2_AB_TABLE3" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="Schema_AB_TABLE2_FK_AB_TABLE2_AB_TABLE3" refer="Schema_AB:AB_TABLE3_TABLE2AKey">
+<xs:selector xpath=".//TABLE2"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Equal-Area-x20-Projection-x20--x28-Australia-x29-">
+<gml:srsName>
+Equal-Area Projection (Australia)</gml:srsName>
+<fdo:WKT>
+PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", SPHEROID ["WGS 84", 6378137, 298.257223563]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Albers Conical Equal Area"], PARAMETER ["Standard_Parallel_1", -21.500000], PARAMETER ["Standard_Parallel_2", -33.500000], PARAMETER ["Central_Meridian", 132.500000], PARAMETER ["Latitude_Of_Origin", -10.000000], UNIT ["Mile", 1609.344000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLEWILDType" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="STRING_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -1256,7 +506,39 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FK_CD_TABLE1_EF_TABLE2" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="Schema_CD_CD_TABLE1_FK_CD_TABLE1_EF_TABLE2" refer="Schema_CD:AssociatedClass_CD_TABLE1_FK_CD_TABLE1_EF_TABLE2Key">
+<xs:selector xpath=".//CD_TABLE1"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1293,7 +575,7 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1304,6 +586,17 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="CD_TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="DOUBLE_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>
@@ -1312,7 +605,7 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="FK_CD_TABLE1_EF_TABLE2" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:element name="FK_CD_TABLE2_CD_TABLE1" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1331,23 +624,12 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </xs:element>
 </xs:sequence>
 </xs:complexType>
-<xs:keyref name="Schema_CD_CD_TABLE1_FK_CD_TABLE1_EF_TABLE2" refer="Schema_CD:AssociatedClass_CD_TABLE1_FK_CD_TABLE1_EF_TABLE2Key">
-<xs:selector xpath=".//CD_TABLE1"/>
+<xs:keyref name="Schema_CD_CD_TABLE2_FK_CD_TABLE2_CD_TABLE1" refer="Schema_CD:CD_TABLE1_CD_TABLE2AKey">
+<xs:selector xpath=".//CD_TABLE2"/>
 <xs:field xpath="ID"/>
 </xs:keyref>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="CD_TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1384,7 +666,7 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1395,6 +677,17 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="CD_TABLE3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="DOUBLE_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>
@@ -1403,7 +696,7 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="FK_CD_TABLE2_CD_TABLE1" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:element name="FK_CD_TABLE3_AB_TABLE2" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1422,23 +715,12 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </xs:element>
 </xs:sequence>
 </xs:complexType>
-<xs:keyref name="Schema_CD_CD_TABLE2_FK_CD_TABLE2_CD_TABLE1" refer="Schema_CD:CD_TABLE1_CD_TABLE2AKey">
-<xs:selector xpath=".//CD_TABLE2"/>
+<xs:keyref name="Schema_CD_CD_TABLE3_FK_CD_TABLE3_AB_TABLE2" refer="Schema_CD:AssociatedClass_CD_TABLE3_FK_CD_TABLE3_AB_TABLE2Key">
+<xs:selector xpath=".//CD_TABLE3"/>
 <xs:field xpath="ID"/>
 </xs:keyref>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="CD_TABLE3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1475,7 +757,7 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1486,6 +768,17 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="CD_TABLE5Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
 <xs:element name="DOUBLE_COLUMN" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>
@@ -1494,7 +787,7 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="FK_CD_TABLE3_AB_TABLE2" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:element name="FK_CD_TABLE5_GH_TABLE4" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1513,23 +806,12 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 </xs:element>
 </xs:sequence>
 </xs:complexType>
-<xs:keyref name="Schema_CD_CD_TABLE3_FK_CD_TABLE3_AB_TABLE2" refer="Schema_CD:AssociatedClass_CD_TABLE3_FK_CD_TABLE3_AB_TABLE2Key">
-<xs:selector xpath=".//CD_TABLE3"/>
+<xs:keyref name="Schema_CD_CD_TABLE5_FK_CD_TABLE5_GH_TABLE4" refer="Schema_CD:AssociatedClass_CD_TABLE5_FK_CD_TABLE5_GH_TABLE4Key">
+<xs:selector xpath=".//CD_TABLE5"/>
 <xs:field xpath="ID"/>
 </xs:keyref>
 </xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:complexType name="CD_TABLE5Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="ID">
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1566,7 +848,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1576,38 +858,6 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="FK_CD_TABLE5_GH_TABLE4" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexType>
-<xs:sequence>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:complexType>
-<xs:keyref name="Schema_CD_CD_TABLE5_FK_CD_TABLE5_GH_TABLE4" refer="Schema_CD:AssociatedClass_CD_TABLE5_FK_CD_TABLE5_GH_TABLE4Key">
-<xs:selector xpath=".//CD_TABLE5"/>
-<xs:field xpath="ID"/>
-</xs:keyref>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1620,6 +870,14 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 <xs:complexContent>
 <xs:extension base="fdo:ClassType">
 <xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -1630,14 +888,6 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1679,7 +929,15 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1716,7 +974,7 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1726,14 +984,6 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1746,7 +996,39 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FK_EF_TABLE2_CD_TABLE4" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="Schema_EF_TABLE2_FK_EF_TABLE2_CD_TABLE4" refer="Schema_EF:AssociatedClass_TABLE2_FK_EF_TABLE2_CD_TABLE4Key">
+<xs:selector xpath=".//TABLE2"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1783,7 +1065,7 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
-<xs:element name="FOREIGN_COLUMN">
+<xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1793,38 +1075,6 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="FK_EF_TABLE2_CD_TABLE4" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexType>
-<xs:sequence>
-<xs:element name="FOREIGN_COLUMN">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-</xs:sequence>
-</xs:complexType>
-<xs:keyref name="Schema_EF_TABLE2_FK_EF_TABLE2_CD_TABLE4" refer="Schema_EF:AssociatedClass_TABLE2_FK_EF_TABLE2_CD_TABLE4Key">
-<xs:selector xpath=".//TABLE2"/>
-<xs:field xpath="ID"/>
-</xs:keyref>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1855,6 +1105,756 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:simpleType>
 <xs:restriction base="xs:string">
 <xs:maxLength value="50"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:Schema_GH="http://fdo.osgeo.org/schemas/feature/Schema_GH" xmlns:Schema_AB="http://fdo.osgeo.org/schemas/feature/Schema_AB" targetNamespace="http://fdo.osgeo.org/schemas/feature/Schema_GH" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILD" type="Schema_AB:GH_TABLEWILDType" abstract="true">
+<xs:unique name="AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILDKey">
+<xs:selector xpath=".//FK_GH_TABLE1_GH_TABLEWILD"/>
+<xs:field xpath="ID"/>
+</xs:unique>
+</xs:element>
+<xs:element name="AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILD" type="Schema_AB:CD_TABLEWILDType" abstract="true">
+<xs:unique name="AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILDKey">
+<xs:selector xpath=".//FK_GH_TABLE2_CD_TABLEWILD"/>
+<xs:field xpath="ID"/>
+</xs:unique>
+</xs:element>
+<xs:element name="CD_TABLE4" type="Schema_GH:CD_TABLE4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="CD_TABLE4Key">
+<xs:selector xpath=".//CD_TABLE4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE1" type="Schema_GH:GH_TABLE1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE1Key">
+<xs:selector xpath=".//GH_TABLE1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE2" type="Schema_GH:GH_TABLE2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE2Key">
+<xs:selector xpath=".//GH_TABLE2"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE3" type="Schema_GH:GH_TABLE3Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE3Key">
+<xs:selector xpath=".//GH_TABLE3"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE4" type="Schema_GH:GH_TABLE4Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE4Key">
+<xs:selector xpath=".//GH_TABLE4"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE6" type="Schema_GH:GH_TABLE6Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE6Key">
+<xs:selector xpath=".//GH_TABLE6"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE7" type="Schema_GH:GH_TABLE7Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE7Key">
+<xs:selector xpath=".//GH_TABLE7"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_TABLE8" type="Schema_GH:GH_TABLE8Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_TABLE8Key">
+<xs:selector xpath=".//GH_TABLE8"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="GH_VIEW1" type="Schema_GH:GH_VIEW1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="GH_VIEW1Key">
+<xs:selector xpath=".//GH_VIEW1"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:element name="TABLE5" type="Schema_GH:TABLE5Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="TABLE5Key">
+<xs:selector xpath=".//TABLE5"/>
+<xs:field xpath="ID"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="CD_TABLE4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1000.000000 1000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
+<gml:srsName>
+Quebec MTM Zone 4 (NAD 83)</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE1Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FK_GH_TABLE1_GH_TABLEWILD" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="Schema_GH_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILD" refer="Schema_GH:AssociatedClass_GH_TABLE1_FK_GH_TABLE1_GH_TABLEWILDKey">
+<xs:selector xpath=".//GH_TABLE1"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
+<gml:srsName>
+Quebec MTM Zone 4 (NAD 83)</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE2Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FK_GH_TABLE2_CD_TABLEWILD" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="Schema_GH_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILD" refer="Schema_GH:AssociatedClass_GH_TABLE2_FK_GH_TABLE2_CD_TABLEWILDKey">
+<xs:selector xpath=".//GH_TABLE2"/>
+<xs:field xpath="ID"/>
+</xs:keyref>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Equal-Area-x20-Projection-x20--x28-Australia-x29-">
+<gml:srsName>
+Equal-Area Projection (Australia)</gml:srsName>
+<fdo:WKT>
+PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", SPHEROID ["WGS 84", 6378137, 298.257223563]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Albers Conical Equal Area"], PARAMETER ["Standard_Parallel_1", -21.500000], PARAMETER ["Standard_Parallel_2", -33.500000], PARAMETER ["Central_Meridian", 132.500000], PARAMETER ["Latitude_Of_Origin", -10.000000], UNIT ["Mile", 1609.344000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE3Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
+<gml:srsName>
+UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
+<fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE4Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Quebec-x20-MTM-x20-Zone-x20-4-x20--x28-NAD-x20-83-x29-">
+<gml:srsName>
+Quebec MTM Zone 4 (NAD 83)</gml:srsName>
+<fdo:WKT>
+PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["NAD 83 (Continental US)", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999900], PARAMETER ["Central_Meridian", -61.500000], PARAMETER ["False_Easting", 304800.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE6Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
+<gml:srsName>
+UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
+<fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE7Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
+<gml:srsName>
+UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
+<fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_TABLE8Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="FOREIGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="UTM-x20-Zone-x20-4-x20--x28-NAD-x20-27-x20-for-x20-Alaska-x29-">
+<gml:srsName>
+UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
+<fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="GH_VIEW1Type" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="fdo:ClassType">
+<xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TABLE5Type" abstract="false" fdo:geometryName="GEOM_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="FRGN_COLUMN">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:XYTolerance>
+0.033300</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.011100</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1.000000 1.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Longitude-x20--x2f--x20-Latitude-x20--x28-NAD-x20-83-x29--x20-Datum-x20-33">
+<gml:srsName>
+Longitude / Latitude (NAD 83) Datum 33</gml:srsName>
+<fdo:WKT>
+GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["GRS 80", 6378137, 298.257222101]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
@@ -1910,18 +1910,10 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
+<xs:restriction base="xs:double"/>
 </xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -1937,13 +1929,21 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -1988,6 +1988,14 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:complexContent>
 <xs:extension base="fdo:ClassType">
 <xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -1998,14 +2006,6 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -2018,18 +2018,10 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="ID">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="xs:decimal">
-<xs:totalDigits value="10"/>
-<xs:fractionDigits value=""/>
-</xs:restriction>
+<xs:restriction base="xs:double"/>
 </xs:simpleType>
-</xs:element>
-<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -2045,13 +2037,21 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
+<xs:element name="GEOM_COLUMN" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="true" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+</xs:element>
+<xs:element name="ID">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value=""/>
+</xs:restriction>
+</xs:simpleType>
 </xs:element>
 </xs:sequence>
 </xs:extension>
@@ -2096,6 +2096,14 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:complexContent>
 <xs:extension base="fdo:ClassType">
 <xs:sequence>
+<xs:element name="DOUBLE_COLUMN" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:double"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 <xs:element name="ID">
 <xs:annotation>
 <xs:documentation/>
@@ -2106,14 +2114,6 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <xs:fractionDigits value=""/>
 </xs:restriction>
 </xs:simpleType>
-</xs:element>
-<xs:element name="DOUBLE_COLUMN" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:double"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
 </xs:element>
 </xs:sequence>
 </xs:extension>
