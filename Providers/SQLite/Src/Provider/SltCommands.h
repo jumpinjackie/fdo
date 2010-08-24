@@ -101,7 +101,9 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         SltExtendedSelect(SltConnection* connection)
             : SltFeatureCommand<FdoIExtendedSelect>(connection),
               m_orderingProps(NULL),
-              m_option(FdoOrderingOption_Ascending)
+              m_option(FdoOrderingOption_Ascending),
+              m_joinCriteria(NULL),
+              m_alias(NULL)
         {
             m_properties = FdoIdentifierCollection::Create();
         }
@@ -111,6 +113,8 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
         {
             m_properties->Release();
             FDO_SAFE_RELEASE(m_orderingProps);
+            FDO_SAFE_RELEASE(m_joinCriteria);
+            FDO_SAFE_RELEASE(m_alias);
         }
 
     //-------------------------------------------------------
@@ -134,7 +138,7 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 }
             }
 
-            return m_connection->Select(m_className, m_filter, m_properties, false, ordering, m_pParmeterValues);
+            return m_connection->Select(m_className, m_filter, m_properties, false, ordering, m_pParmeterValues, m_joinCriteria, m_alias);
         }
                
         virtual FdoIdentifierCollection*    GetOrdering()       
@@ -181,6 +185,26 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
             m_orderingOptions.clear();
         }
 
+        virtual FdoJoinCriteriaCollection* GetJoinCriteria()
+        {
+            if (m_joinCriteria == NULL)
+                m_joinCriteria = FdoJoinCriteriaCollection::Create();
+
+            return FDO_SAFE_ADDREF(m_joinCriteria);
+        }
+
+        virtual FdoString* GetAlias()
+        {
+            return (m_alias == NULL) ? NULL : m_alias->GetName();
+        }
+
+        virtual void SetAlias(FdoString* alias)
+        {
+            FDO_SAFE_RELEASE(m_alias);
+            if (alias != NULL && *alias != '\0')
+                m_alias = FdoIdentifier::Create(alias);
+        }
+
         virtual FdoIScrollableFeatureReader* ExecuteScrollable()
         {
             std::vector<NameOrderingPair> ordering;
@@ -194,6 +218,9 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
                 }
             }
 
+            if (m_joinCriteria != NULL && m_joinCriteria->GetCount())
+                throw FdoCommandException::Create(L"Cannot use scrollable select on join selects.");
+
             return m_connection->Select(m_className, m_filter, m_properties, true, ordering, m_pParmeterValues);
         }
 
@@ -206,6 +233,8 @@ class SltExtendedSelect: public SltFeatureCommand<FdoIExtendedSelect>
             FdoIdentifierCollection* m_properties;
             std::map<std::wstring, FdoOrderingOption> m_orderingOptions;
             FdoOrderingOption m_option;
+            FdoJoinCriteriaCollection* m_joinCriteria;
+            FdoIdentifier* m_alias;
 };
 
 
@@ -225,7 +254,9 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
             SltFeatureCommand<FdoISelectAggregates>(connection),
         m_bDistinct(false), 
         m_eOrderingOption(FdoOrderingOption_Ascending), 
-        m_grfilter(NULL)
+        m_grfilter(NULL),
+        m_joinCriteria(NULL),
+        m_alias(NULL)
         {
             m_grouping = FdoIdentifierCollection::Create();
             m_ordering = FdoIdentifierCollection::Create();
@@ -239,6 +270,8 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
             m_ordering->Release();
             m_properties->Release();
             FDO_SAFE_RELEASE(m_grfilter);
+            FDO_SAFE_RELEASE(m_joinCriteria);
+            FDO_SAFE_RELEASE(m_alias);
         }
         
     //-------------------------------------------------------
@@ -257,7 +290,9 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
                                                     m_ordering, 
                                                     m_grfilter, 
                                                     m_grouping,
-                                                    m_pParmeterValues); 
+                                                    m_pParmeterValues,
+                                                    m_joinCriteria,
+                                                    m_alias); 
         }
         virtual void                     SetDistinct( bool value )              { m_bDistinct = value; }
         virtual bool                     GetDistinct( )                         { return m_bDistinct; }
@@ -272,6 +307,26 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
         virtual void                     SetOrderingOption( FdoOrderingOption option) { m_eOrderingOption = option; }
         virtual FdoOrderingOption        GetOrderingOption( )                   { return m_eOrderingOption; }
 
+        virtual FdoJoinCriteriaCollection* GetJoinCriteria()
+        {
+            if (m_joinCriteria == NULL)
+                m_joinCriteria = FdoJoinCriteriaCollection::Create();
+
+            return FDO_SAFE_ADDREF(m_joinCriteria);
+        }
+
+        virtual FdoString* GetAlias()
+        {
+            return (m_alias == NULL) ? NULL : m_alias->GetName();
+        }
+
+        virtual void SetAlias(FdoString* alias)
+        {
+            FDO_SAFE_RELEASE(m_alias);
+            if (alias != NULL && *alias != '\0')
+                m_alias = FdoIdentifier::Create(alias);
+        }
+
     private:
         FdoIdentifierCollection*    m_properties;
         bool                        m_bDistinct;
@@ -279,6 +334,8 @@ class SltSelectAggregates : public SltFeatureCommand<FdoISelectAggregates>
         FdoIdentifierCollection*    m_ordering;
         FdoFilter*                  m_grfilter;
         FdoIdentifierCollection*    m_grouping;
+        FdoJoinCriteriaCollection* m_joinCriteria;
+        FdoIdentifier* m_alias;
 };
 
 

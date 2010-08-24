@@ -23,12 +23,13 @@
 #include <FdoExpressionEngineCopyFilter.h>
 #include <algorithm>
 
-SltQueryTranslator::SltQueryTranslator(FdoClassDefinition* fc)
+SltQueryTranslator::SltQueryTranslator(FdoClassDefinition* fc, bool validateProps)
 : m_refCount(1),
 m_strgeomOperations(0),
 m_canUseFastStepping(true),
 m_mustKeepFilterAlive(false),
-m_foundEnvInt(false)
+m_foundEnvInt(false),
+m_validateProps(validateProps)
 {
     m_fc = FDO_SAFE_ADDREF(fc);
     m_evalStack.reserve(4);
@@ -100,17 +101,24 @@ void SltQueryTranslator::ProcessSpatialCondition(FdoSpatialCondition& filter)
     m_allocatedObjects.pop_back();
 
     FdoPtr<FdoIdentifier> pname = filter.GetPropertyName();
+    pname->Process(this);
+    IFilterChunk* exprName = m_evalStack.back();
+    m_evalStack.pop_back();
+    // we don't need to keep this value we delete it at the end
+    m_allocatedObjects.pop_back();
+
     //construct the SQLite function we want to use for this spatial op
     m_sb.Reset();
     m_sb.Append(sfunc);
     m_sb.Append("(", 1);
-    m_sb.Append(pname->GetName());
+    m_sb.Append(exprName->ToString());
     m_sb.Append(",", 1);
     m_sb.Append(expr->ToString());
     m_sb.Append(")", 1);
 
     FilterChunk* ret = CreateFilterChunk(m_sb.Data(), m_sb.Length(), StlFilterType_Spatial);
     delete expr;
+    delete exprName;
 
     m_evalStack.push_back(ret);
 }
@@ -190,9 +198,16 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
     for(int idx = 0; idx < cnt; idx++)
     {
         FdoPtr<FdoValueExpression> exp = vals->GetItem(idx);
+        if (exp->GetExpressionType() == FdoExpressionItemType_SubSelectExpression && cnt > 1)
+            throw FdoException::Create(L"Unsupported FDO type in filters");
         exp->Process(this);
     }
     m_convReqStack.pop_back();
+    if (!cnt)
+    {
+        FdoPtr<FdoSubSelectExpression> subsel = filter.GetSubSelect();
+        subsel->Process(this);
+    }
     size_t szAfter = m_evalStack.size();
 
     m_sb.Reset();
@@ -223,9 +238,16 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
 void SltQueryTranslator::ProcessNullCondition(FdoNullCondition& filter)
 {
     FdoPtr<FdoIdentifier> idf = filter.GetPropertyName();
+    idf->Process(this);
+    IFilterChunk* idfName = m_evalStack.back();
+    m_evalStack.pop_back();
+    // we don't need to keep this value we delete it at the end
+    m_allocatedObjects.pop_back();
+
     m_sb.Reset();
-    m_sb.AppendDQuoted(idf->GetName());
+    m_sb.AppendDQuoted(idfName->ToString());
     m_sb.Append(" IS NULL", 8);
+    delete idfName;
     m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
@@ -346,36 +368,48 @@ void SltQueryTranslator::ProcessIdentifier(FdoIdentifier& expr)
     //are stored in non-volatile memory, so we can use fast
     //stepping for them.
 
-    FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
-
-    FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(expr.GetName());
-
-    if (pd.p)
+    if (m_validateProps)
     {
-        FdoPropertyType type = pd->GetPropertyType();
-
-        if (type == FdoPropertyType_GeometricProperty)
-            m_strgeomOperations++;
-        else if (type == FdoPropertyType_DataProperty)
+        if (m_fc != NULL)
         {
-            FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)(pd.p);
+            FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
 
-            FdoDataType dt = dpd->GetDataType();
+            FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(expr.GetName());
 
-            if (dt == FdoDataType_String || dt == FdoDataType_BLOB)
-                m_canUseFastStepping = false;
+            if (pd.p)
+            {
+                FdoPropertyType type = pd->GetPropertyType();
+
+                if (type == FdoPropertyType_GeometricProperty)
+                    m_strgeomOperations++;
+                else if (type == FdoPropertyType_DataProperty)
+                {
+                    FdoDataPropertyDefinition* dpd = (FdoDataPropertyDefinition*)(pd.p);
+
+                    FdoDataType dt = dpd->GetDataType();
+
+                    if (dt == FdoDataType_String || dt == FdoDataType_BLOB)
+                        m_canUseFastStepping = false;
+                }
+            }
+            else
+            {
+                std::wstring err(L"The property '");
+                err.append(expr.GetName());
+                err.append(L"' was not found.");
+                throw FdoException::Create(err.c_str());
+            }
         }
+        m_sb.Reset();
+        m_sb.AppendDQuoted(expr.GetName());
     }
     else
     {
-        std::wstring err(L"The property '");
-        err.append(expr.GetName());
-        err.append(L"' was not found.");
-        throw FdoException::Create(err.c_str());
+        // we can avoid overhead added by FDO API getting scope, name, ...
+        m_sb.Reset();
+        m_sb.AppendIdentifier(expr.GetText());
     }
 
-    m_sb.Reset();
-    m_sb.AppendDQuoted(expr.GetName());
     m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
 }
 
@@ -622,6 +656,93 @@ void SltQueryTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
     m_evalStack.push_back(ret);
 }
 
+void SltQueryTranslator::ProcessSubSelectExpression(FdoSubSelectExpression& expr)
+{
+    FdoPtr<FdoIdentifier> clsIdf = expr.GetFeatureClassName();
+    FdoPtr<FdoIdentifier> propIdf = expr.GetPropertyName();
+    FdoPtr<FdoFilter> filter = expr.GetFilter();
+    FdoPtr<FdoJoinCriteriaCollection> joinCrit = expr.GetJoinCriteria();
+    // since this expression can be used in 'IN' only it needs all important parameters set.
+    if (clsIdf == NULL || propIdf == NULL || filter == NULL)
+        throw FdoException::Create(L"Unsupported FDO type in filters");
+    m_sb.Reset();
+    m_sb.Append("SELECT ", 7);
+    // let's not pass m_fc to avoid validating the properties for now
+    SltExpressionTranslator exTrans;
+    propIdf->Process(&exTrans);
+    StringBuffer* exp = exTrans.GetExpression();
+    m_sb.Append(exp->Data(), exp->Length());
+    m_sb.Append(" FROM ", 6);
+    m_sb.AppendDQuoted(clsIdf->GetName());
+    if (joinCrit != NULL)
+    {
+        StringBuffer sbjd;
+        int cntJoin = joinCrit->GetCount();
+        for (int idx = 0; idx < cntJoin; idx++)
+        {
+            FdoPtr<FdoJoinCriteria> jc = joinCrit->GetItem(idx);
+            FdoPtr<FdoIdentifier> joinCls = jc->GetJoinClass();
+            FdoPtr<FdoFilter> jFilter = jc->GetFilter();
+            FdoJoinType jType = jc->GetJoinType();
+            switch (jType)
+            {
+            case FdoJoinType_Cross:
+                m_sb.Append(",", 1);
+                m_sb.AppendDQuoted(joinCls->GetName());
+                if (jc->HasAlias())
+                {
+                    m_sb.Append(" AS ", 4);
+                    m_sb.AppendDQuoted(jc->GetAlias());
+                }
+                break;
+            case FdoJoinType_Inner:
+                sbjd.Append(" INNER ", 7);
+                break;
+            case FdoJoinType_LeftOuter:
+                sbjd.Append(" LEFT OUTER ", 12);
+                break;
+            case FdoJoinType_RightOuter:
+                throw FdoException::Create(L"Right outer join type is not supported.");
+                break;
+            case FdoJoinType_FullOuter:
+                throw FdoException::Create(L"Full outer join type is not supported.");
+                break;
+            default:
+                throw FdoException::Create(L"Unsupported join type used in filter");
+                break;
+            }
+            if (jType == FdoJoinType_Cross)
+                continue;
+            sbjd.Append(" JOIN ", 6);
+            sbjd.AppendDQuoted(joinCls->GetName());
+            if (jc->HasAlias())
+            {
+                sbjd.Append(" AS ", 4);
+                sbjd.AppendDQuoted(jc->GetAlias());
+            }
+            if (jFilter == NULL)
+                throw FdoException::Create(L"Unsupported FDO type in filters");
+            sbjd.Append(" ON (", 5);
+            SltQueryTranslator qtj(NULL, false);
+            jFilter->Process(&qtj);
+            if (qtj.MustKeepFilterAlive())
+                m_mustKeepFilterAlive = true;
+            sbjd.Append(qtj.GetFilter());
+            sbjd.Append(") ", 2);
+        }
+        if (sbjd.Length())
+            m_sb.Append(sbjd.Data(), sbjd.Length());
+    }
+    m_sb.Append(" WHERE ", 7);
+    SltQueryTranslator qt(NULL, false);
+    filter->Process(&qt);
+    m_sb.Append(qt.GetFilter());
+    if (qt.MustKeepFilterAlive())
+        m_mustKeepFilterAlive = true;
+
+    m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
+}
+
 const char* SltQueryTranslator::GetFilter()
 {
     return m_evalStack[0]->ToString();
@@ -760,7 +881,7 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
 {
     // most of the time m_convReqStack.size() == 0 and this should not add any performance impact
     if (m_convReqStack.size() != 0 && m_convReqStack.back() == StlConvReqOperationType_String
-        && m_fc != NULL)
+        && m_fc != NULL && !m_avoidExp)
     {
         FdoPtr<FdoPropertyDefinitionCollection> pdc = m_fc->GetProperties();
         FdoPtr<FdoPropertyDefinition> pd = pdc->FindItem(expr.GetName());
@@ -800,14 +921,16 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
             throw FdoException::Create(err.c_str());
         }
     }
-    m_expr.AppendDQuoted(expr.GetName());
+
+    // we can avoid overhead added by FDO API getting scope, name, ...
+    m_expr.AppendIdentifier(expr.GetText());
 }
 
 void SltExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
     m_convReqStack.push_back(StlConvReqOperationType_Default);
     FdoPtr<FdoExpression> param = expr.GetExpression();
-    if (m_props != NULL)
+    if (m_props != NULL && !m_avoidExp)
     {
         // expand the expressions in case we have expressions besad on other expressions.
         FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(param, m_props);
@@ -962,11 +1085,16 @@ void SltExpressionTranslator::ProcessGeometryValue(FdoGeometryValue& expr)
     throw FdoException::Create(L"Unsupported FDO type in expression");
 }
 
+void SltExpressionTranslator::ProcessSubSelectExpression(FdoSubSelectExpression& expr)
+{
+    throw FdoException::Create(L"Unsupported FDO type in expression");
+}
+
 void SltExtractExpressionTranslator::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
 {
     m_convReqStack.push_back(StlConvReqOperationType_Default);
     FdoPtr<FdoExpression> param = expr.GetExpression();
-    if (m_props != NULL)
+    if (m_props != NULL && !m_avoidExp)
     {
         // expand the expressions in case we have expressions besad on other expressions.
         FdoPtr<FdoExpression> expandedExpression = FdoExpressionEngineCopyFilter::Copy(param, m_props);

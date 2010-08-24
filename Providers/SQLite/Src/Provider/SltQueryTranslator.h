@@ -206,7 +206,7 @@ class SltQueryTranslator : public FdoIFilterProcessor,
 
 public:
 
-    SltQueryTranslator(FdoClassDefinition* fc);
+    SltQueryTranslator(FdoClassDefinition* fc, bool validateProps = true);
     ~SltQueryTranslator();
 
     SLT_IMPLEMENT_REFCOUNTING
@@ -248,6 +248,7 @@ public:
     virtual void ProcessBLOBValue               (FdoBLOBValue& expr);
     virtual void ProcessCLOBValue               (FdoCLOBValue& expr);
     virtual void ProcessGeometryValue           (FdoGeometryValue& expr);
+    virtual void ProcessSubSelectExpression     (FdoSubSelectExpression& expr);
 
 public:
     const char* GetFilter();
@@ -275,6 +276,7 @@ private:
     bool                        m_mustKeepFilterAlive;
     bool                        m_canUseFastStepping;
     bool                        m_foundEnvInt;
+    bool                        m_validateProps;
 };
 
 //Translates an FDO Expression to a SQLite expression
@@ -285,10 +287,11 @@ class SltExpressionTranslator : public FdoIExpressionProcessor
 
 public:
 
-    SltExpressionTranslator(FdoIdentifierCollection* props = NULL, FdoClassDefinition* classDef = NULL)
+    SltExpressionTranslator(FdoIdentifierCollection* props = NULL, FdoClassDefinition* classDef = NULL, bool avoidExp = false)
     {
         m_props = FDO_SAFE_ADDREF(props);
         m_fc = FDO_SAFE_ADDREF(classDef);
+        m_avoidExp = avoidExp || props == NULL || (props->GetCount() == 0);
     }
     virtual ~SltExpressionTranslator()
     {}
@@ -326,6 +329,7 @@ public:
     virtual void ProcessBLOBValue               (FdoBLOBValue& expr);
     virtual void ProcessCLOBValue               (FdoCLOBValue& expr);
     virtual void ProcessGeometryValue           (FdoGeometryValue& expr);
+    virtual void ProcessSubSelectExpression     (FdoSubSelectExpression& expr);
 
 public:
     StringBuffer* GetExpression() { return &m_expr; }
@@ -336,6 +340,8 @@ protected:
     FdoPtr<FdoClassDefinition>      m_fc;
     FdoPtr<FdoIdentifierCollection> m_props;
     StringBuffer m_expr;
+    StringBuffer m_sb;
+    bool m_avoidExp;
     char m_useConv[256];
 };
 
@@ -347,8 +353,8 @@ class SltExtractExpressionTranslator : public SltExpressionTranslator
 
 public:
 
-    SltExtractExpressionTranslator(FdoIdentifierCollection* props = NULL)
-        : SltExpressionTranslator(props)
+    SltExtractExpressionTranslator(FdoIdentifierCollection* props = NULL, bool avoidExp = false)
+        : SltExpressionTranslator(props, NULL, avoidExp)
     {
     }
     virtual ~SltExtractExpressionTranslator()
@@ -405,6 +411,7 @@ public:
     virtual void ProcessBLOBValue               (FdoBLOBValue& expr){m_error = true;}
     virtual void ProcessCLOBValue               (FdoCLOBValue& expr){m_error = true;}
     virtual void ProcessGeometryValue           (FdoGeometryValue& expr){m_error = true;}
+    virtual void ProcessSubSelectExpression     (FdoSubSelectExpression& expr) {m_error = true;}
 
 public:
     void Reset() 

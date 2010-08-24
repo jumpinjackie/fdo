@@ -305,6 +305,7 @@ int SltConnection::PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool
     else
         rc += sqlite3_exec(db, "PRAGMA page_size=32768;", NULL, NULL, NULL);
     rc += sqlite3_exec(db, "PRAGMA journal_mode=MEMORY;", NULL, NULL, NULL);
+    rc += sqlite3_exec(db, "PRAGMA legacy_file_format=FALSE;", NULL, NULL, NULL);
     
     //create the spatial_ref_sys table
     //Note the sr_name field is not in the spec, we are adding it in order to 
@@ -749,11 +750,15 @@ SltReader* SltConnection::SelectView(FdoClassDefinition* fc,
     int cnt = (props == NULL) ? 0 : props->GetCount();
     if (cnt != 0)
     {
+        SltExpressionTranslator et;
         for (int i = 0; i < cnt; i++)
         {
 		    if (i) sb.Append(",", 1);
             FdoPtr<FdoIdentifier> idf = props->GetItem(i);
-		    sb.AppendDQuoted(idf->GetName());
+            
+            idf->Process(&et);
+            StringBuffer* exp = et.GetExpression();
+            sb.Append(exp->Data(), exp->Length());
         }
     }
     else
@@ -805,12 +810,157 @@ SltReader* SltConnection::SelectView(FdoClassDefinition* fc,
     return new SltReader(this, sb.Data(), parmValues);
 }
 
+void SltConnection::AppendSelectJoin(StringBuffer& sb,
+                                     FdoJoinCriteriaCollection* joinCriteria,
+                                     FdoIdentifier* alias)
+{
+    if (alias != NULL)
+    {
+        sb.Append(" AS ", 4);
+        sb.AppendDQuoted(alias->GetName());        
+    }
+
+    StringBuffer sbjd;
+    int cntJoin = joinCriteria->GetCount();
+    for (int idx = 0; idx < cntJoin; idx++)
+    {
+        FdoPtr<FdoJoinCriteria> jc = joinCriteria->GetItem(idx);
+        FdoPtr<FdoIdentifier> joinCls = jc->GetJoinClass();
+        FdoPtr<FdoFilter> jFilter = jc->GetFilter();
+        FdoJoinType jType = jc->GetJoinType();
+        switch (jType)
+        {
+        case FdoJoinType_Cross:
+            sb.Append(",", 1);
+            sb.AppendDQuoted(joinCls->GetName());
+            if (jc->HasAlias())
+            {
+                sb.Append(" AS ", 4);
+                sb.AppendDQuoted(jc->GetAlias());
+            }
+            break;
+        case FdoJoinType_Inner:
+            sbjd.Append(" INNER ", 7);
+            break;
+        case FdoJoinType_LeftOuter:
+            sbjd.Append(" LEFT OUTER ", 12);
+            break;
+        case FdoJoinType_RightOuter:
+            throw FdoException::Create(L"Right outer join type is not supported.");
+            break;
+        case FdoJoinType_FullOuter:
+            throw FdoException::Create(L"Full outer join type is not supported.");
+            break;
+        default:
+            throw FdoException::Create(L"Unsupported join type used in filter");
+            break;
+        }
+        if (jType == FdoJoinType_Cross)
+            continue;
+        sbjd.Append(" JOIN ", 6);
+        sbjd.AppendDQuoted(joinCls->GetName());
+        if (jc->HasAlias())
+        {
+            sbjd.Append(" AS ", 4);
+            sbjd.AppendDQuoted(jc->GetAlias());
+        }
+        if (jFilter == NULL)
+            throw FdoException::Create(L"Unsupported FDO type in filters");
+        sbjd.Append(" ON (", 5);
+        SltQueryTranslator qtj(NULL, false);
+        jFilter->Process(&qtj);
+        sbjd.Append(qtj.GetFilter());
+        sbjd.Append(") ", 2);
+    }
+    if (sbjd.Length())
+        sb.Append(sbjd.Data(), sbjd.Length());
+}
+
+SltReader* SltConnection::SelectJoin(FdoClassDefinition* fc,
+                                     FdoIdentifierCollection* props, 
+                                     StringBuffer& strWhere,
+                                     FdoParameterValueCollection*  parmValues,
+                                     const std::vector<NameOrderingPair>& ordering,
+                                     FdoJoinCriteriaCollection* joinCriteria,
+                                     FdoIdentifier* alias)
+{
+    StringBuffer sb;
+    sb.Append("SELECT ", 7);
+    int cnt = (props == NULL) ? 0 : props->GetCount();
+    if (cnt != 0)
+    {
+        SltExpressionTranslator et;
+        for (int i = 0; i < cnt; i++)
+        {
+		    if (i) sb.Append(",", 1);
+            FdoPtr<FdoIdentifier> idf = props->GetItem(i);
+            
+            idf->Process(&et);
+            StringBuffer* exp = et.GetExpression();
+            sb.Append(exp->Data(), exp->Length());
+            et.Reset();
+        }
+    }
+    else
+        sb.Append("*", 1);
+
+    sb.Append(" FROM ", 6);
+    sb.AppendDQuoted(fc->GetName());
+    AppendSelectJoin(sb, joinCriteria, alias);
+
+    if (strWhere.Length() != 0)
+    {
+        sb.Append(" WHERE ", 7);
+        sb.Append(strWhere.Data(), strWhere.Length());
+    }
+
+    if (!ordering.empty())
+    {
+        sb.Append(" ORDER BY ", 10);
+        SltExtractExpressionTranslator exTrans(props);
+        for (size_t i=0; i<ordering.size(); i++)
+        {
+            if (i)
+                sb.Append(",", 1);
+
+            // identifiers for order are provided as identifiers even are calculations.
+            // so in order to get the "expression" we need to look for them in the select list
+            FdoIdentifier* idfto = ordering[i].name;
+            FdoPtr<FdoIdentifier> idfadd;
+            if (props != NULL)
+            {
+                idfadd = props->FindItem(idfto->GetName());
+                if (idfadd != NULL)
+                {
+                    idfadd->Process(&exTrans);
+                    StringBuffer* exp = exTrans.GetExpression();
+                    sb.Append(exp->Data(), exp->Length());
+                    exTrans.Reset();
+                }
+            }
+            // in case it's a property not present in selection list just add it
+            if (idfadd == NULL)
+                sb.Append(idfto->ToString());
+
+            if (ordering[i].option == FdoOrderingOption_Ascending)
+                sb.Append(" ASC", 4);
+            else
+                sb.Append(" DESC", 5);
+        }
+    }
+    sb.Append(";", 1);
+
+    return new SltReader(this, sb.Data(), parmValues);
+}
+
 SltReader* SltConnection::Select(FdoIdentifier* fcname, 
                                  FdoFilter* filter, 
                                  FdoIdentifierCollection* props, 
                                  bool scrollable, 
                                  const std::vector<NameOrderingPair>& ordering,
-                                 FdoParameterValueCollection*  parmValues)
+                                 FdoParameterValueCollection*  parmValues,
+                                 FdoJoinCriteriaCollection* joinCriteria,
+                                 FdoIdentifier* alias)
 {
     if (m_connState != FdoConnectionState_Open)
         throw FdoCommandException::Create(L"Connection must be open in order to Select.");
@@ -838,6 +988,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         errVal.append(L"' is not found");
         throw FdoException::Create(errVal.c_str(), 1);
     }
+    bool isJoinSelect = (joinCriteria != NULL && joinCriteria->GetCount());
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
     if (md->IsView())
     {
@@ -849,6 +1000,8 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         }
         else
             idClassProp = md->GetIdName();
+        if (isJoinSelect)
+            throw FdoCommandException::Create(L"Cannot use join selects on views.");
     }
 
     //Translate the filter from FDO to SQLite where clause.
@@ -856,7 +1009,7 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     //by using the spatial index.
     if (filter)
     {
-        SltQueryTranslator qt(fc);
+        SltQueryTranslator qt(fc, !isJoinSelect);
         filter->Process(&qt);
 
         const char* txtFilter = qt.GetFilter();
@@ -868,6 +1021,14 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
     if (idClassProp == NULL)
     {
         SltReader* rdrRet = SelectView(fc, props, strWhere, parmValues, ordering);
+        if (rdrRet && mustKeepFilterAlive)
+            rdrRet->SetInternalFilter(filter);
+        return rdrRet;
+    }
+
+    if (isJoinSelect)
+    {
+        SltReader* rdrRet = SelectJoin(fc, props, strWhere, parmValues, ordering, joinCriteria, alias);
         if (rdrRet && mustKeepFilterAlive)
             rdrRet->SetInternalFilter(filter);
         return rdrRet;
@@ -952,7 +1113,9 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
                                                 FdoIdentifierCollection*    ordering,
                                                 FdoFilter*                  grFilter,
                                                 FdoIdentifierCollection*    grouping,
-                                                FdoParameterValueCollection*  parmValues)
+                                                FdoParameterValueCollection*  parmValues,
+                                                FdoJoinCriteriaCollection* joinCriteria,
+                                                FdoIdentifier* alias)
 {
     const wchar_t* wfc = fcname->GetName();
     StringBuffer sbfcn;
@@ -967,12 +1130,16 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         throw FdoException::Create(errVal.c_str(), 1);
     }
     FdoPtr<FdoClassDefinition> fc = md->ToClass();
+    bool isJoinSelect = (joinCriteria != NULL && joinCriteria->GetCount());
     
+    if (md->IsView() && isJoinSelect)
+        throw FdoCommandException::Create(L"Cannot use join aggregate selects on views.");
+
     StringBuffer sb;
-    SltExpressionTranslator exTrans(properties);
+    SltExpressionTranslator exTrans(properties, NULL, isJoinSelect);
     int propsCount = properties->GetCount();
     
-    if (!bDistinct && fc->GetClassType() == FdoClassType_FeatureClass && (propsCount == 1 || propsCount == 2))
+    if (!bDistinct && fc->GetClassType() == FdoClassType_FeatureClass && (propsCount == 1 || propsCount == 2) && !isJoinSelect)
     {
         SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p, filter);
 
@@ -1001,10 +1168,13 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         sb.Append(" FROM ", 6);
     sb.AppendDQuoted(mbfc);
 
+    if (isJoinSelect)
+        AppendSelectJoin(sb, joinCriteria, alias);
+
     bool mustKeepFilterAlive = false;
     if(filter)
     {
-        SltQueryTranslator qt(fc);
+        SltQueryTranslator qt(fc, !isJoinSelect);
         filter->Process(&qt);
         mustKeepFilterAlive = qt.MustKeepFilterAlive();
 
@@ -1032,7 +1202,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
         }
         if (grFilter)
         {
-            SltQueryTranslator qt(fc);
+            SltQueryTranslator qt(fc, !isJoinSelect);
             grFilter->Process(&qt);
 
             const char* txtFilter = qt.GetFilter();
