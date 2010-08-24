@@ -829,6 +829,7 @@ void InsertTest::TestNoPK ()
 	    }
         CPPUNIT_ASSERT(cnt == 2);
 
+        rdr->Close();
         conn->Close();
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
