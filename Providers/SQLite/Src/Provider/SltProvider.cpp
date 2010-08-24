@@ -3350,7 +3350,9 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 
             if (rec.stmt == stmt)
             {
-                sqlite3_reset(stmt);
+                // avoid reset on closed connections.
+                if (m_connState != FdoConnectionState_Closed)
+                    sqlite3_reset(stmt);
                 rec.inUse = false;
                 return;
             }
