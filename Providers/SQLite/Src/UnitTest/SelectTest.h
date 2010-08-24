@@ -47,7 +47,11 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestSelectMultipleCS);
     CPPUNIT_TEST(TestViewSelects);
     CPPUNIT_TEST(TestJoinViewSelects);
-    //CPPUNIT_TEST(TestSubSelect);
+    CPPUNIT_TEST(TestSubSelect);
+    CPPUNIT_TEST(TestJoin);
+    CPPUNIT_TEST(TestMSelect);
+    CPPUNIT_TEST(TestJoinAggregatesSelect);
+    CPPUNIT_TEST(TestMAggregatesSelect);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -55,6 +59,8 @@ private:
     void InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt);
     void CreateFeatureClass(FdoIConnection* conn, FdoString* className, FdoString* scName);
     int SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id);
+    void TestJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
+    void TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax);
 
 public:
     SelectTest(void);
@@ -76,6 +82,10 @@ public:
     void TestViewSelects ();
     void TestJoinViewSelects ();
     void TestSubSelect ();
+    void TestJoin ();
+    void TestMSelect ();
+    void TestJoinAggregatesSelect ();
+    void TestMAggregatesSelect ();
 };
 
 #endif

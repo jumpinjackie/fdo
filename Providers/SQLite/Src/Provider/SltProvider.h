@@ -190,7 +190,9 @@ public:
                                                 FdoIdentifierCollection* props,
                                                 bool                     scrollable,
                                                 const std::vector<NameOrderingPair>& ordering,
-                                                FdoParameterValueCollection*  parmValues);
+                                                FdoParameterValueCollection*  parmValues,
+                                                FdoJoinCriteriaCollection* joinCriteria = NULL,
+                                                FdoIdentifier* alias = NULL);
 
     FdoIDataReader*     SelectAggregates       (FdoIdentifier*             fcname, 
                                                 FdoIdentifierCollection*   properties,
@@ -200,7 +202,9 @@ public:
                                                 FdoIdentifierCollection*   ordering,
                                                 FdoFilter*                 grFilter,
                                                 FdoIdentifierCollection*   grouping,
-                                                FdoParameterValueCollection*  parmValues);
+                                                FdoParameterValueCollection*  parmValues,
+                                                FdoJoinCriteriaCollection* joinCriteria = NULL,
+                                                FdoIdentifier* alias = NULL);
 
     FdoInt32            Update                 (FdoIdentifier*              fcname, 
                                                 FdoFilter*                  filter, 
@@ -216,6 +220,18 @@ public:
                                                 StringBuffer& strWhere,
                                                 FdoParameterValueCollection*  parmValues,
                                                 const std::vector<NameOrderingPair>& ordering);
+
+    SltReader*          SelectJoin             (FdoClassDefinition* fc,
+                                                FdoIdentifierCollection* props, 
+                                                StringBuffer& strWhere,
+                                                FdoParameterValueCollection*  parmValues,
+                                                const std::vector<NameOrderingPair>& ordering,
+                                                FdoJoinCriteriaCollection* joinCriteria,
+                                                FdoIdentifier* alias = NULL);
+
+    void               AppendSelectJoin        (StringBuffer& sb,
+                                                FdoJoinCriteriaCollection* joinCriteria,
+                                                FdoIdentifier* alias);
 
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 

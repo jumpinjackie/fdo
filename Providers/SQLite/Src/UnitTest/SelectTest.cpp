@@ -1007,7 +1007,7 @@ void SelectTest::TestSubSelect ()
             cnt++;
         }
         reader->Close();
-        printf ("\nCnt = %d\n", cnt);
+        printf ("\nCount = %d -> OK\n", cnt);
         CPPUNIT_ASSERT(cnt == 5);
     }
     catch ( FdoException* e )
@@ -1025,3 +1025,267 @@ void SelectTest::TestSubSelect ()
 	printf( "Done\n" );
 }
 
+void SelectTest::TestJoinType (FdoIConnection* conn, FdoJoinType jtype, int expCount)
+{
+    int cnt = 0;
+    FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    selCmd->SetFeatureClassName(L"MainTable");
+
+    FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+    FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"a.FeatId");
+    idpColl->Add(idf);
+    idf = FdoIdentifier::Create(L"a.GEOMETRY");
+    idpColl->Add(idf);
+    idf = FdoComputedIdentifier::Create(L"MainName", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"a.Name")));
+    idpColl->Add(idf);
+    idf = FdoComputedIdentifier::Create(L"SecondName", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"b.Name")));
+    idpColl->Add(idf);
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"a.GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+    selCmd->SetFilter(filter);
+    selCmd->SetAlias(L"a");
+    FdoPtr<FdoJoinCriteriaCollection> jcColl = selCmd->GetJoinCriteria();
+    FdoPtr<FdoIdentifier> jcClass = FdoIdentifier::Create(L"SecondTable");
+    FdoPtr<FdoFilter> jcFilter = FdoFilter::Parse(L"a.ID=b.ID");
+    FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create(L"b", jcClass, jtype, jcFilter);
+    jcColl->Add(jc);
+
+    FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+    while(reader->ReadNext())
+    {
+        reader->GetInt32(L"FeatId");
+        cnt++;
+    }
+    reader->Close();
+
+    printf ("\nCount = %d -> OK\n", cnt);
+    CPPUNIT_ASSERT(cnt == expCount);
+}
+
+void SelectTest::TestJoin ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        //printf ("\n### Inner Join Test ###");
+        //TestJoinType(conn, FdoJoinType_Inner, 7);
+        printf ("\n### LeftOuter Join Test ###");
+        TestJoinType(conn, FdoJoinType_LeftOuter, 10);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestMSelect ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        printf ("\n### Cross Join Test ###");
+        int cnt = 0;
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"MainTable");
+
+        FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"a.FeatId");
+        idpColl->Add(idf);
+        idf = FdoComputedIdentifier::Create(L"Geom", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"a.GEOMETRY")));
+        idpColl->Add(idf);
+        idf = FdoComputedIdentifier::Create(L"MainName", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"a.Name")));
+        idpColl->Add(idf);
+        idf = FdoComputedIdentifier::Create(L"SecondName", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"b.Name")));
+        idpColl->Add(idf);
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"a.ID=b.ID AND Geom INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+        selCmd->SetFilter(filter);
+        selCmd->SetAlias(L"a");
+        FdoPtr<FdoJoinCriteriaCollection> jcColl = selCmd->GetJoinCriteria();
+        FdoPtr<FdoIdentifier> jcClass = FdoIdentifier::Create(L"SecondTable");
+        FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create(L"b", jcClass, FdoJoinType_Cross);
+        jcColl->Add(jc);
+
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        while(reader->ReadNext())
+        {
+            reader->GetInt32(L"FeatId");
+            cnt++;
+        }
+        reader->Close();
+
+        printf ("\nCount = %d -> OK\n", cnt);
+        CPPUNIT_ASSERT(cnt == 7);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax)
+{
+    int cnt = 0;
+    FdoPtr<FdoISelectAggregates> selCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+    selCmd->SetFeatureClassName(L"MainTable");
+
+    FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+    FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"Max(a.FeatId)");
+    FdoPtr<FdoIdentifier> idf = FdoComputedIdentifier::Create(L"MAXID", exp);
+    idpColl->Add(idf);
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"a.GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+    selCmd->SetFilter(filter);
+    selCmd->SetAlias(L"a");
+    FdoPtr<FdoJoinCriteriaCollection> jcColl = selCmd->GetJoinCriteria();
+    FdoPtr<FdoIdentifier> jcClass = FdoIdentifier::Create(L"SecondTable");
+    FdoPtr<FdoFilter> jcFilter = FdoFilter::Parse(L"a.ID=b.ID");
+    FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create(L"b", jcClass, jtype, jcFilter);
+    jcColl->Add(jc);
+
+    FdoPtr<FdoIDataReader> reader = selCmd->Execute();
+    while(reader->ReadNext())
+    {
+        int mid = reader->GetInt32(L"MAXID");
+        printf ("\nMAXID = %d\n", mid);
+        CPPUNIT_ASSERT(mid == expMax);
+        cnt++;
+    }
+    reader->Close();
+
+    printf ("\nCount = %d -> OK\n", cnt);
+    CPPUNIT_ASSERT(cnt == 1);
+}
+
+void SelectTest::TestJoinAggregatesSelect ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        printf ("\n### Inner Join Aggregates Test ###");
+        TestJoinTypeAggregates(conn, FdoJoinType_Inner, 13);
+        printf ("\n### LeftOuter Join Aggregates Test ###");
+        TestJoinTypeAggregates(conn, FdoJoinType_LeftOuter, 695);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestMAggregatesSelect ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        int cnt = 0;
+        FdoPtr<FdoISelectAggregates> selCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        selCmd->SetFeatureClassName(L"MainTable");
+
+        FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+        FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"Max(a.FeatId)");
+        FdoPtr<FdoIdentifier> idf = FdoComputedIdentifier::Create(L"MAXID", exp);
+        idpColl->Add(idf);
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"a.ID=b.ID AND a.GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+        selCmd->SetFilter(filter);
+        selCmd->SetAlias(L"a");
+        FdoPtr<FdoJoinCriteriaCollection> jcColl = selCmd->GetJoinCriteria();
+        FdoPtr<FdoIdentifier> jcClass = FdoIdentifier::Create(L"SecondTable");
+        FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create(L"b", jcClass, FdoJoinType_Cross);
+        jcColl->Add(jc);
+
+        FdoPtr<FdoIDataReader> reader = selCmd->Execute();
+        while(reader->ReadNext())
+        {
+            int mid = reader->GetInt32(L"MAXID");
+            printf ("\nMAXID = %d\n", mid);
+            CPPUNIT_ASSERT(mid == 13);
+            cnt++;
+        }
+        reader->Close();
+
+        printf ("\nCount = %d -> OK\n", cnt);
+        CPPUNIT_ASSERT(cnt == 1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}

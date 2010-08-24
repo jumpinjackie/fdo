@@ -159,6 +159,39 @@ public:
         Append(mbs, mbslen);
     }
 
+    void Append(const wchar_t* ws, size_t wlen)
+    {
+        size_t clen = 4*wlen+1;
+        char* mbs = (char*)alloca(clen);
+        size_t mbslen = W2A_FAST(mbs, clen, ws, wlen);
+        Append(mbs, mbslen);
+    }
+    
+    void AppendIdentifier(const wchar_t* idf)
+    {
+        const wchar_t* tmp = idf;
+        while (*tmp != '\0' && *tmp != ':' && *tmp != '.') tmp++;
+        if (*tmp != '\0')
+        {
+            if (*tmp == ':')
+            {
+                idf = tmp + 1;
+                while (*tmp != '\0' && *tmp != '.') tmp++;
+            }
+            if (*tmp != '\0')
+            {
+                Append("\"", 1);
+                Append(idf, (size_t)(tmp-idf));
+                Append("\".", 2);
+                AppendDQuoted(tmp+1);
+            }
+            else
+                AppendDQuoted(idf);
+        }
+        else
+            AppendDQuoted(idf);
+    }
+
     //Appends the string representation of the given integer
     //to the buffer
     void Append(int value)
