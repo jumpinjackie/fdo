@@ -278,7 +278,7 @@ FdoClassDefinition* SltMetadata::ToClass()
             int fgdettype = gtypes[gi + 1];
             if (fgdettype <= 0)
             {
-                if (fgtype != 0 && fgtype <= (int)FdoGeometryType_MultiCurvePolygon)
+                if (fgtype != 0 && fgtype != 8 && fgtype != 9 && fgtype <= (int)FdoGeometryType_MultiCurvePolygon)
                     gpd->SetSpecificGeometryTypes((FdoGeometryType*)&fgtype, 1);
                 else
                     gpd->SetGeometryTypes(FdoGeometricType_All); //0 = set all.
