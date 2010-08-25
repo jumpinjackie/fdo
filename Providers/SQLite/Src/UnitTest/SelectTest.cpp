@@ -1077,8 +1077,8 @@ void SelectTest::TestJoin ()
         FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
         FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
 
-        //printf ("\n### Inner Join Test ###");
-        //TestJoinType(conn, FdoJoinType_Inner, 7);
+        printf ("\n### Inner Join Test ###");
+        TestJoinType(conn, FdoJoinType_Inner, 7);
         printf ("\n### LeftOuter Join Test ###");
         TestJoinType(conn, FdoJoinType_LeftOuter, 10);
     }
