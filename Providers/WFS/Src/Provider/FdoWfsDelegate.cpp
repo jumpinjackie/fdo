@@ -66,7 +66,7 @@ FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollect
     FdoPtr<FdoIoStream> stream = response->GetStream();
 
     // now we should merge stream and all its referenced schema
-    FdoWfsSchemaMerger merger;
+	FdoWfsSchemaMerger merger(version);
     stream = merger.MergeSchema(stream, GetUrl(), L"");
     FdoPtr<FdoFeatureSchemaCollection> schemas = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);

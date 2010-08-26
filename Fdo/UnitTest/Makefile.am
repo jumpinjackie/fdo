@@ -45,6 +45,10 @@ EXTRA_DIST = \
     gml_simple_geometry_schema.xml \
     gml_simple_object.xml \
     gml_simple_object_schema.xml \
+	gml3_multi_geometry.xml \
+	gml3_multi_geometry_schema.xml \
+	gml3_simple_geometry.xml \
+	gml3_simple_geometry_schema.xml \
     g_coords.txt \
     sc1a_master.txt \
     sc1b_master.txt \
@@ -73,6 +77,7 @@ EXTRA_DIST = \
     sc_err1a_master.txt \
     sc_err1b_master.txt \
     gml_write_master.txt \
+	gml3_write_master.txt \
     sc_error.xml \
     UnitTest.vcproj
 

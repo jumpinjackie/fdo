@@ -20,9 +20,11 @@
 class GmlWriteTest : public CppUnit::TestCase
 {
     FDO_CPPUNIT_DEFINE(testSimpleFeature);
+	FDO_CPPUNIT_DEFINE(testGML3SimpleFeature);
  
     CPPUNIT_TEST_SUITE(GmlWriteTest);
     CPPUNIT_TEST(testSimpleFeature);
+	CPPUNIT_TEST(testGML3SimpleFeature);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -32,6 +34,7 @@ public:
 
 protected:
     void testSimpleFeature();
+	void testGML3SimpleFeature();
 
 };
 

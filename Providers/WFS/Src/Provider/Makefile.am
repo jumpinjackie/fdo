@@ -98,7 +98,29 @@ noinst_HEADERS = $(libWFSProviderSrc_la_SOURCES) \
   ./FdoWfsGlobals.h \
   ./FdoWfsSchemaCapabilities.h \
   ./FdoWfsUtils.h \
-  ./FdoWfsSpatialExtentsAggregateReader.h
+  ./FdoWfsSpatialExtentsAggregateReader.h \
+  ./Gml311/feature3.h \
+  ./Gml311/basicTypes3.h \
+  ./Gml311/coordinateOperations3.h \
+  ./Gml311/coordinateReferenceSystems3.h \
+  ./Gml311/coordinateSystems3.h \
+  ./Gml311/dataQuality3.h \
+  ./Gml311/dictionary3.h \
+  ./Gml311/direction3.h \
+  ./Gml311/geometryAggregates3.h \
+  ./Gml311/geometryBasic0d1d3.h \
+  ./Gml311/geometryBasic2d3.h \
+  ./Gml311/geometryComplexes3.h \
+  ./Gml311/geometryPrimitives3.h \
+  ./Gml311/gml3.h \
+  ./Gml311/gmlBase3.h \
+  ./Gml311/grids3.h \
+  ./Gml311/measures3.h \
+  ./Gml311/referenceSystems3.h \
+  ./Gml311/temporal3.h \
+  ./Gml311/temporalReferenceSystems3.h \
+  ./Gml311/units3.h \
+  ./Gml311/valueObjects3.h 
 
 libWFSProviderSrc_la_LDFLAGS =
 
