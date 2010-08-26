@@ -113,7 +113,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
         FdoPtr<FdoDataValue> dataValue;
         FdoPtr<FdoPropertyValue> propertyValue;
 
-        dataValue = FdoDataValue::Create(L"Carleton");
+        dataValue = FdoDataValue::Create(L"Nepean");
         propertyValue = AddNewProperty( propertyValues, mSetup.GetPropertyNameCitiesName());
         propertyValue->SetValue(dataValue);
 
@@ -148,7 +148,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
         filter = FdoComparisonCondition::Create(
             FdoPtr<FdoIdentifier>(FdoIdentifier::Create(mSetup.GetPropertyNameCitiesName()) ),
             FdoComparisonOperations_EqualTo,
-            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Carleton") ) );
+            FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Nepean") ) );
 
         updateCommand->SetFilter(filter);
 
