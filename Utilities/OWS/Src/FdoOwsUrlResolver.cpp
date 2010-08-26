@@ -85,7 +85,7 @@ FdoStringP FdoOwsUrlResolver::GetUrl(bool& bGet, FdoString* requestName)
 			{
 				FdoStringP url;
 				FdoOwsDcpP dcp = metadata->GetDcp();
-				FdoOwsHttpP http;
+				FdoOwsHttpP http = dcp->GetHttp();
 				FdoOwsXLinkP xlink;
 				if (bGet)
 				{
