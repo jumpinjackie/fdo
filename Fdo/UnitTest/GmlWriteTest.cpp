@@ -105,6 +105,7 @@ public:
 
         // geometric property
         FdoPtr<FdoGeometricPropertyDefinition> geoProp = FdoGeometricPropertyDefinition::Create(L"geoProp", L"geometric property");
+		geoProp->SetSpatialContextAssociation(L"EPSG:4326");
         props->Add(geoProp);
         m_propertyNames->Add(L"geoProp");
 
@@ -366,6 +367,43 @@ void GmlWriteTest::testSimpleFeature() {
 #endif
 }
 
+void GmlWriteTest::testGML3SimpleFeature() 
+{
+	FdoPtr<FdoIFeatureReader> featureReader = new MyFeatureReader();
+
+    FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
+    flags->SetWriteCollection(true);
+    flags->SetWriteMember(true);
+    flags->SetCollectionUri(L"http://www.opengis.net/wfs");
+    flags->SetCollectionName(L"FeatureCollection");
+    flags->SetMemberName(L"featureMember");
+    flags->SetMemberUri(L"http://www.opengis.net/gml");
+    // set schemaLocation
+    flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/base/feature.xsd");
+    // wfs schema location
+    flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.1.0/WFS.xsd");
+
+    // default namespace schema location
+    flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
+
+    // set the default namespace
+    flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+
+	// set the GML version
+	flags->SetGmlVersion(FdoGmlVersion_311);
+
+    FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(L"gml3_write.xml", false);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter,flags);
+    FdoPtr<FdoXmlFeatureWriter> featureWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
+
+    FdoXmlFeatureSerializer::XmlSerialize(featureReader, featureWriter, flags);
+
+#ifdef _WIN32
+        // Compare output against expected results.
+        UnitTestUtil::CheckOutput( "gml3_write_master.txt", "gml3_write.xml" );
+#endif
+
+}
 
 
 

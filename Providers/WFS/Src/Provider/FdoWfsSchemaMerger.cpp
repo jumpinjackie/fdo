@@ -26,6 +26,28 @@
 #include "feature.h"
 #include "geometry.h"
 #include "xlinks.h"
+#include "Gml311/feature3.h"
+#include "Gml311/basicTypes3.h"
+#include "Gml311/coordinateOperations3.h"
+#include "Gml311/coordinateReferenceSystems3.h"
+#include "Gml311/coordinateSystems3.h"
+#include "Gml311/dataQuality3.h"
+#include "Gml311/dictionary3.h"
+#include "Gml311/direction3.h"
+#include "Gml311/geometryAggregates3.h"
+#include "Gml311/geometryBasic0d1d3.h"
+#include "Gml311/geometryBasic2d3.h"
+#include "Gml311/geometryComplexes3.h"
+#include "Gml311/geometryPrimitives3.h"
+#include "Gml311/gml3.h"
+#include "Gml311/gmlBase3.h"
+#include "Gml311/grids3.h"
+#include "Gml311/measures3.h"
+#include "Gml311/referenceSystems3.h"
+#include "Gml311/temporal3.h"
+#include "Gml311/temporalReferenceSystems3.h"
+#include "Gml311/units3.h"
+#include "Gml311/valueObjects3.h"
 
 FdoWfsSchemaMerger::FdoWfsSchemaMerger()
 {
@@ -37,8 +59,49 @@ FdoWfsSchemaMerger::FdoWfsSchemaMerger()
     m_copier = NULL;
 }
 
+FdoWfsSchemaMerger::FdoWfsSchemaMerger(FdoString* version)
+{
+    m_FeatureLoaded = false;
+    m_GeometryLoaded = false;
+    m_XlinksLoaded = false;
+    m_mergedList = NULL;
+    m_loadedStreams = NULL;
+    m_copier = NULL;
+	m_version = version;
+	
+	// add the GML3 basic schemas
+	if (wcscmp(m_version,FdoWfsGlobals::WfsVersion110) == 0)
+	{
+		m_Gml311[L"feature.xsd"] = (char**)feature3;
+		m_Gml311[L"basicTypes.xsd"] = (char**)basicTypes3;
+		m_Gml311[L"coordinateOperations.xsd"] = (char**)coordinateOperations3;
+		m_Gml311[L"coordinateReferenceSystems.xsd"] = (char**)coordinateReferenceSystems3;
+		m_Gml311[L"coordinateSystems.xsd"] = (char**)coordinateSystems3;
+		m_Gml311[L"dataQuality.xsd"] = (char**)dataQuality3;
+		m_Gml311[L"dictionary.xsd"] = (char**)dictionary3;
+		m_Gml311[L"direction.xsd"] = (char**)direction3;
+		m_Gml311[L"geometryAggregates.xsd"] = (char**)geometryAggregates3;
+		m_Gml311[L"geometryBasic0d1d.xsd"] = (char**)geometryBasic0d1d3;
+		m_Gml311[L"geometryBasic2d.xsd"] = (char**)geometryBasic2d3;
+		m_Gml311[L"geometryComplexes.xsd"] = (char**)geometryComplexes3;
+		m_Gml311[L"geometryPrimitives.xsd"] = (char**)geometryPrimitives3;
+		m_Gml311[L"gml.xsd"] = (char**)gml3;
+		m_Gml311[L"gmlBase.xsd"] = (char**)gmlBase3;
+		m_Gml311[L"grids.xsd"] = (char**)grids3;
+		m_Gml311[L"measures.xsd"] = (char**)measures3;
+		m_Gml311[L"referenceSystems.xsd"] = (char**)referenceSystems3;
+		m_Gml311[L"temporal.xsd"] = (char**)temporal3;
+		m_Gml311[L"temporalReferenceSystems.xsd"] = (char**)temporalReferenceSystems3;
+		m_Gml311[L"units.xsd"] = (char**)units3;
+		m_Gml311[L"valueObjects.xsd"] = (char**)valueObjects3;
+	}
+}
+
+
 FdoWfsSchemaMerger::~FdoWfsSchemaMerger()
 {
+	if (!m_Gml311.empty())
+		m_Gml311.clear();
 }
 
 FdoIoStream* FdoWfsSchemaMerger::MergeSchema(FdoIoStream* schema, FdoString* schemaLocation, FdoString* uri)
@@ -106,22 +169,43 @@ void FdoWfsSchemaMerger::_mergeSchema(FdoIoStream* schema, FdoString* schemaLoca
             {
                 FdoPtr<FdoIoStream> stream;
                 char** xmlSchema = NULL;
-                // if it is a well known GML schema, then do not get it from outside
-                if (fullLocation.Contains(L"feature.xsd"))
-                {
-                    if (m_FeatureLoaded)
-                        continue;
-                    m_FeatureLoaded = true;
-                    xmlSchema = (char**)feature;
-                }
-                else if (fullLocation.Contains(L"geometry.xsd"))
-                {
-                    if (m_GeometryLoaded)
-                        continue;
-                    m_GeometryLoaded = true;
-                    xmlSchema = (char**)geometry;
-                }
-                else if (fullLocation.Contains(L"xlinks.xsd"))
+				// if it is a well known GML schema, then do not get it from outside
+				if (wcscmp(m_version,FdoWfsGlobals::WfsVersion) == 0) //1.0.0 version, use GML 2.1.2
+				{
+					if (fullLocation.Contains(L"feature.xsd"))
+					{
+						if (m_FeatureLoaded)
+							continue;
+						m_FeatureLoaded = true;
+						xmlSchema = (char**)feature;
+					}
+					else if (fullLocation.Contains(L"geometry.xsd"))
+					{
+						if (m_GeometryLoaded)
+							continue;
+						m_GeometryLoaded = true;
+						xmlSchema = (char**)geometry;
+					}
+				}
+				else if (wcscmp(m_version,FdoWfsGlobals::WfsVersion110) == 0) //1.1.0 version, use GML 3.1.1
+				{
+					// don't need to merge the unneeded parts
+					if (fullLocation.Contains(L"dynamicFeature.xsd")|| fullLocation.Contains(L"defaultStyle.xsd") || fullLocation.Contains(L"datums.xsd") ||
+						fullLocation.Contains(L"smil20-language.xsd") ||  fullLocation.Contains(L"xml-mod.xsd") || fullLocation.Contains(L"smil20.xsd") ||
+						fullLocation.Contains(L"temporalTopology.xsd") || fullLocation.Contains(L"topology.xsd") ||
+						fullLocation.Contains(L"coverage.xsd") || fullLocation.Contains(L"observation.xsd") )
+						continue;
+					else // found in the m_Gml313 map
+					{
+						//get the xsd name
+						FdoStringP name = this->_getXSDName(fullLocation);
+						std::map<FdoStringP,char** >::iterator iter = m_Gml311.find(name);
+						if(iter != m_Gml311.end())
+							xmlSchema = iter->second;
+					}
+				}
+                
+				if (fullLocation.Contains(L"xlinks.xsd")) //xlinks schema is same between GML 2 and GML 3
                 {
                     if (m_XlinksLoaded)
                         continue;
@@ -170,6 +254,26 @@ void FdoWfsSchemaMerger::_mergeSchema(FdoIoStream* schema, FdoString* schemaLoca
     schema->Reset();
     srcReader = FdoXmlReader::Create(schema);
     srcReader->Parse(m_copier);
+
+}
+
+FdoStringP FdoWfsSchemaMerger::_getXSDName(FdoStringP location)
+{
+	FdoStringP rv;
+
+	size_t len = location.GetLength();
+	size_t i;
+	for (i = len - 1;i>=0;i--)
+	{
+         if (*((FdoString*)location + i) == FdoWfsGlobals::SLASH)
+              break;
+	}
+
+	if ( i == -1)
+		rv = L"";
+	else
+		rv = location.Mid(i + 1,len - i);
+	return rv;
 
 }
 

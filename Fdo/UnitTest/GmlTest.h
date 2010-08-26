@@ -34,8 +34,12 @@ class GmlTest : public CppUnit::TestCase
     FDO_CPPUNIT_DEFINE(testMultiGeometry);
     FDO_CPPUNIT_DEFINE(testSimpleObject);
     FDO_CPPUNIT_DEFINE(testNestedObject);
+	FDO_CPPUNIT_DEFINE(testGML3SimpleGeometry);
+	FDO_CPPUNIT_DEFINE(testGML3MultiGeometry);
  
     CPPUNIT_TEST_SUITE(GmlTest);
+	CPPUNIT_TEST(testGML3SimpleGeometry);
+	CPPUNIT_TEST(testGML3MultiGeometry);
     CPPUNIT_TEST(testInheritedClass);
     CPPUNIT_TEST(testBLOBHex);
     CPPUNIT_TEST(testBLOBBase64);
@@ -68,6 +72,9 @@ protected:
     void testBLOBBase64();
     void testBLOBHex();
     void testInheritedClass();
+
+	void testGML3SimpleGeometry();
+	void testGML3MultiGeometry();
 
 private:
     void testGeometryProperty(FdoXmlFeatureReader* featureReader, FdoString* propName);

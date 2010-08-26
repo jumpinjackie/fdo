@@ -849,6 +849,26 @@
 				>
 			</File>
 			<File
+				RelativePath=".\gml3_multi_geometry.xml"
+				>
+			</File>
+			<File
+				RelativePath=".\gml3_multi_geometry_schema.xml"
+				>
+			</File>
+			<File
+				RelativePath=".\gml3_simple_geometry.xml"
+				>
+			</File>
+			<File
+				RelativePath=".\gml3_simple_geometry_schema.xml"
+				>
+			</File>
+			<File
+				RelativePath=".\gml3_write_master.txt"
+				>
+			</File>			
+			<File
 				RelativePath=".\gml_blob.xml"
 				>
 			</File>

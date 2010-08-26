@@ -247,6 +247,69 @@ void GmlTest::testNestedCollection()
 
 
 
+
+void GmlTest::testGML3SimpleGeometry()
+{
+	// without schemas 
+    {
+	FdoXmlReaderP fileReader = FdoXmlReader::Create(L"gml3_simple_geometry.xml");
+	CPPUNIT_ASSERT(fileReader != NULL);
+	
+	FdoPtr<FdoXmlFeatureFlags> featureFlag = FdoXmlFeatureFlags::Create();
+	featureFlag->SetGmlVersion(FdoGmlVersion_311);
+
+	FdoXmlFeatureReaderP featureReader = FdoXmlFeatureReader::Create(fileReader, featureFlag);
+	CPPUNIT_ASSERT(featureReader != NULL);
+
+	int count = 0;
+	while(featureReader->ReadNext())
+	{
+		count ++;
+
+		FdoStringP name = featureReader->GetString(L"geographicIdentifier");
+		CPPUNIT_ASSERT(name != NULL);
+
+		testGeometryProperty(featureReader, L"gml/pointProperty");
+		testGeometryProperty(featureReader, L"gml/curveProperty");
+	}
+	CPPUNIT_ASSERT(count == 2);
+	}
+
+	// with schemas
+    {
+	FdoXmlReaderP fileReader = FdoXmlReader::Create(L"gml3_simple_geometry.xml");
+	CPPUNIT_ASSERT(fileReader != NULL);
+
+    FdoPtr<FdoFeatureSchemaCollection> schemas = FdoFeatureSchemaCollection::Create(NULL);
+    FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create(L"fdo.osgeo.org/schemas/feature", FdoXmlFlags::ErrorLevel_VeryLow);
+    schemas->ReadXml(L"gml3_simple_geometry_schema.xml", flags);
+	FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = schemas->GetXmlSchemaMappings();
+	FdoPtr<FdoXmlFeatureFlags> featureFlags = FdoXmlFeatureFlags::Create(L"fdo.osgeo.org/schemas/feature", FdoXmlFlags::ErrorLevel_VeryLow);
+	featureFlags->SetSchemaMappings(schemaMappings);
+
+		
+	FdoXmlFeatureReaderP featureReader = FdoXmlFeatureReader::Create(fileReader, featureFlags);
+	CPPUNIT_ASSERT(featureReader != NULL);
+    featureReader->SetFeatureSchemas(schemas);
+
+
+	int count = 0;
+	while(featureReader->ReadNext())
+	{
+		count ++;
+
+		FdoStringP name = featureReader->GetString(L"geographicIdentifier");
+		CPPUNIT_ASSERT(name != NULL);
+
+		testGeometryProperty(featureReader, L"gml/pointProperty");
+		testGeometryProperty(featureReader, L"gml/curveProperty");
+	}
+
+	CPPUNIT_ASSERT(count == 2);
+    }
+}
+
+
 void GmlTest::testSimpleGeometry()
 {
     // without schemas
@@ -430,6 +493,67 @@ void GmlTest::testMultiGeometry()
 
 	CPPUNIT_ASSERT(count == 2);
     }
+}
+void GmlTest::testGML3MultiGeometry()
+{
+    // without schemas
+    {
+	FdoXmlReaderP fileReader = FdoXmlReader::Create(L"gml3_multi_geometry.xml");
+	CPPUNIT_ASSERT(fileReader != NULL);
+
+	FdoPtr<FdoXmlFeatureFlags> featureFlag = FdoXmlFeatureFlags::Create();
+	featureFlag->SetGmlVersion(FdoGmlVersion_311);
+		
+	FdoXmlFeatureReaderP featureReader = FdoXmlFeatureReader::Create(fileReader, featureFlag);
+	CPPUNIT_ASSERT(featureReader != NULL);
+    
+	int count = 0;
+	while(featureReader->ReadNext())
+	{
+		count ++;
+
+		FdoStringP name = featureReader->GetString(L"geographicIdentifier");
+		CPPUNIT_ASSERT(name != NULL);
+
+		testGeometryProperty(featureReader, L"gml/pointArrayProperty");
+		testGeometryProperty(featureReader, L"gml/curveArrayProperty");
+	}
+
+	CPPUNIT_ASSERT(count == 2);
+    }
+
+    // with schemas
+    {
+	FdoXmlReaderP fileReader = FdoXmlReader::Create(L"gml3_multi_geometry.xml");
+	CPPUNIT_ASSERT(fileReader != NULL);
+
+    FdoPtr<FdoFeatureSchemaCollection> schemas = FdoFeatureSchemaCollection::Create(NULL);
+    FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create(L"fdo.osgeo.org/schemas/feature", FdoXmlFlags::ErrorLevel_VeryLow);
+    schemas->ReadXml(L"gml3_multi_geometry_schema.xml", flags);
+	FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = schemas->GetXmlSchemaMappings();
+	FdoPtr<FdoXmlFeatureFlags> featureFlags = FdoXmlFeatureFlags::Create(L"fdo.osgeo.org/schemas/feature", FdoXmlFlags::ErrorLevel_VeryLow);
+	featureFlags->SetSchemaMappings(schemaMappings);
+
+		
+	FdoXmlFeatureReaderP featureReader = FdoXmlFeatureReader::Create(fileReader, featureFlags);
+	CPPUNIT_ASSERT(featureReader != NULL);
+    featureReader->SetFeatureSchemas(schemas);
+    
+	int count = 0;
+	while(featureReader->ReadNext())
+	{
+		count ++;
+
+		FdoStringP name = featureReader->GetString(L"geographicIdentifier");
+		CPPUNIT_ASSERT(name != NULL);
+
+		testGeometryProperty(featureReader, L"gml/pointArrayProperty");
+		testGeometryProperty(featureReader, L"gml/curveArrayProperty");
+	}
+
+	CPPUNIT_ASSERT(count == 2);
+    }
+
 }
 
 
