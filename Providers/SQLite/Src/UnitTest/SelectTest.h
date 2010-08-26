@@ -56,7 +56,8 @@ class SelectTest : public CppUnit::TestCase
 
 private:
     int SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* clsName = NULL);
-    void InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt);
+    int InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt);
+    void UpdateValue(FdoIConnection* conn, int rowid, FdoString* className, FdoString* valTxtFlt);
     void CreateFeatureClass(FdoIConnection* conn, FdoString* className, FdoString* scName);
     int SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id);
     void TestJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);

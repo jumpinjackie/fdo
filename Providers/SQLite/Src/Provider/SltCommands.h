@@ -825,7 +825,12 @@ class SltSql : public SltCommand<FdoISQLCommand>
                 count = sqlite3_changes(db);
 
             if (rc == SQLITE_DONE)
-                return (count) ? count : 1; // "CREATE TEMP TABLE" don't update sqlite3_changes count
+            {
+                // "CREATE/ALTER/DROP* will set sqlite3_changes = 0 so result will be 0
+                // INSERT/UPDATE/DELETE* will return affected rows 
+                // in case of error an exception will be thrown
+                return count;
+            }
             else 
             {
                 const char* err = sqlite3_errmsg(db);

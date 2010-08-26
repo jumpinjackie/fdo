@@ -4504,6 +4504,8 @@ case OP_Delete: {
   // callback to inform we deleted a feature in case we have a SI
   if (u.bg.pTable && u.bg.pTable->pSpIndex){
       assert(db->xUpdSpIndexCallback!=0);
+      assert( u.bg.pC->rowidIsValid );  /* lastRowid set by previous OP_NotFound */
+      u.bg.iKey = u.bg.pC->lastRowid;
       db->xUpdSpIndexCallback(db->pSpIndexArg, u.bg.pTable->pSpIndex, SQLITE_DELETE, u.bg.iKey, 0, 0);
   }
   /* Invoke the update-hook if required. */
