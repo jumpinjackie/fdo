@@ -708,7 +708,7 @@ int SelectTest::SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* c
     return cnt;
 }
 
-void SelectTest::InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt)
+int SelectTest::InsertValue(FdoIConnection* conn, FdoString* className, FdoString* valTxtFlt)
 {
     FdoPtr<FdoFilter> filter = FdoFilter::Parse(valTxtFlt);
     FdoSpatialCondition* spFlt = static_cast<FdoSpatialCondition*>(filter.p);
@@ -719,6 +719,29 @@ void SelectTest::InsertValue(FdoIConnection* conn, FdoString* className, FdoStri
     sql.append(className);
     sql.append(L" (Geometry) VALUES(:GVAL);");
     sqlCmd->SetSQLStatement(sql.c_str());
+    
+    FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+    FdoPtr<FdoParameterValue> param = FdoParameterValue::Create(L":GVAL", gv);
+    params->Add(param);
+    sqlCmd->ExecuteNonQuery();
+
+    FdoPtr<FdoISQLCommand> sqlCmd2 = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+    sqlCmd->SetSQLStatement(L"select last_insert_rowid() as rowid from fdo_columns limit 1;");
+    FdoPtr<FdoISQLDataReader> rdr = sqlCmd->ExecuteReader();
+    if(rdr->ReadNext())
+        return rdr->GetInt32(L"rowid");
+    return -1;
+}
+
+void SelectTest::UpdateValue(FdoIConnection* conn, int rowid, FdoString* className, FdoString* valTxtFlt)
+{
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(valTxtFlt);
+    FdoSpatialCondition* spFlt = static_cast<FdoSpatialCondition*>(filter.p);
+    FdoPtr<FdoGeometryValue> gv = static_cast<FdoGeometryValue*>(spFlt->GetGeometry());
+    
+    FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+    FdoStringP sql = FdoStringP::Format(L"UPDATE %ls SET Geometry=:GVAL WHERE rowid=%d;", className, rowid);
+    sqlCmd->SetSQLStatement(sql);
     
     FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
     FdoPtr<FdoParameterValue> param = FdoParameterValue::Create(L":GVAL", gv);
@@ -784,7 +807,25 @@ void SelectTest::TestDualConnection ()
         cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
 
-        InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3464596345164 39.0575513745066 0)')");
+        int lastRowid = InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3464596345164 39.0575513745066 0)')");
+        cnt1 = SelectObjects(conn1, L"conn1");
+        cnt2 = SelectObjects(conn2, L"conn2");
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+
+        FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn2->CreateCommand(FdoCommandType_SQLCommand));
+        FdoStringP sql = FdoStringP::Format(L"DELETE FROM \"TestClass\" WHERE rowid=%d;", lastRowid);
+        sqlCmd->SetSQLStatement(sql);
+        CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery());
+        int cnt3 = SelectObjects(conn1, L"conn1");
+        CPPUNIT_ASSERT(cnt3 == (cnt1-1));
+        
+        lastRowid = InsertValue(conn2, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.3464596345164 39.0575513745066 0)')");
+        cnt1 = SelectObjects(conn1, L"conn1");
+        cnt2 = SelectObjects(conn2, L"conn2");
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt1 == (cnt3+1));
+
+        UpdateValue(conn1, lastRowid, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.1464596345164 39.1575513745066 0)')");
         cnt1 = SelectObjects(conn1, L"conn1");
         cnt2 = SelectObjects(conn2, L"conn2");
         CPPUNIT_ASSERT(cnt1 == cnt2);
