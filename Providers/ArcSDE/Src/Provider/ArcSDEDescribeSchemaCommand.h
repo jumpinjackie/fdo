@@ -28,8 +28,7 @@ class ArcSDEDescribeSchemaCommand :
 
 private:
     wchar_t* mSchemaName;
-    FdoStringCollection* mClassNames;
-	FdoPtr<FdoIdentifier> mFdoClassIdToLoad;
+    FdoStringsP mClassNames;
 
 private:
     //
@@ -51,7 +50,7 @@ protected:
     void GetArcSDEMetadata(const SE_METADATAINFO &metadata, CHAR* classname, CHAR* property, CHAR* value, CHAR* description, CHAR* metadata_qual_table);
     void addClass (ArcSDEConnection* connection, FdoFeatureSchema* schema, wchar_t* class_name, wchar_t* class_description,
         CHAR* qualified_table_name, SE_REGINFO registration, SE_METADATAINFO *metadata_list, LONG num_records);
-    void addTable (ArcSDEConnection* connection, FdoFeatureSchemaCollection* schemas, SE_REGINFO registration);
+    void addTable (ArcSDEConnection* connection, FdoFeatureSchemaCollection* schemas, /*SE_REGINFO registration*/FdoStringP qFeatureClassName);
     FdoFeatureSchema* findOrCreateSchema (FdoFeatureSchemaCollection* schemas, const wchar_t* name, const wchar_t* description);
 
     // Converts a Metadata value string to FDO datatype enum:
@@ -60,6 +59,11 @@ protected:
     // Converts a Metadata value string to boolean:
     bool MetadataValueToBoolean(CHAR* value);
 
+	// Construct the requested qualified feature class name collection.
+	void constructRequestedClassNames(FdoStringCollection* qualifiedClassNames, bool *isFullyLoaded);
+
+	// Clone the requested class definitions.
+	void cloneClassDefinitions(FdoStringCollection* qFCNames, FdoFeatureSchemaCollection* retSchemaCol, FdoFeatureSchemaCollection* schemaCol);
 
 public:
     //

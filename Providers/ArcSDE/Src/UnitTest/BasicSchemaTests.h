@@ -38,6 +38,9 @@ class BasicSchemaTests : public ArcSDETests
     CPPUNIT_TEST (create_unique_constraint);
     CPPUNIT_TEST (describe_read_only);
     CPPUNIT_TEST (apply_specific_geometry_types);
+    CPPUNIT_TEST (get_schema_names);
+    CPPUNIT_TEST (get_feature_class_names);
+    CPPUNIT_TEST (describe_one_specified_class);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -60,6 +63,10 @@ protected:
     void create_unique_constraint ();
     void describe_read_only();
     void apply_specific_geometry_types();
+    void get_schema_names();
+    void get_feature_class_names();
+    void describe_one_specified_class();
 };
 
 #endif // CPP_UNIT_BasicSchemaTests_H
+

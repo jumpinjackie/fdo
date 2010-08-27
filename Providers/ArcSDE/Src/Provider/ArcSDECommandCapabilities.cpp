@@ -45,6 +45,8 @@ FdoInt32* ArcSDECommandCapabilities::GetCommands (FdoInt32& size)
         FdoCommandType_Delete,
         FdoCommandType_Update,
         FdoCommandType_DescribeSchema,
+        FdoCommandType_GetSchemaNames,
+        FdoCommandType_GetClassNames,
 
 #ifdef _DEBUG  // Only make apply/destroy schema commands available to debug test suite
         FdoCommandType_ApplySchema,

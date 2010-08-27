@@ -461,6 +461,11 @@ SymbolicName=ARCSDE_LAYER_INFO_GET
 Language=English
 Spatial layer information could not be retrieved.
 .
+MessageId=3031
+SymbolicName=ARCSDE_SCHEMA_NAME_INCONSISTENT
+Language=English
+The schema in the qualified class name '%1$ls' is inconsistent with the specified one '%2$ls'.
+.
 
 
 

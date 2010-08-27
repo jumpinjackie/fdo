@@ -179,6 +179,8 @@ class ArcSDEConnection;
 #include <ArcSDEDataReader.h>
 #include <ArcSDEListDataStores.h>
 #include <ArcSDEDataStoreReader.h>
+#include <ArcSDEGetSchemaNamesCommand.h>
+#include <ArcSDEGetClassNamesCommand.h>
 
 #endif // FDOSDE_H
 

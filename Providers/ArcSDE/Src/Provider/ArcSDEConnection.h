@@ -25,6 +25,7 @@
 #include <sdetype.h>
 
 class ArcSDETransaction;
+class TableRegistry;
 
 class ArcSDEConnection : public FdoIConnection
 {
@@ -75,6 +76,13 @@ protected:
     LONG* mCachedSpatialRefSRIDList;
     LONG mCachedSpatialRefListCount;
     bool mCachedSpatialRefListCreatedByUs;
+
+	bool mIsSchemaClassNameCached;
+	typedef std::map<FdoStringP, FdoStringsP> SchemaClassMap;
+	SchemaClassMap mCachedSchemaClassNames; 
+
+	typedef std::map<FdoStringP, TableRegistry*> NamedTableRegistry;
+	NamedTableRegistry mCachedTableRegistryInfo;
 
     /**
      * Cached schema mapping information.
@@ -128,6 +136,12 @@ protected:
 	 * Set if the generator object is initialized
 	 */
 	bool m_uuidGeneratorCreated;
+
+public:
+	/*
+	 * Get the registered table names from server and cached them in the connection.
+	 */
+	void GetRegisteredTableNames();
 
 public:
 
@@ -281,6 +295,24 @@ public:
 
     // Returns the current schema.
     FdoFeatureSchemaCollection* GetSchemaCollection (FdoIdentifier* name = NULL, bool bAutoLoad = true, bool* bIsFullyLoaded=NULL);
+
+	// Return the schema names.
+	FdoStringCollection* GetSchemaNames();
+
+	// Return all the qualified feature class names of a specified schema.
+	// If the schema name is not specified, all the qualified feature class names are returned.
+	FdoStringCollection* GetFeatureClassNames(FdoString* schemaName);
+
+	// Return the relevant SDE table registry from cache by a qualified feature class name.
+	// If the information is not cached yet, return null.
+	const SE_REGINFO* GetCachedTableRegistryInfo(FdoStringP featureClassName);
+
+	// Return the relevant SDE qualified table name from cache by a qualified feature class name.
+	// If the information is not cached yet, return null.
+	CHAR* GetCachedSDEQualifiedTableName(FdoStringP featureClassName);
+
+	// Indicate if the schema/class names cached yet.
+	bool IsSchemaClassNamesCached();
 
     // Stores the schema collection as the current schema collection.
     void SetSchemaCollection (FdoFeatureSchemaCollection* schemaCollection, bool bFullyLoaded);

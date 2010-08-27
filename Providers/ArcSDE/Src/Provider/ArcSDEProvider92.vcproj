@@ -1693,6 +1693,22 @@
 				>
 			</File>
 			<File
+				RelativePath="ArcSDEGetClassNamesCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ArcSDEGetClassNamesCommand.h"
+				>
+			</File>
+			<File
+				RelativePath="ArcSDEGetSchemaNamesCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath="ArcSDEGetSchemaNamesCommand.h"
+				>
+			</File>
+			<File
 				RelativePath="ArcSDESchemaManager.cpp"
 				>
 			</File>

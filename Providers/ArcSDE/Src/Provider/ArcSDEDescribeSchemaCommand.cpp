@@ -23,10 +23,16 @@
 
 ArcSDEDescribeSchemaCommand::ArcSDEDescribeSchemaCommand (FdoIConnection *connection, FdoIdentifier* fdoClassIdToLoad) :
     ArcSDECommand<FdoIDescribeSchema> (connection),
-    mSchemaName (NULL),
-    mClassNames (NULL)
+    mSchemaName (NULL)
 {
-	mFdoClassIdToLoad = FDO_SAFE_ADDREF(fdoClassIdToLoad);
+	mClassNames = FdoStringCollection::Create();
+
+	// Keep compatible with previous construct. 
+	if (fdoClassIdToLoad != NULL)
+	{
+		SetSchemaName(fdoClassIdToLoad->GetSchemaName());
+		mClassNames->Add(fdoClassIdToLoad->GetName());
+	}
 }
 
 /** Do not implement the copy constructor. **/
@@ -80,7 +86,7 @@ void ArcSDEDescribeSchemaCommand::SetSchemaName (const wchar_t* value)
 /// <returns>Returns the collection of class names</returns>
 FdoStringCollection* ArcSDEDescribeSchemaCommand::GetClassNames()
 {
-    return mClassNames;
+    return FDO_SAFE_ADDREF(mClassNames.p);
 }
 
 /// <summary>Sets the name of the classes to retrieve. This is optional, if not
@@ -94,9 +100,7 @@ FdoStringCollection* ArcSDEDescribeSchemaCommand::GetClassNames()
 /// <returns>Returns nothing</returns>
 void ArcSDEDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
 {
-    // Do nothing.
-    // This method is not implemented.  DescribeSchema command
-    // will describe all classes.
+	mClassNames = FDO_SAFE_ADDREF(value);
 }
 
 FdoDataType ArcSDEDescribeSchemaCommand::MetadataValueToFDOType(CHAR* value)
@@ -517,206 +521,125 @@ FdoFeatureSchema* ArcSDEDescribeSchemaCommand::findOrCreateSchema (FdoFeatureSch
 }
 
 void ArcSDEDescribeSchemaCommand::addTable (
-    ArcSDEConnection* connection,
-    FdoFeatureSchemaCollection* schemas,
-    SE_REGINFO registration)
+	ArcSDEConnection* connection,
+	FdoFeatureSchemaCollection* schemas,
+	FdoStringP qFeatureClassName)
 {
-    CHAR qualified_table_name[SE_QUALIFIED_TABLE_NAME+1];
-    CHAR owner[SE_MAX_OWNER_LEN+1];
-    CHAR table_name[SE_MAX_TABLE_LEN];
-    CHAR database_name[SE_MAX_DATABASE_LEN+1];
+	CHAR* qualified_table_name;
 #ifdef _DEBUG
-    CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
+	CHAR metadata_qual_table[SE_MAX_OBJECT_NAME_LEN];
 #endif
-    wchar_t* wdatabase_name = NULL;
-    wchar_t* wowner = NULL;
-    wchar_t* wtable = NULL;
-    SE_METADATAINFO *metadata_list = NULL;
-    LONG count = 0L;
+	SE_METADATAINFO *metadata_list = NULL;
+	LONG count = 0L;
 #ifdef _DEBUG
 	CHAR classname[SE_MAX_METADATA_CLASS_LEN];
-    CHAR property[SE_MAX_METADATA_PROPERTY_LEN];
-    CHAR value[SE_MAX_METADATA_VALUE_LEN];
+	CHAR value[SE_MAX_METADATA_VALUE_LEN];
 #endif
-    CHAR description[SE_MAX_DESCRIPTION_LEN];
-    FdoStringP fdoSchemaName;
-    wchar_t* fdoSchemaDesc = NULL;
-    FdoStringP fdoClassName;
-    FdoStringP fdoClassDesc;
-    LONG result = 0L;
-    FdoPtr<FdoFeatureSchema> schema;
-    FdoPtr<FdoSchemaAttributeDictionary> dictionary;
-    wchar_t* wproperty = NULL;
-    wchar_t* wvalue = NULL;
+	CHAR description[SE_MAX_DESCRIPTION_LEN];
+	FdoStringP fdoSchemaName;
+	wchar_t* fdoSchemaDesc = NULL;
+	FdoStringP fdoClassName;
+	FdoStringP fdoClassDesc;
+	LONG result = 0L;
+	FdoPtr<FdoFeatureSchema> schema;
 
-    try
-    {
-        // Get (possibly qualified) table name:
-        result = SE_reginfo_get_table_name (registration, qualified_table_name);
-        handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
-        database_name[0] = '\0';
-        owner[0] = '\0';
-        table_name[0] = '\0';
-        result = SE_table_parse_qualified_name(connection->GetConnection(), qualified_table_name, database_name, owner, table_name, NULL, FALSE);
-        handle_sde_err<FdoSchemaException> (connection->GetConnection(), result, __FILE__, __LINE__, ARCSDE_REGISTRATION_INFO_ITEM, "Table registration info item '%1$ls' could not be retrieved.", L"qualified_table_name");
+	// At the moment, the relevant SDE table registry and qualified table name shoule be cached.
+	const SE_REGINFO* registration = mConnection->GetCachedTableRegistryInfo(qFeatureClassName);
+	assert(registration != NULL);
 
-        sde_multibyte_to_wide (wdatabase_name, database_name);
-        sde_multibyte_to_wide (wowner, owner);
-        sde_multibyte_to_wide (wtable, table_name);
+	qualified_table_name = mConnection->GetCachedSDEQualifiedTableName(qFeatureClassName);
+	assert(qualified_table_name != NULL);
 
-        // Determine default FDO schema name & description:
-        bool bHasDBName = false;
-        if ((wdatabase_name != NULL) && (wcslen(wdatabase_name) > 0))
-        {
-            bHasDBName = true;
+	fdoSchemaName = qFeatureClassName.Left(L":");
+	fdoClassName = qFeatureClassName.Right(L":");
 
-            fdoSchemaName  = wdatabase_name;
-            fdoSchemaName += SCHEMANAME_SEPARATOR;
-            fdoSchemaName += wowner;
-        }
-        else
-        {
-            fdoSchemaName = wowner;
-        }
-        fdoSchemaDesc = NULL;
-
-        // ignore the GDB_ tables that SDE/DBO owns
-        if ((0 == wcscmp (wowner, SDE_USER) || 0 == wcscmp (wowner, DBO_USER)) && (4 <= wcslen (wtable)) && (0 == wcsncmp (wtable, ARCOBJECT_PREFIX, 4)))
-            return;
-
-        // default to class name being the table name
-        fdoClassName = wtable;
-
-
-        // Read this table's metadata & interpret it:
-        // NOTE: ArcSDE 9.0/9.1 client on Oracle contains a bug which causes SE_table_metadata_get_info_list() to
-        //       fail to retrieve metadata for tables not owned by the connected user.
-        //       This problem does not occur if using SQL Server as the RDBMS, or using
-        //       SE_metadata_get_info_list() instead of SE_table_metadata_get_info_list().
-
-        // Build where clause that will fetch only this table's metadata:
-        CHAR whereClause[SE_QUALIFIED_TABLE_NAME + 100];
-        if (bHasDBName)
-            sde_sprintf(sde_pus2wc(whereClause), SE_QUALIFIED_TABLE_NAME + 100, 
-#ifdef SDE_UNICODE
-			L"OBJECT_DATABASE = '%ls' AND OBJECT_OWNER = '%ls' AND OBJECT_NAME = '%ls'"
-#else
-			"OBJECT_DATABASE = '%s' AND OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'"
-#endif
-			, database_name, owner, table_name);
-        else
-            sde_sprintf(sde_pus2wc(whereClause), SE_QUALIFIED_TABLE_NAME + 100, 
-#ifdef SDE_UNICODE
-			L"OBJECT_OWNER = '%ls' AND OBJECT_NAME = '%ls'"
-#else
-			"OBJECT_OWNER = '%s' AND OBJECT_NAME = '%s'"
-#endif
-			, owner, table_name);
-
-
-        // Get this table's metadata (only in debug mode, since this is only required for
+	try
+	{
+		// Get this table's metadata (only in debug mode, since this is only required for
 		// ApplySchema support which is only supported in debug mode):
 #ifdef _DEBUG
-        connection->GetArcSDEMetadataList(&metadata_list, &count);
-        for (int i = 0; i < count; i++)
-        {
-            GetArcSDEMetadata(metadata_list[i], classname, property, value, description, metadata_qual_table);
-            if (0==sde_strcmp(sde_pcus2wc(metadata_qual_table), sde_pcus2wc(qualified_table_name)))
-            {
-                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSSCHEMA)))
-                {
-                    wchar_t* fdoSchemaNameTemp = NULL;
-                    sde_multibyte_to_wide (fdoSchemaNameTemp, value);
-                    fdoSchemaName = fdoSchemaNameTemp;
-                }
+		connection->GetArcSDEMetadataList(&metadata_list, &count);
+		for (int i = 0; i < count; i++)
+		{
+			result = SE_metadatainfo_get_object_name (metadata_list[i], metadata_qual_table);
+			handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
+			if (0==sde_strcmp(sde_pcus2wc(metadata_qual_table), sde_pcus2wc(qualified_table_name)))
+			{
+				result = SE_metadatainfo_get_classname (metadata_list[i], classname);
+				handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
+								
+				if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSDESC)))
+				{
+					result = SE_metadatainfo_get_value (metadata_list[i], value);
+					handle_sde_err<FdoSchemaException>(result, __FILE__, __LINE__, ARCSDE_METADATA_MANIPULATE_FAILED, "Failed to get or set ArcSDE metadata.");
 
-                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSNAME)))
-                {
-                    wchar_t* fdoClassNameTemp = NULL;
-                    sde_multibyte_to_wide (fdoClassNameTemp, value);
-                    fdoClassName = fdoClassNameTemp;
-                }
-
-                if (0==sde_strcmp(sde_pcus2wc(classname), sde_pcus2wc(METADATA_CN_CLASSDESC)))
-                {
-                    wchar_t* fdoClassDescTemp = NULL;
-                    sde_multibyte_to_wide (fdoClassDescTemp, value);
-                    fdoClassDesc = fdoClassDescTemp;
-                }
-            }
-
-            // TODO: METADATA_CN_CLASSATTRIBUTE, METADATA_CN_CLASSBASE, METADATA_CN_CLASSABSTRACT
-        }
+					wchar_t* fdoClassDescTemp = NULL;
+					sde_multibyte_to_wide (fdoClassDescTemp, value);
+					fdoClassDesc = fdoClassDescTemp;
+				}
+			}
+			// TODO: METADATA_CN_CLASSATTRIBUTE, METADATA_CN_CLASSBASE, METADATA_CN_CLASSABSTRACT
+		}
 #endif
-
 
 		// Get or create the schema this class belongs in:
 		schema = findOrCreateSchema (schemas, fdoSchemaName, fdoSchemaDesc);
 		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
 		FdoPtr<FdoClassDefinition> preloadedClass = classes->FindItem(fdoClassName);
 
-		// optimization: only load information for a specific class if only that class is requested:
-		if ((preloadedClass==NULL)
-		  && ((mFdoClassIdToLoad==NULL)
-		    || (((mFdoClassIdToLoad->GetSchemaName()==NULL) || (mFdoClassIdToLoad->GetSchemaName()[0]=='\0') || 0==wcscmp(mFdoClassIdToLoad->GetSchemaName(),fdoSchemaName))
-                && (0==wcscmp(mFdoClassIdToLoad->GetName(),fdoClassName)))))
+		// If the class is already loaded, skip it.
+		if (preloadedClass != NULL)
+			return;
+
+		// if we don't have a class description yet, get a default description from class registration info:
+		if (fdoClassDesc.GetLength() == 0)
 		{
-			// Store the overrides always:
-			FdoPtr<ArcSDEClassMapping> classMapping = mConnection->GetClassMapping(fdoSchemaName, fdoClassName, false);
-			classMapping->SetDatabaseName(wdatabase_name);
-			classMapping->SetOwnerName(wowner);
-			classMapping->SetTableName(wtable);
-
-			// if we don't have a class decription yet, get a default description from class registration info:
-            if (fdoClassDesc.GetLength() == 0)
+			result = SE_reginfo_get_description (*registration, description);
+			if (SE_SUCCESS == result)
 			{
-				result = SE_reginfo_get_description (registration, description);
-				if (SE_SUCCESS == result)
-				{
-                    wchar_t* fdoClassDescTmp = NULL;
-                    sde_multibyte_to_wide (fdoClassDescTmp, description);
-                    fdoClassDesc = fdoClassDescTmp;
-				}
-                if (fdoClassDesc.GetLength() == 0)
-                    fdoClassDesc = L"Default class description";
+				wchar_t* fdoClassDescTmp = NULL;
+				sde_multibyte_to_wide (fdoClassDescTmp, description);
+				fdoClassDesc = fdoClassDescTmp;
 			}
-
-			// Create the FDO class and its FDO properties:
-			addClass (connection, schema, (wchar_t*)(FdoString*)fdoClassName, (wchar_t*)(FdoString*)fdoClassDesc, qualified_table_name, registration, metadata_list, count);
-
-			// Populate the schema attributes dictionary:
-			//TODO: do we want to try to expose native ArcSDE metadata as schema attributes?
-			/*
-			dictionary = schema->GetAttributes ();
-			for (int i = 0; i < count; i++)
-			{
-				GetArcSDEMetadata(metadata_list[i], classname, property, value, NULL);
-				if (   (0 != strcmp (SCHEMA_KEYWORD, classname))
-					&& (0 != strcmp (CLASS_KEYWORD, classname))
-					&& (0 != strcmp (COLUMN_KEYWORD, classname)))
-				{
-					multibyte_to_wide (wproperty, property);
-					multibyte_to_wide (wvalue, value);
-					if ((NULL != wproperty) && (NULL != wvalue))
-						dictionary->Add (wproperty, wvalue);
-				}
-			}
-			*/
+			if (fdoClassDesc.GetLength() == 0)
+				fdoClassDesc = L"Default class description";
 		}
-    }
-    catch (FdoException *e)
-    {
-        // NOTE: if an exception occurs during this method, we will ignore it and silently
-        // remove the class from its associated schema:
-        e->Release();
-        if ((schema != NULL) && (fdoClassName != NULL))
-        {
-            FdoPtr<FdoClassCollection> classes = schema->GetClasses();
-            FdoPtr<FdoClassDefinition> addedClass = classes->FindItem(fdoClassName);
-            if (addedClass != NULL)
-                classes->Remove(addedClass);
-        }
-    }
+
+		// Create the FDO class and its FDO properties:
+		addClass (connection, schema, (wchar_t*)(FdoString*)fdoClassName, (wchar_t*)(FdoString*)fdoClassDesc, qualified_table_name, *registration, metadata_list, count);
+
+		// Populate the schema attributes dictionary:
+		//TODO: do we want to try to expose native ArcSDE metadata as schema attributes?
+		/*
+		dictionary = schema->GetAttributes ();
+		for (int i = 0; i < count; i++)
+		{
+		GetArcSDEMetadata(metadata_list[i], classname, property, value, NULL);
+		if (   (0 != strcmp (SCHEMA_KEYWORD, classname))
+		&& (0 != strcmp (CLASS_KEYWORD, classname))
+		&& (0 != strcmp (COLUMN_KEYWORD, classname)))
+		{
+		multibyte_to_wide (wproperty, property);
+		multibyte_to_wide (wvalue, value);
+		if ((NULL != wproperty) && (NULL != wvalue))
+		dictionary->Add (wproperty, wvalue);
+		}
+		}
+		*/
+	}
+	catch (FdoException *e)
+	{
+		// NOTE: if an exception occurs during this method, we will ignore it and silently
+		// remove the class from its associated schema:
+		e->Release();
+		if ((schema != NULL) && (fdoClassName != NULL))
+		{
+			FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+			FdoPtr<FdoClassDefinition> addedClass = classes->FindItem(fdoClassName);
+			if (addedClass != NULL)
+				classes->Remove(addedClass);
+		}
+	}
 }
 
 
@@ -729,11 +652,6 @@ void ArcSDEDescribeSchemaCommand::addTable (
 FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 {
     FdoPtr<ArcSDEConnection> connection;
-    SE_REGINFO *registrations = NULL;
-    LONG count = 0L;
-    LONG result = 0L;
-    const wchar_t* name = NULL;
-    int size = 0;
     FdoPtr<FdoFeatureSchemaCollection> ret;
 
     // verify the connection
@@ -746,31 +664,225 @@ FdoFeatureSchemaCollection* ArcSDEDescribeSchemaCommand::Execute ()
 	bool bIsFullyLoaded = false;
     FdoPtr<FdoFeatureSchemaCollection> cachedSchemas = connection->GetSchemaCollection (NULL, false, &bIsFullyLoaded);
     FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = connection->GetSchemaMappingCollection(NULL, NULL, false);
-    if (!bIsFullyLoaded)
-    {
-        // Read all registered arcsde tables, adding them into their schema:
-        connection->GetArcSDERegistrationList(&registrations, &count);
-        for (int i = 0; i < count; i++)
-            addTable (connection, cachedSchemas, registrations[i]);
+	
+	// Get all the schema/class names.
+	// TODO: make further optimization to only get the requested schema/class names.
+	if (!mConnection->IsSchemaClassNamesCached())
+		mConnection->GetRegisteredTableNames();
+	
+	// Construct the requested qualified feature class name collection,
+	// If both schema name and class names are not set in this command, 
+	// the collection will contain all the qualified feature class names.
+	FdoStringsP qFeatureClassNames = FdoStringCollection::Create();
+	// The flag indicate if a full describing is requested.
+	bool bIsAllRequested = false;
+	constructRequestedClassNames(qFeatureClassNames, &bIsAllRequested);
 
-        // Mark all schemas as "unchanged":
-        size = cachedSchemas->GetCount ();
-        for (int i = 0; i < size; i++)
-        {
-            FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem (i);
-            schema->AcceptChanges ();
-        }
+	// If the schema collection is already loaded fully, we don't need try to construct it again.
+	if (!bIsFullyLoaded)
+	{
+		// Construct the requested schema/feature class.
+		FdoInt32 count = qFeatureClassNames->GetCount();
+		for (FdoInt32 i = 0; i < count; ++i)
+		{
+			addTable(connection, cachedSchemas, qFeatureClassNames->GetString(i));
+		}
 
-        // Cache these schemas on this connection:
-        connection->SetSchemaCollection (cachedSchemas, mFdoClassIdToLoad==NULL);
-    }
+		// Mark all schemas as "unchanged":
+		int size = cachedSchemas->GetCount ();
+		for (int i = 0; i < size; i++)
+		{
+			FdoPtr<FdoFeatureSchema> schema = cachedSchemas->GetItem (i);
+			schema->AcceptChanges ();
+		}
 
-    // clone the relevant schemas from the cached schema collection:
-    ret = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(cachedSchemas, GetSchemaName());
+		// Cache these schemas on this connection:
+		connection->SetSchemaCollection (cachedSchemas, bIsAllRequested);
+	}
 
+	// clone the relevant schemas from the cached schema collection.
+	if (bIsAllRequested)
+		// If this is fully describing schema, clone the entire schema collection.
+		ret = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(cachedSchemas, NULL);
+	else
+	{
+		// Just clone the requested schema/class.
+		ret = FdoFeatureSchemaCollection::Create(NULL);
+		cloneClassDefinitions(qFeatureClassNames, ret, cachedSchemas);
+	}
+	
     return (FDO_SAFE_ADDREF(ret.p));
 }
 
+void ArcSDEDescribeSchemaCommand::cloneClassDefinitions(FdoStringCollection* qFCNames, FdoFeatureSchemaCollection* retSchemaCol, FdoFeatureSchemaCollection* schemaCol)
+{
+	FdoInt32 count = qFCNames->GetCount();
+	for (FdoInt32 i = 0; i < count; ++i)
+	{
+		FdoStringP qualifiedClassName = qFCNames->GetString(i);
+		FdoStringP schemaName = qualifiedClassName.Left(L":");
+		FdoStringP className = qualifiedClassName.Right(L":");
+
+		
+		// It's possible that the requested schema doesn't exist due to some reasons. See defect 613177.01.
+		if (!schemaCol->Contains(schemaName))
+			continue;
+		FdoPtr<FdoFeatureSchema> schema = schemaCol->GetItem(schemaName);
+
+		FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+		if (classes == NULL) // it's needed to do the check?
+			continue;
+
+		// It's possible that the requested schema doesn't exist due to some reasons. See defect 613177.01.
+		if (!classes->Contains(className))
+			continue;
+		FdoPtr<FdoClassDefinition> classDef = classes->GetItem(className);
+
+		FdoPtr<FdoFeatureSchema> retSchema;
+		if (!retSchemaCol->Contains(schema->GetName()))
+		{
+			retSchema = FdoFeatureSchema::Create(schema->GetName(), schema->GetDescription());
+			retSchemaCol->Add(retSchema);
+		}
+		else
+			retSchema = retSchemaCol->GetItem(schema->GetName());
+
+		classes = retSchema->GetClasses();
+        // At this point, classes should be check to see if it already contains the current class. 
+		// The deep copy and adding of the class can be skipped if it already is. This can happen 
+		// if the client puts a duplicate entry in mClassNames, or if a class in qFCNames is the 
+		// base class of a class appearing earlier on in qFCNames. 
+		if (classes->Contains(classDef->GetName()))
+			continue;
+
+		classDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(classDef, NULL);
+		FDO_SAFE_ADDREF(classDef.p);
+		classes->Add(classDef);
+
+		retSchema->AcceptChanges();
+	}
+}
+
+void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollection* qFeatureClassNames, bool* isFullyLoaded)
+{
+	if (mSchemaName != NULL && mSchemaName[0] != '\0') // The schema name was set.
+	{
+		FdoStringsP cachedSchemaNames = mConnection->GetSchemaNames();
+		// Not find the specified schema name, an exception will be thrown.
+		if (cachedSchemaNames->IndexOf(mSchemaName) == -1)
+			throw FdoException::Create(NlsMsgGet1(ARCSDE_SCHEMA_DOES_NOT_EXIST, "Schema '%1$ls' does not exist.", mSchemaName)); 
+
+		FdoInt32 size = mClassNames->GetCount();
+		for (FdoInt32 i = 0; i < size; ++i)
+		{
+			FdoStringP className = mClassNames->GetString(i);
+			FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(mSchemaName);
+			//
+			// className might have been passed in as a qualified name. 
+			// Also, to be consistent with the GenericRdbms providers, 
+			// an exception should be thrown if className is qualified 
+			// but its schema name part differs from mSchemaName
+			FdoStringP qFCName;
+			if (className.Contains(L":"))
+			{
+				FdoStringP schemaName = className.Left(L":");
+				if (schemaName != mSchemaName)
+					throw FdoException::Create(NlsMsgGet2(ARCSDE_SCHEMA_NAME_INCONSISTENT, 
+					"The schema in the qualified class name '%1$ls' is inconsistent with the specified one '%2$ls'.", className, mSchemaName));
+
+				qFCName = className;
+			}
+			else
+			{
+				qFCName = FdoStringP(mSchemaName) + L":" + className;
+			}
+
+			if (cachedClassNames->IndexOf(qFCName) == -1)
+				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", qFCName)); 
+
+			qFeatureClassNames->Add(qFCName);
+		}
+
+		// No feature class name is specified, get all the feature class names in the schema.
+		if (qFeatureClassNames->GetCount() == 0)
+		{
+			FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(mSchemaName);
+			for (FdoInt32 i = 0; i < cachedClassNames->GetCount(); ++i)
+			{
+				FdoStringP className = cachedClassNames->GetString(i);
+				qFeatureClassNames->Add(className);
+			}
+		}
+	}
+	else // The schema name is not set.
+	{
+		FdoStringsP cachedSchemaNames = mConnection->GetSchemaNames();
+		for (FdoInt32 i = 0; i < mClassNames->GetCount(); ++i)
+		{
+			FdoStringP className = mClassNames->GetString(i);
+			// If the class name is qualified, we should verify if it exists.
+			// If not, an exception will be thrown.
+			if (className.Contains(L":"))
+			{
+				FdoStringP schemaName = className.Left(L":");
+				if (cachedSchemaNames->IndexOf(schemaName) == -1)
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+				FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(schemaName);
+				if (cachedClassNames->IndexOf(className) == -1)
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+
+				qFeatureClassNames->Add(className);
+			}
+			// If the class name is not qualified,
+			// to find the class names in all feature schema.
+			else
+			{
+				bool isFound = false;
+				for (FdoInt32 j = 0; j < cachedSchemaNames->GetCount(); ++j)
+				{
+					FdoStringP schemaName = cachedSchemaNames->GetString(j);
+					FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(schemaName);
+					FdoStringP qFCName = schemaName + L":" + className;
+					// The schema has a class with the same name.
+					if ( cachedClassNames->IndexOf(qFCName) != -1)
+					{
+						qFeatureClassNames->Add(qFCName);
+						isFound = true;
+					}
+				}
+
+				if (!isFound)
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+			}
+		}
+
+		// At the point, we can conclude that both the schema name and class names are not specified.
+		// We should do a full schema describing.
+		if (qFeatureClassNames->GetCount() == 0)
+		{
+			// Get all of the qualified feature class name.
+			FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(NULL);
+			for (FdoInt32 j = 0; j < cachedClassNames->GetCount(); ++j)
+			{
+				FdoStringP className = cachedClassNames->GetString(j);
+				qFeatureClassNames->Add(className);
+			}
+
+			*isFullyLoaded = true;
+		}
+
+		//
+		// Verify that the requested qualified feature class names all exist.
+		FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(NULL); // Get all the cached feature class names.
+		for (FdoInt32 i = 0; i < qFeatureClassNames->GetCount(); ++i)
+		{
+			FdoStringP qFCName = qFeatureClassNames->GetString(i);
+			// If no existing class matches with the requested one, an exception will be thrown.
+			if (cachedClassNames->IndexOf(qFCName) == -1)
+				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", qFCName));
+		}
+	}
+}
 
 // the caller must allocate the arguments to the following sizes, or pass in NULL:
 //    CHAR classname[SE_MAX_METADATA_CLASS_LEN];
