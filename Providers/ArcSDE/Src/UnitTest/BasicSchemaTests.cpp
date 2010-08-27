@@ -78,6 +78,98 @@ void BasicSchemaTests::tearDown ()
         mConnection->Close ();
 }
 
+void BasicSchemaTests::get_schema_names()
+{
+	if (CreateSchemaOnly()) 
+		return;
+
+	FdoPtr<ArcSDEGetSchemaNamesCommand> command = (ArcSDEGetSchemaNamesCommand*)mConnection->CreateCommand(FdoCommandType_GetSchemaNames);
+	FdoPtr<FdoStringCollection> schemas = command->Execute();
+	for (FdoInt32 i = 0; i < schemas->GetCount(); ++i)
+		printf("%ls:\n", schemas->GetString(i));
+
+	printf("Schema number: %d\n", schemas->GetCount());
+}
+
+void BasicSchemaTests::get_feature_class_names()
+{
+	if (CreateSchemaOnly()) 
+		return;
+
+	FdoPtr<ArcSDEGetSchemaNamesCommand> command = (ArcSDEGetSchemaNamesCommand*)mConnection->CreateCommand(FdoCommandType_GetSchemaNames);
+	FdoPtr<FdoStringCollection> schemas = command->Execute();
+	FdoInt32 num = 0;
+	for (FdoInt32 i = 0; i < schemas->GetCount(); ++i)
+	{
+		printf("%ls:\n", schemas->GetString(i));
+		FdoPtr<ArcSDEGetClassNamesCommand> cmd = (ArcSDEGetClassNamesCommand*)mConnection->CreateCommand(FdoCommandType_GetClassNames);
+		cmd->SetSchemaName(schemas->GetString(i));
+		FdoPtr<FdoStringCollection> classNames = cmd->Execute();
+		for (FdoInt32 j = 0; j < classNames->GetCount(); ++j)
+		{
+			FdoStringP className = classNames->GetString(j);
+			CPPUNIT_ASSERT_MESSAGE("The class name is not qualified.", className.Contains(L":"));
+			FdoStringP schemaName = className.Left(L":");
+			CPPUNIT_ASSERT_MESSAGE("The class isn't found in the schema.", schemaName == schemas->GetString(i));
+			printf("   %ls\n", classNames->GetString(j));
+			++num;
+		}
+	}
+
+	printf("Schema number %d\n", schemas->GetCount());
+	printf("Feature class number %d\n", num);
+}
+
+void BasicSchemaTests::describe_one_specified_class()
+{
+	if (CreateSchemaOnly()) 
+		return;
+
+	try
+	{
+		// Fully describe the schema
+		FdoPtr<ArcSDEDescribeSchemaCommand> command = (ArcSDEDescribeSchemaCommand*)mConnection->CreateCommand(FdoCommandType_DescribeSchema);
+		FdoPtr<FdoFeatureSchemaCollection> schemas = command->Execute();
+
+		// Get the first feature class in the first schema.
+		FdoPtr<FdoFeatureSchema> featureSchema = schemas->GetItem(0);
+		FdoStringP schemaName = featureSchema->GetName();
+		FdoPtr<FdoClassCollection> classes = featureSchema->GetClasses();
+		FdoPtr<FdoClassDefinition> classDef = classes->GetItem(0);
+		FdoStringP className = classDef->GetName();
+
+		// Try to describe the specified class.
+		command->SetSchemaName(schemaName);
+		FdoStringsP classNames = FdoStringCollection::Create();
+		classNames->Add(className);
+		command->SetClassNames(classNames);
+		schemas = command->Execute();
+
+		CPPUNIT_ASSERT_MESSAGE("The number of the returned schemas is not 1.", schemas->GetCount() == 1);
+		FdoPtr<FdoFeatureSchema> featureSchema2 = schemas->GetItem(0);
+		CPPUNIT_ASSERT_MESSAGE("Both schema names are not identical.", FdoStringP(featureSchema->GetName()) == FdoStringP(featureSchema2->GetName()));
+		classes = featureSchema2->GetClasses();
+		CPPUNIT_ASSERT_MESSAGE("The number of the returned classes is not 1.", classes->GetCount() == 1);
+		FdoPtr<FdoClassDefinition> classDef2 = classes->GetItem(0);
+
+		// Compare both class definitions.
+		CPPUNIT_ASSERT_MESSAGE("Both class names are not same.", FdoStringP(classDef->GetName()) == FdoStringP(classDef2->GetName()));
+		FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
+		FdoPtr<FdoPropertyDefinitionCollection> properties2 = classDef2->GetProperties();
+		CPPUNIT_ASSERT_MESSAGE("The property number is not equal.", properties->GetCount() == properties2->GetCount());
+		for (FdoInt32 i = 0; i < properties->GetCount(); ++i)
+		{
+			FdoPtr<FdoPropertyDefinition> propDef = properties->GetItem(i);
+			FdoPtr<FdoPropertyDefinition> propDef2 = properties2->GetItem(propDef->GetName());
+			CPPUNIT_ASSERT_MESSAGE("The property is not found.", propDef2 != NULL);
+			CPPUNIT_ASSERT_MESSAGE("The property type is not same.", propDef->GetPropertyType() == propDef2->GetPropertyType());
+		}
+	}
+	catch (FdoException* e)
+	{
+		fail(e);
+	}
+}
 
 void show_schema (FdoFeatureSchemaCollection* schemas, bool bVerifyClassWriteCapability = false, bool bClassesShouldSupportWrite = false)
 {
@@ -247,7 +339,7 @@ void BasicSchemaTests::apply ()
 
         FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
         FdoPtr<FdoFeatureSchema> schema = ArcSDETests::GetDefaultSchema(mConnection);  //FdoFeatureSchema::Create (schema_name, schema_description);
-        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+		FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
 
         // build an id property
         FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (id_name, id_description);
