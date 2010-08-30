@@ -73,7 +73,8 @@ FdoIoStream* FdoWmsDelegate::GetMap(FdoStringCollection* layerNames,
 									FdoString* backgroundColor,
 									FdoString* timeDimension,
 									FdoString* elevation,
-									FdoString* version)
+									FdoString* version,
+									FdoString* exceptionFormat)
 {
 	VALIDATE_ARGUMENT (layerNames);
 	VALIDATE_ARGUMENT (styleNames);
@@ -89,7 +90,7 @@ FdoIoStream* FdoWmsDelegate::GetMap(FdoStringCollection* layerNames,
 	FdoDouble maxX = bbox->GetMaxX ();
 	FdoDouble maxY = bbox->GetMaxY ();
 
-	FdoPtr<FdoWmsGetMap> request = FdoWmsGetMap::Create (layerNames, styleNames, crs, imgFormat, height, width, minX, minY, maxX, maxY, version, bTransparent, backgroundColor, timeDimension, elevation);
+	FdoPtr<FdoWmsGetMap> request = FdoWmsGetMap::Create (layerNames, styleNames, crs, imgFormat, height, width, minX, minY, maxX, maxY, version,exceptionFormat, bTransparent, backgroundColor, timeDimension, elevation);
     FdoPtr<FdoOwsResponse> response = Invoke (request);
 	FdoPtr<FdoIoStream> stream = response->GetStream ();
 

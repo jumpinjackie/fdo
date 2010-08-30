@@ -189,8 +189,9 @@ namespace FdoOwsGlobals
     static const FdoString *CapabilitiesLatLonBoundingBoxNBL    = L"maxy";
     static const FdoString *CapabilitiesLatLonBoundingBoxSBL    = L"miny";
 
-	static const FdoString *LowerCorner    = L"LowerCorner";
-	static const FdoString *UpperCorner    = L"UpperCorner";
+	static const FdoString *LowerCorner							= L"LowerCorner";
+	static const FdoString *UpperCorner							= L"UpperCorner";
+	static const FdoString *Format								= L"Format";
 }
 
 
