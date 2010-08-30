@@ -135,8 +135,28 @@ static Entry_t * cat_alloc(char *cat_name)
                 c = catopen(cat_name, 0);   /* open catalog */
             }   
 #else
-            c = catopen(cat_name, 0);   /* open catalog */
+            c = catopen(cat_name, 0);   /* open catalog */    
 #endif
+
+            if (c == (nl_catd) -1) {
+                char fullfilename[512];
+                struct stat my_stat;
+                const char *install = "/usr/local/fdo-3.6.0/nls/";
+
+                // Determine the user-specified FDO install location
+                char *fdo_home = getenv( "FDOHOME" );
+                if ( NULL != fdo_home ) { 
+                    install = fdo_home;
+                }
+            
+                sprintf (fullfilename, "%s%s", "./", cat_name);
+                if ((0 != stat (fullfilename, &my_stat)) || !S_ISREG(my_stat.st_mode)) {
+                    // not found or not a file, try the install location
+                    sprintf (fullfilename, "%s%s", install, cat_name);
+                    if ((0 == stat (fullfilename, &my_stat)) && S_ISREG(my_stat.st_mode))
+                        c = catopen(fullfilename, 0);   /* open catalog */
+                }
+            }
 
 #if defined(OSF1)
             if (catgets(c, 1, 1, NULL) != NULL) {
