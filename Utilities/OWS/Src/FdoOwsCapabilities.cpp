@@ -26,6 +26,7 @@
 FdoOwsCapabilities::FdoOwsCapabilities()
 {
     m_requests = FdoOwsRequestMetadataCollection::Create();
+	m_exceptionFormats = FdoStringCollection::Create();
 }
 
 FdoOwsCapabilities::~FdoOwsCapabilities()
@@ -65,6 +66,11 @@ FdoXmlSaxHandler* FdoOwsCapabilities::XmlStartElement(
         {
             if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Request) == 0)			
                 myContext->SetStateCapability(1);
+			else if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Format) == 0)			
+			{
+                m_xmlContentHandler = FdoXmlCharDataHandler::Create();
+                pRet = m_xmlContentHandler;
+			}
             else
                 pRet = BaseType::XmlStartElement(context, uri, name, qname, atts);
         }
@@ -97,6 +103,11 @@ FdoBoolean FdoOwsCapabilities::XmlEndElement(FdoXmlSaxContext* context, FdoStrin
         FdoOwsXmlSaxContext* myContext = static_cast<FdoOwsXmlSaxContext*>(context);
         if (myContext->StateCapability() == 0)
         {
+			if (FdoCommonOSUtil::wcsicmp(name, FdoOwsGlobals::Format) == 0)
+				m_exceptionFormats->Add(m_xmlContentHandler->GetString());
+
+			FDO_SAFE_RELEASE(m_xmlContentHandler.p);
+
             ret = BaseType::XmlEndElement(context, uri, name, qname);
         }
         else
@@ -119,6 +130,10 @@ FdoOwsRequestMetadataCollection* FdoOwsCapabilities::GetRequestMetadatas() const
     return FDO_SAFE_ADDREF(m_requests.p);
 }
 
+FdoStringCollection* FdoOwsCapabilities::GetExceptionFormats() const
+{
+    return FDO_SAFE_ADDREF(m_exceptionFormats.p);
+}
 
 
 

@@ -45,6 +45,7 @@ FdoWmsGetMap::FdoWmsGetMap (FdoStringCollection* layerNames,
 							FdoDouble maxx, 
 							FdoDouble maxy,
 							FdoString* version,
+							FdoString* exceptionFormat,
 							FdoBoolean bTransparent, 
 							FdoString* backgroundColor, 
 							FdoString* timeDimension, 
@@ -58,6 +59,7 @@ FdoWmsGetMap::FdoWmsGetMap (FdoStringCollection* layerNames,
         mMinY(miny), 
         mMaxX(maxx), 
         mMaxY(maxy),
+		mExceptionFormat(exceptionFormat),
 		mbTransparent(bTransparent),
 		mBackgroundColor(backgroundColor ? backgroundColor : L""),
 		mTimeDimension(timeDimension ? timeDimension : L""),
@@ -79,6 +81,7 @@ FdoWmsGetMap* FdoWmsGetMap::Create (FdoStringCollection* layerNames,
 									FdoDouble maxx, 
 									FdoDouble maxy,
 									FdoString* version,
+									FdoString* exceptionFormat,
 									FdoBoolean bTransparent, 
 									FdoString* backgroundColor, 
 									FdoString* timeDimension, 
@@ -89,7 +92,7 @@ FdoWmsGetMap* FdoWmsGetMap::Create (FdoStringCollection* layerNames,
                                                                L"FdoWmsGetMap",
                                                                L"layerNames"));
 
-	return new FdoWmsGetMap (layerNames, styleNames, srsName, imgFormat, height, width, minx, miny, maxx, maxy, version, bTransparent, backgroundColor, timeDimension, elevation);
+	return new FdoWmsGetMap (layerNames, styleNames, srsName, imgFormat, height, width, minx, miny, maxx, maxy, version, exceptionFormat,bTransparent, backgroundColor, timeDimension, elevation);
 }
 
 FdoWmsGetMap::~FdoWmsGetMap ()
@@ -101,15 +104,11 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 	// For common request, version and service
     FdoStringP ret = FdoOwsRequest::EncodeKVP();
 
-    // Some WMS servers do not correctly default to
-    // using the xml service exception report.
     ret += FdoOwsGlobals::And;
     ret += FdoWmsXmlGlobals::EXCEPTIONS;
     ret += FdoOwsGlobals::Equal;
-    if (FdoStringP(GetVersion()) == FdoWmsXmlGlobals::WmsVersion)
-        ret += FdoWmsXmlGlobals::ExceptionType130;
-    else
-        ret += FdoWmsXmlGlobals::ExceptionType;
+	if (mExceptionFormat.GetLength())
+		ret += mExceptionFormat;
 
 	// Add "LAYERS" parameters in the request	
 	ret += FdoOwsGlobals::And;

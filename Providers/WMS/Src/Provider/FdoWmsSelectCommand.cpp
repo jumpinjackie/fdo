@@ -346,8 +346,26 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 
 	// Get the WMS version
 	FdoStringP wmsVersion = metadata->GetVersion ();
+
+	// Get the exception format
+    // Some WMS servers do not correctly default to
+    // using the xml service exception report.
+	//
+	// Some servers may not support xml format, in this case
+	// use the first format specified in its capability document 
+	FdoString* exceptionFormat;
+    if (wmsVersion == FdoWmsXmlGlobals::WmsVersion)
+        exceptionFormat = FdoWmsXmlGlobals::ExceptionType130;
+    else
+        exceptionFormat = FdoWmsXmlGlobals::ExceptionType;
+
+	FdoPtr<FdoStringCollection> formats = capa->GetExceptionFormats();
+
+	if ((formats->GetCount())>0 && formats->IndexOf (exceptionFormat) == -1 ) // not found the default xml format? use the first one in request
+		exceptionFormat = formats->GetString(0);
+
     // Retrieve the raster stream through the WMS GetMap Request
-	FdoPtr<FdoIoStream> stream = wmsDelegate->GetMap (layerNames, styleNames, bbox, imageFormat, height, width, bTransparent, bgColor, timeDimension, elevation, wmsVersion);
+	FdoPtr<FdoIoStream> stream = wmsDelegate->GetMap (layerNames, styleNames, bbox, imageFormat, height, width, bTransparent, bgColor, timeDimension, elevation, wmsVersion,exceptionFormat);
 
 	// Create a FeatureReader on the stream and return it to the user
     FdoPtr<FdoWmsFeatureReader> ret;

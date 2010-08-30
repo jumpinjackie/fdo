@@ -39,6 +39,7 @@ protected:
 		FdoDouble maxx, 
 		FdoDouble maxy,
 		FdoString* version,
+		FdoString* exceptionFormat,
 		FdoBoolean bTransparent,
 		FdoString* backgroundColor,
 		FdoString* timeDimension,
@@ -59,6 +60,7 @@ public:
 		FdoDouble maxx, 
 		FdoDouble maxy,
 		FdoString* version,
+		FdoString* exceptionFormat,
 		FdoBoolean bTransparent = false,
 		FdoString* backgroundColor = NULL,
 		FdoString* timeDimension = NULL,
@@ -101,6 +103,9 @@ private:
 
     /// Elevation dimension
 	FdoStringP mElevation;
+
+	/// Exception format
+	FdoStringP mExceptionFormat;
 };
 
 
