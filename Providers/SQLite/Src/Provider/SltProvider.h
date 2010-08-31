@@ -262,6 +262,7 @@ public:
     int GetDefaultSpatialContext();
     bool SupportsTolerance();
     bool AddSupportForTolerance();
+    void FreeCachedSchema (bool isAddition);
 
 private :
 

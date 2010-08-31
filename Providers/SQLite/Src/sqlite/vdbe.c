@@ -200,6 +200,36 @@ void* sqlite3GetVdbeSpatialIndex(Vdbe* p, Mem* mem)
 }
 
 /*
+** Returns true if is OK to move to the next record, also sets SI usage in case of spatial joins
+*/
+u8 sqlite3IsVdbeJoinMoveFirst(Vdbe* p, BtCursor* crs, int pc)
+{
+  int crsTnum = sqlite3BtreeRootTableCursor(crs);
+  if (p->pSpIterator || !p->pSpIndex || p->siTopTnum == p->siTnum){
+    return 0;
+  }
+  if (!p->u.gc.siPrepared){
+    /* do we need to use secondary SI?*/ 
+    if (crsTnum == p->siTnum){
+      int tmpTnum = p->siTnum;
+      void* tmpSI = p->pSpIndex;
+      u16 tmpGeomCol = p->u.gc.geomCol;
+      p->pSpIndex = p->pTopSpIndex;
+      p->pTopSpIndex = tmpSI;
+      p->siTnum = p->siTopTnum;
+      p->siTopTnum = tmpTnum;
+      p->u.gc.geomCol = p->u.gc.topGeomCol;
+      p->u.gc.topGeomCol = tmpGeomCol;
+    }
+    p->u.gc.siPrepared = 1;
+  }
+  if (!p->pcRw && crsTnum == p->siTnum){
+    p->pcRw = pc;
+  }
+  return (crsTnum == p->siTopTnum);
+}
+
+/*
 ** Allocate VdbeCursor number iCur.  Return a pointer to it.  Return NULL
 ** if we run out of memory.
 */
@@ -2822,6 +2852,11 @@ case OP_Column: {
 op_column_out:
   UPDATE_MAX_BLOBSIZE(u.am.pDest);
   REGISTER_TRACE(pOp->p3, u.am.pDest);
+  if ((u.am.pC->iDb != -1 && p->pcRw && !p->pSpIterator && p->pSpIndex && (p->siTopTnum != p->siTnum) && sqlite3BtreeRootTableCursor(u.am.pC->pCursor) == p->siTopTnum) && p->u.gc.topGeomCol == pOp->p2){
+    sqlite3GetVdbeSpatialIndex(p, u.am.pDest);
+    if (p->pSpIterator)
+        pc = p->pcRw - 1;
+  }
   break;
 }
 
@@ -3805,10 +3840,13 @@ case OP_SeekGt: {       /* jump, in3 */
         }
       }
       /* For OP_SeekGe & OP_SeekGt engine will move to the first row in database we need to avoid that and move to the first key from SI*/
-      if ((u.az.oc==OP_SeekGe || u.az.oc==OP_SeekGt) && (u.az.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.az.pC->pCursor) == p->siTnum) && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
+      if (u.az.pC->iDb != -1 && sqlite3IsVdbeJoinMoveFirst(p, u.az.pC->pCursor, pc)){
+        /* update is done by sqlite3IsVdbeJoinMoveFirst */
+      }
+      else if ((u.az.oc==OP_SeekGe || u.az.oc==OP_SeekGt) && (u.az.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.az.pC->pCursor) == p->siTnum) && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
         i64 siKey;
         i64 siStKey = (u64)u.az.iKey + (i64)(u.az.oc==OP_SeekGt);
-        if (!p->pSpIterator && p->u.iVarIndex){
+        if (!p->pSpIterator && p->u.iVarIndex && p->siTopTnum == p->siTnum){
           assert( p->u.iVarIndex <= p->nVar );
           sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
         }
@@ -4762,9 +4800,14 @@ case OP_Rewind: {        /* jump */
   u.bl.res = 1;
   if( (u.bl.pCrsr = u.bl.pC->pCursor)!=0 ){
     /* In case we can use SI move to the first row returned by SI */
-    if ((u.bl.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bl.pC->pCursor) == p->siTnum) && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
+    if (u.bl.pC->iDb != -1 && sqlite3IsVdbeJoinMoveFirst(p, u.bl.pC->pCursor, pc)){
+      rc = sqlite3BtreeFirst(u.bl.pCrsr, &u.bl.res);
+      u.bl.pC->atFirst = u.bl.res==0 ?1:0;
+      u.bl.pC->rowidIsValid = 0;
+    }
+    else if ((u.bl.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bl.pC->pCursor) == p->siTnum) && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
       i64 siKey;
-      if (!p->pSpIterator && p->u.iVarIndex){
+      if (!p->pSpIterator && p->u.iVarIndex && p->siTnum == p->siTopTnum){
         assert( p->u.iVarIndex <= p->nVar );
         sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
       }
@@ -4847,9 +4890,14 @@ case OP_Next: {        /* jump */
   }
   u.bm.res = 1;
   /* In case we can use SI move to the next row returned by SI */
+  if ((u.bl.pC->iDb != -1 && p->pSpIterator && p->pSpIndex && pOp->opcode==OP_Next && (p->siTopTnum != p->siTnum) && sqlite3BtreeRootTableCursor(u.bl.pC->pCursor) == p->siTopTnum)){
+    // enforce to aget a new SI based on next read next
+    db->xSpIteratorRelCallback(p->pSpIterator);
+    p->pSpIterator = 0;
+  }
   if ((u.bm.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bm.pCrsr) == p->siTnum) && pOp->opcode==OP_Next && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
     i64 siKey;
-    if (!p->pSpIterator && p->u.iVarIndex){
+    if (!p->pSpIterator && p->u.iVarIndex && p->siTnum == p->siTopTnum){
       assert( p->u.iVarIndex <= p->nVar );
       sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
     }

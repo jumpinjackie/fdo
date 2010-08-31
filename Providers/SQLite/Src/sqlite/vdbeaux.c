@@ -653,7 +653,7 @@ void sqlite3SetVdbeSpatialIterator(Vdbe* v, void* pSit)
 
 u8 sqlite3VdbeSpatialIndexIsSet(Vdbe* v)
 {
-  return (v->spIndexDisabled || v->pSpIterator || (v->pSpIndex && v->u.pParam>0));
+  return (v->pSpIndex || v->spIndexDisabled || v->pSpIterator);
 }
 
 void sqlite3SetVdbeDynSpatialIndex(Vdbe* v, void* pSi, void* param)
@@ -668,6 +668,22 @@ void sqlite3SetVdbeDynSpatialIndex(Vdbe* v, void* pSi, void* param)
   v->u.pParam = param;
 }
 
+void sqlite3SetVdbeJoinSpatialIndex(Vdbe* v, void* pSi, u32 tnum, u16 gc, void* pSiSec, u32 tnumTop, u16 gcSec)
+{
+  sqlite3* db = v->db;
+  if (v->pSpIterator)
+    db->xSpIteratorRelCallback(v->pSpIterator);
+  v->pSpIterator = 0;
+  v->lowerRowId = 0;
+  v->spIndexDisabled = 0;
+  v->pSpIndex = pSi;
+  v->siTnum = tnum;
+  v->u.gc.geomCol = gc;
+  v->pTopSpIndex = pSiSec;
+  v->siTopTnum = tnumTop;
+  v->u.gc.topGeomCol = gcSec;
+}
+
 u8 sqlite3VdbeDisableSpatialIndex(Vdbe* v, u8 val)
 {
   u8 ret = v->siDisabled;
@@ -678,7 +694,7 @@ u8 sqlite3VdbeDisableSpatialIndex(Vdbe* v, u8 val)
 
 void sqlite3SetVdbeTableInfo(Vdbe* v, int tnum)
 {
-  v->siTnum = tnum;
+    v->siTopTnum = v->siTnum = tnum;
 }
 
 /*
@@ -1535,7 +1551,7 @@ void sqlite3VdbeMakeReady(
   }
 #endif
   /*At reset time try to get a new SI iterator in case we have a pointer to a blob values used in SI*/
-  if (p->u.iVarIndex > SQLITE_MAX_VARIABLE_NUMBER && p->pSpIndex){
+  if (p->u.iVarIndex > SQLITE_MAX_VARIABLE_NUMBER && p->pSpIndex && p->siTnum == p->siTopTnum){
     sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
   }
 }

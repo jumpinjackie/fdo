@@ -77,6 +77,20 @@ int StringContains(const char* str, const char* val)
     return -1;
 }
 
+bool StringStartsWith(const char* str, const char* val)
+{
+    assert( str!=NULL );
+    const char* strTmp = str;
+    while (*strTmp == ' ' && *strTmp != '\0') strTmp++;
+    const char* valTmp = val;
+    while(sqlite3UpperToLower[*strTmp++] == sqlite3UpperToLower[*valTmp++])
+    {
+        if (*valTmp == '\0')
+            return true;
+    }
+    return false;
+}
+
 FdoDateTime DateFromString(const wchar_t* val, bool excOnErr)
 {
     assert( val!=NULL );

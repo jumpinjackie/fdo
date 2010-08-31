@@ -52,6 +52,13 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestMSelect);
     CPPUNIT_TEST(TestJoinAggregatesSelect);
     CPPUNIT_TEST(TestMAggregatesSelect);
+    CPPUNIT_TEST(TestSpatialJoins);
+    CPPUNIT_TEST(TestSpatialJoinsWFilter1);
+    CPPUNIT_TEST(TestSpatialJoinsWFilter2);
+    CPPUNIT_TEST(TestSpatialJoinsWFilter3);
+    CPPUNIT_TEST(TestSpatialJoinsComplexFilter);
+    CPPUNIT_TEST(TestSpatialJoinsFdo);
+    CPPUNIT_TEST(TestReleaseSchema);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -62,6 +69,8 @@ private:
     int SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id);
     void TestJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
     void TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax);
+    int SelectSpatial(FdoIConnection* conn, FdoString* sql);
+    void TestSpatialJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
 
 public:
     SelectTest(void);
@@ -87,6 +96,13 @@ public:
     void TestMSelect ();
     void TestJoinAggregatesSelect ();
     void TestMAggregatesSelect ();
+    void TestSpatialJoins ();
+    void TestSpatialJoinsWFilter1 ();
+    void TestSpatialJoinsWFilter2 ();
+    void TestSpatialJoinsWFilter3 ();
+    void TestSpatialJoinsComplexFilter ();
+    void TestSpatialJoinsFdo ();
+    void TestReleaseSchema ();
 };
 
 #endif
