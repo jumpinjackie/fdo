@@ -2624,6 +2624,7 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
         if (db->xSpIndexCallback && ((long)pDef->pUserData&(~(long)0x0F))==SQLITE_SPEVAL_FUNCTION && nFarg==2){
           Expr* pExpr = pFarg->a[1].pExpr;
           Table* pTab = pFarg->a->pExpr->pTab;
+          Table* pSecTab = pFarg->a[1].pExpr->pTab;
           u8 isDisabled;
           int wasEval;
           /*If we already have a SI iterator avoid getting a second one*/
@@ -2662,8 +2663,13 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
             }else if (pExpr->op == TK_VARIABLE){
               /*We have a variable which will be bind before execution, keep the variable index*/
               sqlite3SetVdbeDynSpatialIndex(v, pTab->pSpIndex, (void*)pExpr->iColumn);
-            }else if (pExpr->op == TK_COLUMN){
+            }else if (pExpr->op == TK_COLUMN && pSecTab && pTab->tnum != pSecTab->tnum){
               /*We have a column which will be bind before execution, keep the information index*/
+              if (!pSecTab->pSpIndex){
+                pSecTab->nGeomColIdx = pFarg->a[1].pExpr->iColumn;
+                pSecTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pSecTab->zName, &pSecTab->nGeomColIdx);
+              }
+              sqlite3SetVdbeJoinSpatialIndex(v, pTab->pSpIndex, pTab->tnum, (u16)pTab->nGeomColIdx, pSecTab->pSpIndex, pSecTab->tnum, (u16)pSecTab->nGeomColIdx);
             }
             if (zBlob){
               /*If possible get a SI iterator based on the blob value*/
@@ -2672,7 +2678,9 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
                 sqlite3DbFree(db, zBlob);
             }
             /*Remember table root id*/
-            sqlite3SetVdbeTableInfo(v, pTab->tnum);
+            if (pExpr->op != TK_COLUMN){
+              sqlite3SetVdbeTableInfo(v, pTab->tnum);
+            }
           }
         }else{
           /* Get Spatial Context in case we use a spatial function (e.g. Area) and pass it as an auxiliary parameter */

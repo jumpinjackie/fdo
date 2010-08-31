@@ -4051,3 +4051,37 @@ bool SltConnection::GetCSTolerances(const char* tablename, double& xyTolerance, 
     }
     return (xyTolerance > 0.0);
 }
+
+void SltConnection::FreeCachedSchema (bool isAddition)
+{
+    if (isAddition)
+    {
+        // The cached FDO schema will need to be refreshed
+        FDO_SAFE_RELEASE(m_pSchema);
+        m_pSchema = NULL;
+    }
+    else // should we improve this? for now let's not do it.
+    {
+        FDO_SAFE_RELEASE(m_pSchema);
+        m_pSchema = NULL;
+        //free the spatial indexes
+        for (SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.begin();
+             iter != m_mNameToSpatialIndex.end(); iter++)
+        {
+            iter->second->Release();
+            free((char*)iter->first); //it was created via strdup, must use free()
+        }
+
+        m_mNameToSpatialIndex.clear();
+
+        //clear the cached schema metadata
+        for (MetadataCache::iterator iter = m_mNameToMetadata.begin();
+             iter != m_mNameToMetadata.end(); iter++)
+        {
+             delete iter->second;
+             free(iter->first); //it was created via strdup, must use free()
+        }
+
+        m_mNameToMetadata.clear();
+    }
+}

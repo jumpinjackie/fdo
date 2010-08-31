@@ -224,6 +224,8 @@ void sqlite3SetVdbeDynSpatialIndex(Vdbe*, void*, void*);
 u8 sqlite3VdbeDisableSpatialIndex(Vdbe*, u8);
 /*function used to set table ID used in SI optimization*/
 void sqlite3SetVdbeTableInfo(Vdbe*, int);
+/*function used to set table ID used and SI in spatial joins*/
+void sqlite3SetVdbeJoinSpatialIndex(Vdbe*, void*, u32, u16, void*, u32, u16);
 /*function used to get id we found a way already to optimize the query*/
 u8 sqlite3VdbeSpatialIndexIsSet(Vdbe*);
 

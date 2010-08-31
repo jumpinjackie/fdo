@@ -826,6 +826,11 @@ class SltSql : public SltCommand<FdoISQLCommand>
 
             if (rc == SQLITE_DONE)
             {
+                const char* sql = m_sb.Data();
+                if (StringStartsWith(sql, "create"))
+                    m_connection->FreeCachedSchema(true);
+                else if (StringStartsWith(sql, "drop") || StringStartsWith(sql, "alter"))
+                    m_connection->FreeCachedSchema(false);
                 // "CREATE/ALTER/DROP* will set sqlite3_changes = 0 so result will be 0
                 // INSERT/UPDATE/DELETE* will return affected rows 
                 // in case of error an exception will be thrown

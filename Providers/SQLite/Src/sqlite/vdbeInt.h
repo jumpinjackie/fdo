@@ -332,11 +332,19 @@ struct Vdbe {
   union {
     u64 iVarIndex;          /* Index of variable to init pSpIterator based on pSpIndex */
     void* pParam;           /* Parameter used to re-init pSpIterator based on pSpIndex */
+    struct {
+      u16 geomCol;          /* geometry index for pSpIndex */
+      u16 topGeomCol;       /* geometry index for pTopSpIndex */
+      u8  siPrepared;       /* SI settings were prepared */
+    } gc;
   } u;
-  void *pSpIndex;         /* This is just a copy of the pointer used only when iVarIndex>=1 */
+  void *pSpIndex;         /* SI of table siTnum */
   u8 siDisabled;          /* True to disable spatial index optimization during code generation */
   i64 lowerRowId;         /* Minimum rowid allowed to be returned by SI in case there is one */
-  int siTnum;             /* Root BTree node for table used by SI to avoid using SI on other tables*/
+  u32 siTnum;             /* Root BTree node for table used by SI (pSpIndex) to avoid using SI on other tables*/
+  u32 siTopTnum;          /* Root BTree node for table used by SI (pTopSpIndex) to avoid using SI on other tables*/
+  void *pTopSpIndex;      /* SI of table siTnum siTopTnum */
+  int pcRw;               /* PC address to get a new geometry value*/
 };
 
 /*

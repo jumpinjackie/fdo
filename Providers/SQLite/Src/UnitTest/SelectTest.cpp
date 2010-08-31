@@ -24,11 +24,13 @@
 static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.sqlite";
 static const wchar_t* SRC_VIEW_TEST_FILE = L"..\\..\\TestData\\ViewTests.sqlite";
+static const wchar_t* SRC_SPATIAL_TEST_FILE = L"..\\..\\TestData\\SpatialTests.sqlite";
 #else
 #include <unistd.h>
 static const wchar_t* SC_TEST_FILE = L"../../TestData/SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.sqlite";
 static const wchar_t* SRC_VIEW_TEST_FILE = L"../../TestData/ViewTests.sqlite";
+static const wchar_t* SRC_SPATIAL_TEST_FILE = L"../../TestData/SpatialTests.sqlite";
 #endif
 
 
@@ -1315,6 +1317,340 @@ void SelectTest::TestMAggregatesSelect ()
 
         printf ("\nCount = %d -> OK\n", cnt);
         CPPUNIT_ASSERT(cnt == 1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+int SelectTest::SelectSpatial(FdoIConnection* conn, FdoString* sql)
+{
+    int cnt = 0;
+    FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+    sqlCmd->SetSQLStatement(sql);
+    FdoPtr<FdoISQLDataReader> rdr = sqlCmd->ExecuteReader();
+    while(rdr->ReadNext()) cnt++;
+
+    return cnt;
+}
+
+void SelectTest::TestSpatialJoins ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        printf ("\n### Spatial Join Test ###");
+        std::wstring sql;
+        sql.append(L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b, MainTB a WHERE geom_inside(b.Geometry, a.Geometry);");
+        int cnt1 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM MainTB a, SlaveTB b WHERE geom_inside(b.Geometry, a.Geometry);");
+        int cnt2 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b INNER JOIN MainTB a ON(geom_inside(b.Geometry, a.Geometry));");
+        int cnt3 = SelectSpatial(conn, sql.c_str());
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt2 == cnt3);
+        printf ("\nCnt = %d\n", cnt1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSpatialJoinsWFilter1 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        printf ("\n### Spatial Join with extra filter Test(I) ###");
+        std::wstring sql;
+        sql.append(L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b, MainTB a WHERE geom_inside(b.Geometry, a.Geometry) AND sFid > 1;");
+        int cnt1 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM MainTB a, SlaveTB b WHERE  sFid > 1 AND geom_inside(b.Geometry, a.Geometry);");
+        int cnt2 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b INNER JOIN MainTB a ON(geom_inside(b.Geometry, a.Geometry)) AND sFid > 1;");
+        int cnt3 = SelectSpatial(conn, sql.c_str());
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt2 == cnt3);
+        printf ("\nCnt = %d\n", cnt1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSpatialJoinsWFilter2 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        printf ("\n### Spatial Join with extra filter Test(II) ###");
+        std::wstring sql;
+        sql.append(L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b, MainTB a WHERE geom_inside(b.Geometry, a.Geometry) AND mFid >= 2;");
+        int cnt1 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM MainTB a, SlaveTB b WHERE mFid >= 2 AND geom_inside(b.Geometry, a.Geometry);");
+        int cnt2 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b INNER JOIN MainTB a ON(geom_inside(b.Geometry, a.Geometry)) AND mFid >= 2;");
+        int cnt3 = SelectSpatial(conn, sql.c_str());
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt2 == cnt3);
+        printf ("\nCnt = %d\n", cnt1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSpatialJoinsWFilter3 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        printf ("\n### Spatial Join with extra filter Test(III) ###");
+        std::wstring sql;
+        sql.append(L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b, MainTB a WHERE geom_inside(b.Geometry, a.Geometry) AND sFid IN(1,2,8);");
+        int cnt1 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM MainTB a, SlaveTB b WHERE sFid IN(1,2,8) AND geom_inside(b.Geometry, a.Geometry);");
+        int cnt2 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b INNER JOIN MainTB a ON(geom_inside(b.Geometry, a.Geometry)) AND sFid IN(1,2,8);");
+        int cnt3 = SelectSpatial(conn, sql.c_str());
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt2 == cnt3);
+        printf ("\nCnt = %d\n", cnt1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSpatialJoinsComplexFilter ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        printf ("\n### Spatial Join with complex filter Test ###");
+        std::wstring sql;
+        sql.append(L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b, MainTB a WHERE sFid > 1 AND geom_inside(b.Geometry, a.Geometry) AND mFid >= 2;");
+        int cnt1 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM MainTB a, SlaveTB b WHERE mFid >= 2 AND geom_inside(b.Geometry, a.Geometry) AND sFid > 1;");
+        int cnt2 = SelectSpatial(conn, sql.c_str());
+        sql.assign (L"SELECT a.FeatId as mFid, b.FeatId as sFid, b.PID FROM SlaveTB b INNER JOIN MainTB a ON(geom_inside(b.Geometry, a.Geometry)) AND mFid >= 2 AND sFid > 1;");
+        int cnt3 = SelectSpatial(conn, sql.c_str());
+        CPPUNIT_ASSERT(cnt1 == cnt2);
+        CPPUNIT_ASSERT(cnt2 == cnt3);
+        printf ("\nCnt = %d\n", cnt1);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSpatialJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount)
+{
+    int cnt = 0;
+    FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    selCmd->SetFeatureClassName(L"SlaveTB");
+
+    FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+    FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"a.FeatId");
+    idpColl->Add(idf);
+    idf = FdoIdentifier::Create(L"a.Geometry");
+    idpColl->Add(idf);
+    idf = FdoComputedIdentifier::Create(L"sFid", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"a.FeatId")));
+    idpColl->Add(idf);
+    idf = FdoComputedIdentifier::Create(L"mFid", FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"b.FeatId")));
+    idpColl->Add(idf);
+
+    FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"sFid > 1");
+    selCmd->SetFilter(filter);
+    selCmd->SetAlias(L"a");
+    FdoPtr<FdoJoinCriteriaCollection> jcColl = selCmd->GetJoinCriteria();
+    FdoPtr<FdoIdentifier> jcClass = FdoIdentifier::Create(L"MainTB");
+    FdoPtr<FdoFilter> jcFilter = FdoFilter::Parse(L"a.Geometry INSIDE b.Geometry");
+    FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create(L"b", jcClass, jtype, jcFilter);
+    jcColl->Add(jc);
+
+    FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+    while(reader->ReadNext())
+    {
+        reader->GetInt32(L"FeatId");
+        cnt++;
+    }
+    reader->Close();
+
+    printf ("\nCount = %d -> OK\n", cnt);
+    CPPUNIT_ASSERT(cnt == expCount);
+}
+
+void SelectTest::TestSpatialJoinsFdo ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+
+        printf ("\n### Inner Spatial Join Test ###");
+        TestSpatialJoinType(conn, FdoJoinType_Inner, 4);
+        printf ("\n### LeftOuter Spatial Join Test ###");
+        TestSpatialJoinType(conn, FdoJoinType_LeftOuter, 11);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestReleaseSchema ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        FdoPtr<FdoIDescribeSchema> decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoFeatureSchemaCollection> schColl = decrCmd->Execute();
+        
+        std::wstring sql;
+        sql.append(L"DROP TABLE SlaveTB;");
+        
+        FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+        sqlCmd->SetSQLStatement(sql.c_str());
+        sqlCmd->ExecuteNonQuery();
+
+        decrCmd = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema); 
+        schColl = decrCmd->Execute();
+        CPPUNIT_ASSERT(1 == schColl->GetCount());
     }
     catch ( FdoException* e )
 	{
