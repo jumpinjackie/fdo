@@ -167,7 +167,7 @@ bool FdoSmPhRdPostGisSpatialContextReader::ReadNext()
             mCSname = L"";
         }
 */
-        mCSname = FdoCommonStringUtil::Int64ToString(mSrid);
+        mCSname = FdoSmPhReader::GetString(L"", L"srid");;
 
 		double xmin = -2000000;
 		double xmax = 2000000;
