@@ -405,7 +405,16 @@ void SchemaMgrTests::testGenDefault ()
 
         FdoIoMemoryStreamP stream1 = FdoIoMemoryStream::Create();
 
-        UnitTestUtil::ExportDb( fdoConn, stream1 );
+        FdoXmlSpatialContextFlagsP flags = 
+            FdoXmlSpatialContextFlags::Create(  
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlSpatialContextFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+
+        UnitTestUtil::ExportDb( fdoConn, stream1, flags );
 		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"smtables_logical.xml" ) );
 
         UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
@@ -431,7 +440,12 @@ void SchemaMgrTests::testGenDefault ()
 
         printf( "Copying spatial contexts ...\n" );
 
+        FdoPtr<FdoIDestroySpatialContext> dsCmd = (FdoIDestroySpatialContext*) fdoConn->CreateCommand(FdoCommandType_DestroySpatialContext);
+        dsCmd->SetName(L"Default");
+        dsCmd->Execute();
+
         stream1->Reset();
+
         FdoXmlSpatialContextSerializer::XmlDeserialize( 
             fdoConn,
             FdoXmlSpatialContextReaderP(
@@ -440,7 +454,8 @@ void SchemaMgrTests::testGenDefault ()
                         FdoXmlReader::Create(stream1)
                     )
                 )
-            )
+            ),
+            flags
         );
 
 		printf( "Copying schema ...\n" );
@@ -485,15 +500,6 @@ void SchemaMgrTests::testGenDefault ()
         }
 
         FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
-
-        FdoXmlSpatialContextFlagsP flags = 
-            FdoXmlSpatialContextFlags::Create(  
-            L"fdo.osgeo.org/schemas/feature",
-            FdoXmlSpatialContextFlags::ErrorLevel_Normal,
-            true,
-            FdoXmlSpatialContextFlags::ConflictOption_Add,
-            true
-        );
 
         UnitTestUtil::ExportDb( 
             fdoConn, 
