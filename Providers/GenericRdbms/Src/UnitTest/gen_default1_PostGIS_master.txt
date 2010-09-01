@@ -637,9 +637,9 @@
 <gml:metaDataProperty>
 <gml:GenericMetaData>
 <fdo:XYTolerance>
-0.001000</fdo:XYTolerance>
+0.000100</fdo:XYTolerance>
 <fdo:ZTolerance>
-0.001000</fdo:ZTolerance>
+0.000100</fdo:ZTolerance>
 </gml:GenericMetaData>
 </gml:metaDataProperty>
 <gml:validArea>
@@ -784,9 +784,9 @@
 <gml:metaDataProperty>
 <gml:GenericMetaData>
 <fdo:XYTolerance>
-0.001000</fdo:XYTolerance>
+0.000100</fdo:XYTolerance>
 <fdo:ZTolerance>
-0.001000</fdo:ZTolerance>
+0.000100</fdo:ZTolerance>
 </gml:GenericMetaData>
 </gml:metaDataProperty>
 <gml:validArea>
@@ -907,9 +907,9 @@
 <gml:metaDataProperty>
 <gml:GenericMetaData>
 <fdo:XYTolerance>
-0.001000</fdo:XYTolerance>
+0.000100</fdo:XYTolerance>
 <fdo:ZTolerance>
-0.001000</fdo:ZTolerance>
+0.000100</fdo:ZTolerance>
 </gml:GenericMetaData>
 </gml:metaDataProperty>
 <gml:validArea>
