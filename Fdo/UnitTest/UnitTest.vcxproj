@@ -125,6 +125,7 @@
     </Link>
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
+copy gml3_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -176,6 +177,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(Ou
     </Link>
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
+copy gml3_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -226,6 +228,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(Ou
     </Link>
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
+copy gml3_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -279,6 +282,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(O
     </Link>
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
+copy gml3_*.xml $(OutDir)	  
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
