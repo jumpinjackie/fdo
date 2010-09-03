@@ -1,7 +1,7 @@
 @echo off
 
 rem 
-rem Copyright (C) 2004-2006  Autodesk, Inc.
+rem Copyright (C) 2004-2010  Autodesk, Inc.
 rem 
 rem This library is free software; you can redistribute it and/or
 rem modify it under the terms of version 2.1 of the GNU Lesser
@@ -30,10 +30,10 @@ goto usage
 
 :setvcvarsall
 SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC"
+if exist %ACTIVEPATHCHECK% goto VSExist
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="D:\Program Files\Microsoft Visual Studio 9.0\VC"
-if not exist %ACTIVEPATHCHECK% goto error 
 
 :VSExist
 call %ACTIVEPATHCHECK%\vcvarsall.bat %1
