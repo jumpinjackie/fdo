@@ -510,7 +510,7 @@ void FdoSmLpAssociationPropertyDefinition::InitIdentyProperties()
         // In this case the identities and reverse identities are reversed.
         // We need to find the original association property.
         const FdoSmLpClassDefinition*      pAssociatedClass = RefAssociatedClass();
-        for(int i=0; pAssociatedClass->RefProperties()->GetCount(); i++ )
+        for(int i=0; i<pAssociatedClass->RefProperties()->GetCount(); i++ )
         {
             const FdoSmLpPropertyDefinition  *prop = pAssociatedClass->RefProperties()->RefItem( i );
             if( prop->GetPropertyType() == FdoPropertyType_AssociationProperty )
@@ -716,7 +716,7 @@ void FdoSmLpAssociationPropertyDefinition::Finalize()
                 {
                     // In this case the identities and reverse identities are reversed.
                     // We need to find the original association property.
-                    for(int i=0; pAssociatedClass->RefProperties()->GetCount(); i++ )
+                    for(int i=0; i<pAssociatedClass->RefProperties()->GetCount(); i++ )
                     {
                         const FdoSmLpPropertyDefinition  *prop = pAssociatedClass->RefProperties()->RefItem( i );
                         if( prop->GetPropertyType() == FdoPropertyType_AssociationProperty )
