@@ -229,11 +229,7 @@ void SpatialIndex::Delete(__int64 dbId)
         unsigned int tproc = (unsigned int)(_positionIdx/10.0);
         if (tproc && _countChanges > tproc)
             FullSpatialIndexUpdate();
-        else if (index == (_positionIdx-1))
-            _positionIdx = (index <= 1) ? 1 : (index-1);
     }
-    _backMap[it->second-1] = 0;
-    _linkMap.erase(it);
 }
 
 __int64 SpatialIndex::operator[](int fid)
