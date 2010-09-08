@@ -245,7 +245,7 @@ void SltQueryTranslator::ProcessNullCondition(FdoNullCondition& filter)
     m_allocatedObjects.pop_back();
 
     m_sb.Reset();
-    m_sb.AppendDQuoted(idfName->ToString());
+    m_sb.Append(idfName->ToString());
     m_sb.Append(" IS NULL", 8);
     delete idfName;
     m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
