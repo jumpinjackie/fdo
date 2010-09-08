@@ -112,7 +112,19 @@ FdoByte FdoWfsFeatureReader::GetByte(FdoString* propertyName)
 
 FdoDateTime FdoWfsFeatureReader::GetDateTime(FdoString* propertyName)
 {
-	return this->m_featureReader->GetDateTime(_decodeName(propertyName));
+	// some date time is not valid and the FDO parser will throw a exception
+	// for WFS service, make the user to not be able to see his data 
+	// only because a wrong date time value is not good
+	// catch this exception here to make provider more robust 
+	try
+	{
+		return this->m_featureReader->GetDateTime(_decodeName(propertyName));
+	}
+	catch(FdoException *e)
+	{
+		e->Release();
+		return FdoDateTime(); // NULL data time
+	}
 }
 
 double FdoWfsFeatureReader::GetDouble(FdoString* propertyName)

@@ -703,7 +703,8 @@ void FdoWfsConnection::_setClassDescription (FdoClassDefinition* clsdef)
 
 FdoString* FdoWfsConnection::GetVersion()
 {
-	return this->GetServiceMetadata()->GetVersion();
+	FdoPtr<FdoWfsServiceMetadata> meta = this->GetServiceMetadata();
+	return meta->GetVersion();
 }
 
 FdoStringP FdoWfsConnection::_getRequestWFSVersion(FdoString* str)
