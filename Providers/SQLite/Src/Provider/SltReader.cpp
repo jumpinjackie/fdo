@@ -84,7 +84,8 @@ m_ri(NULL),
 m_filter(NULL),
 m_aPropNames(NULL),
 m_fromwhere(),
-m_isViewSelect(false)
+m_isViewSelect(false),
+m_canAddSelectProps(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
@@ -115,7 +116,8 @@ m_ri(NULL),
 m_aPropNames(NULL),
 m_filter(NULL),
 m_fromwhere(),
-m_isViewSelect(false)
+m_isViewSelect(false),
+m_canAddSelectProps(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_class = FDO_SAFE_ADDREF(cls);
@@ -148,7 +150,8 @@ m_ri(ri),
 m_aPropNames(NULL),
 m_filter(NULL),
 m_fromwhere(),
-m_isViewSelect(false)
+m_isViewSelect(false),
+m_canAddSelectProps(true)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
@@ -179,7 +182,8 @@ m_aPropNames(NULL),
 m_filter(NULL),
 m_fromwhere(),
 m_parmValues(NULL),
-m_isViewSelect(false)
+m_isViewSelect(false),
+m_canAddSelectProps(false)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
 }
@@ -231,9 +235,11 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             m_reissueProps.Add(exp->Data(), exp->Length());
         }
         m_nTotalProps = nProps;
+        m_canAddSelectProps = false;
 	}
     else
     {
+        m_canAddSelectProps = true;
         m_reissueProps.Reserve(4);
     }
     
@@ -443,7 +449,7 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     //we placed it there
     int cur_id = sqlite3_column_int(m_pStmt, 0);
 
-    if (!m_class)
+    if (!m_class || !m_canAddSelectProps)
         throw FdoCommandException::Create((std::wstring(L"The property \'") + name + L"\' was not found.").c_str());
         //throw FdoException::Create(L"Attempted to access a property which was not listed in the Select command. API misuse by the caller!");
 
@@ -469,8 +475,14 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
         InitPropIndex(m_pStmt);
 
         //step till the feature we were at with the previous query
-        while (cur_id != sqlite3_column_int(m_pStmt, 0))
-            ReadNext();
+        int fid = 0;
+        while (ReadNext())
+        {
+            fid = sqlite3_column_int(m_pStmt, 0);
+            if (fid == cur_id)
+                break;
+        }
+        assert( cur_id == fid);
 
         //return the index of the new property
         return index; // this is not accurate since other properties can be already selected...
