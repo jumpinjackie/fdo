@@ -245,6 +245,7 @@ protected:
         ReaderCloseType m_closeDB;  //indicates the statement is based on a memory backed temporary database that we should close when done
         bool m_useFastStepping;
         bool m_isViewSelect;
+        bool m_canAddSelectProps;
 
         //things cached/precomputed for speed
         FdoClassDefinition*         m_class;
