@@ -3855,8 +3855,16 @@ case OP_SeekGt: {       /* jump, in3 */
         {
           /* In case we have a max value ensure key returned by SI is lower than it*/
           do{
-            siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
-          }while(siKey != -1 && siKey < siStKey);
+            do{
+              siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+            }while(siKey != -1 && siKey < siStKey);
+            if (siKey != -1){
+              rc = sqlite3BtreeMovetoUnpacked(u.az.pC->pCursor, 0, (u64)siKey, 0, &u.az.res);
+              if( rc!=SQLITE_OK ){
+                goto abort_due_to_error;
+              }
+            }
+          }while(u.az.res && siKey != -1);
           if (siKey == -1){
             pc = pOp->p2 - 1;
             break;
@@ -3865,7 +3873,8 @@ case OP_SeekGt: {       /* jump, in3 */
           avoidMoveNext = 1;
         }
       }
-      rc = sqlite3BtreeMovetoUnpacked(u.az.pC->pCursor, 0, (u64)u.az.iKey, 0, &u.az.res);
+      if (!avoidMoveNext)
+        rc = sqlite3BtreeMovetoUnpacked(u.az.pC->pCursor, 0, (u64)u.az.iKey, 0, &u.az.res);
       if( rc!=SQLITE_OK ){
         goto abort_due_to_error;
       }
@@ -4813,12 +4822,14 @@ case OP_Rewind: {        /* jump */
       }
       if (p->pSpIterator)
       {
-        /* Call read next on SI */
-        siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
-        if (siKey == -1)
-            u.bl.res = 1;
-        else /* Move to the row pointed by SI */
-            rc = sqlite3BtreeMovetoUnpacked(u.bl.pCrsr, 0, siKey, 0, &u.bl.res);
+        do{
+          /* Call read next on SI */
+          siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+          if (siKey == -1)
+              u.bl.res = 1;
+          else /* Move to the row pointed by SI */
+              rc = sqlite3BtreeMovetoUnpacked(u.bl.pCrsr, 0, siKey, 0, &u.bl.res);
+        }while(u.bl.res && siKey != -1);
         u.bl.pC->lastRowid = siKey;
         u.bl.pC->rowidIsValid = u.bl.res==0 ?1:0;
       }else{
@@ -4904,12 +4915,15 @@ case OP_Next: {        /* jump */
     if (p->pSpIterator){
       /* In case we have a max key ensure SI will provide lower keys */
       do{
-        siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
-      }while(siKey != -1 && siKey < p->lowerRowId);
-      if (siKey == -1)
-        u.bm.res = 1;
-      else
-        rc = sqlite3BtreeMovetoUnpacked(u.bm.pCrsr, 0, siKey, 0, &u.bm.res);
+        do{
+          siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
+        }while(siKey != -1 && siKey < p->lowerRowId);
+        if (siKey == -1)
+          u.bm.res = 1;
+        else
+          rc = sqlite3BtreeMovetoUnpacked(u.bm.pCrsr, 0, siKey, 0, &u.bm.res);
+      }while(u.bm.res && siKey != -1);
+
       u.bm.pC->lastRowid = siKey;
       u.bm.pC->rowidIsValid = u.bm.res==0 ?1:0;
       u.bm.pC->deferredMoveto = 0;
