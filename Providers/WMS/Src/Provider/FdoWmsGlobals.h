@@ -74,6 +74,13 @@ namespace FdoWmsGlobals
 
 	static FdoString *DefaultEPSGCode     				    = L"EPSG:4326";
 	static FdoString *DefaultEPSGCode2     				    = L"CRS:4326";
+	static FdoString *ESPGPrefix     						= L"EPSG";
+	static FdoString *WmsVersion100     					= L"1.0.0";
+	static FdoString *WmsVersion110     					= L"1.1.0";
+	static FdoString *WmsVersion111     					= L"1.1.1";
+	static FdoString *WmsVersion130     					= L"1.3.0";
+	static FdoString *ExtendedReverseEPSGsFileName			= L"ExtendedReverseEPSG.txt";
+
 };
 
 

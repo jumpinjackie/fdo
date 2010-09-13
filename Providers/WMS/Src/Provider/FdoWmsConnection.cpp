@@ -428,8 +428,12 @@ FdoConnectionState FdoWmsConnection::Open ()
     }
     FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
     FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
+
     if (capa)
+	{
+		capa->AdjustBBoxOrder(metadata->GetVersion());
         capa->FillUpGeographicDataLayers();
+	}
     if (mConfigured)
     {
         // Some layer names may contain ":" or "." characters which are not allowed

@@ -58,6 +58,21 @@ public:
     // Update all SRS-es and all bounding boxes for layers.
     // update them each layer has all information without querying the parent
     void FillUpGeographicDataLayers();
+
+	// update the BBox order in 1.3.0 and later version
+	// this is a bit tricky
+	// for the same data, the BBox value in capability document is different like below:
+	// <BoundingBox CRS="EPSG:4326" minx="-90" miny="-180" maxx="90" maxy="180"> under 1.3.0 version
+	// <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"> under previous version
+	//
+	// since what we’re querying and the data that we’re seeing coming back 
+	// are in different coordinate systems.
+	// we should reverse the BBox value for 1.3.0 or later version here
+	// and later, if user use the default bbox in GetMap request
+	// it will be reversed to meet the server's taste.
+	//
+	void AdjustBBoxOrder(FdoString* version);
+
 protected:
     FdoWmsCapabilities(void);
     virtual ~FdoWmsCapabilities(void);
