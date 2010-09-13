@@ -37,11 +37,11 @@ void WmsTestSelect::testServer1 ()
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
-	    conn->SetConnectionString (L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+	    conn->SetConnectionString (L"FeatureServer=http://www.cgkn.net/cgi-bin/cgknwms");
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
 	    FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-	    cmd->SetFeatureClassName (L"airports");
+	    cmd->SetFeatureClassName (L"Borders_Poly");
 	    FdoPtr<FdoIdentifierCollection> selProps = cmd->GetPropertyNames ();
 	    CPPUNIT_ASSERT (selProps->GetCount () == 0);
 	    FdoPtr<FdoIdentifier> prop = FdoIdentifier::Create (L"FeatId");
@@ -51,7 +51,7 @@ void WmsTestSelect::testServer1 ()
 	    // test GetClassDefinition method
 	    FdoPtr<FdoClassDefinition> clsDef = featReader->GetClassDefinition ();
 	    FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties ();	
-	    CPPUNIT_ASSERT (wcscmp (clsDef->GetName (), L"airports") == 0);
+	    CPPUNIT_ASSERT (wcscmp (clsDef->GetName (), L"Borders_Poly") == 0);
 	    CPPUNIT_ASSERT (props->GetCount () == 0);
 	    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = clsDef->GetBaseProperties ();
 	    CPPUNIT_ASSERT (baseProps->GetCount () != 0);
@@ -59,9 +59,9 @@ void WmsTestSelect::testServer1 ()
 
 	    FdoPtr<FdoIStreamReaderTmpl<FdoByte> > byteStreamReader;
 
-	    // Layer "airports"
+	    // Layer "Borders_Poly"
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
-	    CPPUNIT_ASSERT (wcscmp (featReader->GetString(L"FeatId"), L"airports") == 0);
+	    CPPUNIT_ASSERT (wcscmp (featReader->GetString(L"FeatId"), L"Borders_Poly") == 0);
 	    try 
 	    {
 		    (featReader->GetString(L"non-exist"));		
@@ -111,8 +111,8 @@ void WmsTestSelect::testServer1 ()
 	    CPPUNIT_ASSERT (cntTotal == 1000000);	
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());	
 
-	    // Layer "dlgstln2"
-	    cmd->SetFeatureClassName (L"dlgstln2");	
+	    // Layer "BW_Shaded_Relief_Magnetics"
+	    cmd->SetFeatureClassName (L"BW_Shaded_Relief_Magnetics");	
 
 	    featReader = cmd->Execute ();
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
@@ -143,8 +143,8 @@ void WmsTestSelect::testServer1 ()
 
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());
 
-	    // Layer "lakespy2"
-	    cmd->SetFeatureClassName (L"lakespy2");
+	    // Layer "Borders_Line"
+	    cmd->SetFeatureClassName (L"Borders_Line");
 	    featReader = cmd->Execute ();
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
 	    raster = featReader->GetRaster (L"Raster");
@@ -160,32 +160,15 @@ void WmsTestSelect::testServer1 ()
 	    }
 	    while (cntRead);
 
-	    // Layer "mcd90py2"
-	    cmd->SetFeatureClassName (L"mcd90py2");
+	    // Layer "Radarsat_1000"
+	    cmd->SetFeatureClassName (L"Radarsat_1000");
 	    featReader = cmd->Execute ();
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
 	    raster = featReader->GetRaster (L"Raster");
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());	
 
-	    // Layer "ITASCA"
-	    cmd->SetFeatureClassName (L"ITASCA");
-	    featReader = cmd->Execute ();
-	    CPPUNIT_ASSERT (featReader->ReadNext ());
-	    try
-	    {
-		    raster = featReader->GetRaster (L"Raster");	
-		    CPPUNIT_ASSERT (false);
-	    }
-	    catch (FdoException* ex)
-	    {
-		    ex->Release ();
-	    }
-
-	    featReader->GetString (L"FeatId");
-	    CPPUNIT_ASSERT (!featReader->ReadNext ());
-
-	    // Layer "ctybdpy2"
-	    cmd->SetFeatureClassName (L"ctybdpy2");
+	    // Layer "Colour_Shaded_Relief_Bouger"
+	    cmd->SetFeatureClassName (L"Colour_Shaded_Relief_Bouger");
 	    featReader = cmd->Execute ();
 	    CPPUNIT_ASSERT (featReader->ReadNext ());	
 	    raster = featReader->GetRaster (L"Raster");	
@@ -205,11 +188,11 @@ void WmsTestSelect::testNestedClip ()
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
-	    conn->SetConnectionString (L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+	    conn->SetConnectionString (L"FeatureServer=http://www.cgkn.net/cgi-bin/cgknwms");
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
 	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-	    cmdSelect->SetFeatureClassName (L"airports");
+	    cmdSelect->SetFeatureClassName (L"Borders_Poly");
 
 	    // set up clip function: CLIP(Image, 100, 100, 1500.0, 1000.0)
 	    FdoPtr<FdoExpressionCollection> funcParams = FdoExpressionCollection::Create();
@@ -296,11 +279,11 @@ void WmsTestSelect::testGetBounds ()
     FdoPtr<FdoIConnection> conn = this->GetConnection ();
 	try
 	{
-		conn->SetConnectionString (L"FeatureServer=http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
+		conn->SetConnectionString (L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi");
 		CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
 		FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-		cmd->SetFeatureClassName (L"ITASCA");	    
+		cmd->SetFeatureClassName (L"global_mosaic");	    
 		FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
 
 		CPPUNIT_ASSERT (featReader->ReadNext ());
@@ -310,10 +293,10 @@ void WmsTestSelect::testGetBounds ()
 		FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
 		FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
 
-		CPPUNIT_ASSERT (enve->GetMinX() == 388108.00);
-		CPPUNIT_ASSERT (enve->GetMinY() == 5203120.00);
-		CPPUNIT_ASSERT (enve->GetMaxX() == 500896.00);
-		CPPUNIT_ASSERT (enve->GetMaxY() == 5310240.00);
+		CPPUNIT_ASSERT (enve->GetMinX() == -180);
+		CPPUNIT_ASSERT (enve->GetMinY() == -60);
+		CPPUNIT_ASSERT (enve->GetMaxX() == 180);
+		CPPUNIT_ASSERT (enve->GetMaxY() == 84);
 #ifdef _DEBUG
 		wprintf (L"Extent: (%f,%f %f,%f)\n", enve->GetMinX(), enve->GetMinY(), enve->GetMaxX(), enve->GetMaxY());                
 #endif
@@ -406,6 +389,98 @@ void WmsTestSelect::testServer2 ()
 	    CPPUNIT_ASSERT (featReader->ReadNext ());
 	    raster = featReader->GetRaster (L"Raster");
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//test 1.3.0 version and 1.1.0 version server with axis order reverse or not
+void WmsTestSelect::testServer3 ()
+{
+    try
+    {
+	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
+	    conn->SetConnectionString (L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.3.0");
+	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+
+	    FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
+		cmd->SetFeatureClassName (L"Foundation BNDTXT_1M");
+	    FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
+
+		CPPUNIT_ASSERT (featReader->ReadNext ());
+		FdoPtr<FdoIRaster> raster = featReader->GetRaster(L"Raster");
+
+        // Test the bounds
+        FdoPtr<FdoByteArray> gba = raster->GetBounds ();
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
+        FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
+        FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
+
+        CPPUNIT_ASSERT (enve->GetMinX() == -179.909469604492);
+        CPPUNIT_ASSERT (enve->GetMinY() == -82.9724044799805);
+        CPPUNIT_ASSERT (enve->GetMaxX() == 179.91194152832);
+        CPPUNIT_ASSERT (enve->GetMaxY() == 83.61899566650389);
+
+		conn->Close();
+
+		// connect the same server with 1.1.0 version
+	    conn->SetConnectionString (L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0");
+	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+
+	    cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
+		cmd->SetFeatureClassName (L"Foundation BNDTXT_1M");
+	    featReader = cmd->Execute ();
+
+		CPPUNIT_ASSERT (featReader->ReadNext ());
+		raster = featReader->GetRaster(L"Raster");
+
+        // Test the bounds
+        gba = raster->GetBounds ();
+        factory = FdoFgfGeometryFactory::GetInstance ();
+        geom = factory->CreateGeometryFromFgf (gba.p);
+        enve = geom->GetEnvelope ();
+
+        CPPUNIT_ASSERT (enve->GetMinX() == -179.909469604492);
+        CPPUNIT_ASSERT (enve->GetMinY() == -82.9724044799805);
+        CPPUNIT_ASSERT (enve->GetMaxX() == 179.91194152832);
+        CPPUNIT_ASSERT (enve->GetMaxY() == 83.61899566650389);
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+//test 1.3.0 version server with axis order reverse
+void WmsTestSelect::testServer4 ()
+{
+    try
+    {
+	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
+	    conn->SetConnectionString (L"FeatureServer=http://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?version=1.3.0");
+	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
+
+	    FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
+		cmd->SetFeatureClassName (L"0");
+	    FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
+
+		CPPUNIT_ASSERT (featReader->ReadNext ());
+		FdoPtr<FdoIRaster> raster = featReader->GetRaster(L"Raster");
+
+        // Test the bounds
+        FdoPtr<FdoByteArray> gba = raster->GetBounds ();
+        FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();
+        FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf (gba.p);
+        FdoPtr<FdoIEnvelope> enve = geom->GetEnvelope ();
+
+        CPPUNIT_ASSERT (enve->GetMinX() == -178.217598);
+        CPPUNIT_ASSERT (enve->GetMinY() == 18.924782);
+        CPPUNIT_ASSERT (enve->GetMaxX() == -66.969271);
+        CPPUNIT_ASSERT (enve->GetMaxY() == 71.406235);
+
+		conn->Close();
     }
     catch (FdoException* e)
     {
@@ -609,7 +684,7 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
             
             FdoWmsOvClassesP ovClasses = ovMapping->GetClasses();
             FdoInt32 numClasses = ovClasses->GetCount();
-            CPPUNIT_ASSERT (numClasses == 20);
+            CPPUNIT_ASSERT (numClasses == 15);
 
             FdoWmsOvClassDefinitionP ovClass = ovClasses->GetItem(0);
             CPPUNIT_ASSERT (FdoStringP(ovClass->GetName()) == L"global_mosaic");
@@ -1448,19 +1523,19 @@ void WmsTestSelect::testNS_CRS ()
     }
 }
 
-//http://www2.dmsolutions.ca/cgi-bin/mswms_gmap
-void WmsTestSelect::testDMSolutions ()
+//http://mapconnect.ga.gov.au/wmsconnector/com.esri.wms.Esrimap?Servicename=GDA94_MapConnect_SDE_250kmap_WMS
+void WmsTestSelect::testMapConnect_SDE ()
 {
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap");
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://mapconnect.ga.gov.au/wmsconnector/com.esri.wms.Esrimap?Servicename=GDA94_MapConnect_SDE_250kmap_WMS");
         connection->SetConnectionString((FdoString*)sServer);
         FdoConnectionState state = connection->Open ();
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"drainage");
+        cmdSelect->SetFeatureClassName (L"Mainlands");
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");
@@ -1755,7 +1830,7 @@ void WmsTestSelect::testLinuxgurrl ()
         CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"ecodistricts");
+        cmdSelect->SetFeatureClassName (L"ecodistricts-labels"); 
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Raster");

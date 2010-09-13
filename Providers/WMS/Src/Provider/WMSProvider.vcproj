@@ -384,6 +384,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoWmsReverseEpsgCodes.h"
+				>
+			</File>		
+			<File
 				RelativePath="FdoWmsUtils.cpp"
 				>
 			</File>

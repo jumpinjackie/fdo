@@ -231,6 +231,7 @@
     <ClInclude Include="FdoWmsGlobals.h" />
     <ClInclude Include="FdoWmsReader.h" />
     <ClInclude Include="FdoWmsRect.h" />
+	<ClInclude Include="FdoWmsReverseEpsgCodes.h" />
     <ClInclude Include="FdoWmsUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="FdoWmsCommandCapabilities.h" />

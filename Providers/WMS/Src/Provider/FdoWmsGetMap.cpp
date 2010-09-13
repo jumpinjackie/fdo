@@ -21,6 +21,8 @@
 #include "FdoWmsXmlGlobals.h"
 #include <FdoCommonStringUtil.h>
 #include <OWS/FdoOwsGlobals.h>
+#include "FdoWmsReverseEpsgCodes.h"
+#include "FdoWmsGlobals.h"
 
 FdoWmsGetMap::FdoWmsGetMap () :   
 		FdoOwsRequest(FdoWmsXmlGlobals::WMSServiceName, FdoWmsXmlGlobals::WmsGetMapRequest), 
@@ -174,13 +176,41 @@ FdoStringP FdoWmsGetMap::EncodeKVP()
 		ret += FdoOwsGlobals::And;
 		ret += FdoWmsXmlGlobals::WmsRequestBBOX;
 		ret += FdoOwsGlobals::Equal;
-		ret += FdoStringP::Format(L"%lf", mMinX);
-		ret += FdoWmsXmlGlobals::WmsRequestComma;
-		ret += FdoStringP::Format(L"%lf", mMinY);
-		ret += FdoWmsXmlGlobals::WmsRequestComma;
-		ret += FdoStringP::Format(L"%lf", mMaxX);
-		ret += FdoWmsXmlGlobals::WmsRequestComma;
-		ret += FdoStringP::Format(L"%lf", mMaxY);
+
+		// handle the reverse at the last minute before sending request
+		FdoBoolean reverse;
+
+		if (wcscmp(FdoWmsGlobals::WmsVersion100,m_version) == 0 ||
+			wcscmp(FdoWmsGlobals::WmsVersion110,m_version) == 0 ||
+			wcscmp(FdoWmsGlobals::WmsVersion111,m_version) == 0)
+			reverse = false; 
+		else
+		{
+			// check reverse only when current version is 1.3.0 or later and cs is EPSG format
+			if (mSrsName.Contains(FdoWmsGlobals::ESPGPrefix))
+				reverse = _reverseCheck(mSrsName);
+		}
+
+		if (reverse)
+		{
+			ret += FdoStringP::Format(L"%lf", mMinY);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMinX);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMaxY);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMaxX);
+		}
+		else
+		{
+			ret += FdoStringP::Format(L"%lf", mMinX);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMinY);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMaxX);
+			ret += FdoWmsXmlGlobals::WmsRequestComma;
+			ret += FdoStringP::Format(L"%lf", mMaxY);
+		}
 	}
 
 	// Add the "HEIGHT" and "WIDTH" parameters
@@ -248,3 +278,4 @@ FdoStringP FdoWmsGetMap::EncodeXml()
 	// TODO: shall we support this?
 	return L"";
 }
+
