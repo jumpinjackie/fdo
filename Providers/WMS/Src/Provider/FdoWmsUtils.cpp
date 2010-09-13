@@ -123,7 +123,10 @@ FdoBoolean _reverseCheck(FdoStringP epsgName)
 
 		// try to read the epsg list from file if it exist
 		wifstream infile;
-		infile.open (FdoWmsGlobals::ExtendedReverseEPSGsFileName, wifstream::in);
+		
+		FdoStringP strName = (FdoStringP)(FdoWmsGlobals::ExtendedReverseEPSGsFileName);
+		const char* name = (const char*)strName;	
+		infile.open (name, wifstream::in);
 		if (infile.good())
 		{
 			wstring line;
