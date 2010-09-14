@@ -88,7 +88,7 @@ private:
 	/// <summary>Gets the coordinates of the FdoIDirectPosition object.</summary>
 	/// <param name="position">An instance of FdoIDirectPosition type.</param>
 	/// <returns>Returns the corrdinates as string.</returns>
-	static FdoStringP GetDirectPositionCoordinates( FdoIDirectPosition* position);
+	static FdoStringP GetDirectPositionCoordinates( FdoIDirectPosition* position,FdoGmlVersion gmlversion);
 
 };
 
