@@ -61,16 +61,35 @@ void SltQueryTranslator::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& 
     m_evalStack.pop_back();
 
     FdoBinaryLogicalOperations op = filter.GetOperation();
-
     ComplexFilterChunk* rVal = CreateComplexFilterChunk();
-    rVal->AddToList(CreateBaseFilterChunk("(", 1));
+    if (op == FdoBinaryLogicalOperations_And)
+    {
+        FdoBinaryLogicalOperator* pBLO = dynamic_cast<FdoBinaryLogicalOperator*>(right.p);
+        if (pBLO != NULL && pBLO->GetOperation() == FdoBinaryLogicalOperations_Or)
+        {
+            ComplexFilterChunk* tmpVal = CreateComplexFilterChunk();
+            tmpVal->AddToList(CreateFilterChunk("(", 1));
+            tmpVal->AddToList(rights);
+            tmpVal->AddToList(CreateFilterChunk(")", 1));
+            rights = tmpVal;
+        }
+        pBLO = dynamic_cast<FdoBinaryLogicalOperator*>(left.p);
+        if (pBLO != NULL && pBLO->GetOperation() == FdoBinaryLogicalOperations_Or)
+        {
+            ComplexFilterChunk* tmpVal = CreateComplexFilterChunk();
+            tmpVal->AddToList(CreateFilterChunk("(", 1));
+            tmpVal->AddToList(lefts);
+            tmpVal->AddToList(CreateFilterChunk(")", 1));
+            lefts = tmpVal;
+        }
+    }
+
     rVal->AddToList(lefts);
     if (op == FdoBinaryLogicalOperations_And)
-        rVal->AddToList(CreateBaseFilterChunk(") AND (", 7));
+        rVal->AddToList(CreateBaseFilterChunk(" AND ", 5));
     else
-        rVal->AddToList(CreateBaseFilterChunk(") OR (", 6));
+        rVal->AddToList(CreateBaseFilterChunk(" OR ", 4));
     rVal->AddToList(rights);
-    rVal->AddToList(CreateBaseFilterChunk(")", 1));
 
     m_evalStack.push_back(rVal);
 }
