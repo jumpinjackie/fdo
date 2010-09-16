@@ -31,7 +31,8 @@ c_KgOraSpatialContext::c_KgOraSpatialContext () :
     m_XYTolerance (D_SPATIALCONTEXT_DEFAULT_XY_TOLERANCE),
     m_ZTolerance (D_SPATIALCONTEXT_DEFAULT_Z_TOLERANCE)
 {
-  m_CoordSysName = "LOCAL_CS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+  //m_CoordSysName = "LOCAL_CS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
+  m_CoordSysName = "";
   m_Wkt = "LOCAL_CS[\"*XY-MT*\",LOCAL_DATUM[\"*X-Y*\",10000],UNIT[\"Meter\", 1],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH]]";
   
     FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance ();

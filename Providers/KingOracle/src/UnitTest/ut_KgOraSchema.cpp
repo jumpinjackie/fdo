@@ -212,4 +212,16 @@ catch(FdoException* ex)
   ex->Release();
 }   
   
+}//end of ut_KgOraSchema::DifferentOwner
+
+void ut_KgOraSchema::JustMyTest()
+{
+  int a = sizeof(LONG);
+  int b = sizeof(__int32);
+  int i = sizeof(int);
+  int s = sizeof(short);
+  
+  int l = sizeof(long long);
+
+  int c = a - b;
 }

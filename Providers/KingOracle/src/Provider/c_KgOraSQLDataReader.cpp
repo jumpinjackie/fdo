@@ -49,9 +49,10 @@ c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
     int dtype = OciStatement->GetColumnOciType(ind+1);//m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
     int length = OciStatement->GetColumnWidth(ind+1);//m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
     int orascale = OciStatement->GetColumnScale(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
+    int oraprecision = OciStatement->GetColumnPrecision(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
     FdoDataType fdotype;
-    if( c_FdoOra_API2::OraTypeToFdoDataType(dtype,orascale,length,fdotype) )
+    if( c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype) )
     {  
       m_SqlColumns->Add(cname);
       m_SqlColIndex.push_back(ind);
@@ -150,9 +151,10 @@ FdoDataType c_KgOraSQLDataReader::GetColumnType(FdoString* ColumnName)
   int dtype = m_OciStatement->GetColumnOciType(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
   int length = m_OciStatement->GetColumnWidth(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
   int orascale = m_OciStatement->GetColumnScale(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
+  int oraprecision = m_OciStatement->GetColumnPrecision(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
   FdoDataType fdotype;
-  c_FdoOra_API2::OraTypeToFdoDataType(dtype,orascale,length,fdotype);
+  c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
   
   return fdotype;
   
