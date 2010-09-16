@@ -34,9 +34,9 @@ public:
   
   static c_KgOraSchemaDesc* DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema,const wchar_t* KingFdoViews,const wchar_t* SdeSchema);
 
-  static bool OraTypeToFdoDataType(const char* OraType,int Scale,int Length,FdoDataType & FdoType);
+  static bool OraTypeToFdoDataType(const char* OraType,int Precision,int Scale,int Length,FdoDataType & FdoType);
   
-  static bool OraTypeToFdoDataType(ub2 OCiDataType,int Scale,int Length,FdoDataType & FdoType);
+  static bool OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale,int Length,FdoDataType & FdoType);
 
   static bool FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoStringP& OraType);
   //static bool FdoDataTypeToOraDataType(FdoDataType DataTape,oracle::occi::Type& OraType);

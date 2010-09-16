@@ -78,9 +78,10 @@ FdoDataType c_KgOraDataReader::GetDataType( FdoString* PropertyName )
   int dtype = m_OciStatement->GetColumnOciType(ind); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_TYPE);
   int length = m_OciStatement->GetColumnWidth(ind); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_DATA_SIZE);
   int orascale = m_OciStatement->GetColumnScale(ind); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
+  int oraprecision = m_OciStatement->GetColumnPrecision(ind);
 
   FdoDataType fdotype;
-  c_FdoOra_API2::OraTypeToFdoDataType(dtype,orascale,length,fdotype);
+  c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
   
   return fdotype;
 }

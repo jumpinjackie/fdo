@@ -39,7 +39,7 @@ c_FdoOra_API2::~c_FdoOra_API2(void)
 }
 
 
-bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Scale,int Length,FdoDataType & FdoType)
+bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale,int Length,FdoDataType & FdoType)
 {
   bool isfdotype=true;
   switch( OCiDataType )
@@ -51,7 +51,34 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Scale,int Length,Fd
     
     case OCI_TYPECODE_NUMBER:  // NUMBER
     case OCI_TYPECODE_DECIMAL:  // NUMBER
-      if( Scale == 0 ) FdoType = FdoDataType_Int32;  
+      if( Scale <= 0 ) 
+      {
+        if( Precision <= 4 )
+        {
+          FdoType = FdoDataType_Int16;  
+        }
+        else 
+        {
+          if( Precision <= 9 )
+          {
+            FdoType = FdoDataType_Int32;  
+          }
+          else
+          {
+            if( Precision <= 19 ) // this is deliberately to be 19 so it stay as integer (not decimal)
+                                  // even 19 places can exceed int64
+            {
+              FdoType = FdoDataType_Int64;  
+            }
+            else
+            {
+              FdoType = FdoDataType_Decimal;  
+            }
+          
+          }
+          
+        }
+      }
       else FdoType = FdoDataType_Decimal;
     break;
     
@@ -60,7 +87,12 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Scale,int Length,Fd
       else FdoType = FdoDataType_String;
     break;
     
+    case OCI_TYPECODE_SIGNED16:
+        FdoType = FdoDataType_Int16;
+    break;
+        
     case OCI_TYPECODE_INTEGER:
+    case OCI_TYPECODE_SIGNED32:
       FdoType = FdoDataType_Int32;
     break;
     
@@ -574,7 +606,7 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,const wch
   return true;
 }//end of c_FdoOra_API2::SetOracleStatementData
 
-bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Length,FdoDataType & FdoType)
+bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int Scale,int Length,FdoDataType & FdoType)
 {
   
   bool isfdotype=false;
@@ -591,23 +623,49 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Scale,int Lengt
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"NUMBER") == 0 )
   {            
-    if( Scale == 0 ) FdoType = FdoDataType_Int32;
+    if( Scale <= 0 ) 
+    {
+      if( Precision <= 4 )
+      {
+        FdoType = FdoDataType_Int16;  
+      }
+      else 
+      {
+        if( Precision <= 9 )
+        {
+          FdoType = FdoDataType_Int32;  
+        }
+        else
+        {
+          if( Precision <= 19 ) // this is deliberately to be 19 so it stay as integer (not decimal)
+            // even 19 places can exceed int64
+          {
+            FdoType = FdoDataType_Int64;  
+          }
+          else
+          {
+            FdoType = FdoDataType_Decimal;  
+          }
+
+        }
+
+      }
+    }
     else FdoType = FdoDataType_Decimal;
     isfdotype=true;
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"CHAR") == 0 )
   {            
-    //if( Length==1 ) FdoType = FdoDataType_Byte;
-    //else FdoType = FdoDataType_String;
-    FdoType = FdoDataType_String;
+    if( Length==1 ) FdoType = FdoDataType_Byte;
+    else FdoType = FdoDataType_String;
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_FLOAT") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_FLOAT") == 0 || (FdoCommonOSUtil::stricmp(OraType,"FLOAT") == 0) )
   {            
     FdoType = FdoDataType_Single;    
     isfdotype=true;
   } else
-  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_DOUBLE") == 0 )
+  if( FdoCommonOSUtil::stricmp(OraType,"BINARY_DOUBLE") == 0 || (FdoCommonOSUtil::stricmp(OraType,"DOUBLE") == 0) )
   {            
     FdoType = FdoDataType_Double;    
     isfdotype=true;
@@ -735,7 +793,7 @@ try
       (OCIError *) OciConn->m_OciHpError);
       
     FdoDataType fdotype;      
-    bool isfdotype = c_FdoOra_API2::OraTypeToFdoDataType(col_type,col_scale,col_width,fdotype);
+    bool isfdotype = c_FdoOra_API2::OraTypeToFdoDataType(col_type,col_precision,col_scale,col_width,fdotype);
 
     if( isfdotype )
     {            
@@ -2405,7 +2463,7 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
         break;
         
         case FdoDataType_Int16:
-          OraType = L"NUMBER(10,0)";
+          OraType = L"NUMBER(5,0)";
         break;
 
         case FdoDataType_Int32:
@@ -2413,7 +2471,7 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
         break;
 
         case FdoDataType_Int64:
-          OraType = L"NUMBER(10,0)";
+          OraType = L"NUMBER(19,0)";
         break;
         
         default:
