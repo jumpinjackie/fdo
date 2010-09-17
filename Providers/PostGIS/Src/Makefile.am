@@ -50,6 +50,7 @@ libPostGISProvider_la_LIBADD =  \
   Provider/libPostGISProviderSrc.la \
   libPostGISOverrides.la \
   ../../../Utilities/Common/libProvidersCommon.la \
+  ../../../Utilities/ExpressionEngine/Src/libExpressionEngine.la \
   ../../../Fdo/Unmanaged/Src/libFDO.la \
   ../../../Thirdparty/boost/stage/lib/libboost_thread-mt.a \
   ../../../Thirdparty/boost/stage/lib/libboost_date_time-mt.a \
