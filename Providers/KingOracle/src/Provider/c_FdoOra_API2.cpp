@@ -72,7 +72,9 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale
             }
             else
             {
-              FdoType = FdoDataType_Decimal;  
+              //FdoType = FdoDataType_Decimal;  
+              
+              FdoType = FdoDataType_Int64;  
             }
           
           }
