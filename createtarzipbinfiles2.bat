@@ -215,6 +215,7 @@ if "%TYPEPLATFORM%"=="x64" SET FILEPPLATFORMPREFIX=win64
 
 :start_zip_fdo
 if "%FDOCOREENABLE%"=="no" goto start_zip_shp
+   rmdir /s /q "%FDOZIPTEMP%"
    mkdir %FDOZIPTEMP%
    mkdir %FDOZIPTEMP%\Bin
    mkdir %FDOZIPTEMP%\Bin\com
@@ -245,7 +246,7 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    gzip -9 "fdo-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdo-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_shp
 if "%SHPENABLE%"=="no" goto start_zip_sdf
    mkdir %FDOZIPTEMP%
@@ -261,7 +262,7 @@ if "%SHPENABLE%"=="no" goto start_zip_sdf
    gzip -9 "fdoshp-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdoshp-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_sdf
 if "%SDFENABLE%"=="no" goto start_zip_wfs
    mkdir %FDOZIPTEMP%
@@ -275,7 +276,7 @@ if "%SDFENABLE%"=="no" goto start_zip_wfs
    gzip -9 "fdosdf-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdosdf-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_wfs
 if "%WFSENABLE%"=="no" goto start_zip_wms
    mkdir %FDOZIPTEMP%
@@ -289,7 +290,7 @@ if "%WFSENABLE%"=="no" goto start_zip_wms
    gzip -9 "fdowfs-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdowfs-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_wms
 if "%WMSENABLE%"=="no" goto start_zip_arcsde
    mkdir %FDOZIPTEMP%
@@ -305,7 +306,7 @@ if "%WMSENABLE%"=="no" goto start_zip_arcsde
    gzip -9 "fdowms-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdowms-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_arcsde
 if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
    mkdir %FDOZIPTEMP%
@@ -321,11 +322,14 @@ if "%ARCSDEENABLE%"=="no" goto start_zip_rdbms
    gzip -9 "fdoarcsde-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdoarcsde-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_rdbms
 if "%RDBMSENABLE%"=="no" goto start_zip_mysql
    mkdir %FDOZIPTEMP%
    mkdir %FDOZIPTEMP%\Bin
+   mkdir %FDOZIPTEMP%\Bin\com
+   copy "%FDOROOT%\Bin\com\postgis_fdo_sys.sql" %FDOZIPTEMP%\Bin\com
+   copy "%FDOROOT%\Bin\com\postgis_fdo_sys_idx.sql" %FDOZIPTEMP%\Bin\com
    copy "%FDOROOT%\Bin\RdbmsMsg.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\SmMessage.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\RdbmsOverrides.dll" %FDOZIPTEMP%\Bin\
@@ -335,6 +339,8 @@ if "%RDBMSENABLE%"=="no" goto start_zip_mysql
    copy "%FDOROOT%\Bin\MySQLProvider.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\SQLServerSpatialOverrides.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\SQLServerSpatialProvider.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\PostgreSQLOverrides.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\PostgreSQLProvider.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\OSGeo.FDO.Providers.SQLServerSpatial.Overrides.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\OSGeo.FDO.Providers.Rdbms.Overrides.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\OSGeo.FDO.Providers.MySQL.Overrides.dll" %FDOZIPTEMP%\Bin\
@@ -346,7 +352,7 @@ if "%RDBMSENABLE%"=="no" goto start_zip_mysql
    gzip -9 "fdordbms-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdordbms-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_mysql
 if "%MYSQLENABLE%"=="no" goto start_zip_odbc
    mkdir %FDOZIPTEMP%
@@ -365,7 +371,7 @@ if "%MYSQLENABLE%"=="no" goto start_zip_odbc
    gzip -9 "fdomysql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdomysql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_odbc
 if "%ODBCENABLE%"=="no" goto start_zip_sqlspatial
    mkdir %FDOZIPTEMP%
@@ -384,7 +390,7 @@ if "%ODBCENABLE%"=="no" goto start_zip_sqlspatial
    gzip -9 "fdoodbc-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdoodbc-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_sqlspatial
 if "%SQLSPATIALENABLE%"=="no" goto start_zip_gdal
    mkdir %FDOZIPTEMP%
@@ -403,7 +409,7 @@ if "%SQLSPATIALENABLE%"=="no" goto start_zip_gdal
    gzip -9 "fdosqlspatial-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdosqlspatial-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_gdal
 if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    mkdir %FDOZIPTEMP%
@@ -418,7 +424,7 @@ if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    gzip -9 "fdogdal-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdogdal-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_king_oracle
 if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
    mkdir %FDOZIPTEMP%
@@ -433,7 +439,7 @@ if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
    gzip -9 "fdokingoracle-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdokingoracle-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_postgis
 if "%POSTGISENABLE%"=="no" goto start_zip_ogr
    mkdir %FDOZIPTEMP%
@@ -448,7 +454,25 @@ if "%POSTGISENABLE%"=="no" goto start_zip_ogr
    gzip -9 "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
+   mkdir %FDOZIPTEMP%
+   mkdir %FDOZIPTEMP%\Bin
+   mkdir %FDOZIPTEMP%\Bin\com
+   copy "%FDOROOT%\Bin\com\postgis_fdo_sys.sql" %FDOZIPTEMP%\Bin\com
+   copy "%FDOROOT%\Bin\com\postgis_fdo_sys_idx.sql" %FDOZIPTEMP%\Bin\com
+   copy "%FDOROOT%\Bin\PostgreSQLOverrides.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\PostgreSQLProvider.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\RdbmsMsg.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\RdbmsOverrides.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\SmMessage.dll" %FDOZIPTEMP%\Bin\
+   pushd "%FDOZIPTEMP%"
+   if exist "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar" del /q /f "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
+   if exist "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" del /q /f "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz"
+   tar -cf "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar" Bin
+   gzip -9 "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
+   cp "fdopostgresql-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
+   popd
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_ogr
 if "%OGRENABLE%"=="no" goto start_zip_sqlite
    mkdir %FDOZIPTEMP%
@@ -461,7 +485,7 @@ if "%OGRENABLE%"=="no" goto start_zip_sqlite
    gzip -9 "fdoogr-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdoogr-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_sqlite
 if "%SQLITEENABLE%"=="no" goto end
    mkdir %FDOZIPTEMP%
@@ -474,7 +498,7 @@ if "%SQLITEENABLE%"=="no" goto end
    gzip -9 "fdosqlite-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdosqlite-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
-   deltree /Y "%FDOZIPTEMP%"
+   rmdir /s /q "%FDOZIPTEMP%"
 	
 :end
 echo End Build
