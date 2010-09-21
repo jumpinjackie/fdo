@@ -351,6 +351,7 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
     {
         m_reissueProps.Add("\"rowid\"", 7);
         maxIndex = -1; // composite, non-int or no PK force add all
+        m_nTotalProps++;
     }
 
     StringBuffer propName(30);
@@ -1636,17 +1637,19 @@ void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
 
     //Trying to access a property that is theoretically available
     //but was not queried in the initial query (which only assumes ID and geom)
-    int count = sqlite3_column_count(pStmt);
-    if (index >= count)
+    if (m_canAddSelectProps)
     {
-        FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
-        for (int i=count; i<index; i++)
+        int count = sqlite3_column_count(pStmt);
+        if (index >= count)
         {
-            FdoPtr<FdoPropertyDefinition> pv = pdc->GetItem(i);
-            AddColumnToQuery(pv->GetName());
+            FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
+            for (int i=count; i<index; i++)
+            {
+                FdoPtr<FdoPropertyDefinition> pv = pdc->GetItem(i);
+                AddColumnToQuery(pv->GetName());
+            }
         }
     }
-
 }
 
 // function supports following formats (note a+b is just a sample - it can be any expression)
