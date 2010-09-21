@@ -470,6 +470,7 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libintl.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
@@ -492,6 +493,7 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dl
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
+copy "$(FDOTHIRDPARTY)\postgres\bin\libintl.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
