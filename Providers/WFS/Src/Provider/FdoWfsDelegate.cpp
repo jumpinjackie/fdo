@@ -135,8 +135,8 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
         exc1->Release();
     }
     FdoPtr<FdoIoStream> stream = response->GetStream();
-
-    FdoPtr<FdoXmlReader> xmlReader = FdoXmlReader::Create(stream);
+	FdoPtr<FdoIoStream> tempStream = preProcessStream(stream);
+    FdoPtr<FdoXmlReader> xmlReader = FdoXmlReader::Create(tempStream);
 	FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);
 	flags->SetSchemaMappings(schemaMappings);
     FdoPtr<FdoXmlFeatureReader> xmlFeatureReader = FdoXmlFeatureReader::Create(xmlReader, flags);
@@ -146,4 +146,33 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
 
     return FDO_SAFE_ADDREF(featureReader.p);
 }
+
+FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream)
+{
+	FdoIoFileStreamP tempStream= FdoIoFileStream::Create( L"temp_stream.xml", L"w+" );
+	const int readSize = 4098;
+
+	FdoByte * buffer = new FdoByte[readSize];
+	do
+	{
+		FdoSize cntRead = stream->Read(buffer,readSize);
+		if (cntRead == 0)
+			break;
+		for (FdoSize i =0;i<cntRead;i++)
+		{
+			int num = (int)buffer[i];
+			if ((num >= 1 && num <= 7) || 
+				(num >= 11 && num <=19))
+				buffer[i] = ' ';
+		}
+		tempStream->Write(buffer,cntRead);
+	}
+	while (true);
+	delete[] buffer;
+
+	tempStream->Reset();
+	return FDO_SAFE_ADDREF(tempStream.p);
+
+}
+
 
