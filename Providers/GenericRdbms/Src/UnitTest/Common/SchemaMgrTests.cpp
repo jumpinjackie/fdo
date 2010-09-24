@@ -324,11 +324,7 @@ void SchemaMgrTests::testGenDefault ()
         table->CreateUkey();
     	table->AddUkeyCol( table->GetUkeyColumns()->GetCount() - 1, L"UNIQUE_COLUMN" );
         column = table->CreateColumnChar( L"CHECK_COLUMN", false, 50 );
-#ifdef RDBI_DEF_ORA
-        constraint = new FdoSmPhCheckConstraint( L"CHECK_COLUMN_CHECK", L"CHECK_COLUMN", L"\"CHECK_COLUMN\" in ( ''a'', ''b'', ''c'')" );
-#else
         constraint = new FdoSmPhCheckConstraint( L"CHECK_COLUMN_CHECK", L"CHECK_COLUMN", L"\"CHECK_COLUMN\" in ( 'a', 'b', 'c')" );
-#endif
         table->AddCkeyCol( constraint );
         column = table->CreateColumnChar( L"STRING_COLUMN", false, 20 );
         column = table->CreateColumnSingle( L"SINGLE_COLUMN", true );

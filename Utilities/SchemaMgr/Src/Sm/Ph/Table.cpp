@@ -382,13 +382,14 @@ void FdoSmPhTable::CommitCConstraints(bool isBeforeParent)
                 // Constraints are created along with table, so skip adding constraint
                 // if table was new.
             	if ( GetCommitState() != FdoSchemaElementState_Added ) {
+                    FdoStringP checkClause = GetAddCkeySql(pCheck);
 				    FdoStringP ckeySql = FdoStringP::Format( 
 							    L"CHECK (%ls)",
-							    (FdoString *)pCheck->GetClause()
+							    (FdoString *)checkClause
 				    );
 
 				    if ( !AddConstraint( ckeySql ) ) {
-					    AddCkeyError(pCheck->GetClause());
+					    AddCkeyError(checkClause);
 
 					    // This will trigger error reporting
 					    if (GetElementState() == FdoSchemaElementState_Unchanged )
@@ -614,7 +615,7 @@ FdoStringP FdoSmPhTable::GetAddCkeysSql()
 
 		FdoStringP ckeySql = FdoStringP::Format( 
 			L"CHECK (%ls)",
-			(FdoString*) elem->GetClause()
+			(FdoString*) GetAddCkeySql(elem)
 		);
 
 		ckeyCollSql += ckeySql;	
@@ -633,8 +634,13 @@ FdoStringP FdoSmPhTable::GetAddCkeySql(int uCollNum)
     return FdoStringP::Format( 
 		L"alter table %ls add CHECK (%ls)", 
 		(FdoString*) GetDDLQName(),
-		(FdoString*) elem->GetClause()
+		(FdoString*) GetAddCkeySql(elem)
 	);
+}
+
+FdoStringP FdoSmPhTable::GetAddCkeySql(FdoSmPhCheckConstraint* ckey)
+{
+    return ckey->GetClause();
 }
 
 FdoStringP FdoSmPhTable::GetConstraintDDLName( FdoStringP constraintName ) const

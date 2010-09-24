@@ -563,7 +563,6 @@ FdoSmPhGrdMgr::StringMap::StringMap()
     Insert( L"btree" );
     Insert( L"by" );
 
-    Insert( L"cascade" ); 
     Insert( L"char" ); 
     Insert( L"check" );  
     Insert( L"childstate" ); 
@@ -630,7 +629,6 @@ FdoSmPhGrdMgr::StringMap::StringMap()
 
     Insert( L"minus" ); 
     Insert( L"mlslabel" ); 
-    Insert( L"mode" ); 
     Insert( L"modify" );
 
     Insert( L"new" ); 

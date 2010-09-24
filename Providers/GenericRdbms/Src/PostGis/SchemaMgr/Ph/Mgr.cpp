@@ -314,7 +314,6 @@ FdoSmPhPostGisMgr::ReservedWordsMap::ReservedWordsMap()
     Insert(L"mediumtext"); 
     Insert(L"single"); 
     Insert(L"smallint"); 
-    Insert(L"text"); 
     Insert(L"time"); 
     Insert(L"timestamp"); 
     Insert(L"tinyint"); 

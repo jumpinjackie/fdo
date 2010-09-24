@@ -698,7 +698,7 @@ void FdoSmLpAssociationPropertyDefinition::Finalize()
  
             // Skip association existence check if from config doc. This helps
             // performance by avoiding unnecessary foreign key loading.
-            if ( !GetIsFromConfig() ) 
+            if ( GetElementState() == FdoSchemaElementState_Added && !GetIsFromConfig() ) 
             {
                 // Make sure that an association between these two classes does not already exist
                 FdoSmPhAssociationReaderP rdr = pPhysical->CreateAssociationReader( pParent->GetDbObjectName(), pAssociatedClass->GetDbObjectName(), true );
