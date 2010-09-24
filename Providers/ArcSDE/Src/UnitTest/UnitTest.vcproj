@@ -341,7 +341,7 @@
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FdoSpatial.lib ProvidersCommon.lib Advapi32.lib"
 				OutputFile="$(OutDir)/UnitTest.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\ESRI\ArcSDEClient931\Win64\lib&quot;;&quot;$(SDEHOME)\lib&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
