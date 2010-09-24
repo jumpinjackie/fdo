@@ -98,6 +98,9 @@ public:
 	/// Get SQL for creating a CHECK constraint on an existing table
 	FdoStringP GetAddCkeySql(int uCollNum);
 
+    // Given a check constraint, return the SQL clause for adding it to its table.
+    virtual FdoStringP GetAddCkeySql(FdoSmPhCheckConstraint* ckey);
+    
     // Given a constraint name, return the name to use in DDL operations, such 
     // as dropping the constraint.
     virtual FdoStringP GetConstraintDDLName( FdoStringP constraintName ) const;

@@ -163,6 +163,14 @@ FdoStringP FdoSmPhRdPostGisConstraintReader::GetString( FdoStringP tableName, Fd
         FdoStringP defValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName ); 
         if( defValue != NULL  )
         {
+            int extraBrackets = 0;
+            if ( defValue.Contains(L"= ANY ((ARRAY[") ) 
+                // lose a couple of left brackets after replacement
+                extraBrackets = 2;
+            else if ( defValue.Contains(L"= ANY (ARRAY[") ) 
+                // lose a left bracket after replacement
+                extraBrackets = 1;
+
             fieldValue = defValue.Replace(L"= ANY ((ARRAY[",L"IN (");
             fieldValue = fieldValue.Replace(L"= ANY (ARRAY[",L"IN (");
             fieldValue = fieldValue.Replace(L"::text[]",L"");
@@ -176,6 +184,31 @@ FdoStringP FdoSmPhRdPostGisConstraintReader::GetString( FdoStringP tableName, Fd
             fieldValue = fieldValue.Replace(L"double precision",L"");
             fieldValue = fieldValue.Replace(L"character varying",L"");           
             fieldValue = fieldValue.Replace(L"::",L" ");
+
+            if ( extraBrackets > 0 ) 
+            {
+                // Lost some left brackets so trim the same number of 
+                // right brackets from the end of the string. This only 
+                // works for simple constraint strings but these are the
+                // only ones that get successfully parsed anyway.
+
+                int i = 0;
+                FdoString* buffer = fieldValue;
+
+                for ( i = (fieldValue.GetLength() - 1); (i > 0) && (extraBrackets > 0); i-- )
+                {
+                    if ( buffer[i] == ')' ) 
+                        extraBrackets--;
+                    else if ( buffer[i] != ' ' )
+                        break;
+                }
+
+                // Loop does extra decrement so compensate.
+                i++;
+
+                if ( (i > 0) && (extraBrackets == 0) ) 
+                    fieldValue = fieldValue.Mid(0,i);
+            }
         }
         else
             fieldValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName );
