@@ -1,0 +1,5 @@
+ Element 'Acad:Orphan SubClass' references class (Orphan Class) which does not belong to a feature schema. 
+ Cannot add class 'Acad:ElectricDevice'; it already exists 
+ Cannot set base class for 'Acad:Base Conflict' to 'Acad:AcDbEntity'; they have different class types 
+ Error resolving Feature Schema references; base class 'Acad:Ghost' for class 'Acad:Base Missing' not found.  
+ Error resolving Feature Schemas references; geometry property 'Geometry' for feature class 'Acad:NullIds1' not found. 

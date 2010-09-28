@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+	<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.autodesk.com/External" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:ext="http://www.autodesk.com/External" elementFormDefault="qualified" attributeFormDefault="unqualified">
+		<xs:annotation>
+			<xs:documentation>AutoCAD schema</xs:documentation>
+		</xs:annotation>
+		<xs:element name="GblBool" type="xs:boolean"/>
+		<xs:element name="GblDouble" type="ext:NonNegDblType"/>
+		<xs:element name="GblString">
+			<xs:annotation>
+				<xs:documentation>datavalue</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="100"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:element>
+		<xs:group name="ElemSubGroup">
+			<xs:sequence>
+				<xs:element name="GrpDouble" type="xs:double"/>
+				<xs:element ref="ext:GblDouble"/>
+			</xs:sequence>
+		</xs:group>
+		<xs:group name="ElemGroup">
+			<xs:choice>
+				<xs:element ref="ext:GblBool"/>
+				<xs:group ref="ext:ElemSubGroup"/>
+				<xs:element name="GrpObject" type="ext:TestObj1Type"/>
+			</xs:choice>
+		</xs:group>
+		<xs:attribute name="attBasRef" type="xs:int"/>
+		<xs:attribute name="attBasStringRef">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:maxLength value="15"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="attDollarRef" type="ext:DollarType"/>
+		<xs:attribute name="attSalaryRef">
+			<xs:simpleType>
+				<xs:restriction base="ext:DollarType">
+					<xs:totalDigits value="5"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="attPriceRef">
+			<xs:simpleType>
+				<xs:restriction base="ext:DollarType">
+					<xs:totalDigits value="10"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attributeGroup name="attSubGroupRef">
+			<xs:attribute name="grpAttNonNeg" type="xs:nonNegativeInteger"/>
+			<xs:attribute ref="ext:attPriceRef"/>
+		</xs:attributeGroup>
+		<xs:attributeGroup name="attGroupRef">
+			<xs:attribute name="grpAttBool" type="xs:boolean"/>
+			<xs:attributeGroup ref="ext:attSubGroupRef"/>
+		</xs:attributeGroup>
+		<xs:element name="TestFeat1" type="TestFeat1Type"/>
+		<xs:complexType name="TestFeat1Type" abstract="false">
+			<xs:complexContent>
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="IntProp" type="fdo:int32" default="5">
+							<xs:annotation>
+								<xs:documentation>seq</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element ref="ext:GblString"/>
+						<xs:group ref="ext:ElemGroup"/>
+						<xs:element name="GeomBas" type="gml:PointType"/>
+						<xs:element ref="gml:LineString"/>
+						<xs:element name="GeomType" type="ext:PolyType"/>
+						<xs:element ref="ext:LineProperty"/>
+						<xs:element name="FeatType" type="ext:TestFeat3PropertyType"/>
+						<xs:element ref="ext:TestFeat2Property"/>
+						<xs:element ref="ext:TestFeat3Property"/>
+						<xs:element name="InlineAssoc">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:restriction base="gml:FeatureAssociationType">
+										<xs:sequence>
+											<xs:element ref="ext:TestFeat3"/>
+										</xs:sequence>
+										<xs:attributeGroup ref="xlink:simpleLink"/>
+										<xs:attribute ref="gml:remoteSchema" use="prohibited"/>
+									</xs:restriction>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="AssocByType" type="ext:TestFeat2PropertyType"/>
+					</xs:sequence>
+					<xs:attribute name="attBasType" type="xs:double" default="3.14159"/>
+					<xs:attribute ref="ext:attBasRef" use="required"/>
+					<xs:attribute ref="ext:attBasStringRef" use="required"/>
+					<xs:attribute ref="ext:attDollarRef" use="required"/>
+					<xs:attribute ref="ext:attSalaryRef"/>
+					<xs:attributeGroup ref="ext:attGroupRef"/>
+					<xs:attribute name="attSkip" type="xs:string" use="prohibited"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat2" type="TestFeat2Type"/>
+		<xs:complexType name="TestFeat2Type" abstract="false">
+			<xs:complexContent>
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="IntProp" type="fdo:int32"/>
+						<xs:element name="StringProp">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="100"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<xs:element name="DollarProp" type="ext:DollarType"/>
+						<xs:element ref="gml:LineString"/>
+					</xs:sequence>
+					<xs:attribute name="attBasType" type="xs:double" default="3.14159"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat2r" type="TestFeat2rType"/>
+		<xs:complexType name="TestFeat2rType" abstract="false">
+			<xs:complexContent>
+				<xs:restriction base="ext:TestFeat2Type">
+					<xs:sequence>
+						<xs:element name="IntProp" type="fdo:int32"/>
+						<xs:element name="StringProp">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="20"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="attBasType" type="xs:double" default="3.14159" use="required"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat2re" type="TestFeat2reType"/>
+		<xs:complexType name="TestFeat2reType" abstract="false">
+			<xs:complexContent>
+				<xs:extension base="ext:TestFeat2rType">
+					<xs:sequence>
+						<xs:element name="BoolProp" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat3" type="ext:TestFeat3Type">
+			<xs:key name="TestFeat3Key">
+				<xs:selector xpath=".//TestFeat3"/>
+				<xs:field xpath="ID"/>
+			</xs:key>
+		</xs:element>
+		<xs:complexType name="TestFeat3Type" abstract="false">
+			<xs:complexContent>
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<xs:element name="ID" type="fdo:int64"/>
+						<xs:element name="DoubleProp" type="xs:double"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat2Property" type="ext:TestFeat2PropertyType"/>
+		<xs:complexType name="TestFeat2PropertyType">
+			<xs:complexContent>
+				<xs:restriction base="gml:FeatureAssociationType">
+					<xs:sequence>
+						<xs:element ref="ext:TestFeat3"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="xlink:simpleLink"/>
+					<xs:attribute ref="gml:remoteSchema" use="prohibited"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="TestFeat3Property" type="ext:TestFeat3PropertyType"/>
+		<xs:complexType name="TestFeat3PropertyType">
+			<xs:complexContent>
+				<xs:restriction base="gml:FeaturePropertyType">
+					<xs:sequence>
+						<xs:element ref="ext:TestFeat3"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="TestObj1Type" abstract="false">
+			<xs:sequence>
+				<xs:element name="IntProp" type="fdo:int32">
+					<xs:annotation>
+						<xs:documentation>seq</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="attBasType" type="xs:double"/>
+			<xs:attribute ref="ext:attBasRef" use="required"/>
+			<xs:attribute ref="ext:attBasStringRef" use="required"/>
+			<xs:attribute ref="ext:attDollarRef" use="required"/>
+			<xs:attribute ref="ext:attSalaryRef"/>
+			<xs:attributeGroup ref="ext:attGroupRef"/>
+			<xs:attribute name="attSkip" type="xs:string" use="prohibited"/>
+		</xs:complexType>
+		<xs:complexType name="PolyType">
+			<xs:complexContent>
+				<xs:extension base="gml:PolygonType">
+					<xs:sequence>
+						<xs:element name="PolyElem" type="xs:boolean"/>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:element name="LineProperty" type="ext:LinePropertyType"/>
+		<xs:complexType name="LinePropertyType">
+			<xs:complexContent>
+				<xs:restriction base="gml:CurvePropertyType">
+					<xs:sequence>
+						<xs:element ref="gml:LineString"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:simpleType name="DollarType">
+			<xs:restriction base="xs:decimal">
+				<xs:totalDigits value="15"/>
+				<xs:fractionDigits value="2"/>
+			</xs:restriction>
+		</xs:simpleType>
+		<xs:simpleType name="NonNegDblType">
+			<xs:restriction base="xs:double">
+				<xs:minInclusive value="0"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:schema>
+	<schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ctn.com/Unique" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:uni="http://www.ctn.com/Unique" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ext="http://www.autodesk.com/External" elementFormDefault="qualified" attributeFormDefault="unqualified">
+		<complexType name="TestFeat1Type">
+			<complexContent>
+				<extension base="ext:TestObj1Type">
+					<sequence>
+						<element name="prop1"  type="double"/>
+					</sequence>
+				</extension>
+			</complexContent>
+		</complexType>
+		<complexType name="TestFeat2Type">
+			<complexContent>
+				<extension base="uni:TestFeat1Type"/>
+			</complexContent>
+		</complexType>
+	</schema>
+</fdo:DataStore>

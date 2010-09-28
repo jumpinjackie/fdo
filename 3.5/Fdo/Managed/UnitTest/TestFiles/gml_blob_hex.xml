@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<wfs:FeatureCollection   xmlns:bsc="http://www.bsc-eoc.org/bsc"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:NAME>Digges Sound</bsc:NAME>
+        <bsc:binData>696e666573746174696f6e</bsc:binData>
+      </bsc:IBA>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+

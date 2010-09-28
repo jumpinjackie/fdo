@@ -1,0 +1,39 @@
+.TH "nearblack" 1 "4 Dec 2008" "GDAL" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+nearblack \- nearblack 
+convert nearly black/white borders to black
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+nearblack [-white] [-near dist] [-nb non_black_pixels]
+          [-o outfile] infile
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+This utility will scan an image and try to set all pixels that are nearly black (or nearly white) around the collar to exactly black (or white). This is often used to 'fix up' lossy compressed airphotos so that color pixels can be treated as transparent when mosaicing.
+.PP
+.IP "\fB\fB-o\fP \fIoutfile\fP:\fP" 1c
+The name of the output file to be created. Newly created files are currently always created with the HFA driver (Erdas Imagine - .img) 
+.IP "\fB\fB-white\fP:\fP" 1c
+Search for nearly white (255) pixels instead of nearly black pixels.  
+.IP "\fB\fB-near\fP \fIdist\fP:\fP" 1c
+Select how far from black (or white) the pixel values can be and still considered near black (white). Defaults to 15.  
+.IP "\fB\fB-nb\fP \fInon_black_pixels\fP:\fP" 1c
+number of non-black pixels that can be encountered before the giving up search inwards. Defaults to 2.  
+.IP "\fB\fIinfile\fP:\fP" 1c
+The input file. Any GDAL supported format, any number of bands, normally 8bit Byte bands.  
+.PP
+.PP
+The algorithm processes the image one scanline at a time. A scan 'in' is done from either end setting pixels to black (white) until at least 'non_black_pixels' pixels that are more than 'dist' gray levels away from black (white) have been encountered at which point the scan stops. The nearly black (white) pixels are set to black (white).
+.PP
+Note that this algorithm is only applied to horizontal scanlines, so a photo with an indentation in the top or bottom will not have that indentation identified. The processing is all done in 8bit (Bytes).
+.PP
+If the output file is omitted, the processed results will be written back to the input file - which must support update.
+.SH "AUTHORS"
+.PP
+Frank Warmerdam <warmerdam@pobox.com> 

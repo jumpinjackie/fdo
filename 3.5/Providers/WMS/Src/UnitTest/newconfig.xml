@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+  <gml:DerivedCRS gml:id="EPSG:26917">
+    <gml:metaDataProperty>
+      <gml:GenericMetaData>
+        <fdo:XYTolerance>0.001000</fdo:XYTolerance>
+        <fdo:ZTolerance>0.001000</fdo:ZTolerance>
+      </gml:GenericMetaData>
+    </gml:metaDataProperty>
+    <gml:srsName>EPSG:26917</gml:srsName>
+    <gml:validArea>
+      <gml:boundingBox>
+        <gml:pos>-172.367000 35.667300</gml:pos>
+        <gml:pos>-11.562400 83.829300</gml:pos>
+      </gml:boundingBox>
+    </gml:validArea>
+    <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:26917" />
+    <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" />
+    <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+    <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" />
+  </gml:DerivedCRS>
+  <gml:DerivedCRS gml:id="EPSG:42304">
+    <gml:metaDataProperty>
+      <gml:GenericMetaData>
+        <fdo:XYTolerance>0.001000</fdo:XYTolerance>
+        <fdo:ZTolerance>0.001000</fdo:ZTolerance>
+      </gml:GenericMetaData>
+    </gml:metaDataProperty>
+    <gml:srsName>EPSG:42304</gml:srsName>
+    <gml:validArea>
+      <gml:boundingBox>
+        <gml:pos>-2750560.000000 -936639.000000</gml:pos>
+        <gml:pos>3583870.000000 4673120.000000</gml:pos>
+      </gml:boundingBox>
+    </gml:validArea>
+    <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:42304" />
+    <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" />
+    <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+    <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" />
+  </gml:DerivedCRS>
+  <gml:DerivedCRS gml:id="EPSG:4326">
+    <gml:metaDataProperty>
+      <gml:GenericMetaData>
+        <fdo:XYTolerance>0.001000</fdo:XYTolerance>
+        <fdo:ZTolerance>0.001000</fdo:ZTolerance>
+      </gml:GenericMetaData>
+    </gml:metaDataProperty>
+    <gml:srsName>EPSG:4326</gml:srsName>
+    <gml:validArea>
+      <gml:boundingBox>
+        <gml:pos>-178.838000 31.884400</gml:pos>
+        <gml:pos>179.940000 89.825400</gml:pos>
+      </gml:boundingBox>
+    </gml:validArea>
+    <gml:baseCRS xlink:href="http://fdo.osgeo.org/schemas/feature/crs/#EPSG:4326" />
+    <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity" />
+    <gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">geographic</gml:derivedCRSType>
+    <gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian" />
+  </gml:DerivedCRS>
+  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/WMSLayers" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:WMSLayers="http://fdo.osgeo.org/schemas/feature/WMSLayers" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="rail" type="WMSLayers:railType" abstract="false" substitutionGroup="gml:_Feature">
+      <xs:key name="railKey">
+        <xs:selector xpath=".//rail" />
+        <xs:field xpath="Id" />
+      </xs:key>
+    </xs:element>
+    <xs:complexType name="railType" abstract="false" fdo:hasGeometry="false">
+      <xs:annotation>
+        <xs:documentation>Railroads</xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element name="Id">
+              <xs:annotation>
+                <xs:documentation />
+              </xs:annotation>
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:maxLength value="256" />
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:element>
+            <xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1024" fdo:defaultImageYSize="1024" fdo:srsName="EPSG:4326" />
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <SchemaMapping provider="OSGeo.WMS.3.5" name="WMSLayers" xmlns="http://fdowms.osgeo.org/schemas">
+    <complexType name="railType">
+      <RasterDefinition name="Image">
+        <Format>PNG</Format>
+        <FormatType>image/png; PhotometricInterpretation=RGB</FormatType>
+        <Transparent>true</Transparent>
+        <BackgroundColor />
+        <Time />
+        <Elevation />
+        <SpatialContext>EPSG:4326</SpatialContext>
+        <Layer name="WMS_Schema:rail" />
+      </RasterDefinition>
+    </complexType>
+  </SchemaMapping>
+</fdo:DataStore>
