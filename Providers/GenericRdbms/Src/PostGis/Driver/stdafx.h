@@ -74,6 +74,9 @@
 
 #ifdef _WIN32
 #define snprintf _snprintf
+#else
+#undef libintl_sprintf
+#define libintl_sprintf sprintf
 #endif
 
 #ifdef _WIN32
