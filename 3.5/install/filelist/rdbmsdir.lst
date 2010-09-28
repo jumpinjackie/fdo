@@ -1,5 +1,0 @@
-./include/Rdbms
-./include/Rdbms/Override
-./include/Rdbms/Override/MySql
-./include/Rdbms/Override/Odbc
-./lib/com

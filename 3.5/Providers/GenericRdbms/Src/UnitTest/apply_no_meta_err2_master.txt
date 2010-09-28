@@ -1,8 +1,0 @@
- Schema Acad has errors; cannot apply it 
- Base Property Acad:AcDbEntity.xdata (for property Acad:AcDb3dPolyline.xdata) has errors (1st error is ' Cannot add object property 'Acad:AcDbEntity.xdata' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables ') 
- Base Property Acad:AcDbEntity.Layer (for property Acad:AcDb3dPolyline.Layer) has errors (1st error is ' Cannot set Schema Attribute Dictionary for element 'Acad:AcDbEntity.Layer' in datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables ') 
- Cannot add object property 'Acad:Entity.xdata' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables 
- Cannot add object property 'Acad:AcDbEntity.xdata' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables 
- Cannot set Schema Attribute Dictionary for element 'Acad:AcDbEntity.Layer' in datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables 
- Cannot set Schema Attribute Dictionary for element 'Acad:AcDbEntity' in datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables 
- Cannot add object property 'Acad:AcDbVertexData.point' to datastore '{USER_DS}_apply_no_meta'; datastore has no FDO metadata tables 

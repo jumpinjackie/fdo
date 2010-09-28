@@ -1,7 +1,0 @@
- Schema Acad has errors; cannot apply it 
- Column {USER_DS}_apply_no_meta.Acad.Entity.Layer has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_apply_no_meta.Acad.Entity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
- Cannot delete table "Acad"."Entity" because it has rows 
- Column {USER_DS}_apply_no_meta.Acad.AcDbEntity.Layer has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_apply_no_meta.Acad.AcDbEntity.FeatId has conditional rows or rows with non-null values, cannot delete its property 
- Cannot delete table "Acad"."AcDbEntity" because it has rows 

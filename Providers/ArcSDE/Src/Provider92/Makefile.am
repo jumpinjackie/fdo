@@ -152,7 +152,6 @@ noinst_HEADERS = $(libArcSDEProvider92_la_SOURCES) \
 INCLUDES = \
   -I../Provider \
   -I$(FDO)/Unmanaged/Inc \
-  -I$(FDOTHIRDPARTY)/ESRI/ArcSDEClient92/Linux/include \
   -I$(SDEHOME)/include \
   -I$(FDOUTILITIES)/Common/Inc \
   -I../../Inc \
@@ -169,7 +168,6 @@ libArcSDEProvider92_la_LIBADD =  \
 libArcSDEProvider92_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/ESRI/ArcSDEClient92/Linux/lib \
   -L$(SDEHOME)/lib
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32

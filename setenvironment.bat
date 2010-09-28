@@ -58,7 +58,13 @@ SET XALANROOT=%FDOTHIRDPARTY%\apache\xml-xalan\c
 SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xml-xerces\c
 SET NLSDIR=%FDOTHIRDPARTY%\apache\xml-xalan\c\Src\xalanc\NLS
 
-if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
+if "%1" == ""          SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Windows
+if "%1" == "x86"       SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Windows
+if "%1" == "amd64"     SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
+if "%1" == "x64"       SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
+if "%1" == "ia64"      SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
+if "%1" == "x86_amd64" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
+if "%1" == "x86_ia64"  SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
 if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
 if not exist "%SDEHOME%" SET SDEHOME=
 if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92

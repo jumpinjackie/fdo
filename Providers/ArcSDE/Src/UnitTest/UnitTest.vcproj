@@ -2104,7 +2104,7 @@
 						Name="VCCustomBuildTool"
 						Description="Copying ESRI files"
 						CommandLine="if exist &quot;$(SDEHOME)\bin\pe.dll&quot; copy &quot;$(SDEHOME)\bin\pe.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sde.dll&quot; copy &quot;$(SDEHOME)\bin\sde.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sg.dll&quot; copy &quot;$(SDEHOME)\bin\sg.dll&quot; $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyArcSDE.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll"
+						AdditionalDependencies="$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll"
 						Outputs="$(OutDir)\CopyArcSDE.ilk"
 					/>
 				</FileConfiguration>
@@ -2125,8 +2125,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Copying ESRI files"
-						CommandLine="if exist &quot;$(SDEHOME)\bin\pe91.dll&quot; copy &quot;$(SDEHOME)\bin\pe91.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sde91.dll&quot; copy &quot;$(SDEHOME)\bin\sde91.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sg91.dll&quot; copy &quot;$(SDEHOME)\bin\sg91.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\pe.dll&quot; copy &quot;$(SDEHOME)\bin\pe.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sde.dll&quot; copy &quot;$(SDEHOME)\bin\sde.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sg.dll&quot; copy &quot;$(SDEHOME)\bin\sg.dll&quot; $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyArcSDE.ilk&#x0D;&#x0A;"
-						AdditionalDependencies="$(SDEHOME)\bin\pe91.dll;$(SDEHOME)\bin\sde91.dll;$(SDEHOME)\bin\sg91.dll;$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll"
+						CommandLine="if exist &quot;$(SDEHOME)\bin\pe.dll&quot; copy &quot;$(SDEHOME)\bin\pe.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sde.dll&quot; copy &quot;$(SDEHOME)\bin\sde.dll&quot; $(OutDir)&#x0D;&#x0A;if exist &quot;$(SDEHOME)\bin\sg.dll&quot; copy &quot;$(SDEHOME)\bin\sg.dll&quot; $(OutDir)&#x0D;&#x0A;echo &quot;delete me please&quot;&gt;$(OutDir)\CopyArcSDE.ilk&#x0D;&#x0A;"
+						AdditionalDependencies="$(SDEHOME)\bin\pe.dll;$(SDEHOME)\bin\sde.dll;$(SDEHOME)\bin\sg.dll"
 						Outputs="$(OutDir)\CopyArcSDE.ilk"
 					/>
 				</FileConfiguration>
