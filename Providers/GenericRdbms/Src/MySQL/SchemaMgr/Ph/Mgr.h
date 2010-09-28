@@ -41,6 +41,12 @@ public:
 
     ~FdoSmPhMySqlMgr(void);
 
+    // Get the MySQL version number for the current connection.
+    FdoStringP GetDbVersion();
+
+    // Get the maximum length for varchar columns, depending on the MySQL version.
+    FdoInt32 GetVarcharMaxLen();
+
     // Temporary object creator implementation
     virtual FdoSmPhDbObjectP CreateTempObject();
 
@@ -100,6 +106,9 @@ protected:
     virtual FdoSmPhDatabaseP CreateDatabase(FdoStringP database);
 
 private:
+    FdoStringP     mDbVersion;
+    FdoInt32   mVarcharMaxLen;
+
     FdoSmPhReaderP mDbObjectsReader;
     FdoSmPhReaderP mDbObjectsReaderD;
 

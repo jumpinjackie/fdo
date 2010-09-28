@@ -44,11 +44,7 @@ public:
         FdoSmPhMySqlColumn (reader),
         FdoSmPhColumn    ( 
             columnName, 
-            length <= mVarcharMaxLen ? L"VARCHAR" :
-                ( length <= mTextMaxLen ? L"TEXT" :
-                    ( length < mMediumTextMaxLen ? L"MEDIUMTEXT" : L"LONGTEXT"
-                    )
-                ), 
+            CalcTypeName(reader, length, parentObject, defaultValue),
             elementState, 
             parentObject, 
             bNullable, 
@@ -56,7 +52,8 @@ public:
 			defaultValue
         ),
         FdoSmPhColumnChar( length )
-    {}
+    {
+    }
 
     virtual ~FdoSmPhMySqlColumnChar(void) {}
 
@@ -69,6 +66,9 @@ public:
     virtual FdoStringP GetTypeSql();
 
     virtual FdoInt64 GetDbBinarySize();
+
+    // Determines the RDB type name of this column (varchar, text,, etc.).
+    static FdoStringP CalcTypeName( FdoSmPhRdColumnReader* reader, int length, FdoSmPhDbObject* parentObject, FdoPtr<FdoDataValue> defaultValue );
 
     static const FdoInt64 mVarcharMaxLen = 255;
     static const FdoInt64 mTextMaxLen = 65535;

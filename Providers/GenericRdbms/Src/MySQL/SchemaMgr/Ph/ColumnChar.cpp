@@ -19,6 +19,8 @@
 #include "stdafx.h"
 #include "ColumnChar.h"
 #include "CharacterSet.h"
+#include "Mgr.h"
+#include "DbObject.h"
 
 FdoStringP FdoSmPhMySqlColumnChar::GetTypeSql()
 {
@@ -45,3 +47,51 @@ FdoInt64 FdoSmPhMySqlColumnChar::GetDbBinarySize()
     // Size is max characters X max character size. 
     return charCount * charSize;
 }
+
+FdoStringP FdoSmPhMySqlColumnChar::CalcTypeName( FdoSmPhRdColumnReader* reader, int length, FdoSmPhDbObject* parentObject, FdoPtr<FdoDataValue> defaultValue )
+{
+    FdoStringP typeName;
+
+    if ( reader )
+    {
+        // Column already exist so just get RDB type name from reader.
+        typeName = reader->GetString(L"", L"type_string").Upper();
+    }
+    else
+    {
+        // new column, determine RDB type from length.
+
+        FdoSmPhMySqlMgrP mgr = parentObject->GetManager()->SmartCast<FdoSmPhMySqlMgr>();
+
+        // For versions before MySQL 5.0.3 maximum varchar length is 255. 
+        // For MySQL 5.0.3 and after, maximum varchar length is 65335. However, this is also the 
+        // maximum for all non-LOB columns in this column's table.
+        // At this point, we don't know how many other columns will be in the containing table so, 
+        // to be on the safe side, varchar is only used for columns with length of 255 or less.
+        // However, text columns cannot have default values. Columns of length 256 would be fairly 
+        // common so, if the MySQL version is 5.0.3 or after, and the column has a default value,
+        // set the maximum for varchar a bit higher (512).
+        //
+        // TODO: Move this calculation to just before the containing table is created or modified.
+        // Once we know all of the columns in the table, and their sizes, the varchar maximum size
+        // could potentially be set much higher.
+        FdoInt32 maxLen = 255;
+
+        if ( defaultValue ) 
+        {
+            maxLen = mgr->GetVarcharMaxLen();
+            if ( maxLen > 512 )
+                maxLen = 512;
+        }
+
+        typeName = 
+            length <= maxLen ? L"VARCHAR" :
+                ( length <= mTextMaxLen ? L"TEXT" :
+                    ( length <= mMediumTextMaxLen ? L"MEDIUMTEXT" : L"LONGTEXT"
+                    )
+                );
+    }
+
+    return typeName;
+}
+
