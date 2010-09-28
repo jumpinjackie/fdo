@@ -51,7 +51,8 @@ if test ! -e "$FDOTHIRDPARTY"; then
 fi
 
 # Fully-qualfied location of the ESRI ArcSDE SDK
-export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient91/Linux
+export SDEVER_ARCUNITTEST=92
+export SDEHOME=$FDOTHIRDPARTY/ESRI/ArcSDEClient931/Linux
 if test ! -e "$SDEHOME"; then
    echo ""
    echo "NOTE: The default location for the ArcSDE client SDK files"
