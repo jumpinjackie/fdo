@@ -150,9 +150,9 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
 FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream)
 {
 	FdoIoFileStreamP tempStream= FdoIoFileStream::Create( L"temp_stream.xml", L"w+" );
-	const int readSize = 4098;
-
-	FdoByte * buffer = new FdoByte[readSize];
+	
+	FdoByte buffer[4096];
+	const int readSize = sizeof(buffer)/sizeof(FdoByte);
 	do
 	{
 		FdoSize cntRead = stream->Read(buffer,readSize);
@@ -168,7 +168,6 @@ FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream)
 		tempStream->Write(buffer,cntRead);
 	}
 	while (true);
-	delete[] buffer;
 
 	tempStream->Reset();
 	return FDO_SAFE_ADDREF(tempStream.p);
