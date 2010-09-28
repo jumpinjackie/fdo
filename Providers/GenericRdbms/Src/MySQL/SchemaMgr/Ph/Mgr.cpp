@@ -22,18 +22,63 @@
 #include "TempObject.h"
 #include <Rdbms/Override/MySQL/MySqlOvPhysicalSchemaMapping.h>
 #include <Rdbms/Override/MySQL/MySqlOvStorageEngineType.h>
+#include <Sm/Ph/Rd/QueryReader.h>
 
 
 FdoSmPhMySqlMgr::MySqlStringMap FdoSmPhMySqlMgr::mMySqlReservedDbObjectNames;
 
 FdoSmPhMySqlMgr::FdoSmPhMySqlMgr(GdbiConnection* connection, FdoStringP mqlSchemaName) :
-    FdoSmPhGrdMgr(connection)
+    FdoSmPhGrdMgr(connection),
+    mVarcharMaxLen(0)
 {
     SetDefaultOwnerName(mqlSchemaName);
 }
 
 FdoSmPhMySqlMgr::~FdoSmPhMySqlMgr(void)
 {
+}
+
+FdoStringP FdoSmPhMySqlMgr::GetDbVersion()
+{
+
+    if ( mDbVersion == L"" ) {
+        GdbiConnection* gdbiConn = GetGdbiConnection();
+        GdbiCommands* gdbiCommands = gdbiConn->GetCommands();
+	    bool		  autoCmtChanged = false;
+
+        mDbVersion = L"0.0.0";
+        try {
+            FdoSmPhRowP row = new FdoSmPhRow( FDO_SAFE_ADDREF(this), L"db_ver" );
+            FdoSmPhFieldP field = new FdoSmPhField( row, L"db_version", row->CreateColumnChar(L"db_version", false, 50) );
+            FdoPtr<FdoSmPhRdQueryReader> rdr = CreateQueryReader( row, L"select version() as db_version" );
+
+            if ( rdr->ReadNext() ) {
+                mDbVersion = rdr->GetString( L"", L"db_version" );
+            }
+        }
+        catch ( FdoException* ex ) {
+            ex->Release();
+        }
+        catch ( ... ) {
+        }
+    }
+ 
+    return mDbVersion;
+}
+
+FdoInt32 FdoSmPhMySqlMgr::GetVarcharMaxLen()
+{
+    if ( mVarcharMaxLen == 0 )
+    {
+        mVarcharMaxLen = 65535;
+        FdoVectorP version503 = FdoVector::Create(L"5.0.3", L".");
+        FdoVectorP dbVersion = FdoVector::Create(GetDbVersion(), L".");
+
+        if ( dbVersion < version503 ) 
+            mVarcharMaxLen = 255;
+    }
+
+    return mVarcharMaxLen;
 }
 
 FdoSmPhDatabaseP FdoSmPhMySqlMgr::CreateDatabase(FdoStringP database)

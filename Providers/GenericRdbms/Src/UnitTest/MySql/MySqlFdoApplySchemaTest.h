@@ -28,11 +28,17 @@ class MySqlFdoApplySchemaTest : public FdoApplySchemaTest
 {
 public:
     CPPUNIT_TEST_SUB_SUITE (MySqlFdoApplySchemaTest, FdoApplySchemaTest);
+    CPPUNIT_TEST( TestCharSize );
     CPPUNIT_TEST_SUITE_END ();
 	
 public:
 	void  set_provider();
 	
+    void TestCharSize();
+
+    void CheckPropSize(FdoPropertiesP props, FdoString* propName, FdoInt32 expected );
+    void CheckColType(FdoSmPhColumnsP cols, FdoString* colName, FdoString* expected );
+
     // Helper methods for overrides tests; overriden by each provider:
    	virtual FdoRdbmsOvPhysicalSchemaMapping* CreateOverrideDefaults( FdoIConnection* connection, int passNum );
     virtual void CreateRdbmsSpecificElements(FdoIConnection* connection, FdoString* wDatastore);
@@ -49,6 +55,9 @@ public:
 	virtual FdoStringP GetParcelLastName();
 
     virtual bool DelayNLSSchema() {return false;};
+
+    static FdoString*      DB_NAME_CHARSIZE_SUFFIX;
+
 };
 
 
