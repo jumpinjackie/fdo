@@ -312,10 +312,10 @@ if test "$FDOCOREENABLE" == yes; then
       make clean
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      make install
+      sudo make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      make uninstall
+      sudo make uninstall
    fi
 fi
 
@@ -330,10 +330,10 @@ if test "$FDOENABLE" == yes; then
       make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      make install
+      sudo make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      make uninstall
+      sudo make uninstall
    fi
    
    if test "$BUILDDOCS" == build ; then
@@ -378,10 +378,10 @@ if test "$UTILENABLE" == yes; then
       make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      make install
+      sudo make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      make uninstall
+      sudo make uninstall
    fi
    
    popd >& /dev/null

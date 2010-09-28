@@ -25,7 +25,7 @@ export NLSDIR=$XALANCROOT/src/xalanc/NLS
 cd xerces
 ./runConfigure -p linux -P "$XERCESCROOT"
 make
-make install
+sudo make install
 cd ..
 
 cd xalan
