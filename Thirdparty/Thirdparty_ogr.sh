@@ -49,7 +49,7 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     echo     python support      - no
     echo     OGR support         - yes
     echo     postgreSQL support  - no
-    sudo sh ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
+    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
     make
     cp -f .libs/libgdal.a lib/
     cp -f .libs/libgdal.so lib/
