@@ -181,7 +181,7 @@ fi
 pushd "Thirdparty" >& /dev/null
 
 if test "$TYPEACTION" == clean ; then
-    make clean
+    sudo -E make clean
 fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
     if test "$ALLENABLE" == yes ; then
