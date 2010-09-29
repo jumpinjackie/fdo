@@ -141,3 +141,8 @@ if test ! $# -eq 1; then
 
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/fdo-3.6.0/lib:$SDEHOME/lib
 fi
+
+export XERCESCROOT=$FDOTHIRDPARTY/apache/xerces
+export XALANCROOT=$FDOTHIRDPARTY/apache/xalan
+export NLSDIR=$XALANCROOT/src/xalanc/NLS
+
