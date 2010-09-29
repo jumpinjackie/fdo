@@ -23,14 +23,14 @@ export XALANCROOT=$PWD/xalan
 export NLSDIR=$XALANCROOT/src/xalanc/NLS
 
 cd xerces
-sudo sh ./runConfigure -p linux -P "$XERCESCROOT"
+./runConfigure -p linux -P "$XERCESCROOT"
 make
 sudo make install
 cd ..
 
 cd xalan
-sudo sh ./runConfigure -p linux -P "$XALANCROOT"
+./runConfigure -p linux -P "$XALANCROOT"
 make
-sudo make install
+## sudo make install
 cd ..
 
