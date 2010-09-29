@@ -26,6 +26,6 @@ pushd . >& /dev/null
 cd Sqlite3.3.13
 echo Building Sqlite3.3.13
 cd Src
-make
+sudo -E make
 popd >& /dev/null
 
