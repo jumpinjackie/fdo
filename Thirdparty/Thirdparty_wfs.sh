@@ -36,7 +36,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./configure
-sudo sh ./configure --without-libidn
+./configure --without-libidn
 make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
@@ -49,7 +49,7 @@ echo Building openssl
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
-sudo sh ./config
+./config
 make clean
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
