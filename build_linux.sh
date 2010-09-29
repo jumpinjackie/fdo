@@ -307,10 +307,10 @@ CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE --p $PRE
 #build all of fdocore
 if test "$FDOCOREENABLE" == yes; then
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      make
+      sudo -E make
    fi
    if test "$TYPEACTION" == clean ; then
-      make clean
+      sudo -E make clean
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo -E make install
@@ -325,10 +325,10 @@ if test "$FDOENABLE" == yes; then
    pushd Fdo >& /dev/null
    
    if test "$TYPEACTION" == clean ; then
-      make clean
+      sudo -E make clean
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      make
+      sudo -E make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo -E make install
@@ -373,10 +373,10 @@ if test "$UTILENABLE" == yes; then
    pushd Utilities >& /dev/null
    
    if test "$TYPEACTION" == clean ; then
-      make clean
+      sudo -E make clean
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      make
+      sudo -E make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo -E make install
