@@ -44,7 +44,7 @@ pushd . >& /dev/null
 cd Sqlite3.3.13
 echo Building Sqlite3.3.13
 cd Src
-make
+sudo -E make
 popd >& /dev/null
 
 
@@ -64,7 +64,7 @@ cd libcurl
 echo Building libcurl
 chmod a+x ./configure
 ./configure --without-libidn
-make
+sudo -E make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 cp -f ./lib/.libs/libcurl.a ./lib/linux
@@ -77,7 +77,7 @@ mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
 ./config
-make
+sudo -E make
 mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 popd >& /dev/null
@@ -107,7 +107,7 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     echo     OGR support         - yes
     echo     postgreSQL support  - no
     ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
-    make
+    sudo -E make
     cp -f .libs/libgdal.a lib/
     cp -f .libs/libgdal.so lib/
     cp -f .libs/libgdal.so.1 lib/
