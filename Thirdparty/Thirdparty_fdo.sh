@@ -25,12 +25,14 @@
 pushd . >& /dev/null
 cd apache
 echo Building apche
-./build2.sh
+chmod a+x ./build2.sh
+sudo sh ./build2.sh
 popd >& /dev/null
 
 pushd . >& /dev/null
 cd linux/cppunit
 echo Building linux/cppunit
-./build
+chmod a+x ./build
+sudo sh ./build
 popd >& /dev/null
 

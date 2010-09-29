@@ -27,13 +27,15 @@
 pushd . >& /dev/null
 cd apache
 echo Building apche
-./build2.sh
+chmod a+x ./build2.sh
+sudo sh ./build2.sh
 popd >& /dev/null
 
 pushd . >& /dev/null
 cd linux/cppunit
 echo Building linux/cppunit
-./build
+chmod a+x ./build
+sudo sh ./build
 popd >& /dev/null
 
 
@@ -52,7 +54,7 @@ cd boost
 echo Building boost
 cd tools/jam/src
 chmod a+x ./build.sh
-./build.sh
+sudo sh ./build.sh
 cd ../../../
 ./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
 popd >& /dev/null
@@ -61,7 +63,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./configure
-./configure --without-libidn
+sudo sh ./configure --without-libidn
 make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
@@ -74,7 +76,7 @@ echo Building openssl
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
-./config
+sudo sh ./config
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
@@ -104,7 +106,7 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     echo     python support      - no
     echo     OGR support         - yes
     echo     postgreSQL support  - no
-    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
+    sudo sh ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
     make
     cp -f .libs/libgdal.a lib/
     cp -f .libs/libgdal.so lib/
