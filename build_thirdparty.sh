@@ -169,7 +169,8 @@ if test "$TYPECONFIGURE" == configure ; then
   libtoolize --force
   automake --add-missing --copy
   autoconf
-  ./configure --prefix="$PREFIXVAL"
+  chmod a+x ./configure
+  sudo sh ./configure --prefix="$PREFIXVAL"
 fi
 
 if test ! -e "Thirdparty/Thirdparty.sh"; then
@@ -184,19 +185,19 @@ if test "$TYPEACTION" == clean ; then
 fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
     if test "$ALLENABLE" == yes ; then
-      ./Thirdparty.sh
+      sudo sh ./Thirdparty.sh
     elif test "$FDOENABLE" == yes ; then
-      ./Thirdparty_fdo.sh
+      sudo sh ./Thirdparty_fdo.sh
     elif test "$SDFENABLE" == yes ; then
-      ./Thirdparty_sdf.sh
+      sudo sh ./Thirdparty_sdf.sh
     elif test "$WMSENABLE" == yes ; then
-      ./Thirdparty_wms.sh
+      sudo sh ./Thirdparty_wms.sh
     elif test "$WFSENABLE" == yes ; then
-      ./Thirdparty_wfs.sh
+      sudo sh ./Thirdparty_wfs.sh
     elif test "$GDALENABLE" == yes ; then
-      ./Thirdparty_gdal.sh
+      sudo sh ./Thirdparty_gdal.sh
     elif test "$OGRENABLE" == yes ; then
-      ./Thirdparty_ogr.sh
+      sudo sh ./Thirdparty_ogr.sh
     fi
 fi
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
