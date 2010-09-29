@@ -293,9 +293,9 @@ if test "$TYPECONFIGURE" == configure ; then
 
 	  chmod a+x ./configure
       if test "$TYPEBUILD" == release; then
-         sudo sh ./configure --prefix="$PREFIXVAL"
+         ./configure --prefix="$PREFIXVAL"
       else
-         sudo sh ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+         ./configure --enable-debug=yes --prefix="$PREFIXVAL"
       fi
    fi
 fi
@@ -313,10 +313,10 @@ if test "$FDOCOREENABLE" == yes; then
       make clean
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      sudo make install
+      sudo -E make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      sudo make uninstall
+      sudo -E make uninstall
    fi
 fi
 
@@ -331,10 +331,10 @@ if test "$FDOENABLE" == yes; then
       make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      sudo make install
+      sudo -E make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      sudo make uninstall
+      sudo -E make uninstall
    fi
    
    if test "$BUILDDOCS" == build ; then
@@ -379,10 +379,10 @@ if test "$UTILENABLE" == yes; then
       make
    fi
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      sudo make install
+      sudo -E make install
    fi
    if test "$TYPEACTION" == uninstall ; then
-      sudo make uninstall
+      sudo -E make uninstall
    fi
    
    popd >& /dev/null
@@ -392,7 +392,8 @@ fi
 if test "$SHPENABLE" == yes; then
    if test -e "Providers/SHP/build_linux.sh"; then
        pushd Providers/SHP >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -401,7 +402,8 @@ fi
 if test "$SDFENABLE" == yes; then
    if test -e "Providers/SDF/build_linux.sh"; then
        pushd Providers/SDF >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -410,7 +412,8 @@ fi
 if test "$WFSENABLE" == yes; then
    if test -e "Providers/WFS/build_linux.sh"; then
        pushd Providers/WFS >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -419,7 +422,8 @@ fi
 if test "$WMSENABLE" == yes; then
    if test -e "Providers/WMS/build_linux.sh"; then
        pushd Providers/WMS >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -428,7 +432,8 @@ fi
 if test "$ARCENABLE" == yes; then
    if test -e "Providers/ArcSDE/build_linux.sh"; then
        pushd Providers/ArcSDE >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -437,7 +442,8 @@ fi
 if test "$RDBMSENABLE" == yes; then
    if test -e "Providers/GenericRdbms/build_linux.sh"; then
        pushd Providers/GenericRdbms >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -446,7 +452,8 @@ fi
 if test "$GDALENABLE" == yes; then
    if test -e "Providers/GDAL/build_linux.sh"; then
        pushd Providers/GDAL >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -455,7 +462,8 @@ fi
 if test "$OGRENABLE" == yes; then
    if test -e "Providers/OGR/build_linux.sh"; then
        pushd Providers/OGR >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -464,7 +472,8 @@ fi
 if test "$POSTGISENABLE" == yes; then
    if test -e "Providers/PostGIS/build_linux.sh"; then
        pushd Providers/PostGIS >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -473,7 +482,8 @@ fi
 if test "$KINGORACLEENABLE" == yes; then
    if test -e "Providers/KingOracle/build_linux.sh"; then
        pushd Providers/KingOracle >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -482,7 +492,8 @@ fi
 if test "$SQLITEENABLE" == yes; then
    if test -e "Providers/SQLite/build_linux.sh"; then
        pushd Providers/SQLite >& /dev/null
-       sudo sh ./build_linux.sh $CMDEX
+	   chmod a+x ./build_linux.sh
+       sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
