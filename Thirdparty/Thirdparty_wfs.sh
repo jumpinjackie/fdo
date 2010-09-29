@@ -27,7 +27,7 @@ cd boost
 echo Building boost
 cd tools/jam/src
 chmod a+x ./build.sh
-sudo sh ./build.sh
+sudo -E sh ./build.sh
 cd ../../../
 ./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
 popd >& /dev/null
