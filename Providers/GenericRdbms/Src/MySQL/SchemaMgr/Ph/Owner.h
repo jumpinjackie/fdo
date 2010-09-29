@@ -152,6 +152,8 @@ private:
     void DropTempTable( FdoStringP tableName );
     // Generate next unique number for temporary table name.
     FdoInt32 NextTempTableNum();
+	// Check if the server has a higher version than 5.5.0, including 5.5.0.
+	FdoBoolean IsHigherVersionThan550();
 
     FdoStringP mCharacterSetName;
 
