@@ -36,7 +36,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./configure
-sudo sh ./configure --without-libidn
+./configure --without-libidn
 make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
@@ -49,14 +49,14 @@ echo Building openssl
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
 chmod a+x ./config
-sudo sh ./config
+./config
 make
 mv -f ./libssl.a ./lib/linux/libssl.a
 mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 popd >& /dev/null
 
 ## Thirdparty_WMS/GDAL
-if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then 
+if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     pushd . >& /dev/null
     cd gdal
     echo Building gdal
@@ -76,9 +76,9 @@ if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
     echo     geotiff support     - internal
     echo     libz support        - internal
     echo     python support      - no
-    echo     OGR support         - no
+    echo     OGR support         - yes
     echo     postgreSQL support  - no
-    sudo sh ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --without-ogr --with-pg=no --with-python=no --with-libz=internal
+    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal
     make
     cp -f .libs/libgdal.a lib/
     cp -f .libs/libgdal.so lib/
