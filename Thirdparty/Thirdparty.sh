@@ -28,14 +28,14 @@ pushd . >& /dev/null
 cd apache
 echo Building apche
 chmod a+x ./build2.sh
-sudo sh ./build2.sh
+sudo -E sh ./build2.sh
 popd >& /dev/null
 
 pushd . >& /dev/null
 cd linux/cppunit
 echo Building linux/cppunit
 chmod a+x ./build
-sudo sh ./build
+sudo -E sh ./build
 popd >& /dev/null
 
 
@@ -54,7 +54,7 @@ cd boost
 echo Building boost
 cd tools/jam/src
 chmod a+x ./build.sh
-sudo sh ./build.sh
+sudo -E sh ./build.sh
 cd ../../../
 ./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
 popd >& /dev/null
