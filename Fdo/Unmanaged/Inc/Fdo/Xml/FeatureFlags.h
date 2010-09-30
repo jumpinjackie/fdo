@@ -233,7 +233,7 @@ public:
     /// \param prefix 
     /// Input the GML ID Prefix
     /// 
-	FDO_API virtual void SetGmlIdPrefix( FdoString* prefix );
+	FDO_API virtual void SetGmlIdPrefix( FdoString* prefix ); 
 
     /// \brief
     /// Gets the current GML ID prefix.
@@ -297,6 +297,72 @@ public:
     /// 
     FDO_API virtual FdoString* GetDefaultNamespace();
 
+    /// \brief
+    /// Sets the default namespace prefix
+    /// If the prefix is not set then it could be defaulted to the schema name. 
+    /// 
+    /// 
+    /// \param defaultNamespace 
+    /// Default namespace prefix.
+    /// 
+	FDO_API virtual void SetDefaultNamespacePrefix(FdoString* prefix);
+
+	/// \brief
+    /// Gets the default namespace prefix.
+    /// 
+    /// \return
+    /// Returns the default namespace prefix.
+    /// 
+	FDO_API virtual FdoString* GetDefaultNamespacePrefix();
+
+    /// \brief
+    /// Sets the property name collection which is going to be composed as gml id values.
+    /// 
+    /// \param gmlIDRelatePropertyNames 
+    /// related property name collection in FDO
+    ///
+    FDO_API virtual void SetGmlIDRelatePropertyNames(FdoStringCollection* gmlIDRelatePropertyNames);
+
+    /// \brief
+    /// Gets the property name collection which is going to be used as gml id values.
+    /// 
+    /// \return
+    /// Returns the property name collection.
+    /// 
+    FDO_API virtual FdoStringCollection* GetGmlIDRelatePropertyNames();
+
+    /// \brief
+    /// Sets the property name which is going to be used as gml name.
+    /// 
+    /// \param gmlNameRelatePropertyName 
+    /// related property name in FDO
+    ///
+    FDO_API virtual void SetGmlNameRelatePropertyName(FdoString* gmlNameRelatePropertyName);
+
+    /// \brief
+    /// Gets the property name which is set as gml name.
+    /// 
+    /// \return
+    /// Returns the property name.
+    /// 
+    FDO_API virtual FdoString* GetGmlNameRelatePropertyName();
+
+    /// \brief
+    /// Sets the property name which is going to be used as gml description.
+    /// 
+    /// \param gmlDescriptionRelatePropertyName 
+    /// related property name in FDO
+    ///
+    FDO_API virtual void SetGmlDescriptionRelatePropertyName(FdoString* gmlDescriptionRelatePropertyName);
+
+    /// \brief
+    /// Gets the property name which is set as gml description.
+    /// 
+    /// \return
+    /// Returns the property name.
+    /// 
+    FDO_API virtual FdoString* GetGmlDescriptionRelatePropertyName();
+
 protected:
 	FdoXmlFeatureFlags();
     FdoXmlFeatureFlags(FdoString* url, ErrorLevel errorLevel, FdoBoolean nameAdjust, ConflictOption conflictOption);
@@ -314,7 +380,10 @@ private:
     FdoPtr<FdoStringCollection> mNamespaces;
     FdoPtr<FdoStringCollection> mSchemaLocations;
     FdoStringP mDefaultNamespace;
-
+	FdoStringP mDefaultNamespacePrefix;
+	FdoPtr<FdoStringCollection> mGmlIDRelatePropertyNames;
+	FdoStringP mGmlNameRelatePropertyName;
+	FdoStringP mGmlDescriptionRelatePropertyName;
 };
 
 /// \ingroup (typedefs)
