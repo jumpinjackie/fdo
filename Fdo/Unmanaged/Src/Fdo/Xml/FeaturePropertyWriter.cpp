@@ -53,7 +53,6 @@ FdoXmlWriter* FdoXmlFeaturePropertyWriter::GetXmlWriter() {
     return FDO_SAFE_ADDREF(m_writer.p);
 }
 
-
 void FdoXmlFeaturePropertyWriter::SetClassDefinition(FdoClassDefinition* classDefinition) {
     m_classDef = FDO_SAFE_ADDREF(classDefinition);
 }
@@ -62,6 +61,10 @@ void FdoXmlFeaturePropertyWriter::WriteFeatureStart(FdoString* startTag) {
     if (startTag == NULL)
         startTag = m_classDef->GetName();
     m_writer->WriteStartElement(startTag);
+}
+
+void FdoXmlFeaturePropertyWriter::WriteAtribute(FdoString* name, FdoString* value) {
+	m_writer->WriteAttribute(name,value);
 }
 
 void FdoXmlFeaturePropertyWriter::WriteFeatureEnd() {

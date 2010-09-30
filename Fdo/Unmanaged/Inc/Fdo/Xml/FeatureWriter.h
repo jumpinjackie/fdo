@@ -164,6 +164,14 @@ public:
     /// 
     FDO_API	virtual void WriteFeature(FdoString* elementTag = NULL);
 
+    /// \brief
+    /// clear the propeties stored in this feature writer.
+    /// 
+    /// \return
+    /// returns nothing
+    /// 
+	FDO_API void ClearProperties();
+
 protected:
     FdoXmlFeatureWriter();
     FdoXmlFeatureWriter(FdoXmlFeaturePropertyWriter* writer, FdoXmlFeatureFlags* flags);

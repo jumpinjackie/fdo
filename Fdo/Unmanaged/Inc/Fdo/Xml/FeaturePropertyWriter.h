@@ -91,6 +91,15 @@ public:
     FDO_API void WriteFeatureStart(FdoString* startTag);
 
     /// \brief
+    /// Write an attribute to the feature element
+    /// 
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+	FDO_API void WriteAtribute(FdoString* name, FdoString* value);
+
+    /// \brief
     /// Closes the current feature by writing the feature element and feature member 
     /// element end tags.
     /// 

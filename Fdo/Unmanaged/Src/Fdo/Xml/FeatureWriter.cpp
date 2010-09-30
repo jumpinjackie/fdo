@@ -23,6 +23,7 @@
 #include <Fdo.h>
 #include <Fdo/Xml/FeatureWriter.h>
 #include <vector>
+#include <StringUtility.h>
 
 //
 // definition and implementation for class FdoXmlFeatureWriterCollection
@@ -251,6 +252,11 @@ void FdoXmlFeatureWriter::SetProperty(FdoPropertyValue* propertyValue) {
     mPropertyValues->Add(propertyValue);
 }
 
+void FdoXmlFeatureWriter::ClearProperties() {
+
+	mPropertyValues->Clear();
+}
+
 FdoXmlFeatureWriter* FdoXmlFeatureWriter::GetObjectWriter(FdoString* propertyName) {
     // first check if it already exists
     FdoInt32 count = mObjectPropertyNames->GetCount();
@@ -344,20 +350,93 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
                     FdoStringCollection* associationPropertyNames,
                     FdoXmlFeatureWriterCollection* associationPropertyWriters) 
 {
+	FdoStringP prefixName = mFlags->GetDefaultNamespacePrefix();
+	if (prefixName == NULL) // use schema name as default prefix
+	{
+		FdoPtr<FdoFeatureSchema>  schema = classDef->GetFeatureSchema();
+		if (schema != NULL)
+		{
+			FdoPtr<FdoXmlWriter> _writer = mPropertyWriter->GetXmlWriter();
+			FdoStringP schemaName = _writer->EncodeName(schema->GetName());
+			prefixName = schemaName;
+		}
+	}
+	
+	if (prefixName != NULL)
+		prefixName += L":";
+
     if (elementTag == NULL)
-        mPropertyWriter->WriteFeatureStart(classDef->GetName());
-    else
-        mPropertyWriter->WriteFeatureStart(elementTag);
+        mPropertyWriter->WriteFeatureStart(prefixName + classDef->GetName());
+	else if (FdoStringUtility::FindCharacter(elementTag,L':') == NULL)
+        mPropertyWriter->WriteFeatureStart(prefixName + elementTag);
+	else // have prefix already!
+		mPropertyWriter->WriteFeatureStart(elementTag);
 
 	mPropertyWriter->SetClassDefinition(classDef);
 
     FdoInt32 count = propertyValues->GetCount();
     int i;
+
+	//pre-process the gml:id attribute
+	FdoPtr<FdoStringCollection> idProperties = mFlags->GetGmlIDRelatePropertyNames();
+	if (idProperties != NULL)
+	{
+		FdoStringP value;
+		for (i = 0; i < count; i ++) {
+			FdoPtr<FdoPropertyValue> propValue = propertyValues->GetItem(i);
+			FdoPtr<FdoIdentifier> name = propValue->GetName();
+			if (idProperties->IndexOf(name->GetName())!= -1)
+			{
+				//use it as part of the gml:id values
+				FdoPtr<FdoValueExpression> valueExpression = propValue->GetValue();
+				FdoDataValue* dataValue = static_cast<FdoDataValue*>(valueExpression.p);
+				FdoStringP temp;
+				if (dataValue && !dataValue->IsNull())
+				{
+					FdoDataType dataType = dataValue->GetDataType();
+
+					if (dataType == FdoDataType_String)
+						temp =static_cast<FdoStringValue*>(dataValue)->GetString();
+					else
+						temp = dataValue->ToString();
+				}
+
+				// sperate the values with "\_" to keep its uniqueness as gml:id
+				// like: x\_y\_z, no need to add for first value
+				// use the value directly if there is only one
+				if (value.GetLength() != 0) 
+				{
+					value += L"_";	
+					// scan the character and replace the reserved "_" with "\_"(escape character) to make sure uniqueness
+					// note: replace "\" with "\\" first
+					temp = temp.Replace(L"\\",L"\\\\").Replace(L"_",L"\\_");
+				}
+				value += temp;
+			}
+		}
+		if (value != NULL) // set gml:id attribute only when we got values
+		{
+			FdoStringP qValue = classDef->GetName();
+			qValue += L".";
+			qValue += value;
+
+			mPropertyWriter->WriteAtribute(L"gml:id",qValue);
+		}
+	}
+
     for (i = 0; i < count; i ++) {
         FdoPtr<FdoPropertyValue> propValue = propertyValues->GetItem(i);
         FdoPtr<FdoIdentifier> name = propValue->GetName();
-        mPropertyWriter->WriteProperty(name->GetName(), propValue);
-
+		if (idProperties != NULL)
+			if (idProperties->IndexOf(name->GetName())!= -1)
+				continue;
+		FdoStringP qName = prefixName + name->GetName();
+		//handle gml:name/description as special cases
+		if (wcscmp(mFlags->GetGmlNameRelatePropertyName(),name->GetName()) ==0)
+			qName = L"gml:name";
+		if (wcscmp(mFlags->GetGmlDescriptionRelatePropertyName(),name->GetName()) ==0)
+			qName = L"gml:description";
+		mPropertyWriter->WriteProperty(qName, propValue);
     }
     // For object properties
     count = objectPropertyWriters->GetCount();

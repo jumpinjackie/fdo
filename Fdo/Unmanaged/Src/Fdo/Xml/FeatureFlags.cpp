@@ -181,3 +181,37 @@ FdoString* FdoXmlFeatureFlags::GetDefaultNamespace() {
     return mDefaultNamespace;
 }
 
+void FdoXmlFeatureFlags::SetDefaultNamespacePrefix(FdoString* prefix) {
+    mDefaultNamespacePrefix = prefix;
+}
+
+FdoString* FdoXmlFeatureFlags::GetDefaultNamespacePrefix() {
+    return mDefaultNamespacePrefix;
+}
+
+void FdoXmlFeatureFlags::SetGmlIDRelatePropertyNames(FdoStringCollection* gmlIDRelatePropertyNames) {
+    mGmlIDRelatePropertyNames = gmlIDRelatePropertyNames;
+}
+
+FdoStringCollection* FdoXmlFeatureFlags::GetGmlIDRelatePropertyNames() {
+    return FDO_SAFE_ADDREF(mGmlIDRelatePropertyNames.p);
+}
+
+
+void FdoXmlFeatureFlags::SetGmlNameRelatePropertyName(FdoString* gmlNameRelatePropertyName) {
+    mGmlNameRelatePropertyName = gmlNameRelatePropertyName;
+}
+
+FdoString* FdoXmlFeatureFlags::GetGmlNameRelatePropertyName() {
+    return mGmlNameRelatePropertyName;
+}
+
+void FdoXmlFeatureFlags::SetGmlDescriptionRelatePropertyName(FdoString* gmlDescriptionRelatePropertyName) {
+    mGmlDescriptionRelatePropertyName = gmlDescriptionRelatePropertyName;
+}
+
+FdoString* FdoXmlFeatureFlags::GetGmlDescriptionRelatePropertyName() {
+    return mGmlDescriptionRelatePropertyName;
+}
+
+
