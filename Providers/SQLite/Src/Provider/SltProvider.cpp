@@ -759,6 +759,7 @@ SltReader* SltConnection::SelectView(FdoClassDefinition* fc,
             idf->Process(&et);
             StringBuffer* exp = et.GetExpression();
             sb.Append(exp->Data(), exp->Length());
+            et.Reset();
         }
     }
     else
