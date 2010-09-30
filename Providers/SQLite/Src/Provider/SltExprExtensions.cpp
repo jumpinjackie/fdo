@@ -27,12 +27,12 @@
 
 #define SQLITE_INFO_STRING(/*IN*/str, /*OUT*/len, /*OUT*/lenInChars, /*IN-OUT*/charsToStudy) {  \
   len = lenInChars = 0;                                                                         \
-  const char* z2 = NULL;                                                                        \
-  for(z2 = str; *z2 && charsToStudy; charsToStudy--) {                                          \
+  const unsigned char* z2 = NULL;                                                               \
+  for(z2 = (const unsigned char*)str; *z2 && charsToStudy; charsToStudy--) {                    \
       lenInChars++;                                                                             \
       SQLITE_SKIP_UTF8(z2);                                                                     \
   }                                                                                             \
-  len = (z2 - str);                                                                             \
+  len = (z2 - (const unsigned char*)str);                                                       \
 }                                                                                               \
 
 class DateTokenFormat;
@@ -1150,7 +1150,7 @@ static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
                 size_t sub_idx = 0; 
                 curr_char[sub_idx++] = *z2;
                 // SQLITE_SKIP_UTF8 with copy character into curr_char
-                if( (*(z2++))>=0xc0 )
+                if( ((unsigned char)*(z2++))>=0xc0 )
                 {
                     while((*z2 & 0xc0) == 0x80)
                     {
@@ -1168,7 +1168,7 @@ static void strFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
                         const char* z3 = a3+pos;
                         *(res + main_idx++) = *z3;
                         // SQLITE_SKIP_UTF8 with copy character into res
-                        if( (*(z3++))>=0xc0 )
+                        if( ((unsigned char)*(z3++))>=0xc0 )
                         {
                             while((*z3 & 0xc0) == 0x80)
                             {
