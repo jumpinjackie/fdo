@@ -316,7 +316,9 @@ int SltConnection::PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool
                           "sr_name TEXT, "
                           "auth_name TEXT,"
                           "auth_srid INTEGER,"
-                          "srtext TEXT "
+                          "srtext TEXT,"
+                          "sr_xytol REAL,"
+                          "sr_ztol REAL "
                           ");";
 
     char* zerr = NULL;
