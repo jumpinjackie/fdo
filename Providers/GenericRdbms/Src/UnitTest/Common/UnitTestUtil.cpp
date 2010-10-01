@@ -1859,8 +1859,9 @@ void UnitTestUtil::ExportDb(
                         selCmd->SetFeatureClassName(classDef->GetQualifiedName());
                         FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
 
-                        FdoXmlFeatureWriterP featureWriter = FdoXmlFeatureWriter::Create(writer);
                         FdoXmlFeatureFlagsP featureFlags = FdoXmlFeatureFlags::Create();
+                        featureFlags->SetDefaultNamespace( FdoStringP(L"http://") + (featureFlags->GetUrl()) + L"/" + writer->EncodeName(schema->GetName()) );
+                        FdoXmlFeatureWriterP featureWriter = FdoXmlFeatureWriter::Create(writer, featureFlags);
                         FdoXmlFeatureSerializer::XmlSerialize( rdr, featureWriter, featureFlags );
                     }
                 }
