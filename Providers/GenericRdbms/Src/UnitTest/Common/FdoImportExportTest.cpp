@@ -434,8 +434,9 @@ void FdoImportExportTest::Export( FdoIConnection* connection, FdoIoStream* strea
             selCmd->SetFeatureClassName(selClass->GetQualifiedName());
             FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
 
-            FdoXmlFeatureWriterP featureWriter = FdoXmlFeatureWriter::Create(writer);
             FdoXmlFeatureFlagsP featureFlags = FdoXmlFeatureFlags::Create();
+            featureFlags->SetDefaultNamespace( FdoStringP(L"http://") + (featureFlags->GetUrl()) + L"/Schema1" );
+            FdoXmlFeatureWriterP featureWriter = FdoXmlFeatureWriter::Create(writer, featureFlags);
             FdoXmlFeatureSerializer::XmlSerialize( rdr, featureWriter, featureFlags );
         }
     }

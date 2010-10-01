@@ -1885,7 +1885,8 @@ xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" \
 xmlns:fdo=\"http://fdo.osgeo.org/schemas\" \
 xmlns:ora=\"http://www.autodesk.com/isd/fdo/OracleProvider\" \
 xmlns:mql=\"http://fdomysql.osgeo.org/schemas\" \
-xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
+xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\" \
+xmlns:Schema1=\"http://fdo.osgeo.org/schemas/feature/Schema1\">\
 <xsl:template match=\"fdo:DataStore\">\
     <xsl:copy>\
         <xsl:apply-templates select=\"@*\"/>\
@@ -1932,7 +1933,7 @@ xmlns:sqs=\"http://www.autodesk.com/isd/fdo/SQLServerProvider\">\
 <xsl:template match=\"gml:FeatureColection\">\
     <xsl:copy>\
         <xsl:apply-templates select=\"gml:featureMember\">\
-            <xsl:sort select=\"ClassB1/Prop1\" />\
+        <xsl:sort select=\"Schema1:ClassB1/Prop1\" />\
         </xsl:apply-templates>\
     </xsl:copy>\
 </xsl:template>\
