@@ -64,6 +64,7 @@ FdoDataType* c_KgOraSchemaCapabilities::GetDataTypes (FdoInt32& Length)
         FdoDataType_Single,
         FdoDataType_String,
         FdoDataType_BLOB,
+        FdoDataType_CLOB,
     };
 
     Length = sizeof (types) / sizeof (FdoDataType);

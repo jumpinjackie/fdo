@@ -3,6 +3,7 @@
 class ut_Geometries : public CppUnit::TestFixture
 {
   CPPUNIT_TEST_SUITE( ut_Geometries );
+    CPPUNIT_TEST( TestSdoPointType );    
     CPPUNIT_TEST( GeometryTypes );    
     CPPUNIT_TEST( TestCurvedSegment );  
     CPPUNIT_TEST( TestPolygons3D );  
@@ -22,6 +23,7 @@ public:
   void TestPolygons3D();
   void TestHasElevation();
   void TestGeometryCollection();
+  void TestSdoPointType();
 };
 
 

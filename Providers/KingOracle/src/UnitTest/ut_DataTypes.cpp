@@ -17,6 +17,48 @@ ut_DataTypes::~ut_DataTypes(void)
 {
 }
 
+void ut_DataTypes::elektro_lob()
+{
+  FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpentConnection(L"Username=elektro;Password=elektro;Service=//192.168.0.38:1522/epdb;OracleSchema=ELEKTRO;KingFdoClass=MYFDOCLASS");    
+  
+  FdoPtr<FdoIDescribeSchema> comm_fdoschema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+  FdoPtr<FdoFeatureSchemaCollection> coll_schema = comm_fdoschema->Execute();
+  
+  FdoPtr<FdoFeatureSchema> schema = coll_schema->FindItem(L"KINGORA");
+  
+  
+  FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
+  comm_select->SetFeatureClassName(L"KINGFDOINIT");
+  
+  FdoPtr<FdoIFeatureReader> reader = comm_select->Execute();
+  if( reader->ReadNext() )
+  {
+    bool isnull = reader->IsNull(L"INIT");
+    FdoPtr<FdoLOBValue> lobval = reader->GetLOB(L"INIT");
+    FdoPtr<FdoByteArray> barray = lobval->GetData();
+    long size = barray->GetCount();
+    FdoByte *bytes = barray->GetData();
+    
+    
+    FdoPtr<FdoByteArray> barray2 = FdoByteArray::Create(size+2);
+    FdoByteArray::Append(barray2,size,bytes);
+    FdoByteArray::Append(barray2,0);
+    FdoByteArray::Append(barray2,0);
+    
+    long size2 = barray2->GetCount();
+    FdoByte *bytes2 = barray2->GetData();
+    
+    FdoString * str =  (FdoString *)bytes2;
+    
+    FdoStringP strp(str,true);
+    long strlen = strp.GetLength();
+    
+    
+    int a=1;
+    a=a+1;
+  }
+}
+
 void ut_DataTypes::DataTypes()
 {
 
@@ -28,12 +70,12 @@ void ut_DataTypes::DataTypes()
 try
 {  
   comm->SetSQLStatement(L"CREATE TABLE ut_DataTypes( \
-                          dt_varchar2 VARCHAR2(64), dt_decimal NUMBER(10,0) \
+                          dt_varchar2 VARCHAR2(64), dt_int32 NUMBER(8,0) \
                           ,dt_double NUMBER(10,3), dt_byte CHAR(1) \
                           ,dt_charstring CHAR(128), dt_binfloat BINARY_FLOAT \
                           ,dt_bindouble BINARY_DOUBLE, dt_datetime DATE \
                           ,dt_date DATE ,dt_time DATE \
-                          ,dt_geom SDO_GEOMETRY )"
+                          ,dt_geom SDO_GEOMETRY, dt_clob CLOB )"
                        );
   comm->ExecuteNonQuery();
 }
@@ -50,24 +92,24 @@ try
                         ,TO_DATE('01-05-1997 15:16:17','MM-DD-YYYY HH24-MI-SS') \
                         ,TO_DATE('12-02-1998','MM-DD-YYYY') \
                         ,TO_DATE('9:10:11','HH24-MI-SS') \
-                        ,NULL\
+                        ,NULL,'some CLOB value'\
                         )");
   comm->ExecuteNonQuery();
   comm->SetSQLStatement(L"INSERT INTO ut_DataTypes VALUES('dt_varchar2' ,10 ,10.10 ,'b' ,'dt_charstring' ,20.20, 111.111 \
                         ,TO_DATE('01-05-1997 15:16:17','MM-DD-YYYY HH24-MI-SS') \
                         ,TO_DATE('12-02-1998','MM-DD-YYYY') \
                         ,TO_DATE('9:10:11','HH24-MI-SS') \
-                        ,NULL\
+                        ,NULL,'some CLOB value'\
                         )");
   comm->ExecuteNonQuery();
   
   // query table row
   comm->SetSQLStatement(L"SELECT \
-                        dt_varchar2, dt_decimal  \
+                        dt_varchar2, dt_int32  \
                         ,dt_double , dt_byte  \
                         ,dt_charstring , dt_binfloat  \
                         ,dt_bindouble , dt_datetime  \
-                        ,dt_date  ,dt_time ,dt_geom \
+                        ,dt_date  ,dt_time ,dt_geom, dt_clob \
                          from ut_DataTypes");
   FdoPtr<FdoISQLDataReader> sqlreader = comm->ExecuteReader();
   
@@ -76,9 +118,9 @@ try
   {
   
     int ccount = sqlreader->GetColumnCount();
-    if( ccount != 11 )
+    if( ccount != 12 )
     {
-      CPPUNIT_FAIL( "Column count is not 11" );
+      CPPUNIT_FAIL( "Column count is not 12" );
     }
     
     FdoStringP colname;
@@ -110,7 +152,7 @@ try
     colind++;
     {
       colname = sqlreader->GetColumnName(colind);
-      if( strcmpi((const char*)colname,"dt_decimal") )
+      if( strcmpi((const char*)colname,"dt_int32") )
       {
         CPPUNIT_FAIL( "Wrong column name" );
       }
@@ -326,12 +368,65 @@ try
       }
       
     } 
+    
+    // test column 12 - CLOB
+    colind++;
+    {
+      colname = sqlreader->GetColumnName(colind);
+      if( strcmpi((const char*)colname,"dt_clob") )
+      {
+        CPPUNIT_FAIL( "Wrong column name" );
+      }
+      if( sqlreader->GetPropertyType(colname) != FdoPropertyType_DataProperty )
+      {
+        CPPUNIT_FAIL( "Wrong column property type" );
+      }
+      if( sqlreader->GetColumnType(colname) != FdoDataType_CLOB )
+      {
+        CPPUNIT_FAIL( "Wrong column data type" );
+      }
+      if( sqlreader->IsNull(colname) )
+      {
+        CPPUNIT_FAIL( "Invalid NULL value!" );
+      }
+      FdoPtr<FdoLOBValue> lobval = sqlreader->GetLOB(colname);
+      FdoPtr<FdoByteArray> barray = lobval->GetData();
+      FdoByte * byte = barray->GetData();
+      long size = barray->GetCount();
+      
+      FdoByteArray::Append(barray,0);
+      FdoByteArray::Append(barray,0);
+
+      long size2 = barray->GetCount();
+      FdoByte *bytes2 = barray->GetData();
+
+      FdoString * str =  (FdoString *)bytes2;
+
+      FdoStringP strp(str,true);
+      long strlen = strp.GetLength();
+
+      if( strlen != 15 )
+      {
+        CPPUNIT_FAIL( "Invalid CLOB length!" );
+      }
+      if( strp.ICompare(L"some CLOB value") )
+      {
+        CPPUNIT_FAIL( "Invalid CLOB value!" );
+      }
+      
+      
+      
+      
+      int a=5;
+      a=a+1;
+      
+    } 
   }
   
   sqlreader->Close();
   
-  comm->SetSQLStatement(L"DROP TABLE ut_DataTypes");
-  comm->ExecuteNonQuery();
+  //comm->SetSQLStatement(L"DROP TABLE ut_DataTypes");
+  //comm->ExecuteNonQuery();
   
   
   conn->Close();

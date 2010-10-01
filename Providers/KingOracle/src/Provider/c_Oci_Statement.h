@@ -162,6 +162,9 @@ class c_Oci_Statement
     const wchar_t* GetString( int ColNumber );
     long GetLongRawLength( int ColNumber );
     unsigned char* GetLongRaw( int ColNumber );
+    void GetLobData( int ColNumber,unsigned long& BuffSize,void* Buff );
+    bool IsColumnClob(int ColNumber);
+    bool IsColumnBlob(int ColNumber);
     
     //SDO_GEOMETRY_TYPE* GetSdoGeom( int ColNumber,SDO_GEOMETRY_ind** geom_ind=NULL );
     c_SDO_GEOMETRY* GetSdoGeom( int ColNumber );
@@ -224,6 +227,8 @@ protected:
     void DeleteBindValues();
     void Bind( int ColNumber,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
     void Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,ub2 DataType );
+    
+
 
 
 
