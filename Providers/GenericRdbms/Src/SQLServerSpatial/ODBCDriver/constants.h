@@ -59,6 +59,12 @@
 /* Max buffer length */
 #define ODBCDR_MAX_BUFF_SIZE	RDBI_MSG_SIZE	
 
+/* buffer size for long varchar columns */
+#define ODBCDR_LONGVARCHAR_SIZE       16000
+
+/* buffer size for long wide varchar columns */
+#define ODBCDR_WLONGVARCHAR_SIZE      32000
+
 /*
  *  Some common ODBC error codes
  * 	These need to be converted to SQL Server
