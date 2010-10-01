@@ -21,6 +21,7 @@
 #include "DbObjectBinds.h"
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 #include "../Mgr.h"
+#include "../../../ODBCDriver/Constants.h"
 
 FdoSmPhRdSqsConstraintReader::FdoSmPhRdSqsConstraintReader(
     FdoSmPhOwnerP owner,
@@ -91,6 +92,13 @@ FdoStringP FdoSmPhRdSqsConstraintReader::GetString( FdoStringP tableName, FdoStr
         FdoStringP userName = FdoSmPhRdConstraintReader::GetString( tableName, L"table_schema" ); 
 
         fieldValue = userName + L"." + dbObjectName;        
+    }
+    else if ( fieldName == L"check_clause" ) {
+        fieldValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName ); 
+        // check clause completely fills the buffer allocated by GDBI so it may have
+        // been truncated. If so, skip it since truncation gives it invalid syntax.
+        if ( fieldValue.GetLength() >= ODBCDR_WLONGVARCHAR_SIZE )
+            fieldValue = L"";
     }
     else {
         fieldValue = FdoSmPhRdConstraintReader::GetString( tableName, fieldName );        
@@ -222,9 +230,9 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
     // Create binds for owner and optional object names
     FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
         owner->GetManager(),
-        L"CK.TABLE_SCHEMA",
+        L"s.name",
         L"user_name",
-        L"CK.TABLE_NAME",
+        L"t.name",
         L"object_name",
         tableNames
     );
@@ -240,7 +248,7 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
     if ( join != NULL ) {
         // If joining to another table, add join clause.
         qualification = FdoStringP::Format( 
-            L"  %ls and ((CK.TABLE_SCHEMA = 'dbo' and CK.TABLE_NAME = %ls) or ((CK.TABLE_SCHEMA + '.' + CK.TABLE_NAME) = %ls))\n", 
+            L"  %ls and ((s.name = 'dbo' and t.name = %ls) or ((s.name + '.' + t.name) = %ls))\n", 
             (FdoString*) ((FdoSmPhRdJoin*)(join.p))->GetWhere(),
             (FdoString*) join->GetJoinColumn(),
             (FdoString*) join->GetJoinColumn()
@@ -249,31 +257,30 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 
 	if ( constraintType == L"C" ) 
 	{
-		// The following query gets the CHECK() constraints for a table T
-		sqlString = FdoStringP::Format(
-			L"select %ls CK.CONSTRAINT_NAME collate latin1_general_bin as constraint_name, \n"
-			L"	  CK.TABLE_NAME collate latin1_general_bin as table_name, \n"
-			L"	  CK.COLUMN_NAME as column_name, \n"
-			L"    CCK.CHECK_CLAUSE as check_clause, \n"
-			L"    CK.TABLE_SCHEMA collate latin1_general_bin as table_schema \n"
-			L"    from %ls.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CK, \n"
-			L"		   %ls.INFORMATION_SCHEMA.CHECK_CONSTRAINTS CCK, \n"
-			L"		   %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS TK \n"
-            L"         %ls"
-			L"    where (\n"
-			L"			%ls %ls\n"
-			L"			CK.CONSTRAINT_NAME = CCK.CONSTRAINT_NAME and \n"
-			L"			CK.CONSTRAINT_NAME = TK.CONSTRAINT_NAME and \n"
-			L"			TK.CONSTRAINT_TYPE = 'CHECK' )"			
-			L"    order by CK.TABLE_SCHEMA collate latin1_general_bin asc, CK.TABLE_NAME collate latin1_general_bin asc, CK.CONSTRAINT_NAME collate latin1_general_bin asc",
+        // The following query gets the CHECK() constraints for a table
+        sqlString = FdoStringP::Format(
+            L"select %ls t.name collate latin1_general_bin as table_name,\n"
+            L" c.name as column_name,\n"
+            L" ck.name collate latin1_general_bin as constraint_name,\n"
+            L" s.name collate latin1_general_bin as table_schema,\n"
+			L" ck.definition as check_clause \n"
+            L" from %ls.sys.objects  t\n"
+            L"  INNER JOIN %ls.sys.columns c ON ( t.object_id = c.object_id ) \n"
+            L"  INNER JOIN %ls.sys.schemas s ON ( t.schema_id = s.schema_id ) \n"
+            L"  INNER JOIN %ls.sys.check_constraints ck ON ( t.object_id = ck.parent_object_id and c.column_id = ck.parent_column_id ) \n"
+            L"  %ls\n"
+            L" %ls %ls\n"
+            L" order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ck.name collate latin1_general_bin asc",
             join ? L"distinct" : L"",
-			(FdoString*) ownerName,
-			(FdoString*) ownerName,
-			(FdoString*) ownerName,
-            (FdoString*) joinFrom,
-			(FdoString*) qualification,
-            (qualification == L"") ? L"" : L"and"
-    	);
+            (FdoString *)ownerName,
+            (FdoString *)ownerName,
+            (FdoString *)ownerName,
+            (FdoString *)ownerName,
+            (FdoString *)joinFrom,
+            (qualification == L"") ? L"" : L"where",
+            (FdoString *)qualification
+        );
+
 
 		field = new FdoSmPhField(
 			row, 
@@ -283,27 +290,29 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
 	}
 	else if ( constraintType == L"U" )
 	{
-		// The following query gets the UNIQUE constraints for a table T
-		sqlString = FdoStringP::Format(
-			L"select %ls CK.CONSTRAINT_NAME collate latin1_general_bin as constraint_name, \n"
-			L"	  CK.TABLE_NAME collate latin1_general_bin as table_name, \n"
-			L"	  CK.COLUMN_NAME collate latin1_general_bin as column_name, \n"
-			L"	  CK.TABLE_SCHEMA collate latin1_general_bin as table_schema \n"
-			L"    from %ls.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CK, \n"
-			L"		   %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS TK \n"
-            L"         %ls"
-			L"    where (\n"
-			L"			%ls %ls\n"
-			L"			CK.CONSTRAINT_NAME = TK.CONSTRAINT_NAME and \n"
-			L"			TK.CONSTRAINT_TYPE = 'UNIQUE' )"			
-			L"    order by CK.TABLE_SCHEMA collate latin1_general_bin asc, CK.TABLE_NAME collate latin1_general_bin asc, CK.CONSTRAINT_NAME collate latin1_general_bin asc, CK.COLUMN_NAME collate latin1_general_bin asc",
-            join ? L"distinct" : L"",
-			(FdoString*) ownerName,
-			(FdoString*) ownerName,
-            (FdoString*) joinFrom,
-			(FdoString*) qualification,
-            (qualification == L"") ? L"" : L"and"
-		);
+        // Constraint name should be retrieved from sys.key_constraints but the constraint index
+        // has the same name, so using the index name saves joining in key_constraints.
+        // Also, the names do not make it to FDO Feature schemas anyway.
+        sqlString = FdoStringP::Format(
+            L"select ix.name as constraint_name, t.name as table_name, \n"
+            L"   c.name as column_name, s.name as table_schema \n"
+            L"   from %ls.sys.objects t \n"
+            L"   INNER JOIN %ls.sys.indexes ix on (ix.object_id = t.object_id)\n"
+            L"   INNER JOIN %ls.sys.index_columns ic on (ix.object_id = ic.object_id and ix.index_id = ic.index_id)\n"
+            L"   INNER JOIN %ls.sys.columns c on (ic.object_id = c.object_id and ic.column_id = c.column_id)\n"
+            L"   INNER JOIN %ls.sys.schemas s on (t.schema_id = s.schema_id)\n"
+            L"   %ls \n"
+            L"   where is_unique_constraint = 1 %ls %ls \n"
+            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.index_column_id asc",
+            (FdoString*)ownerName,
+            (FdoString*)ownerName,
+            (FdoString*)ownerName,
+            (FdoString*)ownerName,
+            (FdoString*)ownerName,
+            (FdoString *)joinFrom,
+            (qualification == L"") ? L"" : L"and",
+            (FdoString *)qualification
+        );
 	}
 
 //TODO: cache this query to make full use of the binds.

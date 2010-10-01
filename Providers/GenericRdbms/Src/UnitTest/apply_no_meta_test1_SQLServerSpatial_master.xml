@@ -670,8 +670,8 @@
 </xs:key>
 <xs:unique name="-x31--8-x20-SchoolKey_0">
 <xs:selector xpath=".//-x31--8-x20-School"/>
-<xs:field xpath="-x25--x20-Occupied"/>
 <xs:field xpath="FeatureId"/>
+<xs:field xpath="-x25--x20-Occupied"/>
 </xs:unique>
 </xs:element>
 <xs:element name="Build-x27-g" type="Land:Build-x27-gType" abstract="false" substitutionGroup="gml:_Feature">
@@ -681,8 +681,8 @@
 </xs:key>
 <xs:unique name="Build-x27-gKey_0">
 <xs:selector xpath=".//Build-x27-g"/>
-<xs:field xpath="-x25--x20-Occupied"/>
 <xs:field xpath="FeatureId"/>
+<xs:field xpath="-x25--x20-Occupied"/>
 </xs:unique>
 </xs:element>
 <xs:element name="County" type="Land:CountyType" abstract="false" substitutionGroup="gml:_Feature">
