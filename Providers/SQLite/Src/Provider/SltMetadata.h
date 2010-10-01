@@ -54,6 +54,7 @@ public:
     static FdoDataValue* GenerateConstraintValue(FdoDataType type, FdoString* value);
 
     bool IsView() { return m_bIsView; }
+    bool IsMultipleSelectSrcView() { return m_bIsMSelectView; }    
 
 private:
     class SQLiteExpression
@@ -86,6 +87,7 @@ private:
     const wchar_t*      m_geomName;
     int                 m_idIndex;
     int                 m_geomIndex;
+    bool                m_bIsMSelectView;
 };
 
 #endif

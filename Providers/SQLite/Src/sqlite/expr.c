@@ -2629,7 +2629,7 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
           int wasEval;
           /*If we already have a SI iterator avoid getting a second one*/
           u8 isIteratorSet = sqlite3VdbeSpatialIndexIsSet(v);
-          if (pTab && !pTab->pSpIndex){
+          if (pTab && !pTab->pSpIndex && !pTab->dbMem){
             pTab->nGeomColIdx = pFarg->a->pExpr->iColumn;
             pTab->pSpIndex = db->xSpIndexCallback(db->pSpIndexArg, pTab->zName, &pTab->nGeomColIdx);
           }
@@ -2637,7 +2637,7 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
           isDisabled = sqlite3VdbeDisableSpatialIndex(v, -1);
           /*function do not need to be re-evaluated in case we have envelope intersects=0x0A*/
           wasEval = (int)(((long)pDef->pUserData&0x0F)==0x0A && !isDisabled && !isIteratorSet && pExpr->op != TK_COLUMN);
-          if (pTab) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
+          if (pTab && !pTab->dbMem) /* Convert normal function to a VBE function to be able to pass auxiliary parameters */
             pVdbeFunc = sqlite3CreateVdbeFuncWithAuxData(db, pDef, pTab->pSpIndex, (void*)wasEval);
 
           /*Disjoint = 0x02, avoid trying to optimize this*/

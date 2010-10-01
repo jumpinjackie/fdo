@@ -1144,7 +1144,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     
     if (!bDistinct && fc->GetClassType() == FdoClassType_FeatureClass && (propsCount == 1 || propsCount == 2) && !isJoinSelect)
     {
-        SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p, filter);
+        SltReader* rdr = CheckForSpatialExtents(properties, (FdoFeatureClass*)fc.p, filter, parmValues);
 
         if (rdr)
             return rdr;
@@ -1274,7 +1274,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
     if (md->IsView())
     {
         // views well defined can be modified
-        if (md->GetIdName() == NULL)
+        if (md->GetIdName() == NULL || md->IsMultipleSelectSrcView())
             throw FdoException::Create(L"Views cannot be updated");
         sb.AppendDQuoted(md->GetMainViewTable());
         md = GetMetadata(md->GetMainViewTable());
@@ -1497,7 +1497,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
     if (md->IsView())
     {
         // views well defined can be modified
-        if (md->GetIdName() == NULL)
+        if (md->GetIdName() == NULL || md->IsMultipleSelectSrcView())
             throw FdoException::Create(L"Views cannot be updated");
         sb.AppendDQuoted(md->GetMainViewTable());
         md = GetMetadata(md->GetMainViewTable());
@@ -1783,7 +1783,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
             errVal.append(L"' is not found");
             throw FdoException::Create(errVal.c_str(), 1);
         }
-        if (md->GetIdName() != NULL)
+        if (md->GetIdName() != NULL && !md->IsMultipleSelectSrcView())
         {
             spDesc = GetSpatialIndexDescriptor(md->GetMainViewTable());
             if (spDesc)
@@ -3097,7 +3097,7 @@ void SltConnection::CollectBaseClassProperties(FdoClassCollection* myclasses, Fd
     }
 }
 
-bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq)
+bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq, FdoParameterValueCollection*  parmValues)
 {
     *countReq = 0;
 
@@ -3194,7 +3194,7 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
         props->Add(idf);
     }
 
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, NULL);
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
     FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     DBounds ext;
     while(rdr->ReadNext())
@@ -3216,7 +3216,7 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
     return (*countReq == 0);
 }
 
-SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter)
+SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter, FdoParameterValueCollection*  parmValues)
 {
     //Checks for a SpatialExtents or Count request
     std::string fcname = W2A_SLOW(fc->GetName());
@@ -3261,7 +3261,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
     DBounds extReq;
     bool emptyResult = false;
     if (filter)
-        emptyResult = GetExtentAndCountInfo(fc, filter, !extname.empty(), &countReq, &extReq);
+        emptyResult = GetExtentAndCountInfo(fc, filter, !extname.empty(), &countReq, &extReq, parmValues);
 
     //ok this is a spatial extents or count computed property.
     //Look up the extents and count and return a reader with them.
@@ -3307,7 +3307,21 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         if (extReq.IsEmpty() && !emptyResult)
         {
             SpatialIndex* si = GetSpatialIndex(fcname.c_str());
-            si->GetTotalExtent(ext);
+            if (si == NULL)
+            {
+                double extBuff[4];
+                extBuff[0] = extBuff[1] = DBL_MAX;
+                extBuff[2] = extBuff[3] = -DBL_MAX;
+                if (GetExtents(fc->GetName(), extBuff))
+                {
+                    ext.min[0] = extBuff[0];
+                    ext.max[0] = extBuff[2];
+                    ext.min[1] = extBuff[1];
+                    ext.max[1] = extBuff[3];
+                }
+            }
+            else
+                si->GetTotalExtent(ext);
         }
         else
             ext = extReq;
@@ -3365,13 +3379,19 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         if (countIsFirst)
         {
             sql.AppendDQuoted(countname.c_str());
-            sql.Append(",", 1);
-            sql.AppendDQuoted(extname.c_str());
+            if (extname.size())
+            {
+                sql.Append(",", 1);
+                sql.AppendDQuoted(extname.c_str());
+            }
         }
         else
         {
-            sql.AppendDQuoted(extname.c_str());
-            sql.Append(",", 1);
+            if (extname.size())
+            {
+                sql.AppendDQuoted(extname.c_str());
+                sql.Append(",", 1);
+            }
             sql.AppendDQuoted(countname.c_str());
         }
     }
@@ -3597,7 +3617,15 @@ bool SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
             FdoInt64 countReq;
             FdoPtr<FdoClassDefinition> fc = md->ToClass();
             if (fc != NULL && fc->GetClassType() == FdoClassType_FeatureClass)
-                GetExtentAndCountInfo(static_cast<FdoFeatureClass*>(fc.p), NULL, true, &countReq, &dext);
+            {
+                if (!GetExtentAndCountInfo(static_cast<FdoFeatureClass*>(fc.p), NULL, true, &countReq, &dext, NULL))
+                {
+                    ext[0] = dext.min[0];
+                    ext[1] = dext.min[1];
+                    ext[2] = dext.max[0];
+                    ext[3] = dext.max[1];
+                }
+            }
         }
     }
     return !dext.IsEmpty();

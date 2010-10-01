@@ -63,6 +63,7 @@ static FdoDataType ConvertDataType(const char* type)
 SltMetadata::SltMetadata(SltConnection* connection, const char* name, bool bUseFdoMetadata)
 : m_tablename(name),
   m_bIsView(false),
+  m_bIsMSelectView(false),
   m_fc(NULL),
   m_connection(connection), //No addref -- it owns us, and we are private to it
   m_bUseFdoMetadata(bUseFdoMetadata),
@@ -178,6 +179,8 @@ FdoClassDefinition* SltMetadata::ToClass()
     {
         m_fc = FdoClass::Create(fname.c_str(), NULL);
     }
+
+    std::wstring enforcedPK;
 
     FdoPtr<FdoClassCapabilities> caps = FdoClassCapabilities::Create(*m_fc);
     caps->SetSupportsLocking(false);
@@ -361,7 +364,18 @@ FdoClassDefinition* SltMetadata::ToClass()
                         int detail = (int)sqlite3_column_int(pfdostmt, 2);
                         dpd->SetIsSystem((detail & 0x01) != 0);
                         if ((detail & 0x02) != 0)
+                        {
+                            // if we have a view we might have an enforced PK 
+                            if (pTable->pSelect != NULL && (dt == FdoDataType_Int16 || dt == FdoDataType_Int32 || dt == FdoDataType_Int64))
+                            {
+                                // in case there are more properties marked as read only avoid set a PK
+                                if (!enforcedPK.size())
+                                    enforcedPK = A2W_SLOW(pname);
+                                else
+                                    enforcedPK = L" ";
+                            }
                             dpd->SetReadOnly(true);
+                        }
                         else
                             propMarkedAsReadOnly = false;
                         dpd->SetLength((int)sqlite3_column_int(pfdostmt, 3));
@@ -512,8 +526,20 @@ FdoClassDefinition* SltMetadata::ToClass()
             FdoDataType dtView = pd->GetDataType();
             caps->SetSupportsWrite(dtView == FdoDataType_Int16 || dtView == FdoDataType_Int32 || dtView == FdoDataType_Int64);
         }
+        else if (enforcedPK.size() != 0 && enforcedPK[0] != ' ')
+        {
+            FdoPtr<FdoPropertyDefinition> pdef = pdc->FindItem(enforcedPK.c_str());
+            if (pdef != NULL && pdef->GetPropertyType() == FdoPropertyType_DataProperty)
+            {
+                idpdc->Add(static_cast<FdoDataPropertyDefinition*>(pdef.p));
+                m_idName = pdef->GetName();
+                m_bIsMSelectView = true;
+            }
+        }
         else
+        {
             caps->SetSupportsWrite(false);
+        }
     }
 
     if (pTable->pSelect == NULL && pTable->pIndex != NULL)

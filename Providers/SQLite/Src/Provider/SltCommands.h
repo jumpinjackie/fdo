@@ -508,7 +508,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 					m_fcname.clear();
 					throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
 				}
-                if (md->IsView() && md->GetMainViewTable() != NULL)
+                if (md->IsView() && md->GetMainViewTable() != NULL &&  !md->IsMultipleSelectSrcView())
                 {
                     m_fcmainname = md->GetMainViewTable();
                     md = m_connection->GetMetadata(m_fcmainname.c_str());
