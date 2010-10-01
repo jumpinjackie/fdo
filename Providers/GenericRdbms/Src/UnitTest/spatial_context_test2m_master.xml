@@ -542,42 +542,42 @@ geographic</gml:derivedCRSType>
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_classb1" name="dbo.classb1"/>
 </complexType>
 </SchemaMapping>
-<gml:FeatureCollection>
+<gml:FeatureCollection xmlns:ScTest="http://fdo.osgeo.org/schemas/feature/ScTest">
 <gml:featureMember>
-<ClassB1>
-<Geometry1>
+<ScTest:ClassB1>
+<ScTest:Geometry1>
 <gml:LineString>
 <gml:coordinates>
 2.100000,3.100000 4.100000,5.100000</gml:coordinates>
 </gml:LineString>
-</Geometry1>
-<Geometry2>
+</ScTest:Geometry1>
+<ScTest:Geometry2>
 <gml:LineString>
 <gml:coordinates>
 2.200000,3.200000 4.200000,5.200000</gml:coordinates>
 </gml:LineString>
-</Geometry2>
-<Geometry3>
+</ScTest:Geometry2>
+<ScTest:Geometry3>
 <gml:LineString>
 <gml:coordinates>
 2.300000,3.300000 4.300000,5.300000</gml:coordinates>
 </gml:LineString>
-</Geometry3>
-<Geometry4>
+</ScTest:Geometry3>
+<ScTest:Geometry4>
 <gml:LineString>
 <gml:coordinates>
 2.400000,3.400000 4.400000,5.400000</gml:coordinates>
 </gml:LineString>
-</Geometry4>
-<Geometry5>
+</ScTest:Geometry4>
+<ScTest:Geometry5>
 <gml:LineString>
 <gml:coordinates>
 2.500000,3.500000 4.500000,5.500000</gml:coordinates>
 </gml:LineString>
-</Geometry5>
-<Prop1>
-1</Prop1>
-</ClassB1>
+</ScTest:Geometry5>
+<ScTest:Prop1>
+1</ScTest:Prop1>
+</ScTest:ClassB1>
 </gml:featureMember>
 </gml:FeatureCollection>
 </fdo:DataStore>
