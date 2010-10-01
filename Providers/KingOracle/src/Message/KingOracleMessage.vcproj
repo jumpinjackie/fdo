@@ -385,7 +385,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine=""
+				CommandLine="copy /y $(OutDir)\*.dll ..\UnitTest\$(ConfigurationName)\"
 			/>
 		</Configuration>
 		<Configuration
@@ -681,7 +681,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine=""
+				CommandLine="copy /y $(OutDir)\*.dll ..\UnitTest\$(ConfigurationName)\"
 			/>
 		</Configuration>
 		<Configuration

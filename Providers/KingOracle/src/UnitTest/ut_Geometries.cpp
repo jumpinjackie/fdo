@@ -42,6 +42,98 @@ void ut_Geometries::GeometryTypes(void)
 {
 }
 
+void ut_Geometries::TestSdoPointType()
+{
+  try
+  {
+    FdoStringP tablename = L"UT_TESTPOINT";
+
+    FdoStringP fdoclass_name = L"UNITTEST~UT_TESTPOINT~GEOM";
+
+
+    try
+    {
+
+
+
+      c_OCI_API::OciInit();
+      c_Oci_Connection* ociconn = c_OCI_API::CreateConnection(D_CONN_USERNAME,D_CONN_PASS,D_CONN_SERVICE);
+      ut_OCI::PrepareTable2D(ociconn,tablename);
+
+      c_Oci_Statement* stm = ociconn->CreateStatement();
+      FdoStringP sql_insert;
+
+      sql_insert = L"INSERT INTO UT_TESTPOINT(fid,geom) VALUES(1,MDSYS.SDO_GEOMETRY(2001,null,MDSYS.SDO_POINT_TYPE(20,30,null),null,null))";
+      stm->Prepare(sql_insert);
+      stm->ExecuteNonQuery();
+
+   
+
+
+
+      ociconn->TerminateStatement(stm);
+      c_OCI_API::CloseConnection(ociconn);
+    } 
+    catch (c_Oci_Exception* ex)
+    {
+      FdoStringP str = ex->GetErrorText();
+      delete ex;
+      CPPUNIT_FAIL( (const char*)str );  
+    } 
+
+
+
+    FdoPtr<FdoIConnection> conn  = c_KgOraUtil::OpenUnitTestConnection_10_2();
+    c_KgOraConnection* kingora_conn = (c_KgOraConnection*)conn.p;
+    kingora_conn->ClearCachedSchemaDesc();
+
+    FdoPtr<FdoIDescribeSchema> comm_fdoschema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoFeatureSchemaCollection> coll_schema = comm_fdoschema->Execute();
+
+    FdoPtr<FdoIDisposableCollection> class_col = coll_schema->FindClass(fdoclass_name);
+    FdoPtr<FdoClassDefinition> classdef;
+    if( class_col->GetCount() > 0 ) classdef = (FdoClassDefinition*)class_col->GetItem(0);
+
+    CPPUNIT_ASSERT( classdef.p );
+
+    FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
+    comm_select->SetFeatureClassName(fdoclass_name);
+    //comm_select->SetFilter(L"fid=1");
+
+    FdoPtr<FdoIFeatureReader> reader = comm_select->Execute();
+    if( reader->ReadNext() )
+    {
+      do 
+      {
+        FdoPtr<FdoByteArray> fgf = reader->GetGeometry(L"geom");
+        FdoPtr<FdoGeometryValue> geomval = FdoGeometryValue::Create( fgf );
+        FdoString *strval=geomval->ToString();
+      } while (reader->ReadNext());
+
+
+
+
+    }
+    else
+    {
+      CPPUNIT_FAIL( "Empty Reader" );
+    }
+
+
+    reader->Close();
+
+
+    conn->Close();
+  }
+  catch(FdoException* ex)
+  {
+    FdoStringP str = ex->GetExceptionMessage();
+    ex->Release();
+    CPPUNIT_FAIL( (const char*)str );
+  }
+
+}//end of ut_Geometries::TestCurvedSegment
+
 void ut_Geometries::TestCurvedSegment()
 {
 try

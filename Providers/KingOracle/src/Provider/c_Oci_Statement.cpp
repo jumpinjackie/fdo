@@ -569,6 +569,32 @@ unsigned char* c_Oci_Statement::GetLongRaw( int ColNumber )
   return coldata->GetLongRaw();
 }
 
+void c_Oci_Statement::GetLobData( int ColNumber,unsigned long& BuffSize,void* Buff )
+{
+  c_Oci_ColumnData*coldata;
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  coldata = m_ColumnDataPtrArray[ColNumber-1];
+
+  return coldata->GetLobData(BuffSize,Buff);
+}
+
+bool c_Oci_Statement::IsColumnClob(int ColNumber)
+{
+  c_Oci_ColumnData*coldata;
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  coldata = m_ColumnDataPtrArray[ColNumber-1];
+  
+  return coldata->IsClob();
+}
+bool c_Oci_Statement::IsColumnBlob(int ColNumber)
+{
+  c_Oci_ColumnData*coldata;
+  if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
+  coldata = m_ColumnDataPtrArray[ColNumber-1];
+
+  return coldata->IsBlob();
+}
+
 c_SDO_GEOMETRY* c_Oci_Statement::GetSdoGeom( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
@@ -626,7 +652,7 @@ void c_Oci_Statement::Bind( const wchar_t* Name,dvoid* ValuePtr, sb4 ValueSize,u
   { 
     OCIInd ind=OCI_IND_NULL;
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
-      ,(OraText*)Name,wcslen(Name), (dvoid *) 0,
+      ,(OraText*)Name,wcslen(Name)*sizeof(wchar_t), (dvoid *) 0,
       (sword) 0, DataType, (dvoid *) &ind,
       (ub2 *) 0, (ub2) 0, (ub4) 0, (ub4 *) 0, OCI_DEFAULT));
   }
@@ -919,25 +945,29 @@ void c_Oci_Statement::BindSdoDimElement( const wchar_t* Name,c_SDO_DIM_ELEMENT* 
 
 void c_Oci_Statement::BindBlob( int ColNumber,const char* ValuePtr,long Size )
 {
-  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_BLOB);
+  //Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_BLOB);
+  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_LNG);
  
 }//end of c_Oci_Statement::BindBlob
 
 void c_Oci_Statement::BindBlob( const wchar_t* Name,const char* ValuePtr,long Size )
 {
-  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_BLOB);
+  //Bind(Name,(dvoid*)ValuePtr,Size,SQLT_BLOB);
+  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_LNG);
 
 }//end of c_Oci_Statement::BindBlob
 
 void c_Oci_Statement::BindClob( int ColNumber,const char* ValuePtr,long Size )
 {
-  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_CLOB);
+  //Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_CLOB);
+  Bind(ColNumber,(dvoid*)ValuePtr,Size,SQLT_LNG);
   
   
 }//end of c_Oci_Statement::BindClob
 
 void c_Oci_Statement::BindClob( const wchar_t* Name,const char* ValuePtr,long Size )
 {
-  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_CLOB);
+  //Bind(Name,(dvoid*)ValuePtr,Size,SQLT_CLOB);
+  Bind(Name,(dvoid*)ValuePtr,Size,SQLT_LNG);
 
 }//end of c_Oci_Statement::BindClob

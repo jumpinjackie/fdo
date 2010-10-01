@@ -529,6 +529,34 @@ template <class FDO_READER> FdoString* c_KgOraReader<FDO_READER>::GetString(FdoS
 
 template <class FDO_READER> FdoLOBValue* c_KgOraReader<FDO_READER>::GetLOB(FdoString* propertyName)
 {
+  int oraind = PropNameToColumnNumber(propertyName); 
+  if( m_OciStatement && (oraind >= 1) )
+  {
+    FdoBLOBValue* blobval;
+    unsigned long size = m_OciStatement->GetLongRawLength(oraind); 
+    
+    if( m_OciStatement->IsColumnBlob(oraind) || m_OciStatement->IsColumnClob(oraind) )
+    {
+      if( m_OciStatement->IsColumnClob(oraind) ) size = size * 2; // 2 bytes per character
+      
+      FdoPtr<FdoByteArray> barray = FdoByteArray::Create(size+2);
+      FdoByteArray::SetSize(barray,size);
+      long count = barray->GetCount();
+      
+      m_OciStatement->GetLobData(oraind,size,barray->GetData());
+      blobval = FdoBLOBValue::Create( barray);
+    }
+    else
+    {
+      unsigned char* ptr = m_OciStatement->GetLongRaw(oraind); 
+
+      FdoPtr<FdoByteArray> barray = FdoByteArray::Create(ptr,size);
+      blobval = FdoBLOBValue::Create( barray);
+    }
+    
+    
+    return blobval;
+  }
     return NULL;
 }
 

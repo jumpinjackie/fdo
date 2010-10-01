@@ -214,14 +214,188 @@ catch(FdoException* ex)
   
 }//end of ut_KgOraSchema::DifferentOwner
 
-void ut_KgOraSchema::JustMyTest()
+void Prepare_TestNamesWith_( FdoIConnection* Connection, const wchar_t*TableName )
 {
-  int a = sizeof(LONG);
-  int b = sizeof(__int32);
-  int i = sizeof(int);
-  int s = sizeof(short);
-  
-  int l = sizeof(long long);
 
-  int c = a - b;
+  // create test table with different data types
+  FdoPtr<FdoISQLCommand> sqlcomm = (FdoISQLCommand*)Connection->CreateCommand( FdoCommandType_SQLCommand );
+
+  FdoStringP tname = TableName;
+  try
+  {  
+    FdoStringP sql = FdoStringP::Format(L"DROP TABLE %s",tname);
+
+
+    sqlcomm->SetSQLStatement(sql);
+    sqlcomm->ExecuteNonQuery();
+  }  
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    // drop sequnce
+    FdoStringP sql = FdoStringP::Format(L"DROP SEQUENCE %s_FDOSEQ",tname);
+    sqlcomm->SetSQLStatement(sql);
+    sqlcomm->ExecuteNonQuery();
+  }  
+  catch(FdoException* ex  )
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    FdoStringP sql = FdoStringP::Format(L"CREATE TABLE %s( \
+                                         fid NUMBER(10,0) \
+                                         ,SDATE DATE\
+                                         ,SITE   VARCHAR2(254 BYTE)\
+                                         ,DESC_ VARCHAR2(254 BYTE)\
+                                         ,geom SDO_GEOMETRY,name VARCHAR2(100) )",tname);
+    sqlcomm->SetSQLStatement(sql);
+    sqlcomm->ExecuteNonQuery();
+  }  
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    // create primary key
+    FdoStringP sql = FdoStringP::Format(L"alter table %s add constraint %s_pk primary key (fid)",TableName,TableName);
+    sqlcomm->SetSQLStatement(sql);
+    sqlcomm->ExecuteNonQuery();
+  }  
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    // create sequnce
+    FdoStringP sql = FdoStringP::Format(L"CREATE SEQUENCE %s_FDOSEQ",tname);
+    sqlcomm->SetSQLStatement(sql);
+    sqlcomm->ExecuteNonQuery();
+  }  
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    // insert user_sdo_geom_metadata
+    FdoStringP sql = FdoStringP::Format(L"INSERT INTO user_SDO_GEOM_METADATA  VALUES ('%s'\
+                                         , 'GEOM',SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', -1000000, 1000000, 0.005),SDO_DIM_ELEMENT('Y', -1000000, 1000000, 0.005))\
+                                         ,NULL)",tname);
+    sqlcomm->SetSQLStatement(sql);
+
+    sqlcomm->ExecuteNonQuery();
+  }
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  } 
+  try
+  {  
+    //-- Create index
+    FdoStringP sql = FdoStringP::Format(L"INSERT INTO user_SDO_GEOM_METADATA  VALUES ('%s'\
+                                         , 'GEOM',SDO_DIM_ARRAY(SDO_DIM_ELEMENT('X', -1000000, 1000000, 0.005),SDO_DIM_ELEMENT('Y', -1000000, 1000000, 0.005))\
+                                         ,NULL)",tname);
+    sqlcomm->SetSQLStatement(sql);
+
+    sqlcomm->ExecuteNonQuery();
+  }
+  catch(FdoException* ex)
+  {
+    ex->Release();
+  }  
+
+}//end of Prepare_TestNamesWith_
+
+void ut_KgOraSchema::TestNamesWith_()
+{
+  FdoPtr<FdoIConnection> conn;
+try
+{
+  //conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  Prepare_TestNamesWith_(conn,L"Underscore");  
+  conn->Close();
+}
+catch(FdoException* ex)
+{
+  ex->Release();
+  CPPUNIT_FAIL("Exception!");
+}
+  
+conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+  
+try
+{ 
+  FdoStringP src_classname = L"UNITTEST~UNDERSCORE~GEOM";
+  
+  FdoPtr<FdoIDescribeSchema> comm_schema = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+  FdoPtr<FdoFeatureSchemaCollection> schemas = comm_schema->Execute();
+  FdoPtr<FdoIDisposableCollection> coll = schemas->FindClass(src_classname);
+  FdoPtr<FdoClassDefinition> classdef = (FdoClassDefinition*)coll->GetItem(0);
+  
+  
+  FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select);
+ 
+  
+ 
+  comm_select->SetFeatureClassName(src_classname);
+  FdoPtr<FdoIFeatureReader> reader = comm_select->Execute();
+  reader->ReadNext();
+  reader->Close();
+  
+  FdoPtr<FdoIInsert> comm_insert = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
+  comm_insert->SetFeatureClassName( src_classname );
+  FdoPtr<FdoPropertyValueCollection> propcol = comm_insert->GetPropertyValues();
+  FdoPtr<FdoDataValue> fid_val=  FdoDataValue::Create(3);
+  FdoPtr<FdoPropertyValue> propval_fid = FdoPropertyValue::Create(L"FID",fid_val);
+
+  // Geometry property
+  FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
+
+  double ordinates[10] = { 1,1 ,10,1 ,10,10 ,1,10 ,1,1 }; 
+
+  FdoPtr<FdoILinearRing> ring = fgf->CreateLinearRing(0,10,ordinates);
+  FdoPtr<FdoIPolygon> polygon = fgf->CreatePolygon(ring,NULL);
+
+  FdoPtr<FdoByteArray> barray = fgf->GetFgf(polygon);
+
+  FdoPtr<FdoGeometryValue> geom_val=  FdoGeometryValue::Create(barray);
+
+  FdoPtr<FdoPropertyValue> propval_geom = FdoPropertyValue::Create(L"GEOM",geom_val);
+  
+  
+  // add null insert values for other properties
+  FdoPtr<FdoPropertyDefinitionCollection> props = classdef->GetProperties();
+  for(int ind=0; ind<props->GetCount();ind++)
+  {
+    FdoPtr<FdoPropertyDefinition> propdef = props->GetItem(ind);
+    if( propdef->GetPropertyType() == FdoPropertyType_DataProperty)
+    {
+      FdoDataPropertyDefinition* dataprop = (FdoDataPropertyDefinition*)propdef.p;
+      FdoPtr<FdoDataValue> ins_val=  FdoDataValue::Create(dataprop->GetDataType());
+      FdoPtr<FdoPropertyValue> ins_propval = FdoPropertyValue::Create(dataprop->GetName(),ins_val);
+      propcol->Add(ins_propval);      
+    }
+  }
+  
+  
+  
+  
+  propcol->Add(propval_geom);
+  FdoPtr<FdoIFeatureReader> insreader = comm_insert->Execute();
+  
+  conn->Close();
+  
+}
+catch(FdoException* ex)
+{
+  ex->Release();
+  CPPUNIT_FAIL("Exception!");
+}  
 }

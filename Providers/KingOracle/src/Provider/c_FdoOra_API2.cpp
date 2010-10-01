@@ -115,6 +115,12 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale
     case OCI_TYPECODE_DATE:
       FdoType = FdoDataType_DateTime;  
     break;
+    case OCI_TYPECODE_BLOB:
+      FdoType = FdoDataType_BLOB;  
+    break;
+    case OCI_TYPECODE_CLOB:
+      FdoType = FdoDataType_CLOB;  
+    break;
     default:
       isfdotype = false;
     break;
