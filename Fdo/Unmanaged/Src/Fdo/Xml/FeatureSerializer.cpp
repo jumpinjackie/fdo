@@ -128,6 +128,8 @@ void _writeFeature(FdoString* featureName, FdoIFeatureReader* reader, FdoXmlFeat
     FdoPtr<FdoClassDefinition> oldClassDef = writer->GetClassDefinition();
     writer->SetClassDefinition(classDef);
 
+	writer->ClearProperties();
+
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
     FdoInt32 count = baseProps->GetCount();
     for (int i = 0; i < count; i++) {
@@ -138,8 +140,6 @@ void _writeFeature(FdoString* featureName, FdoIFeatureReader* reader, FdoXmlFeat
 
     FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
     count = props->GetCount();
-
-	writer->ClearProperties();
 
     for (int i = 0; i < count; i++) {
         FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
