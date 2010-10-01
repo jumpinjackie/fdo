@@ -239,7 +239,7 @@ public:
     SpatialIndex*   GetSpatialIndex(const char* table);
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
-    SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter);
+    SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter, FdoParameterValueCollection*  parmValues);
     FdoInt64        GetFeatureCount(const char* table);
     
     sqlite3_stmt*   GetCachedParsedStatement(const char* sql);
@@ -272,7 +272,7 @@ private :
     void DeleteClassFromSchema(FdoClassDefinition* fc);
     void DeleteClassFromSchema(const wchar_t* fcName);
     void UpdateClassFromSchema(FdoClassCollection* classes, FdoClassDefinition* fc, FdoClassDefinition* mainfc);
-    bool GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq);
+    bool GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter, bool isExtentReq, FdoInt64* countReq, DBounds* extReq, FdoParameterValueCollection*  parmValues);
     void GenerateAutoGenerateTrigger(FdoClassDefinition* fc, bool dropTriggerFirst = false);
 
     void CollectBaseClassProperties(FdoClassCollection* myclasses, FdoClassDefinition* fc, FdoClassDefinition* mainfc, 
