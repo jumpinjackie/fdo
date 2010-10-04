@@ -774,7 +774,7 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 		FdoStringsP cachedSchemaNames = mConnection->GetSchemaNames();
 		// Not find the specified schema name, an exception will be thrown.
 		if (cachedSchemaNames->IndexOf(mSchemaName) == -1)
-			throw FdoException::Create(NlsMsgGet1(ARCSDE_SCHEMA_DOES_NOT_EXIST, "Schema '%1$ls' does not exist.", mSchemaName)); 
+			throw FdoException::Create(NlsMsgGet1(ARCSDE_SCHEMA_DOES_NOT_EXIST, "Schema '%1$ls' does not exist.", (FdoString*)mSchemaName)); 
 
 		FdoInt32 size = mClassNames->GetCount();
 		for (FdoInt32 i = 0; i < size; ++i)
@@ -792,7 +792,7 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 				FdoStringP schemaName = className.Left(L":");
 				if (schemaName != mSchemaName)
 					throw FdoException::Create(NlsMsgGet2(ARCSDE_SCHEMA_NAME_INCONSISTENT, 
-					"The schema in the qualified class name '%1$ls' is inconsistent with the specified one '%2$ls'.", className, mSchemaName));
+					"The schema in the qualified class name '%1$ls' is inconsistent with the specified one '%2$ls'.", (FdoString*)className, (FdoString*)mSchemaName));
 
 				qFCName = className;
 			}
@@ -802,7 +802,7 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 			}
 
 			if (cachedClassNames->IndexOf(qFCName) == -1)
-				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", qFCName)); 
+				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", (FdoString*)qFCName)); 
 
 			qFeatureClassNames->Add(qFCName);
 		}
@@ -830,10 +830,10 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 			{
 				FdoStringP schemaName = className.Left(L":");
 				if (cachedSchemaNames->IndexOf(schemaName) == -1)
-					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", (FdoString*)className)); 
 				FdoStringsP cachedClassNames = mConnection->GetFeatureClassNames(schemaName);
 				if (cachedClassNames->IndexOf(className) == -1)
-					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", (FdoString*)className)); 
 
 				qFeatureClassNames->Add(className);
 			}
@@ -856,7 +856,7 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 				}
 
 				if (!isFound)
-					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", className)); 
+					throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", (FdoString*)className)); 
 			}
 		}
 
@@ -883,7 +883,7 @@ void ArcSDEDescribeSchemaCommand::constructRequestedClassNames(FdoStringCollecti
 			FdoStringP qFCName = qFeatureClassNames->GetString(i);
 			// If no existing class matches with the requested one, an exception will be thrown.
 			if (cachedClassNames->IndexOf(qFCName) == -1)
-				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", qFCName));
+				throw FdoException::Create(NlsMsgGet1(ARCSDE_FEATURE_CLASS_NOT_FOUND, "Feature class '%1$ls' not found in schema.", (FdoString*)qFCName));
 		}
 	}
 }
