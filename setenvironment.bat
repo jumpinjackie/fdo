@@ -58,12 +58,6 @@ SET XALANROOT=%FDOTHIRDPARTY%\apache\xalan
 SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xerces
 SET NLSDIR=%FDOTHIRDPARTY%\apache\xalan\src\xalanc\NLS
 
-if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
-if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
-if not exist "%SDEHOME%" SET SDEHOME=
-if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
-if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
-
 if "%1" == ""		goto setfdovariables_x86
 if "%1" == "x86"	goto setfdovariables_x86
 
@@ -76,6 +70,8 @@ if not exist "%FDOMYSQL%" SET FDOMYSQL=%FDOTHIRDPARTY%\mysql_x64
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 if not exist "%FDOMYSQL%" SET FDOMYSQL=
 
+if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
+
 goto contsetfdovariables
 
 :setfdovariables_x86
@@ -87,6 +83,8 @@ if not exist "%FDOMYSQL%" SET FDOMYSQL=%FDOTHIRDPARTY%\mysql
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 if not exist "%FDOMYSQL%" SET FDOMYSQL=
 
+if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Windows
+
 :contsetfdovariables
 if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
 if not exist "%FDOGDAL%" echo OPTIONAL FDO environment variable FDOGDAL is not set
@@ -95,6 +93,11 @@ if not exist "%FDOGDAL%" SET FDOGDAL=
 if not exist "%FDOPOSTGRESQL%" SET FDOPOSTGRESQL=%FDOTHIRDPARTY%\pgsql
 if not exist "%FDOPOSTGRESQL%" echo OPTIONAL FDO environment variable FDOPOSTGRESQL is not set
 if not exist "%FDOPOSTGRESQL%" SET FDOPOSTGRESQL=
+
+if not exist "%SDEHOME%" echo OPTIONAL FDO environment variable SDEHOME is not set
+if not exist "%SDEHOME%" SET SDEHOME=
+if exist "%SDEHOME%\bin\sde.dll" SET SDEVER_ARCUNITTEST=92
+if exist "%SDEHOME%\bin\sde91.dll" SET SDEVER_ARCUNITTEST=91
 
 SET ACTIVENAMECHECK="7-Zip"
 SET ACTIVEPATHCHECK="C:\Program Files\7-Zip"
