@@ -1444,10 +1444,6 @@ copy ..\..\..\..\Utilities\ExpressionEngine\bin\win64\release\ExpressionEngine.d
       <Project>{6c04ef62-a3c2-4c4c-9bab-30be6afc5762}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\Provider\ArcSDEProvider91.vcxproj">
-      <Project>{79fcd9d7-26ad-458e-821b-64d343d7247e}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Provider\ArcSDEProvider92.vcxproj">
       <Project>{f427cd47-243b-4770-b25b-366445061e35}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

@@ -820,10 +820,6 @@
       <Project>{b840e617-c94f-4e23-beba-4a9f3fbd92db}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="ArcSDEProvider91.vcxproj">
-      <Project>{79fcd9d7-26ad-458e-821b-64d343d7247e}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="ArcSDEProvider92.vcxproj">
       <Project>{f427cd47-243b-4770-b25b-366445061e35}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
