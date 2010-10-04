@@ -36,8 +36,17 @@ public:
 	
     void TestCharSize();
 
-    void CheckPropSize(FdoPropertiesP props, FdoString* propName, FdoInt32 expected );
-    void CheckColType(FdoSmPhColumnsP cols, FdoString* colName, FdoString* expected );
+    void TestCharSize_AddToExpected(
+        FdoDictionaryP expected, 
+        FdoString* key,
+        FdoString* value
+    );
+
+    void TestCharSize_Validate(
+        FdoDictionaryP expected,
+        FdoFeatureSchemaP schema, 
+        FdoSmPhOwnerP owner
+    );
 
     // Helper methods for overrides tests; overriden by each provider:
    	virtual FdoRdbmsOvPhysicalSchemaMapping* CreateOverrideDefaults( FdoIConnection* connection, int passNum );

@@ -57,7 +57,8 @@ protected:
     virtual FdoSmPhOwnerP NewOwner(
         FdoStringP owner,
         bool hasMetaSchema,
-        FdoSchemaElementState elementState
+        FdoSchemaElementState elementState,
+        FdoSmPhRdOwnerReader* reader
     );
 
     // Instantiate a character set (must exist in RDBMS).
