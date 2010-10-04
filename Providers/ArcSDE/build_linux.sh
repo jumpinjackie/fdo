@@ -151,11 +151,11 @@ if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   sudo make install
+   sudo -E make install
 fi
 
 if test "$TYPEACTION" == uninstall ; then
-   sudo make uninstall
+   sudo -E make uninstall
 fi
 
 if test "$BUILDDOCS" == yes ; then
