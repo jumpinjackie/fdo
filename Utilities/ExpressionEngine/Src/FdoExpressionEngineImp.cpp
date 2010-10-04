@@ -3630,8 +3630,8 @@ FdoFilter* FdoExpressionEngineImp::OptimizeFilter( FdoFilter *filter )
 			    }
                 if( (retOpt == FdoOptimizeResultType_Invalid ) || 
                     (FdoSpatialUtility::Evaluate (geomRight, FdoSpatialOperations_Disjoint, geomLeft ) &&
-                    !((rightOp == FdoSpatialOperations_Crosses || rightOp == FdoSpatialOperations_Intersects || rightOp == FdoSpatialOperations_Overlaps || rightOp == FdoSpatialOperations_EnvelopeIntersects)
-                    && (leftOp == FdoSpatialOperations_Crosses || leftOp == FdoSpatialOperations_Intersects || leftOp == FdoSpatialOperations_Overlaps || leftOp == FdoSpatialOperations_EnvelopeIntersects))))
+                    !((rightOp == FdoSpatialOperations_Touches || rightOp == FdoSpatialOperations_Crosses || rightOp == FdoSpatialOperations_Intersects || rightOp == FdoSpatialOperations_Overlaps || rightOp == FdoSpatialOperations_EnvelopeIntersects)
+                    && (leftOp == FdoSpatialOperations_Touches || leftOp == FdoSpatialOperations_Crosses || leftOp == FdoSpatialOperations_Intersects || leftOp == FdoSpatialOperations_Overlaps || leftOp == FdoSpatialOperations_EnvelopeIntersects))))
 				{
                     resultIsInvalid = true;
 					// If the condition do not overlap, then replace it with a filter that returns 0 features.

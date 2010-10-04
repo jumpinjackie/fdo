@@ -25,12 +25,14 @@ static const wchar_t* SC_TEST_FILE = L"..\\..\\TestData\\SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"..\\..\\TestData\\PARCEL_Source.sqlite";
 static const wchar_t* SRC_VIEW_TEST_FILE = L"..\\..\\TestData\\ViewTests.sqlite";
 static const wchar_t* SRC_SPATIAL_TEST_FILE = L"..\\..\\TestData\\SpatialTests.sqlite";
+static const wchar_t* SRC_SPATIAL2_TEST_FILE = L"..\\..\\TestData\\CrOvTcTest.sqlite";
 #else
 #include <unistd.h>
 static const wchar_t* SC_TEST_FILE = L"../../TestData/SelectTest.sqlite";
 static const wchar_t* SRC_TEST_FILE = L"../../TestData/PARCEL_Source.sqlite";
 static const wchar_t* SRC_VIEW_TEST_FILE = L"../../TestData/ViewTests.sqlite";
 static const wchar_t* SRC_SPATIAL_TEST_FILE = L"../../TestData/SpatialTests.sqlite";
+static const wchar_t* SRC_SPATIAL2_TEST_FILE = L"../../TestData/CrOvTcTest.sqlite";
 #endif
 
 
@@ -1657,6 +1659,207 @@ void SelectTest::TestReleaseSchema ()
 		TestCommonFail( e );
 	}
 	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+int SelectTest::SelectSpatial(FdoIConnection* conn, FdoFilter* filter)
+{
+    FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    selCmd->SetFeatureClassName(L"TestClassSI");
+    selCmd->SetFilter(filter);
+    
+    FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+    FdoPtr<FdoIFeatureReader>reader = selCmd->Execute();
+
+    int cnt = 0;
+    while(reader->ReadNext())
+    {
+        FdoInt64 id = reader->GetInt64(L"FeatId");
+        cnt++;
+    }
+    return cnt;
+}
+
+void SelectTest::TestCrosses ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL2_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        printf("Crosses Test\n");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((5.64107995094196 5.72418567722121 0, 4.49969068092314 4.53237498298507 0, 7.56610964914775 1.67202932380327 0, 9.32078273800774 3.39164189541864 0, 6.08400716043732 5.62203046388181 0, 5.64107995094196 5.72418567722121 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((9.70441429799531 6.69114612596216 0, 10.4971321778807 3.37354836996973 0, 13.123010210118 7.73099019143822 0, 9.35760024916692 8.47373595249256 0, 9.70441429799531 6.69114612596216 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((-0.055924779192004 7.33485910723438 0, -1.29454649013447 5.304687348711 0, 2.42131864269291 5.304687348711 0, 3.51130574328302 7.33485910723438 0, -0.055924779192004 7.33485910723438 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((-2.08726437001989 7.5329246667986 0, 2.81767758263562 7.5329246667986 0, 2.81767758263562 3.02693369311924 0, -1.49272592861051 3.02693369311924 0, -3.96996935049543 6.83969527817302 0, -2.08726437001989 7.5329246667986 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((15.5011639127649 9.95922747460123 0, 14.7579908610032 1.93757322028982 0, 16.7397856237073 -0.637278739723669 0, 23.378797946486 1.83854047543231 0, 22.387900565134 10.256325779023 0, 19.712477704773 10.256325779023 0, 15.5011639127649 9.95922747460123 0))') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((7.50743893828114 17.7352088200722 0, 12.866208702344 17.7352088200722 0, 8.87036307314368 8.2621405371578 0, 6.42329479788964 12.1937734558655 0, 6.42329479788964 16.2801950644052 0, 7.50743893828114 17.7352088200722 0))') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((21.7871664615633 9.09799951254206 0, 16 8 0, 13.7644995867972 10.3363090940624 0, 17.2957120392973 13.6487872115325 0, 22.437652967911 12.967716946935 0, 21.7871664615633 9.09799951254206 0))') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((16.7691277404297 6.09509877473591 0, 18.9993671802346 2.25633908250027 0, 21.880093126387 3.71135283816731 0, 21.880093126387 7.64298575687501 0, 18.9374160580673 7.64298575687501 0, 16.7691277404297 6.09509877473591 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((18.5717275612748 9.81912636856469 0, 17.638265907894 7.40907014083032 0, 13.4765827615909 6.47614516432039 0, 13.4765827615909 4.92127018950067 0, 21.1776413098462 4.92127018950067 0, 22.8889876620929 8.45861075512006 0, 18.5717275612748 9.81912636856469 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry CROSSES GeomFromText('POLYGON XYZ ((21.7871664615633 9.09799951254206 0, 16 7.5 0, 13.7644995867972 10.3363090940624 0, 17.2957120392973 13.6487872115325 0, 22.437652967911 12.967716946935 0, 21.7871664615633 9.09799951254206 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestOverlaps ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL2_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        printf("Overlaps Test\n");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((16.7181543649235 9.18095589981505 0, 24.1487287709618 11.0065031058681 0, 30.2960956331682 11.832695546637 0, 31.3026820425922 13.2336305621859 0, 36.0809848883546 13.2336305621859 0, 36.7253897236272 8.56769885711159 0, 29.6062507775767 4.12158541276267 0, 16.7181543649235 9.18095589981505 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((17.1273936605245 10.3291603574335 0, 24.1487287709618 11.0065031058681 0, 31.3766288155446 13.1615292327876 0, 35.760421745192 8.887139892799 0, 30.2978675767441 5.43956131692004 0, 21.9963303877134 6.24233130458029 0, 17.1273936605245 10.3291603574335 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((17.1273936605245 10.3291603574335 0, 24.1487287709618 11.0065031058681 0, 31.3766288155446 13.1615292327876 0, 35.760421745192 8.887139892799 0, 30.2978675767441 5.43956131692004 0, 21.9963303877134 6.24233130458029 0, 17.1273936605245 10.3291603574335 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((1.10092232192566 16.2550387727144 0, 0.233606980128833 11.1160540146437 0, 5.09676798798053 10.7755188928224 0, 6.2738387931957 15.2024756231834 0, 8.07042056210213 7.27729432240809 0, 13.8628479970634 8.11315329779234 0, 14.4204078754419 11.7042510737239 0, 11.9423640575315 13.2211803137057 0, 7.38895851309812 15.3882220761276 0, 17.7967425778055 14.6761940693727 0, 15.7833319734499 18.793573399115 0, 8.56602935516784 18.2363341031469 0, 0.357509187608901 18.2363341031469 0, 1.10092232192566 16.2550387727144 0))') ");
+        CPPUNIT_ASSERT(2 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((-0.254621764529062 14.076636807366 0, -0.254621764529064 7.27405882396183 0, 5.26835964164376 8.44021503412186 0, 6.51297516719999 12.3662743434462 0, 11.7636968845443 6.84646820798188 0, 16.6254762893103 9.99509000894158 0, 11.9581680592608 12.9882243208012 0, 8.49658113456603 15.0484336561509 0, 5.57951351381918 18.7801335831454 0, 1.84566693715049 18.7801335831454 0, -1.49923725323075 17.0308992469506 0, -0.254621764529062 14.076636807366 0))')");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((14 14 0, 9.80855087933362 19.1300937779063 0, 4 15 0, 2 15 0, 2 13 0, 8.00420231045137 8.61077817237079 0, 12.3432310627054 12.8614404076817 0, 14 14 0))') ");
+        CPPUNIT_ASSERT(2 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('MULTILINESTRING ((14 16, 12.5749377755851 14.9025166869653), (14.7172699545801 12.9807339797083, 13.2078995698835 12.177963992048))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((2 15 0, 2 13 0, -1.94674288802481 7.74193391855054 0, 18.1473053962809 -1.0247283724833 0, 26.1102718727124 19.306467178796 0, 8.19359722200315 26.2700571008214 0, -16.0063556015169 18.4981933401415 0, 2 15 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('LINESTRING XYZ (16 8 0, 16 2.80461446806285 0, 20.3465571196173 2.80461446806285 0)') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((4 16.5487622016098 0, 2.66838249647226 13.7935234010625 0, 12.6734844329376 14.8151287874814 0, 11.3725114202424 17.4155788981967 0, 7.81032342508592 18.0037759572769 0, 4 16.5487622016098 0))') ");
+        CPPUNIT_ASSERT(2 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry OVERLAPS GeomFromText('POLYGON XYZ ((1.10092232192566 16.2550387727144 0, 0.233606980128833 11.1160540146437 0, 5.09676798798053 10.7755188928224 0, 6.2738387931957 15.2024756231834 0, 8.07042056210213 7.27729432240809 0, 13.8628479970634 8.11315329779234 0, 14.4204078754419 11.7042510737239 0, 11.9423640575315 13.2211803137057 0, 7.38895851309812 15.3882220761276 0, 17.7967425778055 14.6761940693727 0, 15.7833319734499 18.793573399115 0, 8.56602935516784 18.2363341031469 0, 0.357509187608901 18.2363341031469 0, 1.10092232192566 16.2550387727144 0))')");
+        CPPUNIT_ASSERT(2 == SelectSpatial(conn, filter));
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestTouches ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_SPATIAL2_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+        printf("Touches Test\n");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((16.6260965417702 9.18095589981505 0, 24.1487287709618 11.0065031058681 0, 30.2960956331682 11.832695546637 0, 35.760421745192 8.887139892799 0, 31.3026820425922 13.2336305621859 0, 36.0502989473035 13.2336305621859 0, 36.6947037825761 8.35305891521561 0, 29.69830860073 4.15224825861142 0, 20.9835005736234 7.61715046816241 0, 16.6260965417702 9.18095589981505 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((17.1273936605245 10.3291603574335 0, 24.1487287709618 11.0065031058681 0, 31.3766288155446 13.1615292327876 0, 35.760421745192 8.887139892799 0, 30.2978675767441 5.43956131692004 0, 21.9963303877134 6.24233130458029 0, 17.1273936605245 10.3291603574335 0))') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((14 16 0, 14 14 0, 14.8633380468798 12.2022903495955 0, 17.6629766778234 13.248323975595 0, 17.2978064470741 16.1674875937566 0, 15.6910573219778 16.4350775896433 0, 14 16 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((4 15 0, 4 13 0, 6.75655837524837 12.4212276094325 0, 7.09738394834758 14.5132948614315 0, 4 15 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('LINESTRING XYZ (16 8 0, 16.9646885381517 12.0652662234523 0, 21.1747387629147 9.74529454204749 0, 19.1625824157176 6.52826714914131 0)') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((14 16 0, 17.8624198495349 16 0, 14.5810572034165 10.7351491325397 0, 12 10 0, 12.9713321110189 7.08506033926743 0, 21.1747387629147 14.4780367628933 0, 16.6551260485366 19.5201085314808 0, 10.8972632658988 19.1489130783817 0, 14 16 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('LINESTRING XYZ (16 8 0, 18.4906959529213 9.79398036566004 0, 20.2435131703174 7.65326039856605 0, 16.8839467912252 5.34225586577529 0, 14.1816869006814 5.60984586166204 0)') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+        
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((14 16 0, 14 11.9972809420408 0, 7.88242268225574 11.9972809420408 0, 7.88242268225574 16 0, 14 16 0))') ");
+        CPPUNIT_ASSERT(0 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((24.1487287709618 11.0065031058681 0, 30.2960956331682 11.832695546637 0, 35.760421745192 8.887139892799 0, 25 3 0, 24 3 0, 22.7957913506804 3 0, 23 4 0, 21.1387503875221 8.28707592379031 0, 24.1487287709618 11.0065031058681 0))') ");
+        CPPUNIT_ASSERT(5 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('LINESTRING XYZ (10 5 0, 12 5 0, 12 3 0, 13.8048098175142 1.93986568058828 0)') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+
+        filter = FdoFilter::Parse(L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((22 2 0, 24 2 0, 23 3 0, 24 4 0, 22 4 0, 22 2 0, 22 2 0))') ");
+        CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+
 	{
 		throw;
 	}
