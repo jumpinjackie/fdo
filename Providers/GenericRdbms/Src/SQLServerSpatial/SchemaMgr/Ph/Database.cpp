@@ -53,7 +53,8 @@ void FdoSmPhSqsDatabase::UnsetCurrentOwner()
 FdoSmPhOwnerP FdoSmPhSqsDatabase::NewOwner(
     FdoStringP owner,
     bool hasMetaSchema,
-    FdoSchemaElementState elementState
+    FdoSchemaElementState elementState,
+    FdoSmPhRdOwnerReader* /*reader*/
 )
 {
 

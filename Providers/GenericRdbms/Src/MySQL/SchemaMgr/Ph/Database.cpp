@@ -63,7 +63,8 @@ FdoPtr<FdoSmPhRdCollationReader> FdoSmPhMySqlDatabase::CreateCollationReader( Fd
 FdoSmPhOwnerP FdoSmPhMySqlDatabase::NewOwner(
     FdoStringP owner,
     bool hasMetaSchema,
-    FdoSchemaElementState elementState
+    FdoSchemaElementState elementState,
+    FdoSmPhRdOwnerReader* reader
 )
 {
 
@@ -73,7 +74,8 @@ FdoSmPhOwnerP FdoSmPhMySqlDatabase::NewOwner(
         owner.GetLength() > 0 ? owner : mqlSchemaName,
         hasMetaSchema,
         this,
-        elementState
+        elementState,
+        reader
     );
 }
 

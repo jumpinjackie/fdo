@@ -87,14 +87,9 @@
 							<xsl:choose>
 								<xsl:when test="$providerName = 'MySql'">
 									<xsl:choose>
-										<xsl:when test="@length &lt; 256">
+										<xsl:when test="@length &lt; 65536">
 											<xsl:attribute name="dataType">VARCHAR</xsl:attribute>
 											<xsl:attribute name="length"><xsl:value-of select="@length"/></xsl:attribute>
-											<xsl:attribute name="scale">0</xsl:attribute>
-										</xsl:when>
-										<xsl:when test="@length &lt; 65536">
-											<xsl:attribute name="dataType">TEXT</xsl:attribute>
-											<xsl:attribute name="length">65535</xsl:attribute>
 											<xsl:attribute name="scale">0</xsl:attribute>
 										</xsl:when>
 										<xsl:when test="@length &lt; 16777216">
