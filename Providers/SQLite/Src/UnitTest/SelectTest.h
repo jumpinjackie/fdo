@@ -59,6 +59,9 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestSpatialJoinsComplexFilter);
     CPPUNIT_TEST(TestSpatialJoinsFdo);
     CPPUNIT_TEST(TestReleaseSchema);
+    CPPUNIT_TEST(TestCrosses);
+    CPPUNIT_TEST(TestOverlaps);
+    CPPUNIT_TEST(TestTouches);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -71,6 +74,7 @@ private:
     void TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax);
     int SelectSpatial(FdoIConnection* conn, FdoString* sql);
     void TestSpatialJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
+    int SelectSpatial(FdoIConnection* conn, FdoFilter* filter);
 
 public:
     SelectTest(void);
@@ -103,6 +107,9 @@ public:
     void TestSpatialJoinsComplexFilter ();
     void TestSpatialJoinsFdo ();
     void TestReleaseSchema ();
+    void TestCrosses ();
+    void TestOverlaps ();
+    void TestTouches ();
 };
 
 #endif

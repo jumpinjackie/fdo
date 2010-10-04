@@ -519,18 +519,21 @@ private:
                 double *    xi2_O,
                 double *    yi2_O,
                 int *       IsInterp2_O,
-                double      toleranceXY);
+                double      toleranceXY,
+                bool*       isIntersectOnly = NULL);
 
     static int line_segment_intersect(
                 double* line0, 
                 double* line1,  
                 double* ret,
-                double toleranceXY);
+                double toleranceXY,
+                bool*  isIntersectOnly = NULL);
 
     static bool line_contains_line(
                 double* line0, 
                 double* line1,
-                double toleranceXY);
+                double  toleranceXY,
+                bool*   linesAreEq = NULL);
 
     static double pt_dist_to_seg(
                 double      PtX,
@@ -620,6 +623,54 @@ private:
     static FdoIPolygon* FixPolygonVertexOrder( FdoIPolygon * polygon, FdoPolygonVertexOrderRule vertexOrderRule );
 
     static FdoICurvePolygon* FixPolygonVertexOrder( FdoICurvePolygon * polygon, FdoPolygonVertexOrderRule vertexOrderRule );
+
+    // PRIMITIVE Crosses
+    // methods used to search avoiding touch or overlap, so search excluding start and end points
+    static bool PointStrictInsideLine(double x, double y, FdoILineString* line, double toleranceXY);
+
+    static bool PointStrictInsidePolygon(double x, double y, FdoIPolygon* poly, double toleranceXY);
+    
+    static bool LineStrictIntersectLine(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
+
+    static bool PolygonStrictIntersectsLine(FdoIPolygon* poly, FdoILineString* line, double toleranceXY);
+
+    static bool PointStrictInsideGeometry(double x, double y, FdoIGeometry* g, double toleranceXY);
+    
+    static bool LineStrictIntersectGeometry(FdoILineString* line1, FdoIGeometry* g, double toleranceXY);
+
+    // PRIMITIVE Overlaps
+    static bool LineOverlapsLine(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
+    
+    static bool PointStrictOutsideLine(double x, double y, FdoILineString* line, double toleranceXY);
+
+    static bool PolygonOverlapsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY, bool* allowSameInt = NULL);
+
+    static bool LineOverlaps(FdoILineString* line, FdoIGeometry* g, double toleranceXY);
+
+    static bool PolygonOverlaps(FdoIPolygon* poly, FdoIGeometry* g, double toleranceXY);
+
+    static int PolygonOverlapsLine(FdoIPolygon* poly, FdoILineString* line, double toleranceXY);
+
+    static bool PolygonContainsPolygonSegment(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY);
+
+    // PRIMITIVE Touches
+    static int PointTouchesGeometry(double x, double y, FdoIGeometry* geom, double toleranceXY);
+
+    static int LineTouchesGeometry(FdoILineString* line, FdoIGeometry* geom, double toleranceXY);
+
+    static int PolygonTouchesGeometry(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY);
+
+    static int PointTouchesLine(double x, double y, FdoILineString* line, double toleranceXY);
+
+    static int LineTouchesPolygon(FdoILineString* line, FdoIPolygon* poly, double toleranceXY);
+
+    static int PolygonTouchesPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, double toleranceXY);
+
+    static int PointTouchesPolygon(double x, double y, FdoIPolygon* poly, double toleranceXY);
+
+    static int LineTouchesLine(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
+
+    static bool SegmentTouchesPolygon(double* line, FdoIPolygon* poly, double toleranceXY);
 };
 #endif // FdoSpatialUtility___H
 
