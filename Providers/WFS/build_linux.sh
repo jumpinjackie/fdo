@@ -143,19 +143,19 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
    
 if test "$TYPEACTION" == clean ; then
-  make clean
+  sudo -E make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   make
+   sudo -E make
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   sudo make install
+   sudo -E make install
 fi
 
 if test "$TYPEACTION" == uninstall ; then
-   sudo make uninstall
+   sudo -E make uninstall
 fi
 
 if test "$BUILDDOCS" == yes ; then
