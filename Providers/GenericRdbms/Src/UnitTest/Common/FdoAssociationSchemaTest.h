@@ -27,6 +27,7 @@ class FdoAssociationSchemaTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoAssociationSchemaTest );
   CPPUNIT_TEST( TestCreate_NoIdent );
+  CPPUNIT_TEST( TestCreate_NoIdent_MultiSchema );
   CPPUNIT_TEST( TestDelete_rollbak );
   CPPUNIT_TEST( TestDelete_commit );
   CPPUNIT_TEST( TestCreate_NoIdentAssocFeatClass );
@@ -50,6 +51,7 @@ public:
 	void tearDown ();
 
     virtual void TestCreate_NoIdent () { TestCreate( false, false ); }
+    virtual void TestCreate_NoIdent_MultiSchema ();
     virtual void TestCreate_NoIdentCirc (int circularType) { TestCreate( false, false, false, false, true, false, false, false, circularType ); }
 
     virtual void TestCreate_NoIdentAssocFeatClass () { TestCreate( false, false,false,false,true,true ); }

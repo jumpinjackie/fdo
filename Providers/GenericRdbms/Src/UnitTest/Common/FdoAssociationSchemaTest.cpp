@@ -61,6 +61,60 @@ void FdoAssociationSchemaTest::createFreshDb()
 	UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
 }
 
+void FdoAssociationSchemaTest::TestCreate_NoIdent_MultiSchema ()
+{ 
+    TestCreate( false, false ); 
+    FdoPtr<FdoIConnection> connection = UnitTestUtil::GetConnection(DB_SUFFIX, false);
+
+    FdoPtr<FdoIDescribeSchema> descCmd = (FdoIDescribeSchema*) connection->CreateCommand( FdoCommandType_DescribeSchema );
+
+    FdoFeatureSchemasP schemas = descCmd->Execute();
+    FdoFeatureSchemaP baseSchema = schemas->FindItem(L"AssociationSchema");
+    CPPUNIT_ASSERT(baseSchema);
+
+    FdoClassesP classes = baseSchema->GetClasses();
+    FdoClassDefinitionP baseClass = classes->FindItem(L"TestFeatureClass");
+    CPPUNIT_ASSERT(baseClass);
+
+    FdoFeatureSchemaP newSchema = FdoFeatureSchema::Create(L"SubSchema", L"");
+    classes = newSchema->GetClasses();
+
+    FdoFeatureClassP newClass = FdoFeatureClass::Create(L"TestSubFeatureClass",L"");
+    newClass->SetBaseClass(baseClass);
+    classes->Add(newClass);
+
+    FdoPtr<FdoIApplySchema> applyCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    applyCmd->SetFeatureSchema(newSchema);
+    applyCmd->Execute();
+
+    descCmd = (FdoIDescribeSchema*) connection->CreateCommand( FdoCommandType_DescribeSchema );
+    schemas = descCmd->Execute();
+    FdoFeatureSchemaP schema = schemas->FindItem(L"SubSchema");
+    CPPUNIT_ASSERT(schema);
+
+    FdoClassesP classes2 = schema->GetClasses();
+    FdoClassDefinitionP classDef = classes2->FindItem(L"TestSubFeatureClass");
+    CPPUNIT_ASSERT(classDef);
+
+    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
+
+    int foundCount = 0;
+    for ( int i = 0; i < baseProps->GetCount(); i++ ) 
+    {
+        FdoPropertyP prop = baseProps->GetItem(i);
+        FdoStringP propName = prop->GetName();
+
+        if ( (propName == L"Association Prop1") || (propName == L"Association Prop2") ) 
+        {
+            foundCount++;
+
+            CPPUNIT_ASSERT(prop->GetPropertyType() == FdoPropertyType_AssociationProperty);
+        }
+    }
+
+    CPPUNIT_ASSERT(foundCount == 2);
+}
+
 void FdoAssociationSchemaTest::TestCreate ( bool useIdent, bool useObjProp, bool useNestedObj, bool useTransaction, bool commitTransaction, bool associatedIsFeat, bool ownerIsFeat, bool addToSubclass, int circularType )
 {
 	createFreshDb();
