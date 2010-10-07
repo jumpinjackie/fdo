@@ -1774,12 +1774,14 @@ void TestCommonConstraints::DescribeConstraintsSchema( Context& context, FdoStri
 
         FdoPropertiesP    pProps = (FdoPropertyDefinitionCollection *)pClass2->GetProperties();
         for ( int i = 0; i < pProps->GetCount(); i++ ) {
-            FdoPtr<FdoDataPropertyDefinition>    pProp = (FdoDataPropertyDefinition *)pProps->GetItem(i);
+            FdoPtr<FdoPropertyDefinition>    pProp = pProps->GetItem(i);
 
-            if (pProp == NULL )
+            if ((pProp == NULL) || (pProp->GetPropertyType() != FdoPropertyType_DataProperty) )
                 continue;
 
-            FdoPtr<FdoPropertyValueConstraint>        pConstr = pProp->GetValueConstraint();
+            FdoDataPropertyDefinition*   pDataProp = (FdoDataPropertyDefinition *)pProp.p;
+
+            FdoPtr<FdoPropertyValueConstraint>        pConstr = pDataProp->GetValueConstraint();
 
             if (pConstr == NULL )
                 continue;
@@ -2124,12 +2126,14 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
     FdoPtr<FdoPropertyDefinitionCollection> pProps = pClass2->GetProperties();
 
     for ( int i = 0; i < pProps->GetCount(); i++ ) {
-        FdoPtr<FdoDataPropertyDefinition>    pProp = (FdoDataPropertyDefinition *)pProps->GetItem(i);
+        FdoPtr<FdoPropertyDefinition>    pProp = pProps->GetItem(i);
 
-        if (pProp == NULL )
+        if ((pProp == NULL) || (pProp->GetPropertyType() != FdoPropertyType_DataProperty) )
             continue;
 
-        FdoPtr<FdoPropertyValueConstraint>        pConstr = pProp->GetValueConstraint();
+        FdoDataPropertyDefinition*   pDataProp = (FdoDataPropertyDefinition *)pProp.p;
+
+        FdoPtr<FdoPropertyValueConstraint>        pConstr = pDataProp->GetValueConstraint();
 
         if (pConstr == NULL )
             continue;
@@ -2138,7 +2142,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
         {
             if ( wcscmp( pProp->GetName(), PROP_INT32_R  ) == 0) {
                 // Remove the constraint
-                pProp->SetValueConstraint( NULL );
+                pDataProp->SetValueConstraint( NULL );
 
                 pApplyCmd->Execute();
 
@@ -2170,7 +2174,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
                 FdoPtr<FdoDataValue>   val2 = FdoDataValue::Create( INT32_RANGE[1] );
                 newRangeConstr1->SetMaxValue( val2 );
-                pProp->SetValueConstraint(newRangeConstr1);
+                pDataProp->SetValueConstraint(newRangeConstr1);
 
                 bool error = false;
                 if ( context.ltMethod != 2 ) {
@@ -2188,7 +2192,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 newRangeConstr1->SetMaxInclusive(INT_MAX_INCLUSIVE);
                 val2 = FdoDataValue::Create( value + 1 ); // Note: INT_MAX_INCLUSIVE is FALSE
                 newRangeConstr1->SetMaxValue( val2 ); 
-                pProp->SetValueConstraint(newRangeConstr1);
+                pDataProp->SetValueConstraint(newRangeConstr1);
 
                 error = false;
                 try    {
@@ -2199,7 +2203,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                     DBG(printf("Expected check constraint violation exception: %ls\n", (FdoString* )ex->GetExceptionMessage()));
                     ex->Release();
                     error = true;
-                    pProp->SetValueConstraint( NULL );
+                    pDataProp->SetValueConstraint( NULL );
                 }
                 CPPUNIT_ASSERT_MESSAGE("Expected 2nd check constraint violation exception on PROPERTY_1", error == !CanRestrictCheckConstraint());
 
@@ -2250,7 +2254,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 FdoPropertyValueConstraintRange*  newRangeConstr1 =  static_cast<FdoPropertyValueConstraintRange*>((FdoPropertyValueConstraint*) pConstr);
                 FdoPtr<FdoDataValue> newValue = FdoDataValue::Create( UPD_BYTE_RANGE[1] );
                 newRangeConstr1->SetMaxValue( newValue );
-                pProp->SetValueConstraint(newRangeConstr1);
+                pDataProp->SetValueConstraint(newRangeConstr1);
 
                 pApplyCmd->Execute();
 
@@ -2283,7 +2287,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 FdoPtr<FdoDataValue>   newVal = FdoDataValue::Create( newValue );
 
                 pList->Add( newVal );
-                pProp->SetValueConstraint( pConstrList );
+                pDataProp->SetValueConstraint( pConstrList );
                 pApplyCmd->Execute();
 
                 // Now try to insert. It should succeed.
@@ -2327,7 +2331,7 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
 
                 pList->Add( newVal );
                 pList->Add( newVal2 );
-                pProp->SetValueConstraint( pConstrList );
+                pDataProp->SetValueConstraint( pConstrList );
                 bool error = false;
 
                 // Following fails because some rows have stringlist='open'
