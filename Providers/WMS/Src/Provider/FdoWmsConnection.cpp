@@ -902,6 +902,7 @@ FdoStringP _generateValidFdoClassName(FdoStringP& layerName)
 void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWmsLayer* layer, FdoClassDefinition* parent)
 {
 	FdoBoolean bAbstract = false;
+	FdoStringP modLayerName;
 
 	// If the layer name is empty this means the WMS layer is abstract and cannot be
 	// queried from. Use the layer Title and the class name
@@ -911,8 +912,20 @@ void FdoWmsConnection::_addFeatureClass (FdoClassCollection* featClasses, FdoWms
 		layerName = layer->GetTitle ();
 	}
 
-	// Generate a valid FDO class name from a WMS layer name
-	FdoStringP modLayerName = _generateValidFdoClassName(layerName);
+	// still empty? make the FDO class name with a default value,like [Empty],[Empty1]
+	// that informs the user that the layer does not have a name, or the name is missing. 
+	if (layerName.GetLength() == 0) {
+		int count = 0;
+		do
+		{
+			modLayerName = FdoStringP::Format(count>0?L"[Empty%d]":L"[Empty]",count);
+			count++;
+		}
+		while (featClasses->FindItem(modLayerName)!=NULL);
+	}
+	else
+		// Generate a valid FDO class name from a WMS layer name
+		modLayerName = _generateValidFdoClassName(layerName);
 
 	// If the layer name is valid, we can try and add the layer
 	FdoPtr<FdoClassDefinition> featureClassDef;
