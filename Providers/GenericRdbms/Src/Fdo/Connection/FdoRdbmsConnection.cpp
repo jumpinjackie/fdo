@@ -723,6 +723,9 @@ void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, 
 		}
 	}
 
+    // Creating an owner is a major operation so force refresh of schema 
+    // info from the RDBMS by clearing the schema manager caches.
+    GetSchemaManager()->Clear(true);
 }
 
 void FdoRdbmsConnection::DeleteDb( FdoString *dbName, FdoString *dbPassword, FdoString *connectString )
