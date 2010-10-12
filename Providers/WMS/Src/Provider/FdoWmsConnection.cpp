@@ -429,7 +429,10 @@ FdoConnectionState FdoWmsConnection::Open ()
     FdoPtr<FdoWmsServiceMetadata> metadata = this->GetWmsServiceMetadata ();
     FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
     if (capa)
+    {
+        capa->AdjustBBoxOrder(metadata->GetVersion());
         capa->FillUpGeographicDataLayers();
+    }
     if (mConfigured)
     {
         // Some layer names may contain ":" or "." characters which are not allowed
@@ -1067,6 +1070,7 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
             FdoStringsP crsNames = layer->GetCoordinateReferenceSystems ();
             if (crsNames->GetCount () > 0)
             {
+/*
                 // If the layer supports the default CRS (EPSG:4326) find the index of the default CRS
                 // (Use both default CRS names in the search. A server may support one or both)
                 FdoInt32 indexDefaultCRS = crsNames->IndexOf(FdoWmsGlobals::DefaultEPSGCode);
@@ -1086,6 +1090,9 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
                 {
                     crsName = crsNames->GetString (0);
                 }
+*/
+
+                crsName = crsNames->GetString (0);
 
                 // Stop processing layers
                 break;

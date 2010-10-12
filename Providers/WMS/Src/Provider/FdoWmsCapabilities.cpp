@@ -538,3 +538,41 @@ void FdoWmsCapabilities::FillUpGeographicDataLayers()
 	    _processGeographicDataLayer (rootLayer);
 	}
 }
+
+// update the BBox order in 1.3.0 and later version  
+void FdoWmsCapabilities::AdjustBBoxOrder(FdoString* version)  
+{  
+    // only handle it in 1.3.0 and later version  
+    if (wcscmp(FdoWmsGlobals::WmsVersion100,version) == 0 ||  
+        wcscmp(FdoWmsGlobals::WmsVersion110,version) == 0 ||  
+        wcscmp(FdoWmsGlobals::WmsVersion111,version) == 0)  
+        return;  
+
+    FdoPtr<FdoWmsLayerCollection> layers = GetLayers ();  
+    for (FdoInt32 i=0; i < layers->GetCount (); i++)  
+    {
+        FdoPtr<FdoWmsLayer> layer = layers->GetItem (i);  
+        FdoPtr<FdoWmsBoundingBoxCollection> boundingBoxes = layer->GetBoundingBoxes();  
+
+        // reverse it if needed  
+        for (FdoInt32 j = 0; j<boundingBoxes->GetCount(); j++)  
+        {  
+            FdoPtr<FdoWmsBoundingBox> bbox = boundingBoxes->GetItem(j);  
+            FdoStringP crs = bbox->GetCRS();  
+            if (crs.Contains(FdoWmsGlobals::ESPGPrefix) && _reverseCheck(crs))  
+            {  
+                FdoDouble minx = bbox->GetMinX();  
+                FdoDouble miny = bbox->GetMinY();  
+                FdoDouble maxx = bbox->GetMaxX();  
+                FdoDouble maxy = bbox->GetMaxY();  
+
+                //reverse it  
+                bbox->SetMinX(miny);  
+                bbox->SetMinY(minx);  
+                bbox->SetMaxX(maxy);  
+                bbox->SetMaxY(maxx);  
+            }  
+        }  
+    }  
+}  
+   
