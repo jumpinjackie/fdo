@@ -621,7 +621,7 @@ void OverridesTest::TestRequestSpcialImageFormat()
         connection->Open();
       
 	    FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName (L"WMSLayers:BARRIERL_1M Foundation");
+        cmdSelect->SetFeatureClassName (L"WMSLayers:Foundation BARRIERL_1M"); // layer name is Foundation BARRIERL_1M
         FdoPtr<FdoIFeatureReader> featReader = cmdSelect->Execute ();
         CPPUNIT_ASSERT (featReader->ReadNext ());	    
         FdoPtr<FdoIRaster> raster = featReader->GetRaster (L"Image");

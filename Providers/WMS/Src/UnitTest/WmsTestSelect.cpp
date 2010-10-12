@@ -1827,7 +1827,7 @@ void WmsTestSelect::testLinuxgurrl ()
         FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
         FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
         FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
-        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:42304");
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
         cmdSelect->SetFeatureClassName (L"ecodistricts-labels"); 
@@ -1885,7 +1885,7 @@ void WmsTestSelect::testOpenmaps ()
         FdoPtr<FdoPropertyDefinition> prop = props->GetItem (L"Raster");
         FdoRasterPropertyDefinition* rasterProp = (FdoRasterPropertyDefinition*)(prop.p);
         FdoStringP rasterAssoc = rasterProp->GetSpatialContextAssociation();
-        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:3005");
+        CPPUNIT_ASSERT (rasterAssoc == L"EPSG:4326");
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*> (connection->CreateCommand (FdoCommandType_Select));
         cmdSelect->SetFeatureClassName (L"BC_BC_BC_XC100M_BCALB_20070115");
