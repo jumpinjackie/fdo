@@ -1090,8 +1090,6 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
                     crsName = crsNames->GetString (0);
                 }
 
-                crsName = crsNames->GetString (0);
-
                 // Stop processing layers
                 break;
             }
