@@ -1070,7 +1070,6 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
             FdoStringsP crsNames = layer->GetCoordinateReferenceSystems ();
             if (crsNames->GetCount () > 0)
             {
-/*
                 // If the layer supports the default CRS (EPSG:4326) find the index of the default CRS
                 // (Use both default CRS names in the search. A server may support one or both)
                 FdoInt32 indexDefaultCRS = crsNames->IndexOf(FdoWmsGlobals::DefaultEPSGCode);
@@ -1090,7 +1089,6 @@ void FdoWmsConnection::_setDefaultSpatialContextAssociation (FdoClassDefinition*
                 {
                     crsName = crsNames->GetString (0);
                 }
-*/
 
                 crsName = crsNames->GetString (0);
 
