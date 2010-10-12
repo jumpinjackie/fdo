@@ -40,6 +40,7 @@ FdoString* NlsMsgGet(int msg_num, char* default_msg, char* file, int line, ...);
 // Bounding Box helper functions
 void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundingBox* bbox);
 void _calcLayersBoundingBox (FdoWmsLayerCollection* layers, FdoString* srsName, FdoWmsBoundingBox* bbox);
+FdoBoolean _reverseCheck(FdoStringP epsgName); 
 
 
 #endif // FDOWMSUTILS_H
