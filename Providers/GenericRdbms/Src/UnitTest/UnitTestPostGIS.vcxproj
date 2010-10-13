@@ -311,6 +311,7 @@
     <ClCompile Include="Common\MessageTest.cpp" />
     <ClCompile Include="Common\SchemaMgrTests.cpp" />
     <ClCompile Include="PostGis\PostGisConnectionUtil.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoAdvancedSelectTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoExpressionFunctionTest.cpp" />
     <ClCompile Include="PostGis\PostGisSchemaOverrideUtil.cpp" />
     <ClCompile Include="PostGis\PostGisTestRegister.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="Common\MessageTest.h" />
     <ClInclude Include="Common\SchemaMgrTests.h" />
     <ClInclude Include="PostGis\PostGisConnectionUtil.h" />
+    <ClInclude Include="PostGis\PostGisFdoAdvancedSelectTest.h" />
     <ClInclude Include="PostGis\PostGisFdoExpressionFunctionTest.h" />
     <ClInclude Include="PostGis\PostGisSchemaOverrideUtil.h" />
     <ClInclude Include="Common\SchemaOverrideUtil.h" />

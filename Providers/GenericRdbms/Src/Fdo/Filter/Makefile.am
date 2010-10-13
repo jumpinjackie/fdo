@@ -21,12 +21,14 @@ noinst_LTLIBRARIES = libFdoRdbms_Filter.la
 
 libFdoRdbms_Filter_la_SOURCES = \
   FdoRdbmsFilterProcessor.cpp  \
-  FdoRdbmsFilterUtil.cpp
+  FdoRdbmsFilterUtil.cpp \
+  FdoRdbmsFunctionIsValid.h
 
 noinst_HEADERS = $(libFdoRdbms_Filter_la_SOURCES) \
   FdoRdbmsBaseFilterProcessor.h \
   FdoRdbmsFilterProcessor.h \
-  FdoRdbmsFilterUtil.h
+  FdoRdbmsFilterUtil.h \
+  FdoRdbmsFunctionIsValid.cpp
 
 INCLUDES = \
   -I../ \

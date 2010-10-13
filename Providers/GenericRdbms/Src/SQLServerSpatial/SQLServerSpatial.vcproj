@@ -421,10 +421,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Fdo\FdoRdbmsSqlServerFunctionIsValid.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerOptimizedAggregateReader.cpp"
 				>
 				<FileConfiguration
@@ -528,10 +524,6 @@
 			</File>
 			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerFilterProcessor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Fdo\FdoRdbmsSqlServerFunctionIsValid.h"
 				>
 			</File>
 			<File

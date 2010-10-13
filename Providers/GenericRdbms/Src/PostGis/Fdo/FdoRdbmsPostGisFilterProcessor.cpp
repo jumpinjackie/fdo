@@ -667,7 +667,14 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
             AppendString(CLOSE_PARENTH);
         }
     }
-    
+    else if (0 == name.ICompare(FDORDBMS_FUNCTION_ISVALID))
+    {
+        FdoPtr<FdoExpression> geom1Expr(args->GetItem(0));
+        AppendString(L"Cast(ST_IsValid(");
+        geom1Expr->Process(this);
+        AppendString(L") as int)");
+        processArgs = false;
+    }
     else
     {
         AppendString(static_cast<char const*>(name));

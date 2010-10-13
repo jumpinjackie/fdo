@@ -177,6 +177,8 @@ public:
     ///
 	virtual FdoIFilterCapabilities* GetFilterCapabilities();
 
+    virtual FdoIExpressionCapabilities* GetExpressionCapabilities();
+
 protected:
 
     /// Default constructor.

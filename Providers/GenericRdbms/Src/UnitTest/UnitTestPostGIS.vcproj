@@ -1113,6 +1113,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PostGis\PostGisFdoAdvancedSelectTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoAdvancedSelectTest.h"
+				>
+			</File>
+			<File
 				RelativePath="PostGis\PostGisFdoApplySchemaTest.cpp"
 				>
 			</File>

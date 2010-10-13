@@ -25,6 +25,7 @@ libPostGisUnitTests_la_SOURCES = \
 PostGisConnectionUtil.cpp \
 PostGisConnectTests.cpp \
 PostGisDescribeSchemaTest.cpp \
+PostGisFdoAdvancedSelectTest.cpp \
 PostGisFdoApplySchemaTest.cpp \
 PostGisFdoConnectionInfoTest.cpp \
 PostGisFdoConnectTest.cpp \
@@ -44,6 +45,7 @@ PostGisSchemaOverrideUtil.cpp
 noinst_HEADERS = $(libPostGisUnitTests_la_SOURCES) \
 PostGisConnectionUtil.h \
 PostGisConnectTests.h \
+PostGisFdoAdvancedSelectTest.h \
 PostGisFdoApplySchemaTest.h \
 PostGisFdoConnectionInfoTest.h \
 PostGisFdoConnectTest.h \

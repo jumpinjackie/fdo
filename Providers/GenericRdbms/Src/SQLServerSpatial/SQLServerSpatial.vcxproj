@@ -266,7 +266,6 @@
     <ClCompile Include="Fdo\FdoRdbmsSqlServerExpressionCapabilities.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsSqlServerFilterCapabilities.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsSqlServerFilterProcessor.cpp" />
-    <ClCompile Include="Fdo\FdoRdbmsSqlServerFunctionIsValid.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsSqlServerOptimizedAggregateReader.cpp">
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ShowIncludes>
       <ShowIncludes Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ShowIncludes>
@@ -290,7 +289,6 @@
     <ClInclude Include="Fdo\FdoRdbmsSqlServerExpressionCapabilities.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerFilterCapabilities.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerFilterProcessor.h" />
-    <ClInclude Include="Fdo\FdoRdbmsSqlServerFunctionIsValid.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerOptimizedAggregateReader.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerProviderInfo.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerSchemaCapabilities.h" />

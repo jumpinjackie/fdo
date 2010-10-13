@@ -632,6 +632,10 @@
 					RelativePath="Filter\FdoRdbmsFilterUtil.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Filter\FdoRdbmsFunctionIsValid.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="DataStore"
@@ -991,6 +995,10 @@
 				</File>
 				<File
 					RelativePath="Filter\FdoRdbmsFilterUtil.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Filter\FdoRdbmsFunctionIsValid.h"
 					>
 				</File>
 			</Filter>
