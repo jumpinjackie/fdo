@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm113"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -138,7 +138,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="-Zm113"
 				Optimization="0"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -231,7 +231,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -324,7 +324,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager"
+				AdditionalIncludeDirectories="../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDOUTILITIES)/SchemaMgr/inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -423,6 +423,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Fdo\FdoRdbmsPostGisExpressionCapabilities.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Fdo\FdoRdbmsPostGisFilterCapabilities.cpp"
 				>
 			</File>
@@ -509,6 +513,10 @@
 			</File>
 			<File
 				RelativePath="Fdo\FdoRdbmsPostGisDeleteDataStore.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Fdo\FdoRdbmsPostGisExpressionCapabilities.h"
 				>
 			</File>
 			<File

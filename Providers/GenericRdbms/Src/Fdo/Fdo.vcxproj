@@ -180,6 +180,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Filter\FdoRdbmsFunctionIsValid.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -258,6 +259,8 @@
     <ClCompile Include="Pvc\FdoRdbmsPvcUpdateHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Custom\FdoRdbmsCreateSpatialIndex.h" />
+    <ClInclude Include="Filter\FdoRdbmsFunctionIsValid.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Capability\FdoRdbmsCommandCapabilities.h" />
     <ClInclude Include="Capability\FdoRdbmsConnectionCapabilities.h" />
@@ -265,7 +268,6 @@
     <ClInclude Include="Capability\FdoRdbmsFilterCapabilities.h" />
     <ClInclude Include="Capability\FdoRdbmsGeometryCapabilities.h" />
     <ClInclude Include="Capability\FdoRdbmsTopologyCapabilities.h" />
-    <ClInclude Include="Custom\FdoRdbmsCreateSpatialContext.h" />
     <ClInclude Include="Custom\FdoRdbmsDestroySpatialIndex.h" />
     <ClInclude Include="Custom\FdoRdbmsGetSpatialIndexes.h" />
     <ClInclude Include="Custom\FdoRdbmsSpatialIndexReader.h" />

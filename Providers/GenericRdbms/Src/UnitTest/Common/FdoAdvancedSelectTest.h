@@ -70,6 +70,9 @@ public:
     virtual void TestCeillInt64Property();
     virtual void TestLowerOnStringProperty();
 
+    // Applicable only to PostgreSQL and SQLServerSpatial providers.
+    void isValidTest();
+
     virtual FdoStringP GetSchemaName(){return L"Acad";};
     virtual FdoStringP AcDb3dPolylineName(){return L"AcDb3dPolyline";};
     virtual FdoStringP GetDateTimePropName(){return L"datetime";};

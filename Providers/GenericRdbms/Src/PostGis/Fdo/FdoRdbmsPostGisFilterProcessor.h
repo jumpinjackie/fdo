@@ -18,6 +18,7 @@
 #define FDORDBMSPOSTGISFILTERPROCESSOR_H
 
 #include "../../Fdo/Filter/FdoRdbmsFilterProcessor.h"
+#include "FdoRdbmsFunctionIsValid.h"
 
 static wchar_t* PostGisSupportedFunctions[] = {
 
@@ -96,7 +97,8 @@ static wchar_t* PostGisSupportedFunctions[] = {
     //FDO_FUNCTION_X,         
     //FDO_FUNCTION_Y,         
     //FDO_FUNCTION_Z,         
-    //FDO_FUNCTION_M,         
+    //FDO_FUNCTION_M,  
+    FDORDBMS_FUNCTION_ISVALID,
     NULL
 };
 

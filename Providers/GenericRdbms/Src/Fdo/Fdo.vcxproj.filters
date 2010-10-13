@@ -1,0 +1,546 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Connection\DbiConnection.cpp">
+      <Filter>Source Files\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsAcquireLock.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsActivateLongTransaction.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialContext\FdoRdbmsActivateSpatialContext.cpp">
+      <Filter>Source Files\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsApplySchemaCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsBLOBStreamReader.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsCommandCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsCommitLongTransaction.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="Connection\FdoRdbmsConnection.cpp">
+      <Filter>Source Files\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsConnectionCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="Connection\FdoRdbmsConnectionPropertyDictionary.cpp">
+      <Filter>Source Files\Connection</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsCreateLongTransaction.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialContext\FdoRdbmsCreateSpatialContext.cpp">
+      <Filter>Source Files\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="Custom\FdoRdbmsCreateSpatialIndex.cpp">
+      <Filter>Source Files\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStore\FdoRdbmsDataStoreReader.cpp">
+      <Filter>Source Files\Datastore</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsDeactivateLongTransaction.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsDeleteCommand.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsDescribeSchemaCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsDescribeSchemaMappingCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsDestroySchemaCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialContext\FdoRdbmsDestroySpatialContext.cpp">
+      <Filter>Source Files\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="Custom\FdoRdbmsDestroySpatialIndex.cpp">
+      <Filter>Source Files\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsExpressionCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureInfoReader.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureReader.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsFeatureTransaction.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsFilterCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter\FdoRdbmsFilterProcessor.cpp">
+      <Filter>Source Files\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter\FdoRdbmsFilterUtil.cpp">
+      <Filter>Source Files\Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsGetClassNamesCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="DataStore\FdoRdbmsGetDataStores.cpp">
+      <Filter>Source Files\Datastore</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsGetLockedObjects.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsGetLockOwners.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsGetLockInfo.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsGetLongTransactions.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialContext\FdoRdbmsGetSpatialContexts.cpp">
+      <Filter>Source Files\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="Custom\FdoRdbmsGetSpatialIndexes.cpp">
+      <Filter>Source Files\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsGetSchemaNamesCommand.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsInsertCommand.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsLobUtility.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsLockConflictReader.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsLockConflicts.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsLockedObjectsReader.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsLockInfoReader.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsLockOwnersReader.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsLongTransactionConflictDirectiveEnumerator.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsLongTransactionReader.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="Pvc\FdoRdbmsPvcHandler.cpp">
+      <Filter>Source Files\Pvc</Filter>
+    </ClCompile>
+    <ClCompile Include="Pvc\FdoRdbmsPvcUpdateHandler.cpp">
+      <Filter>Source Files\Pvc</Filter>
+    </ClCompile>
+    <ClCompile Include="Pvc\FdoRdbmsPvcInsertHandler.cpp">
+      <Filter>Source Files\Pvc</Filter>
+    </ClCompile>
+    <ClCompile Include="Pvc\FdoRdbmsPvcOperation.cpp">
+      <Filter>Source Files\Pvc</Filter>
+    </ClCompile>
+    <ClCompile Include="Pvc\FdoRdbmsPvcProcessor.cpp">
+      <Filter>Source Files\Pvc</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\FdoRdbmsReleaseLock.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="Lt\FdoRdbmsRollbackLongTransaction.cpp">
+      <Filter>Source Files\Lt</Filter>
+    </ClCompile>
+    <ClCompile Include="Schema\FdoRdbmsSchemaUtil.cpp">
+      <Filter>Source Files\Schema</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsSchemaCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsSelectAggregates.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsSelectCommand.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="SpatialContext\FdoRdbmsSpatialContextReader.cpp">
+      <Filter>Source Files\SpatialContext</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsException.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsPrimaryKey.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsPrimaryKeyColumn.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Custom\FdoRdbmsSpatialIndexReader.cpp">
+      <Filter>Source Files\Custom</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsSQLCommand.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsSQLDataReader.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Capability\FdoRdbmsTopologyCapabilities.cpp">
+      <Filter>Source Files\Capability</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsUpdateCommand.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Other\FdoRdbmsUtil.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock\LockUtility.cpp">
+      <Filter>Source Files\Lock</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter\FdoRdbmsFunctionIsValid.cpp">
+      <Filter>Source Files\Filter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Connection\DbiConnection.h">
+      <Filter>Header Files\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Connection\FdoRdbmsConnection.h">
+      <Filter>Header Files\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsAcquireLock.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsActivateLongTransaction.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialContext\FdoRdbmsActivateSpatialContext.h">
+      <Filter>Header Files\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsApplySchemaCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter\FdoRdbmsBaseFilterProcessor.h">
+      <Filter>Header Files\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsBLOBStreamReader.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsCommandCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsCommitLongTransaction.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsConnectionCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="Connection\FdoRdbmsConnectionPropertyDictionary.h">
+      <Filter>Header Files\Connection</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStore\FdoRdbmsCreateDatastore.h">
+      <Filter>Header Files\Datastore</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsCreateLongTransaction.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialContext\FdoRdbmsCreateSpatialContext.h">
+      <Filter>Header Files\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsDataReader.h">
+      <Filter>Header Files\Datastore</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsDeactivateLongTransaction.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsDeleteCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStore\FdoRdbmsDeleteDataStore.h">
+      <Filter>Header Files\Datastore</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsDescribeSchemaCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsDescribeSchemaMappingCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsDestroySchemaCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialContext\FdoRdbmsDestroySpatialContext.h">
+      <Filter>Header Files\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="Custom\FdoRdbmsDestroySpatialIndex.h">
+      <Filter>Header Files\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="Custom\FdoRdbmsCreateSpatialIndex.h">
+      <Filter>Header Files\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStore\FdoRdbmsDataStoreReader.h">
+      <Filter>Header Files\Datastore</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsExpressionCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureInfoReader.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureReader.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsFilterCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter\FdoRdbmsFilterProcessor.h">
+      <Filter>Header Files\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter\FdoRdbmsFilterUtil.h">
+      <Filter>Header Files\Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsGeometryCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsGetClassNamesCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="DataStore\FdoRdbmsGetDataStores.h">
+      <Filter>Header Files\Datastore</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsGetLockedObjects.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsGetLockInfo.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsGetLockOwners.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsGetLongTransactions.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsGetSchemaNamesCommand.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialContext\FdoRdbmsGetSpatialContexts.h">
+      <Filter>Header Files\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsFeatureTransaction.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Custom\FdoRdbmsGetSpatialIndexes.h">
+      <Filter>Header Files\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsInsertCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsLobUtility.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsLockConflictReader.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsLockOwnersReader.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsLockConflicts.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsLockedObjectsReader.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsLockInfoReader.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsLongTransactionConflictDirectiveEnumerator.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsLongTransactionReader.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="Pvc\FdoRdbmsPvcHandler.h">
+      <Filter>Header Files\Pvc</Filter>
+    </ClInclude>
+    <ClInclude Include="Pvc\FdoRdbmsPvcInsertHandler.h">
+      <Filter>Header Files\Pvc</Filter>
+    </ClInclude>
+    <ClInclude Include="Pvc\FdoRdbmsPvcOperation.h">
+      <Filter>Header Files\Pvc</Filter>
+    </ClInclude>
+    <ClInclude Include="Pvc\FdoRdbmsPvcProcessor.h">
+      <Filter>Header Files\Pvc</Filter>
+    </ClInclude>
+    <ClInclude Include="Pvc\FdoRdbmsPvcUpdateHandler.h">
+      <Filter>Header Files\Pvc</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\Collection.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\Disposable.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbms.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsException.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsPrimaryKey.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsPrimaryKeyColumn.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\FdoRdbmsReleaseLock.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="Lt\FdoRdbmsRollbackLongTransaction.h">
+      <Filter>Header Files\Lt</Filter>
+    </ClInclude>
+    <ClInclude Include="Schema\FdoRdbmsSchemaUtil.h">
+      <Filter>Header Files\Schema</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsSelectAggregates.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsSelectCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialContext\FdoRdbmsSpatialContextReader.h">
+      <Filter>Header Files\SpatialContext</Filter>
+    </ClInclude>
+    <ClInclude Include="Custom\FdoRdbmsSpatialIndexReader.h">
+      <Filter>Header Files\Custom</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsSQLCommand.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsSQLDataReader.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Other\FdoRdbmsUtil.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="Capability\FdoRdbmsTopologyCapabilities.h">
+      <Filter>Header Files\Capability</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsUpdateCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock\LockUtility.h">
+      <Filter>Header Files\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter\FdoRdbmsFunctionIsValid.h">
+      <Filter>Header Files\Filter</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e9af0dbe-108a-40e1-82a1-32ee0bd30cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{78fb0835-b813-439b-a034-68a3a576ee31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Capability">
+      <UniqueIdentifier>{8f2d5a78-3e92-4967-8a71-2713f36d87f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Connection">
+      <UniqueIdentifier>{c9a9efb5-9ce1-455d-a8a9-883c2dfbea8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Custom">
+      <UniqueIdentifier>{e6eba423-b632-42cc-ab89-28ccec81be04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Datastore">
+      <UniqueIdentifier>{a4c1d992-1bb8-4804-87f9-deaecb81a950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\FeatureCommands">
+      <UniqueIdentifier>{19291b5f-886b-4e61-8408-5f37a27c053c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Filter">
+      <UniqueIdentifier>{ea9c3818-fd6c-4797-b860-40c686f9f2d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lock">
+      <UniqueIdentifier>{eddc8e50-27a7-4feb-bf2c-f37f098dd5d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lt">
+      <UniqueIdentifier>{200af3dc-96f9-437b-9d8e-83cfde4a65f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Pvc">
+      <UniqueIdentifier>{e5b4894a-f891-4c65-aafb-1eb9ecd09346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Other">
+      <UniqueIdentifier>{2f3fbd87-9a65-4704-88b0-53dfb4969b87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Capability">
+      <UniqueIdentifier>{800c658d-a2ce-4c98-8fb2-328813e8fa3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Connection">
+      <UniqueIdentifier>{d602fffa-cc6b-4368-aac9-f2ee9f268a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Custom">
+      <UniqueIdentifier>{c3b29ff0-a496-446a-a78f-45aa253062c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Datastore">
+      <UniqueIdentifier>{04763915-edff-4820-9b41-dd991edbd9b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FeatureCommands">
+      <UniqueIdentifier>{ca125261-10a3-4221-a92c-7d488e39d52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Filter">
+      <UniqueIdentifier>{5e5b0f95-b90b-4fb0-a98f-97a9a5f6eeee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lock">
+      <UniqueIdentifier>{2a5179fb-2e93-4a35-add0-508d20ff6dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lt">
+      <UniqueIdentifier>{c43a311e-5627-4c5c-ab37-abe9bedf49ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SpatialContext">
+      <UniqueIdentifier>{77ac4523-e342-43c0-90b3-2f4c1bf1de13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Schema">
+      <UniqueIdentifier>{039ddc74-4858-4bd6-8139-e02227ccb5bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Pvc">
+      <UniqueIdentifier>{0d37a8bd-ee22-48ac-841a-0644c4ed497a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SpatialContext">
+      <UniqueIdentifier>{17d28528-4e17-403c-925a-0951e9cbdd5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Schema">
+      <UniqueIdentifier>{d99a44e0-aa56-42ed-ab98-42d6e7bc232e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Other">
+      <UniqueIdentifier>{bd4fc318-bc86-4666-b4f6-d26528444208}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

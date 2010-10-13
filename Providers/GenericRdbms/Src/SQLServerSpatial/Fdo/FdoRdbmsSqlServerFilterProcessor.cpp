@@ -25,7 +25,7 @@
 #include "FdoRdbmsSqlServerConnection.h"
 #include "FdoCommonOSUtil.h"
 #include "FdoRdbmsSqlServerSpatialGeometryConverter.h"
-#include "FdoRdbmsSqlServerFunctionIsValid.h"
+#include "FdoRdbmsFunctionIsValid.h"
 #include "../SchemaMgr/Ph/SpatialIndex.h"
 #include "../SchemaMgr/Ph/Mgr.h"
 
@@ -496,7 +496,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
     if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_SPATIALEXTENTS) == 0)
         return ProcessSpatialExtentsFunction(expr);
 
-    if (FdoCommonOSUtil::wcsicmp(funcName, FDORDBMSSQLSERVER_FUNCTION_ISVALID) == 0)
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDORDBMS_FUNCTION_ISVALID) == 0)
         return ProcessIsValidFunction(expr);
 
     if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_Z) == 0)

@@ -17,7 +17,7 @@
 //  
 #include "stdafx.h"
 #include "FdoRdbmsSqlServerExpressionCapabilities.h"
-#include "FdoRdbmsSqlServerFunctionIsValid.h"
+#include "FdoRdbmsFunctionIsValid.h"
 #include <FdoExpressionEngineFunctionCollection.h>
 
 //-------------------------------------------------------
@@ -79,7 +79,7 @@ FdoFunctionDefinitionCollection* FdoRdbmsSqlServerExpressionCapabilities::GetFun
         m_supportedFunctions = FdoExpressionEngine::GetStandardFunctions();
   		FdoPtr<FdoExpressionEngineFunctionCollection>   customFuncs = FdoExpressionEngineFunctionCollection::Create();
 
-        FdoPtr<FdoExpressionEngineIFunction>  func1 = FdoRdbmsSqlServerFunctionIsValid::Create();
+        FdoPtr<FdoExpressionEngineIFunction>  func1 = FdoRdbmsFunctionIsValid::Create();
 
         m_supportedFunctions->Add(FdoPtr<FdoFunctionDefinition>(func1->GetFunctionDefinition()));
 
