@@ -21,6 +21,7 @@ set( PostGisUnitTests_STAT_SRCS
 	PostGisConnectionUtil.cpp
 	PostGisConnectTests.cpp
 	PostGisDescribeSchemaTest.cpp
+	PostGisFdoAdvancedSelectTest.cpp
 	PostGisFdoApplySchemaTest.cpp
 	PostGisFdoConnectionInfoTest.cpp
 	PostGisFdoConnectTest.cpp

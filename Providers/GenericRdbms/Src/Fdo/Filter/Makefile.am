@@ -22,13 +22,13 @@ noinst_LTLIBRARIES = libFdoRdbms_Filter.la
 libFdoRdbms_Filter_la_SOURCES = \
   FdoRdbmsFilterProcessor.cpp  \
   FdoRdbmsFilterUtil.cpp \
-  FdoRdbmsFunctionIsValid.h
+  FdoRdbmsFunctionIsValid.cpp
 
 noinst_HEADERS = $(libFdoRdbms_Filter_la_SOURCES) \
   FdoRdbmsBaseFilterProcessor.h \
   FdoRdbmsFilterProcessor.h \
   FdoRdbmsFilterUtil.h \
-  FdoRdbmsFunctionIsValid.cpp
+  FdoRdbmsFunctionIsValid.h
 
 INCLUDES = \
   -I../ \
@@ -58,6 +58,7 @@ INCLUDES = \
   -I$(FDO)/Unmanaged/src/geometry \
   -I$(FDOUTILITIES)/SchemaMgr/Inc \
   -I$(FDOUTILITIES)/Common/Inc \
+  -I$(FDOUTILITIES)/ExpressionEngine/Inc \
   -I../../Gdbi \
   -I../../LongTransactionManager \
   -I../../LockManager
