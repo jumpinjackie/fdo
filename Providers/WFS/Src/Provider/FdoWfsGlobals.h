@@ -25,7 +25,7 @@
 
 namespace FdoWfsGlobals
 {
-	static FdoString* FeatureTypeList				    = L"FeatureTypeList";
+    static FdoString* FeatureTypeList                   = L"FeatureTypeList";
     static FdoString* Filter_Capabilities               = L"Filter_Capabilities";
     static FdoString* Operations                        = L"Operations";
     static FdoString* FeatureType                       = L"FeatureType";
@@ -37,20 +37,23 @@ namespace FdoWfsGlobals
     static FdoString* Name                              = L"Name";
     static FdoString* Title                             = L"Title";
     static FdoString* SRS                               = L"SRS";
-	static FdoString* DefaultSRS                        = L"DefaultSRS";
-	static FdoString* Abstract                          = L"Abstract";
-	static FdoString* Keywords                          = L"Keywords";
-	static FdoString* MetadataURL                       = L"MetadataURL";
+    static FdoString* DefaultSRS                        = L"DefaultSRS";
+    static FdoString* Abstract                          = L"Abstract";
+    static FdoString* Keywords                          = L"Keywords";
+    static FdoString* MetadataURL                       = L"MetadataURL";
     static FdoString* LatLongBoundingBox                = L"LatLongBoundingBox";
-	static FdoString* WGS84BoundingBox                  = L"WGS84BoundingBox";
+    static FdoString* WGS84BoundingBox                  = L"WGS84BoundingBox";
     static FdoString* minx                              = L"minx";
     static FdoString* miny                              = L"miny";
     static FdoString* maxx                              = L"maxx";
     static FdoString* maxy                              = L"maxy";
+    static FdoString* name                              = L"name";
     static FdoString* Spatial_Capabilities              = L"Spatial_Capabilities";
     static FdoString* Scalar_Capabilities               = L"Scalar_Capabilities";
     static FdoString* Spatial_Operators                 = L"Spatial_Operators";
-    static FdoString* Intersect                         = L"Intersect";
+    static FdoString* SpatialOperators                  = L"SpatialOperators";
+    static FdoString* SpatialOperator                   = L"SpatialOperator";
+    static FdoString* Intersects                        = L"Intersects";
     static FdoString* BBOX                              = L"BBOX";
     static FdoString* Contains                          = L"Contains";
     static FdoString* Crosses                           = L"Crosses";
@@ -62,17 +65,27 @@ namespace FdoWfsGlobals
     static FdoString* DWithin                           = L"DWithin";
     static FdoString* Beyond                            = L"Beyond";
     static FdoString* Logical_Operators                 = L"Logical_Operators";
+    static FdoString* LogicalOperators                  = L"LogicalOperators";
     static FdoString* Comparison_Operators              = L"Comparison_Operators";
-    static FdoString* Atithmetic_Operators              = L"Atithmetic_Operators";
+    static FdoString* ComparisonOperators               = L"ComparisonOperators";
+    static FdoString* ComparisonOperator                = L"ComparisonOperator";
+    static FdoString* Arithmetic_Operators              = L"Arithmetic_Operators";
+    static FdoString* ArithmeticOperators               = L"ArithmeticOperators";
     static FdoString* Simple_Comparisons                = L"Simple_Comparisons";
+    static FdoString* LessThan                          = L"LessThan";
+    static FdoString* GreaterThan                       = L"GreaterThan";
+    static FdoString* LessThanEqualTo                   = L"LessThanEqualTo";
+    static FdoString* GreaterThanEqualTo                = L"GreaterThanEqualTo";
+    static FdoString* EqualTo                           = L"EqualTo";
+    static FdoString* NotEqualTo                        = L"NotEqualTo";
     static FdoString* Like                              = L"Like";
     static FdoString* NullCheck                         = L"NullCheck";
     static FdoString* Between                           = L"Between";
     static FdoString* Simple_Arithmetic                 = L"Simple_Arithmetic";
-    static FdoString* Arithmetic_Operators              = L"Arithmetic_Operators";
+    static FdoString* SimpleArithmetic                  = L"SimpleArithmetic";
     static FdoString* WFS                               = L"WFS";
     static FdoString* WfsVersion                        = L"1.0.0";
-	static FdoString* WfsVersion110						= L"1.1.0";
+    static FdoString* WfsVersion110                     = L"1.1.0";
 
     static FdoString* DescribeFeatureType               = L"DescribeFeatureType";
     static FdoString* GetFeature                        = L"GetFeature";
@@ -103,7 +116,7 @@ namespace FdoWfsGlobals
     static FdoString* GMLSchemaName                     = L"gml";
     static FdoString* XLinkSchemaName                   = L"xlink";
 
-	static FdoString* Dot								= L"-dot-";
+    static FdoString* Dot                               = L"-dot-";
 
 }
 
