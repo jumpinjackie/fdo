@@ -40,6 +40,7 @@ private:
     FdoInt32 m_comparisonOperators;
     bool m_logicalOperators;
     bool m_simpleArithmetic;
+    FdoXmlCharDataHandlerP mXmlContentHandler;
 
 protected:
     FdoWfsOgcScalarCapabilities();

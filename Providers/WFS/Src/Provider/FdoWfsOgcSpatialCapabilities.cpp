@@ -55,8 +55,11 @@ FdoXmlSaxHandler* FdoWfsOgcSpatialCapabilities::XmlStartElement(
         {
         case 0:
             {
+                // WFS 1.0 and WFS 1.1 use different element name for Spatial Operator element.
                 if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Spatial_Operators) == 0)
                     myContext->SetStateSpatial_Capabilities(1);
+                else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SpatialOperators) == 0)
+                    myContext->SetStateSpatial_Capabilities(2);
                 else
                     throw FdoException::Create(FdoException::NLSGetMessage(
                                             FDO_NLSID(FDO_52_BADSUBELEMENT), 
@@ -67,7 +70,7 @@ FdoXmlSaxHandler* FdoWfsOgcSpatialCapabilities::XmlStartElement(
             }
         case 1:
             {
-                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Intersect) == 0)
+                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Intersects) == 0)
                     m_spatialOperators |= SpatialOperators_Intersect;
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::BBOX) == 0)
                     m_spatialOperators |= SpatialOperators_BBOX;
@@ -96,11 +99,83 @@ FdoXmlSaxHandler* FdoWfsOgcSpatialCapabilities::XmlStartElement(
                                             name, FdoWfsGlobals::Spatial_Operators));
                 break;
             }
+        case 2:
+            {
+                bool bSuccess = false;
+                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SpatialOperator) == 0)
+                {
+                    FdoPtr<FdoXmlAttribute> attr = atts->FindItem(FdoWfsGlobals::name);
+                    if (attr != NULL)
+                    {
+                        FdoStringP value = attr->GetValue();
+                        if (value == FdoWfsGlobals::Intersects)
+                        {
+                            m_spatialOperators |= SpatialOperators_Intersect;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::BBOX)
+                        {
+                            m_spatialOperators |= SpatialOperators_BBOX;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Contains)
+                        {
+                            m_spatialOperators |= SpatialOperators_Contains;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Crosses)
+                        {
+                            m_spatialOperators |= SpatialOperators_Crosses;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Disjoint)
+                        {
+                            m_spatialOperators |= SpatialOperators_Disjoint;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Equals)
+                        {
+                            m_spatialOperators |= SpatialOperators_Equals;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Overlaps)
+                        {
+                            m_spatialOperators |= SpatialOperators_Overlaps;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Touches)
+                        {
+                            m_spatialOperators |= SpatialOperators_Touches;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Within)
+                        {
+                            m_spatialOperators |= SpatialOperators_Within;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::DWithin)
+                        {
+                            m_spatialOperators |= SpatialOperators_DWithin;
+                            bSuccess = true;
+                        }
+                        else if (value == FdoWfsGlobals::Beyond)
+                        {
+                            m_spatialOperators |= SpatialOperators_Beyond;
+                            bSuccess = true;
+                        }
+                    }
+                }
+                if (!bSuccess)
+                    throw FdoException::Create(FdoException::NLSGetMessage(
+                            FDO_NLSID(FDO_52_BADSUBELEMENT), 
+                            "Error reading from XML, unexpected element %1$ls inside '%2$ls'.", 
+                            name, FdoWfsGlobals::SpatialOperator));
+                break;
+            }
         default:
             throw FdoCommandException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_57_UNEXPECTEDERROR)));
         }
-
-	}
+    }
     catch (FdoException* ex) 
     {
         context->AddError(ex);
@@ -126,6 +201,12 @@ FdoBoolean FdoWfsOgcSpatialCapabilities::XmlEndElement(FdoXmlSaxContext* context
         case 1:
             {
                 if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Spatial_Operators) == 0)
+                    myContext->SetStateSpatial_Capabilities(0);
+                break;
+            }
+        case 2:
+            {
+                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::SpatialOperators) == 0)
                     myContext->SetStateSpatial_Capabilities(0);
                 break;
             }
