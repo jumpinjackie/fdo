@@ -77,6 +77,8 @@ public:
 	virtual void GetLtTableExpression( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltJoin, FdoStringP &ltTableExp, FdoCommandType callerFdoCommand );
 	virtual void GetLtQualificationClause( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltQualificationClause );
 
+    virtual bool SupportsSpatialOrNonSpatialOperator();
+
 protected:
 
     // SQL Server is using update hint. 

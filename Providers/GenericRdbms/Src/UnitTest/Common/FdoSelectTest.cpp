@@ -746,6 +746,123 @@ void FdoSelectTest::spatial_query_defect880310 ()
     }
 }
 
+void FdoSelectTest::spatial_or_attribute_query()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+    FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            bool supportsZ = (FdoPtr<FdoIGeometryCapabilities>(mConnection->GetGeometryCapabilities())->GetDimensionalities() & FdoDimensionality_Z);
+            
+            FdoPtr<FdoIDelete> delCmd = (FdoIDelete*)mConnection->CreateCommand( FdoCommandType_Delete );
+            delCmd->SetFeatureClassName(L"L\x00e4nd:Building");
+            delCmd->Execute();
+
+            FdoPtr<FdoIInsert> insCmd = (FdoIInsert*)mConnection->CreateCommand( FdoCommandType_Insert );
+            insCmd->SetFeatureClassName(L"L\x00e4nd:Building");
+            FdoPtr<FdoPropertyValueCollection> propertyValues = insCmd->GetPropertyValues();
+            FdoPtr<FdoDataValue> dataValue;
+            FdoPtr<FdoPropertyValue> propertyValue;
+
+            for ( int x = 0; x < 10; x++ ) 
+            {
+                for ( int y = 0; y < 10; y++ ) 
+                {
+                    FdoStringP value = FdoStringP::Format(L"value %d", y );
+                    dataValue = FdoDataValue::Create(value);
+                    propertyValue = TestCommonMiscUtil::AddNewProperty( propertyValues, L"Value");
+                    propertyValue->SetValue(dataValue);
+
+                    double       coordsBuffer[3];
+
+                    coordsBuffer[0] = x;
+                    coordsBuffer[1] = y;
+                    coordsBuffer[2] = 0;
+
+                    propertyValue = TestCommonMiscUtil::AddNewProperty( propertyValues, L"Geometry");
+
+            		FdoPtr<FdoIPoint> point1;
+
+            		if ( supportsZ )
+			            point1 = gf->CreatePoint(FdoDimensionality_XY|FdoDimensionality_Z, coordsBuffer);
+            		else
+			            point1 = gf->CreatePoint(FdoDimensionality_XY, coordsBuffer);
+
+                    FdoPtr<FdoByteArray> byteArray = gf->GetFgf(point1);
+                    FdoPtr<FdoGeometryValue> geometryValue = FdoGeometryValue::Create(byteArray);
+                    propertyValue->SetValue(geometryValue);
+
+                    FdoPtr<FdoIFeatureReader> insRdr = insCmd->Execute();
+                }
+            }
+            
+            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+            selCmd->SetFeatureClassName(L"L\x00e4nd:Building");
+            FdoPtr<FdoFilter> attributeFilter = FdoFilter::Parse(L"Value = 'value 3'");
+            double ordsXYExt[15];
+            ordsXYExt[0] = 1.5; ordsXYExt[1] = 1.5; ordsXYExt[2] = 0.0;
+            ordsXYExt[3] = 7.5; ordsXYExt[4] = 1.5; ordsXYExt[5] = 0.0;
+            ordsXYExt[6] = 7.5; ordsXYExt[7] = 7.5; ordsXYExt[8] = 0.0;
+            ordsXYExt[9] = 1.5; ordsXYExt[10] = 7.5;ordsXYExt[11] = 0.0;
+            ordsXYExt[12] = 1.5; ordsXYExt[13] = 1.5;  ordsXYExt[14] = 0.0;
+            FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY|FdoDimensionality_Z, 15, ordsXYExt);
+            FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL );
+            FdoPtr<FdoGeometryValue> geomValue = FdoPtr<FdoGeometryValue>(FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly))));
+            FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(L"Geometry",
+                                                                      FdoSpatialOperations_Intersects,
+                                                                      geomValue));
+
+            FdoPtr<FdoFilter> totalFilter = FdoFilter::Combine( attributeFilter, FdoBinaryLogicalOperations_Or, spatialFilter);
+            selCmd->SetFilter(totalFilter);
+ 
+            int count = 0;
+            int expectedCount = 40;
+
+            try
+            {
+                myReader = selCmd->Execute();
+            }
+            catch( FdoException *ex )
+            {
+                if ( spatial_or_attribute_query_should_fail() ) 
+                {
+                    // Provider does not support this type of filter
+                    // so exception expected
+                    myReader = NULL;
+                    expectedCount = 0;
+                    FDO_SAFE_RELEASE(ex);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            if( myReader != NULL  )
+            {
+                // Trap case where select should have failed but didn't.
+                CPPUNIT_ASSERT(!spatial_or_attribute_query_should_fail());
+
+                while ( myReader->ReadNext() )
+                {
+                    count++;
+                }
+            }
+
+            CPPUNIT_ASSERT( count == expectedCount );
+        }
+        catch( FdoException *ex )
+        {
+            DBG( printf("FDO Feature query error: %ls\n", ex->GetExceptionMessage()) );
+            TestCommonFail (ex);
+        }
+    }
+}
+
 void FdoSelectTest::feature_subset_query ()
 {
     FdoPtr<FdoIFeatureReader> myReader;

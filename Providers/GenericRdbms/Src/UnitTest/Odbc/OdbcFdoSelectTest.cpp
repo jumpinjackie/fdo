@@ -742,6 +742,67 @@ void OdbcAccessFdoSelectTest::TestDefect779194()
         }
     }
 }
+void OdbcAccessFdoSelectTest::spatial_or_attribute_query()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+    FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            
+            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+            
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selCmd->SetFeatureClassName(fcn);
+
+            FdoPtr<FdoFilter> attributeFilter = FdoFilter::Parse(L"NAME = 'MY NAME'");
+
+            FdoPtr<FdoIdentifier> geomPropID = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoIEnvelope> pEnvelope = gf->CreateEnvelopeXY(8, 8, 17, 17);
+            FdoPtr<FdoIGeometry> pGeometry = gf->CreateGeometry(pEnvelope);
+            FdoPtr<FdoByteArray> pByteArray = gf->GetFgf(pGeometry);
+            FdoPtr<FdoGeometryValue> pValue = FdoGeometryValue::Create(pByteArray);
+            FdoPtr<FdoSpatialCondition> spatialFilter = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+
+            FdoPtr<FdoFilter> totalFilter = FdoFilter::Combine( attributeFilter, FdoBinaryLogicalOperations_Or, spatialFilter);
+            selCmd->SetFilter(totalFilter);
+
+            bool failed = false;
+            try
+            {
+                myReader = selCmd->Execute();
+            }
+            catch( FdoException *ex )
+            {
+                // Provider does not support this type of filter
+                // so exception expected
+                FDO_SAFE_RELEASE(ex);
+                failed = true;
+            }
+
+            CPPUNIT_ASSERT(failed);
+
+            selCmd->SetFilter(attributeFilter);
+            myReader = selCmd->Execute();
+            selCmd->SetFilter(spatialFilter);
+            myReader = selCmd->Execute();
+        }
+        catch( FdoException *ex )
+        {
+            TestCommonFail (ex);
+        }
+    }
+}
+
 
 void OdbcExcelFdoSelectTest::AllTypesTest()
 {

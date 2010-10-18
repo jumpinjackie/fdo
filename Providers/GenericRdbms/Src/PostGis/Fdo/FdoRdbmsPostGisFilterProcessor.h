@@ -127,6 +127,8 @@ public:
     /// Destructor.
     ~FdoRdbmsPostGisFilterProcessor();
 
+    virtual bool SupportsSpatialOrNonSpatialOperator();
+
 protected:
 
     virtual void ProcessBooleanValue(FdoBooleanValue& expr);

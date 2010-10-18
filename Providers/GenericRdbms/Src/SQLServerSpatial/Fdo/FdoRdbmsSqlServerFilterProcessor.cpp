@@ -157,6 +157,11 @@ FdoRdbmsSqlServerFilterProcessor::~FdoRdbmsSqlServerFilterProcessor(void)
 {
 }
 
+bool FdoRdbmsSqlServerFilterProcessor::SupportsSpatialOrNonSpatialOperator()
+{
+    return true;
+}
+
 const FdoSmLpGeometricPropertyDefinition* FdoRdbmsSqlServerFilterProcessor::GetGeometricProperty( const FdoSmLpClassDefinition* currentClass, const wchar_t *geomPropName ) const
 {
     const FdoSmLpGeometricPropertyDefinition* geom = NULL;
