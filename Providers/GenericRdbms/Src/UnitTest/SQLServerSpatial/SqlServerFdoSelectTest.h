@@ -40,6 +40,8 @@ protected:
     void SpatialGeogSelect( FdoIConnection* connection, FdoIGeometry* spatialArea );
     FdoStringsP SpatialGeogSelectNames( FdoIConnection* connection, FdoIGeometry* spatialArea, FdoStringP propName );
 
+    virtual bool spatial_or_attribute_query_should_fail () {return false;}
+
 private:
     static const FdoStringP mSpatialGeogSuffix;
 

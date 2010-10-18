@@ -92,6 +92,11 @@ FdoRdbmsPostGisFilterProcessor::~FdoRdbmsPostGisFilterProcessor(void)
     // idle
 }
 
+bool FdoRdbmsPostGisFilterProcessor::SupportsSpatialOrNonSpatialOperator()
+{
+    return true;
+}
+
 const FdoSmLpGeometricPropertyDefinition* FdoRdbmsPostGisFilterProcessor::GetGeometricProperty(
         const FdoSmLpClassDefinition* currentClass, 
         const wchar_t* geomPropName)

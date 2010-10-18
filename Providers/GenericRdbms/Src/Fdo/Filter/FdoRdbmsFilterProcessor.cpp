@@ -766,8 +766,11 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         HandleFilter( rightOperand );
 		FdoSpatialCondition* leftSpCond = dynamic_cast<FdoSpatialCondition*>(leftOperand.p);
         FdoSpatialCondition* rightSpCond = dynamic_cast<FdoSpatialCondition*>(rightOperand.p);
-        if ((leftSpCond || rightSpCond) && !(leftSpCond && rightSpCond))
-            throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "OR not supported in a query when mixing property with spatial filters" ) );
+        if ( !SupportsSpatialOrNonSpatialOperator() ) 
+        {
+            if ((leftSpCond || rightSpCond) && !(leftSpCond && rightSpCond))
+                throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_532, "OR not supported in a query when mixing property with spatial filters" ) );
+        }
     }
 
     if (mUseNesting)
@@ -926,6 +929,11 @@ bool FdoRdbmsFilterProcessor::CanOptimizeRelationQuery( const FdoSmLpClassDefini
 bool FdoRdbmsFilterProcessor::CanSelectDistinctColType( FdoSmPhColType colType )
 {
     return true;
+}
+
+bool FdoRdbmsFilterProcessor::SupportsSpatialOrNonSpatialOperator()
+{
+    return false;
 }
 
 // This method is used to follow a value type object property or an m:1 association

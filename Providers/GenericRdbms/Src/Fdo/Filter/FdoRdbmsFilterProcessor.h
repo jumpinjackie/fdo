@@ -380,6 +380,8 @@ public:
 
     virtual bool CanSelectDistinctColType( FdoSmPhColType colType );
 
+    virtual bool SupportsSpatialOrNonSpatialOperator();
+
     virtual const wchar_t* FilterToSql( FdoFilter *filter,
                                         const wchar_t *className,
                                         SqlCommandType cmdType,

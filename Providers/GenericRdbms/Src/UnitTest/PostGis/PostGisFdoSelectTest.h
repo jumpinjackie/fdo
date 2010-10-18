@@ -31,6 +31,8 @@ class PostGisFdoSelectTest : public FdoSelectTest
 
 protected:
     void spatial_query_defect813611() {}
+
+    virtual bool spatial_or_attribute_query_should_fail () {return false;}
 };
 
 #endif // PostGis_FDOSELECTTEST_H
