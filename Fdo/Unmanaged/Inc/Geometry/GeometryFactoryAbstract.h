@@ -29,8 +29,7 @@
 
 /// \brief
 ///  
-/// The FdoGeometryFactoryAbstract class is a factory (abstract, non-pure) 
-/// for Geometry objects and Geometry helper objects.
+/// The FdoGeometryFactoryAbstract class is a factory (abstract, non-pure) for Geometry objects and Geometry helper objects.
 class FdoGeometryFactoryAbstract : public FdoIDisposable
 {
 public:
@@ -512,126 +511,6 @@ public:
         FdoIDirectPosition* startPosition,
         FdoIDirectPosition* midPosition,
         FdoIDirectPosition* endPosition) = 0;
-
-    /// CircleSegment
-
-    /// \brief
-    ///  Creates a CircleSegment object using the three points on the circle.
-    /// 
-    /// \param firstPosition 
-    /// Input first position of the circle
-    /// \param secondPosition 
-    /// Input a position on the circle, and not equal to the first or third positions
-    /// \param thirdPosition 
-    /// Input third position of the circle
-    /// 
-    /// \return
-    /// Returns a CircleSegment
-    /// 
-    //FDO_GEOM_API virtual FdoICircularArcSegment* CreateCircleSegment(
-    //    FdoIDirectPosition* firstPosition,
-    //    FdoIDirectPosition* secondPosition,
-    //    FdoIDirectPosition* thirdPosition) = 0;
-
-    /// EllipticalArcSegment
-
-    /// \brief
-    /// Creates a EllipticalArcSegment object by specifying three 
-    /// points on the arc, and the two focal positions.
-    /// 
-    /// \param startPosition 
-    /// Input starting position of the ellipse
-    /// \param midPosition 
-    /// Input a position on the ellipse, and not equal to the starting 
-    /// or ending positions
-    /// \param endPosition 
-    /// Input ending position of the ellipse
-    /// \param focalPoisition1 
-    /// Input the first focal position of the ellipse
-    /// \param focalPoisition2 
-    /// Input the second focal position of the ellipse
-    /// 
-    /// \return
-    /// Returns an EllipticalArc Segment
-    /// 
-    //FDO_GEOM_API virtual FdoIEllipticalArcSegment* CreateEllipticalArcSegment(
-    //    FdoIDirectPosition* startPosition,
-    //    FdoIDirectPosition* midPosition,
-    //    FdoIDirectPosition* endPosition,
-    //    FdoIDirectPosition* focalPoisition1,
-    //    FdoIDirectPosition* focalPoisition2) = 0;
-
-    /// ClothoidSegment
-
-    /// \brief
-    /// Creates a Clothoid Segment object from the start and end positions, 
-    /// the vector at the start position of the clothoid and the start and end
-    /// radius values.
-    /// 
-    /// \param startPosition 
-    /// Input starting position of the clothoid
-    /// or ending positions
-    /// \param endPosition 
-    /// Input ending position of the clothoid
-    /// \param startVector 
-    /// Input the vector at the start position of the clothoid
-    /// \param startRadius 
-    /// Input the radius at the start position 
-    /// \param endRadius 
-    /// Input the radius at the end position 
-    /// 
-    /// \return
-    /// Returns an Clothoid Segment
-    /// 
-    //virtual FdoIClothoidSegment* CreateClothoidSegment(
-    //    FdoIDirectPosition* startPosition,
-    //    FdoIDirectPosition* endPosition,
-    //    FdoIDirectPosition* startVector,
-    //    double startRadius,
-    //    double endRadius) = 0;
-
-    /// SplineSegments
-
-    /// \brief
-    /// Creates a Cubic Spline segment from the start and end tangents, 
-    /// and a set of control positions
-    /// 
-    /// \param startTangent 
-    /// Input the start tanget of the spline
-    /// \param endTangent 
-    /// Input the end tanget of the spline
-    /// \param controlPositions 
-    /// Input the collection of control positions that define the spline
-    /// \return
-    /// Returns a Cubic Spline Segment
-    /// 
-    //virtual FdoICubicSplineSegment* CreateCubicSplineSegment(
-    //    FdoIDirectPosition* startTangent,
-    //    FdoIDirectPosition* endTangent,
-    //    FdoDirectPositionCollection* controlPositions) = 0;
-
-    /// \brief
-    /// Creates a B-Spline segment from collections of 
-    /// control positions and knots, 
-    /// 
-    /// \param degree 
-    /// Input the algebraic degree of the basis function. 
-    /// \param controlPositions 
-    /// Input the control positions that will be used to contruct the spline 
-    /// \param knots 
-    /// Input the knots that will be used to contruct the spline 
-    /// \param weights 
-    /// \param knotType 
-    /// Input the knotType to be used to contruct the spline 
-    /// 
-    /// \return
-    /// Returns a B-Spline Segment
-    /// 
-    //virtual FdoIBSplineSegment* CreateBSplineSegment(
-    //    FdoInt32 degree,
-    //    FdoDirectPositionCollection* controlPositions,
-    //    FdoBSplineKnotCollection* knots,
-    //    FdoGeometricKnotType knotType) = 0;  /// KnotType: TDB
 
     /// CurveString
 
