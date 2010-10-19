@@ -53,6 +53,7 @@ namespace FdoWfsGlobals
     static FdoString* Spatial_Operators                 = L"Spatial_Operators";
     static FdoString* SpatialOperators                  = L"SpatialOperators";
     static FdoString* SpatialOperator                   = L"SpatialOperator";
+    static FdoString* Intersect                         = L"Intersect";
     static FdoString* Intersects                        = L"Intersects";
     static FdoString* BBOX                              = L"BBOX";
     static FdoString* Contains                          = L"Contains";

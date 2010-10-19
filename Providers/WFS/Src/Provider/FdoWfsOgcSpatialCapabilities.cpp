@@ -70,7 +70,9 @@ FdoXmlSaxHandler* FdoWfsOgcSpatialCapabilities::XmlStartElement(
             }
         case 1:
             {
-                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Intersects) == 0)
+                // Some of WFS server returns 'Intersect' instead of 'Intersects'.
+                if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Intersects) == 0 ||
+                    FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Intersect) == 0 )
                     m_spatialOperators |= SpatialOperators_Intersect;
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::BBOX) == 0)
                     m_spatialOperators |= SpatialOperators_BBOX;
@@ -108,7 +110,8 @@ FdoXmlSaxHandler* FdoWfsOgcSpatialCapabilities::XmlStartElement(
                     if (attr != NULL)
                     {
                         FdoStringP value = attr->GetValue();
-                        if (value == FdoWfsGlobals::Intersects)
+                        if (value == FdoWfsGlobals::Intersects ||
+                            value == FdoWfsGlobals::Intersect )
                         {
                             m_spatialOperators |= SpatialOperators_Intersect;
                             bSuccess = true;
