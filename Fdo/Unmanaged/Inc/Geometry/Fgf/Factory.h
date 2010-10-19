@@ -427,106 +427,6 @@ public:
         FdoIDirectPosition* midPosition,
         FdoIDirectPosition* endPosition);
 
-    /// EllipticalArcSegment
-
-    /// \brief
-    /// Creates a EllipticalArcSegment object by specifying three 
-    /// points on the arc, and the two focal positions.
-    /// 
-    /// \param startPosition 
-    /// Input starting position of the ellipse
-    /// \param midPosition 
-    /// Input a position on the ellipse, and not equal to the starting 
-    /// or ending positions
-    /// \param endPosition 
-    /// Input ending position of the ellipse
-    /// \param focalPoisition1 
-    /// Input the first focal position of the ellipse
-    /// \param focalPoisition2 
-    /// Input the second focal position of the ellipse
-    /// 
-    /// \return
-    /// Returns an EllipticalArc Segment
-    /// 
-    //FDO_GEOM_API virtual FdoIEllipticalArcSegment* CreateEllipticalArcSegment(
-    //    FdoIDirectPosition* startPosition,
-    //    FdoIDirectPosition* midPosition,
-    //    FdoIDirectPosition* endPosition,
-    //    FdoIDirectPosition* focalPoisition1,
-    //    FdoIDirectPosition* focalPoisition2);
-
-    /// ClothoidSegment
-
-    /// \brief
-    /// Creates a Clothoid Segment object from the start and end positions, 
-    /// the vector at the start position of the clothoid and the start and end
-    /// radius values.
-    /// 
-    /// \param startPosition 
-    /// Input starting position of the clothoid
-    /// or ending positions
-    /// \param endPosition 
-    /// Input ending position of the clothoid
-    /// \param startVector 
-    /// Input the vector at the start position of the clothoid
-    /// \param startRadius 
-    /// Input the radius at the start position 
-    /// \param endRadius 
-    /// Input the radius at the end position 
-    /// 
-    /// \return
-    /// Returns an Clothoid Segment
-    /// 
-    //virtual FdoIClothoidSegment* CreateClothoidSegment(
-    //    FdoIDirectPosition* startPosition,
-    //    FdoIDirectPosition* endPosition,
-    //    FdoIDirectPosition* startVector,
-    //    double startRadius,
-    //    double endRadius);
-
-    /// SplineSegments
-
-    /// \brief
-    /// Creates a Cubic Spline segment from the start and end tangents, 
-    /// and a set of control positions
-    /// 
-    /// \param startTangent 
-    /// Input the start tanget of the spline
-    /// \param endTangent 
-    /// Input the end tanget of the spline
-    /// \param controlPositions 
-    /// Input the collection of control positions that define the spline
-    /// \return
-    /// Returns a Cubic Spline Segment
-    /// 
-    //virtual FdoICubicSplineSegment* CreateCubicSplineSegment(
-    //    FdoIDirectPosition* startTangent,
-    //    FdoIDirectPosition* endTangent,
-    //    FdoDirectPositionCollection* controlPositions);
-
-    /// \brief
-    /// Creates a B-Spline segment from collections of 
-    /// control positions and knots, 
-    /// 
-    /// \param degree 
-    /// Input the algebraic degree of the basis function. 
-    /// \param controlPositions 
-    /// Input the control positions that will be used to contruct the spline 
-    /// \param knots 
-    /// Input the knots that will be used to contruct the spline 
-    /// \param weights 
-    /// \param knotType 
-    /// Input the knotType to be used to contruct the spline 
-    /// 
-    /// \return
-    /// Returns a B-Spline Segment
-    /// 
-    //virtual FdoIBSplineSegment* CreateBSplineSegment(
-    //    FdoInt32 degree,
-    //    FdoDirectPositionCollection* controlPositions,
-    //    FdoBSplineKnotCollection* knots,
-    //    FdoGeometricKnotType knotType);  /// KnotType: TDB
-
     /// CurveString
 
     /// \brief
@@ -614,40 +514,21 @@ public:
     FDO_GEOM_API virtual FdoIMultiGeometry* CreateMultiGeometry(
         FdoGeometryCollection* geometries);
 
-    /// \brief
     /// Get an empty (possibly pooled) byte array.
-    /// 
-    /// \return
-    /// Returns a empty FDO ByteArray
-    /// 
     FDO_GEOM_API virtual FdoByteArray * GetByteArray();
 
-    /// \brief
     /// Pool this array, released from some geometry.
-    ///
-    /// \return
-    /// Returns nothing
-    /// 
     FDO_GEOM_API virtual void TakeReleasedByteArray(FdoByteArray * byteArray);
 
 /// \cond DOXYGEN-IGNORE
 
 protected:
 
-    FdoFgfGeometryFactory2 * m_private;
+    FdoFgfGeometryFactory2 *         m_private;
 
-protected:
-    /// \brief
-    /// Disposes the FGF GeometryFactory.
-    /// 
-    /// \return
-    /// Returns nothing
-    /// 
     FDO_GEOM_API void Dispose();
 
-    /// \brief
     /// Union of public CreateGeometryFromFgf methods. One of byteArray or byteArrayData must be non-NULL.
-    /// 
     FdoIGeometry * CreateGeometryFromFgf(FdoByteArray * byteArray, const FdoByte * byteArrayData, FdoInt32 count);
 
     /// \brief
@@ -666,12 +547,7 @@ protected:
     /// 
     FDO_GEOM_API ~FdoFgfGeometryFactory();
 
-    /// \brief
     /// Constructor for a private instance.
-    /// 
-    /// \return
-    /// Returns nothing
-    /// 
     FdoFgfGeometryFactory(
         FdoInt32 numGeometries,
         FdoInt32 numPositions,
