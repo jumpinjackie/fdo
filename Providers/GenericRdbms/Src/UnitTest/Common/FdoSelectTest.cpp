@@ -773,7 +773,7 @@ void FdoSelectTest::spatial_or_attribute_query()
                 for ( int y = 0; y < 10; y++ ) 
                 {
                     FdoStringP value = FdoStringP::Format(L"value %d", y );
-                    dataValue = FdoDataValue::Create(value);
+                    dataValue = FdoDataValue::Create((FdoString*) value);
                     propertyValue = TestCommonMiscUtil::AddNewProperty( propertyValues, L"Value");
                     propertyValue->SetValue(dataValue);
 
