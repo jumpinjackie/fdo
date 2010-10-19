@@ -189,11 +189,11 @@ public:
                 break;
         }
 
-        FDO_SAFE_RELEASE(m_list[i]);
-
         if (i == m_size)
             throw EXC::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_6_OBJECTNOTFOUND)));
         
+        FDO_SAFE_RELEASE(m_list[i]);
+
         while (i < m_size - 1) 
         {
             m_list[i] = m_list[i+1];

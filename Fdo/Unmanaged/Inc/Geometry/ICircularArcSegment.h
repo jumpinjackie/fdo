@@ -2,7 +2,7 @@
 #define _ICIRCULARARCSEGMENT_H_
 
 //
-// Copyright (C) 2004-2006  Autodesk, Inc.
+// Copyright (C) 2004-2010  Autodesk, Inc.
 // 
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of version 2.1 of the GNU Lesser
@@ -30,8 +30,6 @@
 /// The FdoICircularArcSegment class is a circular arc curve segment
 class FdoICircularArcSegment : public FdoIArcSegmentAbstract
 {
-public:
-
 protected:
 
     /// \brief
@@ -41,8 +39,8 @@ protected:
     /// Returns nothing
     /// 
     FDO_GEOM_API virtual ~FdoICircularArcSegment() {};
-
 };
+
 #endif
 
 
