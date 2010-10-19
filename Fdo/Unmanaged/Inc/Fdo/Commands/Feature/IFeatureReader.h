@@ -1,6 +1,5 @@
 #ifndef FDO_XML_IFEATUREREADER_H_
 #define FDO_XML_IFEATUREREADER_H_
-// 
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -28,7 +27,6 @@
 #include <Fdo/Raster/IRaster.h>
 #include <Fdo/Expression/LOBValue.h>
 #include <Fdo/Commands/Feature/IReader.h>
-#include <Fdo/Annotation/AnnotationText.h>
 
 /// \brief
 /// The FdoIFeatureReader interface provides a forward-only, read-only iterator
@@ -151,33 +149,5 @@ public:
     /// Returns the nested feature reader
     /// 
     FDO_API virtual FdoIFeatureReader* GetFeatureObject(FdoInt32 index) = 0;
-
-    /// \brief
-    /// Gets the Annotation object of the specified property.
-    /// Because no conversion is performed, the property must be
-    /// of Annotation type; otherwise, an exception is thrown.
-    /// 
-    /// \param propertyName 
-    /// Input the property name.
-    /// 
-    /// \return
-    /// Returns the Annotation object.
-    /// 
-    //FDO_API virtual FdoIAnnotation* GetAnnotation(FdoString* propertyName) = 0;
-
-    /// \brief
-    /// Gets the Annotation object of the property at the specified index.
-    /// Because no conversion is performed, the property must be
-    /// of Annotation type; otherwise, an exception is thrown.
-    /// 
-    /// \param index 
-    /// Input the index of the property.
-    /// 
-    /// \return
-    /// Returns the Annotation object.
-    /// 
-    //FDO_API virtual FdoIAnnotation* GetAnnotation(FdoInt32 index) = 0;
 };
 #endif
-
-
