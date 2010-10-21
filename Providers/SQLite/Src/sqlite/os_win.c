@@ -1850,7 +1850,7 @@ static int getTempname(int nBuf, char *zBuf){
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     "0123456789";
   size_t i, j;
-  char zTempPath[MAX_PATH+1];
+  char zTempPath[UTF8_MAX_PATH+1];
 
   /* It's odd to simulate an io-error here, but really this is just
   ** using the io-error infrastructure to test that SQLite handles this
@@ -1859,14 +1859,14 @@ static int getTempname(int nBuf, char *zBuf){
   SimulateIOError( return SQLITE_IOERR );
 
   if( sqlite3_temp_directory ){
-    sqlite3_snprintf(MAX_PATH-30, zTempPath, "%s", sqlite3_temp_directory);
+    sqlite3_snprintf(UTF8_MAX_PATH-30, zTempPath, "%s", sqlite3_temp_directory);
   }else if( isNT() ){
     char *zMulti;
     WCHAR zWidePath[MAX_PATH];
     GetTempPathW(MAX_PATH-30, zWidePath);
     zMulti = unicodeToUtf8(zWidePath);
     if( zMulti ){
-      sqlite3_snprintf(MAX_PATH-30, zTempPath, "%s", zMulti);
+      sqlite3_snprintf(UTF8_MAX_PATH-30, zTempPath, "%s", zMulti);
       free(zMulti);
     }else{
       return SQLITE_NOMEM;
@@ -1878,11 +1878,11 @@ static int getTempname(int nBuf, char *zBuf){
 #if SQLITE_OS_WINCE==0
   }else{
     char *zUtf8;
-    char zMbcsPath[MAX_PATH];
+    char zMbcsPath[UTF8_MAX_PATH];
     GetTempPathA(MAX_PATH-30, zMbcsPath);
     zUtf8 = sqlite3_win32_mbcs_to_utf8(zMbcsPath);
     if( zUtf8 ){
-      sqlite3_snprintf(MAX_PATH-30, zTempPath, "%s", zUtf8);
+      sqlite3_snprintf(UTF8_MAX_PATH-30, zTempPath, "%s", zUtf8);
       free(zUtf8);
     }else{
       return SQLITE_NOMEM;
@@ -1996,7 +1996,7 @@ static int winOpen(
   winFile *pFile = (winFile*)id;
   void *zConverted;                 /* Filename in OS encoding */
   const char *zUtf8Name = zName;    /* Filename in UTF-8 encoding */
-  char zTmpname[MAX_PATH+1];        /* Buffer used to create temp filename */
+  char zTmpname[UTF8_MAX_PATH+1];        /* Buffer used to create temp filename */
 
   assert( id!=0 );
   UNUSED_PARAMETER(pVfs);
@@ -2007,7 +2007,7 @@ static int winOpen(
   ** temporary file name to use 
   */
   if( !zUtf8Name ){
-    int rc = getTempname(MAX_PATH+1, zTmpname);
+    int rc = getTempname(UTF8_MAX_PATH+1, zTmpname);
     if( rc!=SQLITE_OK ){
       return rc;
     }
@@ -2356,7 +2356,7 @@ static int getSectorSize(
   UNUSED_PARAMETER(pVfs);
   UNUSED_PARAMETER(zRelative);
 #else
-  char zFullpath[MAX_PATH+1];
+  char zFullpath[UTF8_MAX_PATH+1];
   int rc;
   DWORD dwRet = 0;
   DWORD dwDummy;
@@ -2367,7 +2367,7 @@ static int getSectorSize(
   ** size.
   */
   SimulateIOErrorBenign(1);
-  rc = winFullPathname(pVfs, zRelative, MAX_PATH, zFullpath);
+  rc = winFullPathname(pVfs, zRelative, UTF8_MAX_PATH, zFullpath);
   SimulateIOErrorBenign(0);
   if( rc == SQLITE_OK )
   {
@@ -2629,7 +2629,7 @@ int sqlite3_os_init(void){
   static sqlite3_vfs winVfs = {
     2,                   /* iVersion */
     sizeof(winFile),     /* szOsFile */
-    MAX_PATH,            /* mxPathname */
+    UTF8_MAX_PATH,            /* mxPathname */
     0,                   /* pNext */
     "win32",             /* zName */
     0,                   /* pAppData */
