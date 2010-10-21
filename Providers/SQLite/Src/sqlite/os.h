@@ -81,7 +81,8 @@
 */
 #if SQLITE_OS_WIN
 # include <windows.h>
-# define SQLITE_TEMPNAME_SIZE (MAX_PATH+50)
+#define UTF8_MAX_PATH (4*MAX_PATH)
+# define SQLITE_TEMPNAME_SIZE (UTF8_MAX_PATH+50)
 #elif SQLITE_OS_OS2
 # if (__GNUC__ > 3 || __GNUC__ == 3 && __GNUC_MINOR__ >= 3) && defined(OS2_HIGH_MEMORY)
 #  include <os2safe.h> /* has to be included before os2.h for linking to work */
