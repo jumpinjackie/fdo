@@ -190,7 +190,7 @@ FdoString* FdoXmlFeatureFlags::GetDefaultNamespacePrefix() {
 }
 
 void FdoXmlFeatureFlags::SetGmlIDRelatePropertyNames(FdoStringCollection* gmlIDRelatePropertyNames) {
-    mGmlIDRelatePropertyNames = gmlIDRelatePropertyNames;
+    mGmlIDRelatePropertyNames = FDO_SAFE_ADDREF(gmlIDRelatePropertyNames);
 }
 
 FdoStringCollection* FdoXmlFeatureFlags::GetGmlIDRelatePropertyNames() {
