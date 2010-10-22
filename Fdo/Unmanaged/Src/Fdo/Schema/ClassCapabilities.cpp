@@ -116,7 +116,7 @@ FdoPolygonVertexOrderRule FdoClassCapabilities::GetPolygonVertexOrderRule( FdoSt
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
 
     if (m_polygonVertexOrderRuleMap.find(geometryPropName) == m_polygonVertexOrderRuleMap.end())
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_6_OBJECTNOTFOUND)));
+        return FdoPolygonVertexOrderRule_None;
 
     return m_polygonVertexOrderRuleMap[geometryPropName];
 }
@@ -135,7 +135,7 @@ FdoBoolean FdoClassCapabilities::GetPolygonVertexOrderStrictness(FdoString* geom
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
 
     if (m_polygonVertexOrderStrictnessMap.find(geometryPropName) == m_polygonVertexOrderStrictnessMap.end())
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_6_OBJECTNOTFOUND)));
+        return FdoPolygonVertexOrderRule_None;
 
     return m_polygonVertexOrderStrictnessMap[geometryPropName];
 }
