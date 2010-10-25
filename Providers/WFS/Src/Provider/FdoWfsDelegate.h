@@ -35,6 +35,7 @@ protected:
     virtual void Dispose() { delete this; }
 
 public:
+    typedef bool (FdoWfsCancelExecutationHander)(void*);
     static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
 
     FdoWfsServiceMetadata* GetCapabilities(FdoString* version);
@@ -46,7 +47,9 @@ public:
                                     FdoString* from,
                                     FdoFilter* where,
                                     FdoString* schemaName,
-									FdoString* version);
+                                    FdoString* version,
+                                    FdoWfsCancelExecutationHander handler,
+                                    void* handleData);
 
 private:
 
@@ -62,7 +65,7 @@ private:
 	// [0x11 - 0x19]
 	// we trust Xerces can handle most of the characters now or in the future. 
 	//
-	FdoIoStream* preProcessStream(FdoIoStream* stream);
+	FdoIoStream* preProcessStream(FdoIoStream* streamm, FdoWfsCancelExecutationHander handler, void* handleData);
 
 };
 
