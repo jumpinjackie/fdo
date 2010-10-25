@@ -464,6 +464,24 @@ void FdoClassDefinition::Set( FdoClassDefinition* pClass, FdoSchemaMergeContext*
         //    end if
         //  end if
 
+        // Class Capabilities.
+        // Take cautious approach for now. Copy capabilites only if this is 
+        // a new schema element.
+
+        if ( GetElementState() == FdoSchemaElementState_Added )
+        {
+            FdoPtr<FdoClassCapabilities> myCapabilities = GetCapabilities();
+            FdoPtr<FdoClassCapabilities> otherCapabilities = pClass->GetCapabilities();
+
+            // Do not overwrite any existing capabilities
+            if ( otherCapabilities && !myCapabilities ) 
+            {
+                myCapabilities = FdoClassCapabilities::Create( *this );
+                myCapabilities->Set( otherCapabilities );
+                SetCapabilities( myCapabilities );
+            }
+        }
+
         // IsAbstract setting
 
         if ( GetIsAbstract() != pClass->GetIsAbstract() ) {

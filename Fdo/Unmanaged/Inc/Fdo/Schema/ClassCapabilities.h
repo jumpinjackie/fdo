@@ -175,6 +175,11 @@ public:
     ///  
     FDO_API void SetPolygonVertexOrderStrictness( FdoString* geometryPropName, FdoBoolean value );
 
+    // Public non-API functions for XML and Schema Merge support
+
+    // Update class capabilities from the given capabilities.
+    void Set( FdoClassCapabilities* pCapabilities );
+
 private:
     FdoBoolean          m_supportsLocking;
     FdoBoolean          m_supportsLongTransactions;
