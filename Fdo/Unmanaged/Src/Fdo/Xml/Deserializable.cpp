@@ -15,9 +15,14 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
+
 #include <FdoStd.h>
 #include <Fdo/Xml/Deserializable.h>
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN	// Exclude rarely-used stuff from Windows headers
+#include <windows.h>
+#endif
 
 FdoXmlDeserializable::FdoXmlDeserializable()
 {
@@ -153,7 +158,14 @@ void FdoXmlDeserializable::ReadXml(
         // Rewind the internal format stream
         internalStream->Reset();
 #ifdef XML_DEBUG
-        FdoIoFileStreamP temp = FdoIoFileStream::Create( L"temp_in.xml", L"w+" );
+        FdoStringP file = L"temp_in.xml";
+#ifdef _WIN32
+        wchar_t tempPath[MAX_PATH + 1];
+        bool ret = (0 != ::GetTempPathW (MAX_PATH, tempPath));
+        if (ret)
+            file = FdoStringP::Format(L"%ls%ls", tempPath, (FdoString*)file);
+#endif
+        FdoIoFileStreamP temp = FdoIoFileStream::Create( file, L"w+" );
         temp->Write(internalStream);
         temp = NULL;
         internalStream->Reset();
