@@ -85,7 +85,9 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
                                               FdoString* from,
                                               FdoFilter* where,
                                               FdoString* schemaName,
-											  FdoString* version)
+                                              FdoString* version,
+                                              FdoWfsCancelExecutationHander handler,
+                                              void* handleData)
 {
     FdoPtr<FdoWfsGetFeature> request = FdoWfsGetFeature::Create(targetNamespace, 
                                                                 srsName, 
@@ -135,7 +137,7 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
         exc1->Release();
     }
     FdoPtr<FdoIoStream> stream = response->GetStream();
-	FdoPtr<FdoIoStream> tempStream = preProcessStream(stream);
+	FdoPtr<FdoIoStream> tempStream = preProcessStream(stream, handler, handleData);
     FdoPtr<FdoXmlReader> xmlReader = FdoXmlReader::Create(tempStream);
 	FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);
 	flags->SetSchemaMappings(schemaMappings);
@@ -147,7 +149,7 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
     return FDO_SAFE_ADDREF(featureReader.p);
 }
 
-FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream)
+FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream, FdoWfsCancelExecutationHander handler, void* handleData)
 {
 	FdoIoFileStreamP tempStream= FdoIoFileStream::Create( L"temp_stream.xml", L"w+" );
 	
@@ -167,7 +169,7 @@ FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream)
 		}
 		tempStream->Write(buffer,cntRead);
 	}
-	while (true);
+	while (!handler(handleData));
 
 	tempStream->Reset();
 	return FDO_SAFE_ADDREF(tempStream.p);
