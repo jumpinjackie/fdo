@@ -732,7 +732,7 @@ void FdoDataPropertyDefinition::_writeXml( FdoSchemaXmlContext* pContext )
         {
             try {
                 FdoPtr<FdoExpression> expr = FdoExpression::Parse( m_defaultValue );
-                FdoDataValue* dv = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
+                FdoPtr<FdoDataValue> dv = FDO_SAFE_ADDREF(dynamic_cast<FdoDataValue*>(expr.p));
 
                 if ( dv )
                     writer->WriteAttribute( L"default", dv->GetXmlValue() );

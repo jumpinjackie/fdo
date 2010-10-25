@@ -148,3 +148,21 @@ void FdoClassCapabilities::SetPolygonVertexOrderStrictness( FdoString* geometryP
     m_polygonVertexOrderStrictnessMap[geometryPropName] = value;
 }
 
+void FdoClassCapabilities::Set( FdoClassCapabilities* pCapabilities )
+{
+    SetSupportsLocking( pCapabilities->SupportsLocking() );
+
+    FdoInt32 lockCount;
+    FdoLockType* lockTypes = pCapabilities->GetLockTypes( lockCount );
+    SetLockTypes( lockTypes, lockCount );
+
+    SetSupportsLongTransactions( pCapabilities->SupportsLongTransactions() );
+
+    SetSupportsWrite( pCapabilities->SupportsWrite() );
+
+    m_polygonVertexOrderRuleMap = pCapabilities->m_polygonVertexOrderRuleMap;
+
+    m_polygonVertexOrderStrictnessMap = pCapabilities->m_polygonVertexOrderStrictnessMap;
+
+}
+
