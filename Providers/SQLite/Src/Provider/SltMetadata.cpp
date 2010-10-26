@@ -272,10 +272,12 @@ FdoClassDefinition* SltMetadata::ToClass()
             FindSpatialContextName(srid, scname);            
             gpd->SetSpatialContextAssociation(scname.c_str());
 
-            if (gdims[gi] > 2)
+            if (gdims[gi] > 2) // XYZ
                 gpd->SetHasElevation(true);
-            if (gdims[gi] > 3)
+            if (gdims[gi] > 3) // XYZ or XYZM
                 gpd->SetHasMeasure(true);
+            if (gdims[gi] == 5) // XYM
+                gpd->SetHasElevation(false);
 
             int fgtype = gtypes[gi];
             int fgdettype = gtypes[gi + 1];
