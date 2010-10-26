@@ -1951,6 +1951,7 @@ void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_
     int dim = 2;
     if (gpd->GetHasElevation()) dim++;
     if (gpd->GetHasMeasure()) dim++;
+    if (!gpd->GetHasElevation() && gpd->GetHasMeasure()) dim = 5; // XYM
     
     sb.Append(dim); //coord_dimension
     sb.Append(",", 1);
