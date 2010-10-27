@@ -45,11 +45,11 @@ II. Build Notes
 
      Visual Studio 2008 C# Express Edition:
 
-        http://www.microsoft.com/express/download/
+        http://www.microsoft.com/express/Downloads/
 
      Visual Studio 2008 C++ Express Edition: 
  
-        http://www.microsoft.com/express/download/
+        http://www.microsoft.com/express/Downloads/#2008-Visual-CPP
         
      You will need to download and install Windows .NET Framework 3.5 Service Pack 1.
      You can download it from the following location:
@@ -79,53 +79,60 @@ II. Build Notes
 
         set PATH=%PATH%;c:\WINDOWS\Microsoft.NET\Framework\v3.5
  
-  5. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK and/or ArcSDE 9.2 Client SDK installed 
-     and the following environment variable set that points to the installation location:
+  5. In order to build the ArcSDE 9.2 Provider, you will need to have the ArcSDE
+     9.2/9.3 Client SDK installed and the following environment variable
+	 set to point to the ArcSDE SDK installation location:
 
-        set SDEHOME=[ArcSDE developer components path]  - used by unit test 
-        set SDEVER_ARCUNITTEST=[91]/[92] 
+        set SDEHOME=[ArcSDE 9.2/9.3 Developer Components Path]
+		
+     In order to build the unit tests for the ArcSDE 9.2 provider, set the following 
+	 environment variable value:
+		
+        set SDEVER_ARCUNITTEST=92  - will build unit test using ArcSDE 9.2 SDK
 
-     SDEVER_ARCUNITTEST=91   -will build unit test using ArcSDE 9.1 Client
-     SDEVER_ARCUNITTEST=92   -will build unit test using ArcSDE 9.2 Client
-     
-     In case user has ArcSDE 9.1 Client SDK and ArcSDE 9.2 Client SDK installed:
-     Copy the "bin", "include" and "lib" directory from the ArcSDE 9.1 Client SDK into:
-     %FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
-     
-     Copy the "bin", "include" and "lib" directory from the ArcSDE 9.2 Client SDK into:
-     %FDOTHIRDPARTY%\ESRI\ArcSDEClient92\Windows
-     
-     The script will build the support for both ArcSDE clients.
+     In case user needs to build both the 91 and 92 versions of the ArcSDE Provider on Windows,
+	 they will need to install both the ArcSDE 9.1 Client SDK and the ArcSDE 9.2/9.3 Client SDK,
+	 set the environment variable SDEHOME to point to the location of the 9.2/9.3 Client SDK as 
+     specified above, and copy the "bin", "include" and "lib" directory from the ArcSDE 9.1 
+     Client SDK into: %FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Windows
+	 
+     In order to build the unit tests for the ArcSDE 9.1 provider using the AcSDE 9.1 SDK,
+	 set the following environment variable value:
+	 
+		set SDEVER_ARCUNITTEST=91   - will build unit test using ArcSDE 9.1 SDK
+	 
+     The ArcSDE provider build script will attempt to build both the ArcSDE 9.1 and 9.2 providers.
      In case user has only one version of the ArcSDE client installed, the location must be
-     specified using %SDEHOME%
+     specified using %SDEHOME%. 
      
-     The ArcSDE unit test project will only search for include and lib files in %SDEHOME%
-     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
+     NOTE: The ArcSDE unit test project will only search for include and lib files in %SDEHOME%
+     NOTE: ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   6. In order to build the MySQL Provider, you will need to download 
-     and install the MySQL 5.0 Windows client and developer components from:
+     and install the 'MySQL 6.0.2 Connector/C' components from:
 
-        http://downloads.mysql.com/archives.php?p=mysql-5.0
+        http://dev.mysql.com/downloads/connector/c/
 
      Following the installation, set the following FDO Windows environment variable:
 
         set FDOMYSQL=[MySQL developer components path] 
 
-     e.g. set FDOMYSQL=c:\Program Files\MySQL\MySQL Server 5.0
+     e.g. set FDOMYSQL=C:\Fdo\Thirdparty\mysql
 
   7. In order to build the King Oracle Provider, you will need to download 
-     and install the 'Oracle 10.2.0.3 Instant Client' for Windows from:
+     and install the 'Oracle 11gR2 Instant Client' for Windows from:
 
-        http://www.oracle.com/technology/software/tech/oci/instantclient/htdocs/winsoft.html
+        http://www.oracle.com/technetwork/database/features/instant-client/index.html
 
-     The name of the installation file is 'instantclient-sdk-win32-10.2.0.3-20061115.zip'
+     Specific Instant Client Downloads are available at:
+	 
+		http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html
      
      Following the installation, set the following FDO Windows environment variable:
 
         set FDOORACLE=[Oracle instant client path] 
 
-     e.g. set FDOORACLE=C:\oracle\instantclient\10.2\sdk
+     e.g. set FDOORACLE=C:\oracle\instantclient\11gR2\sdk
 
   8. OPTIONAL: The FDO build includes several generated .cpp files that were 
      generated from source .y files by the Bision and Sed utilities. These 
@@ -201,12 +208,12 @@ II. Build Notes
      Ensure that the tools are in the build environment's PATH.
 
         Doxygen    -- e.g. C:\Program Files\doxygen\bin
-        Dot        -- e.g. C:\Program Files\ATT\Graphviz\bin
+        Dot        -- e.g. C:\Program Files\Graphviz\bin
 
         e.g.
         
         set PATH=%PATH%;C:\Program Files\doxygen\bin
-        set PATH=%PATH%;C:\Program Files\ATT\Graphviz\bin
+        set PATH=%PATH%;C:\Program Files\Graphviz\bin
 
  10. OPTIONAL: The FDO build process supports the generation of a set of python 
      wrapper scripts for the FDO API. The python scripts are generated using SWIG. To
@@ -315,7 +322,8 @@ II. Build Notes
                                            postgis,
                                            kingoracle,
                                            sqlspatial,
-                                           sqlite
+                                           sqlite,
+										   postgresql
             ************************************************************************       
             
             e.g.
@@ -470,7 +478,7 @@ I. Build Instructions
      Thirdparty SDK components and build tools. (Refer to the Build Notes 
      below)
 
-  3.  Source the setenvironment.sh script (bash or bourne compatible shells)
+  3. Source the setenvironment.sh script (bash or bourne compatible shells)
 
       source ./setenvironment.sh
 
@@ -515,25 +523,24 @@ II. Build Notes
        FDOUTILITIES = [FDO OpenSource]/Providers/Utilities
        FDOTHIRDPARTY = [FDO OpenSource]/ThirdParty
  
-  3. In order to build the ArcSDE Provider, you will need to have the
-     ArcSDE 9.1 Client SDK installed, ArcSDE 9.2 Client SDK installed
-     and the following environment variable set that points to the installation location:
+  3. In order to build the ArcSDE 9.2 Provider, you will need to have the ArcSDE
+     9.2/9.3 Client SDK installed and the following environment variable
+	 set to point to the ArcSDE SDK installation location:
 
-       SDEHOME=[ArcSDE 9.2 developer components path] - used by unit test 
-
-     In case user has ArcSDE 9.1 Client SDK and ArcSDE 9.2 Client SDK installed: 
-     Copy the "include" and "lib" directory from the ArcSDE 9.1 Client SDK into: 
-     $FDOTHIRDPARTY\ESRI\ArcSDEClient91\Linux
-      
-     Copy the "include" and "lib" directory from the ArcSDE 9.2 Client SDK into: 
-     $FDOTHIRDPARTY\ESRI\ArcSDEClient92\Linux 
+        SDEHOME=[ArcSDE 9.2/9.3 Developer Components Path]
+		
+     In case user needs to build both the 91 and 92 versions of the ArcSDE Provider on Linux,
+	 they will need to install both the ArcSDE 9.1 Client SDK and the ArcSDE 9.2/9.3 Client SDK,
+	 set the environment variable SDEHOME to point to the location of the 9.2/9.3 Client SDK as 
+     specified above, and copy the "bin", "include" and "lib" directory from the ArcSDE 9.1 
+     Client SDK into: %FDOTHIRDPARTY%\ESRI\ArcSDEClient91\Linux
+	 
+     The ArcSDE provider build script will attempt to build both the ArcSDE 9.1 and 9.2 providers.
+     In case user has only one version of the ArcSDE client installed, the location must be
+     specified using %SDEHOME%. 
      
-     The script will build the support for both ArcSDE clients. 
-     In case user has only one version of the ArcSDE client installed, the location must be 
-     specified using $SDEHOME 
-     
-     The ArcSDE unit test project will only search for include and lib files in $SDEHOME
-     Note that ArcSDE is licensed software and must be obtained from an ESRI vendor.
+     NOTE: The ArcSDE unit test project will only search for include and lib files in %SDEHOME%
+     NOTE: ArcSDE is licensed software and must be obtained from an ESRI vendor.
 
   4. In order to build the MySQL Provider, you will need to download and 
      extract the MySQL client and MySQL 5.0 devloper components from MySQL. 
