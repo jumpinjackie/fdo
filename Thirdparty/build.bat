@@ -211,7 +211,7 @@ rem # Install all Thirdparty Files
 :install_all_files
 echo copy %TYPEBUILDTHR% Thirdparty files
 copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_11_0%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
+copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xerces\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_3_1%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal17.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-vc90-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
