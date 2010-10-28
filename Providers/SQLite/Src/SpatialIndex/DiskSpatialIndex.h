@@ -54,6 +54,9 @@ public:
     SpatialIndex(const wchar_t* seedname);
     ~SpatialIndex();
 
+    // Function used to reset to empty the SI without free the allocated memory
+    // We can re-use it to avoid free-reallocate
+    void ResetToEmpty();
     void Insert(FdoInt64 dbId, DBounds& ext);
     void Update(FdoInt64 dbId, DBounds& ext);
     void Delete(FdoInt64 dbId);

@@ -53,6 +53,9 @@ public:
     SpatialIndex(const wchar_t*); //argument unused, for compatibility with disk backed implementation only
     ~SpatialIndex();
     
+    // Function used to reset to empty the SI without free the allocated memory
+    // We can re-use it to avoid free-reallocate
+    void ResetToEmpty();
     void Insert(__int64 dbId, DBounds& ext);
     void Update(__int64 dbId, DBounds& ext);
     void Delete(__int64 dbId);
