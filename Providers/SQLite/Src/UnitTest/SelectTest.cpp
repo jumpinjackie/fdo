@@ -1869,3 +1869,76 @@ void SelectTest::TestTouches ()
    	}
 	printf( "Done\n" );
 }
+
+void SelectTest::TestCachedStmWithRollback ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+        
+	    FdoPtr<FdoISelect> selcmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+	    selcmd->SetFeatureClassName(L"DaKlass");
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText('POLYGON XYZ ((7.18647526717365 43.7516876726629 0, 7.18647526717365 43.7433670616738 0, 7.21480038790375 43.7433670616738 0, 7.21480038790375 43.7516876726629 0, 7.18647526717365 43.7516876726629 0))')");
+        selcmd->SetFilter(filter);
+
+        {
+            FdoPtr<FdoIFeatureReader> reader1 = selcmd->Execute();
+            int cnt1 = 0;
+            while(reader1->ReadNext())cnt1++;
+            printf ("Selectd features step (1): %d\n", cnt1);
+            CPPUNIT_ASSERT(cnt1 == 414);
+        }
+
+        FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
+        try
+        {
+            FdoSpatialCondition* spFlt = static_cast<FdoSpatialCondition*>(filter.p);
+            FdoPtr<FdoGeometryValue> gv = static_cast<FdoGeometryValue*>(spFlt->GetGeometry());
+            
+            FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
+            std::wstring sql(L"INSERT INTO \"DaKlass\"");
+            sql.append(L" (Data2, Name) VALUES(:GVAL, 'coco');");
+            sqlCmd->SetSQLStatement(sql.c_str());
+            
+            FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+            FdoPtr<FdoParameterValue> param = FdoParameterValue::Create(L":GVAL", gv);
+            params->Add(param);
+            sqlCmd->ExecuteNonQuery();
+
+            trans->Rollback();
+        }
+        catch(FdoException* exp)
+        {
+            UnitTestUtil::PrintException( exp, stdout, false);
+            FDO_SAFE_RELEASE(exp);
+        }
+
+        {
+            FdoPtr<FdoIFeatureReader> reader2 = selcmd->Execute();
+            int cnt2 = 0;
+            while(reader2->ReadNext())cnt2++;
+            printf ("Selectd features step (2): %d\n", cnt2);
+            CPPUNIT_ASSERT(cnt2 == 414);
+        }
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}

@@ -109,6 +109,34 @@ void SpatialIndex::GetSIFilename(std::wstring& res)
 
 static Bounds EMPTY_BOX(true);
 
+// Function used to reset to empty the SI without free the allocated memory
+// We can re-use it to avoid free-reallocate
+void SpatialIndex::ResetToEmpty()
+{
+    _positionIdx = 1;
+    _lastInsertedIdx = 0;
+    _countChanges = 0;
+
+    _haveOffset = false;
+    _rootLevel = 0;
+
+    memset(_offset, 0, sizeof(_offset));
+    for (int i=0; i<MAX_LEVELS; i++)
+    {
+        if (_levelTypes[i] != 0)
+        {
+            // since this was a level kept in a mapped file
+            // release it since this time we might not really need it
+            ((BoundsMappedFile*)_levels[i])->close();
+            delete (BoundsMappedFile*)_levels[i];
+            _levels[i] = NULL;
+            _sizes[i] = 0;
+        }
+        _counts[i] = 0;
+        _levelTypes[i] = 0;
+    }
+}
+
 void SpatialIndex::Insert(FdoInt64 dbId, DBounds& ext)
 {
     _linkMap[dbId] = _positionIdx;

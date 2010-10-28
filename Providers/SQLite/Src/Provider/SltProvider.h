@@ -285,6 +285,7 @@ private :
     RowidIterator* GetScrollableIterator(SltReader* rdr);
     static int PrepareSpatialDatabase(sqlite3* db, bool useFdoMetadata, bool isInMemory = false);
     SpatialIndexDescriptor* GetSpatialIndexDescriptor(const char* table, int* geomIdx = NULL);
+    void RebuildSpatialOperator(SpatialIndexDescriptor* spDesc, SltMetadata* md = NULL);
 
     static int commit_hook(void* caller);
     static void rollback_hook(void* caller);

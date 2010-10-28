@@ -62,6 +62,7 @@ class SelectTest : public CppUnit::TestCase
     CPPUNIT_TEST(TestCrosses);
     CPPUNIT_TEST(TestOverlaps);
     CPPUNIT_TEST(TestTouches);
+    CPPUNIT_TEST(TestCachedStmWithRollback);
     CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -110,6 +111,7 @@ public:
     void TestCrosses ();
     void TestOverlaps ();
     void TestTouches ();
+    void TestCachedStmWithRollback ();
 };
 
 #endif

@@ -63,6 +63,22 @@ SpatialIndex::~SpatialIndex()
 
 static Bounds EMPTY_BOX(true);
 
+// Function used to reset to empty the SI without free the allocated memory
+// We can re-use it to avoid free-reallocate
+void SpatialIndex::ResetToEmpty()
+{
+    _positionIdx = 1;
+    _lastInsertedIdx = 0;
+    _countChanges = 0;
+
+    _haveOffset = false;
+    _rootLevel = 0;
+
+    memset(_counts, 0, sizeof(_sizes));
+    memset(_levels, 0, sizeof(_levels));
+    memset(_offset, 0, sizeof(_offset));
+}
+
 void SpatialIndex::Insert(__int64 dbId, DBounds& ext)
 {
     _linkMap[dbId] = _positionIdx;

@@ -1735,9 +1735,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
 
     SpatialIndex* si = NULL;
     SpatialIndexDescriptor* spDesc = NULL;
-    SltReader* rdr = NULL;
     Table* pTable = NULL;
-    DBounds ext;
 
     if (iter != m_mNameToSpatialIndex.end())
     {
@@ -1841,6 +1839,34 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
 
     m_mNameToSpatialIndex[_strdup(table)] = spDesc; //Note the memory allocation
 
+    RebuildSpatialOperator(spDesc, md);
+
+#if 0
+    }
+    clock_t t1 = clock();
+    printf("Spatial index build time: %d\n", t1 - t0);
+#endif
+
+    if (pTable && !pTable->pSpIndex)
+    {
+        spDesc->AddRef();
+        pTable->pSpIndex = spDesc;
+        if (geomIdx != NULL)
+            *geomIdx = md->GetGeomIndex();
+        pTable->nGeomColIdx = md->GetGeomIndex();
+    }
+    return spDesc;
+}
+
+void SltConnection::RebuildSpatialOperator(SpatialIndexDescriptor* spDesc, SltMetadata* md)
+{
+    DBounds ext;
+    SltReader* rdr = NULL;
+    const char* table = spDesc->GetTableName();
+    md = (md == NULL) ? GetMetadata(table) : md;
+    if (md == NULL)
+        return;
+
     //we will need the ID and the geometry when we build the spatial index, so add them to the query
     FdoPtr<FdoIdentifierCollection> idcol = FdoIdentifierCollection::Create();
     FdoPtr<FdoIdentifier> idid = FdoIdentifier::Create(L"rowid");
@@ -1856,6 +1882,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
     FdoPtr<FdoIdentifier> idgeom = FdoIdentifier::Create(geomName);
     idcol->Add(idgeom);
 
+    SpatialIndex* si = spDesc->GetSpatialIndex();
     rdr = new SltReader(this, idcol, table, "", NULL, true, NULL, NULL);
     FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     while (rdr->ReadNext())
@@ -1879,21 +1906,6 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
     }
     rdr->Close();
     si->ReOpen();
-#if 0
-    }
-    clock_t t1 = clock();
-    printf("Spatial index build time: %d\n", t1 - t0);
-#endif
-
-    if (pTable && !pTable->pSpIndex)
-    {
-        spDesc->AddRef();
-        pTable->pSpIndex = spDesc;
-        if (geomIdx != NULL)
-            *geomIdx = md->GetGeomIndex();
-        pTable->nGeomColIdx = md->GetGeomIndex();
-    }
-    return spDesc;
 }
 
 void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname)
@@ -3835,12 +3847,13 @@ void SltConnection::rollback_hook(void* caller)
         {
             if (iter->second->GetChangesAvailable())
             {
-                iter->second->SetReleased(true);
-                iter->second->Release();
-                free((char*)iter->first); //it was created via strdup, must use free()
-                conn->m_mNameToSpatialIndex.erase(iter);
-                // we will get a crash in case we do not set it back
-                iter = conn->m_mNameToSpatialIndex.begin();
+                SpatialIndex* si = iter->second->GetSpatialIndex();
+                if (si)
+                {
+                    // we cannot release it since there might be cached statements keeping the SI locked
+                    si->ResetToEmpty();
+                    conn->RebuildSpatialOperator(iter->second);
+                }
             }
         }
         conn->m_changesAvailable = false;
@@ -3915,8 +3928,9 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
 {
     DBounds ext;
     SpatialIndexDescriptor* sidVal = static_cast<SpatialIndexDescriptor*>(sid);
-    if (sidVal->IsReleased())
-        return NULL;
+    if (sidVal->IsReleased()) // this would be the case when we try to use a released SI
+        return new SpatialIteratorStep(NULL);
+
     if (szBlob == -1 && blob != NULL)
     {
         FdoByteArray* geomArray = static_cast<FdoByteArray*>((void*)blob);
