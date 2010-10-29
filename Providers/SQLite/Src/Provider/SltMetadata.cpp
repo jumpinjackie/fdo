@@ -279,8 +279,8 @@ FdoClassDefinition* SltMetadata::ToClass()
             if (gdims[gi] == 5) // XYM
                 gpd->SetHasElevation(false);
 
-            int fgtype = gtypes[gi];
-            int fgdettype = gtypes[gi + 1];
+            int fgtype = gtypes[2*gi];
+            int fgdettype = gtypes[2*gi + 1];
             if (fgdettype <= 0)
             {
                 if (fgtype != 0 && fgtype != 8 && fgtype != 9 && fgtype <= (int)FdoGeometryType_MultiCurvePolygon)
