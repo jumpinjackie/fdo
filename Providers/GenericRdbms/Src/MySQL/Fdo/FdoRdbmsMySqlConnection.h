@@ -30,8 +30,6 @@ private:
     FdoRdbmsMySqlFilterProcessor *mFilterProcessor;
 
     FdoIConnectionInfo          *mConnectionInfo;
-	void						logOpen(char access);
-	void						delOpen();
 
 protected:
     virtual ~FdoRdbmsMySqlConnection ();
@@ -81,7 +79,6 @@ public:
     virtual const char* FdoToDbiTime( FdoDateTime  time );
 
 	virtual FdoConnectionState Open ();
-	virtual void Close();
 
     // Creates a Long Transaction Manager and its corresponding Long Transaction
     // Manager Service.

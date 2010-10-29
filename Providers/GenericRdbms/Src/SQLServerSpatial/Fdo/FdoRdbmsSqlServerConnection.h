@@ -47,10 +47,6 @@ private:
     bool                        mIsGeogLatLongSet;
     bool                        mIsGeogLatLong;
 
-	void						logOpen(char access);
-	void						delOpen();
-
-
 protected:
     virtual ~FdoRdbmsSqlServerConnection ();
     FdoRdbmsSqlServerConnection ();
