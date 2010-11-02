@@ -368,6 +368,14 @@ FdoXmlSaxHandler* FdoFeatureSchema::XmlStartElement(
                 // its properties and other sub-elements.
                 pRet = pClass;
             }
+            else 
+            {
+                // Skip this class since type could not be determined
+                if ( !m_XmlSkipHandler ) 
+                    m_XmlSkipHandler = FdoXmlSkipElementHandler::Create();
+
+                pRet = m_XmlSkipHandler;
+            }
         }
 
         if ( wcscmp(name, L"ElementMapping") == 0 ) {
