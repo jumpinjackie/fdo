@@ -1360,6 +1360,7 @@ void FdoSchemaMergeContext::CheckSchemasWData()
 void FdoSchemaMergeContext::ResolveBaseClasses()
 {
     FdoInt32 i;
+    FdoXmlFlags::ErrorLevel errorLevel = GetErrorLevel();
 
     for ( i = 0; i < mBaseClassRefs->GetCount(); i++ ) {
 
@@ -1374,18 +1375,25 @@ void FdoSchemaMergeContext::ResolveBaseClasses()
 
         if ( (baseClass == NULL) && ( baseClassName != L"") ) {
             // Dangling reference error
-            AddError( 
-                FdoSchemaExceptionP(
-                    FdoSchemaException::Create(
-                        FdoException::NLSGetMessage(
-                            FDO_NLSID(SCHEMA_26_BASECLASSREF),
-                            (FdoString*) ref->GetSchemaName(), 
-                            (FdoString*) ref->GetClassName(), 
-                            (FdoString*) referencer->GetQualifiedName()
+            if ( errorLevel != FdoXmlFlags::ErrorLevel_VeryLow ) {
+                AddError( 
+                    FdoSchemaExceptionP(
+                        FdoSchemaException::Create(
+                            FdoException::NLSGetMessage(
+                                FDO_NLSID(SCHEMA_26_BASECLASSREF),
+                                (FdoString*) ref->GetSchemaName(), 
+                                (FdoString*) ref->GetClassName(), 
+                                (FdoString*) referencer->GetQualifiedName()
+                            )
                         )
                     )
-                )
-            );
+                );
+            }
+            else {
+                // For VeryLow error level, set to no base class if 
+                // base class could not be found.
+                referencer->SetBaseClass(NULL);
+            }
         }
         else {
             if ( baseClass ) 
@@ -1422,9 +1430,7 @@ void FdoSchemaMergeContext::ResolveObjPropClasses()
 
         if ( (opClass == NULL) && (ref->GetClassName() != L"") ) {
             // Unable to resolve this reference
-            if ( (errorLevel == FdoXmlFlags::ErrorLevel_High) || 
-                 (errorLevel == FdoXmlFlags::ErrorLevel_Normal)
-            ) {
+            if ( errorLevel != FdoXmlFlags::ErrorLevel_VeryLow ) {
                 // This is an error for higher error levels
                 AddError( 
                     FdoSchemaExceptionP(
@@ -1458,6 +1464,7 @@ void FdoSchemaMergeContext::ResolveObjPropClasses()
 void FdoSchemaMergeContext::ResolveAssociatedPropClasses()
 {
     FdoInt32 i;
+    FdoXmlFlags::ErrorLevel errorLevel = GetErrorLevel();
 
     for ( i = 0; i < mAssocPropRefs->GetCount(); i++ ) {
         FdoPtr<ClassRef> ref = mAssocPropRefs->GetItem(i);
@@ -1468,20 +1475,45 @@ void FdoSchemaMergeContext::ResolveAssociatedPropClasses()
         FdoPtr<FdoClassDefinition> parent = (FdoClassDefinition*) refProp->GetParent();
         FdoPtr<FdoClassDefinition> mergeParent = FindClass( mSchemas, parent );
 
-        if ( (apClass == NULL) && (ref->GetClassName() != L"") ) {
+        if ( apClass == NULL ) {
             // Unable to resolve this reference
-            AddError( 
-                FdoSchemaExceptionP(
-                    FdoSchemaException::Create (
-                        FdoSchemaException::NLSGetMessage( 
-                            FDO_NLSID(SCHEMA_45_ASSOCPROPCLASSREF),
-                            (FdoString*) ref->GetSchemaName(),
-                            (FdoString*) ref->GetClassName(),
-                            (FdoString*) refProp->GetQualifiedName()
+            // Unable to resolve this reference
+            if ( errorLevel != FdoXmlFlags::ErrorLevel_VeryLow ) {
+                if ( ref->GetClassName() != L"" ) {
+                    AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create (
+                                FdoSchemaException::NLSGetMessage( 
+                                    FDO_NLSID(SCHEMA_45_ASSOCPROPCLASSREF),
+                                    (FdoString*) ref->GetSchemaName(),
+                                    (FdoString*) ref->GetClassName(),
+                                    (FdoString*) refProp->GetQualifiedName()
+                                )
+                            )
                         )
-                    )
-                )
-            );
+                    );
+                }
+                else {
+                    AddError( 
+                        FdoSchemaExceptionP(
+                            FdoSchemaException::Create(
+                                FdoException::NLSGetMessage(
+                                    FDO_NLSID(SCHEMA_55_ASSOCIATEDCLASSREQUIRED), 
+                                    (FdoString*) refProp->GetQualifiedName() 
+                                )
+                            )
+                        )
+                    );
+                }
+            }
+            else {
+                // For lower error levels, just skip the Association Property.
+                // TODO: don't throw away for non-XML merges
+                if ( parent ) {
+                    FdoPtr<FdoPropertyDefinitionCollection> props = parent->GetProperties();
+                    props->Remove( refProp );
+                }
+            }
         }
         else {
             refProp->SetAssociatedClass( apClass );

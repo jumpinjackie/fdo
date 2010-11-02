@@ -252,6 +252,8 @@ FdoClassDefinition* FdoSchemaXmlContext::CreateClass(
     FdoString* className, 
     FdoXmlAttributeCollection* atts )
 {
+    FdoXmlFlagsP flags = GetFlags();
+
     // Get the root class (the most specific ancestor class not in the XML
     // file ).
     FdoXmlAttributeP rootSchemaAtt = atts->FindItem( L"rootSchema" );
@@ -261,16 +263,18 @@ FdoClassDefinition* FdoSchemaXmlContext::CreateClass(
     // without base class will have its type resolved by now
 
     if ( (rootSchemaAtt == NULL) || (rootClassAtt == NULL) ) {
-        AddError( 
-            FdoSchemaExceptionP(
-                FdoSchemaException::Create(
-                    FdoException::NLSGetMessage(
-                        FDO_NLSID(SCHEMA_35_NOCLASSTYPE),
-                        (FdoString*) FdoStringP::Format( L"%ls:%ls", schemaName, className )
+        if ( !flags || (flags->GetErrorLevel() != FdoXmlFlags::ErrorLevel_VeryLow) ) {
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_35_NOCLASSTYPE),
+                            (FdoString*) FdoStringP::Format( L"%ls:%ls", schemaName, className )
+                        )
                     )
                 )
-            )
-        );
+            );
+        }
 
         return(NULL);
     }
@@ -284,19 +288,21 @@ FdoClassDefinition* FdoSchemaXmlContext::CreateClass(
     FdoClassDefinitionP rootClass = GetMergeContext()->FindClass( schemas, rootSchemaName, rootClassName );
 
     if ( rootClass == NULL ) {
-        // Not there so log an error and give up
-        AddError( 
-            FdoSchemaExceptionP(
-                FdoSchemaException::Create(
-                    FdoException::NLSGetMessage(
-                        FDO_NLSID(SCHEMA_26_BASECLASSREF),
-                        (FdoString*) rootSchemaName, 
-                        (FdoString*) rootClassName, 
-                        (FdoString*) FdoStringP::Format( L"%ls:%ls", schemaName, className )
+        if ( !flags || (flags->GetErrorLevel() != FdoXmlFlags::ErrorLevel_VeryLow) ) {
+            // Not there so log an error and give up
+            AddError( 
+                FdoSchemaExceptionP(
+                    FdoSchemaException::Create(
+                        FdoException::NLSGetMessage(
+                            FDO_NLSID(SCHEMA_26_BASECLASSREF),
+                            (FdoString*) rootSchemaName, 
+                            (FdoString*) rootClassName, 
+                            (FdoString*) FdoStringP::Format( L"%ls:%ls", schemaName, className )
+                        )
                     )
                 )
-            )
-        );
+            );
+        }
 
         return(NULL);
     }
