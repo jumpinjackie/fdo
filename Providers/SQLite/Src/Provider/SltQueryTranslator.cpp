@@ -1140,8 +1140,9 @@ void SltScCHelperTranslator::ProcessFunction(FdoFunction& expr)
                 FdoString* geomName = m_stackNames.back();
                 if (m_fc)
                 {
-                    FdoPtr<FdoGeometricPropertyDefinition> geomProp = m_fc->GetGeometryProperty();
-                    if (geomProp && 0==wcscmp(geomName, geomProp->GetName()))
+                    FdoPtr<FdoPropertyDefinitionCollection> props =  m_fc->GetProperties();
+                    FdoPtr<FdoPropertyDefinition> prop= (FdoPropertyDefinition*)props->FindItem(geomName);
+                    if(prop && FdoPropertyType::FdoPropertyType_GeometricProperty == prop->GetPropertyType())
                     {
                         m_extname = m_stackNames.at(sz-1);
                         return;
