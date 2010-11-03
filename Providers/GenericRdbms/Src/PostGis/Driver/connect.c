@@ -150,8 +150,9 @@ int postgis_connect(postgis_context_def* context,
             {
                 /*
                  * Establish connection with PostgreSQL database.
+                 * Default the database to the postgres database.
                  */
-                conn = PQsetdbLogin(pghost, pgport, pgoptions, pgtty, dbname, pglogin, pgpwd);
+                conn = PQsetdbLogin(pghost, pgport, pgoptions, pgtty, (dbname && (dbname[0] != '\0')) ? dbname : POSTGIS_DEFAULT_DBNAME, pglogin, pgpwd);
                 
                 ret = postgis_pgconn_status(conn);
                 if (RDBI_SUCCESS != ret)
@@ -161,7 +162,7 @@ int postgis_connect(postgis_context_def* context,
                      */
                     pch = PQerrorMessage(conn);
                     postgis_set_err_msg(context, pch);
-                    
+
                     /* If we have an error message, set return to GENERIC_ERROR
                      * so that the error message will propogate up.
                      */
@@ -169,8 +170,32 @@ int postgis_connect(postgis_context_def* context,
                         ret = RDBI_GENERIC_ERROR;
                     PQfinish(conn);
                     conn = NULL;
+
+                    if ( (!dbname) || (dbname[0] == '\0') ) 
+                    {
+                        /* Connecting to postgres database failed. Try again, this time leaving
+                         * dbname NULL, which will connect to a database with same name as the user.
+                         */
+                        conn = PQsetdbLogin(pghost, pgport, pgoptions, pgtty, (const char*) NULL, pglogin, pgpwd);
+                        int ret2 = postgis_pgconn_status(conn);
+
+                        if (RDBI_SUCCESS == ret2)
+                        {
+                            /* 2nd connect successful, get rid of error message */
+                            postgis_set_err_msg(context, "");
+                            ret = RDBI_SUCCESS;
+                        }
+                        else
+                        {
+                            /* 2nd connect failed, give up */
+                            PQfinish(conn);
+                            conn = NULL;
+                        }
+                    }
+
                 }
-                else
+
+                if (RDBI_SUCCESS == ret)
                 {
                     
                     if (-1 == context->postgis_current_connect)
