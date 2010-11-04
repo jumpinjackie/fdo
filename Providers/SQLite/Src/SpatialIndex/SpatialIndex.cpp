@@ -75,7 +75,6 @@ void SpatialIndex::ResetToEmpty()
     _rootLevel = 0;
 
     memset(_counts, 0, sizeof(_counts));
-    memset(_levels, 0, sizeof(_levels));
     memset(_offset, 0, sizeof(_offset));
 }
 
