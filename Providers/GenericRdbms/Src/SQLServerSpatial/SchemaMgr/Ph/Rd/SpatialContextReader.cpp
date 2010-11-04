@@ -297,8 +297,37 @@ FdoSmPhReaderP FdoSmPhRdSqsSpatialContextReader::MakeQueryReader( FdoSmPhOwnerP 
         FdoSmPhRowsP rows = MakeRows( mgr );
         FdoSmPhRowP row = rows->GetItem(0);
 
-        reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds->GetBinds() );
+        try 
+        {
+            reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds->GetBinds() );
+        }
+        catch (FdoException* ex )
+        {
+            // Reading spatial contexts is often the first spatial type operation the 
+            // provider tries. Check if server version is older than 10.0. If it is 
+            // then the spatial context read failed because the server is too old. 
+            FdoException* ex2 = ex;
 
+            FdoVectorP verTokens = FdoVector::Create( pMgr->GetDbVersion(), L"." );
+            FdoVectorP minSupported = FdoVector::Create();
+            minSupported->Add( 10 );
+            minSupported->Add( 0 );
+            minSupported->Add( 0 );
+
+            if ( verTokens < minSupported )
+            {
+                ex2 = FdoConnectionException::Create(
+                    NlsMsgGet(
+                        FDORDBMS_546, 
+                        "OSGeo.SQLServerSpatial provider cannot perform spatial handling on server with version older than 10.0."
+                    )
+                );
+
+                ex2->SetCause(ex);
+            }
+
+            throw ex2;
+        }
 //        mgr->SetStaticReader( readerName, reader );
     }
     else {

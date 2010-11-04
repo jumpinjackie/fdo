@@ -51,6 +51,11 @@ protected:
     virtual ~FdoRdbmsSqlServerConnection ();
     FdoRdbmsSqlServerConnection ();
 
+    // Checks if SQL Server version is 8 or earlier and 
+    // throws an exception if it is. The SQLServerSpatial provider
+    // relies on some sys views introduced in version 9.
+    void CheckForUnsupportedVersion();
+
     // Checks for FDO-style geometries. If any are present, an
     // exception is thrown. These geometries are created by the SqlServer
     // provider, meaning they cannot be handled by the SQLServerSpatial
