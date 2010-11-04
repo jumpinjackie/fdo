@@ -1995,3 +1995,13 @@ SymbolicName=FDORDBMS_544
 Language=English
 Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations.
 .
+MessageId=2770
+SymbolicName=FDORDBMS_545
+Language=English
+Cannot connect OSGeo.SQLServerSpatial provider to server with version older than 9.0.
+.
+MessageId=2771
+SymbolicName=FDORDBMS_546
+Language=English
+OSGeo.SQLServerSpatial provider cannot perform spatial handling on server with version older than 10.0.
+.

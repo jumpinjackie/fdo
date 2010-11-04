@@ -317,9 +317,24 @@ FdoConnectionState FdoRdbmsSqlServerConnection::Open()
 	if( state != FdoConnectionState_Open )
 	{
   	    state = FdoRdbmsConnection::Open();
+        try
+        {
+            CheckForUnsupportedVersion();
+        }
+        catch (FdoException *ex)
+        {
+	        try
+	        {
+		        Close();
+	        }
+	        catch(...)
+	        {
+	        }
+	        throw ex;
+        }
+
 	    if( state == FdoConnectionState_Open )
 	    {
-
 	        try
 	        {
                 CheckForFdoGeometries();
@@ -350,6 +365,27 @@ void FdoRdbmsSqlServerConnection::Close()
     }
 		
 	FdoRdbmsConnection::Close();
+}
+
+void FdoRdbmsSqlServerConnection::CheckForUnsupportedVersion()
+{
+    FdoSmPhSqsMgrP phMgr = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
+
+    FdoVectorP verTokens = FdoVector::Create( phMgr->GetDbVersion(), L"." );
+    FdoVectorP minSupported = FdoVector::Create();
+    minSupported->Add( 9 );
+    minSupported->Add( 0 );
+    minSupported->Add( 0 );
+
+    if ( verTokens < minSupported )
+    {
+        throw FdoConnectionException::Create(
+            NlsMsgGet(
+                FDORDBMS_545, 
+                "Cannot connect OSGeo.SQLServerSpatial provider to server with version older than 9.0."
+            )
+        );
+    }
 }
 
 void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
