@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{15d221b6-003a-4679-9d39-bb28d93080ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{537ff8cd-59f7-4c4a-b4e7-3bd720644d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Symbolic Targets">
+      <UniqueIdentifier>{81ee82a4-58c6-4c0a-9291-79f457b8e5a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{889b7fcb-2100-4d3a-aa82-8abd5f0b041f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Support Files">
+      <UniqueIdentifier>{dddac714-078e-483f-866a-2e6075456b3e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Pch.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="CapabilityTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="OverridesTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTestUtil.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsTestCustomCommands.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsTestDescribeSchema.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsTestSelect.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="WmsTestSpatialContexts.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlFormatter.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Pch.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="CapabilityTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectTests.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="OverridesTest.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitTestUtil.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsTestCustomCommands.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsTestDescribeSchema.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsTests.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsTestSelect.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="WmsTestSpatialContexts.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="XmlFormatter.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="NASA_WMS_Config.xml">
+      <Filter>Support Files</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="providers.xml">
+      <Filter>Support Files</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsOverridesConfig.xml">
+      <Filter>Support Files</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsSchemaConfig.xml">
+      <Filter>Support Files</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsSchemaConfig_Jake_MapServer.xml">
+      <Filter>Support Files</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Filter>Symbolic Targets</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>
