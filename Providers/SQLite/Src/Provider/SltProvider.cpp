@@ -667,7 +667,12 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
                 clss->Add(fc_copy);
             }
             else
-                throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.");
+            {
+                std::wstring strErr(L"Feature class '");
+                strErr.append(idClass->GetName());
+                strErr.append(L"' does not exist!");
+                throw FdoException::Create(strErr.c_str());
+            }
         }
         return FDO_SAFE_ADDREF(pSchema.p);
     }
