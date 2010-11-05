@@ -38,9 +38,9 @@ class ConnectTests :  public WmsTests
     CPPUNIT_TEST (TestConnection7);
     CPPUNIT_TEST (TestConnection8);    
     // disabled because the server cannot connect
-    //CPPUNIT_TEST (TestConnection9);
+    CPPUNIT_TEST (TestConnection9);
     // disabled because the server cannot connect
-    //CPPUNIT_TEST (TestConnection10);
+    CPPUNIT_TEST (TestConnection10);
     // disabled because the server cannot connect
     //CPPUNIT_TEST (TestConnection11);
     CPPUNIT_TEST (TestConnection12);

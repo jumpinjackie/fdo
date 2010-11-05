@@ -1,0 +1,1039 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugInternal|Win32">
+      <Configuration>DebugInternal</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugInternal|x64">
+      <Configuration>DebugInternal</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseInternal|Win32">
+      <Configuration>ReleaseInternal</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseInternal|x64">
+      <Configuration>ReleaseInternal</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BE1C32E9-2FDB-43F1-85CC-02708B6D33C3}</ProjectGuid>
+    <RootNamespace>UnitTest</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">..\..\Bin\Win32\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">DebugInternal\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">..\..\Bin\Win64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Debug64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">..\..\Bin\Win32\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">ReleaseInternal\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">..\..\Bin\Win64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Release64\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">UnitTest</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UnitTest</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;__CPPUNIT_MFC_APP;_FDO_RUN_INTERNAL_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>
+      </BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>
+      </BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunitd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>
+      </BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;..\..\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\Provider;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)\Common\inc;$(FDOTHIRDPARTY)\cppunit\include;..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_FDO_RUN_INTERNAL_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
+      <BrowseInformation>
+      </BrowseInformation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDONLS.lib;ProvidersCommon.lib;WMSOverrides.lib;cppunit.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;..\..\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="Pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\TestMain.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)StdAfx.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="CapabilityTest.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="ConnectTests.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="OverridesTest.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="UnitTestUtil.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="WmsTestCustomCommands.cpp" />
+    <ClCompile Include="WmsTestDescribeSchema.cpp" />
+    <ClCompile Include="WmsTests.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="WmsTestSelect.cpp" />
+    <ClCompile Include="WmsTestSpatialContexts.cpp" />
+    <ClCompile Include="XmlFormatter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppDoc.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostAppView.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
+    <ClInclude Include="Pch.h" />
+    <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
+    <ClInclude Include="CapabilityTest.h" />
+    <ClInclude Include="ConnectTests.h" />
+    <ClInclude Include="OverridesTest.h" />
+    <ClInclude Include="UnitTestUtil.h" />
+    <ClInclude Include="WmsTestCustomCommands.h" />
+    <ClInclude Include="WmsTestDescribeSchema.h" />
+    <ClInclude Include="WmsTests.h" />
+    <ClInclude Include="WmsTestSelect.h" />
+    <ClInclude Include="WmsTestSpatialContexts.h" />
+    <ClInclude Include="XmlFormatter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CopyFdo">
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win32\Debug\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.dll;$(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdbl;$(FDOUTILITIES)\OWS\Bin\Win64\Debug\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDO)\Unmanaged\Bin\Win32\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win32\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win32\Release\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb $(OutDir)
+copy /Y $(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb $(OutDir)
+copy /Y $(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDO)\Unmanaged\Bin\Win64\Release\FDO.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDO.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOCommon.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOGeometry.pdb;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.dll;$(FDO)\Unmanaged\Bin\Win64\Release\FDOSpatial.pdb;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.dll;$(FDOUTILITIES)\OWS\Bin\Win64\Release\OWS.pdb;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="CopyThirdparty">
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll  $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win32\debug\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll;$(FDOGDAL)\bin\win32\debug\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll  $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win64\debug\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll;$(FDOGDAL)\bin\win64\debug\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win32\debug\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc90-mt-gd-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll;$(FDOGDAL)\bin\win32\debug\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win64\debug\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc90-mt-gd-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc90-mt-gd-1_42.dll;$(FDOGDAL)\bin\win32\debug\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win32\release\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc90-mt-1_42.dll;$(FDOGDAL)\bin\win32\release\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win64\release\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc90-mt-1_42.dl;$(FDOGDAL)\bin\win64\release\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win32\release\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc90-mt-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc90-mt-1_42.dll;$(FDOGDAL)\bin\win32\release\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc90-mt-1_42.dll $(OutDir)
+copy $(FDOGDAL)\bin\win64\release\gdal17.dll $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc90-mt-1_42.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc90-mt-1_42.dl;$(FDOGDAL)\bin\win64\release\gdal17.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="FakeInstall">
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Performing fake install</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy providers.xml $(OutDir)
+copy WmsOverridesConfig.xml $(OutDir)
+copy WmsSchemaConfig.xml $(OutDir)
+copy WmsSchemaConfig_Jake_MapServer.xml $(OutDir)
+copy NASA_WMS_Config.xml $(OutDir)
+copy WMSOverrideClass2.xml $(OutDir)
+copy CubeServer_WMS_Config.xml $(OutDir)
+copy MultiLayers_Config.xml $(OutDir)
+</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">providers.xml;WmsOverridesConfig.xml;WmsSchemaConfig.xml;WmsSchemaConfig_Jake_MapServer.xml;NASA_WMS_Config.xml;WMSOverrideClass2.xml;CubeServer_WMS_Config.xml;MultiLayers_Config.xml;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)providers.xml;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuildStep Include="NASA_WMS_Config.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="providers.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsOverridesConfig.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsSchemaConfig.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="WmsSchemaConfig_Jake_MapServer.xml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
