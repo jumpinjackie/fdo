@@ -394,8 +394,10 @@ void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
     FdoSmPhOwnerP owner = phMgr->FindOwner();
 
     // non-FDO datastores not supported by Autodesk.SqlServer provider so 
-    // assume these can be opened by this provider
-    if ( !owner->GetHasMetaSchema() ) 
+    // assume these can be opened by this provider. 
+    // Also skip check if the Schema Manager can't find the datastore (owner == NULL).
+    // This case will be trapped later on and an exception thrown.
+    if ( !owner || !owner->GetHasMetaSchema() ) 
         return;
 
     // Geometric properties have numeric attributetype. Following query find
