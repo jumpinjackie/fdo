@@ -52,6 +52,16 @@ FdoString* FdoXmlSchemaMapping::GetTargetNamespace()
     return mTargetNamespace;
 }
 
+void FdoXmlSchemaMapping::SetTargetNamespacePrefix(FdoString* prefix)
+{
+    mTargetNamespacePrefix = prefix;
+}
+
+FdoString* FdoXmlSchemaMapping::GetTargetNamespacePrefix()
+{
+    return mTargetNamespacePrefix;
+}
+
 FdoXmlElementMappingCollection* FdoXmlSchemaMapping::GetElementMappings()
 {
     if ( !mElementMappings )

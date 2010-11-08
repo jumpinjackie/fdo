@@ -72,6 +72,24 @@ public:
     /// Returns the target namespace.
     /// 
 	FDO_API FdoString* GetTargetNamespace();
+    
+    /// \brief
+    /// Sets the target namespace prefix for the GML version of this schema.
+    /// When the Feature Schema for these overrides is written to GML, its targetNamespace prefix
+    /// is set to this value.
+    /// 
+    /// \param prefix 
+    /// Input the target namespace prefix.
+    /// 
+    FDO_API void SetTargetNamespacePrefix(FdoString* prefix);
+
+    /// \brief
+    /// Gets the target namespace prefix for the GML version of this schema.
+    /// 
+    /// \return
+    /// Returns the target namespace prefix.
+    /// 
+    FDO_API FdoString* GetTargetNamespacePrefix();
 
     /// \brief
     /// Gets the mappings between GML global elements and their types as Fdo Classes. These
@@ -143,6 +161,7 @@ protected:
 
 private:
     FdoStringP mTargetNamespace;
+    FdoStringP mTargetNamespacePrefix;
     FdoXmlElementMappingsP mElementMappings;
     FdoXmlClassMappingsP mClassMappings;
 };

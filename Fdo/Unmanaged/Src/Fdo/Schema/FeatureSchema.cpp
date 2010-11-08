@@ -434,9 +434,42 @@ void FdoFeatureSchema::_writeXml( FdoSchemaXmlContext* pContext )
 {
     int                 i;
     FdoXmlWriterP       writer = pContext->GetXmlWriter();
+    FdoXmlFlagsP flags = pContext->GetFlags();
 
     // Write the Feature Schema element.
     writer->WriteStartElement( L"Schema" );
+
+    // Find the overridden schema target namespace prefix.
+    if (flags != NULL)
+    {
+        FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = flags->GetSchemaMappings();
+        if (schemaMappings != NULL)
+        {
+            FdoStringP schemaTargetNamespace;
+            FdoStringP schemaTargetNamespacePrefix;
+            FdoInt32 count = schemaMappings->GetCount();
+            for (FdoInt32 i = 0; i < count; ++i)
+            {
+                FdoPhysicalSchemaMappingP psMapping = schemaMappings->GetItem(i);
+                FdoXmlSchemaMapping* schemaMapping = dynamic_cast<FdoXmlSchemaMapping*>(psMapping.p);
+                // Find this schema mapping.
+                if (schemaMapping != NULL && wcscmp(this->GetName(), schemaMapping->GetName()) == 0)
+                {
+                    schemaTargetNamespace = schemaMapping->GetTargetNamespace();
+                    // Write out the overridden schema target namespace as the 'targetNamespace' attribute.
+                    if (schemaTargetNamespace != L"")
+                        writer->WriteAttribute(L"targetNamespace", schemaTargetNamespace);
+
+                    schemaTargetNamespacePrefix = schemaMapping->GetTargetNamespacePrefix();
+                    // Write out the overridden schema target namespace as the 'prefix' attribute.
+                    if (schemaTargetNamespacePrefix != L"")
+                        writer->WriteAttribute(L"prefix", schemaTargetNamespacePrefix);
+
+                    break;
+                }
+            }
+        }
+    }
 
     // Write the generic attributes and sub-elements
     FdoSchemaElement::_writeXml(pContext);
@@ -448,4 +481,5 @@ void FdoFeatureSchema::_writeXml( FdoSchemaXmlContext* pContext )
     // Close the Feature Schema element.
     writer->WriteEndElement();
 }
+
 
