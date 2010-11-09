@@ -109,7 +109,7 @@
 		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="..\..\Bin\Win64\Debug"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="Debug64"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -289,7 +289,7 @@
 		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\..\Bin\Win64\Release"
-			IntermediateDirectory="Release"
+			IntermediateDirectory="Release64"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
