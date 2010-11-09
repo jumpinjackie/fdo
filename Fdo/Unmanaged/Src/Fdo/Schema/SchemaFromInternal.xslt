@@ -881,7 +881,7 @@
                 <xsl:with-param name="schema">
                     <xsl:call-template name="choose_schemaPrefix">
                         <xsl:with-param name="schema" select="@classSchema" />
-                        <xsl:with-param name="prefix" select="'//Schema[@name=@classSchema]/@prefix'" />
+                        <xsl:with-param name="prefix" select="//Schema[@name=@classSchema]/@prefix" />
                     </xsl:call-template>
                 </xsl:with-param>
                 <xsl:with-param name="class" select="@class"/>
@@ -1066,21 +1066,17 @@
             <xsl:with-param name="schema">
                 <xsl:call-template name="choose_schemaPrefix">
                     <xsl:with-param name="schema" select="$schema" />
-                    <xsl:with-param name="prefix" select="'//Schema[@name=$schema]/@prefix'" />
+                    <xsl:with-param name="prefix" select="//Schema[@name=$schema]/@prefix" />
                 </xsl:call-template>
             </xsl:with-param>
 	    </xsl:call-template>
 	</xsl:variable>
 
-	<xsl:variable name="uri" >
-	    <xsl:call-template name="schema_to_uri">
-            <xsl:with-param name="schema">
-                <xsl:call-template name="choose_targetNamespace">
-                    <xsl:with-param name="schema" select="$schema"/>
-                    <xsl:with-param name="custom_targetNamespace" select="//Schema[@name=$schema]/@targetNamespace"/>
-                </xsl:call-template>
-            </xsl:with-param>
-	    </xsl:call-template>
+    <xsl:variable name="uri" >
+        <xsl:call-template name="choose_targetNamespace">
+            <xsl:with-param name="schema" select="$schema"/>
+            <xsl:with-param name="custom_targetNamespace" select="//Schema[@name=$schema]/@targetNamespace"/>
+        </xsl:call-template>
 	</xsl:variable>
 
     <xsl:attribute name="{concat('xmlns:',$prefix)}" >
@@ -1653,7 +1649,7 @@
                 <xsl:with-param name="schema">
                     <xsl:call-template name="choose_schemaPrefix">
                         <xsl:with-param name="schema" select="@associatedClassSchema" />
-                        <xsl:with-param name="prefix" select="'//Schema[@name=@associatedClassSchema]/@prefix'" />
+                        <xsl:with-param name="prefix" select="//Schema[@name=@associatedClassSchema]/@prefix" />
                     </xsl:call-template>
                 </xsl:with-param>
 	            <xsl:with-param name="class" select="@associatedClass"/>
@@ -1707,7 +1703,7 @@
                         <xsl:with-param name="schema">
                             <xsl:call-template name="choose_schemaPrefix">
                                 <xsl:with-param name="schema" select="@associatedClassSchema" />
-                                <xsl:with-param name="prefix" select="'//Schema[@name=@associatedClassSchema]/@prefix'" />
+                                <xsl:with-param name="prefix" select="//Schema[@name=@associatedClassSchema]/@prefix" />
                             </xsl:call-template>
                         </xsl:with-param>
 		                <xsl:with-param name="class" select="@associatedClass"/>
@@ -2164,7 +2160,7 @@
         <xsl:with-param name="schema">
             <xsl:call-template name="choose_schemaPrefix">
                 <xsl:with-param name="schema" select="@baseSchema" />
-                <xsl:with-param name="prefix" select="'//Schema[@name=@baseSchema]/@prefix'" />
+                <xsl:with-param name="prefix" select="//Schema[@name=@baseSchema]/@prefix" />
             </xsl:call-template>
         </xsl:with-param>
         <xsl:with-param name="class" select="@baseClass"/>
