@@ -154,6 +154,7 @@ FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream, FdoWfsCancelE
 	FdoIoFileStreamP tempStream= FdoIoFileStream::Create( L"temp_stream.xml", L"w+" );
 	
 	FdoByte buffer[4096];
+	bool bCanceled = false;
 	const int readSize = sizeof(buffer)/sizeof(FdoByte);
 	do
 	{
@@ -169,7 +170,10 @@ FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream, FdoWfsCancelE
 		}
 		tempStream->Write(buffer,cntRead);
 	}
-	while (!handler(handleData));
+	while (!(bCanceled = handler(handleData)));
+
+	if (bCanceled)
+		tempStream->SetLength(0);
 
 	tempStream->Reset();
 	return FDO_SAFE_ADDREF(tempStream.p);
