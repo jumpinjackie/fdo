@@ -109,8 +109,6 @@ ArcSDEFilterToSql::ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition
     m_Connection = FDO_SAFE_ADDREF(conn);
     mDefinition = FDO_SAFE_ADDREF(definition);
     mSpatialFilters.clear();
-    mFilterAnalyzed = false;
-    mUseNesting = true;
 }
 
 ArcSDEFilterToSql::~ArcSDEFilterToSql (void)
@@ -667,119 +665,6 @@ void ArcSDEFilterToSql::ProcessGeometryValue (FdoGeometryValue& expr)
 // FdoFilterProcessor
 //
 
-void ArcSDEFilterToSql::AnalyzeFilter (FdoFilter *filter)
-{
-
-    // The following defines the filter analyzer. The filter analyzer is used
-    // to scan the filter for its content and set flags that control the
-    // process of converting the filter into the corresponding SQL statement.
-    // For example, it checks whether or not nesting of filter elememts is
-    // required. 
-
-    class FilterAnalyzer : public FdoIFilterProcessor
-    {
-
-    public:
-
-        //  containsBinaryLogicalOperatorAnd:
-        //      The flag is set to TRUE if the filter contains the binary
-        //      logical operator AND.
-        bool containsBinaryLogicalOperatorAnd;
-
-        //  containsBinaryLogicalOperatorOr:
-        //      The flag is set to TRUE if the filter contains the binary
-        //      logical operator OR.
-		bool containsBinaryLogicalOperatorOr;
-
-        //  containsUnaryLogicalOperatorNot:
-        //      The flag is set to TRUE if the filter contains the unary
-        //      logical operator NOT.
-        bool containsUnaryLogicalOperatorNot;
-
-        // Constructor.
-        FilterAnalyzer() 
-        { 
-            containsBinaryLogicalOperatorAnd = false;
-			containsBinaryLogicalOperatorOr  = false;
-            containsUnaryLogicalOperatorNot  = false;
-        }  
-
-        // Processes a binary logical operator node. Depending on the used
-        // operator, it sets the corresponding flag and then continues
-        // analyzing the tree.
-        virtual void ProcessBinaryLogicalOperator(
-                                            FdoBinaryLogicalOperator& filter)
-        {
-            FdoBinaryLogicalOperations binaryLogicalOperator;
-            binaryLogicalOperator = filter.GetOperation();
-
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
-                containsBinaryLogicalOperatorAnd = true;
-            if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
-                containsBinaryLogicalOperatorOr = true;
-
-            if (filter.GetLeftOperand() != NULL)
-                filter.GetLeftOperand()->Process(this);
-            if (filter.GetRightOperand() != NULL)
-                filter.GetRightOperand()->Process(this);
-        }
-
-        virtual void ProcessUnaryLogicalOperator(
-                                            FdoUnaryLogicalOperator& filter)
-        {
-            containsUnaryLogicalOperatorNot = true;
-            if (filter.GetOperand() != NULL)
-                filter.GetOperand()->Process(this);
-        }
-
-        virtual void ProcessComparisonCondition(FdoComparisonCondition& filter)
-        {
-        }
-
-        virtual void ProcessInCondition(FdoInCondition& filter)
-        {
-        }
-
-        virtual void ProcessNullCondition(FdoNullCondition& filter)
-        {
-        }
-
-        virtual void ProcessSpatialCondition(FdoSpatialCondition& filter)
-        {
-        }
-
-        virtual void ProcessDistanceCondition(FdoDistanceCondition& filter)
-        {
-        }
-
-        virtual void Dispose() { delete this; }
-
-    };
-
-    // Initialize the member variables that are set by this routine. The default
-    // value should reflect the current behavior.
-    mUseNesting         = true;
-
-    // Analyze the filter.
-    FilterAnalyzer filterAnalyzer;
-    filter->Process(&filterAnalyzer);
-
-    // Check the result of the analyzing process and set the corresponding
-    // member variables that control the generation of the SQL statement
-    // from the given filter.
-    if ((filterAnalyzer.containsBinaryLogicalOperatorAnd) ||
-        (filterAnalyzer.containsBinaryLogicalOperatorOr)     )
-    {
-        mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
-                      filterAnalyzer.containsBinaryLogicalOperatorOr;
-    }
-}
-
-void ArcSDEFilterToSql::SetFilterAnalyzedFlag (bool value)
-{
-    mFilterAnalyzed = value;
-}
-
 ///<summary>Processes the FdoBinaryLogicalOperator passed in as an argument.</summary>
 /// <param name="filter">Input the FdoBinaryLogicalOperator</param> 
 /// <returns>Returns nothing</returns> 
@@ -789,61 +674,70 @@ void ArcSDEFilterToSql::ProcessBinaryLogicalOperator (FdoBinaryLogicalOperator& 
     //       that ArcSDE understands.  This method handles these special combinations.
     //       Unsupported combinations will cause exceptions during prior calls to HandleFilter().
 
-    ArcSDEFilterTypeEnum leftOpType = GetFilterType(FdoPtr<FdoFilter>(filter.GetLeftOperand ()));
-    ArcSDEFilterTypeEnum rightOpType = GetFilterType(FdoPtr<FdoFilter>(filter.GetRightOperand ()));
+    FdoPtr<FdoFilter> left = filter.GetLeftOperand ();
+    FdoPtr<FdoFilter> right = filter.GetRightOperand ();
+    ArcSDEFilterTypeEnum leftOpType = GetFilterType(left);
+    ArcSDEFilterTypeEnum rightOpType = GetFilterType(right);
     if ((leftOpType == ArcSDEFilterType_Spatial) && (rightOpType == ArcSDEFilterType_Attribute))
     {
         // Process attribute portion (append to query string):
         // NOTE: This will always be an AND binary operation; an OR operation would have failed prior to getting here.
         AppendString (OPEN_PAREN);
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetRightOperand ()));
+        HandleFilter (right);
         AppendString (CLOSE_PAREN);
 
         // Process spatial filter portion (it won't be appended to query string):
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetLeftOperand ()));
+        HandleFilter (left);
     }
     else if ((leftOpType == ArcSDEFilterType_Attribute) && (rightOpType == ArcSDEFilterType_Spatial))
     {
         // Process attribute portion (append to query string):
         // NOTE: This will always be an AND binary operation; an OR operation would have failed prior to getting here.
         AppendString (OPEN_PAREN);
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetLeftOperand ()));
+        HandleFilter (left);
         AppendString (CLOSE_PAREN);
 
         // Process spatial filter portion (it won't be appended to query string):
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetRightOperand ()));
+        HandleFilter (right);
     }
     else if ((leftOpType == ArcSDEFilterType_Attribute) && (rightOpType == ArcSDEFilterType_Attribute))
     {
         // Both operands are "attribute"-style filters, process them both (append both to query string):
 
-        if (!mFilterAnalyzed)
-            AppendString (OPEN_PAREN);
-        else
-            if ((mFilterAnalyzed) && (mUseNesting))
-                AppendString (OPEN_PAREN);
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetLeftOperand ()));
-        if (!mFilterAnalyzed)
-            AppendString (OPEN_PAREN);
-        else
-            if ((mFilterAnalyzed) && (mUseNesting))
-                AppendString (OPEN_PAREN);
-        switch (filter.GetOperation ())
+        FdoBinaryLogicalOperations op = filter.GetOperation();
+        if (op == FdoBinaryLogicalOperations_And)
         {
-            case FdoBinaryLogicalOperations_And:
-                AppendString (LOGICAL_AND);
-                break;
-            case FdoBinaryLogicalOperations_Or:
-                AppendString (LOGICAL_OR);
-                break;
-            default:
-                throw FdoFilterException::Create (NlsMsgGet(ARCSDE_UNSUPPORTED_BINARY_LOGICAL_OPERATOR, "The given binary logical operator is not supported."));
+            FdoBinaryLogicalOperator* pBLO = dynamic_cast<FdoBinaryLogicalOperator*>(left.p);
+            if (pBLO != NULL && pBLO->GetOperation() == FdoBinaryLogicalOperations_Or)
+            {
+                AppendString (OPEN_PAREN);
+                HandleFilter (left);
+                AppendString (CLOSE_PAREN);
+            }
+            else
+                HandleFilter (left);
+
+            // op = FdoBinaryLogicalOperations_And
+            AppendString (LOGICAL_AND);
+            
+            pBLO = dynamic_cast<FdoBinaryLogicalOperator*>(right.p);
+            if (pBLO != NULL && pBLO->GetOperation() == FdoBinaryLogicalOperations_Or)
+            {
+                AppendString (OPEN_PAREN);
+                HandleFilter (right);
+                AppendString (CLOSE_PAREN);
+            }
+            else
+                HandleFilter (right);
         }
-        if ((mFilterAnalyzed) && (mUseNesting))
-            AppendString (OPEN_PAREN);
-        HandleFilter (FdoPtr<FdoFilter>(filter.GetRightOperand ()));
-        if ((mFilterAnalyzed) && (mUseNesting))
-            AppendString (CLOSE_PAREN);
+        else if (op == FdoBinaryLogicalOperations_Or)
+        {
+            HandleFilter (left);
+            AppendString (LOGICAL_OR);
+            HandleFilter (right);
+        }
+        else
+            throw FdoFilterException::Create (NlsMsgGet(ARCSDE_UNSUPPORTED_BINARY_LOGICAL_OPERATOR, "The given binary logical operator is not supported."));
     }
     else if ((leftOpType == ArcSDEFilterType_Spatial) && (rightOpType == ArcSDEFilterType_Spatial))
     {

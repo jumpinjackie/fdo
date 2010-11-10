@@ -1753,10 +1753,7 @@ void GetFilterInfo(ArcSDEConnection *connection, FdoFilter* filter, FdoClassDefi
 
         // Get whereClause from filter:
         f2s = new ArcSDEFilterToSql (connection, classDef);
-        f2s->AnalyzeFilter (filter);
-        f2s->SetFilterAnalyzedFlag (true);
         f2s->HandleFilter (filter);
-        f2s->SetFilterAnalyzedFlag (false);
         CHAR* tempWhereClause = NULL;
         sde_wide_to_multibyte (tempWhereClause, f2s->GetSql ());  // volatile, since memory is on stack
         if (0 == sde_stricmp (sde_pcus2wc(tempWhereClause), _TXT(" WHERE ")))
