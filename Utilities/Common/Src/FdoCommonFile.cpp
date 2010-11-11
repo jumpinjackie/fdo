@@ -624,9 +624,16 @@ bool FdoCommonFile::FileExists (const wchar_t* filePath)
     wcscpy (path, filePath);
     if (0 < length)
     {
-        // trim off trailing slash
+        // trim off trailing slash unless it is a share
+        // On network shares use a path in the form of the following: "\\server\service\*". 
+        // (see ::FindFirstFile() usage at http://msdn.microsoft.com/en-us/library/aa364418(VS.85).aspx)
         if (FILE_PATH_DELIMITER == path[length - 1])
-            path[--length] = L'\0';
+        {
+            if (!IsAbsolutePath(path))
+                path[--length] = L'\0';
+            else
+                wcscat (path, L"*");
+        }
         else if (FILE_PATH_DELIMITER2 == path[length - 1])
             path[--length] = L'\0';
     }
