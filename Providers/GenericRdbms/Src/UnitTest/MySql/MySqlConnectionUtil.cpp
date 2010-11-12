@@ -188,6 +188,9 @@ void MySqlConnectionUtil::SetProvider( const char *providerName )
 		
 		pValue = m_SetupValues->GetPropertyValue( L"password" );
         FdoCommonOSUtil::setenv( "password", pValue);
+
+		pValue = m_SetupValues->GetPropertyValue( L"datastore" );
+        FdoCommonOSUtil::setenv( "datastore", pValue);
     } 
     else
     {

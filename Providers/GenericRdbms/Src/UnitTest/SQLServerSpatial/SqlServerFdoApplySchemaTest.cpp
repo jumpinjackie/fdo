@@ -172,31 +172,31 @@ void SqlServerFdoApplySchemaTest::CreateRdbmsSpecificElements(FdoIConnection* co
 
     const char* mbSqlServerRootPath = UnitTestUtil::GetEnv("sqlserver_data_root", "C:\\Program Files\\Microsoft SQL Server\\MSSQL\\data");
 
-	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILEGROUP TestFileGroup1", wDatastore));
+	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILEGROUP TestFileGroup1", wDatastore));
     sqlCommand->ExecuteNonQuery();
 	try
 	{
-    	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile1, FILENAME='%hs\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, mbSqlServerRootPath, wDatastore));
+    	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILE (NAME=TestFile1, FILENAME='%hs\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, mbSqlServerRootPath, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
 	catch (FdoException* ex)
 	{
         FDO_SAFE_RELEASE(ex);
-		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile1, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, wDatastore));
+		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILE (NAME=TestFile1, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file1.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup1", wDatastore, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
 
-	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILEGROUP TestFileGroup2", wDatastore));
+	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILEGROUP TestFileGroup2", wDatastore));
     sqlCommand->ExecuteNonQuery();
 	try
 	{
-    	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile2, FILENAME='%hs\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, mbSqlServerRootPath, wDatastore));
+    	sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILE (NAME=TestFile2, FILENAME='%hs\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, mbSqlServerRootPath, wDatastore));
 		sqlCommand->ExecuteNonQuery();
 	}
 	catch (FdoException* ex)
 	{
         FDO_SAFE_RELEASE(ex);
-		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE %ls ADD FILE (NAME=TestFile2, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, wDatastore));
+		sqlCommand->SetSQLStatement(FdoStringP::Format(L"ALTER DATABASE \"%ls\" ADD FILE (NAME=TestFile2, FILENAME='C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\data\\%ls_file2.ndf', SIZE=2MB, MAXSIZE=100MB, FILEGROWTH=5MB) TO FILEGROUP TestFileGroup2", wDatastore, wDatastore));
 		sqlCommand->ExecuteNonQuery();
     }
 }

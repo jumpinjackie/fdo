@@ -139,9 +139,9 @@ FdoSmPhReaderP FdoSmPhRdSqsFkeyReader::MakeReader(
 		    L"   and R.CONSTRAINT_CATALOG = ?\n"
 		    L"%ls"
 		    L" order by K1.TABLE_SCHEMA collate latin1_general_bin asc, K1.TABLE_NAME collate latin1_general_bin asc, R.CONSTRAINT_NAME collate latin1_general_bin asc, K1.ORDINAL_POSITION asc",
-		     (FdoString*) ownerName,
-		     (FdoString*) ownerName,
-		     (FdoString*) ownerName,
+             (FdoString*)(owner->GetDbName()),
+             (FdoString*)(owner->GetDbName()),
+             (FdoString*)(owner->GetDbName()),
 		     dbObject ? L"   and K1.TABLE_SCHEMA = ? and K1.TABLE_NAME = ?\n" : L""
 	    );
 

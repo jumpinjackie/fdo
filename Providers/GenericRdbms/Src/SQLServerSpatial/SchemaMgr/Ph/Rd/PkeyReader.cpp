@@ -179,8 +179,8 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
 		  L"     and tc.CONSTRAINT_TYPE = 'PRIMARY KEY')\n"
 		  L" order by tc.TABLE_SCHEMA collate latin1_general_bin asc, tc.TABLE_NAME collate latin1_general_bin asc, kcu.ORDINAL_POSITION asc",
           join ? L"distinct" : L"",
-		  (FdoString*) ownerName,
-		  (FdoString*) ownerName,
+          (FdoString*)(owner->GetDbName()),
+          (FdoString*)(owner->GetDbName()),
           (FdoString*)joinFrom,
           (qualification == L"") ? L"" : L"and",
           (FdoString*) qualification

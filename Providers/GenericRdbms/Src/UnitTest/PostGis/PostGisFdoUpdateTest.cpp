@@ -32,7 +32,7 @@ void PostGisFdoUpdateTest::set_provider()
 
 FdoString* PostGisFdoUpdateTest::NoMetaSuffix()
 {
-    FdoString* noMetaSuffix = L"_no_meta";
+    FdoString* noMetaSuffix = L"_no meta";
 
     return noMetaSuffix;
 }

@@ -219,7 +219,7 @@ const wchar_t* MySqlFdoUpdateTest::mForeignPolygonTest[] = {
 
 FdoString* MySqlFdoUpdateTest::NoMetaSuffix()
 {
-    FdoString* noMetaSuffix = L"_no_meta\x30b0\x30b1";
+    FdoString* noMetaSuffix = L"_no meta\x30b0\x30b1";
 
     return noMetaSuffix;
 }

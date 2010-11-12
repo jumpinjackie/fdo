@@ -45,10 +45,7 @@ bool FdoSmPhDbElement::GetExists() const
 
 FdoStringP FdoSmPhDbElement::GetDbName() const
 {
-    if ( (wcslen(GetName()) > 0) && ((FdoSmPhDbElement*) this)->GetManager()->SupportsAnsiQuotes() ) 
-        return FdoStringP(L"\"") + GetName() + L"\"";
-    else
-        return GetName();
+    return ((FdoSmPhDbElement*) this)->GetManager()->GetSQLObjectName( FdoStringP(GetName(),true) ); 
 }
 
 FdoStringP FdoSmPhDbElement::GetQName() const
