@@ -175,7 +175,7 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
                 L" %ls \n"
                 L" order by D.VIEW_SCHEMA collate latin1_general_bin asc, D.VIEW_NAME collate latin1_general_bin asc",
                 join ? L"distinct" : L"",
-                (FdoString*)ownerName,
+                (FdoString*)(owner->GetDbName()),
                 (FdoString*)joinFrom,
                 (qualification == L"") ? L"" : L"where",
                 (FdoString*) qualification

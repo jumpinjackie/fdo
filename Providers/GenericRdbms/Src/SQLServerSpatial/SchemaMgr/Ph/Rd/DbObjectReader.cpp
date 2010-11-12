@@ -211,11 +211,11 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
                 L" %ls %ls %ls \n"
                 L" order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc",
                 join ? L"distinct" : L"",
-                (FdoString*)ownerName,
-                (FdoString*)ownerName,
-                (FdoString*)ownerName,
-                (FdoString*)ownerName,
-                (FdoString*)ownerName,
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
                 (FdoString*)joinFrom,
                 L"a.type in ('U', 'V')", //This was done because format string got too long.
                 (qualification == L"") ? L"" : L" and ",

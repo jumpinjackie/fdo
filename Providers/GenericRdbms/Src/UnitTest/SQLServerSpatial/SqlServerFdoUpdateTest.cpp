@@ -140,7 +140,7 @@ void SqlServerFdoUpdateTest::UpdateNonDbo()
 
 FdoString* SqlServerFdoUpdateTest::NoMetaSuffix()
 {
-    static FdoString* noMetaSuffix = L"_no_met\x00e4\x00e4\x00e4\x00e4";
+    static FdoString* noMetaSuffix = L"_no met\x00e4\x00e4\x00e4\x00e4";
 
     return noMetaSuffix;
 }

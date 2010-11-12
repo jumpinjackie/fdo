@@ -94,8 +94,8 @@ FdoSmPhReaderP FdoSmPhRdSqsDbSchemaReader::MakeQueryReader(
                 L"  INNER JOIN %ls.sys.database_principals b ON (a.principal_id = b.principal_id) \n"
                 L"  %ls\n"
                 L" order by a.name collate latin1_general_bin asc",
-                (FdoString*)ownerName,
-                (FdoString*)ownerName,
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
                 (schemaName == L"") ? L"" : L"where a.name = ?"
             );
 

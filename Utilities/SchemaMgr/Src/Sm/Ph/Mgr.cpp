@@ -647,6 +647,14 @@ FdoStringP FdoSmPhMgr::GetRealDbObjectName( FdoStringP objectName)
     return objectName;
 }
 
+FdoStringP FdoSmPhMgr::GetSQLObjectName( FdoStringP objectName ) const
+{
+    if ( (objectName != L"") && ((FdoSmPhMgr*)this)->SupportsAnsiQuotes() ) 
+        return FdoStringP(L"\"") + objectName + L"\"";
+    else
+        return objectName;
+}
+
 FdoStringP FdoSmPhMgr::GetDefaultPhysicalSchemaName()
 {
     return L"";

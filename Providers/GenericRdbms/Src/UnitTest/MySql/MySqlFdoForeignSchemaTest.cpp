@@ -41,11 +41,11 @@ void MySqlFdoForeignSchemaTest::create_foreign_datastore()
 
 	if (dbExists)
 	{
-		sqlStmt = FdoStringP::Format(L"drop database %ls", (FdoString*) UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX));
+		sqlStmt = FdoStringP::Format(L"drop database \"%ls\"", (FdoString*) UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX));
 		UnitTestUtil::Sql2Db(sqlStmt, connection);
 	}
 	sqlStmt = FdoStringP::Format(
-		L"create database %ls character set latin1 collate latin1_bin", (FdoString*) UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX));
+		L"create database \"%ls\" character set latin1 collate latin1_bin", (FdoString*) UnitTestUtil::GetEnviron("datastore",DB_NAME_SUFFIX));
    
 	UnitTestUtil::Sql2Db(sqlStmt, connection);
 

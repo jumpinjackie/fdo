@@ -597,6 +597,11 @@ public:
     // returns the given name unaltered by default
     virtual FdoStringP GetRealDbObjectName( FdoStringP objectName );
 
+    // Given a database object name, returns the name formatted for inclusion
+    // in a SQL statement. For providers that support ANSI Quotes, this means
+    // double-quote delimiting the name.
+    virtual FdoStringP FdoSmPhMgr::GetSQLObjectName( FdoStringP objectName ) const;
+    
     // Returns the name of the default physical schema.
     // This function assumes that the provider RDBMS does not have
     // physical schemas, so it returns L"".

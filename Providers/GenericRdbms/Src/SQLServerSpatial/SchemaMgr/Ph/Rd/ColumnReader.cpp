@@ -230,12 +230,12 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
                     L" %ls %ls\n"
                     L" order by d.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.column_id asc",
                  join ? L"distinct" : L"",
-                (FdoString *)ownerName,
-                (FdoString *)ownerName,
-                (FdoString *)ownerName,
-                (FdoString *)ownerName,
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
                 (FdoString *)joinFrom,
-                (FdoString *)ownerName,
+                (FdoString*)(owner->GetDbName()),
                 (qualification == L"") ? L"" : L"where",
                 (FdoString *)qualification
               );

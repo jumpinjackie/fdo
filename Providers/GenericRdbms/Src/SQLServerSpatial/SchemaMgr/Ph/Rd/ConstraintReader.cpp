@@ -156,8 +156,8 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
         L"         NULL as r_column_name\n"
         L"  from %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS T,\n"
         L"       %ls.INFORMATION_SCHEMA.KEY_COLUMN_USAGE K1",
-        (FdoString*) ownerName,
-        (FdoString*) ownerName
+        (FdoString*) (owner->GetDbName()),
+        (FdoString*) (owner->GetDbName())
     );
 
     sqlString = sqlString +
@@ -272,10 +272,10 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
             L" %ls %ls\n"
             L" order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ck.name collate latin1_general_bin asc",
             join ? L"distinct" : L"",
-            (FdoString *)ownerName,
-            (FdoString *)ownerName,
-            (FdoString *)ownerName,
-            (FdoString *)ownerName,
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
             (FdoString *)joinFrom,
             (qualification == L"") ? L"" : L"where",
             (FdoString *)qualification
@@ -304,11 +304,11 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
             L"   %ls \n"
             L"   where is_unique_constraint = 1 %ls %ls \n"
             L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.index_column_id asc",
-            (FdoString*)ownerName,
-            (FdoString*)ownerName,
-            (FdoString*)ownerName,
-            (FdoString*)ownerName,
-            (FdoString*)ownerName,
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
             (FdoString *)joinFrom,
             (qualification == L"") ? L"" : L"and",
             (FdoString *)qualification
