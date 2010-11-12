@@ -68,9 +68,10 @@ libFdoOws_la_LIBADD =  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
   $(FDOTHIRDPARTY)/boost/stage/lib/libboost_thread.a \
   $(FDOTHIRDPARTY)/libcurl/lib/linux/libcurl.a  \
-  $(FDOTHIRDPARTY)/openssl/lib/linux/libssl.a \
-  $(FDOTHIRDPARTY)/openssl/lib/linux/libcrypto.a \
   -lz \
+  -lrt \
+  -lssl \
+  -lcrypto \
   -lpthread
 
 libFdoOws_la_LDFLAGS = -shared \
