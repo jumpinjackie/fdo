@@ -36,7 +36,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./configure
-./configure --without-libidn
+./configure --without-libidn --disable-ldap
 sudo -E make
 mkdir -p lib/linux
 rm -f ./lib/linux/*.*
