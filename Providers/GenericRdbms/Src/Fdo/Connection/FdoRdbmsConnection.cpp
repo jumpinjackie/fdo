@@ -685,44 +685,59 @@ void FdoRdbmsConnection::CreateDb( FdoString *dbName, FdoString *dbDescription, 
         );
 
 // Create a new Owner (physical schema) in the current database instance
-	FdoSmPhOwnerP newSchema = physicalMgr->GetDatabase()->CreateOwner( dbName, isFdoEnabled );
-    newSchema->SetPassword( dbPassword );
-	newSchema->SetDescription( dbDescription );
-
-	FdoLtLockModeType lt_mode = NoLtLock;
-	if ( wcscmp( ltMode, L"FDO" ) == 0 )
-		lt_mode = FdoMode;
-	else if ( wcscmp( ltMode, L"OWM" ) == 0 )
-		lt_mode = OWMMode;
-
-	newSchema->SetLtMode( lt_mode );
 	
-	FdoLtLockModeType lck_mode = NoLtLock;
-	if (  wcscmp( lckMode, L"FDO" ) == 0 )
-		lck_mode = FdoMode;
-	else if ( wcscmp( lckMode, L"OWM" ) == 0 )
-		lck_mode = OWMMode;
+    try
+    {
+        FdoSmPhOwnerP newSchema = physicalMgr->GetDatabase()->CreateOwner( dbName, isFdoEnabled );
+        newSchema->SetPassword( dbPassword );
+	    newSchema->SetDescription( dbDescription );
 
-    FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = this->GetConnectionCapabilities();
-	if (connectionCapabilities->SupportsLocking() ||
-		connectionCapabilities->SupportsLongTransactions())
-		newSchema->SetLckMode( lck_mode);
-	else
-		newSchema->SetLckMode( NoLtLock );
+	    FdoLtLockModeType lt_mode = NoLtLock;
+	    if ( wcscmp( ltMode, L"FDO" ) == 0 )
+		    lt_mode = FdoMode;
+	    else if ( wcscmp( ltMode, L"OWM" ) == 0 )
+		    lt_mode = OWMMode;
 
-    // Post the new Owner to the RDBMS.
-    newSchema->Commit();
+	    newSchema->SetLtMode( lt_mode );
+    	
+	    FdoLtLockModeType lck_mode = NoLtLock;
+	    if (  wcscmp( lckMode, L"FDO" ) == 0 )
+		    lck_mode = FdoMode;
+	    else if ( wcscmp( lckMode, L"OWM" ) == 0 )
+		    lck_mode = OWMMode;
 
-	// Check if FDOSYS is needed
-	if (newSchema->GetLtMode() == FdoMode ||
-		newSchema->GetLckMode() == FdoMode)	{
-		// Create FDOSYS
-		FdoSmPhOwnerP fdoOwner = FdoSmPhDatabaseP(physicalMgr->GetDatabase())->FindOwner(FDOSYS_OWNER);
-		if (!fdoOwner)	{
-			CreateSysDb( FDOSYS_OWNER, L"", connectString);
-		}
-	}
+        FdoPtr<FdoIConnectionCapabilities> connectionCapabilities = this->GetConnectionCapabilities();
+	    if (connectionCapabilities->SupportsLocking() ||
+		    connectionCapabilities->SupportsLongTransactions())
+		    newSchema->SetLckMode( lck_mode);
+	    else
+		    newSchema->SetLckMode( NoLtLock );
 
+        // Post the new Owner to the RDBMS.
+        newSchema->Commit();
+
+	    // Check if FDOSYS is needed
+	    if (newSchema->GetLtMode() == FdoMode ||
+		    newSchema->GetLckMode() == FdoMode)	{
+		    // Create FDOSYS
+		    FdoSmPhOwnerP fdoOwner = FdoSmPhDatabaseP(physicalMgr->GetDatabase())->FindOwner(FDOSYS_OWNER);
+		    if (!fdoOwner)	{
+			    CreateSysDb( FDOSYS_OWNER, L"", connectString);
+		    }
+	    }
+    }
+    catch ( ... ) 
+    {
+        try
+        {
+            GetSchemaManager()->Clear(true);
+        }
+        catch (...) 
+        {
+        }
+
+        throw;
+    }
     // Creating an owner is a major operation so force refresh of schema 
     // info from the RDBMS by clearing the schema manager caches.
     GetSchemaManager()->Clear(true);
