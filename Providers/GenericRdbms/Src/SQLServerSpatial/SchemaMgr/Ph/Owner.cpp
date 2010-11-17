@@ -362,6 +362,7 @@ FdoSmPhRdCoordSysReaderP FdoSmPhSqsOwner::CreateCoordSysReader( FdoStringP csNam
 bool FdoSmPhSqsOwner::Add()
 {
     FdoSmPhSqsMgrP mgr = GetManager()->SmartCast<FdoSmPhSqsMgr>();
+    FdoSmPhDatabase* pDatabase = (FdoSmPhDatabase*)GetParent();
     GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
     GdbiCommands* gdbiCommands = gdbiConn->GetCommands();
 	bool		  autoCmtChanged = false;
@@ -428,6 +429,8 @@ bool FdoSmPhSqsOwner::Add()
                 
                 if ( prevOwner )
                     prevOwner->SetCurrent();
+                else
+                    pDatabase->UnsetCurrentOwner();
             }
             catch (...) {
             }
@@ -445,6 +448,8 @@ bool FdoSmPhSqsOwner::Add()
                 
         if ( prevOwner && FdoStringP(prevOwner->GetName()).GetLength() != 0)
             prevOwner->SetCurrent();
+        else
+            pDatabase->UnsetCurrentOwner();
 
         //TODO: spatial handling?
     }
