@@ -77,7 +77,44 @@ int StringContains(const char* str, const char* val)
     return -1;
 }
 
-bool StringStartsWith(const char* str, const char* val)
+// returns a table name been able to process formats like: 
+// name, "name", main."name", main.name, "main"."name"
+std::string GetTableNameToken(const char* str)
+{
+    const char* strTmp = str;
+    while (*strTmp == ' ' && *strTmp != '\0') strTmp++;
+    str = strTmp;
+    bool startDq = false;
+    while(*strTmp != '\0')
+    {
+        if (*strTmp == '\"')
+            startDq = !startDq;
+        if (*strTmp == ' ' && !startDq)
+            break;        
+        strTmp++;
+    }
+    if (str == strTmp)
+        return std::string("");
+    if (StringStartsWith(str, "main."))
+        str = str + 5;
+    else if (StringStartsWith(str, "\"main\"."))
+        str = str + 7;
+    if (*str == '\"')
+        return std::string(str+1, (int)(strTmp-str-2));
+    else
+        return std::string(str, (int)(strTmp-str));
+}
+
+// skips a predefined token whihc cannot contain space character
+const char* SkipTokenString(const char* str)
+{
+    const char* strTmp = str;
+    while (*strTmp == ' ' && *strTmp != '\0') strTmp++;
+    while(*strTmp != '\0' && *strTmp != ' ') strTmp++;
+    return strTmp;
+}
+
+bool StringStartsWith(const char* str, const char* val, const char** lastPos)
 {
     assert( str!=NULL );
     const char* strTmp = str;
@@ -86,7 +123,11 @@ bool StringStartsWith(const char* str, const char* val)
     while(sqlite3UpperToLower[*strTmp++] == sqlite3UpperToLower[*valTmp++])
     {
         if (*valTmp == '\0')
+        {
+            if (lastPos != NULL)
+                *lastPos = strTmp;
             return true;
+        }
     }
     return false;
 }

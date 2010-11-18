@@ -262,7 +262,8 @@ public:
     int GetDefaultSpatialContext();
     bool SupportsTolerance();
     bool AddSupportForTolerance();
-    void FreeCachedSchema (bool isAddition);
+    void FreeCachedSchema ();
+    void ClearClassFromCachedSchema(const char* table, bool fullDrop);
 
 private :
 

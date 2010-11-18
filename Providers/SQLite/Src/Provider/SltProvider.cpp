@@ -4103,36 +4103,54 @@ bool SltConnection::GetCSTolerances(const char* tablename, double& xyTolerance, 
     return (xyTolerance > 0.0);
 }
 
-void SltConnection::FreeCachedSchema (bool isAddition)
+void SltConnection::ClearClassFromCachedSchema(const char* table, bool fullDrop)
 {
-    if (isAddition)
+    // do we have this class in the current schema?
+    if (!fullDrop)
     {
-        // The cached FDO schema will need to be refreshed
-        FDO_SAFE_RELEASE(m_pSchema);
-        m_pSchema = NULL;
-    }
-    else // should we improve this? for now let's not do it.
-    {
-        FDO_SAFE_RELEASE(m_pSchema);
-        m_pSchema = NULL;
-        //free the spatial indexes
-        for (SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.begin();
-             iter != m_mNameToSpatialIndex.end(); iter++)
+        MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
+        if (iter != m_mNameToMetadata.end())
         {
-            iter->second->Release();
-            free((char*)iter->first); //it was created via strdup, must use free()
+            // in case we do just clean it up.
+            FDO_SAFE_RELEASE(m_pSchema);
+            m_pSchema = NULL;
+
+            delete iter->second;
+            free(iter->first); //it was created via strdup, must use free()
+            m_mNameToMetadata.erase(iter);
         }
-
-        m_mNameToSpatialIndex.clear();
-
+    }
+    else
+    {
         //clear the cached schema metadata
-        for (MetadataCache::iterator iter = m_mNameToMetadata.begin();
-             iter != m_mNameToMetadata.end(); iter++)
+        for (MetadataCache::iterator iter = iter = m_mNameToMetadata.begin();
+            iter != m_mNameToMetadata.end(); iter++)
         {
              delete iter->second;
              free(iter->first); //it was created via strdup, must use free()
         }
-
         m_mNameToMetadata.clear();
+        // in case we do just clean it up.
+        FDO_SAFE_RELEASE(m_pSchema);
+        m_pSchema = NULL;
     }
+    SpatialIndexCache::iterator iterSp = m_mNameToSpatialIndex.find((char*)table);
+    if (iterSp != m_mNameToSpatialIndex.end())
+    {
+        SpatialIndex* si = iterSp->second->GetSpatialIndex();
+        if (si)
+        {
+            // we cannot release it since there might be cached statements keeping the SI locked
+            si->ResetToEmpty();
+            if (!fullDrop) // we had alter
+                RebuildSpatialOperator(iterSp->second);
+        }
+    }
+}
+
+void SltConnection::FreeCachedSchema ()
+{
+    // The cached FDO schema will need to be refreshed
+    FDO_SAFE_RELEASE(m_pSchema);
+    m_pSchema = NULL;
 }
