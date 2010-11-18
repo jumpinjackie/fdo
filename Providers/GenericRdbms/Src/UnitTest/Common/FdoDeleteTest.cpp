@@ -68,29 +68,12 @@ void FdoDeleteTest::FeatureDelete ()
 
         count = deleteCommand->Execute();
 
-        // FdoInsertTest keeps adding features to the Parcel class. When # of features
-        // hits 5000, delete them all in order to prevent parcel table from growing
+        // FdoInsertTest keeps adding features to the Parcel and AcDb3dPolyline classes. When # of features
+        // hits 5000, delete them all in order to prevent these tables from growing
         // indefinitely.
 
-		FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
-        selCmd->SetFeatureClassName(L"L\x00e4nd:Parcel");
-        FdoPtr<FdoIFeatureReader>myReader = selCmd->Execute();
-
-        int limit = 5000;
-        int featCount = 0;
-
-        while ( myReader->ReadNext() && (featCount < limit) )
-            featCount++;
-
-        myReader = NULL;
-        selCmd = NULL;
-
-        if ( featCount >= limit ) 
-        {
-    	    deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
-            deleteCommand->SetFeatureClassName(L"L\x00e4nd:Parcel");
-            deleteCommand->Execute();
-        }
+        TruncateTable(connection, L"L\x00e4nd:Parcel");
+        TruncateTable(connection, L"Acad:AcDb3dPolyline");
     }
 	catch ( FdoException* e ) 
 	{
@@ -197,4 +180,27 @@ void FdoDeleteTest::ObjectPropDelete ()
 	connection->Close();
 	finish = clock();
 	printf( "Elapsed: %f seconds\n", ((double)(finish - start) / CLOCKS_PER_SEC) );
+}
+
+void FdoDeleteTest::TruncateTable(FdoIConnection* connection, FdoString* className)
+{
+	FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
+    selCmd->SetFeatureClassName(className);
+    FdoPtr<FdoIFeatureReader>myReader = selCmd->Execute();
+
+    int limit = 5000;
+    int featCount = 0;
+
+    while ( myReader->ReadNext() && (featCount < limit) )
+        featCount++;
+
+    myReader = NULL;
+    selCmd = NULL;
+
+    if ( featCount >= limit ) 
+    {
+	    FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+        deleteCommand->SetFeatureClassName(className);
+        deleteCommand->Execute();
+    }
 }
