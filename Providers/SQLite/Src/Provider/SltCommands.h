@@ -448,6 +448,69 @@ class SltDelete : public SltFeatureCommand<FdoIDelete>
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
 ///\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+// Class used only to detect if the property values collection has changed between 
+// two or more consecutive inserts. No other special handling is done here
+class SltPropertyValueCollection : public FdoPropertyValueCollection
+{
+private:
+    bool m_collChanged;
+protected:
+    SltPropertyValueCollection()
+    {
+        m_collChanged = false;
+    }
+    virtual ~SltPropertyValueCollection()
+    {
+    }
+
+    virtual void Dispose()
+    {
+        delete this;
+    }
+public:
+    static SltPropertyValueCollection* Create()
+    {
+        return new SltPropertyValueCollection();
+    }
+    virtual void SetItem(FdoInt32 index, FdoPropertyValue* value)
+    {
+        m_collChanged = true;
+        FdoCollection<FdoPropertyValue, FdoCommandException>::SetItem(index, value);
+    }
+    virtual FdoInt32 Add(FdoPropertyValue* value)
+    {
+        m_collChanged = true;
+        return FdoCollection<FdoPropertyValue, FdoCommandException>::Add(value);
+    }
+    virtual void Insert(FdoInt32 index, FdoPropertyValue* value)
+    {
+        m_collChanged = true;
+        FdoCollection<FdoPropertyValue, FdoCommandException>::Insert(index, value);
+    }
+    virtual void Clear()
+    {
+        m_collChanged = true;
+        FdoCollection<FdoPropertyValue, FdoCommandException>::Clear();
+    }
+    virtual void Remove(const FdoPropertyValue* value)
+    {
+        m_collChanged = true;
+        FdoCollection<FdoPropertyValue, FdoCommandException>::Remove(value);
+    }
+    virtual void RemoveAt(FdoInt32 index)
+    {
+        m_collChanged = true;
+        FdoCollection<FdoPropertyValue, FdoCommandException>::RemoveAt(index);
+    }
+    bool GetCollectionChanged()
+    {
+        return m_collChanged;
+    }
+    void SetCollectionChanged(bool value)
+    {
+        m_collChanged = value;
+    }
+};
 
 //Insert is special. We attempt to speed up inserts if the caller is cooperating.
 //The contract is as follows -- as long as the caller reuses the SltInsert object,
@@ -459,7 +522,7 @@ class SltInsert : public SltCommand<FdoIInsert>
         SltInsert(SltConnection* connection) 
             : SltCommand<FdoIInsert>(connection)
         {
-            m_properties = FdoPropertyValueCollection::Create();
+            m_properties = SltPropertyValueCollection::Create();
             m_pCompiledSQL = NULL;
 			m_idProp = NULL;
             m_db = m_connection->GetDbConnection();
@@ -544,16 +607,21 @@ class SltInsert : public SltCommand<FdoIInsert>
             }
             else
             {
-                size_t count = (size_t)m_properties->GetCount();
-
-                //detect changes to the property value collection that may have been
-                //done between calls to Execute(). Not recommended to do that, but it happens...
-                if (count != m_propNames.size())
+                // Provider will detect any add/move/insert/delete of properties only
+                // It's not detecting if a property value changed the name while in collection
+                // see below the comments.
+                if (m_properties->GetCollectionChanged())
                 {
                     FlushSQL();
                     return Execute();
                 }
-
+                // Do we really need this check? e.g. 50 properties for each insert we do 50 string compare
+                // I would say no because usually you add/move/delete property values
+                // and not take a property value and set the name after is already in the collection
+                // Sure someone can do that but it will be a rare case, and to cover rare cases 
+                // and pay for all other cases... in the end is a API style usage :)
+#ifdef EXTRA_CHECK_PROPVALUENAME_CHG
+                size_t count = (size_t)m_properties->GetCount();
                 for (size_t i=0; i<count; i++)
                 {
                     FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
@@ -564,6 +632,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                         return Execute();
                     }
                 }
+#endif
             }
 
             // in case active transaction was closed by the user reopen it
@@ -649,6 +718,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             m_pCompiledSQL = NULL;
             m_propNames.clear();
+            m_properties->SetCollectionChanged(false);
         }
 
 
@@ -662,6 +732,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
             sbval.Append(") VALUES(");
 
+            m_properties->SetCollectionChanged(false);
             for (int i=0; i<m_properties->GetCount(); i++)
             {
                 FdoPtr<FdoPropertyValue> pv = m_properties->GetItem(i);
@@ -707,7 +778,7 @@ class SltInsert : public SltCommand<FdoIInsert>
 
 		// used only to get the inserted ID if needed
         FdoDataPropertyDefinition*  m_idProp;
-        FdoPropertyValueCollection* m_properties;
+        SltPropertyValueCollection* m_properties;
 
         std::string                 m_fcname;
         std::string                 m_fcmainname;
@@ -827,10 +898,36 @@ class SltSql : public SltCommand<FdoISQLCommand>
             if (rc == SQLITE_DONE)
             {
                 const char* sql = m_sb.Data();
-                if (StringStartsWith(sql, "create"))
-                    m_connection->FreeCachedSchema(true);
-                else if (StringStartsWith(sql, "drop") || StringStartsWith(sql, "alter"))
-                    m_connection->FreeCachedSchema(false);
+                const char* lastPos = NULL;
+                if (StringStartsWith(sql, "create", &lastPos)) // handle CREATE [TEMP]/[TEMPORARY] TABLE
+                {
+                    // if we clear the schema and the table is not in the schema we do it for nothing
+                    // in case we create a non temp table free the cached schema
+                    if (!StringStartsWith(lastPos, "TEMP"))
+                        m_connection->FreeCachedSchema();
+                }
+                else if (StringStartsWith(sql, "drop", &lastPos)) // DROP VIEW/TABLE [IF EXIST] database.tablename
+                {
+                    std::string name;
+                    if (StringStartsWith(lastPos, "table", &lastPos) || StringStartsWith(lastPos, "view", &lastPos))
+                    {
+                        if (StringStartsWith(lastPos, "if ", &lastPos)) // skip IF
+                            lastPos = SkipTokenString(lastPos); // skip EXISTS
+                        name = GetTableNameToken(lastPos);
+                    }
+                    // if we clear the schema and the table is not in the schema we do it for nothing
+                    if (name.size())
+                        m_connection->ClearClassFromCachedSchema(name.c_str(), true);
+                }
+                else if (StringStartsWith(sql, "alter", &lastPos))
+                {
+                    std::string name;
+                    lastPos = SkipTokenString(lastPos); // skip TABLE
+                    name = GetTableNameToken(lastPos);
+                    // if we clear the schema and the table is not in the schema we do it for nothing
+                    if (name.size())
+                        m_connection->ClearClassFromCachedSchema(name.c_str(), false);
+                }
                 // "CREATE/ALTER/DROP* will set sqlite3_changes = 0 so result will be 0
                 // INSERT/UPDATE/DELETE* will return affected rows 
                 // in case of error an exception will be thrown
