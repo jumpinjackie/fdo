@@ -112,25 +112,29 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
         //properties which are relevant to the select aggregates.
         //In our subset this means computed identifiers containing
         //functions like min, max, sum, avg, count.
-        FdoPtr<FdoClassDefinition> aggrClass = GetAggregateClassDef(originalClassDef, selectedIds);
-        m_propIndex = new FdoCommonPropertyIndex(aggrClass, 0);
+        // Keep this pointer since m_propIndex is built using hard copy 
+        // pointers to the property names and the class is a deep copy class
+        m_usedClass = GetAggregateClassDef(originalClassDef, selectedIds);
+        m_propIndex = new FdoCommonPropertyIndex(m_usedClass, 0);
 
         //compute aggregate values
-        RunAggregateQuery(reader, originalClassDef, selectedIds, aggrClass, aggrIdents);
+        RunAggregateQuery(reader, originalClassDef, selectedIds, m_usedClass, aggrIdents);
     }
     else
     {
 
         //get the updated class definition. It should only contain
         //properties which are relevant to the select distinct
-        FdoPtr<FdoClassDefinition> readerClass = reader->GetClassDefinition();
+        // Keep this pointer since m_propIndex is built using hard copy 
+        // pointers to the property names and the class is a deep copy class
+        m_usedClass = reader->GetClassDefinition();
 
         //Now create a temporary FdoCommonPropertyIndex structure corresponding to that class.
         //Normally we do not use temporary FdoCommonPropertyIndex structures since they are
         //used for serialization of real properties (not computed) but in this case we are going
         //to be serializing computed properties in the process of determining distinct so it's ok.
         //Use 0 as feature class ID, since this is not a fully defined class definition.
-        m_propIndex = new FdoCommonPropertyIndex(readerClass, 0, ids);
+        m_propIndex = new FdoCommonPropertyIndex(m_usedClass, 0, ids);
 
         // Dump the results into m_results:
         FdoPtr<FdoCommonBinaryWriter> wrt = new FdoCommonBinaryWriter(256);
@@ -138,7 +142,7 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
         {
             // Serialize the row:
             wrt->Reset();
-            wrt->WritePropertyValues(readerClass, m_propIndex, reader);
+            wrt->WritePropertyValues(m_usedClass, m_propIndex, reader);
 
             // Convert the binary writer to FdoByteArray:
             int dataLen = wrt->GetDataLen();

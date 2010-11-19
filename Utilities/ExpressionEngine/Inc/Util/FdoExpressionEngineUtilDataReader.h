@@ -617,6 +617,7 @@ protected:
     FdoOrderingOption               m_orderbyOption;
     FdoCommonBinaryReader*          m_orderbyBinReader1;
     FdoCommonBinaryReader*          m_orderbyBinReader2;
+    FdoPtr<FdoClassDefinition>      m_usedClass;
 
 };
 
