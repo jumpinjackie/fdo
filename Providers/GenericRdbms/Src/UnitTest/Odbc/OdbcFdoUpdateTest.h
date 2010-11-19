@@ -44,6 +44,7 @@ public:
   	virtual void UpdateMultiIdFeatureClass (){}
   	virtual void UpdateSingleIdFeatureClass (){}
   	virtual void UpdateNlsIdFeatureClass (){}
+    virtual void UpdateFeatureWithMultiGeometries() {}
   	virtual void ConditionalUpdate (){}
   	virtual void UpdateNoMeta (){}
 
