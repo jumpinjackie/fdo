@@ -350,7 +350,19 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
                     FdoStringCollection* associationPropertyNames,
                     FdoXmlFeatureWriterCollection* associationPropertyWriters) 
 {
-	FdoStringP prefixName = mFlags->GetDefaultNamespacePrefix();
+    FdoStringP prefixName;
+    FdoPtr<FdoStringCollection> idProperties;
+    FdoStringP gmlNameRelatePropName;
+    FdoStringP gmlDescriptionRelatePropName;
+    // Try to get the customized flag information.
+    if (mFlags != NULL)
+    {
+        prefixName = mFlags->GetDefaultNamespacePrefix();
+        idProperties = mFlags->GetGmlIDRelatePropertyNames();
+        gmlNameRelatePropName = mFlags->GetGmlNameRelatePropertyName();
+        gmlDescriptionRelatePropName = mFlags->GetGmlDescriptionRelatePropertyName();
+    }
+
 	if (prefixName == NULL) // use schema name as default prefix
 	{
 		FdoPtr<FdoFeatureSchema>  schema = classDef->GetFeatureSchema();
@@ -378,7 +390,6 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
     int i;
 
 	//pre-process the gml:id attribute
-	FdoPtr<FdoStringCollection> idProperties = mFlags->GetGmlIDRelatePropertyNames();
 	if (idProperties != NULL)
 	{
 		FdoStringP value;
@@ -432,9 +443,9 @@ void FdoXmlFeatureWriter::_writeFeature(FdoString* elementTag,
 				continue;
 		FdoStringP qName = prefixName + name->GetName();
 		//handle gml:name/description as special cases
-		if (wcscmp(mFlags->GetGmlNameRelatePropertyName(),name->GetName()) ==0)
+		if (wcscmp(gmlNameRelatePropName,name->GetName()) ==0)
 			qName = L"gml:name";
-		if (wcscmp(mFlags->GetGmlDescriptionRelatePropertyName(),name->GetName()) ==0)
+		if (wcscmp(gmlDescriptionRelatePropName,name->GetName()) ==0)
 			qName = L"gml:description";
 		mPropertyWriter->WriteProperty(qName, propValue);
     }
