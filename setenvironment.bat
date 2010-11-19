@@ -62,7 +62,7 @@ if "%1" == ""		goto setfdovariables_x86
 if "%1" == "x86"	goto setfdovariables_x86
 
 :setfdovariables_x64
-if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle_x64\instantclient\10.2\sdk
+if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle_x64\instantclient\11.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
 if not exist "%FDOORACLE%" SET FDOORACLE=
 
@@ -75,7 +75,7 @@ if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
 goto contsetfdovariables
 
 :setfdovariables_x86
-if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle\instant_client\10.2\sdk
+if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle\instant_client\11.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
 if not exist "%FDOORACLE%" SET FDOORACLE=
 
