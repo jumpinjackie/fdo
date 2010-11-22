@@ -3683,7 +3683,8 @@ FdoITransaction* SltConnection::BeginTransaction()
 //Turn on in order to use SAVEPOINTS rather than BEGIN/COMMIT
 //for internal transactions. Internally transactions are used for
 //batching bulk updates and bulk inserts.
-#define SAVEPOINTS_INTERNAL
+// disable internal savepoints and use normal transaction to avoid locking
+//#define SAVEPOINTS_INTERNAL
 
 int SltConnection::StartTransaction(bool isUserTrans)
 {
