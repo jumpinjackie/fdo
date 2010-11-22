@@ -4123,7 +4123,7 @@ void SltConnection::ClearClassFromCachedSchema(const char* table, bool fullDrop)
     else
     {
         //clear the cached schema metadata
-        for (MetadataCache::iterator iter = iter = m_mNameToMetadata.begin();
+        for (MetadataCache::iterator iter = m_mNameToMetadata.begin();
             iter != m_mNameToMetadata.end(); iter++)
         {
              delete iter->second;

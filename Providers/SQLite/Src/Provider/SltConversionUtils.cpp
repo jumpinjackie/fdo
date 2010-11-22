@@ -100,9 +100,16 @@ std::string GetTableNameToken(const char* str)
     else if (StringStartsWith(str, "\"main\"."))
         str = str + 7;
     if (*str == '\"')
+    {
         return std::string(str+1, (int)(strTmp-str-2));
+    }
     else
-        return std::string(str, (int)(strTmp-str));
+    {
+        std::string ret(str, (int)(strTmp-str));
+        if (ret.size() && ret[ret.size()-1] == ';')
+            ret.resize(ret.size()-1);
+        return ret;
+    }
 }
 
 // skips a predefined token whihc cannot contain space character
