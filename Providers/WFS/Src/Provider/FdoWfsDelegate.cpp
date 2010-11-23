@@ -169,8 +169,9 @@ FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream, FdoWfsCancelE
 				buffer[i] = ' ';
 		}
 		tempStream->Write(buffer,cntRead);
+		bCanceled = handler(handleData);
 	}
-	while (!(bCanceled = handler(handleData)));
+	while (!bCanceled);
 
 	if (bCanceled)
 		tempStream->SetLength(0);

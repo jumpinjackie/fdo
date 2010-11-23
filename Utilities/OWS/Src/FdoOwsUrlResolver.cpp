@@ -97,6 +97,7 @@ FdoStringP FdoOwsUrlResolver::GetUrl(bool& bGet, FdoString* requestName)
 					xlink = http->GetHttpPostXLink();
 					url = xlink->GetHref();
 				}
+				ret = url;
 				break;
 			}
 		}
