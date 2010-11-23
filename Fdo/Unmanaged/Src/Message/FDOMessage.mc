@@ -1260,12 +1260,12 @@ Unknown message id: %1$d
 MessageId=7014
 SymbolicName=CLNT_14_XML_ERROR
 Language=English
-Error in registry file '%1$ls', line %2$d: %3$s
+Error in registry file '%1$ls', line %2$d: %3$ls
 .
 MessageId=7015
 SymbolicName=CLNT_15_XML_WRITE_ERROR
 Language=English
-Error writing to registry file '%1$ls', %2$s
+Error writing to registry file '%1$ls', %2$ls
 .
 
 MessageId=8001

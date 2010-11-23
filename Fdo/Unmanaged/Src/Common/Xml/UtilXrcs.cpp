@@ -32,6 +32,10 @@ FdoStringP FdoXmlUtilXrcs::Xrcs2Unicode( const XMLCh* chars, const XMLSize_t len
     FdoStringP outString;
     XMLSize_t localLength = length;
 
+    // If input null, just return empty string
+    if ( chars == NULL ) 
+        return outString;
+
 #ifdef _WIN32
 
     // On Windows, wchar_t is 16 bits (UTF-16), and XMLCh is 16-bits, so no conversion necessary:

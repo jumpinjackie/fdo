@@ -854,18 +854,17 @@ DOMDocument* FdoRegistryUtility::GetDOMDocument()
     }
     catch ( const SAXParseException& ex ) 
     {
-        char* msg = XMLString::transcode(ex.getMessage());
+        FdoStringP msg = FdoXmlUtilXrcs::Xrcs2Unicode(ex.getMessage());
 
         FdoClientServiceException* ex2 = FdoClientServiceException::Create(
             FdoClientServiceException::NLSGetMessage(
                 FDO_NLSID(CLNT_14_XML_ERROR),
                 GetFileName(),
                 ex.getLineNumber(),
-                msg
+                (FdoString*) msg
             )
         );
         DOMCleanup( NULL, NULL, &parser, NULL, NULL );
-        XMLString::release(&msg);
 
         throw ex2;
     }
@@ -916,18 +915,17 @@ void FdoRegistryUtility::PutDOMDocument( DOMDocument* doc )
     }
     catch ( const XMLException& ex )
     {
-        char* msg = XMLString::transcode(ex.getMessage());
+        FdoStringP msg = FdoXmlUtilXrcs::Xrcs2Unicode(ex.getMessage());
 
         FdoClientServiceException* ex2 = FdoClientServiceException::Create(
             FdoClientServiceException::NLSGetMessage(
                 FDO_NLSID(CLNT_15_XML_WRITE_ERROR),
                 GetFileName(),
-                msg
+                (FdoString*) msg
             )
         );
 
         DOMCleanup( NULL, NULL, NULL, &serializer, &target );
-        XMLString::release(&msg);
 
         throw ex2;
     }
