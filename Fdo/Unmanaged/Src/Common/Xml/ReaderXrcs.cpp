@@ -132,14 +132,19 @@ FdoBoolean FdoXmlReaderXrcs::Parse(
                 PopSaxHandler();
             SetSaxContext(NULL);
 
+            // FDO_33_XMLPARSEERROR represents resource string "XML Document parse error at line %1$d column %2$d: %3$ls".
+            // It uses "%d" to format line and column number. However, ex.getLineNumber() and ex.getColumnNumber() return
+            // unsigned int64 number. So we need to conver them to unsigned int32 otherwise it may result in crash when
+            // calling method FdoException::NLSGetMessage.
+            unsigned int line = static_cast<unsigned int>(ex.getLineNumber());
+            unsigned int col = static_cast<unsigned int>(ex.getColumnNumber());
+            FdoStringP errMessage = FdoXmlUtilXrcs::Xrcs2Unicode(ex.getMessage());
             throw FdoXmlException::Create(
                 FdoException::NLSGetMessage(
                     FDO_NLSID(FDO_33_XMLPARSEERROR),
-                    ex.getLineNumber(), 
-                    ex.getColumnNumber(), 
-                    (FdoString*) FdoXmlUtilXrcs::Xrcs2Unicode(ex.getMessage())
-                )
-            );
+                    line,
+                    col,
+                    (FdoString*)errMessage));
         }
         catch ( ... ) {
             if ( saxHandler ) 
