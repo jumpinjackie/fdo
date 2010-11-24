@@ -37,6 +37,9 @@
 #include <Sm/Ph/OptionsReader.h>
 #include <Sm/Ph/SchemaReader.h>
 
+FdoString* FdoSmPhOwner::NOT_CLASSIFIED = L"nc";
+FdoString* FdoSmPhOwner::NOT_EXIST = L"ne";
+FdoString* FdoSmPhOwner::CLASSIFIED = L"c";
 
 FdoSmPhOwner::FdoSmPhOwner(
     FdoStringP name, 
@@ -62,7 +65,7 @@ FdoSmPhOwner::FdoSmPhOwner(
     mSchemaInfoLoaded = false;
 	SetIsSystem(false);
 
-    mNotFoundObjects = FdoDictionary::Create();
+    mNotClassifiedObjects = FdoDictionary::Create();
 
     mReservedDbObjectNames = FdoStringCollection::Create();
 
@@ -214,21 +217,29 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindDbObject(FdoStringP dbObject)
     }
 
     if ( !pDbObject ) {
-        // Not a candidate either. Check if previously fetched but not found.
-        if ( mNotFoundObjects->IndexOf( dbObject ) >= 0 ) 
+        // Not a candidate either. Check if previously fetched but not classified.
+        if ( mNotClassifiedObjects->IndexOf( dbObject ) >= 0 ) 
             return pDbObject;
 
         // Not in cache so read it in.
         FdoSmPhRdDbObjectReaderP reader = CreateDbObjectReader(dbObject);
    
+        // default reason for not being able to classify (create a DbObject for) the object;
+        // it doesn't exist.
+        FdoString* reason = NOT_EXIST;
         if ( reader->ReadNext() )
+        {
+            // object exists, change reason to not classified.
+            reason = NOT_CLASSIFIED;
             pDbObject = CacheDbObject( reader );
+        }
 
         if ( (!pDbObject) && (dbObject != L"")) {
             // Not in RDBMS so add to not found list (avoids multiple RDBMS fetches when this
             // object is asked for repeatedly).
-            FdoDictionaryElementP elem = FdoDictionaryElement::Create( dbObject, L"" );
-            mNotFoundObjects->Add( elem );
+            // reason indicates whether object was not found or was found but not classified.
+            FdoDictionaryElementP elem = FdoDictionaryElement::Create( dbObject, reason );
+            mNotClassifiedObjects->Add( elem );
         }
     }
    
@@ -799,7 +810,7 @@ void FdoSmPhOwner::OnAfterCommit()
 {
     // An object previously not found might get created on commit.
     // Therefore, clear the not found list since it is now stale. 
-    mNotFoundObjects->Clear();
+    mNotClassifiedObjects->Clear();
 }
 
 void FdoSmPhOwner::XMLSerialize( FILE* xmlFp, int ref ) const
@@ -890,6 +901,15 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 
 	if ( !bReserved && FindDbObject(objectName) )
 		bReserved = true;
+
+    if ( !bReserved ) 
+    {
+        // Object might exist but was not classified. Check the not classified objects list
+        // to see if this was the case. If it exists, then its name is reserved.
+        FdoDictionaryElementP elem = mNotClassifiedObjects->FindItem(objectName);
+        if ( elem && (wcscmp(elem->GetValue(), NOT_CLASSIFIED) == 0) )
+            bReserved = true;
+    }
 
     // The rest of the checks are unnecessary if this datastore does not yet exist.
     if ( GetElementState() != FdoSchemaElementState_Added ) {
@@ -1031,10 +1051,16 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
         // Cache the current dbObject
         FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
-        FdoDictionaryElementP elem = candDbObjects->FindItem( dbObject->GetName() );
-       if ( elem )
-            // Mark it has having been read (fetched).
-            elem->SetValue(L"f");
+        FdoDictionaryElementP elem = candDbObjects->FindItem( dbObject ? dbObject->GetName() : (FdoString*)(objReader->GetString(L"",L"name")) );
+        if ( elem )
+        {
+            if ( dbObject ) 
+                // Object was cached, mark it has having been read and classified.
+                elem->SetValue(CLASSIFIED);
+            else
+                // Object not cached, mark it has having been read but not classified.
+                elem->SetValue(NOT_CLASSIFIED);
+        }
 
         if ( dbObject ) {
             if ( objectName == dbObject->GetName() ) 
@@ -1069,8 +1095,14 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
     // Add any candidates not fetched to the not found list.
     for  ( ix = 0; ix < candDbObjects->GetCount(); ix++ ) {
         FdoDictionaryElementP elem = candDbObjects->GetItem( ix );
+
+        // If no reason set yet then object was not found.
         if ( wcslen(elem->GetValue()) == 0 )
-            mNotFoundObjects->Add( elem );
+            elem->SetValue( NOT_EXIST );
+
+        // If object not classifed or not found, add it to the not classified list.
+        if ( wcscmp(elem->GetValue(), CLASSIFIED) != 0 ) 
+            mNotClassifiedObjects->Add( elem );
     }
 
     return retDbObject;

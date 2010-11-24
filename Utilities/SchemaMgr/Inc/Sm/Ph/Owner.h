@@ -453,8 +453,8 @@ private:
     bool mDbObjectsCached;              // true if all db objects have been cached.
     bool mDbComponentsCached;           // true if all db components (columns and keys) have been cached.
 	FdoSmPhDbObjectsP mDbObjects;       // collection of cached objects
-    FdoDictionaryP mNotFoundObjects;    // collection of object which were queried from the RDBMS but not
-                                        // found. Use to prevent repeated attempts to fetch these objects.
+    FdoDictionaryP mNotClassifiedObjects; // collection of object which were queried from the RDBMS but not
+                                        // classified or do not exist. Use to prevent repeated attempts to fetch these objects.
 	FdoStringsP mReservedDbObjectNames;
     FdoDictionaryP mCandDbObjects;      // List of candidate objects for fetching from RDBMS. 
 
@@ -490,6 +490,11 @@ private:
 
     bool mBulkLoadPkeys;
     bool mBulkLoadFkeys;
+
+    // Statuses for cache candidates and mNotClassifiedObjects list
+    static FdoString* NOT_CLASSIFIED;  // object exists but Schema Manager does not classify it (e.g. Oracle index)
+    static FdoString* NOT_EXIST;       // object does not exist
+    static FdoString* CLASSIFIED;      // object exists and can be classified by Schema Manager.
 };
 
 typedef FdoPtr<FdoSmPhOwner> FdoSmPhOwnerP;

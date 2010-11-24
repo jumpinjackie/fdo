@@ -203,5 +203,14 @@
 <Column name="CLASSNAME1"/>
 </element>
 </complexType>
+<complexType name="class_with__25__char_nameType" tableMapping="Concrete">
+<Table pkeyName="PK_CLASS_WITH__25__CH1" name="CLASS_WITH__25__CHAR_1"/>
+<element name="FeatureId">
+<Column name="FEATUREID"/>
+</element>
+<element name="Geometry">
+<GeometricColumn name="GEOMETRY"/>
+</element>
+</complexType>
 </SchemaMapping>
 </fdo:DataStore>
