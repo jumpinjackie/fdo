@@ -535,6 +535,14 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                             FdoStringP pChoiceName = element->GetChoiceName();
                             if (pChoiceName.GetLength() != 0)
                                 cntGeometricProperties++;
+                            
+                            // Remove the associated spatial context name.
+                            // When connecting to a MapGuide server, issuing the DescribeFeatureType command ,
+                            // the returned XML document will contain "fdo:srsName" attribute that at last will
+                            // be converted as the spatial context name of the geometry. This is invalid. we should 
+                            // clear the spatial context name to ignore the extended attribute.
+                            FdoGeometricPropertyDefinition* geomProp = (FdoGeometricPropertyDefinition*)prop.p;
+                            geomProp->SetSpatialContextAssociation(L"");
                         }
                     }
                 } // end of for each property
