@@ -676,6 +676,8 @@
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE1'">acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE2'">acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
 					<xsl:when test="$inName='A_ADDRESS_STREET'">'address_street</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_1'">class_with__25__char_name</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_2'">class_with__25__char_name1</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_ENTITY'">electricdevice_entity</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_ENTITY1'">electricdevice_entity_acxdata</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1'">electricdevice_maint history</xsl:when>
@@ -716,6 +718,8 @@
 					<xsl:when test="$inName='ACDBVERTEXCOORDINATEV1'">acdbvertexcoordinatevalue</xsl:when>
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE1'">acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE2'">acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_1'">class_with__25__char_name</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_2'">class_with__25__char_name1</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_ENTITY1'">electricdevice_entity_acxdata</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1'">electricdevice_maint history</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_2'">electricdevice_maint history_maint history item</xsl:when>
@@ -757,6 +761,8 @@
 					<xsl:when test="$inName='ACDBVERTEXCOORDINATEV1'">acdbvertexcoordinatevalue</xsl:when>
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE1'">acdbvertexdata_acdbvertexcoordinatevalue</xsl:when>
 					<xsl:when test="$inName='ACDBVERTEXDATA_ACDBVE2'">acdbvertexdata_acdbvertexcoordinatevalue1</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_1'">class_with__25__char_name</xsl:when>
+					<xsl:when test="$inName='CLASS_WITH__25__CHAR_2'">class_with__25__char_name1</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_ENTITY1'">electricdevice_entity_acxdata</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_1'">electricdevice_maint_history</xsl:when>
 					<xsl:when test="$inName='ELECTRICDEVICE_MAINT_2'">electricdevice_maint_history_maint_history_item</xsl:when>

@@ -258,6 +258,17 @@ FdoStringP FdoSmPhPostGisMgr::FormatSQLVal(FdoStringP value,
 	return sqlString;
 }
 
+FdoStringP FdoSmPhPostGisMgr::FormatOrderCol( FdoStringP colName, FdoSmPhColType colType )
+{
+    FdoStringP fmtName = colName;
+
+    if ( colType == FdoSmPhColType_String )
+        // force binary collation to get case-insensitive order
+        fmtName = FormatCollateColumnSql(colName);
+
+	return fmtName;
+}
+
 FdoStringP FdoSmPhPostGisMgr::FormatCurrentDateField()
 {
     return (L"CURRENT_DATE");

@@ -107,6 +107,8 @@ public:
     /// type [in] - type of column value.
 	virtual FdoStringP FormatSQLVal(FdoStringP value, FdoSmPhColType type);
 
+    virtual FdoStringP FormatOrderCol( FdoStringP colName, FdoSmPhColType colType );
+    
     /// Returns name of CURRENT_DATE function to be embedded
     /// in the SQL query string.
     ///
