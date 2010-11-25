@@ -170,8 +170,19 @@ int odbcdr_bind(
 		)
 	{
 		debug3 ("\nError=%d in SQLDescribeParam() for '%s', type=%d. Assuming type = SQL_CHAR, length = 100\n", rc, name, sql_type );
-		// most SQL types can be converted to SQL_CHAR
-		sql_type = SQL_CHAR;
+        switch (odbcdr_datatype)
+        {
+        case SQL_C_WCHAR:
+    		sql_type = SQL_WVARCHAR;
+            break;
+        case SQL_C_CHAR:
+    		sql_type = SQL_VARCHAR;
+            break;
+        default:
+    		// most SQL types can be converted to SQL_CHAR
+            sql_type = SQL_CHAR;
+            break;
+        }
 		col_size = 100;
 		decimal_digits = 0;
 	}
