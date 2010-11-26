@@ -21,6 +21,7 @@
 #include "FdoRdbmsSQLDataReader.h"
 
 #include "FdoRdbmsUtil.h"
+#include "FdoCommonOSUtil.h"
 
 static  char*  noMoreRows = "End of rows or ReadNext not called"; // error message that repeats
 static  char  *strNUllColumnExp = "Column '%1$ls' value is NULL; use IsNull method before trying to access this column value";
@@ -72,7 +73,7 @@ mColList( NULL )
     for ( int i=0; i<mColCount; i++ )
     {
         if( ! mQueryResult->GetColumnDesc( i+1, mColList[i] ) )
-            mColList[i].column[0] = '\0';
+            mColList[i].column[0] = L'\0';
     }
 
 }
@@ -101,7 +102,7 @@ const wchar_t* FdoRdbmsSQLDataReader::GetColumnName(FdoInt32 index)
     if ( index >= mColCount )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
 
-    return mConnection->GetUtility()->Utf8ToUnicode(mColList[index].column);
+    return mColList[index].column;
 }
 
 FdoInt32 FdoRdbmsSQLDataReader::GetColumnIndex(FdoString* columnName)
@@ -111,16 +112,11 @@ FdoInt32 FdoRdbmsSQLDataReader::GetColumnIndex(FdoString* columnName)
 
 int FdoRdbmsSQLDataReader::FindColumnIndex( const wchar_t* columnName, FdoException* exc )
 {
-    const char  *tmpColName = mConnection->GetUtility()->UnicodeToUtf8( columnName );
     int i;
 
     for( i=0; i<mColCount; i++ )
     {
-#ifdef _WIN32
-        if( _stricmp( tmpColName, mColList[i].column ) == 0 )
-#else
-        if( strcasecmp( tmpColName, mColList[i].column ) == 0 )
-#endif
+        if( FdoCommonOSUtil::wcsicmp( columnName, mColList[i].column ) == 0 )
             break;
     }
     if( i == mColCount )
@@ -202,12 +198,11 @@ const wchar_t* FdoRdbmsSQLDataReader::GetString(const wchar_t* columnName)
 
     try
     {
-        char *colName = (char *) mConnection->GetUtility()->UnicodeToUtf8( columnName);
-        const wchar_t* tmpVal = mQueryResult->GetString( colName,&isNULL, NULL);
+        const wchar_t* tmpVal = mQueryResult->GetString( columnName,&isNULL, NULL);
         if( isNULL )
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp, columnName ));
 
-        colValue = mStringMap.AddtoMap(colName, tmpVal, mConnection->GetUtility());
+        colValue = mStringMap.AddtoMap(columnName, tmpVal, mConnection->GetUtility());
     }
     catch ( FdoCommandException* exc )
     {

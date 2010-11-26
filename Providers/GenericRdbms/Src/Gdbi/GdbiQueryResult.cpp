@@ -293,8 +293,9 @@ int GdbiQueryResult::GetColumnDesc( int colIdx, GdbiColumnDesc &desc )
 
 	GdbiColumnInfoType *colInfo = mColList->at(idx-1);
 
-	strncpy( desc.column, (const char*)FdoStringP(colInfo->name), sizeof(desc.column) - 1);
-    desc.column[sizeof(desc.column)-1]=0;
+    int colSize = sizeof(desc.column) / sizeof(wchar_t);
+	wcsncpy( desc.column, colInfo->name, colSize - 1);
+    desc.column[colSize-1]=0;
     desc.datatype = colInfo->original_type;
 	desc.size = (colInfo->type == RDBI_CHAR || colInfo->type == RDBI_FIXED_CHAR || colInfo->type == RDBI_STRING) ? colInfo->size-1 : colInfo->size;
     desc.null_ok = colInfo->null_allowed;

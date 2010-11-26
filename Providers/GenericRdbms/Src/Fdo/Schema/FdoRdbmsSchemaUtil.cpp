@@ -82,10 +82,10 @@ FdoRdbmsSchemaUtil::~FdoRdbmsSchemaUtil()
         delete[] mBuffer;
 }
 
-const char *FdoRdbmsSchemaUtil::MakeDBValidName(const wchar_t *name)
+const wchar_t *FdoRdbmsSchemaUtil::MakeDBValidName(const wchar_t *name)
 {
-    return mUtility->UnicodeToUtf8(name);
-//TODO:    return mUtility->UnicodeToUtf8( mSchemaMgr->RefPhysicalSchema()->CensorDbObjName( name ) );
+    return name;
+//TODO:    return mSchemaMgr->RefPhysicalSchema()->CensorDbObjName( name );
 }
 
 const FdoSmLpClassDefinition* FdoRdbmsSchemaUtil::GetClass(const wchar_t* className)
@@ -806,7 +806,7 @@ bool FdoRdbmsSchemaUtil::IsRingValid( FdoIRing *ring, double xyResol )
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-FdoStringP FdoRdbmsSchemaUtil::GetAliasSqlName(const char * propName)
+FdoStringP FdoRdbmsSchemaUtil::GetAliasSqlName(FdoString * propName)
 {
     FdoStringP strAlias = "\"";
     strAlias += propName;
