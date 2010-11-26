@@ -96,7 +96,7 @@ public:
 
     const wchar_t *GetTable(const wchar_t *className);
 
-    virtual const char *MakeDBValidName(const wchar_t *name);
+    virtual const wchar_t *MakeDBValidName(const wchar_t *name);
 
     const FdoSmLpSchema* GetSchema(const wchar_t *className);
 
@@ -147,7 +147,7 @@ public:
                                  bool                            *containsObjectProperties );
 
     // Given a property name, adds enclosing ANSI quotes if RDBMS supports them
-    virtual FdoStringP GetAliasSqlName(const char * propName);
+    virtual FdoStringP GetAliasSqlName(FdoString * propName);
 };
 
 #endif // FdoRdbmsSchemaUtil_H

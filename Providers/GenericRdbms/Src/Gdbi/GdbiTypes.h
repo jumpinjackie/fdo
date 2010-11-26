@@ -41,14 +41,14 @@
 ************************************************************************/
 typedef struct
 {
-    char  owner[GDBI_DB_NAME_SIZE];      /* Table owner (if specified)       */
+    wchar_t  owner[GDBI_DB_NAME_SIZE];      /* Table owner (if specified)       */
 
                                         /* col. name or expression syntax   */
-    char  column[GDBI_COLUMN_NAME_SIZE]; /* if expression, may be truncated  */
-    char  c_alias[GDBI_COLUMN_NAME_SIZE];/* col alias, if specified          */
+    wchar_t  column[GDBI_COLUMN_NAME_SIZE]; /* if expression, may be truncated  */
+    wchar_t  c_alias[GDBI_COLUMN_NAME_SIZE];/* col alias, if specified          */
 
-    char  table[GDBI_TABLE_NAME_SIZE];   /* table name if !is_expression     */
-    char  t_alias[GDBI_TABLE_NAME_SIZE]; /* table alias, if specified        */
+    wchar_t  table[GDBI_TABLE_NAME_SIZE];   /* table name if !is_expression     */
+    wchar_t  t_alias[GDBI_TABLE_NAME_SIZE]; /* table alias, if specified        */
 
     int   is_expression;                /* TRUE iff not a simple column     */
 

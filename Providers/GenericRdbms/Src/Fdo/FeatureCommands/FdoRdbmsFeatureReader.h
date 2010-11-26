@@ -43,7 +43,7 @@ class FdoRdbmsDataReader;
                                      // them a conenction string optional parameter.
 
 typedef  struct _col_cache_ {
-      char      col_name[GDBI_COLUMN_NAME_SIZE];
+      wchar_t   col_name[GDBI_COLUMN_NAME_SIZE];
       int       type;
       int       size;
   } ColDef;
@@ -63,15 +63,14 @@ typedef struct {
 
 typedef struct {
 	wchar_t           propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE];
-    char              columnQName[GDBI_SCHEMA_ELEMENT_NAME_SIZE*2 + 1];
 	wchar_t           columnNameW[GDBI_SCHEMA_ELEMENT_NAME_SIZE * sizeof(wchar_t) + 1]; // Not table qualified
 	wchar_t           columnPosition[3 * sizeof(wchar_t) + 1];  // 1- based
     FdoPropertyType   propertyType;
     bool              isSystem;
 } FdoRdbmsPropertyInfoDef;
 
-typedef std::map<std::string, ValueDef *> StrMap;
-typedef std::pair<std::string, ValueDef *> ModulePair;
+typedef std::map<std::wstring, ValueDef *> StrMap;
+typedef std::pair<std::wstring, ValueDef *> ModulePair;
 typedef StrMap::iterator StringMapIterator;
 
 typedef struct _AggregateElement_ {
@@ -103,7 +102,7 @@ public:
 // Add the string to the map
 // If the column alreadys exists, then replace the value
 //
-    wchar_t *AddtoMap(char *colName, const wchar_t *value, FdoRdbmsUtil* util)
+    wchar_t *AddtoMap(FdoString *colName, const wchar_t *value, FdoRdbmsUtil* util)
     {
         wchar_t *colValue = NULL;
         ValueDef *val = NULL;
@@ -155,11 +154,11 @@ class FdoRdbmsFeatureReader: public FdoDefaultFeatureReader
 
       FdoRdbmsFeatureReader & operator=(const FdoRdbmsFeatureReader &right);
 
-      const char*	 Property2ColName( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
-      const wchar_t* Property2ColNameW( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
-      const char*	 Property2ColNameChar( const wchar_t *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
+      FdoString* Property2ColName( FdoString *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
+      FdoString* Property2ColNameW( FdoString *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
+      FdoString* Property2ColNameChar( FdoString *propName, FdoPropertyType *type, bool systemOnly, bool *found = NULL, int *index = NULL );
 
-      const char* GetDbAliasName( const wchar_t *propName, FdoPropertyType *type = NULL );
+      FdoString* GetDbAliasName( FdoString *propName, FdoPropertyType *type = NULL );
 
       int GetAttributeQuery( wchar_t* className );
 
@@ -172,7 +171,7 @@ class FdoRdbmsFeatureReader: public FdoDefaultFeatureReader
       FdoIFeatureReader* GetAssociatedObject( const FdoSmLpAssociationPropertyDefinition *propertyDefinition );
 
 	  // Derive the given expression's property type and data type:
-	  void GetExpressionType(FdoIConnection* connection, FdoClassDefinition* classDef, const char* colName, FdoExpression* expr, FdoPropertyType &propType, FdoDataType &dataType);
+	  void GetExpressionType(FdoIConnection* connection, FdoClassDefinition* classDef, const wchar_t* colName, FdoExpression* expr, FdoPropertyType &propType, FdoDataType &dataType);
     
       inline FdoRdbmsPropertyInfoDef* GetPropertyInfoDef(int pos)
       {
@@ -209,7 +208,7 @@ private:
     FdoByteArray* GetGeometry(const wchar_t* propertyName, bool checkIsNullOnly, GdbiQueryResult *query);
 
     FdoClassDefinition* FilterClassDefinition( FdoClassDefinition* classDef, bool isBaseClass = false );
-    int GetColumnIndex(const char *propName, bool avoidCalculations = true);
+    int GetColumnIndex(FdoString *propName, bool avoidCalculations = true);
     void ProcessCalculations(std::vector<int>& idxs);
 
 public:
