@@ -167,11 +167,14 @@ bool FdoSmPhRdPostGisSpatialContextReader::ReadNext()
             mCSname = L"";
         }
 */
-        mCSname = FdoSmPhReader::GetString(L"", L"srid");;
+        mCSname = FdoSmPhReader::GetString(L"", L"srid");
 
-		double xmin = -2000000;
-		double xmax = 2000000;
-		double ymin = -2000000;
+        if (mCSname != L"")
+            mCSname = FdoSmPhReader::GetString(L"", L"authname") + L":" + FdoSmPhReader::GetString(L"", L"srid");
+
+        double xmin = -2000000;
+        double xmax = 2000000;
+        double ymin = -2000000;
 		double ymax = 2000000;
 
 		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
@@ -213,6 +216,7 @@ FdoSmPhReaderP FdoSmPhRdPostGisSpatialContextReader::MakeQueryReader( FdoSmPhOwn
     // Generate sql statement if not already done
     sqlString = FdoStringP::Format(
           L"select b.srid, a.f_table_schema||'.'||a.f_table_name as geomtablename, a.f_geometry_column as geomcolumnname, \n"
+          L" b.auth_name as authname, \n"
 		  L" b.srtext as wktext, \n"
 		  L" a.coord_dimension as dimension,\n"
 		  L" a.type as geomtype\n"
@@ -261,6 +265,12 @@ FdoSmPhRowsP FdoSmPhRdPostGisSpatialContextReader::MakeRows( FdoSmPhMgrP mgr)
         row, 
         L"geomcolumnname",
         row->CreateColumnChar(L"geomcolumnname",true, 32)
+    );
+
+    pField = new FdoSmPhField(
+        row, 
+        L"authname",
+        row->CreateColumnChar(L"authname",true, 32)
     );
 
     pField = new FdoSmPhField(
