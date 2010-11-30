@@ -247,6 +247,8 @@ private:
 	int m_curFeatureIndex;
 	std::vector<FdoXmlFeatureReaderImpl*> m_featureCollection;
 
+    FdoPtr<FdoClassDefinition> m_classDefinition;
+
 	//feature properties
 	std::vector<FdoXmlDataProperty*> m_dataProperties;
 	std::vector<FdoXmlGeometricProperty*> m_geometricProperties;

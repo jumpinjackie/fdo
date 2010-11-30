@@ -101,6 +101,7 @@ UnitTest_SOURCES = \
     UnitTestUtil.cpp \
     XmlFormatter.cpp \
     XmlTest.cpp \
+    GmlTest.cpp \
     GmlWriteTest.cpp
 
 noinst_HEADERS = $(UnitTest_SOURCES) \

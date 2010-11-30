@@ -807,6 +807,15 @@ void GmlTest::testBLOBHex()
 	CPPUNIT_ASSERT(count == 1);
 }
 
+void GmlTest::testLargeGeoms()
+{
+    try {
+        roundTrip( L"hawaii_in.xml", L"hawaii_schema.xml", L"hawaii_out.xml" );
+    }
+    catch ( FdoException* e ) {
+		UnitTestUtil::FailOnException( e );
+    }
+}
 void GmlTest::testGeometryProperty(FdoXmlFeatureReader* featureReader, FdoString* propName)
 {
     FdoInt32 baCount = 0;
@@ -822,7 +831,31 @@ void GmlTest::testGeometryProperty(FdoXmlFeatureReader* featureReader, FdoString
     CPPUNIT_ASSERT(baPtr = arrayPtr);
 }
 
+void GmlTest::roundTrip(FdoString* GMLFileIn, FdoString* SchemaFile, FdoString* GMLFileOut )
+{
+    {
+        FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create(L"fdo.osgeo.org/schemas/feature", FdoXmlFlags::ErrorLevel_VeryLow);
 
+        FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
+        schemas->ReadXml(SchemaFile, flags );
+
+        FdoPtr<FdoXmlReader> xmlRdr = FdoXmlReader::Create(GMLFileIn);
+        FdoPtr<FdoXmlFeatureReader> ftRdr = FdoXmlFeatureReader::Create(xmlRdr, flags);
+        ftRdr->SetFeatureSchemas(schemas);
+
+        flags->SetDefaultNamespace(L"http://fdo.osgeo.org/schemas/feature/Default");
+        flags->SetDefaultNamespacePrefix(L"df");
+        flags->SetCollectionName(L"FeatureCollection");
+        flags->SetCollectionUri(L"http://www.opengis.net/wfs");
+
+        FdoPtr<FdoXmlWriter> xmlWtr = FdoXmlWriter::Create(GMLFileOut,false, FdoXmlWriter::LineFormat_Indent);
+        FdoPtr<FdoXmlFeatureWriter> ftWtr = FdoXmlFeatureWriter::Create(xmlWtr, flags);
+
+        FdoXmlFeatureSerializer::XmlSerialize(ftRdr, ftWtr, flags);
+    }
+
+    UnitTestUtil::CheckOutput( (const char*)FdoStringP(GMLFileIn), (const char*)FdoStringP(GMLFileOut) );
+}
 
 
 

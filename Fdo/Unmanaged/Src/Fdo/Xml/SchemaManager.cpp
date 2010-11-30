@@ -51,6 +51,9 @@ FdoXmlLpSchemaCollection* FdoXmlSchemaManager::_schemas() {
         m_lpSchemas = FdoXmlLpSchemaCollection::Create(this);
         FdoInt32 count = m_fdoSchemas->GetCount();
         FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = m_flags->GetSchemaMappings();
+        if ( mappings == NULL ) 
+            mappings = m_fdoSchemas->GetXmlSchemaMappings();
+
         FdoInt32 count1 = mappings->GetCount();
         FdoPtr<FdoXmlSchemaMapping> tempXmlMapping = FdoXmlSchemaMapping::Create(L"temp");
         for (int i = 0; i < count; i++) {
