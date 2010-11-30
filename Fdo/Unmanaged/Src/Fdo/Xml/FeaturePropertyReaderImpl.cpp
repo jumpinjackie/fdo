@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-//  
+//
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN	// Exclude rarely-used stuff from Windows headers
 #include <windows.h>
@@ -84,6 +84,9 @@ void FdoXmlFeaturePropertyReaderImpl::SetFeatureSchemas(FdoFeatureSchemaCollecti
     m_schemaManager = NULL;
     if (m_schemas != NULL && m_flags != NULL) {
         FdoPtr<FdoPhysicalSchemaMappingCollection> schemaMappings = m_flags->GetSchemaMappings();
+        if ( schemaMappings == NULL ) 
+            schemaMappings = schemas->GetXmlSchemaMappings();
+
         if (schemaMappings != NULL) {
             m_schemaManager = FdoXmlSchemaManager::Create(m_schemas, m_flags);
         }
@@ -289,8 +292,13 @@ FdoXmlSaxHandler* FdoXmlFeaturePropertyReaderImpl::XmlStartElement(
 
 			    m_parsingStateStack.push_back(ParsingState_Feature);
 
-			    //TODO: get class definition
-			    nextFeatureHandler = curFeatureHandler->FeatureStart(m_featureContext, NULL);
+                FdoPtr<FdoClassDefinition> fdoClassDef;
+
+                if ( classDef )
+                    fdoClassDef = classDef->GetClassDefinition();
+
+			    //TODO: get class definition when XML Schema mappings not specified
+			    nextFeatureHandler = curFeatureHandler->FeatureStart(m_featureContext, fdoClassDef);
 			    break;
             }
 

@@ -24,6 +24,7 @@ set( UnitTest_SRCS
     UnitTestUtil.cpp
     XmlFormatter.cpp
     XmlTest.cpp
+    GmlTest.cpp
     GmlWriteTest.cpp
 )
 
