@@ -1072,6 +1072,59 @@ static void numFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
     else
         sqlite3_result_int64(context, (i64)val);
 }
+// increments a column with a value and return the value based on a filter or rowid.
+static void nextvalue(sqlite3_context *context, int argc, sqlite3_value **argv)
+{
+    assert(argc != 5);
+    for (int i=0; i<argc; i++)
+    {
+        if (sqlite3_value_type(argv[i]) == SQLITE_NULL)
+        {
+            sqlite3_result_null(context);
+            return;
+        }
+    }
+    const char* table = (const char*)sqlite3_value_text(argv[0]);
+    const char* column = (const char*)sqlite3_value_text(argv[1]);
+    i64 nextValue = sqlite3_value_int64(argv[2]);
+    i64 amount = sqlite3_value_int64(argv[3]);
+    i64 rowid = -1;
+    const char* whereStr = NULL;
+    if (sqlite3_value_type(argv[4]) == SQLITE_INTEGER)
+        rowid = sqlite3_value_int64(argv[4]);
+    else
+        whereStr = (const char*)sqlite3_value_text(argv[4]);
+
+    sqlite3* db = sqlite3_context_db_handle(context);
+    StringBuffer sb;
+    sb.Append("UPDATE ", 7);
+    sb.AppendDQuoted(table);
+    sb.Append(" SET ", 4);
+    sb.AppendDQuoted(column);
+    sb.Append("=", 1);
+    sb.AppendDQuoted(column);
+    sb.Append("+", 1);
+    sb.Append(amount);
+    if (rowid != -1)
+    {
+        sb.Append(" WHERE rowid=", 13);
+        sb.Append(rowid);
+    }
+    else if (whereStr != NULL)
+    {
+        sb.Append(" WHERE ", 7);
+        sb.Append(whereStr);
+    }
+    sb.Append(";", 1);
+
+    sqlite3_stmt* stmt;
+    const char* tail = NULL;
+    int rc = sqlite3_exec(db, sb.Data(), NULL, NULL, NULL);
+    if (SQLITE_OK == rc)
+        sqlite3_result_int64(context, nextValue);
+    else
+        sqlite3_result_null(context);
+}
 
 //===============================================================================
 //  String operations
@@ -2058,6 +2111,7 @@ void RegisterExtensions (sqlite3* db)
         { "floattostring",      1, 1,  SQLITE_UTF8,    0, floatToStringFunc },
         { "doubletostring",     1, 1,  SQLITE_UTF8,    0, doubleToStringFunc },
         { "datetostring",       1, 1,  SQLITE_UTF8,    0, dateToStringFunc },
+        { "nextvalue",          5, 1,  SQLITE_UTF8,    0, nextvalue },
     };
    
     static const struct {
