@@ -368,6 +368,7 @@ FdoConnectionState SltConnection::Open()
 
 #ifdef _WIN32
     struct _stat statInfo;
+    memset(&statInfo, 0x00, sizeof(struct _stat));
     if (!isInMemory)
     {
         if (0 != _wstat (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
