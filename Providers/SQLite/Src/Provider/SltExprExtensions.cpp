@@ -1104,11 +1104,11 @@ static void nextvalue(sqlite3_context *context, int argc, sqlite3_value **argv)
     sb.Append("=", 1);
     sb.AppendDQuoted(column);
     sb.Append("+", 1);
-    sb.Append(amount);
+    sb.Append((int)amount);
     if (rowid != -1)
     {
         sb.Append(" WHERE rowid=", 13);
-        sb.Append(rowid);
+        sb.Append((int)rowid);
     }
     else if (whereStr != NULL)
     {
@@ -1117,8 +1117,6 @@ static void nextvalue(sqlite3_context *context, int argc, sqlite3_value **argv)
     }
     sb.Append(";", 1);
 
-    sqlite3_stmt* stmt;
-    const char* tail = NULL;
     int rc = sqlite3_exec(db, sb.Data(), NULL, NULL, NULL);
     if (SQLITE_OK == rc)
         sqlite3_result_int64(context, nextValue);

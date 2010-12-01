@@ -490,8 +490,6 @@ int SltReader::AddColumnToQuery(const wchar_t* name)
     }
     else
         throw FdoCommandException::Create((std::wstring(L"The property \'") + name + L"\' was not found.").c_str());
-
-    return -1;
 }
 
 void SltReader::Requery2()
