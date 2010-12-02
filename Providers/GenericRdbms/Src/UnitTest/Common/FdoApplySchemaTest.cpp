@@ -481,6 +481,17 @@ void FdoApplySchemaTest::TestOverrides ()
         lp = mgr->RefLogicalPhysicalSchemas();
         lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_overrides3.xml" ) );
 
+		printf( "Doing 3rd modification to Schema ... \n" );
+		ModOverrideSchema3( 
+            connection, 
+            FdoRdbmsOvSchemaMappingP( CreateOverrides(connection, 4) )
+        );
+
+        printf( "Writing 4th LogicalPhysical Schema ... \n" );
+        mgr = staticConn->CreateSchemaManager();
+        lp = mgr->RefLogicalPhysicalSchemas();
+        lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_overrides4.xml" ) );
+
         FdoSmLpQClassesP classes;
         classes = lp->TableToClasses( ph->GetRealDbObjectName(L"ovclassa") );
         CPPUNIT_ASSERT( classes->GetCount() == 1 );
@@ -658,12 +669,15 @@ void FdoApplySchemaTest::TestOverrides ()
         FdoStringP ov2       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides2.xml" ) );
         FdoStringP ovMaster3 = LogicalPhysicalBend(L"apply_schema_overrides3_master.txt");
         FdoStringP ov3       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides3.xml" ) );
+        FdoStringP ovMaster4 = LogicalPhysicalBend(L"apply_schema_overrides4_master.txt");
+        FdoStringP ov4       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_overrides4.xml" ) );
 
 	    // First do xml dumps of LogicalPhysical schema
         // TODO: get this to work on SQL Server
         UnitTestUtil::CheckOutput( (const char*)ovMaster1, (const char*)ov1 );
         UnitTestUtil::CheckOutput( (const char*)ovMaster2, (const char*)ov2 );
         UnitTestUtil::CheckOutput( (const char*)ovMaster3, (const char*)ov3 );
+        UnitTestUtil::CheckOutput( (const char*)ovMaster4, (const char*)ov4 );
 #endif
 
         // Next, compare described schema mappings.
@@ -5842,6 +5856,37 @@ void FdoApplySchemaTest::ModOverrideSchema2( FdoIConnection* connection, FdoRdbm
     pObProp->SetObjectType( FdoObjectType_Collection );
     pObProp->SetIdentityProperty( pSeqProp );
     FdoPropertiesP(pClass->GetProperties())->Add( pObProp );
+
+    pCmd->SetFeatureSchema( pSchema );
+
+    if ( pOverrides ) 
+        pCmd->SetPhysicalMapping( pOverrides );
+
+	pCmd->Execute();
+}
+
+void FdoApplySchemaTest::ModOverrideSchema3( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides )
+{
+	FdoPtr<FdoIDescribeSchema>  pDescCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+	pDescCmd->SetSchemaName( L"OverridesA" );
+	FdoFeatureSchemasP pSchemas = pDescCmd->Execute();
+	FdoFeatureSchemaP  pSchema = pSchemas->GetItem( L"OverridesA" );
+
+    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+    FdoFeatureClassP                    pFeatClass;
+    FdoFeatureClassP                    pBaseClass;
+    FdoClassP                           pOpClass;
+    FdoDataPropertyP                    pProp;
+    FdoObjectPropertyP                  pObProp;
+    FdoPropertiesP                      pProps;
+
+    pFeatClass = (FdoFeatureClass*) (FdoClassesP(pSchema->GetClasses())->GetItem( L"OvClassK" ));
+    pFeatClass->SetDescription(L"OvClassK description modified");
+    pProps = pFeatClass->GetProperties();
+    FdoPropertyP propF = pProps->FindItem(L"FID");
+    propF->SetDescription(L"FID description modified");
+    propF = pProps->FindItem(L"GeomK");
+    propF->SetDescription(L"geomK description modified");
 
     pCmd->SetFeatureSchema( pSchema );
 

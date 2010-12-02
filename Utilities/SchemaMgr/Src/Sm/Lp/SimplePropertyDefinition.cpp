@@ -110,6 +110,11 @@ FdoString* FdoSmLpSimplePropertyDefinition::GetColumnName() const
     return mColumnName;
 }
 
+FdoString* FdoSmLpSimplePropertyDefinition::Get_ColumnName()
+{
+    return mColumnName;
+}
+
 FdoString* FdoSmLpSimplePropertyDefinition::GetRootColumnName() const
 {
     return mRootColumnName;

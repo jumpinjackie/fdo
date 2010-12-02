@@ -43,6 +43,13 @@ public:
     /// L"" if the property has no column.
 	FdoString* GetColumnName() const;
 
+    /// Gets the current name of the corresponding Database column for this property,
+    /// without triggering Finalization. 
+    /// Returns L"" if the property has no column name yet. 
+    /// If the property is new, hasn't been finalized, and doesn't have a physical override
+    /// then L"" may be returned since the column name has not yet been assigned.
+	FdoString* Get_ColumnName();
+
     /// Returns the corresponding column name in the foreign table, when 
     /// containing table is actually a view on a foreign table.
     /// Returns L"" if containing table is not a view.
