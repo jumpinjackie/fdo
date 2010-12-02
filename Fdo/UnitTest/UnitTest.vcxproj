@@ -126,6 +126,7 @@
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
 copy gml3_*.xml $(OutDir)
+copy hawaii_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -178,6 +179,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(Ou
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
 copy gml3_*.xml $(OutDir)
+copy hawaii_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -229,6 +231,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(Ou
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
 copy gml3_*.xml $(OutDir)
+copy hawaii_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -283,6 +286,7 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(O
     <PostBuildEvent>
       <Command>copy gml_*.xml $(OutDir)
 copy gml3_*.xml $(OutDir)	  
+copy hawaii_*.xml $(OutDir)
 copy schema_merge1a.xml $(OutDir)
 copy *_master.txt $(OutDir)
 
@@ -451,6 +455,8 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(O
     <None Include="gml_simple_object.xml" />
     <None Include="gml_simple_object_schema.xml" />
     <None Include="gml_write_master.txt" />
+    <None Include="hawaii_in.xml" />
+    <None Include="hawaii_schema.xml" />
     <None Include="sc1a_master.txt" />
     <None Include="sc1b_master.txt" />
     <None Include="sc2a_master.txt" />
