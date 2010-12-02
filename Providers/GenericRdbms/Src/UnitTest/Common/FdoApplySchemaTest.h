@@ -82,6 +82,10 @@ protected:
 */
 	void ModOverrideSchema1( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModOverrideSchema2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
+	
+    // Tests defect 1296122 scenario (update description on data property with override 
+    // leads to finalization before update).
+    void ModOverrideSchema3( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModOverrideSchemaForeign( FdoFeatureSchema* pSchema, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModOverrideSchemaForeign2( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides = NULL );
 	void ModElectricSchema( FdoIConnection* connection, bool hasMetaSchema = true  );

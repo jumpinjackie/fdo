@@ -142,7 +142,7 @@ void FdoSmLpGrdDataPropertyDefinition::Update(
         }
     }
     else if ( GetElementState() == FdoSchemaElementState_Modified ) {			 
-        if ( (ovColName.GetLength() > 0) && (ovColName.ICompare(GetColumnName()) != 0) ) 
+        if ( (ovColName.GetLength() > 0) && (ovColName.ICompare(Get_ColumnName()) != 0) ) 
             AddColNameChangeError( ovColName );
 	}
 }

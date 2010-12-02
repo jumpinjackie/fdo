@@ -476,11 +476,11 @@ Concrete</tableMapping>
 <table name="OVCLASSC111_OPC_TABLE2" description="" pkeyName="PK_OVCLASSC111_OPC_TA1">
 <property xsi:type="Data" name="OpA"/>
 <property xsi:type="Data" name="OpB"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSC111_OPC_TABLE1_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -553,11 +553,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpId1"/>
 <property xsi:type="Data" name="OvClassC111_FeatId"/>
 <property xsi:type="Data" name="OvOpClassHD_OpId1"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSC111_OPC_TABLE1_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -635,11 +635,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
 <property xsi:type="Data" name="OvClassC111_FeatId"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSC111_FEATID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
@@ -1626,9 +1626,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -1708,9 +1708,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OvOpClassHD_OpId1"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -1792,11 +1792,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
 <property xsi:type="Data" name="OvClassH_FeatId"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSH_FEATID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
@@ -4128,9 +4128,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -4205,9 +4205,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OvOpClassHD_OpId1"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -4285,11 +4285,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
 <property xsi:type="Data" name="OvClassH_FeatId"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSH_FEATID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
@@ -4984,9 +4984,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -5066,9 +5066,9 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OvOpClassHD_OpId1"/>
 <column name="NESTED_COL_A" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
-<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
 <column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
+<column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
 <column name="OVCLASSH_FTABLED_OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
 </column>
@@ -5150,11 +5150,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
 <property xsi:type="Data" name="OvClassH_FeatId"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OVCLASSH_FEATID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
@@ -5253,7 +5253,7 @@ Concrete</tableMapping>
 <table name="F_CLASSDEFINITION" description="" pkeyName=""/>
 </tables>
 </class>
-<class xsi:type="Feature" name="OvClassK" description="a class" baseClass="" abstract="False" tableName="OVCLASSK" tblCreator="True" fixedTbl="True">
+<class xsi:type="Feature" name="OvClassK" description="OvClassK description modified" baseClass="" abstract="False" tableName="OVCLASSK" tblCreator="True" fixedTbl="True">
 <geometryProperty>
 GeomK</geometryProperty>
 <tableMapping>
@@ -5273,11 +5273,11 @@ Concrete</tableMapping>
 <column name="CLASSNAME" description="" dataType="NVARCHAR2" length="255" scale="0" nullable="False">
 </column>
 </property>
-<property xsi:type="Data" name="FID" description="id" dataType="int64" length="0" precision="0" scale="0" readOnly="True" featId="False" system="False" nullable="False" autogenerated="True" defaultValue="" tableName="OVCLASSK" columnName="FEATID" colCreator="True" fixedCol="True">
+<property xsi:type="Data" name="FID" description="FID description modified" dataType="int64" length="0" precision="0" scale="0" readOnly="True" featId="False" system="False" nullable="False" autogenerated="True" defaultValue="" tableName="OVCLASSK" columnName="FEATID" colCreator="True" fixedCol="True">
 <column name="FEATID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
 </property>
-<property xsi:type="Geometric" name="GeomK" description="" geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False" tableName="OVCLASSK" columnName="GEOMK" colCreator="True" fixedCol="True">
+<property xsi:type="Geometric" name="GeomK" description="geomK description modified" geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False" tableName="OVCLASSK" columnName="GEOMK" colCreator="True" fixedCol="True">
 <column name="GEOMK" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True">
 </column>
 </property>
@@ -5590,11 +5590,11 @@ Concrete</tableMapping>
 <table name="OPC_TABLE_HC" description="" pkeyName="">
 <property xsi:type="Data" name="OpA"/>
 <property xsi:type="Data" name="OpB"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="PREFIXA_OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
@@ -5632,11 +5632,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpA"/>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="PREFIXA_OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
@@ -5795,11 +5795,11 @@ Concrete</tableMapping>
 <table name="OPC_TABLE_HDA" description="" pkeyName="">
 <property xsi:type="Data" name="OpA"/>
 <property xsi:type="Data" name="OpB"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="PREFIXA_OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
@@ -5837,11 +5837,11 @@ Concrete</tableMapping>
 <property xsi:type="Data" name="OpA"/>
 <property xsi:type="Data" name="OpB"/>
 <property xsi:type="Data" name="OpId1"/>
+<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
+</column>
 <column name="OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="OPID1" description="" dataType="NUMBER" length="10" scale="0" nullable="False">
-</column>
-<column name="OP_COL_B" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
 <column name="PREFIXA_OPA" description="" dataType="NVARCHAR2" length="10" scale="0" nullable="True">
 </column>
@@ -6073,12 +6073,20 @@ Concrete</tableMapping>
 <column name="CLASSNAME" description="" dataType="NVARCHAR2" length="255" scale="0" nullable="False">
 </column>
 </property>
+<property xsi:type="Data" name="col1" description="" dataType="string" length="50" precision="0" scale="0" readOnly="False" featId="False" system="False" nullable="True" autogenerated="False" defaultValue="" tableName="VIEWBASE" columnName="COL1" colCreator="True" fixedCol="True">
+<column name="COL1" description="" dataType="NVARCHAR2" length="50" scale="0" nullable="True">
+</column>
+</property>
 <property xsi:type="Data" name="Column2" description="" dataType="int16" length="0" precision="0" scale="0" readOnly="False" featId="False" system="False" nullable="True" autogenerated="False" defaultValue="" tableName="VIEWBASE" columnName="COL2" colCreator="True" fixedCol="True">
 <column name="COL2" description="" dataType="NUMBER" length="5" scale="0" nullable="True">
 </column>
 </property>
 <property xsi:type="Geometric" name="Geometry" description="" geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False" tableName="VIEWBASE" columnName="GEOMETRY" colCreator="True" fixedCol="True">
 <column name="GEOMETRY" description="" dataType="MDSYS.SDO_GEOMETRY" length="0" scale="0" nullable="True">
+</column>
+</property>
+<property xsi:type="Data" name="id" description="id" dataType="int64" length="0" precision="0" scale="0" readOnly="True" featId="False" system="False" nullable="False" autogenerated="True" defaultValue="" tableName="VIEWBASE" columnName="ID" colCreator="True" fixedCol="True">
+<column name="ID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
 </column>
 </property>
 <property xsi:type="Data" name="RevisionNumber" description="Edit count for supporting optimistic locking.  This value is incremented everytime the object is updated." dataType="double" length="0" precision="0" scale="0" readOnly="True" featId="False" system="True" nullable="False" autogenerated="True" defaultValue="" tableName="VIEWBASE" columnName="REVISIONNUMBER" colCreator="False" fixedCol="True">
@@ -6089,19 +6097,11 @@ Concrete</tableMapping>
 <column name="SCHEMANAME" description="" dataType="NVARCHAR2" length="255" scale="0" nullable="True">
 </column>
 </property>
-<property xsi:type="Data" name="col1" description="" dataType="string" length="50" precision="0" scale="0" readOnly="False" featId="False" system="False" nullable="True" autogenerated="False" defaultValue="" tableName="VIEWBASE" columnName="COL1" colCreator="True" fixedCol="True">
-<column name="COL1" description="" dataType="NVARCHAR2" length="50" scale="0" nullable="True">
-</column>
-</property>
-<property xsi:type="Data" name="id" description="id" dataType="int64" length="0" precision="0" scale="0" readOnly="True" featId="False" system="False" nullable="False" autogenerated="True" defaultValue="" tableName="VIEWBASE" columnName="ID" colCreator="True" fixedCol="True">
-<column name="ID" description="" dataType="NUMBER" length="20" scale="0" nullable="False">
-</column>
-</property>
 </properties>
 <table name="VIEWBASE" description="" pkeyName="">
+<property xsi:type="Data" name="col1"/>
 <property xsi:type="Data" name="Column2"/>
 <property xsi:type="Geometric" name="Geometry"/>
-<property xsi:type="Data" name="col1"/>
 <property xsi:type="Data" name="id"/>
 <column name="COL1" description="" dataType="NVARCHAR2" length="50" scale="0" nullable="True">
 </column>
