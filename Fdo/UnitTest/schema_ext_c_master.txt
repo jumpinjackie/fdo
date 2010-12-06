@@ -13,7 +13,7 @@
 <xs:sequence>
 <xs:element name="IntProp" default="5">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>

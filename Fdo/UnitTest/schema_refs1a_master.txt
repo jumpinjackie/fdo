@@ -38,7 +38,7 @@
 <xs:sequence>
 <xs:element name="Prop-x20-2">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -68,7 +68,7 @@
 <xs:sequence>
 <xs:element name="Prop-x20-2">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -408,7 +408,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-1">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -433,7 +433,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-1">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

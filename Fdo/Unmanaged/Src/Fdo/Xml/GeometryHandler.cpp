@@ -447,18 +447,48 @@ FdoXmlGeometryHandler::GmlGeometryType FdoXmlGeometryHandler::getGmlGeometryType
 	else if (wcscmp( name, L"X" ) == 0){
 		geoType = GmlGeometryType_X;
 	}
-	else if (wcscmp( name, L"Y" ) == 0){
-		geoType = GmlGeometryType_Y;
-	}
-	else if (wcscmp( name, L"Z" ) == 0){
-		geoType = GmlGeometryType_Z;
-	}
-	// GML 3
-	else if (wcscmp( name, L"Envelope" ) == 0){
-		geoType = GmlGeometryType_Box;
-	}
-	else if (wcscmp( name,L"lowerCorner") == 0){
-		geoType = GmlGeometryType_LowerCorner;
+    else if (wcscmp( name, L"Y" ) == 0){
+        geoType = GmlGeometryType_Y;
+    }
+    else if (wcscmp( name, L"Z" ) == 0){
+        geoType = GmlGeometryType_Z;
+    }
+    // GML 3
+    else if (wcscmp( name, L"Curve" ) == 0){
+        geoType = GmlGeometryType_LineString;
+    }
+    else if (wcscmp( name, L"segments" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"LineStringSegment" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"Surface" ) == 0){
+        geoType = GmlGeometryType_Polygon;
+    }
+    else if (wcscmp( name, L"patches" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"PolygonPatch" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"MultiCurve" ) == 0){
+        geoType = GmlGeometryType_MultiLineString;
+    }
+    else if (wcscmp( name, L"curveMember" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"MultiSurface" ) == 0){
+        geoType = GmlGeometryType_MultiPolygon;
+    }
+    else if (wcscmp( name, L"surfaceMember" ) == 0){
+        geoType = GmlGeometryType_GeometryAssociation;
+    }
+    else if (wcscmp( name, L"Envelope" ) == 0){
+        geoType = GmlGeometryType_Box;
+    }
+    else if (wcscmp( name,L"lowerCorner") == 0){
+        geoType = GmlGeometryType_LowerCorner;
 	}
 	else if (wcscmp( name,L"upperCorner") == 0){
 		geoType = GmlGeometryType_UpperCorner;
