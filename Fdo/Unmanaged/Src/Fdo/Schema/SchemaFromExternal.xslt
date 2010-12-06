@@ -2889,10 +2889,11 @@
           <xsl:when test="$typeName='hexBinary'">blob</xsl:when>
           <xsl:when test="$typeName='string'">string</xsl:when>
           <xsl:when test="$typeName='decimal'">decimal</xsl:when>
-          <xsl:when test="$typeName='int' or $typeName='integer' or $typeName='nonPositiveInteger' or $typeName='negativeInteger' or $typeName='positiveInteger' or $typeName='nonNegativeInteger'">int64</xsl:when>
+          <xsl:when test="$typeName='long' or $typeName='integer' or $typeName='nonPositiveInteger' or $typeName='negativeInteger' or $typeName='positiveInteger' or $typeName='nonNegativeInteger'">int64</xsl:when>
           <xsl:when test="$typeName='unsignedInt'">int64</xsl:when>
           <xsl:when test="$typeName='short'">int16</xsl:when>
-          <xsl:when test="$typeName='unsignedShort'">int32</xsl:when>
+          <xsl:when test="$typeName='int' or $typeName='unsignedShort'">int32</xsl:when>
+          <xsl:when test="$typeName='unsignedByte'">byte</xsl:when>
           <xsl:when test="$typeName='ID' or $typeName='anyURI'">string</xsl:when>
           <!-- Classes based on Any are Non-Feature Classes -->
           <xsl:when test="$typeName = 'anyType'">Class</xsl:when>

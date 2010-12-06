@@ -804,9 +804,9 @@
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@dataType = 'byte'" >
-				<xsl:call-template name="dataproperty_other" >
-					<xsl:with-param name="gmlType" >fdo:byte</xsl:with-param>
-				</xsl:call-template>
+                <xsl:call-template name="dataproperty_other" >
+                    <xsl:with-param name="gmlType" >xs:unsignedByte</xsl:with-param>
+                </xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@dataType = 'datetime'" >
 				<xsl:call-template name="dataproperty_other" >
@@ -820,17 +820,17 @@
 			</xsl:when>
 			<xsl:when test="@dataType = 'int16'" >
 				<xsl:call-template name="dataproperty_other" >
-					<xsl:with-param name="gmlType" >fdo:int16</xsl:with-param>
+					<xsl:with-param name="gmlType" >xs:short</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@dataType = 'int32'" >
 				<xsl:call-template name="dataproperty_other" >
-					<xsl:with-param name="gmlType" >fdo:int32</xsl:with-param>
+					<xsl:with-param name="gmlType" >xs:int</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@dataType = 'int64'" >
 				<xsl:call-template name="dataproperty_other" >
-					<xsl:with-param name="gmlType" >fdo:int64</xsl:with-param>
+					<xsl:with-param name="gmlType" >xs:long</xsl:with-param>
 				</xsl:call-template>
 			</xsl:when>
 			<xsl:when test="@dataType = 'single'" >
@@ -1863,11 +1863,13 @@
 	<xsl:element name="xs:simpleType">
 		<xsl:element name="xs:restriction">
 		    <xsl:attribute name="base">xs:string</xsl:attribute>
-			<xsl:element name="xs:maxLength">
-				<xsl:attribute name="value" >
-					<xsl:value-of select="@length" />
-				</xsl:attribute>
-			</xsl:element>
+            <xsl:if test="@length and @length != ''">
+                <xsl:element name="xs:maxLength">
+                    <xsl:attribute name="value" >
+                        <xsl:value-of select="@length" />
+                    </xsl:attribute>
+                </xsl:element>
+            </xsl:if>
       <xsl:apply-templates select="Constraint" />
 		</xsl:element>
 	</xsl:element>
@@ -1910,16 +1912,16 @@
 
 <!-- For other types of data properties, just set the type -->
 <xsl:template name="dataproperty_other">
-	<xsl:param name="gmlType" />
-  <xsl:element name="xs:simpleType">
-    <xsl:element name="xs:restriction">
-      <xsl:attribute name="base">
-        <xsl:value-of select="$gmlType" />
-      </xsl:attribute>
-      <xsl:apply-templates select="Constraint" />
+    <xsl:param name="gmlType" />
+    <xsl:element name="xs:simpleType">
+        <xsl:element name="xs:restriction">
+            <xsl:attribute name="base">
+                <xsl:value-of select="$gmlType" />
+            </xsl:attribute>
+            <xsl:apply-templates select="Constraint" />
+        </xsl:element>
     </xsl:element>
-  </xsl:element>
-	<xsl:call-template name="element_subelements" />
+    <xsl:call-template name="element_subelements" />
 </xsl:template>
 
 <!-- For the dataproperty's list and range restriction  -->

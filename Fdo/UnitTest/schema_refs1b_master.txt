@@ -37,7 +37,7 @@
 <xs:sequence>
 <xs:element name="Prop-x20-3">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -67,7 +67,7 @@
 <xs:sequence>
 <xs:element name="Prop-x20-3">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>

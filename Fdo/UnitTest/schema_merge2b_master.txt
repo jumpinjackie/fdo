@@ -37,7 +37,7 @@
 <xs:sequence>
 <xs:element name="NewProp-x20-1">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 </xs:element>
 </xs:sequence>
@@ -59,7 +59,7 @@
 <xs:sequence>
 <xs:element name="Prop-x20-1">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -331,7 +331,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-2">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -361,7 +361,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-2">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -675,7 +675,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-2">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 </xs:element>
 <xs:element name="Object-x20-Property-x20-2" type="Reference-x20-Schema-x20-1:Object-x20-Property-x20-ClassType" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Prop-x20-1"/>
@@ -722,7 +722,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-3">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -752,7 +752,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-3">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1093,7 +1093,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-4">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1123,7 +1123,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-4">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1476,7 +1476,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-5">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1506,7 +1506,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-5">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1820,7 +1820,7 @@ A network link test class</xs:documentation>
 <xs:sequence>
 <xs:element name="Prop-x20-5">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 </xs:element>
 <xs:element name="Object-x20-Property-x20-5" type="Reference-x20-Schema-x20-4:Object-x20-Property-x20-NewClassType" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="NewProp-x20-1"/>

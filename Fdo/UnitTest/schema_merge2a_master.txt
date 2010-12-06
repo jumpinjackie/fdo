@@ -14,7 +14,7 @@ Xdata</xs:documentation>
 <xs:sequence>
 <xs:element name="Seq">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -41,7 +41,7 @@ datavalue</xs:documentation>
 <xs:sequence>
 <xs:element name="Seq">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -66,7 +66,7 @@ A vertex</xs:documentation>
 <xs:sequence>
 <xs:element name="Seq">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -97,7 +97,7 @@ AutoCAD entity base class</xs:documentation>
 <xs:sequence>
 <xs:element name="FeatId" fdo:readOnly="true">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -117,7 +117,7 @@ Acad layer</xs:documentation>
 </xs:element>
 <xs:element name="ColourIndex" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte">
+<xs:restriction base="xs:unsignedByte">
 <xs:maxExclusive value="128"/>
 <xs:minExclusive value="16"/>
 </xs:restriction>
@@ -789,7 +789,7 @@ feet</fdo:attribute>
 </xs:element>
 <xs:element name="FeatId" fdo:readOnly="true">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -873,7 +873,7 @@ no</fdo:attribute>
 </xs:element>
 <xs:element name="PartNum" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -905,7 +905,7 @@ no</fdo:attribute>
 </xs:element>
 <xs:element name="Tension">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation>
@@ -1049,7 +1049,7 @@ point location</xs:documentation>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1067,7 +1067,7 @@ point location</xs:documentation>
 </xs:element>
 <xs:element name="PartNum" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1091,7 +1091,7 @@ point location</xs:documentation>
 </xs:element>
 <xs:element name="PartNum" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1124,7 +1124,7 @@ point location</xs:documentation>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1142,7 +1142,7 @@ point location</xs:documentation>
 </xs:element>
 <xs:element name="PartNum" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1166,7 +1166,7 @@ point location</xs:documentation>
 </xs:element>
 <xs:element name="PartNum" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -1199,7 +1199,7 @@ point location</xs:documentation>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
