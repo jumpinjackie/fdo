@@ -112,7 +112,7 @@
 <xs:sequence>
 <xs:element name="TABLE1_ID012345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -127,7 +127,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -145,7 +145,7 @@
 </xs:element>
 <xs:element name="TABLE1_ID012345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -170,7 +170,7 @@
 <xs:sequence>
 <xs:element name="TABLE1_ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -219,7 +219,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -237,7 +237,7 @@
 </xs:element>
 <xs:element name="TABLE1_ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -282,7 +282,7 @@
 <xs:sequence>
 <xs:element name="TABLE7_ID12345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -297,7 +297,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -315,7 +315,7 @@
 </xs:element>
 <xs:element name="TABLE7_ID12345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -347,7 +347,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -373,7 +373,7 @@
 </xs:element>
 <xs:element name="UNIQUE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -392,7 +392,7 @@
 <xs:sequence>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -400,7 +400,7 @@
 </xs:element>
 <xs:element name="INT64_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -435,7 +435,7 @@
 </xs:element>
 <xs:element name="BOOL_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="xs:unsignedByte"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -443,7 +443,7 @@
 </xs:element>
 <xs:element name="BYTE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="xs:unsignedByte"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -490,7 +490,7 @@
 </xs:element>
 <xs:element name="ID3456789012345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -508,7 +508,7 @@
 </xs:element>
 <xs:element name="INT_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -516,7 +516,7 @@
 </xs:element>
 <xs:element name="INT16_COLUMN345678901234567890" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16">
+<xs:restriction base="xs:short">
 <xs:maxExclusive value="20000"/>
 </xs:restriction>
 </xs:simpleType>
@@ -526,7 +526,7 @@
 </xs:element>
 <xs:element name="INT32_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -534,7 +534,7 @@
 </xs:element>
 <xs:element name="INT64_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -685,7 +685,7 @@
 </xs:element>
 <xs:element name="TINYINT_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="xs:unsignedByte"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -769,7 +769,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -777,7 +777,7 @@
 </xs:element>
 <xs:element name="INT16_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -806,7 +806,7 @@
 <xs:sequence>
 <xs:element name="ID" fdo:readOnly="true" fdo:autogenerated="true">
 <xs:simpleType>
-<xs:restriction base="fdo:int64"/>
+<xs:restriction base="xs:long"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -835,7 +835,7 @@
 <xs:sequence>
 <xs:element name="BYTE_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:byte"/>
+<xs:restriction base="xs:unsignedByte"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -854,7 +854,7 @@
 </xs:element>
 <xs:element name="ID3456789012345678901234567890">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -881,7 +881,7 @@
 </xs:element>
 <xs:element name="ID">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -889,7 +889,7 @@
 </xs:element>
 <xs:element name="INT16_COLUMN" minOccurs="0">
 <xs:simpleType>
-<xs:restriction base="fdo:int16"/>
+<xs:restriction base="xs:short"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
