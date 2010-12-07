@@ -147,7 +147,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -182,7 +182,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -212,7 +212,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -242,7 +242,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -272,7 +272,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
@@ -302,7 +302,7 @@ geographic</gml:derivedCRSType>
 <xs:sequence>
 <xs:element name="id">
 <xs:simpleType>
-<xs:restriction base="fdo:int32"/>
+<xs:restriction base="xs:int"/>
 </xs:simpleType>
 <xs:annotation>
 <xs:documentation/>
