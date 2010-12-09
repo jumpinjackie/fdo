@@ -63,7 +63,8 @@ public:
     }
     void setsize(size_t sz, const _Ty& defaultVal)
     {
-        if (sizeof(_Ty)*sz > MAPPED_RECS_PERPAGE)
+        // we keep max 1048576 records in memory
+        if (sz > MAX_MEMSIZE_VECT)
         {
             if (_mapFile == NULL)
             {
