@@ -580,11 +580,7 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                                 double* pts = (double*)ireader;
                                 // add points we have
                                 AddToExtent(2, dim, pts, ext);
-                                // adjust extents for curves and add it again
-                                double extArc[4];
-                                AdjustExtentsForCurves(dim, startpt, pts, extArc);
-                                // add adjusted extents
-                                AddToExtent(2, 2, extArc, ext);
+                                AddCurveExtents(dim, startpt, pts, ext);
                                 ireader = (int*)(pts + 2 * dim);
                                 startpt = pts+dim;
                             }
@@ -596,6 +592,7 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                                 double* pts = (double*)ireader;
                                 AddToExtent(num_pts, dim, pts, ext);
                                 ireader = (int*)(pts + num_pts * dim);
+                                startpt = pts+dim*(num_pts-1);
                             }
                             break;
                     
@@ -1775,41 +1772,56 @@ double ComputeUsingTesselateArcSegment(unsigned int dim, const double *startpoin
 #define __eX     *(ordinates+dim)
 #define __eY     *(ordinates+dim+1)
 
-void AdjustExtentsForCurves(int dim, double* startpoint, double* ordinates, double* ext)
+/************************************************************************/
+/// A different solution would be to use SSS Theorem to calculate radius and center
+///
+// double a = DistanceBetweenPositionsXY(*ordinates, *(ordinates+1), *startpoint, *(startpoint+1));
+// double b = DistanceBetweenPositionsXY(*ordinates, *(ordinates+dim+1), *(ordinates+dim), *(ordinates+1));
+// double c = DistanceBetweenPositionsXY(*(ordinates+dim), *(startpoint+1), *startpoint, *(ordinates+dim+1));
+// double s = (a+b+c)/2.0;
+// SSS Theorem
+// double radius = (a*b*c)/(4*sqrt(s*(a+b-s)*(a+c-s)*(b+c-s)));
+// double h = sqrt(radius*radius - (a*a/4.0));
+
+// double mx = (*startpoint + *ordinates)/2.0;
+// double my = (*(startpoint+1) + *(ordinates+1))/2.0;
+// bool isCounterClockWise = IsDirectionCounterClockWise(startpoint, ordinates, ordinates+dim);
+// double norm = isCounterClockWise ? 1 : -1;
+// center[0] = mx + norm*h*(*(startpoint+1) - *(ordinates+1))/a;
+// center[1] = my + norm*h*(*ordinates - *startpoint)/a;
+/************************************************************************/
+void AddCurveExtents(int dim, double* startpoint, double* ordinates, double* ext)
 {
     ArcSegmentDetails details;
-    if(!GetCircularArcSegmentDetails(dim, startpoint, ordinates, &details))
+    if(GetCircularArcSegmentDetails(dim, startpoint, ordinates, &details))
     {
-        ext[0] = ext[1] =  DBL_MAX;
-        ext[2] = ext[3] = -DBL_MAX;
-    }
-    else
-    {
+        double extTmp[4];
         if (details.isCircle)
         {
-            *ext = details.center[0] - details.radius;
-            *(ext+1) = details.center[1] - details.radius;
-            *(ext+2) = details.center[0] + details.radius;
-            *(ext+3) = details.center[1] + details.radius;
+            extTmp[0] = details.center[0] - details.radius;
+            extTmp[1] = details.center[1] - details.radius;
+            extTmp[2] = details.center[0] + details.radius;
+            extTmp[3] = details.center[1] + details.radius;
         }
         else
         {
-            *ext = __eX < __sX ? __eX : __sX;
-            *(ext+1) = __eY < __sY ? __eY : __sY;
-            *(ext+2) = __eX > __sX ? __eX : __sX;
-            *(ext+3) = __eY > __sY ? __eY : __sY;
+            extTmp[0] = __eX < __sX ? __eX : __sX;
+            extTmp[1] = __eY < __sY ? __eY : __sY;
+            extTmp[2] = __eX > __sX ? __eX : __sX;
+            extTmp[3] = __eY > __sY ? __eY : __sY;
             
             if (vectorToLeft(details.center[0]-__sX, details.center[1]+details.radius-__sY, __dX, __dY) == details.isCounterClockWise)
-                *(ext+3) = details.center[1] + details.radius; // Use circle top.
+                extTmp[3] = details.center[1] + details.radius; // Use circle top.
 
             if (vectorToLeft(details.center[0]-__sX, details.center[1]-details.radius-__sY, __dX, __dY) == details.isCounterClockWise)
-                *(ext+1) = details.center[1] - details.radius; // Use circle bottom.
+                extTmp[1] = details.center[1] - details.radius; // Use circle bottom.
 
             if (vectorToLeft(details.center[0]-details.radius-__sX, details.center[1]-__sY, __dX, __dY) == details.isCounterClockWise)
-                *ext = details.center[0] - details.radius; // Use circle left.
+                extTmp[0] = details.center[0] - details.radius; // Use circle left.
 
             if (vectorToLeft(details.center[0]+details.radius-__sX, details.center[1]-__sY, __dX, __dY) == details.isCounterClockWise)
-                *(ext+2) = details.center[0] + details.radius; // Use circle right.
+                extTmp[2] = details.center[0] + details.radius; // Use circle right.
         }
+        AddToExtent(2, 2, extTmp, ext);
     }
 }
