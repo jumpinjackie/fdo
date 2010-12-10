@@ -154,9 +154,9 @@ FdoStringP FdoSmPhRdSqsOwnerReader::GetDescription()
 
         sqlString = FdoStringP::Format(
                 L"select T.description from %ls.dbo.f_schemainfo T \n"
-                L" where T.schemaname = '%ls'",
+                L" where T.schemaname = %ls",
 			    (FdoString*)(mgr->GetSQLObjectName(ownerName)),
-			    (FdoString*)(mgr->GetSQLObjectName(ownerName))
+			    (FdoString*)(mgr->FormatSQLVal(ownerName, FdoSmPhColType_String))
         );
 
         // Each field adds itself to the row.
