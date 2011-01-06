@@ -253,20 +253,23 @@ FdoClassDefinition* SltMetadata::ToClass()
             FindSpatialContextName(srid, scname);            
             gpd->SetSpatialContextAssociation(scname.c_str());
 
-            if ((gdims[gi] & 0x01) != 0)
+            if (gdims[gi] > 2) // XYZ
                 gpd->SetHasElevation(true);
-            if ((gdims[gi] & 0x02) != 0)
+            if (gdims[gi] > 3) // XYZ or XYZM
                 gpd->SetHasMeasure(true);
+            if (gdims[gi] == 5) // XYM
+                gpd->SetHasElevation(false);
 
-            int fgtype = gtypes[gi];
-
-            if (fgtype > 0)
-                gpd->SetGeometryTypes(fgtype); //unsure... set what we get.
+            int fgtype = gtypes[2*gi];
+            int fgdettype = gtypes[2*gi + 1];
+            if (fgdettype <= 0)
+            {
+                if (fgtype != 0 && fgtype != 8 && fgtype != 9 && fgtype <= (int)FdoGeometryType_MultiCurvePolygon)
+                    gpd->SetSpecificGeometryTypes((FdoGeometryType*)&fgtype, 1);
+                else
+                    gpd->SetGeometryTypes(FdoGeometricType_All); //0 = set all.
+            }
             else
-                gpd->SetGeometryTypes(FdoGeometricType_All); //unsure... set all.
-
-            int fgdettype = gtypes[gi + 1];
-            if (fgdettype > 0)
             {
                 // update geometry subtypes in case we have them defined
                 int maxGeomVal = FdoGeometryType_MultiCurvePolygon;
