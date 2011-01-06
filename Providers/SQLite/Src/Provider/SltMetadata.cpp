@@ -1058,14 +1058,14 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 {
     ret.clear();
 	int defSc = -1;
-	if (!srid)
+	if (srid == -1)
 	{
 		srid = m_connection->GetDefaultSpatialContext();
 		defSc = srid;
 	}
 
 	// in case we still have a valid SRID search for it
-	if (srid)
+	if (srid != -1)
 	{
 		const char* sql = "SELECT sr_name FROM spatial_ref_sys WHERE srid=?";
 		int rc;
@@ -1082,7 +1082,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 				{
 					const char* txt = (const char*)sqlite3_column_text(stmt, 0);
 					ret = (txt == NULL || *txt == '\0') ? L"" : A2W_SLOW(txt);
-					defSc = 0; // enforce to leave the break
+					defSc = 0; // enforce to leave the do-while
 				}
 				else if (defSc == -1) // No sr_name -- use the SRID as the name
 				{
@@ -1091,10 +1091,13 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 					// requery with the default SRID
 					sqlite3_reset(stmt);
 					defSc = m_connection->GetDefaultSpatialContext();
-					srid = defSc; // try to return the default one.
+                    if (defSc == -1)
+                        srid = defSc = 0; // No default SC, leave the do-while.
+                    else
+                        srid = defSc; // try to return the default one.
 				}
 				else
-					defSc = 0; // enforce to leave the break
+					defSc = 0; // enforce to leave the do-while
 			}while(defSc == -1);
 			sqlite3_finalize(stmt);
 		}
@@ -1103,7 +1106,7 @@ void SltMetadata::FindSpatialContextName(int srid, std::wstring& ret)
 	if (ret.empty())
 	{
 		wchar_t tmp[64];
-		swprintf(tmp, 64, L"%d", srid);
+        swprintf(tmp, 64, L"%d", ((srid==-1)?0:srid));
 		ret = tmp;
 	}
 }

@@ -127,8 +127,8 @@ FdoByteArray* SltSpatialContextReader::GetExtent()
     ext[2] = ext[3] = -DBL_MAX;
     StringBuffer sb(100);
     int defaultSpatialContext = m_connection->GetDefaultSpatialContext();
-    int spContext = m_connection->FindSpatialContext(myname, defaultSpatialContext);
-    if (defaultSpatialContext != spContext)
+    int spContext = m_connection->FindSpatialContext(myname);
+    if (defaultSpatialContext != spContext && spContext != -1)
     {
         sb.Append("SELECT f_table_name FROM geometry_columns WHERE srid=", 53);
         sb.Append(spContext);

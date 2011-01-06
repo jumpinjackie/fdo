@@ -107,7 +107,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_wkbBuffer = NULL;
     m_wkbBufferLen = 0;
     m_changesAvailable = false;
-    m_defSpatialContextId = 0;
+    m_defSpatialContextId = -1;
     m_isReadOnlyConnection = true;
 }
 
@@ -1839,7 +1839,7 @@ SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* tab
         if (GetCSTolerances(table, xyTolerance, zTolerance))
         {
             spDesc->SetXYTolerance(xyTolerance);
-            spDesc->SetXYTolerance(zTolerance);
+            spDesc->SetZTolerance(zTolerance);
         }
     }
 
@@ -2022,7 +2022,7 @@ int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
 {
     // After apply schema a class can have a garbage CS name
     // in case we do not find it return the first CS SRID
-    int retVal = 0; // invalid CS
+    int retVal = -1; // invalid CS
     if (name)
     {
         std::string mbname = W2A_SLOW(name);
@@ -2049,10 +2049,10 @@ int SltConnection::FindSpatialContext(const wchar_t* name, int valIfNotFound)
     }
     // most of FDO providers have only one CS per schema
     // in case we have invalid CS name try getting the first one
-    if (!retVal)
+    if (retVal == -1)
         retVal = (!valIfNotFound) ? GetDefaultSpatialContext() : valIfNotFound;        
     
-    return retVal; //returns 0 if not found
+    return retVal; //returns -1 if not found
 }
 
 int SltConnection::GetDefaultSpatialContext()
@@ -2070,7 +2070,7 @@ int SltConnection::GetDefaultSpatialContext()
         m_defSpatialContextId = sqlite3_column_int(stmt, 0);
 
     sqlite3_finalize(stmt);
-    return m_defSpatialContextId; //returns 0 if not found
+    return m_defSpatialContextId; //returns -1 if not found
 }
 
 void SltConnection::DeleteClassFromSchema(FdoClassDefinition* fc)
@@ -3998,8 +3998,7 @@ bool SltConnection::IsCoordSysLatLong(const char* tablename, const char* columnn
             if(pdef->GetPropertyType() == FdoPropertyType_GeometricProperty)
             {
                 FdoGeometricPropertyDefinition* propGeom = static_cast<FdoGeometricPropertyDefinition*>(pdef.p);
-                int dval = 0;
-                spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation(), dval);
+                spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation());
             }
         }
     }
@@ -4072,7 +4071,7 @@ bool SltConnection::AddSupportForTolerance()
 
 bool SltConnection::GetCSTolerances(const char* tablename, double& xyTolerance, double& zTolerance)
 {
-    int spContext = 0;
+    int spContext = -1;
     SltMetadata* md = GetMetadata(tablename);
     FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
     if (fc && fc->GetClassType() == FdoClassType_FeatureClass)
@@ -4080,12 +4079,9 @@ bool SltConnection::GetCSTolerances(const char* tablename, double& xyTolerance, 
         FdoFeatureClass* fcDef = static_cast<FdoFeatureClass*>(fc.p);
         FdoPtr<FdoGeometricPropertyDefinition> propGeom = fcDef->GetGeometryProperty();
         if (propGeom != NULL)
-        {
-            int dval = 0;
-            spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation(), dval);
-        }
+            spContext = FindSpatialContext(propGeom->GetSpatialContextAssociation());
     }
-    if (!spContext)
+    if (spContext == -1)
         return false;
     StringBuffer sb;
     sb.Append("SELECT sr_xytol,sr_ztol FROM spatial_ref_sys WHERE srid=", 56);
