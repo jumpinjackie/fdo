@@ -192,7 +192,6 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.6.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Spatial.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -362,7 +361,6 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f&quot;3.6.0.0%FDO_VERSION%&quot; -v&quot;..\Managed\Fdo.version&quot; $(OutDir)\OSGeo.FDO.Spatial.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>
