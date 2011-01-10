@@ -186,7 +186,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot;  $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -361,7 +360,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Creating Library and Versioning $(ProjectName).dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\$(ProjectName).dll&#x0D;&#x0A;"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>

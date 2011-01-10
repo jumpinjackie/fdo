@@ -183,7 +183,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.MySQL.Overrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -350,7 +349,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.MySQL.Overrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>

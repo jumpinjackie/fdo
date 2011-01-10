@@ -186,7 +186,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning WMSOverrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WMSOverrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 		<Configuration
@@ -352,7 +351,6 @@
 				Name="VCPostBuildEventTool"
 				Description="Versioning WMSOverrides.dll"
 				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;..\..\..\SubDoc\Providers.version&quot; -f&quot;3.6.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\WMSOverrides.dll"
-				ExcludedFromBuild="true"
 			/>
 		</Configuration>
 	</Configurations>
