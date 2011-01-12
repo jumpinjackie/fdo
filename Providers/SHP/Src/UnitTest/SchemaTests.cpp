@@ -1292,6 +1292,7 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
 
         // check it's contents
         properties = cls->GetProperties ();
+
         FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
         CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Decimal == featid->GetDataType ());
 
@@ -1365,6 +1366,122 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         TestCommonFail (ge);
     }
 }
+
+void SchemaTests::ascii_property_name_with_puctuation ()
+{
+    try
+    {
+        FdoString* NEW_SCHEMA_NAME = L"NewSchema";
+        FdoString* NEW_CLASS_NAME = L"Test4";
+
+        // Clean up leftovers from previous tests:
+        //TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
+
+
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
+        FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
+
+// punctuation chars (':' or '.' not allowed)
+        FdoString *name1 = L"P{~!@#$";
+        FdoPtr<FdoDataPropertyDefinition> streetA = FdoDataPropertyDefinition::Create (name1, L"text");
+        streetA->SetDataType (FdoDataType_String);
+        streetA->SetLength (64);
+
+// punctuation chars (':' or '.' not allowed)
+        FdoString *name2 = L"P%^&*?><;=}";
+        FdoPtr<FdoDataPropertyDefinition> streetB = FdoDataPropertyDefinition::Create (name2, L"text");
+        streetB->SetDataType (FdoDataType_String);
+        streetB->SetLength (64);
+
+// with spaces
+        FdoString *name3 = L"P{ }< >";
+        FdoPtr<FdoDataPropertyDefinition> area1 = FdoDataPropertyDefinition::Create (name3, L"double");
+        area1->SetDataType (FdoDataType_Decimal);
+        area1->SetPrecision (20);
+        area1->SetScale (8);
+
+        // build a location geometry property
+        FdoPtr<FdoGeometricPropertyDefinition> location = FdoGeometricPropertyDefinition::Create (L"Geometry", L"geometry");
+        location->SetGeometryTypes (FdoGeometricType_Point);
+        location->SetHasElevation (true);
+
+        //// assemble the feature class
+        FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
+        FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
+        properties->Add (streetA);
+        properties->Add (streetB);
+        properties->Add (area1);
+        properties->Add (location);
+
+        feature->SetGeometryProperty (location);
+        classes->Add (feature);
+        apply->SetFeatureSchema (schema);
+
+        apply->Execute ();
+		
+        // NO MAPPING!
+        // SaveSchema(mConnection);
+
+        // close and reopen the connection
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+        // check that the new schema shows up in the list
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
+
+        FdoPtr<FdoIDisposableCollection> collection = schemas->FindClass (NEW_CLASS_NAME);
+        CPPUNIT_ASSERT_MESSAGE ("no class found", 1 == collection->GetCount ());
+        FdoPtr<FdoFeatureClass> cls = (FdoFeatureClass *)collection->GetItem (0);
+        CPPUNIT_ASSERT_MESSAGE ("wrong name", 0 == wcscmp (NEW_CLASS_NAME, cls->GetName ()));
+
+        // check it's contents
+        properties = cls->GetProperties ();
+
+        
+        streetA = (FdoDataPropertyDefinition*)properties->GetItem (name1);
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == streetA->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == streetA->GetLength ());
+
+        streetB = (FdoDataPropertyDefinition*)properties->GetItem (name2);
+        CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == streetB->GetDataType ());
+        CPPUNIT_ASSERT_MESSAGE ("street wrong size", 64 == streetB->GetLength ());
+
+        area1 = (FdoDataPropertyDefinition*)properties->GetItem (name3);
+        CPPUNIT_ASSERT_MESSAGE ("area wrong type", FdoDataType_Decimal == area1->GetDataType ());
+
+        location = (FdoGeometricPropertyDefinition*)properties->GetItem (L"Geometry");
+        CPPUNIT_ASSERT_MESSAGE ("wrong geometry types", FdoGeometricType_Point == location->GetGeometryTypes ());
+        CPPUNIT_ASSERT_MESSAGE ("wrong elevation", location->GetHasElevation ());
+
+        // Test a filter
+        FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName (NEW_CLASS_NAME);
+
+        // TODO: revisit this syntax.
+        FdoStringP filterS = FdoStringP::Format(L"'%ls' > 176 and '%ls' = 'XX' and '%ls' = 'PP'", name1, name2, name3);
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse (filterS);
+        select->SetFilter (filter);
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+
+        // OK, now delete the class
+        schema = schemas->GetItem (0);
+        classes = schema->GetClasses ();
+        FdoPtr<FdoClassDefinition> definition = classes->GetItem (NEW_CLASS_NAME);
+        definition->Delete ();
+        apply->SetFeatureSchema (schema);
+
+        apply->Execute ();
+
+
+    }
+    catch (FdoException* ge) 
+    {
+        TestCommonFail (ge);
+    }
+}
+
 void SchemaTests::non_ascii_class_name1 ()
 {
     try

@@ -129,20 +129,33 @@ ShapeDBF::ShapeDBF (const WCHAR* name, FdoString* codepageCPG) :
         {
             // Now we will have to convert the OEM characters in the DBF file to
             // ANSI or Wide character (UNICODE) string.
-            char name[nDBF_COLNAME_LENGTH+1];
+            char cColumnName[nDBF_COLNAME_LENGTH+1];
             WCHAR* wszColumnName;
-            strncpy (name, (char*)pTableFieldDescriptorArray[i].cFieldName, nDBF_COLNAME_LENGTH);
-            name[nDBF_COLNAME_LENGTH] = '\0';
+            strncpy (cColumnName, (char*)pTableFieldDescriptorArray[i].cFieldName, nDBF_COLNAME_LENGTH);
+            cColumnName[nDBF_COLNAME_LENGTH] = '\0';
 
 #ifdef _WIN32
-			multibyte_to_wide_cpg (wszColumnName, name, codePage);
+			multibyte_to_wide_cpg (wszColumnName, cColumnName, codePage);
 #else
             // Doesn't work properly
-			//multibyte_to_wide_cpg (wszColumnName, name, codePage);
-            multibyte_to_wide (wszColumnName, name);
+			//multibyte_to_wide_cpg (wszColumnName, cColumnName, codePage);
+            multibyte_to_wide (wszColumnName, cColumnName);
 #endif
             // Trim trailing and leading spaces and tabs
             trim (wszColumnName);
+
+            // check for invalid characters
+            for(size_t idx = 0; idx < wcslen(wszColumnName); idx++)
+            {
+                wchar_t ch = wszColumnName[idx];
+                if ( iswcntrl(ch) || 
+                    (iswspace(ch) && (ch != L' ')) || 
+                    (iswpunct(ch) && (ch == L':')) || 
+                    (iswpunct(ch) && (ch == L'.')))
+                {
+                    wszColumnName[idx] = L'_';
+                }
+            }
 
             switch (pTableFieldDescriptorArray[i].cFieldType)
             {
