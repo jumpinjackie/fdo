@@ -67,7 +67,7 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
     m_logicalProperty = FdoDataPropertyDefinition::Create(logicalPropertyName, logicalPropertyDescription);
 
     // Set misc stuff:
-    FdoDataType data_type = ShpSchemaUtilities::DbfTypeToFdoType(info->GetColumnTypeAt(m_physicalColumnIndex));
+    FdoDataType data_type = ShpSchemaUtilities::DbfTypeToFdoType(info->GetColumnTypeAt(m_physicalColumnIndex), info->GetColumnScaleAt(m_physicalColumnIndex));
     m_logicalProperty->SetDataType(data_type);
     m_logicalProperty->SetReadOnly(false);
     m_logicalProperty->SetNullable(true);
@@ -130,8 +130,13 @@ void ShpLpPropertyDefinition::ConvertLogicalToPhysical (int physicalColumnIndex,
     for(size_t idx = 0; idx < physicalColumnName.size(); idx++)
     {
         wchar_t ch = physicalColumnName.at(idx);
-        if (iswcntrl(ch) || iswspace(ch) || iswpunct(ch))
+        if ( iswcntrl(ch) || 
+            (iswspace(ch) && (ch != L' ')) || 
+            (iswpunct(ch) && (ch == L':')) || 
+            (iswpunct(ch) && (ch == L'.')))
+        {
             physicalColumnName[idx] = L'_';
+        }
     }
 
     // Test in advance for the field length (multibyte). 

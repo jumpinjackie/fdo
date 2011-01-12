@@ -44,6 +44,7 @@ class SchemaTests :
     CPPUNIT_TEST (destroy_schema);
     CPPUNIT_TEST (non_ascii_property_name);
     CPPUNIT_TEST (non_ascii_property_name_no_mapping);
+    CPPUNIT_TEST (ascii_property_name_with_puctuation);
     CPPUNIT_TEST (non_ascii_class_name1);
     CPPUNIT_TEST (non_ascii_class_name2);
     CPPUNIT_TEST (non_ascii_schema_name);
@@ -97,6 +98,9 @@ protected:
 
     // Test different characters in property names but no schema.xml
     void non_ascii_property_name_no_mapping ();
+
+    // Test different punctuation/space characters in property names
+    void ascii_property_name_with_puctuation();
 
     // Test different characters in class names
     void non_ascii_class_name1 ();
