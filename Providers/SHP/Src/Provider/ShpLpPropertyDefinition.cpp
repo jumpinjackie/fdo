@@ -67,7 +67,7 @@ void ShpLpPropertyDefinition::ConvertPhysicalToLogical(FdoPropertyDefinition* co
     m_logicalProperty = FdoDataPropertyDefinition::Create(logicalPropertyName, logicalPropertyDescription);
 
     // Set misc stuff:
-    FdoDataType data_type = ShpSchemaUtilities::DbfTypeToFdoType(info->GetColumnTypeAt(m_physicalColumnIndex), info->GetColumnScaleAt(m_physicalColumnIndex));
+    FdoDataType data_type = ShpSchemaUtilities::DbfTypeToFdoType(info->GetColumnTypeAt(m_physicalColumnIndex));
     m_logicalProperty->SetDataType(data_type);
     m_logicalProperty->SetReadOnly(false);
     m_logicalProperty->SetNullable(true);

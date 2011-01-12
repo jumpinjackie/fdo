@@ -1460,7 +1460,7 @@ void SchemaTests::ascii_property_name_with_puctuation ()
         select->SetFeatureClassName (NEW_CLASS_NAME);
 
         // TODO: revisit this syntax.
-        FdoStringP filterS = FdoStringP::Format(L"'%ls' > 176 and '%ls' = 'XX' and '%ls' = 'PP'", name1, name2, name3);
+        FdoStringP filterS = FdoStringP::Format(L"\"%ls\" > 176 and \"%ls\" = 'XX' and \"%ls\" = 'PP'", name1, name2, name3);
         FdoPtr<FdoFilter> filter = FdoFilter::Parse (filterS);
         select->SetFilter (filter);
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
