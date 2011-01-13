@@ -135,7 +135,7 @@ FdoBoolean FdoClassCapabilities::GetPolygonVertexOrderStrictness(FdoString* geom
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
 
     if (m_polygonVertexOrderStrictnessMap.find(geometryPropName) == m_polygonVertexOrderStrictnessMap.end())
-        return FdoPolygonVertexOrderRule_None;
+        return false;
 
     return m_polygonVertexOrderStrictnessMap[geometryPropName];
 }
