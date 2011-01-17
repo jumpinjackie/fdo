@@ -394,12 +394,6 @@ FdoClassDefinition* SltMetadata::ToClass()
                 //Easy case -- no FDO metadata, just report the SQLite native type
                 dt = ConvertDataType(pTable->aCol[i].zType);
 
-                //Lie about the type of the primary key -- report Int32 for better Map3D compatibility,
-                //but only do it if it's an Int64->Int32 downcast in the type -- otherwise, report
-                //the correct type.
-                if (dpd->GetIsSystem() && (dt == FdoDataType_Int64) && !m_bUseFdoMetadata)
-                    dt = FdoDataType_Int32;
-
                 switch(dt)
                 {
                 case FdoDataType_DateTime:
