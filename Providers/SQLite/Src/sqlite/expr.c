@@ -2646,7 +2646,13 @@ int sqlite3ExprCodeTarget(Parse *pParse, Expr *pExpr, int target){
             void* zBlob = 0;
             if (pExpr->op == TK_INTEGER || ExprHasProperty(pExpr, EP_IntValue)){
               /*This is a pointer to a blob value*/
-              zBlob = (void*)pExpr->u.iValue;
+              if (pExpr->flags&EP_IntValue){
+                zBlob = (void*)pExpr->u.iValue;
+              }else{
+                i64 valueptr=0;
+                sqlite3Atoi64(pExpr->u.zToken, &valueptr);
+                zBlob = (void*)valueptr;
+              }
               /*Remember this value for cases when caller uses reset*/
               sqlite3SetVdbeDynSpatialIndex(v, pTab->pSpIndex, (void*)zBlob);
             }else if (pExpr->op == TK_BLOB){
