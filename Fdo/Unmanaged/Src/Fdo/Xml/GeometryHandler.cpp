@@ -323,12 +323,18 @@ FdoBoolean FdoXmlGeometryHandler::XmlEndElement(
 
 		nestedGeometry = m_nestedHandler->GetGeometry();
 
-		if(m_isMultiGeometry){
-			curGeometry->AddGeometryMember(nestedGeometry);
-		}
-		else{
-			curGeometry->AddGeometricProperty(name, nestedGeometry);
-		}
+        // Record the inner geometry
+        if (curGeometry == NULL)
+            m_geometryStack.push_back(nestedGeometry.Detach());
+        else
+        {
+            if(m_isMultiGeometry){
+                curGeometry->AddGeometryMember(nestedGeometry);
+            }
+            else{
+                curGeometry->AddGeometricProperty(name, nestedGeometry);
+            }
+        }
 
 		break;
 
