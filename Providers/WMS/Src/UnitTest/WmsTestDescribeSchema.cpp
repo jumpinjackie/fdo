@@ -34,27 +34,47 @@ WmsTestDescribeSchema::~WmsTestDescribeSchema(void)
 //http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&
 void WmsTestDescribeSchema::testServer1 ()
 {
+    bool failed = false;
+
     try 
     {
 	    TestServer(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&", 15);
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&
 void WmsTestDescribeSchema::testInheritance1 ()
 {
+    bool failed = false;
+
     try 
     {
 	    TestInheritance(L"http://CADCISDJIAB.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&");
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://wms.jpl.nasa.gov/wms.cgi

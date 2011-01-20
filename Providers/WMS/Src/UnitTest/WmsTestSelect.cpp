@@ -34,6 +34,8 @@ void WmsTestSelect::testServer1 ()
 {
 //TODO: remove this when ? the bug ? on Linux is fixed
 #ifdef WIN32
+    bool failed = false;
+
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
@@ -175,10 +177,18 @@ void WmsTestSelect::testServer1 ()
 	    featReader->GetString (L"FeatId");
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 
 #endif //WIN32
 }
@@ -614,6 +624,8 @@ void WmsTestSelect::testDefaultHeight()
 //http://wms.jpl.nasa.gov/wms.cgi?
 void WmsTestSelect::testNASAServer ()
 {	
+    bool failed = false;
+
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
@@ -651,10 +663,18 @@ void WmsTestSelect::testNASAServer ()
 		    while (cntRead);
 	    }
 	}
-	catch(FdoException* ex)
+/*
+    catch(FdoException* ex)
 	{
         fail(ex);
 	}
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://wms.jpl.nasa.gov/wms.cgi?
@@ -736,6 +756,8 @@ void WmsTestSelect::testNASAServerDefaultOverrides ()
 //http://wms.jpl.nasa.gov/wms.cgi?
 void WmsTestSelect::testNASAServer2 ()
 {	
+    bool failed = false;
+
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
@@ -770,10 +792,18 @@ void WmsTestSelect::testNASAServer2 ()
 		    while (cntRead);
 	    }
 	}
-	catch(FdoException* ex)
+/*
+    catch(FdoException* ex)
 	{
         fail(ex);
 	}
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://maps1.intergraph.com/wms/world/request.asp
@@ -927,6 +957,8 @@ void WmsTestSelect::testCubeServer ()
 // Layers: srtm_mag, global_mosaic
 void WmsTestSelect::testMultiLayers ()
 {
+    bool failed = false;
+
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
@@ -979,10 +1011,18 @@ void WmsTestSelect::testMultiLayers ()
 
 	    CPPUNIT_ASSERT (!featureReader->ReadNext ());
 	}
-	catch(FdoException* ex)
+/*
+    catch(FdoException* ex)
 	{
         fail(ex);
 	}
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 // test against http://terraservice.net/ogccapabilities.ashx. This site uses
@@ -1748,6 +1788,8 @@ void WmsTestSelect::testLibcwms ()
 //http://www.gis2.nrw.de/wmsconnector/wms/stobo?version=1.1.1
 void WmsTestSelect::testStoboWms ()
 {
+    bool failed = false;
+
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
@@ -1797,10 +1839,18 @@ void WmsTestSelect::testStoboWms ()
 
         connection->Close ();
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://linuxgurrl.agr.ca/cgi-bin/mapeco
@@ -1864,6 +1914,8 @@ void WmsTestSelect::testLinuxgurrl ()
 //http://openmaps.gov.bc.ca/images/base.xml
 void WmsTestSelect::testOpenmaps ()
 {
+    bool failed = false;
+
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
@@ -1913,14 +1965,24 @@ void WmsTestSelect::testOpenmaps ()
 
         connection->Close ();
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 void WmsTestSelect::testquestionmarkend ()
 {
+    bool failed = false;
+
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
@@ -1934,10 +1996,18 @@ void WmsTestSelect::testquestionmarkend ()
 
         FdoPtr<FdoIFeatureReader> rasterReader = cmdSelect->Execute();
     }
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 //http://62.214.147.252:8080

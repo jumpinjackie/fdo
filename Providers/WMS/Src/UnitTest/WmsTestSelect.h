@@ -45,12 +45,12 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testResample);
     CPPUNIT_TEST (testClip);
     CPPUNIT_TEST (testDefaultHeight);
-    CPPUNIT_TEST (testNASAServer);
-    CPPUNIT_TEST (testNASAServer2);
+    CPPUNIT_TEST (testNASAServer);      // Todo: might need to replace server
+    CPPUNIT_TEST (testNASAServer2);     // Todo: might need to replace server
     // disabled because the server cannot connect
     //CPPUNIT_TEST (testIntegraphWorld);
     CPPUNIT_TEST (testCubeServer);
-    CPPUNIT_TEST (testMultiLayers);
+    CPPUNIT_TEST (testMultiLayers);     // Todo: might need to replace server
     CPPUNIT_TEST (testTerraService);
     //CPPUNIT_TEST (testDefect786029);
     // disabled because the server cannot connect
@@ -69,10 +69,10 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testKortPlandk);
     // disabled because the server cannot connect
     //CPPUNIT_TEST (testLibcwms);
-    CPPUNIT_TEST (testStoboWms);
-    CPPUNIT_TEST (testLinuxgurrl);
-    CPPUNIT_TEST (testOpenmaps);
-    CPPUNIT_TEST (testquestionmarkend);
+    CPPUNIT_TEST (testStoboWms);     // Todo: might need to replace server
+    CPPUNIT_TEST (testLinuxgurrl); 
+    CPPUNIT_TEST (testOpenmaps);     // Todo: might need to replace server
+    CPPUNIT_TEST (testquestionmarkend);     // Todo: might need to replace server
 
 	CPPUNIT_TEST_SUITE_END ();
 

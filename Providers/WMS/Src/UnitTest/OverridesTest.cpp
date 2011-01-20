@@ -57,7 +57,9 @@ OverridesTest::~OverridesTest(void)
 
 void OverridesTest::TestSetConfiguration2 ()
 {
-	FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
+    bool failed = false;
+
+    FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
 	if (connection == NULL) {
 		CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
 	}
@@ -122,10 +124,18 @@ void OverridesTest::TestSetConfiguration2 ()
 
 		connection->Close();
 	}
-	catch (FdoException* e) 
+/*
+    catch (FdoException* e) 
     {
         fail (e);
 	}
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 void OverridesTest::TestCreateSchemaOverrides()
@@ -516,6 +526,8 @@ void OverridesTest::TestSetConfiguration()
 
 void OverridesTest::TestSetConfiguration3()
 {
+    bool failed = false;
+
     try
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection();
@@ -599,10 +611,18 @@ void OverridesTest::TestSetConfiguration3()
 
         connection->Close();
     }
+/*
 	catch (FdoException* e) 
     {
         fail (e);
 	}
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 // Test configuration, which contains the new xml image format, like "image/tiff; PhotometricInterpretation=RGB"
 void OverridesTest::TestRequestSpcialImageFormat()

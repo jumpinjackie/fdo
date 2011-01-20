@@ -86,7 +86,17 @@ void ConnectTests::TestConnection6 ()
 
 void ConnectTests::TestConnection7 ()
 {
-    TestConnection(L"FeatureServer=http://maps1.intergraph.com/wms/world/request.asp");
+    bool failed = false;
+
+    try {
+        TestConnection(L"FeatureServer=http://maps1.intergraph.com/wms/world/request.asp");
+    }
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 // the following sites sometimes response very slow and they are 
@@ -126,7 +136,17 @@ void ConnectTests::TestConnection12 ()
 
 void ConnectTests::TestConnection13 ()
 {
-    TestConnection(L"FeatureServer=http://www.mapguide.com/mapguide/mapagent/mapagent.fcgi");
+    bool failed = false;
+
+    try {
+        TestConnection(L"FeatureServer=http://www.mapguide.com/mapguide/mapagent/mapagent.fcgi");
+    }
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 void ConnectTests::TestConnection14 ()

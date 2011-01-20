@@ -35,7 +35,7 @@ class ConnectTests :  public WmsTests
     CPPUNIT_TEST (TestConnection4);
     CPPUNIT_TEST (TestConnection5);
     CPPUNIT_TEST (TestConnection6);
-    CPPUNIT_TEST (TestConnection7);
+    CPPUNIT_TEST (TestConnection7);   // Todo: might need to replace server
     CPPUNIT_TEST (TestConnection8);    
     // disabled because the server cannot connect
     CPPUNIT_TEST (TestConnection9);
@@ -44,7 +44,7 @@ class ConnectTests :  public WmsTests
     // disabled because the server cannot connect
     //CPPUNIT_TEST (TestConnection11);
     CPPUNIT_TEST (TestConnection12);
-    CPPUNIT_TEST (TestConnection13);
+    CPPUNIT_TEST (TestConnection13);    // Todo: might need to replace server
     // disabled because the server respond with page not found
     //CPPUNIT_TEST (TestConnection14);
 
