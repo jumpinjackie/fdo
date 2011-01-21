@@ -104,7 +104,7 @@ UnitTestMySql_LDADD =  \
   -lxalanMsg \
   -lxerces-c \
   -lz \
-  -lmysqlclient \
+  -lmysql \
   ./Common/libCommonUnitTests.la \
   ./MySql/libMySqlUnitTests.la  \
   ../MySQL/libFdoRdbmsMySQL.la  \
@@ -137,7 +137,7 @@ UnitTestMySql_LDADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
   ../Rdbi/librdbi.la \
   ../Util/libutil.la \
-  -lmysqlclient \
+  -lmysql \
   -lz
 
 UnitTestMySql_LDFLAGS = \
