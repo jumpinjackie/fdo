@@ -88,7 +88,7 @@ libFdoMySQL_la_LIBADD =  \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c \
-  -lmysqlclient \
+  -lmysql \
   -lz \
   MySQL/libFdoRdbmsMySQL.la  \
   Fdo/libFdoRdbms.la   \
