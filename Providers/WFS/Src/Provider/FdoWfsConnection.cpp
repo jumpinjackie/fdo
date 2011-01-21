@@ -684,6 +684,14 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
             }
         }// end of for each schema
     }
+
+    // Apply the changes on these schemas.
+    for (FdoInt32 i = 0; i < mSchemas->GetCount(); ++i)
+    {
+        FdoPtr<FdoFeatureSchema> schema = mSchemas->GetItem(i);
+        schema->AcceptChanges();
+    }
+
     return FDO_SAFE_ADDREF(mSchemas.p);
 }
 
