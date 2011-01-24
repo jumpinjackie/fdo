@@ -930,7 +930,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
             }
             if (count[1] == MAX_BRANCH)
             {
-                n->set_branch(count[0]++, ids[i], bbs[1]);
+                n->set_branch(count[0]++, ids[i], bbs[i]);
                 continue;
             }
 
