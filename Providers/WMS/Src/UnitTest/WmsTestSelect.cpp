@@ -34,8 +34,6 @@ void WmsTestSelect::testServer1 ()
 {
 //TODO: remove this when ? the bug ? on Linux is fixed
 #ifdef WIN32
-    bool failed = false;
-
     try
     {
 	    FdoPtr<FdoIConnection> conn = this->GetConnection ();
@@ -177,19 +175,10 @@ void WmsTestSelect::testServer1 ()
 	    featReader->GetString (L"FeatId");
 	    CPPUNIT_ASSERT (!featReader->ReadNext ());
     }
-/*
     catch (FdoException* e)
     {
         fail(e);
     }
-*/
-    catch ( ... )
-    {
-        failed = true;
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
-
 #endif //WIN32
 }
 
