@@ -37,6 +37,7 @@ protected:
 
     int m_nFileCode;
     ULONG m_nFileLength;
+    ULONG m_nFileSize;
     int m_nFileVersion;
     eShapeTypes m_nFileShapeType;
     bool m_bMDataPresent;

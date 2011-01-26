@@ -167,7 +167,12 @@ void ShapeFileBase::GetFileHeaderDetails ()
     m_nFileVersion = shpHeader.nFileVersion;
 
     if(m_nFileVersion == nSHP_FILE_VERSION)
-    {
+    {    
+        // shpHeader.nFileLength may be incorrect. Get the file size for future sanity checks.
+        FdoInt64    nFileSize;
+        GetFileSize64 (nFileSize);
+        m_nFileSize = (ULONG)nFileSize;
+
         m_nFileLength = shpHeader.nFileLength = SWAPLONG(shpHeader.nFileLength);
         m_nFileShapeType = (eShapeTypes)shpHeader.nFileShapeType;
 

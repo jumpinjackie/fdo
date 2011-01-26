@@ -1312,7 +1312,7 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
     long    bytesRead;
 
     // validate the offset 
-    if ( ulStartOffset > m_nFileLength * WORD_SIZE_IN_BYTES )
+    if ( ulStartOffset > max(m_nFileLength, m_nFileSize) * WORD_SIZE_IN_BYTES )
         throw FdoException::Create (NlsMsgGet(SHP_READ_FILE_ERROR, "Error occured reading file '%1$ls'.", FileName() ));
 
     ClearRowShapeCache();
