@@ -380,9 +380,10 @@ FdoPtr<FdoSmPhRdPkeyReader> FdoSmPhSqsDbObject::CreatePkeyReader() const
 
 FdoPtr<FdoSmPhRdIndexReader> FdoSmPhSqsDbObject::CreateIndexReader() const
 {
-    FdoSmPhSqsDbObject* pDbObject = (FdoSmPhSqsDbObject*) this;
+    FdoSmPhSqsDbObject* pDbObject = (FdoSmPhSqsDbObject*)(this);
+    FdoSmPhSqsOwner* thisOwner = (FdoSmPhSqsOwner*)(this->GetParent());
 
-    return new FdoSmPhRdSqsIndexReader( pDbObject->GetManager(), FDO_SAFE_ADDREF(pDbObject) );
+    return new FdoSmPhRdSqsIndexReader( FDO_SAFE_ADDREF(thisOwner), FDO_SAFE_ADDREF(pDbObject) );
 }
 
 FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhSqsDbObject::CreateFkeyReader() const

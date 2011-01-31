@@ -411,6 +411,12 @@ protected:
     // bulk fetched.
     virtual void LoadBaseObjectCands();
 
+    // Caches spatial context to geometric column relationships, and physical spatial contexts.
+    // When dbObjectName is blank, retrieves all spatial contexts for this owner,
+    // otherwise only the spatial contexts associated with the geometric columns
+    // in the given db object are loaded.
+    virtual void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
+
 private:
     /// Load Schema Information
     void LoadSchemaInfo();
@@ -418,11 +424,6 @@ private:
     /// Load the long transaction and locking settings.
     void LoadLtLck();
 
-    // Caches spatial context to geometric column relationships, and physical spatial contexts.
-    // When dbObjectName is blank, retrieves all spatial contexts for this owner,
-    // otherwise only the spatial contexts associated with the geometric columns
-    // in the given db object are loaded.
-    void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
     void DoLoadSpatialContexts( FdoStringP dbObjectName );
 
     // Caches the coordinate systems retrieved by the given reader.

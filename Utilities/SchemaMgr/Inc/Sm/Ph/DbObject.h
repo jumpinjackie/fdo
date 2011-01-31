@@ -379,6 +379,9 @@ public:
     // Load this database object's indexes from the given reader
     virtual bool CacheIndexes( FdoPtr<FdoSmPhRdIndexReader> rdr );
 
+    // Returns true if this database object's columns have been cached.
+    virtual bool ColumnsLoaded();
+
     // Returns true if this database object's indexes have been cached.
     virtual bool IndexesLoaded();
 
