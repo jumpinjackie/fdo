@@ -23,6 +23,7 @@
 #endif
 
 #include <Sm/Ph/Rd/IndexReader.h>
+#include <Sm/Ph/Rd/TableJoin.h>
 
 // SqlServer index reader implementation
 
@@ -35,13 +36,22 @@ public:
     //      mgr: Physical Schema Manager
     //      dbObject: Retrieve indexes for this database object.
     FdoSmPhRdSqsIndexReader(
-        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP    owner,
         FdoSmPhDbObjectP    dbObject
     );
 
     FdoSmPhRdSqsIndexReader(
-        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP    owner,
+        FdoStringsP objectNames
+    );
+
+    FdoSmPhRdSqsIndexReader(
         FdoSmPhOwnerP    owner
+    );
+
+    FdoSmPhRdSqsIndexReader(
+        FdoSmPhOwnerP owner,
+        FdoSmPhRdTableJoinP join
     );
 
     // Deactivates the index reader
@@ -59,8 +69,9 @@ private:
 
     FdoSmPhReaderP MakeReader(
         FdoSmPhMgrP mgr,
-        const FdoSmPhOwner* owner,
-        FdoSmPhDbObjectP    dbObject
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames,
+        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
     );
 
     FdoSmPhDbObjectP mDbObject;

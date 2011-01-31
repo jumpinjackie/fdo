@@ -208,8 +208,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindDbObject(FdoStringP dbObject)
     // Check cache for database object
     FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(dbObject);
 
-    if ( (!pDbObject) && (dbObject != L"")) {
-        // Not in cache. If it is in the fetch candidate list then fetch
+    if ( ((!pDbObject) || !(pDbObject->ColumnsLoaded())) && (dbObject != L"")) {
+        // Object is not in the cache or its columns have not been cached. 
+        // If it is in the fetch candidate list then fetch
         // it along with some other candidates. Some other candidates
         // are selected to help performance since these will likely be
         // asked for later.
@@ -272,8 +273,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindReferencedDbObject(FdoStringP dbObject, FdoSt
     if ( refOwner ) {
         pDbObject = refOwner->GetDbObjects()->FindItem( dbObject );
 
-        if ( !pDbObject ) {
-            // Not in cache. Set up base objects for bulk loading
+        if ( !pDbObject || (!pDbObject->ColumnsLoaded()) ) {
+            // Not fully cached: not in cache or columns have not been cached. 
+            // Set up base objects for bulk loading
             LoadBaseObjectCands();
 
             // Find the object. This causes the bulk loading of it and some other
@@ -765,10 +767,11 @@ void FdoSmPhOwner::AddCandDbObject( FdoStringP objectName )
 {
     // No need for fetch candidates when all objects for owner are cached. 
     // Bulk fetching candidates is pointless when fetch size is 1.
-    if ( (!mDbObjectsCached) && (GetCandFetchSize() > 1) ) {
+    if ( (!mDbComponentsCached) && (GetCandFetchSize() > 1) ) {
 	    FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(objectName);
 
-        if ( !pDbObject ) {
+        if ( !pDbObject || !(pDbObject->ColumnsLoaded()) ) {
+            // Object not fully cached, add to candidates list.
             FdoDictionaryElementP elem = mCandDbObjects->FindItem( objectName );
             
             if ( !elem ) {
@@ -1089,6 +1092,16 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
             if ( baseObjectReader ) 
                 dbObject->CacheBaseObjects( baseObjectReader );
+
+            // The current object may have already been in the cache, but now its
+            // components have been added. In this case, the index and base object
+            // loaders may have already visited this object and skipped it for 
+            // bulk loading indexes and base objects. Reset the index and base object
+            // loaders, so that they will revisit this object. Now that it has its
+            // components, it might be a bulk load candidate.
+
+            mIndexLoader = NULL;
+            mNextBaseCandIdx = 0;
         }
     }
 
@@ -1156,23 +1169,30 @@ void FdoSmPhOwner::LoadBaseObjectCands()
         for ( idx1 = nextBaseCandIdx; idx1 < mDbObjects->GetCount(); idx1++ ) {
             FdoSmPhDbObjectP dbObject = mDbObjects->GetItem(idx1);
 
-            FdoSmPhBaseObjectsP baseObjects = dbObject->GetBaseObjects();
+            // Skip objects whose columns have not been loaded. Loading
+            // these causes column loads for each individual object.
+            // (which is slow, and nullifies the advantage of bulk loading their 
+            // base objects).
+            if ( dbObject->ColumnsLoaded() ) 
+            {
+                FdoSmPhBaseObjectsP baseObjects = dbObject->GetBaseObjects();
 
-            // Add each base object to it's owner's candidates list.
-            for ( idx2 = 0; idx2 < baseObjects->GetCount(); idx2++ ) {
-                FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(idx2);
+                // Add each base object to it's owner's candidates list.
+                for ( idx2 = 0; idx2 < baseObjects->GetCount(); idx2++ ) {
+                    FdoSmPhBaseObjectP baseObject = baseObjects->GetItem(idx2);
 
-                FdoSmPhOwnerP baseOwner = GetManager()->FindOwner( baseObject->GetOwnerName(), baseObject->GetDatabaseName() );
+                    FdoSmPhOwnerP baseOwner = GetManager()->FindOwner( baseObject->GetOwnerName(), baseObject->GetDatabaseName() );
 
-                if ( baseOwner ) {
-                    baseOwner->AddCandDbObject( baseObject->GetObjectName() );
-                    // Need primary keys of base objects (to determine view identity properties)
-                    // so bulk load them.
-                    baseOwner->SetBulkLoadPkeys(true);
+                    if ( baseOwner ) {
+                        baseOwner->AddCandDbObject( baseObject->GetObjectName() );
+                        // Need primary keys of base objects (to determine view identity properties)
+                        // so bulk load them.
+                        baseOwner->SetBulkLoadPkeys(true);
+                    }
                 }
-            }
 
-            dbObject->LoadFkeyRefCands();
+                dbObject->LoadFkeyRefCands();
+            }
         }
     }
 }
@@ -1334,7 +1354,14 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
 			    throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
 
             if ( mSpatialContextGeoms->IndexOf(scgeom->GetName()) < 0 ) 
+            {
                 mSpatialContextGeoms->Add( scgeom );	
+                // For derived SCGeoms, we hit the corresponding table
+                // or view that contains the geometry column.
+                // Bulk load these tables and views for efficiency.
+                if ( scReader->IsDerived() ) 
+                    AddCandDbObject(scReader->GetGeomTableName());
+            }
         }
 
         // Resolve the SCGeoms that were loaded to their spatial contexts. This is triggered

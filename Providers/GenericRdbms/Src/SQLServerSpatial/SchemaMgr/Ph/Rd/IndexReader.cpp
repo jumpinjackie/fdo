@@ -22,23 +22,46 @@
 #include "../Mgr.h"
 
 FdoSmPhRdSqsIndexReader::FdoSmPhRdSqsIndexReader(
-    FdoSmPhMgrP mgr,
+    FdoSmPhOwnerP    owner,
     FdoSmPhDbObjectP    dbObject
 ) :
     FdoSmPhRdIndexReader(NULL),
     mDbObject(dbObject)
 {
-    SetSubReader(MakeReader(mgr, (const FdoSmPhOwner*)(dbObject->GetParent()), dbObject));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+    objectNames->Add(dbObject->GetName());
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
 }
 
 FdoSmPhRdSqsIndexReader::FdoSmPhRdSqsIndexReader(
-    FdoSmPhMgrP mgr,
     FdoSmPhOwnerP    owner
 ) :
     FdoSmPhRdIndexReader((FdoSmPhReader*) NULL)
 {
-    SetSubReader(MakeReader(mgr, (FdoSmPhOwner*)owner, (FdoSmPhDbObject*)NULL));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
 }
+
+FdoSmPhRdSqsIndexReader::FdoSmPhRdSqsIndexReader(
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames
+) :
+    FdoSmPhRdIndexReader((FdoSmPhReader*) NULL)
+{
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
+}
+
+FdoSmPhRdSqsIndexReader::FdoSmPhRdSqsIndexReader(
+    FdoSmPhOwnerP owner,
+    FdoSmPhRdTableJoinP join
+) :
+    FdoSmPhRdIndexReader((FdoSmPhReader*) NULL)
+{
+    FdoStringsP objectNames = FdoStringCollection::Create();
+    SetSubReader(MakeReader(owner->GetManager(), owner,objectNames,join));
+}
+
    
 FdoSmPhRdSqsIndexReader::~FdoSmPhRdSqsIndexReader(void)
 {
@@ -75,14 +98,11 @@ FdoStringP FdoSmPhRdSqsIndexReader::GetString( FdoStringP tableName, FdoStringP 
 
 FdoSmPhReaderP FdoSmPhRdSqsIndexReader::MakeReader(
     FdoSmPhMgrP mgr,
-    const FdoSmPhOwner* owner,
-    FdoSmPhDbObjectP    dbObject
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join
 )
 {
-    FdoStringP objectName = dbObject ? dbObject->GetName() : L"";
-    FdoStringP ownerName = owner->GetName();
-    FdoSmPhSqsMgrP sqsMgr = mgr->SmartCast<FdoSmPhSqsMgr>();
-
     // Generate SQL statement for selecting the indexes and their columns
     // "indid between 1 and 250" filters out heap table and text column entries.
     FdoStringP sql = FdoStringP::Format(
@@ -98,54 +118,17 @@ FdoSmPhReaderP FdoSmPhRdSqsIndexReader::MakeReader(
         L"   INNER JOIN %ls.sys.index_columns c on (b.object_id = c.object_id and b.index_id = c.index_id)\n"
         L"   INNER JOIN %ls.sys.columns d on (c.object_id = d.object_id and c.column_id = d.column_id)\n"
         L"   INNER JOIN %ls.sys.schemas e on (a.schema_id = e.schema_id)\n"
+        L"   $(JOIN_CLAUSE) \n"
         L"   LEFT OUTER JOIN %ls.sys.spatial_indexes f on (b.object_id = f.object_id and b.index_id = f.index_id)\n"
-        L"   %ls \n"
+        L"   $(WHERE) $(QUALIFICATION) \n"
         L"   order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.name collate latin1_general_bin asc, c.index_column_id asc",
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),
-        (FdoString*)(owner->GetDbName()),
-        dbObject ? L"where e.name = ? and a.name = ?" : L""
+        (FdoString*)(owner->GetDbName())
     );
-
-    // Create a field object for each field in the select list
-    FdoSmPhRowsP rows = MakeRows(mgr);
-    FdoSmPhRowP binds;
-
-    FdoStringP userName;
-    FdoStringP localObjectName;
-
-    if ( objectName != L"" ) {
-        if ( objectName.Contains(L".") ) {
-            userName = objectName.Left(L".");
-            localObjectName = objectName.Right(L".");
-        }
-        else {
-            userName = L"dbo";
-            localObjectName = objectName;
-        }
-
-        // Create and set the bind variables
-        binds = new FdoSmPhRow( mgr, L"Binds" );
-
-        FdoSmPhFieldP field = new FdoSmPhField(
-            binds,
-            L"user_name",
-            binds->CreateColumnDbObject(L"table_name",false)
-        );
-
-        field->SetFieldValue (userName);
-
-        field = new FdoSmPhField(
-            binds,
-            L"table_name",
-            binds->CreateColumnDbObject(L"table_name",false)
-        );
-
-        field->SetFieldValue (localObjectName);
-    }
 
     // INDEXPROPERTY function always returns null for indexes not in the active schema.
     // Therefore, owner (schema) for the indexes to retrieved must be the current one
@@ -159,11 +142,19 @@ FdoSmPhReaderP FdoSmPhRdSqsIndexReader::MakeReader(
         ownerSwitched = true;
     }
 
-    FdoSmPhRdGrdQueryReader* reader = NULL;
+    FdoSmPhReaderP reader;
+
 
     try {
-        //TODO: cache this query to make full use of the binds.
-        reader = new FdoSmPhRdGrdQueryReader( rows->GetItem(0), sql, mgr, binds );
+        reader = FdoSmPhRdIndexReader::MakeQueryReader(
+            L"",
+            owner,
+            sql,
+            L"e.name",
+            L"a.name",
+            objectNames,
+            join
+        );
     }
     catch ( ... ) {
         // Switch back to original current schema, if any
