@@ -28,7 +28,6 @@ SET RDBMSENABLE=yes
 SET GDALENABLE=yes
 SET KINGORACLEENABLE=yes
 SET OGRENABLE=yes
-SET POSTGISENABLE=yes
 SET SQLITEENABLE=yes
 SET MYSQLENABLE=yes
 SET ODBCENABLE=yes
@@ -77,7 +76,6 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET GDALENABLE=no
     SET KINGORACLEENABLE=no
     SET OGRENABLE=no
-    SET POSTGISENABLE=no
     SET SQLITEENABLE=no
     SET MYSQLENABLE=no
     SET ODBCENABLE=no
@@ -115,12 +113,8 @@ if not "%2"=="kingoracle" goto stp9_get_with
     SET KINGORACLEENABLE=yes
     goto next_param
 :stp9_get_with
-if not "%2"=="ogr" goto stp10_get_with
+if not "%2"=="ogr" goto stp11_get_with
     SET OGRENABLE=yes
-    goto next_param
-:stp10_get_with
-if not "%2"=="postgis" goto stp11_get_with
-    SET POSTGISENABLE=yes
     goto next_param
 :stp11_get_with
 if not "%2"=="sqlite" goto stp12_get_with
@@ -150,7 +144,6 @@ if not "%2"=="providers" goto stp16_get_with
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
     SET SQLITEENABLE=yes
     SET MYSQLENABLE=yes
     SET ODBCENABLE=yes
@@ -168,7 +161,6 @@ if not "%2"=="all" goto custom_error
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
     SET SQLITEENABLE=yes
     SET MYSQLENABLE=yes
     SET ODBCENABLE=yes
@@ -373,7 +365,7 @@ if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    popd
    deltree /Y "%FDOZIPTEMP%"
 :start_zip_king_oracle
-if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
+if "%KINGORACLEENABLE%"=="no" goto start_zip_ogr
    mkdir %FDOZIPTEMP%
    mkdir %FDOZIPTEMP%\Bin
    copy "%FDOROOT%\Bin\KingOracleMessage.dll" %FDOZIPTEMP%\Bin\
@@ -382,18 +374,6 @@ if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
    pushd "%FDOZIPTEMP%"
    if exist "%FDOTARZIPFOLDER%\fdokingoracle-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip" del /q /f "%FDOTARZIPFOLDER%\fdokingoracle-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "%FDOTARZIPFOLDER%\fdokingoracle-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip" Bin
-   popd
-   deltree /Y "%FDOZIPTEMP%"
-:start_zip_postgis
-if "%POSTGISENABLE%"=="no" goto start_zip_ogr
-   mkdir %FDOZIPTEMP%
-   mkdir %FDOZIPTEMP%\Bin
-   copy "%FDOROOT%\Bin\PostGISMessage.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\PostGISOverrides.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\PostGISProvider.dll" %FDOZIPTEMP%\Bin\
-   pushd "%FDOZIPTEMP%"
-   if exist "%FDOTARZIPFOLDER%\fdopostgis-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip" del /q /f "%FDOTARZIPFOLDER%\fdopostgis-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "%FDOTARZIPFOLDER%\fdopostgis-win32-%FDORELNUMBER%_%FDOBUILDNUMBER%.zip" Bin
    popd
    deltree /Y "%FDOZIPTEMP%"
 :start_zip_ogr
@@ -460,7 +440,6 @@ echo                         sqlspatial,
 echo                         gdal, 
 echo                         kingoracle, 
 echo                         ogr,
-echo                         postgis,
 echo                         sqlite
 echo BuildNumber:    -b[uild]=User-Defined build number appended to the end of the zip files
 echo ReleaseNumber:  -r[elease]=FDO build number appended to the end of the zip files

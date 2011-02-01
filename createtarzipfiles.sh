@@ -51,9 +51,7 @@ ARCENABLECHK=yes
 RDBMSENABLECHK=yes
 GDALENABLECHK=yes
 KINGORACLEENABLECHK=yes
-KINGSPATIALENABLECHK=yes
 OGRENABLECHK=yes
-POSTGISENABLECHK=yes
 SQLITEENABLECHK=yes
 TESTDATAENABLECHK=yes
 
@@ -114,9 +112,7 @@ do
 	    RDBMSENABLECHK=no
 	    GDALENABLECHK=no
 	    KINGORACLEENABLECHK=no
-	    KINGSPATIALENABLECHK=no
 	    OGRENABLECHK=no
-	    POSTGISENABLECHK=no
 	    SQLITEENABLECHK=no
 	    TESTDATAENABLECHK=no
      fi
@@ -132,9 +128,7 @@ do
 	    RDBMSENABLECHK=yes
 	    GDALENABLECHK=yes
 	    KINGORACLEENABLECHK=yes
-	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
-	    POSTGISENABLECHK=yes
 	    SQLITEENABLECHK=yes
      elif test "$1" == all; then
 	    FDOCOREENABLECHK=yes
@@ -146,9 +140,7 @@ do
 	    RDBMSENABLECHK=yes
 	    GDALENABLECHK=yes
 	    KINGORACLEENABLECHK=yes
-	    KINGSPATIALENABLECHK=yes
 	    OGRENABLECHK=yes
-	    POSTGISENABLECHK=yes
 	    SQLITEENABLECHK=yes
 	    TESTDATAENABLECHK=yes
      elif test "$1" == fdo; then
@@ -172,12 +164,8 @@ do
         GDALENABLECHK=yes
      elif test "$1" == kingoracle; then
         KINGORACLEENABLECHK=yes
-     elif test "$1" == kingspatial; then
-        KINGSPATIALENABLECHK=yes
      elif test "$1" == ogr; then
         OGRENABLECHK=yes
-     elif test "$1" == postgis; then
-        POSTGISENABLECHK=yes
      elif test "$1" == sqlite; then
         SQLITEENABLECHK=yes
      elif test "$1" == testdata; then
@@ -227,9 +215,7 @@ if test "$SHOWHELP" == yes; then
    echo "                         rdbms"
    echo "                         gdal"
    echo "                         kingoracle"
-   echo "                         kingspatial"
    echo "                         ogr"
-   echo "                         postgis"
    echo "                         sqlite"
    echo "                         testdata"
    echo "BuildNumber:    --b[uild]=User-Defined build number appended"
@@ -336,16 +322,6 @@ if test "$KINGORACLEENABLECHK" == yes; then
    gzip -9 fdokingoracle-3.6.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
-if test "$KINGSPATIALENABLECHK" == yes; then
-   mkdir -p "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial
-   svn export "$FDOSVNROOT"/Providers/KingMsSqlSpatial "$FDOTARZIPFOLDER"/Providers/KingMsSqlSpatial --force
-   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdokingspatial-3.6.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdokingspatial-3.6.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdokingspatial-3.6.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdokingspatial-3.6.0_"$FDOBUILDNUMBER".tar
-   rm -rf "$FDOTARZIPFOLDER"
-fi
 if test "$OGRENABLECHK" == yes; then
    mkdir -p "$FDOTARZIPFOLDER"/Providers/OGR
    svn export "$FDOSVNROOT"/Providers/OGR "$FDOTARZIPFOLDER"/Providers/OGR --force
@@ -354,16 +330,6 @@ if test "$OGRENABLECHK" == yes; then
    tar -cf fdoogr-3.6.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
    rm -f fdoogr-3.6.0_"$FDOBUILDNUMBER".tar.gz
    gzip -9 fdoogr-3.6.0_"$FDOBUILDNUMBER".tar
-   rm -rf "$FDOTARZIPFOLDER"
-fi
-if test "$POSTGISENABLECHK" == yes; then
-   mkdir -p "$FDOTARZIPFOLDER"/Providers/PostGIS
-   svn export "$FDOSVNROOT"/Providers/PostGIS "$FDOTARZIPFOLDER"/Providers/PostGIS --force
-   find "$FDOTARZIPFOLDER" -name .svn | xargs rm -rf
-   rm -f fdopostgis-3.6.0_"$FDOBUILDNUMBER".tar
-   tar -cf fdopostgis-3.6.0_"$FDOBUILDNUMBER".tar "$FDOTARZIPFOLDER"
-   rm -f fdopostgis-3.6.0_"$FDOBUILDNUMBER".tar.gz
-   gzip -9 fdopostgis-3.6.0_"$FDOBUILDNUMBER".tar
    rm -rf "$FDOTARZIPFOLDER"
 fi
 if test "$SQLITEENABLECHK" == yes; then
