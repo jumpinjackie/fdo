@@ -27,9 +27,7 @@ SET ARCSDEENABLE=yes
 SET RDBMSENABLE=yes
 SET GDALENABLE=yes
 SET KINGORACLEENABLE=yes
-SET KINGSPATILENABLE=yes
 SET OGRENABLE=yes
-SET POSTGISENABLE=yes
 SET SQLITEENABLE=yes
 SET ZIPTESTDATA=yes
 SET SHOWHELP=no
@@ -71,9 +69,7 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET RDBMSENABLE=no
     SET GDALENABLE=no
     SET KINGORACLEENABLE=no
-    SET KINGSPATILENABLE=no
     SET OGRENABLE=no
-    SET POSTGISENABLE=no
 	SET SQLITEENABLE=no
 	SET ZIPTESTDATA=no
 :stp1_get_with
@@ -109,16 +105,8 @@ if not "%2"=="kingoracle" goto stp9_get_with
 	SET KINGORACLEENABLE=yes
 	goto next_param
 :stp9_get_with
-if not "%2"=="ogr" goto stp10_get_with
+if not "%2"=="ogr" goto stp12_get_with
 	SET OGRENABLE=yes
-	goto next_param
-:stp10_get_with
-if not "%2"=="postgis" goto stp11_get_with
-	SET POSTGISENABLE=yes
-	goto next_param
-:stp11_get_with
-if not "%2"=="kingspatial" goto stp12_get_with
-	SET KINGSPATILENABLE=yes
 	goto next_param
 :stp12_get_with
 if not "%2"=="sqlite" goto stp13_get_with
@@ -135,9 +123,7 @@ if not "%2"=="providers" goto stp14_get_with
     SET RDBMSENABLE=yes
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
-    SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
 	SET SQLITEENABLE=yes
     goto next_param
 :stp14_get_with
@@ -155,9 +141,7 @@ if not "%2"=="all" goto custom_error
     SET RDBMSENABLE=yes
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
-    SET KINGSPATILENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
 	SET SQLITEENABLE=yes
 	set ZIPTESTDATA=yes
     goto next_param
@@ -269,7 +253,7 @@ if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    7z a -airy -bd -tzip "fdogdal-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_king_oracle
-if "%KINGORACLEENABLE%"=="no" goto start_zip_king_spatial
+if "%KINGORACLEENABLE%"=="no" goto start_zip_ogr
    mkdir "%FDOTARZIPFOLDER%\Providers\KingOracle"
    svn export "%FDOSVNROOT%\Providers\KingOracle" "%FDOTARZIPFOLDER%\Providers\KingOracle" --force
    pushd "%FDOTARZIPFOLDER%"
@@ -277,26 +261,6 @@ if "%KINGORACLEENABLE%"=="no" goto start_zip_king_spatial
    popd
    if exist "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip"
    7z a -airy -bd -tzip "fdokingoracle-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
-   deltree /Y "%FDOTARZIPFOLDER%"
-:start_zip_king_spatial
-if "%KINGSPATILENABLE%"=="no" goto start_zip_postgis
-   mkdir "%FDOTARZIPFOLDER%\Providers\KingMsSqlSpatial"
-   svn export "%FDOSVNROOT%\Providers\KingMsSqlSpatial" "%FDOTARZIPFOLDER%\Providers\KingMsSqlSpatial" --force
-   pushd "%FDOTARZIPFOLDER%"
-   if exist .svn del /q /f /s .svn
-   popd
-   if exist "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdokingspatial-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
-   deltree /Y "%FDOTARZIPFOLDER%"
-:start_zip_postgis
-if "%POSTGISENABLE%"=="no" goto start_zip_ogr
-   mkdir "%FDOTARZIPFOLDER%\Providers\PostGIS"
-   svn export "%FDOSVNROOT%\Providers\PostGIS" "%FDOTARZIPFOLDER%\Providers\PostGIS" --force
-   pushd "%FDOTARZIPFOLDER%"
-   if exist .svn del /q /f /s .svn
-   popd
-   if exist "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip" del /q /f "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip"
-   7z a -airy -bd -tzip "fdopostgis-3.6.0_%FDOBUILDNUMBER%.zip" "%FDOTARZIPFOLDER%"
    deltree /Y "%FDOTARZIPFOLDER%"
 :start_zip_ogr
 if "%OGRENABLE%"=="no" goto start_zip_sqlite
@@ -394,9 +358,7 @@ echo                         arcsde,
 echo                         rdbms, 
 echo                         gdal, 
 echo                         kingoracle, 
-echo                         kingspatial, 
 echo                         ogr,
-echo                         postgis,
 echo                         sqlite,
 echo                         testdata
 echo BuildNumber:    -b[uild]=User-Defined build number appended to the end of the tar.gz files

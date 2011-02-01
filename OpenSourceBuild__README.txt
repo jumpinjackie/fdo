@@ -319,7 +319,6 @@ II. Build Notes
                                            mysql,
                                            gdal,
                                            ogr,
-                                           postgis,
                                            kingoracle,
                                            sqlspatial,
                                            sqlite,
@@ -753,8 +752,7 @@ II. Build Notes
                                      arcsde, 
                                      rdbms,
                                      gdal,
-                                     ogr.
-                                     postgis
+                                     ogr,
                                      kingoracle,
 									 sqlite
            **************************************************************

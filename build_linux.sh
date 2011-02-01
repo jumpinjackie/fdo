@@ -35,7 +35,6 @@ ARCENABLE=yes
 RDBMSENABLE=yes
 GDALENABLE=yes
 OGRENABLE=yes
-POSTGISENABLE=yes
 KINGORACLEENABLE=yes
 SQLITEENABLE=yes
 SHOWHELP=no
@@ -124,7 +123,6 @@ do
        UTILENABLE=no
        GDALENABLE=no
        OGRENABLE=no
-       POSTGISENABLE=no
        KINGORACLEENABLE=no
        SQLITEENABLE=no
     fi
@@ -141,7 +139,6 @@ do
         RDBMSENABLE=yes
         GDALENABLE=yes
         OGRENABLE=yes
-        POSTGISENABLE=yes
         KINGORACLEENABLE=yes
         SQLITEENABLE=yes
     elif test "$1" == fdocore; then
@@ -159,7 +156,6 @@ do
         RDBMSENABLE=yes
         GDALENABLE=yes
         OGRENABLE=yes
-        POSTGISENABLE=yes
         KINGORACLEENABLE=yes
         SQLITEENABLE=yes
     elif test "$1" == shp; then
@@ -178,8 +174,6 @@ do
         GDALENABLE=yes
     elif test "$1" == ogr; then
         OGRENABLE=yes
-    elif test "$1" == postgis; then
-        POSTGISENABLE=yes
     elif test "$1" == kingoracle; then
         KINGORACLEENABLE=yes
     elif test "$1" == sqlite; then
@@ -262,9 +256,6 @@ if test "$SHOWHELP" == yes; then
    fi
    if test -e "Providers/OGR/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, ogr"
-   fi
-   if test -e "Providers/PostGIS/build_linux.sh"; then
-   HELPSTRINGWITH="$HELPSTRINGWITH, postgis"
    fi
    if test -e "Providers/KingOracle/build_linux.sh"; then
    HELPSTRINGWITH="$HELPSTRINGWITH, kingoracle"
@@ -462,16 +453,6 @@ fi
 if test "$OGRENABLE" == yes; then
    if test -e "Providers/OGR/build_linux.sh"; then
        pushd Providers/OGR >& /dev/null
-	   chmod a+x ./build_linux.sh
-       sudo -E sh ./build_linux.sh $CMDEX
-       popd >& /dev/null
-   fi
-fi
-
-#build PostGIS Provider
-if test "$POSTGISENABLE" == yes; then
-   if test -e "Providers/PostGIS/build_linux.sh"; then
-       pushd Providers/PostGIS >& /dev/null
 	   chmod a+x ./build_linux.sh
        sudo -E sh ./build_linux.sh $CMDEX
        popd >& /dev/null
