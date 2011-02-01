@@ -122,12 +122,13 @@ FdoStringP FdoSmPhFkey::GetAddSql()
 
 void FdoSmPhFkey::LoadRefCand()
 {
+    FdoSmPhOwner* owner = (FdoSmPhOwner*)(GetParent()->GetParent());
     FdoSmPhOwnerP refOwner = GetManager()->FindOwner( mPkeyTableOwner, GetParent()->GetParent()->GetParent()->GetName() );
 
     if ( refOwner ) {
         refOwner->AddCandDbObject( mPkeyTableName );
         // Bulk load foreign keys for candidates.
-        refOwner->SetBulkLoadFkeys(true);
+        refOwner->SetBulkLoadFkeys(owner->GetBulkLoadFkeys());
     }
 }
 

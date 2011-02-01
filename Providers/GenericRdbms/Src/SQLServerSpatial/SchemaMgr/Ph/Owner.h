@@ -111,6 +111,8 @@ public:
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
+    virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
+
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP constraintName ) const;
 
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType) const;
@@ -123,9 +125,15 @@ public:
 
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
+    /// Create a reader to get all indexes for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader( FdoStringsP objectNames ) const;
+
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
+
+    /// Create a reader to get primary keys for this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader(  FdoStringsP objectNames ) const;
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader() const;
 
@@ -174,6 +182,12 @@ protected:
     virtual bool Delete();
 
     virtual FdoInt32 GetCandFetchSize();
+
+    // Caches spatial context to geometric column relationships, and physical spatial contexts.
+    // When dbObjectName is blank, retrieves all spatial contexts for this owner,
+    // otherwise only the spatial contexts associated with the geometric columns
+    // in the given db object are loaded.
+    virtual void LoadSpatialContexts( FdoStringP dbObjectName = L"" );
 
 private:
     // Loads all schemas into this owner's cache.
