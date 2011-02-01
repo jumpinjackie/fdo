@@ -201,6 +201,9 @@ FdoXmlSaxHandler* FdoXmlGeometryHandler::XmlStartElement(
 		m_parsingStateStack.push_back(ParsingState_GeometryAssociation);
 	
 		m_nestedHandler = new FdoXmlGeometryHandler();
+        // Pass down the outer geometry coordinates.
+        m_nestedHandler->m_coordinates = m_coordinates;
+
 		nextHandler = m_nestedHandler;
 		break;
 
