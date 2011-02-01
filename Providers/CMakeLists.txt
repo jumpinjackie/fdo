@@ -8,7 +8,7 @@ set( PROVIDERS
 	GenericRdbms
 	#KingKML
 	#KingOracle
-	PostGIS
+	#PostGIS
 	SHP
 	WMS
 	GDAL
