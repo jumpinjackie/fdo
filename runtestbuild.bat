@@ -99,7 +99,6 @@ goto study_params
    copy /Y "%FDOSOURCEZIP%\fdordbms-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdogdal-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdoogr-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdopostgis-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    copy /Y "%FDOSOURCEZIP%\fdosqlite-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    
@@ -115,7 +114,6 @@ goto study_params
    7z x -ry "fdordbms-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdogdal-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdoogr-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdopostgis-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdokingoracle-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    7z x -ry "fdosqlite-3.6.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
@@ -128,7 +126,6 @@ goto study_params
    7z x -ry "fdordbms-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdogdal-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdoogr-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdopostgis-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdokingoracle-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    7z x -ry "fdosqlite-3.6.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    

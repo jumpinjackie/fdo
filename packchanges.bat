@@ -98,18 +98,8 @@ echo $(KingOracle)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
 
-pushd Providers\KingMsSqlSpatial
-echo $(KingMsSqlSpatial)>> ..\..\FilesChanges.log
-svn status -q >> ..\..\FilesChanges.log
-popd
-
 pushd Providers\OGR
 echo $(OGR)>> ..\..\FilesChanges.log
-svn status -q >> ..\..\FilesChanges.log
-popd
-
-pushd Providers\PostGIS
-echo $(PostGIS)>> ..\..\FilesChanges.log
 svn status -q >> ..\..\FilesChanges.log
 popd
 

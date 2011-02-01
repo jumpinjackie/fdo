@@ -16,7 +16,6 @@ Current Status:
     - RDBMS
     - WFS
     - WMS
-    - PostGIS
  
 
 TODO
@@ -81,10 +80,10 @@ IV. Compiling Providers
 	Where <provider> is the name of provider you want to compile, be case sensitive, all upper case or all lower case.
 
 	All OpenSource providers are available already. Usage example:
-	-DWITH_POSTGIS=TRUE or -DWITH_PostGIS=TRUE or -DWITH_postgis=TRUE
+	-DWITH_GDAL=TRUE or -DWITH_Gdal=TRUE or -DWITH_gdal=TRUE
 
 	With some providers:
-	-DWITH_POSTGIS=TRUE -DWITH_GDAL=TRUE -DWITH_WMS=TRUE
+	-DWITH_GDAL=TRUE -DWITH_WMS=TRUE
 
 	If you desire to build all available providers, use this definition ( case sensitive )
 	-DALL_PROVIDERS=TRUE

@@ -28,7 +28,6 @@ SET RDBMSENABLE=yes
 SET GDALENABLE=yes
 SET KINGORACLEENABLE=yes
 SET OGRENABLE=yes
-SET POSTGISENABLE=yes
 SET POSTGRESQLENABLE=yes
 SET SQLITEENABLE=yes
 SET MYSQLENABLE=yes
@@ -82,7 +81,6 @@ if "%DEFMODIFY%"=="yes" goto stp1_get_with
     SET GDALENABLE=no
     SET KINGORACLEENABLE=no
     SET OGRENABLE=no
-    SET POSTGISENABLE=no
     SET POSTGRESQLENABLE=no
     SET SQLITEENABLE=no
     SET MYSQLENABLE=no
@@ -121,12 +119,8 @@ if not "%2"=="kingoracle" goto stp9_get_with
     SET KINGORACLEENABLE=yes
     goto next_param
 :stp9_get_with
-if not "%2"=="ogr" goto stp10_get_with
+if not "%2"=="ogr" goto stp11_get_with
     SET OGRENABLE=yes
-    goto next_param
-:stp10_get_with
-if not "%2"=="postgis" goto stp11_get_with
-    SET POSTGISENABLE=yes
     goto next_param
 :stp11_get_with
 if not "%2"=="sqlite" goto stp12_get_with
@@ -164,7 +158,6 @@ if not "%2"=="providers" goto stp18_get_with
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
     SET POSTGRESQLENABLE=yes
     SET SQLITEENABLE=yes
     SET MYSQLENABLE=yes
@@ -183,7 +176,6 @@ if not "%2"=="all" goto custom_error
     SET GDALENABLE=yes
     SET KINGORACLEENABLE=yes
     SET OGRENABLE=yes
-    SET POSTGISENABLE=yes
     SET POSTGRESQLENABLE=yes
     SET SQLITEENABLE=yes
     SET MYSQLENABLE=yes
@@ -451,7 +443,7 @@ if "%GDALENABLE%"=="no" goto start_zip_king_oracle
    popd
    rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_king_oracle
-if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
+if "%KINGORACLEENABLE%"=="no" goto start_zip_ogr
    mkdir %FDOZIPTEMP%
    mkdir %FDOZIPTEMP%\Bin
    copy "%FDOROOT%\Bin\KingOracleMessage.dll" %FDOZIPTEMP%\Bin\
@@ -463,21 +455,6 @@ if "%KINGORACLEENABLE%"=="no" goto start_zip_postgis
    tar -cf "fdokingoracle-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar" Bin
    gzip -9 "fdokingoracle-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
    cp "fdokingoracle-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
-   popd
-   rmdir /s /q "%FDOZIPTEMP%"
-:start_zip_postgis
-if "%POSTGISENABLE%"=="no" goto start_zip_ogr
-   mkdir %FDOZIPTEMP%
-   mkdir %FDOZIPTEMP%\Bin
-   copy "%FDOROOT%\Bin\PostGISMessage.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\PostGISOverrides.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\PostGISProvider.dll" %FDOZIPTEMP%\Bin\
-   pushd "%FDOZIPTEMP%"
-   if exist "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar" del /q /f "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
-   if exist "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" del /q /f "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz"
-   tar -cf "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar" Bin
-   gzip -9 "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar"
-   cp "fdopostgis-%FILEPPLATFORMPREFIX%-%FDORELNUMBER%_%FDOBUILDNUMBER%.tar.gz" "%FDOTARZIPFOLDER%"\
    popd
    rmdir /s /q "%FDOZIPTEMP%"
 :start_zip_ogr
@@ -552,7 +529,6 @@ echo                         sqlspatial,
 echo                         gdal, 
 echo                         kingoracle, 
 echo                         ogr,
-echo                         postgis,
 echo                         sqlite,
 echo                         postgresql
 echo PlatformType:   -p[latform]=Win32(default), x64

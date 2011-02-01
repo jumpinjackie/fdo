@@ -57,7 +57,6 @@ RDBMSENABLECHK=no
 GDALENABLECHK=no
 KINGORACLEENABLECHK=no
 SQLITEENABLECHK=no
-POSTGISENABLECHK=no
 OGRENABLECHK=no
 SHOWHELP=no
 
@@ -116,7 +115,6 @@ do
         GDALENABLECHK=no
         KINGORACLEENABLECHK=no
         SQLITEENABLECHK=no
-        POSTGISENABLECHK=no
         OGRENABLECHK=no
      fi
      if test -z "$1"; then
@@ -140,7 +138,6 @@ do
         GDALENABLECHK=no
         KINGORACLEENABLECHK=no
         SQLITEENABLECHK=no
-        POSTGISENABLECHK=no
         OGRENABLECHK=no
      elif test "$1" == fdocore; then
         FDOCOREENABLECHK=yes
@@ -171,8 +168,6 @@ do
         KINGORACLEENABLECHK=yes
      elif test "$1" == sqlite; then
         SQLITEENABLECHK=yes
-     elif test "$1" == postgis; then
-        POSTGISENABLECHK=yes
      elif test "$1" == ogr; then
         OGRENABLECHK=yes
      else
@@ -227,7 +222,6 @@ if test "$SHOWHELP" == yes; then
    echo "                         gdal"
    echo "                         kingoracle"
    echo "                         sqlite"
-   echo "                         postgis"
    echo "                         ogr"
    echo "**********************************************************"
    exit 0
@@ -315,11 +309,6 @@ fi
 if test "$SQLITEENABLECHK" == yes; then
    echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SQLite"
    svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/SQLite "$FDO_SVN_DESTDIR/Providers/SQLite"
-fi
-# Check out PostGIS  Provider source files
-if test "$POSTGISENABLECHK" == yes; then
-   echo "Checking out https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS"
-   svn checkout https://svn.osgeo.org/fdo/$FDO_SVN_SOURCEDIR/Providers/PostGIS "$FDO_SVN_DESTDIR/Providers/PostGIS"
 fi
 # Check out OGR Provider source files
 if test "$OGRENABLECHK" == yes; then
