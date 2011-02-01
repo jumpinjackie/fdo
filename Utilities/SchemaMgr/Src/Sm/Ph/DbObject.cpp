@@ -1411,6 +1411,11 @@ bool FdoSmPhDbObject::CacheIndexes( FdoSmPhRdIndexReaderP rdr )
     return ret;
 }
 
+bool FdoSmPhDbObject::ColumnsLoaded()
+{
+    return ((GetElementState() == FdoSchemaElementState_Added) || (mColumns != NULL));
+}
+
 bool FdoSmPhDbObject::IndexesLoaded()
 {
     return (mIndexes != NULL);
