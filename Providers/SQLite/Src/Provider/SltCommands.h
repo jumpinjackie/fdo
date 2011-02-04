@@ -676,7 +676,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 //We will accept commit failures at this point, since they are
                 //not critical. It is important that the last COMMIT completes,
                 //and there we do throw an exception (see FlushSQL())
-                if (rc != SQLITE_OK)
+                if (rc != SQLITE_OK && rc != SQLITE_BUSY)
                 //    throw FdoCommandException::Create(L"SQLite commit failed!");
                     fprintf(stderr, "%ls\n", L"Transient commit SQLite failure during Insert.");
 
@@ -713,7 +713,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 int rc = m_connection->CommitTransaction();
                 int rc2 = sqlite3_finalize(m_pCompiledSQL);
 
-                if ((rc != SQLITE_OK) || rc2 != SQLITE_OK)
+                if ((rc != SQLITE_OK && rc != SQLITE_BUSY) || rc2 != SQLITE_OK)
                 //    throw FdoCommandException::Create(L"SQLite commit failed!");
                     fprintf(stderr, "%ls\n", L"Transient commit SQLite failure during Insert.");
             }
