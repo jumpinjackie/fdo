@@ -68,7 +68,19 @@ void FdoSmPhSpatialContextGeom::Finalize()
                             // different sampled SRID than its corresponding base table column.
                             if ( (mSpatialContext->GetSrid() <= 0) || (rootSc->GetSrid() == mSpatialContext->GetSrid()) ) 
                             {
-                                mSpatialContext = rootSc;
+                                // make copy of root SC in case it is in another owner.
+                                mSpatialContext = new FdoSmPhSpatialContext(
+                                    GetManager(),
+                                    rootSc->GetSrid(),
+                                    GetGeomColumnName(),
+                                    rootSc->GetDescription(),
+                                    rootSc->GetCoordinateSystem(),
+                                    rootSc->GetCoordinateSystemWkt(),
+                                    rootSc->GetExtentType(),
+                                    FdoPtr<FdoByteArray>(rootSc->GetExtent()),
+                                    rootSc->GetXYTolerance(),
+                                    rootSc->GetZTolerance()
+                                );
                                 mIsDerived = true;
                             }
                         }

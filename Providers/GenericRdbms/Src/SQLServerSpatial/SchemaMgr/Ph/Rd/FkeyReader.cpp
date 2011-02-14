@@ -23,22 +23,44 @@
 #include "../Mgr.h"
 
 FdoSmPhRdSqsFkeyReader::FdoSmPhRdSqsFkeyReader(
-    FdoSmPhMgrP mgr,
+    FdoSmPhOwnerP owner,
     FdoSmPhDbObjectP    dbObject
 ) :
     FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL),
     mDbObject(dbObject)
 {
-    SetSubReader(MakeReader(mgr, (const FdoSmPhOwner*) (dbObject->GetParent()), dbObject));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+    objectNames->Add(dbObject->GetName());
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
 }
 
 FdoSmPhRdSqsFkeyReader::FdoSmPhRdSqsFkeyReader(
-    FdoSmPhMgrP mgr,
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames
+) :
+    FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL)
+{
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
+}
+
+FdoSmPhRdSqsFkeyReader::FdoSmPhRdSqsFkeyReader(
     FdoSmPhOwnerP    owner
 ) :
     FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL)
 {
-    SetSubReader(MakeReader(mgr, (FdoSmPhOwner*) owner, (FdoSmPhDbObject*) NULL));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+
+    SetSubReader(MakeReader(owner->GetManager(), owner, objectNames));
+}
+
+FdoSmPhRdSqsFkeyReader::FdoSmPhRdSqsFkeyReader(
+    FdoSmPhOwnerP owner,
+    FdoSmPhRdTableJoinP join
+) :
+    FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL)
+{
+    FdoStringsP objectNames = FdoStringCollection::Create();
+    SetSubReader(MakeReader(owner->GetManager(), owner,objectNames,join));
 }
 
 FdoSmPhRdSqsFkeyReader::~FdoSmPhRdSqsFkeyReader(void)
@@ -71,101 +93,78 @@ FdoStringP FdoSmPhRdSqsFkeyReader::GetString( FdoStringP tableName, FdoStringP f
 
 FdoSmPhReaderP FdoSmPhRdSqsFkeyReader::MakeReader(
     FdoSmPhMgrP mgr,
-    const FdoSmPhOwner* owner,
-    FdoSmPhDbObjectP    dbObject
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join
 )
 {
-    FdoStringP objectName = dbObject ? dbObject->GetName() : L"";
+    FdoStringP sql = FdoStringP::Format(
+	    L"select F.name as constraint_name,\n" 
+        L" T.name as table_name,\n"
+        L" TC.name as column_name,\n"
+	    L" %s as r_owner_name,\n"
+	    L" R.name as r_table_name,\n"
+	    L" RC.name as r_column_name,\n"
+	    L" TS.name as table_schema,\n"
+        L" RS.name as r_table_schema, \n"
+        L" FC.constraint_column_id as position \n"
+	    L" from %ls.sys.foreign_keys F, \n"
+	    L" %ls.sys.objects T, %ls.sys.objects R, \n"
+	    L" %ls.sys.schemas TS, %ls.sys.schemas RS, \n"
+	    L" %ls.sys.foreign_key_columns FC, \n"
+	    L" %ls.sys.columns TC, %ls.sys.columns RC \n"
+        L" $(JOIN_FROM) \n"
+	    L" where F.parent_object_id = T.object_id\n"
+	    L"   and T.schema_id = TS.schema_id\n"
+	    L"   and F.referenced_object_id = R.object_id\n"
+	    L"   and R.schema_id = RS.schema_id\n"
+	    L"   and F.object_id = FC.constraint_object_id\n"
+	    L"   and FC.parent_object_id = TC.object_id\n"
+	    L"   and FC.parent_column_id = TC.column_id\n"
+	    L"   and FC.referenced_object_id = RC.object_id\n"
+	    L"   and FC.referenced_column_id = RC.column_id\n"
+	    L"   $(AND) $(QUALIFICATION)"
+	    L" order by TS.name collate latin1_general_bin asc, T.name collate latin1_general_bin asc, F.name collate latin1_general_bin asc, FC.constraint_column_id asc",
+         (FdoString*)(mgr->FormatSQLVal(owner->GetName(), FdoSmPhColType_String)),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName()),
+         (FdoString*)(owner->GetDbName())
+    );
 
-    FdoStringP ownerName = owner->GetName();
-
-    FdoSmPhSqsMgrP sqsMgr = mgr->SmartCast<FdoSmPhSqsMgr>();
-
-    FdoStringP readerName = FdoStringP::Format(L"FkeySqsReader_%ls_%ls", (FdoString*) ownerName, 
-												     dbObject ? L"O" : L"");
-    FdoSmPhReaderP reader = mgr->GetStaticReader( readerName );
-
-    if ( !reader )	{
-
-
-	    //SqlServer> desc INFORMATION_SCHEMA.TABLE_CONSTRAINTS;
-	    //+--------------------+--------------+------+-----+---------+-------+
-	    //| Field              | Type         | Null | Key | Default | Extra |
-	    //+--------------------+--------------+------+-----+---------+-------+
-	    //| CONSTRAINT_CATALOG | varchar(512) | YES  |     | NULL    |       |
-	    //| CONSTRAINT_SCHEMA  | varchar(64)  | NO   |     |         |       |
-	    //| CONSTRAINT_NAME    | varchar(64)  | NO   |     |         |       |
-	    //| TABLE_SCHEMA       | varchar(64)  | NO   |     |         |       |
-	    //| TABLE_NAME         | varchar(64)  | NO   |     |         |       |
-	    //| CONSTRAINT_TYPE    | varchar(64)  | NO   |     |         |       |
-	    //+--------------------+--------------+------+-----+---------+-------+
-	    //SqlServer> desc INFORMATION_SCHEMA.KEY_COLUMN_USAGE;
-	    //+-------------------------------+--------------+------+-----+---------+-------+
-	    //| Field                         | Type         | Null | Key | Default | Extra |
-	    //+-------------------------------+--------------+------+-----+---------+-------+
-	    //| CONSTRAINT_CATALOG            | varchar(512) | YES  |     | NULL    |       |
-	    //| CONSTRAINT_SCHEMA             | varchar(64)  | NO   |     |         |       |
-	    //| CONSTRAINT_NAME               | varchar(64)  | NO   |     |         |       |
-	    //| TABLE_CATALOG                 | varchar(512) | YES  |     | NULL    |       |
-	    //| TABLE_SCHEMA                  | varchar(64)  | NO   |     |         |       |
-	    //| TABLE_NAME                    | varchar(64)  | NO   |     |         |       |
-	    //| COLUMN_NAME                   | varchar(64)  | NO   |     |         |       |
-	    //| ORDINAL_POSITION              | bigint(10)   | NO   |     | 0       |       |
-	    //| POSITION_IN_UNIQUE_CONSTRAINT | bigint(10)   | YES  |     | NULL    |       |
-	    //| REFERENCED_TABLE_SCHEMA       | varchar(64)  | YES  |     | NULL    |       |
-	    //| REFERENCED_TABLE_NAME         | varchar(64)  | YES  |     | NULL    |       |
-	    //| REFERENCED_COLUMN_NAME        | varchar(64)  | YES  |     | NULL    |       |
-	    //+-------------------------------+--------------+------+-----+---------+-------+
-	    // Generate SQL statement to get foreign keys
-	    FdoStringP sql = FdoStringP::Format(
-		    L"select R.CONSTRAINT_NAME as constraint_name,\n" 
-            L" K1.TABLE_NAME as table_name,\n"
-            L" K1.COLUMN_NAME as column_name,\n"
-		    L" R.UNIQUE_CONSTRAINT_CATALOG as r_owner_name,\n"
-		    L" K2.TABLE_NAME as r_table_name,\n"
-		    L" K2.COLUMN_NAME as r_column_name,\n"
-		    L" K1.TABLE_SCHEMA as table_schema,\n"
-            L" K2.TABLE_SCHEMA as r_table_schema\n"
-		    L" from %ls.INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS R,\n"
-		    L" %ls.INFORMATION_SCHEMA.KEY_COLUMN_USAGE K1,\n"
-		    L" %ls.INFORMATION_SCHEMA.KEY_COLUMN_USAGE K2\n"
-		    L" where R.CONSTRAINT_CATALOG = K1.CONSTRAINT_CATALOG\n"
-		    L"   and R.CONSTRAINT_SCHEMA = K1.CONSTRAINT_SCHEMA\n"
-		    L"   and R.CONSTRAINT_NAME = K1.CONSTRAINT_NAME\n"
-		    L"   and R.UNIQUE_CONSTRAINT_CATALOG = K2.CONSTRAINT_CATALOG\n"
-		    L"   and R.UNIQUE_CONSTRAINT_SCHEMA = K2.CONSTRAINT_SCHEMA\n"
-		    L"   and R.UNIQUE_CONSTRAINT_NAME = K2.CONSTRAINT_NAME\n"
-		    L"   and K1.ORDINAL_POSITION = K2.ORDINAL_POSITION\n"
-		    L"   and R.CONSTRAINT_CATALOG = ?\n"
-		    L"%ls"
-		    L" order by K1.TABLE_SCHEMA collate latin1_general_bin asc, K1.TABLE_NAME collate latin1_general_bin asc, R.CONSTRAINT_NAME collate latin1_general_bin asc, K1.ORDINAL_POSITION asc",
-             (FdoString*)(owner->GetDbName()),
-             (FdoString*)(owner->GetDbName()),
-             (FdoString*)(owner->GetDbName()),
-		     dbObject ? L"   and K1.TABLE_SCHEMA = ? and K1.TABLE_NAME = ?\n" : L""
-	    );
-
-	    // Create a field object for each field in the select list
-	    FdoSmPhRowsP rows = MakeRows(mgr);
-	    FdoSmPhRowP row = rows->GetItem(0);
-	    FdoSmPhFieldP pField = new FdoSmPhField(row, L"table_schema", row->CreateColumnDbObject(L"table_schema", false));
-	    pField = new FdoSmPhField(row, L"r_table_schema", row->CreateColumnDbObject(L"r_table_schema", false));
-
-        // Create and set the bind variables
-	    FdoSmPhRowP binds = sqsMgr->MakeByDbObjectBinds(ownerName, objectName);
-	    FdoSmPhDbObjectP rowObj = binds->GetDbObject();
-
-	    reader = new FdoSmPhRdGrdQueryReader( row, sql, mgr, binds );
-	    /*if ( reader )
-		    mgr->SetStaticReader( readerName, reader );*/
-    }
-    else	{
-	    // Re-executing so update bind variables first.
-        FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
-        FdoSmPhRowP binds = pReader->GetBinds();
-	    sqsMgr->SetByDbObjectBinds( binds, ownerName, objectName);
-	    pReader->Execute();
-	}
+    FdoSmPhReaderP reader = FdoSmPhRdFkeyReader::MakeQueryReader(
+        L"",
+        owner,
+        sql,
+        L"TS.name",
+        L"T.name",
+        objectNames,
+        join
+    );
 
     return( reader );
 }
+
+FdoSmPhRowsP FdoSmPhRdSqsFkeyReader::MakeRows( FdoSmPhMgrP mgr )
+{
+    FdoSmPhRowsP rows = FdoSmPhRdFkeyReader::MakeRows( mgr );
+
+    // Single row, no joins
+    FdoSmPhRowP row = rows->GetItem(0);
+    
+    // Each field adds itself to the row.
+    FdoSmPhFieldP field = new FdoSmPhField(
+        row, 
+        L"table_schema",
+        row->CreateColumnDbObject(L"table_schema",false)
+    );
+
+    field = new FdoSmPhField(row, L"r_table_schema", row->CreateColumnDbObject(L"r_table_schema", false));
+    
+    return( rows );
+}
+

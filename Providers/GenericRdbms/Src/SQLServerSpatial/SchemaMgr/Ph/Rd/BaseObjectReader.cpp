@@ -139,9 +139,9 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
             // Create binds for owner and optional object names
             FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
                 mgr,
-                L"D.VIEW_SCHEMA",
+                L"VS.name",
                 L"user_name",
-                L"D.VIEW_NAME",
+                L"V.name",
                 L"name",
                 objectNames
             );
@@ -157,27 +157,36 @@ FdoSmPhReaderP FdoSmPhRdSqsBaseObjectReader::MakeQueryReader(
             if ( join != NULL ) {
                 // If joining to another table, add join clause.
                 qualification = FdoStringP::Format( 
-                    L"  %ls and ((D.VIEW_SCHEMA = 'dbo' and D.VIEW_NAME = %ls) or ((D.VIEW_SCHEMA + '.' + D.VIEW_NAME) = %ls))\n", 
+                    L"  %ls and ((VS.name = 'dbo' and V.name = %ls) or ((VS.name + '.' + V.name) = %ls))\n", 
                     (FdoString*) ((FdoSmPhRdJoin*)(join.p))->GetWhere(),
                     (FdoString*) join->GetJoinColumn(),
                     (FdoString*) join->GetJoinColumn()
                 );
             }
 
-
+            // "and ( D.referenced_id is null or D.referencing_id <> D.referenced_id)"
+            // weeds out circular dependencies between objects and themselves. 
+            // The "D.referenced_id is null" is needed since this is the case when
+            // the referenced object is in a different database.
             sqlString = FdoStringP::Format(
-                L"select %ls D.VIEW_NAME collate latin1_general_bin as name, D.TABLE_NAME as base_name,\n"
-                L" D.TABLE_CATALOG as base_owner, null as base_database,\n"
-                L" D.VIEW_SCHEMA collate latin1_general_bin as view_schema, D.TABLE_SCHEMA as table_schema\n"
-                L" from %ls.INFORMATION_SCHEMA.VIEW_TABLE_USAGE D\n"
+                L"select %ls V.name collate latin1_general_bin as name, D.referenced_entity_name as base_name,\n"
+                L" D.referenced_database_name as base_owner, null as base_database,\n"
+                L" VS.name collate latin1_general_bin as view_schema, D.referenced_schema_name as table_schema\n"
+	            L" from %ls.sys.sql_expression_dependencies D, \n"
+	            L" %ls.sys.objects V, \n"
+	            L" %ls.sys.schemas VS \n"
                 L" %ls\n"
-                L" %ls\n"
-                L" %ls \n"
-                L" order by D.VIEW_SCHEMA collate latin1_general_bin asc, D.VIEW_NAME collate latin1_general_bin asc",
-                join ? L"distinct" : L"",
+	            L" where D.referencing_id = V.object_id\n"
+	            L"   and V.schema_id = VS.schema_id\n"
+                L"   and ( D.referenced_id is null or D.referencing_id <> D.referenced_id)\n"
+	            L"   %ls %ls \n"
+	            L" order by VS.name collate latin1_general_bin asc, V.name collate latin1_general_bin asc",
+                join ? L"distinct" : L"", 
+                (FdoString*)(owner->GetDbName()),
+                (FdoString*)(owner->GetDbName()),
                 (FdoString*)(owner->GetDbName()),
                 (FdoString*)joinFrom,
-                (qualification == L"") ? L"" : L"where",
+                (qualification == L"") ? L"" : L"and",
                 (FdoString*) qualification
             );
 

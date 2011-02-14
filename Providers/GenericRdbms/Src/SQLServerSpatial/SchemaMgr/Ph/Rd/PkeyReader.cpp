@@ -112,9 +112,9 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
         // Create binds for owner and optional object names
         FdoSmPhRdSqsDbObjectBindsP binds = new FdoSmPhRdSqsDbObjectBinds(
             mgr,
-            L"tc.TABLE_SCHEMA",
+            L"s.name",
             L"user_name",
-            L"tc.TABLE_NAME",
+            L"t.name",
             L"object_name",
             objectNames
             );
@@ -130,7 +130,7 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
         if ( join != NULL ) {
             // If joining to another table, add join clause.
             qualification = FdoStringP::Format( 
-                L"%ls and ((tc.TABLE_SCHEMA = 'dbo' and tc.TABLE_NAME = %ls) or ((tc.TABLE_SCHEMA + '.' + tc.TABLE_NAME) = %ls))", 
+                L"%ls and ((s.name = 'dbo' and t.name = %ls) or ((s.name + '.' + t.name) = %ls))", 
                 (FdoString*) ((FdoSmPhRdJoin*)(join.p))->GetWhere(),
                 (FdoString*) join->GetJoinColumn(),
                 (FdoString*) join->GetJoinColumn()
@@ -167,24 +167,30 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
 		//| REFERENCED_COLUMN_NAME        | varchar(64)  | YES  |     | NULL    |       |
 		//+-------------------------------+--------------+------+-----+---------+-------+
 		// TODO: change back to bind variables.
-		FdoStringP sqlString = FdoStringP::Format(
-		  L"select %ls tc.CONSTRAINT_NAME as constraint_name,\n"
-		  L" tc.TABLE_NAME collate latin1_general_bin as table_name, kcu.COLUMN_NAME as column_name,\n"
-		  L" tc.TABLE_SCHEMA collate latin1_general_bin as table_schema, kcu.ORDINAL_POSITION as position\n"
-		  L" from %ls.INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc, %ls.INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu%ls\n"
-		  L" where (tc.CONSTRAINT_CATALOG = kcu.CONSTRAINT_CATALOG\n"
-		  L"     and tc.CONSTRAINT_SCHEMA = kcu.CONSTRAINT_SCHEMA\n"
-		  L"     and tc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME\n"
-		  L"     %ls %ls\n"
-		  L"     and tc.CONSTRAINT_TYPE = 'PRIMARY KEY')\n"
-		  L" order by tc.TABLE_SCHEMA collate latin1_general_bin asc, tc.TABLE_NAME collate latin1_general_bin asc, kcu.ORDINAL_POSITION asc",
-          join ? L"distinct" : L"",
-          (FdoString*)(owner->GetDbName()),
-          (FdoString*)(owner->GetDbName()),
-          (FdoString*)joinFrom,
-          (qualification == L"") ? L"" : L"and",
-          (FdoString*) qualification
-		);
+        FdoStringP sqlString = FdoStringP::Format(
+            L"select %ls ix.name collate latin1_general_bin as constraint_name, \n"
+            L"   t.name collate latin1_general_bin as table_name, \n"
+            L"   c.name as column_name, \n"
+            L"   s.name collate latin1_general_bin as table_schema, \n"
+            L"   ic.index_column_id as position \n"
+            L"   from %ls.sys.objects t \n"
+            L"   INNER JOIN %ls.sys.indexes ix on (ix.object_id = t.object_id)\n"
+            L"   INNER JOIN %ls.sys.index_columns ic on (ix.object_id = ic.object_id and ix.index_id = ic.index_id)\n"
+            L"   INNER JOIN %ls.sys.columns c on (ic.object_id = c.object_id and ic.column_id = c.column_id)\n"
+            L"   INNER JOIN %ls.sys.schemas s on (t.schema_id = s.schema_id)\n"
+            L"   %ls \n"
+            L"   where is_primary_key = 1 %ls %ls \n"
+            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.index_column_id asc",
+            join ? L"distinct" : L"",
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString*)(owner->GetDbName()),
+            (FdoString *)joinFrom,
+            (qualification == L"") ? L"" : L"and",
+            (FdoString *)qualification
+        );
 
 		// Create a field object for each field in the select list.
 		FdoSmPhRowsP rows = MakeRows(mgr);

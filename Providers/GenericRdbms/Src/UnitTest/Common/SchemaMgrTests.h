@@ -113,6 +113,7 @@ protected:
     virtual bool SupportsViewPkey();
     virtual bool SupportsFkeyDoubleDecimal() {return true;};
     virtual bool SupportsCrossDatastoreDependencies() {return true;};
+    virtual bool FindsCrossDatastoreDependencies() {return true;};
     virtual FdoSmPhScInfoP CreateSc( FdoInt64 srid, double minx, double miny, double maxx, double maxy, double xtol, double ztol );
 
     virtual FdoInt64 GetSrid( int index );
