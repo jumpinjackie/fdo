@@ -298,7 +298,22 @@ FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhSqsOwner::CreateFkeyReader() const
 {
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
 
-    return new FdoSmPhRdSqsFkeyReader( pOwner->GetManager(), FDO_SAFE_ADDREF(pOwner) );
+    return new FdoSmPhRdSqsFkeyReader( FDO_SAFE_ADDREF(pOwner) );
+}
+
+FdoPtr<FdoSmPhRdFkeyReader> FdoSmPhSqsOwner::CreateFkeyReader(  FdoStringsP objectNames ) const
+{
+    FdoSmPhSqsOwner* thisOwner = NULL;
+    thisOwner = const_cast<FdoSmPhSqsOwner*>(this);
+    FDO_SAFE_ADDREF(thisOwner);
+
+    FdoSmPhRdSqsFkeyReader* reader = NULL;
+    reader = new FdoSmPhRdSqsFkeyReader(
+        thisOwner,
+        objectNames
+        );
+
+    return reader;
 }
 
 FdoPtr<FdoSmPhRdIndexReader> FdoSmPhSqsOwner::CreateIndexReader() const
@@ -644,34 +659,6 @@ void FdoSmPhSqsOwner::CreateMetaClass()
 			L"SYSTEM_USER,%ls,0,0)",
 			(FdoString *) GetManager()->FormatSQLVal(NlsMsgGet(FDORDBMS_503, "Bounding box for the feature"), FdoSmPhColType_String));
 	gdbiConn->ExecuteNonQuery( (const char*) sql_stmt);
-}
-
-void FdoSmPhSqsOwner::LoadSpatialContexts( FdoStringP dbObjectName )
-{
-    bool loadFkeys = GetBulkLoadFkeys();
-
-    // Temporary Hack: In SQLServerSpatial, loading spatial contexts triggers object
-    // loads when a spatial context is associated with a geometry column in a view.
-    // The base table for each view is also loaded, which brings in foreign keys
-    // if foreign key bulk loading is turned on.
-    // If Foreign Keys are also loaded, this can be expensive. For now, turn off
-    // foreign key loading and reset it after spatial contexts have been loaded.
-    //
-    // The next step will be to tune foreign key retrieval enough to make this 
-    // hack unnecessary.
-
-    try
-    {
-        SetBulkLoadFkeys(false);
-        FdoSmPhOwner::LoadSpatialContexts(dbObjectName);
-    }
-    catch ( ... )
-    {
-        SetBulkLoadFkeys(loadFkeys);
-        throw;
-    }
-
-    SetBulkLoadFkeys(loadFkeys);
 }
 
 void FdoSmPhSqsOwner::LoadSchemas()

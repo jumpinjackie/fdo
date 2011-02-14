@@ -670,33 +670,25 @@ void SqlServerSchemaMgrTests::VldGenGeom( FdoIConnection* conn, FdoClassDefiniti
     }
 
     if ( className == L"f_index_wins1" ) {
-        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
-        //dependencies across databases
-        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
         VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
     }
 
     if ( className == L"f_index_wins2" ) {
         VldGeomSC(conn, classDef, L"geom1", L"", 0, 0, 0, 0 );
-        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
-        //dependencies across databases
-        //VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
         VldGeomSC(conn, classDef, L"geom3", L"CA-I", -2000000, -2000000, 2000000, 2000000 );
     }
 
     if ( className == L"f_index_wins3" ) {
-        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
-        //dependencies across databases
-        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
         VldGeomSC(conn, classDef, L"geom2", L"", 0, 0, 0, 0 );
         VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
     }
 
     if ( className == L"f_index_wins4" ) {
-        //TODO: uncomment when SQLServerSpatial provider supports lookup of view 
-        //dependencies across databases
-        //VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
-        //VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom1", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
+        VldGeomSC(conn, classDef, L"geom2", L"Antigua43.BWIgrid", -1001, -1002, 1001, 1002 );
         VldGeomSC(conn, classDef, L"geom3", L"", 0, 0, 0, 0 );
     }
 
