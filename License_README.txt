@@ -1338,7 +1338,7 @@ outside sources which is not properly a part of SQLite.
 
 PostgreSQL
 
-PostgreSQL is Copyright © 1996-2008 by the PostgreSQL Global Development 
+PostgreSQL is Copyright © 1996-2010 by the PostgreSQL Global Development 
 Group and is distributed under the terms of the license of the University 
 of California below. 
 
