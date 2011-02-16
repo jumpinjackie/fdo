@@ -132,7 +132,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -169,7 +169,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -200,7 +200,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -234,7 +234,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Spatial.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

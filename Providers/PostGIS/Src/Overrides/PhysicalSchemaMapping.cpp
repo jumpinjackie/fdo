@@ -54,7 +54,7 @@ FdoString* PhysicalSchemaMapping::GetProvider()
 {
     // TODO: Replace hard-coded literal with common definition
     // fdo::postgis::ProviderName
-    return L"OSGeo.PostGIS.3.6";
+    return L"OSGeo.PostGIS.3.7";
 }
 
 ClassCollection* PhysicalSchemaMapping::GetClasses() const
