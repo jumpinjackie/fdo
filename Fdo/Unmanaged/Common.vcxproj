@@ -133,7 +133,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning FDOCommon.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -173,7 +173,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning FDOCommon.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -209,7 +209,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning FDOCommon.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -248,7 +248,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning FDOCommon.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.5.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.7.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOCommon.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

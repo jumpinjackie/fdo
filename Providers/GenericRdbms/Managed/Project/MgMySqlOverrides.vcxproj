@@ -126,7 +126,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,7 +161,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -192,7 +192,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -226,7 +226,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.6.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

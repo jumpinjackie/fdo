@@ -85,19 +85,19 @@ bool TestConfig::isReady() const
 FdoStringP TestConfig::getProviderName() const
 {
     validate();
-    return L"OSGeo.PostGIS.3.6";
+    return L"OSGeo.PostGIS.3.7";
 }
 
 FdoStringP TestConfig::getProviderVersion() const
 {
     validate();
-    return L"3.6.0.0";
+    return L"3.7.0.0";
 }
 
 FdoStringP TestConfig::getFdoVersion() const
 {
     validate();
-    return L"3.6.0.0";
+    return L"3.7.0.0";
 }
 
 FdoStringP TestConfig::getPropertyProvider() const
