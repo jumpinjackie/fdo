@@ -39,6 +39,20 @@ FdoSmPhRdTableJoin::~FdoSmPhRdTableJoin(void)
 
 FdoStringP FdoSmPhRdTableJoin::GetClause( 
     FdoSmPhMgrP mgr, 
+    FdoStringP joinColumn
+)
+{
+    FdoStringP clause = FdoStringP::Format(
+        L"JOIN %ls on %ls",
+        (FdoString*) GetFrom(),
+        (FdoString*) GetWhere(joinColumn)
+    );
+
+    return clause;
+}
+
+FdoStringP FdoSmPhRdTableJoin::GetClause( 
+    FdoSmPhMgrP mgr, 
     FdoStringP schemaColumn, 
     FdoStringP tableColumn 
 )

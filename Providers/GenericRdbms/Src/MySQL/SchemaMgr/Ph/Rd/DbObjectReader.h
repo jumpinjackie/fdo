@@ -38,6 +38,11 @@ public:
 
     FdoSmPhRdMySqlDbObjectReader(
         FdoSmPhOwnerP owner,
+        FdoStringsP objectNames
+    );
+
+    FdoSmPhRdMySqlDbObjectReader(
+        FdoSmPhOwnerP owner,
         FdoSmPhRdTableJoinP join
     );
 
@@ -49,11 +54,9 @@ public:
 protected:
     FdoSmPhReaderP MakeQueryReader(
         FdoSmPhOwnerP owner,
-        FdoStringP objectName = L"",
+        FdoStringsP objectNames,
         FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
     );
-
-    FdoSmPhRowP MakeBinds( FdoSmPhMgrP mgr, FdoStringP ownerName, FdoStringP objectName );
 
     // Creates a set of rows describing the fields for this
     // reader. There is one field per database object attribute.

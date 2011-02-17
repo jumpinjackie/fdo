@@ -34,23 +34,32 @@ public:
         FdoStringP whereClause          // clause for qualifying the rows selected from the join table.
     );
 
-    // Returns a JOIN clause ("JOIN table alias on lcol = rcol" for adding this join 
+    // GetClause Returns a JOIN clause ("JOIN table alias on lcol = rcol" for adding this join 
     // to a select.
+
+    // Overload for RDBMS's that do not have native schemas.
+    FdoStringP GetClause( 
+        FdoSmPhMgrP mgr, 
+        FdoStringP joinColumn 
+    );
+
+    // Overload for RDBMS's that have native schemas.
     FdoStringP GetClause( 
         FdoSmPhMgrP mgr, 
         FdoStringP schemaColumn, 
         FdoStringP tableColumn 
     );
 
-    // returns a clause for adding this join to a where clause of a select.
+    // GetWhere returns a clause for adding this join to a where clause of a select.
     // Includes the whereClause passed into the constructor plus a join expressionsfor
     // joining the join table to the main table in the select.
+
+    // Overload for RDBMS's that do not have native schemas.
     FdoStringP GetWhere( 
         FdoStringP joinColumn // column from main table in select, that corresponds to join column.
     );
 
-    // Same as previous function but used by providers that have physical schemas.
-    // The join is done by schema and table name.
+    // Overload for RDBMS's that have native schemas.
     FdoStringP GetWhere( 
         FdoSmPhMgrP mgr, 
         FdoStringP schemaColumn, 

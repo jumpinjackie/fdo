@@ -28,7 +28,20 @@ FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
 ) :
     FdoSmPhRdDbObjectReader((FdoSmPhReader*)NULL, owner, objectName)
 {
-    SetSubReader(MakeQueryReader(owner,objectName));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+    if ( objectName != L"" ) 
+        objectNames->Add(objectName);
+
+    SetSubReader(MakeQueryReader(owner,objectNames));
+}
+
+FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames
+) :
+    FdoSmPhRdDbObjectReader((FdoSmPhReader*)NULL, owner, L"")
+{
+    SetSubReader(MakeQueryReader(owner,objectNames));
 }
 
 FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
@@ -37,7 +50,9 @@ FdoSmPhRdMySqlDbObjectReader::FdoSmPhRdMySqlDbObjectReader(
 ) :
     FdoSmPhRdDbObjectReader((FdoSmPhReader*) NULL, owner, L"")
 {
-    SetSubReader(MakeQueryReader(owner,L"",join));
+    FdoStringsP objectNames = FdoStringCollection::Create();
+
+    SetSubReader(MakeQueryReader(owner,objectNames,join));
 }
 
 FdoSmPhRdMySqlDbObjectReader::~FdoSmPhRdMySqlDbObjectReader(void)
@@ -63,162 +78,82 @@ FdoSmPhDbObjType FdoSmPhRdMySqlDbObjectReader::GetType()
 
 FdoSmPhReaderP FdoSmPhRdMySqlDbObjectReader::MakeQueryReader(
     FdoSmPhOwnerP owner,
-    FdoStringP objectName,
+    FdoStringsP objectNames,
     FdoSmPhRdTableJoinP join
 )
 {
-    bool                 dblink_set = true;
-    bool                 object_set = true;
     FdoStringP           sqlString;
     FdoStringP           ownerName = owner->GetName();
-    FdoStringP           dblinkName = owner->GetParent()->GetName();
 
     // Use temporary table when not selecting all tables for this owner. When repeated selects
     // done against information_schema.tables, it is more efficient to build and use a temporary table.
-    FdoStringP           tablesTableName = ((FdoSmPhMySqlOwner*)(FdoSmPhOwner*)owner)->GetTablesTable( join || (objectName != L"") );
+    FdoStringP           tablesTableName = ((FdoSmPhMySqlOwner*)(FdoSmPhOwner*)owner)->GetTablesTable( join || (objectNames->GetCount() > 0) );
     FdoSmPhMgrP          mgr = owner->GetManager();
     FdoSmPhMySqlMgr*       pMgr = (FdoSmPhMySqlMgr*)(FdoSmPhMgr*)mgr;
 
-    if (dblinkName.GetLength() == 0 )
-        dblink_set = false;
+    //mysql> describe INFORMATION_SCHEMA.tables;
+    //+-----------------+--------------+------+-----+---------+-------+
+    //| Field           | Type         | Null | Key | Default | Extra |
+    //+-----------------+--------------+------+-----+---------+-------+
+    //| TABLE_CATALOG   | varchar(512) | YES  |     | NULL    |       |<- always NULL
+    //| TABLE_SCHEMA    | varchar(64)  | NO   |     |         |       |
+    //| TABLE_NAME      | varchar(64)  | NO   |     |         |       |
+    //| TABLE_TYPE      | varchar(64)  | NO   |     |         |       |
+    //| ENGINE          | varchar(64)  | YES  |     | NULL    |       |
+    //| VERSION         | bigint(21)   | YES  |     | NULL    |       |
+    //| ROW_FORMAT      | varchar(10)  | YES  |     | NULL    |       |
+    //| TABLE_ROWS      | bigint(21)   | YES  |     | NULL    |       |
+    //| AVG_ROW_LENGTH  | bigint(21)   | YES  |     | NULL    |       |
+    //| DATA_LENGTH     | bigint(21)   | YES  |     | NULL    |       |
+    //| MAX_DATA_LENGTH | bigint(21)   | YES  |     | NULL    |       |
+    //| INDEX_LENGTH    | bigint(21)   | YES  |     | NULL    |       |
+    //| DATA_FREE       | bigint(21)   | YES  |     | NULL    |       |
+    //| AUTO_INCREMENT  | bigint(21)   | YES  |     | NULL    |       |
+    //| CREATE_TIME     | datetime     | YES  |     | NULL    |       |
+    //| UPDATE_TIME     | datetime     | YES  |     | NULL    |       |
+    //| CHECK_TIME      | datetime     | YES  |     | NULL    |       |
+    //| TABLE_COLLATION | varchar(64)  | YES  |     | NULL    |       |
+    //| CHECKSUM        | bigint(21)   | YES  |     | NULL    |       |
+    //| CREATE_OPTIONS  | varchar(255) | YES  |     | NULL    |       |
+    //| TABLE_COMMENT   | varchar(80)  | NO   |     |         |       |
+    //+-----------------+--------------+------+-----+---------+-------+
 
-    if (objectName.GetLength() == 0 )
-        object_set = false;
+    // information_schema tables use the utf8 character set with a 
+    // case-insensitive collation. This causes problems with MySQL instances
+    // on Linux, where database and table names are case-sensitive.
+    // The following query overrides the collations to utf8_bin, which
+    // is case-sensitive. 
 
-    FdoSmPhReaderP reader;
-//TODO: cache the queries for performance
-/*
-    if ( object_set )
-        reader = pMgr->GetDbObjectReader(dblink_set);
-    else
-        reader = pMgr->GetDbObjectsReader(dblink_set);
-*/
-    if ( !reader ) {
-        // Generate sql statement if not already done
-
-        // If joining to another table, generated from sub-clause for table.
-        FdoStringP joinFrom;
-        if ( (join != NULL) && (objectName == L"") ) 
-            joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
-
-        FdoStringP qualification;
-
-        if ( objectName != L"" ) {
-            // Selecting single object, qualify by this object.
-            qualification = L"  and ist.table_name collate utf8_bin = ?\n";
-        } 
-        else {
-            if ( join != NULL )
-                // Otherwise, if joining to another table, generated join clause.
-                qualification = FdoStringP::Format( L"  and (%ls)\n", (FdoString*) join->GetWhere(L"ist.table_name") );
-        }
-
-        //mysql> describe INFORMATION_SCHEMA.tables;
-        //+-----------------+--------------+------+-----+---------+-------+
-        //| Field           | Type         | Null | Key | Default | Extra |
-        //+-----------------+--------------+------+-----+---------+-------+
-        //| TABLE_CATALOG   | varchar(512) | YES  |     | NULL    |       |<- always NULL
-        //| TABLE_SCHEMA    | varchar(64)  | NO   |     |         |       |
-        //| TABLE_NAME      | varchar(64)  | NO   |     |         |       |
-        //| TABLE_TYPE      | varchar(64)  | NO   |     |         |       |
-        //| ENGINE          | varchar(64)  | YES  |     | NULL    |       |
-        //| VERSION         | bigint(21)   | YES  |     | NULL    |       |
-        //| ROW_FORMAT      | varchar(10)  | YES  |     | NULL    |       |
-        //| TABLE_ROWS      | bigint(21)   | YES  |     | NULL    |       |
-        //| AVG_ROW_LENGTH  | bigint(21)   | YES  |     | NULL    |       |
-        //| DATA_LENGTH     | bigint(21)   | YES  |     | NULL    |       |
-        //| MAX_DATA_LENGTH | bigint(21)   | YES  |     | NULL    |       |
-        //| INDEX_LENGTH    | bigint(21)   | YES  |     | NULL    |       |
-        //| DATA_FREE       | bigint(21)   | YES  |     | NULL    |       |
-        //| AUTO_INCREMENT  | bigint(21)   | YES  |     | NULL    |       |
-        //| CREATE_TIME     | datetime     | YES  |     | NULL    |       |
-        //| UPDATE_TIME     | datetime     | YES  |     | NULL    |       |
-        //| CHECK_TIME      | datetime     | YES  |     | NULL    |       |
-        //| TABLE_COLLATION | varchar(64)  | YES  |     | NULL    |       |
-        //| CHECKSUM        | bigint(21)   | YES  |     | NULL    |       |
-        //| CREATE_OPTIONS  | varchar(255) | YES  |     | NULL    |       |
-        //| TABLE_COMMENT   | varchar(80)  | NO   |     |         |       |
-        //+-----------------+--------------+------+-----+---------+-------+
-
-        // information_schema tables use the utf8 character set with a 
-        // case-insensitive collation. This causes problems with MySQL instances
-        // on Linux, where database and table names are case-sensitive.
-        // The following query overrides the collations to utf8_bin, which
-        // is case-sensitive. 
-
-        //TODO: find a way to read data/index directory; found no mention of how to do this in MySQL manual.
-		//TODO: read autoincrement_column_name from the column reader instead of this table reader
-        sqlString = FdoStringP::Format(
-            L"select %ls ist.table_name as name, lower(ist.table_type) as type,\n"
-            L"  ' ' as autoincrement_column_name, \n"
-            L"  ist.auto_increment as autoincrement_column_seed, \n"
-            L"  ist.engine as storage_engine, \n"
-            L"  ' ' as data_directory, \n"
-            L"  ' ' as index_directory, \n"
-            L"  table_collation \n"
-            L"  from %ls ist%ls \n"
-            L"  where ist.table_schema collate utf8_bin = ?\n"
-            L"  %ls\n"
-            L"  and ist.table_type in ('BASE TABLE', 'VIEW')\n"
-            L"  order by ist.table_name collate utf8_bin asc",
-            join ? L"distinct" : L"",
-            (FdoString*) tablesTableName,
-            (FdoString*) joinFrom,
-            (FdoString*) qualification
-        );
-
-        FdoSmPhRowsP rows = MakeRows( mgr );
-        FdoSmPhRowP row = rows->GetItem(0);
-
-        reader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, MakeBinds(mgr,ownerName,objectName) );
-/*
-        if ( object_set )
-            pMgr->SetDbObjectReader(reader, dblink_set);
-        else
-            pMgr->SetDbObjectsReader(reader, dblink_set);
-*/
-    }
-    else {
-        // Re-executing so update bind variables first.
-        FdoSmPhRdGrdQueryReader* pReader = (FdoSmPhRdGrdQueryReader*)(FdoSmPhReader*) reader;
-        FdoSmPhRowP binds = pReader->GetBinds();
-		FdoSmPhFieldsP	fields = binds->GetFields();
-
-        FdoSmPhFieldP(fields->GetItem(L"table_schema"))->SetFieldValue(ownerName);
-        if ( object_set )
-            FdoSmPhFieldP(fields->GetItem(L"table_name"))->SetFieldValue(objectName);
-
-        pReader->Execute();
-    }
-
-    return reader;
-}
-
-
-FdoSmPhRowP FdoSmPhRdMySqlDbObjectReader::MakeBinds( FdoSmPhMgrP mgr, FdoStringP ownerName, FdoStringP objectName )
-{
-    FdoSmPhRowP row = new FdoSmPhRow( mgr, L"Binds" );
-    FdoSmPhDbObjectP rowObj = row->GetDbObject();
-
-    FdoSmPhFieldP field = new FdoSmPhField(
-        row,
-        L"table_schema",
-        rowObj->CreateColumnDbObject(L"table_schema",false)
+    //TODO: find a way to read data/index directory; found no mention of how to do this in MySQL manual.
+	//TODO: read autoincrement_column_name from the column reader instead of this table reader
+    sqlString = FdoStringP::Format(
+        L"select %ls ist.table_name as name, lower(ist.table_type) as type,\n"
+        L"  ' ' as autoincrement_column_name, \n"
+        L"  ist.auto_increment as autoincrement_column_seed, \n"
+        L"  ist.engine as storage_engine, \n"
+        L"  ' ' as data_directory, \n"
+        L"  ' ' as index_directory, \n"
+        L"  table_collation \n"
+        L"  from %ls ist $(JOIN_FROM) \n"
+        L"  where ist.table_type in ('BASE TABLE', 'VIEW')\n"
+        L"  $(AND) $(QUALIFICATION)\n"
+        L"  order by ist.table_name collate utf8_bin asc",
+        join ? L"distinct" : L"",
+        (FdoString*) tablesTableName
     );
 
-    field->SetFieldValue(ownerName);
+    FdoSmPhReaderP reader = FdoSmPhRdDbObjectReader::MakeQueryReader(
+        L"",
+        mgr,
+        sqlString,
+        L"ist.table_schema collate utf8_bin",
+        L"ist.table_name collate utf8_bin",
+        ownerName,
+        objectNames,
+        join
+    );
 
-    if ( objectName.GetLength() > 0 ) {
-        field = new FdoSmPhField(
-            row,
-            L"table_name",
-            rowObj->CreateColumnDbObject(L"table_name",false)
-        );
-
-        field->SetFieldValue(objectName);
-    }
-
-    return( row );
+    return reader;
 }
 
 FdoSmPhRowsP FdoSmPhRdMySqlDbObjectReader::MakeRows( FdoSmPhMgrP mgr )

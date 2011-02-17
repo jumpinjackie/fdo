@@ -36,6 +36,7 @@ public:
     //      dbObject: Retrieve primary key columns for this database object 
     //      (usually a table).
     FdoSmPhRdMySqlPkeyReader(
+        FdoSmPhOwnerP    owner,
         FdoSmPhDbObjectP dbObject
     );
 

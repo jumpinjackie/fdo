@@ -19,6 +19,7 @@
 #include "stdafx.h"
 #include <Sm/Ph/Rd/Reader.h>
 #include <Sm/Ph/Rd/QueryReader.h>
+#include <Sm/Ph/Rd/DbObjectBinds.h>
 #include <Sm/Ph/Rd/SchemaDbObjectBinds.h>
 #include <Sm/Ph/DbObject.h>
 
@@ -106,19 +107,7 @@ FdoSmPhReaderP FdoSmPhRdReader::MakeQueryReader(
         }
 
         // Substitute join and qualification clauses into given SQL
-        finalSqlString = sqlString.Replace( L"$(JOIN_CLAUSE)", joinClause );
-        finalSqlString = finalSqlString.Replace( L"$(JOIN_FROM)", joinFrom );
-        finalSqlString = finalSqlString.Replace( L"$(QUALIFICATION)", qualification );
-
-        // Handle qualification clause connectors.
-        if ( qualification != L"" ) {
-            finalSqlString = finalSqlString.Replace( L"$(WHERE)", L"where" );
-            finalSqlString = finalSqlString.Replace( L"$(AND)", L"and" );
-        }
-        else {
-            finalSqlString = finalSqlString.Replace( L"$(WHERE)", L"" );
-            finalSqlString = finalSqlString.Replace( L"$(AND)", L"" );
-        }
+        finalSqlString = DoSqlSubstitutions(sqlString, joinClause, joinFrom, qualification );
 
         reader = mgr->CreateQueryReader(row, finalSqlString, binds->GetBinds() );
 
@@ -157,6 +146,110 @@ FdoSmPhReaderP FdoSmPhRdReader::MakeQueryReader(
     return reader;
 }
 
+FdoSmPhReaderP FdoSmPhRdReader::MakeQueryReader(
+    FdoStringP readerName,
+    FdoSmPhMgrP mgr,
+    FdoStringP sqlString,
+    FdoStringP ownerColumn,
+    FdoStringP dbObjectColumn,
+    FdoStringP ownerName,
+    FdoStringsP objectNames,
+    FdoSmPhRdTableJoinP join
+)
+{
+    FdoStringP           finalSqlString;
+
+    FdoSmPhReaderP reader;
+
+    // If static cursors enabled, resuse existing query reader if availabe.
+    if ( readerName.GetLength() > 0 ) 
+        reader = mgr->GetStaticReader ( readerName );
+
+    if ( !reader ) {
+        FdoSmPhRowsP rows = MakeRows( mgr );
+        FdoSmPhRowP row = rows->GetItem(0);
+
+        // Generate join and qualification clauses
+
+        // Create binds for object names
+        FdoSmPhRdDbObjectBindsP binds = new FdoSmPhRdDbObjectBinds(
+            mgr,
+            ownerColumn,
+            L"owner_name",
+            dbObjectColumn,
+            L"table_name",
+            ownerName,
+            objectNames
+        );
+
+        // Determine syntax caller wants for the join:
+        //      useClause=true - use a JOIN clause.
+        //      useClause=false - add join table to from clause and join to where clause.
+        bool useClause = sqlString.Contains( L"$(JOIN_CLAUSE)" );
+
+        // If joining to another table, generated from sub-clause for table.
+        FdoStringP joinFrom;
+        FdoStringP joinClause;
+        if ( join != NULL ) {
+            if ( useClause ) 
+                joinClause = join->GetClause( mgr, dbObjectColumn );
+            else
+                joinFrom = FdoStringP::Format( L"  , %ls\n", (FdoString*) join->GetFrom() );
+        }
+
+        // Get where clause for owner and object name binds.
+        FdoStringP qualification = binds->GetSQL();
+
+        if ( (!useClause) && (join != NULL) ) {
+            // If joining to another table, but not generating join clause, add join to qualification.
+            qualification += FdoStringP::Format( 
+                L"  %ls (%ls)\n", 
+                (qualification == L"") ? L"" : L"and",
+                (FdoString*) join->GetWhere(dbObjectColumn) 
+            );
+        }
+
+        // Substitute join and qualification clauses into given SQL
+        finalSqlString = DoSqlSubstitutions(sqlString, joinClause, joinFrom, qualification );
+
+        reader = mgr->CreateQueryReader(row, finalSqlString, binds->GetBinds() );
+
+        if (reader && (!join) && (readerName.GetLength() > 0) )
+            // Save away as static reader.
+			mgr->SetStaticReader ( readerName, reader );
+    }
+    else {
+        // Re-execute this existing reader.
+
+        FdoSmPhRdQueryReaderP queryReader = reader->SmartCast<FdoSmPhRdQueryReader>();
+            
+        // queryReader is NULL when it is an empty reader. No need to re-execute in this case.
+        if ( queryReader ) {
+            FdoSmPhRowP bindRow;
+            
+            // Update bind values
+            bindRow = queryReader->GetBinds();
+
+            FdoSmPhRdDbObjectBindsP binds = new FdoSmPhRdDbObjectBinds(
+                mgr,
+                ownerColumn,
+                L"owner_name",
+                dbObjectColumn,
+                L"table_name",
+                ownerName,
+                objectNames,
+                bindRow,
+                true
+            );
+
+            // re-execute
+            queryReader->Execute();
+        }
+    }
+
+    return reader;
+}
+
 FdoSmPhRowsP FdoSmPhRdReader::MakeRows( FdoSmPhMgrP mgr )
 {
     FdoSmPhRowsP rows = new FdoSmPhRowCollection();
@@ -180,4 +273,24 @@ FdoStringsP FdoSmPhRdReader::DbObjectName2Objects( FdoStringP dbObjectName )
         dbObjectNames->Add( dbObjectName );
 
     return dbObjectNames;
+}
+
+FdoStringP FdoSmPhRdReader::DoSqlSubstitutions( FdoStringP sqlString, FdoStringP joinClause, FdoStringP joinFrom, FdoStringP qualification )
+{
+    // Substitute join and qualification clauses into given SQL
+    FdoStringP ret = sqlString.Replace( L"$(JOIN_CLAUSE)", joinClause );
+    ret = ret.Replace( L"$(JOIN_FROM)", joinFrom );
+    ret = ret.Replace( L"$(QUALIFICATION)", qualification );
+
+    // Handle qualification clause connectors.
+    if ( qualification != L"" ) {
+        ret = ret.Replace( L"$(WHERE)", L"where" );
+        ret = ret.Replace( L"$(AND)", L"and" );
+    }
+    else {
+        ret = ret.Replace( L"$(WHERE)", L"" );
+        ret = ret.Replace( L"$(AND)", L"" );
+    }
+
+    return ret;
 }
