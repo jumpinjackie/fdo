@@ -30,12 +30,21 @@
 class FdoSmPhRdMySqlColumnReader : public FdoSmPhRdColumnReader
 {
 public:
-    FdoSmPhRdMySqlColumnReader (FdoSmPhMgrP mgr, FdoSmPhDbObjectP dbObject);
+    FdoSmPhRdMySqlColumnReader(
+        FdoSmPhOwnerP owner, 
+        FdoSmPhDbObjectP dbObject
+    );
+
+    FdoSmPhRdMySqlColumnReader(
+        FdoSmPhOwnerP owner, 
+        FdoStringsP objectNames
+    );
 
     FdoSmPhRdMySqlColumnReader(
         FdoSmPhOwnerP owner,
         FdoSmPhRdTableJoinP join
     );
+
 
     // Deactivates the query.
     ~FdoSmPhRdMySqlColumnReader(void);
@@ -51,13 +60,16 @@ public:
 
     virtual FdoInt32 GetFdoGeometryType();
     virtual FdoInt32 GetFdoGeometricType();
+
+protected:
+    virtual FdoSmPhRowsP MakeRows( FdoSmPhMgrP mgr );
+    
 private:
     // Create the column reader
-    FdoSmPhReaderP MakeQueryReader (
-        FdoSmPhMgrP mgr, 
-        const FdoSmPhOwner* owner,
-        FdoSmPhDbObjectP dbObject,
-        FdoSmPhRdTableJoinP join = (FdoSmPhRdTableJoin*) NULL
+    FdoSmPhReaderP MakeQueryReader(
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames,
+        FdoSmPhRdTableJoinP join = NULL
     );
 
     FdoSmPhRowP MakeBinds (FdoSmPhMgrP mgr, FdoStringP table_owner, FdoStringP table_name);

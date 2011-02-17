@@ -22,22 +22,45 @@
 #include "../../../../SchemaMgr/Ph/Rd/QueryReader.h"
 
 FdoSmPhRdMySqlFkeyReader::FdoSmPhRdMySqlFkeyReader(
-    FdoSmPhMgrP mgr,
+    FdoSmPhOwnerP owner,
     FdoSmPhDbObjectP    dbObject
 ) :
     FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL),
     mDbObject(dbObject)
 {
-    SetSubReader(MakeReader(mgr, (const FdoSmPhOwner*) (dbObject->GetParent()), dbObject));
+    SetSubReader(
+        MakeReader(
+            owner,
+            DbObject2Objects(dbObject)
+        )
+    );
 }
 
 FdoSmPhRdMySqlFkeyReader::FdoSmPhRdMySqlFkeyReader(
-    FdoSmPhMgrP mgr,
-    FdoSmPhOwnerP    owner
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames
 ) :
     FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL)
 {
-    SetSubReader(MakeReader(mgr, (FdoSmPhOwner*) owner, (FdoSmPhDbObject*) NULL));
+    SetSubReader(
+        MakeReader(
+            owner,
+            objectNames
+        )
+    );
+}
+
+FdoSmPhRdMySqlFkeyReader::FdoSmPhRdMySqlFkeyReader(
+    FdoSmPhOwnerP owner
+) :
+    FdoSmPhRdFkeyReader((FdoSmPhReader*) NULL)
+{
+    SetSubReader(
+        MakeReader(
+            owner,
+            DbObject2Objects((FdoSmPhDbObject*)NULL) 
+        )
+    );
 }
 
 FdoSmPhRdMySqlFkeyReader::~FdoSmPhRdMySqlFkeyReader(void)
@@ -45,13 +68,12 @@ FdoSmPhRdMySqlFkeyReader::~FdoSmPhRdMySqlFkeyReader(void)
 }
 
 FdoSmPhReaderP FdoSmPhRdMySqlFkeyReader::MakeReader(
-    FdoSmPhMgrP mgr,
-    const FdoSmPhOwner* owner,
-    FdoSmPhDbObjectP    dbObject
+    FdoSmPhOwnerP owner,
+    FdoStringsP objectNames
 )
 {
-    FdoSmPhMySqlOwner* mqlOwner = (FdoSmPhMySqlOwner*) owner;
-    FdoStringP objectName = dbObject ? dbObject->GetName() : L"";
+    FdoSmPhMgrP mgr = owner->GetManager();
+    FdoSmPhMySqlOwner* mqlOwner = (FdoSmPhMySqlOwner*) owner.p;
     FdoStringP ownerName = owner->GetName();
 
     //mysql> desc INFORMATION_SCHEMA.table_constraints;
@@ -99,43 +121,24 @@ FdoSmPhReaderP FdoSmPhRdMySqlFkeyReader::MakeReader(
         L" %ls kcu\n"
         L" where tc.constraint_schema collate utf8_bin  = kcu.constraint_schema\n"
         L"   and tc.constraint_name collate utf8_bin = kcu.constraint_name\n"
-        L"   and tc.constraint_schema collate utf8_bin = ?\n"
-        L"   %ls\n"
+        L"   $(AND) $(QUALIFICATION)\n"
         L"   and tc.constraint_type='FOREIGN KEY'\n"
         L" order by tc.table_name collate utf8_bin, tc.constraint_name collate utf8_bin, kcu.ordinal_position",
         (FdoString*) mqlOwner->GetTableConstraintsTable(),
-        (FdoString*) mqlOwner->GetKeyColumnUsageTable(),
-        dbObject ? L"and tc.table_name collate utf8_bin = ?" : L""
+        (FdoString*) mqlOwner->GetKeyColumnUsageTable()
     );
 
-    // Create a field object for each field in the select list
-    FdoSmPhRowsP rows = MakeRows(mgr);
-
-    // Create and set the bind variables
-    FdoSmPhRowP binds = new FdoSmPhRow( mgr, L"Binds" );
-    FdoSmPhDbObjectP rowObj = binds->GetDbObject();
-
-    FdoSmPhFieldP field = new FdoSmPhField(
-        binds,
-        L"constraint_schema",
-        rowObj->CreateColumnDbObject(L"constraint_schema",false)
+    FdoSmPhReaderP reader = FdoSmPhRdFkeyReader::MakeQueryReader(
+        L"",
+        mgr,
+        sql,
+        L"tc.constraint_schema collate utf8_bin",
+        L"tc.table_name collate utf8_bin",
+        ownerName,
+        objectNames,
+        (FdoSmPhRdTableJoin*) NULL
     );
 
-    field->SetFieldValue(ownerName);
-
-    if ( dbObject ) {
-        field = new FdoSmPhField(
-            binds,
-            L"table_name",
-            rowObj->CreateColumnDbObject(L"table_name",false)
-        );
-
-        field->SetFieldValue(objectName);
-    }
-
-//TODO: cache this query to make full use of the binds.
-    FdoSmPhRdGrdQueryReader* reader =
-        new FdoSmPhRdGrdQueryReader( FdoSmPhRowP(rows->GetItem(0)), sql, mgr, binds );
-
-    return( reader );
+    return reader;
 }
+

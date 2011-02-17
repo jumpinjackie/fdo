@@ -94,6 +94,8 @@ public:
 
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringP dbObject = L"") const;
 
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoStringsP dbObjects) const;
+
     // Create a reader to get all database objects for this join.
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoSmPhRdTableJoinP join ) const;
 
@@ -101,17 +103,27 @@ public:
 
 	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP tableName, FdoStringP constraintType) const;
 
+	virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringsP tableNames, FdoStringP constraintType) const;
+
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoSmPhRdTableJoinP join, FdoStringP constraintType) const;
 
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
 
+    virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader(  FdoStringsP objectNames ) const;
+
     virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader() const;
 
+    virtual FdoPtr<FdoSmPhRdIndexReader> CreateIndexReader( FdoStringsP objectNames ) const;
+
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader() const;
+
+    virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader(  FdoStringsP objectNames ) const;
 
     virtual FdoPtr<FdoSmPhRdPkeyReader> CreatePkeyReader( FdoPtr<FdoSmPhRdTableJoin> join ) const;
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader() const;
+
+    virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader(FdoStringsP objectNames) const;
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoSmPhRdTableJoinP join ) const;
 

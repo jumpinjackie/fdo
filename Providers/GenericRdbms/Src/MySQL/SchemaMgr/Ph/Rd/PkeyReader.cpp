@@ -23,17 +23,18 @@
 #include <Sm/Ph/Rd/DbObjectBinds.h>
 
 FdoSmPhRdMySqlPkeyReader::FdoSmPhRdMySqlPkeyReader(
+    FdoSmPhOwnerP       owner,
     FdoSmPhDbObjectP    dbObject
 ) :
     FdoSmPhRdPkeyReader((FdoSmPhReader*) NULL),
     mDbObject(dbObject)
 {
-    FdoSmPhOwnerP owner = FDO_SAFE_ADDREF((FdoSmPhOwner*)(FdoSmPhDbElement*)(dbObject->GetParent()));
-
-    FdoStringsP objectNames = FdoStringCollection::Create();
-    objectNames->Add(dbObject->GetName());
-
-    SetSubReader(MakeReader(owner,objectNames));
+    SetSubReader(
+        MakeReader(
+            owner,
+            DbObject2Objects(dbObject)
+        )
+    );
 }
 
 FdoSmPhRdMySqlPkeyReader::FdoSmPhRdMySqlPkeyReader(
@@ -41,9 +42,12 @@ FdoSmPhRdMySqlPkeyReader::FdoSmPhRdMySqlPkeyReader(
 ) :
     FdoSmPhRdPkeyReader((FdoSmPhReader*) NULL)
 {
-    FdoStringsP objectNames = FdoStringCollection::Create();
-
-    SetSubReader(MakeReader(owner,objectNames));
+    SetSubReader(
+        MakeReader(
+            owner,
+            DbObject2Objects((FdoSmPhDbObject*)NULL) 
+        )
+    );
 }
 
 FdoSmPhRdMySqlPkeyReader::FdoSmPhRdMySqlPkeyReader(
@@ -91,35 +95,7 @@ FdoSmPhReaderP FdoSmPhRdMySqlPkeyReader::MakeReader(
     FdoSmPhMySqlOwnerP mqlOwner = owner->SmartCast<FdoSmPhMySqlOwner>();
     FdoStringP ownerName = owner->GetName();
 
-    // Create binds for owner and optional object names
-
-    FdoSmPhRdDbObjectBindsP binds = new FdoSmPhRdDbObjectBinds(
-        mgr,
-        L"tc.table_schema",
-        L"owner_name",
-        L"tc.table_name",
-        L"table_name",
-        ownerName,
-        objectNames
-    );
-
     // Generate sql statement
-
-    // If joining to another table, generated from sub-clause for table.
-    FdoStringP joinFrom;
-    if ( join != NULL ) 
-        joinFrom = FdoStringP::Format( L"  , %ls", (FdoString*) join->GetFrom() );
-
-    // Get where clause for owner and object name binds.
-    FdoStringP qualification = binds->GetSQL();
-
-    // Need proper collation to get case-sensitive comparison.
-    qualification = qualification.Replace( L"= ?", L"collate utf8_bin = ?" );
-		
-    if ( join != NULL ) {
-        // If joining to another table, add generated join clause.
-        qualification += FdoStringP::Format( L"  and (%ls)", (FdoString*) join->GetWhere(L"tc.table_name") );
-    }
 
     // Generate SQL statement to get the primary key columns.
     //mysql> desc INFORMATION_SCHEMA.table_constraints;
@@ -160,27 +136,29 @@ FdoSmPhReaderP FdoSmPhRdMySqlPkeyReader::MakeReader(
     FdoStringP sqlString = FdoStringP::Format(
       L"select %ls tc.constraint_name as constraint_name,\n"
       L" tc.table_name as table_name, kcu.column_name as column_name\n"
-      L" from %ls tc, %ls kcu%ls\n"
+      L" from %ls tc, %ls kcu $(JOIN_FROM)\n"
       L" where (tc.constraint_schema collate utf8_bin = kcu.constraint_schema\n"
       L"     and tc.constraint_name collate utf8_bin = kcu.constraint_name\n"
       L"     and tc.table_schema collate utf8_bin = kcu.table_schema\n"
       L"     and tc.table_name collate utf8_bin = kcu.table_name\n"
-      L"     and %ls\n"
+      L"     $(AND) $(QUALIFICATION)\n"
       L"     and tc.constraint_type = 'PRIMARY KEY')\n"
       L" order by tc.table_name collate utf8_bin, kcu.ordinal_position",
       join ? L"distinct" : L"",
       (FdoString*) mqlOwner->GetTableConstraintsTable(),
-      (FdoString*) mqlOwner->GetKeyColumnUsageTable(),
-      (FdoString*)joinFrom,
-      (FdoString*) qualification
+      (FdoString*) mqlOwner->GetKeyColumnUsageTable()
     );
 
-    // Create a field object for each field in the select list.
-    FdoSmPhRowsP rows = MakeRows(mgr);
+    FdoSmPhReaderP reader = FdoSmPhRdPkeyReader::MakeQueryReader(
+        L"",
+        mgr,
+        sqlString,
+        L"tc.table_schema collate utf8_bin",
+        L"tc.table_name collate utf8_bin",
+        ownerName,
+        objectNames,
+        join
+    );
 
-//TODO: cache this query to make full use of the binds.
-    FdoSmPhRdGrdQueryReader* reader =
-        new FdoSmPhRdGrdQueryReader( FdoSmPhRowP(rows->GetItem(0)), sqlString, mgr, binds->GetBinds() );
-
-    return( reader );
+    return reader;
 }

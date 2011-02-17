@@ -45,7 +45,7 @@ protected:
     // Deactivates the reader.
 	~FdoSmPhRdReader(void);
 
-    // Creates an inner reader which uses SQL to get RDBMS elements
+    // MakeQueryReader creates an inner reader which uses SQL to get RDBMS elements
     // from the datastore. Called only for RDBMS's that have physical schemas.
     //
     // The inner reader massages the given SQL statement before passing it to the
@@ -103,6 +103,8 @@ protected:
     //          is empty then this argument is simply removed.
     //
     //
+
+    // Overload for RDBMS's that have native schemas.
     FdoSmPhReaderP MakeQueryReader(
         FdoStringP readerName,      // Static cursor name. If set then reader
                                     // will be cached for re-use.
@@ -114,6 +116,20 @@ protected:
         FdoStringsP objectNames,    // Names of tables to bind into query
                                     // Each object name must be of form:
                                     //    <schema_name>.<table_name>
+        FdoSmPhRdTableJoinP join    // Specifies a join to another table.
+    );
+
+    // Overload for RDBMS's that don't have native schemas.
+    FdoSmPhReaderP MakeQueryReader(
+        FdoStringP readerName,      // Static cursor name. If set then reader
+                                    // will be cached for re-use.
+                                    // Set it to L"" to skip caching.
+        FdoSmPhMgrP mgr,            // Physical Schema Manager
+        FdoStringP sqlString,       // SQL statement for retrieving RDBMS elements.
+        FdoStringP ownerColumn,     // Owner (datastore) column name
+        FdoStringP dbObjectColumn,  // Table column name
+        FdoStringP ownerName,       // Name of owner to bind into query
+        FdoStringsP objectNames,    // Names of tables to bind into query
         FdoSmPhRdTableJoinP join    // Specifies a join to another table.
     );
 
@@ -131,6 +147,8 @@ protected:
     // given dbObject name.
     FdoStringsP DbObjectName2Objects( FdoStringP dbObjectName );
 
+    // Called by MakeQueryReader to substitute arguments into SQL string.
+    FdoStringP DoSqlSubstitutions( FdoStringP sqlString, FdoStringP joinClause, FdoStringP joinFrom, FdoStringP qualification );
 };
 
 typedef FdoPtr<FdoSmPhRdReader> FdoSmPhRdReaderP;

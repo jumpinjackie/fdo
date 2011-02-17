@@ -35,13 +35,17 @@ public:
     //      mgr: Physical Schema Manager
     //      dbObject: Retrieve foreign keys for this database object.
     FdoSmPhRdMySqlFkeyReader(
-        FdoSmPhMgrP mgr,
+        FdoSmPhOwnerP owner,
         FdoSmPhDbObjectP    dbObject
     );
 
     FdoSmPhRdMySqlFkeyReader(
-        FdoSmPhMgrP mgr,
-        FdoSmPhOwnerP    owner
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames
+    );
+
+    FdoSmPhRdMySqlFkeyReader(
+        FdoSmPhOwnerP owner
     );
 
     // Deactivates the foreign key reader.
@@ -50,9 +54,8 @@ public:
 private:
 
     FdoSmPhReaderP MakeReader(
-        FdoSmPhMgrP mgr,
-        const FdoSmPhOwner* owner,
-        FdoSmPhDbObjectP    dbObject
+        FdoSmPhOwnerP owner,
+        FdoStringsP objectNames
     );
 
     FdoSmPhDbObjectP mDbObject;

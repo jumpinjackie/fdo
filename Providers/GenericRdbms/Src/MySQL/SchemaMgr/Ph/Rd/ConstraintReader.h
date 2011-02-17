@@ -49,6 +49,12 @@ public:
 
     FdoSmPhRdMySqlConstraintReader(
         FdoSmPhOwnerP owner,
+		FdoStringsP tableNames,
+        FdoStringP constraintType
+    );
+
+    FdoSmPhRdMySqlConstraintReader(
+        FdoSmPhOwnerP owner,
 		FdoSmPhRdTableJoinP join,
         FdoStringP constraintType
     );
@@ -65,7 +71,7 @@ private:
 
     FdoSmPhReaderP MakeReader(
         FdoSmPhOwnerP owner,
-		FdoStringP	tableName,
+		FdoStringsP	tableNames,
 		FdoSmPhRdTableJoinP join,
         FdoStringP constraintType
     );
