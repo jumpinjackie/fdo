@@ -703,6 +703,16 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
                 if ( viewReader ) 
                     view->CacheView( viewReader );
             }
+
+            // The current object may have already been in the cache, but now its
+            // components have been added. In this case, the index and base object
+            // loaders may have already visited this object and skipped it for 
+            // bulk loading indexes and base objects. Reset the index and base object
+            // loaders, so that they will revisit this object. Now that it has its
+            // components, it might be a bulk load candidate.
+
+            FDO_SAFE_RELEASE(mIndexLoader);
+            mNextBaseCandIdx = 0;
         }
     }
 
@@ -1100,7 +1110,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
             // loaders, so that they will revisit this object. Now that it has its
             // components, it might be a bulk load candidate.
 
-            mIndexLoader = NULL;
+            FDO_SAFE_RELEASE(mIndexLoader);
             mNextBaseCandIdx = 0;
         }
     }
