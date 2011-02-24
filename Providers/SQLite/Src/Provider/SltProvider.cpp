@@ -52,7 +52,7 @@ SLT_API FdoIConnection* CreateConnection()
 }
 
 
-static bool IsMetadataTable(const char* table)
+bool SltConnection::IsMetadataTable(const char* table)
 {
     if (sqlite3StrICmp(table, "sqlite_master") == 0)
         return true;
@@ -531,6 +531,8 @@ FdoICommand* SltConnection::CreateCommand(FdoInt32 commandType)
         case FdoCommandType_CreateSpatialContext:   return new SltCreateSpatialContext(this);
         case FdoCommandType_ApplySchema:            return new SltApplySchema(this);
         case FdoCommandType_ExtendedSelect:         return new SltExtendedSelect(this);
+        case FdoCommandType_GetSchemaNames:         return new SltGetSchemaNames(this);
+        case FdoCommandType_GetClassNames:          return new SltGetClassNames(this);
         default: break;
     }
     
@@ -652,6 +654,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
 {
     if (classNames && classNames->GetCount() != 0)
     {
+        SltStringList lstNames;
         FdoPtr<FdoFeatureSchemaCollection> pSchema = FdoFeatureSchemaCollection::Create(NULL);
         FdoPtr<FdoFeatureSchema> sch = FdoFeatureSchema::Create(L"Default", L"");
         pSchema->Add(sch);
@@ -660,7 +663,12 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
         {
             FdoPtr<FdoIdentifier> idClass = FdoIdentifier::Create(classNames->GetString(i));
             std::string clsName = W2A_SLOW(idClass->GetName());
-            SltMetadata* md = GetMetadata(clsName.c_str());
+            SltMetadata* md = FindMetadata(clsName.c_str());
+            if (md == NULL)
+            {
+                lstNames.push_back(clsName);
+                continue;
+            }
             FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
             if (fc)
             {
@@ -673,6 +681,27 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
                 strErr.append(idClass->GetName());
                 strErr.append(L"' does not exist!");
                 throw FdoException::Create(strErr.c_str());
+            }
+        }
+        if (lstNames.size() != 0)
+        {
+            SltMetadata::BuildMetadataInfo(this, &lstNames);
+            for(size_t i = 0; i < lstNames.size(); i++)
+            {
+                SltMetadata* md = FindMetadata(lstNames[i].c_str());
+                FdoPtr<FdoClassDefinition> fc = (md) ? md->ToClass() : NULL;
+                if (fc)
+                {
+                    FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(fc);
+                    clss->Add(fc_copy);
+                }
+                else
+                {
+                    std::wstring strErr(L"Feature class '");
+                    strErr.append(A2W_SLOW(lstNames[i].c_str()).c_str());
+                    strErr.append(L"' does not exist!");
+                    throw FdoException::Create(strErr.c_str());
+                }
             }
         }
         return FDO_SAFE_ADDREF(pSchema.p);
@@ -690,52 +719,15 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
     m_pSchema->Add(schema.p);
-    
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();
     
-    //first, make a list of all tables that can be FDO feature classes
-    std::vector<std::string> tables;
-
-    const char* tables_sql = "SELECT name FROM sqlite_master WHERE type=? ORDER BY name;";
-    sqlite3_stmt* pstmt = NULL;
-    const char* pzTail = NULL;
-    int rc;
-    if ((rc = sqlite3_prepare_v2(m_dbWrite, tables_sql, -1, &pstmt, &pzTail)) == SQLITE_OK)
+    SltMetadata::BuildMetadataInfo(this);
+    for (MetadataCache::iterator iter = m_mNameToMetadata.begin(); iter != m_mNameToMetadata.end(); iter++)
     {
-        sqlite3_bind_text(pstmt, 1, "table", 5, SQLITE_STATIC);
-        while (sqlite3_step(pstmt) == SQLITE_ROW)
-            tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
-    }
-    else
-    {
-        const char* err = sqlite3_errmsg(m_dbWrite);
-        if (err != NULL)
-            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
-        else
-            throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.", rc);
-    }
-
-    sqlite3_reset(pstmt);
-    sqlite3_bind_text(pstmt, 1, "view", 4, SQLITE_STATIC);
-    while (sqlite3_step(pstmt) == SQLITE_ROW)
-        tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
-
-    sqlite3_finalize(pstmt);
-
-    //now for each table, map to an FDO class
-    for (size_t i=0; i<tables.size(); i++)
-    {
-        //first check if table is an FDO metadata table and skip it
-        if (IsMetadataTable(tables[i].c_str()))
-            continue;
-
-        SltMetadata* md = GetMetadata(tables[i].c_str());
-        
-        if (md)
-        {
-            FdoPtr<FdoClassDefinition> fc = md->ToClass();
+        SltMetadata* md = iter->second;
+        FdoPtr<FdoClassDefinition> fc = md->ToClass();
+        if (fc)
             classes->Add(fc);
-        }
     }
 
     //We need to clone the schema, because the caller may modify it and mess us up.
@@ -1674,35 +1666,41 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
     return (FdoInt32)ret;
 }
 
+bool SltConnection::NeedsMetadataLoaded(const char* table)
+{
+    if (IsMetadataTable(table))
+        return false;
+    return (m_mNameToMetadata.find((char*)table) == m_mNameToMetadata.end());
+}
+
+void SltConnection::AddMetadata(const char* table, SltMetadata* md)
+{
+#ifdef _DEBUG
+    MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
+    if (iter != m_mNameToMetadata.end())
+        throw FdoException::Create(L"Invalid usage of AddMetadata");
+#endif
+    m_mNameToMetadata[_strdup(table)] = md;
+}
+
+SltMetadata* SltConnection::FindMetadata(const char* table)
+{
+    MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
+    return (iter == m_mNameToMetadata.end()) ? NULL : iter->second;
+}
+
 SltMetadata* SltConnection::GetMetadata(const char* table)
 {
-    SltMetadata* ret = NULL;
-
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
-    
+
     if (iter == m_mNameToMetadata.end())
     {
-        if (!IsMetadataTable(table))
-        {
-            ret = new SltMetadata(this, table, m_bUseFdoMetadata && m_bHasFdoMetadata);
-            FdoPtr<FdoClassDefinition> fc = ret->ToClass();
-
-            //Check if it failed to find the corresponding database table
-            if (fc == NULL)
-            {
-                delete ret;
-                ret = NULL;
-            }
-        }
-
-        m_mNameToMetadata[_strdup(table)] = ret; //Note the memory allocation here
+        SltStringList lst;
+        lst.push_back(table);
+        SltMetadata::BuildMetadataInfo(this, &lst);
+        iter = m_mNameToMetadata.find((char*)table);
     }
-    else 
-    {
-        ret = iter->second;
-    }
-
-    return ret;
+    return (iter == m_mNameToMetadata.end()) ? NULL : iter->second;
 }
 
 void SltConnection::GetGeometryExtent(const unsigned char* ptr, int len, DBounds* ext)
@@ -2756,68 +2754,80 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
     if (dt == FdoDataType_DateTime)
     {
         *dateBuff = '\0';
-        FdoDateTime dtRet;
-        FdoDateTimeValue* dataValue;
         if (constr->GetConstraintType() == FdoPropertyValueConstraintType_Range)
         {
             FdoPropertyValueConstraintRange* rgConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
             FdoPtr<FdoDataValue> dataMin = rgConstr->GetMinValue();
             FdoPtr<FdoDataValue> dataMax = rgConstr->GetMaxValue();
-            if((dataMin != NULL && dataMin->GetDataType() == FdoDataType_DateTime && !dataMin->IsNull()) ||
-                (dataMax != NULL  && dataMax->GetDataType() == FdoDataType_DateTime && !dataMax->IsNull()))
+            FdoDateTime dtMin;
+            FdoDateTime dtMax;
+            bool dtMinNull = dataMin == NULL || dataMin->IsNull();
+            bool dtMaxNull = dataMax == NULL || dataMax->IsNull();
+
+            if (dtMinNull && dtMaxNull)
+                throw FdoException::Create(L"Invalid Datetime value");
+
+            if (!dtMinNull)
             {
-                sb.Append(" CONSTRAINT CHK_", 16);
-                sb.Append(GenerateValidConstrName(propName).c_str());
-                sb.Append(" CHECK(", 7);
-                if ((dataMin != NULL && !dataMin->IsNull()) && (dataMax != NULL  && !dataMax->IsNull())
-                    && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
+                if (dataMin->GetDataType() == FdoDataType_String)
+                    dtMin = DateFromString(static_cast<FdoStringValue*>(dataMin.p)->GetString(), true);
+                else if (dataMin->GetDataType() == FdoDataType_DateTime)
+                    dtMin = static_cast<FdoDateTimeValue*>(dataMin.p)->GetDateTime();
+                else
+                    throw FdoException::Create(FdoStringP(L"Invalid Datetime value: ") + dataMin->ToString());
+            }
+
+            if (!dtMaxNull)
+            {
+                if (dataMax->GetDataType() == FdoDataType_String)
+                    dtMax = DateFromString(static_cast<FdoStringValue*>(dataMax.p)->GetString(), true);
+                else if (dataMax->GetDataType() == FdoDataType_DateTime)
+                    dtMax = static_cast<FdoDateTimeValue*>(dataMax.p)->GetDateTime();
+                else
+                    throw FdoException::Create(FdoStringP(L"Invalid Datetime value: ") + dataMax->ToString());
+            }
+
+            sb.Append(" CONSTRAINT CHK_", 16);
+            sb.Append(GenerateValidConstrName(propName).c_str());
+            sb.Append(" CHECK(", 7);
+            if (!dtMinNull && !dtMaxNull && rgConstr->GetMinInclusive() && rgConstr->GetMaxInclusive())
+            {
+                sb.AppendDQuoted(propName);
+                sb.Append(" BETWEEN ", 9);
+                
+                DateToString(&dtMin, dateBuff, 31);
+                sb.AppendSQuoted(dateBuff);
+                sb.Append(" AND ", 5);
+                DateToString(&dtMax, dateBuff, 31);
+                sb.AppendSQuoted(dateBuff);
+            }
+            else
+            {
+                if (!dtMinNull)
                 {
                     sb.AppendDQuoted(propName);
-                    sb.Append(" BETWEEN ", 9);
-                    
-                    dataValue = static_cast<FdoDateTimeValue*>(dataMin.p);
-                    dtRet = dataValue->GetDateTime();
-                    DateToString(&dtRet, dateBuff, 31);
-                    sb.AppendSQuoted(dateBuff);
-                    sb.Append(" AND ", 5);
-                    dataValue = static_cast<FdoDateTimeValue*>(dataMax.p);
-                    dtRet = dataValue->GetDateTime();
-                    DateToString(&dtRet, dateBuff, 31);
+                    if(rgConstr->GetMinInclusive())
+                        sb.Append(">=", 2);
+                    else
+                        sb.Append(">", 1);
+                    DateToString(&dtMin, dateBuff, 31);
                     sb.AppendSQuoted(dateBuff);
                 }
-                else
+                if (!dtMaxNull)
                 {
-                    if (dataMin != NULL && !dataMin->IsNull())
-                    {
-                        sb.AppendDQuoted(propName);
-                        if(rgConstr->GetMinInclusive())
-                            sb.Append(">=", 2);
-                        else
-                            sb.Append(">", 1);
-                        dataValue = static_cast<FdoDateTimeValue*>(dataMin.p);
-                        dtRet = dataValue->GetDateTime();
-                        DateToString(&dtRet, dateBuff, 31);
-                        sb.AppendSQuoted(dateBuff);
-                    }
-                    if (dataMax != NULL && !dataMax->IsNull())
-                    {
-                        if(dataMin != NULL && !dataMin->IsNull())
-                            sb.Append(" AND ", 5);
-                        
-                        sb.AppendDQuoted(propName);
-                        if(rgConstr->GetMinInclusive())
-                            sb.Append("<=", 2);
-                        else
-                            sb.Append("<", 1);
-                        dataValue = static_cast<FdoDateTimeValue*>(dataMax.p);
-                        dtRet = dataValue->GetDateTime();
-                        DateToString(&dtRet, dateBuff, 31);
-                        sb.AppendSQuoted(dateBuff);
-                    }
+                    if(!dtMinNull)
+                        sb.Append(" AND ", 5);
+                    
+                    sb.AppendDQuoted(propName);
+                    if(rgConstr->GetMinInclusive())
+                        sb.Append("<=", 2);
+                    else
+                        sb.Append("<", 1);
+                    DateToString(&dtMax, dateBuff, 31);
+                    sb.AppendSQuoted(dateBuff);
                 }
-
-                sb.Append(")", 1);
             }
+            sb.Append(")", 1);
         }
         else
         {
@@ -2833,14 +2843,21 @@ void SltConnection::AddPropertyConstraintDefaultValue(FdoDataPropertyDefinition*
                 sb.Append(" IN(", 4);
                 for(int idx = 0; idx < cnt; idx++)
                 {
+                    FdoDateTime dtRet;
                     FdoPtr<FdoDataValue> dataItem = dataColl->GetItem(idx);
-                    if(dataItem != NULL && dataItem->GetDataType() == FdoDataType_DateTime && !dataItem->IsNull())
+                    if (dataItem != NULL && !dataItem->IsNull())
                     {
-                        dataValue = static_cast<FdoDateTimeValue*>(dataItem.p);
-                        dtRet = dataValue->GetDateTime();
-                        DateToString(&dtRet, dateBuff, 31);
-                        sb.AppendSQuoted(dateBuff);
+                        if (dataItem->GetDataType() == FdoDataType_String)
+                            dtRet = DateFromString(static_cast<FdoStringValue*>(dataItem.p)->GetString(), true);
+                        else if(dataItem->GetDataType() == FdoDataType_DateTime)
+                            dtRet = static_cast<FdoDateTimeValue*>(dataItem.p)->GetDateTime();
+                        else
+                            throw FdoException::Create(FdoStringP(L"Invalid Datetime value: ") + dataItem->ToString());
                     }
+                    else
+                        throw FdoException::Create(L"Invalid Datetime value");
+                    DateToString(&dtRet, dateBuff, 31);
+                    sb.AppendSQuoted(dateBuff);
                     if (idx != (cnt-1))
                         sb.Append(",", 1);
                 }
@@ -4151,4 +4168,63 @@ void SltConnection::FreeCachedSchema ()
     // The cached FDO schema will need to be refreshed
     FDO_SAFE_RELEASE(m_pSchema);
     m_pSchema = NULL;
+}
+
+FdoStringCollection* SltConnection::GetDbClasses()
+{
+    FdoPtr<FdoStringCollection> retVal = FdoStringCollection::Create();
+    FdoStringP schName(L"Default:");
+    if (m_pSchema != NULL)
+    {
+         FdoPtr<FdoFeatureSchema> schema = m_pSchema->GetItem(0);
+         FdoPtr<FdoClassCollection> clss = schema->GetClasses();
+         int cnt = clss->GetCount();
+         for (int idx = 0; idx < cnt; idx++)
+         {
+             FdoPtr<FdoClassDefinition> cls = clss->GetItem(idx);
+             retVal->Add(schName + cls->GetName());
+         }
+    }
+    else
+    {
+        //first, make a list of all tables that can be FDO feature classes
+        std::vector<std::string> tables;
+
+        const char* tables_sql = "SELECT name FROM sqlite_master WHERE type=? ORDER BY name;";
+        sqlite3_stmt* pstmt = NULL;
+        const char* pzTail = NULL;
+        int rc;
+        if ((rc = sqlite3_prepare_v2(m_dbWrite, tables_sql, -1, &pstmt, &pzTail)) == SQLITE_OK)
+        {
+            sqlite3_bind_text(pstmt, 1, "table", 5, SQLITE_STATIC);
+            while (sqlite3_step(pstmt) == SQLITE_ROW)
+                tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
+        }
+        else
+        {
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+            else
+                throw FdoException::Create(L"Failed to get all tables that can be FDO feature classes.", rc);
+        }
+
+        sqlite3_reset(pstmt);
+        sqlite3_bind_text(pstmt, 1, "view", 4, SQLITE_STATIC);
+        while (sqlite3_step(pstmt) == SQLITE_ROW)
+            tables.push_back((const char*)sqlite3_column_text(pstmt, 0));
+
+        sqlite3_finalize(pstmt);
+
+        //now for each table, map to an FDO class
+        for (size_t i=0; i<tables.size(); i++)
+        {
+            //first check if table is an FDO metadata table and skip it
+            if (IsMetadataTable(tables[i].c_str()))
+                continue;
+            std::wstring clsName = A2W_SLOW(tables[i].c_str());
+            retVal->Add(schName + clsName.c_str());            
+        }
+    }
+    return FDO_SAFE_ADDREF(retVal.p);
 }
