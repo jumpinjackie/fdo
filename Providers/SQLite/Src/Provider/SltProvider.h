@@ -61,6 +61,7 @@ struct QueryCacheRec
     sqlite3_stmt* stmt;
     bool inUse;
 };
+
 typedef std::vector<QueryCacheRec> QueryCacheRecList;
 typedef std::map<char*, QueryCacheRecList, string_less> QueryCache;
 
@@ -264,9 +265,14 @@ public:
     bool AddSupportForTolerance();
     void FreeCachedSchema ();
     void ClearClassFromCachedSchema(const char* table, bool fullDrop);
+    FdoStringCollection* GetDbClasses();
+    static bool IsMetadataTable(const char* table);
+    bool CanUseFdoMetadata() {return m_bUseFdoMetadata && m_bHasFdoMetadata;};
+    bool NeedsMetadataLoaded(const char* table);
+    void AddMetadata(const char* table, SltMetadata* md);
+    SltMetadata* FindMetadata(const char* table);
 
 private :
-
     void AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname);
     void AddDataCol(FdoDataPropertyDefinition* dpd, const wchar_t* fcname);
     void AddClassToSchema(FdoClassCollection* classes, FdoClassDefinition* fc);
