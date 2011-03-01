@@ -24,7 +24,6 @@
 #include "StringUtil.h"
 
 class SltConnection;
-class SpatialIterator;
 class RowidIterator;
 class SltIdReader;
 
@@ -81,7 +80,6 @@ class SltReader :   public FdoIScrollableFeatureReader,
                     FdoIdentifierCollection*    props, 
                     const char*                 fcname, 
                     const char*                 strWhere, 
-                    SpatialIterator*            si,
                     bool                        useFastStepping,
                     RowidIterator*              ri,
                     FdoParameterValueCollection*  parmValues,
@@ -263,10 +261,6 @@ protected:
         StringList m_reissueProps;
         StringBuffer m_fromwhere;
 
-        //stuff related to spatial filters
-        SpatialIterator*    m_si;
-        int                 m_siEnd;
-        sqlite3_int64       m_curfid;
         // kept here only for special cases when provider needs it alive
         // due some optimizations to avoid copying a geometry
         FdoFilter*          m_filter;
@@ -275,6 +269,8 @@ protected:
 protected:
         //stuff related to scrollable readers
         RowidIterator*      m_ri;
+        int                 m_siEnd;
+        sqlite3_int64       m_curfid;
 };
 
 

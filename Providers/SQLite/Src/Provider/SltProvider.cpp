@@ -1076,13 +1076,13 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
         FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
         collidf->Add(rowIdIdf);
-        FdoPtr<SltReader> rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), NULL, canFastStep, ri, parmValues, sbOrderBy.Data());
+        FdoPtr<SltReader> rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data());
         ri = GetScrollableIterator(rdrSc.p);
         strWhere.Reset();
         sbOrderBy.Reset();
         canFastStep = true;
     }
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), NULL, canFastStep, ri, parmValues, sbOrderBy.Data());
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data());
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
@@ -1887,7 +1887,7 @@ void SltConnection::RebuildSpatialOperator(SpatialIndexDescriptor* spDesc, SltMe
     idcol->Add(idgeom);
 
     SpatialIndex* si = spDesc->GetSpatialIndex();
-    rdr = new SltReader(this, idcol, table, "", NULL, true, NULL, NULL);
+    rdr = new SltReader(this, idcol, table, "", true, NULL, NULL);
     FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     while (rdr->ReadNext())
     {
@@ -3183,39 +3183,12 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
         mustKeepFilterAlive = qt.MustKeepFilterAlive();
     }
 
-    SpatialIterator* siter = NULL;
     RowidIterator* ri = NULL;
 
 
     //if we have a query by specific ID, it will take precedence over spatial query
     if (rowids)
-    {
         ri = new RowidIterator(-1, rowids);
-    }
-    else if (!bbox.IsEmpty())
-    {
-        //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfcname);
-
-        DBounds total_ext;
-        si->GetTotalExtent(total_ext);
-
-        if (bbox.Contains(total_ext))
-        {
-            //only use spatial iterator if the search bounds does not
-            //fully contain the data bounds
-        }
-        else if (bbox.Intersects(total_ext))
-        {
-            siter = new SpatialIterator(bbox, si);
-        }
-        else
-        {
-            // enforce an empty result since result will be empty
-            rowids = new std::vector<__int64>();
-            ri = new RowidIterator(-1, rowids);
-        }
-    }
 
     FdoPtr<FdoIdentifierCollection> props = FdoIdentifierCollection::Create();
     if (isExtentReq)
@@ -3230,7 +3203,7 @@ bool SltConnection::GetExtentAndCountInfo(FdoFeatureClass* fc, FdoFilter* filter
         props->Add(idf);
     }
 
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), siter, canFastStep, ri, parmValues);
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), canFastStep, ri, parmValues);
     FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     DBounds ext;
     while(rdr->ReadNext())
