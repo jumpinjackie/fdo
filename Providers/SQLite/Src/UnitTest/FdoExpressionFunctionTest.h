@@ -35,6 +35,7 @@ class FdoExpressionFunctionTest : public TestCommonExpressionFunctionW
 {
 
   CPPUNIT_TEST_SUB_SUITE(FdoExpressionFunctionTest, TestCommonExpressionFunctionW);
+  CPPUNIT_TEST( TestCustomFunction );
   CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -57,6 +58,8 @@ protected:
     void TestDateStringConv();
 
     void TestConcat();
+    
+    void TestCustomFunction();
 
 };  //  class FdoExpressionFunctionTest
 

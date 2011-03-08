@@ -23,6 +23,10 @@
 #include <Spatial/SpatialStd.h>
 #include <Spatial/SpatialUtility.h>
 #include <FdoCommonMiscUtil.h>
+#include <FdoExpressionEngine.h>
+#include "FdoExpressionEngineIAggregateFunction.h"
+#include "FdoExpressionEngineINonAggregateFunction.h"
+#include "FdoExpressionEngineFunctionCollection.h"
 
 #ifdef _WIN32
 static const wchar_t* EXPFCT_TEST_FILE = L"..\\..\\TestData\\ExpFctTest.sqlite";
@@ -307,4 +311,129 @@ void FdoExpressionFunctionTest::TestConcat()
    	}
 	printf( "Done\n" );
 
+}
+
+class FdoCustomUserFunctionTest: public FdoExpressionEngineINonAggregateFunction
+{
+public:
+    static FdoCustomUserFunctionTest* Create()
+    {
+        return new FdoCustomUserFunctionTest();
+    }
+    static FdoFunctionDefinition* CreateFunctionDefinition()
+    {
+        FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
+	    return FdoFunctionDefinition::Create(
+									    L"CustomFunction", //NOXLATE
+									    L"Test Function.", //NOXLATE
+									    false,
+									    signatures,
+									    FdoFunctionCategoryType_Unspecified,
+									    true);
+    }
+    virtual FdoFunctionDefinition* GetFunctionDefinition()
+    {
+        if (!m_functionDefinition)
+        {
+            m_functionDefinition = FdoCustomUserFunctionTest::CreateFunctionDefinition();
+        }
+        return FDO_SAFE_ADDREF(m_functionDefinition);
+    }
+    virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues)
+    {
+        FdoInt32 count = literalValues->GetCount();
+        if (count != 0)
+        {
+            FdoPtr<FdoLiteralValue> input = literalValues->GetItem(0);
+            return FdoStringValue::Create(input->ToString());
+        }
+        else
+            return FdoStringValue::Create(L"test");
+    }
+    virtual FdoCustomUserFunctionTest* CreateObject()
+    {
+        return new FdoCustomUserFunctionTest();
+    }
+private:
+    FdoCustomUserFunctionTest()
+    {
+        m_functionDefinition = NULL;
+    }
+    ~FdoCustomUserFunctionTest()
+    {
+        FDO_SAFE_RELEASE(m_functionDefinition);
+    }
+    virtual void Dispose()
+    {
+        delete this;
+    }
+	
+    FdoFunctionDefinition* m_functionDefinition;
+};
+
+void FdoExpressionFunctionTest::TestCustomFunction()
+{
+    FdoPtr<FdoIConnection> conn;
+
+	conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
+    try
+    {
+        bool expExc = false;
+        try
+        {
+            FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+            select->SetFeatureClassName(L"exfct_c1");
+            FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+
+	        FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+
+	        FdoPtr<FdoExpressionEngineIFunction> function = FdoCustomUserFunctionTest::Create();
+	        userDefinedFunctions->Add(function);
+            FdoExpressionEngine::RegisterFunctions(userDefinedFunctions);
+
+            FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"CustomFunction(233)");
+            FdoPtr<FdoClassDefinition> cls = rdr->GetClassDefinition();
+            {
+                FdoPtr<FdoExpressionEngine> eng = FdoExpressionEngine::Create(rdr, cls, NULL);
+
+                FdoPtr<FdoLiteralValue> retVal = eng->Evaluate(exp);
+                printf ("\n Result = %ls\n", retVal->ToString());
+            }
+            FdoExpressionEngine::UnRegisterFunctions(userDefinedFunctions);
+
+            expExc = true;
+            {
+                FdoPtr<FdoExpressionEngine> eng = FdoExpressionEngine::Create(rdr, cls, NULL);
+
+                FdoPtr<FdoLiteralValue> retVal = eng->Evaluate(exp);
+                CPPUNIT_FAIL("\nExpected exception missing!");
+            }
+        }
+        catch(FdoException* exc)
+        {
+            if (!expExc)
+            {
+                UnitTestUtil::PrintException(exc);
+                exc->Release();
+                CPPUNIT_FAIL("\nUnexpected exception: ");
+            }
+            else
+                exc->Release();
+        }
+    }
+    catch(FdoException* exc)
+    {
+        UnitTestUtil::PrintException(exc);
+        exc->Release();
+        CPPUNIT_FAIL("\nUnexpected exception: ");
+    }
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
 }
