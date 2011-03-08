@@ -54,6 +54,11 @@ FdoIConnection* c_KgOraUtil::OpenNanaimoConnection_10_2()
   return c_KgOraUtil::OpentConnection(L"Username=nanaimo;Password=nanaimo;Service=//temp10gr2/ora10gr2;OracleSchema=NANAIMO");    
 }
 
+FdoIConnection* c_KgOraUtil::OpenUnitTestConnection_Elektro()
+{
+  //return c_KgOraUtil::OpentConnection(L"Username=unittest;Password=unittest;Service=//temp10gr2/ora10gr2;OracleSchema=UNITTEST");    
+  return c_KgOraUtil::OpentConnection(L"Username=elektro;Password=elektro;Service=//192.168.0.38:1522/epdb;OracleSchema=elektro");    
+}
 
 FdoIConnection* c_KgOraUtil::OpenPerfomanceTestConnection()
 {

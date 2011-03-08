@@ -37,6 +37,9 @@ c_Oci_ColumnData::c_Oci_ColumnData(  )
   m_ColSize = 0;
   
   m_DataBufferType = e_Undefined;
+  
+  m_LobBuff = NULL;                     
+  m_LobBuffSize = 0; 
 }
 void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDataType,const wchar_t*TypeName,int ColumnSize,int DataArraySize )
 {
@@ -82,6 +85,7 @@ void c_Oci_ColumnData::Set( c_Oci_Connection*OciConn,int ColumnNumber,int OciDat
     
     case SQLT_LBI:
       m_DataBufferType = e_OciLongRaw;
+      //m_DataBufferType = e_OciBlob;
     break;
     
     case SQLT_BLOB:
@@ -343,6 +347,14 @@ c_Oci_ColumnData::~c_Oci_ColumnData(  )
     break;
     
   }
+  
+  if( m_LobBuff )
+  {
+    delete [] m_LobBuff;
+    m_LobBuff=NULL;
+    m_LobBuffSize = 0; 
+  }
+  
 }
 
 bool c_Oci_ColumnData::IsNull()
@@ -463,7 +475,52 @@ unsigned char* c_Oci_ColumnData::GetLongRaw()
     return &m_DataLongRaw[m_CurrentRow*m_ColSize];
   }
 
-  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData:: ColumnData is not Blob!");
+  if( m_DataBufferType==e_OciBlob || m_DataBufferType==e_OciClob)
+  {
+    long buffsize = c_Oci_ColumnData::GetLongRawLength(); 
+    
+    if( m_LobBuff )
+    {
+      if( buffsize > m_LobBuffSize )
+      {
+        delete []m_LobBuff;
+        
+        if( buffsize < 4000 )
+          m_LobBuffSize = 4000;
+        else
+          m_LobBuffSize = buffsize;
+        m_LobBuff = new unsigned char[m_LobBuffSize+4];
+      }
+    }
+    else
+    {
+      if( buffsize < 4000 )
+        m_LobBuffSize = 4000;
+      else
+        m_LobBuffSize = buffsize;
+      m_LobBuff = new unsigned char[m_LobBuffSize+4];
+    }
+    
+    oraub8 amtp = buffsize;
+
+    m_OciConn->OciCheckError( OCILobRead2 ( m_OciConn->m_OciHpServiceContext,m_OciConn->m_OciHpError,
+      m_DataLobLocator[m_CurrentRow],
+      &amtp, // oraub8             *byte_amtp,
+      0, //oraub8             *char_amtp,
+      1, // oraub8             offset,
+      m_LobBuff, // void               *bufp,
+      amtp, // oraub8             bufl,
+      OCI_ONE_PIECE , // ub1                piece,
+      0, // void               *ctxp, 
+      NULL, //OCICallbackLobRead2 (cbfp) (void *ctxp,const void *bufp,oraub8 lenp,ub1 piecep,void **changed_bufpp,oraub8 *changed_lenp)
+      OCI_UTF16ID, // ub2                csid,
+      SQLCS_IMPLICIT  // ub1                csfrm 
+      ));
+
+    return m_LobBuff;      
+  }
+  
+  throw new c_Oci_Exception(0,0,L"c_Oci_ColumnData::GetLongRaw Unsupported Data Type!");
 }
 
 void c_Oci_ColumnData::GetLobData(unsigned long& BuffSize,void* BuffPtr)
@@ -619,10 +676,14 @@ void* c_Oci_ColumnData::GetDataRealLengthBuffer()
   switch(m_DataBufferType)
   {
    case e_OciLongRaw:
+   {
+    return m_DataLength;
+   }
+   break;
    case e_OciBlob:
    case e_OciClob:
     {      
-      return m_DataLength;
+      return NULL;
     }
     break;
     
@@ -660,14 +721,20 @@ int c_Oci_ColumnData::GetDataDefineType()
     break;
     case e_OciLongRaw:
     {
-      return m_OciDataType;  
+      //return m_OciDataType;  
+      return SQLT_LBI;  
     }
     break;
     case e_OciBlob:
+    {
+      return SQLT_BLOB;
+    }
+    break;
     case e_OciClob:
     {
       //return m_OciDataType ;  
-      return m_OciDataType;
+      //return m_OciDataType;
+      return SQLT_CLOB;
     }
     break;
     case e_OciSdoGeometry:
@@ -682,7 +749,7 @@ int c_Oci_ColumnData::GetDataDefineType()
   return NULL;
 }
 
-int c_Oci_ColumnData::GetDataDefineSize()
+long c_Oci_ColumnData::GetDataDefineSize()
 {
   switch(m_DataBufferType)
   {

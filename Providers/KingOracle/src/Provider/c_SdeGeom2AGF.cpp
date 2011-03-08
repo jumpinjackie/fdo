@@ -19,7 +19,7 @@
 #include "c_SdeGeom2AGF.h"
 
 
-#define D_BUFF_SIZE_INC 300 * 3 * 8 // three hundred 3 dim points
+#define D_BUFF_SIZE_INC 600 * 3 * 8 // six hundred 3 dim points
 #define D_BUFF_SIZE_RESERVE 512
 
 
@@ -975,7 +975,7 @@ void c_SdeGeom2AGF::UnpackParts()
       {
         part->m_NumberOfPoints = part_point_count;
         part = AddPart();
-        part_point_count=0;
+        part_point_count=-1;
         part->m_IndexOfIntegers = int_count + 2; // skip separator
         //part_start_ind = int_count + 2; // skip separator
         

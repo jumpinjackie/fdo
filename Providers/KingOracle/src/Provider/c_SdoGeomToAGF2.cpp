@@ -19,7 +19,7 @@
 #include "c_SdoGeomToAGF2.h"
 
 
-#define D_BUFF_SIZE_INC 300 * 3 * 8 // three hundred 3 dim points
+#define D_BUFF_SIZE_INC 600 * 3 * 8 // six hundred 3 dim points
 #define D_BUFF_SIZE_RESERVE 512
 
 
@@ -1301,6 +1301,98 @@ bool c_SdoGeomToAGF2::AGF_Get_CurveString(int& ElemInfo_Index)
   return true;
 }//end of c_SdoGeomToAGF2::AGF_Get_CurveString
 
+
+
+bool c_SdoGeomToAGF2::AGF_Get_ExteriorRing(int& ElemInfo_Index,bool& IsLinear,bool ForceCurve)
+{
+  int eleminfo_etype = GetSdoElemInfo(ElemInfo_Index+1); // do not step forward with ++
+  switch( eleminfo_etype )
+  {
+    case 1003:   // exteriror ring (must be  counterclockwise order of points)
+    {         
+
+      // 
+      IsLinear = ForceCurve ? false : true;
+
+      // check how exterior ring is defined
+      int eleminfo_interp = GetSdoElemInfo(ElemInfo_Index+2);
+      switch( eleminfo_interp )      
+      {
+        case 1:
+        {
+          if( ForceCurve )
+          {
+            if( !AGF_Get_CurvePointString(ElemInfo_Index) ) 
+            {
+              return false;
+            }
+
+            IsLinear = false;
+          }
+          else
+          {
+            if( !AGF_Get_LinearString(ElemInfo_Index) )
+            {
+              return false; // ni prebran eterior ring
+            }
+          }
+        }
+        break;
+      case 2:  // arc string
+        {
+          if( !AGF_Get_CurveArcString(ElemInfo_Index) ) 
+          {
+            return false;
+          }
+
+          IsLinear = false;
+        }
+        break;
+      case 3: // rect
+        {
+          // rect like MBR
+          // now in ordintaes there are 2 points   
+          AGF_WriteInt( 5 );
+          AGF_WriteRectangle(ElemInfo_Index);
+          ElemInfo_Index += 3;
+        }
+        break;
+      case 4: // circle
+        {
+          return false;
+        }
+        break;
+        default:
+        {
+          return false;
+        }
+        break;
+      }
+
+      int numrings=1;   // exterior ring is read
+
+    }
+    break;
+    case 1005:   // compound ring - exteriror ring  (compound some are straight lines, some are arcs
+    {
+      // elem_interp is number of subelement contained in this compund line polygon
+      // elem_interp is number of next triplets (subelemnts) in m_SdoGeom->getSdo_elem_info()
+      // in subelemnts only allowed is etype == 2
+
+      // read exterior ring
+      if( !AGF_Get_CurveString(ElemInfo_Index) ) return false;
+      IsLinear = false;
+    }
+    break;
+    default:  
+    {
+      return false;
+    }
+    break;
+  }
+  
+  return true;
+}
 //
 // Reads polygon
 // Starts from element 'ElemInfo_Index' which is index of first triplet in m_SdoGeom->getSdo_elem_info() describing polygon
@@ -1409,13 +1501,13 @@ bool c_SdoGeomToAGF2::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,b
         {
         // rect like MBR
         // now in ordintaes there are 2 points   
-          AGF_UpdateInt( akb_numrings_buffpos, 1 );       
           AGF_WriteInt( 5 );
           AGF_WriteRectangle(ElemInfo_Index);
         }
         break;
         case 4: // circle
         {
+          return false;
         }
         break;
         default:
@@ -1451,8 +1543,75 @@ bool c_SdoGeomToAGF2::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,b
       }
       
       islinear = all_islinear; 
+    }
+    break;
+    case 2003:
+    {
+    // polygon has started with interior ring
+    // skip all interior ringd (2003 and 2005) until found exterior ring (1005)
+      int start_eleminfo_index = ElemInfo_Index;
+
+
+      int exterior_eleminfo_index = ElemInfo_Index + 3;
+
+      bool found_exterior = false;
+      while( !found_exterior  && (exterior_eleminfo_index < m_ElemInfoSize ))            
+      {
+        int etype = GetSdoElemInfo(exterior_eleminfo_index+1); // do not step forward with ++
+        if( etype == 1005 || etype == 1003)
+        {
+          found_exterior = true;
+          break;
+        }
+        
+        exterior_eleminfo_index += 3;
+      }      
+      if( !found_exterior ) return false; // found only interior ring - no exterior ring - error
       
+      int akb_tempbuff_buffpos = m_BuffLen;
+      int akb_numrings_buffpos = m_BuffLen;     // remember where number of rings is
+
+      AGF_WriteInt(0); // number of rings is
+
+
+      // 
+      bool all_islinear = ForceCurve ? false : true;
       
+
+      // check how exterior ring is defined
+      ElemInfo_Index = exterior_eleminfo_index;
+      if( !AGF_Get_ExteriorRing(exterior_eleminfo_index,all_islinear,ForceCurve) )
+      {
+        RestoreBuff(akb_tempbuff_buffpos);
+        return false;
+      }
+      
+      int numrings=1;   // exterior ring is read
+      
+      // read interior rings 
+      ElemInfo_Index = start_eleminfo_index;
+      if( all_islinear && !ForceCurve ) // if up to now is linear then try to read as linear
+      {
+        bool inner_islinear=true;
+        AGF_Get_LinearRings_Etype2003(ElemInfo_Index,numrings,inner_islinear);         
+
+        AGF_UpdateInt( akb_numrings_buffpos, numrings );       
+
+        // exterior ring was read as linear 
+        if( !inner_islinear )
+        {
+          RestoreBuff(akb_tempbuff_buffpos);
+          return false;
+        }
+      }
+      else
+      {
+        AGF_Get_CurveInnerRings_Etype2003_2005(ElemInfo_Index,numrings,ForceCurve);         
+        AGF_UpdateInt( akb_numrings_buffpos, numrings );           
+      }
+      
+      // set next elem info to read to be first after exterior ring
+      ElemInfo_Index = exterior_eleminfo_index + 3;
     }
     break;
     
@@ -1480,6 +1639,59 @@ bool c_SdoGeomToAGF2::AGF_Get_GType3_PolygonOrCurvePolygon(int& ElemInfo_Index,b
       
       islinear = false;     
             
+    }
+    break;
+    case 2005:
+    {
+    // polygon has started with interior ring
+    // skip all interior (2003 and 2005) until found exterior ring (1005)
+      int start_eleminfo_index = ElemInfo_Index;
+      
+      
+      int exterior_eleminfo_index = ElemInfo_Index + 3;
+            
+      bool found_exterior = false;
+      while( !found_exterior  && (exterior_eleminfo_index < m_ElemInfoSize ))            
+      {
+        int etype = GetSdoElemInfo(exterior_eleminfo_index+1); // do not step forward with ++
+        if( etype == 1005 )
+        {
+          found_exterior = true;
+          break;
+        }
+        
+        exterior_eleminfo_index += 3;
+      }      
+      if( !found_exterior ) return false; // found only interior ring - no exterior ring - error
+      
+      // read exterior; then return to read interiors
+      int akb_numrings_buffpos = m_BuffLen;
+
+      AGF_WriteInt(0); // numrings
+
+      int numrings=0;
+      
+      islinear = false;   
+      // read exterior ring
+      // check how exterior ring is defined
+      ElemInfo_Index = exterior_eleminfo_index;
+      if( !AGF_Get_ExteriorRing(exterior_eleminfo_index,islinear,true) )
+      {
+        return false;
+      }
+
+      numrings++;
+
+      // read interior rings 
+      AGF_Get_CurveInnerRings_Etype2003_2005(start_eleminfo_index,numrings,true);   
+
+      AGF_UpdateInt( akb_numrings_buffpos, numrings );   
+
+        
+      
+      // set next elem info to read to be first after exterior ring
+      ElemInfo_Index = exterior_eleminfo_index + 3;
+      
     }
     break;
     default:

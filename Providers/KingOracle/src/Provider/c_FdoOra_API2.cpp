@@ -682,7 +682,17 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int S
   {            
     FdoType = FdoDataType_DateTime;    
     isfdotype=true;
-  } 
+  } else
+  if( FdoCommonOSUtil::stricmp(OraType,"BLOB") == 0 )
+  {            
+    FdoType = FdoDataType_BLOB;    
+    isfdotype=true;
+  } else
+  if( FdoCommonOSUtil::stricmp(OraType,"CLOB") == 0 )
+  {            
+    FdoType = FdoDataType_CLOB;    
+    isfdotype=true;
+  }  
   
   #ifdef _DEBUG
   if( !isfdotype ) 
@@ -2000,7 +2010,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
     L" ,g.g_table_schema,g.g_table_name,g.geometry_type,g.coord_dimension"
     L" ,r.srid,r.srtext,r.falsex,r.falsey,r.xyunits,r.falsez,r.zunits,r.falsem,r.munits" 
 	// 1SPATIAL START
-	L" ,l.gsize1"
+	L" ,l.gsize1, l.gsize2"
 	// 1SPATIAL END
     L" FROM sde.layers l INNER JOIN (sde.geometry_columns g INNER JOIN sde.spatial_references r ON g.srid = r.srid)" 
     L" ON l.table_name = g.f_table_name and l.owner = g.f_table_schema";
@@ -2114,6 +2124,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       //sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(16);
 		sde_munits = stm->IsColumnNull(17) ? 1 : stm->GetDouble(17);
 		double gsize1 = stm->IsColumnNull(18) ? 1 : stm->GetDouble(18);
+		double gsize2 = stm->IsColumnNull(19) ? 1 : stm->GetDouble(19);
 		// 1SPATIAL END
       
 
@@ -2243,7 +2254,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
       
 		// 1SPATIAL START
         //phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str());
-		phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str(), gsize1);
+		phys_class->SetSdeClass(true,sde_featurekey_colname.c_str(),sde_full_geometry_table_name.c_str(),sde_geom_type,sde_full_index_table_name.c_str(), gsize1,gsize2);
 		// 1SPATIAL END
 
         FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -2480,6 +2491,14 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
 
         case FdoDataType_Int64:
           OraType = L"NUMBER(19,0)";
+        break;
+        
+        case FdoDataType_BLOB:
+          OraType = L"BLOB";
+        break;
+        
+        case FdoDataType_CLOB:
+          OraType = L"CLOB";
         break;
         
         default:

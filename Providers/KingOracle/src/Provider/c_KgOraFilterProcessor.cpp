@@ -323,6 +323,45 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     FdoPtr<FdoDoubleValue> fval_gymax = FdoDoubleValue::Create(gymax);
     FdoStringP param_gymax = m_ExpressionProcessor.PushParameter(*fval_gymax);
     
+    
+      	// 1SPATIAL START
+      	FdoStringP szORFilter;
+    	if (m_ClassDef->GetSdeGSize2() > 0)
+      	{
+        		double gxmin2 = 16777216 + floor( minx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
+        		double gxmax2 = 16777216 + floor( maxx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
+        		double gymin2 = 16777216 + floor( miny / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
+        		double gymax2 = 16777216 + floor( maxy / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
+        
+          		FdoPtr<FdoDoubleValue> fval_gxmin2 = FdoDoubleValue::Create(gxmin2);
+        		FdoStringP param_gxmin2 = m_ExpressionProcessor.PushParameter(*fval_gxmin2);
+        
+          		FdoPtr<FdoDoubleValue> fval_gxmax2 = FdoDoubleValue::Create(gxmax2);
+        		FdoStringP param_gxmax2 = m_ExpressionProcessor.PushParameter(*fval_gxmax2);
+        
+          		FdoPtr<FdoDoubleValue> fval_gymin2 = FdoDoubleValue::Create(gymin2);
+        		FdoStringP param_gymin2 = m_ExpressionProcessor.PushParameter(*fval_gymin2);
+        
+          		FdoPtr<FdoDoubleValue> fval_gymax2 = FdoDoubleValue::Create(gymax2);
+        		FdoStringP param_gymax2 = m_ExpressionProcessor.PushParameter(*fval_gymax2);
+        
+          		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= %s  AND  SP_.gx <= %s  AND  SP_.gy >= %s AND SP_.gy <= %s  /* GSize2=%.0lf */) "
+          										,(const wchar_t*)param_gxmin2,(const wchar_t*)param_gxmax2,(const wchar_t*)param_gymin2,(const wchar_t*)param_gymax2
+          										, m_ClassDef->GetSdeGSize2() );
+        
+          //		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= %.0lf  AND  SP_.gx <= %.0lf  AND  SP_.gy >= %.0lf AND SP_.gy <= %.0lf "
+          //										L" /* minx2=%.0lf  m_OraSridDesc.m_SDE_XYUnit=%.0lf  RES=%.0lf  GSize2=%.0lf */ "
+          //										L" ) "
+          //										,gxmin2,gxmax2,gymin2,gymax2
+          //										,minx2,m_OraSridDesc.m_SDE_XYUnit, floor( minx2 / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()))
+          //										,m_ClassDef->GetSdeGSize2() );
+          	}
+    	else
+      		szORFilter = FdoStringP::Format(L" ");
+    	// 1SPATIAL END
+      
+      
+      
     FdoPtr<FdoDoubleValue> fval_maxx = FdoDoubleValue::Create(maxx);
     FdoStringP param_maxx = m_ExpressionProcessor.PushParameter(*fval_maxx);
     
@@ -339,22 +378,27 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     // this goes into FROM part of SQL
     FdoStringP sbuff = FdoStringP::Format(L"(SELECT  /*+ INDEX(SP_ %s) */ DISTINCT sp_fid, eminx, eminy, emaxx,"
         L" emaxy FROM %s SP_  WHERE "
-		// 1SPATIAL START
-       // L" SP_.gx >= 0 AND SP_.gy >= 0"
-		L" SP_.gx >= %s AND SP_.gx <= %s"
-		L" AND SP_.gy >= %s AND SP_.gy <= %s"
-		L" /* XYUnit=%.0lf  GSize1=%.0lf */"
-		// 1SPATIAL END
+        // 1SPATIAL START
+               // L" SP_.gx >= 0 AND SP_.gy >= 0"
+        		L" ("
+        		L"  (SP_.gx >= %s AND SP_.gx <= %s"
+        		L"  AND SP_.gy >= %s AND SP_.gy <= %s"
+        		L"  /* XYUnit=%.0lf  GSize1=%.0lf  GSize2=%.0lf */) "
+        		L" %s "
+        		L" )"        
+        // 1SPATIAL END
         L" AND SP_.eminx <= %s AND SP_.eminy <= %s AND"
         L" SP_.emaxx >= %s AND SP_.emaxy >= %s) S_",
-		indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
-		// 1SPATIAL START
-        // ,maxx,maxy,minx,miny
-		// ,minx,maxx,miny,maxy,maxx,maxy,minx,miny
-		,(const wchar_t*)param_gxmin,(const wchar_t*)param_gxmax,(const wchar_t*)param_gymin,(const wchar_t*)param_gymax
-		,m_OraSridDesc.m_SDE_XYUnit,m_ClassDef->GetSdeGSize1()
-		,(const wchar_t*)param_maxx,(const wchar_t*)param_maxy,(const wchar_t*)param_minx,(const wchar_t*)param_miny
-		// 1SPATIAL END
+        		indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
+        		// 1SPATIAL START
+                // ,maxx,maxy,minx,miny
+        		// ,minx,maxx,miny,maxy,maxx,maxy,minx,miny
+        		,(const wchar_t*)param_gxmin,(const wchar_t*)param_gxmax,(const wchar_t*)param_gymin,(const wchar_t*)param_gymax
+        		,m_OraSridDesc.m_SDE_XYUnit,m_ClassDef->GetSdeGSize1()
+        		,m_ClassDef->GetSdeGSize2()
+        		,(const wchar_t*)szORFilter
+        		,(const wchar_t*)param_maxx,(const wchar_t*)param_maxy,(const wchar_t*)param_minx,(const wchar_t*)param_miny
+        		// 1SPATIAL END
        );
        
     m_SDE_SelectSpatialIndex = sbuff;   

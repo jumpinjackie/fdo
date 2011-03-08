@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\..\bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="..\..\obj\Provider\Win32\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -185,8 +185,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="..\..\bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="..\..\obj\Provider\Win32\$(ConfigurationName)"
+			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -345,7 +345,7 @@
 		<Configuration
 			Name="Debug_FDO_3_4|Win32"
 			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -673,7 +673,7 @@
 		<Configuration
 			Name="Debug_FDO_3_5|Win32"
 			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"
@@ -749,7 +749,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning $(ProjectName).dll"
-				CommandLine="copy /y $(OutDir)\*.dll ..\UnitTest\$(ConfigurationName)\&#x0D;&#x0A;copy /y $(OutDir)\*.pdb ..\UnitTest\$(ConfigurationName)\&#x0D;&#x0A;call KingStampVersion $(OutDir)"
+				CommandLine="copy /y $(OutDir)\*.dll ..\UnitTest\$(ConfigurationName)\&#x0D;&#x0A;copy /y $(OutDir)\*.pdb ..\UnitTest\$(ConfigurationName)\&#x0D;&#x0A;call KingStampVersion $(OutDir)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -838,7 +838,7 @@
 		<Configuration
 			Name="Release_FDO_3_5|Win32"
 			OutputDirectory="..\..\Bin\Win32\$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="1"

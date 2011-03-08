@@ -663,6 +663,7 @@ void ut_InsertUpdateDelete::InsertMultiGeometry()
 
 }//end of ut_InsertUpdateDelete::InsertMultiGeometry()
 
+/*
 void ut_InsertUpdateDelete::Update_BLDG_POLYGON()
 {
   FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
@@ -893,3 +894,4 @@ catch(FdoException* ex)
 }
   
 }
+*/

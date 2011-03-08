@@ -8,7 +8,7 @@ class ut_InsertUpdateDelete : public CppUnit::TestFixture
     CPPUNIT_TEST( InsertUnicode );    
     CPPUNIT_TEST( InsertMultiPoint );
     CPPUNIT_TEST( InsertMultiGeometry );
-    CPPUNIT_TEST( Update_BLDG_POLYGON );
+    //CPPUNIT_TEST( Update_BLDG_POLYGON );
   CPPUNIT_TEST_SUITE_END();
   
 public:
@@ -24,7 +24,7 @@ public:
   void InsertMultiPoint();
   void InsertMultiGeometry();
   
-  void Update_BLDG_POLYGON();
+  //void Update_BLDG_POLYGON();
   
 protected:
   void PrepareTables(FdoIConnection* Connection);  
