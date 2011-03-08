@@ -141,3 +141,9 @@ void FdoExpressionEngine::GetExpressionIdentifiers(FdoClassDefinition* originalC
 {
     FdoExpressionEngineImp::GetExpressionIdentifiers(originalClassDef, expression, identifiers);
 }
+
+void FdoExpressionEngine::UnRegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+{
+    FdoExpressionEngineImp::UnRegisterFunctions(userDefinedFunctions);
+}
+
