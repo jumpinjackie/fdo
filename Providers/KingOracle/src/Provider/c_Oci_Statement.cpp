@@ -267,7 +267,7 @@ int c_Oci_Statement::ExecuteSelectAndDefine( int FetchSize, int ExecMode /*= OCI
 {
 
 m_FetchArraySize = FetchSize;
-sword execstatus = OCIStmtExecute(m_OciConn->m_OciHpServiceContext, m_OciHpStm, m_OciConn->m_OciHpError, 0, 0, (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT);
+sword execstatus = OCIStmtExecute(m_OciConn->m_OciHpServiceContext, m_OciHpStm, m_OciConn->m_OciHpError, 0, 0, (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT );
 if( execstatus != OCI_SUCCESS && execstatus!=OCI_NO_DATA )
 {
   m_OciConn->OciCheckError(execstatus);

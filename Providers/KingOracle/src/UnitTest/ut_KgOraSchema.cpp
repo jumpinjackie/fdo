@@ -78,6 +78,44 @@ catch(FdoException* ex)
   
 }//end of ut_KgOraSchema::DescribeSchema
 
+void ut_KgOraSchema::DescribeSchema_Elektro()
+{
+  try
+  {
+    FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_Elektro();
+
+    c_KgOraConnection* kingora_conn = (c_KgOraConnection*)conn.p;
+    kingora_conn->ClearCachedSchemaDesc();
+
+    FdoPtr<FdoIDescribeSchema> comm = (FdoIDescribeSchema*)conn->CreateCommand(FdoCommandType_DescribeSchema);
+
+
+    FdoPtr<FdoFeatureSchemaCollection> schemas = comm->Execute();
+
+    CPPUNIT_ASSERT_MESSAGE( "FdoIDescribeSchema:Execute returns NULL schema collection" , schemas );
+
+
+    long count_schema =schemas->GetCount();
+
+    FdoPtr<FdoFeatureSchema> schema = schemas->GetItem(0);
+
+    FdoPtr<FdoClassCollection> coll_class = schema->GetClasses();
+    long count_classes = coll_class->GetCount();
+
+    conn->Close();
+
+
+    //CPPUNIT_ASSERT_MESSAGE( "FdoIDescribeSchema:Execute returns 0 spatial contexts " , count );
+  }
+  catch(FdoException* ex)
+  {
+    FdoStringP str = ex->GetExceptionMessage();
+    ex->Release();
+    CPPUNIT_FAIL( (const char*)str );
+  }
+
+}//end of ut_KgOraSchema::DescribeSchema_Elektro
+
 
 
 void ut_KgOraSchema::DifferentOwner_Prepare()

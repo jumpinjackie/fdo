@@ -212,45 +212,4 @@ catch(FdoException* ex)
 
 
 
-//
-// Test geometry transform from sdo_geometry to FDF fromat and back to sdo_geometry
-//
-void ut_SelectOrderBy::SelectMultiPoint()
-{
-
-  FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
-  
-  // create test table with different data types
-  FdoPtr<FdoISQLCommand> sqlcomm = (FdoISQLCommand*)conn->CreateCommand( FdoCommandType_SQLCommand );
-
-
-try
-// execute select order by  
-{  
-  FdoPtr<FdoISelect> comm_select = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );    
-  comm_select->SetFeatureClassName( L"TEST~POINTS~GEOMETRY" );
-    
-  comm_select->Execute();
-  FdoPtr<FdoIFeatureReader> freader = comm_select->Execute();
-  unsigned long previd;
-  bool isfirst=true;
-  while( freader->ReadNext() )
-  {
-    int id = freader->GetInt32(L"FEATID");
-    freader->GetGeometry(L"GEOMETRY");
-    isfirst=false;
-  }
- freader->Close();
-
-  conn->Close();
-}  
-catch(FdoException* ex)
-{
-  FdoStringP str = ex->GetExceptionMessage();
-  ex->Release();
-  CPPUNIT_FAIL( (const char*)str );
-}
-
-}//end of ut_SelectOrderBy::SelectOrderBy
-
 

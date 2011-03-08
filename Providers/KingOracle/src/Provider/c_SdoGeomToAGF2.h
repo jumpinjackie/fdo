@@ -98,6 +98,8 @@ protected:
   
   bool AGF_Get_CurveString(int& ElemInfo_Index);
   
+  bool AGF_Get_ExteriorRing(int& ElemInfo_Index,bool& IsLinear,bool ForceCurve);
+  
   //int AGF_Get_CurveRings_Etype2005(int& ElemInfo_Index,int*& AkbBuff,int& NumRings);
   
   bool AGF_Get_CurveInnerRings_Etype2003_2005(int& ElemInfo_Index,int& NumRings,bool ForceCurve);
@@ -118,6 +120,7 @@ protected:
   double GetSdoPointX();
   double GetSdoPointY();
   double GetSdoPointZ();
+  
 };
 
 #endif

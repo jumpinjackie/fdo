@@ -3,7 +3,7 @@
 #include "ut_KgOraConnection.h"
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ut_KgOraConnection);
+//CPPUNIT_TEST_SUITE_REGISTRATION(ut_KgOraConnection);
 
 
 
@@ -517,10 +517,10 @@ catch(FdoException* ex)
 void ut_KgOraConnection::setUp()
 {
   //m_Conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
-  m_Conn = c_KgOraUtil::OpenNanaimoConnection_10_2();
+  //m_Conn = c_KgOraUtil::OpenNanaimoConnection_10_2();
 }
 
 void ut_KgOraConnection::tearDown()
 {
-  m_Conn->Close();
+  //m_Conn->Close();
 }

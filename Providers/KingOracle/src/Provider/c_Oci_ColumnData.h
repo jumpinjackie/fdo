@@ -59,8 +59,8 @@ public:
   void* GetDataIndDefineBuffer();
   
   int GetDataDefineType();
-  int GetDataDefineSize();
-  
+  long GetDataDefineSize();
+
   OCIType* GetDataOciType() { return m_OciType; }
   
   
@@ -97,9 +97,13 @@ protected:
 
   int m_ColumnNumber;
   int m_OciDataType;
-  int m_ColSize;
+  long m_ColSize;
   
   int m_DataArraySize;
+  
+  unsigned char* m_LobBuff; // when data type is Lob it is used to allocate memory to get data from loblocator
+                            // it is valid only for one GetLongRaw ( next GetLongRaw will deallocate previous one)
+  unsigned long m_LobBuffSize; // how much was allocated                            
   
   e_OciDataBufferType m_DataBufferType;
   

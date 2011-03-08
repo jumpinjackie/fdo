@@ -31,13 +31,13 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   
   long ordnum = SdoGeom->GetSdoOrdinatesSize();
   long einfonum = SdoGeom->GetSdoElemInfoSize();
-  long buffsize = ordnum * 24 + einfonum * 6  + 256;
+  long buffsize = ordnum * 24 + einfonum * 6  + 1024;
   
   wchar_t* Buff = new wchar_t[buffsize];
   
   
   
-  wchar_t bufnum[128];
+  wchar_t bufnum[256];
   
   wcscpy(Buff,L"MDSYS.SDO_GEOMETRY(");
   
@@ -103,12 +103,14 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   long sizeord = (long)SdoGeom->GetSdoOrdinatesSize();
   if( sizeord > 0 )
   {
+    double coord = SdoGeom->GetSdoOrdinate(0);
     FdoCommonOSUtil::swprintf(bufnum,128,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(0));    
     wcscat(Buff,bufnum);    
       
     for(long ind=1;ind<sizeord;ind++)
     {
       wcscat(Buff,L",");
+      coord = SdoGeom->GetSdoOrdinate(ind);
       FdoCommonOSUtil::swprintf(bufnum,128,L"%.8lf",(double)SdoGeom->GetSdoOrdinate(ind));    
       wcscat(Buff,bufnum);    
     }
@@ -117,6 +119,8 @@ wchar_t* c_Ora_API2::SdoGeomToStringW(c_SDO_GEOMETRY *SdoGeom)
   
   // end of SDO_GEOMETRY_TYPE(
   wcscat(Buff,L")");
+  
+  unsigned long len = wcslen(Buff);
   
   return Buff;
 }//end of c_Ora_API2::SdoGeomToString
