@@ -36,6 +36,7 @@ PostGisFdoImportExportTest.cpp \
 PostGisFdoInsertTest.cpp \
 PostGisFdoMultiThreadTest.cpp \
 PostGisFdoSelectTest.cpp \
+PostGisFdoSpatialContextTest.cpp \
 PostGisFdoSqlCmdTest.cpp \
 PostGisFdoUpdateTest.cpp \
 PostGisGeometryTests.cpp \
@@ -55,6 +56,7 @@ PostGisFdoImportExportTest.h \
 PostGisFdoInsertTest.h \
 PostGisFdoMultiThreadTest.h \
 PostGisFdoSelectTest.h \
+PostGisFdoSpatialContextTest.h \
 PostGisFdoSqlCmdTest.h \
 PostGisFdoUpdateTest.h \
 PostGisGeometryTests.h \

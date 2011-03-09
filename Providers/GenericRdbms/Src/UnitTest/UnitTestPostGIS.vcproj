@@ -1001,6 +1001,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoSpatialContextTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoSpatialContextTest.h"
+				>
+			</File>
+			<File
 				RelativePath="Common\FdoSqlCmdTest.cpp"
 				>
 			</File>
@@ -1206,6 +1214,14 @@
 			</File>
 			<File
 				RelativePath="PostGis\PostGisFdoSelectTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoSpatialContextTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PostGis\PostGisFdoSpatialContextTest.h"
 				>
 			</File>
 			<File

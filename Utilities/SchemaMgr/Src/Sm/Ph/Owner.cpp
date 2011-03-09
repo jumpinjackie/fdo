@@ -398,6 +398,20 @@ FdoSmPhCoordinateSystemP FdoSmPhOwner::FindCoordinateSystemByWkt( FdoStringP wkt
     return coordSys;
 }
 
+void FdoSmPhOwner::CacheCoordinateSystem( FdoSmPhCoordinateSystemP coordSys )
+{
+    FdoInt32 index = -1;
+
+    if ( !mCoordinateSystems ) 
+        mCoordinateSystems = new FdoSmPhCoordinateSystemCollection();
+    else
+        index = mCoordinateSystems->IndexOf(coordSys->GetName());
+
+    // Add coordinate system only if not already in collection.
+    if ( index < 0 ) 
+        mCoordinateSystems->Add(coordSys);
+}
+
 FdoStringP FdoSmPhOwner::GetBestSchemaName() const
 {
     return FdoSmPhMgr::RdSchemaPrefix + GetName();
@@ -1133,12 +1147,18 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
 
 void FdoSmPhOwner::CacheCandIndexes( FdoStringP objectName )
 {
+    FdoPtr<FdoSmPhIndexLoader> indexLoader;
+
     if ( !mIndexLoader ) {
-        FdoPtr<FdoSmPhIndexLoader> indexLoader = CreateIndexLoader( GetDbObjects() );
+        indexLoader = CreateIndexLoader( GetDbObjects() );
         mIndexLoader = FDO_SAFE_ADDREF( indexLoader.p );
     }
+    else
+    {
+        indexLoader = FDO_SAFE_ADDREF(mIndexLoader);
+    }
 
-    mIndexLoader->Load( objectName, !mDbObjectsCached, GetCandFetchSize() );
+    indexLoader->Load( objectName, !mDbObjectsCached, GetCandFetchSize() );
 }
 
 bool FdoSmPhOwner::GetBulkLoadPkeys()

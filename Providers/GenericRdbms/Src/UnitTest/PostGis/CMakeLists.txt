@@ -32,6 +32,7 @@ set( PostGisUnitTests_STAT_SRCS
 	PostGisFdoInsertTest.cpp
 	PostGisFdoMultiThreadTest.cpp
 	PostGisFdoSelectTest.cpp
+	PostGisFdoSpatialContextTest.cpp
 	PostGisFdoSqlCmdTest.cpp
 	PostGisFdoUpdateTest.cpp
 	PostGisGeometryTests.cpp
