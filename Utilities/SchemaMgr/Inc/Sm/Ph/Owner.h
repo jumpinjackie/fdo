@@ -152,6 +152,10 @@ public:
     // Returns NULL if coordinate system not found.
     virtual FdoSmPhCoordinateSystemP FindCoordinateSystemByWkt( FdoStringP wkt );
 
+    // Adds the given coordinate system to this owner's cache.
+    // Does nothing if the coordinate system is already cached.
+    virtual void CacheCoordinateSystem( FdoSmPhCoordinateSystemP coordSys );
+
     // Reverse-engineers an FDO feature schema name from this datastore.
     // Default implementation returns datastore name prepended by "Fdo".
     // "Fdo" is prepended to prevent name conflict with special schema 

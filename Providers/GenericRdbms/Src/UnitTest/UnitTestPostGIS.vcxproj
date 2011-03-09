@@ -305,6 +305,7 @@
     <ClCompile Include="Common\FdoSchemaRollbackTest.cpp" />
     <ClCompile Include="Common\FdoSchemaTest.cpp" />
     <ClCompile Include="Common\FdoSelectTest.cpp" />
+    <ClCompile Include="Common\FdoSpatialContextTest.cpp" />
     <ClCompile Include="Common\FdoSqlCmdTest.cpp" />
     <ClCompile Include="Common\FdoUpdateTest.cpp" />
     <ClCompile Include="Common\GeometryTests.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="PostGis\PostGisConnectionUtil.cpp" />
     <ClCompile Include="PostGis\PostGisFdoAdvancedSelectTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoExpressionFunctionTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoSpatialContextTest.cpp" />
     <ClCompile Include="PostGis\PostGisSchemaOverrideUtil.cpp" />
     <ClCompile Include="PostGis\PostGisTestRegister.cpp" />
     <ClCompile Include="Common\SchemaOverrideUtil.cpp" />
@@ -348,6 +350,7 @@
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
+    <ClInclude Include="Common\FdoSpatialContextTest.h" />
     <ClInclude Include="Common\Pch.h" />
     <ClInclude Include="Common\ConnectionUtil.h" />
     <ClInclude Include="Common\ConnectTests.h" />
@@ -381,6 +384,7 @@
     <ClInclude Include="PostGis\PostGisConnectionUtil.h" />
     <ClInclude Include="PostGis\PostGisFdoAdvancedSelectTest.h" />
     <ClInclude Include="PostGis\PostGisFdoExpressionFunctionTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoSpatialContextTest.h" />
     <ClInclude Include="PostGis\PostGisSchemaOverrideUtil.h" />
     <ClInclude Include="Common\SchemaOverrideUtil.h" />
     <ClInclude Include="Common\StringPropertiesDictionary.h" />
