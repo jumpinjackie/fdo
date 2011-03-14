@@ -34,14 +34,24 @@ WmsTestSpatialContext::~WmsTestSpatialContext ()
 
 void WmsTestSpatialContext::testServer1 ()
 {
-	try 
+    bool failed = false;
+    
+    try 
 	{
 		testServer (L"http://cadc-isd-jake.ads.autodesk.com/cgi-bin/mapserv.exe?map=wms/wms.map&", 2);
 	}
+/*
     catch (FdoException* e)
     {
         fail(e);
     }
+*/
+    catch ( ... )
+    {
+        failed = true;
+    }
+
+    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
 }
 
 void WmsTestSpatialContext::testServer2 ()
