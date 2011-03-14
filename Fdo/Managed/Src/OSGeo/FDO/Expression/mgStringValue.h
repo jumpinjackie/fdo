@@ -64,6 +64,80 @@ public:
 	StringValue(System::String^ value);
 
     /// \brief
+    /// Constructs an instance of a StringValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_DateTime
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether FdoFloat or FdoDouble values are allowed to shift 
+    /// when conversion to strings causes loss of precision.
+    ///     true - convert values allowing them to shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input for future use. There are currently no possible out of range
+    /// src values.
+    /// \return
+    /// Returns a StringValue, whose value is converted from the src value. 
+    /// If src is a StringValue then its value is simply copied to the 
+    /// returned StringValue. Otherwise, the value is converted by calling
+    /// src->ToString().
+    ///
+    StringValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a StringValue from another DataValue.
+    /// Equivalent to StringValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_DateTime
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns a StringValue, whose value is converted from the src value. 
+    /// If src is a StringValue then its value is simply copied to the 
+    /// returned StringValue. Otherwise, the value is converted by calling
+    /// src->ToString().
+    ///
+    StringValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the StringValue.
     /// 
     /// \return

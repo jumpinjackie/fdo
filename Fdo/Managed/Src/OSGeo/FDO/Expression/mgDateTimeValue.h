@@ -64,6 +64,54 @@ public:
 	DateTimeValue(System::DateTime value);
 
     /// \brief
+    /// Constructs an instance of a DateTimeValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_DateTime
+    ///     FdoDataType_String
+    ///         - value must follow an FDO DateTime format
+    ///           (e.g. "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'"
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input for future use.
+    /// \return
+    /// Returns an FdoDateTimeValue, whose value is converted from the src value. 
+    DateTimeValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a DateTimeValue from another DataValue.
+    /// Equivalent to DateTimeValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_DateTime
+    ///     FdoDataType_String
+    ///         - value must follow an FDO DateTime format
+    ///           (e.g. "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'"
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns an FdoDateTimeValue, whose value is converted from the src value. 
+    DateTimeValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the DateTimeValue.
     /// 
     /// \return

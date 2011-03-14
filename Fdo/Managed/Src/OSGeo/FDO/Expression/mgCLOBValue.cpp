@@ -51,6 +51,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::CLOBValue(array<System::Byte>^ value)
     }
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::CLOBValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : LOBValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoCLOBValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::CLOBValue(
+    DataValue^ src
+) : LOBValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoCLOBValue::Create(src->GetImpObj())), true))
+}
+
 FdoCLOBValue* NAMESPACE_OSGEO_FDO_EXPRESSION::CLOBValue::GetImpObj()
 {
 	return static_cast<FdoCLOBValue*>(UnmanagedObject.ToPointer());

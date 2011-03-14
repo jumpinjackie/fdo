@@ -65,6 +65,83 @@ public:
 	ByteValue(System::Byte value);
 
     /// \brief
+    /// Constructs an instance of a ByteValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether non integer values can be converted:
+    ///     true - convert values by rounding them.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoByte range
+    //  ( 0 to 255 ):
+    ///     true - convert values less than 0 to 0, convert values greater than 255 to 255
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns a ByteValue, whose value is converted from the src value. 
+    /// If src is a BooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
+    ByteValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a ByteValue from another DataValue.
+    /// Equivalent to ByteValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns a BteValue, whose value is converted from the src value. 
+    /// If src is a BooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
+    ByteValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the ByteValue.
     /// 
     /// \return

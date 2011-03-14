@@ -62,6 +62,77 @@ public:
 	BooleanValue(System::Boolean value);
 
     /// \brief
+    /// Constructs an instance of a BooleanValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be "TRUE", "FALSE", or numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input determines what to do if source value is numeric but
+    /// not 0 or 1:
+    ///     true - set the FdoBooleanValue to false if source value is 0, true otherwise.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns a BooleanValue, whose value is converted from the src value. 
+    /// If src value is numeric then:
+    ///     0 is converted to false
+    ///     1 is converted to true
+    BooleanValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a BooleanValue from another DataValue.
+    /// Equivalent to BooleanValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be "TRUE", "FALSE", or numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns a BooleanValue, whose value is converted from the src value. 
+    /// If src value is numeric then:
+    ///     0 is converted to false
+    ///     1 is converted to true
+    BooleanValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the BooleanValue.
     /// 
     /// \return

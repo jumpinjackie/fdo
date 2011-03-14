@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value::Int64Value(System::Int64 value) : Da
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt64Value::Create(value)), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value::Int64Value(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt64Value::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value::Int64Value(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt64Value::Create(src->GetImpObj())), true))
+}
+
 FdoInt64Value* NAMESPACE_OSGEO_FDO_EXPRESSION::Int64Value::GetImpObj()
 {
 	return static_cast<FdoInt64Value*>(UnmanagedObject.ToPointer());

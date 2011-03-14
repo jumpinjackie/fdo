@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::Int16Value(System::Int16 value) : Da
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt16Value::Create(value)), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::Int16Value(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt16Value::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::Int16Value(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoInt16Value::Create(src->GetImpObj())), true))
+}
+
 FdoInt16Value* NAMESPACE_OSGEO_FDO_EXPRESSION::Int16Value::GetImpObj()
 {
 	return static_cast<FdoInt16Value*>(UnmanagedObject.ToPointer());

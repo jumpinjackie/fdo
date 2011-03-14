@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::DateTimeValue(System::DateTime va
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoDateTimeValue::Create(SystemDateToFdoDateTime(value))), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::DateTimeValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDateTimeValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::DateTimeValue(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDateTimeValue::Create(src->GetImpObj())), true))
+}
+
 FdoDateTimeValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DateTimeValue::GetImpObj()
 {
 	return static_cast<FdoDateTimeValue*>(UnmanagedObject.ToPointer());

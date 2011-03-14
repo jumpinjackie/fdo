@@ -95,6 +95,25 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataValue(array<System::Byte>^ value,
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoDataValue::Create(unbuffer, value->Length, static_cast<FdoDataType>(dataType))), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataValue(
+    NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType,
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : LiteralValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDataValue::Create(static_cast<FdoDataType>(dataType), src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataValue(
+    NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType,
+    DataValue^ src
+) : LiteralValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDataValue::Create(static_cast<FdoDataType>(dataType), src->GetImpObj())), true))
+}
+
 NAMESPACE_OSGEO_FDO_SCHEMA::DataType NAMESPACE_OSGEO_FDO_EXPRESSION::DataValue::DataType::get()
 {
 	FdoDataType unobj;

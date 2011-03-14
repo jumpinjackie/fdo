@@ -64,6 +64,84 @@ public:
 	SingleValue(System::Single value);
 
     /// \brief
+    /// Constructs an instance of a SingleValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether FdoInt32 or FdoInt64 values are allowed to shift 
+    /// when they have more precision that can be handled by a float.
+    ///     true - convert values allowing them to shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoFloat range
+    ///  ( -3.4e38, 3.4e38 ):
+    ///     true - convert values less than -3.4e38 to -3.4e38, convert values greater than 3.4e38 to 3.4e38
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns a SingleValue, whose value is converted from the src value. 
+    /// If src is a BooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
+    SingleValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a SingleValue from another DataValue.
+    /// Equivalent to SingleValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns a SingleValue, whose value is converted from the src value. 
+    /// If src is a BooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    ///
+    SingleValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the SingleValue.
     /// 
     /// \return

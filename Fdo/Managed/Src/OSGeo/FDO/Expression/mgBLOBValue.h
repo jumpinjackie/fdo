@@ -57,6 +57,48 @@ public:
 	BLOBValue(array<System::Byte>^ value);
 
     /// \brief
+    /// Constructs an instance of a BLOBValue from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_BLOB
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input for future use.
+    /// \param truncate 
+    /// Input for future use.
+    /// \return
+    /// Returns a BLOBValue, whose value is converted from the src value. 
+    BLOBValue(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of a BLOBValue from another DataValue.
+    /// Equivalent to BLOBValue(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_BLOB
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns a BLOBValue, whose value is converted from the src value. 
+    BLOBValue(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the FDO DataType of the BLOB
     /// 
     /// \return
