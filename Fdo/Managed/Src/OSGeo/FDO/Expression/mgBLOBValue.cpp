@@ -50,6 +50,22 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue::BLOBValue(array<System::Byte>^ value)
     }
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue::BLOBValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : LOBValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBLOBValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue::BLOBValue(
+    DataValue^ src
+) : LOBValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoBLOBValue::Create(src->GetImpObj())), true))
+}
 
 FdoBLOBValue* NAMESPACE_OSGEO_FDO_EXPRESSION::BLOBValue::GetImpObj()
 {

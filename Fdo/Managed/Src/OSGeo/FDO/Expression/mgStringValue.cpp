@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::StringValue(System::String^ value) 
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoStringValue::Create(StringToUni(value))), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::StringValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoStringValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::StringValue(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoStringValue::Create(src->GetImpObj())), true))
+}
+
 FdoStringValue* NAMESPACE_OSGEO_FDO_EXPRESSION::StringValue::GetImpObj()
 {
 	return static_cast<FdoStringValue*>(UnmanagedObject.ToPointer());

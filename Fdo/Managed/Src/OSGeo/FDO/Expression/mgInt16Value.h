@@ -64,6 +64,81 @@ public:
 	Int16Value(System::Int16 value);
 
     /// \brief
+    /// Constructs an instance of an Int16Value from another DataValue.
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if the source value cannot be converted to 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines whether non integer values can be converted:
+    ///     true - convert values by rounding them.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the FdoInt16 range
+    //  ( -32768 to 32767 ):
+    ///     true - convert values less than -32768 to -32768, convert values greater than 32767 to 32767
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns an Int16Value, whose value is converted from the src value. 
+    /// If src is an FdoBooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    Int16Value(
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of an Int16Value from another DataValue.
+    /// Equivalent to Int16Value(src, false, true, false)
+    /// 
+    /// \param src 
+    /// Input the other DataValue. Must be of one of the following types:
+    ///     FdoDataType_Boolean
+    ///     FdoDataType_Byte
+    ///     FdoDataType_Decimal
+    ///     FdoDataType_Double
+    ///     FdoDataType_Int16
+    ///     FdoDataType_Int32
+    ///     FdoDataType_Int64
+    ///     FdoDataType_Single
+    ///     FdoDataType_String
+    ///         - value must be numeric.
+    ///
+    /// In all other cases, the src type is considered incompatible with this type.
+    /// \return
+    /// Returns an Int16Value, whose value is converted from the src value. 
+    /// If src is an FdoBooleanValue:
+    ///     false is converted to 0
+    ///     true is converted to 1
+    Int16Value(
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the Int16Value.
     /// 
     /// \return

@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::DoubleValue(System::Double value) :
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoDoubleValue::Create(value)), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::DoubleValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDoubleValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::DoubleValue(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDoubleValue::Create(src->GetImpObj())), true))
+}
+
 NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue::operator System::Double( NAMESPACE_OSGEO_FDO_EXPRESSION::DoubleValue^ value )
 {
 	return (value->GetImpObj())->operator FdoDouble();

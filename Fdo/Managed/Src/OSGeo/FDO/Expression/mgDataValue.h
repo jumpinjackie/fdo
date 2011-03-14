@@ -160,6 +160,68 @@ public:
 	DataValue(array<System::Byte>^ value, NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType);
 	
     /// \brief
+    /// Constructs an instance of an DataValue from another DataValue.
+    /// 
+    /// \param dataType
+    /// Input the destination type. A DataValue of this type is created. 
+    /// For more information on how the DataValue is created, see the specific 
+    /// constructor for each dataType. For example, if dataType=FdoDataType_Int16, see
+    /// Int16Value(DataValue^, Boolean, Boolean, Boolean)
+    /// \param src 
+    /// Input the source (other) DataValue
+    /// \param nullIfIncompatible 
+    /// Input will determine what to do if source value type is not compatible with the 
+    /// this type:
+    ///     true - return NULL.
+    ///     false - throw an exception
+    /// 
+    /// \param shift 
+    /// Input determines what to do if the src value is within the range of 
+    /// valid values for the destination type but still must be shifted to be a 
+    /// valid destination type value (e.g. 3.5 must be shifted to convert it from
+    /// DoubleValue to Int32Value):
+    ///     true - perform the shift.
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// 
+    /// \param truncate 
+    /// Input determines what to do if source value is outside the
+    ///  range of valid values for the destination type:
+    ///     true - convert values less than the minimum to the minimum, 
+    ///            convert values greater than maximum to the maximum
+    ///     false - behaviour depends on nullIfIncompatible:
+    ///         true - return NULL.
+    ///         false - throw an exception
+    /// \return
+    /// Returns a DataValue, whose value is converted from the src value. 
+    DataValue(
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType,
+        DataValue^ src, 
+        System::Boolean nullIfIncompatible,
+        System::Boolean shift,
+        System::Boolean truncate
+    );
+
+    /// \brief
+    /// Constructs an instance of an DataValue from another DataValue.
+    /// Equivalent to DataValue(dataType, src, false, true, false).
+    /// 
+    /// \param dataType
+    /// Input the destination type. A DataValue of this type is created. 
+    /// For more information on how the  DataValue is created, see the specific 
+    /// constructor for each dataType. For example, if dataType=FdoDataType_Int16, see
+    /// Int16Value(DataValue^, Boolean, Boolean, Boolean)
+    /// \param src 
+    /// Input the source (other) DataValue
+    /// \return
+    /// Returns a DataValue, whose value is converted from the src value. 
+    DataValue(
+        NAMESPACE_OSGEO_FDO_SCHEMA::DataType dataType,
+        DataValue^ src
+    );
+
+    /// \brief
     /// Gets the data type of the DataValue.
     /// 
     /// \return

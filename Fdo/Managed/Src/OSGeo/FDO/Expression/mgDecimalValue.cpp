@@ -40,6 +40,23 @@ NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::DecimalValue(System::Double value)
 	EXCEPTION_HANDLER(Attach(IntPtr(FdoDecimalValue::Create(value)), true))
 }
 
+NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::DecimalValue(
+    DataValue^ src, 
+    System::Boolean nullIfIncompatible,
+    System::Boolean shift,
+    System::Boolean truncate
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDecimalValue::Create(src->GetImpObj(), nullIfIncompatible, shift, truncate)), true))
+}
+
+NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::DecimalValue(
+    DataValue^ src
+) : DataValue(IntPtr::Zero, false)
+{
+	EXCEPTION_HANDLER(Attach(IntPtr(FdoDecimalValue::Create(src->GetImpObj())), true))
+}
+
 FdoDecimalValue* NAMESPACE_OSGEO_FDO_EXPRESSION::DecimalValue::GetImpObj()
 {
 	return static_cast<FdoDecimalValue*>(UnmanagedObject.ToPointer());
