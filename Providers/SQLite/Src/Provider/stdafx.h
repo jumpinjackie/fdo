@@ -33,6 +33,7 @@
 #define _SECURE_SCL 0
 
 #include <string>
+#include <vector>
 #include <wchar.h>
 #include <sstream>
 
