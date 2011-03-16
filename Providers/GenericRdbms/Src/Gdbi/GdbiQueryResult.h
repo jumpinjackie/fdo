@@ -21,6 +21,7 @@
 #pragma once
 #endif
 
+#include <vector>
 #include <map>
 #include <string>
 
