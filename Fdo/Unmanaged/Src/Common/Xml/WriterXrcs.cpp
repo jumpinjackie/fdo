@@ -60,8 +60,14 @@ FdoStringP FdoXmlWriterXrcs::EncodeName( FdoStringP name )
     FdoCharacter xChar = 0;
     FdoBoolean bFirstChar = true;
 
-    // Check each token for the encoding pattern.
+    // Encode any characters that are not allowed in XML names.
+    // The encoding pattern is "-x%x-" where %x is the character value in hexidecimal.
+    // The dash delimeters were an unfortunate choice since dash cannot be the 1st character
+    // in an XML name. When the 1st character needs to be encoded, it is encoded as "_x%x-" to 
+    // resolve this issue.
+
     for ( i = 0; i < tokens->GetCount(); i++ ) {
+        // Check each token for the encoding pattern.
         // Tack on a character to match the whole token to the pattern.
         FdoStringP token = FdoStringP(tokens->GetString(i)) + L"x";
 
@@ -71,14 +77,31 @@ FdoStringP FdoXmlWriterXrcs::EncodeName( FdoStringP name )
             // the token happens to match the encoding pattern. We want to avoid
             // decoding this sub-string on decode. This is done by encoding the leading
             // dash.
-            outName += FdoStringP::Format( L"-x%x-", '-' );
+            if ( outName == L"" ) 
+                // Lead with '_' if this is the 1st character.
+                outName += FdoStringP::Format( L"_x%x-", '-' );
+            else
+                outName += FdoStringP::Format( L"-x%x-", '-' );
+        }
+        else if ( (i == 0) && (swscanf( (const FdoString*) token, L"_x%xx", &xChar ) > 0) && (xChar > 0) ) {
+            // the token happens to match the encoding pattern for the 1st character. 
+            // We want to avoid decoding this sub-string on decode. 
+            // This is done by prepending a dummy encoding for character 0. This character is 
+            // discarded on decode. 
+            outName +=  L"_x00-";
         }
         else {
             // The token doesn't match the encoding pattern, just write the dash
             // that was discarded by the tokenizer.
 
             if ( i > 0  ) 
-                outName += L"-";
+            {
+                if ( outName == L"" ) 
+                    // 1st character so lead with '_'
+                    outName = L"_x2d-";
+                else
+                    outName += L"-";
+            }
         }
 
         // Re-retrieve the token without the appended 'x'
@@ -95,7 +118,6 @@ FdoStringP FdoXmlWriterXrcs::EncodeName( FdoStringP name )
             // check if character is valid
             if ( bFirstChar ) {
                 bValid = XERCES_CPP_NAMESPACE::XMLChar1_0::isFirstNameChar( inToken[end] );
-                bFirstChar = false;
             }
             else {
                 bValid = XERCES_CPP_NAMESPACE::XMLChar1_0::isNameChar( inToken[end] );
@@ -106,10 +128,12 @@ FdoStringP FdoXmlWriterXrcs::EncodeName( FdoStringP name )
                 if ( end > start ) 
                     outName += token.Mid( start, end - start );
 
-                // Encode this character
-                outName += FdoStringP::Format( L"-x%x-", inToken[end] );
+                // Encode this character. Lead with '_' if 1st character
+                outName += FdoStringP::Format( L"%cx%x-", bFirstChar ? '_' : '-', inToken[end] );
                 start = end + 1;
             }
+            
+            bFirstChar = false;
         }
 
         // Write any characters left over

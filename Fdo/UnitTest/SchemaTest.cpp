@@ -3954,7 +3954,7 @@ FdoFeatureSchema* SchemaTest::createRefSchema( FdoInt32 idx, FdoFeatureSchema* p
     }
 
 	FdoFeatureSchema* pSchema = FdoFeatureSchema::Create( 
-        (FdoString*) FdoStringP::Format( L"Reference Schema %d", idx ), 
+        (FdoString*) FdoStringP::Format( L"%d Reference Schema", idx ), 
         L"" 
     );
 
@@ -4167,7 +4167,7 @@ FdoFeatureSchema* SchemaTest::createAssocSchema( FdoInt32 idx, FdoFeatureSchema*
     }
 
 	FdoFeatureSchema* pSchema = FdoFeatureSchema::Create( 
-        (FdoString*) FdoStringP::Format( L"Reference Schema %d", idx ), 
+        (FdoString*) FdoStringP::Format( L"%d Reference Schema", idx ), 
         L"" 
     );
 
