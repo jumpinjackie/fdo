@@ -72,6 +72,9 @@ DWORD dwHighDateTime;
 // number of elements in an array
 // #define ELEMENTS(x) (sizeof(x)/sizeof(x[0]))FdoTypes.hfdotypes
 
+// STL includes
+#include <vector>
+
 // Base FDO headers
 #include <Fdo.h>
 #include <FdoGeometry.h>
