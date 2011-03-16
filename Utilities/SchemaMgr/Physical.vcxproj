@@ -1,0 +1,585 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>SmPhysical</ProjectName>
+    <ProjectGuid>{80E04928-D74C-441C-8851-09B8BD281D5F}</ProjectGuid>
+    <RootNamespace>SmPhysical</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Lib/Win32/Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug/Physical\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Lib/Win64/Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Debug64/Physical\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Lib/Win32/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release/Physical\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Lib/Win64/Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release64/Physical\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)SchemaMgr_PHNew.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)SchemaMgr_PHNew.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)SchemaMgr_PHNew.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>$(FDO)\Unmanaged\Inc;$(FDO)\Unmanaged;Inc;$(FDOUTILITIES)\Common\Inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)SchemaMgr_PHNew.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\Sm\Ph\AssociationReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\AssociationWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\BaseObject.cpp" />
+    <ClCompile Include="Src\Sm\Ph\CharacterSet.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassPropertyReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassPropertySADReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassSADReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Collation.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Column.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnChar.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnDate.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnDecimal.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnGeom.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnList.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnUnknown.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ColumnVarlen.cpp" />
+    <ClCompile Include="Src\Sm\Ph\CommandWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\CoordinateSystem.cpp" />
+    <ClCompile Include="Src\Sm\Ph\CoordinateSystemCollection.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Database.cpp" />
+    <ClCompile Include="Src\Sm\Ph\DbElement.cpp" />
+    <ClCompile Include="Src\Sm\Ph\DbObject.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Dependency.cpp" />
+    <ClCompile Include="Src\Sm\Ph\DependencyReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\DependencyWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Field.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Fkey.cpp" />
+    <ClCompile Include="Src\Sm\Ph\GroupReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Index.cpp" />
+    <ClCompile Include="Src\Sm\Ph\IndexLoader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\LockTypes.cpp" />
+    <ClCompile Include="src\Sm\Ph\MergeReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Mgr.cpp" />
+    <ClCompile Include="Src\Sm\Ph\OptionsReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\OptionsWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Owner.cpp" />
+    <ClCompile Include="Src\Sm\Ph\PropertyReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\PropertyWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Reader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ReadWrite.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Row.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SADReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SADWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SchemaElement.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SchemaReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SchemaWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContext.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextCollection.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextGeom.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextGeomReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextGeomWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextGroupReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextGroupWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialContextWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SpatialIndex.cpp" />
+    <ClCompile Include="Src\Sm\Ph\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Table.cpp" />
+    <ClCompile Include="Src\Sm\Ph\TableComponentReader.cpp" />
+    <ClCompile Include="src\Sm\Ph\TableMergeReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\TempObject.cpp" />
+    <ClCompile Include="Src\Sm\Ph\View.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Writer.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\AssociationReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\BaseObjectReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\CharacterSetReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\ClassReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\CollationReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\ColumnReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\ConstraintReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\CoordSysReader.cpp" />
+    <ClCompile Include="src\Sm\Ph\Rd\DbObjectBinds.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\DbObjectReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\FkeyReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\IndexReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="src\Sm\Ph\Rd\Join.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\OwnerReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\PkeyReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\PropertyReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\QueryReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\Reader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\SchemaDbObjectBinds.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\SchemaReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\SpatialContextGeomReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\SpatialContextGroupReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rd\SpatialContextReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="src\Sm\Ph\Rd\TableJoin.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\ViewReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Cfg\ClassReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Cfg\PropertyReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Cfg\SchemaReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\AssociationReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\ClassReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="src\Sm\Ph\Mt\ClassTableJoin.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Mt\PropertyReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\SchemaReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)3.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\SpatialContextGeomReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\SpatialContextGroupReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Mt\SpatialContextReader.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rb\Cache.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rb\Column.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\Rb\Table.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="Src\Sm\Ph\ClassSOReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\ClassSOWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SchemaSOReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SchemaSOWriter.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SOReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SOWriter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="Inc\Sm\Ph\AssociationReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\AssociationWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\BaseObject.h" />
+    <ClInclude Include="Inc\Sm\Ph\BaseObjectCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\CharacterSet.h" />
+    <ClInclude Include="Inc\Sm\Ph\CheckConstraint.h" />
+    <ClInclude Include="Inc\Sm\Ph\CheckConstraintCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassIndexReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassPropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassPropertySADReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassSADReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\Collation.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColType.h" />
+    <ClInclude Include="Inc\Sm\Ph\Column.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnBatchCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnBLOB.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnBool.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnByte.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnChar.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnDate.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnDecimal.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnDouble.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnGeom.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnInt16.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnInt32.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnInt64.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnList.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnSingle.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnUnknown.h" />
+    <ClInclude Include="Inc\Sm\Ph\ColumnVarlen.h" />
+    <ClInclude Include="Inc\Sm\Ph\CommandWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\CoordinateSystem.h" />
+    <ClInclude Include="Inc\Sm\Ph\CoordinateSystemCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\Database.h" />
+    <ClInclude Include="Inc\Sm\Ph\DatabaseCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\DbElement.h" />
+    <ClInclude Include="Inc\Sm\Ph\DbObject.h" />
+    <ClInclude Include="Inc\Sm\Ph\DbObjectCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\DbObjectComponentLoader.h" />
+    <ClInclude Include="Inc\Sm\Ph\DbObjType.h" />
+    <ClInclude Include="Inc\Sm\Ph\Dependency.h" />
+    <ClInclude Include="Inc\Sm\Ph\DependencyCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\DependencyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\DependencyWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\Field.h" />
+    <ClInclude Include="Inc\Sm\Ph\FieldCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\Fkey.h" />
+    <ClInclude Include="Inc\Sm\Ph\FkeyCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\GroupReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Index.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexLoader.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexPropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexPropertyWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexType.h" />
+    <ClInclude Include="Inc\Sm\Ph\IndexWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\ISADReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\LockTypes.h" />
+    <ClInclude Include="Inc\Sm\Ph\LockTypesCollection.h" />
+    <ClInclude Include="inc\Sm\Ph\MergeReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mgr.h" />
+    <ClInclude Include="Inc\Sm\Ph\NullIndicator.h" />
+    <ClInclude Include="Inc\Sm\Ph\OptionsReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\OptionsWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\Owner.h" />
+    <ClInclude Include="Inc\Sm\Ph\OwnerCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\PropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\PropertyWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\Reader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ReadWrite.h" />
+    <ClInclude Include="Inc\Sm\Ph\Row.h" />
+    <ClInclude Include="Inc\Sm\Ph\RowCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\SADReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SADWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SchemaElement.h" />
+    <ClInclude Include="Inc\Sm\Ph\SchemaReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SchemaWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\Sequence.h" />
+    <ClInclude Include="Inc\Sm\Ph\SequenceCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContext.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextGeom.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextGeomReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextGeomWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextGroupReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextGroupWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialContextWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SpatialIndex.h" />
+    <ClInclude Include="Src\Sm\Ph\stdafx.h" />
+    <ClInclude Include="Inc\Sm\Ph\Table.h" />
+    <ClInclude Include="inc\Sm\Ph\TableComponentReader.h" />
+    <ClInclude Include="inc\Sm\Ph\TableMergeReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\TempObject.h" />
+    <ClInclude Include="Inc\Sm\Ph\View.h" />
+    <ClInclude Include="Inc\Sm\Ph\Writer.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\AssociationReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\BaseObjectReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\CharacterSetReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\ClassReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\CollationReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\ColumnReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\ConstraintReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\CoordSysReader.h" />
+    <ClInclude Include="inc\Sm\Ph\Rd\DbObjectBinds.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\DbObjectReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\FkeyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\IndexReader.h" />
+    <ClInclude Include="inc\Sm\Ph\Rd\Join.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\OwnerReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\PkeyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\PropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\QueryReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\Reader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SchemaDbObjectBinds.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SchemaReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextGeomReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextGroupReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextReader.h" />
+    <ClInclude Include="inc\Sm\Ph\Rd\TableJoin.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\ViewReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Cfg\ClassReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Cfg\PropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Cfg\SchemaReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rb\Cache.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rb\Column.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rb\ColumnCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rb\Table.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rb\TableCollection.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\AssociationReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\ClassReader.h" />
+    <ClInclude Include="inc\Sm\Ph\Mt\ClassTableJoin.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\PropertyReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\SchemaReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\SpatialContextGeomReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\SpatialContextGroupReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Mt\SpatialContextReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassSOReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\ClassSOWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SchemaSOReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SchemaSOWriter.h" />
+    <ClInclude Include="Inc\Sm\Ph\SOReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\SOWriter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
