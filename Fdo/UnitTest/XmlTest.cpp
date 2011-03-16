@@ -323,28 +323,103 @@ void XmlTest::testNameAdjust()
  
         name1 = L" Abc#defg$$";
         name2 = writer->EncodeName(name1);
-        FDO_CPPUNIT_ASSERT( name2 == L"-x20-Abc-x23-defg-x24--x24-" );
+        FDO_CPPUNIT_ASSERT( name2 == L"_x20-Abc-x23-defg-x24--x24-" );
         FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
         
         name1 = L" Abc#defg hij";
         name2 = writer->EncodeName(name1);
-        FDO_CPPUNIT_ASSERT( name2 == L"-x20-Abc-x23-defg-x20-hij" );
+        FDO_CPPUNIT_ASSERT( name2 == L"_x20-Abc-x23-defg-x20-hij" );
         FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
         
         name1 = L"--abc-def---ghi--";
         name2 = writer->EncodeName(name1);
-        FDO_CPPUNIT_ASSERT( name2 == L"--abc-def---ghi--" );
+        FDO_CPPUNIT_ASSERT( name2 == L"_x2d--abc-def---ghi--" );
         FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
         
         name1 = L"--abc-x20-def-x23--x24-ghi--";
         name2 = writer->EncodeName(name1);
-        FDO_CPPUNIT_ASSERT( name2 == L"--abc-x2d-x20-def-x2d-x23--x2d-x24-ghi--" );
+        FDO_CPPUNIT_ASSERT( name2 == L"_x2d--abc-x2d-x20-def-x2d-x23--x2d-x24-ghi--" );
         FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
 
         name1 = L"-xab";
         name2 = writer->EncodeName(name1);
-        FDO_CPPUNIT_ASSERT( name2 == L"-x2d-xab" );
+        FDO_CPPUNIT_ASSERT( name2 == L"_x2d-xab" );
         FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"&Entity";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x26-Entity" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"11ab";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x31-1ab" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"2_Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x32-_Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"2%Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x32--x25-Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"2-Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x32--Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"2-x2f-Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x32--x2d-x2f-Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"_x2d-";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x00-_x2d-" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"-x3d-";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x2d-x3d-" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"_x2d-_x3f-";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x00-_x2d-_x3f-" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"__x2d-_x3f-";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"__x2d-_x3f-" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"_Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"_5Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_5Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"_-5Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_-5Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        name1 = L"-_x2f-Class";
+        name2 = writer->EncodeName(name1);
+        FDO_CPPUNIT_ASSERT( name2 == L"_x2d-_x2f-Class" );
+        FDO_CPPUNIT_ASSERT( name1 == reader->DecodeName(name2) );
+
+        // Backward compatibility check. Make sure old-style 1st character encodings get decoded.
+        name2 = L"-x40-A";
+        FDO_CPPUNIT_ASSERT( reader->DecodeName(name2) == L"@A" );
+        
     }
     catch ( FdoException* e ) {
 		UnitTestUtil::FailOnException( e );

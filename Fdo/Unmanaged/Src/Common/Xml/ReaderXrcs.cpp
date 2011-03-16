@@ -186,9 +186,19 @@ FdoStringP FdoXmlReaderXrcs::DecodeName ( FdoStringP name )
         // The following does 2 things:
         //    checks if the token matches the encoding pattern (a hex number).
         //    if it does, convert the hex pattern to a wide character.
-        if ( (!prevDecode) && (swscanf( (const FdoString*) pattern, L"x%xx", &xChar ) > 0) && (xChar > 0) ) {
+        if ( (!prevDecode) && (swscanf( (const FdoString*) pattern, L"x%xx", &xChar ) > 0)) {
             // it matches, append the converted character to the output string.
-            outName += FdoStringP::Format( L"%c", xChar );
+            // Discard character 0. It was prepended to prevent decoding "_x%x-" patterns that
+            // are actually part of the name rather than an encoded character
+            if ( xChar != 0 ) 
+                outName += FdoStringP::Format( L"%c", xChar );
+            prevDecode = true;
+        }
+        else if ( (i == 0) && (swscanf( (const FdoString*) pattern, L"_x%xx", &xChar ) > 0)) {
+            // it matches the encoding pattern for a 1st character, 
+            // append the converted character to the output string.
+            if ( xChar != 0 ) 
+                outName += FdoStringP::Format( L"%c", xChar );
             prevDecode = true;
         }
         else {

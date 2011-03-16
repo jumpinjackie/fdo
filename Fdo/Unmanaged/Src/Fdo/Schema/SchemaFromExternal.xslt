@@ -2251,7 +2251,7 @@
         <xsl:call-template name="Properties">
           <xsl:with-param name="schemaName" select="$schemaName"/>
         </xsl:call-template>
-      </xsl:for-each>-->
+      </xsl:for-each>
     </xsl:element>
   </xsl:template>
 
