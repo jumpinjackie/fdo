@@ -17,7 +17,9 @@
  */
 
 #ifdef _WIN32
+
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
+#include <windows.h>
 
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
 #ifdef __CPPUNIT_MFC_APP
