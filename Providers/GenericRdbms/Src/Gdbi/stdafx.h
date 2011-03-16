@@ -24,6 +24,8 @@
 #pragma once
 #endif
 
+#include <vector>
+
 #ifdef USE_NONRDBMS_HEADER
 #include <inc/rdbi/proto.h>
 #else
