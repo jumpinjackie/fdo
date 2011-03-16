@@ -28,6 +28,7 @@
 
 // Windows Header Files:
 #include <windows.h>
+#include <string>
 
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the FDOWMS_EXPORTS
