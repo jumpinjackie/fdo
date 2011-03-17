@@ -1,6 +1,6 @@
 #ifndef _IRDBMSGEOMETRYCAPABILITIES_H_
 #define _IRDBMSGEOMETRYCAPABILITIES_H_
-//
+
 //  Copyright (C) 2004-2006  Autodesk, Inc.
 //  
 //  This library is free software; you can redistribute it and/or
@@ -15,9 +15,11 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 #ifdef _WIN32
 #pragma once
 #endif
+
 #include <FdoStd.h>
 #include <Common/GeometryType.h>
 

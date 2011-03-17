@@ -26,9 +26,9 @@
 #pragma once
 #endif
 
-#include "FdoStd.h"
-#include "Fdo/Schema/PropertyDefinition.h"
-#include "Fdo/Commands/ICommand.h"
+#include <FdoStd.h>
+#include <Fdo/Commands/ICommand.h>
+#include <Fdo/Schema/PropertyDefinition.h>
 
 /// <summary>The IDestroySpatialIndex interface defines the DestroySpatialIndex
 /// command, which drops an existing spatial index. Input to the command is

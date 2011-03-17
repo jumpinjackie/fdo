@@ -26,11 +26,12 @@
 #pragma once
 #endif
 
-#include "FdoStd.h"
-#include "Fdo/Commands/ICommand.h"
+#include <FdoStd.h>
+#include <Fdo/Commands/ICommand.h>
+#include <Fdo/Schema/PropertyDefinition.h>
+
 #include "Rdbms/SpatialIndexDimensionType.h"
 #include "Rdbms/SpatialIndexType.h"
-#include "Fdo/Schema/PropertyDefinition.h"
 
 
 /// <summary>The ICreateSpatialIndex interface defines the CreateSpatialIndex
