@@ -94,7 +94,7 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_pgis
 
 echo %MSACTION% %TYPEBUILD% PGIS Provider Dlls
-msbuild Src/PostGis.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild Src/PostGis%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end

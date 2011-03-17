@@ -93,7 +93,7 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_ogr
 
 echo %MSACTION% %TYPEBUILD% OGR Provider Dlls
-msbuild OGRProvider.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild OGRProvider%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end

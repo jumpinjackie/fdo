@@ -127,11 +127,11 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files
 
 echo %MSACTION% %TYPEBUILD% ODBC provider dlls
-SET FDOACTIVEBUILD=%cd%\ODBC
+SET FDOACTIVEBUILD=%cd%\Odbc%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild ODBC_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild Odbc%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist ODBC_temp.sln del /Q /F ODBC_temp.sln
+if exist Odbc%VCBEXTENSION%_temp.sln del /Q /F Odbc%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs

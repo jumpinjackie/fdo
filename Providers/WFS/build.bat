@@ -124,12 +124,12 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_wfs
 
 echo %MSACTION% %TYPEBUILD% WFS provider dlls
-SET FDOACTIVEBUILD=%cd%\Src\WFSOS
+SET FDOACTIVEBUILD=%cd%\Src\WFSOS%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild WFSOS_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild WFSOS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist WFSOS_temp.sln del /Q /F WFSOS_temp.sln
+if exist WFSOS%VCBEXTENSION%_temp.sln del /Q /F WFSOS%VCBEXTENSION%_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end

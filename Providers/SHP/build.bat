@@ -129,12 +129,12 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_shp
 
 echo %MSACTION% %TYPEBUILD% SHP provider dlls
-SET FDOACTIVEBUILD=%cd%\Src\SHP
+SET FDOACTIVEBUILD=%cd%\Src\SHP%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SHP_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild SHP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist SHP_temp.sln del /Q /F SHP_temp.sln
+if exist SHP%VCBEXTENSION%_temp.sln del /Q /F SHP%VCBEXTENSION%_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
