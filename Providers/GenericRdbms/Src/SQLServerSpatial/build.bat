@@ -127,11 +127,11 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_sqlspatial
 
 echo %MSACTION% %TYPEBUILD% SQLServer Spatial Provider DLLs
-SET FDOACTIVEBUILD=%cd%\SQLServerSpatial
+SET FDOACTIVEBUILD=%cd%\SQLServerSpatial%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild SQLServerSpatial_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild SQLServerSpatial%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist SQLServerSpatial_temp.sln del /Q /F SQLServerSpatial_temp.sln
+if exist SQLServerSpatial%VCBEXTENSION%_temp.sln del /Q /F SQLServerSpatial%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs

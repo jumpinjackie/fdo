@@ -124,11 +124,11 @@ if "%TYPEACTION%"=="install" goto install_files_rfp
 
 echo %MSACTION% %TYPEBUILD% GdalFile provider dlls
 pushd Src
-SET FDOACTIVEBUILD=%cd%\RFP
+SET FDOACTIVEBUILD=%cd%\RFP%VCBEXTENSION%
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild RFP_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild RFP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist RFP_temp.sln del /Q /F RFP_temp.sln
+if exist RFP%VCBEXTENSION%_temp.sln del /Q /F RFP%VCBEXTENSION%_temp.sln
 popd
 
 if "%FDOERROR%"=="1" goto error

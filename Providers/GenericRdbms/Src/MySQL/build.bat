@@ -132,11 +132,11 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files
 
 echo %MSACTION% %TYPEBUILD% MySQL provider dlls
-SET FDOACTIVEBUILD=%cd%\MySQL
+SET FDOACTIVEBUILD=%cd%\MySQL%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild MySQL_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild MySQL%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist MySQL_temp.sln del /Q /F MySQL_temp.sln
+if exist MySQL%VCBEXTENSION%_temp.sln del /Q /F MySQL%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
 if "%TYPEACTION%"=="build" goto generate_docs

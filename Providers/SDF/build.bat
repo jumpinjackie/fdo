@@ -124,12 +124,12 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_sdf
 
 echo %MSACTION% %TYPEBUILD% SDF provider dlls
-SET FDOACTIVEBUILD=%cd%\Src\SDFOS
+SET FDOACTIVEBUILD=%cd%\Src\SDFOS%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SDFOS_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild SDFOS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist SDFOS_temp.sln del /Q /F SDFOS_temp.sln
+if exist SDFOS%VCBEXTENSION%_temp.sln del /Q /F SDFOS%VCBEXTENSION%_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end

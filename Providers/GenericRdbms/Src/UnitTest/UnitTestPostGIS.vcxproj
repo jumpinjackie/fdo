@@ -21,7 +21,6 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D2EF6A19-4817-4978-8D61-066A694A6A34}</ProjectGuid>
     <RootNamespace>UnitTestPostGIS</RootNamespace>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -95,6 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <AdditionalOptions>-Zm120 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -126,6 +126,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
+      <AdditionalOptions>-Zm120 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -154,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
+      <AdditionalOptions>-Zm120 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -177,6 +179,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
+      <AdditionalOptions>-Zm120 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -298,6 +301,7 @@
     <ClCompile Include="Common\FdoConstraintsTest.cpp" />
     <ClCompile Include="Common\FdoDatastoreTest.cpp" />
     <ClCompile Include="Common\FdoDeleteTest.cpp" />
+    <ClCompile Include="Common\FdoExpressionFunctionTest.cpp" />
     <ClCompile Include="Common\FdoForeignSchemaTest.cpp" />
     <ClCompile Include="Common\FdoImportExportTest.cpp" />
     <ClCompile Include="Common\FdoInsertTest.cpp" />
@@ -312,9 +316,6 @@
     <ClCompile Include="Common\MessageTest.cpp" />
     <ClCompile Include="Common\SchemaMgrTests.cpp" />
     <ClCompile Include="PostGis\PostGisConnectionUtil.cpp" />
-    <ClCompile Include="PostGis\PostGisFdoAdvancedSelectTest.cpp" />
-    <ClCompile Include="PostGis\PostGisFdoExpressionFunctionTest.cpp" />
-    <ClCompile Include="PostGis\PostGisFdoSpatialContextTest.cpp" />
     <ClCompile Include="PostGis\PostGisSchemaOverrideUtil.cpp" />
     <ClCompile Include="PostGis\PostGisTestRegister.cpp" />
     <ClCompile Include="Common\SchemaOverrideUtil.cpp" />
@@ -322,16 +323,19 @@
     <ClCompile Include="Common\XmlFormatter.cpp" />
     <ClCompile Include="PostGis\PostGisConnectTests.cpp" />
     <ClCompile Include="PostGis\PostGisDescribeSchemaTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoAdvancedSelectTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoApplySchemaTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoConnectionInfoTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoConnectTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoConstraintsTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoDatastoreTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoDeleteTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoExpressionFunctionTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoImportExportTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoInsertTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoMultiThreadTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoSelectTest.cpp" />
+    <ClCompile Include="PostGis\PostGisFdoSpatialContextTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoSqlCmdTest.cpp" />
     <ClCompile Include="PostGis\PostGisFdoUpdateTest.cpp" />
     <ClCompile Include="PostGis\PostGisGeometryTests.cpp" />
@@ -350,7 +354,6 @@
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\MainFrm.h" />
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\Resource.h" />
     <ClInclude Include="$(FDOTHIRDPARTY)\cppunit\HostApp\StdAfx.h" />
-    <ClInclude Include="Common\FdoSpatialContextTest.h" />
     <ClInclude Include="Common\Pch.h" />
     <ClInclude Include="Common\ConnectionUtil.h" />
     <ClInclude Include="Common\ConnectTests.h" />
@@ -369,6 +372,7 @@
     <ClInclude Include="Common\FdoConstraintsTest.h" />
     <ClInclude Include="Common\FdoDatastoreTest.h" />
     <ClInclude Include="Common\FdoDeleteTest.h" />
+    <ClInclude Include="Common\FdoExpressionFunctionTest.h" />
     <ClInclude Include="Common\FdoForeignSchemaTest.h" />
     <ClInclude Include="Common\FdoImportExportTest.h" />
     <ClInclude Include="Common\FdoInsertTest.h" />
@@ -376,15 +380,13 @@
     <ClInclude Include="Common\FdoSchemaRollbackTest.h" />
     <ClInclude Include="Common\FdoSchemaTest.h" />
     <ClInclude Include="Common\FdoSelectTest.h" />
+    <ClInclude Include="Common\FdoSpatialContextTest.h" />
     <ClInclude Include="Common\FdoSqlCmdTest.h" />
     <ClInclude Include="Common\FdoUpdateTest.h" />
     <ClInclude Include="Common\GeometryTests.h" />
     <ClInclude Include="Common\MessageTest.h" />
     <ClInclude Include="Common\SchemaMgrTests.h" />
     <ClInclude Include="PostGis\PostGisConnectionUtil.h" />
-    <ClInclude Include="PostGis\PostGisFdoAdvancedSelectTest.h" />
-    <ClInclude Include="PostGis\PostGisFdoExpressionFunctionTest.h" />
-    <ClInclude Include="PostGis\PostGisFdoSpatialContextTest.h" />
     <ClInclude Include="PostGis\PostGisSchemaOverrideUtil.h" />
     <ClInclude Include="Common\SchemaOverrideUtil.h" />
     <ClInclude Include="Common\StringPropertiesDictionary.h" />
@@ -392,16 +394,19 @@
     <ClInclude Include="Common\XmlFormatter.h" />
     <ClInclude Include="PostGis\PostGisConnectTests.h" />
     <ClInclude Include="PostGis\PostGisDescribeSchemaTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoAdvancedSelectTest.h" />
     <ClInclude Include="PostGis\PostGisFdoApplySchemaTest.h" />
     <ClInclude Include="PostGis\PostGisFdoConnectionInfoTest.h" />
     <ClInclude Include="PostGis\PostGisFdoConnectTest.h" />
     <ClInclude Include="PostGis\PostGisFdoConstraintsTest.h" />
     <ClInclude Include="PostGis\PostGisFdoDatastoreTest.h" />
     <ClInclude Include="PostGis\PostGisFdoDeleteTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoExpressionFunctionTest.h" />
     <ClInclude Include="PostGis\PostGisFdoImportExportTest.h" />
     <ClInclude Include="PostGis\PostGisFdoInsertTest.h" />
     <ClInclude Include="PostGis\PostGisFdoMultiThreadTest.h" />
     <ClInclude Include="PostGis\PostGisFdoSelectTest.h" />
+    <ClInclude Include="PostGis\PostGisFdoSpatialContextTest.h" />
     <ClInclude Include="PostGis\PostGisFdoSqlCmdTest.h" />
     <ClInclude Include="PostGis\PostGisFdoUpdateTest.h" />
     <ClInclude Include="PostGis\PostGisGeometryTests.h" />
@@ -460,52 +465,48 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\libpq.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\comerr32.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\libintl-8.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\libiconv-2.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\krb5_32.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\k5sprt32.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\gssapi32.dll" $(OutDir)
-echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+echo "delete me please"&gt;$(OutDir)CopyThirdpartyPostGIS.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\postgres\bin\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\comerr32.dll;$(FDOTHIRDPARTY)\postgres\bin\libintl-8.dll;$(FDOTHIRDPARTY)\postgres\bin\libiconvl-2.dll;$(FDOTHIRDPARTY)\postgres\bin\k5sprt32.dll;$(FDOTHIRDPARTY)\postgres\bin\gssapi32.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\postgres\bin\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\libintl-8.dll;$(FDOTHIRDPARTY)\postgres\bin\libiconvl-2.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdpartyPostGIS.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\libintl.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
-echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libintl.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdpartyPostGIS.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOPOSTGRESQL)\bin\libpq.dll;$(FDOPOSTGRESQL)\bin\comerr32.dll;$(FDOPOSTGRESQL)\bin\libintl-8.dll;$(FDOPOSTGRESQL)\bin\libiconvl-2.dll;$(FDOPOSTGRESQL)\bin\krb5_32.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunitd_dll.dll;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libintl.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdpartyPostGIS.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\libpq.dll" $(OutDir)
-echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+echo "delete me please"&gt;$(OutDir)CopyThirdpartyPostGIS.ilk
 </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\postgres\bin\libpq.dll;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdpartyPostGIS.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll" $(OutDir)
-copy "$(FDOTHIRDPARTY)\postgres\bin\libintl.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll" $(OutDir)
 copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll" $(OutDir)
-echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
+copy "$(FDOTHIRDPARTY)\postgres\bin\Win64\libintl.dll" $(OutDir)
+echo "delete me please"&gt;$(OutDir)CopyThirdpartyPostGIS.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libpq.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libeay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\ssleay32.dll;$(FDOTHIRDPARTY)\postgres\bin\Win64\libintl.dll;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdpartyPostGIS.ilk;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="FakeInstall">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Performing fake install</Message>
@@ -603,56 +604,6 @@ echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)FakeInstall.ilk;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="providers.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Utilities\Common\FdoCommon.vcxproj">
-      <Project>{9037a345-04eb-418c-98d0-3d5b19fc9d55}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Utilities\TestCommon\TestCommon.vcxproj">
-      <Project>{31607a09-f8ca-43b3-9195-c1d5fb18e0d7}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Nls\fdordbms.vcxproj">
-      <Project>{9bf08d0e-cd3b-4687-86e2-6db8270e94e9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Gdbi\Gdbi.vcxproj">
-      <Project>{531ac4ee-b2bf-4fc9-8a03-ef272dcaeab3}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\LockManager\LockManager.vcxproj">
-      <Project>{080c612a-c598-476e-a0cc-5d98fa48b738}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\LongTransactionManager\LongTransactionManager.vcxproj">
-      <Project>{a97744c0-dcc5-4d58-91b5-7db006bd40c1}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\PostGis\Driver\PostGISDriver.vcxproj">
-      <Project>{69d1e6e5-9391-40fe-a989-b9bebe3ee305}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\PostGis\PostGIS.vcxproj">
-      <Project>{44f93112-3496-498a-9b98-856995520807}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\PostGis\SchemaMgr\PostGISOverrides.vcxproj">
-      <Project>{c7c93492-5656-42d9-a576-67c1ca628af5}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\PostGis\SchemaMgr\PostGISSchemaMgr.vcxproj">
-      <Project>{dd12e36f-088f-4ffd-8919-d6a787139844}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\SchemaMgr\GrdSchemaMgr.vcxproj">
-      <Project>{e3307244-0639-4f87-a21b-b4369c0fd93f}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Util\util.vcxproj">
-      <Project>{001b698f-66ff-4486-ad57-53318cf47a4a}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

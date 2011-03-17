@@ -118,12 +118,12 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_SQLite
 
 echo %MSACTION% %TYPEBUILD% SQLite provider dlls
-SET FDOACTIVEBUILD=%cd%\Src\SQLiteProvider
+SET FDOACTIVEBUILD=%cd%\Src\SQLiteProvider%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SQLiteProvider_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild SQLiteProvider%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
-if exist SQLiteProvider_temp.sln del /Q /F SQLiteProvider_temp.sln
+if exist SQLiteProvider%VCBEXTENSION%_temp.sln del /Q /F SQLiteProvider%VCBEXTENSION%_temp.sln
 popd
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
