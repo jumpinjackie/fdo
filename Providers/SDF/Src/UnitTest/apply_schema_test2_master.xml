@@ -221,13 +221,13 @@
             </xs:extension>
          </xs:complexContent>
       </xs:complexType>
-      <xs:element name="-x27-Address" type="Acad:-x27-AddressType" abstract="false" substitutionGroup="gml:_Feature">
-         <xs:key name="-x27-AddressKey">
-            <xs:selector xpath=".//-x27-Address"/>
+      <xs:element name="_x27-Address" type="Acad:_x27-AddressType" abstract="false" substitutionGroup="gml:_Feature">
+         <xs:key name="_x27-AddressKey">
+            <xs:selector xpath=".//_x27-Address"/>
             <xs:field xpath="Number"/>
          </xs:key>
       </xs:element>
-      <xs:complexType name="-x27-AddressType" abstract="false">
+      <xs:complexType name="_x27-AddressType" abstract="false">
          <xs:annotation>
             <xs:documentation/>
          </xs:annotation>
