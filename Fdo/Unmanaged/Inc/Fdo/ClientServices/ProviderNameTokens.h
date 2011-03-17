@@ -1,6 +1,5 @@
 #ifndef _FDOPROVIDERNAMETOKENS_H_
 #define _FDOPROVIDERNAMETOKENS_H_
-/***************************************************************************
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -19,20 +18,16 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-
- ***************************************************************************/
 #ifdef _WIN32
 #pragma once
 #endif
 
 // Include definitions
 #include <FdoStd.h>
-#include <FdoCommon.h>
-#include <Common/Vector.h>
-#include <Fdo/ClientServices/ClientServices.h>
 
 /// \brief
 /// A provider name tokenized into its company, name and version parts.
+///
 class FdoProviderNameTokens : public FdoIDisposable
 {
 public:
@@ -82,12 +77,14 @@ public:
 
 /// \cond DOXYGEN-IGNORE
 protected:
+    /// Constructors
     FdoProviderNameTokens() {}
     FdoProviderNameTokens(FdoString* name);
 
     /// Default destructor for FdoProvider.
     virtual ~FdoProviderNameTokens() {}
 
+    /// Release the object, disposing of any allocated memory
     virtual void Dispose();
 /// \endcond
 

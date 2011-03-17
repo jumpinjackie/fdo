@@ -17,7 +17,7 @@
 //  
 #include <Fdo/Expression/ExpressionCollection.h>
 
-FDO_API FdoExpressionCollection* FdoExpressionCollection::Create()
+FdoExpressionCollection* FdoExpressionCollection::Create()
 {
     return new FdoExpressionCollection();
 }

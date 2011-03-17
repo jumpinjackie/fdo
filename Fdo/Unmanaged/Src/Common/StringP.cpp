@@ -805,3 +805,33 @@ size_t FdoStringP::GetBufSize()
     else
         return 0;
 }
+
+bool FdoStringP::operator>( const FdoStringP str2 ) const
+{
+	return( wcscmp( *this, str2 ) > 0 );
+}
+
+bool FdoStringP::operator>=( const FdoStringP str2 ) const
+{
+	return( wcscmp( *this, str2 ) >= 0 );
+}
+
+bool FdoStringP::operator==( const FdoStringP str2 ) const
+{
+	return( wcscmp( *this, str2 ) == 0 );
+}
+
+bool FdoStringP::operator==( FdoString* str2 ) const
+{
+    return( wcscmp( *this, str2 ? str2 : L"" ) == 0 );
+}
+
+bool FdoStringP::operator<=( const FdoStringP str2 ) const
+{
+	return( wcscmp( *this, str2 ) <= 0 );
+}
+
+bool FdoStringP::operator<( const FdoStringP str2 ) const
+{
+	return( wcscmp( *this, str2 ) < 0 );
+}

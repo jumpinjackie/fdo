@@ -17,12 +17,12 @@
 //  
 #include <Fdo/Schema/PropertyDefinitionCollection.h>
 
-FDO_API FdoPropertyDefinitionCollection* FdoPropertyDefinitionCollection::Create(FdoSchemaElement* parent)
+FdoPropertyDefinitionCollection* FdoPropertyDefinitionCollection::Create(FdoSchemaElement* parent)
 {
     return new FdoPropertyDefinitionCollection(parent);
 }
 
-FDO_API void FdoPropertyDefinitionCollection::Remove(const FdoSchemaElement* value)
+void FdoPropertyDefinitionCollection::Remove(const FdoSchemaElement* value)
 {
     FdoSchemaElement*   parent = ((FdoSchemaElement*)value)->GetParent();
 
@@ -43,7 +43,7 @@ FDO_API void FdoPropertyDefinitionCollection::Remove(const FdoSchemaElement* val
     }
 }
 
-FDO_API void FdoPropertyDefinitionCollection::RemoveAt(FdoInt32 index)
+void FdoPropertyDefinitionCollection::RemoveAt(FdoInt32 index)
 {
     FdoSchemaElement*   item = NULL;
     FdoSchemaElement*   parent = NULL;

@@ -1,6 +1,5 @@
 #ifndef _FDOTYPES_H_
 #define _FDOTYPES_H_
-// 
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -27,6 +26,16 @@
 #include <stdint.h>
 #else
 #include <limits.h>
+#endif
+
+#ifdef _WIN32
+#ifndef NULL
+#ifdef __cplusplus
+#define NULL    0
+#else
+#define NULL    ((void *)0)
+#endif
+#endif
 #endif
 
 /// \ingroup (typedefs)

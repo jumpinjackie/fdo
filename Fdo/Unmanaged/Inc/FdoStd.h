@@ -1,6 +1,5 @@
 #ifndef _FDOSTD_H_
 #define _FDOSTD_H_
-// 
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -22,7 +21,6 @@
 #ifdef _WIN32
 #pragma once
 #endif
-#include <FdoCommon.h>
 
 #ifdef _WIN32
 
@@ -41,8 +39,8 @@
 
 #endif
 
-#include <Common/Collection.h>
-#include <Common/Exception.h>
+#include <FdoCommon.h>
+
 #endif
 
 

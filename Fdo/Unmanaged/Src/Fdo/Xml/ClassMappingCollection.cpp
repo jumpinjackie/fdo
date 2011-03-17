@@ -17,7 +17,7 @@
 //  
 #include <Fdo/Xml/ClassMappingCollection.h>
 
-FDO_API FdoXmlClassMappingCollection* FdoXmlClassMappingCollection::Create(FdoPhysicalElementMapping* parent)
+FdoXmlClassMappingCollection* FdoXmlClassMappingCollection::Create(FdoPhysicalElementMapping* parent)
 {
     return new FdoXmlClassMappingCollection(parent);
 }

@@ -1,6 +1,5 @@
 #ifndef _FDOPROVIDERCOLLECTION_H_
 #define _FDOPROVIDERCOLLECTION_H_
-/***************************************************************************
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -19,17 +18,15 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
- *
- ***************************************************************************/
 #ifdef _WIN32
 #pragma once
 #endif
 
 // Include definitions
-#include <vector>
 #include <FdoStd.h>
-#include <Fdo/ClientServices/ClientServices.h>
 #include <Fdo/ClientServices/Provider.h>
+
+class FdoProviderVectorArray;
 
 /// \brief
 /// Read only collection of information describing each of the installed feature providers
@@ -47,6 +44,7 @@ protected:
     /// Default destructor for FdoProviderCollection.
     virtual ~FdoProviderCollection();
 
+    /// Dispose the object, releasing any allocated memory
     virtual void Dispose();
 
     /// Adds a new provider to the collection. The pointer passed to the Add method is stored. 
@@ -59,7 +57,7 @@ protected:
     /// Removes a provider from the collection. The allocated provider is freed. removing a provider from the 
     /// collection only removes the item from the buffered vector contained in the collection. The provider is not 
     /// removed from the persistant data store. 
-    virtual void Remove(const wchar_t* name);
+    virtual void Remove(FdoString* name);
 /// \endcond
 
 public:
@@ -95,7 +93,7 @@ public:
     /// Returns true if the collection contains the specified item, otherwise false.
     /// Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual bool Contains(const wchar_t* name) const;
+    FDO_API virtual bool Contains(FdoString* name) const;
     
     /// \brief
     /// Returns the index of the specified item in the collection.
@@ -108,11 +106,11 @@ public:
     /// Returns the index item or -1 if the item does not exist. Index is 0 based.
     /// Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual int IndexOf(const wchar_t* name) const;
+    FDO_API virtual int IndexOf(FdoString* name) const;
 
 private:
     /// The list of providers defined in the registry
-    std::vector<FdoProvider*> m_providers;
+    FdoProviderVectorArray* m_providers;
 };
 #endif
 

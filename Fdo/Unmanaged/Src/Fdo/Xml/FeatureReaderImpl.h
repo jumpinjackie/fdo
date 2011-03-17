@@ -1,6 +1,5 @@
 #ifndef FDO_XML_FEATUREREADER_IMPL_H_
 #define FDO_XML_FEATUREREADER_IMPL_H_
-//
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -22,6 +21,8 @@
 #ifdef _WIN32
 #pragma once
 #endif
+
+#include <vector>
 
 #include <FdoStd.h>
 #include <Fdo.h>
