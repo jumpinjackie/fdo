@@ -1,3 +1,0 @@
-+ Operations on geometries: select/insert/update/delete
-+ Filters support
-+ Expressions support
