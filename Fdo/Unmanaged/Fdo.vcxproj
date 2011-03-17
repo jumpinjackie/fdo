@@ -219,7 +219,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_3.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_3_1.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>Lib/Win32/Release;$(FDOTHIRDPARTY)/apache/xerces/build/win32/VC9/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>
@@ -270,7 +270,7 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_3.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FDOCommon.lib;FDOGeometry.lib;Xerces-C_3_1.lib;Version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>Lib/Win64/Release;$(FDOTHIRDPARTY)/apache/xerces/build/Win64/VC9/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>

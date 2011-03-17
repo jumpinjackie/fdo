@@ -23,7 +23,8 @@ namespace Fdo_Test
 	/// </summary>
 	public class mgNester : XmlSaxHandler
 	{
-		public mgNester(XmlReader reader)
+        public mgNester(XmlReader reader)
+            : base(IntPtr.Zero, false)
 		{
 			mReader = reader;
 		}

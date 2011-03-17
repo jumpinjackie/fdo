@@ -46,7 +46,7 @@ namespace Fdo_Test
 			Debug.Assert(argue[0].Description == "Argument 1 (Boolean)");
 			Debug.Assert(argue[0].DataType == DataType.DataType_Boolean);
 			Debug.Assert(argue[1].Name == "Arg2");
-			Debug.Assert(argue[1].Description == string.Empty);  //in C++ test, it use NULL; but in .NET empty string is better than null
+			Debug.Assert(String.IsNullOrEmpty(argue[1].Description));  //in C++ test, it use NULL; but in .NET empty string is better than null
 			Debug.Assert(argue[1].DataType == DataType.DataType_Byte);
 			Debug.Assert(argue[2].Name == "Arg3");
 			Debug.Assert(argue[2].Description == "Argument 3 (BLOB)");
