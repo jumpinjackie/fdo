@@ -17,8 +17,13 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
+if "%2" == "VC10" goto studyParam
+
 if not "%2" == "" goto usage
 
+SET PARAM1=%1
+
+:studyParam
 if "%1" == ""          goto setvcvarsall
 if "%1" == "x86"       goto setvcvarsall
 if "%1" == "amd64"     goto setvcvarsall
@@ -26,9 +31,22 @@ if "%1" == "x64"       goto setvcvarsall
 if "%1" == "ia64"      goto setvcvarsall
 if "%1" == "x86_amd64" goto setvcvarsall
 if "%1" == "x86_ia64"  goto setvcvarsall
+
+SET PARAM1=x86
+if "%1" == "VC10"      goto setvcvarsallVC10
 goto usage
 
+:setvcvarsallVC10
+SET VCBEXTENSION=_vs10
+SET ACTIVENAMECHECK="Microsoft Visual Studio 10"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 10.0\VC"
+if exist %ACTIVEPATHCHECK% goto VSExist
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC"
+if exist %ACTIVEPATHCHECK% goto VSExist
+goto VSExist
+
 :setvcvarsall
+if "%2" == "VC10" goto setvcvarsallVC10
 SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
@@ -36,7 +54,7 @@ SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
 
 :VSExist
-call %ACTIVEPATHCHECK%\vcvarsall.bat %1
+call %ACTIVEPATHCHECK%\vcvarsall.bat %PARAM1%
 
 :setfdovars
 SET FDO=%cd%\Fdo
@@ -58,8 +76,8 @@ SET XALANROOT=%FDOTHIRDPARTY%\apache\xalan
 SET XERCESCROOT=%FDOTHIRDPARTY%\apache\xerces
 SET NLSDIR=%FDOTHIRDPARTY%\apache\xalan\src\xalanc\NLS
 
-if "%1" == ""		goto setfdovariables_x86
-if "%1" == "x86"	goto setfdovariables_x86
+if "%PARAM1%" == ""		goto setfdovariables_x86
+if "%PARAM1%" == "x86"	goto setfdovariables_x86
 
 :setfdovariables_x64
 if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle_x64\instantclient\11.2\sdk
@@ -134,8 +152,9 @@ goto end
 
 :usage
 echo Error in script usage. The correct usage is:
-echo     %0 [option]
-echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64
+echo     %0 [option] [VC Option]
+echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^| VC10
+echo where [VC Option] can be: VC10
 echo:
 echo For example:
 echo     %0 x86_amd64
