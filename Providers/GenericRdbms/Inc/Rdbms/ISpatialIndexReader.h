@@ -27,7 +27,7 @@
 #pragma once
 #endif
 
-#include "Fdo.h"
+#include <Fdo.h>
 #include "Rdbms/SpatialIndexDimensionType.h"
 #include "Rdbms/SpatialIndexType.h"
 

@@ -21,9 +21,8 @@
 #pragma once
 #endif
 
+#include <FdoStd.h>
 #include "FdoRdbms.h"
-#include "FdoStd.h"
-
 #include "FdoRdbmsCommand.h"
 #include "FdoRdbmsDataStoreReader.h"
 #include "Fdo/Commands/DataStore/IListDataStores.h"

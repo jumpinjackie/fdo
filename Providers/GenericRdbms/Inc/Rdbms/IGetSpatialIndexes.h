@@ -27,8 +27,8 @@
 #pragma once
 #endif
 
-#include "FdoStd.h"
-#include "Fdo/Commands/ICommand.h"
+#include <FdoStd.h>
+#include <Fdo/Commands/ICommand.h>
 #include "Rdbms/ISpatialIndexReader.h"
 
 /// <summary>The IGetSpatialIndexes interface defines the GetSpatialIndexes command,
