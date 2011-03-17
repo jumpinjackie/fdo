@@ -18,8 +18,6 @@
 #ifndef _SHPCOMPAREHANDLER_H
 #define _SHPCOMPAREHANDLER_H
 
-#include "stdafx.h"
-
 class ShpCompareHandler: public FdoIDisposable
 {
 private:
