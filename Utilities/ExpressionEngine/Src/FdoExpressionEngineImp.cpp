@@ -4566,6 +4566,25 @@ void FdoExpressionEngineImp::RegisterFunctions(FdoExpressionEngineFunctionCollec
     }
 }
 
+void FdoExpressionEngineImp::UnRegisterFunctions(FdoExpressionEngineFunctionCollection *userDefinedFunctions)
+{
+    try
+    {
+        mutex.Enter();
+        initFunction.UnRegisterFunctions(userDefinedFunctions);
+        mutex.Leave();
+    }
+    catch (FdoException *)
+    {
+        mutex.Leave();
+        throw;
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
 // This method would only be usefully when calling from the Evaluate methods. The Evaluate method returns a FdoLiteralValue object to the user. This object should only be re-used
 // by the Expression Engine when the ref-count is 1(ie. the caller is not holding a reference to the object.)
 void FdoExpressionEngineImp::PotentialRelinquishLiteralValue(FdoLiteralValue *value)
