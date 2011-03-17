@@ -180,6 +180,8 @@ public:
 
     void RegisterFunctions(FdoExpressionEngineFunctionCollection *functions)
     {
+        if (functions == NULL)
+            return;
         for (int i=0; i<functions->GetCount(); i++)
         {
             FdoPtr<FdoExpressionEngineIFunction> function = functions->GetItem(i);
@@ -194,6 +196,27 @@ public:
             }
             if (j == m_UserDefinedFunctions->GetCount())
                 m_UserDefinedFunctions->Add(function);
+        }
+    }
+    
+    void UnRegisterFunctions(FdoExpressionEngineFunctionCollection *functions)
+    {
+        if (functions == NULL)
+            return;
+        for (int i=0; i<functions->GetCount(); i++)
+        {
+            FdoPtr<FdoExpressionEngineIFunction> function = functions->GetItem(i);
+            FdoPtr<FdoFunctionDefinition> functionDefinition = function->GetFunctionDefinition();
+            for (int j=0; j<m_UserDefinedFunctions->GetCount(); j++)
+            {
+                FdoPtr<FdoExpressionEngineIFunction> cacheFunction = m_UserDefinedFunctions->GetItem(j);
+                FdoPtr<FdoFunctionDefinition> cacheFunctionDefinition = cacheFunction->GetFunctionDefinition();
+                if (FdoCommonOSUtil::wcsicmp(functionDefinition->GetName(), cacheFunctionDefinition->GetName()) == 0)
+                {
+                    m_UserDefinedFunctions->RemoveAt(j);
+                    break;
+                }
+            }
         }
     }
 
