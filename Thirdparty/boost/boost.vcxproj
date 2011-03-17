@@ -28,18 +28,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -65,10 +69,10 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug stage --with-date_time --with-program_options --with-thread</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug clean --with-date_time --with-program_options --with-thread
-bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug stage --with-date_time --with-program_options --with-thread</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug clean --with-date_time --with-program_options --with-thread
+bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">boost_1_42_0</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
@@ -77,10 +81,10 @@ bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=m
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage --with-date_time --with-program_options --with-thread</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean --with-date_time --with-program_options --with-thread
-bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean --with-date_time --with-program_options --with-thread
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage --with-date_time --with-program_options --with-thread</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean --with-date_time --with-program_options --with-thread
+bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">bjam toolset=msvc-9.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug clean --with-date_time --with-program_options --with-thread
 </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">boost_1_42_0</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -90,11 +94,11 @@ bjam toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=m
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release stage --with-date_time --with-program_options --with-thread
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release stage --with-date_time --with-program_options --with-thread
 </NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release clean --with-date_time --with-program_options --with-thread
-bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release clean --with-date_time --with-program_options --with-thread
+bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">boost_1_42_0</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
@@ -103,11 +107,11 @@ bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release stage --with-date_time --with-program_options --with-thread
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release stage --with-date_time --with-program_options --with-thread
 </NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release clean --with-date_time --with-program_options --with-thread
-bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release clean --with-date_time --with-program_options --with-thread
+bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release stage --with-date_time --with-program_options --with-thread</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">bjam toolset=msvc-9.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release clean --with-date_time --with-program_options --with-thread</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">boost_1_42_0</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
