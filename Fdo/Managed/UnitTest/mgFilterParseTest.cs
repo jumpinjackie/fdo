@@ -134,7 +134,7 @@ namespace Fdo_Test
 
 			// Example from Vinay.  Identifier were only returning their name, not 
 			// the fully qualified text.
-			ParseFilter("NOT Entity.Color NULL");
+			ParseFilter("NOT (Entity.Color NULL)");
 			ParseFilter("Entity.Color IN ('Red', 'Blue', 'Green')");
 
 			// Examples from FDO Expressions and FiltersRpt.doc

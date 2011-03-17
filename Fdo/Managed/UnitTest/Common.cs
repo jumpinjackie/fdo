@@ -22,11 +22,11 @@ using OSGeo.FDO.Common;
 
 namespace Fdo_Test
 {
-	/// <summary>
-	/// Summary description for CommonFuntion.
-	/// </summary>
-	public class Common
-	{
+    /// <summary>
+    /// Summary description for CommonFuntion.
+    /// </summary>
+    public class Common
+    {
         public const int Dimensionality_XY = 0;
         public const int Dimensionality_Z = 1;
         public const int Dimensionality_M = 2;
@@ -62,8 +62,8 @@ namespace Fdo_Test
         {
 #if DUMPTESTCONTENT
             Console.WriteLine("FGFT = {0}", p.Text);
- #endif
-       }
+#endif
+        }
 
         public static void DumpLineString(ILineString line)
         {
@@ -73,21 +73,21 @@ namespace Fdo_Test
 
             IDirectPosition pStart = line.StartPosition;
             DumpPosition("", pStart);
-        
+
             IDirectPosition pEnd = line.EndPosition;
             DumpPosition("", pEnd);
-        
+
             IEnvelope envl = line.Envelope;
             DumpEnvelope(envl);
-        
-            for (int i=0; i<line.Count; i++)
+
+            for (int i = 0; i < line.Count; i++)
             {
-                IDirectPosition pos = line.get_Item(i);
+                IDirectPosition pos = line[i];
                 DumpPosition("", pos);
             }
             DumpFGFT(line);
         }
-        
+
         public static void DumpLinearRing(ILinearRing lRing)
         {
 #if DUMPTESTCONTENT
@@ -97,9 +97,9 @@ namespace Fdo_Test
             IEnvelope envl = lRing.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<lRing.Count; i++)
+            for (int i = 0; i < lRing.Count; i++)
             {
-                IDirectPosition pos = lRing.get_Item(i);
+                IDirectPosition pos = lRing[i];
                 DumpPosition("", pos);
             }
 
@@ -120,14 +120,14 @@ namespace Fdo_Test
             IEnvelope envl = lSeg.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<lSeg.Count; i++)
+            for (int i = 0; i < lSeg.Count; i++)
             {
-                IDirectPosition pos = lSeg.get_Item(i);
+                IDirectPosition pos = lSeg[i];
                 DumpPosition("", pos);
             }
         }
 
-        
+
         public static void DumpPolygon(IPolygon polygon)
         {
 #if DUMPTESTCONTENT
@@ -137,7 +137,7 @@ namespace Fdo_Test
             ILinearRing extRing = polygon.ExteriorRing;
             DumpLinearRing(extRing);
 
-            for (int i = 0; i<polygon.InteriorRingCount; i++)
+            for (int i = 0; i < polygon.InteriorRingCount; i++)
             {
                 ILinearRing intRing = polygon.GetInteriorRing(i);
                 DumpLinearRing(intRing);
@@ -181,9 +181,9 @@ namespace Fdo_Test
             IEnvelope envl = multiPnt.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<multiPnt.Count; i++)
+            for (int i = 0; i < multiPnt.Count; i++)
             {
-                IPoint pnt = multiPnt.get_Item(i);
+                IPoint pnt = multiPnt[i];
                 DumpPoint(pnt);
             }
             DumpFGFT(multiPnt);
@@ -198,9 +198,9 @@ namespace Fdo_Test
             IEnvelope envl = multiLine.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<multiLine.Count; i++)
+            for (int i = 0; i < multiLine.Count; i++)
             {
-                ILineString lineString = multiLine.get_Item(i);
+                ILineString lineString = multiLine[i];
                 DumpLineString(lineString);
             }
             DumpFGFT(multiLine);
@@ -214,9 +214,9 @@ namespace Fdo_Test
             IEnvelope envl = multiPoly.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<multiPoly.Count; i++)
+            for (int i = 0; i < multiPoly.Count; i++)
             {
-                IPolygon polygon = multiPoly.get_Item(i);
+                IPolygon polygon = multiPoly[i];
                 DumpPolygon(polygon);
             }
             DumpFGFT(multiPoly);
@@ -256,9 +256,9 @@ namespace Fdo_Test
             IEnvelope envl = curveString.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<curveString.Count; i++)
+            for (int i = 0; i < curveString.Count; i++)
             {
-                ICurveSegmentAbstract seg = curveString.get_Item(i);
+                ICurveSegmentAbstract seg = curveString[i];
                 switch (seg.DerivedType)
                 {
                     case GeometryComponentType.GeometryComponentType_LineStringSegment:
@@ -274,8 +274,8 @@ namespace Fdo_Test
                     default:
                         Debug.Assert(false);
                         break;
-                } 
-            } 
+                }
+            }
 
             DumpFGFT(curveString);
         }
@@ -291,23 +291,23 @@ namespace Fdo_Test
             IEnvelope envl = ring.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<ring.Count; i++)
+            for (int i = 0; i < ring.Count; i++)
             {
-                ICurveSegmentAbstract seg = ring.get_Item(i);
-                switch(seg.DerivedType)
+                ICurveSegmentAbstract seg = ring[i];
+                switch (seg.DerivedType)
                 {
                     case GeometryComponentType.GeometryComponentType_LineStringSegment:
-                    {
-                        DumpLineStringSegment((ILineStringSegment)seg);
-                        break;
-                    }
+                        {
+                            DumpLineStringSegment((ILineStringSegment)seg);
+                            break;
+                        }
                     case GeometryComponentType.GeometryComponentType_CircularArcSegment:
-                    {
-                        DumpCircularArcSegment((ICircularArcSegment)seg);
-                        break;
-                    }
-            } 
-            } 
+                        {
+                            DumpCircularArcSegment((ICircularArcSegment)seg);
+                            break;
+                        }
+                }
+            }
         }
 
         public static void DumpCurvePolygon(ICurvePolygon curvePoly)
@@ -319,7 +319,7 @@ namespace Fdo_Test
             IRing extRing = curvePoly.ExteriorRing;
             DumpRing(extRing);
 
-            for (int i=0; i<curvePoly.InteriorRingCount; i++)
+            for (int i = 0; i < curvePoly.InteriorRingCount; i++)
             {
                 IRing ring = curvePoly.get_InteriorRing(i);
                 DumpRing(ring);
@@ -337,9 +337,9 @@ namespace Fdo_Test
             Console.WriteLine("{0}:count({1}) dimtype({2}) derivedtype({3})", "MULTICURVEPOLYGON", multiCurvePoly.Count, multiCurvePoly.Dimensionality, multiCurvePoly.DerivedType);
 #endif
 
-            for (int i=0; i<multiCurvePoly.Count; i++)
+            for (int i = 0; i < multiCurvePoly.Count; i++)
             {
-                ICurvePolygon curvePoly = multiCurvePoly.get_Item(i);
+                ICurvePolygon curvePoly = multiCurvePoly[i];
                 DumpCurvePolygon(curvePoly);
             }
 
@@ -354,9 +354,9 @@ namespace Fdo_Test
             Console.WriteLine("{0}:count({1}) dimtype({2}) derivedtype({3})", "MULTICURVESTRING", multiCurveString.Count, multiCurveString.Dimensionality, multiCurveString.DerivedType);
 #endif
 
-            for (int i=0; i<multiCurveString.Count; i++)
+            for (int i = 0; i < multiCurveString.Count; i++)
             {
-                ICurveString curveString = multiCurveString.get_Item(i);
+                ICurveString curveString = multiCurveString[i];
                 DumpCurveString(curveString);
             }
 
@@ -374,9 +374,9 @@ namespace Fdo_Test
             IEnvelope envl = multiGeometry.Envelope;
             DumpEnvelope(envl);
 
-            for (int i=0; i<multiGeometry.Count; i++)
+            for (int i = 0; i < multiGeometry.Count; i++)
             {
-                IGeometry geometry = multiGeometry.get_Item(i);
+                IGeometry geometry = multiGeometry[i];
                 switch (geometry.DerivedType)
                 {
                     case GeometryType.GeometryType_LineString:
@@ -499,16 +499,16 @@ namespace Fdo_Test
         {
             FgfGeometryFactory gf = new FgfGeometryFactory();
 
-            IDirectPosition startPos = gf.CreatePositionXY(offset+0.0, offset+0.0);
-            IDirectPosition midPos = gf.CreatePositionXY(offset+0.0, offset+1.0);
-            IDirectPosition endPos = gf.CreatePositionXY(offset+1.0, offset+2.0);
+            IDirectPosition startPos = gf.CreatePositionXY(offset + 0.0, offset + 0.0);
+            IDirectPosition midPos = gf.CreatePositionXY(offset + 0.0, offset + 1.0);
+            IDirectPosition endPos = gf.CreatePositionXY(offset + 1.0, offset + 2.0);
 
             ICircularArcSegment arcSeg = gf.CreateCircularArcSegment(startPos, midPos, endPos);
 
             DirectPositionCollection points = new DirectPositionCollection();
-            IDirectPosition pt1 = gf.CreatePositionXY(offset+1.0, offset+2.0);
-            IDirectPosition pt2 = gf.CreatePositionXY(offset+3.0, offset+0.0);
-            IDirectPosition pt3 = gf.CreatePositionXY(offset+3.0, offset+2.0);
+            IDirectPosition pt1 = gf.CreatePositionXY(offset + 1.0, offset + 2.0);
+            IDirectPosition pt2 = gf.CreatePositionXY(offset + 3.0, offset + 0.0);
+            IDirectPosition pt3 = gf.CreatePositionXY(offset + 3.0, offset + 2.0);
             points.Add(pt1);
             points.Add(pt2);
             points.Add(pt3);
@@ -526,15 +526,15 @@ namespace Fdo_Test
         {
             FgfGeometryFactory gf = new FgfGeometryFactory();
 
-            IDirectPosition startPos = gf.CreatePositionXY(offset+0.0, offset+0.0);
-            IDirectPosition midPos = gf.CreatePositionXY(offset+0.0, offset+1.0);
-            IDirectPosition endPos = gf.CreatePositionXY(offset+1.0, offset+2.0);
+            IDirectPosition startPos = gf.CreatePositionXY(offset + 0.0, offset + 0.0);
+            IDirectPosition midPos = gf.CreatePositionXY(offset + 0.0, offset + 1.0);
+            IDirectPosition endPos = gf.CreatePositionXY(offset + 1.0, offset + 2.0);
 
             ICircularArcSegment arcSeg = gf.CreateCircularArcSegment(startPos, midPos, endPos);
 
             DirectPositionCollection points = new DirectPositionCollection();
-            IDirectPosition fromPt = gf.CreatePositionXY(offset+1.0, offset+2.0);
-            IDirectPosition toPt = gf.CreatePositionXY(offset+0.0, offset+0.0);
+            IDirectPosition fromPt = gf.CreatePositionXY(offset + 1.0, offset + 2.0);
+            IDirectPosition toPt = gf.CreatePositionXY(offset + 0.0, offset + 0.0);
             points.Add(fromPt);
             points.Add(toPt);
 
@@ -567,9 +567,9 @@ namespace Fdo_Test
         {
             CurvePolygonCollection curvePolys = new CurvePolygonCollection();
 
-            for (int i=0; i<numCurvePolys; i++)
+            for (int i = 0; i < numCurvePolys; i++)
             {
-                ICurvePolygon curvePoly = CreateCurvePolygon(i+offset);
+                ICurvePolygon curvePoly = CreateCurvePolygon(i + offset);
                 curvePolys.Add(curvePoly);
             }
 
@@ -607,7 +607,7 @@ namespace Fdo_Test
             // Point
             double[] ordsXYZ = new double[3];
             ordsXYZ[0] = 5.0; ordsXYZ[1] = 3.0; ordsXYZ[2] = 2.0;
-            geometry = gf.CreatePoint(Dimensionality_XY|Dimensionality_Z, ordsXYZ);
+            geometry = gf.CreatePoint(Dimensionality_XY | Dimensionality_Z, ordsXYZ);
             geometries.Add(geometry);
 
             // Polygon
@@ -642,6 +642,6 @@ namespace Fdo_Test
             // Make MultiGeometry from the many geometries collected above.
             return gf.CreateMultiGeometry(geometries);
         }
-	}
+    }
 }
 

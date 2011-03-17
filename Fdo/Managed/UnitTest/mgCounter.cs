@@ -24,6 +24,7 @@ namespace Fdo_Test
     public class mgCounter : XmlSaxHandler
     {
         public mgCounter()
+            : base(IntPtr.Zero, false)
         {
             mCount = 0;
         }

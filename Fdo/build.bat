@@ -133,7 +133,7 @@ if "%TYPEACTION%"=="builddocsonly" goto generate_docs
 if "%TYPEACTION%"=="install" goto install_files
 
 echo %MSACTION% %TYPEBUILD% Fdo dlls
-msbuild FDO.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild FDO%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 

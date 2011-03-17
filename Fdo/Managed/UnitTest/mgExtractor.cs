@@ -24,6 +24,7 @@ namespace Fdo_Test
     public class mgExtractor : XmlSaxHandler
     {
         public mgExtractor(XmlWriter writer)
+            : base(IntPtr.Zero, false)
         {
             mWriter = writer;
         }
