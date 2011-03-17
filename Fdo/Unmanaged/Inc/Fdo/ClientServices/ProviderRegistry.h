@@ -1,6 +1,5 @@
 #ifndef _FDOPROVIDERREGISTRY_H_
 #define _FDOPROVIDERREGISTRY_H_
-/***************************************************************************
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -19,8 +18,6 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
- *
- ***************************************************************************/
 #ifdef _WIN32
 #pragma once
 #endif
@@ -34,13 +31,14 @@ class FdoProviderCollection;
 /// \brief
 /// The FdoProviderRegistry interface supports registering, un-registering, and enumerating 
 /// registered feature providers
-/// \note
+///
+/// \remarks
 /// This is not the MS-Windows registry.
+///
 class FdoProviderRegistry : public IProviderRegistry
 {
-/// \brief
-/// Instances of the FdoFeatureAccessManager interface are responsible for the 
-/// lifespan of FdoProviderRegistry.
+    /// Instances of the FdoFeatureAccessManager interface are responsible for the 
+    /// lifespan of FdoProviderRegistry.
     friend class FdoFeatureAccessManager;
 
 /// \cond DOXYGEN-IGNORE
@@ -51,6 +49,7 @@ protected:
     /// Default destructor for FdoProviderRegistry object.
     virtual ~FdoProviderRegistry();
 
+    /// Release the object, disposing of any allocated memory
     virtual void Dispose();
 /// \endcond
 
@@ -88,13 +87,13 @@ public:
     /// \return
     /// Returns nothing. Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual void RegisterProvider(const wchar_t * name, 
-                                            const wchar_t * displayName, 
-                                            const wchar_t * description, 
-                                            const wchar_t * version, 
-                                            const wchar_t * fdoVersion, 
-                                            const wchar_t * libraryPath,
-                                            bool isManaged);
+    FDO_API virtual void RegisterProvider(FdoString* name, 
+                                          FdoString* displayName, 
+                                          FdoString* description, 
+                                          FdoString* version, 
+                                          FdoString* fdoVersion, 
+                                          FdoString* libraryPath,
+                                          bool isManaged);
 
     /// \brief
     /// Unregisters the provider with the specified name. 
@@ -106,7 +105,7 @@ public:
     /// \return
     /// Returns nothing. Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual void UnregisterProvider(const wchar_t * name);
+    FDO_API virtual void UnregisterProvider(FdoString* name);
 
 private:
     /// The ProvideRegistry class defines and maintains a collection of Providers

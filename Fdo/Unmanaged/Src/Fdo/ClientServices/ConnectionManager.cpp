@@ -1,5 +1,5 @@
 /***************************************************************************
- * 
+* 
 * Copyright (C) 2004-2006  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
@@ -26,8 +26,20 @@
 
 #include "ProviderDef.h"
 #include "RegistryUtility.h"
+
 #include <Fdo/ClientServices/ConnectionManager.h>
 #include <Fdo/ClientServices/ClientServiceException.h>
+
+#include <string>
+#include <map>
+
+#ifdef _WIN32
+typedef std::map <std::wstring, HMODULE> FdoModuleMap;
+#else
+typedef std::map <std::wstring, void *> FdoModuleMap;
+#endif
+
+static FdoModuleMap m_moduleMap;
 
 extern wchar_t module[];
 
@@ -58,7 +70,7 @@ extern wchar_t module[];
 // macro to convert a wide character string into a multibyte string, allocating space on the stack
 #define wide_to_multibyte(mb,w)\
 {\
-    const wchar_t* p = (w);\
+    FdoString* p = (w);\
     size_t i = wcslen (p);\
     i++;\
     mb = (char*)alloca (i * 6);\
@@ -92,7 +104,7 @@ extern wchar_t module[];
 // macro to convert a wide character string into a multibyte string, allocating space on the stack
 #define wide_to_multibyte(mb,w)\
 {\
-    const wchar_t* p = (w);\
+    FdoString* p = (w);\
     size_t i = wcslen (p);\
     i++;\
     mb = (char*)alloca (i * 6);\
@@ -149,8 +161,8 @@ static int addPath (std::wstring exe)
 #ifdef _WIN32
 	//An environment variable has a maximum size limit of 32,767 characters, including the null-terminating character
     wchar_t env[0x7FFF];
-    const wchar_t* DIR_SEP_CHAR = L"\\";
-    const wchar_t* PATH_SEP_CHAR = L";";
+    FdoString* DIR_SEP_CHAR = L"\\";
+    FdoString* PATH_SEP_CHAR = L";";
     std::wstring::size_type pos;
     std::wstring path;
     std::wstring new_path;
@@ -186,7 +198,7 @@ static int addPath (std::wstring exe)
 }
 
 // Creates an unitialized connection object given the provider name
-FdoIConnection* FdoConnectionManager::CreateConnection(const wchar_t* providerName)
+FdoIConnection* FdoConnectionManager::CreateConnection(FdoString* providerName)
 {
 #ifdef _WIN32
     FdoIConnection* connection = NULL;
@@ -329,7 +341,7 @@ FdoIConnection* FdoConnectionManager::CreateConnection(const wchar_t* providerNa
 }
 
 // Frees a connection library reference given the provider name
-void FdoConnectionManager::FreeLibrary(const wchar_t* providerName)
+void FdoConnectionManager::FreeLibrary(FdoString* providerName)
 {
     FdoModuleMapIterator moduleIterator = m_moduleMap.find(providerName);
 

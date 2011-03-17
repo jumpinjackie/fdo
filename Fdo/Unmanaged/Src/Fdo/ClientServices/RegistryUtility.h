@@ -1,7 +1,8 @@
 #ifndef _FDOREGISTRYUTILITY_H_
 #define _FDOREGISTRYUTILITY_H_
+
 /***************************************************************************
- * Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2006  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -41,28 +42,28 @@ class FdoRegistryUtility
 public:
 	// Gets a provider's library path for a provider based on the provider name.
     // Returns true if the provider is registered, false otherwise.
-    static bool GetLibraryLocation(const wchar_t* providerName, std::wstring &libraryLocation);
+    static bool GetLibraryLocation(FdoString* providerName, std::wstring &libraryLocation);
 
     // Fills a collection object with a list of valid providers defined in the registry
     static void GetProviderCollection(std::vector<FdoProvider*> &providers);
 
     // Creates a provider key in the system datastore based on the provider properties
-    static void RegisterProvider(const wchar_t * name, 
-                                 const wchar_t * displayName, 
-                                 const wchar_t * description, 
-                                 const wchar_t * version, 
-                                 const wchar_t * fdoVersion, 
-                                 const wchar_t * libraryPath,
+    static void RegisterProvider(FdoString * name, 
+                                 FdoString * displayName, 
+                                 FdoString * description, 
+                                 FdoString * version, 
+                                 FdoString * fdoVersion, 
+                                 FdoString * libraryPath,
                                  bool isManaged);
 
     // Removes a provider key from the system datastore based on the provider properties
-    static void UnregisterProvider(const wchar_t * name);
+    static void UnregisterProvider(FdoString * name);
 
 private:
-    static void AddText(DOMDocument *doc, DOMElement* featureProviderElem, const XMLCh* name, const wchar_t *nameValue);
-    static bool DeleteProvider(DOMDocument *doc, const wchar_t * name);
+    static void AddText(DOMDocument *doc, DOMElement* featureProviderElem, const XMLCh* name, FdoString *nameValue);
+    static bool DeleteProvider(DOMDocument *doc, FdoString * name);
     static wchar_t* GetFileName();
-	static bool FileExists (const wchar_t* filePath);
+	static bool FileExists (FdoString* filePath);
     // Caller responsible for freeing document returned by GetDOMDocument
     static DOMDocument* GetDOMDocument();
     static void PutDOMDocument( DOMDocument* doc );

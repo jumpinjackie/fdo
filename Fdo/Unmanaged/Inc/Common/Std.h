@@ -1,6 +1,5 @@
 #ifndef _FDO_COMMONSTD_H_
 #define _FDO_COMMONSTD_H_
-// 
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -21,9 +20,11 @@
 
 #ifdef _WIN32
 #pragma once
-#endif
+#else
 #include <wchar.h>
 #include <stdlib.h>
+#endif
+
 #include <Common/FdoTypes.h>
 
 // FDOCommon

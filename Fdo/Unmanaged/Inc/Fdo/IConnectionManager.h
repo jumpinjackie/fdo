@@ -1,7 +1,6 @@
 #ifndef _ICONNECTIONMANAGER_H_
 #define _ICONNECTIONMANAGER_H_
 
-
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
 // 
@@ -18,13 +17,14 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+
 #ifdef _WIN32
 #pragma once
 #endif
 
-// Include definitions
-#include <Fdo.h>
-#include <Fdo/ClientServices/ClientServices.h>
+#include <FdoStd.h>
+
+class FdoIConnection;
 
 /// \brief
 ///  
@@ -60,7 +60,7 @@ public:
     /// \return
     /// Returns an instance of an FdoIConnection object. Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual FdoIConnection* CreateConnection(const wchar_t* providerName) = 0;
+    FDO_API virtual FdoIConnection* CreateConnection(FdoString* providerName) = 0;
 	
     /// \brief
     /// Frees a connection library reference given the provider name.
@@ -72,7 +72,7 @@ public:
     /// \return
     /// Returns nothing. Throws an instance of FdoClientServicesException * if an error occurs.
     /// 
-    FDO_API virtual void FreeLibrary(const wchar_t* providerName) = 0;
+    FDO_API virtual void FreeLibrary(FdoString* providerName) = 0;
 };
 #endif
 

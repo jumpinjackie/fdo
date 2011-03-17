@@ -26,6 +26,7 @@
 #endif
 #endif
 #include <FdoStd.h>
+#include <FdoCommon.h>
 #include <FdoGeometry.h>
 
 ////////////////////////////////////////////////////////////////

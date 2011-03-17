@@ -171,10 +171,7 @@ public:
     /// \return
     /// Returns true if this string is lexically greater than str2
     /// 
-	FDO_API_COMMON bool operator>( const FdoStringP str2 ) const
-	{
-		return( wcscmp( *this, str2 ) > 0 );
-	}
+	FDO_API_COMMON bool operator>( const FdoStringP str2 ) const;
 
     /// \brief
     /// Greater than or equal comparison operator
@@ -185,10 +182,7 @@ public:
     /// \return
     /// Returns true if this string is lexically greater or equal to str2
     /// 
-	FDO_API_COMMON bool operator>=( const FdoStringP str2 ) const
-	{
-		return( wcscmp( *this, str2 ) >= 0 );
-	}
+	FDO_API_COMMON bool operator>=( const FdoStringP str2 ) const;
 
     /// \brief
     /// Equals comparison operator
@@ -199,10 +193,7 @@ public:
     /// \return
     /// Returns true if this string is lexically equal to str2
     /// 
-	FDO_API_COMMON bool operator==( const FdoStringP str2 ) const
-	{
-		return( wcscmp( *this, str2 ) == 0 );
-	}
+	FDO_API_COMMON bool operator==( const FdoStringP str2 ) const;
 
     /// \brief
     /// Equals comparison operator
@@ -213,10 +204,7 @@ public:
     /// \return
     /// Returns true if this string is lexically equal to str2
     /// 
-	FDO_API_COMMON bool operator==( FdoString* str2 ) const
-	{
-        return( wcscmp( *this, str2 ? str2 : L"" ) == 0 );
-	}
+	FDO_API_COMMON bool operator==( FdoString* str2 ) const;
 
     /// \brief
     /// Not Equals comparison operator
@@ -228,9 +216,9 @@ public:
     /// Returns true if this string is not lexically equal to str2
     /// 
 	FDO_API_COMMON bool operator!=( FdoString* str2 ) const
-	{
-		return( !((*this) == str2) );
-	}
+    {
+	    return( !((*this) == str2) );
+    }
 
     /// \brief
     /// Less than or Equals comparison operator
@@ -241,10 +229,7 @@ public:
     /// \return
     /// Returns true if this string is lexically less than or equal to str2
     /// 
-	FDO_API_COMMON bool operator<=( const FdoStringP str2 ) const
-	{
-		return( wcscmp( *this, str2 ) <= 0 );
-	}
+	FDO_API_COMMON bool operator<=( const FdoStringP str2 ) const;
 
     /// \brief
     /// Less than  comparison operator
@@ -255,10 +240,7 @@ public:
     /// \return
     /// Returns true if this string is lexically less than str2
     /// 
-	FDO_API_COMMON bool operator<( const FdoStringP str2 ) const
-	{
-		return( wcscmp( *this, str2 ) < 0 );
-	}
+	FDO_API_COMMON bool operator<( const FdoStringP str2 ) const;
 
     /// \brief
     /// Case-insensitive string comparison.

@@ -18,12 +18,12 @@
 #include <Fdo/Filter/ValueExpressionCollection.h>
 
 // Constructs a default empty instance of a ValueCollection.
-FDO_API FdoValueExpressionCollection* FdoValueExpressionCollection::Create()
+FdoValueExpressionCollection* FdoValueExpressionCollection::Create()
 {
     return new FdoValueExpressionCollection();
 }
 
-FDO_API FdoValueExpressionCollection* FdoValueExpressionCollection::Create(FdoString** values, FdoInt32 length)
+FdoValueExpressionCollection* FdoValueExpressionCollection::Create(FdoString** values, FdoInt32 length)
 {
     FdoValueExpressionCollection* pCollection = Create();
 

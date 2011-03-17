@@ -1,6 +1,5 @@
 #ifndef _FDOCLIENTSERVICES_H_
 #define _FDOCLIENTSERVICES_H_
-/***************************************************************************
 
 //
 // Copyright (C) 2004-2006  Autodesk, Inc.
@@ -18,26 +17,6 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
-
- *
- ***************************************************************************/
-#ifdef _WIN32
-#pragma once
-
-#define WIN32_LEAN_AND_MEAN
-
-#ifdef _WIN64
-#include <windows.h>
-#else
-#define _X86_
-#endif
-#include <windef.h>
-#include <winnt.h>
-#include <winbase.h>
-#include <winver.h>
-
-#endif
-
 
 #endif
 

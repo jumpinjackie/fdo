@@ -206,7 +206,7 @@ void FdoRasterPropertyDefinition::SetNullable (bool value)
 
 /// <summary>Gets the default data model used by this raster property.</summary>
 /// <returns>Returns the current default data model.</returns> 
-FDO_API FdoRasterDataModel* FdoRasterPropertyDefinition::GetDefaultDataModel ()
+FdoRasterDataModel* FdoRasterPropertyDefinition::GetDefaultDataModel ()
 {
     FDO_SAFE_ADDREF(m_model);
     return (m_model);
@@ -217,7 +217,7 @@ FDO_API FdoRasterDataModel* FdoRasterPropertyDefinition::GetDefaultDataModel ()
 /// SupportsDataModel capability.</summary>
 /// <param name="datamodel">The datamodel to be used for newly created
 /// rasters, or the default datamodel to be used when returning raster data.</param>
-FDO_API void FdoRasterPropertyDefinition::SetDefaultDataModel (FdoRasterDataModel* datamodel)
+void FdoRasterPropertyDefinition::SetDefaultDataModel (FdoRasterDataModel* datamodel)
 {
     _StartChanges ();
     FDO_SAFE_RELEASE(m_model);
@@ -230,7 +230,7 @@ FDO_API void FdoRasterPropertyDefinition::SetDefaultDataModel (FdoRasterDataMode
 /// direction in pixels (number of columns).</summary>
 /// <returns>Returns the current default horizontal image size in pixels
 /// (number of columns).</returns> 
-FDO_API FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageXSize ()
+FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageXSize ()
 {
     return (m_sizeX);
 }
@@ -239,7 +239,7 @@ FDO_API FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageXSize ()
 /// direction in pixels (number of columns).</summary>
 /// <param name="size">The desired default horizontal image size in pixels
 /// (number of columns).</param> 
-FDO_API void FdoRasterPropertyDefinition::SetDefaultImageXSize (FdoInt32 size)
+void FdoRasterPropertyDefinition::SetDefaultImageXSize (FdoInt32 size)
 {
     _StartChanges ();
     m_sizeX = size;
@@ -250,7 +250,7 @@ FDO_API void FdoRasterPropertyDefinition::SetDefaultImageXSize (FdoInt32 size)
 /// direction in pixels (number of rows).</summary>
 /// <returns>Returns the current default vertical image size in pixels
 /// (number of rows).</returns> 
-FDO_API FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageYSize ()
+FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageYSize ()
 {
     return (m_sizeY);
 }
@@ -259,7 +259,7 @@ FDO_API FdoInt32 FdoRasterPropertyDefinition::GetDefaultImageYSize ()
 /// direction in pixels (number of rows).</summary>
 /// <param name="size">The desired default vertical image size in pixels
 /// (number of rows).</param> 
-FDO_API void FdoRasterPropertyDefinition::SetDefaultImageYSize (FdoInt32 size)
+void FdoRasterPropertyDefinition::SetDefaultImageYSize (FdoInt32 size)
 {
     _StartChanges ();
     m_sizeY = size;
