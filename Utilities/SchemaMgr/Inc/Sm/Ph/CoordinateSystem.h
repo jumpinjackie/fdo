@@ -86,7 +86,7 @@ protected:
         double& operator[]( int index );
 
         // Copy ordinates to this vector from given vector
-        void operator=(Vector& src);
+        Vector& operator=(Vector& src);
 
         // Multiple this vector with given vector. 
         // Returns ( this[0] * rhs[0] + this[1] * rhs[1] + this[2] * rhs[2]
@@ -117,7 +117,7 @@ protected:
         // Get the row at the 0-base index
         Vector& operator[]( int index );
         // Copy from src into this matrix
-        void operator=(Matrix& src);
+        Matrix& operator=(Matrix& src);
 
         // Multiply this and the rhs matrix.
         Matrix operator*(Matrix& rhs);

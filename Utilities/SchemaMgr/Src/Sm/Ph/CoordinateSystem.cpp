@@ -326,9 +326,11 @@ double& FdoSmPhCoordinateSystem::Vector::operator[]( int index )
     return mVector[index];
 }
 
-void FdoSmPhCoordinateSystem::Vector::operator=(Vector& src)
+FdoSmPhCoordinateSystem::Vector& FdoSmPhCoordinateSystem::Vector::operator=(Vector& src)
 {
     Set(src);
+
+    return(*this);
 }
 
 double FdoSmPhCoordinateSystem::Vector::operator*(Vector& rhs)
@@ -395,9 +397,11 @@ FdoSmPhCoordinateSystem::Vector& FdoSmPhCoordinateSystem::Matrix::operator[]( in
     return mMatrix[index];
 }
 
-void FdoSmPhCoordinateSystem::Matrix::operator=(FdoSmPhCoordinateSystem::Matrix& src)
+FdoSmPhCoordinateSystem::Matrix& FdoSmPhCoordinateSystem::Matrix::operator=(FdoSmPhCoordinateSystem::Matrix& src)
 {
     Set(src);
+
+    return(*this);
 }
 
 FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::operator*(FdoSmPhCoordinateSystem::Matrix& rhs)
