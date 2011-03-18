@@ -44,8 +44,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalOptions="-Zm120"
+				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
@@ -73,7 +73,7 @@
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Debug&quot;;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOMYSQL)\lib\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug&quot;"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				IgnoreDefaultLibraryNames="LIBCMTD"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="1"
@@ -130,8 +130,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalOptions="-Zm120"
+				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\include&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="0"
@@ -159,7 +159,7 @@
 				AdditionalDependencies="cppunitd.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win64\Debug;&quot;$(FDO)\Unmanaged\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Debug&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\Debug&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug&quot;;..\;..\..\..\Lib\Win64\Debug"
-				IgnoreDefaultLibraryNames="libcmtd.lib"
+				IgnoreDefaultLibraryNames="LIBCMTD"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				SubSystem="1"
@@ -238,7 +238,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOMYSQL)\lib\opt;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release&quot;"
-				IgnoreDefaultLibraryNames="LIBC;LIBCMT"
+				IgnoreDefaultLibraryNames="LIBCMT"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
@@ -314,7 +314,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="cppunit.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FdoGeneric.lib libmySQL.lib Rdbi.lib gdbi.lib schemamgrnew.lib MySQLDriver.lib mysqloverrides.lib mysqlschemamgr.lib ProvidersCommon.lib rdbmsoverrides.lib mysql.lib schemamgr_lpnew.lib schemamgr_phnew.lib SchemaMgr_OVNew.lib grdschemamgr.lib util.lib Advapi32.lib TestCommon.lib"
 				AdditionalLibraryDirectories="..\..\Lib\Win64\Release;&quot;$(FDO)\Unmanaged\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win64\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win64&quot;;&quot;$(FDOMYSQL)\lib\opt&quot;;&quot;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release&quot;;&quot;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release&quot;;..\;..\..\..\Lib\Win64\Release"
-				IgnoreDefaultLibraryNames="libc.lib"
+				IgnoreDefaultLibraryNames="LIBCMT"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="17"
