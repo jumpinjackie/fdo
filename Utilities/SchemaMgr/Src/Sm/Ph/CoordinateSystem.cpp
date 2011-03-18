@@ -18,7 +18,7 @@
 
 #include "stdafx.h"
 #include <Sm/Ph/CoordinateSystem.h>
-#include <FdoCommonOsUtil.h>
+#include <FdoCommonOSUtil.h>
 
 // Transition table and enums for parsing WKT
 
@@ -267,10 +267,10 @@ void FdoSmPhCoordinateSystem::ParseWkt( FdoStringP inWKT )
 
     if ( xdirn == WKT_TOKEN_NORTH || xdirn == WKT_TOKEN_SOUTH ) 
     {
-        mTransformOut = mTransformOut.SwapXY();
+        mTransformOut.operator=(mTransformOut.SwapXY());
     }
 
-    mTransformIn = mTransformOut.Inverse();
+    mTransformIn.operator=(mTransformOut.Inverse());
 }
 
 void FdoSmPhCoordinateSystem::TransformOut( double& x, double& y, double& z)
@@ -368,7 +368,7 @@ FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::SwapXY()
     // Keep Z the same
     flip[2][2] = 1;
 
-    out =  flip * (*this);
+    out.operator=(flip.operator*(*this));
 
     return out;
 }
