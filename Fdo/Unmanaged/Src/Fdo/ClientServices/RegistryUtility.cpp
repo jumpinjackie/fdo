@@ -22,6 +22,8 @@
 #include <windows.h>
 #endif
 
+#include <string>
+
 #include <malloc.h>
 
 #ifndef _WIN32

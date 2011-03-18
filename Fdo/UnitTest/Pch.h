@@ -18,6 +18,8 @@
 #include <windows.h>
 #endif
 
+#include <string>
+#include <vector>
 #include <cstring>
 #include <cstdlib> 
 #include <cstdio>

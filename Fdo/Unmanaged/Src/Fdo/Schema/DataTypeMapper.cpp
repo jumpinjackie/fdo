@@ -17,6 +17,7 @@
 * 
  */
 
+#include <string>
 #include "DataTypeMapper.h"
 
 std::map<std::wstring,FdoDataType> FdoDataTypeMapper::mStdMap;

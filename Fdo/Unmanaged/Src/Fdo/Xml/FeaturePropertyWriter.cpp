@@ -20,6 +20,8 @@
 #include <windows.h>
 #endif
 
+#include <string>
+
 #include <Fdo.h>
 #include <Fdo/Xml/FeaturePropertyWriter.h>
 #include <xercesc/util/Base64.hpp>

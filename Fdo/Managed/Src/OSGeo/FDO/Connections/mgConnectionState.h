@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <Fdo/Connections/ConnectionState.h>
+
 /// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_CONNECTIONS
 /// \endcond
