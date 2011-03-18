@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <Fdo/Commands/CommandType.h>
+
 /// \cond DOXYGEN-IGNORE
 BEGIN_NAMESPACE_OSGEO_FDO_COMMANDS
 /// \endcond
