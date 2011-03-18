@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
 <xs:schema xmlns:Acad="http://fdo.osgeo.org/schemas/feature/Acad" targetNamespace="http://fdo.osgeo.org/schemas/feature/Acad" elementFormDefault="qualified" attributeFormDefault="unqualified">
 <xs:annotation>
@@ -693,15 +693,15 @@
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
-<xs:element name="-x31--8-x20-School" type="Land:-x31--8-x20-SchoolType" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="-x31--8-x20-SchoolKey">
-<xs:selector xpath=".//-x31--8-x20-School"/>
+<xs:element name="_x31--8-x20-School" type="Land:_x31--8-x20-SchoolType" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="_x31--8-x20-SchoolKey">
+<xs:selector xpath=".//_x31--8-x20-School"/>
 <xs:field xpath="FeatureId"/>
 </xs:key>
-<xs:unique name="-x31--8-x20-SchoolKey_0">
-<xs:selector xpath=".//-x31--8-x20-School"/>
+<xs:unique name="_x31--8-x20-SchoolKey_0">
+<xs:selector xpath=".//_x31--8-x20-School"/>
 <xs:field xpath="FeatureId"/>
-<xs:field xpath="-x25--x20-Occupied"/>
+<xs:field xpath="_x25--x20-Occupied"/>
 </xs:unique>
 </xs:element>
 <xs:element name="Build-x27-g" type="Land:Build-x27-gType" abstract="false" substitutionGroup="gml:_Feature">
@@ -712,7 +712,7 @@
 <xs:unique name="Build-x27-gKey_0">
 <xs:selector xpath=".//Build-x27-g"/>
 <xs:field xpath="FeatureId"/>
-<xs:field xpath="-x25--x20-Occupied"/>
+<xs:field xpath="_x25--x20-Occupied"/>
 </xs:unique>
 </xs:element>
 <xs:element name="class_with__25__char_name" type="Land:class_with__25__char_nameType" abstract="false" substitutionGroup="gml:_Feature">
@@ -758,14 +758,14 @@
 <xs:field xpath="PolyNum"/>
 </xs:unique>
 </xs:element>
-<xs:complexType name="-x31--8-x20-SchoolType" abstract="false" fdo:geometryName="Geometry">
+<xs:complexType name="_x31--8-x20-SchoolType" abstract="false" fdo:geometryName="Geometry">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="-x23--x20-Occupied" minOccurs="0">
+<xs:element name="_x23--x20-Occupied" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:short"/>
 </xs:simpleType>
@@ -773,7 +773,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="-x23--x20-Rooms" minOccurs="0">
+<xs:element name="_x23--x20-Rooms" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:short"/>
 </xs:simpleType>
@@ -781,7 +781,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="-x25--x20-Occupied" minOccurs="0">
+<xs:element name="_x25--x20-Occupied" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>
 </xs:simpleType>
@@ -823,7 +823,7 @@
 <xs:complexContent>
 <xs:extension base="gml:AbstractFeatureType">
 <xs:sequence>
-<xs:element name="-x23--x20-Rooms" minOccurs="0">
+<xs:element name="_x23--x20-Rooms" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:short"/>
 </xs:simpleType>
@@ -831,7 +831,7 @@
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="-x25--x20-Occupied" minOccurs="0">
+<xs:element name="_x25--x20-Occupied" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:double"/>
 </xs:simpleType>
