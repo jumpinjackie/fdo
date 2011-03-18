@@ -267,10 +267,10 @@ void FdoSmPhCoordinateSystem::ParseWkt( FdoStringP inWKT )
 
     if ( xdirn == WKT_TOKEN_NORTH || xdirn == WKT_TOKEN_SOUTH ) 
     {
-        mTransformOut.operator=(mTransformOut.SwapXY());
+        mTransformOut = mTransformOut.SwapXY();
     }
 
-    mTransformIn.operator=(mTransformOut.Inverse());
+    mTransformIn = mTransformOut.Inverse();
 }
 
 void FdoSmPhCoordinateSystem::TransformOut( double& x, double& y, double& z)
@@ -326,14 +326,14 @@ double& FdoSmPhCoordinateSystem::Vector::operator[]( int index )
     return mVector[index];
 }
 
-FdoSmPhCoordinateSystem::Vector& FdoSmPhCoordinateSystem::Vector::operator=(Vector& src)
+FdoSmPhCoordinateSystem::Vector& FdoSmPhCoordinateSystem::Vector::operator=(Vector src)
 {
     Set(src);
 
     return(*this);
 }
 
-double FdoSmPhCoordinateSystem::Vector::operator*(Vector& rhs)
+double FdoSmPhCoordinateSystem::Vector::operator*(Vector rhs)
 {
     double out = 0;
 
@@ -370,7 +370,7 @@ FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::SwapXY()
     // Keep Z the same
     flip[2][2] = 1;
 
-    out.operator=(flip.operator*(*this));
+    out = flip * (*this);
 
     return out;
 }
@@ -397,14 +397,14 @@ FdoSmPhCoordinateSystem::Vector& FdoSmPhCoordinateSystem::Matrix::operator[]( in
     return mMatrix[index];
 }
 
-FdoSmPhCoordinateSystem::Matrix& FdoSmPhCoordinateSystem::Matrix::operator=(FdoSmPhCoordinateSystem::Matrix& src)
+FdoSmPhCoordinateSystem::Matrix& FdoSmPhCoordinateSystem::Matrix::operator=(FdoSmPhCoordinateSystem::Matrix src)
 {
     Set(src);
 
     return(*this);
 }
 
-FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::operator*(FdoSmPhCoordinateSystem::Matrix& rhs)
+FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::operator*(FdoSmPhCoordinateSystem::Matrix rhs)
 {
     Matrix out(false);
 
@@ -420,7 +420,7 @@ FdoSmPhCoordinateSystem::Matrix FdoSmPhCoordinateSystem::Matrix::operator*(FdoSm
     return out;
 }
 
-FdoSmPhCoordinateSystem::Vector FdoSmPhCoordinateSystem::Matrix::operator*(FdoSmPhCoordinateSystem::Vector& rhs)
+FdoSmPhCoordinateSystem::Vector FdoSmPhCoordinateSystem::Matrix::operator*(FdoSmPhCoordinateSystem::Vector rhs)
 {
     Vector out;
 
