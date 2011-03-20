@@ -157,7 +157,7 @@ echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^| 
 echo where [VC Option] can be: VC10
 echo:
 echo For example:
-echo     %0 x86_amd64
+echo     %0 x64 VS10
 exit /B 1
 
 :end
