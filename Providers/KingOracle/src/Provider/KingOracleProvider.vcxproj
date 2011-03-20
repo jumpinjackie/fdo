@@ -289,7 +289,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>oraocci10.lib;oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>oci.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONls.lib;ProvidersCommon.lib;KingOracleOverrides.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(FDOORACLE)\lib\msvc;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;..\..\lib\Win64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
