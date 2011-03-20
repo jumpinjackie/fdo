@@ -718,10 +718,6 @@ echo "delete me please"&gt;$(OutDir)FakeInstall.ilk
       <Project>{001b698f-66ff-4486-ad57-53318cf47a4a}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="UnitTestSqlServer.vcxproj">
-      <Project>{c99add26-4c4c-4417-adfc-f296bede3b45}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
