@@ -184,26 +184,28 @@ if "%ALLENABLETHR%"=="no" goto rebuild_fdo
 if "%TYPEACTIONTHR%"=="install" goto install_all_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty files
-msbuild Thirdparty_fdo.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild Thirdparty_fdo%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild Thirdparty_sdf%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
+msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+SET FDOERROR=%errorlevel%
+if "%FDOERROR%"=="1" goto error
 
-if "%FDOERROR%"=="1" goto error
-msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
-msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
-SET FDOERROR=%errorlevel%
-msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
-SET FDOERROR=%errorlevel%
-if "%FDOERROR%"=="1" goto error
 if not exist util\UpdateVersion\bin mkdir util\UpdateVersion\bin
 copy /y util\UpdateVersion\build\UpdateVersion.exe util\UpdateVersion\bin
+
 if "%TYPEACTIONTHR%"=="build" goto rebuild_fdo
 if "%TYPEACTIONTHR%"=="clean" goto rebuild_fdo
 
@@ -223,11 +225,13 @@ if "%FDOENABLETHR%"=="no" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="install" goto install_fdo_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty FDO files
-msbuild Thirdparty_fdo.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild Thirdparty_fdo%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
 if not exist util\UpdateVersion\bin mkdir util\UpdateVersion\bin
 copy /y util\UpdateVersion\build\UpdateVersion.exe util\UpdateVersion\bin
+
 if "%TYPEACTIONTHR%"=="build" goto rebuild_sdf
 if "%TYPEACTIONTHR%"=="clean" goto rebuild_sdf
 
@@ -244,7 +248,8 @@ if "%SDFENABLETHR%"=="no" goto rebuild_wfs
 if "%TYPEACTIONTHR%"=="install" goto rebuild_wfs
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty SDF files
-msbuild Thirdparty_sdf.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild Thirdparty_sdf%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 
@@ -254,16 +259,16 @@ if "%WFSENABLETHR%"=="no" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="install" goto install_wfs_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WFS files
-msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_wms
-msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
 if "%TYPEACTIONTHR%"=="build" goto rebuild_wms
 if "%TYPEACTIONTHR%"=="clean" goto rebuild_wms
 
@@ -279,19 +284,19 @@ if "%WMSENABLETHR%"=="no" goto rebuild_gdal
 if "%TYPEACTIONTHR%"=="install" goto install_wms_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty WMS files
-msbuild openssl\openssl.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild openssl\openssl%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild libcurl\lib\curllib.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild libcurl\lib\curllib%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
-if not "%PLATFORMTHR%"=="Win32" goto rebuild_gdal
-msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
 if "%TYPEACTIONTHR%"=="build" goto end
 if "%TYPEACTIONTHR%"=="clean" goto end
 
@@ -308,9 +313,10 @@ if "%GDALENABLETHR%"=="no" goto rebuild_postgis
 if "%TYPEACTIONTHR%"=="install" goto install_gdal_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty GDAL files
-msbuild gdal\gdal.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild gdal\gdal%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
 if "%TYPEACTIONTHR%"=="build" goto end
 if "%TYPEACTIONTHR%"=="clean" goto end
 
@@ -323,13 +329,13 @@ rem # End GDAL part #
 rem # Build PostGIS Provider Thirdparty Files
 :rebuild_postgis
 if "%POSTGISENABLETHR%"=="no" goto end
-if not "%PLATFORMTHR%"=="Win32" goto end
 if "%TYPEACTIONTHR%"=="install" goto install_postgis_files
 
 echo %MSACTIONTHR% %TYPEBUILDTHR% Thirdparty PostGIS dlls
-msbuild boost\boost.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
+msbuild boost\boost%VCBEXTENSION%.sln /t:%MSACTIONTHR% /p:Configuration=%TYPEBUILDTHR% /p:Platform=%PLATFORMTHR% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
+
 if "%TYPEACTIONTHR%"=="build" goto end
 if "%TYPEACTIONTHR%"=="clean" goto end
 
