@@ -17,11 +17,11 @@ rem License along with this library; if not, write to the Free Software
 rem Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 rem 
 
+SET PARAM1=%1
+
 if "%2" == "VC10" goto studyParam
 
 if not "%2" == "" goto usage
-
-SET PARAM1=%1
 
 :studyParam
 if "%1" == ""          goto setvcvarsall
@@ -157,7 +157,7 @@ echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^| 
 echo where [VC Option] can be: VC10
 echo:
 echo For example:
-echo     %0 x64 VS10
+echo     %0 x64 VC10
 exit /B 1
 
 :end
