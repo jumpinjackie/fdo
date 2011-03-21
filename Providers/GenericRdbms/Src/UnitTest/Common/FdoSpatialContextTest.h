@@ -54,7 +54,7 @@ protected:
 
     FdoStringP GenFileName( int fileNum, bool hasMetaSchema, bool isMaster );
 
-    static FdoString* FdoSpatialContextTest::DB_NAME_SUFFIX;
+    static FdoString* DB_NAME_SUFFIX;
 
 };
 
