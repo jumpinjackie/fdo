@@ -166,7 +166,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Xalan-C_1_11D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Xalan-C_1_11D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Xalan-C_1_11</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Xalan-C_1_11     </TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Xalan-C_1_11</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug with ICU|Win32'">Xalan-C_1_11D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug with ICU|x64'">Xalan-C_1_11D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release with ICU|x64'">Xalan-C_1_11</TargetName>
