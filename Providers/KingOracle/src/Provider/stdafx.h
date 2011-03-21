@@ -74,6 +74,7 @@ DWORD dwHighDateTime;
 
 // STL includes
 #include <vector>
+#include <string>
 
 // Base FDO headers
 #include <Fdo.h>
