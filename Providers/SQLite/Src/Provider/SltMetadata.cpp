@@ -99,8 +99,8 @@ public:
 
 typedef std::map<const wchar_t*, SltColumnDefinition*, wstring_less> SltGeomColumnDefinitions;
 typedef std::map<const wchar_t*, FdoPropertyDefinition*, wstring_less> SltFdoColumnDefinitions;
-typedef std::vector<std::pair<FdoDataPropertyDefinition*, int>> SltPrimaryKeys;
-typedef std::vector<std::pair<int, std::wstring>> SltCacheSpatialContext;
+typedef std::vector< std::pair<FdoDataPropertyDefinition*, int> > SltPrimaryKeys;
+typedef std::vector< std::pair<int, std::wstring> > SltCacheSpatialContext;
 typedef std::vector<FdoPropertyDefinition*> SltOrderedProperties;
 
 class SltTableDefinition
