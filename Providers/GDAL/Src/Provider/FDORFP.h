@@ -31,7 +31,8 @@
 #include <windows.h>
 #endif //_WIN32
 
-
+#include <string>
+#include <vector>
 #include <GdalFile/FdoGrfpProvider.h>
 #include <FdoCommon.h>
 #include <FdoSpatial.h>

@@ -22,6 +22,8 @@
 #ifdef _WIN32
 #pragma once
 #endif
+
+#include <string>
 #include "FdoRfpRect.h"
 
 class FdoRfpUtil
