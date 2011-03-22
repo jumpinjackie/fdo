@@ -226,6 +226,300 @@ void SqlServerSchemaMgrTests::testSpatialContextsGeog()
     }
 }
 
+void SqlServerSchemaMgrTests::testSynonyms()
+{
+    StaticConnection* conn = CreateStaticConnection();
+    FdoPtr<FdoIConnection> fdoConn;
+
+    try
+    {
+        char prvenv[100];
+        FdoStringP providerName = conn->GetServiceName();
+        sprintf( prvenv, "provider=%ls", (FdoString*) providerName );
+#ifdef _WIN32
+        _putenv( prvenv );
+#else
+        putenv( prvenv );
+#endif
+
+        // Sets the other env.
+        UnitTestUtil::SetProvider( conn->GetServiceName() ); 
+
+        printf( "\nOpening Connection ...\n" );
+
+        conn->connect();
+
+        FdoStringP datastore;
+        FdoStringP fdatastore;
+
+        {
+            FdoSchemaManagerP mgr = conn->CreateSchemaManager();
+
+            FdoSmPhGrdMgrP phMgr = mgr->GetPhysicalSchema()->SmartCast<FdoSmPhGrdMgr>();
+
+            printf( "(Re)Creating datastores ...\n" );
+
+            datastore = phMgr->GetDcOwnerName(
+                UnitTestUtil::GetEnviron("datastore", DB_NAME_SUFFIX)
+            );
+
+            fdatastore = phMgr->GetDcOwnerName(
+                UnitTestUtil::GetEnviron("datastore", DB_NAME_FOREIGN_SUFFIX)
+            );
+
+            UnitTestUtil::CreateDBNoMeta(mgr, datastore);
+
+            UnitTestUtil::CreateDBNoMeta(mgr, fdatastore);
+
+            printf( "Creating Schema ...\n" );
+
+            FdoSmPhOwnerP fowner = phMgr->FindOwner( fdatastore, L"", false );
+
+            FdoSmPhTableP ftable1 = fowner->CreateTable( phMgr->GetDcDbObjectName(L"ftable1" ));
+            FdoSmPhColumnP column = ftable1->CreateColumnInt32( L"fid", false );
+            ftable1->AddPkeyCol( column->GetName() );
+            column = ftable1->CreateColumnDate(L"stamp", true);
+            FdoSmPhScInfoP scinfo = CreateSc( GetSrid(3), 0, 0, 200000, 100000, 0.0333, 0.0111 );
+            column = ftable1->CreateColumnGeom( L"geometry1", scinfo, true, false );
+
+            FdoSmPhSynonymP fsynonym1 = fowner->CreateSynonym(L"synonym1", ftable1 );
+
+            FdoSmPhTableP ftable2 = fowner->CreateTable( phMgr->GetDcDbObjectName(L"f[]table2" ));
+            column = ftable2->CreateColumnInt32( L"fid2", false );
+            ftable2->AddPkeyCol( column->GetName() );
+            column = ftable2->CreateColumnChar(L"value", false, 20);
+            column = ftable2->CreateColumnByte(L"flags", true);
+            scinfo = CreateSc( GetSrid(5), 0, 0, 200000, 100000, 0.0333, 0.0111 );
+            column = ftable2->CreateColumnGeom( L"geometry2", scinfo, true, false );
+
+            FdoSmPhTableP ftable3 = fowner->CreateTable( phMgr->GetDcDbObjectName(L"ftable3" ));
+            column = ftable3->CreateColumnInt32( L"fid3", false );
+            ftable3->AddPkeyCol( column->GetName() );
+            column = ftable3->CreateColumnChar(L"value", false, 20);
+            scinfo = CreateSc( GetSrid(3), 0, 0, 200000, 100000, 0.0333, 0.0111 );
+            column = ftable3->CreateColumnGeom( L"geometry", scinfo, true, false );
+            
+            FdoSmPhViewP fview3 = fowner->CreateView(L"view3", L"", L"", ftable3->GetName() );
+            column = fview3->CreateColumnInt32( L"fid3", false, false, L"fid3" );
+            column = fview3->CreateColumnChar(L"value", false, 20, L"value");
+            column = fview3->CreateColumnGeom( L"geometry", scinfo, true, false, false, L"geometry" );
+
+            fowner->Commit();
+
+
+            FdoSmPhOwnerP owner = phMgr->FindOwner( datastore, L"", false );
+
+            FdoSmPhTableP table = owner->CreateTable( phMgr->GetDcDbObjectName(L"[table]" ));
+            column = table->CreateColumnInt32( L"id", false );
+            table->AddPkeyCol( column->GetName() );
+
+            scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+            column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+            column->SetTypeName(L"geography");
+            
+            scinfo = CreateSc( GetSrid(0), -1001, -1002, 1001, 1002, 0.0333, 0.0111 );
+            column = table->CreateColumnGeom( L"geom_column2", scinfo, true, false );
+            
+            FdoSmPhSynonymP synonym = owner->CreateSynonym(L"synonym1", table );
+
+            FdoSmPhViewP view = owner->CreateView(L"view1", L"", L"", table->GetName() );
+            column = view->CreateColumnInt32( L"id", false, false, L"id" );
+            column = view->CreateColumnGeom( L"geom_column2", scinfo, true, false, false, L"geom_column2" );
+
+            synonym = owner->CreateSynonym(L"synonym1b", view );
+
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"]table[" ));
+            column = table->CreateColumnInt32( L"id2", false );
+            table->AddPkeyCol( column->GetName() );
+            
+            scinfo = CreateSc( GetSrid(0), -90, -180, 90, 180, 0.0333, 0.0111 );
+            column = table->CreateColumnGeom( L"geog_column1", scinfo, true, true );
+            column->SetTypeName(L"geography");
+            
+            column = table->CreateColumnChar( L"name", true, 50);
+
+            synonym = owner->CreateSynonym(L"synonym2", table );
+            synonym = owner->CreateSynonym(L"synonym2b", synonym );
+
+            table = owner->CreateTable( phMgr->GetDcDbObjectName(L"table[]embedded" ));
+            column = table->CreateColumnChar( L"first name", false, 50 );
+            table->AddPkeyCol( column->GetName() );
+
+            column = table->CreateColumnChar( L"last name", false, 50 );
+            table->AddPkeyCol( column->GetName() );
+            
+            column = table->CreateColumnDouble( L"amount", true );
+                   
+            synonym = owner->CreateSynonym(L"synonym3", table );
+
+            view = owner->CreateView(L"view3", L"", L"", synonym->GetName() );
+            column = view->CreateColumnChar( L"first name", false, 50, L"first name" );
+            column = view->CreateColumnChar( L"last name", false, 50, L"last name" );
+            column = view->CreateColumnDouble( L"amount", true, L"amount" );
+
+            synonym = owner->CreateSynonym(L"synonym4", fsynonym1 );
+            synonym = owner->CreateSynonym(L"synonym5", ftable2 );
+            synonym = owner->CreateSynonym(L"synonym6", fview3 );
+
+            owner->Commit();
+
+            FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
+
+            grdOwner->ActivateAndExecute( "create synonym dbo.synonym7 for \"dbo\".\"[table]\" " );
+            grdOwner->ActivateAndExecute( "create synonym dbo.synonym8 for \"dbo\".\"]table[\" " );
+            grdOwner->ActivateAndExecute( "create synonym dbo.synonym9 for \"dbo\".\"table[]embedded\" " );
+        }
+            
+        delete conn;
+        conn = NULL;
+
+        printf( "Connecting and Describing ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoIoMemoryStreamP stream1 = FdoIoMemoryStream::Create();
+
+        FdoXmlSpatialContextFlagsP flags = FdoXmlSpatialContextFlags::Create(
+            L"fdo.osgeo.org/schemas/feature",
+            FdoXmlFlags::ErrorLevel_Normal,
+            true,
+            FdoXmlSpatialContextFlags::ConflictOption_Add,
+            true
+        );
+
+        UnitTestUtil::ExportDb( 
+            fdoConn, 
+            stream1, 
+            flags,
+            false, 
+            FdoStringP(L"Fdo") + datastore
+        );
+		UnitTestUtil::Stream2File( stream1, UnitTestUtil::GetOutputFileName( L"synonyms1.xml" ) );
+
+        UnitTestUtil::CheckOutput( 
+            FdoStringP::Format(L"synonyms1_%ls_master.xml", (FdoString*) providerName),
+            UnitTestUtil::GetOutputFileName( L"synonyms1.xml" )
+        );
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Doing partial Describe ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoStringsP classNames = FdoStringCollection::Create();
+        classNames->Add( L"dbo:synonym2");
+        classNames->Add( L"dbo:synonym4");
+
+        FdoPtr<FdoIDescribeSchema> cmd = (FdoIDescribeSchema*)(fdoConn->CreateCommand( FdoCommandType_DescribeSchema )); 
+        cmd->SetClassNames(classNames);
+        FdoFeatureSchemasP schemas = cmd->Execute();
+        FdoFeatureSchemaP schema = schemas->FindItem(L"dbo");
+        CPPUNIT_ASSERT(schema);
+
+        FdoClassesP classes = schema->GetClasses();
+        CPPUNIT_ASSERT(classes->GetCount() == 2 );
+
+        cmd = (FdoIDescribeSchema*)(fdoConn->CreateCommand( FdoCommandType_DescribeSchema )); 
+        schemas = cmd->Execute();
+        VldSynonymSchema(schemas);
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Doing list and Describe ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoPtr<FdoIGetClassNames> listCmd = (FdoIGetClassNames*)(fdoConn->CreateCommand( FdoCommandType_GetClassNames )); 
+        FdoStringsP listClassNames = listCmd->Execute();
+
+        CPPUNIT_ASSERT(listClassNames->GetCount() == 16 );
+
+        cmd = (FdoIDescribeSchema*)(fdoConn->CreateCommand( FdoCommandType_DescribeSchema )); 
+        schemas = cmd->Execute();
+        VldSynonymSchema(schemas);
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Performing select and describe ...\n" );
+
+        fdoConn = UnitTestUtil::CreateConnection(
+            false,
+            false,
+            DB_NAME_SUFFIX
+        );
+
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)(fdoConn->CreateCommand( FdoCommandType_Select )); 
+        selCmd->SetFeatureClassName(L"dbo:synonym1");
+        FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute();
+        FdoClassDefinitionP classDef = rdr->GetClassDefinition();
+        CPPUNIT_ASSERT(classDef);
+
+        FdoPropertiesP props = classDef->GetProperties();
+        CPPUNIT_ASSERT(props->GetCount() == 3);
+        CPPUNIT_ASSERT(props->Contains(L"id"));
+        CPPUNIT_ASSERT(props->Contains(L"geog_column1"));
+        CPPUNIT_ASSERT(props->Contains(L"geom_column2"));
+
+        cmd = (FdoIDescribeSchema*)(fdoConn->CreateCommand( FdoCommandType_DescribeSchema )); 
+        schemas = cmd->Execute();
+        
+        VldSynonymSchema(schemas);
+
+        rdr = NULL;
+
+        UnitTestUtil::CloseConnection( fdoConn, false, DB_NAME_SUFFIX );
+
+        printf( "Done\n" );
+    }
+    catch (FdoException* e ) 
+    {
+        if ( conn ) delete conn;
+        UnitTestUtil::FailOnException(e);
+    }
+    catch (CppUnit::Exception exception)
+    {
+        if ( conn ) delete conn;
+        throw exception;
+    }
+    catch (...)
+    {
+        if ( conn ) delete conn;
+        CPPUNIT_FAIL ("unexpected exception encountered");
+    }
+}
+
+void SqlServerSchemaMgrTests::VldSynonymSchema( FdoFeatureSchemasP schemas )
+{
+    FdoFeatureSchemaP schema = schemas->FindItem(L"dbo");
+    CPPUNIT_ASSERT(schema);
+
+    FdoClassesP classes = schema->GetClasses();
+    CPPUNIT_ASSERT(classes->GetCount() == 16 );
+
+    int propCount = 0;
+    for ( int i = 0; i < classes->GetCount(); i++ ) 
+    {
+        FdoClassDefinitionP classDef = classes->GetItem(i);
+        FdoPropertiesP props = classDef->GetProperties();
+        propCount += props->GetCount();
+    }
+
+    CPPUNIT_ASSERT(propCount == 47 );
+}
+
 int SqlServerSchemaMgrTests::GenKeysCreateSpecific( FdoSmPhGrdOwner* grdOwner )
 {
     FdoStringP createJoinSql = 

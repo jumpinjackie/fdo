@@ -333,6 +333,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ph\Synonym.cpp" />
     <ClCompile Include="SchemaManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DebugOra|Win32'">Create</PrecompiledHeader>
@@ -376,6 +377,7 @@
     <ClCompile Include="Lp\Schema.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ph\Synonym.h" />
     <ClInclude Include="SchemaManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Ph\ClassWriter.h" />

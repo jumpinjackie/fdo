@@ -29,6 +29,7 @@ set( SmPhRd_SRCS
 	SpatialContextGeomReader.cpp
 	SpatialContextGroupReader.cpp
 	SpatialContextReader.cpp
+	SynonymReader.cpp
 	TableJoin.cpp
 	ViewReader.cpp
 )

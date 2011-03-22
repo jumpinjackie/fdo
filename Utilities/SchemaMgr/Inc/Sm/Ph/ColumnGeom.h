@@ -27,6 +27,7 @@
 
 class FdoSmPhSpatialIndex;
 class FdoSmPhSpatialContext;
+class FdoSmPhSpatialContextGeom;
 
 // Describes spatial context information without depending on
 // logical/physical types.  Some overrides of FdoSmPhColumn may
@@ -103,6 +104,9 @@ public:
 
     /// returns the associated Spatial Context
     FdoPtr<FdoSmPhSpatialContext> GetSpatialContext();
+
+    /// returns Column to Spatial Context association info.
+    FdoPtr<FdoSmPhSpatialContextGeom> GetSpatialContextGeom();
 
     // Returns:
     //  true: if this column is the main geometry for its table or view
@@ -189,7 +193,7 @@ private:
     bool mbHasMeasure;
     bool mbIsPrimary;
     FdoSmPhScInfoP mScInfo;
-    FdoPtr<FdoSmPhSpatialContext> mSpatialContext;
+    FdoPtr<FdoSmPhSpatialContextGeom> mSpatialContextGeom;
     FdoSmPhSpatialIndex* mSpatialIndex;
 };
 

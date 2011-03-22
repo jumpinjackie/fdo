@@ -26,9 +26,12 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
     CPPUNIT_TEST_SUB_SUITE (SqlServerSchemaMgrTests, SchemaMgrTests);
     CPPUNIT_TEST (testSpatialContexts);
     CPPUNIT_TEST (testSpatialContextsGeog);
+    CPPUNIT_TEST (testSynonyms);
     CPPUNIT_TEST_SUITE_END ();
 
     void testSpatialContextsGeog();
+
+    void testSynonyms();
 
     virtual int GenKeysCreateSpecific( FdoSmPhGrdOwner* grdOwner );
     virtual void GenKeysVldSpecific( FdoClassCollection* classes );
@@ -57,6 +60,8 @@ class SqlServerSchemaMgrTests : public SchemaMgrTests
 
 
     virtual FdoInt64 GetSrid( int index );
+
+    void VldSynonymSchema( FdoFeatureSchemasP schemas );
 
 };
 

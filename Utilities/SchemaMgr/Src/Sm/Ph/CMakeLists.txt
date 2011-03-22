@@ -71,6 +71,8 @@ set( SmPhysical_SRCS
 	SpatialContextWriter.cpp
 	SpatialIndex.cpp
 	stdafx.cpp
+	Synonym.cpp
+	SynonymBaseLoader.cpp
 	Table.cpp
 	TableComponentReader.cpp
 	TableMergeReader.cpp

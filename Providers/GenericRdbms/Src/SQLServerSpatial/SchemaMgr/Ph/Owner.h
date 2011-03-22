@@ -21,6 +21,7 @@
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/BaseObjectReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
+#include <Sm/Ph/Rd/SynonymReader.h>
 #include <Sm/Ph/Rd/TableJoin.h>
 #include "SchemaCollection.h"
 
@@ -109,6 +110,12 @@ public:
     // Create a reader to get all database objects for this join.
     virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDbObjectReader( FdoSmPhRdTableJoinP join ) const;
 
+    /// Create a reader to get all derived objects for this owner.
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDerivedObjectReader( FdoStringP objectName = L"") const;
+
+    /// Create a reader to get derived objects this owner and object name list.
+    virtual FdoPtr<FdoSmPhRdDbObjectReader> CreateDerivedObjectReader( FdoStringsP objectNames ) const;
+
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
@@ -143,6 +150,12 @@ public:
 
     virtual FdoPtr<FdoSmPhRdColumnReader> CreateColumnReader( FdoSmPhRdTableJoinP join ) const;
 
+    virtual FdoSmPhRdSynonymReaderP CreateSynonymReader() const;
+
+    virtual FdoSmPhRdSynonymReaderP CreateSynonymReader( FdoStringP synonymName ) const;
+
+    virtual FdoSmPhRdSynonymReaderP CreateSynonymReader( FdoStringsP synonymNames ) const;
+
 	/// Get reader to retrieve all spatial contexts for the connection (no metaschema).
 	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader();
 
@@ -160,7 +173,7 @@ public:
 
 protected:
 
-    // Table and View creation implementors
+    // Table, View and Synonym creation implementors
     virtual FdoSmPhDbObjectP NewTable(
         FdoStringP tableName,
         FdoSchemaElementState elementState,
@@ -172,6 +185,13 @@ protected:
         FdoStringP rootDatabase,
         FdoStringP rootOwner,
         FdoStringP rootObjectName,
+        FdoSchemaElementState elementState,
+        FdoSmPhRdDbObjectReader* reader
+    );
+
+    virtual FdoSmPhDbObjectP NewSynonym(
+        FdoStringP sequenceName,
+        FdoSmPhDbObjectP rootObject,
         FdoSchemaElementState elementState,
         FdoSmPhRdDbObjectReader* reader
     );

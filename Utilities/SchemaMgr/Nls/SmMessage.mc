@@ -1241,3 +1241,18 @@ SymbolicName=FDOSM_425
 Language=English
 Cannot add schema %1$ls to database; it has the same name as the system schema
 .
+MessageId=2650
+SymbolicName=FDOSM_426
+Language=English
+Error creating synonym '%1$ls': referenced database object not specified.
+.
+MessageId=2651
+SymbolicName=FDOSM_427
+Language=English
+Error loading synonym '%1$ls': cannot change referenced database object.
+.
+MessageId=2652
+SymbolicName=FDOSM_428
+Language=English
+Cannot create synonym %1$ls.%2$ls, an object of that name already exists.
+.

@@ -201,6 +201,15 @@ public:
         }
     }
 
+    // Reset this component loader so that it will check all dbObject when the 
+    // next candidate check is done. This is useful when the state of one of the 
+    // objects, that was already checked, changes. The object may have changed
+    // from not being to being a candidate.
+    void Reset()
+    {
+        mNextCandIdx = 0;
+    }
+
 protected:
     // Add the given dbObjects to the candidates list.
     // Default implementation adds all dbObject.

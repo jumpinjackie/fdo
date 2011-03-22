@@ -43,6 +43,7 @@ libSmPhRd_la_SOURCES = \
   SpatialContextGeomReader.cpp \
   SpatialContextGroupReader.cpp \
   SpatialContextReader.cpp \
+  SynonymReader.cpp \
   TableJoin.cpp \
   ViewReader.cpp 
 

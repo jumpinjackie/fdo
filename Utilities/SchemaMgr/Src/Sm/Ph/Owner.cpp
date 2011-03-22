@@ -33,6 +33,7 @@
 #include <Sm/Ph/Rd/PkeyReader.h>
 #include <Sm/Ph/Rd/SpatialContextReader.h>
 #include <Sm/Ph/IndexLoader.h>
+#include <Sm/Ph/SynonymBaseLoader.h>
 #include <Sm/Ph/Rd/TableJoin.h>
 #include <Sm/Ph/OptionsReader.h>
 #include <Sm/Ph/SchemaReader.h>
@@ -40,6 +41,8 @@
 FdoString* FdoSmPhOwner::NOT_CLASSIFIED = L"nc";
 FdoString* FdoSmPhOwner::NOT_EXIST = L"ne";
 FdoString* FdoSmPhOwner::CLASSIFIED = L"c";
+
+class FdoSmPhSynonym;
 
 FdoSmPhOwner::FdoSmPhOwner(
     FdoStringP name, 
@@ -49,7 +52,8 @@ FdoSmPhOwner::FdoSmPhOwner(
 ) : 
     FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, pDatabase, elementState ),
     mDbObjectsCached(false), mDbComponentsCached(false),
-    mIndexLoader(NULL)
+    mIndexLoader(NULL),
+    mSynonymBaseLoader(NULL)
 {
     SetHasMetaSchema( hasMetaSchema );
     mLtMode = NoLtLock;
@@ -99,6 +103,7 @@ FdoSmPhOwner::FdoSmPhOwner(
 FdoSmPhOwner::~FdoSmPhOwner(void)
 {
     FDO_SAFE_RELEASE( mIndexLoader );
+    FDO_SAFE_RELEASE( mSynonymBaseLoader );
 }
 
 void FdoSmPhOwner::SetPassword( FdoStringP password )
@@ -469,6 +474,16 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDbObjectReader( FdoStringsP 
     return (FdoSmPhRdDbObjectReader*) NULL;
 }
  
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDerivedObjectReader( FdoStringP objectName ) const
+{
+    return (FdoSmPhRdDbObjectReader*) NULL;
+}
+ 
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDerivedObjectReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdDbObjectReader*) NULL;
+}
+ 
 FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhOwner::CreateDbObjectReader( FdoSmPhRdTableJoinP join ) const
 {
     return (FdoSmPhRdDbObjectReader*) NULL;
@@ -560,6 +575,21 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader( FdoStrin
     return (FdoSmPhRdBaseObjectReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhOwner::CreateSynonymReader() const
+{
+    return (FdoSmPhRdSynonymReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhOwner::CreateSynonymReader( FdoStringP synonymName) const
+{
+    return (FdoSmPhRdSynonymReader*) NULL;
+}
+
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhOwner::CreateSynonymReader( FdoStringsP synonymNames) const
+{
+    return (FdoSmPhRdSynonymReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader()
 {
     return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
@@ -628,6 +658,27 @@ FdoSmPhViewP FdoSmPhOwner::CreateView(
     return( view->SmartCast<FdoSmPhView>() );
 }
 
+FdoSmPhSynonymP FdoSmPhOwner::CreateSynonym(
+    FdoStringP synonymName,
+    FdoSmPhDbObjectP rootObject
+)
+{
+    if ( FindDbObject( GetManager()->GetDcDbObjectName(synonymName) ) )
+        throw FdoSchemaException::Create( 
+            FdoSmError::NLSGetMessage(
+				FDO_NLSID(FDOSM_428),
+				"Cannot create synonym %1$ls.%2$ls, an object of that name already exists.", 
+                (FdoString*) GetQName(),
+                (FdoString*) synonymName
+            )
+		);
+
+    FdoSmPhDbObjectP synonym = NewSynonym( synonymName, rootObject, FdoSchemaElementState_Added, NULL );
+    GetDbObjects()->Add(synonym);
+
+    return( synonym->SmartCast<FdoSmPhSynonym>() );
+}
+
 FdoSmPhDbObjectsP FdoSmPhOwner::CacheDbObjects( bool cacheComponents )
 {
     // skip if all objects already cached.
@@ -664,6 +715,9 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
 
    // Create reader for owner's db objects
     objReader = CreateDbObjectReader();
+
+    if ( !objReader )
+        return;
 
     if ( cacheComponents ) {
         // Caching db object components so create readers for components.
@@ -719,13 +773,16 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
             }
 
             // The current object may have already been in the cache, but now its
-            // components have been added. In this case, the index and base object
+            // components have been added. In this case, the lazy
             // loaders may have already visited this object and skipped it for 
-            // bulk loading indexes and base objects. Reset the index and base object
+            // bulk loading . Reset the lazy
             // loaders, so that they will revisit this object. Now that it has its
             // components, it might be a bulk load candidate.
 
-            FDO_SAFE_RELEASE(mIndexLoader);
+            if ( mIndexLoader ) 
+                mIndexLoader->Reset();
+            if ( mSynonymBaseLoader ) 
+                mSynonymBaseLoader->Reset();
             mNextBaseCandIdx = 0;
         }
     }
@@ -776,9 +833,23 @@ FdoSmPhDbObjectP FdoSmPhOwner::NewDbObject(
         // TODO: Find out if there is a way to get the root table info.
         pDbObject = NewView(objName, L"", L"", L"", FdoSchemaElementState_Unchanged, reader);
         break;
+
+    case FdoSmPhDbObjType_Synonym:
+        pDbObject = NewSynonym(objName, (FdoSmPhDbObject*) NULL, FdoSchemaElementState_Unchanged, reader);
+        break;
     }
 
     return pDbObject;
+}
+
+FdoSmPhDbObjectP FdoSmPhOwner::NewSynonym(
+    FdoStringP synonymName,
+    FdoSmPhDbObjectP rootObject,
+    FdoSchemaElementState elementState,
+    FdoSmPhRdDbObjectReader* reader
+)
+{
+    return (FdoSmPhDbObject*) NULL;
 }
 
 void FdoSmPhOwner::DiscardDbObject( FdoSmPhDbObject* dbObject )
@@ -812,6 +883,14 @@ void FdoSmPhOwner::RemoveCandDbObject( FdoStringP objectName )
     if ( ix >= 0 ) 
         mCandDbObjects->RemoveAt( ix );
 
+}
+
+void FdoSmPhOwner::CacheSynonymBases( FdoStringP synonymName )
+{
+    if ( !mSynonymBaseLoader ) 
+        mSynonymBaseLoader = new FdoSmPhSynonymBaseLoader( FDO_SAFE_ADDREF(this), GetDbObjects() );
+
+    mSynonymBaseLoader->Load( synonymName, !GetAreAllDbObjectsCached(), GetCandFetchSize() );
 }
 
 FdoSchemaExceptionP FdoSmPhOwner::Errors2Exception(FdoSchemaException* pFirstException ) const
@@ -984,7 +1063,7 @@ bool FdoSmPhOwner::IsDbObjectNameReserved( FdoStringP objectName )
 	return(bReserved);
 }
 
-FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
+FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName)
 {
     FdoSmPhDbObjectP retDbObject;
     FdoDictionaryP candDbObjects = FdoDictionary::Create();
@@ -1118,13 +1197,16 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName )
                 dbObject->CacheBaseObjects( baseObjectReader );
 
             // The current object may have already been in the cache, but now its
-            // components have been added. In this case, the index and base object
+            // components have been added. In this case, the lazy
             // loaders may have already visited this object and skipped it for 
-            // bulk loading indexes and base objects. Reset the index and base object
+            // bulk loading. Reset the lazy
             // loaders, so that they will revisit this object. Now that it has its
             // components, it might be a bulk load candidate.
 
-            FDO_SAFE_RELEASE(mIndexLoader);
+            if ( mIndexLoader ) 
+                mIndexLoader->Reset();
+            if ( mSynonymBaseLoader ) 
+                mSynonymBaseLoader->Reset();
             mNextBaseCandIdx = 0;
         }
     }
@@ -1347,8 +1429,12 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
             scReader = CreateRdSpatialContextReader(dbObjectName);
         }
     
+        bool scFound = false;
+
         while (scReader->ReadNext())
         {
+            scFound = true;
+
             // Generate physical spatial context from current SpatialContextGeom
             FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
             FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
@@ -1394,6 +1480,81 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
             }
         }
 
+        // Get spatial contexts for derived objects. A derived object does not have
+        // an explicit correspondence to its columns (it is implicitly related to the
+        // columns of its base object). Synonyms are usually derived objects.
+        // This means the above won't pick up spatial contexts for geometric columns
+        // for derived objects, meaning that a spatial context can be missed for a 
+        // synonym that references a table in another datastore. The following finds
+        // spatial contexts for these derived objects.
+
+        // If loading spatial contexts for a single dbObject and spatial contexts
+        // were found then the dbObject was not derived. Therefore we can skip the 
+        // derived object check.
+        if ( (dbObjectName == L"") || !scFound ) 
+        {
+            FdoStringsP derivedObjects = FdoStringCollection::Create();
+            FdoSmPhRdDbObjectReaderP objReader = CreateDerivedObjectReader(dbObjectName);
+            
+            if ( objReader ) 
+            {
+                //Read and cache all derived object before looking at their columns.
+                //This causes their base objects (which have the columns) to be bulk loaded.
+                while ( objReader->ReadNext() )
+                {
+                    CacheDbObject(objReader);
+                    derivedObjects->Add( objReader->GetString(L"", L"name") );
+                }
+
+
+                // Check each derived object for geometric column
+                for ( int i = 0; i < derivedObjects->GetCount(); i++ ) 
+                {
+                    FdoSmPhDbObjectP dbObject = FindDbObject(derivedObjects->GetString(i));
+
+                    if ( dbObject ) 
+                    {
+                        FdoSmPhColumnsP columns = dbObject->GetColumns();
+
+                        for ( int j = 0; j < columns->GetCount(); j++ )
+                        {
+                            FdoSmPhColumnP column = columns->GetItem(j);
+                            FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+                            if ( geomColumn )
+                            {
+                                // Found a geometric column
+                                FdoStringP scGeomName = FdoSmPhSpatialContextGeom::MakeName(dbObject->GetName(), geomColumn->GetName());
+
+                                if ( mSpatialContextGeoms->IndexOf(scGeomName) == -1 )
+                                {
+                                    // Its spatial context info has not yet been cached.
+                                    // Cache a dummy spatial context geometry. When the
+                                    // scGeoms are resolved (see below) the base column
+                                    // is retrieved and its spatial context is added to the 
+                                    // cache.
+                                    FdoSmPhSpatialContextGeomP  scgeom = new FdoSmPhSpatialContextGeom(
+                                                                                    this,
+													                                dbObject->GetName(),
+													                                geomColumn->GetName(),
+													                                false,
+                                                                                    false,
+                                                                                    0,
+                                                                                    true,
+                                                                                    NULL,
+                                                                                    mSpatialContexts
+                                    );
+                    
+                                    mSpatialContextGeoms->Add( scgeom );	
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+
         // Resolve the SCGeoms that were loaded to their spatial contexts. This is triggered
         // by doing a GetSpatialContext on each SCGeom. This does the following:
         //  - coalesce and cache spatial contexts in mSpatialContexts
@@ -1407,6 +1568,15 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
         {
             FdoSmPhSpatialContextGeomP  scgeom = mSpatialContextGeoms->GetItem(i);
             FdoSmPhSpatialContextP sc = scgeom->GetSpatialContext();
+        }
+
+        // If an scgeom for a derived object does not get resolve them it is dangling
+        // (null spatial context). Remove these scgeoms.
+        for ( FdoInt32 i = lastScGeom; i >= firstScGeom; i-- )
+        {
+            FdoSmPhSpatialContextGeomP  scgeom = mSpatialContextGeoms->GetItem(i);
+            if ( !scgeom->GetSpatialContext() )
+                mSpatialContextGeoms->RemoveAt(i);
         }
     }
 }

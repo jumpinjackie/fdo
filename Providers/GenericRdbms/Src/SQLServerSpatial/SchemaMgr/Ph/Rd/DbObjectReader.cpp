@@ -24,7 +24,8 @@
 
 FdoSmPhRdSqsDbObjectReader::FdoSmPhRdSqsDbObjectReader(
     FdoSmPhOwnerP owner,
-    FdoStringP objectName
+    FdoStringP objectName,
+    bool derivedOnly
 ) :
     FdoSmPhRdDbObjectReader(NULL, owner, objectName)
 {
@@ -32,16 +33,17 @@ FdoSmPhRdSqsDbObjectReader::FdoSmPhRdSqsDbObjectReader(
     if ( objectName != L"" ) 
         objectNames->Add(objectName);
 
-    SetSubReader(MakeQueryReader(owner,objectNames));
+    SetSubReader(MakeQueryReader(owner,objectNames,derivedOnly));
 }
 
 FdoSmPhRdSqsDbObjectReader::FdoSmPhRdSqsDbObjectReader(
     FdoSmPhOwnerP owner,
-    FdoStringsP objectNames
+    FdoStringsP objectNames,
+    bool derivedOnly
 ) :
     FdoSmPhRdDbObjectReader(NULL, owner, L"")
 {
-    SetSubReader(MakeQueryReader(owner,objectNames));
+    SetSubReader(MakeQueryReader(owner,objectNames,derivedOnly));
 }
 
 FdoSmPhRdSqsDbObjectReader::FdoSmPhRdSqsDbObjectReader(
@@ -52,7 +54,7 @@ FdoSmPhRdSqsDbObjectReader::FdoSmPhRdSqsDbObjectReader(
 {
     FdoStringsP objectNames = FdoStringCollection::Create();
 
-    SetSubReader(MakeQueryReader(owner,objectNames,join));
+    SetSubReader(MakeQueryReader(owner,objectNames,false,join));
 }
 
 FdoSmPhRdSqsDbObjectReader::~FdoSmPhRdSqsDbObjectReader(void)
@@ -69,6 +71,8 @@ FdoSmPhDbObjType FdoSmPhRdSqsDbObjectReader::GetType()
         ret = FdoSmPhDbObjType_Table;
     else if (type == L"v ")
         ret = FdoSmPhDbObjType_View;
+    else if (type == L"sn")
+        ret = FdoSmPhDbObjType_Synonym;
     else
         ret = FdoSmPhDbObjType_Unknown;
 
@@ -117,6 +121,7 @@ FdoSmPhRowsP FdoSmPhRdSqsDbObjectReader::MakeRows( FdoSmPhMgrP mgr )
 FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
     FdoSmPhOwnerP owner,
     FdoStringsP objectNames,
+    bool derivedOnly,
     FdoSmPhRdTableJoinP join
 )
 {
@@ -217,7 +222,10 @@ FdoSmPhReaderP FdoSmPhRdSqsDbObjectReader::MakeQueryReader(
                 (FdoString*)(owner->GetDbName()),
                 (FdoString*)(owner->GetDbName()),
                 (FdoString*)joinFrom,
-                L"a.type in ('U', 'V')", //This was done because format string got too long.
+                // When asked for derived object only, just retrieve synonyms.
+                // Synonyms are considered derived because the SQL Server data dictionary does not explicity
+                // relate synonyms to their columns. They implicitly relate to the columns for their base objects.
+                derivedOnly ? L"a.type = 'SN'" : L"a.type in ('U', 'V','SN')", //This was done because format string got too long.
                 (qualification == L"") ? L"" : L" and ",
                 (FdoString*) qualification
             );

@@ -948,15 +948,19 @@ void FdoSmPhDbObject::CacheColumns( FdoSmPhRdColumnReaderP rdr )
 
 void FdoSmPhDbObject::CacheBaseObjects( FdoSmPhRdBaseObjectReaderP rdr )
 {
-    // Do nothing if base objects already loaded
+    FdoSmPhTableComponentReaderP groupReader = NewTableBaseReader(
+        rdr
+    );
+
 	if ( !mBaseObjects ) {
 		mBaseObjects = new FdoSmPhBaseObjectCollection( this );
 
-        FdoSmPhTableComponentReaderP groupReader = NewTableBaseReader(
-            rdr
-        );
-
         LoadBaseObjects( groupReader );
+    }
+    else
+    {
+        // Base objects already loaded, just skip ones in reader.
+        LoadBaseObjects( groupReader, true );
     }
 }
 
