@@ -242,6 +242,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\Sm\Ph\Table.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Synonym.cpp" />
+    <ClCompile Include="Src\Sm\Ph\SynonymBaseLoader.cpp" />
     <ClCompile Include="Src\Sm\Ph\TableComponentReader.cpp" />
     <ClCompile Include="src\Sm\Ph\TableMergeReader.cpp" />
     <ClCompile Include="Src\Sm\Ph\TempObject.cpp" />
@@ -333,6 +335,7 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="src\Sm\Ph\Rd\TableJoin.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\SynonymReader.cpp" />
     <ClCompile Include="Src\Sm\Ph\Rd\ViewReader.cpp" />
     <ClCompile Include="Src\Sm\Ph\Cfg\ClassReader.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
@@ -522,6 +525,8 @@
     <ClInclude Include="Inc\Sm\Ph\SpatialContextWriter.h" />
     <ClInclude Include="Inc\Sm\Ph\SpatialIndex.h" />
     <ClInclude Include="Src\Sm\Ph\stdafx.h" />
+    <ClInclude Include="Inc\Sm\Ph\Synonym.h" />
+    <ClInclude Include="Inc\Sm\Ph\SynonymBaseLoader.h" />
     <ClInclude Include="Inc\Sm\Ph\Table.h" />
     <ClInclude Include="inc\Sm\Ph\TableComponentReader.h" />
     <ClInclude Include="inc\Sm\Ph\TableMergeReader.h" />
@@ -551,6 +556,7 @@
     <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextGeomReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextGroupReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Rd\SpatialContextReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\SynonymReader.h" />
     <ClInclude Include="inc\Sm\Ph\Rd\TableJoin.h" />
     <ClInclude Include="Inc\Sm\Ph\Rd\ViewReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Cfg\ClassReader.h" />
