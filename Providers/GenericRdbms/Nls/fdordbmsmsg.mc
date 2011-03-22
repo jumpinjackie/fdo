@@ -755,11 +755,6 @@ SymbolicName=FDORDBMS_122
 Language=English
 Cannot create sequence %1$ls.%2$ls, an object of that name already exists.
 .
-MessageId=2328
-SymbolicName=FDORDBMS_123
-Language=English
-Cannot create synonym %1$ls.%2$ls, an object of that name already exists.
-.
 MessageId=2329
 SymbolicName=FDORDBMS_124
 Language=English
@@ -779,16 +774,6 @@ MessageId=2332
 SymbolicName=FDORDBMS_127
 Language=English
 Error in sequence for property '%1$ls': cannot create synonym for non-existent foreign sequence %2$ls.
-.
-MessageId=2333
-SymbolicName=FDORDBMS_128
-Language=English
-Error creating synonym '%1$ls': referenced database object not specified.
-.
-MessageId=2334
-SymbolicName=FDORDBMS_129
-Language=English
-Error loading synonym '%1$ls': cannot change referenced database object.
 .
 MessageId=2335
 SymbolicName=FDORDBMS_130

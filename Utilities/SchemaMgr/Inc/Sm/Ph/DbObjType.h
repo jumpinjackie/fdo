@@ -26,6 +26,7 @@ enum FdoSmPhDbObjType
     FdoSmPhDbObjType_Table,         // a concrete table.
     FdoSmPhDbObjType_View,          // view on another database object (or objects).
     FdoSmPhDbObjType_Index,         // table index
+    FdoSmPhDbObjType_Synonym,       // synonym
     FdoSmPhDbObjType_Temp,          // temporary object (for queries).
     FdoSmPhDbObjType_Provider,      // Provider-specific type
     FdoSmPhDbObjType_Unknown        // Don't know what this database object is.

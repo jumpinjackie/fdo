@@ -364,11 +364,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\Sm\Ph\ColumnList.cpp"
+				RelativePath=".\Src\Sm\Ph\ColumnList.cpp"
 				>
 			</File>
 			<File
@@ -574,6 +574,14 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\Synonym.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Sm\Ph\SynonymBaseLoader.cpp"
+				>
 			</File>
 			<File
 				RelativePath="Src\Sm\Ph\Table.cpp"
@@ -1025,6 +1033,10 @@
 							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Src\Sm\Ph\Rd\SynonymReader.cpp"
+					>
 				</File>
 				<File
 					RelativePath=".\src\Sm\Ph\Rd\TableJoin.cpp"
@@ -1663,11 +1675,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\inc\Sm\Ph\ColumnList.h"
+				RelativePath=".\Inc\Sm\Ph\ColumnList.h"
 				>
 			</File>
 			<File
@@ -1927,6 +1939,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\Sm\Ph\Synonym.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Sm\Ph\SynonymBaseLoader.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\Sm\Ph\Table.h"
 				>
 			</File>
@@ -2043,6 +2063,10 @@
 				</File>
 				<File
 					RelativePath=".\Inc\Sm\Ph\Rd\SpatialContextReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Inc\Sm\Ph\Rd\SynonymReader.h"
 					>
 				</File>
 				<File

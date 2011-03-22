@@ -60,7 +60,19 @@ FdoSmPhScInfoP	FdoSmPhColumnGeom::GetSpatialContextInfo()
 
 FdoSmPhSpatialContextP FdoSmPhColumnGeom::GetSpatialContext()
 {
-    if ( !mSpatialContext ) {
+    FdoSmPhSpatialContextP spatialContext;
+
+    FdoSmPhSpatialContextGeomP scGeom = GetSpatialContextGeom();
+
+    if ( scGeom )
+        spatialContext = scGeom->GetSpatialContext();
+
+    return spatialContext;
+}
+
+FdoSmPhSpatialContextGeomP FdoSmPhColumnGeom::GetSpatialContextGeom()
+{
+    if ( !mSpatialContextGeom ) {
         // No Spatial context info set yet so set it from the associated spatial context.
         FdoSmSchemaElement* dbObject = (FdoSmSchemaElement*)(GetParent());
         
@@ -71,15 +83,12 @@ FdoSmPhSpatialContextP FdoSmPhColumnGeom::GetSpatialContext()
                 FdoStringP    dbObjectName  = dbObject->GetName();
 
                 // Get Spatial Context Geometry assocation, use it to get the spatial context
-                FdoSmPhSpatialContextGeomP scGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
-
-                if ( scGeom )
-                    mSpatialContext = scGeom->GetSpatialContext();
+                mSpatialContextGeom = owner->FindSpatialContextGeom(dbObjectName, GetName());
             }
         }
     }
 
-    return mSpatialContext;
+    return mSpatialContextGeom;
 }
 
 void FdoSmPhColumnGeom::SetPrimary( bool isPrimary )

@@ -719,6 +719,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Ph\Synonym.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Ph\Table.cpp"
 					>
 				</File>
@@ -845,6 +849,10 @@
 				</File>
 				<File
 					RelativePath=".\Ph\SpatialContextWriter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Ph\Synonym.h"
 					>
 				</File>
 				<File

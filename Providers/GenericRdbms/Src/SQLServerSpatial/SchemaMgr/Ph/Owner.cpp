@@ -20,6 +20,7 @@
 #include "Owner.h"
 #include "Table.h"
 #include "View.h"
+#include "Synonym.h"
 #include "Mgr.h"
 #include "Rd/DbObjectReader.h"
 #include "Rd/BaseObjectReader.h"
@@ -28,6 +29,7 @@
 #include "Rd/FkeyReader.h"
 #include "Rd/IndexReader.h"
 #include "Rd/PkeyReader.h"
+#include "Rd/SynonymReader.h"
 #include "Rd/SpatialContextReader.h"
 #include "Rd/CoordSysReader.h"
 #include "Rd/DbSchemaReader.h"
@@ -230,6 +232,16 @@ FdoSmPhDbObjectP FdoSmPhSqsOwner::NewView(
     return new FdoSmPhSqsView(viewName, rootDatabase, rootOwner, rootObjectName, this, elementState, reader);
 }
 
+FdoSmPhDbObjectP FdoSmPhSqsOwner::NewSynonym(
+    FdoStringP synonymName,
+    FdoSmPhDbObjectP rootObject,
+    FdoSchemaElementState elementState,
+    FdoSmPhRdDbObjectReader* reader
+)
+{
+    return new FdoSmPhSqsSynonym(synonymName, rootObject, this, elementState, reader);
+}
+
 FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDbObjectReader( FdoStringP dbObject) const
 {
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
@@ -238,6 +250,20 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDbObjectReader( FdoString
 }
 
 FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDbObjectReader( FdoStringsP objectNames ) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsDbObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames );
+}
+
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDerivedObjectReader( FdoStringP objectName ) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsDbObjectReader( FDO_SAFE_ADDREF(pOwner), objectName, true  );
+}
+
+FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDerivedObjectReader( FdoStringsP objectNames ) const
 {
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
 
@@ -382,6 +408,27 @@ FdoPtr<FdoSmPhRdColumnReader> FdoSmPhSqsOwner::CreateColumnReader( FdoSmPhRdTabl
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
 
     return new FdoSmPhRdSqsColumnReader( FDO_SAFE_ADDREF(pOwner), join );
+}
+
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhSqsOwner::CreateSynonymReader() const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsSynonymReader( FDO_SAFE_ADDREF(pOwner) );
+}
+
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhSqsOwner::CreateSynonymReader( FdoStringP synonymName) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsSynonymReader( FDO_SAFE_ADDREF(pOwner), synonymName );
+}
+
+FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhSqsOwner::CreateSynonymReader( FdoStringsP synonymNames) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqsSynonymReader( FDO_SAFE_ADDREF(pOwner), synonymNames );
 }
 
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader()

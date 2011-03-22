@@ -19,6 +19,7 @@ set( SmPhGrd_STAT_SRCS
    Owner.cpp
    SpatialContextGroupWriter.cpp
    SpatialContextWriter.cpp
+   Synonym.cpp
    Table.cpp
    View.cpp
 )
