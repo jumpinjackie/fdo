@@ -31,24 +31,10 @@ FdoCommonBinaryReader::FdoCommonBinaryReader(unsigned char* data, int len)
     m_data = data;
     m_len = len;
     m_pos = 0;
-    m_wcsCacheLen = 0;
-    m_wcsCacheCurrent = 0;
-    m_wcsCache = NULL;
-
 }
 
 FdoCommonBinaryReader::~FdoCommonBinaryReader()
 {
-    //if we used extra string buffers, clear them
-    if (!m_stringCaches.empty())
-    {
-        for (std::list<wchar_t*>::iterator iter=m_stringCaches.begin(); 
-            iter != m_stringCaches.end(); iter++)
-            delete [] (*iter);
-    }
-
-    if (m_wcsCache)
-        delete [] m_wcsCache;
 }
 
 void FdoCommonBinaryReader::Reset(unsigned char* data, int len)
@@ -56,23 +42,8 @@ void FdoCommonBinaryReader::Reset(unsigned char* data, int len)
     m_data = data;
     m_len = len;
     m_pos = 0;
-    m_wcsCacheCurrent = 0;
-    
-    if (!(m_wcsCachedStrings).empty())
-    {
-        (m_wcsCachedStrings).clear();
-    }
 
-    //if we used extra string buffers, clear them
-    //and only reuse the last one (pointed to by m_wcsCache)
-    if (!m_stringCaches.empty())
-    {
-        for (std::list<wchar_t*>::iterator iter=m_stringCaches.begin(); 
-            iter != m_stringCaches.end(); iter++)
-            delete [] (*iter);
-
-		m_stringCaches.clear();
-    }
+    m_bufferCache.Reset();
 }
 
 void FdoCommonBinaryReader::SetPosition(int offset)
@@ -198,66 +169,38 @@ wchar_t* FdoCommonBinaryReader::ReadString()
 
 wchar_t* FdoCommonBinaryReader::ReadRawString(unsigned mbstrlen)
 {    
-    
     //check if we have read this string already (it will be cached)
-    wchar_t* thestring = (m_wcsCachedStrings)[m_pos];
-    if (thestring != NULL)
-        return thestring;
-
+    CachedBuffer* buff = m_bufferCache.GetBuffer(m_pos);
+    if (buff != NULL)
+        return buff->Data();
+    
     //make sure wchar_t cache size is big enough
-    if (m_wcsCacheLen - m_wcsCacheCurrent < mbstrlen + 1)
-    {
-        //pick size -- minimum size is STRING_BUFFER_SIZE
-        m_wcsCacheLen = max(STRING_CACHE_SIZE, m_wcsCacheCurrent + mbstrlen + 1);
-        wchar_t* tmp = new wchar_t[m_wcsCacheLen];
-
-        if (m_wcsCache)
-        {
-            //if we already had a buffer, keep track of it
-            //in the list, but set the new current buffer 
-            //to the newly allocated one
-            m_stringCaches.push_back(m_wcsCache);
-            m_wcsCache = tmp;
-        }
-        else
-        {
-            //otherwise just keep track of cache buffer pointer
-            m_wcsCache = tmp;
-        }
-    }
+    buff = m_bufferCache.GetFreeBuffer(m_pos, mbstrlen + 1);
 
     //handle empty string
     if (mbstrlen <= 1)
     {
-        m_wcsCache[m_wcsCacheCurrent] = 0;
-        (m_wcsCachedStrings)[m_pos] = m_wcsCache + m_wcsCacheCurrent;
-        m_wcsCacheCurrent += 1;
+        buff->SetLength(1);
+        *buff->Data() = L'\0';
 
         //skip past null character
         m_pos += mbstrlen;
 
-        return m_wcsCache + m_wcsCacheCurrent - 1;
+        return buff->Data();
     }
         
     //Note: we pass in m_len as number of characters to read, but we know
     //the string must be null terminated, so the function will terminate before that
-    int count = FdoStringP::Utf8ToUnicode((char*)(m_data + m_pos), mbstrlen, m_wcsCache + m_wcsCacheCurrent, mbstrlen);
+    int count = FdoStringP::Utf8ToUnicode((char*)(m_data + m_pos), mbstrlen, buff->Data(), mbstrlen);
 
     _ASSERT(count > 0 && (unsigned int)count < mbstrlen);
-
-    //remember offset of current string
-    unsigned offset = m_wcsCacheCurrent;
-    (m_wcsCachedStrings)[m_pos] = m_wcsCache + offset;
 
     //increment position count to position after string
     //note that "count" is the number of unicode characters
     //read, not the number of bytes we need to increment.
     m_pos += mbstrlen; 
 
-    //remember where to put next string that we read
-    m_wcsCacheCurrent += (int)wcslen(m_wcsCache + m_wcsCacheCurrent) + 1;
-
-    return m_wcsCache + offset;
+    return buff->Data();
 }
 
 

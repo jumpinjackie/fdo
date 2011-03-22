@@ -991,9 +991,9 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                 }
                 else
                 {
-                    std::vector<std::wstring> files;
+                    FdoPtr<FdoStringCollection> files = FdoStringCollection::Create();
                     FdoCommonFile::GetAllFiles (GetDirectory (), files);
-                    int count = (int)files.size ();
+                    int count = (int)files->GetCount ();
                     size_t ext1_len = ELEMENTS(SHP_EXTENSION) - 1;
                     size_t ext2_len = ELEMENTS(DBF_EXTENSION) - 1;
                     for (int i = 0; i < count; i++)
@@ -1003,7 +1003,7 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
                         std::wstring path;
                         FdoString* base;
                         
-                        name = files[i].c_str ();
+                        name = files->GetString(i);
                         length = wcslen (name);
                         if (((ext1_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext1_len]), SHP_EXTENSION)))
                             || ((ext2_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext2_len]), DBF_EXTENSION))))

@@ -569,6 +569,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Inc\FdoCommonHash.h"
+				>
+			</File>
+			<File
 				RelativePath="Inc\FdoCommonMiscUtil.h"
 				>
 			</File>

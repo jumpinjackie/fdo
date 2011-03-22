@@ -873,7 +873,7 @@ bool FdoCommonFile::GetTempFile (wchar_t** name, const wchar_t* path)
 
 #ifdef _WIN32
 #include <io.h>
-void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>& files)
+void FdoCommonFile::GetAllFiles (const wchar_t* path, FdoStringCollection* files)
 {
     size_t length;
     wchar_t* pattern;
@@ -894,7 +894,7 @@ void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>&
     {
         do 
             if (0 != file.size)
-                files.push_back (file.name);
+                files->Add (file.name);
         while (0 == _wfindnext (handle, &file));
         _findclose (handle);
     }
@@ -904,14 +904,14 @@ void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>&
 #include <sys/stat.h> 
 #include <unistd.h> 
 #include <dirent.h>
-void append_file (std::vector<std::wstring>& files, char* name)
+void append_file (FdoStringCollection* files, char* name)
 {
     wchar_t* _name;
 
     conv_utf8_to_wide (_name, name);
-    files.push_back (_name);
+    files->Add (_name);
 }
-void FdoCommonFile::GetAllFiles (const wchar_t* path, std::vector<std::wstring>& files)
+void FdoCommonFile::GetAllFiles (const wchar_t* path, FdoStringCollection* files)
 {
     char* _path;
     struct dirent* dptr;

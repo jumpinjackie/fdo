@@ -179,17 +179,16 @@ SqlServerConnectionUtil::~SqlServerConnectionUtil(void)
 	FdoStringP pTypeName = L"SQLServerSpatial";
 	pTypeName += m_IdTest;
 	FdoString* pTypeNamecst = pTypeName;
-	std::vector<std::wstring> files;
+	FdoPtr<FdoStringCollection> files = FdoStringCollection::Create();
 	FdoCommonFile::GetAllFiles (L"", files);
 	size_t lng = pTypeName.GetLength();
-	size_t count = files.size();
+	size_t count = files->GetCount ();
 	for (size_t i = 0; i < count; i++)
 	{
-		const wchar_t* name;
-		if (lng < files[i].length())
+		FdoStringP name = files->GetString(i);
+		if (lng < name.GetLength())
 		{
-			name = files[i].c_str ();
-			if (0 == memcmp(name, pTypeNamecst, lng*sizeof(wchar_t)))
+			if (0 == memcmp((FdoString*)name, pTypeNamecst, lng*sizeof(wchar_t)))
 				FdoCommonFile::Delete (name, true);
 		}
 	}
