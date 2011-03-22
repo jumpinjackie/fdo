@@ -348,6 +348,7 @@
     <ClInclude Include="Inc\FdoCommonFeatureCommand.h" />
     <ClInclude Include="Inc\FdoCommonFile.h" />
     <ClInclude Include="Inc\FdoCommonGeometryUtil.h" />
+    <ClInclude Include="Inc\FdoCommonHash.h" />
     <ClInclude Include="Inc\FdoCommonMiscUtil.h" />
     <ClInclude Include="Inc\FdoCommonNlsUtil.h" />
     <ClInclude Include="Inc\FdoCommonOSUtil.h" />

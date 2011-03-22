@@ -207,7 +207,7 @@ void FileAccessTests::only_shp ()
         // is being used, which generally works but isn't 100% sound:
         connection = ShpTests::GetConnection ();
         connection->SetConnectionString (L"DefaultFileLocation=" ONLY_SHP_FILE L";TemporaryFileLocation=" ROOT_DATA_PATH);
-        std::vector<std::wstring> filesBefore;
+        FdoPtr<FdoStringCollection> filesBefore = FdoStringCollection::Create();
         FdoCommonFile::GetAllFiles (ROOT_DATA_PATH, filesBefore);
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
         select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);

@@ -20,7 +20,6 @@
 #include "stdafx.h"
 #include "FdoCommonConnStringParser.h"
 #include "FdoCommonOSUtil.h"
-#include "FdoCommonStringUtil.h"
 #include "FdoCommonConnPropDictionary.h"
 
 #include <malloc.h>
@@ -47,10 +46,8 @@ void FdoCommonConnStringParser::SetPropertyValue (FdoCommonConnPropDictionary* p
     }
     if (bAddValue)
     {
-        char* mbValue;
-        wide_to_multibyte(mbValue, value);
         FdoStringP pkeyword = ((FdoStringP)keyword).Lower();
-        m_valueMap[(const wchar_t*)pkeyword] = ParsStringMapElem(value, mbValue);
+        m_valueMap.Assign(pkeyword, value);
         if (isQuoted && NULL != propDictionary)
         {
             FdoPtr<ConnectionProperty> pProp = propDictionary->FindProperty (keyword);
@@ -86,20 +83,20 @@ const wchar_t* FdoCommonConnStringParser::GetFirstInvalidPropertyName(FdoCommonC
         return NULL;
     propNames = propDictionary->GetPropertyNames(propCount);
 
-    for (ParsStringMapIter it = m_valueMap.begin(); it != m_valueMap.end(); it++)
+    for (size_t it = 0; it < m_valueMap.size(); it++)
     {
-        FdoStringP pName = it->first.c_str();
+        FdoString* pName = m_valueMap.at(it)->GetName();
         bool foundProp = false;
         for (FdoInt32 i = 0; i < propCount; i++)
         {
-            if (0 == FdoCommonOSUtil::wcsnicmp (propNames[i], pName, pName.GetLength()))
+            if (0 == FdoCommonOSUtil::wcsicmp (propNames[i], pName))
             {
                 foundProp = true;
                 break;
             }
         }
         if (!foundProp)
-            return it->first.c_str();
+            return pName;
     }
     return NULL;
 }
@@ -203,21 +200,21 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
 const char* FdoCommonConnStringParser::GetPropertyValue(FdoString* propertyName)
 {
     FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
-    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
-    return (it == m_valueMap.end()) ? NULL : it->second.second.c_str();
+    ParsStringMapElem* it = m_valueMap.find((FdoString*)pPropertyName);
+    return (it == NULL) ? NULL : it->GetMbValue();
 }
 
 const wchar_t* FdoCommonConnStringParser::GetPropertyValueW(FdoString* propertyName)
 {
     FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
-    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
-    return (it == m_valueMap.end()) ? NULL : it->second.first.c_str();
+    ParsStringMapElem* it = m_valueMap.find((FdoString*)pPropertyName);
+    return (it == NULL) ? NULL : it->GetValue();
 }
 
 bool FdoCommonConnStringParser::IsPropertyValueSet(FdoString* propertyName)
 {
     FdoStringP pPropertyName = ((FdoStringP)propertyName).Lower();
-    ParsStringMapIter it = m_valueMap.find((FdoString*)pPropertyName);
-    return (it != m_valueMap.end());
+    ParsStringMapElem* it = m_valueMap.find((FdoString*)pPropertyName);
+    return (it != NULL);
 }
 

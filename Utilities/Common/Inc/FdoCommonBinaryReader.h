@@ -18,23 +18,142 @@
 
 #include <FdoCommonPropertyIndex.h>
 
-#ifdef _WIN32
-#include <hash_map>
-#include <functional>
+#define USE_INTERNALHASH 1
+
+#ifndef USE_INTERNALHASH
+#include <map>
 #else
-#include <list>
+#include <FdoCommonHash.h>
+#endif
+
+#ifndef _WIN32
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
-//the initial string buffer is created with this (smallish) size
-//if we need bigger, either a new buffer will be allocated or a 
-//the bigger size will be used if it is the first buffer we
-//create
-#define STRING_CACHE_SIZE 256
-
 class FdoCommonBinaryReader : public FdoDisposable
 {
+    class CachedBuffer
+    {
+        wchar_t* m_buffer;
+        size_t m_length;
+        size_t m_capacity;
+    public:
+        CachedBuffer()
+        {
+            m_buffer = NULL;
+            m_length = m_capacity = 0;
+        }
+        CachedBuffer(size_t size)
+        {
+            m_buffer = new wchar_t[size];
+            m_capacity = size;
+            m_length = 0;
+        }
+        ~CachedBuffer()
+        {
+            delete [] m_buffer;
+        }
+    
+        wchar_t* Data() { return m_buffer; }
+        size_t Length() { return m_length; }
+        size_t Capacity() { return m_capacity; }
+        void SetLength(size_t val)
+        {
+            m_length = val;
+        }
+        void Reset()
+        {
+            m_length = 0;
+        }
+        void EnsureSize(size_t size)
+        {
+            if (m_capacity < size)
+            {
+                delete [] m_buffer;
+                m_buffer = new wchar_t[size];
+                m_capacity = size;
+                m_length = 0;
+            }
+        }
+    };
+
+#ifndef USE_INTERNALHASH
+    typedef std::map <int, CachedBuffer*> CachedBufferMap;
+    typedef std::pair <int, CachedBuffer*> CachedBufferPair;
+    typedef CachedBufferMap::iterator CachedBufferIterator;
+#else
+    typedef FdoHash <int, CachedBuffer*> CachedBufferMap;
+    typedef CachedBufferMap::pair CachedBufferPair;
+    typedef CachedBufferMap::iterator CachedBufferIterator;
+#endif
+
+    class CachedBufferManager
+    {
+        CachedBufferMap m_mapPosition;
+        CachedBuffer** m_buffers;
+        size_t m_count;
+        size_t m_firstFree;
+        size_t m_capacity;
+    
+    private:
+        void resize()
+        {
+            size_t old_capacity = m_capacity;
+            m_capacity = (m_capacity == 0) ? 8 : (1.4 * m_capacity);
+            CachedBuffer** newArray = new CachedBuffer*[m_capacity];
+            for (size_t i = 0; i < old_capacity; i++)
+                newArray[i] = m_buffers[i];
+
+            delete[] m_buffers;
+            m_buffers = newArray;
+        }
+    public:
+        CachedBufferManager()
+        {
+            m_firstFree = m_count = m_capacity = 0;
+            m_buffers = NULL;
+        }
+        ~CachedBufferManager()
+        {
+            for (size_t i = 0; i < m_count; i++)
+                delete m_buffers[i];
+            delete[] m_buffers;
+        }
+        void Reset()
+        {
+            for (size_t i = 0; i < m_firstFree; i++)
+                m_buffers[i]->Reset();
+            m_mapPosition.clear();
+        }
+
+        CachedBuffer* GetBuffer(int pos)
+        {
+            CachedBufferIterator it = m_mapPosition.find(pos);
+            return (it == m_mapPosition.end()) ? NULL : it->second;
+        }
+
+        CachedBuffer* GetFreeBuffer(int pos, size_t size)
+        {
+            if (m_firstFree < m_count)
+            {
+                CachedBuffer* buff = m_buffers[m_firstFree];
+                buff->EnsureSize(size);
+                m_firstFree++;
+                m_mapPosition[pos] = buff;
+                return buff;
+            }
+            if (m_count <= m_capacity)
+                resize();
+            CachedBuffer* buff = new CachedBuffer(size);
+            m_buffers[m_count] = buff;
+            m_firstFree++;
+            m_count++;
+            m_mapPosition[pos] = buff;
+            return buff;
+        }
+    };
+
 public:
     FdoCommonBinaryReader(void) {};   // 0-arg constructor to please FdoPtr::operator->
     FdoCommonBinaryReader(unsigned char* data, int len);
@@ -70,20 +189,7 @@ private:
     unsigned m_len;
     unsigned m_pos;
 
-    //current unicode string buffer
-    wchar_t* m_wcsCache;
-    unsigned m_wcsCacheCurrent;
-    unsigned m_wcsCacheLen;
-
-    
-    //maps offset of a string in the data record to an 
-    //offset of the unicode representation in the m_wcsCache
-    stdext::hash_map<int, wchar_t*> m_wcsCachedStrings;
-
-    //since we cannot invalidate pointers to strings we have returned
-    //we need to keep all previous caches valid until we are reset or
-    //destroyed.
-    std::list<wchar_t*> m_stringCaches;
+    CachedBufferManager m_bufferCache;
 };
 
 #endif // FDOCOMMONBINARYREADER_H

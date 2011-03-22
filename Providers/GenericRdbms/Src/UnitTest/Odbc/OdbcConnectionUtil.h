@@ -73,7 +73,7 @@ public:
 #endif
 
 protected:
-	void CleanFiles(std::vector<std::wstring>& files, FdoStringP& pTypeName);
+	void CleanFiles(FdoStringCollection* files, FdoStringP& pTypeName);
 #ifdef _WIN32
 	bool m_SetupTextDSNdone;
 	bool m_SetupAccessDSNdone;

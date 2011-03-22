@@ -511,7 +511,7 @@ public:
     /// \param files 
     /// The list of files to fill with names.
     /// 
-    static void GetAllFiles (const wchar_t* path, std::vector<std::wstring>& files);
+    static void GetAllFiles (const wchar_t* path, FdoStringCollection* files);
 
     /// \brief
     /// Make the specified directory.
