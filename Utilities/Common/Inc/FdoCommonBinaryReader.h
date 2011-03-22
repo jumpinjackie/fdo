@@ -100,7 +100,7 @@ class FdoCommonBinaryReader : public FdoDisposable
         void resize()
         {
             size_t old_capacity = m_capacity;
-            m_capacity = (m_capacity == 0) ? 8 : (1.4 * m_capacity);
+            m_capacity = (m_capacity == 0) ? 8 : (size_t)(1.4 * m_capacity);
             CachedBuffer** newArray = new CachedBuffer*[m_capacity];
             for (size_t i = 0; i < old_capacity; i++)
                 newArray[i] = m_buffers[i];
