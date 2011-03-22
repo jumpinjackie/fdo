@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "ApplySchemaTest.h"
 #include "UnitTestUtil.h"
+#include "FdoCommonFile.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -68,6 +69,8 @@ void ApplySchemaTest::TestSchema ()
     try {
 		// delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
+        if (FdoCommonFile::FileExists(APPLY_SCHEMA_TEST_FILE))
+            FdoCommonFile::Delete(APPLY_SCHEMA_TEST_FILE, true);
 		connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_TEST_FILE, true );
 /*
         printf( "Deleting Acad Schema ... \n" );
@@ -246,6 +249,8 @@ void ApplySchemaTest::TestDelete ()
     try {
 		// delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
+        if (FdoCommonFile::FileExists(APPLY_SCHEMA_DEL_FILE))
+            FdoCommonFile::Delete(APPLY_SCHEMA_DEL_FILE, true);
 		connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_DEL_FILE, true );
 
         printf( "Creating Schema ... \n" );
@@ -283,6 +288,8 @@ void ApplySchemaTest::TestReformatTable()
     try {
 		// delete, re-create and open the datastore
 		printf( "Initializing Connection ... \n" );
+        if (FdoCommonFile::FileExists(APPLY_SCHEMA_REFMT_FILE))
+            FdoCommonFile::Delete(APPLY_SCHEMA_REFMT_FILE, true);
 		connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_REFMT_FILE, true );
 
         printf( "Creating Schema ... \n" );
@@ -2087,6 +2094,8 @@ void ApplySchemaTest::CopySchemas(
     /* Test ApplySchema with ignoreStates=true */
 
     printf( "Initializing Copy Connection ... \n" );
+    if (FdoCommonFile::FileExists(APPLY_SCHEMA_COPY_FILE))
+        FdoCommonFile::Delete(APPLY_SCHEMA_COPY_FILE, true);
 	FdoPtr<FdoIConnection> connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_COPY_FILE, true );
 
     // Test1 applies into an empty datastore and then does an apply 
@@ -2109,6 +2118,8 @@ void ApplySchemaTest::CopySchemas(
     connection->Close();
 
     printf( "Initializing Copy Connection ... \n" );
+    if (FdoCommonFile::FileExists(APPLY_SCHEMA_COPY_FILE))
+        FdoCommonFile::Delete(APPLY_SCHEMA_COPY_FILE, true);
 	connection = UnitTestUtil::OpenConnection( APPLY_SCHEMA_COPY_FILE, true );
 
     // Test2 applies into an empty datastore. The FDO Feature Schema elements have
@@ -2511,6 +2522,8 @@ void ApplySchemaTest::ModDlteSchema2( FdoIConnection* connection )
 
 void ApplySchemaTest::TestSpecificGeometryTypes( void )
 {
+    if (FdoCommonFile::FileExists(APPLY_SCHEMA_GEOMTEST_FILE))
+        FdoCommonFile::Delete(APPLY_SCHEMA_GEOMTEST_FILE, true);
     FdoPtr<FdoIConnection> connection = UnitTestUtil::OpenConnection(APPLY_SCHEMA_GEOMTEST_FILE, true);
 
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
