@@ -103,7 +103,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;$(FDOTHIRDPARTY)/apache/xalan/build/Win32/VC9/Release/Nls/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WIN32;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -143,7 +143,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Release/Nls/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -179,7 +179,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;$(FDOTHIRDPARTY)/apache/xalan/build/Win32/VC9/Debug/Nls/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -218,7 +218,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Inc;$(FDOTHIRDPARTY)/apache/xalan/src;$(FDOTHIRDPARTY)/apache/xerces/src;$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Debug/Nls/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_WIN32;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;EXP_FDO_COMMON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -297,7 +297,7 @@
     <ClCompile Include="Src\Common\Xsl\XML885915Transcoder.cpp" />
     <ClCompile Include="Src\Common\Gml212\Gml212.cpp" />
     <ClCompile Include="Src\Common\Gml212\Schema.cpp" />
-	<ClCompile Include="Src\Common\Gml311\Gml311.cpp" />
+    <ClCompile Include="Src\Common\Gml311\Gml311.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\CommonInternal.h" />
@@ -390,7 +390,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Src/Common/Gml212/geometry.xsd;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)Schema.obj;%(Outputs)</Outputs>
     </CustomBuild>
-	<ClInclude Include="Inc\Common\Gml311\Gml311.h" />
+    <ClInclude Include="Inc\Common\Gml311\Gml311.h" />
     <ClInclude Include="Inc\Common\Gml212\Gml212.h" />
     <ClInclude Include="Inc\Common\Gml212\Schema.h" />
     <CustomBuild Include="Src\Common\Gml212\xlinks.h">
