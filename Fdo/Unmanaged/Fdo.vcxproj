@@ -949,10 +949,6 @@ del y.tab.h
       <Project>{963bd148-9446-4600-bbbc-f37257278d1d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="Spatial.vcxproj">
-      <Project>{44cabb29-0b72-48e7-8383-db4b040f3731}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
