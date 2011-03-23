@@ -21,6 +21,9 @@
 #include <windows.h>
 #endif
 
+#include <vector>
+#include <string>
+
 #include <Fdo.h>
 #include <wchar.h>
 #include <FdoCommonStringUtil.h>
