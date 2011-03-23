@@ -51,6 +51,7 @@ template <class KOBJ, class DOBJ> class FdoHash
             }
         }
         list_element* root() { return m_root; }
+        void setempty() { m_root = m_end = NULL; }
         list_element* push_back(KOBJ key, DOBJ data)
         {
             list_element* elem = new list_element();
@@ -182,19 +183,29 @@ private:
             lists[i] = NULL;
         HashList** tmp = m_lists;
         m_lists = lists;
-        for (iterator iter(tmp, oldCap); iter != m_end; iter++)
+        for (int i = 0; i < oldCap; i++)
         {
-            list_element* elem = iter.element();
-            iter.remove();
-            size_t pos = hash_int(elem->key);
-            HashList* lst = m_lists[pos];
-            if (lst == NULL)
+            HashList* oldLst = tmp[i];
+            if (oldLst != NULL)
             {
-                lst = new HashList();
-                m_lists[pos] = lst;
+                list_element* elem = oldLst->root();
+                while (elem != NULL)
+                {
+                    list_element* nextEle = elem->next;
+                    size_t pos = hash_int(elem->key);
+                    HashList* lst = m_lists[pos];
+                    if (lst == NULL)
+                    {
+                        lst = new HashList();
+                        m_lists[pos] = lst;
+                    }
+                    elem->next = NULL;
+                    lst->push_back(elem);
+                    m_size++;
+                    elem = nextEle;
+                }
+                oldLst->setempty();
             }
-            lst->push_back(elem);
-            m_size++;
         }
         for (size_t i = 0; i < oldCap; i++)
             delete tmp[i];
@@ -349,19 +360,6 @@ private:
         {
             first = element->key;
             second = element->data;
-        }
-    }
-    HashElement* element()
-    {
-        return m_element;
-    }
-    void remove()
-    {
-        if (m_element != NULL)
-        {
-            HashList* lst = m_lists[m_posList-1];
-            lst->detach(m_element->key);
-            m_element = lst->root();
         }
     }
     bool next()
