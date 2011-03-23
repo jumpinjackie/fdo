@@ -27,6 +27,8 @@
 #include <tchar.h>
 #endif
 
+#include <vector>
+#include <string>
 #include <cstring>
 #include <malloc.h>
 #include <math.h>
