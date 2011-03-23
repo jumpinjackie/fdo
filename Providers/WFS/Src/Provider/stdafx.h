@@ -55,6 +55,8 @@
 
 // System Headers
 #include <cstring>
+#include <vector>
+#include <string>
 
 // Base FDO headers
 #include <Fdo.h>
