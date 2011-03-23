@@ -183,7 +183,7 @@ private:
             lists[i] = NULL;
         HashList** tmp = m_lists;
         m_lists = lists;
-        for (int i = 0; i < oldCap; i++)
+        for (size_t i = 0; i < oldCap; i++)
         {
             HashList* oldLst = tmp[i];
             if (oldLst != NULL)
