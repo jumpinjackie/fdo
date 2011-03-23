@@ -252,26 +252,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="MgFDO.vcxproj">
-      <Project>{fb0f68cd-66a6-404e-a31a-528dbadf7fb8}</Project>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="MgGeometry.vcxproj">
-      <Project>{00d27054-5167-4b39-bd0c-bc5d518e4e95}</Project>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\Src\OSGeo\Spatial\MgSpatial.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -293,15 +273,18 @@
     <ClCompile Include="..\Src\OSGeo\Spatial\AssemblyInfo.cpp" />
     <ClCompile Include="..\Src\OSGeo\Spatial\AssemblyVersion.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MgCommon.vcxproj">
+      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
+    </ProjectReference>
+    <ProjectReference Include="MgFDO.vcxproj">
+      <Project>{fb0f68cd-66a6-404e-a31a-528dbadf7fb8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="MgGeometry.vcxproj">
+      <Project>{00d27054-5167-4b39-bd0c-bc5d518e4e95}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-    <ProjectReference Include="MgFDO.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

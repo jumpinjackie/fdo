@@ -254,14 +254,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\Src\OSGeo\FDO\mgFDO.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -296,7 +288,6 @@
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureSerializer.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFeatureWriter.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlFlags.h" />
-	<ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlVersion.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlNameCollectionHandler.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSchemaMapping.h" />
     <ClInclude Include="..\Src\OSGeo\FDO\Xml\mgXmlSerializable.h" />
@@ -825,12 +816,12 @@
     <ClCompile Include="..\Src\OSGeo\FDO\AssemblyInfo.cpp" />
     <ClCompile Include="..\Src\OSGeo\FDO\AssemblyVersion.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MgCommon.vcxproj">
+      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

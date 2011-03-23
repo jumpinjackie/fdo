@@ -252,14 +252,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\Src\OSGeo\Geometry\mgDirectPositionImpl.cpp" />
     <ClCompile Include="..\Src\OSGeo\Geometry\mgEnvelopeImpl.cpp" />
     <ClCompile Include="..\Src\OSGeo\Geometry\mgFgfGeometryFactory.cpp" />
@@ -358,15 +350,12 @@
   <ItemGroup>
     <ResourceCompile Include="..\Src\OSGeo\Geometry\MgGeometry.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="MgCommon.vcxproj">
+      <Project>{abe63099-2e2a-4de7-888b-95bcc247e8ee}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup>
-    <ProjectReference Include="MgCommon.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-    <ProjectReference Include="MgFDO.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
