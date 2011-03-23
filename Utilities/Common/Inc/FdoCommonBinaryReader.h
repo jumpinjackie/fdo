@@ -125,6 +125,7 @@ class FdoCommonBinaryReader : public FdoDisposable
             for (size_t i = 0; i < m_firstFree; i++)
                 m_buffers[i]->Reset();
             m_mapPosition.clear();
+            m_firstFree = 0;
         }
 
         CachedBuffer* GetBuffer(int pos)
@@ -143,7 +144,7 @@ class FdoCommonBinaryReader : public FdoDisposable
                 m_mapPosition[pos] = buff;
                 return buff;
             }
-            if (m_count <= m_capacity)
+            if (m_count >= m_capacity)
                 resize();
             CachedBuffer* buff = new CachedBuffer(size);
             m_buffers[m_count] = buff;
