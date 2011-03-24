@@ -15954,7 +15954,7 @@ void TestCommonExpressionFunctionW::InsertTestFeatures(FdoIConnection* connectio
 
 {
 
-    FdoCommonTypes::vector<FdoSpatialCondition*> allCond;
+    FdoCommonUtilTypes::vector<FdoSpatialCondition*> allCond;
     printf("\nInsert features");
 
     try {

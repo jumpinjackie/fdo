@@ -25,8 +25,8 @@
 #include <limits>       // For quiet_NaN()
 using namespace std;
 
-typedef FdoCommonTypes::pair< FdoSpatialOperations, FdoSpatialOperations > TestOperationsPair;
-typedef FdoCommonTypes::pair< int, TestOperationsPair > TestIdxOperationsPair;
+typedef FdoCommonUtilTypes::pair< FdoSpatialOperations, FdoSpatialOperations > TestOperationsPair;
+typedef FdoCommonUtilTypes::pair< int, TestOperationsPair > TestIdxOperationsPair;
 
 
 // ----------------------------------------------------------------------------
@@ -2337,9 +2337,9 @@ bool TestCommonExpressionFunction::EvaluateResults (
 {
 
     bool retVal = true;
-    FdoCommonTypes::vector<int> idxResultOpt;
-    FdoCommonTypes::vector<int> idxResultNoOpt;
-    FdoCommonTypes::vector< FdoCommonTypes::pair< int, FdoCommonTypes::pair< FdoSpatialOperations, FdoSpatialOperations > > > operResult;
+    FdoCommonUtilTypes::vector<int> idxResultOpt;
+    FdoCommonUtilTypes::vector<int> idxResultNoOpt;
+    FdoCommonUtilTypes::vector< FdoCommonUtilTypes::pair< int, FdoCommonUtilTypes::pair< FdoSpatialOperations, FdoSpatialOperations > > > operResult;
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
 
     while(result->ReadNext())
@@ -2376,8 +2376,8 @@ bool TestCommonExpressionFunction::EvaluateResults (
     if (idxResultOpt.size() != idxResultNoOpt.size())
         retVal = false;
     
-    FdoCommonTypes::vector<int>* op1 = &idxResultOpt;
-    FdoCommonTypes::vector<int>* op2 = &idxResultNoOpt;
+    FdoCommonUtilTypes::vector<int>* op1 = &idxResultOpt;
+    FdoCommonUtilTypes::vector<int>* op2 = &idxResultNoOpt;
     if (idxResultOpt.size() == 0) {
 
         op1 = &idxResultNoOpt;
