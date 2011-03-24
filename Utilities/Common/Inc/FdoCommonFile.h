@@ -28,8 +28,6 @@
 #define ABSOLUTE_NAME_START 1
 #endif
 
-#include <vector>
-
 class FdoException;
 
 class FdoCommonFile
