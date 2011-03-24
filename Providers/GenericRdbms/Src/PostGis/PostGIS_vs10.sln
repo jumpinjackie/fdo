@@ -30,23 +30,35 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rdbi", "..\Rdbi\Rdbi.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "util", "..\Util\util.vcxproj", "{001B698F-66FF-4486-AD57-53318CF47A4A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGISProvider", "PostGIS.vcxproj", "{44F93112-3496-498A-9B98-856995520807}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostgreSQLProvider", "PostGIS.vcxproj", "{44F93112-3496-498A-9B98-856995520807}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGISDriver", "Driver\PostGISDriver.vcxproj", "{69D1E6E5-9391-40FE-A989-B9BEBE3EE305}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGISOverrides", "SchemaMgr\PostGISOverrides.vcxproj", "{C7C93492-5656-42D9-A576-67C1CA628AF5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostgreSQLOverrides", "SchemaMgr\PostGISOverrides.vcxproj", "{C7C93492-5656-42D9-A576-67C1CA628AF5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PostGISSchemaMgr", "SchemaMgr\PostGISSchemaMgr.vcxproj", "{DD12E36F-088F-4FFD-8919-D6A787139844}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProvidersCommon", "..\..\..\..\Utilities\Common\FdoCommon.vcxproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr_LPNew", "..\..\..\..\Utilities\SchemaMgr\LogicalPhysical.vcxproj", "{67068A2A-B8E3-4206-AD5E-4CE1CD881AC4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmLogicalPhysical", "..\..\..\..\Utilities\SchemaMgr\LogicalPhysical.vcxproj", "{67068A2A-B8E3-4206-AD5E-4CE1CD881AC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr_OVNew", "..\..\..\..\Utilities\SchemaMgr\Overrides.vcxproj", "{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmOverrides", "..\..\..\..\Utilities\SchemaMgr\Overrides.vcxproj", "{2CFF7B5C-2CC5-435B-8E8E-C4AC3ACFEF83}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr_PHNew", "..\..\..\..\Utilities\SchemaMgr\Physical.vcxproj", "{80E04928-D74C-441C-8851-09B8BD281D5F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmPhysical", "..\..\..\..\Utilities\SchemaMgr\Physical.vcxproj", "{80E04928-D74C-441C-8851-09B8BD281D5F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgrNew", "..\..\..\..\Utilities\SchemaMgr\SchemaMgr.vcxproj", "{F5346F00-C869-4B51-A947-FC097288C625}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SchemaMgr", "..\..\..\..\Utilities\SchemaMgr\SchemaMgr.vcxproj", "{F5346F00-C869-4B51-A947-FC097288C625}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11793E23-75E5-4407-AF82-BE0FC6994EBD} = {11793E23-75E5-4407-AF82-BE0FC6994EBD}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SmMessage", "..\..\..\..\Utilities\SchemaMgr\SmMessage.vcxproj", "{11793E23-75E5-4407-AF82-BE0FC6994EBD}"
 EndProject
