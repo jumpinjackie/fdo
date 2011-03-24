@@ -19,7 +19,10 @@
 #ifndef FdoCommonSchemaUtil___H
 #define FdoCommonSchemaUtil___H	1
 
+#ifdef _WIN32
 #define USE_INTERNALHASH 1
+#endif
+
 #include <Fdo/Commands/IdentifierCollection.h>
 #include <Fdo/Schema/AssociationPropertyDefinition.h>
 #include <Fdo/Schema/FeatureSchemaCollection.h>
