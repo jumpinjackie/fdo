@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2006  Autodesk, Inc.
+* Copyright (C) 2004-2006  Autodesk, Inc.
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -13,14 +13,8 @@
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * Revision Control Modification History
- *
- *         $Id: //providers_reliant/FdoCommon/inc/FdoCommonNlsUtil.h#1 $
- *     $Author: lee $
- *   $DateTime: 2006/02/24 15:47:54 $
- *     $Change: 11018 $
- * 
- */
+*
+*/
 
 #ifndef TESTCOMMONMISCUTIL___H
 #define TESTCOMMONMISCUTIL___H	1

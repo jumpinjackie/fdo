@@ -305,7 +305,8 @@
 #endif
 
 
-// COPY BEGIN -  THIS CODE IS COPIED FROM FdoUnmanagedsrccommon
+/////////////////////////////////////////////////////////////////
+// COPY BEGIN -  THIS CODE IS COPIED FROM Fdo/Unmanaged/Src/Common
 
 //converts utf8 string to unicode
 //returns length of unicode string (excluding null character)
@@ -317,45 +318,45 @@ int _ut_utf8_to_unicode(const char* str_in, size_t in_size, wchar_t* Wtext, size
 //returns -1 if invalid character encountered
 int _ut_utf8_from_unicode(const wchar_t* Wtext, size_t in_size, char* str_out, int out_size);
 
-// COPY END -  THIS CODE IS COPIED FROM FdoUnmanagedsrccommon
+// COPY END -  THIS CODE IS COPIED FROM Fdo/Unmanaged/Src/Common
+/////////////////////////////////////////////////////////////////
 
 
 class FdoCommonStringUtil
 {
 public:
-    static void     ClearString(wchar_t*& psz);
-    static wchar_t* MakeString(FdoString* psz1, FdoString* psz2 = NULL, FdoString* psz3 = NULL, FdoString* psz4 = NULL, FdoString* psz5 = NULL);
-    static wchar_t* MakeString(FdoInt32 numStrings, FdoString* * strings, FdoString* separator = NULL);
-    static wchar_t* MakeString(FdoByte* data, FdoInt32 iDataSize);
-    static void     FormatDouble(double d, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale = true);
-    static void     FormatSingle(float f, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale = true);
-    static void     FormatNumber(double d, FdoInt32 precision, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale);
-    static wchar_t* QuoteString(FdoString* psz, wchar_t chQuote);
+    static void         ClearString(wchar_t*& psz);
+    static wchar_t*     MakeString(FdoString* psz1, FdoString* psz2 = NULL, FdoString* psz3 = NULL, FdoString* psz4 = NULL, FdoString* psz5 = NULL);
+    static wchar_t*     MakeString(FdoInt32 numStrings, FdoString* * strings, FdoString* separator = NULL);
+    static wchar_t*     MakeString(FdoByte* data, FdoInt32 iDataSize);
+    static void         FormatDouble(double d, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale = true);
+    static void         FormatSingle(float f, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale = true);
+    static void         FormatNumber(double d, FdoInt32 precision, wchar_t* pszBuffer, FdoInt32 iLen, bool bUseLocale);
+    static wchar_t*     QuoteString(FdoString* psz, wchar_t chQuote);
 
     /// Hides Windows and Linux string to int64 conversion specifics.
-    static FdoInt64 StringToInt64( FdoString* str );
+    static FdoInt64     StringToInt64( FdoString* str );
 
-    /// Hides Windows and Linux int64 to string conversion specifics.
-    /// Handles allocation of string buffer so not appropriate for 
-    /// extremely performance-sensitive callers.
-    static FdoStringP Int64ToString( FdoInt64 val );
+    /// Hides Windows and Linux int64 to string conversion specifics. Handles allocation 
+    /// of string buffer so not appropriate for extremely performance-sensitive callers.
+    static FdoStringP   Int64ToString( FdoInt64 val );
 
-    static size_t   StringLength(FdoString* string);
-    static FdoInt32 StringCompare(FdoString* string1, FdoString* string2);
-    static FdoInt32 StringCompareNoCase(FdoString* string1, FdoString* string2);
-    static FdoInt32 StringCompareNoCaseN(FdoString* string1, FdoString* string2, FdoSize count);
-    static void     StringCopy(wchar_t* string1, FdoString* string2);
-    static void     SubstringCopy(wchar_t* string1, FdoString* string2, size_t length);
-    static void     StringConcatenate(wchar_t* string1, FdoString* string2);
-    static FdoString* FindCharacter(FdoString* string, wchar_t character);
-/**
- * Remove blanks from the two ends of a string.
- */
-    static wchar_t* StringTrim (wchar_t *str);
+    static size_t       StringLength(FdoString* string);
+    static FdoInt32     StringCompare(FdoString* string1, FdoString* string2);
+    static FdoInt32     StringCompareNoCase(FdoString* string1, FdoString* string2);
+    static FdoInt32     StringCompareNoCaseN(FdoString* string1, FdoString* string2, FdoSize count);
+    static void         StringCopy(wchar_t* string1, FdoString* string2);
+    static void         SubstringCopy(wchar_t* string1, FdoString* string2, size_t length);
+    static void         StringConcatenate(wchar_t* string1, FdoString* string2);
+    static FdoString*   FindCharacter(FdoString* string, wchar_t character);
 
-    static void PrintString(FdoString * string);
+    /// Remove blanks from the two ends of a string.
+    static wchar_t*     StringTrim (wchar_t *str);
+
+    static void         PrintString(FdoString * string);
+
     /// check for a string composed entirely of ASCII characters
-    static bool AllASCII (FdoString* string);
+    static bool         AllASCII (FdoString* string);
 
     static FdoString*   NullString;
 };
