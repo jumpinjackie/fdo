@@ -39,8 +39,8 @@ typedef FdoSchemaElementMap::iterator FdoSchemaElementMapIterator;
 
 // A Map that will allow copied schema elements to be tracked and will 
 // prevent duplicate elements from being copied.
-typedef FdoHash <FdoSchemaElement*, FdoSchemaElement*> FdoSchemaElementMap;
-typedef FdoSchemaElementMap::pair FdoSchemaElementPair;
+typedef FdoCommonTypes::hash<FdoSchemaElement*, FdoSchemaElement*> FdoSchemaElementMap;
+typedef FdoCommonTypes::pair<FdoSchemaElement*, FdoSchemaElement*> FdoSchemaElementPair;
 typedef FdoSchemaElementMap::iterator FdoSchemaElementMapIterator;
 #endif
 
