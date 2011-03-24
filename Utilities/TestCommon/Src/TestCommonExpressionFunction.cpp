@@ -25,8 +25,8 @@
 #include <limits>       // For quiet_NaN()
 using namespace std;
 
-typedef std::pair< FdoSpatialOperations, FdoSpatialOperations > TestOperationsPair;
-typedef std::pair< int, TestOperationsPair > TestIdxOperationsPair;
+typedef FdoCommonTypes::pair< FdoSpatialOperations, FdoSpatialOperations > TestOperationsPair;
+typedef FdoCommonTypes::pair< int, TestOperationsPair > TestIdxOperationsPair;
 
 
 // ----------------------------------------------------------------------------
@@ -1677,8 +1677,8 @@ void TestCommonExpressionFunction::CheckReader64 (
 
     bool     is_valid_result = false;
 
-    FdoInt32 data_count    = 0,
-             id_prop_val;
+    FdoInt32 data_count  = 0,
+             id_prop_val = 0;
 
     FdoInt64 tmp_val,
              cmp_id_val;
@@ -1800,8 +1800,8 @@ void TestCommonExpressionFunction::CheckReaderByte (
 
     FdoByte  cmp_id_val;
 
-    FdoInt32 data_count    = 0,
-             id_prop_val;
+    FdoInt32 data_count  = 0,
+             id_prop_val = 0;
 
     // Navigate through the reader and perform the necessary checks.
 
@@ -1858,8 +1858,8 @@ void TestCommonExpressionFunction::CheckReaderDt (
 
     bool        is_valid_result = false;
 
-    FdoInt32    data_count      = 0,
-                id_prop_val;
+    FdoInt32    data_count  = 0,
+                id_prop_val = 0;
 
     FdoDateTime cmp_id_val;
 
@@ -1954,8 +1954,8 @@ void TestCommonExpressionFunction::CheckReaderDt (
 
     bool        is_valid_result = false;
 
-    FdoInt32    data_count      = 0,
-                id_prop_val;
+    FdoInt32    data_count  = 0,
+                id_prop_val = 0;
 
     FdoDateTime cmp_id_val;
 
@@ -2114,8 +2114,8 @@ void TestCommonExpressionFunction::CheckReaderSgl (
 
     bool     is_valid_result = false;
 
-    FdoInt32 data_count    = 0,
-             id_prop_val;
+    FdoInt32 data_count  = 0,
+             id_prop_val = 0;
 
     FdoFloat tmp_val,
              cmp_id_val;
@@ -2337,9 +2337,9 @@ bool TestCommonExpressionFunction::EvaluateResults (
 {
 
     bool retVal = true;
-    std::vector<int> idxResultOpt;
-    std::vector<int> idxResultNoOpt;
-    std::vector< std::pair< int, std::pair< FdoSpatialOperations, FdoSpatialOperations > > > operResult;
+    FdoCommonTypes::vector<int> idxResultOpt;
+    FdoCommonTypes::vector<int> idxResultNoOpt;
+    FdoCommonTypes::vector< FdoCommonTypes::pair< int, FdoCommonTypes::pair< FdoSpatialOperations, FdoSpatialOperations > > > operResult;
     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
 
     while(result->ReadNext())
@@ -2376,8 +2376,8 @@ bool TestCommonExpressionFunction::EvaluateResults (
     if (idxResultOpt.size() != idxResultNoOpt.size())
         retVal = false;
     
-    std::vector<int>* op1 = &idxResultOpt;
-    std::vector<int>* op2 = &idxResultNoOpt;
+    FdoCommonTypes::vector<int>* op1 = &idxResultOpt;
+    FdoCommonTypes::vector<int>* op2 = &idxResultNoOpt;
     if (idxResultOpt.size() == 0) {
 
         op1 = &idxResultNoOpt;
