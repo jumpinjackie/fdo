@@ -976,10 +976,10 @@ void SchemaTests::switch_schema ()
 void SchemaTests::destroy_schema ()
 {
     #ifdef _WIN32
-    const wchar_t* file_name1 = L"..\\..\\TestData\\Ontario\\lakes";
+    const wchar_t* file_name1 = L"..\\..\\TestData\\Ontario\\roads";
     const wchar_t* file_name2 = L"..\\..\\TestData\\Oahu\\coundist01_n83";
     #else
-    const wchar_t* file_name1 =  L"../../TestData/Ontario/lakes";
+    const wchar_t* file_name1 =  L"../../TestData/Ontario/roads";
     const wchar_t* file_name2 =  L"../../TestData/Oahu/coundist01_n83";
     #endif
 
