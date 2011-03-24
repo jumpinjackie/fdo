@@ -135,7 +135,7 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
                         lenBuffer = pPozEnd-pPozPN+1;
                         lastKey = new wchar_t[lenBuffer];
                     }
-                    wcsncpy_s(lastKey, lenBuffer, connection_string+pPozPN, pPozEnd-pPozPN);
+                    wcsncpy(lastKey, connection_string+pPozPN, (size_t)pPozEnd-pPozPN);
                     lastKey[pPozEnd-pPozPN] = L'\0';
                     SetPropertyValue(propDictionary, lastKey, L"");
                     if (*(connection_string+pPoz+1) == L'\"')
