@@ -21,9 +21,6 @@
 #pragma once
 #endif // _WIN32
 
-//TODO: rename this h file and most of these classes to not contain the keyword
-// "Connection" since they are now usable for several kinds of
-// FdoIPropertyDictionary subclasses.
 #include <FdoCommonOSUtil.h>
 
 class ConnectionProperty : public FdoIDisposable
