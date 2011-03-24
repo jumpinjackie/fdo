@@ -83,8 +83,8 @@ class FdoCommonBinaryReader : public FdoDisposable
     typedef std::pair <int, CachedBuffer*> CachedBufferPair;
     typedef CachedBufferMap::iterator CachedBufferIterator;
 #else
-    typedef FdoHash <int, CachedBuffer*> CachedBufferMap;
-    typedef CachedBufferMap::pair CachedBufferPair;
+    typedef FdoCommonTypes::hash<int, CachedBuffer*> CachedBufferMap;
+    typedef FdoCommonTypes::pair<int, CachedBuffer*> CachedBufferPair;
     typedef CachedBufferMap::iterator CachedBufferIterator;
 #endif
 
