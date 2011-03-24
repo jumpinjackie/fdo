@@ -19,6 +19,8 @@
 #ifndef FdoCommonCommonHash___H
 #define FdoCommonCommonHash___H	1
 
+#ifdef _WIN32
+
 #define INIT_HASHSIZE 20
 #define KNUTH_SEED (size_t)0x9E3779B1
 
@@ -434,5 +436,7 @@ namespace FdoCommonTypes
         }
     };
 };
+
+#endif
 
 #endif // FdoCommonCommonHash___H	

@@ -18,7 +18,9 @@
 
 #include <FdoCommonPropertyIndex.h>
 
+#ifdef _WIN32
 #define USE_INTERNALHASH 1
+#endif
 
 #ifndef USE_INTERNALHASH
 #include <map>
