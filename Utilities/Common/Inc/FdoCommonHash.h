@@ -52,7 +52,7 @@ namespace FdoCommonTypes
 
     template<class T1, class T2> class hash_list
     {
-        typedef typename hash_element<T1, T2> element;
+        typedef FdoCommonTypes::hash_element<T1, T2> element;
     private:
         element* m_root;
         element* m_end;
@@ -134,10 +134,10 @@ namespace FdoCommonTypes
     template<class T1, class T2> class hash;
     template<class T1, class T2> class hash_iterator
     {
-        friend class hash<T1, T2>;
-        typedef typename hash_list<T1, T2> list;
-        typedef typename hash_element<T1, T2> element;
-        typedef typename hash_iterator<T1, T2> _MyTy;
+        friend class FdoCommonTypes::hash<T1, T2>;
+        typedef FdoCommonTypes::hash_list<T1, T2> list;
+        typedef FdoCommonTypes::hash_element<T1, T2> element;
+        typedef FdoCommonTypes::hash_iterator<T1, T2> _MyTy;
     private:
         size_t m_capacity;
         list** m_lists;
@@ -228,10 +228,10 @@ namespace FdoCommonTypes
 
     template <class T1, class T2> class hash
     {
-        typedef typename hash_element<T1, T2> element;
-        typedef typename hash_list<T1, T2> list;
+        typedef FdoCommonTypes::hash_element<T1, T2> element;
+        typedef FdoCommonTypes::hash_list<T1, T2> list;
     public:
-        typedef typename hash_iterator<T1, T2> iterator;
+        typedef FdoCommonTypes::hash_iterator<T1, T2> iterator;
     private:
         size_t m_size;
         size_t m_filledSize;
