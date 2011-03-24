@@ -29,7 +29,82 @@
 #pragma once
 #endif
 
-
+namespace FdoCommonTypes
+{
+    template<class T1, class T2> struct pair
+    {
+        pair()
+            : first(T1()), second(T2())
+        {}
+        pair(const T1& val1, const T2& val2)
+            : first(val1), second(val2)
+	    {}
+        T1 first;
+        T2 second;
+    };
+    template <class T> class vector
+    {
+    private:
+        size_t m_size;
+        size_t m_capacity;
+        T* m_objects;
+    private:
+        void resize()
+        {
+            size_t oldCap = m_capacity;
+            m_capacity = (m_capacity == 0) ? 8 : (size_t)(m_capacity * 1.4);
+            T* objects = new T[m_capacity];
+            for (size_t i = 0; i < m_capacity; i++)
+            {
+                if (i < oldCap)
+                    objects[i] = m_objects[i];
+                else
+                    objects[i] = T();
+            }
+            delete[] m_objects;
+            m_objects = objects;
+        }
+    public:
+        vector()
+        {
+            m_size = m_capacity = 0;
+            m_objects = NULL;
+        }
+        ~vector()
+        {
+            delete[] m_objects;
+        }
+        size_t size() { return m_size; }
+        void push_back(const T& val)
+        {
+            if ((m_size+1) >= m_capacity)
+                resize();
+            m_objects[m_size] = val;
+            m_size++;
+        }
+	    T& operator[](size_t pos)
+        {
+            if (pos < m_size)
+                return m_objects[pos];
+            throw FdoException::Create(L"Index out of bounds!");
+        }
+        T& at(size_t pos)
+        {
+            if (pos < m_size)
+                return m_objects[pos];
+            throw FdoException::Create(L"Index out of bounds!");
+        }
+        void clear()
+        {
+            m_size = 0;
+        }
+        void pop_back()
+        {
+            if (m_size > 0)
+                m_size--;
+        }
+    };
+};
 //
 // Misc commonly-used utility functions:
 void TestCommonFail (FdoException* ge);
