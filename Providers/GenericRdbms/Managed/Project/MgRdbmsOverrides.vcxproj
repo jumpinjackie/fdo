@@ -322,7 +322,6 @@
     </ProjectReference>
     <ProjectReference Include="MgRdbms.vcxproj">
       <Project>{d672727a-c93b-42cb-9b06-7a1638efa7e4}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
