@@ -16,8 +16,6 @@
 #ifndef FDOCOMMONPROPERTYINDEX_H
 #define FDOCOMMONPROPERTYINDEX_H
 
-#include <string>
-
 
 typedef unsigned short FCID_STORAGE;
 
