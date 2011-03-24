@@ -96,7 +96,8 @@ void UnitTestUtil::PrintException( FdoException* e, FdoIoStream* stream, FdoBool
         if (writer)
             writer->WriteLine( pMessage );
         else
-            wprintf(pMessage);
+            printf("%ls", pMessage );
+
 		currE = currE->GetCause();
 	}
 }
