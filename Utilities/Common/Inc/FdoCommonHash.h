@@ -246,7 +246,7 @@ namespace FdoCommonTypes
             short lnkTypeSz = sizeof(T1);
             if (lnkTypeSz == 8)
             {
-                __int64 key = (__int64)keyVal;
+                FdoInt64 key = (FdoInt64)keyVal;
                 key = (key << 18) - key - 1;
                 key = key ^ (key >> 31);
                 key = (key + (key << 2)) + (key << 4);
