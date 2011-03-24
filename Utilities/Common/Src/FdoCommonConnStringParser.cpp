@@ -22,9 +22,6 @@
 #include "FdoCommonOSUtil.h"
 #include "FdoCommonConnPropDictionary.h"
 
-#include <malloc.h>
-#include <string.h>
-
 
 void FdoCommonConnStringParser::SetPropertyValue (FdoCommonConnPropDictionary* propDictionary, const wchar_t* keyword, const wchar_t* value, bool isQuoted)
 {
