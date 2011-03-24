@@ -107,7 +107,8 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
     if(!connection_string)
         return;
     
-    std::wstring LastKey;
+    wchar_t* lastKey = NULL;
+    size_t lenBuffer = 0;
     bool isError = false;
     short State = 0;
     int pPoz = 0, pPozPN = 0, pPozPV = 0, pPozEnd = 0;
@@ -128,8 +129,15 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
             case 1: //get property name
                 if (*(connection_string+pPoz) == L'=')
                 {
-                    LastKey = std::wstring(connection_string+pPozPN, pPozEnd-pPozPN);
-                    SetPropertyValue(propDictionary, LastKey.c_str(), L"");
+                    if (lenBuffer < (size_t)(pPozEnd-pPozPN+1))
+                    {
+                        delete[] lastKey;
+                        lenBuffer = pPozEnd-pPozPN+1;
+                        lastKey = new wchar_t[lenBuffer];
+                    }
+                    wcsncpy_s(lastKey, lenBuffer, connection_string+pPozPN, pPozEnd-pPozPN);
+                    lastKey[pPozEnd-pPozPN] = L'\0';
+                    SetPropertyValue(propDictionary, lastKey, L"");
                     if (*(connection_string+pPoz+1) == L'\"')
                     {
                         pPoz++;
@@ -159,7 +167,7 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
                     isError = true;
                 else if(*(connection_string+pPoz) == L';' || *(connection_string+pPoz) == L'\0')
                 {
-                    SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPozEnd-pPozPV).c_str());
+                    SetPropertyValue(propDictionary, lastKey, std::wstring(connection_string+pPozPV, pPozEnd-pPozPV).c_str());
                     State = 0;
                 }
                 else if(*(connection_string+pPoz) != L' ')
@@ -168,7 +176,7 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
             case 3:  //get property value in case value is surrounded by "
                 if(*(connection_string+pPoz) == L'\"')
                 {
-                    SetPropertyValue(propDictionary, LastKey.c_str(), std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str(), true);
+                    SetPropertyValue(propDictionary, lastKey, std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str(), true);
                     State = 0;
                 }
                 else if(*(connection_string+pPoz+1) == L'\0')
@@ -194,6 +202,7 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
         }
         pPoz++;
     }while(*(connection_string+pPoz-1) != L'\0' && !isError);
+    delete[] lastKey;
     m_connStringValid = !isError;
 }
 
