@@ -106,6 +106,8 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
     
     wchar_t* lastKey = NULL;
     size_t lenBuffer = 0;
+    wchar_t* lastValue = NULL;
+    size_t lenValBuffer = 0;
     bool isError = false;
     short State = 0;
     int pPoz = 0, pPozPN = 0, pPozPV = 0, pPozEnd = 0;
@@ -164,7 +166,15 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
                     isError = true;
                 else if(*(connection_string+pPoz) == L';' || *(connection_string+pPoz) == L'\0')
                 {
-                    SetPropertyValue(propDictionary, lastKey, std::wstring(connection_string+pPozPV, pPozEnd-pPozPV).c_str());
+                    if (lenValBuffer < (size_t)(pPozEnd-pPozPV+1))
+                    {
+                        delete[] lastValue;
+                        lenValBuffer = pPozEnd-pPozPV+1;
+                        lastValue = new wchar_t[lenValBuffer];
+                    }
+                    wcsncpy(lastValue, connection_string+pPozPV, (size_t)pPozEnd-pPozPV);
+                    lastValue[pPozEnd-pPozPV] = L'\0';
+                    SetPropertyValue(propDictionary, lastKey, lastValue);
                     State = 0;
                 }
                 else if(*(connection_string+pPoz) != L' ')
@@ -173,7 +183,15 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
             case 3:  //get property value in case value is surrounded by "
                 if(*(connection_string+pPoz) == L'\"')
                 {
-                    SetPropertyValue(propDictionary, lastKey, std::wstring(connection_string+pPozPV, pPoz-pPozPV).c_str(), true);
+                    if (lenValBuffer < (size_t)(pPoz-pPozPV+1))
+                    {
+                        delete[] lastValue;
+                        lenValBuffer = pPoz-pPozPV+1;
+                        lastValue = new wchar_t[lenValBuffer];
+                    }
+                    wcsncpy(lastValue, connection_string+pPozPV, (size_t)pPoz-pPozPV);
+                    lastValue[pPoz-pPozPV] = L'\0';
+                    SetPropertyValue(propDictionary, lastKey, lastValue, true);
                     State = 0;
                 }
                 else if(*(connection_string+pPoz+1) == L'\0')
@@ -200,6 +218,7 @@ FdoCommonConnStringParser::FdoCommonConnStringParser (FdoCommonConnPropDictionar
         pPoz++;
     }while(*(connection_string+pPoz-1) != L'\0' && !isError);
     delete[] lastKey;
+    delete[] lastValue;
     m_connStringValid = !isError;
 }
 
