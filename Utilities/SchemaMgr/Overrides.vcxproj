@@ -194,12 +194,12 @@
     <ClInclude Include="Inc\Utilities\SchemaMgr\Overrides\TableMappingType.h" />
     <ClInclude Include="Inc\Utilities\SchemaMgr\Overrides\TableMappingTypeMapper.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="SmMessage.vcxproj">
+      <Project>{11793e23-75e5-4407-af82-be0fc6994ebd}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ItemGroup>
-    <ProjectReference Include="SmMessage.vcxproj">
-      <LinkLibraryDependencies>false</LinkLibraryDependencies>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
