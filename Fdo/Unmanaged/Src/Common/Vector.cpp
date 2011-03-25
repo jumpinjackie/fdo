@@ -20,19 +20,47 @@
 #include "StringUtility.h"
 
 
-// Todo: Basing on FdoCollection is a bit inefficient, since it stores
-// an array of pointers to ref-counted wrappers around double numbers.
-// Basing on FdoArray would be more space-efficient, since the internal 
-// storage would simply be an array of doubles. However, more public functions
-// (SetItem(), RemoveAt(), etc.) need to be added to FdoArray first.
+FdoVectorElement* FdoVectorElement::Create( double value )
+{
+	return new FdoVectorElement(value);
+}
+
+FdoVectorElement::FdoVectorElement() 
+{
+}
+    
+FdoVectorElement::FdoVectorElement( double value )
+{
+	mValue = value;
+}
+
+FdoVectorElement::~FdoVectorElement(void)
+{
+}
+
+double FdoVectorElement::GetValue()
+{
+	return mValue;
+}
+
+void FdoVectorElement::SetValue( double value ) 
+{
+    mValue = value;
+}
 
 FdoStringP FdoVectorElement::GetString()
 {
     FdoCharacter buffer[100];
     FdoStringUtility::FormatDouble( mValue, buffer, 99 );
     return buffer;
-//      return FdoStringP::Format( L"%lf", mValue );
 }
+
+
+// Todo: Basing on FdoCollection is a bit inefficient, since it stores
+// an array of pointers to ref-counted wrappers around double numbers.
+// Basing on FdoArray would be more space-efficient, since the internal 
+// storage would simply be an array of doubles. However, more public functions
+// (SetItem(), RemoveAt(), etc.) need to be added to FdoArray first.
 
 FdoVector* FdoVector::Create()
 {
