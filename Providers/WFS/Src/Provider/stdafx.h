@@ -57,6 +57,7 @@
 #include <cstring>
 #include <vector>
 #include <string>
+#include <locale>
 
 // Base FDO headers
 #include <Fdo.h>
