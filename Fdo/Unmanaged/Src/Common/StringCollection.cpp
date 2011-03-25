@@ -18,6 +18,47 @@
 #include <FdoCommon.h>
 
 
+/// -----------------------------------------------------------------------------
+
+
+FdoStringElement* FdoStringElement::Create( FdoStringP src )
+{
+	return new FdoStringElement(src);
+}
+
+FdoStringElement& FdoStringElement::operator=( const FdoStringP& src )
+{
+	mString = src;
+    return(*this);
+}
+
+FdoStringElement& FdoStringElement::operator=( FdoString* wString )
+{
+	mString = wString;
+    return(*this);
+}
+
+FdoStringP FdoStringElement::GetString()
+{
+	return mString;
+}
+
+FdoStringElement::FdoStringElement() 
+{
+}
+    
+FdoStringElement::FdoStringElement( FdoStringP src )
+{
+	mString = src;
+}
+
+FdoStringElement::~FdoStringElement(void)
+{
+}
+
+/// -----------------------------------------------------------------------------
+
+
 FdoStringCollection* FdoStringCollection::Create()
 {
     return new FdoStringCollection();
