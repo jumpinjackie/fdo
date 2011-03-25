@@ -52,11 +52,11 @@ sc_2</gml:srsName>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
-<fdo:WKTCRS gml:id="Antigua43.BWIgrid">
+<fdo:WKTCRS gml:id="CA-I">
 <gml:srsName>
-Antigua43.BWIgrid</gml:srsName>
+CA-I</gml:srsName>
 <fdo:WKT>
-PROJCS[&quot;Antigua 1943 / British West Indies Grid&quot;,GEOGCS[&quot;For testing only&quot;,DATUM[&quot;Test&quot;,SPHEROID[&quot;Clarke 1880 (RGS)&quot;,6378249.145,293.465,]]]]</fdo:WKT>
+PROJCS[&quot;California test&quot;,GEOGCS[&quot;For testing only&quot;,DATUM[&quot;Test&quot;,SPHEROID[&quot;NAD 27&quot;,6300000,123.465,]]]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
@@ -78,11 +78,11 @@ sc_3</gml:srsName>
 </gml:boundingBox>
 </gml:validArea>
 <gml:baseCRS>
-<fdo:WKTCRS gml:id="CA-I">
+<fdo:WKTCRS gml:id="Antigua43.BWIgrid">
 <gml:srsName>
-CA-I</gml:srsName>
+Antigua43.BWIgrid</gml:srsName>
 <fdo:WKT>
-PROJCS[&quot;California test&quot;,GEOGCS[&quot;For testing only&quot;,DATUM[&quot;Test&quot;,SPHEROID[&quot;NAD 27&quot;,6300000,123.465,]]]]</fdo:WKT>
+PROJCS[&quot;Antigua 1943 / British West Indies Grid&quot;,GEOGCS[&quot;For testing only&quot;,DATUM[&quot;Test&quot;,SPHEROID[&quot;Clarke 1880 (RGS)&quot;,6378249.145,293.465,]]]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 <gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
@@ -94,6 +94,62 @@ geographic</gml:derivedCRSType>
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
+<xs:element name="ftable2" type="dbo:ftable2Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="ftable2Key">
+<xs:selector xpath=".//ftable2"/>
+<xs:field xpath="fid2"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="ftable2Type" abstract="false" fdo:geometryName="geometry2">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="fid2">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="value">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:string">
+<xs:maxLength value="20"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+<xs:element name="flags" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:unsignedByte"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="ftable1_fid" minOccurs="0">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="geometry2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
 <xs:element name="synonym1" type="dbo:synonym1Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="synonym1Key">
 <xs:selector xpath=".//synonym1"/>
@@ -281,6 +337,30 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
+<xs:element name="table2_id">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="table2" minOccurs="0" maxOccurs="1" fdo:deleteRule="Cascade">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:complexContent>
+<xs:restriction base="gml:FeatureAssociationType">
+<xs:sequence>
+<xs:element ref="dbo:_x5d-table-x5b-" minOccurs="0"/>
+</xs:sequence>
+<xs:attributeGroup ref="xlink:simpleLink"/>
+<xs:attribute ref="gml:remoteSchema" use="prohibited"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -314,55 +394,7 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
-<xs:element name="geometry1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
-<xs:element name="synonym5" type="dbo:synonym5Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="synonym5Key">
-<xs:selector xpath=".//synonym5"/>
-<xs:field xpath="fid2"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="synonym5Type" abstract="false" fdo:geometryName="geometry2">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="fid2">
-<xs:simpleType>
-<xs:restriction base="xs:int"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="value">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:simpleType>
-<xs:restriction base="xs:string">
-<xs:maxLength value="20"/>
-</xs:restriction>
-</xs:simpleType>
-</xs:element>
-<xs:element name="flags" minOccurs="0">
-<xs:simpleType>
-<xs:restriction base="xs:unsignedByte"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="geometry2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geometry1" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -402,7 +434,7 @@ geographic</gml:derivedCRSType>
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_2" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:element name="geometry" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_3" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
 <xs:annotation>
 <xs:documentation/>
 </xs:annotation>
@@ -528,6 +560,30 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
+<xs:element name="table2_id">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="table2" minOccurs="0" maxOccurs="1" fdo:deleteRule="Cascade">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:complexContent>
+<xs:restriction base="gml:FeatureAssociationType">
+<xs:sequence>
+<xs:element ref="dbo:_x5d-table-x5b-" minOccurs="0"/>
+</xs:sequence>
+<xs:attributeGroup ref="xlink:simpleLink"/>
+<xs:attribute ref="gml:remoteSchema" use="prohibited"/>
+</xs:restriction>
+</xs:complexContent>
+</xs:complexType>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -567,39 +623,13 @@ geographic</gml:derivedCRSType>
 </xs:extension>
 </xs:complexContent>
 </xs:complexType>
-<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
-<xs:key name="view1Key">
-<xs:selector xpath=".//view1"/>
-<xs:field xpath="id"/>
-</xs:key>
-</xs:element>
-<xs:complexType name="view1Type" abstract="false" fdo:geometryName="geom_column2">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-<xs:complexContent>
-<xs:extension base="gml:AbstractFeatureType">
-<xs:sequence>
-<xs:element name="id">
-<xs:simpleType>
-<xs:restriction base="xs:int"/>
-</xs:simpleType>
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-<xs:element name="geom_column2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
-<xs:annotation>
-<xs:documentation/>
-</xs:annotation>
-</xs:element>
-</xs:sequence>
-</xs:extension>
-</xs:complexContent>
-</xs:complexType>
 <xs:element name="_x5d-table-x5b-" type="dbo:_x5d-table-x5b-Type" abstract="false" substitutionGroup="gml:_Feature">
 <xs:key name="_x5d-table-x5b-Key">
 <xs:selector xpath=".//_x5d-table-x5b-"/>
+<xs:field xpath="id2"/>
+</xs:key>
+<xs:key name="_x5d-table-x5b-_table-x5b--x5d-embeddedAKey">
+<xs:selector xpath=".//dbo"/>
 <xs:field xpath="id2"/>
 </xs:key>
 </xs:element>
@@ -679,6 +709,65 @@ geographic</gml:derivedCRSType>
 <xs:documentation/>
 </xs:annotation>
 </xs:element>
+<xs:element name="table2_id">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="table2" minOccurs="0" maxOccurs="1" fdo:multiplicity="" fdo:deleteRule="Break" fdo:defaultIdentity="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType>
+<xs:sequence>
+<xs:element name="table2_id">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:keyref name="dbo_table-x5b--x5d-embedded_table2" refer="dbo:_x5d-table-x5b-_table-x5b--x5d-embeddedAKey">
+<xs:selector xpath=".//table-x5b--x5d-embedded"/>
+<xs:field xpath="id2"/>
+</xs:keyref>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:element name="view1" type="dbo:view1Type" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="view1Key">
+<xs:selector xpath=".//view1"/>
+<xs:field xpath="id"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="view1Type" abstract="false" fdo:geometryName="geom_column2">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="id">
+<xs:simpleType>
+<xs:restriction base="xs:int"/>
+</xs:simpleType>
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="geom_column2" type="gml:AbstractGeometryType" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:srsName="sc_1" fdo:geometricTypes="point curve surface " fdo:geometryTypes="point multipoint linestring multilinestring curvestring multicurvestring polygon multipolygon curvepolygon multicurvepolygon ">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
 </xs:sequence>
 </xs:extension>
 </xs:complexContent>
@@ -736,6 +825,24 @@ geographic</gml:derivedCRSType>
 </xs:annotation>
 </xs:schema>
 <SchemaMapping xmlns:rdb="http://fdordbms.osgeo.org/schemas" xmlns="http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" textInRow="NotInRow" provider="OSGeo.SQLServerSpatial.3.7" name="dbo">
+<complexType name="ftable2Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table textInRow="NotInRow" name="dbo.ftable2"/>
+<element name="fid2">
+<Column name="fid2"/>
+</element>
+<element name="value">
+<Column name="value"/>
+</element>
+<element name="flags">
+<Column name="flags"/>
+</element>
+<element name="ftable1_fid">
+<Column name="ftable1_fid"/>
+</element>
+<element name="geometry2">
+<GeometricColumn name="geometry2"/>
+</element>
+</complexType>
 <complexType name="synonym1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table textInRow="NotInRow" name="dbo.synonym1"/>
 <element name="id">
@@ -792,6 +899,9 @@ geographic</gml:derivedCRSType>
 <element name="amount">
 <Column name="amount"/>
 </element>
+<element name="table2_id">
+<Column name="table2_id"/>
+</element>
 </complexType>
 <complexType name="synonym4Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table textInRow="NotInRow" name="dbo.synonym4"/>
@@ -803,21 +913,6 @@ geographic</gml:derivedCRSType>
 </element>
 <element name="geometry1">
 <GeometricColumn name="geometry1"/>
-</element>
-</complexType>
-<complexType name="synonym5Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table textInRow="NotInRow" name="dbo.synonym5"/>
-<element name="fid2">
-<Column name="fid2"/>
-</element>
-<element name="value">
-<Column name="value"/>
-</element>
-<element name="flags">
-<Column name="flags"/>
-</element>
-<element name="geometry2">
-<GeometricColumn name="geometry2"/>
 </element>
 </complexType>
 <complexType name="synonym6Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
@@ -867,6 +962,9 @@ geographic</gml:derivedCRSType>
 <element name="amount">
 <Column name="amount"/>
 </element>
+<element name="table2_id">
+<Column name="table2_id"/>
+</element>
 </complexType>
 <complexType name="_x5b-table-x5d-Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
 <Table tableFilegroup="PRIMARY" textInRow="NotInRow" pkeyName="pk_[table]" name="dbo.[table]"/>
@@ -875,15 +973,6 @@ geographic</gml:derivedCRSType>
 </element>
 <element name="geog_column1">
 <GeometricColumn name="geog_column1"/>
-</element>
-<element name="geom_column2">
-<GeometricColumn name="geom_column2"/>
-</element>
-</complexType>
-<complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
-<Table textInRow="NotInRow" name="dbo.view1"/>
-<element name="id">
-<Column name="id"/>
 </element>
 <element name="geom_column2">
 <GeometricColumn name="geom_column2"/>
@@ -911,6 +1000,18 @@ geographic</gml:derivedCRSType>
 </element>
 <element name="amount">
 <Column name="amount"/>
+</element>
+<element name="table2_id">
+<Column name="table2_id"/>
+</element>
+</complexType>
+<complexType name="view1Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">
+<Table textInRow="NotInRow" name="dbo.view1"/>
+<element name="id">
+<Column name="id"/>
+</element>
+<element name="geom_column2">
+<GeometricColumn name="geom_column2"/>
 </element>
 </complexType>
 <complexType name="view3Type" identityIsGloballyUnique="false" identitySeed="0" identityIncrement="0" identityPropertyName="">

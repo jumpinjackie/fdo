@@ -289,8 +289,11 @@ void SqlServerSchemaMgrTests::testSynonyms()
             ftable2->AddPkeyCol( column->GetName() );
             column = ftable2->CreateColumnChar(L"value", false, 20);
             column = ftable2->CreateColumnByte(L"flags", true);
+            FdoSmPhColumnP fColumn = ftable2->CreateColumnInt32( L"ftable1_fid", true );
             scinfo = CreateSc( GetSrid(5), 0, 0, 200000, 100000, 0.0333, 0.0111 );
             column = ftable2->CreateColumnGeom( L"geometry2", scinfo, true, false );
+            FdoSmPhFkeyP fkey = ftable2->CreateFkey(L"fk_ftable1", L"dbo.ftable1");
+            fkey->AddFkeyColumn( fColumn, L"fid" );
 
             FdoSmPhTableP ftable3 = fowner->CreateTable( phMgr->GetDcDbObjectName(L"ftable3" ));
             column = ftable3->CreateColumnInt32( L"fid3", false );
@@ -349,6 +352,9 @@ void SqlServerSchemaMgrTests::testSynonyms()
             table->AddPkeyCol( column->GetName() );
             
             column = table->CreateColumnDouble( L"amount", true );
+            fColumn = table->CreateColumnInt32( L"table2_id", false );
+            fkey = table->CreateFkey(L"table2", L"dbo.]table[");
+            fkey->AddFkeyColumn( fColumn, L"id2" );
                    
             synonym = owner->CreateSynonym(L"synonym3", table );
 
@@ -358,13 +364,15 @@ void SqlServerSchemaMgrTests::testSynonyms()
             column = view->CreateColumnDouble( L"amount", true, L"amount" );
 
             synonym = owner->CreateSynonym(L"synonym4", fsynonym1 );
-            synonym = owner->CreateSynonym(L"synonym5", ftable2 );
+            synonym = owner->CreateSynonym(L"ftable2", ftable2 );
             synonym = owner->CreateSynonym(L"synonym6", fview3 );
 
             owner->Commit();
 
             FdoSmPhGrdOwnerP grdOwner = owner->SmartCast<FdoSmPhGrdOwner>();
 
+            // Create some synonyms where the name for the referenced object does not 
+            // include database name.
             grdOwner->ActivateAndExecute( "create synonym dbo.synonym7 for \"dbo\".\"[table]\" " );
             grdOwner->ActivateAndExecute( "create synonym dbo.synonym8 for \"dbo\".\"]table[\" " );
             grdOwner->ActivateAndExecute( "create synonym dbo.synonym9 for \"dbo\".\"table[]embedded\" " );
@@ -517,7 +525,7 @@ void SqlServerSchemaMgrTests::VldSynonymSchema( FdoFeatureSchemasP schemas )
         propCount += props->GetCount();
     }
 
-    CPPUNIT_ASSERT(propCount == 47 );
+    CPPUNIT_ASSERT(propCount == 54 );
 }
 
 int SqlServerSchemaMgrTests::GenKeysCreateSpecific( FdoSmPhGrdOwner* grdOwner )

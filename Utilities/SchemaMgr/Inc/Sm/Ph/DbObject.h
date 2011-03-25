@@ -475,7 +475,7 @@ protected:
     void LoadColumns( FdoPtr<FdoSmPhTableColumnReader> colRdr );
 
     /// Loads objects that this object is based on, if not yet loaded. 
-    void LoadBaseObjects();
+    virtual void LoadBaseObjects();
     virtual void LoadBaseObjects( FdoPtr<FdoSmPhTableComponentReader> baseObjRdr, bool isSkipAdd = false );
 
     /// Load Primary Key if not yet loaded

@@ -59,7 +59,7 @@ void FdoSmPhSpatialContextGeom::Finalize()
                     // If the column's dbObject differs from the SCGeom's dbObject
                     // then it is already the root column. Otherwise need to 
                     // get the root column from the column.
-                    if ( mTableName == geomColumn->GetParent()->GetName() ) 
+                    if ( dbObject->GetQName() == geomColumn->GetParent()->GetQName() ) 
                         rootColumn = geomColumn->GetRootColumn().p->SmartCast<FdoSmPhColumnGeom>();
         
                     if ( rootColumn )
