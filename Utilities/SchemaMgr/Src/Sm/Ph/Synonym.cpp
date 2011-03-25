@@ -77,7 +77,10 @@ FdoSmPhColumnsP FdoSmPhSynonym::GetColumns()
     if ( rootObject ) 
         return rootObject->GetColumns();
 
-    return FdoSmPhDbObject::GetColumns();
+    if ( !mEmptyColumns )
+        mEmptyColumns = new FdoSmPhColumnCollection();
+
+    return mEmptyColumns;
 }
 
 FdoSmPhColumnsP FdoSmPhSynonym::GetPkeyColumns()
@@ -87,7 +90,10 @@ FdoSmPhColumnsP FdoSmPhSynonym::GetPkeyColumns()
     if ( rootObject ) 
         return rootObject->GetPkeyColumns();
 
-    return FdoSmPhDbObject::GetPkeyColumns();
+    if ( !mEmptyPkeyColumns )
+        mEmptyPkeyColumns = new FdoSmPhColumnCollection();
+
+    return mEmptyPkeyColumns;
 }
 
 
@@ -98,7 +104,10 @@ FdoPtr<FdoSmPhIndexCollection> FdoSmPhSynonym::GetIndexes()
     if ( rootObject ) 
         return rootObject->GetIndexes();
 
-    return FdoSmPhDbObject::GetIndexes();
+    if ( !mEmptyIndexes )
+        mEmptyIndexes = new FdoSmPhIndexCollection();
+
+    return mEmptyIndexes;
 }
 
 
@@ -106,10 +115,13 @@ FdoSmPhFkeysP FdoSmPhSynonym::GetFkeysUp()
 {
     FdoSmPhDbObjectP rootObject = GetRootObject();
 
-    if ( rootObject ) 
+    if ( rootObject && (wcscmp(GetParent()->GetName(), rootObject->GetParent()->GetName()) == 0) ) 
         return rootObject->GetFkeysUp();
 
-    return FdoSmPhDbObject::GetFkeysUp();
+    if ( !mEmptyFkeys )
+        mEmptyFkeys = new FdoSmPhFkeyCollection();
+
+    return mEmptyFkeys;
 }
 
 FdoLtLockModeType FdoSmPhSynonym::GetLtMode() const
@@ -161,6 +173,11 @@ bool FdoSmPhSynonym::ClassifyObjectType(FdoBoolean classifyDefaultTypes )
     return false;
 }
 
+void FdoSmPhSynonym::LoadBaseObjects()
+{
+    LoadSynonym();
+}
+
 void FdoSmPhSynonym::LoadSynonym()
 {
     if ( !BaseLoaded() ) {
@@ -203,6 +220,13 @@ bool FdoSmPhSynonym::BaseLoaded()
     }
 
     return mSynonymLoaded;
+}
+
+bool FdoSmPhSynonym::ColumnsLoaded()
+{
+    // Skip trying to load columns for synonym. They never have
+    // direct columns but "inherit" them from their base objects.
+    return true;
 }
 
 bool FdoSmPhSynonym::IndexesLoaded()

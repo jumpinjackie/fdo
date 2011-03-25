@@ -75,6 +75,10 @@ public:
     bool BaseLoaded();
 
     // Always returns true. This override prevents the Schema Manager from trying to 
+    // retrieve columns for synonyms, since a synonym do not explicitly have columns
+    virtual bool ColumnsLoaded();
+
+    // Always returns true. This override prevents the Schema Manager from trying to 
     // retrieve indexes for synonyms, since a synonym would never explicitly have an index.
     virtual bool IndexesLoaded();
 
@@ -89,10 +93,18 @@ protected:
     // unused constructor needed only to build on Linux
     FdoSmPhSynonym() {}
 
+    // Overridden to load synonym base object instead of general dependency.
+    virtual void LoadBaseObjects();
+
 private:
     void LoadSynonym();
 
     bool mSynonymLoaded;
+
+    FdoSmPhColumnsP mEmptyColumns;
+    FdoSmPhColumnsP mEmptyPkeyColumns;
+    FdoSmPhIndexesP mEmptyIndexes;
+    FdoSmPhFkeysP mEmptyFkeys;
 };
 
 typedef FdoPtr<FdoSmPhSynonym> FdoSmPhSynonymP;
