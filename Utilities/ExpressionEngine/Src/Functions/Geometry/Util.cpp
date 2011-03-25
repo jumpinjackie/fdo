@@ -691,8 +691,8 @@ FdoDouble FdoExpressionEngineGeometryUtil::ComputeGeodeticTrapezoidArea2D(FdoDou
 	// Compute the distances to the Ecuator
 	FdoDouble dist1 = FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D( lat1, lon1, minLat, lon1 );
 	FdoDouble dist2 = FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D( lat2, lon2, minLat, lon2 );
-	FdoDouble minDist = min(dist1, dist2);
-
+	FdoDouble minDist = (dist1 < dist2) ? (dist1) : (dist2);
+ 
 	// Compute the distance between points at the same latitude. Take the average
 	FdoDouble distLat1 = FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D( lat1, lon1, lat1, lon2 );
 	FdoDouble distLat2 = FdoExpressionEngineGeometryUtil::ComputeGeodeticDistance2D( lat2, lon1, lat2, lon2 );
