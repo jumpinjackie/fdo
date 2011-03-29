@@ -24,15 +24,15 @@
 #endif
 
 #include <FdoStd.h>
-#include <Fdo/Expression/Expression.h>
+#include <Fdo/Expression/ValueExpression.h>
 #include <Fdo/Expression/Identifier.h>
 #include <Fdo/Filter/Filter.h>
 #include <Fdo/Expression/JoinCriteriaCollection.h>
 
 /// \brief
-/// The FdoSubSelectExpression class derives from FdoExpression and can be used with IN condition
+/// The FdoSubSelectExpression class derives from FdoValueExpression and can be used with IN condition
 /// to test if a property is in a range of values returned by this sub-select
-class FdoSubSelectExpression : public FdoExpression
+class FdoSubSelectExpression : public FdoValueExpression
 {
 /// \cond DOXYGEN-IGNORE
 protected:
