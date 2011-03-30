@@ -91,6 +91,7 @@ FdoSmPhOwner::FdoSmPhOwner(
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup") );
 
     mNextBaseCandIdx = 0;
+    mNextRdScCandIdx = 0;
 
     mSpatialContextsLoaded = false;
 
@@ -213,6 +214,11 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindDbObject(FdoStringP dbObject)
     // Check cache for database object
     FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(dbObject);
 
+    // A dbObject explicitly requested for retrieval is not for listing purposes only.
+    // Update it's component fetch setting.
+    // SetBulkFetchComponents can handle a NULL dbObject.
+    SetBulkFetchComponents(pDbObject, true);
+
     if ( ((!pDbObject) || !(pDbObject->ColumnsLoaded())) && (dbObject != L"")) {
         // Object is not in the cache or its columns have not been cached. 
         // If it is in the fetch candidate list then fetch
@@ -277,6 +283,11 @@ FdoSmPhDbObjectP FdoSmPhOwner::FindReferencedDbObject(FdoStringP dbObject, FdoSt
 
     if ( refOwner ) {
         pDbObject = refOwner->GetDbObjects()->FindItem( dbObject );
+
+        // A dbObject explicitly requested for retrieval is not for listing purposes only.
+        // Update it's component fetch setting.
+        // SetBulkFetchComponents can handle a NULL dbObject.
+        SetBulkFetchComponents(pDbObject, true);
 
         if ( !pDbObject || (!pDbObject->ColumnsLoaded()) ) {
             // Not fully cached: not in cache or columns have not been cached. 
@@ -600,6 +611,11 @@ FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader
     return new FdoSmPhRdSpatialContextReader(FDO_SAFE_ADDREF(this) );
 }
 
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhOwner::CreateRdSpatialContextReader( FdoStringsP objectNames )
+{
+    return (FdoSmPhRdSpatialContextReader*) NULL;
+}
+
 FdoPtr<FdoSmPhIndexLoader> FdoSmPhOwner::CreateIndexLoader(
     FdoSmPhDbObjectsP dbObjects 
 )
@@ -737,7 +753,7 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
 
     while ( objReader->ReadNext() ) {
         // Cache the current dbObject
-        FdoSmPhDbObjectP dbObject = CacheDbObject( objReader );
+        FdoSmPhDbObjectP dbObject = CacheDbObject( objReader, cacheComponents );
 
         if ( dbObject && cacheComponents ) {
 
@@ -779,11 +795,7 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
             // loaders, so that they will revisit this object. Now that it has its
             // components, it might be a bulk load candidate.
 
-            if ( mIndexLoader ) 
-                mIndexLoader->Reset();
-            if ( mSynonymBaseLoader ) 
-                mSynonymBaseLoader->Reset();
-            mNextBaseCandIdx = 0;
+            ResetLoaders();
         }
     }
 
@@ -793,7 +805,8 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
 }
 
 FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(
-    FdoPtr<FdoSmPhRdDbObjectReader> reader
+    FdoPtr<FdoSmPhRdDbObjectReader> reader,
+    bool bulkFetchComponents
 )
 {
     FdoStringP objName = reader->GetString(L"", L"name");
@@ -803,6 +816,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(
         pDbObject = NewDbObject( objName, FdoSchemaElementState_Unchanged, reader);
 
         if ( pDbObject ) {
+
+            pDbObject->SetBulkFetchComponents( bulkFetchComponents );
+
             // Database object found, add it the the cache.
             GetDbObjects()->Add( pDbObject );
 
@@ -810,7 +826,13 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheDbObject(
             RemoveCandDbObject( pDbObject->GetName() );
         }
     }
-
+    else
+    {
+        // dbObject already cached, just update its component
+        // bulk fetch setting.
+        // SetBulkFetchComponents can handle a NULL dbObject
+        SetBulkFetchComponents( pDbObject, bulkFetchComponents );
+    }
 
     return pDbObject;
 }
@@ -865,7 +887,12 @@ void FdoSmPhOwner::AddCandDbObject( FdoStringP objectName )
     if ( (!mDbComponentsCached) && (GetCandFetchSize() > 1) ) {
 	    FdoSmPhDbObjectP pDbObject = GetDbObjects()->FindItem(objectName);
 
-        if ( !pDbObject || !(pDbObject->ColumnsLoaded()) ) {
+        // A dbObject explicitly requested for retrieval is not for listing purposes only.
+        // Update it's component fetch setting.
+        // SetBulkFetchComponents can handle a NULL dbObject.
+        SetBulkFetchComponents(pDbObject, true);
+
+        if ( (!pDbObject) || !(pDbObject->ColumnsLoaded()) ) {
             // Object not fully cached, add to candidates list.
             FdoDictionaryElementP elem = mCandDbObjects->FindItem( objectName );
             
@@ -1203,11 +1230,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName)
             // loaders, so that they will revisit this object. Now that it has its
             // components, it might be a bulk load candidate.
 
-            if ( mIndexLoader ) 
-                mIndexLoader->Reset();
-            if ( mSynonymBaseLoader ) 
-                mSynonymBaseLoader->Reset();
-            mNextBaseCandIdx = 0;
+            ResetLoaders();
         }
     }
 
@@ -1315,6 +1338,33 @@ FdoInt32 FdoSmPhOwner::GetCandFetchSize()
     return 50;
 }
 
+void FdoSmPhOwner::ResetLoaders()
+{
+    if ( mIndexLoader ) 
+        mIndexLoader->Reset();
+    if ( mSynonymBaseLoader ) 
+        mSynonymBaseLoader->Reset();
+    mNextBaseCandIdx = 0;
+    mNextRdScCandIdx = 0;
+}
+
+void FdoSmPhOwner::SetBulkFetchComponents( FdoSmPhDbObjectP dbObject, bool bulkFetchComponents )
+{
+    if ( dbObject ) 
+    {
+        bool oldBulkFetch = dbObject->GetBulkFetchComponents(); 
+
+        dbObject->SetBulkFetchComponents(bulkFetchComponents);
+
+        if ( bulkFetchComponents && !oldBulkFetch)
+            // If the component fetch status changed from false to true then 
+            // this dbObject may have changed from not being to being a candidate for
+            // the lazy component loaders. Reset these loaders so that they will
+            // revisit this dbObject when looking for load candidates.
+            ResetLoaders();
+    }
+}
+
 void FdoSmPhOwner::LoadLtLck()
 {
     // Reading options for owners in other database instances is not yet supported.
@@ -1400,7 +1450,7 @@ void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
         mSpatialContextGeoms = new FdoSmPhSpatialContextGeomCollection();
         // Make sure ScInfo table is loaded first, since real spatial 
         // context names can be determined from the columns in this table.
-        DoLoadSpatialContexts( FdoSmPhMgr::ScInfoNoMetaTable );
+        DoLoadSpatialContexts( scInfoTable );
     }
 
     if ( GetManager()->GetBulkLoadSpatialContexts() || (dbObjectName != scInfoTable) ) 
@@ -1408,7 +1458,14 @@ void FdoSmPhOwner::LoadSpatialContexts( FdoStringP dbObjectName )
 }
 
 void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
-{        
+{
+    FdoStringsP cands;    // Candidate dbObjects for loading spatial contexts.
+                          // As a spatial context is retrieved for each dbObject, the
+                          // dbObject is removed from this list. The list then becomes
+                          // the candidate derived objects to load.
+
+    FdoStringP  scInfoTable = GetManager()->GetRealDbObjectName( FdoSmPhMgr::ScInfoNoMetaTable );
+
     if ( GetElementState() == FdoSchemaElementState_Added ) 
         return;
 
@@ -1425,16 +1482,38 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
             mSpatialContextsLoaded = true;
         }
         else {
-            // Incremental loading (SC's associated with given dbObject).
-            scReader = CreateRdSpatialContextReader(dbObjectName);
+            // Don't incremental bulk load the f_scinfo table. We want to ensure it
+            // gets loaded first.
+            if ( dbObjectName != scInfoTable )
+            {
+                // Incremental bulk loading (SC's associated with given dbObject plus 
+                // some other candidates).
+                cands = GetRdScCands(dbObjectName);
+                scReader = CreateRdSpatialContextReader(cands);
+            }
+            else
+            {
+                cands = FdoStringCollection::Create();
+            }
+
+            if ( !scReader )
+            {
+                // Incremental bulk loading not supported. Fall back to 
+                // loading spatial contexts for just the given dbObject.
+
+                cands->Clear();
+
+                // Candidates list also used to track possible derived objects
+                // (e.g. synonyms). Don't need f_scinfo on this list.
+                if ( dbObjectName != scInfoTable )
+                    cands->Add(dbObjectName);
+
+                scReader = CreateRdSpatialContextReader(dbObjectName);
+            }
         }
     
-        bool scFound = false;
-
         while (scReader->ReadNext())
         {
-            scFound = true;
-
             // Generate physical spatial context from current SpatialContextGeom
             FdoPtr<FdoByteArray> scExtent = scReader->GetExtent();
             FdoSmPhSpatialContextP sc = new FdoSmPhSpatialContext(
@@ -1478,6 +1557,16 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
                 if ( scReader->IsDerived() ) 
                     AddCandDbObject(scReader->GetGeomTableName());
             }
+
+            // Remove dbObjects, for which spatial contexts were found, from 
+            // candidates list. Since it has an explicit spatial context, it is 
+            // not a derived object.
+            if ( cands ) 
+            {
+                int candIdx = cands->IndexOf(scReader->GetGeomTableName());
+                if ( candIdx >= 0 ) 
+                    cands->RemoveAt(candIdx);
+            }
         }
 
         // Get spatial contexts for derived objects. A derived object does not have
@@ -1488,13 +1577,17 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
         // synonym that references a table in another datastore. The following finds
         // spatial contexts for these derived objects.
 
-        // If loading spatial contexts for a single dbObject and spatial contexts
-        // were found then the dbObject was not derived. Therefore we can skip the 
-        // derived object check.
-        if ( (dbObjectName == L"") || !scFound ) 
+        // When remaining candidates list is null then load all derived objects.
+        // Otherwise, load only the ones in the candidates list.
+        if ( (!cands) || (cands->GetCount() > 0) ) 
         {
             FdoStringsP derivedObjects = FdoStringCollection::Create();
-            FdoSmPhRdDbObjectReaderP objReader = CreateDerivedObjectReader(dbObjectName);
+            FdoSmPhRdDbObjectReaderP objReader;
+                
+            if ( cands )     
+                objReader = CreateDerivedObjectReader(cands);
+            else
+                objReader = CreateDerivedObjectReader();
             
             if ( objReader ) 
             {
@@ -1502,10 +1595,9 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
                 //This causes their base objects (which have the columns) to be bulk loaded.
                 while ( objReader->ReadNext() )
                 {
-                    CacheDbObject(objReader);
+                    FdoSmPhDbObjectP derivedObject = CacheDbObject(objReader);
                     derivedObjects->Add( objReader->GetString(L"", L"name") );
                 }
-
 
                 // Check each derived object for geometric column
                 for ( int i = 0; i < derivedObjects->GetCount(); i++ ) 
@@ -1579,6 +1671,62 @@ void FdoSmPhOwner::DoLoadSpatialContexts( FdoStringP dbObjectName )
                 mSpatialContextGeoms->RemoveAt(i);
         }
     }
+}
+
+FdoStringsP FdoSmPhOwner::GetRdScCands( FdoStringP dbObjectName )
+{
+    FdoStringsP cands = FdoStringCollection::Create();
+    cands->Add( dbObjectName );
+    int candCount = 1;
+    int candMax = GetCandFetchSize();
+
+    int idx1;
+    int idx2;
+
+    if ( mDbObjects ) {
+        long nextRdScCandIdx = mNextRdScCandIdx;
+
+        // Check each dbObject not yet checked
+        for ( idx1 = nextRdScCandIdx; (idx1 < mDbObjects->GetCount()) && (candCount < candMax); idx1++ ) {
+            mNextRdScCandIdx = idx1 + 1;
+            FdoSmPhDbObjectP dbObject = mDbObjects->GetItem(idx1);
+
+            // Skip objects whose columns have not been loaded. Loading
+            // these causes column loads for each individual object.
+            // (which is slow, and nullifies the advantage of bulk loading their 
+            // spatial contexts).
+            if ( dbObject->ColumnsLoaded() ) 
+            {
+                FdoSmPhColumnsP columns = dbObject->GetColumns();
+
+                for ( idx2 = 0; idx2 < columns->GetCount(); idx2++ )
+                {
+                    FdoSmPhColumnP column = columns->GetItem(idx2);
+                    FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
+
+                    if ( geomColumn )
+                    {
+                        // Found a geometric column
+                        FdoStringP scGeomName = FdoSmPhSpatialContextGeom::MakeName(dbObject->GetName(), geomColumn->GetName());
+
+                        if ( mSpatialContextGeoms->IndexOf(scGeomName) == -1 )
+                        {
+                            // Column's spatial context not yet cached so add its
+                            // dbObject to the candidates list. 
+                            if ( cands->IndexOf(dbObject->GetName()) < 0 ) 
+                            {
+                                cands->Add(dbObject->GetName());
+                                candCount++;
+                            }   
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return cands;
 }
 
 void FdoSmPhOwner::LoadCoordinateSystems( FdoSmPhRdCoordSysReaderP rdr )

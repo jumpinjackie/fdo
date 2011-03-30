@@ -43,6 +43,11 @@ FdoSmPhRdSqsSpatialContextReader::FdoSmPhRdSqsSpatialContextReader( FdoSmPhOwner
 	SetSubReader( MakeQueryReader(owner, objectNames) );
 }
 
+FdoSmPhRdSqsSpatialContextReader::FdoSmPhRdSqsSpatialContextReader( FdoSmPhOwnerP owner, FdoStringsP objectNames )
+{
+	SetSubReader( MakeQueryReader(owner, objectNames) );
+}
+
 FdoSmPhRdSqsSpatialContextReader::~FdoSmPhRdSqsSpatialContextReader(void)
 {
 }

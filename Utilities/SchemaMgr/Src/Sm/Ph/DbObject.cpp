@@ -39,7 +39,8 @@ FdoSmPhDbObject::FdoSmPhDbObject(
 ) : 
     FdoSmPhDbElement(name, (FdoSmPhMgr*) NULL, pOwner, elementState ),
     mLtMode(NoLtLock),
-    mLockingMode(NoLtLock)
+    mLockingMode(NoLtLock),
+    mBulkFetchComponents(false)
 {
 }
 
@@ -1423,6 +1424,16 @@ bool FdoSmPhDbObject::ColumnsLoaded()
 bool FdoSmPhDbObject::IndexesLoaded()
 {
     return (mIndexes != NULL);
+}
+
+bool FdoSmPhDbObject::GetBulkFetchComponents()
+{
+    return mBulkFetchComponents;
+}
+
+void FdoSmPhDbObject::SetBulkFetchComponents(bool bulkFetchComponents)
+{
+    mBulkFetchComponents = bulkFetchComponents;
 }
 
 void FdoSmPhDbObject::LoadFkeys(void)

@@ -267,7 +267,7 @@ FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDerivedObjectReader( FdoS
 {
     FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
 
-    return new FdoSmPhRdSqsDbObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames );
+    return new FdoSmPhRdSqsDbObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames, true );
 }
 
 FdoPtr<FdoSmPhRdDbObjectReader> FdoSmPhSqsOwner::CreateDbObjectReader( FdoSmPhRdTableJoinP join ) const
@@ -439,6 +439,11 @@ FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextRea
 FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader( FdoStringP dbObjectName )
 {
     return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this), dbObjectName );
+}
+
+FdoPtr<FdoSmPhRdSpatialContextReader> FdoSmPhSqsOwner::CreateRdSpatialContextReader( FdoStringsP objectNames )
+{
+    return new FdoSmPhRdSqsSpatialContextReader(FDO_SAFE_ADDREF(this), objectNames );
 }
 
 FdoSmPhRdCoordSysReaderP FdoSmPhSqsOwner::CreateCoordSysReader( FdoInt64 srid ) const

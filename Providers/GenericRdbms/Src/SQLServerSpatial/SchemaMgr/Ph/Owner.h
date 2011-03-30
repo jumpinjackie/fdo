@@ -162,6 +162,9 @@ public:
 	/// Get reader to retrieve all spatial contexts for a database object.
 	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringP dbObjectName );
 
+	/// Get reader to retrieve all spatial contexts for a list of database objects.
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringsP objectNames );
+
     // Create a reader to get the coordinate system(s) of the given csysName.
     // When csysName is L"" then all coordinates systems for this datastore are read.
     virtual FdoPtr<FdoSmPhRdCoordSysReader> CreateCoordSysReader( FdoStringP csysName = L"") const;

@@ -224,9 +224,13 @@ bool FdoSmPhSynonym::BaseLoaded()
 
 bool FdoSmPhSynonym::ColumnsLoaded()
 {
-    // Skip trying to load columns for synonym. They never have
-    // direct columns but "inherit" them from their base objects.
-    return true;
+    // Synonyms do not actually have explicit columns,
+    // but report that the columns have been loaded
+    // when this synonym has been cached for component retrieval. 
+    if ( GetBulkFetchComponents() )
+        return true;
+
+    return FdoSmPhDbObject::ColumnsLoaded();
 }
 
 bool FdoSmPhSynonym::IndexesLoaded()
