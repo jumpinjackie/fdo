@@ -211,6 +211,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win32\Release\PostGISProvider.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Message>Versioning PostgreSQLProvider.dll</Message>
@@ -258,6 +259,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>..\..\Lib\Win64\Release\PostGISProvider.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>LIBCMT</IgnoreSpecificDefaultLibraries>
     </Link>
     <PostBuildEvent>
       <Message>Versioning PostgreSQLProvider.dll</Message>

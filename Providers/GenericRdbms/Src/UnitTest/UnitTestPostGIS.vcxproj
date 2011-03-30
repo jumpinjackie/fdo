@@ -111,7 +111,7 @@
     <Link>
       <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpq.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;PostgreSQLOverrides.lib;PostGISSchemaMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -143,7 +143,7 @@
     <Link>
       <AdditionalDependencies>cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpqdll.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;PostgreSQLOverrides.lib;PostGISSchemaMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOTHIRDPARTY)\postgres\lib\ms\Win64;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -168,7 +168,7 @@
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpq.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;PostgreSQLOverrides.lib;PostGISSchemaMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -192,7 +192,7 @@
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libpqdll.lib;Rdbi.lib;Gdbi.lib;schemamgrnew.lib;PostGISDriver.lib;ProvidersCommon.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;PostgreSQLOverrides.lib;PostGISSchemaMgr.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOTHIRDPARTY)\postgres\lib\ms\Win64;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
