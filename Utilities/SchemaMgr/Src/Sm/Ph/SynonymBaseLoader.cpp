@@ -59,7 +59,7 @@ bool FdoSmPhSynonymBaseLoader::IsCandidate( FdoSmPhDbObjectP dbObject )
     // Candidate must be a synonym.
     FdoSmPhSynonymP synonym = dbObject.p->SmartCast<FdoSmPhSynonym>();
 
-    return (synonym != NULL);
+    return (synonym != NULL) && synonym->GetBulkFetchComponents();
 }
 
 FdoPtr<FdoSmPhRdSynonymReader> FdoSmPhSynonymBaseLoader::CreateReader( FdoStringsP candidates )

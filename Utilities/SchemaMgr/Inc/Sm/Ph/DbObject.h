@@ -385,6 +385,19 @@ public:
     // Returns true if this database object's indexes have been cached.
     virtual bool IndexesLoaded();
 
+    // Gets the current component bulk fetch setting
+    virtual bool GetBulkFetchComponents();
+
+    // Sets component bulk loading
+    virtual void SetBulkFetchComponents(
+        bool bulkFetchComponents
+            // false: This dbObject was cached for listing purposes only. It can 
+            // be skipped when looking for candidates for lazy loading components
+            // (e.g.: indexes, base objects)
+            // true: This dbObject was cached for component retrieval as well. It is 
+            // a candidate for lazy loading components. 
+    );
+
     // Load this object's columns from the given reader
     virtual void CacheBaseObjects( FdoPtr<FdoSmPhRdBaseObjectReader> rdr );
 
@@ -754,6 +767,8 @@ private:
 
 	FdoPtr<FdoSmPhDependencyCollection> mDependenciesDown;
 	FdoPtr<FdoSmPhDependencyCollection> mDependenciesUp;
+
+    bool                mBulkFetchComponents;
 
     FdoLtLockModeType   mLtMode;
     FdoLtLockModeType   mLockingMode;

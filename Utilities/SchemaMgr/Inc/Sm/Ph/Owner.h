@@ -213,6 +213,9 @@ public:
 	/// Get reader to retrieve all spatial contexts for a database object.
 	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringP dbObjectName );
 
+	/// Get reader to retrieve all spatial contexts for a list of database objects.
+	virtual FdoPtr<FdoSmPhRdSpatialContextReader> CreateRdSpatialContextReader( FdoStringsP objectNames );
+
     // Create a reader to get all foreign keys (ordered by foreign table) for this owner.
     // Default implementation returns NULL (not supported).
     virtual FdoPtr<FdoSmPhRdFkeyReader> CreateFkeyReader() const;
@@ -301,13 +304,16 @@ public:
     //
     // Parameters:
     //  cacheComponents: if true, cache each object's components (primary key, foreign
-    //  keys, indexes).
+    //  keys, indexes). if false, then caching for listing purposes only.
     FdoSmPhDbObjectsP CacheDbObjects( bool cacheComponents );
 
     /// Given a DbObject reader, add its current database object to 
     /// this owner's cache.
     FdoSmPhDbObjectP CacheDbObject(
-        FdoPtr<FdoSmPhRdDbObjectReader> reader
+        FdoPtr<FdoSmPhRdDbObjectReader> reader,
+        bool bulkFetchComponents = true
+            // false: caching for listing purposes only
+            // true: components will also be cached.
     );
 
     /// Remove a database object from the cache.
@@ -447,6 +453,21 @@ protected:
     // Returns the number of object candidates to fetch in one operation (See CacheCandDbObjects). 
     virtual FdoInt32 GetCandFetchSize();
 
+    // Reset all loaders to start at the first cached dbObject when looking for 
+    // candidates to load.
+    void ResetLoaders();
+
+    // Change the fetch components status for the given dbObject
+    void SetBulkFetchComponents( 
+        FdoSmPhDbObjectP dbObject, 
+        bool bulkFetchComponents 
+            // false: This dbObject is being cached for listing purposes only. It can 
+            // be skipped when looking for candidates for lazy loading components
+            // (e.g.: indexes, base objects)
+            // true: This dbObject is being cached for component retrieval as well. It is 
+            // a candidate for lazy loading components. 
+    );
+
 protected:
     // Checks each DbObject in this owner and adds its base object (if any) to 
     // the Candidates list for the base object's owner.
@@ -469,6 +490,12 @@ private:
     void LoadLtLck();
 
     void DoLoadSpatialContexts( FdoStringP dbObjectName );
+
+    // Creates list of dbObjects that are candidates for spatial context loading.
+    // This allows bulk fetching of physical spatial context info when only partially
+    // describing a schema. 
+    // Returned list is empty if the given dbObject is not a candidate.
+    FdoStringsP GetRdScCands( FdoStringP dbObjectName );
 
     // Caches the coordinate systems retrieved by the given reader.
     void LoadCoordinateSystems( FdoPtr<FdoSmPhRdCoordSysReader> rdr );
@@ -506,6 +533,10 @@ private:
     // Current indexes for next dbObject to check for base object bulk fetching.
     // Any dbobjects with lower index in the cache have already been checked.
     int mNextBaseCandIdx;
+
+    // Current indexes for next dbObject to check for spatial context bulk fetching.
+    // Any dbobjects with lower index in the cache have already been checked.
+    int mNextRdScCandIdx;
 
     // Lazy bulk loader for indexes.
     FdoSmPhIndexLoader* mIndexLoader;
