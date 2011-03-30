@@ -83,7 +83,8 @@ class SltReader :   public FdoIScrollableFeatureReader,
                     bool                        useFastStepping,
                     RowidIterator*              ri,
                     FdoParameterValueCollection*  parmValues,
-                    const char*                 strOrderBy = "");
+                    const char*                 strOrderBy = "",
+                    FdoIdentifier* alias = NULL);
 
         virtual ~SltReader();
 
@@ -202,7 +203,7 @@ protected:
 
     protected:
 
-        void DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, const char* strOrderBy = "", bool addPkOnly = false);
+        void DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, const char* strOrderBy = "", bool addPkOnly = false, FdoIdentifier* alias = NULL);
 
     private:
         bool ReadNextOnView();

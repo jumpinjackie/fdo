@@ -130,7 +130,7 @@ m_canAddSelectProps(false)
 //requested columns collection is empty, it will start out with a query
 //for just featid and geometry, then redo the query if caller asks for other
 //property values
-SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* strWhere, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues, const char* strOrderBy)
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, const char* fcname, const char* strWhere, bool useFastStepping, RowidIterator* ri, FdoParameterValueCollection*  parmValues, const char* strOrderBy, FdoIdentifier* alias)
 : m_refCount(1),
 m_pStmt(0),
 m_class(NULL),
@@ -152,7 +152,7 @@ m_canAddSelectProps(true)
 {
 	m_connection = FDO_SAFE_ADDREF(connection);
     m_parmValues  = FDO_SAFE_ADDREF(parmValues);
-    DelayedInit(props, fcname, strWhere, strOrderBy);
+    DelayedInit(props, fcname, strWhere, strOrderBy, false, alias);
 }
 
 //Same as above but does not initialize the reader.
@@ -204,7 +204,7 @@ void SltReader::SetInternalFilter(FdoFilter* filter)
     m_filter = FDO_SAFE_ADDREF(filter);
 }
 
-void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, const char* strOrderBy, bool addPkOnly)
+void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, const char* strWhere, const char* strOrderBy, bool addPkOnly, FdoIdentifier* alias)
 {
     int rc = 0;
 
@@ -242,7 +242,14 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
 
     m_fromwhere.Append(" FROM ", 6);
     if (!md->IsView())
+    {
         m_fromwhere.AppendDQuoted(fcname);
+        if (alias != NULL)
+        {
+            m_fromwhere.Append(" AS ", 4);
+            m_fromwhere.AppendDQuoted(alias->GetName());
+        }
+    }
     else
     {
         if (md->GetIdName() != NULL)
@@ -251,6 +258,11 @@ void SltReader::DelayedInit(FdoIdentifierCollection* props, const char* fcname, 
             m_useFastStepping = false;
             idClassProp = md->GetIdName();
             m_fromwhere.AppendDQuoted(fcname);
+            if (alias != NULL)
+            {
+                m_fromwhere.Append(" AS ", 4);
+                m_fromwhere.AppendDQuoted(alias->GetName());
+            }
         }
         else
             throw FdoCommandException::Create(L"Requested feature class cannot use this select type.");

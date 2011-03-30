@@ -329,16 +329,16 @@ union fdo_filter_yyalloc
 /* FDO_FILTER_YYFINAL -- State number of the termination state. */
 #define FDO_FILTER_YYFINAL  63
 /* FDO_FILTER_YYLAST -- Last index in FDO_FILTER_YYTABLE.  */
-#define FDO_FILTER_YYLAST   484
+#define FDO_FILTER_YYLAST   590
 
 /* FDO_FILTER_YYNTOKENS -- Number of terminals. */
 #define FDO_FILTER_YYNTOKENS  69
 /* FDO_FILTER_YYNNTS -- Number of nonterminals. */
 #define FDO_FILTER_YYNNTS  45
 /* FDO_FILTER_YYNRULES -- Number of rules. */
-#define FDO_FILTER_YYNRULES  119
+#define FDO_FILTER_YYNRULES  123
 /* FDO_FILTER_YYNRULES -- Number of states. */
-#define FDO_FILTER_YYNSTATES  197
+#define FDO_FILTER_YYNSTATES  206
 
 /* FDO_FILTER_YYTRANSLATE(FDO_FILTER_YYLEX) -- Bison symbol number corresponding to FDO_FILTER_YYLEX.  */
 #define FDO_FILTER_YYUNDEFTOK  2
@@ -397,11 +397,12 @@ static const unsigned short fdo_filter_yyprhs[] =
       98,   100,   102,   106,   112,   116,   122,   126,   132,   136,
      138,   144,   148,   150,   152,   154,   156,   158,   161,   164,
      168,   170,   172,   174,   176,   178,   180,   182,   186,   193,
-     202,   209,   218,   220,   224,   231,   240,   249,   260,   266,
-     272,   275,   277,   279,   281,   283,   287,   290,   294,   298,
-     302,   307,   309,   311,   313,   315,   317,   319,   321,   323,
-     325,   327,   329,   331,   333,   335,   337,   339,   341,   343,
-     345,   347,   349,   351,   353,   355,   357,   359,   361,   363
+     202,   211,   218,   227,   236,   238,   242,   249,   258,   267,
+     276,   287,   298,   304,   310,   313,   315,   317,   319,   321,
+     325,   328,   332,   336,   340,   345,   347,   349,   351,   353,
+     355,   357,   359,   361,   363,   365,   367,   369,   371,   373,
+     375,   377,   379,   381,   383,   385,   387,   389,   391,   393,
+     395,   397,   399,   401
 };
 
 /* FDO_FILTER_YYRHS -- A `-1'-separated list of the rules' RHS. */
@@ -427,23 +428,27 @@ static const fdo_filter_yysigned_char fdo_filter_yyrhs[] =
      103,    -1,   106,    -1,   105,    -1,   108,    -1,   104,    -1,
       90,    -1,    97,    66,    90,    -1,    22,    67,    85,    66,
      110,    68,    -1,    22,    67,    85,    66,   110,    66,    94,
-      68,    -1,    22,    67,    88,    66,   110,    68,    -1,    22,
-      67,    88,    66,   110,    66,    94,    68,    -1,    98,    -1,
-      99,    66,    98,    -1,    21,    67,    85,    66,    89,    68,
-      -1,    21,    67,    85,    66,    89,    66,    94,    68,    -1,
-      21,    67,    85,    66,    89,    66,    99,    68,    -1,    21,
-      67,    85,    66,    89,    66,    94,    66,    99,    68,    -1,
-      85,    20,    67,    97,    68,    -1,    85,    20,    67,   100,
-      68,    -1,    85,     3,    -1,   101,    -1,   107,    -1,    96,
-      -1,   102,    -1,    85,   112,    71,    -1,    18,    94,    -1,
-      94,    16,    94,    -1,    94,    17,    94,    -1,    71,   109,
-      71,    -1,    85,   111,    71,   113,    -1,    53,    -1,    54,
-      -1,    55,    -1,    56,    -1,    57,    -1,    58,    -1,    19,
-      -1,    10,    -1,    11,    -1,    12,    -1,    13,    -1,    14,
-      -1,    15,    -1,    23,    -1,    24,    -1,    25,    -1,    27,
-      -1,    28,    -1,    30,    -1,    32,    -1,    31,    -1,    33,
-      -1,    34,    -1,    35,    -1,    26,    -1,    29,    -1,    80,
-      -1,    40,    -1,    41,    -1
+      68,    -1,    22,    67,    85,    66,   110,    66,    39,    68,
+      -1,    22,    67,    88,    66,   110,    68,    -1,    22,    67,
+      88,    66,   110,    66,    94,    68,    -1,    22,    67,    88,
+      66,   110,    66,    39,    68,    -1,    98,    -1,    99,    66,
+      98,    -1,    21,    67,    85,    66,    89,    68,    -1,    21,
+      67,    85,    66,    89,    66,    94,    68,    -1,    21,    67,
+      85,    66,    89,    66,    39,    68,    -1,    21,    67,    85,
+      66,    89,    66,    99,    68,    -1,    21,    67,    85,    66,
+      89,    66,    94,    66,    99,    68,    -1,    21,    67,    85,
+      66,    89,    66,    39,    66,    99,    68,    -1,    85,    20,
+      67,    97,    68,    -1,    85,    20,    67,   100,    68,    -1,
+      85,     3,    -1,   101,    -1,   107,    -1,    96,    -1,   102,
+      -1,    85,   112,    71,    -1,    18,    94,    -1,    94,    16,
+      94,    -1,    94,    17,    94,    -1,    71,   109,    71,    -1,
+      85,   111,    71,   113,    -1,    53,    -1,    54,    -1,    55,
+      -1,    56,    -1,    57,    -1,    58,    -1,    19,    -1,    10,
+      -1,    11,    -1,    12,    -1,    13,    -1,    14,    -1,    15,
+      -1,    23,    -1,    24,    -1,    25,    -1,    27,    -1,    28,
+      -1,    30,    -1,    32,    -1,    31,    -1,    33,    -1,    34,
+      -1,    35,    -1,    26,    -1,    29,    -1,    80,    -1,    40,
+      -1,    41,    -1
 };
 
 /* FDO_FILTER_YYRLINE[FDO_FILTER_YYN] -- source line where rule number FDO_FILTER_YYN was defined.  */
@@ -453,14 +458,15 @@ static const unsigned short fdo_filter_yyrline[] =
      139,   143,   144,   145,   146,   150,   153,   155,   157,   159,
      161,   163,   165,   167,   169,   171,   176,   177,   180,   183,
      186,   189,   192,   195,   198,   202,   206,   207,   208,   212,
-     217,   228,   229,   233,   239,   248,   250,   255,   257,   259,
-     261,   263,   268,   269,   273,   274,   278,   280,   285,   290,
-     291,   292,   296,   297,   301,   302,   306,   307,   312,   314,
-     316,   318,   323,   325,   330,   332,   334,   336,   341,   343,
-     348,   352,   353,   354,   355,   359,   364,   368,   369,   373,
-     377,   382,   383,   384,   385,   386,   387,   388,   392,   393,
-     394,   395,   396,   397,   401,   402,   406,   407,   408,   409,
-     410,   411,   412,   413,   414,   415,   416,   420,   421,   422
+     217,   228,   229,   233,   239,   247,   249,   254,   256,   258,
+     260,   262,   267,   268,   272,   273,   277,   279,   284,   289,
+     290,   291,   295,   296,   300,   301,   305,   306,   311,   313,
+     315,   317,   319,   321,   326,   328,   333,   335,   337,   339,
+     341,   343,   348,   350,   355,   359,   360,   361,   362,   366,
+     371,   375,   376,   380,   384,   389,   390,   391,   392,   393,
+     394,   395,   399,   400,   401,   402,   403,   404,   408,   409,
+     413,   414,   415,   416,   417,   418,   419,   420,   421,   422,
+     423,   427,   428,   429
 };
 #endif
 
@@ -530,11 +536,12 @@ static const unsigned char fdo_filter_yyr1[] =
       85,    86,    86,    87,    87,    88,    88,    89,    89,    89,
       89,    89,    90,    90,    91,    91,    92,    92,    93,    94,
       94,    94,    95,    95,    96,    96,    97,    97,    98,    98,
-      98,    98,    99,    99,   100,   100,   100,   100,   101,   101,
-     102,   103,   103,   103,   103,   104,   105,   106,   106,   107,
-     108,   109,   109,   109,   109,   109,   109,   109,   110,   110,
-     110,   110,   110,   110,   111,   111,   112,   112,   112,   112,
-     112,   112,   112,   112,   112,   112,   112,   113,   113,   113
+      98,    98,    98,    98,    99,    99,   100,   100,   100,   100,
+     100,   100,   101,   101,   102,   103,   103,   103,   103,   104,
+     105,   106,   106,   107,   108,   109,   109,   109,   109,   109,
+     109,   109,   110,   110,   110,   110,   110,   110,   111,   111,
+     112,   112,   112,   112,   112,   112,   112,   112,   112,   112,
+     112,   113,   113,   113
 };
 
 /* FDO_FILTER_YYR2[FDO_FILTER_YYN] -- Number of symbols composing right hand side of rule FDO_FILTER_YYN.  */
@@ -547,11 +554,12 @@ static const unsigned char fdo_filter_yyr2[] =
        1,     1,     3,     5,     3,     5,     3,     5,     3,     1,
        5,     3,     1,     1,     1,     1,     1,     2,     2,     3,
        1,     1,     1,     1,     1,     1,     1,     3,     6,     8,
-       6,     8,     1,     3,     6,     8,     8,    10,     5,     5,
-       2,     1,     1,     1,     1,     3,     2,     3,     3,     3,
-       4,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       8,     6,     8,     8,     1,     3,     6,     8,     8,     8,
+      10,    10,     5,     5,     2,     1,     1,     1,     1,     3,
+       2,     3,     3,     3,     4,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1
 };
 
 /* FDO_FILTER_YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -563,32 +571,33 @@ static const unsigned char fdo_filter_yydefact[] =
       29,    30,    31,    32,    33,    34,    23,    24,     0,     0,
        0,     0,     0,     7,    55,    15,    22,    18,    19,    20,
       21,    17,    16,     8,    54,     9,     0,    41,    10,    52,
-      53,     6,     2,    60,    83,    81,    84,    61,    65,    63,
-      62,    82,    64,     0,     0,     0,    86,     0,    58,     9,
-      57,     0,     0,     1,    97,     0,     0,     0,     0,    91,
-      92,    93,    94,    95,    96,     0,     0,    80,     0,   104,
-     105,   106,   115,   107,   108,   116,   109,   111,   110,   112,
-     113,   114,    36,     0,     0,     0,     0,     0,     0,     0,
-       0,     5,    59,    11,    12,    13,    14,    44,    89,     0,
-      37,     0,     0,    85,    42,     3,    87,    88,    39,     5,
-       0,     0,    66,     0,     0,     0,    35,   118,   119,   117,
-      90,    43,     0,     0,    78,    79,    38,     0,    67,     0,
-       0,     0,     9,     0,     0,     9,     0,     0,     0,    74,
-       5,     0,    51,    48,     0,     0,    72,     0,     0,     0,
-       0,     0,    75,     0,    76,    50,    47,     0,     0,     0,
-       0,    73,     0,     0,     0,     0,    77,     0,    46,    98,
-      99,   100,   101,   102,   103,     0,     0,     0,     0,    68,
-       0,    70,    45,     0,     0,    69,    71
+      53,     6,     2,    60,    87,    85,    88,    61,    65,    63,
+      62,    86,    64,     0,     0,     0,    90,     0,    58,     9,
+      57,     0,     0,     1,   101,     0,     0,     0,     0,    95,
+      96,    97,    98,    99,   100,     0,     0,    84,     0,   108,
+     109,   110,   119,   111,   112,   120,   113,   115,   114,   116,
+     117,   118,    36,     0,     0,     0,     0,     0,     0,     0,
+       0,     5,    59,    11,    12,    13,    14,    44,    93,     0,
+      37,     0,     0,    89,    42,     3,    91,    92,    39,     5,
+       0,     0,    66,     0,     0,     0,    35,   122,   123,   121,
+      94,    43,     0,     0,    82,    83,    38,     0,    67,     0,
+       0,     0,     9,     0,     0,     9,     0,     0,     0,    76,
+       5,     0,    51,    48,     0,    28,     0,    74,     0,     0,
+       0,     0,     0,    78,     0,    77,     0,    79,    50,    47,
+       0,     0,     0,     0,     0,    75,     0,     0,     0,     0,
+      81,    80,     0,    46,   102,   103,   104,   105,   106,   107,
+       0,     0,     0,     0,    68,     0,    71,    45,    28,     0,
+      28,     0,    70,    69,    73,    72
 };
 
 /* FDO_FILTER_YYDEFGOTO[NTERM-NUM]. */
 static const short fdo_filter_yydefgoto[] =
 {
       -1,    21,    55,    23,    24,    25,    26,    27,    28,    29,
-      30,    31,    32,    33,   111,    34,    59,    36,    37,   169,
-     143,    38,    39,    40,    41,    62,    43,    44,   123,   156,
-     157,   124,    45,    46,    47,    48,    49,    50,    51,    52,
-      76,   185,    93,    94,   130
+      30,    31,    32,    33,   111,    34,    59,    36,    37,   172,
+     143,    38,    39,    40,    41,    62,    43,    44,   123,   157,
+     158,   124,    45,    46,    47,    48,    49,    50,    51,    52,
+      76,   190,    93,    94,   130
 };
 
 /* FDO_FILTER_YYPACT[STATE-NUM] -- Index in FDO_FILTER_YYTABLE of the portion describing
@@ -596,36 +605,37 @@ static const short fdo_filter_yydefgoto[] =
 #define FDO_FILTER_YYPACT_NINF -105
 static const short fdo_filter_yypact[] =
 {
-     160,  -105,  -105,  -105,  -105,   -60,   206,  -105,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,   297,   -24,
-     206,    27,   398,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,   205,   -26,  -105,  -105,  -105,
-    -105,  -105,   114,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,  -105,    10,   206,   426,  -105,   297,  -105,   -12,
-    -105,    68,     1,  -105,  -105,   297,   297,   297,   297,  -105,
-    -105,  -105,  -105,  -105,  -105,    15,   297,  -105,     6,  -105,
+     162,  -105,  -105,  -105,  -105,   -60,   208,  -105,  -105,  -105,
+    -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,   391,   -24,
+     208,    27,   520,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
+    -105,  -105,  -105,  -105,  -105,   207,   -26,  -105,  -105,  -105,
+    -105,  -105,    93,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
+    -105,  -105,  -105,    10,   208,   532,  -105,   391,  -105,   -12,
+    -105,    68,     1,  -105,  -105,   391,   391,   391,   391,  -105,
+    -105,  -105,  -105,  -105,  -105,    15,   391,  -105,    21,  -105,
     -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,  -105,   297,   297,   297,   252,   206,   206,    16,   126,
-      43,     4,  -105,    59,    59,  -105,  -105,  -105,    53,   387,
-      53,   -52,    93,    53,  -105,   114,  -105,    60,  -105,  -105,
-      15,    21,  -105,   -47,    67,   297,  -105,  -105,  -105,  -105,
-    -105,  -105,    15,   397,  -105,  -105,    53,    83,  -105,   342,
-     297,    64,   -56,   -36,   214,   -32,    15,    15,    19,  -105,
-      86,    91,  -105,  -105,    90,   -15,  -105,   -18,    15,    15,
-     -33,   140,  -105,   140,  -105,  -105,  -105,    15,     8,   100,
-      17,  -105,   102,    15,    32,    32,  -105,   104,  -105,  -105,
-    -105,  -105,  -105,  -105,  -105,    61,    88,    15,   206,  -105,
-     206,  -105,  -105,     9,    22,  -105,  -105
+    -105,  -105,   391,   391,   391,   254,   208,   208,     5,   492,
+      43,     4,  -105,    99,    99,  -105,  -105,  -105,    53,   481,
+      53,   -52,   134,    53,  -105,    93,  -105,    60,  -105,  -105,
+      15,    67,  -105,   -47,    16,   391,  -105,  -105,  -105,  -105,
+    -105,  -105,    15,   491,  -105,  -105,    53,    75,  -105,   436,
+     391,    64,   -56,   -36,    94,   -32,    15,    15,    19,  -105,
+      66,   100,  -105,  -105,    91,   -18,   -15,  -105,     6,    15,
+      15,   -33,   146,  -105,   146,  -105,   146,  -105,  -105,  -105,
+      15,    63,   103,    17,    65,  -105,   104,    15,    32,    32,
+    -105,  -105,   109,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
+      69,    88,    15,   300,  -105,   346,  -105,  -105,   108,     9,
+     111,    22,  -105,  -105,  -105,  -105
 };
 
 /* FDO_FILTER_YYPGOTO[NTERM-NUM].  */
 static const fdo_filter_yysigned_char fdo_filter_yypgoto[] =
 {
     -105,  -105,    13,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,    73,  -105,  -105,  -105,  -105,     0,  -105,    76,  -105,
+    -105,    74,  -105,  -105,  -105,  -105,     0,  -105,    86,  -105,
     -105,  -104,  -105,  -105,  -105,     3,  -105,  -105,  -105,    23,
-      11,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
-    -105,    14,  -105,  -105,  -105
+      -7,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,  -105,
+    -105,     8,  -105,  -105,  -105
 };
 
 /* FDO_FILTER_YYTABLE[FDO_FILTER_YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -638,52 +648,63 @@ static const short fdo_filter_yytable[] =
       35,    96,    97,    42,     7,   122,    35,    53,   147,    56,
      -49,    92,   -49,    22,   125,    60,   126,    96,    97,   133,
       35,   134,     2,     3,     4,    96,    97,    63,     5,   138,
-     148,    58,   149,    61,   167,    92,   151,     6,    96,    97,
-      95,   154,   179,   180,   181,   182,   183,   184,   163,    98,
-     164,   161,     7,   162,    35,    92,     7,     8,     9,    10,
+     148,    58,   149,    61,   170,    92,   151,     6,    96,    97,
+      95,   154,   184,   185,   186,   187,   188,   189,   162,    98,
+     163,   164,     7,   165,    35,    92,     7,     8,   155,    10,
       11,    12,    13,    14,    15,    16,    17,    99,   120,   102,
-     100,    18,   173,   109,   174,   107,    96,   195,   103,   104,
-     105,   106,    19,   163,   118,   176,    54,    64,   132,   108,
-     196,    65,    66,    67,    68,    35,    35,    35,   115,   116,
-     117,    65,    66,    67,    68,   110,   112,   113,    22,    67,
-      68,   119,    65,    66,    67,    68,    65,    66,    67,    68,
-     131,    69,    70,    71,    72,    73,    74,   188,   146,   189,
-      96,    97,   137,   127,   128,   135,   101,    14,   136,   142,
-     145,    65,    66,    67,    68,    64,   152,   153,    35,   139,
-     158,   155,   141,   144,   190,   159,   191,   160,   165,   166,
-     168,     1,   154,     2,     3,     4,   175,   172,   187,     5,
-     177,   114,   170,   178,    65,    66,    67,    68,     6,    69,
-      70,    71,    72,    73,    74,   129,   171,   192,    35,   186,
-      35,   193,     0,   194,   119,     0,     0,     7,     8,     9,
-      10,    11,    12,    13,    14,    15,    16,    17,    77,     2,
-       3,     4,    18,     0,     0,     5,     0,     0,     0,     0,
-       0,     0,     0,    19,     6,    78,     0,    20,    79,    80,
-      81,    82,    83,    84,    85,    86,    87,    88,    89,    90,
-      91,     0,     0,     7,     8,     9,    10,    11,    12,    13,
-      14,    15,    16,    17,     0,     2,     3,     4,    18,     0,
-       0,     5,    65,    66,    67,    68,     0,     0,     0,    19,
-       6,     0,    92,    54,     0,     0,     0,     0,     0,     0,
-       0,     0,   150,     0,     0,     0,     0,     0,     0,     7,
+     100,    18,   166,   118,   167,   107,    96,   203,   103,   104,
+     105,   106,    19,   166,   135,   180,    54,    64,   109,   108,
+     205,    65,    66,    67,    68,    35,    35,    35,   115,   116,
+     117,    65,    66,    67,    68,   110,   112,   113,    22,    96,
+      97,   119,    65,    66,    67,    68,    65,    66,    67,    68,
+     131,    69,    70,    71,    72,    73,    74,   177,   146,   178,
+     159,   166,   137,   181,   132,   193,   101,   194,   136,   142,
+     145,   139,    65,    66,    67,    68,   152,   153,    35,    67,
+      68,   156,   141,   144,   195,   173,   196,   174,   161,   168,
+     169,   171,   150,     1,   160,     2,     3,     4,   154,   179,
+     176,     5,   182,   192,   127,   128,   202,   183,    14,   204,
+       6,   114,    65,    66,    67,    68,   129,   191,     0,   175,
+       0,     0,   197,    35,     0,    35,   199,     0,   201,     7,
        8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-       2,     3,     4,     0,    18,     0,     5,     0,     0,     0,
-       0,     0,     0,     0,     0,    19,     0,     0,     0,    20,
+      77,     2,     3,     4,    18,     0,     0,     5,     0,     0,
+       0,     0,     0,     0,     0,    19,     6,    78,     0,    20,
+      79,    80,    81,    82,    83,    84,    85,    86,    87,    88,
+      89,    90,    91,     0,     0,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,     0,     2,     3,     4,
+      18,     0,     0,     5,     0,     0,     0,     0,     0,     0,
+       0,    19,     6,     0,    92,    54,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     7,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,     2,     3,     4,     0,    18,
-       0,     5,     0,     0,     0,     0,     0,     0,     0,     0,
-      19,     0,     0,     0,    57,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     7,
-       8,     9,    10,    11,    12,    13,    14,    15,    16,    17,
-       2,     3,     4,     0,    18,     0,     5,     0,     0,     0,
-       2,     3,     4,     0,     0,    19,     5,     0,   121,   140,
-       0,     0,     0,     0,     0,     0,     0,    64,     0,     0,
-       0,     0,     0,     0,     0,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,    64,    65,    66,    67,    68,
-      19,    69,    70,    71,    72,    73,    74,     0,     0,     0,
-      19,     0,    75,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    65,    66,    67,    68,     0,    69,
-      70,    71,    72,    73,    74
+       0,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,     0,     2,     3,     4,    18,     0,     0,     5,
+       0,     0,     0,     0,     0,     0,     0,    19,     6,     0,
+       0,    20,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     7,     8,   198,
+      10,    11,    12,    13,    14,    15,    16,    17,     0,     2,
+       3,     4,    18,     0,     0,     5,     0,     0,     0,     0,
+       0,     0,     0,    19,     6,     0,     0,    54,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     7,     8,   200,    10,    11,    12,    13,
+      14,    15,    16,    17,     2,     3,     4,     0,    18,     0,
+       5,     0,     0,     0,     0,     0,     0,     0,     0,    19,
+       0,     0,     0,    54,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,     2,
+       3,     4,     0,    18,     0,     5,     0,     0,     0,     0,
+       0,     0,     0,     0,    19,     0,     0,     0,    57,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,     2,     3,     4,     0,    18,     0,
+       5,     0,     0,     0,     2,     3,     4,     0,     0,    19,
+       5,     0,   121,   140,     0,     0,     0,     0,     0,     0,
+       0,    64,     0,     0,     0,     0,     0,     0,     0,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    17,    64,
+      65,    66,    67,    68,    19,    69,    70,    71,    72,    73,
+      74,    64,     0,     0,    19,     0,     0,     0,     0,     0,
+     119,     0,     0,     0,     0,     0,     0,     0,    65,    66,
+      67,    68,     0,    69,    70,    71,    72,    73,    74,     0,
+      65,    66,    67,    68,    75,    69,    70,    71,    72,    73,
+      74
 };
 
 static const short fdo_filter_yycheck[] =
@@ -695,48 +716,59 @@ static const short fdo_filter_yycheck[] =
       66,    22,    10,    11,    12,    13,    14,    15,    66,    39,
       68,    66,    37,    68,    54,    67,    37,    38,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    54,    64,    68,
-      57,    52,    64,    67,    66,    75,    16,    68,    65,    66,
+      57,    52,    66,    68,    68,    75,    16,    68,    65,    66,
       67,    68,    63,    66,    68,    68,    67,    19,    67,    76,
       68,    48,    49,    50,    51,    95,    96,    97,    95,    96,
-      97,    48,    49,    50,    51,    92,    93,    94,    95,    50,
-      51,    68,    48,    49,    50,    51,    48,    49,    50,    51,
-     120,    53,    54,    55,    56,    57,    58,    66,    64,    68,
-      16,    17,   132,    40,    41,    68,    68,    44,   125,   139,
-     140,    48,    49,    50,    51,    19,   146,   147,   148,    66,
-      64,   148,   139,   140,    66,    64,    68,    67,   158,   159,
-     160,     1,    22,     3,     4,     5,    66,   167,    64,     9,
-      68,    95,   161,   173,    48,    49,    50,    51,    18,    53,
-      54,    55,    56,    57,    58,   112,   163,   187,   188,   175,
-     190,   188,    -1,   190,    68,    -1,    -1,    37,    38,    39,
-      40,    41,    42,    43,    44,    45,    46,    47,     3,     3,
-       4,     5,    52,    -1,    -1,     9,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    63,    18,    20,    -1,    67,    23,    24,
-      25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    -1,    -1,    37,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    -1,     3,     4,     5,    52,    -1,
-      -1,     9,    48,    49,    50,    51,    -1,    -1,    -1,    63,
-      18,    -1,    67,    67,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    68,    -1,    -1,    -1,    -1,    -1,    -1,    37,
+      97,    48,    49,    50,    51,    92,    93,    94,    95,    16,
+      17,    68,    48,    49,    50,    51,    48,    49,    50,    51,
+     120,    53,    54,    55,    56,    57,    58,    64,    64,    66,
+      64,    66,   132,    68,    67,    66,    68,    68,   125,   139,
+     140,    66,    48,    49,    50,    51,   146,   147,   148,    50,
+      51,   148,   139,   140,    66,   162,    68,   164,    67,   159,
+     160,   161,    68,     1,    64,     3,     4,     5,    22,    66,
+     170,     9,    68,    64,    40,    41,    68,   177,    44,    68,
+      18,    95,    48,    49,    50,    51,   112,   179,    -1,   166,
+      -1,    -1,   192,   193,    -1,   195,   193,    -1,   195,    37,
       38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-       3,     4,     5,    -1,    52,    -1,     9,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    63,    -1,    -1,    -1,    67,
+       3,     3,     4,     5,    52,    -1,    -1,     9,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    63,    18,    20,    -1,    67,
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    -1,    -1,    37,    38,    39,    40,    41,
+      42,    43,    44,    45,    46,    47,    -1,     3,     4,     5,
+      52,    -1,    -1,     9,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    63,    18,    -1,    67,    67,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    37,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,     3,     4,     5,    -1,    52,
-      -1,     9,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      63,    -1,    -1,    -1,    67,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    37,
-      38,    39,    40,    41,    42,    43,    44,    45,    46,    47,
-       3,     4,     5,    -1,    52,    -1,     9,    -1,    -1,    -1,
-       3,     4,     5,    -1,    -1,    63,     9,    -1,    21,    67,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,    19,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    38,    39,    40,    41,    42,
-      43,    44,    45,    46,    47,    19,    48,    49,    50,    51,
-      63,    53,    54,    55,    56,    57,    58,    -1,    -1,    -1,
-      63,    -1,    64,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    48,    49,    50,    51,    -1,    53,
-      54,    55,    56,    57,    58
+      -1,    37,    38,    39,    40,    41,    42,    43,    44,    45,
+      46,    47,    -1,     3,     4,     5,    52,    -1,    -1,     9,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    63,    18,    -1,
+      -1,    67,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    37,    38,    39,
+      40,    41,    42,    43,    44,    45,    46,    47,    -1,     3,
+       4,     5,    52,    -1,    -1,     9,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    63,    18,    -1,    -1,    67,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,     3,     4,     5,    -1,    52,    -1,
+       9,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    63,
+      -1,    -1,    -1,    67,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,     3,
+       4,     5,    -1,    52,    -1,     9,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    63,    -1,    -1,    -1,    67,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    37,    38,    39,    40,    41,    42,    43,
+      44,    45,    46,    47,     3,     4,     5,    -1,    52,    -1,
+       9,    -1,    -1,    -1,     3,     4,     5,    -1,    -1,    63,
+       9,    -1,    21,    67,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    19,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    19,
+      48,    49,    50,    51,    63,    53,    54,    55,    56,    57,
+      58,    19,    -1,    -1,    63,    -1,    -1,    -1,    -1,    -1,
+      68,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    48,    49,
+      50,    51,    -1,    53,    54,    55,    56,    57,    58,    -1,
+      48,    49,    50,    51,    64,    53,    54,    55,    56,    57,
+      58
 };
 
 /* FDO_FILTER_YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -758,11 +790,12 @@ static const unsigned char fdo_filter_yystos[] =
       64,    21,    90,    97,   100,    66,    68,    40,    41,    80,
      113,    85,    67,    66,    68,    68,    71,    85,    90,    66,
       67,    71,    85,    89,    71,    85,    64,    64,    66,    68,
-      68,    68,    85,    85,    22,    94,    98,    99,    64,    64,
-      67,    66,    68,    66,    68,    85,    85,    67,    85,    88,
-      99,    98,    85,    64,    66,    66,    68,    68,    85,    10,
-      11,    12,    13,    14,    15,   110,   110,    64,    66,    68,
-      66,    68,    85,    94,    94,    68,    68
+      68,    68,    85,    85,    22,    39,    94,    98,    99,    64,
+      64,    67,    66,    68,    66,    68,    66,    68,    85,    85,
+      67,    85,    88,    99,    99,    98,    85,    64,    66,    66,
+      68,    68,    68,    85,    10,    11,    12,    13,    14,    15,
+     110,   110,    64,    66,    68,    66,    68,    85,    39,    94,
+      39,    94,    68,    68,    68,    68
 };
 
 #if ! defined (FDO_FILTER_YYSIZE_T) && defined (__SIZE_TYPE__)
@@ -1494,7 +1527,7 @@ fdo_filter_yyreduce:
 
   case 28:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"STRING", FdoDataValue::Create(pParse->fdo_filter_yyvsp[0].m_string));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"STRING", FdoStringValue::Create(pParse->fdo_filter_yyvsp[0].m_string));}
     break;
 
   case 29:
@@ -1718,250 +1751,270 @@ fdo_filter_yyreduce:
 
   case 70:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetExpression())), (FdoJoinType)pParse->fdo_filter_yyvsp[-1].m_id));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoJoinType)pParse->fdo_filter_yyvsp[-3].m_id, FdoPtr<FdoFilter>(FdoFilter::Parse(pParse->fdo_filter_yyvsp[-1].m_string))));}
     break;
 
   case 71:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetExpression())), (FdoJoinType)pParse->fdo_filter_yyvsp[-3].m_id, (FdoFilter*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node)->GetExpression())), (FdoJoinType)pParse->fdo_filter_yyvsp[-1].m_id));}
     break;
 
   case 72:
 
-    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoJoinCriteriaCollection::Create()); ((FdoJoinCriteriaCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoJoinCriteria*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"JoinCriteria 1");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetExpression())), (FdoJoinType)pParse->fdo_filter_yyvsp[-3].m_id, (FdoFilter*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 73:
 
-    {((FdoJoinCriteriaCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoJoinCriteria*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"JoinCriteria n");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoJoinCriteria::Create(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetName(), FdoPtr<FdoIdentifier>(static_cast<FdoIdentifier*>(((FdoComputedIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node)->GetExpression())), (FdoJoinType)pParse->fdo_filter_yyvsp[-3].m_id, FdoPtr<FdoFilter>(FdoFilter::Parse(pParse->fdo_filter_yyvsp[-1].m_string))));}
     break;
 
   case 74:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"JoinCriteria", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=pParse->AddNodeToDelete(FdoJoinCriteriaCollection::Create()); ((FdoJoinCriteriaCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoJoinCriteria*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"JoinCriteria 1");}
     break;
 
   case 75:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoFilter*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {((FdoJoinCriteriaCollection*)pParse->fdo_filter_yyval.m_node)->Add((FdoJoinCriteria*)pParse->fdo_filter_yyvsp[0].m_node); Node_Trace(L"JoinCriteria n");}
     break;
 
   case 76:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoJoinCriteriaCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 77:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-7].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoFilter*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoJoinCriteriaCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoFilter*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 78:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoValueExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, FdoPtr<FdoFilter>(FdoFilter::Parse(pParse->fdo_filter_yyvsp[-1].m_string))));}
     break;
 
   case 79:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoSubSelectExpression*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoJoinCriteriaCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 80:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-7].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, (FdoFilter*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoJoinCriteriaCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 81:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"InCondition", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoSubSelectExpression::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-7].m_node, (FdoIdentifier*)pParse->fdo_filter_yyvsp[-5].m_node, FdoPtr<FdoFilter>(FdoFilter::Parse(pParse->fdo_filter_yyvsp[-3].m_string)), (FdoJoinCriteriaCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 82:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"ComparisonCondition", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ValueExpressionCollection", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoValueExpressionCollection*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 83:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometricCondition", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"SubSelectExpression", FdoInCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-4].m_node, (FdoSubSelectExpression*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 84:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"NullCondition", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NULL", FdoNullCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-1].m_node));}
     break;
 
   case 85:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoSpatialOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"InCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 86:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node, FdoUnaryLogicalOperations_Not));}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"ComparisonCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 87:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_And, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"GeometricCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 88:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_Or, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"NullCondition", pParse->fdo_filter_yyvsp[0].m_node);}
     break;
 
   case 89:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoComparisonOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"Id-SpatialOp-Expression", FdoSpatialCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoSpatialOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));}
     break;
 
   case 90:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoDistanceOperations)pParse->fdo_filter_yyvsp[-2].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[-1].m_node, ((FdoDoubleValue*)pParse->fdo_filter_yyvsp[0].m_node)->GetDouble()));}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"NOT", FdoUnaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node, FdoUnaryLogicalOperations_Not));}
     break;
 
   case 91:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_EqualTo; Node_Trace(L"EQ");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"AND", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_And, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));}
     break;
 
   case 92:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_NotEqualTo; Node_Trace(L"NE");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"OR", FdoBinaryLogicalOperator::Create((FdoFilter*)pParse->fdo_filter_yyvsp[-2].m_node, FdoBinaryLogicalOperations_Or, (FdoFilter*)pParse->fdo_filter_yyvsp[0].m_node));}
     break;
 
   case 93:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThan; Node_Trace(L"GT");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"ComparisonOperations", FdoComparisonCondition::Create((FdoExpression*)pParse->fdo_filter_yyvsp[-2].m_node, (FdoComparisonOperations)pParse->fdo_filter_yyvsp[-1].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[0].m_node));}
     break;
 
   case 94:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThanOrEqualTo; Node_Trace(L"GE");}
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"Indentifier-DistanceOp-Expression", FdoDistanceCondition::Create((FdoIdentifier*)pParse->fdo_filter_yyvsp[-3].m_node, (FdoDistanceOperations)pParse->fdo_filter_yyvsp[-2].m_id, (FdoExpression*)pParse->fdo_filter_yyvsp[-1].m_node, ((FdoDoubleValue*)pParse->fdo_filter_yyvsp[0].m_node)->GetDouble()));}
     break;
 
   case 95:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThan; Node_Trace(L"LT");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_EqualTo; Node_Trace(L"EQ");}
     break;
 
   case 96:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThanOrEqualTo; Node_Trace(L"LE");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_NotEqualTo; Node_Trace(L"NE");}
     break;
 
   case 97:
 
-    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_Like; Node_Trace(L"LIKE");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThan; Node_Trace(L"GT");}
     break;
 
   case 98:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_None; Node_Trace(L"NONE");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_GreaterThanOrEqualTo; Node_Trace(L"GE");}
     break;
 
   case 99:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_Inner; Node_Trace(L"INNER");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThan; Node_Trace(L"LT");}
     break;
 
   case 100:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_RightOuter; Node_Trace(L"RIGHTOUTER");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_LessThanOrEqualTo; Node_Trace(L"LE");}
     break;
 
   case 101:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_LeftOuter; Node_Trace(L"LEFTOUTER");}
+    {pParse->fdo_filter_yyval.m_id=FdoComparisonOperations_Like; Node_Trace(L"LIKE");}
     break;
 
   case 102:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_FullOuter; Node_Trace(L"FULLOUTER");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_None; Node_Trace(L"NONE");}
     break;
 
   case 103:
 
-    {pParse->fdo_filter_yyval.m_id=FdoJoinType_Cross; Node_Trace(L"CROSS");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_Inner; Node_Trace(L"INNER");}
     break;
 
   case 104:
 
-    {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Beyond; Node_Trace(L"BEYOND");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_RightOuter; Node_Trace(L"RIGHTOUTER");}
     break;
 
   case 105:
 
-    {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Within; Node_Trace(L"WITHINDISTANCE");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_LeftOuter; Node_Trace(L"LEFTOUTER");}
     break;
 
   case 106:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Contains; Node_Trace(L"CONTAINS");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_FullOuter; Node_Trace(L"FULLOUTER");}
     break;
 
   case 107:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Crosses; Node_Trace(L"CROSSES");}
+    {pParse->fdo_filter_yyval.m_id=FdoJoinType_Cross; Node_Trace(L"CROSS");}
     break;
 
   case 108:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Disjoint; Node_Trace(L"DISJOINT");}
+    {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Beyond; Node_Trace(L"BEYOND");}
     break;
 
   case 109:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Equals; Node_Trace(L"EQUALS");}
+    {pParse->fdo_filter_yyval.m_id=FdoDistanceOperations_Within; Node_Trace(L"WITHINDISTANCE");}
     break;
 
   case 110:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Inside; Node_Trace(L"INSIDE");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Contains; Node_Trace(L"CONTAINS");}
     break;
 
   case 111:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Intersects; Node_Trace(L"INTERSECTS");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Crosses; Node_Trace(L"CROSSES");}
     break;
 
   case 112:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Overlaps; Node_Trace(L"OVERLAPS");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Disjoint; Node_Trace(L"DISJOINT");}
     break;
 
   case 113:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Touches; Node_Trace(L"TOUCHES");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Equals; Node_Trace(L"EQUALS");}
     break;
 
   case 114:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Within; Node_Trace(L"WITHIN");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Inside; Node_Trace(L"INSIDE");}
     break;
 
   case 115:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_CoveredBy; Node_Trace(L"COVEREDBY");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Intersects; Node_Trace(L"INTERSECTS");}
     break;
 
   case 116:
 
-    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_EnvelopeIntersects; Node_Trace(L"ENVELOPEINTERSECTS");}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Overlaps; Node_Trace(L"OVERLAPS");}
     break;
 
   case 117:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"double", pParse->fdo_filter_yyvsp[0].m_node);}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Touches; Node_Trace(L"TOUCHES");}
     break;
 
   case 118:
 
-    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_integer));}
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_Within; Node_Trace(L"WITHIN");}
     break;
 
   case 119:
+
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_CoveredBy; Node_Trace(L"COVEREDBY");}
+    break;
+
+  case 120:
+
+    {pParse->fdo_filter_yyval.m_id=FdoSpatialOperations_EnvelopeIntersects; Node_Trace(L"ENVELOPEINTERSECTS");}
+    break;
+
+  case 121:
+
+    {pParse->fdo_filter_yyval.m_node=Node_Copy(L"double", pParse->fdo_filter_yyvsp[0].m_node);}
+    break;
+
+  case 122:
+
+    {pParse->fdo_filter_yyval.m_node=Node_Add(L"INTEGER", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_integer));}
+    break;
+
+  case 123:
 
     {pParse->fdo_filter_yyval.m_node=Node_Add(L"INT64", FdoDoubleValue::Create((double)pParse->fdo_filter_yyvsp[0].m_int64));}
     break;

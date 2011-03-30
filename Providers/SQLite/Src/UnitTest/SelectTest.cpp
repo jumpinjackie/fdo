@@ -1942,3 +1942,110 @@ void SelectTest::TestCachedStmWithRollback ()
    	}
 	printf( "Done\n" );
 }
+
+void SelectTest::TestSelSubSelectType1 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        int cnt = 0;
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"MainTable");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"a.GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+        selCmd->SetFilter(filter);
+        selCmd->SetAlias(L"a");
+
+        FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"a.FeatId");
+        idpColl->Add(idf);
+        idf = FdoIdentifier::Create(L"a.GEOMETRY");
+        idpColl->Add(idf);
+        FdoPtr<FdoComputedIdentifier> cIdf = static_cast<FdoComputedIdentifier*>(FdoExpression::Parse(L"SELECT(SecondTable,NAME,'a.ID = SecondTable.ID') AS Location"));
+        idpColl->Add(cIdf);
+
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        FdoPtr<FdoClassDefinition> cls = reader->GetClassDefinition();
+        while(reader->ReadNext())
+        {
+            reader->GetInt32(L"FeatId");
+            cnt++;
+        }
+        reader->Close();
+
+        printf ("\nCount = %d -> OK\n", cnt);
+        CPPUNIT_ASSERT(cnt == 10);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}
+
+void SelectTest::TestSelSubSelectType2 ()
+{
+    FdoPtr<FdoIConnection> conn;
+
+    try
+    {
+        if (FdoCommonFile::FileExists(SC_TEST_FILE))
+            FdoCommonFile::Delete(SC_TEST_FILE, true);
+        FdoCommonFile::Copy(SRC_VIEW_TEST_FILE, SC_TEST_FILE);
+
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
+
+        int cnt = 0;
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selCmd->SetFeatureClassName(L"MainTable");
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"GEOMETRY INSIDE GeomFromText('POLYGON XYZ ((-77.1292540392099 39.02968253293 0, -77.1453959885122 38.9948388680958 0, -77.1156948434364 38.9774170901157 0, -77.0349855133297 38.938056575283 0, -77.0524187352952 38.8896625782011 0, -77.0156153823694 38.8741765775241 0, -76.9975363158697 38.917408538089 0, -77.0169066550326 38.917408538089 0, -77.0401510203875 38.993548386185 0, -76.9613785992755 38.9703192762956 0, -76.9613785992755 38.9057939831443 0, -76.9471737671705 38.8967603920212 0, -76.8935828286107 38.9148274653936 0, -77.0104498753116 39.0793671207965 0, -77.0814740358369 39.0574284928179 0, -77.1292540392099 39.02968253293 0))')");
+        selCmd->SetFilter(filter);
+
+        FdoPtr<FdoIdentifierCollection> idpColl = selCmd->GetPropertyNames();
+        FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(L"FeatId");
+        idpColl->Add(idf);
+        idf = FdoIdentifier::Create(L"GEOMETRY");
+        idpColl->Add(idf);
+        FdoPtr<FdoComputedIdentifier> cIdf = static_cast<FdoComputedIdentifier*>(FdoExpression::Parse(L"SELECT(SecondTable,NAME,'MainTable.ID = SecondTable.ID') AS Location"));
+        idpColl->Add(cIdf);
+
+        FdoPtr<FdoIFeatureReader> reader = selCmd->Execute();
+        FdoPtr<FdoClassDefinition> cls = reader->GetClassDefinition();
+        while(reader->ReadNext())
+        {
+            reader->GetInt32(L"FeatId");
+            cnt++;
+        }
+        reader->Close();
+
+        printf ("\nCount = %d -> OK\n", cnt);
+        CPPUNIT_ASSERT(cnt == 10);
+    }
+    catch ( FdoException* e )
+	{
+		TestCommonFail( e );
+	}
+	catch ( CppUnit::Exception e ) 
+	{
+		throw;
+	}
+   	catch (...)
+   	{
+   		CPPUNIT_FAIL ("caught unexpected exception");
+   	}
+	printf( "Done\n" );
+}

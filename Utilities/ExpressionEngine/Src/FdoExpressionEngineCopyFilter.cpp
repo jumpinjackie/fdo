@@ -226,7 +226,7 @@ void FdoExpressionEngineCopyFilter::ProcessIdentifier(FdoIdentifier& expr)
 			}
 		}
 	}
-	m_pExpression = FdoIdentifier::Create( expr.GetName() );
+	m_pExpression = FdoIdentifier::Create( expr.GetText() );
 }
 
 void FdoExpressionEngineCopyFilter::ProcessComputedIdentifier(FdoComputedIdentifier& expr)
@@ -241,6 +241,70 @@ void FdoExpressionEngineCopyFilter::ProcessComputedIdentifier(FdoComputedIdentif
 		FdoPtr<FdoExpression>(expr.GetExpression())->Process( &helper );
 		m_pExpression = FdoComputedIdentifier::Create( expr.GetName(), FdoPtr<FdoExpression>(helper.GetExpression() ) );
 	}
+}
+
+void FdoExpressionEngineCopyFilter::ProcessSubSelectExpression(FdoSubSelectExpression& expr)
+{
+    FdoPtr<FdoFilter> copyFilter;
+    FdoPtr<FdoFilter> filter = expr.GetFilter();
+    if (filter != NULL)
+    {
+        FdoExpressionEngineCopyFilter helper(m_pIdentifierCollection);
+        filter->Process(&helper);
+        copyFilter = helper.GetFilter();
+    }
+    FdoPtr<FdoIdentifier> copyProp;
+    FdoPtr<FdoIdentifier> prop = expr.GetPropertyName();
+    if (prop != NULL)
+    {
+        FdoExpressionEngineCopyFilter helper(m_pIdentifierCollection);
+        prop->Process(&helper);
+        copyProp = static_cast<FdoIdentifier*>(helper.GetExpression());
+    }
+
+    FdoPtr<FdoIdentifier> copyFcls;
+    FdoPtr<FdoIdentifier> fcls = expr.GetFeatureClassName();
+    if (fcls != NULL)
+    {
+        FdoExpressionEngineCopyFilter helper(m_pIdentifierCollection);
+        fcls->Process(&helper);
+        copyFcls = static_cast<FdoIdentifier*>(helper.GetExpression());
+    }
+    
+    FdoPtr<FdoJoinCriteriaCollection> copyJCritColl;
+
+    FdoPtr<FdoJoinCriteriaCollection> jCritColl = expr.GetJoinCriteria();
+    int cnt = (jCritColl != NULL) ? jCritColl->GetCount() : 0;
+
+    if (cnt != 0)
+        copyJCritColl = FdoJoinCriteriaCollection::Create();
+
+    for (int i = 0; i < cnt; i++)
+    {
+        FdoPtr<FdoJoinCriteria> jCrit = jCritColl->GetItem(i);
+
+        FdoPtr<FdoFilter> copyJcFilter;
+        FdoPtr<FdoFilter> jcfilter = jCrit->GetFilter();
+        if (jcfilter != NULL)
+        {
+            FdoExpressionEngineCopyFilter helper(m_pIdentifierCollection);
+            jcfilter->Process(&helper);
+            copyJcFilter = helper.GetFilter();
+        }
+        FdoPtr<FdoIdentifier> copyJcFcls;
+        FdoPtr<FdoIdentifier> jcFcls = jCrit->GetJoinClass();
+        if (jcFcls != NULL)
+        {
+            FdoExpressionEngineCopyFilter helper(m_pIdentifierCollection);
+            jcFcls->Process(&helper);
+            copyJcFcls = static_cast<FdoIdentifier*>(helper.GetExpression());
+        }
+
+        FdoPtr<FdoJoinCriteria> jc = FdoJoinCriteria::Create (jCrit->GetAlias(), copyJcFcls, jCrit->GetJoinType(), copyJcFilter);
+        copyJCritColl->Add(jc);
+    }
+
+    m_pExpression = FdoSubSelectExpression::Create(copyFcls, copyProp, copyFilter, copyJCritColl);
 }
 
 FdoExpression*	FdoExpressionEngineCopyFilter::GetExpression()
