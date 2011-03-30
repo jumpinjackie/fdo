@@ -236,7 +236,7 @@ public:
     /// \return
     /// Returns well defined text string
     /// 
-    FdoString* ToStringInternal( FdoIdentifierCollection *pIdCol );
+    FdoString* ToStringInternal(bool useFilterAsStr);
 
 private:
     FdoPtr<FdoIdentifier> m_className;

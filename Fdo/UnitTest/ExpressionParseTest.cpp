@@ -112,6 +112,7 @@ void ExpressionParseTest::testExpressions()
 	// trivial test
 //	ParseExpression(L" \"literal\" \'literal\' :parameter identifier");
 //	ParseExpression(L" + a+b a - 2.3 a -2.3 a-2.3 a + 2.3 a +2.3 a+2.3");
+    ParseExpression(L"SELECT(CLS,P1,'P1 >= 45') AS MyName", L"( SELECT(CLS,P1,'P1 >= 45') ) AS MyName");
 	ParseExpression(L"4");
 	ParseExpression(L"4.5");
 	ParseExpression(L"TRUE");

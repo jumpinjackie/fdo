@@ -99,7 +99,12 @@ FdoString* FdoComputedIdentifier::ToString()
     const wchar_t* asStr = L" ) AS ";
 
     if( m_Expression )
-        exprStr = m_Expression->ToString();
+    {
+        if (m_Expression->GetExpressionType() == FdoExpressionItemType_SubSelectExpression)
+            exprStr = (static_cast<FdoSubSelectExpression*>(m_Expression))->ToStringInternal(true);
+        else
+            exprStr = m_Expression->ToString();
+    }
 
     identStr = FdoStringUtility::MakeString( FdoIdentifier::ToString() );
 

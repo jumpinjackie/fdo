@@ -1076,13 +1076,13 @@ SltReader* SltConnection::Select(FdoIdentifier* fcname,
         FdoPtr<FdoIdentifierCollection> collidf = FdoIdentifierCollection::Create();
         FdoPtr<FdoIdentifier> rowIdIdf = FdoIdentifier::Create(idClassProp);
         collidf->Add(rowIdIdf);
-        FdoPtr<SltReader> rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data());
+        FdoPtr<SltReader> rdrSc = new SltReader(this, collidf, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data(), alias);
         ri = GetScrollableIterator(rdrSc.p);
         strWhere.Reset();
         sbOrderBy.Reset();
         canFastStep = true;
     }
-    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data());
+    SltReader* rdr = new SltReader(this, props, mbfcname, strWhere.Data(), canFastStep, ri, parmValues, sbOrderBy.Data(), alias);
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
