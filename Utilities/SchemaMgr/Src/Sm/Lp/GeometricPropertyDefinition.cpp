@@ -344,7 +344,7 @@ void FdoSmLpGeometricPropertyDefinition::SynchPhysical(bool bRollbackOnly)
 	FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhDbObjectP pPhDbObject;
 
-    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
 	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
     else
 	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
@@ -377,104 +377,109 @@ void FdoSmLpGeometricPropertyDefinition::Commit( bool fromParent )
 	FdoSmLpSimplePropertyDefinition::Commit( fromParent );
 
 	FdoSmPhMgrP	                pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSmPhOwnerP               pOwner = pPhysical->FindOwner();
 
-    // Get containing class.
-    FdoSmLpClassDefinition*		pClass = (FdoSmLpClassDefinition*) RefParentClass();
-	
-    // Get the highest level containing class. Different from containing class
-	// when this property is nested within an object property.
-	FdoSmLpClassDefinition*		pTopClass = (FdoSmLpClassDefinition*)(GetTopProperty()->RefParentClass());
-    
-    FdoSmPhPropertyWriterP      pWriter = pPhysical->GetPropertyWriter();
+    // Cannot commit metadata when metadata table not present. 
+    if ( pOwner->GetHasAttrMetaSchema() ) 
+    {
+        // Get containing class.
+        FdoSmLpClassDefinition*		pClass = (FdoSmLpClassDefinition*) RefParentClass();
+    	
+        // Get the highest level containing class. Different from containing class
+	    // when this property is nested within an object property.
+	    FdoSmLpClassDefinition*		pTopClass = (FdoSmLpClassDefinition*)(GetTopProperty()->RefParentClass());
+        
+        FdoSmPhPropertyWriterP      pWriter = pPhysical->GetPropertyWriter();
 
-    char*						pUser = "fdo_user"; //TODO: pConn->GetUser();
-	FdoStringP				    dbUser(pUser);
-	
-//	delete[] pUser;
+        char*						pUser = "fdo_user"; //TODO: pConn->GetUser();
+	    FdoStringP				    dbUser(pUser);
+    	
+    //	delete[] pUser;
 
-	switch ( GetElementState() ) {
+	    switch ( GetElementState() ) {
 
-    case FdoSchemaElementState_Deleted:  
+        case FdoSchemaElementState_Deleted:  
 
-        // Remove the association with spatial context.
-        // Do not remove if base table mapping used since, in this case, the association is shared
-        // with the base property.
-        if ((mAssociatedScId >= 0) && (pClass->GetTableMapping() != FdoSmOvTableMappingType_BaseTable)) {
-            FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
-            scGeomWriter->Delete( GetContainingDbObjectName(), GetColumnName() );
-        }
-        break;
-
-	case FdoSchemaElementState_Added:
-
-		// Skip inherited properties not being added to the containing class's table.
-        // These will generate a duplicate index error if added.
-		if ( !GetBaseProperty() || (FdoStringP(GetContainingDbObjectName()).ICompare(pClass->GetDbObjectName()) == 0) ) {
-
-			pWriter->SetTableName( GetContainingDbObjectName() );
-			pWriter->SetClassId( pTopClass->GetId() );
-			pWriter->SetColumnName( GetColumnName() );
-            pWriter->SetRootObjectName( GetRootColumnName() );
-			pWriter->SetName( GetNestedName() );
-			pWriter->SetColumnType( GetColumn() ? GetColumn()->GetTypeName() : L"n/a"   );
-            pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
-            pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
-			pWriter->SetIsNullable( true );
-			pWriter->SetIsFeatId( GetIsFeatId() );
-			pWriter->SetIsSystem( GetIsSystem() );
-			pWriter->SetIsReadOnly(	GetReadOnly() );
-			pWriter->SetUser( dbUser );
-			pWriter->SetDescription( GetDescription() );
-			pWriter->SetHasElevation( GetHasElevation() );
-			pWriter->SetHasMeasure( GetHasMeasure() );
-			pWriter->SetIsFixedColumn( GetIsFixedColumn() );
-			pWriter->SetIsColumnCreator( GetIsColumnCreator() );
- 			pWriter->Add();
-            if (mAssociatedScId >= 0) {
+            // Remove the association with spatial context.
+            // Do not remove if base table mapping used since, in this case, the association is shared
+            // with the base property.
+            if ((mAssociatedScId >= 0) && (pClass->GetTableMapping() != FdoSmOvTableMappingType_BaseTable)) {
                 FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
-                scGeomWriter->SetScId(mAssociatedScId);
-                scGeomWriter->SetGeomTableName( GetContainingDbObjectName() );
-                scGeomWriter->SetGeomColumnName( GetColumnName() );
-                FdoInt32 dimensionality = FdoDimensionality_XY;
-                if (GetHasElevation())
-                    dimensionality |= FdoDimensionality_Z;
-                if (GetHasMeasure())
-                    dimensionality |= FdoDimensionality_M;
-                scGeomWriter->SetDimensionality( dimensionality );
-
-                // Delete any previous record.  This can happen if multiple classes
-                // define geometric properties on the same table/column.  The association
-                // table does not contain class ID, so we must remove previous entries.
-                scGeomWriter->Delete(GetContainingDbObjectName(), GetColumnName());
-
-                // Now add the association record.
-                scGeomWriter->Add();
+                scGeomWriter->Delete( GetContainingDbObjectName(), GetColumnName() );
             }
             break;
-        }
-	case FdoSchemaElementState_Modified:
-            pWriter->SetIsReadOnly( GetReadOnly() );
-            pWriter->SetDescription( GetDescription() );
-            pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
-            pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
-			pWriter->SetHasElevation( GetHasElevation() );
-			pWriter->SetHasMeasure( GetHasMeasure() );
-            pWriter->Modify( pTopClass->GetId(), GetName() );
-            if (mAssociatedScId >= 0) {
-                FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
-                scGeomWriter->SetScId(mAssociatedScId);
-                scGeomWriter->SetGeomTableName( GetContainingDbObjectName() );
-                scGeomWriter->SetGeomColumnName( GetColumnName() );
-                FdoInt32 dimensionality = FdoDimensionality_XY;
-                if (GetHasElevation())
-                    dimensionality |= FdoDimensionality_Z;
-                if (GetHasMeasure())
-                    dimensionality |= FdoDimensionality_M;
-                scGeomWriter->SetDimensionality( dimensionality );
-                scGeomWriter->Modify( GetContainingDbObjectName(), GetColumnName() );
+
+	    case FdoSchemaElementState_Added:
+
+		    // Skip inherited properties not being added to the containing class's table.
+            // These will generate a duplicate index error if added.
+		    if ( !GetBaseProperty() || (FdoStringP(GetContainingDbObjectName()).ICompare(pClass->GetDbObjectName()) == 0) ) {
+
+			    pWriter->SetTableName( GetContainingDbObjectName() );
+			    pWriter->SetClassId( pTopClass->GetId() );
+			    pWriter->SetColumnName( GetColumnName() );
+                pWriter->SetRootObjectName( GetRootColumnName() );
+			    pWriter->SetName( GetNestedName() );
+			    pWriter->SetColumnType( GetColumn() ? GetColumn()->GetTypeName() : L"n/a"   );
+                pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
+                pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
+			    pWriter->SetIsNullable( true );
+			    pWriter->SetIsFeatId( GetIsFeatId() );
+			    pWriter->SetIsSystem( GetIsSystem() );
+			    pWriter->SetIsReadOnly(	GetReadOnly() );
+			    pWriter->SetUser( dbUser );
+			    pWriter->SetDescription( GetDescription() );
+			    pWriter->SetHasElevation( GetHasElevation() );
+			    pWriter->SetHasMeasure( GetHasMeasure() );
+			    pWriter->SetIsFixedColumn( GetIsFixedColumn() );
+			    pWriter->SetIsColumnCreator( GetIsColumnCreator() );
+ 			    pWriter->Add();
+                if (mAssociatedScId >= 0) {
+                    FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
+                    scGeomWriter->SetScId(mAssociatedScId);
+                    scGeomWriter->SetGeomTableName( GetContainingDbObjectName() );
+                    scGeomWriter->SetGeomColumnName( GetColumnName() );
+                    FdoInt32 dimensionality = FdoDimensionality_XY;
+                    if (GetHasElevation())
+                        dimensionality |= FdoDimensionality_Z;
+                    if (GetHasMeasure())
+                        dimensionality |= FdoDimensionality_M;
+                    scGeomWriter->SetDimensionality( dimensionality );
+
+                    // Delete any previous record.  This can happen if multiple classes
+                    // define geometric properties on the same table/column.  The association
+                    // table does not contain class ID, so we must remove previous entries.
+                    scGeomWriter->Delete(GetContainingDbObjectName(), GetColumnName());
+
+                    // Now add the association record.
+                    scGeomWriter->Add();
+                }
+                break;
             }
-		    break;
-	}
+	    case FdoSchemaElementState_Modified:
+                pWriter->SetIsReadOnly( GetReadOnly() );
+                pWriter->SetDescription( GetDescription() );
+                pWriter->SetDataType( FdoStringP::Format(L"%d", GetGeometryTypes()) );
+                pWriter->SetGeometryType( FdoStringP::Format(L"%d", GetSpecificGeometryTypes()) );
+			    pWriter->SetHasElevation( GetHasElevation() );
+			    pWriter->SetHasMeasure( GetHasMeasure() );
+                pWriter->Modify( pTopClass->GetId(), GetName() );
+                if (mAssociatedScId >= 0) {
+                    FdoSmPhSpatialContextGeomWriterP scGeomWriter = pPhysical->GetSpatialContextGeomWriter();
+                    scGeomWriter->SetScId(mAssociatedScId);
+                    scGeomWriter->SetGeomTableName( GetContainingDbObjectName() );
+                    scGeomWriter->SetGeomColumnName( GetColumnName() );
+                    FdoInt32 dimensionality = FdoDimensionality_XY;
+                    if (GetHasElevation())
+                        dimensionality |= FdoDimensionality_Z;
+                    if (GetHasMeasure())
+                        dimensionality |= FdoDimensionality_M;
+                    scGeomWriter->SetDimensionality( dimensionality );
+                    scGeomWriter->Modify( GetContainingDbObjectName(), GetColumnName() );
+                }
+		        break;
+	    }
+    }
 }
 
 FdoSchemaExceptionP FdoSmLpGeometricPropertyDefinition::Errors2Exception(FdoSchemaException* pFirstException ) const
@@ -552,7 +557,7 @@ void FdoSmLpGeometricPropertyDefinition::Finalize()
         // Copied columns are also kept in the target class table.
         FdoStringP dbObjectName = pContainingClass->GetDbObjectName();
 
-        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
             pPhDbObject = pPhysical->FindDbObject(dbObjectName);
         else
             pPhDbObject = pPhysical->FindDbObject(dbObjectName, RefParentClass()->GetOwner());
@@ -721,7 +726,7 @@ FdoSmPhScInfoP FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo()
     if ( sc == NULL )
 	{
 		// When metadata exists, then "Default" spatial context should exist
-		if ( FdoSmPhOwnerP(pPhMgr->GetOwner())->GetHasMetaSchema() )
+		if ( FdoSmPhOwnerP(pPhMgr->GetOwner())->GetHasSCMetaSchema() )
 			throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_134_SPATIAL_CONTEXT_ERROR_DEFAULT_EXISTS),
                                                                    L"FdoSmLpGeometricPropertyDefinition::CreateSpatialContextInfo"));
 	}
@@ -759,7 +764,7 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewSiColumn( FdoSmPhDbObjectP
     FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindOwner();
 
     // Skip creating new column in views not managed by Schema Manager.
-    if ( (!owner->GetHasMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
+    if ( (!owner->GetHasClassMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
         return (FdoSmPhColumn*) NULL;
 
     FdoSmPhColumnP column = dbObject->CreateColumnChar(
@@ -782,7 +787,7 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::NewOrdColumn( FdoSmPhDbObject
     FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->FindOwner();
 
     // Skip creating new column in views not managed by Schema Manager.
-    if ( (!owner->GetHasMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
+    if ( (!owner->GetHasClassMetaSchema()) || ((!table) && (!ColumnIsForeign())) ) 
         return (FdoSmPhColumn*) NULL;
 
 	return dbObject->CreateColumnDouble(
@@ -810,7 +815,7 @@ void FdoSmLpGeometricPropertyDefinition::AddSiColumns()
 
     FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
 	FdoSmPhDbObjectP pPhDbObject;
-    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
     else
     	pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );
@@ -1139,7 +1144,7 @@ FdoSmPhColumnP FdoSmLpGeometricPropertyDefinition::FindColumn( FdoStringP column
     if ( columnName != FdoStringP::mEmptyString ) {
         FdoSmPhMgrP pPhysical	        = GetLogicalPhysicalSchema()->GetPhysicalSchema();
         FdoSmPhDbObjectP pPhDbObject;
-        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+        if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
     	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName());
         else
     	    pPhDbObject = pPhysical->FindDbObject( GetContainingDbObjectName(), RefParentClass()->GetOwner() );

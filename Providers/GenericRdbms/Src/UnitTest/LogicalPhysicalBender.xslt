@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsi="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:lp="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical" xmlns="http:/www.autodesk.com/isd/fdo/GenericLogicalPhysical">
 	<xsl:param name="providerName"/>
+	<xsl:param name="hybridLevel"/>
 	<xsl:template match="lp:schema[@name='F_MetaClass' or (not($providerName='Oracle') and starts-with(@name,'abcdef1234567890'))]"/>
 	<xsl:template match="lp:schema[@description='NLS Schema' and ($providerName='PostGIS' or $providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
 	<xsl:template match="lp:class[@name='aCxdATA' and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
@@ -49,7 +50,7 @@
 			</xsl:if>
 		</xsl:copy>
 	</xsl:template>
-	<xsl:template match="lp:property[@name='GEOMETRY' and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
+	<xsl:template match="lp:property[@name='GEOMETRY' and $hybridLevel = 0 and ($providerName='SqlServer' or $providerName='SQLServerSpatial')]"/>
 	<xsl:template match="lp:sequence[not($providerName = 'Oracle')]|lp:sequenceSynonym[not($providerName = 'Oracle')]"/>
 	<xsl:template match="lp:column[@name = 'CLASSNAME' or @name = 'SCHEMANAME']"/>
 	<xsl:template match="lp:column[($providerName='SqlServer' or $providerName='SQLServerSpatial') and @name = 'GEOMETRY1' and  local-name(..) = 'table']"/>
@@ -457,6 +458,7 @@
 					<xsl:when test="$inName='ACDB3DPOLYLINE_ACDBVE1_SEQ'">acdb3dpolyline_acdbvertexdata_seq</xsl:when>
 					<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_ACDB1'">acdbhatch_polyline_acdbvertexdata_acdbhatch_polyline_featid</xsl:when>
 					<xsl:when test="$inName='ACDBHATCH_POLYLINE_AC1_SEQ'">acdbhatch_polyline_acdbvertexdata_seq</xsl:when>
+					<xsl:when test="$inName='PLOT_STYLE'">plot style</xsl:when>
 					<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_POLY1'">polyline_acdbvertexdata_polyline_featid</xsl:when>
 					<xsl:when test="$inName='POLYLINE_ACDBVERTEXDA1_SEQ'">polyline_acdbvertexdata_seq</xsl:when>
 					<xsl:when test="$inName='MAINTENANCE_HISTORY_DESCRIP1'">maintenance history description</xsl:when>
@@ -492,6 +494,9 @@
 					<xsl:when test="$inName='FEATID' and ancestor::lp:class[@name='Parcel' or @name='Zoning']">featid</xsl:when>
 					<xsl:when test="$inName='SCHEMANAME'">schemaname</xsl:when>
 					<xsl:when test="$inName='REVISIONNUMBER'">revisionnumber</xsl:when>
+					<xsl:when test="$inName='CREDIT_RATING'">credit rating</xsl:when>
+					<xsl:when test="$inName='FIRST_NAME'">first name</xsl:when>
+					<xsl:when test="$inName='LAST_NAME'">last name</xsl:when>
 					<xsl:when test="local-name(..) = 'property'">
 						<xsl:call-template name="tolower">
 							<xsl:with-param name="inString" select="../@name"/>

@@ -2005,7 +2005,7 @@ void UnitTestUtil::LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stre
     LogicalPhysicalSort( tempStream, stream2 );
 }
 
-void UnitTestUtil::LogicalPhysicalBend( FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName )
+void UnitTestUtil::LogicalPhysicalBend( FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName, int hybridLevel )
 {
     FdoIoMemoryStreamP tempStream = FdoIoMemoryStream::Create();
 
@@ -2028,8 +2028,56 @@ void UnitTestUtil::LogicalPhysicalBend( FdoIoStream* stream1, FdoIoStream* strea
         ) 
     );
 
+    params->Add( 
+        FdoDictionaryElementP( 
+            FdoDictionaryElement::Create( 
+                L"hybridLevel", 
+                FdoStringP::Format(L"%d", hybridLevel)
+            ) 
+        ) 
+    );
+
     transformer->Transform();
     transformer = NULL;
+
+    if ( hybridLevel > 0 ) 
+    {
+        FdoIoMemoryStreamP tempStream2 = FdoIoMemoryStream::Create();
+        tempStream->Reset();
+
+        stylesheet = FdoXmlReader::Create( L"LogicalPhysicalHybridBender.xslt" );
+
+        transformer = FdoXslTransformer::Create( 
+            FdoXmlReaderP(FdoXmlReader::Create(tempStream)), 
+            stylesheet, 
+            FdoXmlWriterP(FdoXmlWriter::Create(tempStream2,false))
+        );
+
+        FdoDictionaryP params = transformer->GetParameters();
+        params->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create( 
+                    L"providerName", 
+                    FdoStringP(L"'") + providerName + L"'"
+                ) 
+            ) 
+        );
+
+        params->Add( 
+            FdoDictionaryElementP( 
+                FdoDictionaryElement::Create( 
+                    L"hybridLevel", 
+                    FdoStringP::Format(L"%d", hybridLevel)
+                ) 
+            ) 
+        );
+
+        transformer->Transform();
+        transformer = NULL;
+
+        tempStream2->Reset();
+        tempStream = tempStream2;
+    }
 
     LogicalPhysicalSort( tempStream, stream2 );
 }

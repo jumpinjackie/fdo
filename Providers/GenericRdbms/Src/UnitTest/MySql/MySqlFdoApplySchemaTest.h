@@ -57,13 +57,15 @@ public:
     virtual void VldClassCapabilities( int ltMode, int lckMode, FdoClassDefinition* pClass );
 
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
-    virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
+    virtual FdoStringP LogicalPhysicalBend( FdoString* inFile, int hybridLevel = 0 );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 
   	virtual FdoStringP GetParcelFirstName();
 	virtual FdoStringP GetParcelLastName();
 
     virtual bool DelayNLSSchema() {return false;};
+
+    virtual bool HasPhysicalSpatialContexts() {return false;};
 
     static FdoString*      DB_NAME_CHARSIZE_SUFFIX;
 

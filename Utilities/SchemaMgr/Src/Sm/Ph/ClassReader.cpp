@@ -142,11 +142,11 @@ FdoStringP FdoSmPhClassReader::GetOption( FdoStringP optionName )
 FdoSmPhClassPropertyReaderP FdoSmPhClassReader::CreateClassPropertyReader()
 {
     FdoSmPhPropertyReaderP propReader;
+    FdoSmPhOwnerP owner = GetManager()->GetOwner();
+    FdoStringP className = GetName();
 
-    if ( GetId() > 0 ) {
-        // ClassId set so class was read from MetaSchema.
-	    // Create the property reader if not already done. This property
-        // reader reads all class properties for the current schema.
+    if (owner && owner->GetHasAttrMetaSchema() ) {
+        // Read properties from metaschema
 	    if ( !mPropReader ) 
 		    mPropReader = new FdoSmPhPropertyReader(mSchemaName, GetManager());
     
@@ -168,12 +168,15 @@ FdoSmPhClassPropertyReaderP FdoSmPhClassReader::CreateClassPropertyReader()
         }
         else {
 
-            // No ClassId so we know that properties must be read
+            // Properties not in metaschema or config document so read them 
             // from the native physical schema.
             propReader = new FdoSmPhPropertyReader( 
                             GetManager()->CreateRdPropertyReader( dbObject).p->SmartCast<FdoSmPhReader>(),
                             GetManager()
             );
+
+            if ( dbObject )
+                className = dbObject->GetBestClassName();
         }
     }
 
@@ -187,7 +190,7 @@ FdoSmPhClassPropertyReaderP FdoSmPhClassReader::CreateClassPropertyReader()
 	// class reader and property reader both retrieve their rows ordered
 	// by class name.
 
-	return new FdoSmPhClassPropertyReader(mSchemaName, GetName(), propReader, mPropSADReader);
+	return new FdoSmPhClassPropertyReader(mSchemaName, className, propReader, mPropSADReader);
 }
 
 /*TODO

@@ -63,7 +63,7 @@ public:
 
     virtual FdoStringP SchemaTestErrFile( int fileNum, bool isMaster );
     virtual FdoStringP SchemaOvErrFile( int fileNum, bool isMaster );
-    virtual FdoStringP LogicalPhysicalBend( FdoString* inFile );
+    virtual FdoStringP LogicalPhysicalBend( FdoString* inFile, int hybridLevel = 0 );
     virtual FdoStringP LogicalPhysicalFormat( FdoString* inFile );
 
     virtual FdoStringP GetDefaultSchemaName();

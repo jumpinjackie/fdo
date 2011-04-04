@@ -1110,7 +1110,7 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
         }
         else
         {
-            if (pOwner->GetHasMetaSchema())
+            if (pOwner->GetHasClassMetaSchema())
             {
                 // Inner reader is a FdoSmPhMtClassReader.
                 bProcessFromRdClassReader = false;

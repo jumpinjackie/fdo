@@ -38,7 +38,7 @@ FdoSmLpPropertyDefinition::FdoSmLpPropertyDefinition(FdoSmPhClassPropertyReaderP
 {
 	FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
 
-    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+    if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
         mContainingDbObject = pPhysical->FindDbObject(mContainingDbObjectName);
     else
         mContainingDbObject = pPhysical->FindDbObject(mContainingDbObjectName, mpParentClass->GetOwner());
@@ -358,30 +358,51 @@ void FdoSmLpPropertyDefinition::Update(
 void FdoSmLpPropertyDefinition::Commit( bool fromParent )
 {
 	FdoSmPhMgrP                	pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSmPhOwnerP               pOwner = pPhysical->FindOwner();
 
-    // Get containing class
-    FdoSmLpClassDefinition*		pClass = (FdoSmLpClassDefinition*) RefParentClass();
-	
-    // Get the highest level containing class. Different from containing class
-	// when this property is nested within an object property.
-	FdoSmLpClassDefinition*		pTopClass = (FdoSmLpClassDefinition*) (GetTopProperty()->RefParentClass());
-    
-    FdoSmPhPropertyWriterP       pWriter = pPhysical->GetPropertyWriter();
+    // Cannot commit metadata when metadata table not present. 
+    if ( pOwner->GetHasAttrMetaSchema() ) 
+    {
 
-	// Adds are sub-class specific and are handled at sub-class level.
-	switch ( GetElementState() ) {
-	case FdoSchemaElementState_Deleted:
-        pWriter->Delete( pTopClass->GetId(), GetNestedName() );
+        // Get containing class
+        FdoSmLpClassDefinition*		pClass = (FdoSmLpClassDefinition*) RefParentClass();
+    	
+        // Get the highest level containing class. Different from containing class
+	    // when this property is nested within an object property.
+	    FdoSmLpClassDefinition*		pTopClass = (FdoSmLpClassDefinition*) (GetTopProperty()->RefParentClass());
+        
+        FdoSmPhPropertyWriterP       pWriter = pPhysical->GetPropertyWriter();
 
-		break;
+	    // Adds are sub-class specific and are handled at sub-class level.
+	    switch ( GetElementState() ) {
+	    case FdoSchemaElementState_Deleted:
+            pWriter->Delete( pTopClass->GetId(), GetNestedName() );
 
-	case FdoSchemaElementState_Modified:
-        pWriter->SetDescription( GetDescription() );
-        pWriter->SetIsReadOnly( GetReadOnly() );
-        pWriter->Modify( pTopClass->GetId(), GetName() );
+		    break;
 
-		break;
-	}
+	    case FdoSchemaElementState_Modified:
+            pWriter->SetDescription( GetDescription() );
+            pWriter->SetIsReadOnly( GetReadOnly() );
+            pWriter->Modify( pTopClass->GetId(), GetName() );
+
+		    break;
+	    }
+    }
+    else
+    {
+        if ( !GetLogicalPhysicalSchema()->GetSchemas()->CanApplySchemaWithoutMetaSchema() ) 
+        {
+            // Error - provider does not support applying property definitions
+            // without writing metadata.
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    FDO_NLSID(FDOSM_430),
+			        GetQName(),
+		            pOwner->GetName()
+		        )
+            );
+        }
+    }
 
 	// Inherited properties don't have their own Schema Attribute Dictionary entries.
 	if ( !RefBaseProperty() ) 
@@ -475,7 +496,7 @@ void FdoSmLpPropertyDefinition::Finalize()
         if ( (mContainingDbObjectName.GetLength() > 0) && (!mContainingDbObject) ) {
         	// Set the containing table to the containing class's table.
 	        FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasMetaSchema())
+            if (FdoSmPhOwnerP(pPhysical->GetOwner())->GetHasClassMetaSchema())
    	            mContainingDbObject = pPhysical->FindDbObject( mContainingDbObjectName);
             else
    	            mContainingDbObject = pPhysical->FindDbObject( mContainingDbObjectName, mpParentClass->GetOwner() );

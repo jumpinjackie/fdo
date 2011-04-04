@@ -344,7 +344,7 @@ void FdoSmLpObjectPropertyDefinition::Update(
 
         if ( GetLogicalPhysicalSchema()->GetSchemas()->CanCreatePhysicalObjects() ) {
             FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner();
-            if ( (!owner) || !(owner->GetHasMetaSchema()) ) {
+            if ( (!owner) || !(owner->GetHasObPropMetaSchema()) ) {
                 if ( elementState == FdoSchemaElementState_Added ) 
                     // Need metaschema to store object property definition.
                     AddCreateNoMetaError( owner );
@@ -426,168 +426,188 @@ void FdoSmLpObjectPropertyDefinition::Commit( bool fromParent )
 	// the top class to delete or modify the F_AttributeDefinition row.
 
 	FdoSmPhMgrP	                    pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-    FdoSmPhPropertyWriterP          pWriter = pPhysical->GetPropertyWriter();
-    FdoSmPhDependencyWriterP        pDepWriter = pPhysical->GetDependencyWriter();
+    FdoSmPhOwnerP                   pOwner = pPhysical->FindOwner();
 
-	// Ref the containing class
-	FdoSmLpClassDefinition*		    pClass = (FdoSmLpClassDefinition*) RefParentClass();
-
-	// Ref the highest level containing class. Different from containing class
-	// when this property is nested within another object property.
-	FdoSmLpClassDefinition*		    pTopClass = (FdoSmLpClassDefinition*) RefTopProperty()->RefParentClass();
-    int								rowsProcessed =0;
-	const FdoSmLpDbObject*	        pLpTable = NULL;
-    const FdoSmLpDbObject*          pTargTable = NULL;
-    FdoStringP				        fullName = GetName();
-	FdoStringP				        pkTableName;
-	FdoStringP				        fkTableName;
-    bool                            bDepInherited;
-//TODO
-//    char*					        pUser = pConn->RefUser();
-//	FdoStringP				        dbUser(pUser);
-	FdoStringP				        dbUser(L"fdo_user");
-    FdoStringP                      colPrefix = L"n/a";
-    FdoSmLpPropertyMappingSingleP pSingleMapping = 
+    // Ref the containing class
+    FdoSmLpClassDefinition*		    pClass = (FdoSmLpClassDefinition*) RefParentClass();
+    FdoSmLpPropertyMappingSingleP   pSingleMapping = 
         mpMappingDefinition.p->SmartCast<FdoSmLpPropertyMappingSingle>();
 
-//TODO
-//	delete[] pUser;
-	
-	// table and full property name are defined in the target class. 
-	if ( RefTargetClass() ) {
-		pLpTable = RefTargetClass()->RefDbObject();
-		fkTableName = RefTargetClass()->GetDbObjectName();
-		// knock off outermost class name.
-		fullName = FdoStringP( RefTargetClass()->GetName() ).Right(L"." );		
-	}
+    // Cannot commit metadata when metadata table not present. 
+    if ( pOwner->GetHasObPropMetaSchema() ) 
+    {
+        FdoSmPhPropertyWriterP          pWriter = pPhysical->GetPropertyWriter();
+        FdoSmPhDependencyWriterP        pDepWriter = pPhysical->GetDependencyWriter();
 
-	// Figure out the pkTable ( table for containing class ).
-	if ( pLpTable ) {
-		pTargTable = pLpTable->RefTargetDbObject();
+	    // Ref the highest level containing class. Different from containing class
+	    // when this property is nested within another object property.
+	    FdoSmLpClassDefinition*		    pTopClass = (FdoSmLpClassDefinition*) RefTopProperty()->RefParentClass();
+        int								rowsProcessed =0;
+	    const FdoSmLpDbObject*	        pLpTable = NULL;
+        const FdoSmLpDbObject*          pTargTable = NULL;
+        FdoStringP				        fullName = GetName();
+	    FdoStringP				        pkTableName;
+	    FdoStringP				        fkTableName;
+        bool                            bDepInherited;
+    //TODO
+    //    char*					        pUser = pConn->RefUser();
+    //	FdoStringP				        dbUser(pUser);
+	    FdoStringP				        dbUser(L"fdo_user");
+        FdoStringP                      colPrefix = L"n/a";
 
-		if ( pTargTable )
-			pkTableName = pTargTable->GetName();
-	}
+    //TODO
+    //	delete[] pUser;
+    	
+	    // table and full property name are defined in the target class. 
+	    if ( RefTargetClass() ) {
+		    pLpTable = RefTargetClass()->RefDbObject();
+		    fkTableName = RefTargetClass()->GetDbObjectName();
+		    // knock off outermost class name.
+		    fullName = FdoStringP( RefTargetClass()->GetName() ).Right(L"." );		
+	    }
 
-	if ( pkTableName.GetLength() == 0 ) 
-		// This happens when the containing class has no id properties and therefore
-		// no table. Just use containing class table name in this case.
-		pkTableName = RefParentClass()->GetDbObjectName();
+	    // Figure out the pkTable ( table for containing class ).
+	    if ( pLpTable ) {
+		    pTargTable = pLpTable->RefTargetDbObject();
 
-    // Check if relation to pkTable is inherited from an ancestor property.
-    bDepInherited = IsPkTableInherited( this, pkTableName );
+		    if ( pTargTable )
+			    pkTableName = pTargTable->GetName();
+	    }
 
-    if ( pSingleMapping ) 
-        colPrefix = pSingleMapping->GetPrefix();
+	    if ( pkTableName.GetLength() == 0 ) 
+		    // This happens when the containing class has no id properties and therefore
+		    // no table. Just use containing class table name in this case.
+		    pkTableName = RefParentClass()->GetDbObjectName();
 
-	switch ( GetElementState() ) {
-	case FdoSchemaElementState_Added:
-		// Skip inherited properties when doing concrete property mapping. 
-        // They can be auto-generated from their base properties.
-		if ( pSingleMapping || (pClass == RefDefiningClass()) ) {
+        // Check if relation to pkTable is inherited from an ancestor property.
+        bDepInherited = IsPkTableInherited( this, pkTableName );
 
-			// Create the attribute definition
+        if ( pSingleMapping ) 
+            colPrefix = pSingleMapping->GetPrefix();
 
-            if ( mpMappingDefinition )
-                mpMappingDefinition->WriteDb( pWriter );
+	    switch ( GetElementState() ) {
+	    case FdoSchemaElementState_Added:
+		    // Skip inherited properties when doing concrete property mapping. 
+            // They can be auto-generated from their base properties.
+		    if ( pSingleMapping || (pClass == RefDefiningClass()) ) {
 
-            pWriter->SetTableName( GetContainingDbObjectName() );
-			pWriter->SetClassId( pTopClass->GetId() );
-			pWriter->SetName( fullName );
-            pWriter->SetColumnName( colPrefix );
-            pWriter->SetDataType( RefClass() ? RefClass()->GetQName() : L"" );
-			pWriter->SetColumnType( L"table"  );
-			pWriter->SetIsNullable( true );
-			pWriter->SetIsFeatId( GetIsFeatId() );
-			pWriter->SetIsSystem( GetIsSystem() );
-			pWriter->SetIsReadOnly(	GetReadOnly() );
-			pWriter->SetUser( dbUser );
-			pWriter->SetDescription( GetDescription() );
-            pWriter->SetIsFixedColumn( mbFixedDbObject );
-            pWriter->SetIsColumnCreator( mbDbObjectCreator );
-            pWriter->SetRootObjectName( mRootDbObjectName );
-			pWriter->Add();
-		}
+			    // Create the attribute definition
 
-		// Create the attribute dependency row, which shows how the 
-		// containing class table and the object property table are joined.
-		// Also stores cardinality.
+                if ( mpMappingDefinition )
+                    mpMappingDefinition->WriteDb( pWriter );
 
-		// Attribute dependency rows for inherited properties are created,
-		// since the primary key table for an inherited property is 
-		// different from that of the base property.
-        //
-        // This create step is skipped if:
-        //  - contain class has no table
-        //  - containing class table and containing table are the same
-        //      (single table mapping)
-        //  - relationship to pkTable is inherited from an ancestor property.
+                pWriter->SetTableName( GetContainingDbObjectName() );
+			    pWriter->SetClassId( pTopClass->GetId() );
+			    pWriter->SetName( fullName );
+                pWriter->SetColumnName( colPrefix );
+                pWriter->SetDataType( RefClass() ? RefClass()->GetQName() : L"" );
+			    pWriter->SetColumnType( L"table"  );
+			    pWriter->SetIsNullable( true );
+			    pWriter->SetIsFeatId( GetIsFeatId() );
+			    pWriter->SetIsSystem( GetIsSystem() );
+			    pWriter->SetIsReadOnly(	GetReadOnly() );
+			    pWriter->SetUser( dbUser );
+			    pWriter->SetDescription( GetDescription() );
+                pWriter->SetIsFixedColumn( mbFixedDbObject );
+                pWriter->SetIsColumnCreator( mbDbObjectCreator );
+                pWriter->SetRootObjectName( mRootDbObjectName );
+			    pWriter->Add();
+		    }
 
-		if ( (pkTableName.GetLength() > 0) && 
-            (pkTableName.ICompare(fkTableName) != 0) &&
-            (!bDepInherited) 
-        ) {
-			FdoSmPhColumnListP srcColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
-			FdoSmPhColumnListP targColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
-			FdoStringP idColName;
+		    // Create the attribute dependency row, which shows how the 
+		    // containing class table and the object property table are joined.
+		    // Also stores cardinality.
 
-			if ( pLpTable ) {
-				// Gather the pkey and fkey columns if the containing class has a table.
-				const FdoSmPhColumnCollection* pSrcCols = pLpTable->RefSourceColumns();
-				const FdoSmPhColumnCollection* pTargCols = pLpTable->RefTargetColumns();
+		    // Attribute dependency rows for inherited properties are created,
+		    // since the primary key table for an inherited property is 
+		    // different from that of the base property.
+            //
+            // This create step is skipped if:
+            //  - contain class has no table
+            //  - containing class table and containing table are the same
+            //      (single table mapping)
+            //  - relationship to pkTable is inherited from an ancestor property.
 
-				for ( int i = 0; i < pSrcCols->GetCount(); i++ )
-					srcColNames->Add( pSrcCols->RefItem(i)->GetName() );
+		    if ( (pkTableName.GetLength() > 0) && 
+                (pkTableName.ICompare(fkTableName) != 0) &&
+                (!bDepInherited) 
+            ) {
+			    FdoSmPhColumnListP srcColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+			    FdoSmPhColumnListP targColNames = FdoSmPhColumnList::Create( GetLogicalPhysicalSchema()->GetPhysicalSchema() );
+			    FdoStringP idColName;
 
-				for ( int i = 0; i < pTargCols->GetCount(); i++ )
-					targColNames->Add( pTargCols->RefItem(i)->GetName() );
-			}
+			    if ( pLpTable ) {
+				    // Gather the pkey and fkey columns if the containing class has a table.
+				    const FdoSmPhColumnCollection* pSrcCols = pLpTable->RefSourceColumns();
+				    const FdoSmPhColumnCollection* pTargCols = pLpTable->RefTargetColumns();
 
-			if ( mpIdentityProperty )
-				idColName = mpIdentityProperty->GetColumnName();
+				    for ( int i = 0; i < pSrcCols->GetCount(); i++ )
+					    srcColNames->Add( pSrcCols->RefItem(i)->GetName() );
 
-			// Create the dependency row.
+				    for ( int i = 0; i < pTargCols->GetCount(); i++ )
+					    targColNames->Add( pTargCols->RefItem(i)->GetName() );
+			    }
 
-            pDepWriter->SetPkTableName( pkTableName );
-			pDepWriter->SetPkColumnNames( targColNames );
-            pDepWriter->SetFkTableName( fkTableName );
-			pDepWriter->SetFkColumnNames( srcColNames );
-			pDepWriter->SetCardinality(	GetObjectType() == FdoObjectType_Value ? 1 : -1 );
-			pDepWriter->SetIdentityColumn( idColName );
-            pDepWriter->SetOrderType(
-                (mObjectType == FdoObjectType_OrderedCollection) ?
-					(( mOrderType == FdoOrderType_Descending ) ? L"d" : L"a") :
-					L""
-			);
-            pDepWriter->Add();
-		}
+			    if ( mpIdentityProperty )
+				    idColName = mpIdentityProperty->GetColumnName();
 
-		break;
+			    // Create the dependency row.
 
-	case FdoSchemaElementState_Deleted:
-		// Delete the attribute definition.
+                pDepWriter->SetPkTableName( pkTableName );
+			    pDepWriter->SetPkColumnNames( targColNames );
+                pDepWriter->SetFkTableName( fkTableName );
+			    pDepWriter->SetFkColumnNames( srcColNames );
+			    pDepWriter->SetCardinality(	GetObjectType() == FdoObjectType_Value ? 1 : -1 );
+			    pDepWriter->SetIdentityColumn( idColName );
+                pDepWriter->SetOrderType(
+                    (mObjectType == FdoObjectType_OrderedCollection) ?
+					    (( mOrderType == FdoOrderType_Descending ) ? L"d" : L"a") :
+					    L""
+			    );
+                pDepWriter->Add();
+		    }
 
-        pWriter->Delete( pTopClass->GetId(), fullName );
-		// Delete the dependency row if containing class and this 
-        // property each have a table. Skip the delete if the relationship to 
-        // pkTable is inherited from an ancestor property.
+		    break;
+
+	    case FdoSchemaElementState_Deleted:
+		    // Delete the attribute definition.
+
+            pWriter->Delete( pTopClass->GetId(), fullName );
+		    // Delete the dependency row if containing class and this 
+            // property each have a table. Skip the delete if the relationship to 
+            // pkTable is inherited from an ancestor property.
 
 
-		if ( (pkTableName.GetLength() > 0) && 
-             (fkTableName.GetLength() > 0) &&
-             (!bDepInherited) 
-        )
-            pDepWriter->Delete( pkTableName, fkTableName );
+		    if ( (pkTableName.GetLength() > 0) && 
+                 (fkTableName.GetLength() > 0) &&
+                 (!bDepInherited) 
+            )
+                pDepWriter->Delete( pkTableName, fkTableName );
 
-		break;
+		    break;
 
-	case FdoSchemaElementState_Modified:
-		pWriter->SetDescription( GetDescription() );
-        pWriter->Modify( pTopClass->GetId(), fullName );
+	    case FdoSchemaElementState_Modified:
+		    pWriter->SetDescription( GetDescription() );
+            pWriter->Modify( pTopClass->GetId(), fullName );
 
-        break;
-	}
-
+            break;
+	    }
+    }
+    else
+    {
+        if ( !GetLogicalPhysicalSchema()->GetSchemas()->CanApplySchemaWithoutMetaSchema() ) 
+        {
+            // Error - provider does not support applying object property definitions
+            // without writing metadata.
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    FDO_NLSID(FDOSM_432),
+			        GetQName(),
+		            pOwner->GetName()
+		        )
+            );
+        }
+    }
 
 	// Commit any nested object properties if this property is error free.
 	// Nested inherited object properties with concrete table mapping are not committed. They

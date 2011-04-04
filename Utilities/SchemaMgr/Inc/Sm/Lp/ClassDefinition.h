@@ -278,6 +278,12 @@ public:
         return mbIsDbObjectCreator;
     }
 
+    // Returns true if classes are defined in class metadata table (f_classdefinition)
+    bool GetHasClassMetaSchema() const;
+
+    // Returns true if properties are defined in property metadata table (f_attributedefinition)
+    bool GetHasAttrMetaSchema() const;
+
     /// Convert a column name to one that is datastore-acceptable and 
     /// not already in use.
 	//

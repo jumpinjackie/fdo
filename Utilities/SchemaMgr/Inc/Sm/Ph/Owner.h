@@ -82,6 +82,24 @@ public:
     void SetHasMetaSchema( bool hasMetaSchema );
     bool GetHasMetaSchema();
 
+    // Returns true if spatial contexts defined in SC metadata table (f_spatialcontexts)
+    bool GetHasSCMetaSchema();
+
+    // Returns true if classes are defined in class metadata table (f_classdefinition)
+    bool GetHasClassMetaSchema();
+
+    // Returns true if properties are defined in property metadata table (f_attributedefinition)
+    bool GetHasAttrMetaSchema();
+
+    // Returns true if association properties are defined in the metadata table (f_associationdefinition)
+    bool GetHasAssocMetaSchema();
+
+    // Returns true if object properties are defined in the metadata table (f_attributedependencies)
+    bool GetHasObPropMetaSchema();
+
+    // Returns true if Schema Attribute Dictionary items are defined in the metadata table (f_sad)
+    bool GetHasSADMetaSchema();
+
     /// System database flag
 	void SetIsSystem( bool IsSystem );
 	bool GetIsSystem();

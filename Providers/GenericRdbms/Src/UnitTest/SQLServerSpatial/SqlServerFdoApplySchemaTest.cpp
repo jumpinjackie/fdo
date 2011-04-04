@@ -279,11 +279,11 @@ bool SqlServerFdoApplySchemaTest::CanDropCol()
 
 
 
-FdoStringP SqlServerFdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile )
+FdoStringP SqlServerFdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile, int hybridLevel )
 {
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile );
 
-    _logicalPhysicalBend( inFile, outFile, L"SQLServerSpatial" );
+    _logicalPhysicalBend( inFile, outFile, L"SQLServerSpatial", hybridLevel );
 
     return outFile;
 }

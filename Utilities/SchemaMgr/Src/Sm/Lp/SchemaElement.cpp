@@ -55,31 +55,36 @@ const FdoSmLpSAD* FdoSmLpSchemaElement::RefSAD() const
 void FdoSmLpSchemaElement::CommitSAD( const wchar_t* elementType)
 {
 	FdoSmPhMgrP         		pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
+    FdoSmPhOwnerP               pOwner = pPhysical->FindOwner();
 	FdoSmPhSADWriterP           pWriter = pPhysical->GetSADWriter();
 	FdoSmLpSADP		            pSAD = GetSAD();
 	FdoStringP			        owner = GetParent() ? (FdoString*) GetParent()->GetQName() : GetName();
 	FdoSchemaElementState		elementState = GetElementState();
 
-	// Delete the SAD elements. If we're modifying, they get re-added.
-	if ( (elementState == FdoSchemaElementState_Deleted) ||
-		 (elementState == FdoSchemaElementState_Modified) ) {
-        pWriter->Delete( owner, GetName() );
-	}
+    // Cannot commit metadata if metadata table not present.
+    if ( pOwner->GetHasSADMetaSchema() ) 
+    {
+	    // Delete the SAD elements. If we're modifying, they get re-added.
+	    if ( (elementState == FdoSchemaElementState_Deleted) ||
+		     (elementState == FdoSchemaElementState_Modified) ) {
+            pWriter->Delete( owner, GetName() );
+	    }
 
-	// Add or re-add the elements.
-	if ( (elementState == FdoSchemaElementState_Added) ||
-		 (elementState == FdoSchemaElementState_Modified) ) {
-		for ( int i = 0; i < pSAD->GetCount(); i++ ) {
-			FdoSmLpSADElementP pSADElement = pSAD->GetItem(i);
+	    // Add or re-add the elements.
+	    if ( (elementState == FdoSchemaElementState_Added) ||
+		     (elementState == FdoSchemaElementState_Modified) ) {
+		    for ( int i = 0; i < pSAD->GetCount(); i++ ) {
+			    FdoSmLpSADElementP pSADElement = pSAD->GetItem(i);
 
-			pWriter->SetOwnerName( owner );
-			pWriter->SetElementName( GetName() );
-			pWriter->SetElementType( elementType );
-			pWriter->SetName( pSADElement->GetName() );
-			pWriter->SetValue( pSADElement->GetValue() );
-			pWriter->Add();
-		}
-	}
+			    pWriter->SetOwnerName( owner );
+			    pWriter->SetElementName( GetName() );
+			    pWriter->SetElementType( elementType );
+			    pWriter->SetName( pSADElement->GetName() );
+			    pWriter->SetValue( pSADElement->GetValue() );
+			    pWriter->Add();
+		    }
+	    }
+    }
 }
 
 void FdoSmLpSchemaElement::XMLSerialize( FILE* xmlFp, int ref  ) const
@@ -190,7 +195,7 @@ void FdoSmLpSchemaElement::Update(
 
         if ( GetLogicalPhysicalSchema()->GetSchemas()->CanCreatePhysicalObjects() ) {
             FdoSmPhOwnerP owner = GetLogicalPhysicalSchema()->GetPhysicalSchema()->GetOwner();
-            if ( (!owner) || !(owner->GetHasMetaSchema()) ) {
+            if ( (!owner) || !(owner->GetHasSADMetaSchema()) ) {
                 if ( pFdoSAD->GetCount() > 0 )
                     // Need metaschema to store Schema Attribute Dictionary
                     AddSADNoMetaError( owner );

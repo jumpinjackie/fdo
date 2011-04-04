@@ -137,6 +137,36 @@ bool FdoSmPhOwner::GetHasMetaSchema()
     return mHasMetaSchema;
 }
 
+bool FdoSmPhOwner::GetHasSCMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_spatialcontext")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasClassMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_classdefinition")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasAttrMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedefinition")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasAssocMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_associationdefinition")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasObPropMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedependencies")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasSADMetaSchema()
+{
+    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_sad")) != NULL);
+}
+
 double FdoSmPhOwner::GetSchemaVersion()
 {
     LoadSchemaInfo();

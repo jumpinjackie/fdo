@@ -173,7 +173,7 @@ void FdoSmLpSpatialContext::Commit( bool fromParent )
     // Here is where we split a logical/physical spatial context
     // into physical spatial context and spatial context group.
 
-    if ( mPhysicalSchema->FindOwner()->GetHasMetaSchema() ) {
+    if ( mPhysicalSchema->FindOwner()->GetHasSCMetaSchema() ) {
 	    switch ( GetElementState() ) {
   	    case FdoSchemaElementState_Added:
 
@@ -486,7 +486,7 @@ void FdoSmLpSpatialContext::Finalize()
         
             if ( owner ) 
             {
-                if ( !owner->GetHasMetaSchema() )
+                if ( !owner->GetHasSCMetaSchema() )
                 {
                     // When datastore has no MetaSchema a referencing column is 
                     // created for this spatial context (see AddNoMeta()).
