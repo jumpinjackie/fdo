@@ -121,7 +121,7 @@ FdoSmPhReaderP FdoSmPhRdSqsIndexReader::MakeReader(
         L"   $(JOIN_CLAUSE) \n"
         L"   LEFT OUTER JOIN %ls.sys.spatial_indexes f on (b.object_id = f.object_id and b.index_id = f.index_id)\n"
         L"   $(WHERE) $(QUALIFICATION) \n"
-        L"   order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.name collate latin1_general_bin asc, c.index_column_id asc",
+        L"   order by e.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc, b.name collate latin1_general_bin asc, c.key_ordinal asc",
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),
         (FdoString*)(owner->GetDbName()),

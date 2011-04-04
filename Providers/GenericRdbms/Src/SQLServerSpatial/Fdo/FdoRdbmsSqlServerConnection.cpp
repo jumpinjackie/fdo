@@ -397,7 +397,7 @@ void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
     // assume these can be opened by this provider. 
     // Also skip check if the Schema Manager can't find the datastore (owner == NULL).
     // This case will be trapped later on and an exception thrown.
-    if ( !owner || !owner->GetHasMetaSchema() ) 
+    if ( !owner || !owner->GetHasAttrMetaSchema() ) 
         return;
 
     // Geometric properties have numeric attributetype. Following query find
@@ -406,7 +406,7 @@ void FdoRdbmsSqlServerConnection::CheckForFdoGeometries()
 	FdoStringP sqlStmt = L"select top 1 tablename from f_attributedefinition where lower(columntype) = 'image' and isnumeric(attributetype) = 1";
 
 	GdbiConnection* gdbiConn = phMgr->GetGdbiConnection();
-	GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const wchar_t*)sqlStmt);
+  	GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const wchar_t*)sqlStmt);
 
 	if (gdbiResult->ReadNext())
 	{

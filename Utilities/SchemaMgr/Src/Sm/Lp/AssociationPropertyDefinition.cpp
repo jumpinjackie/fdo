@@ -357,83 +357,103 @@ void FdoSmLpAssociationPropertyDefinition::SynchPhysical(bool bRollbackOnly)
 void FdoSmLpAssociationPropertyDefinition::Commit( bool fromParent)
 {
 	FdoSmPhMgrP                     pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
-    FdoSmPhPropertyWriterP          pWriter = pPhysical->GetPropertyWriter();
-    FdoSmPhAssociationWriterP       pAssocWriter = pPhysical->GetAssociationWriter();
-	FdoSmLpClassDefinition*		    pClass = (FdoSmLpClassDefinition*) RefParentClass();
-    const FdoSmLpClassDefinition*   pAssociatedClass = RefAssociatedClass();
-    FdoStringP				        fullName = GetName();
-	char*							pUser = "fdo_user"; //TODO: pConn->GetUser();
-	FdoStringP				        dbUser(pUser);
-    int								rowsProcessed =0;
-    FdoStringsP                     srcColNames = FdoStringCollection::Create();
-    FdoStringsP                     associatedColNames = FdoStringCollection::Create();
-    FdoStringP                      pkTableName = pClass->GetDbObjectName();
-    FdoStringP                      fkTableName = pAssociatedClass->GetDbObjectName();
-    bool                            failed = false;
-	FdoStringP				        sqlCmd;
+    FdoSmPhOwnerP                   pOwner = pPhysical->FindOwner();
 
-//TODO:    delete [] pUser;
-
-    FdoSmPhDbObjectP pPhTable = pPhysical->FindDbObject(pClass->GetDbObjectName());
-    mPseudoColumnName = pClass->UniqueColumnName( pPhTable, this, fullName );
-
-	switch ( GetElementState() ) 
+    // Cannot commit metadata when metadata table not present. 
+    if ( pOwner->GetHasAssocMetaSchema() ) 
     {
-	    case FdoSchemaElementState_Added:
-			pWriter->SetTableName( GetContainingDbObjectName() );
-			pWriter->SetClassId( pClass->GetId() );  
-			pWriter->SetColumnName( mPseudoColumnName ); // this is required to create a unique key in the f_attributedefinition table
-			pWriter->SetName( fullName );
-			pWriter->SetColumnType( L"Association"  );
-			pWriter->SetDataType( pAssociatedClass ? pAssociatedClass->GetQName() : L"" );
-			pWriter->SetIsNullable( true );
-			pWriter->SetIsFeatId( false );
-			pWriter->SetIsSystem( GetIsSystem() );
-			pWriter->SetIsReadOnly(	GetReadOnly() );
-			pWriter->SetUser( dbUser );
-			pWriter->SetDescription( GetDescription() );
-			pWriter->Add();
+        FdoSmPhPropertyWriterP          pWriter = pPhysical->GetPropertyWriter();
+        FdoSmPhAssociationWriterP       pAssocWriter = pPhysical->GetAssociationWriter();
+	    FdoSmLpClassDefinition*		    pClass = (FdoSmLpClassDefinition*) RefParentClass();
+        const FdoSmLpClassDefinition*   pAssociatedClass = RefAssociatedClass();
+        FdoStringP				        fullName = GetName();
+	    char*							pUser = "fdo_user"; //TODO: pConn->GetUser();
+	    FdoStringP				        dbUser(pUser);
+        int								rowsProcessed =0;
+        FdoStringsP                     srcColNames = FdoStringCollection::Create();
+        FdoStringsP                     associatedColNames = FdoStringCollection::Create();
+        FdoStringP                      pkTableName = pClass->GetDbObjectName();
+        FdoStringP                      fkTableName = pAssociatedClass->GetDbObjectName();
+        bool                            failed = false;
+	    FdoStringP				        sqlCmd;
 
-            if ( pkTableName.GetLength() != 0 || fkTableName.GetLength() != 0 ) 
-            {       
-                pAssocWriter->SetPseudoColumnName( mPseudoColumnName );
-                pAssocWriter->SetPkTableName( pkTableName );
-			    pAssocWriter->SetPkColumnNames( mpReverseIdentColumns );
-                pAssocWriter->SetFkTableName( fkTableName );
-			    pAssocWriter->SetFkColumnNames( mpIdentColumns );
-			    pAssocWriter->SetMultiplicity( mMultiplicity );
-			    pAssocWriter->SetReverseMultiplicity( mReverseMultiplicity );
-			    pAssocWriter->SetCascadeLock( mbCascadeLock );
-                pAssocWriter->SetDeleteRule( DeleteRuleSqlValue() );
-                pAssocWriter->SetReverseName( mReverseName );
-                pAssocWriter->Add();
-            }
+    //TODO:    delete [] pUser;
 
-		    break;
+        FdoSmPhDbObjectP pPhTable = pPhysical->FindDbObject(pClass->GetDbObjectName());
+        mPseudoColumnName = pClass->UniqueColumnName( pPhTable, this, fullName );
 
-	    case FdoSchemaElementState_Deleted:
-            pWriter->Delete( pClass->GetId(), fullName );
+	    switch ( GetElementState() ) 
+        {
+	        case FdoSchemaElementState_Added:
+			    pWriter->SetTableName( GetContainingDbObjectName() );
+			    pWriter->SetClassId( pClass->GetId() );  
+			    pWriter->SetColumnName( mPseudoColumnName ); // this is required to create a unique key in the f_attributedefinition table
+			    pWriter->SetName( fullName );
+			    pWriter->SetColumnType( L"Association"  );
+			    pWriter->SetDataType( pAssociatedClass ? pAssociatedClass->GetQName() : L"" );
+			    pWriter->SetIsNullable( true );
+			    pWriter->SetIsFeatId( false );
+			    pWriter->SetIsSystem( GetIsSystem() );
+			    pWriter->SetIsReadOnly(	GetReadOnly() );
+			    pWriter->SetUser( dbUser );
+			    pWriter->SetDescription( GetDescription() );
+			    pWriter->Add();
 
-            // Delete the association definition row
-		    if ( pkTableName.GetLength() != 0 && fkTableName.GetLength() != 0 ) 
-                pAssocWriter->Delete( pkTableName, fkTableName );
-		    
-		    break;
+                if ( pkTableName.GetLength() != 0 || fkTableName.GetLength() != 0 ) 
+                {       
+                    pAssocWriter->SetPseudoColumnName( mPseudoColumnName );
+                    pAssocWriter->SetPkTableName( pkTableName );
+			        pAssocWriter->SetPkColumnNames( mpReverseIdentColumns );
+                    pAssocWriter->SetFkTableName( fkTableName );
+			        pAssocWriter->SetFkColumnNames( mpIdentColumns );
+			        pAssocWriter->SetMultiplicity( mMultiplicity );
+			        pAssocWriter->SetReverseMultiplicity( mReverseMultiplicity );
+			        pAssocWriter->SetCascadeLock( mbCascadeLock );
+                    pAssocWriter->SetDeleteRule( DeleteRuleSqlValue() );
+                    pAssocWriter->SetReverseName( mReverseName );
+                    pAssocWriter->Add();
+                }
 
-	    case FdoSchemaElementState_Modified:
-		    pWriter->SetDescription( GetDescription() );
-            pWriter->Modify( pClass->GetId(), fullName );
+		        break;
 
-            if ( pkTableName.GetLength() != 0 || fkTableName.GetLength() != 0 ) 
-            {      
-			    pAssocWriter->SetCascadeLock( mbCascadeLock );
-                pAssocWriter->SetDeleteRule( DeleteRuleSqlValue() );
-                pAssocWriter->Modify( pkTableName, fkTableName );
-            }
+	        case FdoSchemaElementState_Deleted:
+                pWriter->Delete( pClass->GetId(), fullName );
 
-            break;
-	}
+                // Delete the association definition row
+		        if ( pkTableName.GetLength() != 0 && fkTableName.GetLength() != 0 ) 
+                    pAssocWriter->Delete( pkTableName, fkTableName );
+    		    
+		        break;
 
+	        case FdoSchemaElementState_Modified:
+		        pWriter->SetDescription( GetDescription() );
+                pWriter->Modify( pClass->GetId(), fullName );
+
+                if ( pkTableName.GetLength() != 0 || fkTableName.GetLength() != 0 ) 
+                {      
+			        pAssocWriter->SetCascadeLock( mbCascadeLock );
+                    pAssocWriter->SetDeleteRule( DeleteRuleSqlValue() );
+                    pAssocWriter->Modify( pkTableName, fkTableName );
+                }
+
+                break;
+	    }
+    }
+    else
+    {
+        if (!GetLogicalPhysicalSchema()->GetSchemas()->CanApplySchemaWithoutMetaSchema() ) 
+        {
+            // Error - provider does not support applying association property definitions
+            // without writing metadata.
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
+                    FDO_NLSID(FDOSM_431),
+			        GetQName(),
+		            pOwner->GetName()
+		        )
+            );
+        }
+    }
 }
 
 int  FdoSmLpAssociationPropertyDefinition::DeleteRuleSqlValue()
@@ -658,9 +678,6 @@ void FdoSmLpAssociationPropertyDefinition::Finalize()
         const FdoSmLpPropertyDefinitionCollection* lpPropCol = pAssociatedClass->RefProperties();
         FdoSmLpClassDefinition*		pClass = (FdoSmLpClassDefinition*) RefParentClass();
         const FdoSmLpPropertyDefinitionCollection* lpRevPropCol = pClass->RefProperties();
-
-        if ( pAssociatedClass->GetIsAbstract() ) 
-            ASSOCIATED_CLASS_ABSTRACT( (FdoString*)pAssociatedClass->GetQName() );
 
         for(int i=0; i<mpIndProperties->GetCount(); i++ )
         {

@@ -303,7 +303,7 @@ FdoSmPhReaderP FdoSmPhRdSqsConstraintReader::MakeReader(
             L"   INNER JOIN %ls.sys.schemas s on (t.schema_id = s.schema_id)\n"
             L"   %ls \n"
             L"   where is_unique_constraint = 1 %ls %ls \n"
-            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.index_column_id asc",
+            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.key_ordinal asc",
             (FdoString*)(owner->GetDbName()),
             (FdoString*)(owner->GetDbName()),
             (FdoString*)(owner->GetDbName()),

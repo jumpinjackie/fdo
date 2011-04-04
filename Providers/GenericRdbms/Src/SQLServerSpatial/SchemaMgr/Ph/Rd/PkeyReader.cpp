@@ -172,7 +172,7 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
             L"   t.name collate latin1_general_bin as table_name, \n"
             L"   c.name as column_name, \n"
             L"   s.name collate latin1_general_bin as table_schema, \n"
-            L"   ic.index_column_id as position \n"
+            L"   ic.key_ordinal as position \n"
             L"   from %ls.sys.objects t \n"
             L"   INNER JOIN %ls.sys.indexes ix on (ix.object_id = t.object_id)\n"
             L"   INNER JOIN %ls.sys.index_columns ic on (ix.object_id = ic.object_id and ix.index_id = ic.index_id)\n"
@@ -180,7 +180,7 @@ FdoSmPhReaderP FdoSmPhRdSqsPkeyReader::MakeReader(
             L"   INNER JOIN %ls.sys.schemas s on (t.schema_id = s.schema_id)\n"
             L"   %ls \n"
             L"   where is_primary_key = 1 %ls %ls \n"
-            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.index_column_id asc",
+            L"   order by s.name collate latin1_general_bin asc, t.name collate latin1_general_bin asc, ix.name collate latin1_general_bin asc, ic.key_ordinal asc",
             join ? L"distinct" : L"",
             (FdoString*)(owner->GetDbName()),
             (FdoString*)(owner->GetDbName()),

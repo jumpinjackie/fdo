@@ -101,7 +101,7 @@ FdoStringP FdoSmLpSqsClassDefinition::DefaultDbObjectName()
 {
     FdoSmPhMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema();
     FdoSmPhOwnerP pOwner = pPhysical->GetOwner();
-    bool hasMetaSchema = pOwner ? pOwner->GetHasMetaSchema() : false;
+    bool hasMetaSchema = pOwner ? pOwner->GetHasClassMetaSchema() : false;
 
     // Qualify default db object name by user.
 

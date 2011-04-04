@@ -92,7 +92,7 @@ FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLe
     CoordinateSystemMatchLevel level = CoordinateSystemMatchLevel_Lax;
     FdoSmPhOwnerP owner = FindOwner();
 
-    if ( (!owner) || !(owner->GetHasMetaSchema()) ) 
+    if ( (!owner) || !(owner->GetHasSCMetaSchema()) ) 
         // When no MetaSchema, there is no place to put WKT when spatial context
         // coordinate system not valid for SQL Server. Therefore, reject any
         // spatial contexts with these coordinate systems.
@@ -384,7 +384,7 @@ bool FdoSmPhSqsMgr::IsRdbObjNameAscii7()
     // by FDO 3.3 and after.
 
     FdoSmPhOwnerP owner = this->GetOwner();
-    if ( (!owner) || (!owner->GetHasMetaSchema()) ) 
+    if ( (!owner) || (!owner->GetHasClassMetaSchema()) ) 
         return false;
 
     FdoSmPhDbObjectP dbObject = owner->FindDbObject( L"dbo.f_classdefinition" );
@@ -529,7 +529,7 @@ FdoSmPhSqsMgr::SqsStringMap::SqsStringMap()
 FdoStringP FdoSmPhSqsMgr::ClassName2DbObjectName(FdoStringP schemaName, FdoStringP className)
 {
     FdoSmPhOwnerP pOwner = GetOwner();
-    bool hasMetaSchema = pOwner ? pOwner->GetHasMetaSchema() : false;
+    bool hasMetaSchema = pOwner ? pOwner->GetHasClassMetaSchema() : false;
 
     // Qualify default db object name by user.
 

@@ -82,7 +82,7 @@ FdoSmLpSpatialContextGeomP FdoSmLpSpatialContextCollection::FindSpatialContextGe
         FdoIoStreamP configDoc = mPhysicalSchema->GetConfigDoc();
         FdoSmPhOwnerP owner = mPhysicalSchema->GetOwner();
 
-        if ( !owner->GetHasMetaSchema() ) 
+        if ( !owner->GetHasSCMetaSchema() ) 
         {
             // Non-FDO datastore. Get spatial context geom from physical schema
             FdoSmPhSpatialContextGeomP phScGeom = owner->FindSpatialContextGeom( dbObjectName, columnName );
@@ -460,7 +460,7 @@ void FdoSmLpSpatialContextCollection::Load( FdoInt64 scId )
                 }
             }
         }
-        else if ( FdoSmPhOwnerP(mPhysicalSchema->GetOwner())->GetHasMetaSchema() )
+        else if ( FdoSmPhOwnerP(mPhysicalSchema->GetOwner())->GetHasSCMetaSchema() )
 			// No config document; load from metaschema or reverse-engineering/defaults.
         {
             mAreLoaded = true;

@@ -1256,3 +1256,23 @@ SymbolicName=FDOSM_428
 Language=English
 Cannot create synonym %1$ls.%2$ls, an object of that name already exists.
 .
+MessageId=2253
+SymbolicName=FDOSM_429
+Language=English
+Cannot apply class definition '%1$ls' to datastore '%2$ls'; datastore has no class metadata tables (f_classdefinition, f_classtype)
+.
+MessageId=2254
+SymbolicName=FDOSM_430
+Language=English
+Cannot apply property definition '%1$ls' to datastore '%2$ls'; datastore has no property metadata table (f_attributedefinition)
+.
+MessageId=2255
+SymbolicName=FDOSM_431
+Language=English
+Cannot apply association property definition '%1$ls' to datastore '%2$ls'; datastore has no association property metadata table (f_associationdefinition)
+.
+MessageId=2256
+SymbolicName=FDOSM_432
+Language=English
+Cannot apply association property definition '%1$ls' to datastore '%2$ls'; datastore has no association property metadata table (f_associationdefinition)
+.

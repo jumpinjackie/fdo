@@ -250,6 +250,8 @@ void FdoApplySchemaTest::TestSchema ()
 
         CopySchemas( pCopySchemas, pCopySchemas2 );
 
+        DescribePartialMetaSchema();
+
 		// Compare output files with expected results.
 
 		// First do xml dumps of LogicalPhysical schema
@@ -265,6 +267,9 @@ void FdoApplySchemaTest::TestSchema ()
         FdoStringP out5master = LogicalPhysicalBend(L"apply_schema_test5_master.txt");
         FdoStringP out5       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test5.xml" ) );
 
+        FdoStringP out6master = LogicalPhysicalBend(L"apply_schema_test6_master.txt", 1);
+        FdoStringP out6       = LogicalPhysicalFormat(UnitTestUtil::GetOutputFileName( L"apply_schema_test6.xml" ) );
+
         UnitTestUtil::CheckOutput( (const char*) out1master,(const char*) out1 );
         UnitTestUtil::CheckOutput( (const char*) out2master,(const char*) out2 );
         UnitTestUtil::CheckOutput( (const char*) out3master,(const char*) out3 );
@@ -276,6 +281,8 @@ void FdoApplySchemaTest::TestSchema ()
         // might resolve this one.
         UnitTestUtil::CheckOutput( (const char*) out5master,(const char*) out5 );
 #endif
+        if ( SupportsPartialMetaSchema() )
+            UnitTestUtil::CheckOutput( (const char*) out6master,(const char*) out6 );
 
 #ifdef RDBI_DEF_ORA
         // Next do the Schema Mapping XML exports
@@ -5334,6 +5341,80 @@ void FdoApplySchemaTest::CopySchemas(FdoFeatureSchemaCollection* pSchemas, FdoFe
 
 }
 
+void FdoApplySchemaTest::DescribePartialMetaSchema()
+{
+    FdoFeatureSchemasP schemas = FdoFeatureSchemaCollection::Create(NULL);
+    FdoIoMemoryStreamP stream = FdoIoMemoryStream::Create();
+    StaticConnection* staticConn = NULL;
+
+	printf( "Removing part of MetaSchema ... \n" );
+
+    staticConn = UnitTestUtil::NewStaticConnection();
+    staticConn->connect();
+    staticConn->SetSchema( DB_NAME_COPY_SUFFIX );
+
+    FdoSchemaManagerP mgr = staticConn->CreateSchemaManager();
+    FdoSmPhMgrP ph = mgr->GetPhysicalSchema();
+    FdoSmPhOwnerP owner = ph->GetOwner();
+    FdoSmPhRdDbObjectReaderP rdr = owner->CreateDbObjectReader();
+
+    while ( rdr->ReadNext() ) {
+        FdoStringP objName = rdr->GetString(L"", L"name");
+        objName = objName.Lower();
+
+        if ( (objName.Mid( 0, 2 ).ICompare(L"f_") == 0) ||
+             (objName.Mid( 0, 6 ) == L"dbo.f_") ||
+             (objName.Mid( 0, 9 ) == L"public.f_")
+        ) {
+            if ( !objName.Contains(L"f_schemainfo") &&
+                 !objName.Contains(L"f_classtype") &&
+                 !objName.Contains(L"f_classdefinition") 
+            ) {
+                // TODO: without f_spatialcontextgeom, MySQL does not relate columns to the 
+                // one spatial context. Check if this is correct.
+                if ( HasPhysicalSpatialContexts() || !objName.Contains(L"f_spatial") ) 
+                {
+                    FdoSmPhDbObjectP dbObject = owner->CacheDbObject(rdr); 
+           
+                    FdoSmPhTableP table = dbObject.p->SmartCast<FdoSmPhTable>();
+                    if ( table ) 
+                        table->ClearRows();
+
+                    if ( dbObject ) 
+                        dbObject->SetElementState( FdoSchemaElementState_Deleted );
+                }
+            }
+        }
+    }
+
+    rdr = NULL;
+
+    ph->Commit();
+
+    owner = NULL;
+    ph = NULL;
+    mgr = NULL;
+    delete staticConn;
+    staticConn = NULL;
+
+
+
+	printf( "Testing describe from partial metaschema ... \n" );
+
+    staticConn = UnitTestUtil::NewStaticConnection();
+    staticConn->connect();
+    staticConn->SetSchema( DB_NAME_COPY_SUFFIX );
+
+    mgr = staticConn->CreateSchemaManager();
+    const FdoSmLpSchemaCollection* lp = mgr->RefLogicalPhysicalSchemas();
+    lp->XMLSerialize( UnitTestUtil::GetOutputFileName( L"apply_schema_test6.xml" ) );
+
+    mgr = NULL;
+    delete staticConn;
+    staticConn = NULL;
+
+}
+
 void FdoApplySchemaTest::CreateOverrideSchema( FdoIConnection* connection, FdoRdbmsOvPhysicalSchemaMapping* pOverrides, bool nnull, bool addConstraints, bool hasMetaSchema )
 {
 	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
@@ -7128,14 +7209,15 @@ void FdoApplySchemaTest::DeleteObjects( FdoIConnection* connection, FdoStringP s
 	deleteCommand->Execute();
 }
 
-void FdoApplySchemaTest::_logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName )
+void FdoApplySchemaTest::_logicalPhysicalBend( FdoString* inFile, FdoString* outFile, FdoStringP providerName, int hybridLevel )
 {
     FdoIoFileStreamP stream1 = FdoIoFileStream::Create( inFile, L"rt" );
     FdoIoMemoryStreamP stream2 = FdoIoMemoryStream::Create();
     UnitTestUtil::LogicalPhysicalBend( 
         stream1, 
         stream2, 
-        providerName
+        providerName,
+        hybridLevel
     );
 
     stream2->Reset();
@@ -7156,7 +7238,7 @@ void FdoApplySchemaTest::_logicalPhysicalFormat( FdoString* inFile, FdoString* o
     UnitTestUtil::Stream2File( stream2, outFile );
 }
 
-FdoStringP FdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile )
+FdoStringP FdoApplySchemaTest::LogicalPhysicalBend( FdoString* inFile, int hybridLevel )
 {
     return inFile;
 }

@@ -216,7 +216,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
         FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
         bool isFixedColumn = GetIsFixedColumn();
         if ( isFixedColumn ) {
-            if ( owner->GetHasMetaSchema() && ColumnIsForeign() && !GetIsSystem() ) 
+            if ( owner->GetHasAttrMetaSchema() && ColumnIsForeign() && !GetIsSystem() ) 
                 // Although column has been designated as fixed, it is a non-system 
                 // foreign column so it is really not fixed (It's a column in a foreign
                 // table view.
@@ -235,7 +235,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
 	    	FdoStringP columnNameGen = GenColumnName( 
                 dbObject, 
                 columnName, 
-                owner->GetHasMetaSchema(),
+                owner->GetHasAttrMetaSchema(),
                 isFixedColumn 
             );
 
@@ -247,7 +247,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             // always created.
 
             FdoSmPhColumnP foundColumn;
-            if ( (!ColumnIsForeign() || !owner->GetHasMetaSchema()) && isFixedColumn ) {
+            if ( (!ColumnIsForeign() || !owner->GetHasAttrMetaSchema()) && isFixedColumn ) {
                 // By default, column override is match to column
                 // by case-sensitive name compare
 				FdoSmPhColumnsP columns = dbObject->GetColumns();
@@ -304,7 +304,7 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
                 GenColumnName( 
                     dbObject, 
                     columnName,
-                    owner->GetHasMetaSchema(),
+                    owner->GetHasAttrMetaSchema(),
                     isFixedColumn 
                 ) 
             );
@@ -322,8 +322,8 @@ void FdoSmLpSimplePropertyDefinition::CreateColumn( FdoSmPhDbObjectP dbObject )
             GenColumnName( 
                 dbObject, 
                 columnName, 
-                owner->GetHasMetaSchema(),
-                GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasMetaSchema()) 
+                owner->GetHasAttrMetaSchema(),
+                GetIsFixedColumn() && (!ColumnIsForeign() || !owner->GetHasAttrMetaSchema()) 
             ) 
         );
 	}

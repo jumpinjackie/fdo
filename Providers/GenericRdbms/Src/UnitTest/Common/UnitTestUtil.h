@@ -213,7 +213,7 @@ public:
 
 	static void LogicalPhysicalFormat(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName );
 
-    static void LogicalPhysicalBend(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName );
+    static void LogicalPhysicalBend(FdoIoStream* stream1, FdoIoStream* stream2, FdoStringP providerName, int hybridLevel = 0 );
 
     static void LogicalPhysicalSort( FdoIoStream* stream1, FdoIoStream* stream2 );
 
