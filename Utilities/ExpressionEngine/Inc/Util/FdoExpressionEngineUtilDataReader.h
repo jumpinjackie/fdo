@@ -20,13 +20,6 @@ class FdoCommonPropertyIndex;
 class FdoCommonBinaryReader;
 
 #include <utility>
-#ifdef _WIN32
-#include <hash_map>
-#else
-#include <ext/hash_map>
-namespace stdext = ::__gnu_cxx;
-using namespace std;
-#endif
 #include "../ExpressionEngine.h"
 
 
@@ -38,45 +31,8 @@ typedef enum FdoCommonExpressionType
 };
 
 
-class my_hash_compare
-{	// traits class for hash containers
-private:
-    std::less< FdoByteArray* > comp;	// the comparator object
-
-public:
-	enum
-		{	// parameters for hash table
-		bucket_size = 4,	// 0 < bucket_size
-		min_buckets = 8};	// min_buckets = 2 ^^ N, 0 < N
-
-    my_hash_compare()
-		: comp()
-	{	// construct with default comparator
-	}
-
-	my_hash_compare(std::less< FdoByteArray* > _Pred)
-		: comp(_Pred)
-	{	// construct with _Pred comparator
-	}
-
-	bool operator()(FdoByteArray * const _Keyval1, FdoByteArray * const _Keyval2) const;
-
-	size_t operator()(FdoByteArray * const key) const;
-
-	size_t hashvalue(FdoByteArray * const key) const;
-};
-
-
-#ifdef _WIN32
-typedef stdext::hash_map<FdoByteArray*, FdoByteArray*, my_hash_compare >  HASHMAP;
-#else // _WIN32
-typedef stdext::hash_map<FdoByteArray*, FdoByteArray*, my_hash_compare, my_hash_compare >  HASHMAP;
-#endif // _WIN32
-typedef std::pair<FdoByteArray*, FdoByteArray*>                           HASHMAP_PAIR;
-typedef HASHMAP::iterator                                 HASHMAP_ITER;
-
-
 class FdoExpressionEngineUtilDataReader;
+class FdoResultsStack;
 
 struct orderby_context
 {
@@ -92,8 +48,6 @@ public:
 };
 
 
-
-
 //A generic data reader, based on the FdoCommonPropertyIndex and
 //FdoCommonBinaryReader helper classes. The FdoCommonPropertyIndex is used to obtain
 //information about a property and the FdoCommonBinaryReader is used to get the
@@ -102,15 +56,25 @@ class FdoExpressionEngineUtilDataReader : public FdoIDataReader
 {
 public:
 
-    EXPRESSIONENGINE_API FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, bool bDistinct, FdoIdentifierCollection* orderingIds, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* ids, FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
+    EXPRESSIONENGINE_API FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, 
+                                                           FdoIFeatureReader* reader, 
+                                                           FdoClassDefinition* originalClassDef, 
+                                                           FdoIdentifierCollection* selectedIds, 
+                                                           bool bDistinct, 
+                                                           FdoIdentifierCollection* orderingIds, 
+                                                           FdoOrderingOption eOrderingOption, 
+                                                           FdoIdentifierCollection* ids, 
+                                                           FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
 
 protected:
 
     virtual void Dispose();
     FdoExpressionEngineUtilDataReader() {};  // dummy 0-arg constructor to please FdoPtr::operator->
     virtual ~FdoExpressionEngineUtilDataReader();
-    virtual FdoCommonBinaryReader* perform_checks (
-        FdoDataType* types, FdoInt16 type_count, FdoString* property_name, int* len = NULL);
+    virtual FdoCommonBinaryReader* perform_checks (FdoDataType* types, 
+                                                   FdoInt16 type_count, 
+                                                   FdoString* property_name, 
+                                                   int* len = NULL);
 
 public:
 
@@ -606,8 +570,8 @@ public:
 
 protected:
 
+    FdoResultsStack*               m_resultsStack;
     FdoCommonPropertyIndex*        m_propIndex;
-    std::vector<void*>             m_results;
     FdoInt32                       m_resultsIndex;
     FdoCommonBinaryReader*         m_binReader;
     FdoPtr<FdoFunctionDefinitionCollection>         m_functions;

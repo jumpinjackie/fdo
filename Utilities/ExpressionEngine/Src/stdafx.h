@@ -47,6 +47,18 @@
 #endif
 
 #include <Fdo.h>
+#include <math.h>
+#include <wctype.h>
+#include <malloc.h>
+#include <limits.h>
+#include <stdio.h>
+#include <vector>
+
+#include <FdoCommonStringUtil.h>
+#include <FdoCommonOSUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <FdoCommonThreadMutex.h>
+#include <FdoCommonSchemaUtil.h>
 
 #ifndef _WIN32
 #define fdofdo_cat "FdoMessage.cat"

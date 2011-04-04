@@ -19,7 +19,6 @@
 #ifndef FDOFUNCTIONX_H
 #define FDOFUNCTIONX_H
 
-#include <FdoExpressionEngine.h>
 #include <FdoExpressionEngineINonAggregateFunction.h>
 
 
