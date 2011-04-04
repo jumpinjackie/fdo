@@ -19,18 +19,6 @@
 #ifndef FDOFUNCTIONMOD_H
 #define FDOFUNCTIONMOD_H
 
-#include <FdoExpressionEngine.h>
-#include <FdoCommonOSUtil.h>
-#include <FdoCommonMiscUtil.h>
-
-#include <Spatial/SpatialStd.h>
-#include <Spatial/SpatialUtility.h>
-
-#include <wctype.h>
-#include <malloc.h>
-#include <math.h>
-#include <limits.h>
-
 #include <FdoExpressionEngineINonAggregateFunction.h>
 
 

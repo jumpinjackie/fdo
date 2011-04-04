@@ -18,14 +18,13 @@
 #define FDOEXPRESSIONENGINEIMP_H
 
 #include <ExpressionEngine.h>
-#include <vector>
 #include <FdoExpressionEngineFunctionCollection.h>
 #include <Fdo/Connections/Capabilities/FunctionDefinition.h>
 #include <FdoCommonPropertyIndex.h>
 #include <FdoExpressionEngineIAggregateFunction.h>
 #include <FdoExpressionEngineINonAggregateFunction.h>
 
-typedef std::vector<FdoLiteralValue*> retval_stack;
+class FdoExecutionStack;
 
 struct FunctionCache
 {
@@ -237,7 +236,7 @@ private:
 
 protected:
     FdoIReader*  m_reader;   // NOTE: weak reference
-    retval_stack m_retvals;  // Execution stack
+    FdoExecutionStack* m_stack; // Execution stack
 
 private:
     FdoPtr< FdoArray<FdoFunction*> > mAggrIdents;
@@ -245,45 +244,12 @@ private:
     /// list of computed identifiers
     FdoPtr<FdoIdentifierCollection> m_compIdents;
 
-    /// pools of data values
-    std::vector<FdoBooleanValue*> mBooleanPool;
-    std::vector<FdoByteValue*> mBytePool;
-    std::vector<FdoDateTimeValue*> mDateTimePool;
-    std::vector<FdoDecimalValue*> mDecimalPool;
-    std::vector<FdoDoubleValue*> mDoublePool;
-    std::vector<FdoInt16Value*> mInt16Pool;
-    std::vector<FdoInt32Value*> mInt32Pool;
-    std::vector<FdoInt64Value*> mInt64Pool;
-    std::vector<FdoSingleValue*> mSinglePool;
-    std::vector<FdoStringValue*> mStringPool;
-    std::vector<FdoBLOBValue*> mBLOBPool;
-    std::vector<FdoCLOBValue*> mCLOBPool;
-    std::vector<FdoLiteralValueCollection*> mLiteralValueCollectionPool;
-
-    std::vector<FdoBooleanValue*> mPotentialBooleanPool;
-    std::vector<FdoByteValue*> mPotentialBytePool;
-    std::vector<FdoDateTimeValue*> mPotentialDateTimePool;
-    std::vector<FdoDecimalValue*> mPotentialDecimalPool;
-    std::vector<FdoDoubleValue*> mPotentialDoublePool;
-    std::vector<FdoInt16Value*> mPotentialInt16Pool;
-    std::vector<FdoInt32Value*> mPotentialInt32Pool;
-    std::vector<FdoInt64Value*> mPotentialInt64Pool;
-    std::vector<FdoSingleValue*> mPotentialSinglePool;
-    std::vector<FdoStringValue*> mPotentialStringPool;
-    std::vector<FdoBLOBValue*> mPotentialBLOBPool;
-    std::vector<FdoCLOBValue*> mPotentialCLOBPool;
-
     FdoPtr<FdoClassDefinition> m_classDefinition;
 
     FdoCommonPropertyIndex* m_propIndex;
 
     FdoPtr<FdoExpressionEngineFunctionCollection> m_UserDefinedFunctions;           // the user-defined functions to be supported
 
-    std::vector<FdoExpressionEngineIAggregateFunction *> m_AggregateFunctions;      // the aggregate functions. If selecting
-                                                                                    // min(property), max(property2), min(property3) 
-                                                                                    // the first item would be the min object,
-                                                                                    // second item would be a max object and the last 
-                                                                                    // item would be another max object 
     int m_CurrentIndex;         // specifies which item of the aggregate object
  
     bool m_processingAggregate; // true if processing an aggregate function, 
