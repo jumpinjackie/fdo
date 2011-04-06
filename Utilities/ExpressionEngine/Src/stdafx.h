@@ -49,9 +49,19 @@
 #endif
 #endif
 
+#include <vector>
+#include <algorithm>
+
+#ifdef _WIN32
+#include <hash_map>
+#else
+#include <ext/hash_map>
+namespace stdext = ::__gnu_cxx;
+using namespace std;
+#endif
+
 #include <float.h>
 #include <math.h>
-#include <vector>
 
 #include <Fdo.h>
 #include <FdoCommonStringUtil.h>
@@ -59,6 +69,9 @@
 #include <FdoCommonMiscUtil.h>
 #include <FdoCommonThreadMutex.h>
 #include <FdoCommonSchemaUtil.h>
+#include <FdoCommonBinaryReader.h>
+#include <FdoCommonBinaryWriter.h>
+#include <FdoCommonPropertyIndex.h>
 
 #ifndef _WIN32
 #define fdofdo_cat "FdoMessage.cat"
