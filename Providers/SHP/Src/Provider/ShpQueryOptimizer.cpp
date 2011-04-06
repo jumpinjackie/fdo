@@ -219,7 +219,8 @@ void ShpQueryOptimizer::ProcessSpatialCondition(FdoSpatialCondition& filter)
             ret = FdoSpatialUtility::Evaluate( geomLeft, spatialOp, geomRight);
         }
 
-        m_retvals.push_back( ObtainBooleanValue (false, ret) );
+        FdoPtr<FdoBooleanValue> boolVal = FdoBooleanValue::Create(ret);
+        PushLiteralValue(boolVal);
     }
 }
 
