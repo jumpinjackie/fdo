@@ -10,12 +10,16 @@
 #define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
 #endif		
 
-
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
 #include <windows.h>
-#include <float.h>
 #include <crtdbg.h>
+
+#else
+
+#include <wctype.h>
+#include <malloc.h>
+#include <stdio.h>
 
 #endif
 
@@ -23,7 +27,6 @@
 #   define LLONG_MAX    9223372036854775807LL
 #   define LLONG_MIN    (-LLONG_MAX - 1LL)
 #endif
-
 
 #ifdef _DEBUG
     #ifdef _WIN32
@@ -46,14 +49,11 @@
 #endif
 #endif
 
-#include <Fdo.h>
+#include <float.h>
 #include <math.h>
-#include <wctype.h>
-#include <malloc.h>
-#include <limits.h>
-#include <stdio.h>
 #include <vector>
 
+#include <Fdo.h>
 #include <FdoCommonStringUtil.h>
 #include <FdoCommonOSUtil.h>
 #include <FdoCommonMiscUtil.h>
