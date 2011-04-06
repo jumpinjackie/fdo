@@ -28,6 +28,7 @@
 #include <Fdo/Commands/Locking/LockType.h>
 
 class FdoClassDefinition;
+class FdoClassCapabilitiesMap;
 
 /// \brief
 /// The FdoClassCapabilites class describes various capabilities
@@ -181,14 +182,13 @@ public:
     void Set( FdoClassCapabilities* pCapabilities );
 
 private:
-    FdoBoolean          m_supportsLocking;
-    FdoBoolean          m_supportsLongTransactions;
-    FdoBoolean          m_supportsWrite;
-    FdoClassDefinition* m_parent;
-    FdoLockType*        m_lockTypes;
-    FdoInt32            m_lockTypeCount;
-    std::map<FdoStringP, FdoPolygonVertexOrderRule> m_polygonVertexOrderRuleMap;
-    std::map<FdoStringP, FdoBoolean> m_polygonVertexOrderStrictnessMap;
+    FdoBoolean                  m_supportsLocking;
+    FdoBoolean                  m_supportsLongTransactions;
+    FdoBoolean                  m_supportsWrite;
+    FdoClassDefinition*         m_parent;
+    FdoLockType*                m_lockTypes;
+    FdoInt32                    m_lockTypeCount;
+    FdoClassCapabilitiesMap*    m_capabilitiesMap;
 };
 
 /// \ingroup (typedefs)
