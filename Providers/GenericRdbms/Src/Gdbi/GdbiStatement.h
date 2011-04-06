@@ -98,4 +98,153 @@ public:
 
 };
 
+class GdbiCacheParam
+{
+    union
+    {
+        FdoInt16    vInt16;
+        FdoInt32    vInt32;
+        FdoInt64    vInt64;
+	    float       vFloat;
+	    double      vDouble;
+	    char*       vChar;
+	    FdoString*  vString;
+    }Data;
+    FdoDataType mType;
+    FdoInt64    mNullInd;
+
+public:
+    GdbiCacheParam()
+    {
+        mType = FdoDataType_Int32;
+        Data.vInt64 = 0;
+        mNullInd = -1;
+    }
+    GdbiCacheParam(FdoDataValue* pData, GdbiStatement* statement, int idx)
+    {
+        BindParameter(pData, statement, idx);
+    }
+    void BindParameter(FdoDataValue* pData, GdbiStatement* statement, int idx)
+    {
+        mType = pData->GetDataType();
+        mNullInd = -1;
+        switch(mType)
+        {
+        case FdoDataType_BLOB:
+            {
+            //FdoLOBValue* v = static_cast<FdoLOBValue*>(pData);
+            //FdoPtr<FdoByteArray> ba = v->GetData();
+            }
+            break;
+        case FdoDataType_DateTime:
+            {
+                FdoDateTimeValue* v = static_cast<FdoDateTimeValue*>(pData);
+                FdoDateTime dtm = v->GetDateTime();
+                // convert
+            }
+            break;
+        case FdoDataType_Boolean:
+            if (!pData->IsNull())
+            {
+                FdoBooleanValue* v = static_cast<FdoBooleanValue*>(pData);
+                Data.vInt32 = v->GetBoolean() ? 1 : 0;
+                statement->Bind(idx, &Data.vInt32);
+            }
+            else
+                statement->Bind(idx, (int*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Byte:
+            if (!pData->IsNull())
+            {
+                FdoByteValue* v = static_cast<FdoByteValue*>(pData);
+                Data.vInt16 = v->GetByte();
+                statement->Bind(idx, &Data.vInt16);
+            }
+            else
+                statement->Bind(idx, (short*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Decimal:
+            if (!pData->IsNull())
+            {
+                FdoDecimalValue* v = static_cast<FdoDecimalValue*>(pData);
+                Data.vDouble = v->GetDecimal();
+                statement->Bind(idx, &Data.vDouble);
+            }
+            else
+                statement->Bind(idx, (double*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Double:
+            if (!pData->IsNull())
+            {
+                FdoDoubleValue* v = static_cast<FdoDoubleValue*>(pData);
+                Data.vDouble = v->GetDouble();
+                statement->Bind(idx, &Data.vDouble);
+            }
+            else
+                statement->Bind(idx, (double*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Int16:
+            if (!pData->IsNull())
+            {
+                FdoInt16Value* v = static_cast<FdoInt16Value*>(pData);
+                Data.vInt16 = v->GetInt16();
+                statement->Bind(idx, &Data.vInt16);
+            }
+            else
+                statement->Bind(idx, (short*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Int32:
+            if (!pData->IsNull())
+            {
+                FdoInt32Value* v = static_cast<FdoInt32Value*>(pData);
+                Data.vInt32 = v->GetInt32();
+                statement->Bind(idx, &Data.vInt32);
+            }
+            else
+                statement->Bind(idx, (int*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Int64:
+            if (!pData->IsNull())
+            {
+                FdoInt64Value* v = static_cast<FdoInt64Value*>(pData);
+                Data.vInt64 = v->GetInt64();
+                statement->Bind(idx, &Data.vInt64);
+            }
+            else
+                statement->Bind(idx, (FdoInt64*)NULL, &mNullInd);
+            break;
+        case FdoDataType_Single:
+            if (!pData->IsNull())
+            {
+                FdoSingleValue* v = static_cast<FdoSingleValue*>(pData);
+                Data.vFloat = v->GetSingle();
+                statement->Bind(idx, &Data.vFloat);
+            }
+            else
+                statement->Bind(idx, (float*)NULL, &mNullInd);
+            break;
+        case FdoDataType_String:
+            if (!pData->IsNull())
+            {
+                FdoStringValue* v = static_cast<FdoStringValue*>(pData);
+                Data.vString = v->GetString();
+                if (Data.vString != NULL)
+                {
+                    int sz = sizeof(FdoString) * (wcslen(Data.vString) + 1);
+                    statement->Bind(idx, sz, Data.vString);
+                }
+                else
+                    statement->Bind(idx, 0, (FdoString*)NULL, &mNullInd);
+            }
+            else
+                statement->Bind(idx, 0, (FdoString*)NULL, &mNullInd);
+            break;
+        }
+    }
+    ~GdbiCacheParam()
+    {
+    }
+};
+
+
 #endif //_GDBISTATEMENT_

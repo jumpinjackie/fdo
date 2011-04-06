@@ -43,6 +43,7 @@ protected:
         m_ClassName = NULL;
         mFdoConnection = NULL;
         m_TimeOut = 0;
+        m_pParmeterValues = NULL;
     }
 
     // Constructs an instance of a FeatureClassCommand using the specified arguments.
@@ -55,6 +56,7 @@ protected:
 
         mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(connection);
         m_TimeOut = 0;
+        m_pParmeterValues = NULL;
     }
 
     // Default destructor for FeatureCommand.
@@ -65,6 +67,7 @@ protected:
 
         FDO_SAFE_RELEASE(mFdoConnection);
         FDO_SAFE_RELEASE(m_Filter);
+        FDO_SAFE_RELEASE(m_pParmeterValues);
     }
 
     virtual void Dispose() { delete this; }
@@ -235,7 +238,7 @@ public:
     // Validates and optimizes the command for execution. Calling this method is
     // optional, but recommended if the bound to different sets of parameters and
     // executed multiple times.
-    virtual void Prepare();
+    virtual void Prepare(){}
 
     // Attempts to cancel command execution. Cancel may be called on a separate
     // thread after the commands Execute method has been called and before
@@ -243,14 +246,18 @@ public:
     // Execute method. If there is nothing to cancel, nothing happens. However,
     // if command execution is in process, and the attempt to cancel fails or is
     // not supported, no exception is generated.
-    virtual void Cancel();
+    virtual void Cancel(){}
 
     // Returns a ParameterValueCollection. If the command requires parameters, the
     // literal values to bind to each of those named parameters must be added to
     // this collection.
-    virtual FdoParameterValueCollection* GetParameterValues();
+    virtual FdoParameterValueCollection* GetParameterValues()
+    { 
+        if( m_pParmeterValues == NULL )
+            m_pParmeterValues = FdoParameterValueCollection::Create();
 
-
+        return FDO_SAFE_ADDREF(m_pParmeterValues);
+    }
 
 private:
 
@@ -262,6 +269,8 @@ private:
     int             m_TimeOut;
 
     char  ConversionBuffer[LOCAL_BUFFER_SIZE];
+
+    FdoParameterValueCollection*     m_pParmeterValues;
 };
 
 // Gets the transaction in which the Command executes.
@@ -275,34 +284,6 @@ FdoITransaction* FdoRdbmsFeatureCommand<FDO_FEATURE_COMMAND>::GetTransaction()
 template <class FDO_FEATURE_COMMAND>
 void FdoRdbmsFeatureCommand<FDO_FEATURE_COMMAND>::SetTransaction(FdoITransaction* value)
 {
-}
-
-// Validates and optimizes the command for execution. Calling this method is
-// optional, but recommended if the bound to different sets of parameters and
-// executed multiple times.
-template <class FDO_FEATURE_COMMAND>
-void FdoRdbmsFeatureCommand<FDO_FEATURE_COMMAND>::Prepare()
-{
-}
-
-// Attempts to cancel command execution. Cancel may be called on a separate
-// thread after the commands Execute method has been called and before
-// Execute has returned. If successful an exception will be thrown from the
-// Execute method. If there is nothing to cancel, nothing happens. However,
-// if command execution is in process, and the attempt to cancel fails or is
-// not supported, no exception is generated.
-template <class FDO_FEATURE_COMMAND>
-void FdoRdbmsFeatureCommand<FDO_FEATURE_COMMAND>::Cancel()
-{
-}
-
-// Returns a ParameterValueCollection. If the command requires parameters, the
-// literal values to bind to each of those named parameters must be added to
-// this collection.
-template <class FDO_FEATURE_COMMAND>
-FdoParameterValueCollection* FdoRdbmsFeatureCommand<FDO_FEATURE_COMMAND>::GetParameterValues()
-{
-    return NULL;
 }
 
 #endif // FDORDBMSFEATURECOMMAND_H

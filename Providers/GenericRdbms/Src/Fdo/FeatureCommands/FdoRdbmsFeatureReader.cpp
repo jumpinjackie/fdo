@@ -1435,7 +1435,7 @@ FdoByte FdoRdbmsFeatureReader::GetByte( const wchar_t *propertyName )
 
 FdoDateTime FdoRdbmsFeatureReader::GetDateTime( const wchar_t *propertyName )
 {
-    return mFdoConnection->DbiToFdoTime( mConnection->GetUtility()->UnicodeToUtf8( GetString( propertyName ) ) );
+    return mFdoConnection->DbiToFdoTime(GetString(propertyName));
 }
 
 

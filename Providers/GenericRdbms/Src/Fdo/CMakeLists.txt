@@ -84,6 +84,7 @@ set( FdoRdbms_Lt_STAT_SRCS
 
 set( FdoRdbms_Other_STAT_SRCS
    Other/FdoRdbmsBLOBStreamReader.cpp
+   Other/FdoRdbmsSimpleBLOBStreamReader.cpp
    Other/FdoRdbmsPrimaryKey.cpp
    Other/FdoRdbmsException.cpp
    Other/FdoRdbmsSQLCommand.cpp

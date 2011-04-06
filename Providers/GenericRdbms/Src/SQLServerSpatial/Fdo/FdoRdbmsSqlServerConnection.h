@@ -107,6 +107,10 @@ public:
     virtual FdoDateTime  DbiToFdoTime( const char* time );
 
     //
+    // Converts a SqlServer string date of a specific format to a FdoDateTime (time_t) format.
+    virtual FdoDateTime  DbiToFdoTime( const wchar_t* time );
+
+    //
     // Convert time_t( FdoDateTime ) to a SqlServer string date of the form.
     // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
     virtual const char* FdoToDbiTime( FdoDateTime  time );

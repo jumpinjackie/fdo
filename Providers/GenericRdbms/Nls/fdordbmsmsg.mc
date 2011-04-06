@@ -1990,3 +1990,23 @@ SymbolicName=FDORDBMS_546
 Language=English
 OSGeo.SQLServerSpatial provider cannot perform spatial handling on server with version older than 10.0.
 .
+MessageId=2772
+SymbolicName=FDORDBMS_547
+Language=English
+The given stream offset '%1$d' is negative.
+.
+MessageId=2773
+SymbolicName=FDORDBMS_548
+Language=English
+The given stream offset '%1$d' is too large.
+.
+MessageId=2774
+SymbolicName=FDORDBMS_549
+Language=English
+The count '%1$d' is invalid. It must be either positive or -1 to read the entire stream.
+.
+MessageId=2775
+SymbolicName=FDORDBMS_550
+Language=English
+Buffer required argument was set to NULL.
+.

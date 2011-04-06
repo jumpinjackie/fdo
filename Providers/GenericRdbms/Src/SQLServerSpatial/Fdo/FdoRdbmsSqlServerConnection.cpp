@@ -78,10 +78,7 @@ FdoRdbmsSqlServerConnection* FdoRdbmsSqlServerConnection::Create()
 
 FdoICommand *FdoRdbmsSqlServerConnection::CreateCommand (FdoInt32 commandType)
 {
-    FdoICommand* ret;
-
-	FdoPtr<FdoICommandCapabilities> cmdCapabilities = GetCommandCapabilities();
-
+    FdoICommand* ret = NULL;
     switch (commandType)
     {
         case FdoCommandType_CreateDataStore:
@@ -96,21 +93,30 @@ FdoICommand *FdoRdbmsSqlServerConnection::CreateCommand (FdoInt32 commandType)
              ret = new FdoRdbmsSqlServerDeleteCommand (this);
              break;
 
+        case FdoCommandType_Select:
+        case FdoCommandType_SelectAggregates:
+        case FdoCommandType_Insert:
+        case FdoCommandType_Update:
+        case FdoCommandType_DescribeSchema:
+        case FdoCommandType_ApplySchema:
+        case FdoCommandType_DestroySchema:
+        case FdoCommandType_DescribeSchemaMapping:
+        case FdoCommandType_ActivateSpatialContext:
+        case FdoCommandType_CreateSpatialContext:
+        case FdoCommandType_DestroySpatialContext:
+        case FdoCommandType_GetSpatialContexts:
+        case FdoCommandType_ListDataStores:
+        case FdoCommandType_SQLCommand:
+        case FdoCommandType_GetSchemaNames:
+        case FdoCommandType_GetClassNames:
+            ret = FdoRdbmsConnection::CreateCommand(commandType);
+            break;
         case FdoRdbmsCommandType_CreateSpatialIndex:
         case FdoRdbmsCommandType_DestroySpatialIndex:
         case FdoRdbmsCommandType_GetSpatialIndexes:
-			throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_10, "Command not supported"));
-			break;
-
-		 default:
-			 int size;
-			 FdoInt32 *cmds = cmdCapabilities->GetCommands( size );
-			 for(int i=0; i<size; i++ )
-			 {
-				 if( cmds[i] == commandType )
-					 return FdoRdbmsConnection::CreateCommand( commandType );
-			 }
-             return FdoRdbmsConnection::CreateCommand( -1/*undefined*/ );
+        default:
+            throw FdoConnectionException::Create(NlsMsgGet(FDORDBMS_10, "Command not supported"));
+            break;
     }
     return (ret);
 }
@@ -191,6 +197,29 @@ FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const char* timeStr )
         int count = sscanf(timeStr,"%4d-%02d-%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &seconds);     
         if( count != 6 )
             count = sscanf(timeStr,"%4d-%02d-%02d",&year, &month, &day);
+    }
+    fdoTime.year = (FdoInt16)year;
+    fdoTime.month = (FdoByte)month;
+    fdoTime.day = (FdoByte)day;
+    fdoTime.hour = (FdoByte)hour;
+    fdoTime.minute = (FdoByte)minute;
+    fdoTime.seconds = (float)seconds;
+    return fdoTime;
+}
+
+ //
+// Converts a SqlServer string date of a specific format to a FdoDateTime (time_t) format.
+FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const wchar_t* timeStr )
+{
+    FdoDateTime fdoTime;
+    int year, month, day, hour, minute, seconds;
+    year = month = day = hour = minute = seconds = 0;
+
+    if( timeStr != NULL && *timeStr != '\0' )
+    {
+        int count = swscanf(timeStr, L"%4d-%02d-%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &seconds);     
+        if( count != 6 )
+            count = swscanf(timeStr, L"%4d-%02d-%02d",&year, &month, &day);
     }
     fdoTime.year = (FdoInt16)year;
     fdoTime.month = (FdoByte)month;

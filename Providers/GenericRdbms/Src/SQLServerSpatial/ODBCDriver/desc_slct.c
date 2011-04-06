@@ -265,6 +265,10 @@ int local_odbcdr_desc_slct(
 			*rdbi_type = RDBI_GEOMETRY;
 			*binary_size = sizeof(void*);
             break;
+        case SQL_BINARY:
+			*rdbi_type = RDBI_BLOB;
+			*binary_size = odbc_precision;
+            break;
 		default:
             // ODBC doesn't return an error. This is better than a generic error.
             debug1("odbcdr_desc_slct:Unknown ODBC type %d\n", odbc_type);

@@ -161,9 +161,14 @@ void FdoRdbmsFilterProcessor::PrependString(const char *str)
 // Add a string to the end of the buffer
 void FdoRdbmsFilterProcessor::AppendString(const wchar_t *str)
 {
-    ReallocBuffer( wcslen( str ) + 1, true );
+    AppendString(str, wcslen( str ));
+}
+
+void FdoRdbmsFilterProcessor::AppendString(const wchar_t *str, size_t len)
+{
+    ReallocBuffer( len + 1, true );
     wcscpy( &mSqlFilterText[mNextTxtIndex], str );
-    mNextTxtIndex += wcslen( str );
+    mNextTxtIndex += len;
 }
 
 //
@@ -364,7 +369,7 @@ void FdoRdbmsFilterProcessor::ProcessAggregateFunction (FdoFunction& expr)
 {
     // Append the function name and the opening bracket.
     ProcessFunctionName(expr);
-	AppendString( "( " );
+	AppendString (L"( ", 2);
 
     // Process the arguments. This is where the special processing is required as
     // it is required to have the parameters listed sequentially without a comma
@@ -380,7 +385,7 @@ void FdoRdbmsFilterProcessor::ProcessAggregateFunction (FdoFunction& expr)
             {
                 FdoStringValue *stringValue = static_cast<FdoStringValue *>(dataValue);
                 AppendString(stringValue->GetString());
-                AppendString(L" ");	
+                AppendString(L" ", 1);
             }
             else
                 throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_29, "Unsupported FDO type in expression"));
@@ -388,7 +393,7 @@ void FdoRdbmsFilterProcessor::ProcessAggregateFunction (FdoFunction& expr)
         else
             HandleExpr(exp);
 	}
-    AppendString(" )");
+    AppendString(L" )", 2);
 }
 
 void FdoRdbmsFilterProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
@@ -399,26 +404,26 @@ void FdoRdbmsFilterProcessor::ProcessBinaryExpression(FdoBinaryExpression& expr)
         throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_252, "%1$ls is missing the left expression", L"FdoBinaryExpression" ));
     if( rgtExpr == NULL )
         throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_253, "%1$ls is missing the right expression", L"FdoBinaryExpression" ));
-    AppendString( OPEN_PARENTH );
+    AppendString (OPEN_PARENTH, 3);
     HandleExpr( lftExpr );
     switch( expr.GetOperation() )
     {
-        case FdoBinaryOperations_Add: AppendString( ARITHMETIC_PLUS );
+        case FdoBinaryOperations_Add: AppendString( ARITHMETIC_PLUS, 3 );
             break;
-        case FdoBinaryOperations_Subtract: AppendString( ARITHMETIC_MINUS );
-            break;
-
-        case FdoBinaryOperations_Multiply: AppendString( ARITHMETIC_MULT );
+        case FdoBinaryOperations_Subtract: AppendString( ARITHMETIC_MINUS, 3 );
             break;
 
-        case FdoBinaryOperations_Divide: AppendString( ARITHMETIC_DIV );
+        case FdoBinaryOperations_Multiply: AppendString( ARITHMETIC_MULT, 3 );
+            break;
+
+        case FdoBinaryOperations_Divide: AppendString( ARITHMETIC_DIV, 3 );
             break;
 
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_63, FILTER_ERROR));
     }
     HandleExpr( rgtExpr );
-    AppendString( CLOSE_PARENTH );
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 void FdoRdbmsFilterProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
@@ -429,9 +434,9 @@ void FdoRdbmsFilterProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 
     if( expr.GetOperation() == FdoUnaryOperations_Negate )
     {
-        AppendString( L" ( - ( " );
+        AppendString (L" ( - ( ", 7);
         HandleExpr( uniExpr );
-        AppendString( L" ) ) ");
+        AppendString (L" ) ) ", 5);
     }
     else
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_257, "FdoUnaryExpression supports only the negate operation" ));
@@ -440,18 +445,18 @@ void FdoRdbmsFilterProcessor::ProcessUnaryExpression(FdoUnaryExpression& expr)
 void FdoRdbmsFilterProcessor::ProcessFunction(FdoFunction& expr)
 {
     ProcessFunctionName(expr);
-    //AppendString( OPEN_PARENTH ); // MySql tripped on the leading space 
-	AppendString(L"( "); 
+    //AppendString (OPEN_PARENTH, 3); // MySql tripped on the leading space 
+	AppendString (L"( ", 2); 
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
     for(int i=0; i<exprCol->GetCount(); i++ )
     {
         if( i!= 0 )
-            AppendString( L", " );
+            AppendString (L", ", 2);
 
         FdoPtr<FdoExpression>exp = exprCol->GetItem( i );
         HandleExpr( exp );
     }
-    AppendString( CLOSE_PARENTH );
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 
@@ -467,9 +472,9 @@ void FdoRdbmsFilterProcessor::ProcessComputedIdentifier(FdoComputedIdentifier& e
     if( pExpr == NULL )
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_256, "FdoComputedIdentifier is missing the expression"));
 
-    AppendString( OPEN_PARENTH );
+    AppendString (OPEN_PARENTH, 3);
     HandleExpr( pExpr );
-    AppendString( CLOSE_PARENTH );
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOuterJoin, bool inSelectList )
@@ -625,81 +630,115 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
 
 void FdoRdbmsFilterProcessor::ProcessParameter( FdoParameter& expr )
 {
-    AppendString( L":" );
-    AppendString( PropertyNameToColumnName( expr.GetName() ) );
+    AppendString (L"?", 1);
+    
+    FdoPtr<FdoParameterValue> pVal = (mParams == NULL) ? NULL : mParams->FindItem(expr.GetName());
+    if( pVal == NULL )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    mUsedParameter.push_back(pVal.p);
+    //AppendString( PropertyNameToColumnName( expr.GetName() ) );
 }
 
 void FdoRdbmsFilterProcessor::ProcessBooleanValue(FdoBooleanValue& expr)
 {
-    if( expr.GetBoolean() )
-        AppendString( L"1" );  // Database bool true
+    if (!expr.IsNull())
+    {
+        if( expr.GetBoolean() )
+            AppendString (L"1", 1);  // Database bool true
+        else
+            AppendString (L"0", 1);  // Database bool false
+    }
     else
-        AppendString( L"0" );  // Database bool false
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessByteValue(FdoByteValue& expr)
 {
-    wchar_t   val[2];
-    val[0] = expr.GetByte();
-    val[1] = '\0';
-    AppendString( L"'" );
-    AppendString( val );
-    AppendString( L"'" );
+    if (!expr.IsNull())
+    {
+        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%d", (int)expr.GetByte());
+        AppendString(mConvBuffer);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessDateTimeValue(FdoDateTimeValue& expr)
 {
-    AppendString( L"'" );
-    AppendString( mFdoConnection->FdoToDbiTime( expr.GetDateTime() ) );
-    AppendString( L"'" );
+    if (!expr.IsNull())
+    {
+        AppendString (L"'", 1);
+        AppendString (mFdoConnection->FdoToDbiTime( expr.GetDateTime() ));
+        AppendString (L"'", 1);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessDoubleValue(FdoDoubleValue& expr)
 {
-    char    tmpValue[124];
-    sprintf(tmpValue,"%.16g",expr.GetDouble());
-    AppendString( tmpValue );
+    if (!expr.IsNull())
+    {
+        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDouble());
+        AppendString (mConvBuffer);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
 {
-    char    tmpValue[124];
-    sprintf(tmpValue,"%.8f",expr.GetDecimal());
-    AppendString( tmpValue );
+    if (!expr.IsNull())
+    {
+        // since we use double for a decimal we should use %.16g and not %.8f
+        // in case this will generate issues we can change it back to %.8f
+        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDecimal());
+        AppendString (mConvBuffer);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt16Value(FdoInt16Value& expr)
 {
-    char    tmpValue[124];
-    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt16(),tmpValue) );
+    if (!expr.IsNull())
+        AppendString( FdoCommonOSUtil::itow( (int)expr.GetInt16(),mConvBuffer, MEM_BLOCK_ALLOC_SIZE) );
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt32Value(FdoInt32Value& expr)
 {
-    char    tmpValue[124];
-    AppendString( FdoCommonOSUtil::itoa( (int)expr.GetInt32(),tmpValue) );
+    if (!expr.IsNull())
+        AppendString( FdoCommonOSUtil::itow( (int)expr.GetInt32(),mConvBuffer, MEM_BLOCK_ALLOC_SIZE) );
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessInt64Value(FdoInt64Value& expr)
 {
-    char    tmpValue[124];
-
+    if (!expr.IsNull())
+    {
 #ifdef _WIN32
-	strncpy( tmpValue, _i64toa( (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64(),tmpValue, 10 ), 123 );
-	tmpValue[123]='\0';
+        _i64tow_s(expr.GetInt64(), mConvBuffer, MEM_BLOCK_ALLOC_SIZE, 10);
 #else
-
-	sprintf(tmpValue, "%lld", (FdoInt64)(dynamic_cast<FdoInt64Value&>(expr)).GetInt64());
+        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%lld", (long long int)expr.GetInt64());
 #endif
-    AppendString(tmpValue);
-
+        AppendString (mConvBuffer);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessSingleValue(FdoSingleValue& expr)
 {
-    char    tmpValue[124];
-    sprintf(tmpValue,"%.8f",expr.GetSingle());
-    AppendString( tmpValue );
+    if (!expr.IsNull())
+    {
+        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.8f",expr.GetSingle());
+        AppendString (mConvBuffer);
+    }
+    else
+        AppendString (L"null", 4);
 }
 
 void FdoRdbmsFilterProcessor::ProcessStringValue(FdoStringValue& expr)
@@ -741,28 +780,28 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
     const FdoSmLpDataPropertyDefinitionCollection *properties = classDefinition->RefIdentityProperties();
 
     if (mUseNesting)
-        AppendString(OPEN_PARENTH);
+        AppendString (OPEN_PARENTH, 3);
     if( filter.GetOperation() == FdoBinaryLogicalOperations_And )
     {
         useGrouping  = mUseGrouping;
         mUseGrouping = false;
         if (useGrouping)
-            AppendString(OPEN_PARENTH);
+            AppendString (OPEN_PARENTH, 3);
         HandleFilter( leftOperand );
         if (useGrouping)
-            AppendString(CLOSE_PARENTH);
+            AppendString (CLOSE_PARENTH, 3);
         AppendString( LOGICAL_AND );
         if (useGrouping)
-            AppendString(OPEN_PARENTH);
+            AppendString (OPEN_PARENTH, 3);
         HandleFilter( rightOperand );
         if (useGrouping)
-            AppendString(CLOSE_PARENTH);
+            AppendString (CLOSE_PARENTH, 3);
     }
     else
     {
         mProcessingOrOperator = true;
         HandleFilter( leftOperand );
-        AppendString( LOGICAL_OR );
+        AppendString (LOGICAL_OR, 4);
         HandleFilter( rightOperand );
 		FdoSpatialCondition* leftSpCond = dynamic_cast<FdoSpatialCondition*>(leftOperand.p);
         FdoSpatialCondition* rightSpCond = dynamic_cast<FdoSpatialCondition*>(rightOperand.p);
@@ -774,7 +813,7 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
     }
 
     if (mUseNesting)
-        AppendString(CLOSE_PARENTH);
+        AppendString (CLOSE_PARENTH, 3);
 
   	// Save 
 	mFilterLogicalOps.push_back( filter.GetOperation() );
@@ -789,37 +828,37 @@ void FdoRdbmsFilterProcessor::ProcessComparisonCondition(FdoComparisonCondition&
     if( rtExp == NULL )
         throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_253, "%1$ls is missing the right expression", L"FdoComparisonCondition" ));
 
-    AppendString( OPEN_PARENTH );
+    AppendString (OPEN_PARENTH, 3);
     HandleExpr( lfExp );
 
     switch ( filter.GetOperation() )
     {
-        case FdoComparisonOperations_EqualTo: AppendString( EQUAL_OP );
+        case FdoComparisonOperations_EqualTo: AppendString (EQUAL_OP, 3);
             break;
 
-        case FdoComparisonOperations_NotEqualTo: AppendString( NOT_EQUAL_OP );
+        case FdoComparisonOperations_NotEqualTo: AppendString (NOT_EQUAL_OP, 4);
             break;
 
-        case FdoComparisonOperations_GreaterThan: AppendString( GREATER_THAN_OP );
+        case FdoComparisonOperations_GreaterThan: AppendString (GREATER_THAN_OP, 3);
             break;
 
-        case FdoComparisonOperations_GreaterThanOrEqualTo: AppendString( GREATER_OR_EQUAL_OP );
+        case FdoComparisonOperations_GreaterThanOrEqualTo: AppendString (GREATER_OR_EQUAL_OP, 4);
             break;
 
-        case FdoComparisonOperations_LessThan: AppendString( LESS_THAN_OP );
+        case FdoComparisonOperations_LessThan: AppendString (LESS_THAN_OP, 3);
             break;
 
-        case FdoComparisonOperations_LessThanOrEqualTo: AppendString( LESS_OR_EQUAL_OP );
+        case FdoComparisonOperations_LessThanOrEqualTo: AppendString (LESS_OR_EQUAL_OP, 4);
             break;
 
-        case FdoComparisonOperations_Like: AppendString( LIKE_OP );
+        case FdoComparisonOperations_Like: AppendString (LIKE_OP, 6);
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_63, FILTER_ERROR));
             break;
     }
     HandleExpr( rtExp );
-    AppendString( CLOSE_PARENTH );
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 void FdoRdbmsFilterProcessor::ProcessInCondition(FdoInCondition& filter)
@@ -834,20 +873,20 @@ void FdoRdbmsFilterProcessor::ProcessInCondition(FdoInCondition& filter)
     if( expressions == NULL || expressions->GetCount() <= 0 )
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_249, "FdoInCondition has an empty value list"));
 
-    AppendString(OPEN_PARENTH);
+    AppendString (OPEN_PARENTH, 3);
     ProcessIdentifier( *id );
-    AppendString( L" IN " );
-    AppendString(OPEN_PARENTH);
+    AppendString (L" IN ", 4);
+    AppendString (OPEN_PARENTH, 3);
     for(i=0; i < expressions->GetCount()-1; i++ )
     {
         exp = expressions->GetItem(i);
         HandleExpr( exp );
-        AppendString( L"," );
+        AppendString (L",", 1);
     }
     exp = expressions->GetItem( i );
     HandleExpr(exp);
-    AppendString(CLOSE_PARENTH);
-    AppendString(CLOSE_PARENTH);
+    AppendString (CLOSE_PARENTH, 3);
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 void FdoRdbmsFilterProcessor::ProcessNullCondition(FdoNullCondition& filter)
@@ -856,10 +895,10 @@ void FdoRdbmsFilterProcessor::ProcessNullCondition(FdoNullCondition& filter)
     if( id == NULL )
         throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_248, "%1$ls is missing the property name", L"FdoNullCondition"));
 
-    AppendString(OPEN_PARENTH);
+    AppendString (OPEN_PARENTH, 3);
     ProcessIdentifier( *id );
-    AppendString( L" IS NULL ");
-    AppendString(CLOSE_PARENTH);
+    AppendString(L" IS NULL ", 9);
+    AppendString (CLOSE_PARENTH, 3);
 }
 
 void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperator& filter)
@@ -868,20 +907,20 @@ void FdoRdbmsFilterProcessor::ProcessUnaryLogicalOperator(FdoUnaryLogicalOperato
     if( unaryOp == NULL )
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_250, "FdoUnaryLogicalOperator is missing the operand" ));
 
-    AppendString(OPEN_PARENTH);
+    AppendString (OPEN_PARENTH, 3);
     if ( filter.GetOperation() == FdoUnaryLogicalOperations_Not )
     {
-        AppendString( LOGICAL_NOT );
+        AppendString (LOGICAL_NOT, 5);
     }
     else
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_251, "FdoUnaryLogicalOperator supports only the 'Not' operation"));
 
     if (mAddNegationBracket)
-        AppendString(OPEN_PARENTH);
+        AppendString (OPEN_PARENTH, 3);
     HandleFilter( unaryOp );
     if (mAddNegationBracket)
-        AppendString(CLOSE_PARENTH);
-    AppendString(CLOSE_PARENTH);
+        AppendString (CLOSE_PARENTH, 3);
+    AppendString (CLOSE_PARENTH, 3);
 
 	// Disallow NOT with the spatial filter
     FdoSpatialCondition* spCond = dynamic_cast<FdoSpatialCondition*>(unaryOp.p);
@@ -1019,17 +1058,17 @@ void FdoRdbmsFilterProcessor::AppendOrderBy( FdoRdbmsFilterUtilConstrainDef *fil
     if( filterConstraint == NULL || filterConstraint->orderByProperties == NULL || filterConstraint->orderByProperties->GetCount() == 0 )
         return;
 
-    AppendString( L" ORDER BY " );
+    AppendString (L" ORDER BY ", 10);
     for(int i=0; i<filterConstraint->orderByProperties->GetCount(); i++ )
     {
         if( i != 0 )
-            AppendString( L", " );
+            AppendString (L", ", 2);
         FdoPtr<FdoIdentifier>ident = filterConstraint->orderByProperties->GetItem( i );
         ProcessIdentifier( *ident, true, false );
         if( filterConstraint->orderingOption == FdoOrderingOption_Descending )
-            AppendString( L" DESC " );
+            AppendString (L" DESC ", 6);
         else
-            AppendString( L" ASC " );
+            AppendString (L" ASC ", 5);
     }
 }
 
@@ -1037,7 +1076,7 @@ void FdoRdbmsFilterProcessor::AppendDataProperty( const FdoSmLpClassDefinition* 
 {               
     FdoStringP tableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
     AppendString(  GetTableAlias( tableName ) );
-    AppendString( L"." );
+    AppendString (L".", 1);
     AppendString( (FdoString*)(mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetColumnSqlName(dataProp)) );
 }
 
@@ -1062,7 +1101,7 @@ void FdoRdbmsFilterProcessor::AppendObjectProperty( const FdoSmLpClassDefinition
 
     FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
     AppendString( GetTableAlias( sqlTableName ) );
-    AppendString( L"." );
+    AppendString (L".", 1);
     AppendString( (FdoString*)(pkCols->RefItem(0)->GetName()) );
 }
 
@@ -1081,17 +1120,17 @@ void FdoRdbmsFilterProcessor::AppendGeometricProperty( const FdoSmLpClassDefinit
         if (NULL == columnX || NULL == columnY)
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error"));
         AppendString( tableAlias );
-        AppendString( L"." );
+        AppendString (L".", 1);
         AppendString( (FdoString*)(columnX->GetDbName()) );
-        AppendString( L"," );
+        AppendString (L",", 1);
         AppendString( tableAlias );
-        AppendString( L"." );
+        AppendString (L".", 1);
         AppendString( (FdoString*)(columnY->GetDbName()) );
         if (NULL != columnZ)
         {
-            AppendString( L"," );
+            AppendString (L",", 1);
             AppendString( tableAlias );
-            AppendString( L"." );
+            AppendString (L".", 1);
             AppendString( (FdoString*)(columnZ->GetDbName()) );
         }
     }
@@ -1103,7 +1142,7 @@ void FdoRdbmsFilterProcessor::AppendGeometricProperty( const FdoSmLpClassDefinit
         FdoStringP sqlTableName = mFdoConnection->GetDbiConnection()->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
         FdoString * tableAlias = GetTableAlias( sqlTableName );
         AppendString( tableAlias );
-        AppendString( L"." );
+        AppendString (L".", 1);
         
         FdoStringP  colName = GetGeometryString( (FdoString*)(column->GetDbName()), inSelectList );
         AppendString( (FdoString*)colName );
@@ -1121,11 +1160,11 @@ void FdoRdbmsFilterProcessor::AppendGroupBy( FdoRdbmsFilterUtilConstrainDef *fil
     if( filterConstraint == NULL || filterConstraint->groupByProperties == NULL || filterConstraint->groupByProperties->GetCount() == 0  )
         return;
 
-    AppendString( L" GROUP BY " );
+    AppendString (L" GROUP BY ", 10);
     for(int i=0; i<filterConstraint->groupByProperties->GetCount(); i++ )
     {
         if( i != 0 )
-            AppendString( L", " );
+            AppendString (L", ", 2);
         FdoPtr<FdoIdentifier>ident = filterConstraint->groupByProperties->GetItem( i );
         ProcessIdentifier( *ident, true, false );
     }
@@ -2146,7 +2185,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 
                 first = false;
             }
-            AppendString( L")" );
+            AppendString (L")", 1);
         }
     }
 
@@ -2180,7 +2219,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                     bool added = false;
                     if( !( filterConstraint->orderByProperties != NULL  && filterConstraint->orderByProperties->GetCount() != 0) )
                     {
-                        AppendString( L" order by " );
+                        AppendString (L" ORDER BY ", 10);
                     }
                     else
                     {
@@ -2195,15 +2234,15 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                             }
                         }
                         if( ! added )
-                            AppendString( L", " );
+                            AppendString (L", ", 2);
                     }
                     if( ! added )
                     {
                         AppendString( (FdoString*)(columnName) );
-                        AppendString( L" ");
+                        AppendString (L" ", 1);
                         if (objProp->GetOrderType() == FdoOrderType_Descending)
                         {
-                            AppendString( L"desc ");
+                            AppendString (L"DESC ", 5);
                         }
                     }
                 }
@@ -2240,7 +2279,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
 
     // Generate the select-statement that selects the data to be used to create the
     // reader handed over to the Expression Engine.
-    AppendString( L"SELECT " );
+    AppendString (L"SELECT ", 7);
 
     FdoInt32 i;
     FdoStringsP all = FdoStringCollection::Create();
@@ -2292,10 +2331,10 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
     if (all->GetCount() > 0)
         AppendString( (FdoString *)all->ToString() );
     else
-        AppendString( L" * ");
+        AppendString (L" * ", 3);
 
     FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
-    AppendString( L" FROM " );
+    AppendString (L" FROM ", 6);
     AppendString( (FdoString *)tableName );
 
     if( filter != NULL )
@@ -2303,10 +2342,10 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter     *filter,
         FdoString * tableAlias = GetTableAlias( tableName );
         if (wcscmp(tableAlias, tableName) != 0)
         {
-            AppendString(  L" " );
+            AppendString (L" ", 1);
             AppendString(  GetTableAlias( tableName ) );
         }
-        AppendString( L" WHERE " );
+        AppendString (L" WHERE ", 7);
         HandleFilter( filter );
     }
 

@@ -364,7 +364,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
 						    if (idDataValue->GetDataType() == FdoDataType_DateTime)
 							    (static_cast<FdoDateTimeValue*>(newValue.p))->SetDateTime((static_cast<FdoDateTimeValue*>(idDataValue))->GetDateTime());
 						    else
-							    (static_cast<FdoDateTimeValue*>(newValue.p))->SetDateTime(mFdoConnection->DbiToFdoTime(mConnection->GetUtility()->UnicodeToUtf8(stringValue)));
+							    (static_cast<FdoDateTimeValue*>(newValue.p))->SetDateTime(mFdoConnection->DbiToFdoTime(stringValue));
 						    newIdProp->SetValue(newValue);
 						    break;
 
