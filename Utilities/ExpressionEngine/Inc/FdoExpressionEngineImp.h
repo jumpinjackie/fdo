@@ -197,6 +197,7 @@ protected:
     EXPRESSIONENGINE_API virtual void RelinquishDataValue (FdoLiteralValue* data);
     EXPRESSIONENGINE_API virtual void RelinquishLiteralValueCollection(FdoLiteralValueCollection* literals);
     EXPRESSIONENGINE_API virtual void PotentialRelinquishLiteralValue(FdoLiteralValue *value);
+    EXPRESSIONENGINE_API virtual void PushLiteralValue(FdoLiteralValue *literal);
 
 
 private:
@@ -231,8 +232,6 @@ private:
     bool AddToCache(FdoString *functionName, FdoExpressionEngineIFunction *functionExtension, FdoFunction& expr, bool* isAggregate);
 
     void PushIdentifierValue(FdoIReader* reader, FdoString* name, FdoDataType type );
-    void PushLiteralValue(FdoLiteralValue *literal );
-
 
 protected:
     FdoIReader*  m_reader;   // NOTE: weak reference
