@@ -108,6 +108,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     try
     {
         FdoPtr<FdoRdbmsFilterProcessor>flterProcessor = mFdoConnection->GetFilterProcessor();
+        FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
+        flterProcessor->SetParameterValues(params);
 
         FdoRdbmsFilterUtilConstrainDef filterConstrain;
         filterConstrain.distinct = distinct;
@@ -251,7 +253,23 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         }
 
         GdbiStatement* statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
+        // in case we will change the Execute to be able to re-use a select command
+        // we need to keep this vector on command side cached.
+        std::vector<GdbiCacheParam> bindVals;
+        
+        std::vector<FdoParameterValue*>* paramsUsed = flterProcessor->GetUsedParameterValues();
+        int cntParams = (paramsUsed != NULL) ? paramsUsed->size() : 0;
+        for (int idx = 0; idx < cntParams; idx++)
+        {
+            FdoParameterValue* parm = paramsUsed->at(idx);
+            FdoPtr<FdoLiteralValue> val = parm->GetValue();
+            if (val->GetExpressionType() != FdoExpressionItemType_DataValue)
+                throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
+            FdoDataValue* dval = static_cast<FdoDataValue*>(val.p);
+            bindVals.push_back(GdbiCacheParam(dval, statement, idx+1));
+        }
+        
         BindSpatialGeoms( statement, boundGeometries );
 
         GdbiQueryResult *queryRslt = statement->ExecuteQuery();

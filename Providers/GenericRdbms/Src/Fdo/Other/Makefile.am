@@ -21,6 +21,7 @@ noinst_LTLIBRARIES = libFdoRdbms_Other.la
 
 libFdoRdbms_Other_la_SOURCES = \
   FdoRdbmsBLOBStreamReader.cpp    \
+  FdoRdbmsSimpleBLOBStreamReader.cpp    \
   FdoRdbmsPrimaryKey.cpp  \
   FdoRdbmsException.cpp           \
   FdoRdbmsSQLCommand.cpp \
@@ -35,6 +36,7 @@ noinst_HEADERS = $(libFdoRdbms_Other_la_SOURCES) \
   Disposable.h \
   FdoRdbms.h \
   FdoRdbmsBLOBStreamReader.h \
+  FdoRdbmsSimpleBLOBStreamReader.h \
   FdoRdbmsException.h \
   FdoRdbmsFeatureTransaction.h \
   FdoRdbmsLobUtility.h \

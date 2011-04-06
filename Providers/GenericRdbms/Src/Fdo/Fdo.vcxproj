@@ -237,6 +237,7 @@
     <ClCompile Include="SpatialContext\FdoRdbmsGetSpatialContexts.cpp" />
     <ClCompile Include="SpatialContext\FdoRdbmsSpatialContextReader.cpp" />
     <ClCompile Include="Other\FdoRdbmsBLOBStreamReader.cpp" />
+    <ClCompile Include="Other\FdoRdbmsSimpleBLOBStreamReader.cpp" />
     <ClCompile Include="Other\FdoRdbmsException.cpp" />
     <ClCompile Include="Other\FdoRdbmsFeatureTransaction.cpp" />
     <ClCompile Include="Other\FdoRdbmsLobUtility.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="Other\Collection.h" />
     <ClInclude Include="Other\Disposable.h" />
     <ClInclude Include="Other\FdoRdbms.h" />
+    <ClInclude Include="Other\FdoRdbmsSimpleBLOBStreamReader.h" />
     <ClInclude Include="Other\FdoRdbmsBLOBStreamReader.h" />
     <ClInclude Include="Other\FdoRdbmsException.h" />
     <ClInclude Include="Other\FdoRdbmsFeatureTransaction.h" />

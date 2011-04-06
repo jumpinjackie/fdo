@@ -22,29 +22,20 @@
 
 #include "FdoRdbmsUtil.h"
 #include "FdoCommonOSUtil.h"
+#include "FdoRdbmsSimpleBLOBStreamReader.h"
 
 static  char*  noMoreRows = "End of rows or ReadNext not called"; // error message that repeats
 static  char  *strNUllColumnExp = "Column '%1$ls' value is NULL; use IsNull method before trying to access this column value";
 
-
-#define GET_VALUE( type, colName, FN ) { \
+#define GET_VALUE( type, colIdx, FN ) { \
     type    value; \
     bool  isNULL = false; \
     if( ! mHasMoreRows ) \
-    { \
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows)); \
-    } \
-    try \
-    { \
-        value = FN((char*)mConnection->GetUtility()->UnicodeToUtf8( colName), &isNULL, NULL); \
-        if( isNULL ) \
-            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  colName )); \
-    } \
-    catch ( char * ) \
-    { \
-        FindColumnIndex(colName); /*throws a column not found exception*/ \
-        throw; \
-    } \
+    ValidateIndex(colIdx);\
+    value = FN(colIdx+1, &isNULL, NULL); \
+    if( isNULL ) \
+        throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  mColList[colIdx].column)); \
     return value; \
 }
 
@@ -54,7 +45,12 @@ mFdoConnection( NULL ),
 mConnection( NULL ),
 mHasMoreRows( false ),
 mColCount( 0 ),
-mColList( NULL )
+mColList( NULL ),
+mWkbBuffer(NULL),
+mWkbBufferLen(0),
+mWkbGeomLen(0),
+mSprops(NULL),
+mGeomIdx(-1)
 {
 
     mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(connection);
@@ -72,24 +68,71 @@ mColList( NULL )
 
     for ( int i=0; i<mColCount; i++ )
     {
-        if( ! mQueryResult->GetColumnDesc( i+1, mColList[i] ) )
-            mColList[i].column[0] = L'\0';
-    }
+        GdbiColumnDesc* pCol = &mColList[i];
+        if( !mQueryResult->GetColumnDesc( i+1, *pCol ) )
+            pCol->column[0] = L'\0';
+        
+        if (*pCol->column == L'\0')
+            wcsncpy(pCol->column, L"GeneratedProperty", 18);
 
+        if (mColMap.find(pCol->column) != mColMap.end())
+            GenerateUniqueName(pCol->column, pCol->column);
+        mColMap[pCol->column] = std::make_pair(pCol, i);
+    }
+    mSprops = new StringRec[mColCount];
 }
 
 FdoRdbmsSQLDataReader::~FdoRdbmsSQLDataReader()
 {
     Close();
 
-    if( mQueryResult )
-        delete mQueryResult;
-
-    if( mColList != NULL )
-        delete[] mColList;
+    delete mQueryResult;
+    delete[] mColList;
 
     if( mFdoConnection )
         mFdoConnection->Release();
+	
+    delete[] mSprops;
+    delete[] mWkbBuffer;
+}
+
+wchar_t* FdoRdbmsSQLDataReader::GenerateUniqueName(const wchar_t* name, wchar_t* dest, int maxLen)
+{
+    int idxProp = 1;
+    int idx = 0;
+    wchar_t buffer[5];
+    
+    int propsize = wcslen(name);
+    if ((propsize + 1 + 4) <= maxLen) // from 1 to max 999
+    {
+        *(dest+propsize) = L'$';
+        do
+        {
+            swprintf(buffer, 5, L"%d", idxProp);
+            idx = 0;
+            while(buffer[idx] != L'\0')
+                *(dest+propsize+1+idx) = buffer[idx++];
+            *(dest+propsize+1+idx) = L'\0';
+            idxProp++;
+        }
+        while(mColMap.find(dest) != mColMap.end());
+    }
+    else // we cannot generate the name (too long)
+    {
+        *dest = L'G';
+        *(dest+1) = L'$';
+        do
+        {
+            swprintf(buffer, 5, L"%d", idxProp);
+            idx = 0;
+            while(buffer[idx] != L'\0')
+                *(dest+2+1+idx) = buffer[idx++];
+            *(dest+2+1+idx) = L'\0';
+            idxProp++;
+        }
+        while(mColMap.find(dest) != mColMap.end());
+    }
+    return dest;
 }
 
 FdoInt32 FdoRdbmsSQLDataReader::GetColumnCount()
@@ -99,45 +142,35 @@ FdoInt32 FdoRdbmsSQLDataReader::GetColumnCount()
 
 const wchar_t* FdoRdbmsSQLDataReader::GetColumnName(FdoInt32 index)
 {
-    if ( index >= mColCount )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
-
+    ValidateIndex(index);
     return mColList[index].column;
 }
 
-FdoInt32 FdoRdbmsSQLDataReader::GetColumnIndex(FdoString* columnName)
+FdoInt32 FdoRdbmsSQLDataReader::GetColumnIndex(const wchar_t* columnName)
 {
-    return FindColumnIndex(columnName);
-}
-
-int FdoRdbmsSQLDataReader::FindColumnIndex( const wchar_t* columnName, FdoException* exc )
-{
-    int i;
-
-    for( i=0; i<mColCount; i++ )
-    {
-        if( FdoCommonOSUtil::wcsicmp( columnName, mColList[i].column ) == 0 )
-            break;
-    }
-    if( i == mColCount )
-    {
-        if (exc)
-            exc->Release();
-        throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_42, "Column %1$ls not found", columnName));
-    }
-    if (exc)
-        throw exc;
-    return i;
+    return NameToIndex(columnName);
 }
 
 FdoDataType FdoRdbmsSQLDataReader::GetColumnType( const wchar_t* columnName )
 {
-    return FdoRdbmsUtil::DbiToFdoType( mColList[FindColumnIndex(columnName)].datatype );
+    return FdoRdbmsUtil::DbiToFdoType( mColList[NameToIndex(columnName)].datatype );
 }
 
-FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(FdoString* columnName)
+FdoDataType FdoRdbmsSQLDataReader::GetColumnType(FdoInt32 index)
 {
-    if( mColList[FindColumnIndex(columnName)].datatype == RDBI_GEOMETRY )
+    ValidateIndex(index);
+    return FdoRdbmsUtil::DbiToFdoType( mColList[index].datatype );
+}
+
+FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(const wchar_t* columnName)
+{
+    return FdoRdbmsSQLDataReader::GetPropertyType(NameToIndex(columnName));
+}
+
+FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(FdoInt32 index)
+{
+    ValidateIndex(index);
+    if( mColList[index].datatype == RDBI_GEOMETRY )
         return FdoPropertyType_GeometricProperty;
     else
         return FdoPropertyType_DataProperty;
@@ -145,226 +178,246 @@ FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(FdoString* columnName)
 
 bool FdoRdbmsSQLDataReader::GetBoolean(const wchar_t* columnName)
 {
-    return ( GetInt16( columnName ) != 0 );
+    return (FdoRdbmsSQLDataReader::GetInt16(NameToIndex(columnName)) != 0);
 }
 
+FdoBoolean FdoRdbmsSQLDataReader::GetBoolean(FdoInt32 index)
+{
+    return (FdoRdbmsSQLDataReader::GetInt16(index) != 0);
+}
+
+FdoByte FdoRdbmsSQLDataReader::GetByte(FdoInt32 index)
+{
+    return (FdoByte)FdoRdbmsSQLDataReader::GetInt16(index);
+}
 
 FdoByte FdoRdbmsSQLDataReader::GetByte(const wchar_t* columnName)
 {
-    return (FdoByte)GetInt16( columnName );
+    return (FdoByte)FdoRdbmsSQLDataReader::GetInt16(NameToIndex(columnName));
 }
 
 FdoDateTime FdoRdbmsSQLDataReader::GetDateTime(const wchar_t* columnName)
 {
-    return mFdoConnection->DbiToFdoTime( mConnection->GetUtility()->UnicodeToUtf8( GetString( columnName ) ) );
+    return mFdoConnection->DbiToFdoTime(FdoRdbmsSQLDataReader::GetString(NameToIndex(columnName)));
 }
 
+FdoDateTime FdoRdbmsSQLDataReader::GetDateTime(FdoInt32 index)
+{
+    return mFdoConnection->DbiToFdoTime(FdoRdbmsSQLDataReader::GetString(index));
+}
 
 double FdoRdbmsSQLDataReader::GetDouble(const wchar_t* columnName)
 {
-    GET_VALUE( double, columnName, mQueryResult->GetDouble );
+    return FdoRdbmsSQLDataReader::GetDouble(NameToIndex(columnName));
 }
 
+double FdoRdbmsSQLDataReader::GetDouble(FdoInt32 index)
+{
+    GET_VALUE (double, index, mQueryResult->GetDouble);
+}
 
 FdoInt16 FdoRdbmsSQLDataReader::GetInt16(const wchar_t* columnName)
 {
-    GET_VALUE( short, columnName, mQueryResult->GetInt16 )
+    return FdoRdbmsSQLDataReader::GetInt16(NameToIndex(columnName));
 }
 
+FdoInt16 FdoRdbmsSQLDataReader::GetInt16(FdoInt32 index)
+{
+    GET_VALUE (short, index, mQueryResult->GetInt16);
+}
 
 FdoInt32 FdoRdbmsSQLDataReader::GetInt32(const wchar_t* columnName)
 {
-    GET_VALUE( int, columnName, mQueryResult->GetInt32 )
+    return FdoRdbmsSQLDataReader::GetInt32(NameToIndex(columnName));
 }
 
+FdoInt32 FdoRdbmsSQLDataReader::GetInt32(FdoInt32 index)
+{
+    GET_VALUE (int, index, mQueryResult->GetInt32);
+}
 
 FdoInt64 FdoRdbmsSQLDataReader::GetInt64(const wchar_t* columnName)
 {
-    GET_VALUE( FdoInt64, columnName, mQueryResult->GetInt64 ) // DBI should support a 64 bit long. As it stands now we have to deal with long(32bits).
+    return FdoRdbmsSQLDataReader::GetInt64(NameToIndex(columnName));
 }
 
+FdoInt64 FdoRdbmsSQLDataReader::GetInt64(FdoInt32 index)
+{
+    // DBI should support a 64 bit long. As it stands now we have to deal with long(32bits).
+    GET_VALUE (FdoInt64, index, mQueryResult->GetInt64);
+}
 
 float FdoRdbmsSQLDataReader::GetSingle(const wchar_t* columnName)
 {
-    GET_VALUE( float, columnName, mQueryResult->GetFloat )
+    return FdoRdbmsSQLDataReader::GetSingle(NameToIndex(columnName));
+}
+
+float FdoRdbmsSQLDataReader::GetSingle(FdoInt32 index)
+{
+    GET_VALUE (float, index, mQueryResult->GetFloat);
 }
 
 const wchar_t* FdoRdbmsSQLDataReader::GetString(const wchar_t* columnName)
 {
-    wchar_t *colValue = NULL;
-    bool isNULL = false;
-    if( ! mHasMoreRows )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
-
-    try
-    {
-        const wchar_t* tmpVal = mQueryResult->GetString( columnName,&isNULL, NULL);
-        if( isNULL )
-            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp, columnName ));
-
-        colValue = mStringMap.AddtoMap(columnName, tmpVal, mConnection->GetUtility());
-    }
-    catch ( FdoCommandException* exc )
-    {
-        FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-    }
-    catch ( FdoException* exc )
-    {
-        FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-    }
-    catch ( ... )
-    {
-        // Try to throw a better exception, otherwise re-throw the dbi exception
-        // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
-        // string compares to happen every time.
-        FindColumnIndex( columnName ); /*throws a column not found exception*/
-
-        throw;
-    }
-
-    return colValue;
+    return FdoRdbmsSQLDataReader::GetString(NameToIndex(columnName));
 }
 
+const wchar_t* FdoRdbmsSQLDataReader::GetString(FdoInt32 index)
+{
+    bool isNULL = false;
+    if (! mHasMoreRows)
+        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
+    ValidateIndex(index);
+
+    int i = index;
+	if (mSprops[i].valid)
+		return mSprops[i].data;
+
+    const wchar_t* tmpVal = mQueryResult->GetString(index+1, &isNULL, NULL);
+    if (isNULL || tmpVal == NULL)
+    {
+        mSprops[i].EnsureSize(1);
+        mSprops[i].data = L'\0';
+        mSprops[i].valid = 1;
+        throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp, mColList[index].column ));
+    }
+    
+    size_t sz = wcslen(tmpVal);
+    mSprops[i].EnsureSize(sz+1);
+    wcscpy(mSprops[i].data, tmpVal);
+    mSprops[i].valid = 1;
+
+    return mSprops[i].data;
+}
 
 FdoIStreamReader* FdoRdbmsSQLDataReader::GetLOBStreamReader(const wchar_t* columnName)
 {
-    void    *pLOBLocator;
-    bool	isNULL = false;
+    return FdoRdbmsSQLDataReader::GetLOBStreamReader(NameToIndex(columnName));
+}
 
-    if( ! mHasMoreRows )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
-
-    try
-    {
-        mQueryResult->GetBinaryValue(  columnName, sizeof(void *), (char *)&pLOBLocator, &isNULL, NULL);
-		if( isNULL )
-            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  columnName ));
-    }
-    catch ( FdoCommandException* exc )
-    {
-        FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-    }
-    catch ( FdoException* exc )
-    {
-        FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-    }
-    catch ( ... )
-    {
-        FindColumnIndex( columnName ); /*throws a column not found exception*/
-        throw;
-    }
-
-    // Assume BLOB
-    assert(false);
-    throw "FIXME please: FdoRdbmsSQLDataReader::GetLOBStreamReader";
-//    return FdoRdbmsBLOBStreamReader::Create(mFdoConnection, mQid, pLOBLocator );
+FdoIStreamReader* FdoRdbmsSQLDataReader::GetLOBStreamReader(FdoInt32 index)
+{
+    FdoPtr<FdoLOBValue> blob = GetLOB(index);
+    return new FdoRdbmsSimpleBLOBStreamReader(blob); 
 }
 
 FdoLOBValue* FdoRdbmsSQLDataReader::GetLOB(const wchar_t* columnName)
 {
-    // Assume BLOB
-    FdoRdbmsBLOBStreamReader* blobReader = (FdoRdbmsBLOBStreamReader *)GetLOBStreamReader( columnName );
-
-    FdoInt32  size = (FdoInt32) blobReader->GetLength();
-    FdoByteArray    * byteArray =  FdoByteArray::Create( size );
-
-    if ( size != 0 )
-        blobReader->ReadNext( byteArray, 0, -1 );
-
-    FdoBLOBValue *blobValue = FdoBLOBValue::Create( byteArray );
-    return blobValue;
+    return FdoRdbmsSQLDataReader::GetLOB(NameToIndex(columnName));
 }
 
+FdoLOBValue* FdoRdbmsSQLDataReader::GetLOB(FdoInt32 index)
+{
+    ValidateIndex(index);
+
+    if (mColList[index].size > 0)
+    {
+        FdoByte* vblob = new FdoByte[mColList[index].size];
+        bool	isNull = false;
+        try
+        {
+            mQueryResult->GetBinaryValue (index+1, mColList[index].size, (char*)vblob, &isNull, NULL);
+            FdoLOBValue* retVal = (!isNull) ? (FdoLOBValue*)FdoDataValue::Create(vblob, mColList[index].size, FdoDataType_BLOB) : NULL;
+            delete[] vblob;
+            return retVal;
+        }
+        catch(...)
+        {
+            delete[] vblob;
+            throw;
+        }
+    }
+    else
+    {
+        // please fix this
+        return NULL;
+    }
+
+  //  void    *pLOBLocator;
+  //  bool	isNULL = false;
+
+  //  if( ! mHasMoreRows )
+  //      throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
+
+  //  try
+  //  {
+  //      mQueryResult->GetBinaryValue(  columnName, sizeof(void *), (char *)&pLOBLocator, &isNULL, NULL);
+		//if( isNULL )
+  //          throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  columnName ));
+  //  }
+  //  catch ( FdoCommandException* exc )
+  //  {
+  //      FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
+  //  }
+  //  catch ( FdoException* exc )
+  //  {
+  //      FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
+  //  }
+  //  catch ( ... )
+  //  {
+  //      FindColumnIndex( columnName ); /*throws a column not found exception*/
+  //      throw;
+  //  }
+
+  //  // Assume BLOB
+  //  assert(false);
+  //  throw "FIXME please: FdoRdbmsSQLDataReader::GetLOBStreamReader";
+//    return FdoRdbmsBLOBStreamReader::Create(mFdoConnection, mQid, pLOBLocator );
+    return NULL;
+}
 
 bool FdoRdbmsSQLDataReader::IsNull(const wchar_t* columnName)
 {
-    int     isNull = 0;
+    return FdoRdbmsSQLDataReader::IsNull(NameToIndex(columnName));
+}
 
+bool FdoRdbmsSQLDataReader::IsNull(FdoInt32 index)
+{
+    int     isNull = 0;
     if( ! mHasMoreRows )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
+    ValidateIndex(index);
 
-    try
+    if (mColList[index].datatype == RDBI_GEOMETRY)
     {
-        if( mColList[FindColumnIndex(columnName)].datatype == RDBI_GEOMETRY )
-        {
-            FdoPtr<FdoByteArray>    geom = GetGeometry( columnName, true );
-            isNull = ( geom == NULL );
-        }
-        else
-        {
-            return mQueryResult->GetIsNull( (char *)mConnection->GetUtility()->UnicodeToUtf8( columnName) );
-        }
+        FdoInt32 len = 0;
+        GetGeometry(index+1, &len, true);
+        return len == 0;
     }
-    catch ( FdoCommandException* exc )
-    {
-        try
-        {
-            // Make sure the column exists
-            FindColumnIndex( columnName ); /*throws a column not found exception*/
-            exc->Release();
-        }
-        catch ( FdoCommandException* exc2 )
-        {
-            throw exc2;
-        }
-        catch ( FdoException* exc2 )
-        {
-            throw exc2;
-        }
-        // In this case this is NULL
-        return true;
-    }
-    catch ( FdoException* exc )
-    {
-        try
-        {
-            // Make sure the column exists
-            FindColumnIndex( columnName ); /*throws a column not found exception*/
-            exc->Release();
-        }
-        catch ( FdoCommandException* exc2 )
-        {
-            throw exc2;
-        }
-        catch ( FdoException* exc2 )
-        {
-            throw exc2;
-        }
-        // In this case this is NULL
-        return true;
-    }
-    catch ( ... )
-    {
-        // Make sure the column exists
-        FindColumnIndex( columnName ); /*throws a column not found exception*/
-
-        // In this case this is NULL
-        return true;
-    }
-
-    return (isNull != 0);
+    else
+        return mQueryResult->GetIsNull(index+1);
 }
 
 FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(const wchar_t* propertyName)
 {
-    return GetGeometry( propertyName, false );
+	int len = 0;
+    const void* ptr = FdoRdbmsSQLDataReader::GetGeometry(NameToIndex(propertyName), &len);
+    return (len) ? FdoByteArray::Create((unsigned char*)ptr, len) : NULL;
 }
 
-FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(const wchar_t* columnName, bool checkIsNullOnly)
+FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(FdoInt32 index)
 {
-    FdoIGeometry    *geom = NULL;
-    FdoByteArray   *byteArray = NULL;
-    bool            isSupportedType = false;
-    bool            unsupportedTypeExp = false;
+	int len = 0;
+    const void* ptr = FdoRdbmsSQLDataReader::GetGeometry(index, &len);
+    return (len) ? FdoByteArray::Create((unsigned char*)ptr, len) : NULL;
+}
 
+const void* FdoRdbmsSQLDataReader::GetGeometry(FdoInt32 index, FdoInt32* len, bool noExcOnInvalid)
+{
+    ValidateIndex(index);
     if( ! mHasMoreRows )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
 
-    try
-    {       
+    if (mGeomIdx != index)
+    {
+        FdoIGeometry* geom = NULL;
+        bool isSupportedType = false;
         bool isNull = false;
 
-        mQueryResult->GetBinaryValue( columnName, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
+        mGeomIdx = index;
+        if (mWkbBuffer)
+            *mWkbBuffer = 0;
+        mQueryResult->GetBinaryValue (index+1, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
 
         if ( !isNull && geom && geom->GetDerivedType() != FdoGeometryType_None )
             isSupportedType = true;
@@ -374,55 +427,39 @@ FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(const wchar_t* columnName, bool
             if ( isSupportedType )
             {
                 FdoPtr<FdoFgfGeometryFactory>  gf = FdoFgfGeometryFactory::GetInstance();
-                byteArray = gf->GetFgf( geom );
-            }
-            else
-            {
-                if ( checkIsNullOnly )
+                FdoPtr<FdoByteArray> fgf = gf->GetFgf(geom);
+                if (fgf != NULL && fgf->GetCount() != 0)
                 {
-                    byteArray = FdoByteArray::Create( (FdoInt32) 1);
+                    mWkbGeomLen = fgf->GetCount();
+                    if (mWkbBufferLen < mWkbGeomLen)
+                    {
+                        delete[] mWkbBuffer;
+                        mWkbBufferLen = mWkbGeomLen;
+                        mWkbBuffer = new unsigned char[mWkbGeomLen];
+                    }
+                    memcpy(mWkbBuffer, fgf->GetData(), mWkbGeomLen);
                 }
                 else
-                {
-                    unsupportedTypeExp = true;
-                    FDO_SAFE_RELEASE( geom );
-                    throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_116, "Unsupported geometry type" ) );
-                }
+                    mWkbGeomLen = 0;
             }
+            else
+                mWkbGeomLen = -1;
         }
         else // isNull indicator is not set by dbi_get_val_b for geometry columns
-        {
-            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value",
-                                             columnName ));
-        }
+            mWkbGeomLen = 0;
     }
-    catch ( FdoCommandException* exc )
+    *len = mWkbGeomLen;
+    if (*len <= 0)
     {
-        if ( !unsupportedTypeExp)
-            FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
+        if (!noExcOnInvalid)
+            return NULL;
+        else if (*len == 0)
+            throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value", mColList[index].column ));
         else
-            throw exc;
-    }
-    catch ( FdoException* exc )
-    {
-        if ( !unsupportedTypeExp)
-            FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-        else
-            throw exc;
-    }
-    catch ( ... )
-    {
-        if ( !unsupportedTypeExp)
-        {
-            // Try to throw a better exception, otherwise re-throw the dbi exception
-            // Note that we only do this when something goes wrong for performance reason; we don't want all that agly
-            // string compares to happen every time.
-            FindColumnIndex( columnName ); /*throws a column not found exception*/
-        }
-        throw;
+            throw FdoCommandException::Create( NlsMsgGet(FDORDBMS_116, "Unsupported geometry type" ) );
     }
 
-    return byteArray;
+    return mWkbBuffer;
 }
 
 bool FdoRdbmsSQLDataReader::ReadNext()
@@ -431,6 +468,7 @@ bool FdoRdbmsSQLDataReader::ReadNext()
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_43, "Query ended"));
 
     mHasMoreRows = false;
+    mGeomIdx = -1;
 
     if ( ! mQueryResult->ReadNext() )
     {
@@ -439,6 +477,9 @@ bool FdoRdbmsSQLDataReader::ReadNext()
         mQueryResult = NULL;
         return false;
     }
+
+ 	for (int i=0; i<mColCount; i++)
+		mSprops[i].valid = 0;
 
     return (mHasMoreRows = true);
 }

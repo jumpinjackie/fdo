@@ -593,6 +593,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Other\FdoRdbmsSimpleBLOBStreamReader.cpp"
+					>
+				</File>
+				<File
 					RelativePath="Other\FdoRdbmsSQLCommand.cpp"
 					>
 				</File>
@@ -951,6 +955,10 @@
 				</File>
 				<File
 					RelativePath=".\Other\FdoRdbmsPrimaryKeyColumn.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Other\FdoRdbmsSimpleBLOBStreamReader.h"
 					>
 				</File>
 				<File

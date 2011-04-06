@@ -86,6 +86,7 @@ public:
     //
     // Converts a Odbc string date of a specific format to a FdoDateTime (time_t) format.
     virtual FdoDateTime  DbiToFdoTime( const char* time );
+    virtual FdoDateTime  DbiToFdoTime( const wchar_t* time );
 
     //
     // Convert time_t( FdoDateTime ) to a Odbc string date of the form.

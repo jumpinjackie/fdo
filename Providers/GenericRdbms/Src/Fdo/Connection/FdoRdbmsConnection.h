@@ -204,6 +204,11 @@ public:
     virtual FdoDateTime  DbiToFdoTime( const char* time ) = 0;
 
     //
+    // Converts a dbi string date of a specific format to a FdoDateTime (time_t) format.
+    // The string format have to be of the form: "YYYY-MM-DD-HH24-MI-SS"
+    virtual FdoDateTime  DbiToFdoTime( const wchar_t* time ) = 0;
+
+    //
     // Convert time_t( FdoDateTime ) to char of the form: "YYYY-MM-DD-HH24-MI-SS", See ORACLE_DATE_FORMAT define
     // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
     virtual const char* FdoToDbiTime( FdoDateTime  time ) = 0;

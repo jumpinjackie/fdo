@@ -43,6 +43,10 @@
 
 using namespace std ;
 
+#ifndef _WIN32
+#define _snwprintf snwprintf
+#endif
+
 #include "DbiConnection.h"
 #include "FdoRdbmsBaseFilterProcessor.h"
 
@@ -52,7 +56,7 @@ class FdoRdbmsSpatialSecondaryFilter;
 
 // To bracket various condition and expressions
 #define             OPEN_PARENTH                    L" ( "
-#define             CLOSE_PARENTH                   L"  ) "
+#define             CLOSE_PARENTH                   L" ) "
 
 // For logical operations
 #define             LOGICAL_AND                     L" AND "
@@ -175,6 +179,7 @@ private:
     bool                mUseNesting;
     bool                mUseGrouping;
     bool                mAddNegationBracket;
+    wchar_t             mConvBuffer[MEM_BLOCK_ALLOC_SIZE];
 
     // List of geometry values that are bound in spatial filters.
     FdoPtr<BoundGeometryCollection>       mBoundGeometryValues;
@@ -206,6 +211,8 @@ protected:
     // List of secondary spatial filters that apply to this filter.  
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
 	vector<int>							mFilterLogicalOps;
+	vector<FdoParameterValue*>          mUsedParameter;
+    FdoPtr<FdoParameterValueCollection> mParams;
 
 public:
     FdoRdbmsFilterProcessor();
@@ -265,10 +272,12 @@ protected:
     }
 
     void AppendString(const char *str);
-
+    
     void PrependString(const char *str);
 
 	void AppendString(const wchar_t *str);
+
+    void AppendString(const wchar_t *str, size_t len);
 
     void PrependString(const wchar_t *str);
 
@@ -366,6 +375,9 @@ public:
 	virtual void GetLtQualificationClause( const FdoSmLpClassDefinition *classDefinition, FdoStringP &ltQualificationClause );
     bool IsValidExpression( FdoFilter *filter );
     bool IsValidExpression( FdoIdentifierCollection *identifiers );
+
+    void SetParameterValues (FdoParameterValueCollection* params) { mParams = FDO_SAFE_ADDREF(params); }
+    vector<FdoParameterValue*>* GetUsedParameterValues() { return &mUsedParameter; }
 
     bool  GetUseTableAlias() 
     {

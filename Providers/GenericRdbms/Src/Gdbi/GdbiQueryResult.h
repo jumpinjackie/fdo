@@ -83,7 +83,23 @@ private:
         int *ccode
         );
 
+   template<typename T> T GetNumber(
+        int index,
+        bool *isnull,
+        int *ccode
+        );
+
+   template<typename T> T GetNumber(
+        GdbiColumnInfoType *colInfo,
+        bool *isnull,
+        int *ccode
+        );
+
 	GdbiColumnInfoType *FindColumnCache(const wchar_t *colName );
+
+    FdoString* GetString (GdbiColumnInfoType *colInfo, bool *isnull, int *ccode );
+
+    int GetBinaryValue(GdbiColumnInfoType *colInfo, int length, char *address, bool *null_ind, int *ccode);
 
 public:
     ~GdbiQueryResult(void);
@@ -134,11 +150,36 @@ public:
 
     bool GetIsNull( const wchar_t *ColName );
 
+	/// By index
+    int GetBinaryValue(
+            int index,
+            int length,
+            char *address,
+            bool *null_ind,
+            int *ccode
+            );
+
+	FdoDouble GetDouble( int index, bool *isnull, int *ccode );
+
+    FdoInt32 GetInt32( int index, bool *isnull, int *ccode );
+
+    FdoInt16 GetInt16( int index, bool *isnull, int *ccode );
+
+	FdoInt8 GetInt8( int index, bool *isnull, int *ccode );
+
+    FdoInt64 GetInt64( int index, bool *isnull, int *ccode );
+
+    FdoFloat GetFloat( int index, bool *isnull, int *ccode );
+
+    FdoString* GetString( int index, bool *isnull, int *ccode );
+
+    FdoBoolean GetBoolean( int index, bool *isnull, int *ccode );
+
+    bool GetIsNull( int index );
+
 	// Gets the column index (1 based) into the cached column list.
 	// Can be used in the getters as column position instead of column name.
 	int		GetColumnIndex( const wchar_t *colName );
-
-    FdoString* GetString( int colIndex, bool *isnull, int *ccode );
 
     FdoBoolean LobGetSize(void *lob_ref, unsigned int *size);
 

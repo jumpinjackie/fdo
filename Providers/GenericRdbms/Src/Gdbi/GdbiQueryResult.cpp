@@ -305,8 +305,23 @@ int GdbiQueryResult::GetColumnDesc( int colIdx, GdbiColumnDesc &desc )
 
 int GdbiQueryResult::GetBinaryValue( const wchar_t *colName, int length, char *address, bool *null_ind, int *ccode )
 {
-	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
+    return GetBinaryValue(FindColumnCache(colName), length, address, null_ind, ccode);
+}
 
+int GdbiQueryResult::GetBinaryValue (int index, int length, char *address, bool *null_ind, int *ccode )
+{
+    GdbiColumnInfoType *colInfo = NULL;
+	if( mColList && index <= (int)mColList->size())
+		colInfo = mColList->at(index - 1);
+
+    if (colInfo != NULL)
+        return GetBinaryValue(colInfo, length, address, null_ind, ccode);
+
+    throw FdoCommandException::Create(L"Column index is out of bounds");
+}
+
+int GdbiQueryResult::GetBinaryValue(GdbiColumnInfoType *colInfo, int length, char *address, bool *null_ind, int *ccode )
+{
 	bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
 
 	if (isNull == false)
@@ -408,6 +423,31 @@ int GdbiQueryResult::GetAsciiValue( GdbiColumnInfoType *colInfo, int length, cha
 
 template<typename T> T GdbiQueryResult::GetNumber(
 		const wchar_t *colName,
+		bool *isnull,
+        int *ccode
+	)
+{
+    GdbiColumnInfoType *colInfo = FindColumnCache(colName);
+    return GetNumber<T>(colInfo, isnull, ccode);
+}
+
+template<typename T> T GdbiQueryResult::GetNumber(
+		int index,
+		bool *isnull,
+        int *ccode
+	)
+{
+    GdbiColumnInfoType *colInfo = NULL;
+	if( mColList && index <= (int)mColList->size())
+		colInfo = mColList->at(index - 1);
+
+    if (colInfo != NULL)
+        return GetNumber<T>(colInfo, isnull, ccode);
+    throw FdoCommandException::Create(L"Column index is out of bounds");
+}
+
+template<typename T> T GdbiQueryResult::GetNumber(
+		GdbiColumnInfoType *colInfo,
 		bool *null_ind,
         int *ccode
 	)
@@ -419,8 +459,6 @@ template<typename T> T GdbiQueryResult::GetNumber(
 	float  floatVal;
 	double doubleVal;
 	FdoInt64  int64Val;
-
-	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
 
 	bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
 	
@@ -496,9 +534,19 @@ FdoDouble GdbiQueryResult::GetDouble( const wchar_t *ColName, bool *isnull, int 
     return GetNumber<double>(ColName, isnull, ccode);
 }
 
+FdoDouble GdbiQueryResult::GetDouble (int index, bool *isnull, int *ccode )
+{
+    return GetNumber<double>(index, isnull, ccode);
+}
+
 FdoInt32 GdbiQueryResult::GetInt32( const wchar_t *ColName, bool *isnull, int *ccode )
 {
 	return GetNumber<int>(ColName, isnull, ccode);
+}
+
+FdoInt32 GdbiQueryResult::GetInt32 (int index, bool *isnull, int *ccode )
+{
+	return GetNumber<int>(index, isnull, ccode);
 }
 
 FdoInt16 GdbiQueryResult::GetInt16( const wchar_t *ColName, bool *isnull, int *ccode )
@@ -506,9 +554,46 @@ FdoInt16 GdbiQueryResult::GetInt16( const wchar_t *ColName, bool *isnull, int *c
     return GetNumber<short>(ColName, isnull, ccode);
 }
 
+FdoInt16 GdbiQueryResult::GetInt16 (int index, bool *isnull, int *ccode )
+{
+    return GetNumber<short>(index, isnull, ccode);
+}
+
 FdoInt8 GdbiQueryResult::GetInt8( const wchar_t *ColName, bool *isnull, int *ccode )
 {
     return GetNumber<FdoInt8>(ColName, isnull, ccode);
+}
+
+FdoInt64 GdbiQueryResult::GetInt64 (int index, bool *isnull, int *ccode )
+{
+    GdbiColumnInfoType *colInfo = NULL;
+	if( mColList && index <= (int)mColList->size())
+		colInfo = mColList->at(index - 1);
+
+    if (colInfo == NULL)
+        throw FdoCommandException::Create(L"Column index is out of bounds");
+
+    if ( colInfo->type == RDBI_DOUBLE ) 
+    {
+        bool isnull2;
+        double dblVal = GetNumber<FdoDouble>(index, &isnull2, ccode);
+
+        if ( isnull )
+            (*isnull) = isnull2;
+
+        if ( isnull2 )
+            return (FdoInt64) dblVal;
+
+        if ( dblVal >= (FdoDouble) LLONG_MAX ) 
+            return LLONG_MAX;
+
+        if ( dblVal <= (FdoDouble) LLONG_MIN ) 
+            return LLONG_MIN;
+
+        return (FdoInt64) dblVal;
+    }
+
+    return GetNumber<FdoInt64>(index, isnull, ccode);
 }
 
 FdoInt64 GdbiQueryResult::GetInt64( const wchar_t *ColName, bool *isnull, int *ccode )
@@ -543,15 +628,25 @@ FdoFloat GdbiQueryResult::GetFloat( const wchar_t *ColName, bool *isnull, int *c
     return GetNumber<float>(ColName, isnull, ccode);
 }
 
+FdoFloat GdbiQueryResult::GetFloat (int index, bool *isnull, int *ccode)
+{
+    return GetNumber<float>(index, isnull, ccode);
+}
+
 // Return a const wchar_t that must be copied ASP
 FdoString* GdbiQueryResult::GetString( const wchar_t *colName, bool *isnull, int *ccode)
 {
 	GdbiColumnInfoType *colInfo = FindColumnCache(colName);
+    return GdbiQueryResult::GetString(colInfo, isnull, ccode);
+}
 
-	if( isnull )
-		*isnull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
-
+FdoString* GdbiQueryResult::GetString(GdbiColumnInfoType *colInfo, bool *isnull, int *ccode)
+{
     bool isNull = (m_pGdbiCommands->is_null(colInfo->isNull, mArrayPos) == 1);
+
+    if( isnull )
+		*isnull = isNull;
+
     if (isNull == false)
     {
 		if( ( m_pGdbiCommands->SupportsUnicode() && colInfo->original_type == RDBI_STRING ) || 
@@ -601,9 +696,14 @@ FdoString* GdbiQueryResult::GetString( const wchar_t *colName, bool *isnull, int
 
 FdoString* GdbiQueryResult::GetString(int index, bool *isnull, int *ccode)
 {
-	FdoStringP	colName = FdoStringP::Format(L"%ld", index );
+    GdbiColumnInfoType *colInfo = NULL;
+	if( mColList && index <= (int)mColList->size())
+		colInfo = mColList->at(index - 1);
 
-	return GetString( (const wchar_t *)colName, isnull, ccode);
+    if (colInfo == NULL)
+        throw FdoCommandException::Create(L"Column index is out of bounds");
+
+	return GetString(colInfo, isnull, ccode);
 }
 
 FdoBoolean GdbiQueryResult::GetBoolean( const wchar_t *ColName, bool *isnull, int *ccode )
@@ -620,6 +720,18 @@ bool GdbiQueryResult::GetIsNull( const wchar_t *colName )
 	GdbiColumnInfoType *colInfo = FindColumnCache(colName );
 
     return ( m_pGdbiCommands->is_null( colInfo->isNull, mArrayPos ) == 1 );
+}
+
+bool GdbiQueryResult::GetIsNull(int index)
+{
+    GdbiColumnInfoType *colInfo = NULL;
+	if( mColList && index <= (int)mColList->size())
+		colInfo = mColList->at(index - 1);
+
+    if (colInfo == NULL)
+        throw FdoCommandException::Create(L"Column index is out of bounds");
+
+	return ( m_pGdbiCommands->is_null( colInfo->isNull, mArrayPos ) == 1 );
 }
 
 void GdbiQueryResult::do_copy(char *ascii_I, char *ascii_O, int len, int *ccode)

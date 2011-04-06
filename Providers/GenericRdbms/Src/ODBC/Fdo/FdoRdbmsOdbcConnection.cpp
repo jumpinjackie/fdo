@@ -247,6 +247,27 @@ FdoDateTime  FdoRdbmsOdbcConnection::DbiToFdoTime( const char* timeStr )
     return fdoTime;
 }
 
+FdoDateTime  FdoRdbmsOdbcConnection::DbiToFdoTime( const wchar_t* timeStr )
+{
+    FdoDateTime fdoTime;
+    int year, month, day, hour, minute, seconds;
+    year = month = day = hour = minute = seconds = 0;
+
+    if( timeStr != NULL && *timeStr != '\0' )
+    {
+        int count = swscanf(timeStr, L"%4d-%02d-%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &seconds);     
+        if( count != 6 )
+            count = swscanf(timeStr, L"%4d-%02d-%02d",&year, &month, &day);
+    }
+    fdoTime.year = (FdoInt16)year;
+    fdoTime.month = (FdoByte)month;
+    fdoTime.day = (FdoByte)day;
+    fdoTime.hour = (FdoByte)hour;
+    fdoTime.minute = (FdoByte)minute;
+    fdoTime.seconds = (float)seconds;
+    return fdoTime;
+}
+
 //
 // Convert time_t( FdoDateTime ) to a Odbc string date of the form.
 // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
