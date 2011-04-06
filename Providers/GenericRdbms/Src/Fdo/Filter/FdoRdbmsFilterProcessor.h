@@ -43,10 +43,6 @@
 
 using namespace std ;
 
-#ifndef _WIN32
-#define _snwprintf snwprintf
-#endif
-
 #include "DbiConnection.h"
 #include "FdoRdbmsBaseFilterProcessor.h"
 
