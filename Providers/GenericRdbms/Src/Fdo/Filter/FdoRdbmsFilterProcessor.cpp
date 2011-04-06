@@ -656,7 +656,7 @@ void FdoRdbmsFilterProcessor::ProcessByteValue(FdoByteValue& expr)
 {
     if (!expr.IsNull())
     {
-        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%d", (int)expr.GetByte());
+        swprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%d", (int)expr.GetByte());
         AppendString(mConvBuffer);
     }
     else
@@ -679,7 +679,7 @@ void FdoRdbmsFilterProcessor::ProcessDoubleValue(FdoDoubleValue& expr)
 {
     if (!expr.IsNull())
     {
-        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDouble());
+        swprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDouble());
         AppendString (mConvBuffer);
     }
     else
@@ -692,7 +692,7 @@ void FdoRdbmsFilterProcessor::ProcessDecimalValue(FdoDecimalValue& expr)
     {
         // since we use double for a decimal we should use %.16g and not %.8f
         // in case this will generate issues we can change it back to %.8f
-        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDecimal());
+        swprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.16g",expr.GetDecimal());
         AppendString (mConvBuffer);
     }
     else
@@ -722,7 +722,7 @@ void FdoRdbmsFilterProcessor::ProcessInt64Value(FdoInt64Value& expr)
 #ifdef _WIN32
         _i64tow_s(expr.GetInt64(), mConvBuffer, MEM_BLOCK_ALLOC_SIZE, 10);
 #else
-        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%lld", (long long int)expr.GetInt64());
+        swprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%lld", (long long int)expr.GetInt64());
 #endif
         AppendString (mConvBuffer);
     }
@@ -734,7 +734,7 @@ void FdoRdbmsFilterProcessor::ProcessSingleValue(FdoSingleValue& expr)
 {
     if (!expr.IsNull())
     {
-        _snwprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.8f",expr.GetSingle());
+        swprintf(mConvBuffer, MEM_BLOCK_ALLOC_SIZE, L"%.8f",expr.GetSingle());
         AppendString (mConvBuffer);
     }
     else
