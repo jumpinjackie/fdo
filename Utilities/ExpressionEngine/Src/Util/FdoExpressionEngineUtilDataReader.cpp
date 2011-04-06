@@ -15,26 +15,10 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
+
 #include "stdafx.h"
 #include <Util/FdoExpressionEngineUtilDataReader.h>
-#include <FdoCommonBinaryReader.h>
-#include <FdoCommonBinaryWriter.h>
-#include <FdoCommonPropertyIndex.h>
 #include <FdoExpressionEngine.h>
-#include <FdoCommonMiscUtil.h>
-#include <algorithm>
-
-
-//////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////
-
-#ifdef _WIN32
-#include <hash_map>
-#else
-#include <ext/hash_map>
-namespace stdext = ::__gnu_cxx;
-using namespace std;
-#endif
 
 
 class my_hash_compare
