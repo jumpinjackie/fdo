@@ -50,7 +50,9 @@ mWkbBuffer(NULL),
 mWkbBufferLen(0),
 mWkbGeomLen(0),
 mSprops(NULL),
-mGeomIdx(-1)
+mGeomIdx(-1),
+mUppNameBuffer(NULL),
+mUppNameBufferLen(0)
 {
 
     mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(connection);
@@ -94,6 +96,8 @@ FdoRdbmsSQLDataReader::~FdoRdbmsSQLDataReader()
 	
     delete[] mSprops;
     delete[] mWkbBuffer;
+    
+    delete[] mUppNameBuffer;
 }
 
 wchar_t* FdoRdbmsSQLDataReader::GenerateUniqueName(const wchar_t* name, wchar_t* dest, int maxLen)

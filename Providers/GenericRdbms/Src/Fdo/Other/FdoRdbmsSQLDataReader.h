@@ -22,6 +22,10 @@
 #include "FdoRdbmsFeatureReader.h"
 #include "FdoDefaultSqlDataReader.h"
 
+#ifndef _WIN32
+#include <wctype.h>
+#endif
+
 class DbiConnection;
 
 struct wstring_less
@@ -206,6 +210,9 @@ private:
         unsigned char*      mWkbBuffer; //geometry buffer
         int                 mWkbBufferLen;
         int                 mWkbGeomLen;
+        
+        wchar_t*            mUppNameBuffer; //upper name buffer
+        int                 mUppNameBufferLen;
 
         wchar_t* GenerateUniqueName(const wchar_t* name, wchar_t* dest, int maxLen = GDBI_COLUMN_NAME_SIZE);
 
@@ -216,8 +223,19 @@ private:
         }
 
         int NameToIndex(FdoString* name) 
-        { 
-            GdbiColumnDescToIdx::iterator it = mColMap.find(name);
+        {
+            int len = wcslen(name);
+            if (mUppNameBufferLen <= len)
+            {
+                delete[] mUppNameBuffer;
+                mUppNameBuffer = new wchar_t[len+1];
+                mUppNameBufferLen = len+1;
+            }
+            // using _wcsupr we need to make an extra call to wcscpy
+            // so better use towupper
+            for (int i = 0; i < len; i++)
+                mUppNameBuffer[i] = towupper(name[i]);
+            GdbiColumnDescToIdx::iterator it = mColMap.find(mUppNameBuffer);
             if (it != mColMap.end())
                 return it->second.second;
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_28, "Property '%1$ls' is not found", name ));
