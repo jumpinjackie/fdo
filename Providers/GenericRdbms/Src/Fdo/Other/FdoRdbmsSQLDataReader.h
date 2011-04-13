@@ -235,6 +235,7 @@ private:
             // so better use towupper
             for (int i = 0; i < len; i++)
                 mUppNameBuffer[i] = towupper(name[i]);
+            mUppNameBuffer[len] = '\0';
             GdbiColumnDescToIdx::iterator it = mColMap.find(mUppNameBuffer);
             if (it != mColMap.end())
                 return it->second.second;
