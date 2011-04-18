@@ -579,11 +579,10 @@ void SltQueryTranslator::ProcessInt64Value(FdoInt64Value& expr)
 
 void SltQueryTranslator::ProcessStringValue(FdoStringValue& expr)
 {
-    // it's faster than expr.ToString()
     if (!expr.IsNull())
     {
         m_sb.Reset();
-        m_sb.AppendSQuoted(expr.GetString());
+        m_sb.Append(expr.ToString()); //ToString() rather than GetString() in order to get proper escaping of quotes
         m_evalStack.push_back(CreateBaseFilterChunk(m_sb.Data(), m_sb.Length()));
     }
     else
