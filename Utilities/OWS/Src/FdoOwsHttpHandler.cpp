@@ -32,6 +32,7 @@
 
 FdoOwsHttpHandler::FdoOwsHttpHandler()   :
                             m_url(NULL), m_bGet(false), m_parameters(NULL),
+                            m_proxyHost(NULL), m_proxyPort(NULL), m_proxyUserName(NULL), m_proxyPassword(NULL),
                             m_connectionState(ConnectionState_BeforeConnect),
                             m_disposed(false), m_userName(NULL), m_passwd(NULL),
                             m_bValidDocument(false), m_contentType(FdoOwsMIMEType_unknown),
@@ -39,6 +40,18 @@ FdoOwsHttpHandler::FdoOwsHttpHandler()   :
 {
     m_errorBuffer[0] = '\0';
     m_tvConnect = 0;
+}
+
+FdoOwsHttpHandler::FdoOwsHttpHandler(const char* url, bool bGet, const char* parameters, 
+                         const char* userName, const char* passwd, const char* proxyHost, const char* proxyPort, const char* proxyUserName, const char* proxyPassword) :
+                            m_url(url), m_bGet(bGet), m_parameters(parameters), m_connectionState(ConnectionState_BeforeConnect),
+                            m_disposed(false), m_userName(userName), m_passwd(passwd),
+                            m_proxyHost(proxyHost), m_proxyPort(proxyPort), m_proxyUserName(proxyUserName), m_proxyPassword(proxyPassword), 
+                            m_bValidDocument(false), m_contentType(FdoOwsMIMEType_unknown),
+                            m_currentSize(0), m_currentRead(0), m_bRunning(false)
+{
+    m_errorBuffer[0] = '\0';
+    m_tvConnect = 0;    
 }
 
 FdoOwsHttpHandler::FdoOwsHttpHandler(const char* url, bool bGet, const char* parameters, 
@@ -76,11 +89,10 @@ void FdoOwsHttpHandler::Dispose()
 }
 
 FdoOwsHttpHandler* FdoOwsHttpHandler::Create(const char* url, bool bGet, const char* parameters,
-    const char* userName, const char* passwd)
+    const char* userName, const char* passwd, const char* proxyHost, const char* proxyPort, const char* proxyUserName, const char* proxyPassword)
 {
-    return new FdoOwsHttpHandler(url, bGet, parameters, userName, passwd);
+    return new FdoOwsHttpHandler(url, bGet, parameters, userName, passwd, proxyHost, proxyPort, proxyUserName, proxyPassword);
 }
-
 
 size_t FdoOwsHttpHandler::HeaderCallback( void *ptr, size_t size, size_t nmemb, void *stream)
 {
@@ -420,6 +432,34 @@ void FdoOwsHttpHandler::Proc()
             if (rv != CURLE_OK) break;
             rv = curl_easy_setopt(curlHandle, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
             if (rv != CURLE_OK) break;
+        }
+        
+        // Set the proxy server options.
+        // If the host name is empty, ignore the other proxy setting.
+        if (!m_proxyHost.empty())
+        {
+            // By default, libcurl will default to using port 1080 for proxy.
+            if (m_proxyPort.empty())
+                m_proxyPort = "1080";
+            std::string proxy = m_proxyHost + ':' + m_proxyPort;
+            rv = curl_easy_setopt(curlHandle, CURLOPT_PROXY, proxy.c_str()); 
+            if (rv != CURLE_OK)
+                break;
+
+            // Set the proxy user.
+            if (!m_proxyUserName.empty())
+            {
+                rv = curl_easy_setopt(curlHandle, CURLOPT_PROXYUSERNAME, m_proxyUserName.c_str());
+                if (rv != CURLE_OK) 
+                    break;
+            }
+            // Set the proxy password.
+            if (!m_proxyPassword.empty())
+            {
+                rv = curl_easy_setopt(curlHandle, CURLOPT_PROXYPASSWORD, m_proxyPassword.c_str());
+                if (rv != CURLE_OK) 
+                    break;
+            }
         }
 
         // set http options

@@ -126,6 +126,26 @@ SymbolicName=WFS_CONNECTION_PROPERTY_PASSWORD
 Language=English
 Password
 .
+MessageId=3004
+SymbolicName=WFS_CONNECTION_PROPERTY_PROXYSERVER
+Language=English
+ProxyServerName
+.
+MessageId=3005
+SymbolicName=WFS_CONNECTION_PROPERTY_PROXYPORT
+Language=English
+ProxyServerPort
+.
+MessageId=3006
+SymbolicName=WFS_CONNECTION_PROPERTY_PROXYUSERNAME
+Language=English
+ProxyServerUsername
+.
+MessageId=3007
+SymbolicName=WFS_CONNECTION_PROPERTY_PROXYPASSWORD
+Language=English
+ProxyServerPassword
+.
 
 ;//************************************************************************************
 ;//************************************************************************************

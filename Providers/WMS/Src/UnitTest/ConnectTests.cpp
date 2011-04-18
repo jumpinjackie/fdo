@@ -109,6 +109,12 @@ void ConnectTests::TestConnectionTimeout ()
     TestConnection(L"FeatureServer=http://gis2.gov.ns.ca/servlet/com.esri.wms.Esrimap?");
 }
 
+void ConnectTests::TestConnectionWithProxy()
+{    
+    TestConnection(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx;ProxyServerName=10.148.203.106;ProxyServerPort=8088;ProxyServerUsername=u;ProxyServerPassword=p");
+    TestConnection(L"FeatureServer=http://wms.jpl.nasa.gov/wms.cgi;ProxyServerName=shacng7380p51;ProxyServerPort=8088;ProxyServerUsername=u;ProxyServerPassword=p");
+}
+
 void ConnectTests::TestConnection8 ()
 {
     TestConnection(L"FeatureServer=http://atlas.walis.wa.gov.au/servlet/com.esri.wms.Esrimap", true);

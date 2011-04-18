@@ -30,12 +30,24 @@ class FdoWmsDelegate : public FdoOwsDelegate
 {
 protected:
     FdoWmsDelegate();
-    FdoWmsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
+    /// 
+    /// Create the WMS delegate with proxy server setting. By default, no proxy server is used.
+    /// 
+    FdoWmsDelegate(
+        FdoString* defaultUrl, 
+        FdoString* userName,
+        FdoString* passwd, 
+		FdoString* proxyHost = NULL, 
+		FdoString* proxyPort = NULL, 
+		FdoString* proxyUsername = NULL,
+        FdoString* proxyPassword = NULL
+        );
     virtual ~FdoWmsDelegate();
     virtual void Dispose();
 
 public:
     static FdoWmsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
+    static FdoWmsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password);
 
 public:
     FdoWmsServiceMetadata* GetServiceMetadata(FdoString* pVersion);

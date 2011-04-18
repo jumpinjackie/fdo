@@ -263,6 +263,26 @@ Language=English
 '%1$ls': Cannot find raster property for unspecified class (NULL).
 .
 MessageId=3008
+SymbolicName=FDOWMS_CONNECTION_PROPERTY_PROXYSERVER
+Language=English
+ProxyServerName
+.
+MessageId=3009
+SymbolicName=FDOWMS_CONNECTION_PROPERTY_PROXYUSERNAME
+Language=English
+ProxyServerUsername
+.
+MessageId=3010
+SymbolicName=FDOWMS_CONNECTION_PROPERTY_PROXYPASSWORD
+Language=English
+ProxyServerPassword
+.
+MessageId=3011
+SymbolicName=FDOWMS_CONNECTION_PROPERTY_PROXYPORT
+Language=English
+ProxyServerPort
+.
+MessageId=3012
 SymbolicName=FDOWMS_VERSION_NOT_SUPPORTED
 Language=English
 The WMS version '%1$ls' is not supported.

@@ -120,6 +120,35 @@ FdoIConnectionPropertyDictionary* FdoWmsConnectionInfo::GetConnectionProperties 
                         NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_DEFAULTIMAGEHEIGHT, mbPropName),
                         L"", false, false, false, false, false, false, false, 0, NULL);
 		mPropertyDictionary->AddProperty (property);
+
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyProxyServer);
+        property = new ConnectionProperty (
+                        FdoWmsGlobals::ConnectionPropertyProxyServer,
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PROXYSERVER, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(property);
+
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyProxyPort);
+        property = new ConnectionProperty (
+                        FdoWmsGlobals::ConnectionPropertyProxyPort,
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PROXYPORT, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(property);
+
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyProxyUsername);
+        property = new ConnectionProperty (
+                        FdoWmsGlobals::ConnectionPropertyProxyUsername,
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PROXYUSERNAME, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(property);
+
+        wide_to_multibyte(mbPropName, FdoWmsGlobals::ConnectionPropertyProxyPassword);
+        property = new ConnectionProperty (
+                        FdoWmsGlobals::ConnectionPropertyProxyPassword,
+                        NlsMsgGet(FDOWMS_CONNECTION_PROPERTY_PROXYPASSWORD, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(property);
+
     }
 
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

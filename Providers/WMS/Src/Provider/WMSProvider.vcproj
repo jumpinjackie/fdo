@@ -575,50 +575,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="CommandsSchema"
-			>
-			<File
-				RelativePath="FdoWmsDescribeSchemaCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath="FdoWmsDescribeSchemaCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsDescribeSchemaMappingCommand.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsDescribeSchemaMappingCommand.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetFeatureClassCRSNames.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetFeatureClassCRSNames.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetFeatureClassStyles.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetFeatureClassStyles.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetImageFormats.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FdoWmsGetImageFormats.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Resources"
 			>
 			<File
@@ -835,6 +791,50 @@
 			</File>
 			<File
 				RelativePath="..\..\Inc\WMS\IGetImageFormats.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="CommandsSchema"
+			>
+			<File
+				RelativePath="FdoWmsDescribeSchemaCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath="FdoWmsDescribeSchemaCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsDescribeSchemaMappingCommand.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsDescribeSchemaMappingCommand.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassCRSNames.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassCRSNames.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassStyles.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureClassStyles.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetImageFormats.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetImageFormats.h"
 				>
 			</File>
 		</Filter>

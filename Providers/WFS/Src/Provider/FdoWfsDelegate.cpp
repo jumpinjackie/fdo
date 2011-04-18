@@ -28,8 +28,8 @@
 #include <Fdo/Xml/FeatureFlags.h>
 
 
-FdoWfsDelegate::FdoWfsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd) :
-     FdoOwsDelegate(defaultUrl, userName, passwd)
+FdoWfsDelegate::FdoWfsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password):
+     FdoOwsDelegate(defaultUrl, userName, passwd, proxy_location, proxy_port, proxy_user, proxy_password)
 {
 }
 
@@ -37,9 +37,9 @@ FdoWfsDelegate::~FdoWfsDelegate()
 {
 }
 
-FdoWfsDelegate* FdoWfsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd)
+FdoWfsDelegate* FdoWfsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd,  FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password)
 {
-    return new FdoWfsDelegate(defaultUrl, userName, passwd);
+    return new FdoWfsDelegate(defaultUrl, userName, passwd,  proxy_location, proxy_port, proxy_user, proxy_password);
 }
 
 FdoWfsServiceMetadata* FdoWfsDelegate::GetCapabilities(FdoString* version)
