@@ -30,13 +30,25 @@ class FdoWfsDelegate : public FdoOwsDelegate
 {
 protected:
 	FdoWfsDelegate() {}
-    FdoWfsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
+    ///
+    /// Create the WFS delegate with proxy server setting. By default, no proxy server is used.
+    ///
+    FdoWfsDelegate(
+        FdoString* defaultUrl,
+        FdoString* userName,
+        FdoString* passwd,
+		FdoString* proxyHost = NULL,
+		FdoString* proxyPort = NULL,
+		FdoString* proxyUsername = NULL,
+        FdoString* proxyPassword = NULL
+        );
     virtual ~FdoWfsDelegate();
     virtual void Dispose() { delete this; }
 
 public:
     typedef bool (FdoWfsCancelExecutationHander)(void*);
     static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd);
+    static FdoWfsDelegate* Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password);
 
     FdoWfsServiceMetadata* GetCapabilities(FdoString* version);
     FdoFeatureSchemaCollection* DescribeFeatureType(FdoStringCollection* typeNames,FdoString* version);

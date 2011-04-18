@@ -791,8 +791,12 @@ FdoWmsDelegate* FdoWmsSelectCommand::_getWmsDelegate ()
 
     FdoStringP user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyUsername);
     FdoStringP password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyPassword);
+    FdoStringP proxy_location = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyServer);
+    FdoStringP proxy_port = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyPort);
+    FdoStringP proxy_user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyUsername);
+    FdoStringP proxy_password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyPassword);
 
-    FdoPtr<FdoWmsDelegate> ret = FdoWmsDelegate::Create(location, user, password);
+    FdoPtr<FdoWmsDelegate> ret = FdoWmsDelegate::Create(location, user, password, proxy_location, proxy_port, proxy_user, proxy_password);
     FdoPtr<FdoWmsServiceMetadata> svcMetadata = mConnection->GetWmsServiceMetadata ();
     FdoPtr<FdoOwsCapabilities> capa = svcMetadata->GetCapabilities ();
     FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();

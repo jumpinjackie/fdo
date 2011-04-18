@@ -57,6 +57,10 @@ private:
     std::string m_parameters;
     std::string m_userName;
     std::string m_passwd;
+    std::string m_proxyHost;
+    std::string m_proxyPort;
+    std::string m_proxyUserName;
+    std::string m_proxyPassword;
 
     // thread related variables
     std::auto_ptr<boost::thread> m_thread;
@@ -85,13 +89,17 @@ private:
 protected:
     FdoOwsHttpHandler();
     FdoOwsHttpHandler(const char* url, bool bGet, const char* parameters,
+        const char* userName, const char* passwd, const char* proxy_url, const char* proxy_port, const char* proxy_userName, const char* proxy_passwd);
+
+    FdoOwsHttpHandler(const char* url, bool bGet, const char* parameters,
         const char* userName, const char* passwd);
     virtual ~FdoOwsHttpHandler();
     virtual void Dispose();
 
 public:
     static FdoOwsHttpHandler* Create(const char* url, bool bGet, const char* parameters,
-        const char* userName, const char* passwd);
+        const char* userName, const char* passwd, 
+        const char* proxyHost = NULL, const char* proxyPort = NULL, const char* proxyUserName = NULL, const char* proxyPasswd = NULL);
 
     void Perform();
 

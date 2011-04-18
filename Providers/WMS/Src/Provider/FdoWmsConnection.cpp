@@ -405,6 +405,11 @@ FdoConnectionState FdoWmsConnection::Open ()
             FdoWmsGlobals::ConnectionPropertyFeatureServer));
     }
 
+    FdoStringP proxyHost = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyServer);
+    FdoStringP proxyPort = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyPort);
+    FdoStringP proxyUser = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyUsername);
+    FdoStringP proxyPassword = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyProxyPassword);
+
     FdoStringP user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyUsername);
     FdoStringP password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyPassword);
 
@@ -419,7 +424,7 @@ FdoConnectionState FdoWmsConnection::Open ()
     mLayerMappings = FdoDictionary::Create();
 
     FdoStringP pVersion = GetRequestWMSVersion(location);
-    FdoWmsDelegateP wmsDelegate = FdoWmsDelegate::Create(location, user, password);
+    FdoWmsDelegateP wmsDelegate = FdoWmsDelegate::Create(location, user, password, proxyHost, proxyPort, proxyUser, proxyPassword);
     mWmsServiceMetadata = wmsDelegate->GetServiceMetadata(pVersion);
     if (!wcscmp(mWmsServiceMetadata->GetVersion(), L"1.0.0"))
     {

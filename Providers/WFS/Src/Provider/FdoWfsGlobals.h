@@ -105,6 +105,12 @@ namespace FdoWfsGlobals
     static FdoString* FeatureServer                     = L"FeatureServer";
     static FdoString* Username                          = L"Username";
     static FdoString* Password                          = L"Password";
+
+    static FdoString* ProxyServer                       = L"ProxyServerName";
+    static FdoString* ProxyPort                         = L"ProxyServerPort";
+    static FdoString* ProxyUsername                     = L"ProxyServerUsername";
+    static FdoString* ProxyPassword                     = L"ProxyServerPassword";
+
     static FdoString* PROPERTYNAME                      = L"PROPERTYNAME";
     static FdoString* Filter                            = L"Filter";
     static FdoString* OgcUri                            = L"http://www.opengis.net/ogc";

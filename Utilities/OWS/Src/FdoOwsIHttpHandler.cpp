@@ -21,6 +21,12 @@
 #include "FdoOwsHttpHandler.h"
 
 FdoOwsIHttpHandler* FdoOwsIHttpHandler::Create(const char* url, bool bGet, const char* parameters,
+    const char* userName, const char* passwd, const char* proxy_url, const char* proxy_port, const char* proxy_userName, const char* proxy_passwd)
+{
+    return FdoOwsHttpHandler::Create(url, bGet, parameters, userName, passwd, proxy_url, proxy_port, proxy_userName, proxy_passwd);
+}
+
+FdoOwsIHttpHandler* FdoOwsIHttpHandler::Create(const char* url, bool bGet, const char* parameters,
     const char* userName, const char* passwd)
 {
     return FdoOwsHttpHandler::Create(url, bGet, parameters, userName, passwd);

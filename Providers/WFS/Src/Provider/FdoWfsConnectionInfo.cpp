@@ -111,6 +111,34 @@ FdoIConnectionPropertyDictionary* FdoWfsConnectionInfo::GetConnectionProperties 
                         NlsMsgGet(WFS_CONNECTION_PROPERTY_PASSWORD, mbPropName),
                         L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(passwordProperty);
+
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::ProxyServer);
+        FdoPtr<ConnectionProperty> proxyServerProperty = new ConnectionProperty (
+                        FdoWfsGlobals::ProxyServer,
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PROXYSERVER, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(proxyServerProperty);
+
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::ProxyPort);
+        FdoPtr<ConnectionProperty> proxyPortProperty = new ConnectionProperty (
+                        FdoWfsGlobals::ProxyPort,
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PROXYPORT, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(proxyPortProperty);
+
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::ProxyUsername);
+        FdoPtr<ConnectionProperty> proxyUsernameProperty = new ConnectionProperty (
+                        FdoWfsGlobals::ProxyUsername,
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PROXYUSERNAME, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(proxyUsernameProperty);
+
+        wide_to_multibyte(mbPropName, FdoWfsGlobals::ProxyPassword);
+        FdoPtr<ConnectionProperty> proxyPasswordProperty = new ConnectionProperty (
+                        FdoWfsGlobals::ProxyPassword,
+                        NlsMsgGet(WFS_CONNECTION_PROPERTY_PROXYPASSWORD, mbPropName),
+                        L"", false, false, false, false, false, false, false, 0, NULL);
+        mPropertyDictionary->AddProperty(proxyPasswordProperty);
     }
 
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

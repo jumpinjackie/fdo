@@ -31,12 +31,21 @@ public:
                                                  bool bGet, 
                                                  const char* parameters,
                                                  const char* userName, 
+                                                 const char* passwd,
+                                                 const char* proxy_url,
+                                                 const char* proxy_port,
+                                                 const char* proxy_userName, 
+                                                 const char* proxy_passwd);
+
+    FDOOWS_API static FdoOwsIHttpHandler* Create(const char* url, 
+                                                 bool bGet, 
+                                                 const char* parameters,
+                                                 const char* userName, 
                                                  const char* passwd);
 
     FDOOWS_API virtual void Perform() = 0;
     FDOOWS_API virtual FdoOwsMIMEType GetMIMEType() = 0;
 };
-
 
 
 #endif

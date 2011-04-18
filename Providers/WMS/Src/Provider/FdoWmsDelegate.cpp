@@ -25,14 +25,15 @@
 #include "FdoWmsXmlGlobals.h"
 
 FdoWmsDelegate::FdoWmsDelegate() :
-     FdoOwsDelegate(NULL, NULL, NULL)
+     FdoOwsDelegate(NULL, NULL, NULL, NULL, NULL, NULL, NULL)
 {
 }
 
-FdoWmsDelegate::FdoWmsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd) :
-     FdoOwsDelegate(defaultUrl, userName, passwd)
+FdoWmsDelegate::FdoWmsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password) :
+     FdoOwsDelegate(defaultUrl, userName, passwd, proxy_location, proxy_port, proxy_user, proxy_password)
 {
 }
+
 
 FdoWmsDelegate::~FdoWmsDelegate()
 {
@@ -41,6 +42,11 @@ FdoWmsDelegate::~FdoWmsDelegate()
 void FdoWmsDelegate::Dispose()
 { 
     delete this; 
+}
+
+FdoWmsDelegate* FdoWmsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd, FdoString* proxy_location, FdoString* proxy_port, FdoString* proxy_user, FdoString* proxy_password)
+{
+    return new FdoWmsDelegate(defaultUrl, userName, passwd, proxy_location, proxy_port, proxy_user, proxy_password);
 }
 
 FdoWmsDelegate* FdoWmsDelegate::Create(FdoString* defaultUrl, FdoString* userName, FdoString* passwd)
