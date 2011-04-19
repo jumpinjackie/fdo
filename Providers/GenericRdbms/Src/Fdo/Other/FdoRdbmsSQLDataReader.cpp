@@ -455,7 +455,7 @@ const void* FdoRdbmsSQLDataReader::GetGeometry(FdoInt32 index, FdoInt32* len, bo
     *len = mWkbGeomLen;
     if (*len <= 0)
     {
-        if (!noExcOnInvalid)
+        if (noExcOnInvalid)
             return NULL;
         else if (*len == 0)
             throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_385, "Property '%1$ls' value is NULL; use IsNull method before trying to access the property value", mColList[index].column ));
