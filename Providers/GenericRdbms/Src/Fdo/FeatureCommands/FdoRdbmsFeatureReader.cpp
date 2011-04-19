@@ -997,6 +997,13 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
         FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = classDef->GetIdentityProperties();
         FdoPtr<FdoDataPropertyDefinitionCollection> subsetIdProperties = FdoDataPropertyDefinitionCollection::Create(NULL);
 
+        FdoPtr<FdoGeometricPropertyDefinition> geomProperty;
+        FdoPtr<FdoGeometricPropertyDefinition> retGeomProperty;
+        if (classDef->GetClassType() == FdoClassType_FeatureClass)
+        {
+            geomProperty = ((FdoFeatureClass*)classDef)->GetGeometryProperty();
+        }
+
         FdoPtr<FdoIdentifier> id;
         for (int i=0; i<mProperties->GetCount(); i++)
         {
@@ -1008,6 +1015,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
 
             FdoPtr<FdoDataPropertyDefinition> dataProperty;
             int j;
+            bool found = false;
             for (j=0; j<idProperties->GetCount(); j++)
             {
                 dataProperty = idProperties->GetItem(j);
@@ -1015,11 +1023,14 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                 {
                     idProperties->RemoveAt(j);
                     properties->Remove(dataProperty);
+
                     subsetIdProperties->Add(dataProperty);
+                    subsetProperties->Add(dataProperty);
+                    found = true;
                     break;
                 }
             }
-            if( j != idProperties->GetCount() )
+            if( found )
                 continue;
 
             FdoPtr<FdoPropertyDefinition> property;
@@ -1034,10 +1045,11 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                     if (wcscmp(selectedName, property->GetName()) == 0)
                     {
                         AddToList(subsetBaseProperties, property);
+                        found = true;
                         break;
                     }
                 }
-                if( j != baseProperties->GetCount() )
+                if( found )
                     continue;
             }
 
@@ -1048,10 +1060,16 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                 {
                     properties->RemoveAt(j);
                     subsetProperties->Add(property);
+
+                    if (wcscmp(property->GetName(), geomProperty->GetName()) == 0)
+                    {
+                        retGeomProperty = geomProperty;
+                    }
+                    found = true;
                     break;
                 }
             }
-            if( j != properties->GetCount() )
+            if( found )
                 continue;
 
             // See if we have any Computed Identifier. If so, we need to mark this class as Computed class and
@@ -1090,6 +1108,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
                 }
             }
         }
+
         if (mIsFeatureQuery)
         {
             FdoFeatureClass *featureClass = FdoFeatureClass::Create(classDef->GetName(), classDef->GetDescription());
@@ -1134,7 +1153,11 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
             FdoPtr<FdoDataPropertyDefinition> item = subsetIdProperties->GetItem(i);
             if (!properties->Contains(item))
                 properties->Add(item);
-            retIdProperties->Add(item);        }
+            retIdProperties->Add(item);        
+        }
+        if (retGeomProperty)
+            ((FdoFeatureClass*)returnClassDef)->SetGeometryProperty(retGeomProperty);
+
     }
     else
     {
@@ -1435,7 +1458,7 @@ FdoByte FdoRdbmsFeatureReader::GetByte( const wchar_t *propertyName )
 
 FdoDateTime FdoRdbmsFeatureReader::GetDateTime( const wchar_t *propertyName )
 {
-    return mFdoConnection->DbiToFdoTime(GetString(propertyName));
+    return mFdoConnection->DbiToFdoTime( mConnection->GetUtility()->UnicodeToUtf8( GetString( propertyName ) ) );
 }
 
 
