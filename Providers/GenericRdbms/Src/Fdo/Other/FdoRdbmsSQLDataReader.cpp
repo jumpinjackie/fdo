@@ -385,7 +385,7 @@ bool FdoRdbmsSQLDataReader::IsNull(FdoInt32 index)
     if (mColList[index].datatype == RDBI_GEOMETRY)
     {
         FdoInt32 len = 0;
-        GetGeometry(index+1, &len, true);
+        GetGeometry(index, &len, true);
         return len == 0;
     }
     else
