@@ -1033,7 +1033,7 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
             if( found )
                 continue;
 
-            FdoPtr<FdoPropertyDefinition> property;
+            FdoPtr<FdoPropertyDefinition> prop;
 
             // Skip base properties if class has base class.
             // They will be handled when base class is filtered.
@@ -1041,10 +1041,10 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
             {
                 for (j=0; j<baseProperties->GetCount(); j++)
                 {
-                    property = static_cast<FdoPropertyDefinition *> (baseProperties->GetItem(j));
-                    if (wcscmp(selectedName, property->GetName()) == 0)
+                    prop = static_cast<FdoPropertyDefinition *> (baseProperties->GetItem(j));
+                    if (wcscmp(selectedName, prop->GetName()) == 0)
                     {
-                        AddToList(subsetBaseProperties, property);
+                        AddToList(subsetBaseProperties, prop);
                         found = true;
                         break;
                     }
@@ -1055,13 +1055,13 @@ FdoClassDefinition *FdoRdbmsFeatureReader::FilterClassDefinition(
 
             for (j=0; j<properties->GetCount(); j++)
             {
-                property = static_cast<FdoPropertyDefinition *> (properties->GetItem(j));
-                if (wcscmp(selectedName, property->GetName()) == 0)
+                prop = static_cast<FdoPropertyDefinition *> (properties->GetItem(j));
+                if (wcscmp(selectedName, prop->GetName()) == 0)
                 {
                     properties->RemoveAt(j);
-                    subsetProperties->Add(property);
+                    subsetProperties->Add(prop);
 
-                    if (wcscmp(property->GetName(), geomProperty->GetName()) == 0)
+                    if (geomProperty != NULL && wcscmp(prop->GetName(), geomProperty->GetName()) == 0)
                     {
                         retGeomProperty = geomProperty;
                     }
