@@ -162,6 +162,13 @@ void UnitTestUtil::Sql2Db(const wchar_t* sCommand, FdoIConnection* connection)
 
 void UnitTestUtil::CreateAcadSchema( FdoIConnection* connection, bool useBaseMapping )
 {
+    FdoPtr<FdoIDescribeSchema> dcmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
+    FdoPtr<FdoFeatureSchemaCollection> schs = dcmd->Execute();
+    // Check if land schema already exists
+    FdoPtr<FdoFeatureSchema> acadsch = schs->FindItem( L"Acad" );
+    if (acadsch != NULL)
+        return;
+
     FdoIApplySchema*  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
     FdoPtr<FdoRdbmsOvPhysicalSchemaMapping>pOverrides;
     FdoPtr<FdoRdbmsOvClassDefinition>pOvClass;

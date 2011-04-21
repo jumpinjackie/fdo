@@ -42,7 +42,7 @@ int SqlServerGeometryTests::do_rdbi_init ()
 int SqlServerGeometryTests::do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword)
 {
     FdoStringP odbcConnectString = FdoStringP::Format(
-        L"DRIVER={SQL Server}; SERVER=%ls; UID=%hs; PWD=%hs", 
+        L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=%ls; UID=%hs; PWD=%hs", 
         (FdoString*)(UnitTestUtil::GetEnviron("service")), 
         userName, 
         userPassword
@@ -89,10 +89,10 @@ int SqlServerGeometryTests::do_insert_geometry( int cursor, FdoInt32 *featId, Fd
     int     rc;
     // Do bind instead of literals
     if (mRdbiContext->dispatch.capabilities.supports_unicode == 1){
-        rc  = rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor, L"insert into foo values (?, geometry::STGeomFromWKB(?, 0))",
+        rc  = rdbi_sql_vaW (mRdbiContext, RDBI_VA_EXEC, cursor, L"insert into foo values (?, ?)",
             RDBI_LONG, sizeof(long), featId, RDBI_GEOMETRY, sizeof (geometry), geometry, RDBI_VA_EOL, RDBI_VA_EOL);
     }else{
-        rc  = rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor, "insert into foo values (?, geometry::STGeomFromWKB(?, 0))",
+        rc  = rdbi_sql_va (mRdbiContext, RDBI_VA_EXEC, cursor, "insert into foo values (?, ?)",
             RDBI_LONG, sizeof(long), featId, RDBI_GEOMETRY, sizeof (geometry), geometry, RDBI_VA_EOL, RDBI_VA_EOL);
     }
     return rc;

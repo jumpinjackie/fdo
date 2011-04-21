@@ -61,7 +61,7 @@ int odbcdr_fre_cursor(
 	odbcdr_cursor_def	*parent_cursor; 	/* For traversing cursor list	*/
 	SQLRETURN			rc;
 	int					rdbi_status = RDBI_GENERIC_ERROR;
-	//int					i;
+	geom_srid_map*      ptr;
 
 	debug_on1("odbcdr_fre_cursor", "s:0x%p", *cursor);
 
@@ -123,8 +123,20 @@ int odbcdr_fre_cursor(
     if ( c->odbcdr_blob_tmp != NULL )
         ut_vm_free( _db_function, c->odbcdr_blob_tmp );
 
+    // Free the working buffer
+    if ( c->odbcdr_geom_handle != NULL )
+        IGeometry_ReleaseGeometryHandleConvertor( c->odbcdr_geom_handle );
+
 	// Free the geometry buffers
     ODBCDR_RDBI_ERR( odbcdr_geom_freeAllColumns( context, c ) );   
+
+    ptr = c->geom_srid_maping;
+    while(ptr != NULL)
+    {
+        geom_srid_map* tmp = ptr->next;
+        ut_vm_free( _db_function, ptr);
+        ptr = tmp;
+    }
 
 	ut_vm_free( _db_function, (char *)c );
 	c = NULL;

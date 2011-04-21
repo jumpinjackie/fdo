@@ -537,10 +537,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Fdo\FdoRdbmsSqlServerSpatialGeometryConverter.h"
-				>
-			</File>
-			<File
 				RelativePath=".\resource.h"
 				>
 			</File>

@@ -45,6 +45,7 @@ public:
 
     void SetProvider ();
 
+    double GetNullOrdinate();
 
     //-------------------------------------------------------------------------
     //                           Unit Test Functions

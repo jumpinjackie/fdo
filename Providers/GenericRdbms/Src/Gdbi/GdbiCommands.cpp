@@ -696,3 +696,15 @@ int GdbiCommands::geom_srid_set(
 
 	return RDBI_GENERIC_ERROR;
 }
+
+int GdbiCommands::geom_version_set(
+	int				sqlid,
+	char			*geom_col_name,
+	long			version)
+{
+	int rc = ::rdbi_geom_version_set(m_pRdbiContext, sqlid, geom_col_name, version);
+	if (rc == RDBI_SUCCESS)
+		return rc;
+
+	return RDBI_GENERIC_ERROR;
+}

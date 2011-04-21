@@ -33,6 +33,11 @@ GdbiStatement::~GdbiStatement(void)
 	FDO_SAFE_RELEASE(m_QueryId);
 }
 
+ int GdbiStatement::GetQueryId()
+ {
+     return m_QueryId->GetQueryId();
+ }
+
 int GdbiStatement::Bind( int parmIndex, int size, const char* szValue, GDBI_NI_TYPE *nullInd )
 {
 	if (size == 1)
@@ -74,11 +79,6 @@ int GdbiStatement::Bind( int parmIndex, FdoInt64 *i64Value, GDBI_NI_TYPE *nullIn
 int GdbiStatement::Bind( int parmIndex, FdoIGeometry* gValue, GDBI_NI_TYPE *nullInd )
 {
     return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_GEOMETRY,  sizeof(FdoIGeometry), (char*)gValue, nullInd );
-}
-
-int GdbiStatement::Bind( int parmIndex, FdoDateTime *dValue, GDBI_NI_TYPE *nullInd )
-{
-    return 1;
 }
 
 int GdbiStatement::Bind(
@@ -167,6 +167,16 @@ int GdbiStatement::geom_srid_set(
 	return m_pGdbiCommands->geom_srid_set(m_QueryId->GetQueryId(), 
 		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
 										  srid);
+}
+
+int GdbiStatement::geom_version_set(
+				int		parmIndex,
+				long	version
+				)
+{
+	return m_pGdbiCommands->geom_version_set(m_QueryId->GetQueryId(), 
+		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
+										  version);
 }
 
 char * GdbiStatement::GetGeomInfoFromFgf( long srid, FdoByteArray * fgf )

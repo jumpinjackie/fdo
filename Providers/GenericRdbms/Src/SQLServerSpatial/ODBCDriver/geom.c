@@ -141,6 +141,7 @@ static bool col_list_freeSqlServerGeometries_S( odbcdr_context_def	*context, odb
 static int col_list_setNumRows_S( odbcdr_geom_col_list_def *list, int numRows_I );
 static odbcdr_geom_col_def *col_list_getColumnByIndex_S( odbcdr_geom_col_list_def *list, long indx );
 static odbcdr_geom_col_def *col_list_getColumnByPosition_S( odbcdr_geom_col_list_def *list, int position_I );
+static long odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos);
 
 static int geom_convertFromSqlServer_S( odbcdr_context_def	*context, odbcdr_cursor_def	*cursor, 
                                      int position,
@@ -173,9 +174,72 @@ int odbcdr_geom_srid_set (
     odbcdr_cursor_def    *c;
     int                 rdbi_status = RDBI_GENERIC_ERROR;
     int                 rc = FALSE;
+    int                 pos = atoi(col_name);
+
+    ODBCDR_RDBI_ERR( odbcdr_get_cursor( context, cursor, &c ) );
+    if (c->geom_srid_maping == NULL)
+    {
+        c->geom_srid_maping = (geom_srid_map*)ut_vm_malloc( "geom_srid_map", sizeof( geom_srid_map ) );
+        c->geom_srid_maping->geom_srid_value = srid;
+        c->geom_srid_maping->next = NULL;
+        c->geom_srid_maping->position = pos;
+    }
+    else
+    {
+        geom_srid_map* ptr = c->geom_srid_maping;
+        while (ptr != NULL)
+        {
+            if (ptr->position == pos)
+            {
+                ptr->geom_srid_value = srid;
+                break;
+            }
+            if (ptr->next == NULL)
+            {
+                ptr->next = (geom_srid_map*)ut_vm_malloc( "geom_srid_map", sizeof( geom_srid_map ) );
+                ptr->next->geom_srid_value = srid;
+                ptr->next->next = NULL;
+                ptr->next->position = pos;
+                break;
+            }
+            ptr = ptr->next;
+        }
+    }
+    rc = TRUE;
+the_exit:
+    return rc;
+}
+
+long odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos)
+{
+    long            ret = 0;
+    geom_srid_map*  ptr = c->geom_srid_maping;
+
+    while (ptr != NULL)
+    {
+        if (ptr->position == pos)
+        {
+            ret = ptr->geom_srid_value;
+            break;
+        }
+        ptr = ptr->next;
+    }
+    return ret;
+}
+
+int odbcdr_geom_version_set ( 
+	odbcdr_context_def	*context,
+    char   *cursor,                     /* cursor associated with SQL stmnt */
+	char	*col_name,
+    long version ) 
+{
+    odbcdr_cursor_def    *c;
+    int                 rdbi_status = RDBI_GENERIC_ERROR;
+    int                 rc = FALSE;
 
     ODBCDR_RDBI_ERR( odbcdr_get_cursor( context, cursor, &c ) );
 
+    c->geom_version_value = version;
     rc = TRUE;
 the_exit:
     return rc;
@@ -1052,8 +1116,11 @@ geom_convertFromSqlServer_S(
     if ( NULL == ( wkb = IByteArray_Create( pData, (int) count) ) )
         goto the_exit;
 
+    if ( cursor->odbcdr_geom_handle == NULL )
+        cursor->odbcdr_geom_handle = IGeometry_CreateGeometryHandleConvertor();
+
     // Create the geometry
-    if ( !IGeometry_CreateGeometryFromWkb( wkb, visionGeom_O, l_visionGeom_0 ) )
+    if ( !IGeometry_CreateGeometryFromMsWkb(cursor->odbcdr_geom_handle, wkb, visionGeom_O, l_visionGeom_0 ) )
     {
 		rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
         goto the_exit;
@@ -1124,14 +1191,17 @@ geom_convertToSqlServer_S(
             goto the_exit;
 		}
 
+        if ( cursor->odbcdr_geom_handle == NULL )
+            cursor->odbcdr_geom_handle = IGeometry_CreateGeometryHandleConvertor();
+
         // Get the data, as a regular array of bytes
-        if ( !IGeometry_GetWkb( visionGeom_I,  &wkb ) )
+        if ( !IGeometry_GetMsWkb(cursor->odbcdr_geom_handle, visionGeom_I, odbcdr_geom_srid_get(context, cursor, position), cursor->geom_version_value, &wkb ) )
 		{
 			rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
             goto the_exit;
 		}
 
-        if ( !IGeometry_GetWkbData( wkb, &pData, (int*)&count ) )
+        if ( !IGeometry_GetByteArrayData( wkb, &pData, (int*)&count ) )
 		{
 			rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
             goto the_exit;

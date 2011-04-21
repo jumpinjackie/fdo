@@ -101,6 +101,7 @@ int postgis_rdbi_init (void **contextp, rdbi_methods methods)
         methods->set_schemaW  = NULL;
         methods->vndr_info    = (int (*)(void*, rdbi_vndr_info_def*))postgis_vndr_info;
         methods->geom_srid_set   = (int (*)(void*, char*, char*, long))postgis_geom_srid_set;
+        methods->geom_version_set = NULL;
         methods->geom_dimens_set = NULL;
         methods->get_geoms_ext   = NULL;
         methods->get_gen_id      = NULL;

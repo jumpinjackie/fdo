@@ -112,6 +112,7 @@ odbcdr_rdbi_init(
 	    methods->vndr_name	        = (char*(*)(void*))odbcdr_vndr_name;
 	    methods->vndr_nameW	        = (wchar_t*(*)(void*))odbcdr_vndr_nameW;
         methods->geom_srid_set      = (int  (*)(void*,char*,char*,long))odbcdr_geom_srid_set;
+        methods->geom_version_set   = (int  (*)(void*,char*,char*,long))odbcdr_geom_version_set;
 
         methods->close_cursor       = (int (*)(void*, char*))odbcdr_close_cursor;
 	    methods->disconnect         = (int (*)(void*, char**))odbcdr_disconnect;

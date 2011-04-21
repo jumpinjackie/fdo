@@ -64,7 +64,7 @@ FdoRdbmsFeatureReader( connection, NULL, false, classDef, NULL)
 	    //							countRequired? &count : NULL );
 
         // Apparently strait select is 3x faster.
-        //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope().STAsBinary() as MBR from %ls", colNameW, tableNameW);
+        //    FdoStringP sql = FdoStringP::Format(L"select [%ls].STEnvelope() as MBR from %ls", colNameW, tableNameW);
 
         FdoPtr<FdoISelect> selCmd = (FdoISelect*)(mFdoConnection->CreateCommand(FdoCommandType_Select));
         selCmd->SetFeatureClassName( classDef->GetQName() );

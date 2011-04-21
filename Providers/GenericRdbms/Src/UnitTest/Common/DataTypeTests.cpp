@@ -52,7 +52,14 @@ void DataTypeTests::setUp ()
 		        pDelCmd->Execute();
 		        connection->Close();
             }
-            catch(...) { }
+            catch(FdoException* exc)
+            {
+                exc->Release();
+            }
+            catch(...) 
+            {
+                printf("Unknown exception\n");
+            }
 
 	        UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
             bDatastoreCreated = true;
@@ -72,6 +79,11 @@ void DataTypeTests::setUp ()
             rdbi_term (&mRdbiContext);
             throw exception;
         }
+    }
+    catch(FdoException* ex)
+    {
+        printf("Fail to create datastore: %ls\n", ex->GetExceptionMessage());
+        TestCommonFail (ex);
     }
     catch (CppUnit::Exception exception)
     {

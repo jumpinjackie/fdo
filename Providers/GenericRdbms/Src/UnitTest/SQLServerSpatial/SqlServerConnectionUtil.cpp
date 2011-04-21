@@ -48,13 +48,13 @@ int SqlServerStaticConnection::do_rdbi_connect (rdbi_context_def* rdbi_context, 
     FdoStringP connectString;
 
     if ( username.GetLength() > 0 ) 
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server}; SERVER=%ls; UID=%ls; PWD=%ls", 
+        connectString = FdoStringP::Format(L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=%ls; UID=%ls; PWD=%ls", 
             (FdoString*)pService,
             (FdoString*)username,
             (FdoString*)password
         );
     else
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server}; SERVER=%ls", (FdoString*)pService);
+        connectString = FdoStringP::Format(L"DRIVER={SQL Server Native Client 10.0};Trusted_Connection=yes;MARS_Connection=yes;SERVER=%ls", (FdoString*)pService);
 
     if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
     {

@@ -36,6 +36,8 @@ typedef struct IGeometry_def* pIGeometry_def;
 struct  ByteArray_def;
 typedef struct ByteArray_def* pByteArray_def;
 
+void*           IGeometry_CreateGeometryHandleConvertor();
+void            IGeometry_ReleaseGeometryHandleConvertor(void*);
 
 int             IGeometry_CreateGeometry( pIGeometry_def, pIGeometry_def* );
 
@@ -46,13 +48,12 @@ int             IGeometry_AddRef( pIGeometry_def );
 int             IGeometry_GetFgftString( pIGeometry_def, const wchar_t ** );
 
 int             IGeometry_GetByteArrayData( pByteArray_def, unsigned char **, int * );
-int             IGeometry_GetWkbData( pByteArray_def, unsigned char **, int * );
 
 pByteArray_def  IByteArray_Create(unsigned char* bytes, int count);
 void			IByteArray_Release( pByteArray_def );
 
-int             IGeometry_GetWkb( pIGeometry_def, pByteArray_def * );
-int             IGeometry_CreateGeometryFromWkb( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
+int             IGeometry_GetMsWkb(void* , pIGeometry_def, int, int, pByteArray_def * );
+int             IGeometry_CreateGeometryFromMsWkb(void* , pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 int             IGeometry_GetFgf( pIGeometry_def, pByteArray_def * );
 int             IGeometry_CreateGeometryFromFgf( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 

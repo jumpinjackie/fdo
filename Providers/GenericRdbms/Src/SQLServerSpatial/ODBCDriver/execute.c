@@ -190,6 +190,7 @@ int odbcdr_execute(						/* execute an SQL statement		  */
 
     if ( rc == SQL_NEED_DATA && c->bound_geometries != NULL )
     {
+        count = !count ? 1 : count;
         assert(count <= ODBCDR_MAX_ARRAY_SIZE);
 
         /* Free any Oracle objects from previous executions/fetches. */

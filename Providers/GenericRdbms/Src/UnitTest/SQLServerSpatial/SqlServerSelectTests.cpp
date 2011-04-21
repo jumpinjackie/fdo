@@ -33,7 +33,7 @@ void SqlServerSelectTests::set_provider()
 int SqlServerSelectTests::do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword)
 {
     FdoStringP odbcConnectString = FdoStringP::Format(
-        L"DRIVER={SQL Server}; SERVER=%ls; UID=%hs; PWD=%hs", 
+        L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=%ls; UID=%hs; PWD=%hs", 
         (FdoString*)(UnitTestUtil::GetEnviron("service")), 
         userName, 
         userPassword
