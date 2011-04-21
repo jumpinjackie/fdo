@@ -78,6 +78,23 @@ void FdoRdbmsSQLCommand::SetSQLStatement(const wchar_t* value)
     }
 }
 
+bool FdoRdbmsSQLCommand::SQLStartsWith(const wchar_t* str, const wchar_t* val, const wchar_t** lastPos)
+{
+    const wchar_t* strTmp = str;
+    while (*strTmp == L' ' && *strTmp != L'\0') strTmp++;
+    const wchar_t* valTmp = val;
+    while(towupper(*strTmp++) == towupper(*valTmp++))
+    {
+        if (*valTmp == L'\0')
+        {
+            if (lastPos != NULL)
+                *lastPos = strTmp;
+            return true;
+        }
+    }
+    return false;
+}
+
 // Executes the SQL statement against the connection object and returns
 // the number of rows affected.
 FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
@@ -94,10 +111,17 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
 
     try
     {
-        FdoStringP sqlString(m_SqlString);
+        const wchar_t* lastPos = NULL;
+        GdbiConnection* gdbiConn = m_DbiConnection->GetGdbiConnection();
 
-        numberOfRows = m_DbiConnection->GetGdbiConnection()->ExecuteNonQuery( (wchar_t *)(const wchar_t *)sqlString );
-
+        if ((SQLStartsWith(m_SqlString, L"CREATE", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")) || 
+            (SQLStartsWith(m_SqlString, L"DROP", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")) ||
+            (SQLStartsWith(m_SqlString, L"ALTER", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")))
+        {
+            numberOfRows = mFdoConnection->ExecuteDdlNonQuery(m_SqlString);
+        }
+        else
+            numberOfRows = gdbiConn->ExecuteNonQuery(m_SqlString);
     }
     catch (FdoException *ex)
     {

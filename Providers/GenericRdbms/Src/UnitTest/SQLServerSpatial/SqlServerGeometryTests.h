@@ -33,8 +33,8 @@ class SqlServerGeometryTests : public GeometryTests
 	char *get_geometry_text (FdoIGeometry *geometry);
 	int do_insert_geometry( int cursor, FdoInt32 *featId, FdoIGeometry **geometry );
     
-    char *get_bind_var (int n){ return (n != 2 ? "?" : "geometry::STGeomFromWKB(?, 0)");}
-    char *get_geom_conv () { return ".STAsBinary()"; };
+    char *get_bind_var (int n){ return "?";}
+    char *get_geom_conv () { return ""; };
     char *get_geometry_type (){return ("Geometry");}
 };
 

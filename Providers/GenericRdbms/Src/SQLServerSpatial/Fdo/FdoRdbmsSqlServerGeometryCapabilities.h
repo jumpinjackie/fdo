@@ -24,12 +24,16 @@
 /// <summary>The FdoRdbmsGeometryCapabilities class delineates available support for raster processing from a provider.</summary>
 class FdoRdbmsSqlServerGeometryCapabilities : public FdoRdbmsGeometryCapabilities
 {
-
+    long mGeomVersion;
 protected:
     ~FdoRdbmsSqlServerGeometryCapabilities(void) { }
     virtual void Dispose() { delete this; }
 public:
-    FdoRdbmsSqlServerGeometryCapabilities(void) { }
+    FdoRdbmsSqlServerGeometryCapabilities(void)
+    {
+        mGeomVersion = 1;
+    }
+    void SetGeomVersion(long val) { mGeomVersion = val; }
 
     /// <summary>Return the list of supported geometry types. For example, if a client wanted to know if a provider supported
     /// multi-polygons, it would call GetGeometryTypes and check if the MultiPolygon type was listed.</summary>
@@ -44,9 +48,16 @@ public:
                                             FdoGeometryType_MultiPoint,
                                             FdoGeometryType_MultiLineString,
                                             FdoGeometryType_MultiPolygon,
-                                         //   FdoGeometryType_MultiGeometry,
-                                            };
-        length = sizeof(rdbmGeomTypes)/sizeof(FdoGeometryType);
+                                            FdoGeometryType_MultiGeometry,
+                                            FdoGeometryType_CurveString,
+                                            FdoGeometryType_CurvePolygon,
+                                            FdoGeometryType_MultiCurveString,
+                                            FdoGeometryType_MultiCurvePolygon
+        };
+        if (mGeomVersion >= 2)
+            length = sizeof(rdbmGeomTypes)/sizeof(FdoGeometryType);
+        else
+            length = 7;
         return rdbmGeomTypes;
     }
 
@@ -71,7 +82,7 @@ public:
     /// <returns>Returns the dimensionalities</returns>
     virtual FdoInt32 GetDimensionalities()
     {
-        return (0 | FdoDimensionality_XY /*| FdoDimensionality_Z | FdoDimensionality_M*/ );
+        return (0 | FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M );
     }
 };
 

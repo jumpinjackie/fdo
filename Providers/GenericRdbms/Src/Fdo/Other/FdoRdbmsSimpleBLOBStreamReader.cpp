@@ -63,7 +63,6 @@ FdoInt32 FdoRdbmsSimpleBLOBStreamReader::ReadNext( FdoByte* buffer,
                                     const FdoInt32 count)
 {
     FdoInt32 count2 = count;  // Bypass unnecessary "const"
-	wchar_t tmp[15];
 
     // Validate count2:
     if ((count2 < -1) || (count2==0))
@@ -98,7 +97,6 @@ FdoInt32 FdoRdbmsSimpleBLOBStreamReader::ReadNext(  FdoArray<FdoByte> * &buffer,
                                         const FdoInt32 count)
 {
     FdoInt32 count2 = count;  // Bypass unnecessary "const"
-	wchar_t tmp[15];
 
     // Validate count:
     if ((count2 < -1) || (count2==0))

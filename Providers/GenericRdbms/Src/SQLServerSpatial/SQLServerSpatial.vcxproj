@@ -290,7 +290,6 @@
     <ClInclude Include="Fdo\FdoRdbmsSqlServerOptimizedAggregateReader.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerProviderInfo.h" />
     <ClInclude Include="Fdo\FdoRdbmsSqlServerSchemaCapabilities.h" />
-    <ClInclude Include="Fdo\FdoRdbmsSqlServerSpatialGeometryConverter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

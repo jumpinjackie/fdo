@@ -31,30 +31,14 @@ class SqlServerDataTypeTests :	public DataTypeTests
     int do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword);
     char *get_bind_var (int n, int rdbiType)
     {
-        if ( rdbiType == RDBI_GEOMETRY ) 
-        {
-            return ("geometry::STGeomFromWKB(?,0)");
-        }
-        else
-        {
             return ("?");
-        }
-    
-
     }
 	virtual char *get_geometry_type() { return "GEOMETRY"; }
 	char *get_datetime_type() { return "DATETIME"; }
 	bool allow_timestamp_notnull() { return false; }
     char *get_date_time (const struct tm *when);
     virtual char *get_select_statement(int rdbiType) {
-        if ( rdbiType == RDBI_GEOMETRY )
-        {
-            return "select xyz1.STAsBinary() as xyz1, xyz2.STAsBinary() as xyz2 from bar";
-        }
-        else
-        {
-            return "select * from bar";
-        }
+        return "select * from bar";
     }
         
 };

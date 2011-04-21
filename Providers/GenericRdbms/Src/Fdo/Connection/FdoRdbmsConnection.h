@@ -283,6 +283,8 @@ public:
         int bindIndex
     );
 
+    virtual long GetSpatialGeometryVersion() { return 0x00; }
+
     // Frees a bind value previously returned by BindSpatialGeometry().
     // Providers that support bounding spatial condition geometries
     // must override this function.
@@ -320,6 +322,7 @@ public:
 
     virtual void Flush() {}
 
+    virtual FdoInt32 ExecuteDdlNonQuery(FdoString* sql);
 protected:
     //Instantiates the right Schema Manager for this connection's provider.
     virtual FdoSchemaManagerP NewSchemaManager(

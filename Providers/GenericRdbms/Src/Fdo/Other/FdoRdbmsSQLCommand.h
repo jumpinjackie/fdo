@@ -41,6 +41,8 @@ private:
 
     // Constructs an instance of a SQLCommand using the specified arguments.
     FdoRdbmsSQLCommand(FdoIConnection* connection);
+
+    bool SQLStartsWith(const wchar_t* str, const wchar_t* val, const wchar_t** lastPos = NULL);
 protected:
     // Default destructor for the SQLCommand command.
     virtual ~FdoRdbmsSQLCommand();

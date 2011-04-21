@@ -550,7 +550,9 @@ get_drivertype(
     {
         *driver_type = ODBCDriverType_OracleNative;
     }
-    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB))
+    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB) ||
+        0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_10_MB) ||
+        0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_11_MB))
     {
         *driver_type = ODBCDriverType_SQLServer;
     }

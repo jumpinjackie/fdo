@@ -71,5 +71,5 @@ void SqlServerFdoSqlCmdTest::CreateAndDrop8bitTable ()
 
 FdoString *SqlServerFdoSqlCmdTest::GetGeometrySelectStatement()
 {
-	return L"select geometry.STAsBinary() as geometry from acdb3dpolyline";
+	return L"select geometry from acdb3dpolyline";
 }

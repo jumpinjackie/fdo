@@ -207,7 +207,7 @@ protected:
     // List of secondary spatial filters that apply to this filter.  
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
 	vector<int>							mFilterLogicalOps;
-	vector<FdoParameterValue*>          mUsedParameter;
+    std::vector<std::pair<FdoLiteralValue*, FdoInt64>> mUsedParameterValues; // value and optional the SRID for geometries
     FdoPtr<FdoParameterValueCollection> mParams;
 
 public:
@@ -216,6 +216,12 @@ public:
     FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection);
     virtual ~FdoRdbmsFilterProcessor(void);
 
+    void Reset()
+    {
+        mFilterLogicalOps.clear();
+        mUsedParameterValues.clear();
+        mParams = NULL;
+    }
 private:
 
     void ProcessIdentifier(FdoIdentifier& expr, bool useOuterJoin, bool inSelectList );
@@ -373,7 +379,7 @@ public:
     bool IsValidExpression( FdoIdentifierCollection *identifiers );
 
     void SetParameterValues (FdoParameterValueCollection* params) { mParams = FDO_SAFE_ADDREF(params); }
-    vector<FdoParameterValue*>* GetUsedParameterValues() { return &mUsedParameter; }
+    std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* GetUsedParameterValues() { return &mUsedParameterValues; }
 
     bool  GetUseTableAlias() 
     {

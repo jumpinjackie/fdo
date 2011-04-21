@@ -481,28 +481,31 @@ bool FdoSmPhSqsOwner::Add()
     gdbiCommands->tran_end( "SmPreCreateDatabase" );
 
 	int autoCmtMode = gdbiCommands->autocommit_mode();
-	if (autoCmtMode == 1) //SQL_AUTOCOMMIT_ON 
+	if (autoCmtMode == 0) //SQL_AUTOCOMMIT_OFF
 	{
-		gdbiCommands->autocommit_off();
+        // we need it SQL_AUTOCOMMIT_ON with the new driver
+        gdbiCommands->autocommit_on();
 		autoCmtChanged = true;
 	}
     // Wrap the database create in a transaction.
     gdbiCommands->tran_begin( "SmCreateDatabase" );
     try {
-        gdbiConn->ExecuteNonQuery( (FdoString*) sqlStmt );
+        gdbiConn->ExecuteNonQuery((FdoString*) sqlStmt, true);
     }
     catch ( ... ) {
         try {
             gdbiCommands->tran_end( "SmCreateDatabase" );
 			if (autoCmtChanged)
-				gdbiCommands->autocommit_on();
+				gdbiCommands->autocommit_off();
         }
-        catch ( ... ) {        
-        }
-    
+        catch (FdoException *ex) { ex->Release(); }
+        catch ( ... ) {}            
+
         throw;
     }
     gdbiCommands->tran_end( "SmCreateDatabase" );
+    if (autoCmtChanged)
+	    gdbiCommands->autocommit_off();
 
     if ( GetHasMetaSchema() ) {
         FdoStringsP keywords = FdoStringCollection::Create();

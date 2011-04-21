@@ -27,6 +27,7 @@
 #include <FdoExpressionEngineFunctionCollection.h>
 
 class FeatureSet;
+class FdoRdbmsPvdBindDef;
 
 class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 {
@@ -48,9 +49,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       FdoFilter                  *mGroupingFilter;
 
       FdoIdentifierCollection*   mGroupingCol;
-
-      void**                     mBoundGeometries;
-      FdoInt32                   mBoundGeometryCount;
+      FdoRdbmsPvdBindDef*        mBindParams;
 
       //
       // Prevent the use of the copy constructor by definning it and not implemeting it.
@@ -83,13 +82,6 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 	  // Internal method added in support for processing spatial conditions.
 	  void CheckSpatialFilters( FdoRdbmsSecondarySpatialFilterCollection * geometricConditions, vector<int> *logicalOps );
 
-      // Binds spatial condition geometries to the query statement
-      // (if provider supports bound spatial condition geometries)
-      void  BindSpatialGeoms( GdbiStatement* statement, FdoRdbmsFilterProcessor::BoundGeometryCollection* geometries );
-
-      // Frees all bound spatial condition geometries.
-      void  FreeBoundSpatialGeoms();
-
   protected:
       // Internal method in support for select command 
       virtual FdoRdbmsFeatureReader *GetOptimizedFeatureReader( const FdoSmLpClassDefinition *classDefinition );
@@ -109,6 +101,8 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       // Internal method added in support for the select aggregates command
       FdoIdentifierCollection* GetGrouping();
+
+      void BindParameters(GdbiStatement* statement, std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* params);
 
 
   public:

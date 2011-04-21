@@ -635,8 +635,8 @@ void FdoRdbmsFilterProcessor::ProcessParameter( FdoParameter& expr )
     FdoPtr<FdoParameterValue> pVal = (mParams == NULL) ? NULL : mParams->FindItem(expr.GetName());
     if( pVal == NULL )
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
-    mUsedParameter.push_back(pVal.p);
-    //AppendString( PropertyNameToColumnName( expr.GetName() ) );
+    FdoPtr<FdoLiteralValue> lv = pVal->GetValue();
+    mUsedParameterValues.push_back(std::make_pair(lv.p, 0));
 }
 
 void FdoRdbmsFilterProcessor::ProcessBooleanValue(FdoBooleanValue& expr)

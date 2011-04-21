@@ -55,3 +55,19 @@ int rdbi_geom_srid_set ( rdbi_context_def *context, int sqlid, char *col_name, l
     debug_return(NULL, rc );
 }
 
+int rdbi_geom_version_set ( rdbi_context_def *context, int sqlid, char *col_name, long version ) 
+{
+    rdbi_cursor_def *cursor;        /* for convenience          */
+    int     rc = FALSE;
+
+    debug_on1("rdbi_geom_version_set", "sqlid: %d", sqlid);
+
+    cursor = context->rdbi_cursor_ptrs[sqlid];
+    if (context->dispatch.geom_version_set != NULL)
+        rc = (*(context->dispatch.geom_version_set))( context->drvr, cursor->vendor_data, col_name, version );
+    else
+        rc = TRUE;
+
+    debug_return(NULL, rc );
+}
+
