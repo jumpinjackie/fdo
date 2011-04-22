@@ -64,6 +64,25 @@ public:
 		FdoString* elevation,
 		FdoString* version,
 		FdoString* exceptionFormat);
+
+	FdoIoStream* GetFeatureInfo(
+        FdoStringCollection* layerNames,
+        FdoStringCollection* styleNames,
+        FdoWmsBoundingBox* bbox,
+        FdoString* imgFormat,
+        FdoSize height,
+        FdoSize width,
+        FdoBoolean bTransparent,
+        FdoString* backgroundColor,
+        FdoString* timeDimension,
+        FdoString* elevation,
+        FdoString* version,
+        FdoString* exceptionFormat,
+        FdoStringCollection* queryLayerNames, 
+        FdoString* infoFormat,
+        FdoDouble i,
+        FdoDouble j,
+        FdoInt32 featureCount = 1);
 };
 
 typedef FdoPtr<FdoWmsDelegate> FdoWmsDelegateP;

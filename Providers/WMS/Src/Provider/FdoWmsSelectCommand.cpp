@@ -342,7 +342,7 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 
 	// Verify the styles and layers have the same size
 	if (styleNames->GetCount () > 0 && styleNames->GetCount () != layerNames->GetCount ())
-			throw FdoException::Create (NlsMsgGet (FDOWMS_12004_STYLES_LAYERS_NOT_CORRESPONDING, "The WMS styles and layers are not corresponding."));
+			throw FdoException::Create (NlsMsgGet (FDOWMS_12004_STYLES_LAYERS_NOT_PAIRED, "The specified WMS layer styles and layers aren't one-to-one paired."));
 
 	// Get the WMS version
 	FdoStringP wmsVersion = metadata->GetVersion ();
@@ -366,6 +366,20 @@ FdoIFeatureReader* FdoWmsSelectCommand::Execute ()
 
     // Retrieve the raster stream through the WMS GetMap Request
 	FdoPtr<FdoIoStream> stream = wmsDelegate->GetMap (layerNames, styleNames, bbox, imageFormat, height, width, bTransparent, bgColor, timeDimension, elevation, wmsVersion,exceptionFormat);
+    //
+    // Cache the GetMap paremeters for further GetFeatureInfo
+    mConnection->SetGetMapParametersCache(
+        layerNames,
+        styleNames,
+        bbox,
+        imageFormat,
+        height,
+        width,
+        bTransparent,
+        bgColor,
+        timeDimension,
+        elevation,
+        exceptionFormat);
 
 	// Create a FeatureReader on the stream and return it to the user
     FdoPtr<FdoWmsFeatureReader> ret;

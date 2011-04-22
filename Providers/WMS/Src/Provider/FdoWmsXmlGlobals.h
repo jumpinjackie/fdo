@@ -28,6 +28,7 @@ namespace FdoWmsXmlGlobals
 
 	static FdoString *WmsVersion                            = L"1.3.0";
 	static FdoString *WmsGetMapRequest                      = L"GetMap";
+	static FdoString *WmsGetFeatureInfoRequest              = L"GetFeatureInfo";
 	static FdoString *WmsGetMapRequest2                     = L"Map";
 
     static FdoString *WmsCapabilitiesCapability             = L"Capability";
@@ -77,6 +78,7 @@ namespace FdoWmsXmlGlobals
 
 	static FdoString *WmsCapabilitiesFormat                 = L"Format";
 	static FdoString *WmsCapabilitiesGetMap                 = L"GetMap";
+	static FdoString *WmsCapabilitiesGetFeatureInfo         = L"GetFeatureInfo";
 
 	// Literals to construct the WMS request
 	static FdoString *WmsRequestLayers                      = L"LAYERS";
@@ -95,9 +97,16 @@ namespace FdoWmsXmlGlobals
 	static FdoString *WmsRequestElevation                   = L"ELEVATION";	
 	static FdoString *WmsRequestBackgroundColor             = L"BGCOLOR";
 	static FdoString *WmsRequestDefaultStyle				= L"";
-    static FdoString *EXCEPTIONS                            = L"EXCEPTIONS";
-    static FdoString* ExceptionType                         = L"application/vnd.ogc.se_xml";
-    static FdoString* ExceptionType130                      = L"XML";
+	static FdoString *WmsRequestQueryLayers                 = L"QUERY_LAYERS";
+	static FdoString *WmsRequestFeatureCount                = L"FEATURE_COUNT";
+	static FdoString *WmsRequestInfoFormat                  = L"INFO_FORMAT";
+	static FdoString *WmsRequestI                           = L"I";
+	static FdoString *WmsRequestJ                           = L"J";
+	static FdoString *WmsRequestX                           = L"X";
+	static FdoString *WmsRequestY                           = L"Y";
+	static FdoString *EXCEPTIONS                            = L"EXCEPTIONS";
+	static FdoString* ExceptionType                         = L"application/vnd.ogc.se_xml";
+	static FdoString* ExceptionType130                      = L"XML";
 };
 
 

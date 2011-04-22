@@ -226,10 +226,12 @@
     <ClInclude Include="FdoWmsCommand.h" />
     <ClInclude Include="..\..\Inc\WMS\FdoWmsCommandType.h" />
     <ClInclude Include="FdoWmsEnvelope.h" />
+    <ClInclude Include="FdoWmsGetFeatureInfo.h" />
+    <ClInclude Include="FdoWmsGetFeatureInfoRequest.h" />
     <ClInclude Include="FdoWmsGlobals.h" />
     <ClInclude Include="FdoWmsReader.h" />
     <ClInclude Include="FdoWmsRect.h" />
-	<ClInclude Include="FdoWmsReverseEpsgCodes.h" />
+    <ClInclude Include="FdoWmsReverseEpsgCodes.h" />
     <ClInclude Include="FdoWmsUtils.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="FdoWmsCommandCapabilities.h" />
@@ -281,6 +283,8 @@
     <ClInclude Include="..\..\Inc\WMS\IGetImageFormats.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FdoWmsGetFeatureInfo.cpp" />
+    <ClCompile Include="FdoWmsGetFeatureInfoRequest.cpp" />
     <ClCompile Include="FdoWmsUtils.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -22,6 +22,7 @@
 #include "FdoWmsDelegate.h"
 #include "FdoWmsServiceMetadata.h"
 #include "FdoWmsGetMap.h"
+#include "FdoWmsGetFeatureInfoRequest.h"
 #include "FdoWmsXmlGlobals.h"
 
 FdoWmsDelegate::FdoWmsDelegate() :
@@ -100,5 +101,61 @@ FdoIoStream* FdoWmsDelegate::GetMap(FdoStringCollection* layerNames,
     FdoPtr<FdoOwsResponse> response = Invoke (request);
 	FdoPtr<FdoIoStream> stream = response->GetStream ();
 
+	return FDO_SAFE_ADDREF (stream.p);
+}
+
+FdoIoStream* FdoWmsDelegate::GetFeatureInfo(
+    FdoStringCollection* layerNames,
+    FdoStringCollection* styleNames,
+    FdoWmsBoundingBox* bbox,
+    FdoString* imgFormat,
+    FdoSize height,
+    FdoSize width,
+    FdoBoolean bTransparent,
+    FdoString* backgroundColor,
+    FdoString* timeDimension,
+    FdoString* elevation,
+    FdoString* version,
+    FdoString* exceptionFormat,
+    FdoStringCollection* queryLayerNames, 
+    FdoString* infoFormat,
+    FdoDouble i,
+    FdoDouble j,
+    FdoInt32 featureCount
+    )
+{
+    VALIDATE_ARGUMENT (layerNames);
+    VALIDATE_ARGUMENT (styleNames);
+    VALIDATE_ARGUMENT (bbox);
+    VALIDATE_ARGUMENT (imgFormat);
+    VALIDATE_ARGUMENT (backgroundColor);
+    VALIDATE_ARGUMENT (timeDimension);
+    VALIDATE_ARGUMENT (elevation);
+    VALIDATE_ARGUMENT (exceptionFormat);
+    VALIDATE_ARGUMENT (queryLayerNames);
+    VALIDATE_ARGUMENT (infoFormat);
+
+	FdoPtr<FdoWmsGetFeatureInfoRequest> request = FdoWmsGetFeatureInfoRequest::Create (
+        layerNames,
+        styleNames,
+        bbox,
+        imgFormat,
+        height,
+        width,
+        bTransparent,
+        backgroundColor,
+        timeDimension,
+        elevation,
+        version,
+        exceptionFormat,
+        queryLayerNames, 
+        infoFormat,
+        i,
+        j,
+        featureCount);
+
+    FdoPtr<FdoOwsResponse> response = Invoke (request);
+	FdoPtr<FdoIoStream> stream = response->GetStream ();
+	
 	return FDO_SAFE_ADDREF (stream.p);
 }
