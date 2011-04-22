@@ -44,6 +44,7 @@
 #include "FdoWmsGetImageFormats.h"
 #include "FdoWmsGetFeatureClassStyles.h"
 #include "FdoWmsGetFeatureClassCRSNames.h"
+#include "FdoWmsGetFeatureInfo.h"
 #include "FdoWmsUtils.h"
 #include "FdoWmsXmlGlobals.h"
 #include "FdoWmsRequestMetadata.h"
@@ -398,7 +399,7 @@ FdoConnectionState FdoWmsConnection::Open ()
     FdoPtr<FdoCommonConnPropDictionary> dictionary = static_cast<FdoCommonConnPropDictionary*>(info->GetConnectionProperties ());
 
     FdoStringP location = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyFeatureServer);
-    if (0 == location.GetLength() && !mConfigured) 
+    if (0 == location.GetLength() && !mConfigured)
     {
         throw FdoException::Create (NlsMsgGet(FDOWMS_CONNECTION_REQUIRED_PROPERTY_NULL, 
             "The required connection property '%1$ls' cannot be set to NULL.", 
@@ -412,6 +413,7 @@ FdoConnectionState FdoWmsConnection::Open ()
 
     FdoStringP user = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyUsername);
     FdoStringP password = dictionary->GetProperty (FdoWmsGlobals::ConnectionPropertyPassword);
+
 
     FdoCommonConnStringParser parser (NULL, GetConnectionString ());
     // check the validity of the connection string, i.e. it doesn’t contain unknown properties
@@ -436,8 +438,8 @@ FdoConnectionState FdoWmsConnection::Open ()
 
     if (capa)
 	{
-		capa->AdjustBBoxOrder(metadata->GetVersion());
-        capa->FillUpGeographicDataLayers();
+            capa->AdjustBBoxOrder(metadata->GetVersion());
+            capa->FillUpGeographicDataLayers();
 	}
     if (mConfigured)
     {
@@ -533,6 +535,9 @@ FdoICommand* FdoWmsConnection::CreateCommand (FdoInt32 commandType)
             break;
         case FdoWmsCommandType_GetFeatureClassCRSNames:
             ret = new FdoWmsGetFeatureClassCRSNames(this);
+            break;
+        case FdoWmsCommandType_GetFeatureInfo:
+            ret = new FdoWmsGetFeatureInfo(this);
             break;
         default:
             throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_COMMAND_NOT_SUPPORTED, "The command %1$d is not supported.", (int)commandType));
@@ -839,6 +844,60 @@ FdoString* FdoWmsConnection::GetDefaultImageFormat()
         imageFormat = FdoWmsGlobals::RasterMIMEFormat_GIF;
 
     return imageFormat;
+}
+
+void FdoWmsConnection::SetGetMapParametersCache(
+        FdoStringCollection* layerNames,
+        FdoStringCollection* styleNames,
+        FdoWmsBoundingBox* bbox, 
+        FdoString* imgFormat,
+        FdoSize height,
+        FdoSize width,
+        FdoBoolean bTransparent,
+        FdoString* backgroundColor,
+        FdoString* timeDimension,
+        FdoString* elevation,
+        FdoString* exceptionFormat
+        )
+{
+    mCachedLayerNames = FDO_SAFE_ADDREF(layerNames);
+    mCachedStyleNames = FDO_SAFE_ADDREF(styleNames);
+    mCachedBBox = FDO_SAFE_ADDREF(bbox);
+    mCachedImgFormat = imgFormat;
+    mCachedHeight = height;
+    mCachedWidth = width;
+    mCachedTransparent = bTransparent;
+    mCachedBackgroundColor = backgroundColor;
+    mCachedTimeDimension = timeDimension;
+    mCachedElevation = elevation;
+    mCachedExceptionFormat = exceptionFormat;
+}
+
+void FdoWmsConnection::GetGetMapParametersCache(
+        FdoStringsP& layerNames,
+        FdoStringsP& styleNames,
+        FdoWmsBoundingBoxP& bbox,
+        FdoStringP& imgFormat,
+        FdoSize& height,
+        FdoSize& width,
+        FdoBoolean& bTransparent,
+        FdoStringP& backgroundColor,
+        FdoStringP& timeDimension,
+        FdoStringP& elevation,
+        FdoStringP& exceptionFormat
+        )
+{
+    layerNames = FDO_SAFE_ADDREF(mCachedLayerNames.p);
+    styleNames = FDO_SAFE_ADDREF(mCachedStyleNames.p);
+    bbox = FDO_SAFE_ADDREF(mCachedBBox.p);
+    imgFormat = mCachedImgFormat;
+    height = mCachedHeight;
+    width = mCachedWidth;
+    bTransparent = mCachedTransparent;
+    backgroundColor = mCachedBackgroundColor;
+    timeDimension = mCachedTimeDimension;
+    elevation = mCachedElevation;
+    exceptionFormat = mCachedExceptionFormat;
 }
 
 // build up the feature schemas

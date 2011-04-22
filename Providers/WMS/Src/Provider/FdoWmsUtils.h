@@ -42,5 +42,23 @@ void _calcLayerBoundingBox (FdoWmsLayer* layer, FdoString* srsName, FdoWmsBoundi
 void _calcLayersBoundingBox (FdoWmsLayerCollection* layers, FdoString* srsName, FdoWmsBoundingBox* bbox);
 FdoBoolean _reverseCheck(FdoStringP epsgName);
 
+FdoStringP _encodeGetMapURL(
+                            FdoStringCollection* layerNames,
+                            FdoStringCollection* styleNames,
+                            FdoStringP  srsName,
+                            FdoStringP  imageFormat,
+                            FdoDouble maxX,
+                            FdoDouble minX,
+                            FdoDouble maxY,
+                            FdoDouble minY,
+                            FdoSize height,
+                            FdoSize width,
+                            FdoBoolean transparent,
+                            FdoStringP backgroundColor,
+                            FdoStringP timeDimension,
+                            FdoStringP elevation,
+                            FdoStringP exceptionFormat,
+                            FdoStringP version
+                            );
 
 #endif // FDOWMSUTILS_H

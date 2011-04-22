@@ -203,6 +203,36 @@ public:
 	/// <returns>Return the raster definition for the specified class. If not found, return NULL.</returns>
 	FdoRasterPropertyDefinition* FindRasterProperty (FdoClassDefinition* featClass);
 
+    /// <summary>Cache the GetMap parameters for further GetFeatureInfo request.</summary>
+    void SetGetMapParametersCache(
+        FdoStringCollection* layerNames,
+        FdoStringCollection* styleNames,
+        FdoWmsBoundingBox* bbox, 
+        FdoString* imgFormat,
+        FdoSize height,
+        FdoSize width,
+        FdoBoolean bTransparent,
+        FdoString* backgroundColor,
+        FdoString* timeDimension,
+        FdoString* elevation,
+        FdoString* exceptionFormat
+        );
+
+    /// <summary>Get the cached GetMap parameters.</summary>
+    void GetGetMapParametersCache(
+        FdoStringsP& layerNames,
+        FdoStringsP& styleNames,
+        FdoWmsBoundingBoxP& bbox,
+        FdoStringP& imgFormat,
+        FdoSize& height,
+        FdoSize& width,
+        FdoBoolean& bTransparent,
+        FdoStringP& backgroundColor,
+        FdoStringP& timeDimension,
+        FdoStringP& elevation,
+        FdoStringP& exceptionFormat
+        );
+
     /// <summary>If the user hasn't specified the image format using the configuration file, then the format 
     /// will be determined in the following order if the server supports: PNG, JPEG, TIFF and GIF. </summary>
     FdoString* GetDefaultImageFormat();
@@ -296,6 +326,20 @@ private:
     // Creates a set of default physical schema mappings for the current connection
     void _buildUpDefaultPhysicalSchemaMappings();
 
+private:
+    //
+    // The caching of the GetMap parameters for further GetFeatureInfo request.
+    FdoStringsP mCachedLayerNames;
+    FdoStringsP mCachedStyleNames;
+    FdoWmsBoundingBoxP mCachedBBox; 
+    FdoStringP mCachedImgFormat;
+    FdoSize mCachedHeight;
+    FdoSize mCachedWidth;
+    FdoBoolean mCachedTransparent;
+    FdoStringP mCachedBackgroundColor;
+    FdoStringP mCachedTimeDimension;
+    FdoStringP mCachedElevation;
+    FdoStringP mCachedExceptionFormat;
 };
 
 #endif // FDOWMSCONNECTION_H

@@ -550,6 +550,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoWmsGetFeatureInfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureInfo.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FdoWmsSelectAggregatesCommand.cpp"
 				>
 			</File>
@@ -718,6 +726,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FdoWmsGetFeatureInfoRequest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FdoWmsGetFeatureInfoRequest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FdoWmsGetMap.cpp"
 				>
 			</File>
@@ -787,6 +803,10 @@
 			</File>
 			<File
 				RelativePath="..\..\Inc\WMS\IGetFeatureClassStyles.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Inc\WMS\IGetFeatureInfo.h"
 				>
 			</File>
 			<File

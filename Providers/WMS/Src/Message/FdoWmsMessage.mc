@@ -586,9 +586,9 @@ Language=English
 The spatial context '%1$ls' is not supported by the layer '%2$ls'.
 .
 MessageId=12004
-SymbolicName=FDOWMS_12004_STYLES_LAYERS_NOT_CORRESPONDING
+SymbolicName=FDOWMS_12004_STYLES_LAYERS_NOT_PAIRED
 Language=English
-The WMS styles and layers are not corresponding.
+The specified WMS layer styles and layers aren't one-to-one paired.
 .
 MessageId=12005
 SymbolicName=FDOWMS_12005_GETMAP_NOT_SUPPORTED
@@ -599,6 +599,11 @@ MessageId=12006
 SymbolicName=FDOWMS_12006_NO_DATA_RETURNED
 Language=English
 The WMS Server returned no data from the GetMap request.
+.
+MessageId=12007
+SymbolicName=FDOWMS_12006_GETFEATUREINFO_NOT_SUPPORTED
+Language=English
+The WMS GetFeatureInfo request is not supported.
 .
 
 ;//************************************************************************************
