@@ -80,6 +80,78 @@ catch(FdoException* ex)
 
 }
 
+void ut_SelectAggregates::SelectExtent()
+{
+  FdoPtr<FdoIConnection> conn = c_KgOraUtil::OpenUnitTestConnection_10_2();
+
+  // create test table with different data types
+  FdoPtr<FdoISelectAggregates> aggcomm = (FdoISelectAggregates*)conn->CreateCommand( FdoCommandType_SelectAggregates );
+
+  try
+  {  
+
+    aggcomm->SetFeatureClassName(L"UNITTEST~PARCELS~SHPGEOM");   
+    FdoPtr<FdoIdentifierCollection> coll_ident = aggcomm->GetPropertyNames();
+
+    FdoPtr<FdoExpression> expr = FdoExpression::Parse(FDO_FUNCTION_SPATIALEXTENTS L"(SHPGEOM)");
+    FdoPtr<FdoComputedIdentifier> comp_ident = FdoComputedIdentifier::Create(L"geom_extent",expr);
+
+    coll_ident->Add(comp_ident);
+
+    //expr = FdoExpression::Parse(L"COUNT()");
+    //comp_ident = FdoComputedIdentifier::Create(L"prop_count",expr);
+
+    //coll_ident->Add(comp_ident);
+
+    FdoPtr<FdoIdentifierCollection> coll_groupby = aggcomm->GetGrouping();
+    //FdoPtr<FdoIdentifier> ident_bl_use = FdoIdentifier::Create(L"BL_USE");
+    //coll_groupby->Add(ident_bl_use);
+
+
+    FdoPtr<FdoByteArray> layer_extent;
+    FdoInt32 layer_count;
+
+    FdoPtr<FdoIDataReader> reader = aggcomm->Execute();
+    FdoInt32 count = reader->GetPropertyCount();
+
+    int row_count=0;
+    while(reader->ReadNext())
+    {
+      for(FdoInt32 ind=0;ind<count;ind++)
+      {
+        FdoString* name = reader->GetPropertyName(ind);
+        switch(reader->GetPropertyType(name))
+        {
+        case FdoPropertyType_DataProperty:
+          reader->GetDataType(name);
+          layer_count = reader->GetInt32(name);
+          break;
+
+
+          /// Represents a Geometric Property type.
+        case FdoPropertyType_GeometricProperty:
+          layer_extent = reader->GetGeometry(name);
+          break;
+        }
+      }
+      
+      row_count++;
+    }
+
+    reader->Close();  
+    
+    if( row_count!=1 ) CPPUNIT_FAIL("Should be one records in select extent");
+
+  }
+  catch(FdoException* ex)
+  {
+    FdoStringP str = ex->GetExceptionMessage();
+    ex->Release();
+    CPPUNIT_FAIL( (const char*)str );
+  }  
+
+}//end of ut_SelectAggregates::SelectExtent
+
 
 
 // Execute insert  
