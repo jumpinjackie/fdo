@@ -48,7 +48,8 @@ c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* Str
   m_ParamNumberOffset = ParamNumberOffset;
   
   
-  
+  m_UsedConstantSpatialExtent = false;
+    
 }
 
 c_KgOraExpressionProcessor::~c_KgOraExpressionProcessor(void)
@@ -169,6 +170,7 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
       if( m_ConstantSpatialExtent.GetLength() > 0 )
       {      
         AppendString( m_ConstantSpatialExtent );      
+        m_UsedConstantSpatialExtent = true;
         return;
       }
       else
