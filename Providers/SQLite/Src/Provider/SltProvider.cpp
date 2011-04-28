@@ -1348,10 +1348,12 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfc);
+        SpatialIndexDescriptor* sidesc = GetSpatialIndexDescriptor(mbfc);
+        SpatialIndex* si = (sidesc != NULL) ? sidesc->GetSpatialIndex() : NULL;
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
+        bbox.Expand(sidesc->GetXYTolerance());
 
         if (bbox.Contains(total_ext))
         {
@@ -1546,10 +1548,12 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SpatialIndex* si = GetSpatialIndex(mbfc);
+        SpatialIndexDescriptor* sidesc = GetSpatialIndexDescriptor(mbfc);
+        SpatialIndex* si = (sidesc != NULL) ? sidesc->GetSpatialIndex() : NULL;
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
+        bbox.Expand(sidesc->GetXYTolerance());
 
         if (bbox.Contains(total_ext))
         {
@@ -3949,6 +3953,8 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
     DBounds total_ext;
     SpatialIndex* si = sidVal->GetSpatialIndex();
     si->GetTotalExtent(total_ext);
+    ext.Expand(sidVal->GetXYTolerance());
+
     if (ext.Contains(total_ext))
     {
         //only use spatial iterator if the search bounds does not

@@ -176,6 +176,15 @@ struct DBounds
        
         return true; 
     }
+
+    void Expand(double val)
+    {
+        for (int i=0; i<SI_DIM; i++)
+        {
+            min[i] -= val;
+            max[i] += val;
+        }
+    }
 };
 
 ALGNW struct Bounds
