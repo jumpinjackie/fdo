@@ -16,7 +16,7 @@
  *
  */
 
-#include "stdAfx.h"
+#include "stdafx.h"
 #include "FdoWmsGetFeatureInfo.h"
 #include "FdoWmsGlobals.h"
 #include "FdoWmsXmlGlobals.h"
