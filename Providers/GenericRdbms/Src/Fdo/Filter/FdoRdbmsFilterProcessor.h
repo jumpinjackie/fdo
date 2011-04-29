@@ -207,7 +207,7 @@ protected:
     // List of secondary spatial filters that apply to this filter.  
     FdoRdbmsSecondarySpatialFilters     mSecondarySpatialFilters;
 	vector<int>							mFilterLogicalOps;
-    std::vector<std::pair<FdoLiteralValue*, FdoInt64>> mUsedParameterValues; // value and optional the SRID for geometries
+    std::vector<std::pair<FdoLiteralValue*, FdoInt64> > mUsedParameterValues; // value and optional the SRID for geometries
     FdoPtr<FdoParameterValueCollection> mParams;
 
 public:
