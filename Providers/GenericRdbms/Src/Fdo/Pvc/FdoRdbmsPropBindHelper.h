@@ -35,7 +35,7 @@ public:
 
     /// <summary>Given a PVC operation, execute the handler.</summary>
     /// <returns>Returns the number of affected objects</returns> 
-    virtual void BindParameters(GdbiStatement* statement, std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* params);
+    virtual void BindParameters(GdbiStatement* statement, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params);
 
     /// <summary>Clear all parameters making them ready for a new bind (no free memory will be done)</summary>
     void Clear();
