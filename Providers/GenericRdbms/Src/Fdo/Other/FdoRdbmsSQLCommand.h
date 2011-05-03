@@ -26,6 +26,7 @@
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsCommand.h"
 class DbiConnection;
+class FdoRdbmsPropBindHelper;
 
 // The SQLCommand supports the execution of a SQL statement against an
 // underlying RDBMS. Two execute methods are provided to distingush between
@@ -62,10 +63,48 @@ public:
     // Executes the SQL statement against the connection object and returns
     // an ISQLDataReader.
     virtual FdoISQLDataReader* ExecuteReader();
+
+    /// Returns a ParameterValueCollection. If the command requires parameters, the 
+    /// literal values to bind to each of those named parameters must be added to
+    /// this collection. 
+    virtual FdoParameterValueCollection* GetParameterValues () { return FDO_SAFE_ADDREF(m_params); }
+
+    bool HandleBindValues(std::vector<std::pair<FdoLiteralValue*, FdoInt64>>& usedParameterValues, std::wstring& resultSQL);
+
 private:
+    inline bool IsSpecialChar(wchar_t ch)
+    {
+        switch(ch)
+        {
+        case ' ':
+        case '~':
+        case '*':
+        case '%':
+        case '/':
+        case '+':
+        case '-':
+        case '&':
+        case '^':
+        case '|':
+        case '=':
+        case '<':
+        case '>':
+        case '!':
+        case '(':
+        case ')':
+        case ';':
+        case ',':
+        case '\0':
+            return true;
+        }
+        return false;
+    }
+
     wchar_t         *m_SqlString;
     FdoRdbmsConnection *mFdoConnection;
     DbiConnection   *m_DbiConnection;
+    FdoParameterValueCollection* m_params;
+    FdoRdbmsPropBindHelper* m_bindHelper;
 };
 
 #endif // FDORDBMSSQLCOMMAND_H

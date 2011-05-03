@@ -879,7 +879,7 @@ namespace sqlgeomconv
                 ShapeDescriptor* shape = handle.shapes+idx;
                 ComposeSubGeometry(handle, shape, myBuff);
             }
-            return FdoByteArray::Create(handle.Buffer(), myBuff-handle.Buffer());
+            return FdoByteArray::Create(handle.Buffer(), (FdoInt32)(myBuff-handle.Buffer()));
         }
         else if (GEOM_ISPT(sp)) // simple point
         {
@@ -891,7 +891,7 @@ namespace sqlgeomconv
             BUFF_PUSH_INT(myBuff, (0x00 | (handle.hasZ?0x01:0x00) + (handle.hasM?0x02:0x00))); // dim
             ReadAndPushPointByte(myBuff, handle, 0);
 
-            return FdoByteArray::Create(handle.Buffer(), myBuff-handle.Buffer());
+            return FdoByteArray::Create(handle.Buffer(), (FdoInt32)(myBuff-handle.Buffer()));
         }
         else if (GEOM_ISLN(sp)) // simple line
         {
@@ -908,7 +908,7 @@ namespace sqlgeomconv
             ReadAndPushPointByte(myBuff, handle, 0);
             ReadAndPushPointByte(myBuff, handle, 1);
 
-            return FdoByteArray::Create(handle.Buffer(), myBuff-handle.Buffer());
+            return FdoByteArray::Create(handle.Buffer(), (FdoInt32)(myBuff-handle.Buffer()));
         }
         throw FdoException::Create(L"Invalid geometry!");
     }
@@ -1703,7 +1703,7 @@ int IGeometry_GetMsWkb(void* handle, pIGeometry_def geometry, int srid, int vers
             size_t cnt = 0;
             unsigned char* data = sqlgeomconv::ConvertFdoToMsGeometry(*ptr->writeHandle, g, (size_t)vers, srid, &cnt);
             if (cnt != 0)
-                *baOut = (pByteArray_def)FdoByteArray::Create(data, cnt);
+                *baOut = (pByteArray_def)FdoByteArray::Create(data, (FdoInt32)cnt);
             return true;
         }
         catch (FdoException *ex) 

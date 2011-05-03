@@ -27,7 +27,7 @@
 #include <FdoExpressionEngineFunctionCollection.h>
 
 class FeatureSet;
-class FdoRdbmsPvdBindDef;
+class FdoRdbmsPropBindHelper;
 
 class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 {
@@ -49,7 +49,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       FdoFilter                  *mGroupingFilter;
 
       FdoIdentifierCollection*   mGroupingCol;
-      FdoRdbmsPvdBindDef*        mBindParams;
+      FdoRdbmsPropBindHelper*    mBindParamsHelper;
 
       //
       // Prevent the use of the copy constructor by definning it and not implemeting it.
@@ -101,9 +101,6 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       // Internal method added in support for the select aggregates command
       FdoIdentifierCollection* GetGrouping();
-
-      void BindParameters(GdbiStatement* statement, std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* params);
-
 
   public:
 
