@@ -520,7 +520,7 @@ template<typename T> T GdbiQueryResult::GetNumber(
 					break;
 				}
 			default:
-				(void)GetBinaryValue(colInfo->name, sizeof(T), (char*)&val, null_ind, NULL );
+				(void)GetBinaryValue(colInfo, sizeof(T), (char*)&val, null_ind, NULL );
 				break;
 
 		}
@@ -693,6 +693,15 @@ FdoString* GdbiQueryResult::GetString(GdbiColumnInfoType *colInfo, bool *isnull,
 
     return mUnicodeBuffer;
  }
+
+FdoBoolean GdbiQueryResult::GetBoolean( int index, bool *isnull, int *ccode )
+{
+    char   boolVal;
+    if( GetBinaryValue(index, sizeof(char), &boolVal, isnull, ccode ) == RDBI_SUCCESS )
+        return (boolVal==1 || boolVal == '1');
+
+    throw new GdbiException(L"Internal query error"); // not reached as GetBinaryValue would throw an exception
+}
 
 FdoString* GdbiQueryResult::GetString(int index, bool *isnull, int *ccode)
 {

@@ -657,6 +657,10 @@
 				Name="Pvc"
 				>
 				<File
+					RelativePath=".\Pvc\FdoRdbmsPropBindHelper.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Pvc\FdoRdbmsPvcHandler.cpp"
 					>
 				</File>
@@ -1033,6 +1037,10 @@
 			<Filter
 				Name="Pvc"
 				>
+				<File
+					RelativePath=".\Pvc\FdoRdbmsPropBindHelper.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Pvc\FdoRdbmsPvcHandler.h"
 					>

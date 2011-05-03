@@ -182,12 +182,12 @@ FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(FdoInt32 index)
 
 bool FdoRdbmsSQLDataReader::GetBoolean(const wchar_t* columnName)
 {
-    return (FdoRdbmsSQLDataReader::GetInt16(NameToIndex(columnName)) != 0);
+    return (FdoRdbmsSQLDataReader::GetBoolean(NameToIndex(columnName)) != 0);
 }
 
 FdoBoolean FdoRdbmsSQLDataReader::GetBoolean(FdoInt32 index)
 {
-    return (FdoRdbmsSQLDataReader::GetInt16(index) != 0);
+    GET_VALUE (bool, index, mQueryResult->GetBoolean);
 }
 
 FdoByte FdoRdbmsSQLDataReader::GetByte(FdoInt32 index)

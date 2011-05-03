@@ -253,6 +253,7 @@
     <ClCompile Include="Filter\FdoRdbmsFilterUtil.cpp" />
     <ClCompile Include="DataStore\FdoRdbmsDataStoreReader.cpp" />
     <ClCompile Include="DataStore\FdoRdbmsGetDataStores.cpp" />
+    <ClCompile Include="Pvc\FdoRdbmsPropBindHelper.cpp" />
     <ClCompile Include="Pvc\FdoRdbmsPvcHandler.cpp" />
     <ClCompile Include="Pvc\FdoRdbmsPvcInsertHandler.cpp" />
     <ClCompile Include="Pvc\FdoRdbmsPvcOperation.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="DataStore\FdoRdbmsDataStoreReader.h" />
     <ClInclude Include="DataStore\FdoRdbmsDeleteDataStore.h" />
     <ClInclude Include="DataStore\FdoRdbmsGetDataStores.h" />
+    <ClInclude Include="Pvc\FdoRdbmsPropBindHelper.h" />
     <ClInclude Include="Pvc\FdoRdbmsPvcHandler.h" />
     <ClInclude Include="Pvc\FdoRdbmsPvcInsertHandler.h" />
     <ClInclude Include="Pvc\FdoRdbmsPvcOperation.h" />

@@ -42,6 +42,8 @@ public:
      ~GdbiStatement(void);
      int GetQueryId();
 
+     GdbiCommands* GetGdbiCommands() { return m_pGdbiCommands; }
+
     //
     // Bind overrides
     int Bind( int parmIndex, int size, const char* szValue, GDBI_NI_TYPE *nullInd = NULL);

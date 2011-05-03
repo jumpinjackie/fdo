@@ -6,6 +6,7 @@ set( FdoRdbms_Pvc_STAT_SRCS
    FdoRdbmsPvcProcessor.cpp
    FdoRdbmsPvcOperation.cpp
    FdoRdbmsPvcUpdateHandler.cpp
+   FdoRdbmsPropBindHelper.cpp
 )
 
 add_library( FdoRdbms_Pvc STATIC ${FdoRdbms_Pvc_STAT_SRCS} )
