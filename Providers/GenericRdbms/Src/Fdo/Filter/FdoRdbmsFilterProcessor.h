@@ -379,7 +379,7 @@ public:
     bool IsValidExpression( FdoIdentifierCollection *identifiers );
 
     void SetParameterValues (FdoParameterValueCollection* params) { mParams = FDO_SAFE_ADDREF(params); }
-    std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* GetUsedParameterValues() { return &mUsedParameterValues; }
+    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* GetUsedParameterValues() { return &mUsedParameterValues; }
 
     bool  GetUseTableAlias() 
     {
