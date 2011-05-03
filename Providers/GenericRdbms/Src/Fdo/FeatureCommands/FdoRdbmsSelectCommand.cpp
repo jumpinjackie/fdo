@@ -252,7 +252,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
         statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
 
-        std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* paramsUsed = flterProcessor->GetUsedParameterValues();
+        std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* paramsUsed = flterProcessor->GetUsedParameterValues();
 
         if (((paramsUsed != NULL) ? paramsUsed->size() : 0) != 0)
         {

@@ -69,7 +69,7 @@ public:
     /// this collection. 
     virtual FdoParameterValueCollection* GetParameterValues () { return FDO_SAFE_ADDREF(m_params); }
 
-    bool HandleBindValues(std::vector<std::pair<FdoLiteralValue*, FdoInt64>>& usedParameterValues, std::wstring& resultSQL);
+    bool HandleBindValues(std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >& usedParameterValues, std::wstring& resultSQL);
 
 private:
     inline bool IsSpecialChar(wchar_t ch)

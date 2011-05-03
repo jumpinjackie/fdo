@@ -138,7 +138,7 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                 GdbiStatement* statement = NULL;
                 try
                 {
-                    std::vector<std::pair<FdoLiteralValue*, FdoInt64>> paramsUsed;
+                    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > paramsUsed;
                     if (HandleBindValues(paramsUsed, resultSQL))
                         sqlToExecute = resultSQL.c_str();
                     else
@@ -197,7 +197,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
         GdbiStatement* statement = NULL;
         try
         {
-            std::vector<std::pair<FdoLiteralValue*, FdoInt64>> paramsUsed;
+            std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > paramsUsed;
             if (HandleBindValues(paramsUsed, resultSQL))
                 sqlToExecute = resultSQL.c_str();
             else
@@ -227,7 +227,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
     return new FdoRdbmsSQLDataReader(mFdoConnection , query );
 }
 
-bool FdoRdbmsSQLCommand::HandleBindValues(std::vector<std::pair<FdoLiteralValue*, FdoInt64>>& usedParameterValues, std::wstring& resultSQL)
+bool FdoRdbmsSQLCommand::HandleBindValues(std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >& usedParameterValues, std::wstring& resultSQL)
 {
     bool sqlChanged = false;
     short qState = 0x00;

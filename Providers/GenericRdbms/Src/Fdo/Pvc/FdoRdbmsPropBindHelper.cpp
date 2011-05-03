@@ -100,7 +100,7 @@ void FdoRdbmsPropBindHelper::Clear()
         mBindParams->Clear();
 }
 
-void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vector<std::pair<FdoLiteralValue*, FdoInt64>>* params)
+void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params)
 {
     size_t cntParams = (params != NULL) ? params->size() : 0;
     if (cntParams == 0)
@@ -119,7 +119,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
         cmds->alcnullind(1, &(bind->null_ind));
         cmds->set_null(bind->null_ind, 0, 0 );
 
-        std::vector<std::pair<FdoLiteralValue*, FdoInt64>>::const_reference it = params->at(idx);
+        std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >::const_reference it = params->at(idx);
         FdoLiteralValue* val = it.first;
         switch (val->GetExpressionType())
         {
