@@ -18,6 +18,7 @@
 #include <Inc/Nls/rdbi_msg.h>
 #include <stdio.h>
 #include "FdoGeometry.h"
+#include <math.h>
 #include <string>
 #include <vector>
 #include <limits>
