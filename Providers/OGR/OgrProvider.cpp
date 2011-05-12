@@ -447,8 +447,23 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         if (func && (_wcsicmp(func->GetName(),FDO_FUNCTION_SPATIALEXTENTS) == 0))
             throw FdoCommandException::Create(L"Unsupported aggregate operation.");
 
-        FdoString* exprs = expr->ToString();
-        std::string mbexprs = W2A_SLOW(exprs);
+        //Convert count() to count(*) as this is what OGR can handle
+        std::string mbexprs;
+        if (func && (_wcsicmp(func->GetName(),FDO_FUNCTION_COUNT) == 0))
+        {
+            FdoPtr<FdoExpressionCollection> args = func->GetArguments();
+            if (args->GetCount() == 0)
+            {
+                mbexprs = "COUNT(*)";
+            }
+        }
+
+        //General case -- convert expression to string and hope GDAL gets it
+        if (!mbexprs.length())
+        {
+            FdoString* exprs = expr->ToString();
+            mbexprs = W2A_SLOW(exprs);
+        }
         
         char sql[512];
         
