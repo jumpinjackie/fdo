@@ -119,23 +119,26 @@ FdoBoolean _reverseCheck(FdoStringP epsgName)
     {  
         // load the interanl epsg list  
         for (int i = 0; internalReverseEpsgCodes[i] != NULL; i++ )  
-                epsgList.push_back(internalReverseEpsgCodes[i]);  
+            epsgList.push_back(internalReverseEpsgCodes[i]);  
 
-        // try to read the epsg list from file if it exist  
-        wifstream infile;  
-        infile.open (FdoWmsGlobals::ExtendedReverseEPSGsFileName, wifstream::in);  
-        if (infile.good())  
-        {  
-            wstring line;  
-            while (std::getline(infile,line))  
-            {  
-                // no need to replace the old one  
-                // duplicats are ok since we just need to check whether the epsg  
-                // is in the list  
-                epsgList.push_back(line);  
-            }  
-        }  
-    }  
+        // try to read the epsg list from file if it exist
+        wifstream infile;
+        
+        FdoStringP strName = (FdoStringP)(FdoWmsGlobals::ExtendedReverseEPSGsFileName);
+        const char* name = (const char*)strName;    
+        infile.open (name, wifstream::in);
+        if (infile.good())
+        {
+            wstring line;
+            while (std::getline(infile,line))
+            {
+                // no need to replace the old one
+                // duplicats are ok since we just need to check whether the epsg
+                // is in the list
+                epsgList.push_back(line);
+            }
+        }
+    }
 
     vector<wstring>::iterator it = find(epsgList.begin(),epsgList.end(),s);  
 
