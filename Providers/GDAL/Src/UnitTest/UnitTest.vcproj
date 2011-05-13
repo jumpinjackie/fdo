@@ -245,7 +245,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\Lib\Win32\Release;&quot;$(FDO)\Unmanaged\Lib\Win32\Release&quot;;&quot;$(FDOUTILITIES)\Common\Lib\Win32\Release&quot;;&quot;$(FDOTHIRDPARTY)\cppunit\lib\Win32&quot;"
 				IgnoreDefaultLibraryNames=""
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -373,6 +373,10 @@
 			>
 			<File
 				RelativePath="RfpNoConfigTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RfpNoConfigTest2.cpp"
 				>
 			</File>
 			<File
@@ -558,6 +562,10 @@
 			</File>
 			<File
 				RelativePath="RfpNoConfigTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RfpNoConfigTest2.h"
 				>
 			</File>
 			<File
