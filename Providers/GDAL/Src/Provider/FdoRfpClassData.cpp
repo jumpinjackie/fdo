@@ -33,6 +33,7 @@
 #include "FdoRfpConnection.h"
 #include "FdoCommonMiscUtil.h"
 #include "FdoRfpDatasetCache.h"
+#include "FdoRfpGlobals.h"
 #include <GdalFile/Override/FdoGrfpOverrides.h>
 #include <gdal.h>
 
@@ -103,10 +104,28 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
     // Retrieve the spatial context association from the Raster Property
     FdoStringP m_coord = propraster->GetSpatialContextAssociation();
 
+    bool bResetExtents = false;
     if (m_coord == L"") {
         if (coordSystems->GetCount() == 0) {
-            FdoPtr<FdoRfpSpatialContext> defaultContext = 
-                conn->GetDefaultSpatialContext();
+            FdoPtr<FdoRfpSpatialContext> defaultContext = conn->GetDefaultSpatialContext();
+            FdoPtr<FdoByteArray> extentArr = defaultContext->GetExtent();
+            FdoRfpRect ext = FdoRfpUtil::CreateRectFromGeometryAgf(extentArr);
+
+            //HACK: Check if these extents are the default flubbed ones because if we get an actual extent
+            //it will probably be way smaller than the system default. Hence the cause of trac ticket #740
+            //
+            //This check should be enough to out a spatial context as the system default one.
+            if (ext.m_maxX == FdoGrfpGlobals::DefaultSpatialContextExtentMaxX &&
+                ext.m_maxY == FdoGrfpGlobals::DefaultSpatialContextExtentMaxY &&
+                ext.m_minX == FdoGrfpGlobals::DefaultSpatialContextExtentMinX &&
+                ext.m_minY == FdoGrfpGlobals::DefaultSpatialContextExtentMinY &&
+                wcscmp(FdoGrfpGlobals::DefaultSpatialContextName, defaultContext->GetName()) == 0 && 
+                wcscmp(FdoGrfpGlobals::DefaultSpatialContextName, defaultContext->GetCoordinateSystem()) == 0 &&
+                wcscmp(NlsMsgGet(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"), defaultContext->GetDescription()) == 0)
+            {
+                bResetExtents = true;
+            }
+
             m_coord = defaultContext->GetName();
         }
         else if (coordSystems->GetCount() > 1) { 
@@ -131,7 +150,13 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
     try {
         FdoPtr<FdoByteArray> extentArr = context->GetExtent();
         FdoRfpRect extent = FdoRfpUtil::CreateRectFromGeometryAgf(extentArr);
-        extent = extent.Union(m_extent);
+
+        //Depending on whether we detected a system generated default extent, replace or expand the current extent
+        //with our computed result.
+        if (bResetExtents) 
+            extent = m_extent;
+        else
+            extent = extent.Union(m_extent);
 
         // Set the new extent
         context->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(extent));
