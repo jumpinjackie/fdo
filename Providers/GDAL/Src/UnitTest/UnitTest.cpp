@@ -24,6 +24,7 @@
 #include <malloc.h>
 
 #include "RfpNoConfigTest.h"
+#include "RfpNoConfigTest2.h"
 #include "RfpTestExample1.h"
 #include "RfpOverridesSerializeTest.h"
 #ifndef CPPUNIT_MODERN_API
@@ -52,6 +53,7 @@
 // which Test Cases will be excuted.
 
 #define TEST_NO_CONFIG
+#define TEST_NO_CONFIG_2
 #define TEST_EXAMPLE1
 #define TEST_OVERRIDES_SERIALIZE
 #define TEST_THOROUGHTEST
@@ -93,6 +95,10 @@ void UnitTestMainProc()
 
 #ifdef TEST_NO_CONFIG	
 	runner.addTest(RfpNoConfigTest::suite());
+#endif
+
+#ifdef TEST_NO_CONFIG_2
+	runner.addTest(RfpNoConfigTest2::suite());
 #endif
 
 #ifdef TEST_EXAMPLE1

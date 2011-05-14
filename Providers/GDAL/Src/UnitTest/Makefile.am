@@ -35,6 +35,7 @@ UnitTest_SOURCES = \
   XmlFormatter.cpp \
   UnitTestUtil.cpp \
   RfpNoConfigTest.cpp \
+  RfpNoConfigTest2.cpp \
   RfpOverridesSerializeTest.cpp \
   RfpRasterConversion.cpp \
   RfpTestExample1.cpp \
@@ -59,6 +60,7 @@ UnitTest_SOURCES = \
 
 noinst_HEADERS = $(UnitTest_SOURCES) \
   RfpNoConfigTest.h \
+  RfpNoConfigTest2.h \
   RfpOverridesSerializeTest.h \
   RfpTestBand.h \
   RfpTestBandConfig.h \
