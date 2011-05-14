@@ -228,6 +228,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RfpNoConfigTest.cpp" />
+    <ClCompile Include="RfpNoConfigTest2.cpp" />
     <ClCompile Include="RfpOverridesSerializeTest.cpp" />
     <ClCompile Include="RfpRasterConversion.cpp" />
     <ClCompile Include="RfpTestAAIGrid.cpp" />
@@ -269,6 +270,7 @@
     <ClInclude Include="..\FdoRfpRect.h" />
     <ClInclude Include="..\FdoRfpUtil.h" />
     <ClInclude Include="RfpNoConfigTest.h" />
+    <ClInclude Include="RfpNoConfigTest2.h" />
     <ClInclude Include="RfpOverridesSerializeTest.h" />
     <ClInclude Include="RfpTestAAIGrid.h" />
     <ClInclude Include="RfpTestBand.h" />
