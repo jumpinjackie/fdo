@@ -216,12 +216,13 @@ public:
     FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection);
     virtual ~FdoRdbmsFilterProcessor(void);
 
-    void Reset()
+    virtual void Reset()
     {
         mFilterLogicalOps.clear();
         mUsedParameterValues.clear();
         mParams = NULL;
     }
+
 private:
 
     void ProcessIdentifier(FdoIdentifier& expr, bool useOuterJoin, bool inSelectList );
