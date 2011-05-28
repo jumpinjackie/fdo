@@ -238,7 +238,6 @@ public:
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 
     sqlite3*        GetDbConnection() { return m_dbWrite; }
-    SltSpatialIndex*GetSpatialIndex(const char* table);
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter, FdoParameterValueCollection*  parmValues);
