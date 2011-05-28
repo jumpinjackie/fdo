@@ -387,6 +387,14 @@ typedef MappedFile<fill, 16384> node_mf_t;
         _root_level = 0;
     }
 
+    rtree::rtree(const wchar_t*)
+    {
+        _offset[0] = _offset[1] = 0;
+        _nodes = new node_mgr;
+        _root = _nodes->new_node();
+        _root_level = 0;
+    }
+
     rtree::~rtree()
     {
         delete _nodes;
@@ -1241,16 +1249,21 @@ typedef MappedFile<fill, 16384> node_mf_t;
 
     rtree_iterator::rtree_iterator(const rtree* rt, const dbox& db)
     {
-        _nodes = rt->_nodes;
+        _rt = rt;
 
         box b;
         rt->offset_box(b, db);
         _bwide.make_wide_box(b);
 
+        reset();
+    }
+
+    void rtree_iterator::reset()
+    {
         //push the root node onto the stack
         //to start with
         rt_iter_stack* top = _stack;
-        top->inode = rt->_root;
+        top->inode = _rt->_root;
         top->contained = false;
         _top = top+1;
     }
@@ -1258,7 +1271,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
     fid_t rtree_iterator::next()
     {
         //cache some member pointers into registers
-        const node_mgr* nodes = _nodes;
+        const node_mgr* nodes = _rt->_nodes;
         rt_iter_stack* top = _top;
         rt_iter_stack* stack = _stack;
  

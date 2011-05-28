@@ -22,11 +22,17 @@
 #include "SltProvider.h"
 #include "SltMetadata.h"
 #include "FdoCommonSchemaUtil.h"
+
+#ifdef USE_RTREE
+#include <rtree.h>
+#else
 #ifndef _MSC_VER
 #include "SpatialIndex.h"
 #else
 #include "DiskSpatialIndex.h"
 #endif
+#endif
+
 #include "SltConversionUtils.h"
 #include "RowidIterator.h"
 #include "FdoCommonMiscUtil.h"
