@@ -1344,15 +1344,10 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SltSpatialIndex* si = GetSpatialIndex(mbfc);
+        SpatialIndexDescriptor* si = GetSpatialIndexDescriptor(mbfc);
 
         DBounds total_ext;
-
-#ifdef USE_RTREE
-        si->get_total_extent(*(bvh::dbox*)&total_ext);
-#else
         si->GetTotalExtent(total_ext);
-#endif
 
         if (bbox.Contains(total_ext))
         {
@@ -1363,21 +1358,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
         {
             VectorMF* mfrowids = new VectorMF();
 
-#ifdef USE_RTREE
-            bvh::rtree_iterator siter(si, *(bvh::dbox*)&bbox);
-            fid_t fid;
-            while (fid = siter.next())
-                mfrowids->push_back(fid);
-#else
-            SpatialIterator siter(bbox, si);
-            int start = -1;
-            int end = -1;
-            while (siter.NextRange(start, end))
-            {
-                for (int i=start; i<end; i++)
-                    mfrowids->push_back(siter[i]);
-            }
-#endif
+            si->Enumerate(mfrowids, bbox);
 
             if (mfrowids->size() == 0)
             {
@@ -1554,15 +1535,10 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
     else if (!bbox.IsEmpty())
     {
         //if we have a BBOX filter, we need to get the spatial index
-        SltSpatialIndex* si = GetSpatialIndex(mbfc);
+        SpatialIndexDescriptor* si = GetSpatialIndexDescriptor(mbfc);
 
         DBounds total_ext;
-
-#ifdef USE_RTREE
-        si->get_total_extent(*(bvh::dbox*)&total_ext);
-#else
         si->GetTotalExtent(total_ext);
-#endif
 
         if (bbox.Contains(total_ext))
         {
@@ -1573,21 +1549,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
         {
             VectorMF* mfrowids = new VectorMF();
 
-#ifdef USE_RTREE
-            bvh::rtree_iterator siter(si, *(bvh::dbox*)&bbox);
-            fid_t fid;
-            while (fid = siter.next())
-                mfrowids->push_back(fid);
-#else
-            SpatialIterator siter(bbox, si);
-            int start = -1;
-            int end = -1;
-            while (siter.NextRange(start, end))
-            {
-                for (int i=start; i<end; i++)
-                    mfrowids->push_back(siter[i]);
-            }
-#endif
+            si->Enumerate(mfrowids, bbox);
 
             if (mfrowids->size() == 0)
             {
@@ -1755,12 +1717,6 @@ void SltConnection::GetGeometryExtent(const unsigned char* ptr, int len, DBounds
     }
 }
 
-SltSpatialIndex* SltConnection::GetSpatialIndex(const char* table)
-{
-    SpatialIndexDescriptor* desc = GetSpatialIndexDescriptor(table);
-    return (desc != NULL) ? desc->GetSpatialIndex() : NULL;
-}
-
 SpatialIndexDescriptor* SltConnection::GetSpatialIndexDescriptor(const char* table, int* geomIdx)
 {
     SpatialIndexCache::iterator iter = m_mNameToSpatialIndex.find((char*)table);
@@ -1914,7 +1870,6 @@ void SltConnection::RebuildSpatialOperator(SpatialIndexDescriptor* spDesc, SltMe
     FdoPtr<FdoIdentifier> idgeom = FdoIdentifier::Create(geomName);
     idcol->Add(idgeom);
 
-    SltSpatialIndex* si = spDesc->GetSpatialIndex();
     rdr = new SltReader(this, idcol, table, "", true, NULL, NULL);
     FdoPtr<FdoIDataReader> rdrAutoDel = rdr; // in case of exception this smart ptr will delete the reader
     while (rdr->ReadNext())
@@ -1932,20 +1887,12 @@ void SltConnection::RebuildSpatialOperator(SpatialIndexDescriptor* spDesc, SltMe
         {
             //TODO: assumes DBounds is 2D since GetFgfExtents is 2D
             GetFgfExtents((unsigned char*)geom, len, (double*)&ext);
-
-#ifdef USE_RTREE
-            si->insert(id, *(bvh::dbox*)&ext);
-#else
-            si->Insert(id, ext);            
-#endif
+            spDesc->Insert(id, ext);            
         }
     }
     rdr->Close();
 
-#ifdef USE_RTREE
-#else
-    si->ReOpen();
-#endif
+    spDesc->ReOpen();
 }
 
 void SltConnection::AddGeomCol(FdoGeometricPropertyDefinition* gpd, const wchar_t* fcname)
@@ -3351,7 +3298,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
         DBounds ext;
         if (extReq.IsEmpty() && !emptyResult)
         {
-            SltSpatialIndex* si = GetSpatialIndex(fcname.c_str());
+            SpatialIndexDescriptor* si = GetSpatialIndexDescriptor(fcname.c_str());
             if (si == NULL)
             {
                 double extBuff[4];
@@ -3367,11 +3314,7 @@ SltReader* SltConnection::CheckForSpatialExtents(FdoIdentifierCollection* props,
             }
             else
             {
-#ifdef USE_RTREE
-                si->get_total_extent(*(bvh::dbox*)&ext);
-#else
                 si->GetTotalExtent(ext);
-#endif
             }
         }
         else
@@ -3648,16 +3591,12 @@ bool SltConnection::GetExtents(const wchar_t* fcname, double ext[4])
 {
     std::string table = W2A_SLOW(fcname);
 
-    SltSpatialIndex* si = GetSpatialIndex(table.c_str());
+    SpatialIndexDescriptor* si = GetSpatialIndexDescriptor(table.c_str());
 
     DBounds dext;
     if (si)
     {
-#ifdef USE_RTREE
-        si->get_total_extent(*(bvh::dbox*)&dext);
-#else
         si->GetTotalExtent(dext);
-#endif
 
         ext[0] = dext.min[0];
         ext[1] = dext.min[1];
@@ -3890,15 +3829,10 @@ void SltConnection::rollback_hook(void* caller)
         {
             if (iter->second->GetChangesAvailable())
             {
-                SltSpatialIndex* si = iter->second->GetSpatialIndex();
+                SpatialIndexDescriptor* si = iter->second;
                 if (si)
                 {
-                    // we cannot release it since there might be cached statements keeping the SI locked
-#ifdef USE_RTREE
-                    //TODO:
-#else
-                    si->ResetToEmpty();
-#endif
+                    si->Reset();
                     conn->RebuildSpatialOperator(iter->second);
                 }
             }
@@ -3930,13 +3864,7 @@ void SltConnection::sqlite3_update_spatial_index(void* caller, void* sid, int ac
     {
     case SQLITE_DELETE:
         {
-#ifdef USE_RTREE
-            DBounds ext;
-            GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
-            sidVal->GetSpatialIndex()->erase(id, *(bvh::dbox*)&ext);
-#else
-            sidVal->GetSpatialIndex()->Delete(id);
-#endif
+            sidVal->Delete(id, (const unsigned char*)blob, szBlob);
             sidVal->SetChangesAvailable(true);
             conn->m_changesAvailable = true;
         }
@@ -3948,11 +3876,7 @@ void SltConnection::sqlite3_update_spatial_index(void* caller, void* sid, int ac
             {
                 GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
 
-#ifdef USE_RTREE
-                sidVal->GetSpatialIndex()->insert(id, *(bvh::dbox*)&ext);
-#else
-                sidVal->GetSpatialIndex()->Insert(id, ext);
-#endif
+                sidVal->Insert(id, ext);
                 sidVal->SetChangesAvailable(true);
                 conn->m_changesAvailable = true;
             }
@@ -3960,18 +3884,13 @@ void SltConnection::sqlite3_update_spatial_index(void* caller, void* sid, int ac
         break;
     case SQLITE_UPDATE:
         {
-            DBounds ext;
+            DBounds before_ext; //TODO: before_ext required for Rtree support!
+            DBounds after_ext;
+
             if (blob != NULL && szBlob > 0) // handle szBlob==-1 when geometry could not be obtained
-                GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
-#ifdef USE_RTREE
-            //TODO: must know before and after extent...
-            /*
-            sidVal->GetSpatialIndex()->erase(id);
-            sidVal->GetSpatialIndex()->insert(id);
-            */
-#else
-            sidVal->GetSpatialIndex()->Update(id, ext);
-#endif
+                GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&after_ext);
+
+            sidVal->Update(id, before_ext, after_ext);
             sidVal->SetChangesAvailable(true);
             conn->m_changesAvailable = true;
         }
@@ -3994,11 +3913,10 @@ char SltConnection::sqlite3_spatial_context(void* caller, const char* tablename,
 
 void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int szBlob)
 {
-#ifdef USE_RTREE
     DBounds ext;
     SpatialIndexDescriptor* sidVal = static_cast<SpatialIndexDescriptor*>(sid);
     if (sidVal->IsReleased()) // this would be the case when we try to use a released SI
-        return NULL;
+        return sidVal->GetIterator(DBounds());
 
     if (szBlob == -1 && blob != NULL)
     {
@@ -4009,9 +3927,7 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
     GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
     SltSpatialIterator* siter = NULL;
     DBounds total_ext;
-    SltSpatialIndex* si = sidVal->GetSpatialIndex();
-
-    si->get_total_extent(*(bvh::dbox*)&total_ext);
+    sidVal->GetTotalExtent(total_ext);
     if (ext.Contains(total_ext))
     {
         //only use spatial iterator if the search bounds does not
@@ -4019,63 +3935,27 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
         return (void*)-1; // we do not have to use SI
     }
     else if (ext.Intersects(total_ext))
-        siter = new SltSpatialIterator(si, *(bvh::dbox*)&ext);
+        siter = sidVal->GetIterator(ext);
 
     return siter;
-#else
-    DBounds ext;
-    SpatialIndexDescriptor* sidVal = static_cast<SpatialIndexDescriptor*>(sid);
-    if (sidVal->IsReleased()) // this would be the case when we try to use a released SI
-        return new SpatialIteratorStep(NULL);
-
-    if (szBlob == -1 && blob != NULL)
-    {
-        FdoByteArray* geomArray = static_cast<FdoByteArray*>((void*)blob);
-        blob = geomArray->GetData();
-        szBlob = geomArray->GetCount();
-    }
-    GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
-    SltSpatialIterator* siter = NULL;
-    DBounds total_ext;
-    SpatialIndex* si = sidVal->GetSpatialIndex();
-    si->GetTotalExtent(total_ext);
-    if (ext.Contains(total_ext))
-    {
-        //only use spatial iterator if the search bounds does not
-        //fully contain the data bounds
-        return (void*)-1; // we do not have to use SI
-    }
-    else if (ext.Intersects(total_ext))
-        siter = new SpatialIterator(ext, si);
-
-    return new SpatialIteratorStep(siter);
-#endif
 }
 
 sqlite3_int64 SltConnection::sqlite3_spatial_iterator_readnext(void* siit)
 {
-    SpatialIteratorStep* siitsp = static_cast<SpatialIteratorStep*>(siit);
-#ifdef USE_RTREE
-    return siitsp->next();
-#else
-    return siitsp->ReadNext();
-#endif
+    SltSpatialIterator* siitsp = static_cast<SltSpatialIterator*>(siit);
+    return siitsp->Next();
 }
 
 void SltConnection::sqlite3_spatial_iterator_release(void* siit)
 {
-    SpatialIteratorStep* siitToRel = static_cast<SpatialIteratorStep*>(siit);
+    SltSpatialIterator* siitToRel = static_cast<SltSpatialIterator*>(siit);
     delete siitToRel;
 }
 
 void SltConnection::sqlite3_spatial_iterator_reset(void* siit)
 {
-    SpatialIteratorStep* siitToRel = static_cast<SpatialIteratorStep*>(siit);
-#ifdef USE_RTREE
-    siitToRel->reset();
-#else
+    SltSpatialIterator* siitToRel = static_cast<SltSpatialIterator*>(siit);
     siitToRel->Reset();
-#endif
 }
 
 bool SltConnection::IsCoordSysLatLong(const char* tablename, const char* columnname)
@@ -4234,15 +4114,11 @@ void SltConnection::ClearClassFromCachedSchema(const char* table, bool fullDrop)
     SpatialIndexCache::iterator iterSp = m_mNameToSpatialIndex.find((char*)table);
     if (iterSp != m_mNameToSpatialIndex.end())
     {
-        SltSpatialIndex* si = iterSp->second->GetSpatialIndex();
-        if (si)
+        if (iterSp->second)
         {
             // we cannot release it since there might be cached statements keeping the SI locked
-#ifdef USE_RTREE
-            //TODO:
-#else
-            si->ResetToEmpty();
-#endif
+            iterSp->second->Reset();
+
             if (!fullDrop) // we had alter
                 RebuildSpatialOperator(iterSp->second);
         }
