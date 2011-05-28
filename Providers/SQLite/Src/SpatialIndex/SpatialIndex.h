@@ -144,7 +144,7 @@ public:
             int start;
             //spatial reader is done, so we are done
             if (m_siit == NULL || !m_siit->NextRange(start, m_siEnd))
-                return -1;
+                return 0;
             m_curfid = (__int64)(start ? start : 1); //make sure we skip fid=0, which is not valid
         }
         return (*m_siit)[(int)m_curfid];

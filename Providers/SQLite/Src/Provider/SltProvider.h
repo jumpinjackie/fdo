@@ -26,8 +26,9 @@ class RowidIterator;
 class SltExtendedSelect;
 struct NameOrderingPair;
 class StringBuffer;
-class SpatialIndexDescriptor;
 struct DBounds;
+
+#include "SpatialIndexDescriptor.h"
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -237,7 +238,7 @@ public:
     void                ApplySchema            (FdoFeatureSchema* schema, bool ignoreStates);
 
     sqlite3*        GetDbConnection() { return m_dbWrite; }
-    SpatialIndex*   GetSpatialIndex(const char* table);
+    SltSpatialIndex*GetSpatialIndex(const char* table);
     bool            GetExtents(const wchar_t* fcname, double ext[4]);
     SltMetadata*    GetMetadata(const char* table);
     SltReader*      CheckForSpatialExtents(FdoIdentifierCollection* props, FdoFeatureClass* fc, FdoFilter* filter, FdoParameterValueCollection*  parmValues);

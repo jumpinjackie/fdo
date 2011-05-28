@@ -22,6 +22,7 @@
 //Include our custom string map/list data structures
 #include "PropertyNameIndex.h"
 #include "StringUtil.h"
+#include "SpatialIndexDescriptor.h"
 
 class SltConnection;
 class RowidIterator;
@@ -261,6 +262,10 @@ protected:
         //they requested all properties in the select command
         StringList m_reissueProps;
         StringBuffer m_fromwhere;
+
+
+        //stuff related to spatial filters
+        SltSpatialIterator*  m_si;
 
         // kept here only for special cases when provider needs it alive
         // due some optimizations to avoid copying a geometry

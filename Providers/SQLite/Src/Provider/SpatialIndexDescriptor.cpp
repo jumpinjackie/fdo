@@ -19,14 +19,10 @@
 #include "stdafx.h"
 #include "StringUtil.h"
 #include "SltProvider.h"
-#ifndef _MSC_VER
-#include "SpatialIndex.h"
-#else
-#include "DiskSpatialIndex.h"
-#endif
+
 #include "SpatialIndexDescriptor.h"
 
-SpatialIndexDescriptor::SpatialIndexDescriptor(const char* tableName, SpatialIndex* spIndex, bool bAutoDelSi)
+SpatialIndexDescriptor::SpatialIndexDescriptor(const char* tableName, SltSpatialIndex* spIndex, bool bAutoDelSi)
     : m_spIndex(spIndex),
     m_tablename(tableName),
     m_refCount(1),

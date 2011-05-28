@@ -387,7 +387,7 @@ ALGNW struct node4
 
     inline void set_branch(int i, id_t id, const box& b)
     {
-        child_bounds.set(i, b);
+        child_bounds.set((unsigned char)i, b);
         children[i] = id;
     }
 
@@ -410,17 +410,17 @@ ALGNW struct node4
 
     inline void child_bbox(int i, box& b) const
     {
-        child_bounds.extract(i, b);
+        child_bounds.extract((unsigned char)i, b);
     }
 
     inline void set_child_bbox(int i, const box& b) 
     {
-        child_bounds.set(i, b);
+        child_bounds.set((unsigned char)i, b);
     }
 
     inline void add_bbox(int i, const box& b)
     {
-        child_bounds.add(i, b);
+        child_bounds.add((unsigned char)i, b);
     }
 
     inline void set_all_boxes(const box4_soa& val)
@@ -577,6 +577,7 @@ class rtree
 public:
 
     rtree();
+    rtree(const wchar_t*);
     ~rtree();
 
     void insert(const fid_t& fid, const dbox& b);
@@ -627,12 +628,13 @@ public:
     rtree_iterator(const rtree* rt, const dbox& db);
    
     fid_t next();
+    void reset();
 
 private:
     box4_soa _bwide;
     rt_iter_stack _stack[MAX_DEPTH*MAX_BRANCH];
     rt_iter_stack *_top;
-    const node_mgr* _nodes;
+    const rtree* _rt;
 } ALGNL;
 
 

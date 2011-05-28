@@ -15,7 +15,7 @@
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
-
+#pragma once
 #include "SltGeomUtils.h"
 #include "vectormf.h"
 
@@ -154,7 +154,7 @@ public:
             int start;
             //spatial reader is done, so we are done
             if (m_siit == NULL || !m_siit->NextRange(start, m_siEnd))
-                return -1;
+                return 0;
             m_curfid = (FdoInt64)(start ? start : 1); //make sure we skip fid=0, which is not valid
         }
         return (*m_siit)[(int)m_curfid];

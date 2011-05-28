@@ -19,25 +19,38 @@
 #ifndef SLT_SID_H
 #define SLT_SID_H
 
-class SpatialIndex;
+#ifdef USE_RTREE
+    #include <SpatialIndex/rtree.h>
+    typedef bvh::rtree SltSpatialIndex;
+    typedef bvh::rtree_iterator SltSpatialIterator;
+    typedef bvh::rtree_iterator SpatialIteratorStep;
+#else
+    #ifndef _MSC_VER
+        #include <SpatialIndex.h>
+    #else
+        #include <DiskSpatialIndex.h>
+    #endif
+    typedef SpatialIndex SltSpatialIndex;
+    typedef SpatialIterator SltSpatialIterator;
+#endif
 
 class SpatialIndexDescriptor : public FdoIDisposable
 {
 public:
-    SpatialIndexDescriptor(const char* tableName, SpatialIndex* spIndex, bool bAutoDelSi = true);
+    SpatialIndexDescriptor(const char* tableName, SltSpatialIndex* spIndex, bool bAutoDelSi = true);
     ~SpatialIndexDescriptor();
 
     SLT_IMPLEMENT_REFCOUNTING
 
 public:
-    inline SpatialIndex* GetSpatialIndex()
+    inline SltSpatialIndex* GetSpatialIndex()
     {
         return m_spIndex;
     }
 
-    inline SpatialIndex* DetachSpatialIndex()
+    inline SltSpatialIndex* DetachSpatialIndex()
     {
-        SpatialIndex* retval = m_spIndex;
+        SltSpatialIndex* retval = m_spIndex;
         m_spIndex = NULL;
         return retval;
     }
@@ -62,7 +75,7 @@ public:
 
 private:
     bool m_bAutoDelSi;
-    SpatialIndex* m_spIndex;
+    SltSpatialIndex* m_spIndex;
     bool m_bHasUpdates;
     bool m_IsReleased;
     std::string m_tablename;
