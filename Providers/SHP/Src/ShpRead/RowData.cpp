@@ -325,7 +325,11 @@ void RowData::SetData (int index, bool bIsNull, bool value)
 /// <param name="index">Input the column index of the data to get.</param> 
 /// <param name="type">The column type for the column.</param> 
 /// <returns>Returns nothing.</returns> 
-void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* codepage)
+#ifdef _WIN32
+void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, ULONG codepage)
+#else
+void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, const char* codepage)
+#endif
 {
     int width;
     int offset;
@@ -351,13 +355,7 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, WCHAR* 
             {
                 *p = '\0';
 
-                ShapeCPG    *cpg = new ShapeCPG();
-#ifdef _WIN32
-                multibyte_to_wide_cpg (str, raw, cpg->ConvertCodePageWin(codepage));
-#else
-                multibyte_to_wide_cpg (str, raw, cpg->ConvertCodePageLinux(codepage));
-#endif
-                delete cpg;
+                multibyte_to_wide_cpg (str, raw, codepage);
 
                 *p = szSPACE;
                 wcscpy (mStrings[index], str);

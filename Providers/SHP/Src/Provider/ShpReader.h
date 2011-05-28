@@ -66,6 +66,12 @@ protected:
     FdoStringP      mLogicalIdentityPropertyName;
     FdoStringP      mLogicalGeometryPropertyName;
 	int				mMaxNumObjects;		
+
+#ifdef _WIN32
+    ULONG           mCodePage;
+#else
+    const char*     mCodePage;
+#endif
            
     // Query optimizer 
     bool            mFirstRead;         // 1st ReadNext()  
@@ -133,6 +139,22 @@ public:
             mSelected = FDO_SAFE_ADDREF (selected);
 
         mFilterExecutor = ShpQueryOptimizer::Create (this, selected );
+
+
+		// Get the code page from LDID. If not valid try the .CPG file.
+		FdoStringP  codePage = L"";
+		if(mFileSet->GetCpgFile())
+			codePage = mFileSet->GetCpgFile()->GetCodePage();
+
+		if (codePage == L"")
+			codePage = mFileSet->GetDbfFile()->GetCodePage();
+
+        ShapeCPG cpg;
+#ifdef _WIN32
+        mCodePage = cpg.ConvertCodePageWin((WCHAR*)(FdoString*)codePage);
+#else
+        mCodePage = cpg.ConvertCodePageLinux((WCHAR*)(FdoString*)codePage);
+#endif
     }
 
     virtual ~ShpReader (void)
@@ -175,15 +197,7 @@ public:
                 type = info->GetColumnTypeAt (i);
                 if (type == column_type)
 				{
-					// Get the code page from LDID. If not valid try the .CPG file.
-					FdoStringP  codePage = L"";
-					if(mFileSet->GetCpgFile())
-						codePage = mFileSet->GetCpgFile()->GetCodePage();
-
-					if (codePage == L"")
-						codePage = mFileSet->GetDbfFile()->GetCodePage();
-
-					mData->GetData (data, i, type, (WCHAR*)(FdoString *)codePage);
+					mData->GetData (data, i, type, mCodePage);
 				}
                 else
                     throw FdoException::Create (NlsMsgGet(SHP_VALUE_TYPE_MISMATCH, "Value type to insert, update or retrieve doesn't match the type (%1$ls) of property '%2$ls'.", ColumnTypeToString (type), propertyName));
