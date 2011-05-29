@@ -72,6 +72,8 @@ protected:
 #else
     const char*     mCodePage;
 #endif
+
+    FdoPtr<ShpLpClassDefinition> mLpClass; //cached LP class
            
     // Query optimizer 
     bool            mFirstRead;         // 1st ReadNext()  
@@ -108,8 +110,8 @@ public:
         FDO_SAFE_ADDREF (filter);
 
         // Determine the physical FileSet to use:
-        FdoPtr<ShpLpClassDefinition> shpLpClassDef = ShpSchemaUtilities::GetLpClassDefinition(connection, className);
-        mFileSet = shpLpClassDef->GetPhysicalFileSet();
+        mLpClass = ShpSchemaUtilities::GetLpClassDefinition(connection, className);
+        mFileSet = mLpClass->GetPhysicalFileSet();
 
         // Determine the name of the singleton identity property and singleton geometry property:
         FdoPtr<FdoClassDefinition> classDef = ShpSchemaUtilities::GetLogicalClassDefinition(mConnection, mClassName, NULL);
@@ -149,6 +151,7 @@ public:
 		if (codePage == L"")
 			codePage = mFileSet->GetDbfFile()->GetCodePage();
 
+        //Cache the OS-specific code page ID
         ShapeCPG cpg;
 #ifdef _WIN32
         mCodePage = cpg.ConvertCodePageWin((WCHAR*)(FdoString*)codePage);
@@ -186,7 +189,10 @@ public:
         int count;
         eDBFColumnType type;
 
-        columnName = ShpSchemaUtilities::GetPhysicalColumnName (mConnection, mClassName, propertyName);
+        FdoPtr<ShpLpPropertyDefinitionCollection> lpProperties = mLpClass->GetLpProperties();
+        FdoPtr<ShpLpPropertyDefinition> lpProperty = lpProperties->GetItem(propertyName);
+        columnName = lpProperty->GetPhysicalColumnName();
+
         info = mData->GetColumnInfo ();
         count = info->GetNumColumns ();
         type = kColumnUnsupportedType;
@@ -652,7 +658,10 @@ public:
             // if it's anything else, need to explicitly check:
             else
             {
-                FdoString* columnName = ShpSchemaUtilities::GetPhysicalColumnName(mConnection, mClassName, propertyName);
+                FdoPtr<ShpLpPropertyDefinitionCollection> lpProperties = mLpClass->GetLpProperties();
+                FdoPtr<ShpLpPropertyDefinition> lpProperty = lpProperties->GetItem(propertyName);
+                FdoString* columnName = lpProperty->GetPhysicalColumnName();
+
                 ret = true;
                 for (int i = 0; ret && (i < count); i++)
                 {
