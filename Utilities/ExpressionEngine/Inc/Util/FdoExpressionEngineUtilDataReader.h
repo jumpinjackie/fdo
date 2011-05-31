@@ -56,7 +56,7 @@ class FdoExpressionEngineUtilDataReader : public FdoIDataReader
 {
 public:
 
-    EXPRESSIONENGINE_API FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, 
+    EXPRESSIONENGINE_API static FdoExpressionEngineUtilDataReader* Create (FdoFunctionDefinitionCollection *functions, 
                                                            FdoIFeatureReader* reader, 
                                                            FdoClassDefinition* originalClassDef, 
                                                            FdoIdentifierCollection* selectedIds, 
@@ -66,6 +66,15 @@ public:
                                                            FdoIdentifierCollection* ids, 
                                                            FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
 
+    EXPRESSIONENGINE_API FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, 
+                                                           FdoIFeatureReader* reader, 
+                                                           FdoClassDefinition* originalClassDef, 
+                                                           FdoIdentifierCollection* selectedIds, 
+                                                           bool bDistinct, 
+                                                           FdoIdentifierCollection* orderingIds, 
+                                                           FdoOrderingOption eOrderingOption, 
+                                                           FdoIdentifierCollection* ids, 
+                                                           FdoPtr <FdoArray<FdoFunction*> > aggrIdents );
 protected:
 
     virtual void Dispose();

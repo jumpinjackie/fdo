@@ -139,6 +139,10 @@ bool my_hash_compare::operator()(FdoByteArray * const bytearray1, FdoByteArray *
 
 
 
+FdoExpressionEngineUtilDataReader* FdoExpressionEngineUtilDataReader::Create(FdoFunctionDefinitionCollection *functions, FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, bool bDistinct, FdoIdentifierCollection* orderingIds, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* ids, FdoPtr<FdoArray<FdoFunction*> > aggrIdents )
+{
+    return new FdoExpressionEngineUtilDataReader(functions, reader, originalClassDef, selectedIds, bDistinct, orderingIds, eOrderingOption, ids, aggrIdents);
+}
 
 FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunctionDefinitionCollection *functions, FdoIFeatureReader* reader, FdoClassDefinition* originalClassDef, FdoIdentifierCollection* selectedIds, bool bDistinct, FdoIdentifierCollection* orderingIds, FdoOrderingOption eOrderingOption, FdoIdentifierCollection* ids, FdoPtr<FdoArray<FdoFunction*> > aggrIdents )
 {

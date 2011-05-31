@@ -44,6 +44,11 @@
 	return ret; \
 }
 
+FdoExpressionEngineUtilFeatureReader* FdoExpressionEngineUtilFeatureReader::Create (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions) 
+{
+    return new FdoExpressionEngineUtilFeatureReader(classDef, reader, filter, selectedIds, userDefinedFunctions );
+}
+
 FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions) 
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
