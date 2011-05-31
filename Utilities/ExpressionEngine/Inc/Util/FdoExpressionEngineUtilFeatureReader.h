@@ -25,6 +25,8 @@ class FdoExpressionEngineUtilFeatureReader : public FdoIFeatureReader
 {
 public:
 
+    EXPRESSIONENGINE_API static FdoExpressionEngineUtilFeatureReader* Create (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
+
     EXPRESSIONENGINE_API FdoExpressionEngineUtilFeatureReader (FdoClassDefinition* classDef, FdoIFeatureReader* reader, FdoFilter *filter, FdoIdentifierCollection* selectedIds, FdoExpressionEngineFunctionCollection *userDefinedFunctions);
 
 protected:
