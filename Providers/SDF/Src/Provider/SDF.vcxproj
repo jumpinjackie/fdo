@@ -102,16 +102,17 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <StructMemberAlignment>8Bytes</StructMemberAlignment>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist ..\..\Lib\Win32\Debug mkdir ..\..\Lib\Win32\Debug</Command>
@@ -144,16 +145,17 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;..\Utils\;$(FDO)\Unmanaged\src\NLS;..\..\Inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\SQLiteInterface;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <StructMemberAlignment>8Bytes</StructMemberAlignment>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist ..\..\Lib\Win64\Debug mkdir ..\..\Lib\Win64\Debug</Command>
@@ -193,10 +195,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release</Command>
@@ -240,10 +243,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <ProgramDataBaseFileName>$(IntDir)SDFProvider.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist ..\..\Lib\Win64\Release mkdir ..\..\Lib\Win64\Release</Command>
@@ -318,7 +322,12 @@
     <ClCompile Include="SdfDistinctDataReader.cpp" />
     <ClCompile Include="SdfQueryOptimizer.cpp" />
     <ClCompile Include="SdfSpatialExtentsAggregateReader.cpp" />
-    <ClCompile Include="SDF.cpp" />
+    <ClCompile Include="SDF.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RTree.h" />

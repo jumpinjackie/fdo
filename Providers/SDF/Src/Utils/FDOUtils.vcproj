@@ -44,10 +44,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Unmanaged\Src\NLS&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOUTILS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -113,10 +114,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDO)\Unmanaged\Src\NLS&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOUTILS_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -181,6 +183,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -252,6 +255,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"

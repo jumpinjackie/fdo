@@ -44,16 +44,17 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				StructMemberAlignment="4"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -134,16 +135,17 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\Utils\;&quot;$(FDO)\Unmanaged\src\NLS&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\SQLiteInterface&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SDF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				StructMemberAlignment="4"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -223,6 +225,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -236,7 +239,7 @@
 				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -318,6 +321,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -331,7 +335,7 @@
 				EnableFunctionLevelLinking="true"
 				TreatWChar_tAsBuiltInType="true"
 				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="1"
+				UsePrecompiledHeader="2"
 				ProgramDataBaseFileName="$(IntDir)/SDFProvider.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -842,6 +846,38 @@
 		<File
 			RelativePath="SDF.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|x64"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					UsePrecompiledHeader="1"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="SDF.h"

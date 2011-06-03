@@ -45,10 +45,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -130,10 +131,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
 				TreatWChar_tAsBuiltInType="true"
@@ -214,6 +216,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
 				RuntimeLibrary="2"
@@ -296,6 +299,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				AdditionalIncludeDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\include\&quot;;&quot;$(FDO)\Unmanaged\Inc&quot;;..\..\Inc;&quot;$(FDOUTILITIES)\TestCommon\inc&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST"
 				RuntimeLibrary="2"
