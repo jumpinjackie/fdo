@@ -101,7 +101,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDOTHIRDPARTY)\CppUnit\include\;$(FDO)\Unmanaged\Inc;..\..\Inc;$(FDOUTILITIES)\TestCommon\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -110,6 +110,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -134,7 +135,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDOTHIRDPARTY)\CppUnit\include\;$(FDO)\Unmanaged\Inc;..\..\Inc;$(FDOUTILITIES)\TestCommon\inc;$(FDOUTILITIES)\Common\inc;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;IGNORE_THREAD_TEST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -143,6 +144,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -170,6 +172,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -200,6 +203,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;ProvidersCommon.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
