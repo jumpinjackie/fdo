@@ -46,7 +46,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="false"
@@ -113,7 +113,7 @@
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\..\Fdo\Unmanaged\Inc;..\..\..\..\Utilities\Common\Inc"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
-				MinimalRebuild="true"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -295,13 +295,6 @@
 		<File
 			RelativePath=".\DiskSpatialIndex.cpp"
 			>
-			<FileConfiguration
-				Name="Release|x64"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\DiskSpatialIndex.h"
