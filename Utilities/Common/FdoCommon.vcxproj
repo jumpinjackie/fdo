@@ -136,7 +136,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
@@ -183,7 +183,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN64;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>

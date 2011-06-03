@@ -131,7 +131,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -196,7 +196,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common;$(FDOUTILITIES)\Common\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
