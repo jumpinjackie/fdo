@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Common"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE"
@@ -137,6 +138,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Common"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_CRT_SECURE_NO_DEPRECATE"
@@ -226,6 +228,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Common"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
@@ -310,6 +313,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Common"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CRT_SECURE_NO_DEPRECATE"

@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -135,6 +136,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -222,6 +224,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry"
 				AdditionalUsingDirectories="$(OutDir)\"
@@ -306,6 +309,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\Geometry"
 				AdditionalUsingDirectories="$(OutDir)\"
