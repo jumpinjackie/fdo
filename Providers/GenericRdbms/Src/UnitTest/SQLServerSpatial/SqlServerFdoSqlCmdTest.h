@@ -25,11 +25,22 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSqlCmdTest, FdoSqlCmdTest);
     CPPUNIT_TEST( CreateAndDrop8bitTable );
+    CPPUNIT_TEST( TestOutParamsStoreProcRetOnly );
+    CPPUNIT_TEST( TestOutParamsStoreProcRetAndIn );
+    CPPUNIT_TEST( TestOutParamsStoreProcRetAndOut );
+    CPPUNIT_TEST( TestOutParamsStoreProcRetAndNullOut );
+    CPPUNIT_TEST( TestOutParamsStoreProcRetAndInAndOut );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
 	void CreateAndDrop8bitTable ();
 	virtual FdoString *GetGeometrySelectStatement();
+    
+    void TestOutParamsStoreProcRetOnly();
+    void TestOutParamsStoreProcRetAndIn();
+    void TestOutParamsStoreProcRetAndOut();
+    void TestOutParamsStoreProcRetAndNullOut();
+    void TestOutParamsStoreProcRetAndInAndOut();
 
 	wchar_t *get_datetime_type() 
     { 

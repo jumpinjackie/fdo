@@ -47,7 +47,8 @@ int rdbi_bind(
         int datatype,
         int size,
         char *address,
-        void *null_ind
+        void *null_ind,
+        int typeBind = 1
         );
 int rdbi_break(
         rdbi_context_def *context
@@ -194,6 +195,9 @@ int rdbi_get_info(
         int *exists
         );
 void rdbi_get_msg(
+        rdbi_context_def *context
+        );
+long rdbi_get_server_rc(
         rdbi_context_def *context
         );
 int rdbi_get_size(

@@ -72,10 +72,11 @@ int postgis_rdbi_init (void **contextp, rdbi_methods methods)
         methods->execute    = (int (*)(void*, char*, int, int, int*))postgis_execute;
         methods->exec_coc   = NULL;
         methods->define     = (int (*)(void*, char*, char*, int, int, char*, void*))postgis_define;
-        methods->bind       = (int (*)(void*, char*, char*, int, int, char*, void*))postgis_bind;
+        methods->bind       = (int (*)(void*, char*, char*, int, int, char*, void*, int))postgis_bind;
         methods->fetch      = (int (*)(void*, char*, int, int, int, int*))postgis_fetch;
         methods->get_msg    = (void (*)(void*, char*))postgis_get_msg;
         methods->get_msgW   = (void (*)(void*, wchar_t*))postgis_get_msgW;
+        methods->get_server_rc = NULL;
         methods->alcnullind = (int (*)(void*, int, char**))postgis_alloc_null_ind; 
         methods->set_null   = (void (*)(void*, void*, int, int))postgis_set_null;
         methods->set_nnull  = (void (*)(void*, void*, int, int))postgis_set_not_null;

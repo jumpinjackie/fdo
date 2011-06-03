@@ -73,3 +73,266 @@ FdoString *SqlServerFdoSqlCmdTest::GetGeometrySelectStatement()
 {
 	return L"select geometry from acdb3dpolyline";
 }
+
+void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetOnly()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc\nAS\nBEGIN\ndeclare @value bigint\nSET NOCOUNT ON;\nset @value = 100*rand();\nreturn (@value);\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+        printf("Test1 RandVal = %d", randVal);
+        CPPUNIT_ASSERT( idVal->GetInt32() == randVal);
+
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetAndIn()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc @initval bigint = 0\nAS\nBEGIN\ndeclare @value bigint\nSET NOCOUNT ON;\nset @value = 100*rand()+@initval;\nreturn (@value);\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoInt32Value> initVal = FdoInt32Value::Create(300);
+        FdoPtr<FdoParameterValue> pInitVal = FdoParameterValue::Create(L"InitVal", initVal);
+        pInitVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pInitVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:InitVal)" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+        printf("Test1 RandVal = %d", randVal);
+        CPPUNIT_ASSERT( idVal->GetInt32() == randVal);
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetAndOut()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc @value nvarchar(20) OUT\nAS\nBEGIN\nSET NOCOUNT ON;\nset @value = 'MyTest';\nreturn 11;\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoStringValue> strVal = FdoStringValue::Create(L"");
+        FdoPtr<FdoParameterValue> parStrVal = FdoParameterValue::Create(L"StringVal", strVal);
+        parStrVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(parStrVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:StringVal)" );
+
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        int colCnt = myReader->GetColumnCount();
+        int rIdx = myReader->GetColumnIndex(L"RetVal");
+        int sIdx = myReader->GetColumnIndex(L"StringVal");
+
+        while(myReader->ReadNext())
+        {
+            FdoInt32 cpRet = myReader->GetInt32(rIdx);
+            FdoString* cStrRet;
+            CPPUNIT_ASSERT(!myReader->IsNull(sIdx));
+            if (myReader->IsNull(sIdx))
+                cStrRet = L"NULL";
+            else
+                cStrRet = myReader->GetString(sIdx);
+            printf ("RetValue[%d] = '%ls'\n", cpRet, cStrRet);
+            CPPUNIT_ASSERT( idVal->GetInt32() == cpRet);
+        }
+        myReader->Close();
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetAndNullOut()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc @value nvarchar(20) OUT\nAS\nBEGIN\nSET NOCOUNT ON;\nset @value = null;\nreturn 11;\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoStringValue> strVal = FdoStringValue::Create(L"");
+        FdoPtr<FdoParameterValue> parStrVal = FdoParameterValue::Create(L"StringVal", strVal);
+        parStrVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(parStrVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:StringVal)" );
+
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        int colCnt = myReader->GetColumnCount();
+        int rIdx = myReader->GetColumnIndex(L"RetVal");
+        int sIdx = myReader->GetColumnIndex(L"StringVal");
+
+        while(myReader->ReadNext())
+        {
+            FdoInt32 cpRet = myReader->GetInt32(rIdx);
+            FdoString* cStrRet;
+            CPPUNIT_ASSERT(myReader->IsNull(sIdx));
+            if (myReader->IsNull(sIdx))
+                cStrRet = L"NULL";
+            else
+                cStrRet = myReader->GetString(sIdx);
+            printf ("RetValue[%d] = '%ls'\n", cpRet, cStrRet);
+            CPPUNIT_ASSERT( idVal->GetInt32() == cpRet);
+        }
+        myReader->Close();
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetAndInAndOut()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc @initval bigint = 0, @value nvarchar(20) OUT\nAS\nBEGIN\nSET NOCOUNT ON;\nset @value = 'MyTest';\nreturn 11+@initval;\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoInt32Value> initVal = FdoInt32Value::Create(300);
+        FdoPtr<FdoParameterValue> pInitVal = FdoParameterValue::Create(L"InitVal", initVal);
+        pInitVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pInitVal);
+
+        FdoPtr<FdoStringValue> strVal = FdoStringValue::Create(L"");
+        FdoPtr<FdoParameterValue> parStrVal = FdoParameterValue::Create(L"StringVal", strVal);
+        parStrVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(parStrVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:InitVal, :StringVal)" );
+
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        int colCnt = myReader->GetColumnCount();
+        int rIdx = myReader->GetColumnIndex(L"RetVal");
+        int sIdx = myReader->GetColumnIndex(L"StringVal");
+
+        while(myReader->ReadNext())
+        {
+            FdoInt32 cpRet = myReader->GetInt32(rIdx);
+            FdoString* cStrRet = myReader->GetString(sIdx);
+            printf ("RetValue[%d] = '%ls'\n", cpRet, cStrRet);
+            CPPUNIT_ASSERT( idVal->GetInt32() == cpRet);
+        }
+        myReader->Close();
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}

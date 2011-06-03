@@ -75,10 +75,11 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->execute    = (int (*)(void*, char*, int, int, int*))mysql_execute;
             methods->exec_coc   = NULL;
             methods->define     = (int (*)(void*, char*, char*, int, int, char*, void*))mysql_define;
-            methods->bind       = (int (*)(void*, char*, char*, int, int, char*, void*))mysql_bind;
+            methods->bind       = (int (*)(void*, char*, char*, int, int, char*, void*, int))mysql_bind;
             methods->fetch      = (int (*)(void*, char*, int, int, int, int*))mysql_fetch;
             methods->get_msg    = NULL;
             methods->get_msgW    = (void (*)(void*, wchar_t*))mysql_get_msgW;
+            methods->get_server_rc = NULL;
             methods->alcnullind = (int (*)(void*, int, char**))mysql_alcnullind; 
             methods->set_null   = (void (*)(void*, void*, int, int))mysql_set_null;
             methods->set_nnull  = (void (*)(void*, void*, int, int))mysql_set_nnull;

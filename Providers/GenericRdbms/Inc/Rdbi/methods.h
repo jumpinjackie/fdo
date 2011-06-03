@@ -84,10 +84,11 @@ typedef struct rdbi_methods_def {
     int  (*execute)(void*,char*,int,int,int*);
     int  (*exec_coc)(void*);
     int  (*define)(void*,char*,char*,int,int,char*,void*);
-    int  (*bind)(void*,char*,char*,int,int,char*,void*);
+    int  (*bind)(void*,char*,char*,int,int,char*,void*,int);
     int  (*fetch)(void*,char*,int,int,int,int*);
     void  (*get_msg)(void*,char*);
     void  (*get_msgW)(void*,wchar_t*);
+    long  (*get_server_rc)(void*);
     int  (*alcnullind)(void*,int,char**);
     void  (*set_null)(void*,void*,int,int);
     void  (*set_nnull)(void*,void*,int,int);

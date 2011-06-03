@@ -133,6 +133,7 @@ typedef struct _odbcdr_context_def
 ************************************************************************/
 
     short   odbcdr_last_rc;
+    long    odbcdr_last_server_rc;
     union
     {
 	    char	odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE];

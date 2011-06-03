@@ -114,3 +114,8 @@ void odbcdr_get_msgW(		/* Get a message describing the last operation	*/
     str.wString = buffer;
     return local_odbcdr_get_msg(context, &str);
 }
+
+long odbcdr_get_server_rc (odbcdr_context_def  *context)
+{
+    return context->odbcdr_last_server_rc;
+}

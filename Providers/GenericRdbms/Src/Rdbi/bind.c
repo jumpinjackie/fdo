@@ -91,7 +91,8 @@ rdbi_bind(
     int   datatype,     /* A data type from Inc/rdbi.h              */
     int   size,         /* binary size                              */
     char *address,      /* data address                             */
-    void *null_ind     /* pointer to null indicator variables      */
+    void *null_ind,     /* pointer to null indicator variables      */
+    int typeBind        /* Input=1; Output=4; InputOutput=2; Return=5*/
 )
 {
     rdbi_cursor_def *cursor;            /* convenience pointer      */
@@ -116,7 +117,7 @@ rdbi_bind(
      * Make the rdb call.
      */
     context->rdbi_last_status = (*(context->dispatch.bind))(context->drvr, cursor->vendor_data, name, datatype,
-                                            size, address, null_ind);
+                                            size, address, null_ind, typeBind);
 
     /*
      * If we've successfully done at least one bind, set the flag

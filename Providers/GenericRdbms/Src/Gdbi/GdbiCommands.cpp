@@ -51,10 +51,12 @@ void GdbiCommands::CheckDB()
 
 void GdbiCommands::ThrowException()
 {
+    long serverRc = ::rdbi_get_server_rc (m_pRdbiContext);
+
     if( m_pRdbiContext->last_error_msg == NULL )
         ::rdbi_get_msg (m_pRdbiContext);
     
-    throw GdbiException::Create( m_pRdbiContext->last_error_msg, m_pRdbiContext->rdbi_last_status);
+    throw GdbiException::Create( m_pRdbiContext->last_error_msg, (!serverRc) ? m_pRdbiContext->rdbi_last_status : serverRc);
 }
 
 int GdbiCommands::err_stat()
@@ -156,7 +158,8 @@ int GdbiCommands::bind(
     int   datatype,     /* A data type from Inc/rdbi.h              */
     int   size,         /* binary size                              */
     char *address,      /* data address                             */
-    GDBI_NI_TYPE *null_ind
+    GDBI_NI_TYPE *null_ind,
+    int typeBind
     )
 {
 	int   loc_datatype = datatype;
@@ -170,7 +173,7 @@ int GdbiCommands::bind(
 		throw new GdbiException(L"Cannot bind widechar strings; target RDBMS does not support widechar strings");
 	}
 
-    if( ::rdbi_bind(m_pRdbiContext, cursorId, name, loc_datatype,  loc_size, loc_address, (void *)null_ind) == RDBI_SUCCESS )
+    if( ::rdbi_bind(m_pRdbiContext, cursorId, name, loc_datatype,  loc_size, loc_address, (void *)null_ind, typeBind) == RDBI_SUCCESS )
         return RDBI_SUCCESS;
 
     ThrowException();
