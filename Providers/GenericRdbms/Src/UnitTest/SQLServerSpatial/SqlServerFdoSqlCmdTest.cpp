@@ -336,3 +336,68 @@ void SqlServerFdoSqlCmdTest::TestOutParamsStoreProcRetAndInAndOut()
 		TestCommonFail (ex);
     }
 }
+
+void SqlServerFdoSqlCmdTest::TestParamInGeom()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP TABLE testTable;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE TABLE testTable(ID INT IDENTITY(1,1) NOT NULL, G GEOMETRY);" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTable (G) VALUES ('LINESTRING (4 2, 5 3)');" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTable (G) VALUES ('POLYGON ((0 0, 3 0, 3 3, 0 3, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))');" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"G INSIDE GeomFromText('LINESTRING (3.5 0, 1 4)')");
+        FdoSpatialCondition* spFilter = static_cast<FdoSpatialCondition*>(filter.p);
+        FdoPtr<FdoGeometryValue> gVal = static_cast<FdoGeometryValue*>(spFilter->GetGeometry());
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"gVal", gVal);
+        pval->SetDirection(FdoParameterDirection_Input);
+        params->Add(pval);
+        
+        FdoPtr<FdoInt32Value> sridVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> srval = FdoParameterValue::Create(L"srid", sridVal);
+        pval->SetDirection(FdoParameterDirection_Input);
+        params->Add(srval);
+
+        sqlCmd->SetSQLStatement( L"SELECT * FROM testTable WHERE G.STIntersects(:gVal)=1" );
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        int colCnt = myReader->GetColumnCount();
+        int gIdx = myReader->GetColumnIndex(L"G");
+
+        int cnt = 0;
+        while(myReader->ReadNext())
+        {
+            FdoPtr<FdoByteArray> geom;
+            if (!myReader->IsNull(gIdx))
+                geom = myReader->GetGeometry(gIdx);
+            cnt++;
+        }
+        myReader->Close();
+
+        CPPUNIT_ASSERT( cnt == 1);
+
+        params->Clear();
+
+        sqlCmd->SetSQLStatement( L"DROP TABLE testTable;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}

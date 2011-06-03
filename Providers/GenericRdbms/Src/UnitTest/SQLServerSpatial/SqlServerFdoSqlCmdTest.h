@@ -30,6 +30,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     CPPUNIT_TEST( TestOutParamsStoreProcRetAndOut );
     CPPUNIT_TEST( TestOutParamsStoreProcRetAndNullOut );
     CPPUNIT_TEST( TestOutParamsStoreProcRetAndInAndOut );
+    CPPUNIT_TEST( TestParamInGeom );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -41,6 +42,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     void TestOutParamsStoreProcRetAndOut();
     void TestOutParamsStoreProcRetAndNullOut();
     void TestOutParamsStoreProcRetAndInAndOut();
+    void TestParamInGeom();
 
 	wchar_t *get_datetime_type() 
     { 
