@@ -45,6 +45,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;&quot;$(FDOTHIRDPARTY)/apache/xalan/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xalan/build/Win32/VC9/Release/Nls/Include&quot;"
@@ -135,6 +136,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;&quot;$(FDOTHIRDPARTY)/apache/xalan/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Release/Nls/Include&quot;"
@@ -225,6 +227,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;&quot;$(FDOTHIRDPARTY)/apache/xalan/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xalan/build/Win32/VC9/Debug/Nls/Include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXP_FDO_COMMON;_CRT_SECURE_NO_DEPRECATE;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE_NO_WARNINGS"
@@ -315,6 +318,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;&quot;$(FDOTHIRDPARTY)/apache/xalan/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;;&quot;$(FDOTHIRDPARTY)/apache/xalan/build/Win64/VC9/Debug/Nls/Include&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_USRDLL;EXP_FDO_COMMON;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_HAS_ITERATOR_DEBUGGING=0"
@@ -725,15 +729,14 @@
 					</File>
 				</File>
 			</Filter>
-					<Filter
+			<Filter
 				Name="Gml311"
 				>
 				<File
 					RelativePath="Src\Common\Gml311\Gml311.cpp"
 					>
 				</File>
-			</Filter>	
-			
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1096,9 +1099,9 @@
 				>
 				<File
 					RelativePath="Inc\Common\Gml311\Gml311.h"
-				>
-			</File>	
-			</Filter>	
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
