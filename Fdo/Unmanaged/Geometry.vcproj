@@ -45,6 +45,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
@@ -135,6 +136,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
@@ -224,6 +226,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXP_FDO_GEOM;_CRT_SECURE_NO_DEPRECATE"
@@ -313,6 +316,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;Src/Common;Src/Geometry"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_USRDLL;EXP_FDO_GEOM;_CRT_SECURE_NO_DEPRECATE"
@@ -432,11 +436,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\GeometryImpl.h"
+				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
 				>
 			</File>
 			<File
-				RelativePath="Src\Geometry\Fgf\GeometryImpl.h"
+				RelativePath="Src\Geometry\GeometryImpl.h"
 				>
 			</File>
 			<File

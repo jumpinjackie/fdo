@@ -46,6 +46,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;Src/Nls;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_USRDLL;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;XML_DEBUG"
@@ -142,6 +143,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="Inc;Src/Fdo;Src/Common;Src/Nls;&quot;$(FDOTHIRDPARTY)/apache/xerces/src&quot;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NON_CONFORMING_SWPRINTFS;EXP_FDO;XML_DEBUG"
@@ -237,6 +239,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
@@ -336,6 +339,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
@@ -1731,6 +1735,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Inc\Fdo\Expression\ExpressionItemType.h"
+					>
+				</File>
+				<File
 					RelativePath="Inc\Fdo\Expression\ExpressionType.h"
 					>
 				</File>
@@ -1760,10 +1768,6 @@
 				</File>
 				<File
 					RelativePath="Inc\Fdo\Expression\Int64Value.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Inc\Fdo\Expression\ExpressionItemType.h"
 					>
 				</File>
 				<File
@@ -2601,7 +2605,7 @@
 				<File
 					RelativePath="Inc\Fdo\Xml\GmlVersion.h"
 					>
-				</File>		
+				</File>
 				<File
 					RelativePath="Inc\Fdo\Xml\NameCollectionHandler.h"
 					>
