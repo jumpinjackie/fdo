@@ -44,6 +44,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
@@ -114,6 +115,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="inc;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged\Src\common"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_LIB;GISPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;HAVE_GEOM_INFO_TYPE"
@@ -183,6 +185,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
@@ -254,6 +257,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="true"
