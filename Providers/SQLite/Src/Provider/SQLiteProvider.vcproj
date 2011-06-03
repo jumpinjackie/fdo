@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\sqlite;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\SpatialIndex;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;;..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS;SQLITE_OMIT_PROGRESS_CALLBACK;SQLITE_OMIT_AUTHORIZATION"
@@ -130,6 +131,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\inc&quot;;..\sqlite;&quot;$(FDOUTILITIES)\Common\inc&quot;;..\SpatialIndex;&quot;$(FDOUTILITIES)\ExpressionEngine\inc&quot;;..\"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;SLT_EXPORTS;_CRT_SECURE_NO_WARNINGS;SQLITE_OMIT_PROGRESS_CALLBACK;SQLITE_OMIT_AUTHORIZATION"
@@ -214,6 +216,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
@@ -306,6 +309,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
