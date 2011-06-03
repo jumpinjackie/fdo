@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS"
@@ -123,6 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS"
@@ -203,6 +205,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS"
@@ -282,6 +285,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="inc;&quot;$(FDO)\Unmanaged\inc&quot;;&quot;$(FDO)\Unmanaged\Src\common&quot;;&quot;$(FDOUTILITIES)\Common\inc&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;NDEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;EXPRESSIONENGINE_EXPORTS"
