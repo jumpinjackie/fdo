@@ -45,6 +45,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
@@ -128,6 +129,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
@@ -211,6 +213,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -295,6 +298,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				AdditionalIncludeDirectories="$(FDOTHIRDPARTY)\cppunit\include;..\Unmanaged\Inc;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
