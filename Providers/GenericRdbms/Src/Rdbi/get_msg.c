@@ -54,6 +54,11 @@
 #include <Inc/Rdbi/proto.h>
 #include	<Inc/Rdbi/context.h>
 
+long rdbi_get_server_rc(rdbi_context_def *context) /* Get server error ID for last operation      */
+{
+    return (context->dispatch.get_server_rc != NULL) ? (*(context->dispatch.get_server_rc))(context->drvr) : 0;
+}
+
 void rdbi_get_msg(rdbi_context_def *context)               /* Get msg text for last operation      */
 {
     debug_on("rdbi_get_msg");

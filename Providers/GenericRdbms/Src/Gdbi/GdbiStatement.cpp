@@ -38,47 +38,47 @@ GdbiStatement::~GdbiStatement(void)
      return m_QueryId->GetQueryId();
  }
 
-int GdbiStatement::Bind( int parmIndex, int size, const char* szValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, int size, const char* szValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
 	if (size == 1)
-		return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_CHAR,  size, (char*)szValue, nullInd );
+		return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_CHAR,  size, (char*)szValue, nullInd, typeBind );
 	else
-		return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_STRING,  size, (char*)szValue, nullInd );
+		return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_STRING,  size, (char*)szValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, int size, const wchar_t* szValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, int size, const wchar_t* szValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_WSTRING,  size, (char*)szValue, nullInd );
+	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_WSTRING,  size, (char*)szValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, short *sValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, short *sValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_SHORT,  sizeof(short), (char*)sValue, nullInd );
+	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_SHORT,  sizeof(short), (char*)sValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, int *nValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, int *nValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_INT,  sizeof(int), (char*)nValue, nullInd );
+	return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_INT,  sizeof(int), (char*)nValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, double *dValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, double *dValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_DOUBLE,  sizeof(double), (char*)dValue, nullInd );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_DOUBLE,  sizeof(double), (char*)dValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, float *fValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, float *fValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_FLOAT,  sizeof(float), (char*)fValue, nullInd );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_FLOAT,  sizeof(float), (char*)fValue, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, FdoInt64 *i64Value, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, FdoInt64 *i64Value, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_LONGLONG,  sizeof(FdoInt64), (char*)i64Value, nullInd );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_LONGLONG,  sizeof(FdoInt64), (char*)i64Value, nullInd, typeBind );
 }
 
-int GdbiStatement::Bind( int parmIndex, FdoIGeometry* gValue, GDBI_NI_TYPE *nullInd )
+int GdbiStatement::Bind( int parmIndex, FdoIGeometry* gValue, GDBI_NI_TYPE *nullInd, int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_GEOMETRY,  sizeof(FdoIGeometry), (char*)gValue, nullInd );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), RDBI_GEOMETRY,  sizeof(FdoIGeometry), (char*)gValue, nullInd, typeBind );
 }
 
 int GdbiStatement::Bind(
@@ -86,10 +86,10 @@ int GdbiStatement::Bind(
         int   datatype,     /* A data type from Inc/rdbi.h              */
         int   size,         /* binary size                              */
         char *address,      /* data address                             */
-        GDBI_NI_TYPE *null_ind     /* pointer to null indicator variables      */
-            )
+        GDBI_NI_TYPE *null_ind,     /* pointer to null indicator variables      */
+        int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), datatype,  size, address, null_ind );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), FdoCommonOSUtil::itoa(parmIndex, buffer), datatype,  size, address, null_ind, typeBind );
 }
 
 int GdbiStatement::Bind(
@@ -97,10 +97,10 @@ int GdbiStatement::Bind(
         int   datatype,     /* A data type from Inc/rdbi.h              */
         int   size,         /* binary size                              */
         char *address,      /* data address                             */
-        GDBI_NI_TYPE *null_ind     /* pointer to null indicator variables      */
-            )
+        GDBI_NI_TYPE *null_ind,     /* pointer to null indicator variables      */
+        int typeBind)
 {
-    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), (char*) parmName, datatype,  size, address, null_ind );
+    return m_pGdbiCommands->bind( m_QueryId->GetQueryId(), (char*) parmName, datatype,  size, address, null_ind, typeBind);
 }
 
 int GdbiStatement::BindNull( int parmIndex )

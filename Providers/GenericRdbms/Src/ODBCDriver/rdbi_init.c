@@ -109,6 +109,7 @@ odbcdr_rdbi_init(
         methods->get_next_seqW      = NULL;
 	    methods->get_msg	        = (void (*)(void*, char*))odbcdr_get_msg;
 	    methods->get_msgW	        = (void (*)(void*, wchar_t*))odbcdr_get_msgW;
+        methods->get_server_rc      = NULL;
 	    methods->vndr_name	        = (char*(*)(void*))odbcdr_vndr_name;
 	    methods->vndr_nameW	        = (wchar_t*(*)(void*))odbcdr_vndr_nameW;
 
@@ -137,7 +138,7 @@ odbcdr_rdbi_init(
         methods->vndr_info          = (int (*)(void*, rdbi_vndr_info_def *))odbcdr_vndr_info;
 	    methods->execute	        = (int (*)(void*, char*, int, int, int*))odbcdr_execute;
 	    methods->fetch       		= (int (*)(void*, char*, int, int, int, int*))odbcdr_fetch2;
-	    methods->bind		        = (int (*)(void*, char*, char*, int, int, char*, void*))odbcdr_bind;
+	    methods->bind		        = (int (*)(void*, char*, char*, int, int, char*, void*, int))odbcdr_bind;
 	    methods->commit 	        = (int (*)(void*, int))odbcdr_commit;
         // Many others are missing...
 		methods->lob_create_ref     = NULL;

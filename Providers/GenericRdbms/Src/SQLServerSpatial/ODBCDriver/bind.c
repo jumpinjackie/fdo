@@ -28,6 +28,7 @@
 *   int          size;                                                  *
 *   char        *address;                                               *
 *   short       *null_ind;                                              *
+*   int         typeBind;                                              *
 *                                                                       *
 * Description                                                           *
 *       Bind  a  ":n"  variable to a given address, data type and       *
@@ -71,6 +72,9 @@
 *       NULL).  If this pointer is itself NULL, the variable will       *
 *       be presumed to be always not NULL.                              *
 *                                                                       *
+*   typeBind:   input                                                   *
+*       Input=1; Output=4; InputOutput=2; Return=5                      *
+*                                                                       *
 * Function Value                                                        *
 *       An RDBI status integer.   Good  is  RDBI_SUCCESS  (ie 0).       *
 *       See inc/rdbi.h.  If the bound variable cannot be found in       *
@@ -104,7 +108,8 @@ int odbcdr_bind(
 	int 	 datatype,
 	int 	 size,
 	char	*address,
-	SQLLEN	*null_ind
+	SQLLEN	*null_ind,
+    int      typeBind
 	)
 {
 	odbcdr_cursor_def	*c;
@@ -196,7 +201,7 @@ int odbcdr_bind(
 		ODBCDR_ODBC_ERR( SQLBindParameter(
 						c->hStmt,
 						(SQLUSMALLINT) bindnum,
-						SQL_PARAM_INPUT,
+                        typeBind,
 						(SQLSMALLINT) odbcdr_datatype,
 						(SQLSMALLINT) sql_type,
 						(SQLUINTEGER) col_size,

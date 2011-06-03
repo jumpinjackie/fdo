@@ -519,6 +519,14 @@ template<typename T> T GdbiQueryResult::GetNumber(
 					val = (T)int64Val;
 					break;
 				}
+
+            case RDBI_BOOLEAN:
+                {
+                    char chVal = 0;
+                    memcpy(&chVal, (char*)(colInfo->value) + mArrayPos*colInfo->size, 1);
+				    val = (T)(chVal == 1 || chVal == '1');
+                }
+                break;
 			default:
 				(void)GetBinaryValue(colInfo, sizeof(T), (char*)&val, null_ind, NULL );
 				break;

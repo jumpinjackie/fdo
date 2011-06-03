@@ -71,6 +71,9 @@
 *       NULL).  If this pointer is itself NULL, the variable will       *
 *       be presumed to be always not NULL.                              *
 *                                                                       *
+*   typeBind:   input                                                   *
+*       Input=1; Output=4; InputOutput=2; Return=5                      *
+*                                                                       *
 * Function Value                                                        *
 *       An RDBI status integer.   Good  is  RDBI_SUCCESS  (ie 0).       *
 *       See inc/rdbi.h.  If the bound variable cannot be found in       *
@@ -103,7 +106,8 @@ int odbcdr_bind(
 	int 	 datatype,
 	int 	 size,
 	char	*address,
-	SQLLEN	*null_ind
+	SQLLEN	*null_ind,
+    int      typeBind
 	)
 {
 	odbcdr_cursor_def	*c;

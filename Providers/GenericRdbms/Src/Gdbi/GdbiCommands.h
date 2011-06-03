@@ -184,7 +184,8 @@ public:
         int   datatype,     /* A data type from Inc/rdbi.h              */
         int   size,         /* binary size                              */
         char *address,      /* data address                             */
-        GDBI_NI_TYPE *null_ind
+        GDBI_NI_TYPE *null_ind,
+        int typeBind = 1
     );
 
     int tran_begin( char    *tran_id );
