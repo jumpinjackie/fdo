@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\FDO"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -136,6 +137,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\FDO"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -224,6 +226,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\FDO"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -308,6 +311,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="2"
 				AdditionalIncludeDirectories="..\..\Unmanaged\Inc;..\Src;..\Src\OSGeo;..\Src\OSGeo\FDO"
 				AdditionalUsingDirectories="$(OutDir)"
@@ -669,7 +673,7 @@
 					<File
 						RelativePath="..\Src\OSGeo\FDO\Xml\mgXmlGmlVersion.h"
 						>
-					</File>	
+					</File>
 					<File
 						RelativePath="..\Src\OSGeo\FDO\Xml\mgXmlNameCollectionHandler.cpp"
 						>
@@ -2035,6 +2039,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\Src\OSGeo\FDO\Expression\mgExpressionItemType.h"
+						>
+					</File>
+					<File
 						RelativePath="..\Src\OSGeo\FDO\Expression\mgExpressionType.h"
 						>
 					</File>
@@ -2096,10 +2104,6 @@
 					</File>
 					<File
 						RelativePath="..\Src\OSGeo\FDO\Expression\mgInt64Value.h"
-						>
-					</File>
-					<File
-						RelativePath="..\Src\OSGeo\FDO\Expression\mgExpressionItemType.h"
 						>
 					</File>
 					<File
