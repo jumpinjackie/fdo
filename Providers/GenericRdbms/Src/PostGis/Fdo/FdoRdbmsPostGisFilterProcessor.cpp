@@ -267,7 +267,7 @@ void FdoRdbmsPostGisFilterProcessor::ProcessSpatialDistanceCondition(FdoGeometri
     // Cache the constructor of tested geometry
     // TODO: convert geom to bind variable to eliminate WKB->Hex->WKB translation
     FdoStringP geomFromText = FdoStringP::Format(
-        L"GeomFromWKB(decode('%ls','hex'), %ls)",
+        L"ST_GeomFromWKB(decode('%ls','hex'), %ls)",
         hexstr,
         (FdoString*) FdoCommonStringUtil::Int64ToString(srid)
     );
@@ -317,29 +317,29 @@ void FdoRdbmsPostGisFilterProcessor::BuildSpatialFilter( FdoStringP columnName, 
         switch (spatialFilter->GetOperation())
         {
         case FdoSpatialOperations_Contains:
-            spatialPred = L"Contains";
+            spatialPred = L"_ST_Contains";
             break;
         case FdoSpatialOperations_Crosses:
-            spatialPred = L"Crosses";
+            spatialPred = L"_ST_Crosses";
             break;
         case FdoSpatialOperations_Disjoint:
-            spatialPred = L"Disjoint";
+            spatialPred = L"_ST_Disjoint";
             break;
         case FdoSpatialOperations_Equals:
-            spatialPred = L"Equals";
+            spatialPred = L"_ST_Equals";
             break;
         case FdoSpatialOperations_Intersects:
-            spatialPred = L"Intersects";
+            spatialPred = L"_ST_Intersects";
             break;
         case FdoSpatialOperations_Overlaps:
-            spatialPred = L"Overlaps";
+            spatialPred = L"_ST_Overlaps";
             break;
         case FdoSpatialOperations_Touches:
-            spatialPred = L"Touches";
+            spatialPred = L"_ST_Touches";
             break;
         case FdoSpatialOperations_Within:
         case FdoSpatialOperations_Inside:
-            spatialPred = L"Within";
+            spatialPred = L"_ST_Within";
             break;
         default:
             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
@@ -363,9 +363,9 @@ void FdoRdbmsPostGisFilterProcessor::BuildDistanceFilter( FdoStringP columnName,
     {
     case FdoDistanceOperations_Within:
         {
-            buf += (columnName + " && Expand(" + geomFromText + ", " + distTxt + ") ");
+            buf += (columnName + " && ST_Expand(" + geomFromText + ", " + distTxt + ") ");
             buf += LOGICAL_AND;
-            buf += "distance(";
+            buf += "ST_Distance(";
             buf += (columnName + "," + geomFromText + ")");
             buf += LESS_OR_EQUAL_OP;
             buf += (distTxt);
@@ -373,7 +373,7 @@ void FdoRdbmsPostGisFilterProcessor::BuildDistanceFilter( FdoStringP columnName,
         break;
     case FdoDistanceOperations_Beyond:
         {
-            buf += "distance(";
+            buf += "ST_Distance(";
             buf += (columnName + "," + geomFromText + ")");
             buf += GREATER_THAN_OP;
             buf += (distTxt);
@@ -444,14 +444,14 @@ void FdoRdbmsPostGisFilterProcessor::ProcessFunction(FdoFunction& expr)
     else if (0 == name.ICompare(FDO_FUNCTION_SPATIALEXTENTS))
     {
         processArgs = false;
-        AppendString(L"Coalesce(GeomFromEwkb(AsEwkb(Extent(");
+        AppendString(L"Coalesce(ST_GeomFromEwkb(ST_AsEwkb(ST_Extent(");
         FdoPtr<FdoExpression> geomExpr(args->GetItem(0));
         geomExpr->Process(this);
-        AppendString(L"))),geomfromtext('POLYGON((0 0,0 50,50 50,50 0,0 0))'))");    
+        AppendString(L"))),ST_geomfromtext('POLYGON((0 0,0 50,50 50,50 0,0 0))'))");    
     }
     else if (0 == name.ICompare(FDO_FUNCTION_AREA2D))
     {
-        AppendString(L"Area");
+        AppendString(L"ST_Area");
         argSep = sepComma;
     }
     else if (0 == name.ICompare(FDO_FUNCTION_NULLVALUE))
