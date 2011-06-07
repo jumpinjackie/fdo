@@ -136,7 +136,7 @@ bool ArcSDETransaction::IsSpent ()
 /// <summary> Creates a save point in this transaction.</summary>
 /// <param name="suggestName">Suggested save point name.</param> 
 /// <returns>The actual save point name used by the provider </returns>
-FdoString* ArcSDETransaction::AddSavePoint(FdoString* suggestName);
+FdoString* ArcSDETransaction::AddSavePoint(FdoString* suggestName)
 {
     throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
 }
@@ -144,7 +144,7 @@ FdoString* ArcSDETransaction::AddSavePoint(FdoString* suggestName);
 /// <summary> Releases a specific save point.</summary>
 /// <param name="savePointName">Save point name.</param>
 /// <returns>Returns nothing</returns>
-void ArcSDETransaction::ReleaseSavePoint(FdoString* savePointName);
+void ArcSDETransaction::ReleaseSavePoint(FdoString* savePointName)
 {
     throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
 }
