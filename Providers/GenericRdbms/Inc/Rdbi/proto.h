@@ -48,7 +48,7 @@ int rdbi_bind(
         int size,
         char *address,
         void *null_ind,
-        int typeBind = 1
+        int typeBind
         );
 int rdbi_break(
         rdbi_context_def *context
