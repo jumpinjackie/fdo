@@ -47,8 +47,9 @@ protected:
     virtual FdoIConnection* GetConnection()     { return FDO_SAFE_ADDREF(m_conn); }
     virtual void Commit()                       { m_needsRollback = false; m_conn->CommitTransaction(true); }
     virtual void Rollback()                     { m_needsRollback = false; m_conn->RollbackTransaction(true); }
-
-
+    virtual FdoString* AddSavePoint(FdoString* suggestName){/*TODO:Implement the interface*/ return NULL;}
+    virtual void ReleaseSavePoint(FdoString* svaePointName){/*TODO:Implement the interface*/}
+    virtual void Rollback(FdoString* savePointName){/*TODO:Implement the interface*/}
 private:
     SltConnection*  m_conn;
     bool            m_needsRollback;

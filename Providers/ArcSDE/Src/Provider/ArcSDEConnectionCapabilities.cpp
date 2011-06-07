@@ -83,6 +83,13 @@ bool ArcSDEConnectionCapabilities::SupportsTransactions ()
     return (true);
 }
 
+/// <summary>Determines if the feature provider supports save point.</summary>
+/// <returns>Returns true if the feature provider supports save point.</returns> 
+bool ArcSDEConnectionCapabilities::SupportsSavePoint ()
+{
+    return (false);
+}
+
 /// <summary>Determines true if the feature provider supports long transactions.</summary>
 /// <returns>Returns true if the feature provider supports long transactions.</returns> 
 bool ArcSDEConnectionCapabilities::SupportsLongTransactions ()

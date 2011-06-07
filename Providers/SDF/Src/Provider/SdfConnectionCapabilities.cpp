@@ -105,6 +105,12 @@ bool SdfConnectionCapabilities::SupportsTransactions()
     return false;
 }
 
+// Returns true if the feature provider supports save point.
+bool SdfConnectionCapabilities::SupportsSavePoint()
+{
+    return false;
+}
+
 
 // Returns true if the feature provider supports long transactions.
 bool SdfConnectionCapabilities::SupportsLongTransactions()

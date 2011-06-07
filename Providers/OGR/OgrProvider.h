@@ -131,6 +131,8 @@ public:
         { return false; }
     OGR_API virtual bool SupportsTransactions()
         { return false; }
+    OGR_API virtual bool SupportsSavePoint()
+        { return false; }
     OGR_API virtual bool SupportsLongTransactions()
         { return false; }
     OGR_API virtual bool SupportsSQL()

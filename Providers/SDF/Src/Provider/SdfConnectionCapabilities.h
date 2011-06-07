@@ -63,6 +63,9 @@ class SdfConnectionCapabilities : public FdoIConnectionCapabilities
         // Returns true if the feature provider supports long transactions.
         SDF_API virtual bool SupportsLongTransactions();
 
+        // Returns true if the feature provider supports save point.
+        SDF_API virtual bool SupportsSavePoint();
+
         // Returns true if the feature provider supports SQL commands.
         SDF_API virtual bool SupportsSQL();
 

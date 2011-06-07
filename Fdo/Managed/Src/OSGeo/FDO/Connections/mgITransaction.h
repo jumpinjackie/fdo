@@ -50,6 +50,39 @@ public:
 	System::Void Commit();
 
     /// \brief
+    ///  Creates a save point in this transaction.
+    /// 
+    /// \param suggestName
+    /// Suggested save point name.
+    /// 
+    /// \returns 
+    /// The actual name used by the provider
+    ///
+    System::String^ AddSavePoint(System::String^ suggestName);
+
+    /// \brief
+    ///  Releases a specific save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    System::Void ReleaseSavePoint(System::String^ savePointName);
+
+	/// \brief
+    ///  Rolls back a transaction to a specified save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    ///
+    /// \return
+    /// Returns nothing
+    ///
+    System::Void Rollback(System::String^ savePointName);
+
+    /// \brief
     ///  Rolls back a transaction from a pending state.
     /// 
     /// \return

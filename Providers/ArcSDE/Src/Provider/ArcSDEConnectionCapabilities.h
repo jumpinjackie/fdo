@@ -58,6 +58,10 @@ public:
     /// <returns>Returns true if the feature provider supports transactions.</returns> 
     bool SupportsTransactions ();
 
+    /// <summary>Determines if the feature provider supports save point.</summary>
+    /// <returns>Returns true if the feature provider supports save point.</returns> 
+    bool SupportsSavePoint ();
+
     /// <summary>Determines true if the feature provider supports long transactions.</summary>
     /// <remarks><span class="note">Note&nbsp;</span> Long Transaction commands are NOT supported 
     /// in this release.</remarks>

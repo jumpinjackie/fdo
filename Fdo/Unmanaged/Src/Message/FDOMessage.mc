@@ -3115,3 +3115,8 @@ SymbolicName=FDO_JOIN_MUSTHAVE_FILTER
 Language=English
 Join '%1$ls' must have a filter defined.
 .
+MessageId=9193
+SymbolicName=FDO_186_SAVEPOINT_NOT_SUPPORTED
+Language=English
+Save points are not supported.
+.

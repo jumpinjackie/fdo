@@ -90,6 +90,14 @@ public:
     /// 
 	virtual System::Boolean SupportsTransactions();
 
+	/// \brief
+    /// Returns whether the feature provider supports save point.
+    /// 
+    /// \return
+    /// Returns true if the feature provider supports save point.
+    /// 
+	virtual System::Boolean SupportsSavePoint();
+
     /// \brief
     /// Determines true if the feature provider supports long transactions.
     /// 

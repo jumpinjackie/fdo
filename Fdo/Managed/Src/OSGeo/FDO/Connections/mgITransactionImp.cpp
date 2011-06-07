@@ -51,6 +51,25 @@ System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Commit()
 	EXCEPTION_HANDLER(GetImpObj()->Commit())
 }
 
+System::String^ NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::AddSavePoint(System::String^ suggestName)
+{
+    FdoString* result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->AddSavePoint(StringToUni(suggestName)))
+
+    return CHECK_STRING(result);
+}
+
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::ReleaseSavePoint(System::String^ savePointName)
+{
+    EXCEPTION_HANDLER(GetImpObj()->ReleaseSavePoint(StringToUni(savePointName)));
+}
+
+System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Rollback(System::String^ savePointName)
+{
+    EXCEPTION_HANDLER(GetImpObj()->Rollback(StringToUni(savePointName)));
+}
+
 System::Void NAMESPACE_OSGEO_FDO_CONNECTIONS::ITransactionImp::Rollback()
 {
 	EXCEPTION_HANDLER(GetImpObj()->Rollback())

@@ -74,6 +74,21 @@ void FdoRdbmsFeatureTransaction::Rollback()
     }
 }
 
+FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestSavePoint)
+{
+    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+}
+
+void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
+{
+    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+}
+
+void FdoRdbmsFeatureTransaction::Rollback(FdoString* savePointName)
+{
+    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+}
+
 FdoIConnection* FdoRdbmsFeatureTransaction::GetConnection()
 {
     FDO_SAFE_ADDREF(mFdoConnection);

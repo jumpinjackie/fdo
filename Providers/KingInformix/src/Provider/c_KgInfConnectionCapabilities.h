@@ -89,6 +89,14 @@ public:
     FDOKGINF_API virtual bool SupportsTransactions();
 
     /// \brief
+    /// Determines if the feature provider supports save point.
+    /// 
+    /// \return
+    /// Returns true if the feature provider supports save point.
+    /// 
+    FDOKGINF_API virtual bool SupportsSavePoint();
+
+    /// \brief
     /// Determines true if the feature provider supports long transactions.
     /// 
     /// \return
