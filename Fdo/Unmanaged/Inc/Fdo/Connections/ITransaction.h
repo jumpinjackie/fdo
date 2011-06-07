@@ -51,6 +51,39 @@ public:
     FDO_API virtual void Commit() = 0;
 
     /// \brief
+    ///  Creates a save point in this transaction.
+    /// 
+    /// \param suggestName
+    /// Suggested save point name.
+    /// 
+    /// \returns 
+    /// The actual name used by the provider
+    ///
+    FDO_API virtual FdoString* AddSavePoint(FdoString* suggestName) = 0;
+
+    /// \brief
+    ///  Releases a specific save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    ///
+    /// \returns
+    /// Returns nothing
+    ///
+    FDO_API virtual void ReleaseSavePoint(FdoString* savePointName) = 0;
+
+    /// \brief
+    ///  Rolls back a transaction to a specified save point.
+    /// 
+    /// \param savePointName 
+    /// Save point name.
+    /// 
+    /// \returns
+    /// Returns nothing
+    ///
+    FDO_API virtual void Rollback(FdoString* savePointName) = 0;
+
+    /// \brief
     ///  Rolls back a transaction from a pending state.
     /// 
     /// \return

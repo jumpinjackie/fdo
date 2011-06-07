@@ -92,6 +92,13 @@ bool c_KgInfConnectionCapabilities::SupportsTransactions ()
     return false;
 }
 
+/// <summary>Determines if the feature provider supports save point.</summary>
+/// <returns>Returns true if the feature provider supports save point.</returns> 
+bool c_KgInfConnectionCapabilities::SupportsSavePoint ()
+{
+    return false;
+}
+
 /// <summary>Determines true if the feature provider supports long transactions.</summary>
 /// <returns>Returns true if the feature provider supports long transactions.</returns> 
 bool c_KgInfConnectionCapabilities::SupportsLongTransactions ()

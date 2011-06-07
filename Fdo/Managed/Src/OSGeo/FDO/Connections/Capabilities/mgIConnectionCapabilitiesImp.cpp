@@ -91,6 +91,13 @@ System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabil
 	return rv;
 }
 
+System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::SupportsSavePoint()
+{
+    System::Boolean rv;
+    EXCEPTION_HANDLER(rv = !!GetImpObj()->SupportsSavePoint())
+    return rv;
+}
+
 System::Boolean NAMESPACE_OSGEO_FDO_CONNECTIONS_CAPABILITIES::IConnectionCapabilitiesImp::SupportsLongTransactions()
 {
 	System::Boolean rv;

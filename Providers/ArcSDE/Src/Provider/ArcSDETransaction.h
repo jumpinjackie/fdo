@@ -45,6 +45,21 @@ public:
     /// <returns>Returns nothing</returns>
     void Rollback ();
 
+    /// <summary> Creates a save point in this transaction.</summary>
+    /// <param name="suggestName">Suggested save point name.</param> 
+    /// <returns>The actual save point name used by the provider </returns>
+    FdoString* AddSavePoint(FdoString* suggestName);
+
+    /// <summary> Releases a specific save point.</summary>
+    /// <param name="savePointName">Save point name.</param>
+    /// <returns>Returns nothing</returns>
+    void ReleaseSavePoint(FdoString* savePointName);
+
+    /// <summary> Rolls back a transaction to a specified save point.</summary>
+    /// <param name="savePointName">Save point name.</param>
+    /// <returns>Returns nothing</returns>
+    void Rollback(FdoString* savePointName);
+
     void Dispose ();
 
 protected:
