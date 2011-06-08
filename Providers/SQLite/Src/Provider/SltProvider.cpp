@@ -72,6 +72,9 @@ bool SltConnection::IsMetadataTable(const char* table)
 
     if (sqlite3StrICmp(table, "sqlite_sequence") == 0)
         return true;
+
+    if (sqlite3StrICmp(table, "sqlite_stat1") == 0)
+        return true;
     
     return false;
 }
