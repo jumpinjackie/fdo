@@ -19,7 +19,7 @@
 #include "stdafx.h"
 #include "StringUtil.h"
 #include "SltProvider.h"
-#include <SpatialIndex/SltGeomUtils.h>
+#include "SltGeomUtils.h"
 
 #include "SpatialIndexDescriptor.h"
 

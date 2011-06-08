@@ -20,7 +20,7 @@
 #define SLTQUERYTRANSLATOR_H
 
 #include "StringUtil.h"
-#include <SpatialIndex/SltGeomUtils.h>
+#include "SltGeomUtils.h"
 
 typedef std::vector<__int64> recno_list;
 
