@@ -22,15 +22,15 @@
 //#define USE_RTREE
 
 #ifdef USE_RTREE
-    #include <SpatialIndex/rtree.h>
+    #include "SpatialIndex/rtree.h"
     typedef bvh::rtree SltSpatialIndex;
     typedef bvh::rtree_iterator SpatialIteratorImpl;
-    #include <SpatialIndex/VectorMF.h>
+    #include "VectorMF.h"
 #else
     #ifndef _MSC_VER
-        #include <SpatialIndex.h>
+        #include "SpatialIndex.h"
     #else
-        #include <DiskSpatialIndex.h>
+        #include "DiskSpatialIndex.h"
     #endif
     typedef SpatialIndex SltSpatialIndex;
     typedef SpatialIterator SpatialIteratorImpl;
