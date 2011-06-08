@@ -279,7 +279,7 @@ int local_rdbi_sql_va(rdbi_context_def *context, int opts, int sqlid, rdbi_strin
         else
             n_addr = NULL;
 
-        rc = rdbi_bind(context, sqlid, name, type, size, addr, n_addr);
+        rc = rdbi_bind(context, sqlid, name, type, size, addr, n_addr, 1);
         if(rc != RDBI_SUCCESS) goto the_exit;
     }
 

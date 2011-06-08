@@ -486,18 +486,18 @@ void SelectTests::describe ()
 
         // define the bind variables
 // DS: why size is "sizeof (name) - 1" ?
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "1", RDBI_STRING, sizeof (name)-1, name, (char*)&null_name));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "2", RDBI_CHAR, sizeof (initial), initial, (char*)&null_initial));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "3", RDBI_SHORT, sizeof (grade), (char*)&grade, (char*)&null_grade));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "1", RDBI_STRING, sizeof (name)-1, name, (char*)&null_name, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "2", RDBI_CHAR, sizeof (initial), initial, (char*)&null_initial, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "3", RDBI_SHORT, sizeof (grade), (char*)&grade, (char*)&null_grade, 1));
 // DS: why size is "sizeof (salutation) - 1" ?
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "4", RDBI_FIXED_CHAR, sizeof (salutation)-1, salutation, (char*)&null_salutation));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "5", RDBI_DOUBLE, sizeof (employee), (char*)&employee, (char*)&null_employee));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "6", RDBI_DOUBLE, sizeof (height), (char*)&height, (char*)&null_height));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "7", RDBI_DOUBLE, sizeof (salary), (char*)&salary, (char*)&null_salary));
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "8", RDBI_LONG, sizeof (phone), (char*)&phone, (char*)&null_phone));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "4", RDBI_FIXED_CHAR, sizeof (salutation)-1, salutation, (char*)&null_salutation, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "5", RDBI_DOUBLE, sizeof (employee), (char*)&employee, (char*)&null_employee, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "6", RDBI_DOUBLE, sizeof (height), (char*)&height, (char*)&null_height, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "7", RDBI_DOUBLE, sizeof (salary), (char*)&salary, (char*)&null_salary, 1));
+        CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "8", RDBI_LONG, sizeof (phone), (char*)&phone, (char*)&null_phone, 1));
  
         if ( allow_timestamp_notnull() )
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "9", RDBI_DATE, sizeof (birthday), birthday, (char*)&null_birthday));
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_bind failed", RDBI_SUCCESS == rdbi_bind (mRdbiContext, cursor, "9", RDBI_DATE, sizeof (birthday), birthday, (char*)&null_birthday, 1));
 
         int num_bound_cols = allow_timestamp_notnull()? 9 : 8;
 
