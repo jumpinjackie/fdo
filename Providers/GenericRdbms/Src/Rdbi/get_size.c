@@ -89,6 +89,12 @@ rdbi_get_size(
         case RDBI_GEOMETRY:
             size = sizeof(pIGeometry_def);
             break;
+        case RDBI_BLOB_ULEN:
+        case RDBI_STRING_ULEN:
+        case RDBI_WSTRING_ULEN:
+            size = sizeof(pByteArray_def);
+            break;
+            
     }
 
 

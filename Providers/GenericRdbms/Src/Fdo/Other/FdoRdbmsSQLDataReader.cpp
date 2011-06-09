@@ -247,7 +247,6 @@ FdoInt64 FdoRdbmsSQLDataReader::GetInt64(const wchar_t* columnName)
 
 FdoInt64 FdoRdbmsSQLDataReader::GetInt64(FdoInt32 index)
 {
-    // DBI should support a 64 bit long. As it stands now we have to deal with long(32bits).
     GET_VALUE (FdoInt64, index, mQueryResult->GetInt64);
 }
 
@@ -277,7 +276,40 @@ const wchar_t* FdoRdbmsSQLDataReader::GetString(FdoInt32 index)
 	if (mSprops[i].valid)
 		return mSprops[i].data;
 
-    const wchar_t* tmpVal = mQueryResult->GetString(index+1, &isNULL, NULL);
+    const wchar_t* tmpVal = NULL;
+    if (mColList[index].datatype == RDBI_WSTRING_ULEN)
+    {
+        FdoByteArray* arr = NULL;
+        mQueryResult->GetBinaryValue (index+1, sizeof(FdoByteArray*), (char*)&arr, &isNULL, NULL);
+        if (!isNULL && arr != NULL && arr->GetCount() != 0)
+        {
+            int sizeW = (int)(arr->GetCount()/sizeof(wchar_t));
+            mSprops[i].EnsureSize(sizeW + 1);
+            memcpy(mSprops[i].data, arr->GetData(), arr->GetCount());
+            *(mSprops[i].data+sizeW) = L'\0';
+            mSprops[i].valid = 1;
+            return mSprops[i].data;
+        }
+    }
+    else if (mColList[index].datatype == RDBI_STRING_ULEN)
+    {
+        FdoByteArray* arr = NULL;
+        mQueryResult->GetBinaryValue (index+1, sizeof(FdoByteArray*), (char*)&arr, &isNULL, NULL);
+        if (!isNULL && arr != NULL && arr->GetCount() != 0)
+        {
+            int cntArr = arr->GetCount();
+            mSprops[i].EnsureSize(2*cntArr + 1);
+            char* startCh = (char*)(mSprops[i].data+cntArr);
+            memcpy(startCh, arr->GetData(), cntArr);
+            *(startCh+cntArr) = L'\0'; // add string ending
+            ut_utf8_to_unicode(startCh, mSprops[i].data, cntArr+1);
+            mSprops[i].valid = 1;
+            return mSprops[i].data;
+        }
+    }
+    else
+        tmpVal = mQueryResult->GetString(index+1, &isNULL, NULL);
+
     if (isNULL || tmpVal == NULL)
     {
         mSprops[i].EnsureSize(1);
@@ -314,10 +346,17 @@ FdoLOBValue* FdoRdbmsSQLDataReader::GetLOB(FdoInt32 index)
 {
     ValidateIndex(index);
 
-    if (mColList[index].size > 0)
+    bool isNull = false;
+    if (mColList[index].datatype == RDBI_BLOB_ULEN)
+    {
+        FdoByteArray* arr = NULL;
+        mQueryResult->GetBinaryValue (index+1, sizeof(FdoByteArray*), (char*)&arr, &isNull, NULL);
+        if (!isNull && arr != NULL && arr->GetCount() != 0)
+            return static_cast<FdoLOBValue*>(FdoDataValue::Create(arr->GetData(), arr->GetCount(), FdoDataType_BLOB));
+    }
+    else if (mColList[index].size > 0)
     {
         FdoByte* vblob = new FdoByte[mColList[index].size];
-        bool	isNull = false;
         try
         {
             mQueryResult->GetBinaryValue (index+1, mColList[index].size, (char*)vblob, &isNull, NULL);
@@ -331,43 +370,8 @@ FdoLOBValue* FdoRdbmsSQLDataReader::GetLOB(FdoInt32 index)
             throw;
         }
     }
-    else
-    {
-        // please fix this
-        return NULL;
-    }
 
-  //  void    *pLOBLocator;
-  //  bool	isNULL = false;
-
-  //  if( ! mHasMoreRows )
-  //      throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
-
-  //  try
-  //  {
-  //      mQueryResult->GetBinaryValue(  columnName, sizeof(void *), (char *)&pLOBLocator, &isNULL, NULL);
-		//if( isNULL )
-  //          throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp,  columnName ));
-  //  }
-  //  catch ( FdoCommandException* exc )
-  //  {
-  //      FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-  //  }
-  //  catch ( FdoException* exc )
-  //  {
-  //      FindColumnIndex( columnName, exc ); /*throws a column not found exception*/
-  //  }
-  //  catch ( ... )
-  //  {
-  //      FindColumnIndex( columnName ); /*throws a column not found exception*/
-  //      throw;
-  //  }
-
-  //  // Assume BLOB
-  //  assert(false);
-  //  throw "FIXME please: FdoRdbmsSQLDataReader::GetLOBStreamReader";
-//    return FdoRdbmsBLOBStreamReader::Create(mFdoConnection, mQid, pLOBLocator );
-    return NULL;
+    throw FdoCommandException::Create(NlsMsgGet1( FDORDBMS_386, strNUllColumnExp, mColList[index].column ));
 }
 
 bool FdoRdbmsSQLDataReader::IsNull(const wchar_t* columnName)
@@ -377,19 +381,35 @@ bool FdoRdbmsSQLDataReader::IsNull(const wchar_t* columnName)
 
 bool FdoRdbmsSQLDataReader::IsNull(FdoInt32 index)
 {
-    int     isNull = 0;
+    bool isNull = true;
     if( ! mHasMoreRows )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_62, noMoreRows));
     ValidateIndex(index);
 
-    if (mColList[index].datatype == RDBI_GEOMETRY)
+    switch(mColList[index].datatype)
     {
-        FdoInt32 len = 0;
-        GetGeometry(index, &len, true);
-        return len == 0;
+    case RDBI_GEOMETRY:
+        {
+            FdoInt32 len = 0;
+            GetGeometry(index, &len, true);
+            isNull = (len == 0);
+        }
+        break;
+    case RDBI_BLOB_ULEN:
+    case RDBI_WSTRING_ULEN:
+    case RDBI_STRING_ULEN:
+        {
+            FdoByteArray* arr = NULL;
+            bool isNullArr = false;
+            mQueryResult->GetBinaryValue (index+1, sizeof(FdoByteArray*), (char*)&arr, &isNullArr, NULL);
+            isNull = (isNullArr || arr == NULL || arr->GetCount() == 0);
+        }
+        break;
+    default:
+        isNull = mQueryResult->GetIsNull(index+1);
+        break;
     }
-    else
-        return mQueryResult->GetIsNull(index+1);
+    return isNull;
 }
 
 FdoByteArray* FdoRdbmsSQLDataReader::GetGeometry(const wchar_t* propertyName)

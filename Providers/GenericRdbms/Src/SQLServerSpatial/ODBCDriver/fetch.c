@@ -241,6 +241,20 @@ int odbcdr_fetch2(
 
     }   /* end if geometries */
 
+    /* Convert blob columns into byte arrays. */
+    if ( c->defined_blobs != NULL && rows_in_last_fetch > 0 )
+    {
+        if ( rows_in_last_fetch > ODBCDR_MAX_ARRAY_SIZE )
+        {
+            goto the_exit;
+        }
+
+        /* Reduce array size to exactly that which is populated. */
+        ODBCDR_RDBI_ERR( odbcdr_blob_setNumRows( context, c, rows_in_last_fetch ) );
+
+        ODBCDR_RDBI_ERR( odbcdr_blob_convertBlobsToByteArray(context, c, rows_in_last_fetch));
+
+    }   /* end if geometries */
 
 the_exit:
 debug_area() odbcdr_show_context( context, c );

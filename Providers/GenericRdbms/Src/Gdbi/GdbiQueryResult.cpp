@@ -169,7 +169,7 @@ void GdbiQueryResult::define_exec()
 					colInfo->type = RDBI_WSTRING;
 					memset( colInfo->value, '\0', size*sizeof(wchar_t) );
 				}
-				else
+				else // RDBI_BLOB_ULEN , RDBI_WSTRING_ULEN , RDBI_STRING_ULEN , RDBI_GEOMETRY
 				{
 					int size = colInfo->size * m_pGdbiCommands->get_array_size();
 					colInfo->value = new char[size];
@@ -203,7 +203,8 @@ GdbiQueryResult::~GdbiQueryResult(void)
 				if (m_QueryId)
 					m_pGdbiCommands->lob_destroy_ref(m_QueryId->GetQueryId(), colInfo->value);
 			}
-			else if( colInfo->value && colInfo->type == RDBI_GEOMETRY )
+			else if( colInfo->value && (colInfo->type == RDBI_GEOMETRY || colInfo->type == RDBI_BLOB_ULEN
+                 || colInfo->type == RDBI_WSTRING_ULEN || colInfo->type == RDBI_STRING_ULEN) )
 			{
 				delete[] (char *) colInfo->value;
 			}

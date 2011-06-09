@@ -889,11 +889,7 @@ FdoByteArray* FdoRdbmsConnection::GetGeometryValue(
 
     query->GetBinaryValue( columnName, sizeof(FdoIGeometry *), (char*)&geom, &isNull, NULL);
 
-    pgeom = TransformGeometry( 
-        geom, 
-        pGeometricProperty, 
-        true 
-    );
+    pgeom = FDO_SAFE_ADDREF(geom);
 
     if ( pgeom && pgeom->GetDerivedType() != FdoGeometryType_None )
         isSupportedType = true;
@@ -924,11 +920,6 @@ FdoByteArray* FdoRdbmsConnection::GetGeometryValue(
     }
 
     return byteArray;
-}
-
-FdoIGeometry* FdoRdbmsConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
-{
-    return FDO_SAFE_ADDREF(geom);
 }
 
 void* FdoRdbmsConnection::BindSpatialGeometry( 

@@ -618,7 +618,7 @@ geom_convert_S(
             sqlserverGeom = (odbcdr_geom_def **)ut_da_get( &column->geom_list, 0L );
             sqlserverGeomNI = (odbcdr_geomNI_def **)ut_da_get( &column->geomNI_list, 0L );
             visionGeom = column->address;
-			l_visionGeom = column->l_address;
+            l_visionGeom = column->l_address;
 
             if ( sqlserverGeom == NULL || sqlserverGeomNI == NULL || visionGeom == NULL ) goto the_exit;
 

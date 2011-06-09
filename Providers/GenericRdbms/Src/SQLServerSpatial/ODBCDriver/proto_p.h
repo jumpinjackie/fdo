@@ -160,6 +160,12 @@ int odbcdr_geom_defineColumn( odbcdr_context_def *context, odbcdr_cursor_def *cu
 
 int odbcdr_geom_setNumRows( odbcdr_context_def *context, odbcdr_cursor_def *cursor, int num_rows );
 
+int odbcdr_blob_defineColumn( odbcdr_context_def *context, odbcdr_cursor_def *cursor, int position, char *address );
+
+int odbcdr_blob_setNumRows( odbcdr_context_def *context, odbcdr_cursor_def *cursor, int num_rows );
+
+int odbcdr_blob_convertBlobsToByteArray( odbcdr_context_def *context, odbcdr_cursor_def *cursor, int num_rows );
+
 int odbcdr_geom_getSqlServerBuffAddr( odbcdr_context_def *context, odbcdr_geom_col_list_def *columnList_I, int position_I, odbcdr_geom_def ***buffer_O, odbcdr_geomNI_def ***ni_O );
 
 int odbcdr_geom_convertBoundToSqlServer(odbcdr_context_def *context,  odbcdr_cursor_def *cursor, int num_rows );
@@ -169,6 +175,8 @@ int odbcdr_geom_convertDefinedFromSqlServer( odbcdr_context_def *context, odbcdr
 int odbcdr_geom_freeSqlServerGeometries( odbcdr_context_def *context, odbcdr_cursor_def *cursor );
 
 int odbcdr_geom_freeAllColumns( odbcdr_context_def *context, odbcdr_cursor_def *cursor );
+
+int odbcdr_blob_freeAllColumns( odbcdr_context_def *context, odbcdr_cursor_def *cursor );
 
 int odbcdr_geom_srid_set ( odbcdr_context_def *context, char *cursor, char* col_name, long srid );
 

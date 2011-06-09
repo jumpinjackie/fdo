@@ -135,6 +135,15 @@ FdoDataType  FdoRdbmsUtil::DbiToFdoType( int type /* Inc/rdbi.h */ )
         case RDBI_LONGLONG:
             fdotype = FdoDataType_Int64;
             break;
+        case RDBI_BLOB_ULEN:
+            fdotype = FdoDataType_BLOB;
+            break;
+        case RDBI_WSTRING_ULEN:
+            fdotype = FdoDataType_String;
+            break;
+        case RDBI_STRING_ULEN:
+            fdotype = FdoDataType_String;
+            break;
       //  case RDBI_GEOMETRY:
       //      fdotype = "RDBI_GEOMETRY";
       //      break;

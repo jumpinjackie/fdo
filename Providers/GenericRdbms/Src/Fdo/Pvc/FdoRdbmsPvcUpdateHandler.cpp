@@ -693,11 +693,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             FdoIGeometry        *geom = NULL;
                             if ( ba )
                             {
-                                geom = mFdoConnection->TransformGeometry( 
-                                    FdoPtr<FdoIGeometry>(gf->CreateGeometryFromFgf(ba)), 
-                                    geomPropDef, 
-                                    false 
-                                );
+                                geom = gf->CreateGeometryFromFgf(ba);
 
                                 // Validate the input geometry
                                 mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, geom );
