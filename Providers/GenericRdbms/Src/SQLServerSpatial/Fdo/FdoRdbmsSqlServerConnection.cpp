@@ -599,8 +599,6 @@ FdoRdbmsFeatureReader *FdoRdbmsSqlServerConnection::GetOptimizedAggregateReader(
 
 FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPropertyDefinition* prop )
 { 
-    bool isGeom = false;
-    FdoInt64 srid = 0;
     FdoStringP bindStr(L"?", true);
     return bindStr; 
 }
@@ -608,43 +606,6 @@ FdoStringP FdoRdbmsSqlServerConnection::GetBindString( int n, const FdoSmLpPrope
 bool  FdoRdbmsSqlServerConnection::BindGeometriesLast() 
 { 
     return true; 
-}
-
-FdoIGeometry* FdoRdbmsSqlServerConnection::TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo )
-{
-    // this is done by the geometry convertor
-    return FDO_SAFE_ADDREF(geom);
-    //FdoStringP geomType;
-    //bool       geogLatLong = false;
-
-    //if ( !IsGeogLatLong() )
-    //    // No special transformation for geometry columns
-    //    return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
-
-    ////TODO: check performance impact of looking up geomType for each geometry value and
-    ////optimize if necessary.
-    //FdoSmPhColumnP column = ((FdoSmLpGeometricPropertyDefinition*) prop)->GetColumn();
-    //
-    //if ( column ) 
-    //{
-    //    FdoSmPhColumnGeomP geomColumn = column->SmartCast<FdoSmPhColumnGeom>();
-
-    //    if ( geomColumn ) 
-    //    {
-    //        geomType = geomColumn->GetTypeName();
-    //    }
-    //}
-
-    //if ( geomType != L"geography" )
-    //    // No special transformation for geometry columns
-    //    return FdoRdbmsConnection::TransformGeometry( geom, prop, toFdo );
-
-
-    //if ( !mGeographyConverter )
-    //    mGeographyConverter = new FdoRdbmsSqlServerSpatialGeographyConverter();
-
-    //// For geography columns, flip the X and Y.
-    //return mGeographyConverter->ConvertOrdinates( geom );
 }
 
 bool FdoRdbmsSqlServerConnection::IsGeogLatLong()

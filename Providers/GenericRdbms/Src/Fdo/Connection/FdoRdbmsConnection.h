@@ -247,18 +247,6 @@ public:
         bool& unsupportedTypeExp
     );
 
-    // Perform any required geometry transformations when sending or retrieving geometries to or from the RDBMS.
-    // The default implementation does not modify the geometry.
-    //
-    // geom - the geometry to transform
-    // prop - corresponding geometric property
-    // toFDO -
-    //      true: transforming from RDBMS to FDO format
-    //      false: transforming from FDO to RDBMS format
-    //
-    // Returns the transformed geometry.
-    virtual FdoIGeometry* TransformGeometry( FdoIGeometry* geom, const FdoSmLpGeometricPropertyDefinition* prop, bool toFdo );
-
     // Binds a geometry value to a variable in a query's where clause. 
     // Allows spatial conditions to be specified by bind variables.
     //

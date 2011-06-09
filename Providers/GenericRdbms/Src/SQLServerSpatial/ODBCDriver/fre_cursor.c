@@ -124,11 +124,21 @@ int odbcdr_fre_cursor(
         ut_vm_free( _db_function, c->odbcdr_blob_tmp );
 
     // Free the working buffer
+    if ( c->odbcdr_blob != NULL )
+        ut_vm_free( _db_function, c->odbcdr_blob );
+
+    if ( c->odbcdr_blobNI != NULL )
+        ut_vm_free( _db_function, c->odbcdr_blobNI );
+
+    // Free the working buffer
     if ( c->odbcdr_geom_handle != NULL )
         IGeometry_ReleaseGeometryHandleConvertor( c->odbcdr_geom_handle );
 
 	// Free the geometry buffers
     ODBCDR_RDBI_ERR( odbcdr_geom_freeAllColumns( context, c ) );   
+
+	// Free the blob buffers
+    ODBCDR_RDBI_ERR( odbcdr_blob_freeAllColumns( context, c ) );   
 
     ptr = c->geom_srid_maping;
     while(ptr != NULL)

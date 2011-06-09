@@ -126,7 +126,9 @@ int odbcdr_define(
     // Spetial handling for Geometries
     if ( datatype != RDBI_GEOMETRY )
 	{
-		ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
+        if ( datatype != RDBI_BLOB_ULEN && datatype != RDBI_WSTRING_ULEN && datatype != RDBI_STRING_ULEN)
+        {
+            ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
 									(SQLUSMALLINT) position,
 									(SQLSMALLINT) odbcdr_datatype,
 									(SQLPOINTER) address,
@@ -134,6 +136,43 @@ int odbcdr_define(
 									(SQLLEN *) null_ind),
 							SQL_HANDLE_STMT, c->hStmt,
 							"SQLBindCol", "define" );
+        }
+        else // RDBI_BLOB_ULEN , RDBI_WSTRING_ULEN , RDBI_STRING_ULEN
+        {
+            ODBCDR_RDBI_ERR( odbcdr_blob_defineColumn(context, c, position, address));
+
+            ODBCDR_RDBI_ERR( odbcdr_blob_setNumRows(context, c, ODBCDR_MAX_ARRAY_SIZE));
+
+            // Allocate the buffers for blobs and Null indicators
+            int numBlobCols = c->defined_blobs->size;
+            if ( numBlobCols == 1 )
+            {
+                c->odbcdr_blob = (PBYTE)malloc( ODBCDR_MAX_ARRAY_SIZE * ODBCDR_UBLOB_CHUNK_SIZE );
+                c->odbcdr_blobNI = (SQLLEN *)malloc( ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLLEN));
+            }
+            else
+            {  
+                c->odbcdr_blob = (PBYTE)realloc( c->odbcdr_blob, numBlobCols * ODBCDR_MAX_ARRAY_SIZE * ODBCDR_UBLOB_CHUNK_SIZE );
+                c->odbcdr_blobNI = (SQLLEN *)realloc( c->odbcdr_blobNI, numBlobCols * ODBCDR_MAX_ARRAY_SIZE * sizeof(SQLLEN));
+            }
+
+            // Do binds (the previous bound columns will be rebound because of reallocation)
+            for ( int i = 0; i < numBlobCols; i++ )
+            {
+                odbcdr_blob_col_def *column = (odbcdr_blob_col_def *) ut_da_get( c->defined_blobs, i );
+
+                int offset = i * ODBCDR_MAX_ARRAY_SIZE;
+
+	            ODBCDR_ODBC_ERR( SQLBindCol( c->hStmt,
+								            (SQLUSMALLINT) column->position,
+								            (SQLSMALLINT)  odbcdr_datatype,
+                                            (SQLPOINTER)   (char *)&c->odbcdr_blob[offset * ODBCDR_UBLOB_CHUNK_SIZE],
+                                            (SQLINTEGER)   ODBCDR_UBLOB_CHUNK_SIZE,
+								            (SQLLEN *)     (char *)&c->odbcdr_blobNI[offset]),
+						            SQL_HANDLE_STMT, c->hStmt,
+						            "SQLBindCol", "define" );
+            }
+        }
 	}
 	else
 	{

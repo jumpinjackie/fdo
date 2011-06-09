@@ -55,6 +55,7 @@
  * using SQLPutData() and teoretically this will be redundant.
  */
 #define ODBCDR_BLOB_CHUNK_SIZE       (1024 * 10) // total: 10KB * ODBCDR_MAX_ARRAY_SIZE 
+#define ODBCDR_UBLOB_CHUNK_SIZE      (1024 * 5)  // 5KB
 
 /* Max buffer length */
 #define ODBCDR_MAX_BUFF_SIZE	RDBI_MSG_SIZE	

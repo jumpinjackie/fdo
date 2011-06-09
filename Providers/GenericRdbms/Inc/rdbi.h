@@ -91,6 +91,9 @@
 #define RDBI_WSTRING    77714   /* null-terminated wide string          */
 #define RDBI_LONGLONG   77715
 #define RDBI_BOOLEAN    77716   /* Value storage handled like RDBI_CHAR; must be '1' or '0' */
+#define RDBI_BLOB_ULEN  77720   /* Blob with unknown size */
+#define RDBI_WSTRING_ULEN 77721   /* String with unknown size */
+#define RDBI_STRING_ULEN  77722   /* String with unknown size */
 
 
 /* rdbi rdbms data types */
