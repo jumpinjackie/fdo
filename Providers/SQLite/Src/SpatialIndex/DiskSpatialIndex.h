@@ -16,6 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 #pragma once
+#ifndef SLSPATIAL_INDEX_H
+#define SLSPATIAL_INDEX_H
+
 #include "SltGeomUtils.h"
 #include "vectormf.h"
 
@@ -132,3 +135,5 @@ private:
     char _barr[sizeof(Bounds)*2]; 
     Bounds* _b;
 };
+
+#endif
