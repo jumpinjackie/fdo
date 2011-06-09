@@ -16,6 +16,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
+#ifndef SLSPATIAL_INDEX_H
+#define SLSPATIAL_INDEX_H
+
 #include "SltGeomUtils.h"
 
 //Each tree node will contain 2^BATCH_SHIFT bounding boxes
@@ -123,3 +126,4 @@ private:
     Bounds* _b;
 };
 
+#endif
