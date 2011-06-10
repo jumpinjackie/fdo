@@ -438,10 +438,10 @@ void BindPropValue(sqlite3_stmt* stmt, int i, FdoLiteralValue* lv, int geomForma
                     FdoString* s = v->GetString();
                     size_t wlen = wcslen(s);
                     size_t clen = wlen*4+1;
-                    char* mbs = (char*)malloc(clen);
+                    char* mbs = (char*)_malloca(clen);
                     W2A_FAST(mbs, clen, s, wlen);
                     rc = sqlite3_bind_text(stmt, i, mbs, -1, SQLITE_TRANSIENT);
-                    free(mbs);
+                    _freea(mbs);
                 }
                 break;
         }
