@@ -19,12 +19,14 @@
 #include "stdafx.h"
 #include "rtree.h"
 
+#include <assert.h>
+
 #if _WIN32
 //for file-backed node storage option
 #include "MappedFile.h"
 #endif
 
-namespace bvh {
+namespace fdo {
 
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -387,14 +389,6 @@ typedef MappedFile<fill, 16384> node_mf_t;
         _root_level = 0;
     }
 
-    rtree::rtree(const wchar_t*)
-    {
-        _offset[0] = _offset[1] = 0;
-        _nodes = new node_mgr;
-        _root = _nodes->new_node();
-        _root_level = 0;
-    }
-
     rtree::~rtree()
     {
         delete _nodes;
@@ -441,7 +435,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
 
     void rtree::insert(const box& b, int level, id_t id)
     {
-        stk_entry node_stack[MAX_DEPTH];
+        stk_entry* node_stack = (stk_entry*)alloca(sizeof(stk_entry) * (_root_level + 2));
         stk_entry* top = node_stack;
         node_mgr* nodes = _nodes;
         id_t curnode = _root;
@@ -469,7 +463,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
 
             curnode = n->children[i];
         }
-
+        assert(curlevel<_root_level+2);
 
         //At this point, curnode/n contains the node where we want to
         //insert the new item and the stack contains the path we took
@@ -549,6 +543,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
 
             //update the root pointer
             _root = newroot;
+            _root_level++;
         }
     }
    
@@ -1027,13 +1022,39 @@ typedef MappedFile<fill, 16384> node_mf_t;
     {
         id_t id;
         box b;
-        id_t reinsert_list[MAX_DEPTH];
-        int reinsert_level[MAX_DEPTH];
-        int reinsert_count;
+        id_t* reinsert_list;
+        int* reinsert_level;
+        size_t sz;
+        int count;
 
         erase_data()
         {
-            memset(this, 0, sizeof(erase_data));
+            sz = MAX_DEPTH;
+            reinsert_list = (id_t*)malloc(sizeof(id_t) * sz);
+            reinsert_level = (int*)malloc(sizeof(int) * sz);
+
+            count = 0;
+            id = 0;
+        }
+
+        ~erase_data()
+        {
+            free(reinsert_list);
+            free(reinsert_level);
+        }
+
+        void add(id_t fid, int level)
+        {
+            if (count == sz)
+            {
+                sz *= 2;
+                reinsert_list = (id_t*)realloc(reinsert_list, sz * sizeof(id_t));
+                reinsert_level = (int*)realloc(reinsert_level, sz * sizeof(int));
+            }
+
+            reinsert_list[count] = fid;
+            reinsert_level[count] = level;
+            count++;
         }
     };
 
@@ -1053,7 +1074,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
         //We are done recursing. Now, we have to add back
         //the contents of nodes which got too light on content
         //during the recursive delete.
-        for (int i=0; i<data.reinsert_count; i++)
+        for (int i=0; i<data.count; i++)
         {
             node* n = nodes->get_node(data.reinsert_list[i]);
 
@@ -1082,6 +1103,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
             id_t newroot = nr->children[0];
             nodes->free_node(_root);
             _root = newroot;
+            _root_level--;
         }
 
         return true;
@@ -1143,9 +1165,7 @@ typedef MappedFile<fill, 16384> node_mf_t;
                         {
                             //child is now less than half full --
                             //remove it and mark it for reinsertion
-                            pdata->reinsert_list[pdata->reinsert_count] = n->children[i];
-                            pdata->reinsert_level[pdata->reinsert_count] = level+1;
-                            pdata->reinsert_count++;
+                            pdata->add(n->children[i], level+1);
                             disconnect_branch(n, i);
                         }
 
@@ -1249,29 +1269,41 @@ typedef MappedFile<fill, 16384> node_mf_t;
 
     rtree_iterator::rtree_iterator(const rtree* rt, const dbox& db)
     {
-        _rt = rt;
+        //If the tree is too deep to fit the stack in our preallocated
+        //buffer, allocate a buffer on the heap
+        if (rt->_root_level >= MAX_DEPTH)
+        {
+            _stack = (rt_iter_stack*)malloc(sizeof(rt_iter_stack) * MAX_BRANCH * (rt->_root_level + 1));
+        }
+        else
+        {
+            _stack = _stack_mem;
+        }
+
+        _nodes = rt->_nodes;
 
         box b;
         rt->offset_box(b, db);
         _bwide.make_wide_box(b);
 
-        reset();
-    }
-
-    void rtree_iterator::reset()
-    {
         //push the root node onto the stack
         //to start with
         rt_iter_stack* top = _stack;
-        top->inode = _rt->_root;
+        top->inode = rt->_root;
         top->contained = false;
         _top = top+1;
+    }
+
+    rtree_iterator::~rtree_iterator()
+    {
+        if (_stack != _stack_mem)
+            free(_stack);
     }
    
     fid_t rtree_iterator::next()
     {
         //cache some member pointers into registers
-        const node_mgr* nodes = _rt->_nodes;
+        const node_mgr* nodes = _nodes;
         rt_iter_stack* top = _top;
         rt_iter_stack* stack = _stack;
  

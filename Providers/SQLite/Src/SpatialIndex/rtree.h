@@ -40,8 +40,11 @@
   }
 #endif
 
-//The type to use for feature IDs. Must be a signed type!
-typedef __int64 fid_t;
+namespace fdo
+{
+
+//The type to use for feature IDs. Must be a signed type, int or __int64!
+typedef int fid_t;
 
 //The type to use for node IDs. Generally should match fid_t.
 typedef fid_t id_t;
@@ -51,7 +54,7 @@ typedef fid_t id_t;
     #ifdef _M_X64
         #define RTREE_OUTOFCORE 0
     #else
-        #define RTREE_OUTOFCORE 1
+        #define RTREE_OUTOFCORE 0
     #endif
 #else
     #define RTREE_OUTOFCORE 0
@@ -68,21 +71,19 @@ static const size_t OUT_OF_CORE_THRESHOLD = 16*1024*1024; //bytes
 //Should be enough for a tree depth to hold the maximum expected number of items
 //at the specified branching factor. So max_depth = log_base_branch_factor (num_items)
 #if MAX_BRANCH == 4
-#define MAX_DEPTH 16
+#define MAX_DEPTH 32
 #elif MAX_BRANCH == 8
-#define MAX_DEPTH  11
+#define MAX_DEPTH  16
 #elif MAX_BRANCH == 16
-#define MAX_DEPTH  8
+#define MAX_DEPTH  12
 #elif MAX_BRANCH == 32
-#define MAX_DEPTH  7
+#define MAX_DEPTH  8
 #else
 #error "MAX_BRANCH is not what I expect -- please define MAX_DEPTH here, or fix MAX_BRANCH"
 #endif
 
 #define CACHE_LINE 64
 
-namespace bvh
-{
 
 /*
 static int flt_plus_inf = 0x7f800000; //+Infinity
@@ -382,12 +383,12 @@ ALGNW struct node4
 
     inline bool is_leaf() const
     {
-        return bvh::is_leaf(children[0]);
+        return fdo::is_leaf(children[0]);
     }
 
     inline void set_branch(int i, id_t id, const box& b)
     {
-        child_bounds.set((unsigned char)i, b);
+        child_bounds.set(i, b);
         children[i] = id;
     }
 
@@ -410,17 +411,17 @@ ALGNW struct node4
 
     inline void child_bbox(int i, box& b) const
     {
-        child_bounds.extract((unsigned char)i, b);
+        child_bounds.extract(i, b);
     }
 
     inline void set_child_bbox(int i, const box& b) 
     {
-        child_bounds.set((unsigned char)i, b);
+        child_bounds.set(i, b);
     }
 
     inline void add_bbox(int i, const box& b)
     {
-        child_bounds.add((unsigned char)i, b);
+        child_bounds.add(i, b);
     }
 
     inline void set_all_boxes(const box4_soa& val)
@@ -447,7 +448,7 @@ ALGNW struct node_generic_mul4
 
     inline bool is_leaf() const
     {
-        return bvh::is_leaf(children[0]);
+        return fdo::is_leaf(children[0]);
     }
 
     inline void set_branch(int i, id_t id, const box& b)
@@ -577,7 +578,6 @@ class rtree
 public:
 
     rtree();
-    rtree(const wchar_t*);
     ~rtree();
 
     void insert(const fid_t& fid, const dbox& b);
@@ -626,15 +626,16 @@ ALGNW class rtree_iterator
 public:
 
     rtree_iterator(const rtree* rt, const dbox& db);
+    ~rtree_iterator();
    
     fid_t next();
-    void reset();
 
 private:
     box4_soa _bwide;
-    rt_iter_stack _stack[MAX_DEPTH*MAX_BRANCH];
+    rt_iter_stack _stack_mem[MAX_DEPTH*MAX_BRANCH];
+    rt_iter_stack *_stack;
     rt_iter_stack *_top;
-    const rtree* _rt;
+    const node_mgr* _nodes;
 } ALGNL;
 
 
