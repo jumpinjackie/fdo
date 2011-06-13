@@ -312,10 +312,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\rtree-sort.h"
-			>
-		</File>
-		<File
 			RelativePath=".\rtree.cpp"
 			>
 		</File>
