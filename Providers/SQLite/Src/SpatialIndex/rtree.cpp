@@ -615,7 +615,6 @@ typedef MappedFile<fill, 16384> node_mf_t;
     }
 
 
-    //Slightly slower, more comprehensible version of the function above.
     int node_generic_mul4::pick_child(const box4_soa& bnew) const
     {
         vec area_before[MAX_BRANCH/4];
