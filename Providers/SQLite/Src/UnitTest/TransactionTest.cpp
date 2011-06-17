@@ -277,6 +277,168 @@ void TransactionTest::TestRollback()
  	}
 }
 
+void TransactionTest::TestAddSavePoint()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+        FdoStringP savePointName1;
+        FdoStringP savePointName2;
+
+        //Test to make sure that all save points added have unique names
+        FdoPtr<FdoITransaction> transaction = conn->BeginTransaction();
+        savePointName1 = transaction->AddSavePoint(L"Test");
+        savePointName2 = transaction->AddSavePoint(L"Test");
+
+        CPPUNIT_ASSERT(savePointName1 != savePointName2);
+        transaction->Commit();
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+        CPPUNIT_FAIL("TestAddSavePoint failed");
+    }
+}
+
+void TransactionTest::TestRollBackSavePoint()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
+        conn->Close();
+        conn->Open();
+
+        FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        insCmd->SetFeatureClassName(L"ParcelChild");
+        FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+        FdoPtr<FdoPropertyValue> propIns;
+        
+        FdoPtr<FdoStringValue> valPropName = FdoStringValue::Create(L"name1");
+        propIns = FdoPropertyValue::Create(L"Name", valPropName);
+        vals->Add(propIns);
+        
+        FdoPtr<FdoStringValue> valPropKey = FdoStringValue::Create(L"key1");
+        propIns = FdoPropertyValue::Create(L"Key", valPropKey);
+        vals->Add(propIns);
+        
+        FdoPtr<FdoDoubleValue> valPropNumb = FdoDoubleValue::Create(22);
+        propIns = FdoPropertyValue::Create(L"Numb", valPropNumb);
+        vals->Add(propIns);
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        CPPUNIT_ASSERT(rdr->ReadNext());
+        rdr->Close();
+
+        FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
+        FdoStringP savePoint1 = trans->AddSavePoint(L"Test1");
+        FdoPtr<FdoStringValue> value1 = FdoStringValue::Create(L"transaction_name");
+        InsertOneValue(conn, L"Name", value1);
+        FdoStringP savePoint2 = trans->AddSavePoint(L"Test2");
+        FdoPtr<FdoStringValue> value2 = FdoStringValue::Create(L"transaction_key");
+        InsertOneValue(conn, L"Key", value2);
+        FdoStringP savePoint3 = trans->AddSavePoint(L"Test3");
+        trans->Rollback(savePoint2);
+        bool expectedException =  false;
+        try
+        {
+            trans->Rollback(savePoint3);
+        }
+        catch(FdoException *exp)
+        {
+            UnitTestUtil::PrintException( exp, stdout, true);
+            FDO_SAFE_RELEASE(exp);
+            expectedException = true;
+        }
+        trans->Commit();
+        
+        CPPUNIT_ASSERT(CheckForValue(conn, L"Name='transaction_name'"));
+        CPPUNIT_ASSERT(!CheckForValue(conn, L"Key='transaction_key'"));
+        CPPUNIT_ASSERT(expectedException);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+        CPPUNIT_FAIL("TestSavePointRollback failed");
+    }
+}
+
+void TransactionTest::TestReleaseSavePoint()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
+        conn->Close();
+        conn->Open();
+
+        FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
+        insCmd->SetFeatureClassName(L"ParcelChild");
+        FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+        FdoPtr<FdoPropertyValue> propIns;
+        
+        FdoPtr<FdoStringValue> valPropName = FdoStringValue::Create(L"name1");
+        propIns = FdoPropertyValue::Create(L"Name", valPropName);
+        vals->Add(propIns);
+        
+        FdoPtr<FdoStringValue> valPropKey = FdoStringValue::Create(L"key1");
+        propIns = FdoPropertyValue::Create(L"Key", valPropKey);
+        vals->Add(propIns);
+        
+        FdoPtr<FdoDoubleValue> valPropNumb = FdoDoubleValue::Create(22);
+        propIns = FdoPropertyValue::Create(L"Numb", valPropNumb);
+        vals->Add(propIns);
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        CPPUNIT_ASSERT(rdr->ReadNext());
+        rdr->Close();
+
+        FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
+        FdoStringP savePoint1 = trans->AddSavePoint(L"Test1");
+        FdoPtr<FdoStringValue> value1 = FdoStringValue::Create(L"transaction_name");
+        InsertOneValue(conn, L"Name", value1);
+        FdoStringP savePoint2 = trans->AddSavePoint(L"Test2");
+        FdoPtr<FdoStringValue> value2 = FdoStringValue::Create(L"transaction_key");
+        InsertOneValue(conn, L"Key", value2);
+        trans->ReleaseSavePoint(savePoint2);
+        bool expectedException =  false;
+        try
+        {
+            trans->Rollback(savePoint2);
+        }
+        catch(FdoException *exp)
+        {
+            UnitTestUtil::PrintException( exp, stdout, true);
+            FDO_SAFE_RELEASE(exp);
+            expectedException = true;
+        }
+        trans->Commit();
+        
+        CPPUNIT_ASSERT(CheckForValue(conn, L"Name='transaction_name'"));
+        CPPUNIT_ASSERT(CheckForValue(conn, L"Key='transaction_key'"));
+        CPPUNIT_ASSERT(expectedException);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
+        FDO_SAFE_RELEASE(exp);
+        CPPUNIT_FAIL("TestReleaseSavePoint failed");
+    }
+}
+
 void TransactionTest::TestCommitOnApplySchemaNoUsrTr()
 {
     FdoPtr<FdoIConnection> conn;

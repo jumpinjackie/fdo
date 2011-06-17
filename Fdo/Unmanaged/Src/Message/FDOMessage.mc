@@ -3120,3 +3120,8 @@ SymbolicName=FDO_186_SAVEPOINT_NOT_SUPPORTED
 Language=English
 Save points are not supported.
 .
+MessageId=9194
+SymbolicName=FDO_187_SAVEPOINT_NOT_EXIST
+Language=English
+Save point '%1$ls' does not exist.
+.

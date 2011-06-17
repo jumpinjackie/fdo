@@ -283,6 +283,7 @@
     <ClCompile Include="SltReader.cpp" />
     <ClCompile Include="SltBLOBStreamReader.cpp" />
     <ClCompile Include="SltSpatialContextReader.cpp" />
+    <ClCompile Include="SltTransaction.cpp" />
     <ClCompile Include="SpatialIndexDescriptor.cpp" />
     <ClCompile Include="SQLiteSchemaMergeContext.cpp" />
   </ItemGroup>
