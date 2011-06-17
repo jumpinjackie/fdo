@@ -505,6 +505,10 @@
 			>
 		</File>
 		<File
+			RelativePath=".\SltTransaction.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\SltTransaction.h"
 			>
 		</File>
