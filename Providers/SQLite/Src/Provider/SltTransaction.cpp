@@ -22,12 +22,15 @@
 
 FdoString* SltTransaction::AddSavePoint(FdoString* suggestName)
 {
-    if(suggestName == NULL || wcslen(suggestName) == 0)
+    if(suggestName == NULL || *suggestName == 0)
     {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+        throw FdoException::Create(L"Savepoint name is null.");
     }
 
-    FdoStringP realName = suggestName;
+    size_t len = wcslen(suggestName + 16);
+    wchar_t* realName = (wchar_t*)alloca(sizeof(wchar_t)*len);
+    wcscpy(realName, suggestName);
+
     int postfixCount = 0;
     while(true)
     {
@@ -36,12 +39,12 @@ FdoString* SltTransaction::AddSavePoint(FdoString* suggestName)
         {
             break;
         }
-        realName = FdoStringP::Format(L"%ls%d", (FdoString*)realName, postfixCount);
+        swprintf(realName, len, L"%ls%d", suggestName, postfixCount);
     }
 
-    FdoStringP sql = FdoStringP::Format(L"SAVEPOINT %ls", (FdoString*)realName);
+    std::wstring sql = std::wstring(L"SAVEPOINT ") + realName;
     FdoPtr<FdoISQLCommand> savepointSQL = (FdoISQLCommand*) m_conn->CreateCommand(FdoCommandType_SQLCommand);
-    savepointSQL->SetSQLStatement(sql);
+    savepointSQL->SetSQLStatement(sql.c_str());
     savepointSQL->ExecuteNonQuery();
 
     m_savepoints->Add(realName);
@@ -50,21 +53,21 @@ FdoString* SltTransaction::AddSavePoint(FdoString* suggestName)
 
 void SltTransaction::ReleaseSavePoint(FdoString* savePointName)
 {
-    if(savePointName == NULL || wcslen(savePointName) == 0)
+    if(savePointName == NULL || *savePointName == 0)
     {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+        throw FdoException::Create(L"Savepoint name is null.");
     }
 
     FdoInt32 index = m_savepoints->IndexOf(savePointName);
     if(index == -1)
     {	
-        FdoStringP errorMessage = FdoException::NLSGetMessage(FDO_NLSID(FDO_187_SAVEPOINT_NOT_EXIST), savePointName);
-        throw  FdoException::Create(errorMessage);
+        std::wstring msg = std::wstring(L"Savepoint does not exist: ") + savePointName;
+        throw  FdoException::Create(msg.c_str());
     }
 
-    FdoStringP sql = FdoStringP::Format(L"RELEASE %ls", savePointName);
+    std::wstring sql = std::wstring(L"RELEASE ") + savePointName;
     FdoPtr<FdoISQLCommand> savepointSQL = (FdoISQLCommand*) m_conn->CreateCommand(FdoCommandType_SQLCommand);
-    savepointSQL->SetSQLStatement(sql);
+    savepointSQL->SetSQLStatement(sql.c_str());
     savepointSQL->ExecuteNonQuery();
 
     //Remove all save points defined after it.
@@ -76,21 +79,21 @@ void SltTransaction::ReleaseSavePoint(FdoString* savePointName)
 
 void SltTransaction::Rollback(FdoString* savePointName)
 {
-    if(savePointName == NULL || wcslen(savePointName) == 0)
+    if(savePointName == NULL || *savePointName == 0)
     {
-        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+        throw FdoException::Create(L"Savepoint name is null.");
     }
 
     FdoInt32 index = m_savepoints->IndexOf(savePointName);
     if(index == -1)
     {	
-        FdoStringP errorMessage = FdoException::NLSGetMessage(FDO_NLSID(FDO_187_SAVEPOINT_NOT_EXIST), savePointName);
-        throw  FdoException::Create(errorMessage);
+        std::wstring msg = std::wstring(L"Savepoint does not exist: ") + savePointName;
+        throw FdoException::Create(msg.c_str());
     }
     
-    FdoStringP sql = FdoStringP::Format(L"ROLLBACK TO %ls", savePointName);
+    std::wstring sql = std::wstring(L"ROLLBACK TO ") + savePointName;
     FdoPtr<FdoISQLCommand> savepointSQL = (FdoISQLCommand*) m_conn->CreateCommand(FdoCommandType_SQLCommand);
-    savepointSQL->SetSQLStatement(sql);
+    savepointSQL->SetSQLStatement(sql.c_str());
     savepointSQL->ExecuteNonQuery();
 
     //Remove all save points defined after it.
