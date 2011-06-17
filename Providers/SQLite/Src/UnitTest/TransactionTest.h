@@ -31,6 +31,9 @@ class TransactionTest : public CppUnit::TestCase
   CPPUNIT_TEST( TestStartTransaction );
   CPPUNIT_TEST( TestCommit );
   CPPUNIT_TEST( TestRollback );
+  CPPUNIT_TEST( TestAddSavePoint );
+  CPPUNIT_TEST( TestRollBackSavePoint );
+  CPPUNIT_TEST( TestReleaseSavePoint );
   CPPUNIT_TEST( TestCommitOnApplySchemaNoUsrTr );
   CPPUNIT_TEST( TestCommitOnApplySchemaUsrTr );
   CPPUNIT_TEST_SUITE_END();
@@ -43,6 +46,9 @@ public:
     void TestStartTransaction();
     void TestCommit();
     void TestRollback();
+    void TestAddSavePoint();
+    void TestRollBackSavePoint();
+    void TestReleaseSavePoint();
     void TestCommitOnApplySchemaNoUsrTr();
     void TestCommitOnApplySchemaUsrTr();
 
