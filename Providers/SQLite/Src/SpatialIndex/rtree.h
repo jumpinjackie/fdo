@@ -18,6 +18,8 @@
 
 #define USE_SSE 1
 
+#include "float.h"
+
 #ifdef _MSC_VER
   #define ALGNW __declspec(align(16))
   #define ALGNL
@@ -36,9 +38,11 @@
     #endif
   #endif
 
-  #define _aligned_free free
+  #ifndef _aligned_free
+    #define _aligned_free free
+  #endif
 
-  void* _aligned_malloc(size_t size, size_t alignment)
+  static void* _aligned_malloc(size_t size, size_t alignment)
   {
     void* ret = 0;
     int res = posix_memalign(&ret, alignment, size);
@@ -685,6 +689,37 @@ struct dbox
         };
         double v[4];
     };
+
+    dbox()
+    {
+        minx = miny = DBL_MAX;
+        maxx = maxy = -DBL_MAX;
+    }
+
+    dbox(double minx_, double miny_, double maxx_, double maxy_)
+    {
+        minx = minx_;
+        miny = miny_;
+        maxx = maxx_;
+        maxy = maxy_;
+    }
+
+    bool is_valid() const
+    {
+        return maxx >= minx && maxy >= miny;
+    }
+
+    void add(const dbox& other)
+    {
+        if (minx > other.minx)
+            minx = other.minx;
+        if (miny > other.miny)
+            miny = other.miny;
+        if (maxx < other.maxx)
+            maxx = other.maxx;
+        if (maxy < other.maxy)
+            maxy = other.maxy;
+    }
 };
 
 
