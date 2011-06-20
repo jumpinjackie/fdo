@@ -80,6 +80,8 @@ extern "C"
   #define _snprintf snprintf
   #define _wcsicmp wcscasecmp
   #define _access(x,y) access(x,y)
+  #define _malloca alloca
+  #define _freea(x)
   typedef long long int __int64;
 #endif
 
