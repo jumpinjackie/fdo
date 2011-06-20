@@ -47,8 +47,7 @@ FdoString* SltTransaction::AddSavePoint(FdoString* suggestName)
     savepointSQL->SetSQLStatement(sql.c_str());
     savepointSQL->ExecuteNonQuery();
 
-    m_savepoints->Add(realName);
-    return  (FdoString*)realName;
+    return m_savepoints->GetString(m_savepoints->Add(realName));
 }
 
 void SltTransaction::ReleaseSavePoint(FdoString* savePointName)
