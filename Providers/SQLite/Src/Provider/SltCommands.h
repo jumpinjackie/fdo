@@ -1109,7 +1109,6 @@ public:
     {
         StringBuffer sb;
         int rc;
-        char* zerr = NULL;
         int idToUpdate = -1;
         if (m_connection->IsReadOnlyConnection())
             FdoCommandException::Create(L"Connection is read-only and do not support write operations.");
@@ -1125,28 +1124,9 @@ public:
         if (idToUpdate == -1)
         {
             if (!tolsupp || m_XYTolerance <= 0.0)
-                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(");
+                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext) VALUES(?, ?, ?);");
             else
-                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext,sr_xytol,sr_ztol) VALUES(");
-
-            if (m_scName.empty())
-                sb.Append("NULL", 4);
-            else
-                sb.AppendSQuoted(m_scName.c_str());
-
-            sb.Append(",", 1);
-
-            if (m_coordSysName.empty())
-                sb.Append("NULL", 4);
-            else
-                sb.AppendSQuoted(m_coordSysName.c_str());
-
-            sb.Append(",", 1);
-
-            if (m_coordSysWkt.empty())
-                sb.Append("NULL", 4);
-            else
-                sb.AppendSQuoted(m_coordSysWkt.c_str());
+                sb.Append("INSERT INTO spatial_ref_sys (sr_name,auth_name,srtext,sr_xytol,sr_ztol) VALUES(?, ?, ?");
 
             if (tolsupp && m_XYTolerance > 0.0)
             {
@@ -1158,32 +1138,11 @@ public:
                 else
                     sb.Append("NULL", 4);
             }
-
             sb.Append(");", 2);
         }
         else
         {
-            sb.Append("UPDATE spatial_ref_sys SET ");
-
-            sb.Append("sr_name=");
-            if (m_scName.empty())
-                sb.Append("NULL");
-            else
-                sb.AppendSQuoted(m_scName.c_str());
-
-            sb.Append(",auth_name=");
-            if (m_coordSysName.empty())
-                sb.Append("NULL");
-            else
-                sb.AppendSQuoted(m_coordSysName.c_str());
-
-            sb.Append(",srtext=");
-
-            if (m_coordSysWkt.empty())
-                sb.Append("NULL");
-            else
-                sb.AppendSQuoted(m_coordSysWkt.c_str());
-
+            sb.Append("UPDATE spatial_ref_sys SET sr_name=?, auth_name=?, srtext=?");
             if (tolsupp)
             {
                 sb.Append(",sr_xytol=", 10);
@@ -1197,19 +1156,46 @@ public:
                 else
                     sb.Append("NULL");
             }
-
             sb.Append(" WHERE srid=");
             sb.Append(idToUpdate);
             sb.Append(";", 1);
         }
 
-        rc = sqlite3_exec(m_connection->GetDbConnection(), sb.Data(), NULL, NULL, &zerr);
+        const char* tail = NULL;
+        sqlite3_stmt* stmt = NULL;
+        rc = sqlite3_prepare_v2(m_connection->GetDbConnection(), sb.Data(), sb.Length(), &stmt, &tail);
+        if (rc == SQLITE_OK && stmt != NULL)
+        {
+            if (m_scName.empty())
+                rc = sqlite3_bind_null(stmt, 1);
+            else
+                rc = sqlite3_bind_text(stmt, 1, (W2A_SLOW(m_scName.c_str())).c_str(), -1, SQLITE_TRANSIENT);
+
+            if (m_coordSysName.empty())
+                rc = sqlite3_bind_null(stmt, 2);
+            else
+                rc = sqlite3_bind_text(stmt, 2, (W2A_SLOW(m_coordSysName.c_str())).c_str(), -1, SQLITE_TRANSIENT);
+
+            if (m_coordSysWkt.empty())
+                rc = sqlite3_bind_null(stmt, 3);
+            else
+                rc = sqlite3_bind_text(stmt, 3, (W2A_SLOW(m_coordSysWkt.c_str())).c_str(), -1, SQLITE_TRANSIENT);
+
+            rc = sqlite3_step(stmt);
+            rc = sqlite3_finalize(stmt);
+        }
         if (rc != SQLITE_OK)
         {
-            if (idToUpdate == -1)
-                FdoCommandException::Create(L"Failed to create spatial context.");
+            const char* err = sqlite3_errmsg(m_connection->GetDbConnection());
+            if (err == NULL)
+            {
+                if (idToUpdate == -1)
+                    throw FdoCommandException::Create(L"Failed to create spatial context.", rc);
+                else
+                    throw FdoCommandException::Create(L"Failed to update spatial context.", rc);
+            }
             else
-                FdoCommandException::Create(L"Failed to update spatial context.");
+                throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
         }
     }
 
