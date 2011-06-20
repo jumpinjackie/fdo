@@ -582,35 +582,26 @@ FdoInt32 FdoRdbmsFeatureReader::GetPropertyCount()
 
 void FdoRdbmsFeatureReader::ProcessCalculations(std::vector<int>& idxs)
 {
-    int rowsToSkip = idxs.size() - mProperties->GetCount();
-    if (rowsToSkip < 0)
-        return;
     for (int k = 0; k < (int)idxs.size(); k++)
     {
         int colIdx = idxs[k];
-        bool calcPropNotFound = false;
-        if (rowsToSkip == 0 || (rowsToSkip - k) <= 0)
+        bool calcPropFound = false;
+        if (k < mProperties->GetCount())
         {
-            // properties come in inverse order
-            int idxSelCol = mProperties->GetCount() - 1 - (k - rowsToSkip);
-            // in case properties are mixed try old style select by setting calcPropNotFound = true
-            if (idxSelCol >= 0 && idxSelCol < mProperties->GetCount())
+            FdoPtr<FdoIdentifier> pId = mProperties->GetItem(k);
+            if (pId->GetExpressionType() == FdoExpressionItemType_ComputedIdentifier)
             {
-                FdoPtr<FdoIdentifier> pId = mProperties->GetItem(idxSelCol);
-                FdoComputedIdentifier* pCompId = dynamic_cast<FdoComputedIdentifier*>(pId.p);
-                if (pCompId)
+                if (0==FdoCommonOSUtil::wcsicmp(mColList[colIdx].column, GetDbAliasName(pId->GetName())))
                 {
-                    if (0==FdoCommonOSUtil::wcsicmp(mColList[colIdx].column, GetDbAliasName(pCompId->GetName())))
-                        wcscpy(mColList[colIdx].c_alias, GetDbAliasName(pCompId->GetName()));
-                    else
-                        calcPropNotFound = true; 
+                    calcPropFound = true;
+                    wcscpy(mColList[colIdx].c_alias, GetDbAliasName(pId->GetName()));
                 }
             }
-            else
-                calcPropNotFound = true; 
+            else // it is not a calculation
+                calcPropFound = true;
         }
         // in case we cannot do index match try old method
-        if (calcPropNotFound)
+        if (!calcPropFound)
         {
             for (int i = 0; mComputedProperties && i < mComputedProperties->GetCount(); i++)
             {

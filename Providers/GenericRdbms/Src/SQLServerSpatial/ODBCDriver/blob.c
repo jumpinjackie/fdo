@@ -486,7 +486,7 @@ get_blobSqlServer(
 
     if ( blobValid )
     {
-        if ( cursor->odbcdr_blobNI[offset] == SQL_NULL_DATA)
+        if ( cursor->odbcdr_blobNI[offset] == SQL_NULL_DATA || cursor->odbcdr_blobNI[offset] == 0)
         {
             *visionBlob_O = NULL;
             *l_visionBlob_0 = NULL;
@@ -497,7 +497,7 @@ get_blobSqlServer(
 
         debug0( "Blob is not NULL." );
 
-        pData = (PBYTE)&cursor->odbcdr_blob[offset * ODBCDR_BLOB_CHUNK_SIZE];
+        pData = (PBYTE)&cursor->odbcdr_blob[offset * ODBCDR_UBLOB_CHUNK_SIZE];
      
         count = cursor->odbcdr_blobNI[offset];
     }

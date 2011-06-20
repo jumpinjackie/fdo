@@ -50,6 +50,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
 
       FdoIdentifierCollection*   mGroupingCol;
       FdoRdbmsPropBindHelper*    mBindParamsHelper;
+      bool                       mHasObjectProps;
 
       //
       // Prevent the use of the copy constructor by definning it and not implemeting it.

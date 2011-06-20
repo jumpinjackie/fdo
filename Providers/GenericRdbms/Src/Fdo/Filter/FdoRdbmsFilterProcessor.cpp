@@ -43,7 +43,8 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor():
  mUseTableAliases( true ),
  mUseNesting( true ),
  mUseGrouping( false ),
- mAddNegationBracket( false )
+ mAddNegationBracket( false ),
+ mContainsCustomObjects (false)
 {
 
 }
@@ -59,7 +60,8 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection)
  mUseTableAliases( true ),
  mUseNesting( true ),
  mUseGrouping( false ),
- mAddNegationBracket( false )
+ mAddNegationBracket( false ),
+ mContainsCustomObjects (false)
 {
 
 }
@@ -309,6 +311,7 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
 
         case FdoPropertyType_ObjectProperty:
             {
+                mContainsCustomObjects = true;
                 const FdoSmLpObjectPropertyDefinition* objProp =
                             static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
 
@@ -332,6 +335,7 @@ const wchar_t * FdoRdbmsFilterProcessor::PropertyNameToColumnName( const wchar_t
 
         case FdoPropertyType_GeometricProperty:
             {
+                mContainsCustomObjects = true;
                 const FdoSmLpGeometricPropertyDefinition* geomProp =
                             static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
 
@@ -505,6 +509,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
             {
                 case FdoPropertyType_ObjectProperty:
                     {
+                    mContainsCustomObjects = true;
                     objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
 
                     // If one of the object properties is of collection type, then we may need to add a distinct key word to the select.
@@ -561,6 +566,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
                 case FdoPropertyType_AssociationProperty:
                     {
                     assocProp = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
+                    mContainsCustomObjects = true;
 
 
                     FdoStringP pkTable = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(currentClass);
@@ -602,6 +608,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
 
         case FdoPropertyType_ObjectProperty:
             {
+                mContainsCustomObjects = true;
                 const FdoSmLpObjectPropertyDefinition* objProp =
                             static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
                 AppendObjectProperty( currentClass, objProp, useOuterJoin, inSelectList ); 
@@ -618,6 +625,7 @@ void FdoRdbmsFilterProcessor::ProcessIdentifier( FdoIdentifier& expr, bool useOu
 
         case FdoPropertyType_AssociationProperty:
             {
+                mContainsCustomObjects = true;
                 const FdoSmLpAssociationPropertyDefinition* assocProp =
                             static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
                 AppendAssociationProperty( currentClass, assocProp, useOuterJoin, inSelectList ); 
@@ -936,6 +944,7 @@ bool FdoRdbmsFilterProcessor::CanOptimizeRelationQuery( const FdoSmLpClassDefini
 {
     if( propertyDefinition->GetPropertyType() == FdoPropertyType_AssociationProperty )
     {
+        mContainsCustomObjects = true;
         const FdoSmLpAssociationPropertyDefinition* assocProp = (const FdoSmLpAssociationPropertyDefinition*) propertyDefinition;
 
         // If this is not a read-only association and if reverse multiplicity is set to m, then multiple raws can be returned and as a result a dedicated secondary query is issued
@@ -1046,6 +1055,7 @@ void FdoRdbmsFilterProcessor::FollowRelation( FdoStringP    &relationColumns, co
     }
     if ( propertyDefinition->GetPropertyType() == FdoPropertyType_ObjectProperty )
     {
+        mContainsCustomObjects = true;
         const FdoSmLpObjectPropertyDefinition* objProp = (const FdoSmLpObjectPropertyDefinition*) propertyDefinition;
         if( objProp->GetObjectType() != FdoObjectType_Value )
             return;
@@ -1424,8 +1434,8 @@ bool FdoRdbmsFilterProcessor::ContainsAggregateFunctions( FdoIdentifierCollectio
     FindAggregate  finder(this);
     for( int i=0; i<identifiers->GetCount(); i++ )
     {
-        FdoPtr<FdoIdentifier>property = identifiers->GetItem(i);
-        property->Process( &finder );
+        FdoPtr<FdoIdentifier> prop = identifiers->GetItem(i);
+        prop->Process( &finder );
         if( finder.foundAggregate )
             return true;
     }
@@ -1460,7 +1470,7 @@ void FdoRdbmsFilterProcessor::PrependTables()
     }
 }
 
-void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool scanForTableOnly, bool inSelectList )
+void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* prop, bool scanForTableOnly, bool inSelectList )
 {
     // If it's a computed identifier, then we dump the translated content in the from clause.
     // There may be alot of weird and wonderfull stuff in that expression that does not make sense. We'll leave it
@@ -1476,14 +1486,12 @@ void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool sca
 
     mNextTxtIndex = mSqlTextSize = mFirstTxtIndex = 0;
     mSqlFilterText = NULL;
-    if( dynamic_cast<FdoComputedIdentifier *>( property ) != NULL )
-    {
-        ProcessComputedIdentifier( *((FdoComputedIdentifier*)property) );
-    }
+    
+    if(FdoExpressionItemType_ComputedIdentifier == prop->GetExpressionType())
+        ProcessComputedIdentifier( *((FdoComputedIdentifier*)prop) );
     else
-    {
-        ProcessIdentifier( *property, false, inSelectList );
-    }
+        ProcessIdentifier( *prop, false, inSelectList );
+
     wchar_t* compIdentPseudoCol = &mSqlFilterText[mFirstTxtIndex];
     wchar_t* tmp = mSqlFilterText;
 
@@ -1498,11 +1506,11 @@ void FdoRdbmsFilterProcessor::PrependProperty( FdoIdentifier* property, bool sca
     // to prepend those columns.
     if( ! scanForTableOnly )
     {
-        if( dynamic_cast<FdoComputedIdentifier *>( property ) != NULL )
+        if(FdoExpressionItemType_ComputedIdentifier == prop->GetExpressionType())
         {
             // Add the pseudo column for the computed identifier expression.
             FdoRdbmsSchemaUtil * pUtil = mDbiConnection->GetSchemaUtil();
-            PrependString( (const char *)pUtil->GetAliasSqlName(pUtil->MakeDBValidName(property->GetName())) );
+            PrependString( (const char *)pUtil->GetAliasSqlName(pUtil->MakeDBValidName(prop->GetName())) );
             PrependString( L" AS " );
         }
         PrependString( compIdentPseudoCol );
@@ -1680,8 +1688,8 @@ bool FdoRdbmsFilterProcessor::IsValidExpression( FdoIdentifierCollection *identi
     UsesNativeExpressionFunctions finder(this);
     for( int i=0; i<identifiers->GetCount(); i++ )
     {
-        FdoPtr<FdoIdentifier>property = identifiers->GetItem(i);
-        property->Process( &finder );
+        FdoPtr<FdoIdentifier> prop = identifiers->GetItem(i);
+        prop->Process( &finder );
         if( finder.foundNotNativeSupportedFunction )
             return false;
     }
@@ -1794,6 +1802,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
         {
             if( properties->RefItem(i)->GetPropertyType() == FdoPropertyType_AssociationProperty )
             {
+                mContainsCustomObjects = true;
                 if( CanOptimizeRelationQuery( mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName), properties->RefItem(i)) )
                     FollowRelation( relationColumns, properties->RefItem(i), selectedProperties);
             }
@@ -1819,10 +1828,12 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
         if( identColArray[j] == NULL )
             continue;
 
-        for (int i=0; i<identColArray[j]->GetCount(); i++)
+        int cntIdp = identColArray[j]->GetCount();
+        for (int i = cntIdp-1; i >= 0; i--)
         {
             FdoPtr<FdoExpression> pExpr = identColArray[j]->GetItem(i);
-            if (dynamic_cast<FdoIdentifier*>(pExpr.p) == NULL )
+            FdoExpressionItemType idfType = pExpr->GetExpressionType();
+            if (FdoExpressionItemType_Identifier != idfType && FdoExpressionItemType_ComputedIdentifier != idfType)
                 throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_30, "Unknown expression"));
             PrependProperty( (FdoIdentifier*)pExpr.p, true );
         }
@@ -1845,6 +1856,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
             wcslen( tabRelation.pk_ColumnName ) != 0 &&
             wcslen( tabRelation.pk_TableName )  != 0 )
         {
+            mContainsCustomObjects = true;
             if( index == 0 || wcscmp(lasTabRelation.fk_TableName, tabRelation.fk_TableName) || wcscmp(lasTabRelation.pk_TableName, tabRelation.pk_TableName) )
             {
                 if( tabRelation.useOuterJoin )
@@ -1903,6 +1915,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 		    GetLtTableExpression( mClassArray[index], ltWhereCondition, ltTableExp, callerFdoCommand );
 		    if( ((const wchar_t*)ltWhereCondition)[0] != '\0' )
 		    {
+                mContainsCustomObjects = true;
 			    PrependString ( (const wchar_t*)ltWhereCondition );
 			    PrependString (L" ON ");
 			    PrependString ( (const wchar_t*)ltTableExp);
@@ -1939,7 +1952,6 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
     // If this filter applies to a concrete feature class(i.e. all the returned objects are instances of the same class), then we are
     // going to select all the attributes and geometry(for draw) using a single select. Othewise we need to defer selecting the properties
     // untill we know the class of the returned feature.(See the feature reader ReadNext method where this optimization is used.)
-    bool bForDraw = true;
     first = true;
     bool useAggregateFunctions = ContainsAggregateFunctions( selectedProperties );
 
@@ -1999,9 +2011,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
         }
         else
         {
-            bool *bExist = new bool[identProperties->GetCount()];// Keeps track of all the identify properties.
-                                                            // Set to true if the property exist in the select list.
-
+            int cntProps = selectedProperties->GetCount();
             const wchar_t* featIdColName = NULL;
             bool isFeatIdOnlyQuery = false;
             if ( isFeatureClass )
@@ -2013,33 +2023,20 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                     featIdColName = pFeatIdProp->RefColumn()->GetName();
                 }
             }
-
-            for (int i=0; i<identProperties->GetCount(); i++)
-                bExist[i] = false;
-
-            bForDraw = false;
-            for (int i=0; i<selectedProperties->GetCount() && !(useAggregateFunctions && mRequiresDistinct); i++)
+            if (featIdColName)
             {
-                FdoPtr<FdoIdentifier> property = selectedProperties->GetItem(i);
-                if (first == false)
+                for (int i = 0; i < cntProps; i++)
                 {
-                    PrependString( L"," );
-                }
-                PrependProperty( property, false, true );
-
-                first = false;
-                for (j=0; j<identProperties->GetCount(); j++)
-                {
-                    if (FdoCommonOSUtil::wcsicmp(identProperties->RefItem(j)->GetName(), property->GetName()) == 0)
+                    FdoPtr<FdoIdentifier> prop = selectedProperties->GetItem(i);
+                    if (prop->GetExpressionType() != FdoExpressionItemType_Identifier)
+                        continue;
+                    if(FdoCommonOSUtil::wcsicmp (featIdColName, prop->GetName()) == 0)
                     {
-                        bExist[j] = true;
+                        isFeatIdOnlyQuery = true;
                         break;
                     }
                 }
-                if( featIdColName && FdoCommonOSUtil::wcsicmp( featIdColName, property->GetName() ) == 0 )
-                    isFeatIdOnlyQuery = true;
             }
-
             // explictly add the identity columns that were not in the select list
             // If the query is only selecting featid column, then we do not add the rest of the
             // identity columns as this is a query used by internal component that only expect
@@ -2052,11 +2049,23 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
             {
                 FdoStringP sqlTableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName));
                 const  wchar_t* table = GetTableAlias(sqlTableName);
-                for (j=0; j<identProperties->GetCount(); j++)
+                for (j = 0; j < identProperties->GetCount(); j++)
                 {
-                    if (bExist[j] == false)
+                    bool foundId = false;
+                    for (int i = 0; i < cntProps; i++)
                     {
-                        if (first == false)
+                        FdoPtr<FdoIdentifier> prop = selectedProperties->GetItem(i);
+                        if (prop->GetExpressionType() != FdoExpressionItemType_Identifier)
+                            continue;
+                        if (FdoCommonOSUtil::wcsicmp(identProperties->RefItem(j)->GetName(), prop->GetName()) == 0)
+                        {
+                            foundId = true;
+                            break;
+                        }
+                    }
+                    if (!foundId)
+                    {
+                        if (!first)
                             PrependString( L"," );
                         const FdoSmLpDataPropertyDefinition *idProperty = identProperties->RefItem(j);
                         const FdoSmPhColumn *column = idProperty->RefColumn();
@@ -2068,7 +2077,19 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                 }
             }
 
-            delete [] bExist;
+            if (!(useAggregateFunctions && mRequiresDistinct))
+            {
+                for (int i = cntProps-1; i >= 0; i--)
+                {
+                    FdoPtr<FdoIdentifier> prop = selectedProperties->GetItem(i);
+                    if (first == false)
+                    {
+                        PrependString( L"," );
+                    }
+                    PrependProperty( prop, false, true );
+                    first = false;
+                }
+            }
         }
         //
         // We need to add the order by and group by columns if they are not already in the select list
@@ -2088,14 +2109,14 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
         {
             for (int i=0; i<orderOrGroupByList->GetCount(); i++)
             {
-                FdoPtr<FdoIdentifier> property = orderOrGroupByList->GetItem(i);
+                FdoPtr<FdoIdentifier> prop = orderOrGroupByList->GetItem(i);
                 // Make sure this property was not already added by the user select list.
                 if ( selectedProperties != NULL )
                 {
                     for (j=0; j<selectedProperties->GetCount(); j++)
                     {
                         FdoPtr<FdoIdentifier> selectprop = selectedProperties->GetItem(j);
-                        if (FdoCommonOSUtil::wcsicmp(selectprop->GetName(), property->GetName()) == 0)
+                        if (FdoCommonOSUtil::wcsicmp(selectprop->GetName(), prop->GetName()) == 0)
                         {
                             break;
                         }
@@ -2107,7 +2128,7 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                         // May be it's an identity property which would be added too
                         for (j=0; j<identProperties->GetCount();    j++)
                         {
-                            if (FdoCommonOSUtil::wcsicmp(identProperties->RefItem(j)->GetName(), property->GetName())    == 0)
+                            if (FdoCommonOSUtil::wcsicmp(identProperties->RefItem(j)->GetName(), prop->GetName())    == 0)
                             {
                                 break;
                             }
@@ -2119,14 +2140,14 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
                 else
                 {
                     // If this is a class property, then it's already covered by the table.* case
-                    if (wcschr((wchar_t *)property->GetText(), L'.') == NULL)
+                    if (wcschr((wchar_t *)prop->GetText(), L'.') == NULL)
                         continue;
                 }
                 if (first == false)
                 {
                     PrependString( L"," );
                 }
-                PrependProperty( property );
+                PrependProperty( prop );
                 first = false;
             }
         }
@@ -2163,25 +2184,26 @@ const wchar_t* FdoRdbmsFilterProcessor::FilterToSql( FdoFilter                  
 			mClassArray.clear();
             // First pass build the table dependancies
             AddNewTableRelation( L"",L"", mDbiConnection->GetTable( mCurrentClassName ),L"NotUsed");
-            for (int i=0; i<selectedProperties->GetCount(); i++)
+            int cntProp = selectedProperties->GetCount();
+            for (int i = cntProp-1; i >= 0; i--)
             {
-                FdoPtr<FdoIdentifier> property = selectedProperties->GetItem(i);
-                PrependProperty( property, true );
+                FdoPtr<FdoIdentifier> prop = selectedProperties->GetItem(i);
+                PrependProperty( prop, true );
             }
             // Add the table list
             PrependTables();
             PrependString ( L" FROM " );
             first = true;
             // And finaly add the aggregate functions
-            for (int i=0; i<selectedProperties->GetCount(); i++)
+            for (int i = cntProp-1; i >= 0; i--)
             {
-                FdoPtr<FdoIdentifier> property = selectedProperties->GetItem(i);
+                FdoPtr<FdoIdentifier> prop = selectedProperties->GetItem(i);
 
                 if (first == false)
                 {
                     PrependString(L",");
                 }
-                PrependProperty( property, false, true );
+                PrependProperty( prop, false, true );
 
                 first = false;
             }
@@ -2378,7 +2400,8 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString
 	    const FdoSmPhColumnCollection* columns = dbObject->RefColumns();
         bool    first = true;
 
-        for (int i = 0; i < columns->GetCount(); i++)
+        int colCnt = columns->GetCount();
+        for (int i = colCnt-1; i >= 0 ; i--)
         {
 		    const FdoSmPhColumn* column = columns->RefItem(i);
 		    FdoStringP colNameTmp = column->GetName();
@@ -2401,11 +2424,7 @@ void FdoRdbmsFilterProcessor::PrependSelectStar( FdoStringP tableName, FdoString
                     PrependString( (FdoString*)colName );
                 }
                 else
-                {
-                    PrependString(L"\"");
-                    PrependString(colName);
-                    PrependString(L"\"");
-                }
+                    PrependString((FdoString*)phMgr->GetSQLObjectName(colName));
 
                 PrependString(L".");
 
@@ -2454,9 +2473,6 @@ FdoRdbmsFilterProcessor::BoundGeometry::~BoundGeometry(void)
 
 bool FdoRdbmsFilterProcessor::IsDataValue (FdoExpression *expr)
 {
-    if (dynamic_cast<FdoDataValue *>(expr) != NULL)
-        return true;
-
-    return false;
+    return (FdoExpressionItemType_DataValue == expr->GetExpressionType());
 }
 

@@ -665,6 +665,57 @@ FdoString* GdbiQueryResult::GetString(GdbiColumnInfoType *colInfo, bool *isnull,
 				*ccode = RDBI_SUCCESS;
 			return (const wchar_t*)(((char*)colInfo->value) + mArrayPos*colInfo->size);
 		}
+        if (colInfo->original_type == RDBI_WSTRING_ULEN)
+        {
+            FdoByteArray* arr = NULL;
+            char *address = (char*)&arr;
+            memcpy(address, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(FdoByteArray*));
+            if (arr != NULL && arr->GetCount() != 0)
+            {
+                int sizeW = (int)(arr->GetCount()/sizeof(wchar_t)) + 1;
+                if ((mUnicodeBuffer != NULL) && (mUnicodeBufferSize < sizeW)) 
+                {
+                    delete[] mUnicodeBuffer;
+                    mUnicodeBuffer = NULL;
+                }
+                if( mUnicodeBuffer == NULL )
+                {
+                    mUnicodeBufferSize = sizeW;
+                    mUnicodeBuffer = new wchar_t[sizeW];
+                }
+                memcpy(mUnicodeBuffer, arr->GetData(), arr->GetCount());
+                *(mUnicodeBuffer+sizeW-1) = L'\0';
+                return mUnicodeBuffer;
+            }
+            return NULL;
+        }
+        else if (colInfo->original_type == RDBI_STRING_ULEN)
+        {
+            FdoByteArray* arr = NULL;
+            char *address = (char*)&arr;
+            memcpy(address, ((char*)colInfo->value) + mArrayPos*colInfo->size, sizeof(FdoByteArray*));
+            if (arr != NULL && arr->GetCount() != 0)
+            {
+                int cntArr = arr->GetCount();
+                if ((mUnicodeBuffer != NULL) && (mUnicodeBufferSize < (2*cntArr+1))) 
+                {
+                    delete[] mUnicodeBuffer;
+                    mUnicodeBuffer = NULL;
+                }
+                if( mUnicodeBuffer == NULL )
+                {
+                    mUnicodeBufferSize = (2*cntArr+1);
+                    mUnicodeBuffer = new wchar_t[(2*cntArr+1)];
+                }
+                char* startCh = (char*)(mUnicodeBuffer+cntArr);
+                memcpy(startCh, arr->GetData(), cntArr);
+                *(startCh+cntArr) = L'\0'; // add string ending
+                ut_utf8_to_unicode(startCh, mUnicodeBuffer, cntArr+1);
+                return mUnicodeBuffer;
+            }
+            return NULL;
+        }
+
 
         if ((mAsciiValBuffer != NULL) && (mAsciiValBufferSize <= colInfo->size))
         {

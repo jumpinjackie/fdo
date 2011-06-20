@@ -84,6 +84,8 @@ protected:
     // SQL Server is using update hint. 
     virtual void AppendForUpdate() { } ;
 
+    virtual bool SupportsSimpleReader() { return true; }
+
     virtual void AppendTablesHints( SqlCommandType cmdType, bool forUpdate );
 
     virtual void ProcessDistanceCondition(FdoDistanceCondition& filter);

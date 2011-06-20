@@ -537,6 +537,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleFeatureReader.cpp"
+					>
+				</File>
+				<File
 					RelativePath="FeatureCommands\FdoRdbmsUpdateCommand.cpp"
 					>
 				</File>
@@ -891,6 +895,10 @@
 				</File>
 				<File
 					RelativePath="FeatureCommands\FdoRdbmsSelectCommand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleFeatureReader.h"
 					>
 				</File>
 				<File

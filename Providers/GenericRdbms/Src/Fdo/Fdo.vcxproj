@@ -226,6 +226,7 @@
     <ClCompile Include="FeatureCommands\FdoRdbmsDeleteCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsFeatureInfoReader.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsFeatureReader.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsSimpleFeatureReader.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsInsertCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsSelectAggregates.cpp" />
@@ -304,6 +305,7 @@
     <ClInclude Include="FeatureCommands\FdoRdbmsFeatureCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsFeatureInfoReader.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsFeatureReader.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsSimpleFeatureReader.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsFeatureSubsetReader.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsInsertCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsSelectAggregates.h" />

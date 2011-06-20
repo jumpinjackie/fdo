@@ -26,6 +26,7 @@
 // FdoRdbmsSelectCommand
 #include "FdoRdbmsSelectCommand.h"
 #include "FdoRdbmsFeatureReader.h"
+#include "FdoRdbmsSimpleFeatureReader.h"
 #include "FdoRdbmsFeatureSubsetReader.h"
 #include "LockUtility.h"
 #include "FdoRdbmsFilterProcessor.h"
@@ -49,7 +50,8 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (): mConnection( NULL ), mIdentifie
   mGroupingCol(NULL),
   mGroupingFilter(NULL),
   mOrderingIdentifiers(NULL),
-  mBindParamsHelper(NULL)
+  mBindParamsHelper(NULL),
+  mHasObjectProps(false)
 {
   mLockType           = FdoLockType_Exclusive;
   mLockStrategy       = FdoLockStrategy_Partial;
@@ -65,7 +67,8 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (FdoIConnection *connection) :
     mGroupingCol(NULL),
     mGroupingFilter(NULL),
     mOrderingIdentifiers(NULL),
-    mBindParamsHelper(NULL)
+    mBindParamsHelper(NULL),
+    mHasObjectProps(false)
 {
   mConn = static_cast<FdoRdbmsConnection*>(connection);
   if( mConn )
@@ -95,11 +98,14 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
     int                 qid = -1;
     bool                res = false;
+    bool delStatement = true;
     GdbiStatement* statement = NULL;
     const FdoSmLpClassDefinition *classDefinition = mConnection->GetSchemaUtil()->GetClass(this->GetClassNameRef()->GetText());
 
     bool isFeatureClass = ( classDefinition != NULL &&  classDefinition->GetClassType() == FdoClassType_FeatureClass );
     bool isForUpdate = HasLobProperty( classDefinition );
+
+    bool doNotUseSimpleSelect = mHasObjectProps && (mIdentifiers == NULL || mIdentifiers->GetCount() == 0);
 
     if( mConnection == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
@@ -146,7 +152,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                                                  this->GetClassNameRef()->GetText() );
 
             GdbiQueryResult *queryRslt = mConnection->GetGdbiConnection()->ExecuteQuery( sqlStatement );
-            FdoPtr<FdoIFeatureReader> featureReader = new FdoRdbmsFeatureReader( FdoPtr<FdoIConnection>(GetConnection()),
+            FdoPtr<FdoIFeatureReader> featureReader = new FdoRdbmsFeatureReader( mFdoConnection,
                                                                                  queryRslt,
                                                                                  isFeatureClass,
                                                                                  classDefinition,
@@ -269,23 +275,35 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         if (mBindParamsHelper != NULL)
             mBindParamsHelper->Clear();
 
-        if (( mIdentifiers && mIdentifiers->GetCount() > 0) )
-            return new FdoRdbmsFeatureSubsetReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions, logicalOps );
-        else
-            return new FdoRdbmsFeatureReader( FdoPtr<FdoIConnection>(GetConnection()), queryRslt, isFeatureClass, classDefinition, NULL, NULL, 0, geometricConditions, logicalOps ); // The feature reader should free the queryRslt
+        // statement will be deleted in the reader.
+        delStatement = false;
 
+        // For now only SQL Spatial Server supports SupportsSimpleReader, later (after we add some unit tests) we can extend it to other providers
+        if (!flterProcessor->ContainsCustomObjects() && flterProcessor->SupportsSimpleReader() && geometricConditions == NULL && callerId == (FdoInt16)FdoCommandType_Select && !doNotUseSimpleSelect)
+        {
+            return new FdoRdbmsSimpleFeatureReader(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
+        }
+        else
+        {
+            if (( mIdentifiers && mIdentifiers->GetCount() > 0))
+                return new FdoRdbmsFeatureSubsetReader (mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers, geometricConditions, logicalOps );
+            else
+                return new FdoRdbmsFeatureReader (mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, NULL, 0, geometricConditions, logicalOps ); // The feature reader should free the queryRslt
+        }
     }
 
     catch (FdoCommandException *ex)
     {
-        delete statement;
+        if (delStatement)
+            delete statement;
         ex;
         SELECT_CLEANUP;
         throw;
     }
     catch (FdoException *ex)
     {
-        delete statement;
+        if (delStatement)
+            delete statement;
         SELECT_CLEANUP;
         // Wrap in FdoPtr to remove original reference to original exception
         throw FdoCommandException::Create(ex->GetExceptionMessage(), FdoPtr<FdoException>(ex));
@@ -293,7 +311,8 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
     catch ( ... )
     {
-        delete statement;
+        if (delStatement)
+            delete statement;
         SELECT_CLEANUP;
         throw;
     }
@@ -479,9 +498,13 @@ bool FdoRdbmsSelectCommand::HasLobProperty( const FdoSmLpClassDefinition *classD
     bool    forUpdate = false;
     const   FdoSmLpPropertyDefinitionCollection *propertyDefinitions = classDefinition->RefProperties();
 
+    mHasObjectProps = false;
     for ( int i = 0; i < propertyDefinitions->GetCount(); i++ )
     {
         const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
+        if (FdoPropertyType_AssociationProperty == propertyDefinition->GetPropertyType() || 
+            FdoPropertyType_ObjectProperty == propertyDefinition->GetPropertyType())
+            mHasObjectProps = true;
 
         const FdoSmLpDataPropertyDefinition* dataProp =
                     dynamic_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
