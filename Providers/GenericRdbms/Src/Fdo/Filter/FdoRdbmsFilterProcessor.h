@@ -174,6 +174,7 @@ private:
 	bool				mUseTableAliases;
     bool                mUseNesting;
     bool                mUseGrouping;
+    bool                mContainsCustomObjects;
     bool                mAddNegationBracket;
     wchar_t             mConvBuffer[MEM_BLOCK_ALLOC_SIZE];
 
@@ -216,11 +217,15 @@ public:
     FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection);
     virtual ~FdoRdbmsFilterProcessor(void);
 
+    bool ContainsCustomObjects() { return mContainsCustomObjects; }
+    virtual bool SupportsSimpleReader() { return false; }
+
     virtual void Reset()
     {
         mFilterLogicalOps.clear();
         mUsedParameterValues.clear();
         mParams = NULL;
+        mContainsCustomObjects = false;
     }
 
 private:

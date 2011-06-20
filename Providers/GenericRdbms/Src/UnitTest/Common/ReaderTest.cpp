@@ -83,6 +83,20 @@ void ReaderTest::TestDataReaderWithIndex ()
     }
 }
 
+int ReaderTest::GetPropertyIndex (FdoClassDefinition* clsDef, FdoString* name)
+{
+    FdoPtr<FdoClassDefinition> baseCls = clsDef->GetBaseClass();
+    FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties();
+    int idx = props->IndexOf(name);
+    if (idx == -1 && baseCls != NULL)
+    {
+        idx = GetPropertyIndex (baseCls, name);
+        if (idx != -1)
+            return idx + props->GetCount();
+    }
+    return idx;
+}
+
 void ReaderTest::TestFeatureReaderWithIndex ()
 {
     // NOTE: the order of properties are arranged differently with different provider implementation. 
@@ -165,77 +179,156 @@ void ReaderTest::TestFeatureReaderWithIndex ()
         FdoPtr<FdoISelect> select2 = (FdoISelect*)m_connection->CreateCommand (FdoCommandType_Select);
         select2->SetFeatureClassName (L"IndexAccessChild");
         FdoPtr<FdoIFeatureReader> reader2 = select2->Execute();
+        FdoPtr<FdoClassDefinition> clsDef = reader2->GetClassDefinition();
+
+        int idxID = reader2->GetPropertyIndex(L"ID");
+        CPPUNIT_ASSERT(idxID == GetPropertyIndex(clsDef, L"ID"));
+
+        int idxboolean = reader2->GetPropertyIndex(L"boolean");
+        CPPUNIT_ASSERT(idxboolean == GetPropertyIndex(clsDef, L"boolean"));
+
+        int idxbyte = reader2->GetPropertyIndex(L"byte");
+        CPPUNIT_ASSERT(idxbyte == GetPropertyIndex(clsDef, L"byte"));
+        
+        int idxdatetime = reader2->GetPropertyIndex(L"datetime");
+        CPPUNIT_ASSERT(idxdatetime == GetPropertyIndex(clsDef, L"datetime"));
+
+        int idxsingle = reader2->GetPropertyIndex(L"single");
+        CPPUNIT_ASSERT(idxsingle == GetPropertyIndex(clsDef, L"single"));
+
+        int idxstring = reader2->GetPropertyIndex(L"string");
+        CPPUNIT_ASSERT(idxstring == GetPropertyIndex(clsDef, L"string"));
+
+        int idxdouble = reader2->GetPropertyIndex(L"double");
+        CPPUNIT_ASSERT(idxdouble == GetPropertyIndex(clsDef, L"double"));
+
+        int idxgeometry = reader2->GetPropertyIndex(L"geometry");
+        CPPUNIT_ASSERT(idxgeometry == GetPropertyIndex(clsDef, L"geometry"));
+
+        int idxint16 = reader2->GetPropertyIndex(L"int16");
+        CPPUNIT_ASSERT(idxint16 == GetPropertyIndex(clsDef, L"int16"));
+
+        int idxint32 = reader2->GetPropertyIndex(L"int32");
+        CPPUNIT_ASSERT(idxint32 == GetPropertyIndex(clsDef, L"int32"));
+
+        int idxint64 = reader2->GetPropertyIndex(L"int64");
+        CPPUNIT_ASSERT(idxint64 == GetPropertyIndex(clsDef, L"int64"));
+
+        int idxdatetime2 = reader2->GetPropertyIndex(L"datetime2");
+        CPPUNIT_ASSERT(idxdatetime2 == GetPropertyIndex(clsDef, L"datetime2"));
+
+        int idxdouble2 = reader2->GetPropertyIndex(L"double2");
+        CPPUNIT_ASSERT(idxdouble2 == GetPropertyIndex(clsDef, L"double2"));
+
+        int idxgeometry2 = reader2->GetPropertyIndex(L"geometry2");
+        CPPUNIT_ASSERT(idxgeometry2 == GetPropertyIndex(clsDef, L"geometry2"));
+
+        int idxnumber = reader2->GetPropertyIndex(L"number");
+        CPPUNIT_ASSERT(idxnumber == GetPropertyIndex(clsDef, L"number"));
 
         while( reader2->ReadNext() )
         {
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"ID") == 0);
-            CPPUNIT_ASSERT(reader2->GetInt64(L"ID") == reader2->GetInt64(0));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"boolean") == 1);
-            CPPUNIT_ASSERT(reader2->IsNull(L"boolean") == reader2->IsNull(1));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"byte") == 2);
-            CPPUNIT_ASSERT(reader2->IsNull(L"byte")    == reader2->IsNull(2));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"datetime") == 3);
-            CPPUNIT_ASSERT(reader2->IsNull(L"datetime") == reader2->IsNull(3));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"single") == 9);
-            CPPUNIT_ASSERT(reader2->IsNull(L"single") == reader2->IsNull(9));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"string") == 10);
-            CPPUNIT_ASSERT(reader2->IsNull(L"string") == reader2->IsNull(10));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"double") == 4);
-            CPPUNIT_ASSERT(reader2->IsNull(L"double") == reader2->IsNull(4));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"geometry") == 5);
-            FdoPtr<FdoByteArray> geomValue1 = reader2->GetGeometry(L"geometry");
-            FdoPtr<FdoByteArray> geomValue2 = reader2->GetGeometry(5);
-            CPPUNIT_ASSERT(geomValue1->GetCount() == geomValue2->GetCount());
-            for (int i = 0; i < geomValue1->GetCount(); i++ )
+            bool isnull = reader2->IsNull(idxID);
+            CPPUNIT_ASSERT(reader2->IsNull(L"ID") == isnull);
+            if (!isnull)
             {
-                CPPUNIT_ASSERT(geomValue1->operator [](i) == geomValue2->operator [](i));
+                CPPUNIT_ASSERT(reader2->GetInt64(L"ID") == reader2->GetInt64(idxID));
             }
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"int16") == 6);
-            CPPUNIT_ASSERT(reader2->IsNull(L"int16") == reader2->IsNull(6));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"int32") == 7);
-            CPPUNIT_ASSERT(reader2->IsNull(L"int32") == reader2->IsNull(7));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"int64") == 8);
-            CPPUNIT_ASSERT(reader2->IsNull(L"int64") == reader2->IsNull(8));
-
-            //FdoPtr<FdoLOBValue> blobValue1 = reader2->GetLOB(L"blob");
-            //FdoPtr<FdoLOBValue> blobValue2 = reader2->GetLOB(11);
-
-            //FdoPtr<FdoLOBValue> blobValue3 = reader2->GetLOB(L"clob");
-            //FdoPtr<FdoLOBValue> blobValue4 = reader2->GetLOB(12);
-
-            // properties from derived class
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"datetime2") == 11);
-            FdoDateTime dt3 = reader2->GetDateTime(L"datetime2");
-            FdoDateTime dt4 = reader2->GetDateTime(11);
-            CPPUNIT_ASSERT(dt3.year == dt4.year && dt3.month == dt4.month && dt3.day == dt4.day
-                && dt3.hour == dt4.hour && dt3.minute == dt4.minute && dt3.seconds == dt4.seconds);
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"double2") == 12);
-            CPPUNIT_ASSERT(reader2->GetDouble(L"double2") == reader2->GetDouble(12));
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"geometry2") == 13);
-            FdoPtr<FdoByteArray> geomValue3 = reader2->GetGeometry(L"geometry2");
-            FdoPtr<FdoByteArray> geomValue4 = reader2->GetGeometry(13);
-            CPPUNIT_ASSERT(geomValue3->GetCount() == geomValue4->GetCount());
-            for (int i = 0; i < geomValue3->GetCount(); i++ )
+            isnull = reader2->IsNull(idxboolean);
+            CPPUNIT_ASSERT(reader2->IsNull(L"boolean") == isnull);
+            if (!isnull)
             {
-                CPPUNIT_ASSERT(geomValue3->operator [](i) == geomValue4->operator [](i));
+                CPPUNIT_ASSERT(reader2->GetBoolean(L"boolean") == reader2->GetBoolean(idxboolean));
             }
-
-            CPPUNIT_ASSERT(reader2->GetPropertyIndex(L"number") == 14);
-            CPPUNIT_ASSERT(reader2->GetInt32(L"number") == reader2->GetInt32(14));
+            isnull = reader2->IsNull(idxbyte);
+            CPPUNIT_ASSERT(reader2->IsNull(L"byte") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetByte(L"byte") == reader2->GetByte(idxbyte));
+            }
+            isnull = reader2->IsNull(idxdatetime);
+            CPPUNIT_ASSERT(reader2->IsNull(L"datetime") == isnull);
+            if (!isnull)
+            {
+                FdoDateTime dt1 = reader2->GetDateTime(L"datetime");
+                FdoDateTime dt2 = reader2->GetDateTime(idxdatetime);
+                CPPUNIT_ASSERT(memcmp(&dt1, &dt2, sizeof(FdoDateTime))==0);
+            }
+            isnull = reader2->IsNull(idxsingle);
+            CPPUNIT_ASSERT(reader2->IsNull(L"single") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetSingle(L"single") == reader2->GetSingle(idxsingle));
+            }
+            isnull = reader2->IsNull(idxstring);
+            CPPUNIT_ASSERT(reader2->IsNull(L"string") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT((FdoStringP)reader2->GetString(L"string") == (FdoStringP)reader2->GetString(idxstring));
+            }
+            isnull = reader2->IsNull(idxdouble);
+            CPPUNIT_ASSERT(reader2->IsNull(L"double") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetDouble(L"double") == reader2->GetDouble(idxdouble));
+            }
+            isnull = reader2->IsNull(idxgeometry);
+            CPPUNIT_ASSERT(reader2->IsNull(L"geometry") == isnull);
+            if (!isnull)
+            {
+                FdoPtr<FdoByteArray> geomValue1 = reader2->GetGeometry(L"geometry");
+                FdoPtr<FdoByteArray> geomValue2 = reader2->GetGeometry(idxgeometry);
+                CPPUNIT_ASSERT(geomValue1->GetCount() == geomValue2->GetCount());
+                CPPUNIT_ASSERT(memcmp(geomValue1->GetData(), geomValue1->GetData(), geomValue1->GetCount())==0);
+            }
+            isnull = reader2->IsNull(idxint16);
+            CPPUNIT_ASSERT(reader2->IsNull(L"int16") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetInt16(L"int16") == reader2->GetInt16(idxint16));
+            }
+            isnull = reader2->IsNull(idxint32);
+            CPPUNIT_ASSERT(reader2->IsNull(L"int32") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetInt32(L"int32") == reader2->GetInt32(idxint32));
+            }
+            isnull = reader2->IsNull(idxint64);
+            CPPUNIT_ASSERT(reader2->IsNull(L"int64") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetInt64(L"int64") == reader2->GetInt64(idxint64));
+            }
+            isnull = reader2->IsNull(idxdatetime2);
+            CPPUNIT_ASSERT(reader2->IsNull(L"datetime2") == isnull);
+            if (!isnull)
+            {
+                FdoDateTime dt1 = reader2->GetDateTime(L"datetime2");
+                FdoDateTime dt2 = reader2->GetDateTime(idxdatetime2);
+                CPPUNIT_ASSERT(memcmp(&dt1, &dt2, sizeof(FdoDateTime))==0);
+            }
+            isnull = reader2->IsNull(idxdouble2);
+            CPPUNIT_ASSERT(reader2->IsNull(L"double2") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetInt32(L"double2") == reader2->GetInt32(idxdouble2));
+            }
+            isnull = reader2->IsNull(idxgeometry2);
+            CPPUNIT_ASSERT(reader2->IsNull(L"geometry2") == isnull);
+            if (!isnull)
+            {
+                FdoPtr<FdoByteArray> geomValue1 = reader2->GetGeometry(L"geometry2");
+                FdoPtr<FdoByteArray> geomValue2 = reader2->GetGeometry(idxgeometry2);
+                CPPUNIT_ASSERT(geomValue1->GetCount() == geomValue2->GetCount());
+                CPPUNIT_ASSERT(memcmp(geomValue1->GetData(), geomValue1->GetData(), geomValue1->GetCount())==0);
+            }
+            isnull = reader2->IsNull(idxnumber);
+            CPPUNIT_ASSERT(reader2->IsNull(L"number") == isnull);
+            if (!isnull)
+            {
+                CPPUNIT_ASSERT(reader2->GetInt32(L"number") == reader2->GetInt32(idxnumber));
+            }
         }
-
         reader2->Close();
     }
 }

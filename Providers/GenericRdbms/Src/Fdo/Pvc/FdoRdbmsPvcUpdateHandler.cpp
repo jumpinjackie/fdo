@@ -133,6 +133,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
         values[i].propertyName[0] = '\0';
         values[i].name[0] = '\0';
 		values[i].valueNeedsFree = false;
+        values[i].barray = NULL;
     }
     duplicate = new bool[count];
     for (i=0;i<count; i++)

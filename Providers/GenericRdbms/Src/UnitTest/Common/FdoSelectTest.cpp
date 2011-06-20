@@ -1134,39 +1134,61 @@ void FdoSelectTest::feature_geom_query ()
                     FdoPtr<FdoClassDefinition>classDef = myReader->GetClassDefinition();
                     if( classDef )
                     {
-                    FdoPropertiesP props = classDef->GetProperties();
-                    FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
-
-                    CPPUNIT_ASSERT( props->GetCount() == 1 );
-                        DBG( printf("ClassName: %ls\n",classDef->GetName() ) );
-                        classDef->GetName();
-                        DBG( printf("\tId Properties: \n") );
-                        FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = classDef->GetIdentityProperties();
-                        for (int i=0; i<idProperties->GetCount(); i++)
-                        {
-                            FdoPtr<FdoDataPropertyDefinition> idProperty = idProperties->GetItem(i);
-                            DBG( printf("\t\t%d) %ls\n", i+1, idProperty->GetName()) );
-                            idProperty->GetName();
-                        }
-                        DBG( printf("\tBase Properties: \n") );
-                        FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProperties = classDef->GetBaseProperties();
-                        CPPUNIT_ASSERT( baseProperties->GetCount() == 1 );
-                        CPPUNIT_ASSERT( UnitTestUtil::ContainsRdOnlyProp(baseProperties,L"RevisionNumber") );
-                        for (int i=0; i<baseProperties->GetCount(); i++)
-                        {
-                            FdoPtr<FdoPropertyDefinition> baseProperty = static_cast<FdoPropertyDefinition *> (baseProperties->GetItem(i));
-                            DBG( printf("\t\t%d) %ls\n", i+1, baseProperty->GetName()) );
-                            baseProperty->GetName();
-                        }
-                        DBG( printf("\tProperties: \n") );
                         FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
-                        CPPUNIT_ASSERT( properties->GetCount() == 1 );
-                        CPPUNIT_ASSERT( properties->Contains(L"Geometry") );
+                        FdoPtr<FdoClassDefinition> baseClassDef = classDef->GetBaseClass();
+                        if (baseClassDef != NULL)
+                        {
+                            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
+
+                            CPPUNIT_ASSERT( properties->GetCount() == 1 );
+                            DBG( printf("ClassName: %ls\n",classDef->GetName() ) );
+                            classDef->GetName();
+                            DBG( printf("\tId Properties: \n") );
+                            FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = classDef->GetIdentityProperties();
+                            for (int i=0; i<idProperties->GetCount(); i++)
+                            {
+                                FdoPtr<FdoDataPropertyDefinition> idProperty = idProperties->GetItem(i);
+                                DBG( printf("\t\t%d) %ls\n", i+1, idProperty->GetName()) );
+                                idProperty->GetName();
+                            }
+                            DBG( printf("\tBase Properties: \n") );
+                            FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProperties = classDef->GetBaseProperties();
+                            CPPUNIT_ASSERT( baseProperties->GetCount() == 1 );
+                            CPPUNIT_ASSERT( UnitTestUtil::ContainsRdOnlyProp(baseProperties,L"RevisionNumber") );
+                            for (int i=0; i<baseProperties->GetCount(); i++)
+                            {
+                                FdoPtr<FdoPropertyDefinition> baseProperty = static_cast<FdoPropertyDefinition *> (baseProperties->GetItem(i));
+                                DBG( printf("\t\t%d) %ls\n", i+1, baseProperty->GetName()) );
+                                baseProperty->GetName();
+                            }
+                            DBG( printf("\tProperties: \n") );
+                            
+                            CPPUNIT_ASSERT( properties->GetCount() == 1 );
+                            CPPUNIT_ASSERT( properties->Contains(L"Geometry") );
+                        }
+                        else
+                        {
+                            CPPUNIT_ASSERT( properties->GetCount() == 3 );
+                            DBG( printf("ClassName: %ls\n",classDef->GetName() ) );
+                            classDef->GetName();
+                            DBG( printf("\tId Properties: \n") );
+                            FdoPtr<FdoDataPropertyDefinitionCollection> idProperties = classDef->GetIdentityProperties();
+                            for (int i=0; i<idProperties->GetCount(); i++)
+                            {
+                                FdoPtr<FdoDataPropertyDefinition> idProperty = idProperties->GetItem(i);
+                                DBG( printf("\t\t%d) %ls\n", i+1, idProperty->GetName()) );
+                                idProperty->GetName();
+                            }
+
+                            FdoPtr<FdoDataPropertyDefinition> propertyDef = (FdoDataPropertyDefinition*)properties->GetItem(L"RevisionNumber");
+                            CPPUNIT_ASSERT(propertyDef->GetReadOnly());
+                            CPPUNIT_ASSERT( properties->Contains(L"Geometry") );
+                        }
                         for (int i=0; i<properties->GetCount(); i++)
                         {
-                            FdoPtr<FdoPropertyDefinition> property = properties->GetItem(i);
-                            DBG( printf("\t\t%d) %ls\n", i+1, property->GetName()) );
-                            property->GetName();
+                            FdoPtr<FdoPropertyDefinition> prop = properties->GetItem(i);
+                            DBG( printf("\t\t%d) %ls\n", i+1, prop->GetName()) );
+                            prop->GetName();
                         }
                     }
 

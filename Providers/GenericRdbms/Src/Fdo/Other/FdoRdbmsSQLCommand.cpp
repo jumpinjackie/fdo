@@ -527,8 +527,22 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                     FdoParameterValue* pOutPar = HandleStoredProcedureFormat(sqlToExecute, resultSQL2);
                     if (pOutPar != NULL)
                     {
-                        paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
-                        sqlToExecute = resultSQL2.c_str();
+                        // avoid adding same parameter twice
+                        bool addParam = true;
+                        for (size_t idx = 0; idx < paramsUsed.size(); idx++)
+                        {
+                            if (paramsUsed[idx].first == pOutPar)
+                            {
+                                addParam = false;
+                                break;
+                            }
+                        }
+                        if (addParam)
+                            paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
+
+                        // in case SQL was not changed use the old value
+                        if (resultSQL2.size())
+                            sqlToExecute = resultSQL2.c_str();
                     }
                     else
                         sqlToExecute = sqlToExecute2;
@@ -620,8 +634,22 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
             FdoParameterValue* pOutPar = HandleStoredProcedureFormat(sqlToExecute, resultSQL2);
             if (pOutPar != NULL)
             {
-                paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
-                sqlToExecute = resultSQL2.c_str();
+                // avoid adding same parameter twice
+                bool addParam = true;
+                for (size_t idx = 0; idx < paramsUsed.size(); idx++)
+                {
+                    if (paramsUsed[idx].first == pOutPar)
+                    {
+                        addParam = false;
+                        break;
+                    }
+                }
+                if (addParam)
+                    paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
+
+                // in case SQL was not changed use the old value
+                if (resultSQL2.size())
+                    sqlToExecute = resultSQL2.c_str();
             }
             else
                 sqlToExecute = sqlToExecute2;
@@ -680,7 +708,7 @@ FdoParameterValue* FdoRdbmsSQLCommand::HandleStoredProcedureFormat(const wchar_t
         }
     }
     if (!ret || SQLStartsWith(sql, L"{"))
-        return NULL;
+        return ret;
 
     resultSQL = L"{ ?= CALL ";
     resultSQL.append(sql);

@@ -50,20 +50,19 @@ public:
                 free(pBind->null_ind);
 
             // the BLOB value was not allocated
-            if (NULL != pBind->value.strvalue && pBind->type != FdoDataType_BLOB)
+            if (NULL != pBind->value.strvalue)
             {
-                if (pBind->type == FdoRdbmsDataType_Geometry)
-			    {
-                    ((FdoIGeometry*)pBind->value.strvalue)->Release ();
-				    pBind->value.strvalue = NULL;
-			    }
-                else if( pBind->valueNeedsFree )
-			    {
-				    delete[] (char*)pBind->value.strvalue;
-				    pBind->value.strvalue = NULL;
-				    pBind->valueNeedsFree = false;
-			    }
+                if (pBind->type != FdoDataType_BLOB)
+                {
+                    if (pBind->type == FdoRdbmsDataType_Geometry)
+                        ((FdoIGeometry*)pBind->value.strvalue)->Release ();
+                    else if( pBind->valueNeedsFree )
+				        delete[] (char*)pBind->value.strvalue;
+                }
             }
+            if (pBind->barray != NULL && pBind->type == FdoDataType_BLOB)
+                ((FdoByteArray*)pBind->barray)->Release ();
+
             memset (pBind, sizeof(FdoRdbmsPvcBindDef), 0x00);
         }
         usedCnt = 0;
@@ -146,6 +145,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 bind->type = dataType;
                 bind->len = 64;     // Set the length to be 64
                 bind->reader = NULL;
+                bind->barray = NULL;
                 bind->value.strvalue = NULL;
 				bind->valueNeedsFree = false;
                 sprintf(temp, "%d", idx+1); // Parm name are one based
@@ -154,9 +154,21 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 switch(dataType)
                 {
                 case FdoDataType_BLOB:
-                    if (!isNull)
+                    if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+                    }
+                    else
+                    {
+                        if (!isNull)
+                        {
+                            FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
+                            bind->barray = v->GetData();
+                            bind->value.strvalue = (void*)bind->barray->GetData();
+                            statement->Bind((int)(idx+1), RDBI_BLOB, bind->barray->GetCount(), (char*)bind->value.strvalue, NULL);
+                        }
+                        else
+                            statement->Bind((int)(idx+1), RDBI_BLOB, 0, (char*)NULL, bind->null_ind);
                     }
                     break;
                 case FdoDataType_DateTime:
@@ -380,7 +392,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                         bind->type = FdoRdbmsDataType_Geometry;
                         bind->value.strvalue = (char*)g;
                         bind->len = sizeof(gval); // 4 / 8 depends of OS
-                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, bind->null_ind);
+                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, NULL);
                     }
                     else
                     {
@@ -431,6 +443,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 bind->type = dataType;
                 bind->len = 64;     // Set the length to be 64
                 bind->reader = NULL;
+                bind->barray = NULL;
                 bind->value.strvalue = NULL;
 				bind->valueNeedsFree = false;
                 sprintf(temp, "%d", idx+1); // Parm name are one based
@@ -441,8 +454,13 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 case FdoDataType_BLOB:
                     if (!isNull)
                     {
-                        // TODO
+                        FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
+                        bind->barray = v->GetData();
+                        bind->value.strvalue = (void*)bind->barray->GetData();
+                        statement->Bind((int)(idx+1), RDBI_BLOB, bind->barray->GetCount(), (char*)bind->value.strvalue, NULL);
                     }
+                    else
+                        statement->Bind((int)(idx+1), RDBI_BLOB, 0, (char*)NULL, bind->null_ind);
                     break;
                 case FdoDataType_DateTime:
                     if (!isNull)
@@ -563,7 +581,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     bind->type = FdoRdbmsDataType_Geometry;
                     bind->value.strvalue = (char*)g;
                     bind->len = sizeof(gval); // 4 / 8 depends of OS
-                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, bind->null_ind);
+                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, NULL);
                 }
                 else
                 {

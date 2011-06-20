@@ -182,7 +182,7 @@ FdoPropertyType FdoRdbmsSQLDataReader::GetPropertyType(FdoInt32 index)
 
 bool FdoRdbmsSQLDataReader::GetBoolean(const wchar_t* columnName)
 {
-    return (FdoRdbmsSQLDataReader::GetBoolean(NameToIndex(columnName)) != 0);
+    return FdoRdbmsSQLDataReader::GetBoolean(NameToIndex(columnName));
 }
 
 FdoBoolean FdoRdbmsSQLDataReader::GetBoolean(FdoInt32 index)
@@ -496,13 +496,11 @@ bool FdoRdbmsSQLDataReader::ReadNext()
 
     if ( ! mQueryResult->ReadNext() )
     {
-        mQueryResult->Close();
-        delete mQueryResult;
-        mQueryResult = NULL;
+        Close();
         return false;
     }
 
- 	for (int i=0; i<mColCount; i++)
+ 	for (int i=0; i < mColCount; i++)
 		mSprops[i].valid = 0;
 
     return (mHasMoreRows = true);
@@ -510,13 +508,13 @@ bool FdoRdbmsSQLDataReader::ReadNext()
 
 void FdoRdbmsSQLDataReader::Close()
 {
-  // Free all the cursors
-  if ( mQueryResult != NULL )
-  {
-    mHasMoreRows = false;
-    mQueryResult->Close();
-    delete mQueryResult;
-    mQueryResult = NULL;
-  }
+    // Free all the cursors
+    if ( mQueryResult != NULL )
+    {
+        mHasMoreRows = false;
+        mQueryResult->Close();
+        delete mQueryResult;
+        mQueryResult = NULL;
+    }
 }
 
