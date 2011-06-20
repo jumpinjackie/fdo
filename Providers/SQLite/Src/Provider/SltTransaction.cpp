@@ -27,7 +27,7 @@ FdoString* SltTransaction::AddSavePoint(FdoString* suggestName)
         throw FdoException::Create(L"Savepoint name is null.");
     }
 
-    size_t len = wcslen(suggestName + 16);
+    size_t len = wcslen(suggestName) + 16;
     wchar_t* realName = (wchar_t*)alloca(sizeof(wchar_t)*len);
     wcscpy(realName, suggestName);
 
