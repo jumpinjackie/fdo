@@ -36,6 +36,11 @@
 
 #include <limits>       // For quiet_NaN()
 
+#ifndef _WIN32
+#include<unistd.h>
+  #define _wcsicmp wcscasecmp
+#endif
+
 static  char*  _noMoreRows = "End of rows or ReadNext not called"; // error message that repeats
 static  char*  _strNUllColumnExp = "Column '%1$ls' value is NULL; use IsNull method before trying to access this column value";
 
