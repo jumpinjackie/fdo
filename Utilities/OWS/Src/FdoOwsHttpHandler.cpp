@@ -391,7 +391,7 @@ void FdoOwsHttpHandler::Proc()
         if (rv != CURLE_OK) break;
 
         // set behavior options
-#ifdef _DEBUG // for debug
+#ifdef VERBOSE // for debug
         rv = curl_easy_setopt(curlHandle, CURLOPT_VERBOSE, CURL_TRUE);
         if (rv != CURLE_OK) break;
 #endif
