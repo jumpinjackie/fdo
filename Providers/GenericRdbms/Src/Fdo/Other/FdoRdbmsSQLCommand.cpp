@@ -22,6 +22,7 @@
 #include "FdoRdbmsSQLDataReader.h"
 #include "FdoRdbmsUtil.h"
 #include "Fdo/Pvc/FdoRdbmsPropBindHelper.h"
+#include "FdoRdbmsSchemaUtil.h"
 
 #define SQL_CLEANUP \
         if ( qid != -1) \
@@ -500,14 +501,22 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
         const wchar_t* lastPos = NULL;
         GdbiConnection* gdbiConn = m_DbiConnection->GetGdbiConnection();
 
-        if ((SQLStartsWith(m_SqlString, L"CREATE", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")) || 
-            (SQLStartsWith(m_SqlString, L"DROP", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")) ||
-            (SQLStartsWith(m_SqlString, L"ALTER", &lastPos) && SQLStartsWith(lastPos, L"DATABASE")))
+        bool clearSchema = false;
+        bool isNotDdlStmt = true;
+        if (SQLStartsWith(m_SqlString, L"CREATE", &lastPos) || SQLStartsWith(m_SqlString, L"DROP", &lastPos) || SQLStartsWith(m_SqlString, L"ALTER", &lastPos))
         {
-            // for now we cannot have parameters for this kind of select
-            numberOfRows = mFdoConnection->ExecuteDdlNonQuery(m_SqlString);
+            if (SQLStartsWith(lastPos, L"DATABASE")) // for now we cannot have parameters for this kind of select
+            {
+                // we create a new database
+                numberOfRows = mFdoConnection->ExecuteDdlNonQuery(m_SqlString);
+                isNotDdlStmt = false;
+                clearSchema = true;
+            }
+            else if (SQLStartsWith(lastPos, L"TABLE") || SQLStartsWith(lastPos, L"VIEW"))
+                clearSchema = true;
         }
-        else
+        // in case schema do not change...
+        if (isNotDdlStmt)
         {
             FdoString* sqlToExecute = NULL;
             std::wstring resultSQL;
@@ -570,11 +579,20 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                                 break;
                             }
                         }
+                        // if we have at least one output parameter just process the value
                         if (vParams.size() != 0)
                         {
                             FdoPtr<FdoLiteralValue> pVal = pOutPar->GetValue();
                             delete statement;
                             m_bindHelper->Clear();
+                            if (clearSchema) // clear cached schema
+                            {
+                                FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
+                                pschemaManager->Clear();
+                            }
+                            else // we ran a stored procedure, in case caller will call Flush we need to release the schema
+                                mFdoConnection->SetEnforceClearSchAtFlush(true);
+
                             return m_bindHelper->GetIntValueToRet(pVal);
                         }
                     }
@@ -590,6 +608,13 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
             }
             else
                 numberOfRows = gdbiConn->ExecuteNonQuery(m_SqlString);
+        }
+
+        // Do we have to clear cached schema?
+        if (clearSchema)
+        {
+            FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
+            pschemaManager->Clear();
         }
     }
     catch (FdoException *ex)
@@ -679,7 +704,11 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
                     }
                 }
                 if (vParams.size() != 0)
+                {
+                    // we ran a stored procedure, in case caller will call Flush we need to release the schema
+                    mFdoConnection->SetEnforceClearSchAtFlush(true);
                     return new FdoOutParamSQLDataReader(vParams);
+                }
             }
             m_bindHelper->Clear();
         }

@@ -96,7 +96,8 @@ FdoRdbmsConnection::FdoRdbmsConnection() :
 	mTransactionStarted(false),
     mUserNum(-1),
     mUserSessionId(-1),
-	mLongTransactionManager(NULL)
+	mLongTransactionManager(NULL),
+    mEnforceClearSchAtFlush(false)
 {
      mDbiConnection = new DbiConnection( );
 }
@@ -172,6 +173,7 @@ void FdoRdbmsConnection::SetConfiguration(FdoIoStream* configStream)
 
 void FdoRdbmsConnection::Close ()
 {
+    mEnforceClearSchAtFlush = false;
     if( mDbiConnection != NULL && mState != FdoConnectionState_Closed)
     {
         mState = FdoConnectionState_Closed;

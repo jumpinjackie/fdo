@@ -59,6 +59,7 @@ protected:
     FdoISchemaCapabilities          *mSchemaCapabilities;
     FdoIFilterCapabilities          *mFilterCapabilities;
     FdoIExpressionCapabilities      *mExpressionCapabilities;
+    bool                            mEnforceClearSchAtFlush;
 
     virtual ~FdoRdbmsConnection ();
     FdoRdbmsConnection ();
@@ -311,6 +312,9 @@ public:
     virtual void Flush() {}
 
     virtual FdoInt32 ExecuteDdlNonQuery(FdoString* sql);
+
+    virtual bool GetEnforceClearSchAtFlush() {return mEnforceClearSchAtFlush;}
+    virtual void SetEnforceClearSchAtFlush(bool value) {mEnforceClearSchAtFlush = value;}
 protected:
     //Instantiates the right Schema Manager for this connection's provider.
     virtual FdoSchemaManagerP NewSchemaManager(
