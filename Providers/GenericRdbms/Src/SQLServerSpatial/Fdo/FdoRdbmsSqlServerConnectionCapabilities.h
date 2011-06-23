@@ -53,6 +53,8 @@ public:
     // one time.
     virtual bool SupportsMultiUserWrite();
 
+    virtual bool SupportsFlush() { return true; }
+
 protected:
     ~FdoRdbmsSqlServerConnectionCapabilities(void);
     virtual void Dispose();

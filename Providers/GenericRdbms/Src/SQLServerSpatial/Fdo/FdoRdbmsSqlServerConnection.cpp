@@ -661,3 +661,12 @@ FdoInt32 FdoRdbmsSqlServerConnection::ExecuteDdlNonQuery(FdoString* sql)
         gdbiCommands->autocommit_off();
     return retVal;
 }
+
+void FdoRdbmsSqlServerConnection::Flush()
+{
+    if (mEnforceClearSchAtFlush) // clear cached schema
+    {
+        FdoSchemaManagerP pschemaManager = GetSchemaManager();
+        pschemaManager->Clear();
+    }
+}

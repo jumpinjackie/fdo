@@ -109,6 +109,8 @@ public:
 
     virtual long GetSpatialGeometryVersion() { return mGeomVersion; }
 
+    virtual void Flush();
+
     //
     // Convert time_t( FdoDateTime ) to a SqlServer string date of the form.
     // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
