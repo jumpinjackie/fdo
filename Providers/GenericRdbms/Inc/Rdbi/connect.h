@@ -47,7 +47,7 @@ typedef struct sp_entry_def {
         char* cString;
         wchar_t* wString;
     };
-    sp_entry_def*    next;
+    struct sp_entry_def*    next;
 }sp_entry_def;
 
 typedef struct rdbi_connect_def {
