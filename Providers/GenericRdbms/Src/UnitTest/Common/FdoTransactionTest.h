@@ -46,6 +46,8 @@ class FdoTransactionTest : public CppUnit::TestCase
     virtual void connect();
 
  protected:
+    virtual void CreateTestDataStore();
+    virtual void DestroyTestDataStore();
     virtual void CreateTestSchema();
     virtual void DropTestSchema();
     virtual void set_provider() {};

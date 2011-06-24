@@ -31,6 +31,7 @@ FdoTransactionTest::~FdoTransactionTest(void)
 void FdoTransactionTest::setUp ()
 {
     set_provider();
+    CreateTestDataStore();
     connect();
     CreateTestSchema();
 }
@@ -38,6 +39,7 @@ void FdoTransactionTest::setUp ()
 void FdoTransactionTest::tearDown ()
 {
     DropTestSchema();
+    DestroyTestDataStore();
     if( mConnection != NULL )
         mConnection->Close();
     mConnection = NULL;
@@ -47,12 +49,12 @@ void FdoTransactionTest::connect ()
 {
     try
     {
-        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection(L"", true);
+        mConnection = (FdoIConnection *) UnitTestUtil::GetConnection(L"TranTest");
     }
     catch (FdoException *ex)
     {
         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
-        if( mConnection != NULL )
+        if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
             mConnection->Close();
         mConnection= NULL;
         ex->Release();
@@ -60,6 +62,44 @@ void FdoTransactionTest::connect ()
     }
 }
 
+void FdoTransactionTest::CreateTestDataStore()
+{
+    try
+    {
+        DestroyTestDataStore();
+        UnitTestUtil::CreateDB(false, false, L"TranTest");
+    }
+    catch(FdoException* ex)
+    {
+         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
+        if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
+            mConnection->Close();
+        mConnection= NULL;
+        ex->Release();
+        throw;
+    }
+}
+
+void FdoTransactionTest::DestroyTestDataStore()
+{
+    try
+    {
+        if(mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
+        {
+            mConnection->Close();
+        }
+        UnitTestUtil::DropDb(L"TranTest");
+    }
+    catch(FdoException* ex)
+    {
+         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
+        if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
+            mConnection->Close();
+        mConnection= NULL;
+        ex->Release();
+        throw;
+    }
+}
 
 void FdoTransactionTest::CreateTestSchema()
 {
@@ -68,29 +108,14 @@ void FdoTransactionTest::CreateTestSchema()
     {
         try
         {
-            FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts*) mConnection->CreateCommand( FdoCommandType_GetSpatialContexts );
-            gscCmd->SetActiveOnly(false);
-            FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
+            FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
+            cscCmd->SetName(L"TestContext"); 
+            cscCmd->SetDescription(L"For testing only");
+            cscCmd->SetCoordinateSystem(L"");
+            cscCmd->Execute();
 
-            if  ( !reader->ReadNext() ) 
-            {
-                FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
-                cscCmd->SetName(L"TestContext"); 
-                cscCmd->SetDescription(L"For testing only");
-                cscCmd->SetCoordinateSystem(L"");
-                cscCmd->Execute();
-            }
-
-            FdoPtr<FdoIDescribeSchema>  pDescSchemaCmd = (FdoIDescribeSchema*) mConnection->CreateCommand(FdoCommandType_DescribeSchema);
-            FdoFeatureSchemasP  fsc = pDescSchemaCmd->Execute();
-            FdoFeatureSchema* transSchema;
-            transSchema = fsc->FindItem(L"TestTransaction");
-            if(transSchema != NULL)
-            {
-                testSchema = transSchema;
-            }
-            
-            transSchema = FdoFeatureSchema::Create(L"TestTransaction", L"Schema of the transaction test");
+          
+            FdoPtr<FdoFeatureSchema> transSchema = FdoFeatureSchema::Create(L"TestTransaction", L"Schema of the transaction test");
             FdoPtr<FdoFeatureClass> testFc = FdoFeatureClass::Create(L"TestTransactionClass", L"Feature class for transaction test");    
             FdoPtr<FdoClassCollection>(transSchema->GetClasses())->Add(testFc);
             FdoPtr<FdoPropertyDefinitionCollection> properties = testFc->GetProperties();
@@ -104,11 +129,6 @@ void FdoTransactionTest::CreateTestSchema()
             FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"name", L"");
             dpd->SetDataType(FdoDataType_String);
             dpd->SetLength(64);
-            properties->Add(dpd);
-
-            dpd = FdoDataPropertyDefinition::Create(L"amount", L"");
-            dpd->SetDataType(FdoDataType_Decimal);
-            dpd->SetPrecision(2);
             properties->Add(dpd);
 
             dpd = FdoDataPropertyDefinition::Create(L"is_true", L"");
