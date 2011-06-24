@@ -36,6 +36,7 @@ mConnection( NULL )
     mConnection->GetGdbiCommands()->tran_begin(mTransactionName);
     mTransactionStarted = TRUE;
     mFdoConnection->SetIsTransactionStarted(true);
+    m_savepoints = FdoStringCollection::Create();
 }
 
 
@@ -50,6 +51,7 @@ FdoRdbmsFeatureTransaction::~FdoRdbmsFeatureTransaction()
             SynchSchema();
         }
     }
+    m_savepoints->Clear();
     FDO_SAFE_RELEASE(mFdoConnection);
 }
 
@@ -60,6 +62,7 @@ void FdoRdbmsFeatureTransaction::Commit()
         mTransactionStarted = FALSE;
         mFdoConnection->SetIsTransactionStarted(false);
         mConnection->GetGdbiCommands()->tran_end(mTransactionName);
+        m_savepoints->Clear();
     }
 }
 
@@ -71,22 +74,95 @@ void FdoRdbmsFeatureTransaction::Rollback()
         mFdoConnection->SetIsTransactionStarted(false);
         mConnection->GetGdbiCommands()->tran_rolbk();
         SynchSchema();
+        m_savepoints->Clear();
     }
 }
 
-FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestSavePoint)
+FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestName)
 {
-    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+    
+    if(suggestName == NULL || wcslen(suggestName) == 0)
+    {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+    }
+    
+    FdoStringP realName;
+    try
+    {
+        realName = suggestName;
+        int postfixCount = 0;
+        while(true)
+        {
+            postfixCount++;
+            if(!mConnection->GetGdbiCommands()->sp_exists(realName))
+            {
+                break;
+            }
+            realName = FdoStringP::Format(L"%ls%d", (FdoString*)realName, postfixCount);
+        }
+        mConnection->GetGdbiCommands()->sp_add(realName);
+    }
+    catch(GdbiException* ex)
+    {
+        throw FdoException::Create(ex->GetExceptionMessage(), ex->GetCause(), ex->GetNativeErrorCode());
+    }
+    
+    return  m_savepoints->GetString(m_savepoints->Add(realName));;
 }
 
 void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
 {
-    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+ 
+    if(savePointName == NULL || wcslen(savePointName) == 0)
+    {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+    }
+    
+    if(!mConnection->GetGdbiCommands()->sp_exists(savePointName))
+    {	
+        FdoStringP errorMessage = FdoException::NLSGetMessage(FDO_NLSID(FDO_187_SAVEPOINT_NOT_EXIST), savePointName);
+        throw  FdoException::Create(errorMessage);
+    }
+
+    try
+    {
+        mConnection->GetGdbiCommands()->sp_release(savePointName);
+    }
+    catch(GdbiException* ex)
+    {
+        throw FdoException::Create(ex->GetExceptionMessage(), ex->GetCause(), ex->GetNativeErrorCode());
+    }
 }
 
 void FdoRdbmsFeatureTransaction::Rollback(FdoString* savePointName)
 {
-    throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+        throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
+
+    if(savePointName == NULL || wcslen(savePointName) == 0)
+    {
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_14_NULLSTRING)));
+    }
+    
+    if(!mConnection->GetGdbiCommands()->sp_exists(savePointName))
+    {	
+        FdoStringP errorMessage = FdoException::NLSGetMessage(FDO_NLSID(FDO_187_SAVEPOINT_NOT_EXIST), savePointName);
+        throw  FdoException::Create(errorMessage);
+    }
+    
+    try
+    {
+        FdoStringP name = savePointName;
+        mConnection->GetGdbiCommands()->sp_rollback(name);
+    }
+    catch(GdbiException* ex)
+    {
+        throw FdoException::Create(ex->GetExceptionMessage(), ex->GetCause(), ex->GetNativeErrorCode());
+    }
 }
 
 FdoIConnection* FdoRdbmsFeatureTransaction::GetConnection()

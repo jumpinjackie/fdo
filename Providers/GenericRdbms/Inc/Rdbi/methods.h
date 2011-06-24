@@ -153,6 +153,8 @@ typedef struct rdbi_methods_def {
 	int  (*autocommit_off)(void*);
 	int  (*autocommit_mode)(void*);
     int  (*tran_begin)(void*);
+    int  (*tran_sp)(void*,int,const char*);
+    int  (*tran_spW)(void*,int,const wchar_t*);
     rdbi_driver_capabilities_def    capabilities;
 
 } rdbi_methods_def, *rdbi_methods;

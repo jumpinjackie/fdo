@@ -194,6 +194,11 @@ public:
 
     int tran_rolbk( );
 
+    int sp_add(FdoStringP sp);
+    int sp_rollback(FdoStringP sp);
+    int sp_release(FdoStringP sp);
+    bool sp_exists(FdoStringP sp);
+
 	int	autocommit_on();
 	int autocommit_off();
 	int autocommit_mode();

@@ -1016,6 +1016,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Common\FdoTransactionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Common\FdoTransactionTest.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Common\FdoUpdateTest.cpp"
 				>
 			</File>
@@ -1333,6 +1341,14 @@
 			</File>
 			<File
 				RelativePath=".\SQLServerSpatial\SqlServerFdoSqlCmdTest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoTransactionTest.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SQLServerSpatial\SqlServerFdoTransactionTest.h"
 				>
 			</File>
 			<File

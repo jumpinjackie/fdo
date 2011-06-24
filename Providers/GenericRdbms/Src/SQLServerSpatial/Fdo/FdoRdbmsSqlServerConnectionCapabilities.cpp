@@ -63,3 +63,8 @@ bool FdoRdbmsSqlServerConnectionCapabilities::SupportsMultiUserWrite()
 {
     return true;
 }
+
+bool FdoRdbmsSqlServerConnectionCapabilities::SupportsSavePoint()
+{
+    return true;
+}

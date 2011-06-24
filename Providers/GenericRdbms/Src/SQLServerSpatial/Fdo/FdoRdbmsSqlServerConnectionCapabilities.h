@@ -39,6 +39,9 @@ public:
     /// <returns>Returns the list of lock types</returns>
     virtual FdoLockType* GetLockTypes(FdoInt32& size);
 
+    //  Returns true if the feature provider supports save point.
+    virtual bool SupportsSavePoint();
+    
     // Returns true if the feature provider supports long transactions.
     virtual bool SupportsLongTransactions();
 

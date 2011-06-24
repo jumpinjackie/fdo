@@ -155,6 +155,21 @@ SymbolicName=RDBI_36
 Language=English
 RDBMS: Invalid dimensionality for geometry value.
 .
+MessageId=1790
+SymbolicName=RDBI_37
+Language=English
+RDBMS: Save point '%1$ls' does not exist.
+.
+MessageId=1791
+SymbolicName=RDBI_38
+Language=English
+RDBMS: Save point '%1$ls' already exists.
+.
+MessageId=1792
+SymbolicName=RDBI_39
+Language=English
+RDBMS: Invalid operation, no transaction is active.
+.
 MessageId=2206
 SymbolicName=FDORDBMS_1
 Language=English

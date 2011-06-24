@@ -67,6 +67,7 @@ char    *tran_id )
 {
 
     tran_entry_def  *tran_entry;
+    sp_entry_def    *sp_entry;
     int              status;
     int              first = FALSE;
     int              second = FALSE;
@@ -155,6 +156,21 @@ char    *tran_id )
         if (context->rdbi_last_status == RDBI_SUCCESS ||
             context->rdbi_last_status == RDBI_END_OF_FETCH)
             status = (rdbi_commit(context) == 0);
+
+        /* Free save point stack */
+        for(sp_entry = context->rdbi_cnct->sp_head; sp_entry != NULL; sp_entry = context->rdbi_cnct->sp_head)
+        {
+            context->rdbi_cnct->sp_head = sp_entry->next;
+            if(context->dispatch.capabilities.supports_unicode)
+            {
+                (void)ut_vm_free("rdbi_tran_end", sp_entry->wString);
+            }
+            else
+            {
+                (void)ut_vm_free("rdbi_tran_end", sp_entry->cString);
+            }
+            (void)ut_vm_free("rdbi_tran_end", sp_entry);
+        }
 
     } else {                                /* Track down problem areas */
         debug_area() {

@@ -310,6 +310,7 @@
     <ClCompile Include="Common\FdoSelectTest.cpp" />
     <ClCompile Include="Common\FdoSpatialContextTest.cpp" />
     <ClCompile Include="Common\FdoSqlCmdTest.cpp" />
+    <ClCompile Include="Common\FdoTransactionTest.cpp" />
     <ClCompile Include="Common\FdoUpdateTest.cpp" />
     <ClCompile Include="Common\GeometryTests.cpp" />
     <ClCompile Include="Common\MessageTest.cpp" />
@@ -318,6 +319,7 @@
     <ClCompile Include="Common\SelectTests.cpp" />
     <ClCompile Include="Common\SchemaOverrideUtil.cpp" />
     <ClCompile Include="SQLServerSpatial\SqlServerConnectionUtil.cpp" />
+    <ClCompile Include="SQLServerSpatial\SqlServerFdoTransactionTest.cpp" />
     <ClCompile Include="SQLServerSpatial\SqlServerSchemaOverrideUtil.cpp" />
     <ClCompile Include="SQLServerSpatial\SqlServerTestRegister.cpp" />
     <ClCompile Include="Common\UnitTestUtil.cpp" />
@@ -396,6 +398,7 @@
     <ClInclude Include="Common\FdoSelectTest.h" />
     <ClInclude Include="Common\FdoSpatialContextTest.h" />
     <ClInclude Include="Common\FdoSqlCmdTest.h" />
+    <ClInclude Include="Common\FdoTransactionTest.h" />
     <ClInclude Include="Common\FdoUpdateTest.h" />
     <ClInclude Include="Common\GeometryTests.h" />
     <ClInclude Include="Common\MessageTest.h" />
@@ -404,6 +407,7 @@
     <ClInclude Include="Common\SelectTests.h" />
     <ClInclude Include="Common\SchemaOverrideUtil.h" />
     <ClInclude Include="SQLServerSpatial\SqlServerConnectionUtil.h" />
+    <ClInclude Include="SQLServerSpatial\SqlServerFdoTransactionTest.h" />
     <ClInclude Include="SQLServerSpatial\SqlServerSchemaOverrideUtil.h" />
     <ClInclude Include="Common\StringPropertiesDictionary.h" />
     <ClInclude Include="Common\UnitTestUtil.h" />

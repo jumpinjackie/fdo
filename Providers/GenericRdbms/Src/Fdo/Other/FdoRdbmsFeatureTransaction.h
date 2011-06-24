@@ -65,6 +65,7 @@ public:
       char mTransactionName[32];
       DbiConnection* mConnection;
       int mTransactionStarted;
+      FdoStringsP m_savepoints;
       FdoRdbmsConnection* mFdoConnection;
 };
 

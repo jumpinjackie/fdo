@@ -51,6 +51,7 @@ int
 rdbi_tran_rolbk(rdbi_context_def *context)
 {
     tran_entry_def  *tran_entry;
+    sp_entry_def    *sp_entry;
     int             rc;
     int             status = FALSE;
     int             sqlid = -1;
@@ -77,6 +78,21 @@ rdbi_tran_rolbk(rdbi_context_def *context)
                         tran_entry = context->rdbi_cnct->tran_head) {
         context->rdbi_cnct->tran_head = tran_entry->next;
         (void) ut_vm_free("rdbi_tran_rolbk", tran_entry);
+    }
+
+    /* Free save point stack */
+    for(sp_entry = context->rdbi_cnct->sp_head; sp_entry != NULL; sp_entry = context->rdbi_cnct->sp_head)
+    {
+        context->rdbi_cnct->sp_head = sp_entry->next;
+        if(context->dispatch.capabilities.supports_unicode)
+        {
+            (void)ut_vm_free("rdbi_tran_end", sp_entry->wString);
+        }
+        else
+        {
+            (void)ut_vm_free("rdbi_tran_end", sp_entry->cString);
+        }
+        (void)ut_vm_free("rdbi_tran_end", sp_entry);
     }
 
 the_exit:
