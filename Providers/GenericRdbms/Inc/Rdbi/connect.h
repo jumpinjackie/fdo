@@ -41,6 +41,15 @@ typedef struct tran_entry_def {
     int                      tran_ended;
 } tran_entry_def;
 
+typedef struct sp_entry_def {
+    union
+    {
+        char* cString;
+        wchar_t* wString;
+    };
+    sp_entry_def*    next;
+}sp_entry_def;
+
 typedef struct rdbi_connect_def {
     char   *vendor_data;                        /* rdbms-specific information               */
     int     in_use;                             /* TRUE if this connect structure allocated */
@@ -50,6 +59,7 @@ typedef struct rdbi_connect_def {
     int     read_only;                          /* TRUE when transaction is read-only       */
     int     autocommit_on;                      /* TRUE if in autocommit mode               */
     tran_entry_def  *tran_head;                 /* head of transaction id stack             */
+    sp_entry_def    *sp_head;                   /* head of save point stack                 */
 } rdbi_connect_def;
 
 #endif

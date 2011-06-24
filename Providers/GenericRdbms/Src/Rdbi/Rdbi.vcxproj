@@ -342,6 +342,7 @@
     <ClCompile Include="tran_end.c" />
     <ClCompile Include="tran_getid.c" />
     <ClCompile Include="tran_rolbk.c" />
+    <ClCompile Include="tran_sp.c" />
     <ClCompile Include="users_.c" />
     <ClCompile Include="usr_exists.c" />
     <ClCompile Include="version.c" />

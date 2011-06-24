@@ -177,6 +177,7 @@ local_rdbi_connect(
         context->rdbi_cnct->read_only        = FALSE;
         context->rdbi_cnct->autocommit_on    = TRUE;
         context->rdbi_cnct->tran_head        = NULL;
+        context->rdbi_cnct->sp_head          = NULL;
         debug1("connect_id = %d", *connect_id);
 		/* This is to set the autocommit mode. It does not do anything for some drivers. */
 		status = rdbi_autocommit_on(context);

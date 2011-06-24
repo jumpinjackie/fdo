@@ -522,5 +522,10 @@ int rdbi_autocommit_off (rdbi_context_def *context);
 int rdbi_autocommit_mode (rdbi_context_def *context);
 int rdbi_free_all(rdbi_context_def *context);
 
+int rdbi_tran_sp(rdbi_context_def *context, int action, const char* sp_name);
+int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name);
+
+int rdbi_tran_sp_exists(rdbi_context_def *context, const char* sp_name);
+int rdbi_tran_sp_existsW(rdbi_context_def *context, const wchar_t* sp_name);
 #endif /* INC_RDBI_PROTO_H */
 

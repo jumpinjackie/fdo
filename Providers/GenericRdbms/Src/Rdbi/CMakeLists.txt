@@ -49,6 +49,7 @@ set( rdbi_STAT_SRCS
    tran_end.c
    tran_getid.c
    tran_rolbk.c
+   tran_sp.c
    users_.c
    usr_exists.c
    version.c

@@ -188,6 +188,10 @@ int odbcdr_autocommit_off( odbcdr_context_def *context );
 
 int odbcdr_autocommit_mode( odbcdr_context_def *context );
 
+int odbcdr_tran_sp(odbcdr_context_def * context, int action, const char* sp_name);
+
+int odbcdr_tran_spW(odbcdr_context_def * context, int action, const wchar_t* sp_name);
+
 #ifdef _WIN32
     #define odbcdr_swprintf swprintf_s
 #else

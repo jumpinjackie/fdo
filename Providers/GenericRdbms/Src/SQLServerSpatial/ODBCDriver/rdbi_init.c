@@ -142,6 +142,8 @@ odbcdr_rdbi_init(
 	    methods->fetch       		= (int (*)(void*, char*, int, int, int, int*))odbcdr_fetch2;
 	    methods->bind		        = (int (*)(void*, char*, char*, int, int, char*, void*, int))odbcdr_bind;
 	    methods->commit 	        = (int (*)(void*, int))odbcdr_commit;
+        methods->tran_sp           = (int (*)(void*,int,const char*))odbcdr_tran_sp;
+        methods->tran_spW          = (int (*)(void*,int,const wchar_t*))odbcdr_tran_spW;
         // Many others are missing...
 		methods->lob_create_ref     = NULL;
 	    methods->exec_coc	        = NULL;

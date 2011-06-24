@@ -632,12 +632,72 @@ int GdbiCommands::lob_read_next(int sqlid, void *lob_ref, int rdbi_lob_type, uns
 
 	return RDBI_GENERIC_ERROR;
 }
+
+int GdbiCommands::sp_add(FdoStringP sp)
+{
+    CheckDB();
+    int rc = RDBI_GENERIC_ERROR;
+
+	if(SupportsUnicode())
+        rc = ::rdbi_tran_spW (m_pRdbiContext, RDBI_SP_ADD, sp);
+	else
+        rc = ::rdbi_tran_sp (m_pRdbiContext, RDBI_SP_ADD, sp);
+
+    if(rc == RDBI_SUCCESS)
+        return rc;
+
+    ThrowException();
+    return RDBI_GENERIC_ERROR;
+}
+
+int GdbiCommands::sp_rollback(FdoStringP sp)
+{
+    CheckDB();
+    int rc = RDBI_GENERIC_ERROR;
+
+	if(SupportsUnicode())
+        rc = ::rdbi_tran_spW (m_pRdbiContext, RDBI_SP_RB, sp);
+	else
+        rc = ::rdbi_tran_sp (m_pRdbiContext, RDBI_SP_RB, sp);
+
+    if(rc == RDBI_SUCCESS)
+        return rc;
+
+    ThrowException();
+    return RDBI_GENERIC_ERROR;
+}
+
+int GdbiCommands::sp_release(FdoStringP sp)
+{
+    CheckDB();
+    int rc = RDBI_GENERIC_ERROR;
+	if(SupportsUnicode())
+        rc = ::rdbi_tran_spW (m_pRdbiContext, RDBI_SP_RL, sp);
+	else
+        rc = ::rdbi_tran_sp (m_pRdbiContext, RDBI_SP_RL, sp);
+
+    if(rc == RDBI_SUCCESS || rc == RDBI_SP_NOT_SUPPORTED)
+        return rc;
+
+    ThrowException();
+    return RDBI_GENERIC_ERROR;
+}
+
+bool GdbiCommands::sp_exists(FdoStringP sp)
+{
+	if(SupportsUnicode())
+        return ::rdbi_tran_sp_existsW (m_pRdbiContext, sp) ? true: false;
+	else
+        return ::rdbi_tran_sp_exists (m_pRdbiContext, sp) ? true: false;
+}
+
 int GdbiCommands::autocommit_on()
 {
 	int rc = ::rdbi_autocommit_on(m_pRdbiContext);
 
 	return rc;
 }
+
 int GdbiCommands::autocommit_off()
 {
 	int rc = ::rdbi_autocommit_off(m_pRdbiContext);
