@@ -1083,7 +1083,7 @@ void SltExpressionTranslator::ProcessSingleValue(FdoSingleValue& expr)
 void SltExpressionTranslator::ProcessStringValue(FdoStringValue& expr)
 {
     if (!expr.IsNull())
-        m_expr.AppendSQuoted(expr.ToString());
+        m_expr.Append(expr.ToString());
     else
         m_expr.Append("null", 4);
 }
