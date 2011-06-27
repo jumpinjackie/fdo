@@ -392,14 +392,14 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                         bind->type = FdoRdbmsDataType_Geometry;
                         bind->value.strvalue = (char*)g;
                         bind->len = sizeof(gval); // 4 / 8 depends of OS
-                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, NULL);
+                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), bind->len, (char*)&bind->value.strvalue, NULL);
                     }
                     else
                     {
                         bind->type = FdoRdbmsDataType_Geometry;
                         bind->value.strvalue = NULL;
                         bind->len = 0;
-                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, bind->null_ind);
+                        statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry*)), (char*)&bind->value.strvalue, bind->null_ind);
                     }
                 }
             }
@@ -581,14 +581,14 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     bind->type = FdoRdbmsDataType_Geometry;
                     bind->value.strvalue = (char*)g;
                     bind->len = sizeof(gval); // 4 / 8 depends of OS
-                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, NULL);
+                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), bind->len, (char*)&bind->value.strvalue, NULL);
                 }
                 else
                 {
                     bind->type = FdoRdbmsDataType_Geometry;
                     bind->value.strvalue = NULL;
                     bind->len = 0;
-                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry)), (char*)&bind->value.strvalue, bind->null_ind);
+                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry*)), (char*)&bind->value.strvalue, bind->null_ind);
                 }
             }
             break;
