@@ -3847,8 +3847,10 @@ case OP_SeekGt: {       /* jump, in3 */
         i64 siKey;
         i64 siStKey = (u64)u.az.iKey + (i64)(u.az.oc==OP_SeekGt);
         if (!p->pSpIterator && p->u.iVarIndex && p->siTopTnum == p->siTnum){
-          assert( p->u.iVarIndex <= p->nVar );
-          sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+          if (p->u.iVarIndex <= p->nVar && p->nVar != 0 && p->u.iVarIndex > 0)
+              sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+          else
+              sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
         }
         p->lowerRowId = siStKey;
         if (p->pSpIterator)
@@ -4817,8 +4819,10 @@ case OP_Rewind: {        /* jump */
     else if ((u.bl.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bl.pC->pCursor) == p->siTnum) && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
       i64 siKey;
       if (!p->pSpIterator && p->u.iVarIndex && p->siTnum == p->siTopTnum){
-        assert( p->u.iVarIndex <= p->nVar );
-        sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+        if (p->u.iVarIndex <= p->nVar && p->nVar != 0 && p->u.iVarIndex > 0)
+          sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+        else
+          sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
       }
       if (p->pSpIterator)
       {
@@ -4909,8 +4913,10 @@ case OP_Next: {        /* jump */
   if ((u.bm.pC->iDb != -1 && sqlite3BtreeRootTableCursor(u.bm.pCrsr) == p->siTnum) && pOp->opcode==OP_Next && !p->spIndexDisabled && (p->pSpIterator || p->pSpIndex)){
     i64 siKey;
     if (!p->pSpIterator && p->u.iVarIndex && p->siTnum == p->siTopTnum){
-      assert( p->u.iVarIndex <= p->nVar );
-      sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+      if (p->u.iVarIndex <= p->nVar && p->nVar != 0 && p->u.iVarIndex > 0)
+        sqlite3GetVdbeSpatialIndex(p, &p->aVar[p->u.iVarIndex-1]);
+      else
+        sqlite3SetVdbeSpatialIterator(p, db->xSpIteratorCallback(p->pSpIndex, p->u.pParam, -1));
     }
     if (p->pSpIterator){
       /* In case we have a max key ensure SI will provide lower keys */

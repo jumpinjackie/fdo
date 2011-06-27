@@ -1351,6 +1351,7 @@ FdoInt32 SltConnection::Update(FdoIdentifier* fcname, FdoFilter* filter,
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
+        bbox.Expand(si->GetXYTolerance());
 
         if (bbox.Contains(total_ext))
         {
@@ -1542,6 +1543,7 @@ FdoInt32 SltConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter, FdoPara
 
         DBounds total_ext;
         si->GetTotalExtent(total_ext);
+        bbox.Expand(si->GetXYTolerance());
 
         if (bbox.Contains(total_ext))
         {
@@ -3928,9 +3930,10 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
         szBlob = geomArray->GetCount();
     }
     GetFgfExtents((const unsigned char*)blob, szBlob, (double*)&ext);
-    SltSpatialIterator* siter = NULL;
     DBounds total_ext;
     sidVal->GetTotalExtent(total_ext);
+    ext.Expand(sidVal->GetXYTolerance());
+
     if (ext.Contains(total_ext))
     {
         //only use spatial iterator if the search bounds does not
@@ -3938,9 +3941,12 @@ void* SltConnection::sqlite3_spatial_iterator(void* sid, const void* blob, int s
         return (void*)-1; // we do not have to use SI
     }
     else if (ext.Intersects(total_ext))
-        siter = sidVal->GetIterator(ext);
+        return sidVal->GetIterator(ext);
 
-    return siter;
+    // Returning NULL here will make sqlite engine to run a full table scan at extents edges!!
+    // To avoid allocating lots of iterators we can return a static empty iterator
+    // since this iterator do not change is safe to read from it.
+    return (void*)SltSpatialIterator::EmptyIterator();
 }
 
 sqlite3_int64 SltConnection::sqlite3_spatial_iterator_readnext(void* siit)
@@ -3952,7 +3958,8 @@ sqlite3_int64 SltConnection::sqlite3_spatial_iterator_readnext(void* siit)
 void SltConnection::sqlite3_spatial_iterator_release(void* siit)
 {
     SltSpatialIterator* siitToRel = static_cast<SltSpatialIterator*>(siit);
-    delete siitToRel;
+    if (siitToRel->MustBeDeleted())
+        delete siitToRel;
 }
 
 void SltConnection::sqlite3_spatial_iterator_reset(void* siit)
