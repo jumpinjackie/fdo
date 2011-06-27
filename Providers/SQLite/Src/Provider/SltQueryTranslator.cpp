@@ -931,6 +931,12 @@ void SltExpressionTranslator::ProcessIdentifier(FdoIdentifier& expr)
                 }
             }
         }
+        else if (_wcsicmp(expr.GetName(), L"rowid") == 0 || _wcsicmp(expr.GetName(), L"oid") == 0
+            || _wcsicmp(expr.GetName(), L"_rowid_") == 0) // allow rowid in expressions
+        {
+            m_expr.Append(expr.GetName());
+            return;
+        }
         else
         {
             std::wstring err(L"The property '");
