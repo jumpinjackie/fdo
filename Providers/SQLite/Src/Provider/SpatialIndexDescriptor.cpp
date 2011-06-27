@@ -142,10 +142,22 @@ SltSpatialIterator* SpatialIndexDescriptor::GetIterator(const DBounds& bbox)
 }
 
 
+SltSpatialIterator::SltSpatialIterator()
+{
+    m_impl = NULL;
+    m_mustBeDeleted = false;
+
+#ifdef USE_RTREE
+#else
+    m_curfid = 0; //position prior to first record
+    m_siEnd = -1;
+#endif
+}
 
 SltSpatialIterator::SltSpatialIterator(SpatialIteratorImpl* impl)
 {
     m_impl = impl;
+    m_mustBeDeleted = true;
 
 #ifdef USE_RTREE
 #else
@@ -193,4 +205,11 @@ void SltSpatialIterator::Reset()
     if (m_impl != NULL)
         m_impl->Reset();
 #endif
+}
+
+SltSpatialIterator SltSpatialIterator::m_emptyIt;
+
+const SltSpatialIterator* SltSpatialIterator::EmptyIterator()
+{
+    return &SltSpatialIterator::m_emptyIt;
 }

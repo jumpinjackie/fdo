@@ -99,11 +99,19 @@ public:
     SltSpatialIterator(SpatialIteratorImpl* impl);
     ~SltSpatialIterator();
 
+public:
+    static const SltSpatialIterator* EmptyIterator();
+    bool MustBeDeleted() {return m_mustBeDeleted;}
+
     __int64 Next();
     void Reset();
 
 private:
+    SltSpatialIterator();
+
     SpatialIteratorImpl* m_impl;
+    static SltSpatialIterator m_emptyIt;
+    bool m_mustBeDeleted;
 
 #ifdef USE_RTREE
 #else
