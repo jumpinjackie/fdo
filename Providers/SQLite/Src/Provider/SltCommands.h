@@ -751,12 +751,27 @@ class SltInsert : public SltCommand<FdoIInsert>
             //IMPORTANT: use a transaction-less reader so that
             //it does not commit the insert when disposed. SQLite 
             //does not do nested transactions!
-			if (!m_idProp)
+			if (!m_idProp || (id == 0 && m_idProp))
 			{
-				std::vector<__int64>* rowids = new std::vector<__int64>();
-				rowids->push_back(id);
-				RowidIterator* ri = new RowidIterator(1, rowids);
-				return new DelayedInitReader(m_connection, NULL, m_fcname.c_str(), "", ri);
+                if (!m_idProp)
+                {
+				    std::vector<__int64>* rowids = new std::vector<__int64>();
+				    rowids->push_back(id);
+				    RowidIterator* ri = new RowidIterator(1, rowids);
+				    return new DelayedInitReader(m_connection, NULL, m_fcname.c_str(), "", ri);
+                }
+                else // this is a really rare case when last insert rowid is 0 because of a trigger
+                {
+                    std::wstring sqlExp(L"max(rowid) AS \"");
+                    sqlExp.append(m_idProp->GetName());
+                    sqlExp.append(L"\"");
+                    FdoPtr<FdoComputedIdentifier> cid = static_cast<FdoComputedIdentifier*>(FdoExpression::Parse(sqlExp.c_str()));
+                    FdoPtr<FdoIdentifierCollection> idfColl = FdoIdentifierCollection::Create();
+                    idfColl->Add(cid);
+                    DelayedInitReader* rdr = new DelayedInitReader(m_connection, idfColl, m_fcname.c_str(), "", NULL);
+                    rdr->SetDataValidation(m_properties, m_idProp);
+                    return rdr;
+                }
 			}
 			else
 				return new SltIdReader(m_idProp, id);

@@ -1692,7 +1692,9 @@ DelayedInitReader::DelayedInitReader(   SltConnection*              connection,
 : SltReader(connection),
 m_bInit(false),
 m_fcname(fcname),
-m_where(strWhere)
+m_where(strWhere),
+m_providedValues(NULL),
+m_clsKey(NULL)
 {
     m_ri = ri;
     m_props = FDO_SAFE_ADDREF(props);   
@@ -1701,12 +1703,50 @@ m_where(strWhere)
 DelayedInitReader::~DelayedInitReader()
 {
     FDO_SAFE_RELEASE(m_props);
+    FDO_SAFE_RELEASE(m_providedValues);
+    FDO_SAFE_RELEASE(m_clsKey);
 }
 
 bool DelayedInitReader::ReadNext()
 {
     if (!m_bInit)
     {
+        if (m_providedValues != NULL && m_clsKey != NULL)
+        {
+            FdoPtr<FdoPropertyValue> pKeyVal = m_providedValues->FindItem(m_clsKey->GetName());
+            if (pKeyVal != NULL) // PK was provided and sqlite3_last_insert_rowid = 0 - this is really rare case
+            {
+                FdoPtr<FdoValueExpression> pVal = pKeyVal->GetValue();
+			    std::vector<__int64>* rowids = new std::vector<__int64>();
+                if (FdoExpressionItemType_DataValue == pVal->GetExpressionType())
+                {
+                    FdoDataValue* pDv = static_cast<FdoDataValue*>(pVal.p);
+                    switch (pDv->GetDataType())
+                    {
+                    case FdoDataType_Byte:
+                        rowids->push_back((FdoInt64)static_cast<FdoByteValue*>(pDv)->GetByte());
+                        break;
+                    case FdoDataType_Int16:
+                        rowids->push_back((FdoInt64)static_cast<FdoInt16Value*>(pDv)->GetInt16());
+                        break;
+                    case FdoDataType_Int32:
+                        rowids->push_back((FdoInt64)static_cast<FdoInt32Value*>(pDv)->GetInt32());
+                        break;
+                    case FdoDataType_Int64:
+                        rowids->push_back((FdoInt64)static_cast<FdoInt64Value*>(pDv)->GetInt64());
+                        break;
+                    default: // we should never be here
+                        delete rowids;
+                        throw FdoCommandException::Create(L"Invalid data type.");
+                    }
+                }
+                else
+                    rowids->push_back(0);
+			    m_ri = new RowidIterator(1, rowids);
+                FDO_SAFE_RELEASE(m_props);
+            }
+            // else PK was not provided and sqlite3_last_insert_rowid = 0
+        }
         DelayedInit(m_props, m_fcname.c_str(), m_where.c_str(), "", true);
         m_bInit = true;
     }
