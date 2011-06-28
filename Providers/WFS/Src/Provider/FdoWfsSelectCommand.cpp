@@ -306,7 +306,7 @@ FdoIFeatureReader* FdoWfsSelectCommand::Execute ()
 
             //TODO: Use Expression Engine to handle filters that reference functions not supported
             //by the WFS. Need to parse out function list from WFS capabilities first.
-            ret =  new FdoExpressionEngineUtilFeatureReader(
+            ret = FdoExpressionEngineUtilFeatureReader::Create(
                 clsdef,
                 ret, 
                 NULL,

@@ -156,7 +156,7 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
                                                                     functions,
                                                                     idCol,
                                                                     exprType);
-        return new FdoExpressionEngineUtilDataReader(functions,
+        return FdoExpressionEngineUtilDataReader::Create(functions,
                                                      featureReader,
                                                      classDef,
                                                      idCol,

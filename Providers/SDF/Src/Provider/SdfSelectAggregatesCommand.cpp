@@ -121,7 +121,7 @@ FdoIDataReader* SdfSelectAggregatesCommand::Execute ()
 		reader = selectCmd->Execute();
 	}
 
-    FdoPtr<FdoIDataReader> dataReader = new FdoExpressionEngineUtilDataReader(funcDefs, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
+    FdoPtr<FdoIDataReader> dataReader = FdoExpressionEngineUtilDataReader::Create(funcDefs, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
     return FDO_SAFE_ADDREF(dataReader.p);
 }
 

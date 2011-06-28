@@ -124,7 +124,7 @@ FdoIDataReader* ShpSelectAggregatesCommand::Execute ()
 	FdoPtr<FdoIExpressionCapabilities> expressionCaps = conn->GetExpressionCapabilities();
     FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
 
-    FdoPtr<FdoIDataReader> dataReader = new FdoExpressionEngineUtilDataReader(functions, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
+    FdoPtr<FdoIDataReader> dataReader = FdoExpressionEngineUtilDataReader::Create(functions, reader, originalClassDef, selectedIds, m_bDistinct, m_OrderingIds, m_eOrderingOption, ids, aggrIdents);
     return FDO_SAFE_ADDREF(dataReader.p);
 }
 
