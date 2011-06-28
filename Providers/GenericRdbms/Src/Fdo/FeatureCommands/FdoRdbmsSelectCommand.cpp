@@ -175,7 +175,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
 			FdoExpressionEngineFunctionCollection *userDefinedFunctions = GetUserDefinedFunctions( schemas->GetSpatialContextMgr()->GetSpatialContexts(), classDef );
 
-			return new FdoExpressionEngineUtilFeatureReader(
+			return FdoExpressionEngineUtilFeatureReader::Create(
                                                         classDef,
                                                         featureReader, 
                                                         this->GetFilterRef(),
