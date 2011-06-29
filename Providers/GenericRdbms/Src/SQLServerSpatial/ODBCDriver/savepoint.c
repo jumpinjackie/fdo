@@ -118,7 +118,7 @@ int local_tran_sp_add(odbcdr_context_def *context, rdbi_string_def *sp_name)
     }
     else
     {
-        char* sp = (char*) ut_vm_malloc("local_tran_sp_add", sizeof(char) *(wcslen(sp_name->cwString) + 18));
+        char* sp = (char*) ut_vm_malloc("local_tran_sp_add", sizeof(char) *(strlen(sp_name->ccString) + 18));
         wsprintfA(sp, "SAVE TRANSACTION %s", sp_name->ccString);
         rc = odbcdr_run_sql(context, sp, 0, NULL);
         ut_vm_free("local_tran_sp_add", sp);
@@ -131,14 +131,14 @@ int local_tran_sp_rolbk(odbcdr_context_def  *context, rdbi_string_def *sp_name)
     int rc = RDBI_SUCCESS;
     if(context->odbcdr_UseUnicode)
     {
-         wchar_t* sp = (wchar_t*) ut_vm_malloc("local_tran_sp_add", sizeof(wchar_t) *(wcslen(sp_name->cwString) + 22));
+         wchar_t* sp = (wchar_t*) ut_vm_malloc("local_tran_sp_rolbk", sizeof(wchar_t) *(wcslen(sp_name->cwString) + 22));
          wsprintfW(sp, L"ROLLBACK TRANSACTION %ls", sp_name->cwString);
          rc = odbcdr_run_sqlW(context, sp, 0, NULL);
          ut_vm_free("local_tran_sp_add", sp);
     }
     else
     {
-        char* sp = (char*) ut_vm_malloc("local_tran_sp_add", sizeof(char) *(wcslen(sp_name->cwString) + 22));
+        char* sp = (char*) ut_vm_malloc("local_tran_sp_rolbk", sizeof(char) *(strlen(sp_name->ccString) + 22));
         wsprintfA(sp, "ROLLBACK TRANSACTION %s", sp_name->ccString);
         rc = odbcdr_run_sql(context, sp, 0, NULL);
         ut_vm_free("local_tran_sp_add", sp);

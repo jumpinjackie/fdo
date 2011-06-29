@@ -17,6 +17,7 @@
  */
 #include "Pch.h"
 #include "FdoTransactionTest.h"
+#include "UnitTestUtil.h"
 
 FdoTransactionTest::FdoTransactionTest(void)
 {
@@ -53,7 +54,7 @@ void FdoTransactionTest::connect ()
     }
     catch (FdoException *ex)
     {
-        ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
+        printf("FDO error: %ls\n", ex->GetExceptionMessage());
         if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
             mConnection->Close();
         mConnection= NULL;
@@ -71,7 +72,7 @@ void FdoTransactionTest::CreateTestDataStore()
     }
     catch(FdoException* ex)
     {
-         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
+        printf("FDO error: %ls\n", ex->GetExceptionMessage());
         if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
             mConnection->Close();
         mConnection= NULL;
@@ -92,7 +93,7 @@ void FdoTransactionTest::DestroyTestDataStore()
     }
     catch(FdoException* ex)
     {
-         ( printf("FDO error: %ls\n", ex->GetExceptionMessage()) );
+        printf("FDO error: %ls\n", ex->GetExceptionMessage());
         if( mConnection != NULL && mConnection->GetConnectionState() == FdoConnectionState_Open)
             mConnection->Close();
         mConnection= NULL;
@@ -108,13 +109,8 @@ void FdoTransactionTest::CreateTestSchema()
     {
         try
         {
-            FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
-            cscCmd->SetName(L"TestContext"); 
-            cscCmd->SetDescription(L"For testing only");
-            cscCmd->SetCoordinateSystem(L"");
-            cscCmd->Execute();
+            UnitTestUtil::CreateSpatialContext(mConnection, L"TestContext", L"", -100000, -100000, 100000, 100000);
 
-          
             FdoPtr<FdoFeatureSchema> transSchema = FdoFeatureSchema::Create(L"TestTransaction", L"Schema of the transaction test");
             FdoPtr<FdoFeatureClass> testFc = FdoFeatureClass::Create(L"TestTransactionClass", L"Feature class for transaction test");    
             FdoPtr<FdoClassCollection>(transSchema->GetClasses())->Add(testFc);

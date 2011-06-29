@@ -109,7 +109,7 @@ FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestName)
         throw FdoException::Create(ex->GetExceptionMessage(), ex->GetCause(), ex->GetNativeErrorCode());
     }
     
-    return  m_savepoints->GetString(m_savepoints->Add(realName));;
+    return  m_savepoints->GetString(m_savepoints->Add(realName));
 }
 
 void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
