@@ -46,12 +46,23 @@ FdoOwsHttpHandler::FdoOwsHttpHandler(const char* url, bool bGet, const char* par
                          const char* userName, const char* passwd, const char* proxyHost, const char* proxyPort, const char* proxyUserName, const char* proxyPassword) :
                             m_url(url), m_bGet(bGet), m_parameters(parameters), m_connectionState(ConnectionState_BeforeConnect),
                             m_disposed(false), m_userName(userName), m_passwd(passwd),
-                            m_proxyHost(proxyHost), m_proxyPort(proxyPort), m_proxyUserName(proxyUserName), m_proxyPassword(proxyPassword), 
                             m_bValidDocument(false), m_contentType(FdoOwsMIMEType_unknown),
                             m_currentSize(0), m_currentRead(0), m_bRunning(false)
 {
     m_errorBuffer[0] = '\0';
     m_tvConnect = 0;    
+
+    if ( proxyHost ) 
+        m_proxyHost = proxyHost;
+    
+    if ( proxyPort ) 
+        m_proxyPort = proxyPort; 
+    
+    if ( proxyUserName ) 
+        m_proxyUserName = proxyUserName;
+    
+    if ( proxyPassword )    
+        m_proxyPassword = proxyPassword;   
 }
 
 FdoOwsHttpHandler::FdoOwsHttpHandler(const char* url, bool bGet, const char* parameters, 
