@@ -138,18 +138,7 @@ void ConnectTests::TestConnection9 ()
 
 void ConnectTests::TestConnection10 ()
 {
-    bool failed = false;
-    
-    try 
-	{
-        TestConnection(L"FeatureServer=http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi");
-    }
-    catch ( ... )
-    {
-        failed = true;
-    }
-
-    CPPUNIT_ASSERT_MESSAGE("test started working again", failed);
+    TestConnection(L"FeatureServer=http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi");
 }
 
 void ConnectTests::TestConnection11 ()
