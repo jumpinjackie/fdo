@@ -325,7 +325,7 @@ FdoSmPhReaderP FdoSmPhRdSqsSpatialContextReader::MakeQueryReader( FdoSmPhOwnerP 
                     NlsMsgGet(
                         FDORDBMS_546, 
                         "OSGeo.SQLServerSpatial provider cannot perform spatial handling on server with version older than 10.0."
-                    )
+                    ), ex->GetNativeErrorCode()
                 );
 
                 ex2->SetCause(ex);

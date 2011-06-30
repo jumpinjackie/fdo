@@ -187,7 +187,7 @@ FdoPropertyValueCollection
     catch (FdoException *ex) {
 
       ClearMemory();
-      fdo_cmd_ex = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+      fdo_cmd_ex = FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
       ex->Release();
       throw fdo_cmd_ex;
 

@@ -326,7 +326,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     catch (FdoException *ex)
     {
         UPDATE_CLEANUP;
-        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
         ex->Release();
         throw exp;
     }

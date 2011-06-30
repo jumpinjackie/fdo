@@ -398,7 +398,7 @@ FdoInt32 FdoRdbmsDeleteCommand::InternalExecute ()
         DELETE_CLEANUP;
         if (throw_exception)
         {
-            FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+            FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
             ex->Release();
             throw exp;
         }

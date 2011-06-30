@@ -306,7 +306,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
             delete statement;
         SELECT_CLEANUP;
         // Wrap in FdoPtr to remove original reference to original exception
-        throw FdoCommandException::Create(ex->GetExceptionMessage(), FdoPtr<FdoException>(ex));
+        throw FdoCommandException::Create(ex->GetExceptionMessage(), FdoPtr<FdoException>(ex), ex->GetNativeErrorCode());
     }
 
     catch ( ... )
