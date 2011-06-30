@@ -38,9 +38,9 @@ static void ThrowUnknownError()
     throw FdoRdbmsException::Create(NlsMsgGet(FDORDBMS_55, "Unknown dbi error"));
 }
 
-static void ThrowLastError (wchar_t* err_msg)
+static void ThrowLastError (wchar_t* err_msg, long serverRc)
 {
-	throw FdoRdbmsException::Create(err_msg);
+	throw FdoRdbmsException::Create(err_msg, NULL, serverRc);
 }
 
 #define  SWITCH_CONTEXT   {\
@@ -57,7 +57,7 @@ static void ThrowLastError (wchar_t* err_msg)
     { \
         ThrowUnknownError(); \
     } else \
-        throw FdoRdbmsException::Create( mContext->last_error_msg ); \
+        throw FdoRdbmsException::Create( mContext->last_error_msg, NULL, ::rdbi_get_server_rc (mContext)); \
     }
 
 static void ThrowNotSupportedError()
@@ -169,11 +169,12 @@ FdoConnectionState DbiConnection::Open (
             else
             {
 				wchar_t	err_msg[RDBI_MSG_SIZE+1];
-                rdbi_get_msg( mContext );
+                ::rdbi_get_msg( mContext );
+                long serverRc = ::rdbi_get_server_rc (mContext);
 				wcsncpy(err_msg, mContext->last_error_msg, RDBI_MSG_SIZE);
 				err_msg[RDBI_MSG_SIZE] = '\0';
                 Close();
-				ThrowLastError(err_msg);
+				ThrowLastError(err_msg, serverRc);
             }
         }
         if (this->mGdbiConnection != NULL)
@@ -787,10 +788,11 @@ void DbiConnection::SetActiveSchema(const wchar_t * schemaName)
         {
 			wchar_t	err_msg[RDBI_MSG_SIZE+1];
             rdbi_get_msg( mContext );
+            long serverRc = ::rdbi_get_server_rc (mContext);
 			wcsncpy(err_msg, mContext->last_error_msg, RDBI_MSG_SIZE);
 			err_msg[RDBI_MSG_SIZE] = '\0';
             Close();
-			ThrowLastError(err_msg);
+			ThrowLastError(err_msg, serverRc);
         }
     }
 }

@@ -663,12 +663,17 @@ static void DumpError2W
     UINT        nRec = 1;
     int         msgSize = 0;
 
+    context->odbcdr_last_server_rc = 0;
     while (SQL_SUCCEEDED(SQLGetDiagRecW(eHandleType, hodbc, nRec, szState,
         &nServerError, szMessage, SQL_MAX_MESSAGE_LENGTH + 1, &cbMessage)))
         {
 #ifdef _DEBUG
         wprintf(L"Message: %ls\n", szMessage);
 #endif
+        // take only first non zero error value
+        if (!context->odbcdr_last_server_rc)
+            context->odbcdr_last_server_rc = nServerError;
+
         if ( msgSize < (ODBCDR_MAX_BUFF_SIZE - 2) )
         {
             if ( msgSize > 0 ) 

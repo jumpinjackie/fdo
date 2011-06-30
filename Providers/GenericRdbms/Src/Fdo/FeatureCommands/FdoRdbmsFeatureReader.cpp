@@ -891,7 +891,7 @@ void  FdoRdbmsFeatureReader::FetchProperties ()
     catch (FdoException *ex)
     {
         FEATUREREADER_CLEANUP;
-        throw FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+        throw FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
     }
 
     catch( ... )

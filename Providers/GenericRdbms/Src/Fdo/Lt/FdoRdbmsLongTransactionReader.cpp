@@ -382,7 +382,7 @@ bool FdoRdbmsLongTransactionReader::ReadNext ()
     catch (FdoException *ex) {
 
       ClearMemory();
-      throw FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+      throw FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
 
     }  //  catch (FdoException *ex)
 

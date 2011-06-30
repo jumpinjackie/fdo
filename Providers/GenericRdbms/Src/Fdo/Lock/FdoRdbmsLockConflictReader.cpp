@@ -203,7 +203,7 @@ bool FdoRdbmsLockConflictReader::ReadNext ()
 
     catch (FdoException *ex) {
 
-		FdoCommandException *fdo_cmd_ex = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+		FdoCommandException *fdo_cmd_ex = FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
 		ex->Release();
 		throw fdo_cmd_ex;
 

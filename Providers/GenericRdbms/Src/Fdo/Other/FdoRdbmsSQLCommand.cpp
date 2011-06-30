@@ -496,132 +496,123 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
     if( m_SqlString == NULL )
        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_41, "SQL string not initialized"));
 
-    try
+    const wchar_t* lastPos = NULL;
+    GdbiConnection* gdbiConn = m_DbiConnection->GetGdbiConnection();
+
+    bool clearSchema = false;
+    bool isNotDdlStmt = true;
+    if (SQLStartsWith(m_SqlString, L"CREATE", &lastPos) || SQLStartsWith(m_SqlString, L"DROP", &lastPos) || SQLStartsWith(m_SqlString, L"ALTER", &lastPos))
     {
-        const wchar_t* lastPos = NULL;
-        GdbiConnection* gdbiConn = m_DbiConnection->GetGdbiConnection();
-
-        bool clearSchema = false;
-        bool isNotDdlStmt = true;
-        if (SQLStartsWith(m_SqlString, L"CREATE", &lastPos) || SQLStartsWith(m_SqlString, L"DROP", &lastPos) || SQLStartsWith(m_SqlString, L"ALTER", &lastPos))
+        if (SQLStartsWith(lastPos, L"DATABASE")) // for now we cannot have parameters for this kind of select
         {
-            if (SQLStartsWith(lastPos, L"DATABASE")) // for now we cannot have parameters for this kind of select
-            {
-                // we create a new database
-                numberOfRows = mFdoConnection->ExecuteDdlNonQuery(m_SqlString);
-                isNotDdlStmt = false;
-                clearSchema = true;
-            }
-            else if (SQLStartsWith(lastPos, L"TABLE") || SQLStartsWith(lastPos, L"VIEW"))
-                clearSchema = true;
+            // we create a new database
+            numberOfRows = mFdoConnection->ExecuteDdlNonQuery(m_SqlString);
+            isNotDdlStmt = false;
+            clearSchema = true;
         }
-        // in case schema do not change...
-        if (isNotDdlStmt)
-        {
-            FdoString* sqlToExecute = NULL;
-            std::wstring resultSQL;
-            std::wstring resultSQL2;
-            if (m_params->GetCount() != 0)
-            {
-                GdbiStatement* statement = NULL;
-                try
-                {
-                    std::vector< std::pair< FdoParameterValue*, FdoInt64 > > paramsUsed;
-                    if (HandleBindValues(paramsUsed, resultSQL))
-                        sqlToExecute = resultSQL.c_str();
-                    else
-                        sqlToExecute = m_SqlString;
-
-                    FdoString* sqlToExecute2 = sqlToExecute;
-                    FdoParameterValue* pOutPar = HandleStoredProcedureFormat(sqlToExecute, resultSQL2);
-                    if (pOutPar != NULL)
-                    {
-                        // avoid adding same parameter twice
-                        bool addParam = true;
-                        for (size_t idx = 0; idx < paramsUsed.size(); idx++)
-                        {
-                            if (paramsUsed[idx].first == pOutPar)
-                            {
-                                addParam = false;
-                                break;
-                            }
-                        }
-                        if (addParam)
-                            paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
-
-                        // in case SQL was not changed use the old value
-                        if (resultSQL2.size())
-                            sqlToExecute = resultSQL2.c_str();
-                    }
-                    else
-                        sqlToExecute = sqlToExecute2;
-
-                    statement = m_DbiConnection->GetGdbiConnection()->Prepare(sqlToExecute);
-                    
-                    if (m_bindHelper == NULL)
-                        m_bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
-
-                    m_bindHelper->BindParameters(statement, &paramsUsed);
-
-                    numberOfRows = statement->ExecuteNonQuery();
-                    if (pOutPar != NULL && m_bindHelper->HasOuParams())
-                    {
-                        std::vector<FdoParameterValue*> vParams;
-                        for (size_t idx = 0; idx < paramsUsed.size(); idx++)
-                        {
-                            FdoParameterValue* pParVal = paramsUsed.at(idx).first;
-                            if (pParVal->GetDirection() != FdoParameterDirection_Input)
-                            {
-                                FdoPtr<FdoLiteralValue> pVal = pParVal->GetValue();
-                                m_bindHelper->BindBack(idx, pVal);
-                                FDO_SAFE_ADDREF(pParVal);
-                                vParams.push_back(pParVal);
-                                break;
-                            }
-                        }
-                        // if we have at least one output parameter just process the value
-                        if (vParams.size() != 0)
-                        {
-                            FdoPtr<FdoLiteralValue> pVal = pOutPar->GetValue();
-                            delete statement;
-                            m_bindHelper->Clear();
-                            if (clearSchema) // clear cached schema
-                            {
-                                FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
-                                pschemaManager->Clear();
-                            }
-                            else // we ran a stored procedure, in case caller will call Flush we need to release the schema
-                                mFdoConnection->SetEnforceClearSchAtFlush(true);
-
-                            return m_bindHelper->GetIntValueToRet(pVal);
-                        }
-                    }
-                    delete statement;
-
-                    m_bindHelper->Clear();
-                }
-                catch(...)
-                {
-                    delete statement;
-                    throw;
-                }
-            }
-            else
-                numberOfRows = gdbiConn->ExecuteNonQuery(m_SqlString);
-        }
-
-        // Do we have to clear cached schema?
-        if (clearSchema)
-        {
-            FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
-            pschemaManager->Clear();
-        }
+        else if (SQLStartsWith(lastPos, L"TABLE") || SQLStartsWith(lastPos, L"VIEW"))
+            clearSchema = true;
     }
-    catch (FdoException *ex)
+    // in case schema do not change...
+    if (isNotDdlStmt)
     {
-        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
-        ex->Release();
-        throw exp;
+        FdoString* sqlToExecute = NULL;
+        std::wstring resultSQL;
+        std::wstring resultSQL2;
+        if (m_params->GetCount() != 0)
+        {
+            GdbiStatement* statement = NULL;
+            try
+            {
+                std::vector< std::pair< FdoParameterValue*, FdoInt64 > > paramsUsed;
+                if (HandleBindValues(paramsUsed, resultSQL))
+                    sqlToExecute = resultSQL.c_str();
+                else
+                    sqlToExecute = m_SqlString;
+
+                FdoString* sqlToExecute2 = sqlToExecute;
+                FdoParameterValue* pOutPar = HandleStoredProcedureFormat(sqlToExecute, resultSQL2);
+                if (pOutPar != NULL)
+                {
+                    // avoid adding same parameter twice
+                    bool addParam = true;
+                    for (size_t idx = 0; idx < paramsUsed.size(); idx++)
+                    {
+                        if (paramsUsed[idx].first == pOutPar)
+                        {
+                            addParam = false;
+                            break;
+                        }
+                    }
+                    if (addParam)
+                        paramsUsed.insert(paramsUsed.begin(), std::make_pair(pOutPar, 0));
+
+                    // in case SQL was not changed use the old value
+                    if (resultSQL2.size())
+                        sqlToExecute = resultSQL2.c_str();
+                }
+                else
+                    sqlToExecute = sqlToExecute2;
+
+                statement = m_DbiConnection->GetGdbiConnection()->Prepare(sqlToExecute);
+                
+                if (m_bindHelper == NULL)
+                    m_bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
+
+                m_bindHelper->BindParameters(statement, &paramsUsed);
+
+                numberOfRows = statement->ExecuteNonQuery();
+                if (pOutPar != NULL && m_bindHelper->HasOuParams())
+                {
+                    std::vector<FdoParameterValue*> vParams;
+                    for (size_t idx = 0; idx < paramsUsed.size(); idx++)
+                    {
+                        FdoParameterValue* pParVal = paramsUsed.at(idx).first;
+                        if (pParVal->GetDirection() != FdoParameterDirection_Input)
+                        {
+                            FdoPtr<FdoLiteralValue> pVal = pParVal->GetValue();
+                            m_bindHelper->BindBack(idx, pVal);
+                            FDO_SAFE_ADDREF(pParVal);
+                            vParams.push_back(pParVal);
+                            break;
+                        }
+                    }
+                    // if we have at least one output parameter just process the value
+                    if (vParams.size() != 0)
+                    {
+                        FdoPtr<FdoLiteralValue> pVal = pOutPar->GetValue();
+                        delete statement;
+                        m_bindHelper->Clear();
+                        if (clearSchema) // clear cached schema
+                        {
+                            FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
+                            pschemaManager->Clear();
+                        }
+                        else // we ran a stored procedure, in case caller will call Flush we need to release the schema
+                            mFdoConnection->SetEnforceClearSchAtFlush(true);
+
+                        return m_bindHelper->GetIntValueToRet(pVal);
+                    }
+                }
+                delete statement;
+
+                m_bindHelper->Clear();
+            }
+            catch(...)
+            {
+                delete statement;
+                throw;
+            }
+        }
+        else
+            numberOfRows = gdbiConn->ExecuteNonQuery(m_SqlString);
+    }
+
+    // Do we have to clear cached schema?
+    if (clearSchema)
+    {
+        FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
+        pschemaManager->Clear();
     }
     return numberOfRows;
 }

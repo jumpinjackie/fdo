@@ -974,7 +974,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     catch (FdoException *ex)
     {
         UPDATE_CLEANUP2;
-        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex);
+        FdoCommandException *exp = FdoCommandException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
         ex->Release();
         throw exp;
     }

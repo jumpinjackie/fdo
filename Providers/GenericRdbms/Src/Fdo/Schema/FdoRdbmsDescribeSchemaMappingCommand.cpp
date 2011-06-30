@@ -105,7 +105,7 @@ FdoPhysicalSchemaMappingCollection* FdoRdbmsDescribeSchemaMappingCommand::Execut
     }
     catch (FdoException *ex)
     {
-        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
+        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
     }
 }
 

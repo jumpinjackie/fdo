@@ -133,9 +133,9 @@ static int get_error_from_diag_rec(
 	SDWORD  	SS_Severity = 0;
 	SQLINTEGER	Rownumber = 0;
 	SQLINTEGER  Colnumber = 0;
-    SQLCHAR     errSet = 0;
     szSqlState[0] = L'\0';
     szErrorMsg[0] = L'\0';
+    context->odbcdr_last_server_rc = 0;
 
 	/*
 	** Loop through the diagnostic records until there are no records
@@ -180,9 +180,8 @@ static int get_error_from_diag_rec(
 					SQL_IS_INTEGER,NULL);
 #endif
 
-            if (!errSet)
+            if (!context->odbcdr_last_server_rc)
                 context->odbcdr_last_server_rc = pfNativeError;
-            errSet = 1;
 
 			switch( pfNativeError ) {
 				case 208 :

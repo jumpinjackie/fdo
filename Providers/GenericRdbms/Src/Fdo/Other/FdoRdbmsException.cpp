@@ -25,29 +25,18 @@ FdoRdbmsException* FdoRdbmsException::Create()
     return new FdoRdbmsException();
 }
 
-FdoRdbmsException* FdoRdbmsException::Create(const wchar_t* message)
+FdoRdbmsException* FdoRdbmsException::Create(const wchar_t* message, FdoException* causeFdo, FdoInt64 nativeErrorCode)
 {
-    return new FdoRdbmsException(message);
+    return new FdoRdbmsException(message, causeFdo, nativeErrorCode);
 }
-
-FdoRdbmsException* FdoRdbmsException::Create(const wchar_t* message, FdoException* cause)
-{
-    return new FdoRdbmsException(message, cause);
-}
-
 
 FdoRdbmsException::FdoRdbmsException() :
   FdoException()
 {
 }
 
-FdoRdbmsException::FdoRdbmsException(const wchar_t* message) :
-  FdoException(message)
-{
-}
-
-FdoRdbmsException::FdoRdbmsException(const wchar_t* message, FdoException* cause) :
-  FdoException(message, cause)
+FdoRdbmsException::FdoRdbmsException(const wchar_t* message, FdoException* causeFdo, FdoInt64 nativeErrorCode) :
+  FdoException(message, causeFdo, nativeErrorCode)
 {
 }
 
