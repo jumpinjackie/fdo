@@ -412,7 +412,8 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
             unsigned int dim = FDODIM2NCOORDS(tmp);
 
             //Add the points to the bounds
-            AddToEmptyExtent(pl->np, dim, pl->p, ext);
+            if (pl->np > 0)
+                AddToEmptyExtent(pl->np, dim, pl->p, ext);
         }
         break;
     case FdoGeometryType_Polygon :
@@ -428,9 +429,11 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
             if (contour_count == 1)
             {
                 int point_count = ireader[3];
-                double* dreader = (double*)&ireader[4];
-
-                AddToEmptyExtent(point_count, dim, dreader, ext);
+                if (point_count > 0)
+                {
+                    double* dreader = (double*)&ireader[4];
+                    AddToEmptyExtent(point_count, dim, dreader, ext);
+                }
             }
             else
             {
@@ -442,9 +445,12 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                 for (int i=0; i<contour_count; i++)
                 {
                     int point_count = *ireader++;
-                    double* dreader = (double*) ireader;
-                    AddToExtent(point_count, dim, dreader, ext);
-                    ireader = (int*)(dreader + point_count * dim);
+                    if (point_count > 0)
+                    {
+                        double* dreader = (double*) ireader;
+                        AddToExtent(point_count, dim, dreader, ext);
+                        ireader = (int*)(dreader + point_count * dim);
+                    }
                 }
             }
         }
@@ -499,10 +505,12 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                     //each piece is just one point each
                     if (geom_type != FdoGeometryType_MultiPoint)
                         point_count = *ireader++;
-                    
-                    double* dreader = (double*) ireader;
-                    AddToExtent(point_count, dim, dreader, ext);
-                    ireader = (int*)(dreader + point_count * dim);
+                    if (point_count > 0)
+                    {
+                        double* dreader = (double*) ireader;
+                        AddToExtent(point_count, dim, dreader, ext);
+                        ireader = (int*)(dreader + point_count * dim);
+                    }
                 }
             }
         }
@@ -589,10 +597,13 @@ void GetFgfExtents(const unsigned char* fgf, int len, double ext[4])
                         case FdoGeometryComponentType_LineStringSegment:
                             {
                                 int num_pts = *ireader++;
-                                double* pts = (double*)ireader;
-                                AddToExtent(num_pts, dim, pts, ext);
-                                ireader = (int*)(pts + num_pts * dim);
-                                startpt = pts+dim*(num_pts-1);
+                                if (num_pts > 0)
+                                {
+                                    double* pts = (double*)ireader;
+                                    AddToExtent(num_pts, dim, pts, ext);
+                                    ireader = (int*)(pts + num_pts * dim);
+                                    startpt = pts+dim*(num_pts-1);
+                                }
                             }
                             break;
                     
@@ -645,8 +656,11 @@ double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic)
         unsigned int tmp = (unsigned int)(FdoDimensionality)*(ireader+1);
         unsigned int dim = FDODIM2NCOORDS(tmp);
         int point_count = *(ireader+2);
-        const double* ordinates = (const double*)(ireader+3);
-        retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+        if (point_count > 0)
+        {
+            const double* ordinates = (const double*)(ireader+3);
+            retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+        }
     }
 		break;
 	case FdoGeometryType_Point:
@@ -662,8 +676,11 @@ double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic)
         if (contour_count == 1)
         {
             int point_count = *(ireader+3);
-            const double* ordinates = (const double*)(ireader+4);
-            retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+            if (point_count > 0)
+            {
+                const double* ordinates = (const double*)(ireader+4);
+                retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+            }
         }
         else
         {
@@ -671,9 +688,12 @@ double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic)
             for (int i = 0; i < contour_count; i++)
             {
                 int point_count = *ireader++;
-                const double* ordinates = (const double*)ireader;
-                retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
-                ireader = (int*)(ordinates + point_count * dim);
+                if (point_count > 0)
+                {
+                    const double* ordinates = (const double*)ireader;
+                    retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+                    ireader = (int*)(ordinates + point_count * dim);
+                }
             }
         }
     }
@@ -698,9 +718,12 @@ double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic)
             for (int i = 0; i < contour_count; i++)
             {
                 point_count = *ireader++;
-                const double* ordinates = (const double*)ireader;
-                retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
-                ireader = (int*)(ordinates + point_count * dim);
+                if (point_count > 0)
+                {
+                    const double* ordinates = (const double*)ireader;
+                    retVal += ComputeLength(point_count, dim, ordinates, computeGeodetic);
+                    ireader = (int*)(ordinates + point_count * dim);
+                }
             }
         }
     }
@@ -769,11 +792,14 @@ double ComputeGeometryLength(const unsigned char* fgf, bool computeGeodetic)
                     case FdoGeometryComponentType_LineStringSegment:
                         {
                             int num_pts = *ireader++;
-                            const double* ordinates = (const double*)ireader;
-                            retVal += ComputeLengthWithStartPoint(num_pts, dim, startpt, ordinates, computeGeodetic);
-                            // remember last point for next segment
-                            startpt = ordinates + dim * (num_pts - 1); 
-                            ireader = (int*)(ordinates + num_pts * dim);
+                            if (num_pts > 0)
+                            {
+                                const double* ordinates = (const double*)ireader;
+                                retVal += ComputeLengthWithStartPoint(num_pts, dim, startpt, ordinates, computeGeodetic);
+                                // remember last point for next segment
+                                startpt = ordinates + dim * (num_pts - 1); 
+                                ireader = (int*)(ordinates + num_pts * dim);
+                            }
                         }
                         break;
                 
@@ -834,8 +860,11 @@ double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic)
         if (contour_count == 1)
         {
             int point_count = *(ireader+3);
-            const double* ordinates = (const double*)(ireader+4);
-            retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, true);
+            if (point_count > 0)
+            {
+                const double* ordinates = (const double*)(ireader+4);
+                retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, true);
+            }
         }
         else
         {
@@ -843,9 +872,12 @@ double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic)
             for (int i = 0; i < contour_count; i++)
             {
                 int point_count = *ireader++;
-                const double* ordinates = (const double*)ireader;
-                retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, (i == 0));
-                ireader = (int*)(ordinates + point_count * dim);
+                if (point_count > 0)
+                {
+                    const double* ordinates = (const double*)ireader;
+                    retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, (i == 0));
+                    ireader = (int*)(ordinates + point_count * dim);
+                }
             }
         }
     }
@@ -869,9 +901,12 @@ double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic)
             for (int i = 0; i < contour_count; i++)
             {
                 point_count = *ireader++;
-                const double* ordinates = (const double*)ireader;
-                retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, (i == 0));
-                ireader = (int*)(ordinates + point_count * dim);
+                if (point_count > 0)
+                {
+                    const double* ordinates = (const double*)ireader;
+                    retVal += ComputeLinearRingArea(point_count, dim, ordinates, computeGeodetic, (i == 0));
+                    ireader = (int*)(ordinates + point_count * dim);
+                }
             }
         }
     }
@@ -937,11 +972,14 @@ double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic)
                     case FdoGeometryComponentType_LineStringSegment:
                         {
                             int num_pts = *ireader++;
-                            const double* ordinates = (const double*)ireader;
-                            ringArea += ComputeLinearRingAreaWithStartPoint(num_pts, dim, startpt, ordinates, computeGeodetic);
-                            // remember last point for next segment
-                            startpt = ordinates + dim * (num_pts - 1); 
-                            ireader = (int*)(ordinates + num_pts * dim);
+                            if (num_pts > 0)
+                            {
+                                const double* ordinates = (const double*)ireader;
+                                ringArea += ComputeLinearRingAreaWithStartPoint(num_pts, dim, startpt, ordinates, computeGeodetic);
+                                // remember last point for next segment
+                                startpt = ordinates + dim * (num_pts - 1); 
+                                ireader = (int*)(ordinates + num_pts * dim);
+                            }
                         }
                         break;
                 
