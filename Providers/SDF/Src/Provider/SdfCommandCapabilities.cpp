@@ -99,7 +99,9 @@ FdoInt32* SdfCommandCapabilities::GetCommands(FdoInt32& size)
 		FdoCommandType_DestroyDataStore,
         FdoCommandType_ExtendedSelect,
         SdfCommandType_ExtendedSelect,
-        SdfCommandType_CreateSDFFile
+        SdfCommandType_CreateSDFFile,
+        FdoCommandType_GetSchemaNames,
+        FdoCommandType_GetClassNames,
     };
 
     size = sizeof(commandsReadWrite) / sizeof(FdoCommandType);

@@ -76,4 +76,45 @@ private:
     FdoStringCollection* m_classNames;
 };
 
+class SdfGetSchemaNames : public SdfCommand<FdoIGetSchemaNames>
+{
+    FdoStringCollection* m_schemaNames;
+public:
+    SdfGetSchemaNames(SdfConnection* connection)
+        : SdfCommand<FdoIGetSchemaNames>(connection)
+    {
+        m_schemaNames = NULL;
+    }
 
+protected:
+    virtual ~SdfGetSchemaNames()
+    {
+        FDO_SAFE_RELEASE(m_schemaNames);
+    }
+
+public:
+    virtual FdoStringCollection* Execute();
+};
+
+class SdfGetClassNames : public SdfCommand<FdoIGetClassNames>
+{
+    std::wstring m_schName;
+    FdoStringCollection* m_clsNames;
+public:
+    SdfGetClassNames(SdfConnection* connection)
+        : SdfCommand<FdoIGetClassNames>(connection)
+    {
+        m_clsNames = NULL;
+    }
+
+protected:
+    virtual ~SdfGetClassNames()
+    {
+        FDO_SAFE_RELEASE(m_clsNames);
+    }
+
+public:
+    virtual FdoString* GetSchemaName() { return m_schName.c_str(); }
+    virtual void SetSchemaName(FdoString* value) { m_schName = (value == NULL) ? L"" : value; }
+    virtual FdoStringCollection* Execute();
+};
