@@ -434,6 +434,12 @@ FdoICommand* SdfConnection::CreateCommand(FdoInt32 commandType)
     case SdfCommandType_CreateSDFFile:
         return new SdfCreateSDFFile(this);
 
+    case FdoCommandType_GetSchemaNames:
+        return new SdfGetSchemaNames(this);
+
+    case FdoCommandType_GetClassNames:
+        return new SdfGetClassNames(this);
+
     default:
         throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_3_COMMAND_NOT_SUPPORTED)));
     }

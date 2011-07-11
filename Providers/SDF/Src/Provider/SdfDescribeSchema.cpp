@@ -20,6 +20,11 @@
 #include "SdfConnection.h"
 #include "SchemaDb.h"
 #include "FdoCommonSchemaUtil.h"
+#include <algorithm>
+
+#ifndef _MSC_VER
+#define _wcsicmp wcscasecmp
+#endif
 
 //-------------------------------------------------------
 // Constructor / destructor
@@ -38,6 +43,7 @@ SdfDescribeSchema::SdfDescribeSchema(SdfConnection* connection)
 // default destructor
 SdfDescribeSchema::~SdfDescribeSchema()
 {
+    FDO_SAFE_RELEASE(m_classNames); 
     if (m_schemaName != NULL)
     {
         // use free() since we allocated with malloc via wcsdup()
@@ -88,7 +94,7 @@ void SdfDescribeSchema::SetSchemaName(FdoString* value)
 // will not use the hint will describe the schema for all classes.
 FdoStringCollection* SdfDescribeSchema::GetClassNames()
 {
-    return m_classNames;
+    return FDO_SAFE_ADDREF(m_classNames);
 }
 
 // Sets the name of the classes to retrieve. This is optional, if not
@@ -100,9 +106,8 @@ FdoStringCollection* SdfDescribeSchema::GetClassNames()
 // will not use the hint will describe the schema for all classes.
 void SdfDescribeSchema::SetClassNames(FdoStringCollection* value)
 {
-    // Do nothing.
-    // This method is not implemented.  DescribeSchema command
-    // will describe all classes.
+    FDO_SAFE_RELEASE(m_classNames); 
+    m_classNames = FDO_SAFE_ADDREF(value); 
 }
 
 // Executes the describe schema command and returns a FeatureSchemaCollection.
@@ -121,12 +126,93 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
 
     // Re-read a fresh copy of the schema from the SDF file; this is significant
     // if the caller has changed the spatial contexts in the file since doing ApplySchema:
-    FdoFeatureSchemaP schema = m_connection->GetSchema(GetSchemaName(), true);
-    if (schema)
+    FdoFeatureSchema* schema = m_connection->GetSchema(GetSchemaName());
+    if (schema != NULL)
     {
-        schemaCollection->Add(schema);
-        schema->AcceptChanges();
+        FdoPtr<FdoFeatureSchema> sch = FdoFeatureSchema::Create(schema->GetName(), schema->GetDescription());
+        schemaCollection->Add(sch);
+        FdoPtr<FdoClassCollection> clssDest = sch->GetClasses();
+        int cnt = (m_classNames == NULL) ? 0 : m_classNames->GetCount();
+        if (cnt != 0)
+        {
+            FdoPtr<FdoClassCollection> clss = schema->GetClasses();
+            for (int i = 0; i < cnt; i++)
+            {
+                FdoPtr<FdoIdentifier> idClass = FdoIdentifier::Create(m_classNames->GetString(i));
+                FdoPtr<FdoClassDefinition> cls = clss->GetItem(idClass->GetName());
+                FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(cls);                
+                clssDest->Add(fc_copy);
+            }
+        } 
+        else
+        {
+            FdoPtr<FdoClassCollection> clss = schema->GetClasses();
+            cnt = clss->GetCount();
+            for (int i = 0; i < cnt; i++)
+            {
+                FdoPtr<FdoClassDefinition> cls = clss->GetItem(i);
+                FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(cls);                
+                clssDest->Add(fc_copy);
+            }
+        }
+        sch->AcceptChanges();
     }
-
     return schemaCollection.Detach();
+}
+
+FdoStringCollection* SdfGetSchemaNames::Execute()
+{
+    if (m_connection->GetConnectionState() != FdoConnectionState_Open)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
+
+    if (m_schemaNames != NULL)
+        return m_schemaNames;
+
+    m_schemaNames = FdoStringCollection::Create();
+
+    FdoFeatureSchema* schema = m_connection->GetSchema();
+    m_schemaNames->Add(schema->GetName());
+
+    return FDO_SAFE_ADDREF(m_schemaNames);
+}
+
+static bool Compare(const wchar_t* _Left, const wchar_t* _Right)
+{
+    return _wcsicmp(_Left, _Right) < 0;
+}
+
+FdoStringCollection* SdfGetClassNames::Execute()
+{
+    if (m_connection->GetConnectionState() != FdoConnectionState_Open)
+        throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_26_CONNECTION_CLOSED)));
+
+    if (m_clsNames != NULL)
+        return m_clsNames;
+
+    FdoFeatureSchema* schema = m_connection->GetSchema(m_schName.c_str());
+    m_clsNames = FdoStringCollection::Create();
+    
+    if (schema != NULL)
+    {
+        FdoPtr<FdoClassCollection> clss = schema->GetClasses();
+        std::vector<FdoString*> vclss;
+        int cnt = clss->GetCount();
+        if (cnt > 0)
+        {
+            std::wstring qName((FdoString*)schema->GetQualifiedName());
+            qName.append(L":");
+            for (int i = 0; i < cnt; i++)
+            {
+                FdoPtr<FdoClassDefinition> cls = clss->GetItem(i);
+                vclss.push_back(cls->GetName());
+            }
+            std::sort(vclss.begin(), vclss.end(), Compare);
+            for (int i = 0; i < cnt; i++)
+            {
+                std::wstring clsqName = qName + vclss.at(i);
+                m_clsNames->Add(clsqName.c_str());
+            }
+        }
+    }
+    return FDO_SAFE_ADDREF(m_clsNames);
 }
