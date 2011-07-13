@@ -35,6 +35,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     CPPUNIT_TEST( TestBindNotNullBlob );
     CPPUNIT_TEST( TestBindBigBlob );
     CPPUNIT_TEST( TestGetMaxLenTexts );
+    CPPUNIT_TEST( TestInParamsStoreProcNoRet );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -46,6 +47,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     void TestOutParamsStoreProcRetAndOut();
     void TestOutParamsStoreProcRetAndNullOut();
     void TestOutParamsStoreProcRetAndInAndOut();
+    void TestInParamsStoreProcNoRet();
     void TestParamInGeom();
     void TestGetMaxLenTexts();
     void TestBindNullBlob();
