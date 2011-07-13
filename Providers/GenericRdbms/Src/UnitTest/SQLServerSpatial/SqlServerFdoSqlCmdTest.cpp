@@ -703,3 +703,52 @@ void SqlServerFdoSqlCmdTest::TestGetMaxLenTexts()
 		TestCommonFail (ex);
     }
 }
+
+void SqlServerFdoSqlCmdTest::TestInParamsStoreProcNoRet()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc (@key nvarchar(255), @value bigint)\nAS\nBEGIN\nSET NOCOUNT ON;\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create();
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoStringValue> keyVal = FdoStringValue::Create(L"Mumu");
+        FdoPtr<FdoParameterValue> pKeyVal = FdoParameterValue::Create(L"key", keyVal);
+        pKeyVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pKeyVal);
+
+        FdoPtr<FdoInt32Value> initVal = FdoInt32Value::Create(300);
+        FdoPtr<FdoParameterValue> pInitVal = FdoParameterValue::Create(L"value", initVal);
+        pInitVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pInitVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:key, :value)" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+        printf("Test1 RandVal = %d", randVal);
+        CPPUNIT_ASSERT( idVal->GetInt32() == randVal);
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}

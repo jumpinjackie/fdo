@@ -622,49 +622,49 @@ FdoInt32 FdoRdbmsPropBindHelper::GetIntValueToRet(FdoLiteralValue* pVal)
             case FdoDataType_Boolean:
                 {
                     FdoBooleanValue* v = static_cast<FdoBooleanValue*>(dval);
-                    return (FdoInt32)v->GetBoolean();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetBoolean();
                 }
                 break;
             case FdoDataType_Byte:
                 {
                     FdoByteValue* v = static_cast<FdoByteValue*>(dval);
-                    return (FdoInt32)v->GetByte();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetByte();
                 }
                 break;
             case FdoDataType_Decimal:
                 {
                     FdoDecimalValue* v = static_cast<FdoDecimalValue*>(dval);
-                    return (FdoInt32)v->GetDecimal();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetDecimal();
                 }
                 break;
             case FdoDataType_Double:
                 {
                     FdoDoubleValue* v = static_cast<FdoDoubleValue*>(dval);
-                    return (FdoInt32)v->GetDouble();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetDouble();
                 }
                 break;
             case FdoDataType_Int16:
                 {
                     FdoInt16Value* v = static_cast<FdoInt16Value*>(dval);
-                    return (FdoInt32)v->GetInt16();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetInt16();
                 }
                 break;
             case FdoDataType_Int32:
                 {
                     FdoInt32Value* v = static_cast<FdoInt32Value*>(dval);
-                    return (FdoInt32)v->GetInt32();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetInt32();
                 }
                 break;
             case FdoDataType_Int64:
                 {
                     FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
-                    return (FdoInt32)v->GetInt64();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetInt64();
                 }
                 break;
             case FdoDataType_Single:
                 {
                     FdoSingleValue* v = static_cast<FdoSingleValue*>(dval);
-                    return (FdoInt32)v->GetSingle();
+                    return v->IsNull() ? 0 : (FdoInt32)v->GetSingle();
                 }
                 break;
             case FdoDataType_String:
