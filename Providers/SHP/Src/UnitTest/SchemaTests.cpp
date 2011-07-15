@@ -1150,10 +1150,21 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create (NEW_SCHEMA_NAME, L"");
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
 
-        FdoPtr<FdoDataPropertyDefinition> id = FdoDataPropertyDefinition::Create (L"Id", L"integer");
-        id->SetDataType (FdoDataType_Decimal);
-        id->SetPrecision(10);
-        id->SetScale(0);
+        FdoPtr<FdoDataPropertyDefinition> id32 = FdoDataPropertyDefinition::Create (L"IdInt32", L"integer");
+        id32->SetDataType (FdoDataType_Decimal);
+        id32->SetPrecision(10);
+        id32->SetScale(0);
+
+		// Exercise the internal conversion from DECIMAL to INT
+		FdoPtr<FdoDataPropertyDefinition> id16 = FdoDataPropertyDefinition::Create (L"IdInt16", L"integer");
+        id16->SetDataType (FdoDataType_Decimal);
+        id16->SetPrecision(6);
+        id16->SetScale(0);
+
+        FdoPtr<FdoDataPropertyDefinition> id64 = FdoDataPropertyDefinition::Create (L"IdInt64", L"integer");
+        id64->SetDataType (FdoDataType_Decimal);
+        id64->SetPrecision(17);
+        id64->SetScale(0);
 
 // English
         FdoPtr<FdoDataPropertyDefinition> streetA = FdoDataPropertyDefinition::Create (L"StreetTooLongA", L"text");
@@ -1239,7 +1250,9 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         //// assemble the feature class
         FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
         FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
-        properties->Add (id);
+        properties->Add (id32);
+		properties->Add (id16);
+		properties->Add (id64);
         properties->Add (streetA);
         properties->Add (streetB);
         properties->Add (area1);
@@ -1293,8 +1306,19 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         // check it's contents
         properties = cls->GetProperties ();
 
-        FdoPtr<FdoDataPropertyDefinition> featid = (FdoDataPropertyDefinition*)properties->GetItem (L"Id");
-        CPPUNIT_ASSERT_MESSAGE ("id wrong type", FdoDataType_Decimal == featid->GetDataType ());
+		// FdoDataType_Decimal with scale=0 has been turned into Int
+        FdoPtr<FdoDataPropertyDefinition> featid32 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt32");
+        CPPUNIT_ASSERT_MESSAGE ("IdInt32 wrong type", FdoDataType_Int32 == featid32->GetDataType ());
+		CPPUNIT_ASSERT_MESSAGE ("IdInt32 wrong precision", 10 == featid32->GetPrecision ());
+
+		FdoPtr<FdoDataPropertyDefinition> featid16 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt16");
+        CPPUNIT_ASSERT_MESSAGE ("IdInt16 wrong type", FdoDataType_Int16 == featid16->GetDataType ());
+		CPPUNIT_ASSERT_MESSAGE ("IdInt16 wrong precision", 6 == featid16->GetPrecision ());
+
+        FdoPtr<FdoDataPropertyDefinition> featid64 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt64");
+        CPPUNIT_ASSERT_MESSAGE ("IdInt64 wrong type", FdoDataType_Int64 == featid64->GetDataType ());
+		CPPUNIT_ASSERT_MESSAGE ("IdInt64 wrong precision", 17 == featid64->GetPrecision ());
+
 
         streetA = (FdoDataPropertyDefinition*)properties->GetItem (L"StreetTooLo");
         CPPUNIT_ASSERT_MESSAGE ("street wrong type", FdoDataType_String == streetA->GetDataType ());

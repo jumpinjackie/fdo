@@ -382,7 +382,7 @@ public:
             if (coldata.bIsNull)
                 throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
             else
-                ret = coldata.value.dData;
+                ret = coldata.bIsInt ? (double)coldata.value.nData : coldata.value.dData;
         }
 
         return (ret);
@@ -397,6 +397,7 @@ public:
     {
         FdoPtr<FdoIdentifier> id;
         FdoComputedIdentifier* computed;
+		FdoInt16 ret;
 
         id = validate (identifier);
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
@@ -417,8 +418,17 @@ public:
             throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
-            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Int16"));
-    }
+		{
+            ColumnData coldata;
+            GetData (&coldata, identifier, kColumnDecimalType, L"FdoInt16");
+            if (coldata.bIsNull)
+                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            else
+                ret = coldata.bIsInt ? (FdoInt16)coldata.value.nData : (FdoInt16)coldata.value.dData;
+		}
+
+		return (ret);
+	}
 
     /// <summary>Gets the 32-bit integer value of the specified property. No conversion is
     /// performed, thus the property must be FdoDataType_Int32 or an exception
@@ -466,7 +476,7 @@ public:
                 if (coldata.bIsNull)
                     throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
                 else
-                    ret = (FdoInt32)coldata.value.dData;
+                    ret = coldata.bIsInt ? (FdoInt32)coldata.value.nData : (FdoInt32)coldata.value.dData;
             }
         }
 
@@ -482,6 +492,7 @@ public:
     {
         FdoPtr<FdoIdentifier> id;
         FdoComputedIdentifier* computed;
+		FdoInt64 ret;
 
         id = validate (identifier);
         computed = (id == NULL) ? NULL : dynamic_cast<FdoComputedIdentifier*>(id.p);
@@ -502,8 +513,16 @@ public:
             throw FdoException::Create (NlsMsgGet(SHP_INVALID_LITERAL_TYPE, "Invalid literal type '%1$d'.", results->GetLiteralValueType()));
         }
         else
-            throw FdoException::Create (NlsMsgGet(SHP_UNSUPPORTED_DATATYPE, "The '%1$ls' data type is not supported by Shp.", L"Int64"));
+		{
+            ColumnData coldata;
+            GetData (&coldata, identifier, kColumnDecimalType, L"FdoInt64");
+            if (coldata.bIsNull)
+                throw FdoException::Create(NlsMsgGet(SHP_READER_PROPERTY_NULL, "The property '%1$ls' is NULL.", identifier));
+            else
+                ret = coldata.bIsInt ? (FdoInt64)coldata.value.nData : (FdoInt64)coldata.value.dData;
+		}
 
+		return (ret);
     }
 
     /// <summary>Gets the Single floating point value of the specified property. No
