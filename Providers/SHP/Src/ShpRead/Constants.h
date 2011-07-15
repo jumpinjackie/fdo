@@ -147,8 +147,10 @@ const int SHPHeaderSize = sizeof (SHPHeader);
 
 #define SHP_EOF                                         -1
 
-// DBF Defines
-#define DEFAULT_INT_COL_LENGTH          11		// 10 digits + 1 (the minus sign): (-2147483648, 2147483647)
+// DBF Defines - see also RFC 55
+#define DEFAULT_INT16_COL_LENGTH           6		// 5 digits + 1 (the minus sign): (-32,768, 32,767)
+#define DEFAULT_INT32_COL_LENGTH          11		// 10 digits + 1 (the minus sign): (-2147483648, 2147483647)
+#define DEFAULT_INT64_COL_LENGTH          20		// 19 digits + 1 (the minus sign): (-9,223,372,036,854,775,808, 9,223,372,036,854,775,807)
 
 // Record information
 #define RECORD_HEADER_SIZE              8

@@ -56,7 +56,9 @@ FdoDataType* ShpSchemaCapabilities::GetDataTypes (FdoInt32& length)
     static FdoDataType types[] =
     {
         FdoDataType_Decimal,
-        FdoDataType_Int32,
+		FdoDataType_Int16,
+		FdoDataType_Int32,
+        FdoDataType_Int64,
         FdoDataType_String,
         FdoDataType_DateTime,
         FdoDataType_Boolean

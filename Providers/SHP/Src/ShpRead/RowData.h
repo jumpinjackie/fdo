@@ -37,7 +37,7 @@ struct ColumnData
 {
     union
     {
-        int nData;
+        FdoInt64 nData;
         double dData;
         wchar_t* wszData;
         Date tData;
@@ -45,6 +45,7 @@ struct ColumnData
     } value;
 
     bool bIsNull;
+	bool bIsInt;
 };
 
 class RowData
@@ -75,6 +76,12 @@ public:
     /// <param name="value">Input the value for the column.</param> 
     /// <returns>Returns nothing.</returns> 
     void SetData (int index, bool bIsNull, double value);
+
+    /// <summary>Sets the int64 data.</summary>
+    /// <param name="index">Input the column index of the data to set.</param> 
+    /// <param name="value">Input the value for the column.</param> 
+    /// <returns>Returns nothing.</returns> 
+    void SetData (int index, bool bIsNull, FdoInt64 value);
 
     /// <summary>Sets the string data.</summary>
     /// <param name="index">Input the column index of the data to set.</param> 

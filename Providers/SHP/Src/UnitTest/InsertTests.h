@@ -63,6 +63,8 @@ class InsertTests :
 	CPPUNIT_TEST (insert_2connects_flush);
     //CPPUNIT_TEST (wide2mbPerformaceTest);
     CPPUNIT_TEST (insert_with_locale);
+	CPPUNIT_TEST (insert_integers);
+	CPPUNIT_TEST (insert_integers2);
 	CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -110,6 +112,8 @@ protected:
     void null_data_insert ();
     void insert_large_first_geometry ();
     void insert_no_geometry ();
+	void insert_integers ();
+	void insert_integers2 ();
 	void insert_2connects();
 	void insert_2connects_flush();
 
