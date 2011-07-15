@@ -146,7 +146,7 @@ public:
     FDO_API void SetLength(FdoInt32 value);
 
     /// \brief
-    /// Gets the precision (total number of digits) of a decimal data property.
+    /// Gets the precision (total number of digits) of a decimal or integer data property.
     /// This value does not apply to any other FdoDataType.
     /// 
     /// \return
@@ -155,7 +155,7 @@ public:
     FDO_API FdoInt32 GetPrecision();
 
     /// \brief
-    /// Sets the precision (total number of digits) of a decimal data property.
+    /// Sets the precision (total number of digits) of a decimal or integer data property.
     /// This value is ignored for all other FdoDataType values.
     /// 
     /// \param value 
