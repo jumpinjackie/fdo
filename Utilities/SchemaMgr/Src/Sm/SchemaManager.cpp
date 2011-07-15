@@ -108,7 +108,7 @@ void FdoSchemaManager::DestroySchema( const wchar_t* schemaName  )
 					schemaName
 				)
 			),
-			pException
+            pException, pException->GetNativeErrorCode()
 		);
 
 		FDO_SAFE_RELEASE(pException);
@@ -193,7 +193,7 @@ void FdoSchemaManager::SynchPhysical( const wchar_t* schemaName, bool bRollbackO
             FdoSmError::NLSGetMessage(
     			FDO_NLSID(FDOSM_277)
 			),
-			pException
+			pException, pException->GetNativeErrorCode()
 		);
 
 		FDO_SAFE_RELEASE(pException);
@@ -312,7 +312,7 @@ void FdoSchemaManager::ApplySchema(
 				FDO_NLSID(FDOSM_221),
 				pFeatSchema->GetName()
 			),
-			pException
+			pException, pException->GetNativeErrorCode()
 		);
 
 		FDO_SAFE_RELEASE(pException);
@@ -654,7 +654,7 @@ FdoStringCollection* FdoSchemaManager::GetClassNames(const wchar_t* schemaName)
     }
     catch (FdoException *ex)
     {
-        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
+        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
     }
 }
 
@@ -696,7 +696,7 @@ FdoFeatureSchemasP FdoSchemaManager::GetFdoSchemasEx( FdoStringP schemaName, Fdo
     }
     catch (FdoException *ex)
     {
-        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
+        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
     }
 }
 
@@ -720,7 +720,7 @@ FdoStringCollection* FdoSchemaManager::GetSchemaNames()
     }
     catch (FdoException *ex)
     {
-        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex);
+        throw FdoSchemaException::Create(ex->GetExceptionMessage(), ex, ex->GetNativeErrorCode());
     }
 }
 
