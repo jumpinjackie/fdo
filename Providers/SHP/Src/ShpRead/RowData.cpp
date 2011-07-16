@@ -419,7 +419,7 @@ void RowData::GetData (ColumnData* data, int index, eDBFColumnType type, const c
 #ifdef _WIN32
 					data->value.nData = _atoi64((const char*)raw);
 #else
-					data->value.nData = atoi64((const char*)raw);
+					data->value.nData = atoll((const char*)raw);
 #endif
 					break;  // no extra processing required
 				}
