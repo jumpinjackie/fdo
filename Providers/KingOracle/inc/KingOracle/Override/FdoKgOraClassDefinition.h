@@ -23,6 +23,7 @@
 
 class c_SDO_GEOMETRY;
 #include <KingOracle/Override/FdoKgOraPropertyDefinitionCollection.h>
+#include <stdio.h>
 
 class FdoKgOraClassDefinition : public FdoPhysicalClassMapping
 {

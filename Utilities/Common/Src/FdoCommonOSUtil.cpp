@@ -21,10 +21,10 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <time.h>
 
 #ifdef _WIN32
 #include "mbstring.h" // for multibyte functions
-#include <time.h>
 #else //_WIN32
 #include <wctype.h>  // for wide-char functions
 #include <inttypes.h>

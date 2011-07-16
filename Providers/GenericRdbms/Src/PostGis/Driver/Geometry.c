@@ -18,7 +18,7 @@
 
 //#include "stdafx.h"
 #include "Geometry.h"
-
+#include <string.h>
 
 /// Enumeration of possible byte orders.
 enum ByteOrder

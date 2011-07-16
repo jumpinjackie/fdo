@@ -103,8 +103,8 @@ UnitTest_LDADD = \
   -lxalanMsg
 
 UnitTest_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
+  -L$(FDOTHIRDPARTY)/apache/xalan/lib \
+  -L$(FDOTHIRDPARTY)/apache/xerces/lib
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -D__STDC_LIMIT_MACROS
 

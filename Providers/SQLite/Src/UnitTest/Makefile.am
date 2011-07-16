@@ -73,8 +73,8 @@ UnitTest_LDADD = \
   -lxerces-c
 
 UnitTest_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib
+  -L$(FDOTHIRDPARTY)/apache/xalan/lib \
+  -L$(FDOTHIRDPARTY)/apache/xerces/lib
 
 CXXFLAGS = @CXXFLAGS_SQLITE@
 

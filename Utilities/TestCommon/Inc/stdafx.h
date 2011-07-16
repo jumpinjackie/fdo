@@ -61,6 +61,7 @@
 #include <io.h>
 #include <stddef.h>
 #else
+#include <stdio.h>
 #include <sys/time.h>
 #endif
 
