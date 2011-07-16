@@ -23,6 +23,7 @@
 #define FILE_PATH_DELIMITER2 L'/'
 #define ABSOLUTE_NAME_START 3
 #else
+#include <stdio.h>
 #define FILE_PATH_DELIMITER L'/'
 #define FILE_PATH_DELIMITER2 L'\\'
 #define ABSOLUTE_NAME_START 1

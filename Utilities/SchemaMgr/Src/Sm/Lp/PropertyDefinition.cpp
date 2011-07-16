@@ -397,8 +397,8 @@ void FdoSmLpPropertyDefinition::Commit( bool fromParent )
             throw FdoSchemaException::Create(
                 FdoSmError::NLSGetMessage(
                     FDO_NLSID(FDOSM_430),
-			        GetQName(),
-		            pOwner->GetName()
+			        (FdoString*)GetQName(),
+		            (FdoString*)pOwner->GetName()
 		        )
             );
         }

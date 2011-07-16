@@ -417,7 +417,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         FdoString* pname = id->GetName();
         std::string mbpname = W2A_SLOW(pname);
         
-        sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname.c_str(), mbfc);
+        sprintf(sql, "SELECT DISTINCT %s FROM '%s'", mbpname.c_str(), mbfc.c_str());
 #if DEBUG
         printf (" select distinct: %s\n", sql);
 #endif

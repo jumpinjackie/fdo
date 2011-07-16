@@ -46,6 +46,6 @@ libSDFProvider_la_LIBADD =  \
 
 libSDFProvider_la_LDFLAGS = -shared \
   -release $(VERSION) \
-  -L$(FDOTHIRDPARTY)/apache/xml-xalan/c/lib \
-  -L$(FDOTHIRDPARTY)/apache/xml-xerces/c/lib \
+  -L$(FDOTHIRDPARTY)/apache/xalan/lib \
+  -L$(FDOTHIRDPARTY)/apache/xerces/lib \
   -Wl,-Bsymbolic

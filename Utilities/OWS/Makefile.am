@@ -75,5 +75,6 @@ libFdoOws_la_LIBADD =  \
   -lpthread
 
 libFdoOws_la_LDFLAGS = -shared \
-  -release $(VERSION)
+  -release $(VERSION) \
+  -L$(FDOTHIRDPARTY)/openssl/lib/linux
 

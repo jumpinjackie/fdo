@@ -939,8 +939,8 @@ void FdoSmLpClassBase::Commit( bool fromParent )
             throw FdoSchemaException::Create(
                 FdoSmError::NLSGetMessage(
                     FDO_NLSID(FDOSM_429),
-			        GetQName(),
-		            owner->GetName()
+			        (FdoString*)GetQName(),
+		            (FdoString*)owner->GetName()
 		        )
             );
         }

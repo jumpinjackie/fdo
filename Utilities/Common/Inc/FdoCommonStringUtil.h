@@ -109,6 +109,8 @@
 }
 
 #else
+#include <string.h>
+
 // macro to convert a multibyte string into a wide character string, allocating space on the stack
 #define multibyte_to_wide(w,mb)\
 {\
