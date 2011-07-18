@@ -126,15 +126,15 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
 
     // Re-read a fresh copy of the schema from the SDF file; this is significant
     // if the caller has changed the spatial contexts in the file since doing ApplySchema:
-    FdoFeatureSchema* schema = m_connection->GetSchema(GetSchemaName());
+    FdoPtr<FdoFeatureSchema> schema = m_connection->GetSchema(GetSchemaName(), true);
     if (schema != NULL)
     {
-        FdoPtr<FdoFeatureSchema> sch = FdoFeatureSchema::Create(schema->GetName(), schema->GetDescription());
-        schemaCollection->Add(sch);
-        FdoPtr<FdoClassCollection> clssDest = sch->GetClasses();
         int cnt = (m_classNames == NULL) ? 0 : m_classNames->GetCount();
         if (cnt != 0)
         {
+            FdoPtr<FdoFeatureSchema> sch = FdoFeatureSchema::Create(schema->GetName(), schema->GetDescription());
+            schemaCollection->Add(sch);
+            FdoPtr<FdoClassCollection> clssDest = sch->GetClasses();
             FdoPtr<FdoClassCollection> clss = schema->GetClasses();
             for (int i = 0; i < cnt; i++)
             {
@@ -143,19 +143,13 @@ FdoFeatureSchemaCollection* SdfDescribeSchema::Execute()
                 FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(cls);                
                 clssDest->Add(fc_copy);
             }
+            sch->AcceptChanges();
         } 
         else
         {
-            FdoPtr<FdoClassCollection> clss = schema->GetClasses();
-            cnt = clss->GetCount();
-            for (int i = 0; i < cnt; i++)
-            {
-                FdoPtr<FdoClassDefinition> cls = clss->GetItem(i);
-                FdoPtr<FdoClassDefinition> fc_copy = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(cls);                
-                clssDest->Add(fc_copy);
-            }
+            schemaCollection->Add(schema);
+            schema->AcceptChanges();
         }
-        sch->AcceptChanges();
     }
     return schemaCollection.Detach();
 }
