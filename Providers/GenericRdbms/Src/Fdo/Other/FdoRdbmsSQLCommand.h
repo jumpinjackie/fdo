@@ -97,6 +97,8 @@ private:
         case ';':
         case ',':
         case '\0':
+        case '\r':
+        case '\n':
             return true;
         }
         return false;
