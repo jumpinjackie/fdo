@@ -4868,7 +4868,7 @@ void InsertTests::insert_integers ()
             CPPUNIT_ASSERT_MESSAGE ("incorrect idInt32 value", reader->GetInt32 (L"IdInt32") == -2147483647);
 
             CPPUNIT_ASSERT_MESSAGE ("incorrect idInt64 nullness", !reader->IsNull (L"IdInt64"));
-            CPPUNIT_ASSERT_MESSAGE ("incorrect idInt64 value", reader->GetInt64 (L"IdInt64") == -9223372036854775807);
+            CPPUNIT_ASSERT_MESSAGE ("incorrect idInt64 value", reader->GetInt64 (L"IdInt64") == -9223372036854775807LL);
 
             CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
@@ -4892,7 +4892,7 @@ void InsertTests::insert_integers ()
 
             CPPUNIT_ASSERT_MESSAGE ("incorrect idInt16 value", reader->GetInt16 (L"IdInt16") == -32767);
             CPPUNIT_ASSERT_MESSAGE ("incorrect idInt32 value", reader->GetInt32 (L"IdInt32") == -2147483647);
-            CPPUNIT_ASSERT_MESSAGE ("incorrect idInt64 value", reader->GetInt64 (L"IdInt64") == -9223372036854775807);
+            CPPUNIT_ASSERT_MESSAGE ("incorrect idInt64 value", reader->GetInt64 (L"IdInt64") == -9223372036854775807LL);
 	
 			CPPUNIT_ASSERT_MESSAGE ("incorrect area value", reader->IsNull (L"Area"));
             CPPUNIT_ASSERT_MESSAGE ("incorrect vacant value", reader->IsNull (L"Vacant"));
