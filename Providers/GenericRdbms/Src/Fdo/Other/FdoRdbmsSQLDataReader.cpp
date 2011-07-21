@@ -75,7 +75,7 @@ mUppNameBufferLen(0)
             pCol->column[0] = L'\0';
         
         if (*pCol->column == L'\0')
-            wcsncpy(pCol->column, L"GeneratedProperty", 18);
+            wcsncpy(pCol->column, L"GENERATEDPROPERTY", 18);
 
         if (mColMap.find(pCol->column) != mColMap.end())
             GenerateUniqueName(pCol->column, pCol->column);
