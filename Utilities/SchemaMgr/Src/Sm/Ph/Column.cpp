@@ -46,7 +46,8 @@ FdoSmPhColumn::FdoSmPhColumn(
 	mbNullable(bNullable),
     miDimensionality(-1),
     mDefaultValue(defaultValue),
-	mbAutoIncrement(false)
+	mbAutoIncrement(false),
+    mbReadOnly(false)
 {
 	SetElementState(elementState);
 
@@ -125,6 +126,16 @@ FdoStringP FdoSmPhColumn::GetTypeName() const
 bool FdoSmPhColumn::GetAutoincrement() const
 {
 	return mbAutoIncrement;
+}
+
+bool FdoSmPhColumn::GetReadOnly() const
+{
+	return mbReadOnly;
+}
+
+void FdoSmPhColumn::SetReadOnly(bool val)
+{
+	mbReadOnly = val;
 }
 
 FdoPtr<FdoDataValue> FdoSmPhColumn::GetDefaultValue() const

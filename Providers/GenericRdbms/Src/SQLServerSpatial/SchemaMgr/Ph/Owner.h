@@ -20,6 +20,7 @@
 #include "../../../SchemaMgr/Ph/Owner.h"
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/BaseObjectReader.h>
+#include <Sm/Ph/Rd/ViewRelObjectReader.h>
 #include <Sm/Ph/Rd/ConstraintReader.h>
 #include <Sm/Ph/Rd/SynonymReader.h>
 #include <Sm/Ph/Rd/TableJoin.h>
@@ -47,6 +48,41 @@ public:
     );
 
     ~FdoSmPhSqsOwner(void);
+
+    // Returns true if spatial contexts defined in SC metadata table (f_spatialcontexts)
+    bool GetHasSCMetaSchema();
+
+    // Returns true if classes are defined in class metadata table (f_classdefinition)
+    bool GetHasClassMetaSchema();
+
+    // Returns true if properties are defined in property metadata table (f_attributedefinition)
+    bool GetHasAttrMetaSchema();
+
+    // Returns true if association properties are defined in the metadata table (f_associationdefinition)
+    bool GetHasAssocMetaSchema();
+
+    // Returns true if object properties are defined in the metadata table (f_attributedependencies)
+    bool GetHasObPropMetaSchema();
+
+    // Returns true if Schema Attribute Dictionary items are defined in the metadata table (f_sad)
+    bool GetHasSADMetaSchema();
+
+    // Returns true if Schema option is defined in the metadata table (f_schemaoptions)
+    bool GetHasSCOptionMetaSchema();
+
+    // Returns true if options is defined in the metadata table (f_options)
+    bool GetHasOptionMetaSchema();
+
+    // Returns true if Schema option is defined in the metadata table (f_schemainfo)
+    bool GetHasSCInfoMetaSchema();
+
+    // Returns true if spatial contexts geometry defined in SC metadata table (f_spatialcontextgeom)
+    bool GetHasSCGeomInfoMetaSchema();
+
+    // Returns true if spatial contexts group defined in SC metadata table (f_spatialcontextgroup)
+    bool GetHasSCGroupInfoMetaSchema();
+
+    bool IsRdbObjNameAscii7();
 
     // Find a schema (given by name) in this owner.
     // Returns NULL if the schema is not in this owner.
@@ -119,6 +155,8 @@ public:
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
+
+    virtual FdoPtr<FdoSmPhRdViewRelationsObjectReader> CreateViewRelationsObjectReader( FdoStringsP objectNames ) const;
 
     virtual FdoPtr<FdoSmPhRdConstraintReader> CreateConstraintReader( FdoStringP constraintName ) const;
 
@@ -212,6 +250,9 @@ private:
     // Loads all schemas into this owner's cache.
     void LoadSchemas();
 
+    // check if certain tables exists or not.
+    void LoadFdoMetadata();
+
     // Loads all extended coordinate systems. 
     // SQL Server's coordinate system catalogue (sys.spatial_reference_systems)
     // contains only geodetic systems. However, SQL Server allows geometries
@@ -230,6 +271,10 @@ private:
     FdoSmPhSqsSchemasP mSchemas;
 
     FdoSmPhCoordinateSystemsP mExtendedCoordinateSystems;
+
+    FdoInt32 mIsRdbObjNameAscii7;
+    bool mFdoMetadataLoaded;
+    FdoInt32 mTableFlags;
 };
 
 typedef FdoPtr<FdoSmPhSqsOwner> FdoSmPhSqsOwnerP;

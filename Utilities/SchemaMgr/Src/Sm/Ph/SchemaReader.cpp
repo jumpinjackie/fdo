@@ -127,8 +127,7 @@ FdoSmPhReaderP FdoSmPhSchemaReader::MakeReader( FdoSmPhOwnerP owner, bool dsInfo
     rows->Add( row );
 
 	// Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
-    mbSchemaOptionsTableDefined =
-        (owner->GetHasMetaSchema() && owner->FindDbObject(mgr->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
+    mbSchemaOptionsTableDefined = owner->GetHasSCOptionMetaSchema();
 
 	// Create the appropriate schema reader:
     if ( mgr->GetConfigMappings() && (!dsInfo) ) {
@@ -139,7 +138,7 @@ FdoSmPhReaderP FdoSmPhSchemaReader::MakeReader( FdoSmPhOwnerP owner, bool dsInfo
     }
     else {
 
-        if ( FdoSmPhDbObjectP(row->GetDbObject())->GetExists() ) {
+        if (owner->GetHasSCInfoMetaSchema()) {
             // F_SCHEMAINFO exists, read from MetaSchema
             mbReadFromMetadata = true;
             pSubReader = MakeMtReader( rows, owner, dsInfo );

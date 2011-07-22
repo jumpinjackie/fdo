@@ -247,14 +247,16 @@ FdoSmPhRowsP FdoSmPhPropertyReader::MakeRows( FdoSmPhMgrP mgr )
     rows->Add( row );
 
     // Create row for F_CLASSDEFINITION
-    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
-    FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
+    FdoSmPhOwnerP owner = mgr->GetOwner();
 
-    FdoSmPhRowP classRow = new FdoSmPhRow( 
-        mgr, 
-        L"f_classdefinition", 
-        hasMs ? mgr->FindDbObject(classDefTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP classRow;
+    if (owner->GetHasClassMetaSchema())
+    {
+        FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
+        classRow = new FdoSmPhRow (mgr, L"f_classdefinition", mgr->FindDbObject(classDefTable));
+    }
+    else
+        classRow = new FdoSmPhRow (mgr, L"f_classdefinition", FdoSmPhDbObjectP());
 
     FdoSmPhFieldP field = new FdoSmPhField( classRow, L"classname" );
 

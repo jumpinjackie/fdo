@@ -195,6 +195,9 @@ public:
     virtual FdoSmLpPropertyP CreateObjectProperty( FdoSmPhClassPropertyReaderP propReader, FdoSmLpClassDefinition* parent ) = 0;
     virtual FdoSmLpPropertyP CreateAssociationProperty( FdoSmPhClassPropertyReaderP propReader, FdoSmLpClassDefinition* parent ) = 0;
 
+    // avoid calling this method when there is no metadata 
+    virtual void GetFdoSmLpClassNames (FdoStringCollection* classNames);
+
     /// create from FDO property definition
     virtual FdoSmLpPropertyP CreateDataProperty(
         FdoDataPropertyDefinition* pFdoProp, 

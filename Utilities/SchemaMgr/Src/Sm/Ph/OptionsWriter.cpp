@@ -53,9 +53,15 @@ void FdoSmPhOptionsWriter::SetValue( FdoStringP sValue )
 
 FdoSmPhRowP FdoSmPhOptionsWriter::MakeRow( FdoSmPhMgrP mgr, FdoStringP owner )
 {
-    FdoStringP optDefTable = mgr->GetDcDbObjectName(L"f_options");
-
-    FdoSmPhRowP row = new FdoSmPhRow( mgr, L"f_options", mgr->FindDbObject(optDefTable, owner) );
+    FdoSmPhOwnerP ownerPtr = mgr->FindOwner(owner);
+    FdoSmPhRowP row;
+    if (ownerPtr && ownerPtr->GetHasOptionMetaSchema())
+    {
+        FdoStringP optDefTable = mgr->GetDcDbObjectName(L"f_options");
+        row = new FdoSmPhRow (mgr, L"f_options", mgr->FindDbObject(optDefTable, owner) );
+    }
+    else
+        row = new FdoSmPhRow (mgr, L"f_options", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row
     FdoSmPhFieldP field = new FdoSmPhField( row, L"name" );

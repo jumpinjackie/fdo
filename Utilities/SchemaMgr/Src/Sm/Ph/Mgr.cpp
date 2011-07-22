@@ -82,6 +82,11 @@ FdoPtr<FdoSmPhClassReader> FdoSmPhMgr::CreateClassReader(FdoStringP schemaName)
 	return( new FdoSmPhClassReader(schemaName, FDO_SAFE_ADDREF(this)) );
 }
 
+FdoPtr<FdoSmPhClassReader> FdoSmPhMgr::CreateClassReader(FdoStringP schemaName, bool fullLoad)
+{
+	return( new FdoSmPhClassReader(schemaName, FDO_SAFE_ADDREF(this), fullLoad) );
+}
+
 FdoPtr<FdoSmPhClassReader> FdoSmPhMgr::CreateClassReader(FdoStringP schemaName, FdoStringP className)
 {
 	return( new FdoSmPhClassReader(schemaName, className, FDO_SAFE_ADDREF(this)) );
@@ -319,14 +324,18 @@ void FdoSmPhMgr::SetConfiguration(
     FdoSchemaMappingsP configMappings 
 )
 {
-    // For now, overriding MetaSchema with config document is not allowed.
-    if ( (configSchemas || configMappings) && FindDbObject( GetDcDbObjectName(L"f_schemainfo"), GetDefaultOwnerName() ) ) {
-        throw FdoSchemaException::Create(
-            FdoSmError::NLSGetMessage(
+    if (configSchemas || configMappings)
+    {
+        FdoSmPhOwnerP owner = GetOwner(GetDefaultOwnerName());
+        // For now, overriding MetaSchema with config document is not allowed.
+        if (owner && owner->GetHasSCInfoMetaSchema()) {
+            throw FdoSchemaException::Create(
+                FdoSmError::NLSGetMessage(
                 FDO_NLSID(FDOSM_18_CONFIG_W_METASCHEMA),
-                GetOwner()->GetName()
-            )
-        );
+                owner->GetName()
+                )
+            );
+        }
     }
 
     mProviderName = providerName;

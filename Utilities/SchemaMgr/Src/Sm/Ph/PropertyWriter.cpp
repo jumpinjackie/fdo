@@ -337,14 +337,16 @@ void FdoSmPhPropertyWriter::Delete( FdoInt64 classId, FdoStringP sName )
 
 FdoSmPhRowP FdoSmPhPropertyWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
-    FdoStringP attDefTable = mgr->GetDcDbObjectName(L"f_attributedefinition");
+    FdoSmPhOwnerP owner = mgr->GetOwner();
 
-    FdoSmPhRowP row = new FdoSmPhRow( 
-        mgr, 
-        L"f_attributedefinition", 
-        hasMs ? mgr->FindDbObject(attDefTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP row;
+    if (owner->GetHasAttrMetaSchema())
+    {
+        FdoStringP attDefTable = mgr->GetDcDbObjectName(L"f_attributedefinition");
+        row = new FdoSmPhRow (mgr, L"f_attributedefinition", mgr->FindDbObject(attDefTable));
+    }
+    else
+        row = new FdoSmPhRow (mgr, L"f_attributedefinition", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row.
     FdoSmPhFieldP field = new FdoSmPhField( row, L"classid" );

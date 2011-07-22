@@ -58,6 +58,8 @@ public:
     /// expensive than simpler types of columns such as strings).
     static const long mDateWeight = 50;
 
+    virtual FdoSmPhDbObjType GetType() { return FdoSmPhDbObjType_Index; };
+
 protected:
     /// unused constructor only for building on Linux
     FdoSmPhIndex() {}

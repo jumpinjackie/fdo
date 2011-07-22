@@ -83,6 +83,8 @@ protected:
     /// Get SQL name for the root object
     virtual FdoStringP GetRootNameSql() = 0;
 
+    virtual FdoSmPhDbObjType GetType() { return FdoSmPhDbObjType_View; };
+
 private:
     /// Load View-specific information if not already loaded.
 //    void LoadView();

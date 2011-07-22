@@ -161,6 +161,8 @@ public:
     /// Mainly for unit testing.
 	virtual void XMLSerialize( FILE* xmlFp, int ref ) const;
 
+    virtual FdoSmPhDbObjType GetType() { return FdoSmPhDbObjType_Table; };
+
 protected:
     //Unused constructor needed only to build on Linux
     FdoSmPhTable() {}

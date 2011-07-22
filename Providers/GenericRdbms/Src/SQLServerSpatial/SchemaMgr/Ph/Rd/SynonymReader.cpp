@@ -183,14 +183,14 @@ bool FdoSmPhRdSqsSynonymReader::ReadNext()
 
 FdoStringP FdoSmPhRdSqsSynonymReader::GetString(FdoStringP tableName, FdoStringP fieldName)
 {
-    if ( fieldName == L"name" )
+    if ( wcscmp(fieldName, L"name") == 0 )
         return FdoSmPhRdSynonymReader::GetString(tableName,L"table_schema") + L"." +
                FdoSmPhRdSynonymReader::GetString(tableName,L"name");
-    else if ( fieldName == L"base_name" )
+    else if ( wcscmp(fieldName, L"base_name") == 0 )
         return mBaseName;
-    else if ( fieldName == L"base_owner" )
+    else if ( wcscmp(fieldName, L"base_owner") == 0 )
         return mBaseOwner;
-    else if ( fieldName == L"base_database" )
+    else if ( wcscmp(fieldName, L"base_database") == 0 )
         return L"";
 
     return FdoSmPhRdSynonymReader::GetString(tableName, fieldName);

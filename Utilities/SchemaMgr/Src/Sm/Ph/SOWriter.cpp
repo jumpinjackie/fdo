@@ -98,14 +98,14 @@ void FdoSmPhSOWriter::Delete( FdoStringP sOwner, FdoStringP sName )
 
 FdoSmPhRowP FdoSmPhSOWriter::MakeRow( FdoSmPhOwnerP owner )
 {
-    bool hasMs = owner->GetHasMetaSchema();
-    FdoStringP optDefTable = FdoSmPhMgrP(owner->GetManager())->GetDcDbObjectName(L"f_schemaoptions");
-
-    FdoSmPhRowP row = new FdoSmPhRow( 
-        owner->GetManager(), 
-        L"f_schemaoptions", 
-        hasMs ? owner->FindDbObject(optDefTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP row;
+    if (owner->GetHasSCOptionMetaSchema())
+    {
+        FdoStringP optDefTable = FdoSmPhMgrP(owner->GetManager())->GetDcDbObjectName(L"f_schemaoptions");
+        row = new FdoSmPhRow( owner->GetManager(), L"f_schemaoptions", owner->FindDbObject(optDefTable));
+    }
+    else
+        row = new FdoSmPhRow (owner->GetManager(), L"f_schemaoptions", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row.
     FdoSmPhFieldP field = new FdoSmPhField( row, L"ownername" );

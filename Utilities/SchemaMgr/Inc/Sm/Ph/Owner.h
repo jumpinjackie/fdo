@@ -44,6 +44,7 @@ class FdoSmPhRdSynonymReader;
 class FdoSmPhRdTableJoin;
 class FdoSmPhRdSpatialContextReader;
 class FdoSmPhRdCoordSysReader;
+class FdoSmPhRdViewRelationsObjectReader;
 
 class FdoSmPhIndexLoader;
 class FdoSmPhSynonymBaseLoader;
@@ -79,26 +80,41 @@ public:
     /// Get/Set whether the owner has MetaSchema tables.
     /// The Set function can only be called when this owner's
     /// element state is FdoSchemaElementState_Added.
-    void SetHasMetaSchema( bool hasMetaSchema );
-    bool GetHasMetaSchema();
+    inline void SetHasMetaSchema( bool hasMetaSchema ) { mHasMetaSchema = hasMetaSchema; }
+    inline bool GetHasMetaSchema() { return mHasMetaSchema; }
 
     // Returns true if spatial contexts defined in SC metadata table (f_spatialcontexts)
-    bool GetHasSCMetaSchema();
+    virtual bool GetHasSCMetaSchema();
 
     // Returns true if classes are defined in class metadata table (f_classdefinition)
-    bool GetHasClassMetaSchema();
+    virtual bool GetHasClassMetaSchema();
 
     // Returns true if properties are defined in property metadata table (f_attributedefinition)
-    bool GetHasAttrMetaSchema();
+    virtual bool GetHasAttrMetaSchema();
 
     // Returns true if association properties are defined in the metadata table (f_associationdefinition)
-    bool GetHasAssocMetaSchema();
+    virtual bool GetHasAssocMetaSchema();
 
     // Returns true if object properties are defined in the metadata table (f_attributedependencies)
-    bool GetHasObPropMetaSchema();
+    virtual bool GetHasObPropMetaSchema();
 
     // Returns true if Schema Attribute Dictionary items are defined in the metadata table (f_sad)
-    bool GetHasSADMetaSchema();
+    virtual bool GetHasSADMetaSchema();
+
+    // Returns true if Schema option is defined in the metadata table (f_schemaoptions)
+    virtual bool GetHasSCOptionMetaSchema();
+
+    // Returns true if options is defined in the metadata table (f_options)
+    virtual bool GetHasOptionMetaSchema();
+
+    // Returns true if Schema option is defined in the metadata table (f_schemainfo)
+    virtual bool GetHasSCInfoMetaSchema();
+
+    // Returns true if spatial contexts geometry defined in SC metadata table (f_spatialcontextgeom)
+    virtual bool GetHasSCGeomInfoMetaSchema();
+
+    // Returns true if spatial contexts group defined in SC metadata table (f_spatialcontextgroup)
+    virtual bool GetHasSCGroupInfoMetaSchema();
 
     /// System database flag
 	void SetIsSystem( bool IsSystem );
@@ -276,6 +292,9 @@ public:
 
     // Create a reader to get all base object references for this owner
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader() const;
+
+    // Create a reader to get all relations in a view 
+    virtual FdoPtr<FdoSmPhRdViewRelationsObjectReader> CreateViewRelationsObjectReader( FdoStringsP objectNames ) const;
 
     virtual FdoPtr<FdoSmPhRdBaseObjectReader> CreateBaseObjectReader( FdoStringsP objectNames ) const;
 
@@ -587,6 +606,7 @@ private:
 
     bool mBulkLoadPkeys;
     bool mBulkLoadFkeys;
+    bool mHasOnlyFdoCand;
 
     // Statuses for cache candidates and mNotClassifiedObjects list
     static FdoString* NOT_CLASSIFIED;  // object exists but Schema Manager does not classify it (e.g. Oracle index)

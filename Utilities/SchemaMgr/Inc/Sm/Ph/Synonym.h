@@ -89,6 +89,8 @@ public:
     // for synonyms, since synonyms do not have explicit foreign keys.
     virtual void LoadFkeyRefCands();
 
+    virtual FdoSmPhDbObjType GetType() { return FdoSmPhDbObjType_Synonym; };
+
 protected:
     // unused constructor needed only to build on Linux
     FdoSmPhSynonym() {}

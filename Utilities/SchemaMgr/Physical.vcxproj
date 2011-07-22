@@ -341,6 +341,7 @@
     <ClCompile Include="src\Sm\Ph\Rd\TableJoin.cpp" />
     <ClCompile Include="Src\Sm\Ph\Rd\SynonymReader.cpp" />
     <ClCompile Include="Src\Sm\Ph\Rd\ViewReader.cpp" />
+    <ClCompile Include="Src\Sm\Ph\Rd\ViewRelObjectReader.cpp" />
     <ClCompile Include="Src\Sm\Ph\Cfg\ClassReader.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
@@ -563,6 +564,7 @@
     <ClInclude Include="Inc\Sm\Ph\Rd\SynonymReader.h" />
     <ClInclude Include="inc\Sm\Ph\Rd\TableJoin.h" />
     <ClInclude Include="Inc\Sm\Ph\Rd\ViewReader.h" />
+    <ClInclude Include="Inc\Sm\Ph\Rd\ViewRelObjectReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Cfg\ClassReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Cfg\PropertyReader.h" />
     <ClInclude Include="Inc\Sm\Ph\Cfg\SchemaReader.h" />
