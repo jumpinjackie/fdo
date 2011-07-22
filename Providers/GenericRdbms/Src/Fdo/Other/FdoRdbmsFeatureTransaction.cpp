@@ -100,7 +100,7 @@ FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestName)
             {
                 break;
             }
-            realName = FdoStringP::Format(L"%ls%d", (FdoString*)realName, postfixCount);
+            realName = FdoStringP::Format(L"%ls%d", (FdoString*)suggestName, postfixCount);
         }
         mConnection->GetGdbiCommands()->sp_add(realName);
     }
