@@ -32,6 +32,7 @@ set( SmPhRd_SRCS
 	SynonymReader.cpp
 	TableJoin.cpp
 	ViewReader.cpp
+	ViewRelObjectReader.cpp
 )
 
 

@@ -45,6 +45,7 @@ libSmPhRd_la_SOURCES = \
   SpatialContextReader.cpp \
   SynonymReader.cpp \
   TableJoin.cpp \
+  ViewRelObjectReader.cpp \
   ViewReader.cpp 
 
 

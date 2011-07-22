@@ -41,6 +41,13 @@ FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoStringP classNa
     mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
 }
 
+FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoSmPhMgrP physicalSchema, bool fullLoad) : 
+	FdoSmPhReader( MakeReader(schemaName, physicalSchema, NULL, fullLoad) ),
+	mSchemaName(schemaName)
+{
+    mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
+}
+
 FdoSmPhClassReader::~FdoSmPhClassReader(void)
 {
 }
@@ -218,7 +225,7 @@ FdoSmPhClassSADReaderP FdoSmPhClassReader::GetClassSADReader()
 	return new FdoSmPhClassSADReader(mSchemaName, GetName(), mClassSADReader );
 }
 
-FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className )
+FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className, bool fullLoad)
 {
     mbTableCreatorDefined = false;
     mbSchemaOptionsTableDefined = false;
@@ -236,10 +243,8 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
 
 
 	// Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
-	mbSchemaOptionsTableDefined =
-        (FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema() &&
-         mgr->FindDbObject(mgr->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
-
+    FdoSmPhOwnerP owner = mgr->GetOwner();
+    mbSchemaOptionsTableDefined = owner->GetHasSCOptionMetaSchema();
 
 	// Create the appropriate class reader:
     FdoSchemaMappingsP mappings = mgr->GetConfigMappings();
@@ -249,10 +254,10 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
         pSubReader = mgr->CreateCfgClassReader( rows, schemaName ).p->SmartCast<FdoSmPhReader>();
     }
     else {
-        if ( FdoSmPhDbObjectP(classRow->GetDbObject())->GetExists() ) {
+        if (owner->GetHasClassMetaSchema()) {
             mbReadFromMetadata = true;
             // F_CLASSDEFINITION exists, read from MetaSchema
-            pSubReader = MakeMtReader( rows, schemaName, mgr, className );
+            pSubReader = MakeMtReader( rows, schemaName, mgr, className, fullLoad);
         }
         else {
             // F_CLASSDEFINITION does not exist, read from native physical schema.
@@ -263,9 +268,9 @@ FdoSmPhReaderP FdoSmPhClassReader::MakeReader( FdoStringP schemaName, FdoSmPhMgr
     return pSubReader;
 }
 
-FdoSmPhReaderP FdoSmPhClassReader::MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className )
+FdoSmPhReaderP FdoSmPhClassReader::MakeMtReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className, bool fullLoad )
 {
-    return new FdoSmPhMtClassReader( rows, schemaName, className, mgr );
+    return new FdoSmPhMtClassReader( rows, schemaName, className, mgr, fullLoad);
 }
 
 FdoSmPhReaderP FdoSmPhClassReader::MakeRdReader( FdoSmPhRowsP rows, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoString* className  )

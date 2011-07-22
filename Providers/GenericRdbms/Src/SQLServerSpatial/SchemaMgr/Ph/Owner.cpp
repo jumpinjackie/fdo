@@ -24,6 +24,7 @@
 #include "Mgr.h"
 #include "Rd/DbObjectReader.h"
 #include "Rd/BaseObjectReader.h"
+#include "Rd/ViewRelObjectReader.h"
 #include "Rd/ColumnReader.h"
 #include "Rd/ConstraintReader.h"
 #include "Rd/FkeyReader.h"
@@ -35,6 +36,18 @@
 #include "Rd/DbSchemaReader.h"
 #include "Rdbi/proto.h"
 #include <FdoCommonStringUtil.h>
+
+#define cd_f_spatialcontext         0x01
+#define cd_f_classdefinition        0x02
+#define cd_f_attributedefinition    0x04
+#define cd_f_associationdefinition  0x08
+#define cd_f_attributedependencies  0x10
+#define cd_f_sad                    0x20
+#define cd_f_schemaoptions          0x40
+#define cd_f_options                0x80
+#define cd_f_schemainfo             0x100
+#define cd_f_spatialcontextgeom     0x200
+#define cd_f_spatialcontextgroup    0x400
 
 struct odbcdr_context_def;
 
@@ -53,6 +66,9 @@ FdoSmPhSqsOwner::FdoSmPhSqsOwner(
 ) :
     FdoSmPhGrdOwner(name, hasMetaSchema, pDatabase, elementState)
 {
+    mFdoMetadataLoaded = false;
+    mIsRdbObjNameAscii7 = -1;
+    mTableFlags = 0x00;
 }
 
 FdoSmPhSqsOwner::~FdoSmPhSqsOwner(void)
@@ -71,6 +87,170 @@ FdoSmPhSqsSchemasP FdoSmPhSqsOwner::GetSchemas()
     LoadSchemas();
 
     return mSchemas;
+}
+
+// here we could run "select T.TABLE_NAME table_name from [SqlServerAuthDocument].INFORMATION_SCHEMA.TABLES T where T.TABLE_SCHEMA = 'dbo' AND T.TABLE_NAME LIKE 'f_%'"
+// however since we are interested into just a few tables lets use IN() for now
+void FdoSmPhSqsOwner::LoadFdoMetadata()
+{
+    mFdoMetadataLoaded = false;
+    mTableFlags = 0x00;
+    GdbiConnection* connection = ((FdoSmPhGrdMgr*)(FdoSmPhMgr*)GetManager())->GetGdbiConnection();
+    GdbiCommands* commands = connection->GetCommands();
+
+    GdbiStatement* query = NULL;
+    GdbiQueryResult* results = NULL;
+    try
+    {
+        std::wstring sql(L"select T.TABLE_NAME table_name from ");
+        sql.append(GetDbName());
+        sql.append(L".INFORMATION_SCHEMA.TABLES T where T.TABLE_SCHEMA='dbo' AND T.TABLE_NAME IN('f_spatialcontext', 'f_classdefinition', 'f_attributedefinition', 'f_associationdefinition', 'f_attributedependencies', 'f_sad', 'f_schemaoptions', 'f_options', 'f_schemainfo', 'f_spatialcontextgeom', 'f_spatialcontextgroup')");
+
+        GdbiStatement* query = connection->Prepare ((wchar_t*)sql.c_str());
+        GdbiQueryResult* results = query->ExecuteQuery();
+        while (results->ReadNext())
+        {
+            bool isNULL = false;
+            FdoString* tName = results->GetString(1, &isNULL, NULL);
+            if (!(isNULL || tName == NULL || *tName == '\0'))
+            {
+                // in case we will add more f_* values we should use a std::map to search the values.
+                // avoid wcscmp in case value was already found
+                if ((mTableFlags&cd_f_spatialcontext) == 0 && wcscmp(tName, L"f_spatialcontext") == 0)
+                    mTableFlags = mTableFlags | cd_f_spatialcontext;
+                else if ((mTableFlags&cd_f_schemainfo) == 0 && wcscmp(tName, L"f_schemainfo") == 0)
+                    mTableFlags = mTableFlags | cd_f_schemainfo;
+                else if ((mTableFlags&cd_f_classdefinition) == 0 && wcscmp(tName, L"f_classdefinition") == 0)
+                    mTableFlags = mTableFlags | cd_f_classdefinition;
+                else if ((mTableFlags&cd_f_attributedefinition) == 0 && wcscmp(tName, L"f_attributedefinition") == 0)
+                    mTableFlags = mTableFlags | cd_f_attributedefinition;
+                else if ((mTableFlags&cd_f_schemaoptions) == 0 && wcscmp(tName, L"f_schemaoptions") == 0)
+                    mTableFlags = mTableFlags | cd_f_schemaoptions;
+                if ((mTableFlags&cd_f_spatialcontextgeom) == 0 && wcscmp(tName, L"f_spatialcontextgeom") == 0)
+                    mTableFlags = mTableFlags | cd_f_spatialcontextgeom;
+                if ((mTableFlags&cd_f_spatialcontextgroup) == 0 && wcscmp(tName, L"f_spatialcontextgroup") == 0)
+                    mTableFlags = mTableFlags | cd_f_spatialcontextgroup;
+                else if ((mTableFlags&cd_f_associationdefinition) == 0 && wcscmp(tName, L"f_associationdefinition") == 0)
+                    mTableFlags = mTableFlags | cd_f_attributedependencies;
+                else if ((mTableFlags&cd_f_associationdefinition) == 0 && wcscmp(tName, L"f_attributedependencies") == 0)
+                    mTableFlags = mTableFlags | cd_f_attributedependencies;
+                else if ((mTableFlags&cd_f_sad) == 0 && wcscmp(tName, L"f_sad") == 0)
+                    mTableFlags = mTableFlags | cd_f_sad;
+                else if ((mTableFlags&cd_f_options) == 0 && wcscmp(tName, L"f_options") == 0)
+                    mTableFlags = mTableFlags | cd_f_options;
+            }
+        }
+        mFdoMetadataLoaded = true;
+    }
+    catch(FdoException* exc)
+    {
+        exc->Release();
+        mFdoMetadataLoaded = false;
+        mTableFlags = 0x00;
+    }
+    if ( results )
+        delete results;
+
+    if ( query )
+        delete query;
+}
+
+bool FdoSmPhSqsOwner::GetHasSCMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontext) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasClassMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_classdefinition) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasAttrMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_attributedefinition) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasAssocMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_associationdefinition) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasObPropMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_attributedependencies) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasSADMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_sad) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasSCOptionMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_schemaoptions) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasOptionMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_options) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasSCInfoMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_schemainfo) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasSCGeomInfoMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontextgeom) != 0);
+}
+
+bool FdoSmPhSqsOwner::GetHasSCGroupInfoMetaSchema()
+{
+    if (!mFdoMetadataLoaded)
+        LoadFdoMetadata();
+    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontextgroup) != 0);
+}
+
+bool FdoSmPhSqsOwner::IsRdbObjNameAscii7()
+{
+    if (mIsRdbObjNameAscii7 == -1)
+    {
+        mIsRdbObjNameAscii7 = 0;
+        FdoSmPhDbObjectP dbObject = FindDbObject( L"dbo.f_classdefinition" );
+        if (dbObject)
+        {
+            FdoSmPhColumnP column = dbObject->GetColumns()->FindItem( L"classname" );
+            
+            if ( column && column->GetTypeName().ICompare(L"varchar") == 0 )
+            // Most Schema Manager queries are ordered on string columns. When these
+            // are varchar, it is difficult to pick a collation that returns rows
+            // in a predictable order, when the columns contain non-ASCII7 data.
+            // Therefore, stick to ASCII7 database element names for these datastores.
+            mIsRdbObjNameAscii7 = 1;
+        }
+    }
+    return (mIsRdbObjNameAscii7 == 1);
 }
 
 FdoSmPhCoordinateSystemP FdoSmPhSqsOwner::FindCoordinateSystem( FdoInt64 srid )
@@ -291,6 +471,12 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhSqsOwner::CreateBaseObjectReader(FdoStr
     return new FdoSmPhRdSqsBaseObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames );
 }
 
+FdoPtr<FdoSmPhRdViewRelationsObjectReader> FdoSmPhSqsOwner::CreateViewRelationsObjectReader( FdoStringsP objectNames ) const
+{
+    FdoSmPhSqsOwner* pOwner = (FdoSmPhSqsOwner*) this;
+
+    return new FdoSmPhRdSqlViewRelationsObjectReader( FDO_SAFE_ADDREF(pOwner), objectNames );
+}
 
 FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhSqsOwner::CreateConstraintReader( FdoStringP constraintName) const
 {
@@ -714,6 +900,9 @@ void FdoSmPhSqsOwner::CreateMetaClass()
 			L"SYSTEM_USER,%ls,0,0)",
 			(FdoString *) GetManager()->FormatSQLVal(NlsMsgGet(FDORDBMS_503, "Bounding box for the feature"), FdoSmPhColType_String));
 	gdbiConn->ExecuteNonQuery( (const char*) sql_stmt);
+
+    mFdoMetadataLoaded = false;
+    mTableFlags = 0x00;
 }
 
 void FdoSmPhSqsOwner::LoadSchemas()

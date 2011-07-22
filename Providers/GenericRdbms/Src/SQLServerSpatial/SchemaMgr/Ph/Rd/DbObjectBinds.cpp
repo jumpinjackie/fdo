@@ -56,6 +56,14 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
 
         // Add a user name and object name bind field for each object.
         for ( objectIx = 0; objectIx < objectNames->GetCount(); objectIx++ ) {
+            FdoString* fullObjectName = objectNames->GetString(objectIx);
+            if (fullObjectName == NULL || *fullObjectName == '\0')
+            {
+                objectNames->RemoveAt(objectIx);
+                objectIx--;
+                continue;
+            }
+
             FdoStringP bindFieldName = FdoStringP::Format( 
                 L"%ls%d",
                 (FdoString*) userAlias,
@@ -86,25 +94,31 @@ FdoSmPhRdSqsDbObjectBinds::FdoSmPhRdSqsDbObjectBinds(
 	FdoSmPhFieldsP	fields = mBinds->GetFields();
 
     // Set bind values for objects.
-    for ( objectIx = 0, ix = bindOffset; objectIx < objectNames->GetCount(); objectIx++ ) {
-        FdoStringP fullObjectName = objectNames->GetString( objectIx );
-        FdoStringP userName;
-        FdoStringP objectName;
+    for ( objectIx = 0, ix = bindOffset; objectIx < objectNames->GetCount(); objectIx++ )
+    {
+        FdoString* fullObjectName = objectNames->GetString( objectIx );
 
         // Parse out user name and object name parts from each full object name.
-        if ( fullObjectName.Contains(L".") ) {
+        int dtIdx = 0;
+        while(*(fullObjectName+dtIdx) != '\0')
+        {
+            if (*(fullObjectName+dtIdx) == '.')
+                break;
+            dtIdx++;
+        }
+        if (*(fullObjectName+dtIdx) == '.')
+        {
             // Full Object name contains user name, set object_schema to user name.
-            userName = fullObjectName.Left(L".");
-            objectName = fullObjectName.Right(L".");
+            std::wstring userName(fullObjectName, dtIdx);
+            FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue (userName.c_str());
+            FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue (fullObjectName+dtIdx+1);
         }
-        else {
+        else
+        {
             // Object name not qualified by user name, default the user name to dbo.
-            userName = L"dbo";
-            objectName = fullObjectName;
+            FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue( L"dbo" );
+            FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue( fullObjectName );
         }
-
-        FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue( userName );
-        FdoSmPhFieldP(fields->GetItem(ix++))->SetFieldValue( objectName );
     }
 
     // Generate SQL

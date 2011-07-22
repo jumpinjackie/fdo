@@ -103,7 +103,7 @@ long FdoSmPhDependencyReader::GetCardinality()
 }
 
 
-FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP where, FdoSmPhMgrP mgr, bool bAddClassDef )
+FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP sWhere, FdoSmPhMgrP mgr, bool bAddClassDef )
 {
     FdoSmPhReaderP pSubReader;
 
@@ -113,15 +113,22 @@ FdoSmPhReaderP FdoSmPhDependencyReader::MakeReader( FdoStringP where, FdoSmPhMgr
     FdoSmPhRowP depRow = FdoSmPhDependencyWriter::MakeRow(mgr);
     rows->Add( depRow );
 
+    FdoSmPhOwnerP owner = mgr->GetOwner();
     if ( bAddClassDef ) {
-        FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
-        FdoSmPhRowP row = new FdoSmPhRow( mgr, L"f_classdefinition", mgr->FindDbObject(classDefTable) );
+        FdoSmPhRowP row;
+        if (owner->GetHasClassMetaSchema())
+        {
+            FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
+            row = new FdoSmPhRow (mgr, L"f_classdefinition", mgr->FindDbObject(classDefTable));
+        }
+        else
+            row = new FdoSmPhRow (mgr, L"f_classdefinition", FdoSmPhDbObjectP());
         rows->Add( row );
     }
 
-    if ( FdoSmPhDbObjectP(depRow->GetDbObject())->GetExists() ) {
+    if ( owner->GetHasObPropMetaSchema() ) {
         // F_ATTRIBUTEDEPENDENCY exists, read from MetaSchema
-        pSubReader = mgr->CreateQueryReader( rows, where ).p->SmartCast<FdoSmPhReader>();
+        pSubReader = mgr->CreateQueryReader( rows, sWhere ).p->SmartCast<FdoSmPhReader>();
     }
     else {
         // F_ATTRIBUTEDEPENDENCY does not exist, nothing to read.

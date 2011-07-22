@@ -186,6 +186,7 @@ Sm/Ph/Rd/SpatialContextGroupReader.h \
 Sm/Ph/Rd/ConstraintReader.h \
 Sm/Ph/Rd/IndexReader.h \
 Sm/Ph/Rd/QueryReader.h \
+Sm/Ph/Rd/ViewRelObjectReader.h \
 Sm/Ph/Rd/SpatialContextReader.h \
 Utilities/SchemaMgr/Overrides/GeometricColumnType.h \
 Utilities/SchemaMgr/Overrides/GeometricContentType.h \

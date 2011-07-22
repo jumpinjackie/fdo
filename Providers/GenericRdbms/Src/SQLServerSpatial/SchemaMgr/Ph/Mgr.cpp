@@ -24,6 +24,7 @@
 #include <Rdbms/Override/SQLServerSpatial/SqlServerOvPhysicalSchemaMapping.h>
 #include <Rdbms/Override/SQLServerSpatial/SqlServerOvTextInRowOption.h>
 #include <Sm/Ph/Rd/QueryReader.h>
+#include "Owner.h"
 
 FdoSmPhSqsMgr::SqsStringMap FdoSmPhSqsMgr::mSqsReservedDbObjectNames;
 
@@ -387,20 +388,8 @@ bool FdoSmPhSqsMgr::IsRdbObjNameAscii7()
     if ( (!owner) || (!owner->GetHasClassMetaSchema()) ) 
         return false;
 
-    FdoSmPhDbObjectP dbObject = owner->FindDbObject( L"dbo.f_classdefinition" );
-    if ( !dbObject ) 
-        return false;
-
-    FdoSmPhColumnP column = dbObject->GetColumns()->FindItem( L"classname" );
-
-    if ( column && column->GetTypeName().ICompare(L"varchar") == 0 )
-        // Most Schema Manager queries are ordered on string columns. When these
-        // are varchar, it is difficult to pick a collation that returns rows
-        // in a predictable order, when the columns contain non-ASCII7 data.
-        // Therefore, stick to ASCII7 database element names for these datastores.
-        return true;
-
-    return false;
+    FdoSmPhSqsOwner* pSqlOwner = static_cast<FdoSmPhSqsOwner*>(owner.p);
+    return (pSqlOwner == NULL) ? false : pSqlOwner->IsRdbObjNameAscii7();
 }
 
 FdoSize FdoSmPhSqsMgr::DbObjectNameMaxLen()

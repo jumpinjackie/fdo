@@ -171,6 +171,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ph\Rd\ViewRelObjectReader.cpp" />
     <ClCompile Include="Ph\Rd\SynonymReader.cpp" />
     <ClCompile Include="Ph\Synonym.cpp" />
     <ClCompile Include="SchemaManager.cpp" />
@@ -263,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ph\Rd\SynonymReader.h" />
+    <ClInclude Include="Ph\Rd\ViewRelObjectReader.h" />
     <ClInclude Include="Ph\Synonym.h" />
     <ClInclude Include="SchemaManager.h" />
     <ClInclude Include="stdafx.h" />

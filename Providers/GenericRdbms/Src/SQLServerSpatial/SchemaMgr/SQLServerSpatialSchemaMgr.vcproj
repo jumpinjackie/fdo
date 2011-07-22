@@ -181,8 +181,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				AdditionalOptions="-Zm111"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\inc\Fdo;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\inc;..\..\..;..\..\..\inc;..\..\..\..\Oracle;$(FDOUTILITIES)\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -248,8 +248,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				AdditionalOptions="-Zm111"
+				Optimization="2"
 				AdditionalIncludeDirectories="..\..\..\inc\Fdo;$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOUTILITIES)\SchemaMgr\inc;..\..\..;..\..\..\inc;..\..\..\..\Oracle;$(FDOUTILITIES)\Common\inc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;FDORDBMS_EXPORTS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
@@ -916,6 +916,14 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\SynonymReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\ViewRelObjectReader.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\ViewRelObjectReader.h"
 						>
 					</File>
 				</Filter>

@@ -62,6 +62,10 @@ public:
     /// for this column are generated from a sequence.
     bool GetAutoincrement() const;
 
+    /// Get/set if column is read-only
+    bool GetReadOnly() const;
+    void SetReadOnly(bool val);
+
     /// Gets the length of a string column or total number
     /// of digits ( right or left of the decimal point )
     /// for a NUMBER column.

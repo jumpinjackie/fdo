@@ -48,7 +48,7 @@ class FdoSmPhRdFkeyReader;
 class FdoSmPhTableIndexReader;
 class FdoSmPhTableComponentReader;
 class FdoSmPhTableDependencyReader;
-
+class FdoSmPhRdViewRelationsObjectReader;
 // some constants
 
 enum FdoLtLockModeType	{
@@ -136,6 +136,8 @@ public:
     {
         return GetParent()->GetParent()->GetName();
     }
+
+    virtual FdoSmPhDbObjType GetType() = 0;
 
     /// Returns all base objects for this object. A base object is a object from which
     /// this object is derived (e.g. a view can be based on one or more tables or other views)
@@ -400,6 +402,9 @@ public:
 
     // Load this object's columns from the given reader
     virtual void CacheBaseObjects( FdoPtr<FdoSmPhRdBaseObjectReader> rdr );
+
+    // Load this object's (view) columns relations from the given reader
+    virtual void CacheViewRelationObjects( FdoPtr<FdoSmPhRdViewRelationsObjectReader> rdr);
 
     // Load this object's primary key from the given reader
     virtual void CachePkeys( FdoPtr<FdoSmPhRdPkeyReader> rdr );

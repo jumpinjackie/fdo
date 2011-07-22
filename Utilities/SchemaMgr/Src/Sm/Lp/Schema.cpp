@@ -66,6 +66,28 @@ FdoSmLpSchema::~FdoSmLpSchema(void)
 {
 }
 
+// avoid calling this method when there is no metadata 
+void FdoSmLpSchema::GetFdoSmLpClassNames (FdoStringCollection* classNames)
+{
+    FdoSmPhOwnerP owner = mPhysicalSchema->GetOwner();
+    if (!owner->GetHasClassMetaSchema())
+    {
+        // this can be used only with FDO metadata
+        return;
+    }
+	FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader(GetName(), false);
+
+    std::wstring clsName(GetName());
+    clsName.append(L":");
+    size_t sz = clsName.size();
+	while (classReader->ReadNext())
+    {
+        clsName.append(classReader->GetName());
+        classNames->Add(clsName.c_str());
+        clsName.resize(sz);
+	}
+}
+
 const FdoSmLpClassCollection* FdoSmLpSchema::RefClasses() const
 {
 	// Cast this to allow behind-the-scenes loading of this schema.

@@ -25,10 +25,10 @@
 FdoSmPhSchemaWriter::FdoSmPhSchemaWriter(FdoSmPhMgrP mgr) : 
 	FdoSmPhWriter( MakeWriter( mgr ) )
 {
-    FdoStringP optionsTable = mgr->GetDcDbObjectName(L"f_schemaoptions");
-
+    FdoSmPhOwnerP pOwner = mgr->GetOwner();
     // Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
-	mbSchemaOptionsTableDefined = (mgr->FindDbObject(optionsTable) != NULL);
+    mbSchemaOptionsTableDefined = (pOwner && pOwner->GetHasSCOptionMetaSchema());
+
 	if (mbSchemaOptionsTableDefined)
 		mpSchemaSOWriter = new FdoSmPhSchemaSOWriter(mgr);
 }
@@ -243,14 +243,16 @@ void FdoSmPhSchemaWriter::Delete( FdoStringP sName )
 
 FdoSmPhRowP FdoSmPhSchemaWriter::MakeRow( FdoSmPhOwnerP owner )
 {
-    bool hasMs = owner->GetHasMetaSchema();
-    FdoStringP infoTable = FdoSmPhMgrP(owner->GetManager())->GetDcDbObjectName(L"f_schemainfo");
+    FdoSmPhMgrP mgr = owner->GetManager();
 
-    FdoSmPhRowP row = new FdoSmPhRow( 
-        owner->GetManager(), 
-        L"f_schemainfo", 
-        hasMs ? owner->FindDbObject(infoTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP row;
+    if (owner->GetHasSCInfoMetaSchema())
+    {
+        FdoStringP infoTable = mgr->GetDcDbObjectName(L"f_schemainfo");
+        row = new FdoSmPhRow (mgr, L"f_schemainfo", owner->FindDbObject(infoTable));
+    }
+    else
+        row = new FdoSmPhRow (mgr, L"f_schemainfo", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row.
     FdoSmPhFieldP field = new FdoSmPhField( row, L"schemaname" );

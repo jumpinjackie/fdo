@@ -24,18 +24,19 @@
 class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSqlCmdTest, FdoSqlCmdTest);
-    CPPUNIT_TEST( CreateAndDrop8bitTable );
-    CPPUNIT_TEST( TestOutParamsStoreProcRetOnly );
-    CPPUNIT_TEST( TestOutParamsStoreProcRetAndIn );
-    CPPUNIT_TEST( TestOutParamsStoreProcRetAndOut );
-    CPPUNIT_TEST( TestOutParamsStoreProcRetAndNullOut );
-    CPPUNIT_TEST( TestOutParamsStoreProcRetAndInAndOut );
-    CPPUNIT_TEST( TestParamInGeom );
-    CPPUNIT_TEST( TestBindNullBlob );
-    CPPUNIT_TEST( TestBindNotNullBlob );
-    CPPUNIT_TEST( TestBindBigBlob );
-    CPPUNIT_TEST( TestGetMaxLenTexts );
-    CPPUNIT_TEST( TestInParamsStoreProcNoRet );
+    //CPPUNIT_TEST( CreateAndDrop8bitTable );
+    //CPPUNIT_TEST( TestOutParamsStoreProcRetOnly );
+    //CPPUNIT_TEST( TestOutParamsStoreProcRetAndIn );
+    //CPPUNIT_TEST( TestOutParamsStoreProcRetAndOut );
+    //CPPUNIT_TEST( TestOutParamsStoreProcRetAndNullOut );
+    //CPPUNIT_TEST( TestOutParamsStoreProcRetAndInAndOut );
+    //CPPUNIT_TEST( TestParamInGeom );
+    //CPPUNIT_TEST( TestBindNullBlob );
+    //CPPUNIT_TEST( TestBindNotNullBlob );
+    //CPPUNIT_TEST( TestBindBigBlob );
+    //CPPUNIT_TEST( TestGetMaxLenTexts );
+    //CPPUNIT_TEST( TestInParamsStoreProcNoRet );
+    CPPUNIT_TEST( Romy );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -53,6 +54,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     void TestBindNullBlob();
     void TestBindNotNullBlob();
     void TestBindBigBlob();
+    void Romy();
 
 	wchar_t *get_datetime_type() 
     { 

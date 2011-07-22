@@ -21,12 +21,13 @@
 #include <Sm/Ph/Mt/ClassReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Ph/Rd/PkeyReader.h>
+#include <Sm/Ph/Rd/ViewRelObjectReader.h>
 
-FdoSmPhMtClassReader::FdoSmPhMtClassReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr ) : 
+FdoSmPhMtClassReader::FdoSmPhMtClassReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP mgr, bool fullLoad) : 
 	FdoSmPhReader( MakeReader(froms, schemaName, mgr, className) )
 {
     // Bulk load physical objects for better performance.
-    if( className == NULL )
+    if( className == NULL && fullLoad)
         CachePhysical( schemaName, mgr );
 }
 
@@ -38,7 +39,7 @@ FdoSmPhReaderP FdoSmPhMtClassReader::MakeReader( FdoSmPhRowsP froms, FdoStringP 
 {
     // Generate the where clause
     FdoStringP where;
-    if( className == NULL || className[0] == '\0' )
+    if( className == NULL || *className == '\0' )
         where = FdoStringP::Format( 
             L"where schemaname = %ls and f_classdefinition.classtype = f_classtype.classtype order by %ls", 
     	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
@@ -67,10 +68,11 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
     FdoSmPhDependencyReaderP depReader;
+    FdoSmPhRdViewRelationsObjectReaderP viewRelObjectReader;
 
     // The tables referenced by the MetaClass schema are loaded by FdoSmPhOwner::CacheCandDbObjects
     // so no need to bulk load them a second time.
-    if ( schemaName != FdoSmPhMgr::mMetaClassSchemaName ) {
+    if ( wcscmp(schemaName, FdoSmPhMgr::mMetaClassSchemaName) != 0) {
 
         // Create a join object for only reading physical objects needed by this feature schema.
         FdoSmPhRdTableJoinP join = new FdoSmPhMtClassTableJoin( owner, schemaName );
@@ -97,6 +99,7 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
 
         depReader = new FdoSmPhDependencyReader( join, mgr );
 
+        bool first = true;
         while ( objReader && objReader->ReadNext() ) {
             // Cache the current dbObject
             FdoSmPhDbObjectP dbObject = owner->CacheDbObject( objReader );
@@ -104,6 +107,12 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
             if ( dbObject ) {
                 // Load the components into the db object.
                 FdoSmPhTableP table = dbObject->SmartCast<FdoSmPhTable>();
+
+                if ( first )
+                {
+                    viewRelObjectReader = owner->CreateViewRelationsObjectReader(NULL);
+                    first = false;
+                }
 
                 if ( columnReader ) 
                     dbObject->CacheColumns( columnReader );
@@ -122,6 +131,8 @@ void FdoSmPhMtClassReader::CachePhysical( FdoStringP schemaName, FdoSmPhMgrP mgr
                         table->CacheCkeys( ckeyReader );
 
                 }
+                if ( viewRelObjectReader && dbObject->GetType() == FdoSmPhDbObjType_View)
+                    dbObject->CacheViewRelationObjects( viewRelObjectReader );
             }
         }
     }

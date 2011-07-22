@@ -106,14 +106,16 @@ void FdoSmPhSpatialContextGeomWriter::Delete( FdoStringP geomTableName, FdoStrin
 
 FdoSmPhRowP FdoSmPhSpatialContextGeomWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
-    FdoStringP scgDefTable = mgr->GetDcDbObjectName(L"f_spatialcontextgeom");
+    FdoSmPhOwnerP owner = mgr->GetOwner();
 
-    FdoSmPhRowP row = new FdoSmPhRow( 
-        mgr, 
-        L"f_spatialcontextgeom", 
-        hasMs ? mgr->FindDbObject(scgDefTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP row;
+    if (owner->GetHasSCGeomInfoMetaSchema())
+    {
+        FdoStringP scgDefTable = mgr->GetDcDbObjectName(L"f_spatialcontextgeom");
+        row = new FdoSmPhRow (mgr, L"f_spatialcontextgeom", mgr->FindDbObject(scgDefTable));
+    }
+    else
+        row = new FdoSmPhRow (mgr, L"f_spatialcontextgeom", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row
     FdoSmPhFieldP field = new FdoSmPhField( row, L"scid" );

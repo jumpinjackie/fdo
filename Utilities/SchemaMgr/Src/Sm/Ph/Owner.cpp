@@ -24,6 +24,7 @@
 #include <Sm/Ph/Rd/QueryReader.h>
 #include <Sm/Ph/Rd/ColumnReader.h>
 #include <Sm/Ph/Rd/BaseObjectReader.h>
+#include <Sm/Ph/Rd/ViewRelObjectReader.h>
 #include <Sm/Ph/Rd/DbObjectReader.h>
 #include <Sm/Ph/Rd/ViewReader.h>
 #include <Sm/Ph/Rd/CoordSysReader.h>
@@ -82,14 +83,17 @@ FdoSmPhOwner::FdoSmPhOwner(
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_classdefinition") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_dbopen") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_sad") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_classtype") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_lockname") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_options") );
-    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_schemainfo") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_schemaoptions") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontext") );
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_feature") );    
+    AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_schemainfo") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgeom") );
     AddCandDbObject( GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup") );
 
+    mHasOnlyFdoCand = true;
     mNextBaseCandIdx = 0;
     mNextRdScCandIdx = 0;
 
@@ -127,44 +131,59 @@ bool FdoSmPhOwner::GetIsSystem()
 	return mIsSystem;
 }
 
-void FdoSmPhOwner::SetHasMetaSchema( bool hasMetaSchema )
-{
-    mHasMetaSchema = hasMetaSchema;
-}
-
-bool FdoSmPhOwner::GetHasMetaSchema()
-{
-    return mHasMetaSchema;
-}
-
 bool FdoSmPhOwner::GetHasSCMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_spatialcontext")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_spatialcontext")) != NULL);
 }
 
 bool FdoSmPhOwner::GetHasClassMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_classdefinition")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_classdefinition")) != NULL);
 }
 
 bool FdoSmPhOwner::GetHasAttrMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedefinition")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedefinition")) != NULL);
 }
 
 bool FdoSmPhOwner::GetHasAssocMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_associationdefinition")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_associationdefinition")) != NULL);
 }
 
 bool FdoSmPhOwner::GetHasObPropMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedependencies")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_attributedependencies")) != NULL);
 }
 
 bool FdoSmPhOwner::GetHasSADMetaSchema()
 {
-    return GetHasMetaSchema() && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_sad")) != NULL);
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_sad")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasSCOptionMetaSchema()
+{
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasOptionMetaSchema()
+{
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_options")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasSCInfoMetaSchema()
+{
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_schemainfo")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasSCGeomInfoMetaSchema()
+{
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_spatialcontextgeom")) != NULL);
+}
+
+bool FdoSmPhOwner::GetHasSCGroupInfoMetaSchema()
+{
+    return mHasMetaSchema && (FindDbObject(GetManager()->GetDcDbObjectName(L"f_spatialcontextgroup")) != NULL);
 }
 
 double FdoSmPhOwner::GetSchemaVersion()
@@ -611,6 +630,11 @@ FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader() const
     return (FdoSmPhRdBaseObjectReader*) NULL;
 }
 
+FdoPtr<FdoSmPhRdViewRelationsObjectReader> FdoSmPhOwner::CreateViewRelationsObjectReader( FdoStringsP objectNames ) const
+{
+    return (FdoSmPhRdViewRelationsObjectReader*) NULL;
+}
+
 FdoPtr<FdoSmPhRdBaseObjectReader> FdoSmPhOwner::CreateBaseObjectReader( FdoStringsP objectNames ) const
 {
     return (FdoSmPhRdBaseObjectReader*) NULL;
@@ -758,6 +782,7 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdFkeyReaderP fkeyReader;
     FdoSmPhRdPkeyReaderP pkeyReader;
+    FdoSmPhRdViewRelationsObjectReaderP viewRelObjectReader;
 
    // Create reader for owner's db objects
     objReader = CreateDbObjectReader();
@@ -781,11 +806,18 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
         pkeyReader = CreatePkeyReader();
     }
 
+    bool first = true;
     while ( objReader->ReadNext() ) {
         // Cache the current dbObject
         FdoSmPhDbObjectP dbObject = CacheDbObject( objReader, cacheComponents );
 
         if ( dbObject && cacheComponents ) {
+
+            if ( first )
+            {
+                viewRelObjectReader = CreateViewRelationsObjectReader(NULL);
+                first = false;
+            }
 
             if ( columnReader ) 
                 dbObject->CacheColumns( columnReader );
@@ -811,12 +843,16 @@ void FdoSmPhOwner::ReadAndCacheDbObjects(bool cacheComponents)
             }
 
             // Load the components into the db object.
-            FdoSmPhViewP view = dbObject->SmartCast<FdoSmPhView>();
 
-            if ( view ) {
-                if ( viewReader ) 
+            if (dbObject->GetType() == FdoSmPhDbObjType_View)
+            {
+                FdoSmPhViewP view = dbObject->SmartCast<FdoSmPhView>();
+                if ( view && viewReader ) 
                     view->CacheView( viewReader );
             }
+
+            if ( viewRelObjectReader && dbObject->GetType() == FdoSmPhDbObjType_View)
+                dbObject->CacheViewRelationObjects( viewRelObjectReader );
 
             // The current object may have already been in the cache, but now its
             // components have been added. In this case, the lazy
@@ -929,6 +965,7 @@ void FdoSmPhOwner::AddCandDbObject( FdoStringP objectName )
             if ( !elem ) {
                 elem = FdoDictionaryElement::Create( objectName, L"" );
                 mCandDbObjects->Add( elem );
+                mHasOnlyFdoCand = false;
             }
         }
     }
@@ -1167,6 +1204,7 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName)
     FdoSmPhRdConstraintReaderP ckeyReader;
     FdoSmPhRdColumnReaderP columnReader;
     FdoSmPhRdBaseObjectReaderP baseObjectReader;
+    FdoSmPhRdViewRelationsObjectReaderP viewRelObjectReader;
 
     // Create reader for candidate db objects.
     objReader = CreateDbObjectReader( cands );
@@ -1187,28 +1225,33 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName)
         // a query per dbObject.
         // The join is used to limit results to those needed for this schema.
 
+        // in case we have only FDO metadata tables to select, avoid trying to get all info about them
         if ( first ) {
             if ( GetBulkLoadPkeys() ) {
                 pkeyReader = CreatePkeyReader( cands);
                 if ( !pkeyReader ) 
                     pkeyReader = CreatePkeyReader();
             }
-                    
-            if ( GetBulkLoadFkeys() ) {
-                fkeyReader = CreateFkeyReader( cands );
-                if ( !fkeyReader ) 
-                    fkeyReader = CreateFkeyReader();
-            }
-
-            if ( GetManager()->GetBulkLoadConstraints() ) {
-                ukeyReader = CreateConstraintReader( cands, L"U" );
-                ckeyReader = CreateConstraintReader( cands, L"C" );
-            }
-
+            
             columnReader = CreateColumnReader( cands );
 
-            baseObjectReader = CreateBaseObjectReader(cands);
- 
+            if (!mHasOnlyFdoCand)
+            {
+                if ( GetBulkLoadFkeys() ) {
+                    fkeyReader = CreateFkeyReader( cands );
+                    if ( !fkeyReader ) 
+                        fkeyReader = CreateFkeyReader();
+                }
+
+                if ( GetManager()->GetBulkLoadConstraints() ) {
+                    ukeyReader = CreateConstraintReader( cands, L"U" );
+                    ckeyReader = CreateConstraintReader( cands, L"C" );
+                }
+                baseObjectReader = CreateBaseObjectReader(cands);
+                viewRelObjectReader = CreateViewRelationsObjectReader(cands);
+            }
+
+            mHasOnlyFdoCand = false;
             first = false;
         }
 
@@ -1252,6 +1295,9 @@ FdoSmPhDbObjectP FdoSmPhOwner::CacheCandDbObjects( FdoStringP objectName)
 
             if ( baseObjectReader ) 
                 dbObject->CacheBaseObjects( baseObjectReader );
+
+            if ( viewRelObjectReader && dbObject->GetType() == FdoSmPhDbObjType_View)
+                dbObject->CacheViewRelationObjects( viewRelObjectReader );
 
             // The current object may have already been in the cache, but now its
             // components have been added. In this case, the lazy
@@ -1398,7 +1444,7 @@ void FdoSmPhOwner::SetBulkFetchComponents( FdoSmPhDbObjectP dbObject, bool bulkF
 void FdoSmPhOwner::LoadLtLck()
 {
     // Reading options for owners in other database instances is not yet supported.
-    if ( (!mLtLckLoaded) && (wcslen(GetParent()->GetName()) == 0) && this->GetHasMetaSchema() ) {
+    if ( (!mLtLckLoaded) && (wcslen(GetParent()->GetName()) == 0) && mHasMetaSchema ) {
         mLtLckLoaded = true;
         FdoSmPhOptionsReaderP optRdr = GetManager()->CreateOptionsReader( GetName() );
 

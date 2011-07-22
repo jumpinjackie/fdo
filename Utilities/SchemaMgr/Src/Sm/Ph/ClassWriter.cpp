@@ -26,9 +26,11 @@
 FdoSmPhClassWriter::FdoSmPhClassWriter(FdoSmPhMgrP mgr) : 
 	FdoSmPhWriter( MakeWriter(mgr) )
 {
+    FdoSmPhOwnerP pOwner = mgr->GetOwner();
 	// Determine which table/field names to use, depending on if F_SCHEMAOPTIONS exists:
-	mbSchemaOptionsTableDefined = (mgr->FindDbObject(mgr->GetDcDbObjectName(L"f_schemaoptions")) != NULL);
-	if (mbSchemaOptionsTableDefined)
+    mbSchemaOptionsTableDefined = (pOwner && pOwner->GetHasSCOptionMetaSchema());
+
+    if (mbSchemaOptionsTableDefined)
 		mpClassSOWriter = new FdoSmPhClassSOWriter(mgr);
 }
 
@@ -302,14 +304,16 @@ void FdoSmPhClassWriter::Delete( FdoString* schemaName, FdoString* className, Fd
 
 FdoSmPhRowP FdoSmPhClassWriter::MakeRow( FdoSmPhMgrP mgr )
 {
-    bool hasMs = FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema();
-    FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
+    FdoSmPhOwnerP owner = mgr->GetOwner();
 
-    FdoSmPhRowP row = new FdoSmPhRow( 
-        mgr, 
-        L"f_classdefinition", 
-        hasMs ? mgr->FindDbObject(classDefTable) : FdoSmPhDbObjectP() 
-    );
+    FdoSmPhRowP row;
+    if (owner->GetHasClassMetaSchema())
+    {
+        FdoStringP classDefTable = mgr->GetDcDbObjectName(L"f_classdefinition");
+        row = new FdoSmPhRow (mgr, L"f_classdefinition", mgr->FindDbObject(classDefTable));
+    }
+    else
+        row = new FdoSmPhRow (mgr, L"f_classdefinition", FdoSmPhDbObjectP());
 
     // Each field adds itself to the row
     FdoSmPhFieldP field = new FdoSmPhField( row, L"classid" );

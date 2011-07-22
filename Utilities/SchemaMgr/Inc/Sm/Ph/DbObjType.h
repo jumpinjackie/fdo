@@ -29,7 +29,7 @@ enum FdoSmPhDbObjType
     FdoSmPhDbObjType_Synonym,       // synonym
     FdoSmPhDbObjType_Temp,          // temporary object (for queries).
     FdoSmPhDbObjType_Provider,      // Provider-specific type
-    FdoSmPhDbObjType_Unknown        // Don't know what this database object is.
+    FdoSmPhDbObjType_Unknown,       // Don't know what this database object is.
 };
 
 #endif

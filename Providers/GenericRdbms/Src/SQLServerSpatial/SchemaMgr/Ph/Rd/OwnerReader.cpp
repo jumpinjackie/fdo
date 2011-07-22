@@ -171,7 +171,7 @@ FdoStringP FdoSmPhRdSqsOwnerReader::GetDescription()
         FdoSmPhRdGrdQueryReaderP pReader = new FdoSmPhRdGrdQueryReader(row, sqlString, mgr, binds );
 
         if ( pReader->ReadNext() )
-		    description = pReader->GetString(L"", "description");
+		    description = pReader->GetString(L"", L"description");
     }
 
     return ( description );

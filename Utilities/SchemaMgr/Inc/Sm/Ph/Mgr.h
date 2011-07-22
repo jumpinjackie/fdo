@@ -213,6 +213,11 @@ public:
 
     /// Get reader to retrieve all classes, for the given
     /// feature schema
+    /// fullLoad = false ->classes will not be loaded (only names will be available)
+	virtual FdoPtr<FdoSmPhClassReader> CreateClassReader(FdoStringP schemaName, bool fullLoad);
+
+    /// Get reader to retrieve all classes, for the given
+    /// feature schema
 	virtual FdoPtr<FdoSmPhClassReader> CreateClassReader(FdoStringP schemaName, FdoStringP className);
 
     /// Get reader to retrieve all spatial contexts for the connection.
