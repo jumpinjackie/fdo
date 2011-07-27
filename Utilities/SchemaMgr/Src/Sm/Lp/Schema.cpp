@@ -18,6 +18,7 @@
 
 
 #include "stdafx.h"
+#include <string>
 #include <Sm/Lp/SchemaCollection.h>
 #include <Sm/Ph/SchemaReader.h>
 //#include <Sm/Ph/SADReader.h>
