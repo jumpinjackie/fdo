@@ -44,6 +44,9 @@
 static  char*  _noMoreRows = "End of rows or ReadNext not called"; // error message that repeats
 static  char*  _strNUllColumnExp = "Column '%1$ls' value is NULL; use IsNull method before trying to access this column value";
 
+static FdoString* _revisionNumber = L"RevisionNumber";
+static FdoString* _classId = L"ClassId";
+
 #define GET_VALUE( type, colIdx, FN ) { \
     type    value; \
     bool  isNULL = false; \
@@ -270,11 +273,20 @@ FdoPropertyDefinition* FdoRdbmsSimpleFeatureReader::GetClonePropertyByName(FdoCl
                 return GetClonePropertyByName(baseClsDef, pBaseColl, colDesc, idf);
             }
             // it must be ClassId/RevisionNumber or an invalid property
-            if (_wcsicmp(L"RevisionNumber", idfName) == 0 || _wcsicmp(L"ClassId", idfName) == 0)
+            if (_wcsicmp(_revisionNumber, idfName) == 0)
             {
                 FdoDataPropertyDefinition* retVal = FdoDataPropertyDefinition::Create(idfName, L"", true);
+                retVal->SetIsSystem(true);
                 retVal->SetReadOnly(true);
-                retVal->SetDataType(FdoDataType_Int32);
+                retVal->SetDataType(FdoDataType_Double);
+                return retVal;
+            }
+            else if(_wcsicmp(_classId, idfName) == 0)
+            {
+                FdoDataPropertyDefinition* retVal = FdoDataPropertyDefinition::Create(idfName, L"", true);
+                retVal->SetIsSystem(true);
+                retVal->SetReadOnly(true);
+                retVal->SetDataType(FdoDataType_Int64);
                 return retVal;
             }
         }
@@ -440,11 +452,22 @@ FdoClassDefinition* FdoRdbmsSimpleFeatureReader::FilterClassDefinition(FdoClassD
         // we need to match properties.
         LinkColumnList tmpColList;
         const FdoSmLpClassDefinition* pClass = mClassDefinition;
+        std::vector< std::pair<const FdoSmLpClassDefinition*, FdoClassDefinition*> > vcls;
         FdoPtr<FdoClassDefinition> tmpClsDef = FDO_SAFE_ADDREF(classDef);
         while (pClass && tmpClsDef)
         {
+            vcls.push_back(std::make_pair(pClass, tmpClsDef.p));
+            pClass = pClass->RefBaseClass();
+            tmpClsDef = tmpClsDef->GetBaseClass();
+        }
+
+        for (size_t idx = vcls.size(); idx != 0; idx--)
+        {
+            pClass = vcls.at(idx-1).first;
+            FdoClassDefinition* lClsDef = vcls.at(idx-1).second;
+
             const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = pClass->RefProperties();
-            FdoPtr<FdoPropertyDefinitionCollection> pSrcColl = tmpClsDef->GetProperties();
+            FdoPtr<FdoPropertyDefinitionCollection> pSrcColl = lClsDef->GetProperties();
             cntProps = pSrcColl->GetCount();
             for (int i = 0; i < cntProps; i++)
             {
@@ -484,8 +507,6 @@ FdoClassDefinition* FdoRdbmsSimpleFeatureReader::FilterClassDefinition(FdoClassD
                 else // colName should never be NULL (added just to be aware in case this happen)
                     throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_52, "Index out of range"));
             }
-            pClass = pClass->RefBaseClass();
-            tmpClsDef = tmpClsDef->GetBaseClass();
         }
         // in case we still have left elements move them
         pClass = mMainClassDefinition;
@@ -520,6 +541,28 @@ FdoClassDefinition* FdoRdbmsSimpleFeatureReader::FilterClassDefinition(FdoClassD
             }
             if (*colDet->col.c_alias == '\0')
                 wcscpy(colDet->col.c_alias, colDet->col.column);
+
+            // it must be ClassId/RevisionNumber or an invalid property
+            if (_wcsicmp(_revisionNumber, colDet->col.column) == 0 )
+            {
+                wcscpy(colDet->col.c_alias, _revisionNumber);
+                FdoPtr<FdoDataPropertyDefinition> pdVal = FdoDataPropertyDefinition::Create(_revisionNumber, L"", true);
+                pdVal->SetReadOnly(true);
+                pdVal->SetIsSystem(true);
+                pdVal->SetDataType(FdoDataType_Double);
+                FdoPtr<FdoPropertyDefinitionCollection> propsCls = classDef->GetProperties();
+                propsCls->Add(pdVal);
+            }
+            else if (_wcsicmp(_classId, colDet->col.column) == 0)
+            {
+                wcscpy(colDet->col.c_alias, _classId);
+                FdoPtr<FdoDataPropertyDefinition> pdVal = FdoDataPropertyDefinition::Create(_classId, L"", true);
+                pdVal->SetReadOnly(true);
+                pdVal->SetIsSystem(true);
+                pdVal->SetDataType(FdoDataType_Int64);
+                FdoPtr<FdoPropertyDefinitionCollection> propsCls = classDef->GetProperties();
+                propsCls->Add(pdVal);
+            }
             mColList.erase(mColList.begin());
         }
         mColList.insert(mColList.begin(), tmpColList.begin(), tmpColList.end());
