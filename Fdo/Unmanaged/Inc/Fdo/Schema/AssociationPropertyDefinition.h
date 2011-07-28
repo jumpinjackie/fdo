@@ -37,16 +37,21 @@
 class FdoAssociationPropertyDefinition : public FdoPropertyDefinition
 {
 protected:
+/// \cond DOXYGEN-IGNORE
+
     /// Constructs a default instance of an FdoAssociationPropertyDefinition. 
     FDO_API FdoAssociationPropertyDefinition();
 
     /// Constructs an instance of an FdoAssociationPropertyDefinition using the specified
     /// arguments.
     FDO_API FdoAssociationPropertyDefinition(FdoString* name, FdoString* description, bool system = false);
-/// \cond DOXYGEN-IGNORE
-    virtual ~FdoAssociationPropertyDefinition();
 
-    virtual void Dispose();
+    /// Destruct this object
+    FDO_API virtual ~FdoAssociationPropertyDefinition();
+
+    /// Dispose of this object, calling its destructor.
+    FDO_API virtual void Dispose();
+
 /// \endcond
 
 public:
@@ -271,27 +276,27 @@ public:
     // Public non-API functions for XML and Schema Merge support
 
     // Update this property from the given property.
-    virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext );
+    FDO_API virtual void Set( FdoPropertyDefinition* pProperty, FdoSchemaMergeContext* pContext );
 
     // Checks referenced elements. 
     // Adds errors to the given merge context if the associated class or any 
     // association identity properties are marked for delete.
-    virtual void CheckReferences( FdoSchemaMergeContext* pContext );
+    FDO_API virtual void CheckReferences( FdoSchemaMergeContext* pContext );
 
     /// Initialize this property from its XML attributes
-    virtual void InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
+    FDO_API virtual void InitFromXml(FdoString* propertyTypeName, FdoSchemaXmlContext* pContext, FdoXmlAttributeCollection* attrs);
 
-    /// Handle sub-elements such as properties
-    /// Element start
-    virtual FdoXmlSaxHandler* XmlStartElement(
+    /// Handle the start of a sub-element
+    FDO_API virtual FdoXmlSaxHandler* XmlStartElement(
         FdoXmlSaxContext* context, 
         FdoString* uri, 
         FdoString* name, 
         FdoString* qname, 
         FdoXmlAttributeCollection* atts
     );
-    /// Element end
-    virtual FdoBoolean XmlEndElement(
+
+    /// Handle the end of a sub-element
+    FDO_API virtual FdoBoolean XmlEndElement(
         FdoXmlSaxContext* context, 
         FdoString* uri, 
         FdoString* name, 
@@ -299,9 +304,10 @@ public:
     );
 
     /// Serialize this property to XML.
-    virtual void _writeXml( FdoSchemaXmlContext* pContext );
+    FDO_API virtual void _writeXml( FdoSchemaXmlContext* pContext );
 
-    virtual void SetParent(FdoSchemaElement* value);
+    // Set this objects parent, namely the class in which the object lives.
+    FDO_API virtual void SetParent(FdoSchemaElement* value);
 
 private:
     void CheckIdentityReferences( FdoSchemaMergeContext* pContext, FdoDataPropertyDefinitionCollection* idProps, long messageId );
@@ -332,11 +338,12 @@ private:
 
 protected:
     /// FdoFeatureSchema::RejectChanges() support
-    virtual void    _StartChanges();
-    virtual void    _BeginChangeProcessing();
-    virtual void    _AcceptChanges();
-    virtual void    _RejectChanges();
-    virtual void    _EndChangeProcessing();
+    FDO_API virtual void    _StartChanges();
+    FDO_API virtual void    _BeginChangeProcessing();
+    FDO_API virtual void    _AcceptChanges();
+    FDO_API virtual void    _RejectChanges();
+    FDO_API virtual void    _EndChangeProcessing();
+
     FdoClassDefinition*                     m_associatedClassCHANGED;
     FdoDeleteRule                           m_deleteRuleCHANGED;
     bool                                    m_lockCascadeCHANGED;
