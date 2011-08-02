@@ -325,7 +325,7 @@ FdoClassDefinition* FdoSmLpSchemaCollection::ConvertClassDefinition(const FdoSmL
 
     FdoSmLpClassBase* pcls =  static_cast<FdoSmLpClassBase*>((FdoSmLpClassDefinition*)pLpClassDef);
     FdoSmPhDbObjectP dbObj = pcls->FindPhDbObject();
-    FdoSmPhDbObjType type = dbObj->GetType();
+    FdoSmPhDbObjType type = dbObj ? dbObj->GetType() : FdoSmPhDbObjType_Unknown;
 
     if (!pFdoClassDef)
     {
@@ -599,7 +599,7 @@ FdoDataPropertyDefinition* FdoSmLpSchemaCollection::ConvertDataPropertyDefinitio
         pFdoDataPropDef = FdoDataPropertyDefinition::Create(pLpDataPropDef->GetName(), pLpDataPropDef->GetDescription());
 
         pFdoDataPropDef->SetDataType(pLpDataPropDef->GetDataType());
-        pFdoDataPropDef->SetReadOnly(pLpDataPropDef->GetReadOnly() || column->GetReadOnly());
+        pFdoDataPropDef->SetReadOnly(pLpDataPropDef->GetReadOnly() || (column ? column->GetReadOnly() : false));
         pFdoDataPropDef->SetLength(pLpDataPropDef->GetLength());
         pFdoDataPropDef->SetPrecision(pLpDataPropDef->GetPrecision());
         pFdoDataPropDef->SetScale(pLpDataPropDef->GetScale());
@@ -684,7 +684,7 @@ FdoGeometricPropertyDefinition* FdoSmLpSchemaCollection::ConvertGeometricPropert
         FdoCommonGeometryUtil::GeometryTypesToArray( pLpGeomPropDef->GetSpecificGeometryTypes(), geomTypes, geomTypeCount );
         pFdoGeomPropDef->SetSpecificGeometryTypes( geomTypes, geomTypeCount );
 
-        pFdoGeomPropDef->SetReadOnly(pLpGeomPropDef->GetReadOnly() || column->GetReadOnly());
+        pFdoGeomPropDef->SetReadOnly(pLpGeomPropDef->GetReadOnly() || (column ? column->GetReadOnly() : false));
         pFdoGeomPropDef->SetHasMeasure(pLpGeomPropDef->GetHasMeasure());
         pFdoGeomPropDef->SetHasElevation(pLpGeomPropDef->GetHasElevation());
         pFdoGeomPropDef->SetSpatialContextAssociation(pLpGeomPropDef->GetSpatialContextAssociation());
