@@ -125,7 +125,7 @@ FdoSmPhReaderP FdoSmPhRdSqlViewRelationsObjectReader::MakeQueryReader(
                 L" INNER JOIN %ls.sys.columns b ON ( a.object_id = b.object_id )\n"
                 L" INNER JOIN %ls.sys.types  c ON ( b.user_type_id = c.user_type_id )\n"
                 L" INNER JOIN %ls.sys.schemas d ON ( a.schema_id = d.schema_id )\n"
-                L" INNER JOIN %ls.information_schema.view_column_usage f ON ( d.name = f.table_schema and a.name = f.table_name and b.name = f.column_name)\n"
+                L" INNER JOIN %ls.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE f ON ( d.name = f.table_schema and a.name = f.table_name and b.name = f.column_name)\n"
 	            L" where a.type in ('U', 'V','SN') %ls %ls\n"
 	            L" order by f.view_schema collate latin1_general_bin asc, f.view_name collate latin1_general_bin asc, d.name collate latin1_general_bin asc, a.name collate latin1_general_bin asc",
                 (FdoString*)dbName,
