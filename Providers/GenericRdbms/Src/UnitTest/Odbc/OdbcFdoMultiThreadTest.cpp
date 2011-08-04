@@ -64,7 +64,6 @@ void * StartOdbcQuery(void * lpParameter)
             FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
 
             FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
-            CPPUNIT_ASSERT_MESSAGE("Class should not have IsComputed=true", !classDef->GetIsComputed());
             FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
 
             // read through all the features
