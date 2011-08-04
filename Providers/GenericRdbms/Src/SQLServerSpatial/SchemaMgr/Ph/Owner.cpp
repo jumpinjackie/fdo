@@ -131,7 +131,7 @@ void FdoSmPhSqsOwner::LoadFdoMetadata()
                 if ((mTableFlags&cd_f_spatialcontextgroup) == 0 && wcscmp(tName, L"f_spatialcontextgroup") == 0)
                     mTableFlags = mTableFlags | cd_f_spatialcontextgroup;
                 else if ((mTableFlags&cd_f_associationdefinition) == 0 && wcscmp(tName, L"f_associationdefinition") == 0)
-                    mTableFlags = mTableFlags | cd_f_attributedependencies;
+                    mTableFlags = mTableFlags | cd_f_associationdefinition;
                 else if ((mTableFlags&cd_f_associationdefinition) == 0 && wcscmp(tName, L"f_attributedependencies") == 0)
                     mTableFlags = mTableFlags | cd_f_attributedependencies;
                 else if ((mTableFlags&cd_f_sad) == 0 && wcscmp(tName, L"f_sad") == 0)
