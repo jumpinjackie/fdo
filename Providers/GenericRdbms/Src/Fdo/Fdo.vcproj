@@ -974,6 +974,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Other\FdoRdbmsSQLBuilder.h"
+					>
+				</File>
+				<File
 					RelativePath="Other\FdoRdbmsSQLCommand.h"
 					>
 				</File>

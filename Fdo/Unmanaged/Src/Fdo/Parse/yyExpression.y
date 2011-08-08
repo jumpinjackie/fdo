@@ -203,6 +203,10 @@ Function :
             {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1));}
      | Identifier
             {$$ = Node_Add(L"IDENTIFIER", FdoIdentifier::Create(((FdoIdentifier*)$1)->GetName()));}
+     | '(' SubSelectExpression ')' FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2));}
+     | SubSelectExpression FdoToken_AS Identifier
+            {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$3)->GetName(), (FdoExpression*)$1));}
      | '(' Expression ')' FdoToken_AS Identifier
             {$$ = Node_Add(L"ComputedIdentifier", FdoComputedIdentifier::Create(((FdoIdentifier*)$5)->GetName(), (FdoExpression*)$2));}
      | Expression FdoToken_AS Identifier

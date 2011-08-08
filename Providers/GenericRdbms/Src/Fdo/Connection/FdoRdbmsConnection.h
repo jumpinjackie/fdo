@@ -25,9 +25,9 @@
 #include <Sm/SchemaManager.h>
 #include "SpatialManager/FdoRdbmsSpatialManager.h"
 #include "../FeatureCommands/FdoRdbmsFeatureReader.h"
+#include "FdoRdbmsSQLBuilder.h"
 
 class FdoRdbmsFilterProcessor;
-
 
 #include "DbiConnection.h"
 
@@ -89,6 +89,8 @@ public:
         mTransactionStarted = bTransactionStarted;
     }
 
+    virtual FdoRdbmsBaseFilterProcessor* GetExtendedFilterProcessor() { return NULL; };
+
     virtual FdoRdbmsFilterProcessor* GetFilterProcessor() = 0;
 
 	virtual bool SupportsInnerQuery() { return false; }
@@ -101,6 +103,8 @@ public:
     /// The function returns the unique user number for the current user.
     /// </summary>
 	int GetUserNum();
+
+    FdoClassDefinition* GetClassDefinition(FdoString* qName);
 
     /// <summary>
     /// The function returns the session id for the current user.
@@ -315,6 +319,8 @@ public:
 
     virtual bool GetEnforceClearSchAtFlush() {return mEnforceClearSchAtFlush;}
     virtual void SetEnforceClearSchAtFlush(bool value) {mEnforceClearSchAtFlush = value;}
+
+    virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
 protected:
     //Instantiates the right Schema Manager for this connection's provider.
     virtual FdoSchemaManagerP NewSchemaManager(

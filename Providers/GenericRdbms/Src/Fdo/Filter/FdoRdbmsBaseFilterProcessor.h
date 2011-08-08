@@ -39,24 +39,6 @@ public:
 
     virtual void Dispose() { delete this; }
 
-     /// <summary>Increase the reference count.</summary>
-    /// <returns>Returns the new reference count (value for debugging use only).</returns>
-    FdoInt32 AddRef()
-    {
-        // NOTE: due to multiple inheritance, there is an ambiguity in which AddRef() method to call.
-        //  Calling BOTH AddRef() methods leads to instances of this class being prematurely released.
-        return FdoIFilterProcessor::AddRef();
-    }
-
-    /// <summary>Decrease the reference count.</summary>
-    /// <returns>Returns the new reference count (value for debugging use only).</returns>
-    FdoInt32 Release ()
-    {
-        // NOTE: due to multiple inheritance, there is an ambiguity in which Release() method to call.
-        //  Calling BOTH Release() methods leads to instances of this class being prematurely released.
-        return FdoIFilterProcessor::Release();
-    }
-
     virtual void ProcessBinaryExpression(FdoBinaryExpression& expr)
     {
         HandleExpr( FdoPtr<FdoExpression>(expr.GetLeftExpression()) );

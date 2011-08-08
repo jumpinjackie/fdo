@@ -110,6 +110,24 @@ protected:
     void ProcessSpatialExtentsFunction(FdoFunction& expr);
     void ProcessIsValidFunction(FdoFunction& expr);
     void ProcessZMFunction(FdoFunction& expr);
+    void ProcessModFunction(FdoFunction& expr);
+    void ProcessTruncFunction(FdoFunction& expr);
+    void ProcessInstrFunction(FdoFunction& expr);
+    void ProcessSubStrFunction(FdoFunction& expr);
+    void ProcessTrimFunction(FdoFunction& expr);
+    void ProcessRemainderFunction(FdoFunction& expr);
+    void ProcessLpadFunction(FdoFunction& expr);
+    void ProcessRpadFunction(FdoFunction& expr);
+    void ProcessExtractToDblFunction(FdoFunction& expr);
+    void ProcessExtractToIntFunction(FdoFunction& expr);
+    void ProcessToStringFunction(FdoFunction& expr);
+    void ProcessXFunction(FdoFunction& expr);
+    void ProcessYFunction(FdoFunction& expr);
+    void ProcessArea2dFunction(FdoFunction& expr);
+    void ProcessLength2dFunction(FdoFunction& expr);
+    void ProcessMedianFunction(FdoFunction& expr);
+    void ProcessExtractFunction(FdoFunction& expr);
+    void ProcessToDateFunction(FdoFunction& expr);
 
     FdoString *MapFdoFunction2SqlServerFunction (FdoString *f_name);
     virtual void ProcessFunctionName(FdoFunction& expr);

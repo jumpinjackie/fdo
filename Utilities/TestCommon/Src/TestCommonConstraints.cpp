@@ -689,7 +689,7 @@ void TestCommonConstraints::TestBaseReferences ()
             CPPUNIT_ASSERT_MESSAGE("Wrong number of unique keys", count == 3 );
             CPPUNIT_ASSERT_MESSAGE("Unique keys properties not found", found_unique1 && found_unique2 && found_unique3);
 
-            if (schemaCap->SupportsInheritence())
+            if (schemaCap->SupportsInheritance())
             {
                 // None of the unique constraints on derived class should find their way to the base
                 // class.

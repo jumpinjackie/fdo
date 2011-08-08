@@ -44,6 +44,7 @@ noinst_HEADERS = $(libFdoRdbms_Other_la_SOURCES) \
   FdoRdbmsPrimaryKeyColumn.h \
   FdoRdbmsSQLCommand.h \
   FdoRdbmsSQLDataReader.h \
+  FdoRdbmsSQLBuilder.h \
   FdoRdbmsUtil.h
 
 INCLUDES = \

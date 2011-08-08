@@ -51,6 +51,8 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (): mConnection( NULL ), mIdentifie
   mGroupingFilter(NULL),
   mOrderingIdentifiers(NULL),
   mBindParamsHelper(NULL),
+  mAliasName(NULL),
+  mJoinCriteria(NULL),
   mHasObjectProps(false)
 {
   mLockType           = FdoLockType_Exclusive;
@@ -68,6 +70,8 @@ FdoRdbmsSelectCommand::FdoRdbmsSelectCommand (FdoIConnection *connection) :
     mGroupingFilter(NULL),
     mOrderingIdentifiers(NULL),
     mBindParamsHelper(NULL),
+    mAliasName(NULL),
+    mJoinCriteria(NULL),
     mHasObjectProps(false)
 {
   mConn = static_cast<FdoRdbmsConnection*>(connection);
@@ -87,7 +91,32 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
     FDO_SAFE_RELEASE(mGroupingFilter);
     FDO_SAFE_RELEASE(mGroupingCol);
     FDO_SAFE_RELEASE(mOrderingIdentifiers);
+    FDO_SAFE_RELEASE(mAliasName);
+    FDO_SAFE_RELEASE(mJoinCriteria);
     delete mBindParamsHelper;
+}
+
+void FdoRdbmsSelectCommand::SetOrderingOption(FdoString* propertyName, FdoOrderingOption option)  
+{
+    FdoPtr<FdoIdentifierCollection> tmp = GetOrdering(); //force creation of the ordering props collection
+    if (mOrderingIdentifiers->Contains(propertyName))
+        mOrderingOptions[propertyName] = option;
+}
+
+FdoOrderingOption FdoRdbmsSelectCommand::GetOrderingOption(FdoString* propertyName)                
+{ 
+    FdoPtr<FdoIdentifierCollection> tmp = GetOrdering(); //force creation of the ordering props collection
+    if (mOrderingIdentifiers->Contains(propertyName))
+        return mOrderingOptions[propertyName];
+
+    throw FdoCommandException::Create(L"Property is not in the order list.");
+}
+
+void FdoRdbmsSelectCommand::ClearOrderingOptions() 
+{ 
+    FdoPtr<FdoIdentifierCollection> tmp = GetOrdering(); //force creation of the ordering props collection
+    mOrderingIdentifiers->Clear();
+    mOrderingOptions.clear();
 }
 
 FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
@@ -95,11 +124,11 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     // Flush out any outstanding modifications before selecting; so that the select
     // sees a current picture of the RDBMS.
     mIConnection->Flush();
-
     int                 qid = -1;
     bool                res = false;
     bool delStatement = true;
     GdbiStatement* statement = NULL;
+
     const FdoSmLpClassDefinition *classDefinition = mConnection->GetSchemaUtil()->GetClass(this->GetClassNameRef()->GetText());
 
     bool isFeatureClass = ( classDefinition != NULL &&  classDefinition->GetClassType() == FdoClassType_FeatureClass );
@@ -109,8 +138,58 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
     if( mConnection == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
+
     try
     {
+        // for now we support only select with joins
+        if (callerId != FdoCommandType_SelectAggregates)
+        {
+            FdoPtr<FdoRdbmsSqlBuilder> sqlBuilder = mFdoConnection->GetSqlBuilder();
+            if (sqlBuilder)
+            {
+                std::vector<NameOrderingPair> ordering;
+                FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
+                FdoPtr<FdoJoinCriteriaCollection> jcColl = GetJoinCriteria();
+                sqlBuilder->SetParameterValues(params);
+                if (mOrderingIdentifiers && mOrderingIdentifiers->GetCount())
+                {
+                    for (int i=0; i<mOrderingIdentifiers->GetCount(); i++)
+                    {
+                        FdoPtr<FdoIdentifier> id = mOrderingIdentifiers->GetItem(i);
+                        ordering.push_back(NameOrderingPair(id.p, ((int)mOrderingOptions.size() != mOrderingIdentifiers->GetCount()) ? mOrderingOption : mOrderingOptions[id->GetName()])); 
+                    }
+                }
+
+                FdoString* sqlString = sqlBuilder->ToSelectSqlString(GetClassNameRef(), mAliasName, GetFilterRef(), mIdentifiers, ordering, jcColl);
+                if (sqlString != NULL && *sqlString != '\0')
+                {
+                    statement = mConnection->GetGdbiConnection()->Prepare( sqlString );
+
+                    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* paramsUsed = sqlBuilder->GetUsedParameterValues();
+
+                    if (((paramsUsed != NULL) ? paramsUsed->size() : 0) != 0)
+                    {
+                        if (mBindParamsHelper == NULL)
+                            mBindParamsHelper = new FdoRdbmsPropBindHelper(mConn);
+
+                        mBindParamsHelper->BindParameters(statement, paramsUsed);
+                    }
+
+                    GdbiQueryResult *queryRslt = statement->ExecuteQuery();
+
+                    delete statement;
+
+                    if (mBindParamsHelper != NULL)
+                        mBindParamsHelper->Clear();
+
+                    // statement will be deleted in the reader.
+                    delStatement = false;
+
+                    return new FdoRdbmsSimpleFeatureReader(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
+                }
+            }
+        }
+
         FdoPtr<FdoRdbmsFilterProcessor>flterProcessor = mFdoConnection->GetFilterProcessor();
         FdoPtr<FdoParameterValueCollection> params = GetParameterValues();
         flterProcessor->SetParameterValues(params);
@@ -336,15 +415,10 @@ FdoIdentifierCollection* FdoRdbmsSelectCommand::GetPropertyNames()
 
 FdoIdentifierCollection* FdoRdbmsSelectCommand::GetOrdering()
 {
-    if( NULL == mConnection )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
-
     if( mOrderingIdentifiers == NULL )
         mOrderingIdentifiers = FdoIdentifierCollection::Create();
 
-    mOrderingIdentifiers->AddRef();
-
-    return mOrderingIdentifiers;
+    return FDO_SAFE_ADDREF(mOrderingIdentifiers);
 }
 
 FdoIdentifierCollection* FdoRdbmsSelectCommand::GetGrouping()
