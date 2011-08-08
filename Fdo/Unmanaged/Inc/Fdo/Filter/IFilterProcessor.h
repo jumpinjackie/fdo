@@ -39,7 +39,7 @@
 /// this interface to do something meaningful with a filter hierarchy. For
 /// example, a RDBMS feature provider can implement a processor class to convert a
 /// filter hierarchy to the SQL equivalent syntax.
-class FdoIFilterProcessor : public FdoIDisposable
+class FdoIFilterProcessor : virtual public FdoIDisposable
 {
 public:
     /// \brief

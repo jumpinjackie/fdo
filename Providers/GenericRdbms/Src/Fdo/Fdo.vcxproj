@@ -327,6 +327,7 @@
     <ClInclude Include="Other\FdoRdbmsPrimaryKey.h" />
     <ClInclude Include="Other\FdoRdbmsPrimaryKeyColumn.h" />
     <ClInclude Include="Other\FdoRdbmsSQLCommand.h" />
+    <ClInclude Include="Other\FdoRdbmsSQLBuilder.h" />
     <ClInclude Include="Other\FdoRdbmsSQLDataReader.h" />
     <ClInclude Include="Other\FdoRdbmsUtil.h" />
     <ClInclude Include="Connection\DbiConnection.h" />

@@ -111,6 +111,7 @@ public:
 
     virtual void Flush();
 
+    virtual const wchar_t* FdoToDbiTime( FdoDateTime  time, wchar_t* dest, size_t size );
     //
     // Convert time_t( FdoDateTime ) to a SqlServer string date of the form.
     // It return a statically allocated storage that can be overwritten by subsequent call to this or other methods.
@@ -149,6 +150,8 @@ public:
     bool IsGeogLatLong();
     
     virtual FdoInt32 ExecuteDdlNonQuery(FdoString* sql);
+
+    virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
 };
 
 

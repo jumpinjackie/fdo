@@ -53,7 +53,7 @@
 /// FdoExpression hierarchy. For example, an RDBMS feature provider implements a
 /// processor class to convert an FdoExpression hierarchy to the SQL equivalent
 /// syntax.
-class FdoIExpressionProcessor : public FdoIDisposable
+class FdoIExpressionProcessor : virtual public FdoIDisposable
 {
 public:
 

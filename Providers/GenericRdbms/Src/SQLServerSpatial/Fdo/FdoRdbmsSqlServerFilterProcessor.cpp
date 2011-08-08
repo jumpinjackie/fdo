@@ -16,7 +16,7 @@
  *
  */
 
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "FdoRdbmsSqlServerFilterProcessor.h"
 #include "../../Fdo/Schema/FdoRdbmsSchemaUtil.h"
 #include <Geometry/Fgf/Factory.h>
@@ -27,6 +27,8 @@
 #include "FdoRdbmsFunctionIsValid.h"
 #include "../SchemaMgr/Ph/SpatialIndex.h"
 #include "../SchemaMgr/Ph/Mgr.h"
+#include "FdoRdbmsSqlServerDateTimeUtils.h"
+#include <ctype.h>
 
 // This list includes all the SQL Server aggregate functions. Not all functions are officially supported
 // but they are not being prevented either.
@@ -39,6 +41,7 @@ static wchar_t* sqlServerAggregateFunctions[] = {
     L"COUNT_BIG",
     L"GROUPING",
     L"MAX", // supported
+    L"MEDIAN", // supported
     L"MIN", // supported
     L"SUM", // supported
     L"STDEV",
@@ -52,99 +55,14 @@ static wchar_t* sqlServerAggregateFunctions[] = {
 // be handled by sending it to SQL Server. Instead it needs to be handled in the
 // Expression Engine.
 //
-// NOTE:
-//
-//  TODATE
-//  ------
-//  The expression function TODATE allows the conversion of a string containing
-//  date/time information into a date/time object. Its signatures allows the
-//  specification of an optional format string that describes the structure of
-//  the input string. Although SQL Server has native support to convert a string
-//  with date/time information into a date/time object, it does not support the
-//  specification of format information. Hence, any request to this function
-//  must be redirected to the Expression Engine.
-//
-//  TOSTRING
-//  --------
-//  The expression function TOSTRING allows the conversion of either date or
-//  a numeric value to a string. Although there is native support for this
-//  expression function in SQL Server, the expression function is listed as
-//  a not natively supported function because there is no generic way of
-//  determining the kind of conversion that is needed.
-//
-//  EXTRACT
-//  -------
-//  In SQL Server, the native function processing the expression function
-//  EXTRACT returns a number that cannot be correctly assigned to the cor-
-//  responding object in FDO and hence the result is invalid. Therefore,
-//  the evaluation is handed to the Expression Engine.
-//
-//  MOD
-//  ---
-//  SQL Server supports modulo operations by providing a modulo operator.
-//  Unfortunately, it does not work with all data types that FDO can handle.
-//  Hence, the corresponding expression function must be handled by the
-//  Expression Engine.
-//
-//  TRUNC
-//  -----
-//  The expression function TRUNC truncates date or numeric expressions. In
-//  SQL Server, there is native support for truncation of numeric values only.
-//  Since it is not possible to generally determine based on the function
-//  arguments whether or not there is a native support, the evaluation of the
-//  function is redirected to the Expression Engine.
-//
-//  INSTR
-//  -----
-//  In SQL Server, the function that is the native representation of the
-//  expression function INSTR requires the value of the search string to
-//  have a leading and trailing percent sign. If the search string is
-//  given as a literal, then this can be handled and the function will
-//  execute correctly. However, if the search string is provided via a
-//  property, most likely the string that is stored in the property will
-//  not match the function's requirements. Hence, in those cases the 
-//  function will not work. Therefore, the evaluation of such a function
-//  is handed by the Expression Engine.
-//
-//  SUBSTR
-//  ------
-//  In SQL Server, the function that is the native representation of the
-//  expression function SUBSTR cannot work with all the numeric data types
-//  FDO supports. Therefore, the evaluation of the function is handed to
-//  the Expression Engine.
-//
-//  X, Y
-//  ------
-//  In SQL Server, the function that is the native representation of the
-//  expression functions X and Y cannot work with geography type columns.
-//  Therefore, the evaluation of the function is handed to
-//  the Expression Engine.
 
 static wchar_t* sqlServerUnsupportedFdoFunctions[] = {
 
     L"MEDIAN",
-    L"TODATE",
-    L"TOSTRING",
-    L"EXTRACT",
-    L"EXTRACTTODOUBLE",
-    L"EXTRACTTOINT",
-    L"MOD",
-    L"REMAINDER",
-    L"TRUNC",
-    L"INSTR",
-    L"LPAD",
-    L"RPAD",
-    L"SUBSTR",
     L"TRANSLATE",
-    L"TRIM",
-	L"LENGTH2D",
-    L"AREA2D",
-    L"X",
-    L"Y",
     NULL
 };
 
-    
 FdoRdbmsSqlServerFilterProcessor::FdoRdbmsSqlServerFilterProcessor(FdoRdbmsConnection *connection):
 FdoRdbmsFilterProcessor( connection )
 {
@@ -455,9 +373,1092 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessFunction(FdoFunction& expr)
     if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_M) == 0)
         return ProcessZMFunction(expr);
 
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_MOD) == 0)
+        return ProcessModFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_TRUNC) == 0)
+        return ProcessTruncFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_INSTR) == 0)
+        return ProcessInstrFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_SUBSTR) == 0)
+        return ProcessSubStrFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_TRIM) == 0)
+        return ProcessTrimFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_REMAINDER) == 0)
+        return ProcessRemainderFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_LPAD) == 0)
+        return ProcessLpadFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_RPAD) == 0)
+        return ProcessRpadFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_EXTRACTTOINT) == 0)
+        return ProcessExtractToIntFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_EXTRACTTODOUBLE) == 0)
+        return ProcessExtractToDblFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_EXTRACT) == 0)
+        return ProcessExtractFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_TOSTRING) == 0)
+        return ProcessToStringFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_X) == 0)
+        return ProcessXFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_Y) == 0)
+        return ProcessYFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_AREA2D) == 0)
+        return ProcessArea2dFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_LENGTH2D) == 0)
+        return ProcessLength2dFunction(expr);
+
+    if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_TODATE) == 0)
+        return ProcessToDateFunction(expr);
+
+    //if (FdoCommonOSUtil::wcsicmp(funcName, FDO_FUNCTION_MEDIAN) == 0)
+    //    return ProcessMedianFunction(expr);
+
     // The functions that do not require special handling use the
     // standard processing
     FdoRdbmsFilterProcessor::ProcessFunction(expr);
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessToDateFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1 && colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    // later we need to call expression->Process()->ToString()
+    // for now we support only a few cases
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoExpressionItemType type = exp0->GetExpressionType();
+    if (FdoExpressionItemType_DataValue == type)
+    {
+        FdoDataValue* dv = static_cast<FdoDataValue*>(exp0.p);
+        if (dv == NULL || dv->IsNull() || dv->GetDataType() != FdoDataType_String)
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    }
+    else
+        if (FdoExpressionItemType_Function != type && FdoExpressionItemType_Identifier != type)
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    DateTokenFormat tf;
+    bool processed = false;
+    FdoString* sql = NULL;
+    if (colCount == 2)
+    {
+        FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+        if (FdoExpressionItemType_DataValue == exp1->GetExpressionType())
+        {
+            FdoDataValue* dv = static_cast<FdoDataValue*>(exp1.p);
+            if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+            {
+                FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+                if (strVal != NULL && !strVal->IsNull())
+                {
+                    tf.ProcessFormat(strVal->GetString());
+                    sql = tf.ToDateTimeSQL(exp0->ToString());
+                    processed = true;
+                }
+            }
+        }
+    }
+    else
+    {
+        tf.ProcessFormat(NULL);
+        sql = tf.ToDateTimeSQL(exp0->ToString());
+        processed = true;
+    }
+
+    if (!processed || !sql)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    AppendString(sql);
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessMedianFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    
+    // Get the class definition for the identified class.
+    DbiConnection *mDbiConnection = mFdoConnection->GetDbiConnection();
+    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
+    FdoStringP tableName = mDbiConnection->GetSchemaUtil()->GetDbObjectSqlName(classDefinition);
+
+    FdoPtr<FdoExpression> exp = exprCol->GetItem(0);
+    AppendString(L"select max(medianVal) from (select distinct top 50 percent ");
+    HandleExpr(exp);
+    AppendString(L" as medianVal from ");
+    AppendString((FdoString *)tableName);
+    AppendString(L" as ");
+    AppendString(GetTableAlias(tableName));
+    AppendString(L" where ");
+    HandleExpr(exp);
+    AppendString(L" IS NOT NULL Order By ");
+    HandleExpr(exp);
+    AppendString(L") as medianTb");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessArea2dFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+
+    AppendString(L"\"");
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L"\".");
+    AppendString(L"STArea()");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessLength2dFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+
+    AppendString(L"\"");
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L"\".");
+    AppendString(L"STLength()");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessXFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+
+    DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
+    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
+    if ( classDefinition == NULL ||  classDefinition->GetClassType() != FdoClassType_FeatureClass )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_230, "Spatial condition can only be used with feature classes"));
+
+    const FdoSmLpGeometricPropertyDefinition* geomProp = GetGeometricProperty(classDefinition, id->GetName());
+    const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
+    FdoStringP geomType = geomColumn ? geomColumn->GetTypeName() : FdoStringP(L"geometry");
+    
+    AppendString(L"\"");
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L"\".");
+    if (geomType == L"geometry")
+        AppendString(L"STX");
+    else
+        AppendString(L"Long");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessYFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoIdentifier>   id = (FdoIdentifier *)(exprCol->GetItem(0));
+
+    DbiConnection  *mDbiConnection = mFdoConnection->GetDbiConnection();
+    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(mCurrentClassName);
+    if ( classDefinition == NULL ||  classDefinition->GetClassType() != FdoClassType_FeatureClass )
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_230, "Spatial condition can only be used with feature classes"));
+
+    const FdoSmLpGeometricPropertyDefinition* geomProp = GetGeometricProperty(classDefinition, id->GetName());
+    const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
+    FdoStringP geomType = geomColumn ? geomColumn->GetTypeName() : FdoStringP(L"geometry");
+    
+    AppendString(L"\"");
+    AppendString( PropertyNameToColumnName( id->GetName() ) );
+    AppendString(L"\".");
+    if (geomType == L"geometry")
+        AppendString(L"STY");
+    else
+        AppendString(L"Lat");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessToStringFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1 && colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    if (colCount == 2) // date->ToString()?
+    {
+        FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+        bool processed = false;
+        DateTokenFormat tf;
+        if (FdoExpressionItemType_DataValue == exp1->GetExpressionType())
+        {
+            FdoDataValue* dv = static_cast<FdoDataValue*>(exp1.p);
+            if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+            {
+                FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+                if (strVal != NULL && !strVal->IsNull())
+                {
+                    FdoString* format = strVal->GetString();
+                    tf.ProcessFormat(format);
+                    processed = true;
+                }
+            }
+        }
+        // later we need to call expression->Process()->ToString()
+        // for now we support only a few cases
+        FdoString* sql = NULL;
+        if (FdoExpressionItemType_Function == exp0->GetExpressionType())
+            sql = tf.ToSQL(exp0->ToString());
+        else if (FdoExpressionItemType_Identifier == exp0->GetExpressionType())
+            sql = tf.ToSQL(PropertyNameToColumnName(exp0->ToString()));
+        if (!processed || !sql)
+            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        AppendString(sql);
+    }
+    else
+    {
+        FdoPropertyType propType = FdoPropertyType_DataProperty;
+        FdoDataType dataType = FdoDataType_Int32;
+        FdoPtr<FdoClassDefinition> clsDef = mFdoConnection->GetClassDefinition(mCurrentClassName);
+        FdoPtr<FdoIExpressionCapabilities> expressionCaps = mFdoConnection->GetExpressionCapabilities();
+        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+        try
+        {
+            FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp0, propType, dataType);
+        }
+        catch(FdoExpression* ex) { ex->Release(); }
+
+        if (dataType == FdoDataType_DateTime)
+        {
+            DateTokenFormat tf;
+            tf.ProcessFormat(NULL);
+            // later we need to call expression->Process()->ToString()
+            // for now we support only a few cases
+            FdoString* sql = NULL;
+            if (FdoExpressionItemType_Function == exp0->GetExpressionType())
+                sql = tf.ToSQL(exp0->ToString());
+            else if (FdoExpressionItemType_Identifier == exp0->GetExpressionType())
+                sql = tf.ToSQL(PropertyNameToColumnName(exp0->ToString()));
+            if (!sql)
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+            AppendString(sql);
+        }
+        else
+        {
+            AppendString(L"convert(nvarchar,");
+            HandleExpr(exp0);
+            AppendString(L")");
+        }
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessExtractFunction(FdoFunction& expr)
+{
+    // Note: since we cannot generate invalid date time values, we will preserve the wanted value 
+    // and tuncate the others except the year (to have a valid date), and caller can get the wanted value.
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    bool processed = false;
+    FdoPropertyType propType = FdoPropertyType_DataProperty;
+    FdoDataType dataType = FdoDataType_Int32;
+    FdoPtr<FdoClassDefinition> clsDef = mFdoConnection->GetClassDefinition(mCurrentClassName);
+    FdoPtr<FdoIExpressionCapabilities> expressionCaps = mFdoConnection->GetExpressionCapabilities();
+    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+    try
+    {
+        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
+    }
+    catch(FdoExpression* ex) { ex->Release(); }
+
+    if (dataType != FdoDataType_DateTime)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
+    {
+        FdoDataValue* dv = static_cast<FdoDataValue*>(exp0.p);
+        if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+        {
+            FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+            if (strVal != NULL && !strVal->IsNull())
+            {
+                FdoString* oper = strVal->GetString();
+                if (wcscmp(oper, L"YEAR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01-01 00:00:00.000'");
+                }
+                else if (wcscmp(oper, L"MONTH") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01 00:00:00.000'");
+                }
+                else if (wcscmp(oper, L"DAY") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01-' + cast(DATEPART(DAY,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N' 00:00:00.000'");
+                }
+                else if (wcscmp(oper, L"HOUR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01-01 ' + cast(DATEPART(HOUR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N':00:00.000'");
+                }
+                else if (wcscmp(oper, L"MINUTE") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01-01 00:' + cast(DATEPART(MINUTE,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N':00.000'");
+                }
+                else if (wcscmp(oper, L"SECOND") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as nvarchar) + N'-01-01 00:00:' + cast((DATEPART(SECOND,");
+                    HandleExpr(exp1);
+                    AppendString(L")+DATEPART(MILLISECOND,");
+                    HandleExpr(exp1);
+                    AppendString(L")/1000.0) as nvarchar)");
+                }
+            }
+        }
+    }
+    else
+    {
+        AppendString(L"case when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'YEAR' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01-01 00:00:00.000'");
+        AppendString(L" when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MONTH' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01 00:00:00.000'");
+        AppendString(L" when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'DAY' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01-' + cast(DATEPART(DAY,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N' 00:00:00.000'");
+        AppendString(L" when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'HOUR' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01-01 ' + cast(DATEPART(HOUR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N':00:00.000'");
+        AppendString(L" when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MINUTE' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01-01 00:' + cast(DATEPART(MINUTE,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N':00.000'");
+        AppendString(L" when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'SECOND' then cast(DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") as nvarchar) + N'-01-01 00:00:' + cast((DATEPART(SECOND,");
+        HandleExpr(exp1);
+        AppendString(L")+DATEPART(MILLISECOND,");
+        HandleExpr(exp1);
+        AppendString(L")/1000.0) as nvarchar)");
+        AppendString(L" end ");
+        processed = true;
+    }
+    if (!processed)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessExtractToIntFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    bool processed = false;
+    FdoPropertyType propType = FdoPropertyType_DataProperty;
+    FdoDataType dataType = FdoDataType_Int32;
+    FdoPtr<FdoClassDefinition> clsDef = mFdoConnection->GetClassDefinition(mCurrentClassName);
+    FdoPtr<FdoIExpressionCapabilities> expressionCaps = mFdoConnection->GetExpressionCapabilities();
+    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+    try
+    {
+        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
+    }
+    catch(FdoExpression* ex) { ex->Release(); }
+
+    if (dataType != FdoDataType_DateTime)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
+    {
+        FdoDataValue* dv = static_cast<FdoDataValue*>(exp0.p);
+        if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+        {
+            FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+            if (strVal != NULL && !strVal->IsNull())
+            {
+                FdoString* oper = strVal->GetString();
+                if (wcscmp(oper, L"YEAR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+                else if (wcscmp(oper, L"MONTH") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(MONTH,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+                else if (wcscmp(oper, L"DAY") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(DAY,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+                else if (wcscmp(oper, L"HOUR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(HOUR,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+                else if (wcscmp(oper, L"MINUTE") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(MINUTE,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+                else if (wcscmp(oper, L"SECOND") == 0)
+                {
+                    processed = true;
+                    AppendString(L"DATEPART(SECOND,");
+                    HandleExpr(exp1);
+                    AppendString(L")");
+                }
+            }
+        }
+    }
+    else
+    {
+        AppendString(L"case when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'YEAR' then DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MONTH' then DATEPART(MONTH,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'DAY' then DATEPART(DAY,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'HOUR' then DATEPART(HOUR,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MINUTE' then DATEPART(MINUTE,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'SECOND' then DATEPART(SECOND,");
+        HandleExpr(exp1);
+        AppendString(L") end ");
+        processed = true;
+    }
+    if (!processed)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessExtractToDblFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    if (exprCol->GetCount() != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    bool processed = false;
+    FdoPropertyType propType = FdoPropertyType_DataProperty;
+    FdoDataType dataType = FdoDataType_Int32;
+    FdoPtr<FdoClassDefinition> clsDef = mFdoConnection->GetClassDefinition(mCurrentClassName);
+    FdoPtr<FdoIExpressionCapabilities> expressionCaps = mFdoConnection->GetExpressionCapabilities();
+    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+    try
+    {
+        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
+    }
+    catch(FdoExpression* ex) { ex->Release(); }
+
+    if (dataType != FdoDataType_DateTime)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
+    {
+        FdoDataValue* dv = static_cast<FdoDataValue*>(exp0.p);
+        if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+        {
+            FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+            if (strVal != NULL && !strVal->IsNull())
+            {
+                FdoString* oper = strVal->GetString();
+                if (wcscmp(oper, L"YEAR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as real)");
+                }
+                else if (wcscmp(oper, L"MONTH") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(MONTH,");
+                    HandleExpr(exp1);
+                    AppendString(L") as real)");
+                }
+                else if (wcscmp(oper, L"DAY") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(DAY,");
+                    HandleExpr(exp1);
+                    AppendString(L") as real)");
+                }
+                else if (wcscmp(oper, L"HOUR") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(HOUR,");
+                    HandleExpr(exp1);
+                    AppendString(L") as real)");
+                }
+                else if (wcscmp(oper, L"MINUTE") == 0)
+                {
+                    processed = true;
+                    AppendString(L"cast(DATEPART(MINUTE,");
+                    HandleExpr(exp1);
+                    AppendString(L") as real)");
+                }
+                else if (wcscmp(oper, L"SECOND") == 0)
+                {
+                    processed = true;
+                    AppendString(L"(DATEPART(SECOND,");
+                    HandleExpr(exp1);
+                    AppendString(L")+DATEPART(MILLISECOND,");
+                    HandleExpr(exp1);
+                    AppendString(L")/1000.0)");
+                }
+            }
+        }
+    }
+    else
+    {
+        AppendString(L"case when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'YEAR' then DATEPART(YEAR,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MONTH' then DATEPART(MONTH,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'DAY' then DATEPART(DAY,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'HOUR' then DATEPART(HOUR,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'MINUTE' then DATEPART(MINUTE,");
+        HandleExpr(exp1);
+        AppendString(L") when ");
+        HandleExpr(exp0);
+        AppendString(L"=N'SECOND' then DATEPART(SECOND,");
+        HandleExpr(exp1);
+        AppendString(L")+DATEPART(MILLISECOND,");
+        HandleExpr(exp1);
+        AppendString(L")/1000.0) end ");
+        processed = true;
+    }
+    if (!processed)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessLpadFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2 && colCount != 3)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    AppendString(L"case when cast(");
+    HandleExpr(exp1);
+    AppendString(L" as bigint) <= len(convert(nvarchar,");
+    HandleExpr(exp0);
+    AppendString(L")) then left(convert(nvarchar,");
+    HandleExpr(exp0);
+    AppendString(L"),cast(");
+    HandleExpr(exp1);
+    if (colCount == 2)
+    {
+        AppendString(L" as bigint)) else left(REPLICATE(N' ',cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)), cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)-len(convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L"))) + convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L") end");
+    }
+    else
+    {
+        FdoPtr<FdoExpression> exp2 = exprCol->GetItem(2);
+        AppendString(L" as bigint)) else left(REPLICATE(convert(nvarchar,");
+        HandleExpr(exp2);
+        AppendString(L"),cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)), cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)-len(convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L"))) + convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L") end");
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessRpadFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2 && colCount != 3)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+    if (colCount == 2)
+    {
+        AppendString(L"LEFT(convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L")+REPLICATE(N' ',cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)),cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint))");
+    }
+    else
+    {
+        FdoPtr<FdoExpression> exp2 = exprCol->GetItem(2);
+        AppendString(L"LEFT(convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L")+REPLICATE(convert(nvarchar,");
+        HandleExpr(exp2);
+        AppendString(L"),cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint)),cast(");
+        HandleExpr(exp1);
+        AppendString(L" as bigint))");
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessRemainderFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    AppendString(L"ABS(");
+    HandleExpr(exp0);
+    AppendString(L")-ABS(");
+    HandleExpr(exp1);
+    AppendString(L")*(case when cast(ABS(");
+    HandleExpr(exp0);
+    AppendString(L") as real)/cast(ABS(");
+    HandleExpr(exp1);
+    AppendString(L") as real)-FLOOR(cast(ABS(");
+    HandleExpr(exp0);
+    AppendString(L") as real)/cast(ABS(");
+    HandleExpr(exp1);
+    AppendString(L") as real))<=0.5 then FLOOR(cast(ABS(");
+    HandleExpr(exp0);
+    AppendString(L") as real)/cast(ABS(");
+    HandleExpr(exp1);
+    AppendString(L") as real)) else CEILING(cast(ABS(");
+    HandleExpr(exp0);
+    AppendString(L") as real)/cast(ABS(");
+    HandleExpr(exp1);
+    AppendString(L") as real)) end) *(case when ");
+    HandleExpr(exp0);
+    AppendString(L"<0 THEN -1.0 ELSE 1.0 END)");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessTrimFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1 && colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> mainexp = exprCol->GetItem(0);
+    if (colCount == 1)
+    {
+        AppendString(L"LTRIM(RTRIM(convert(nvarchar,");
+        HandleExpr(mainexp);
+        AppendString(L")))");
+    }
+    else
+    {
+        bool processed = false;
+        FdoPtr<FdoExpression> exp = exprCol->GetItem(0);
+        mainexp = exprCol->GetItem(1);
+        if (FdoExpressionItemType_DataValue == exp->GetExpressionType())
+        {
+            FdoDataValue* dv = static_cast<FdoDataValue*>(exp.p);
+            if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+            {
+                FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+                if (strVal != NULL && !strVal->IsNull())
+                {
+                    FdoString* oper = strVal->GetString();
+                    if (wcscmp(oper, L"BOTH") == 0)
+                    {
+                        processed = true;
+                        AppendString(L"LTRIM(RTRIM(convert(nvarchar,");
+                        HandleExpr(mainexp);
+                        AppendString(L")))");
+                    }
+                    else if (wcscmp(oper, L"LEADING") == 0)
+                    {
+                        processed = true;
+                        AppendString(L"LTRIM(convert(nvarchar,");
+                        HandleExpr(mainexp);
+                        AppendString(L"))");
+                    }
+                    else if (wcscmp(oper, L"TRAILING") == 0)
+                    {
+                        processed = true;
+                        AppendString(L"RTRIM(convert(nvarchar,");
+                        HandleExpr(mainexp);
+                        AppendString(L"))");
+                    }
+                }
+            }
+        }
+        else
+        {
+            AppendString(L"case when ");
+            HandleExpr(exp);
+            AppendString(L"=N'BOTH' then LTRIM(RTRIM(convert(nvarchar,");
+            HandleExpr(mainexp);
+            AppendString(L"))) when ");
+            HandleExpr(exp);
+            AppendString(L"=N'LEADING' then LTRIM(convert(nvarchar,");
+            HandleExpr(mainexp);
+            AppendString(L")) when ");
+            HandleExpr(exp);
+            AppendString(L"=N'TRAILING' then RTRIM(convert(nvarchar,");
+            HandleExpr(mainexp);
+            AppendString(L")) end");
+        }
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessSubStrFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2 && colCount != 3)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+    AppendString(L"(SUBSTRING(");
+    HandleExpr(exp0);
+    AppendString(L",(CASE WHEN cast(");
+    HandleExpr(exp1);
+    AppendString(L" as bigint)=0 THEN 1");
+    AppendString(L" WHEN cast(");
+    HandleExpr(exp1);
+    AppendString(L" as bigint)<0 THEN (case when len(convert(nvarchar,");
+    HandleExpr(exp0);
+    AppendString(L"))+cast(");
+    HandleExpr(exp1);
+    AppendString(L" as bigint)<0 THEN len(convert(nvarchar,");
+    HandleExpr(exp0);
+    AppendString(L"))+1 else");
+    AppendString(L" len(convert(nvarchar,");
+    HandleExpr(exp0);
+    AppendString(L"))+1+cast(");
+    HandleExpr(exp1);
+    AppendString(L" as bigint) END) ELSE cast(");
+    HandleExpr(exp1);
+    if (colCount == 3)
+    {
+        FdoPtr<FdoExpression> exp2 = exprCol->GetItem(2);
+        AppendString(L" as bigint) END) ,(CASE WHEN cast(");
+        HandleExpr(exp2);
+        AppendString(L" as bigint)<0 THEN 0 ELSE cast(");
+        HandleExpr(exp2);
+        AppendString(L" as bigint) END)))");
+    }
+    else
+    {
+        AppendString(L" as bigint) END), len(convert(nvarchar,");
+        HandleExpr(exp0);
+        AppendString(L"))))");
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessInstrFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    AppendString(L"(CHARINDEX(convert(nvarchar,");
+    FdoPtr<FdoExpression> exp = exprCol->GetItem(1);
+    HandleExpr(exp);
+    AppendString(L"),convert(nvarchar,");
+    exp = exprCol->GetItem(0);
+    HandleExpr(exp);
+    AppendString(L")))");
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessTruncFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1 && colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> mainexp = exprCol->GetItem(0);
+    if (colCount == 1)
+    {
+        AppendString(L"cast(cast(");
+        HandleExpr(mainexp);
+        AppendString(L" as bigint) as real)");
+    }
+    else
+    {
+        FdoPropertyType propType = FdoPropertyType_DataProperty;
+        FdoDataType dataType = FdoDataType_Int32;
+        FdoPtr<FdoClassDefinition> clsDef = mFdoConnection->GetClassDefinition(mCurrentClassName);
+        FdoPtr<FdoIExpressionCapabilities> expressionCaps = mFdoConnection->GetExpressionCapabilities();
+        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
+        try
+        {
+            FdoCommonMiscUtil::GetExpressionType(functions, clsDef, mainexp, propType, dataType);
+        }
+        catch(FdoExpression* ex) { ex->Release(); }
+
+        if (dataType == FdoDataType_DateTime)
+        {
+            bool processed = false;
+            FdoPtr<FdoExpression> exp = exprCol->GetItem(1);
+            if (FdoExpressionItemType_DataValue == exp->GetExpressionType())
+            {
+                FdoDataValue* dv = static_cast<FdoDataValue*>(exp.p);
+                if (dv != NULL && dv->GetDataType() == FdoDataType_String)
+                {
+                    FdoStringValue* strVal = static_cast<FdoStringValue*>(dv);
+                    if (strVal != NULL && !strVal->IsNull())
+                    {
+                        FdoString* oper = strVal->GetString();
+                        if (wcscmp(oper, L"YEAR") == 0)
+                        {
+                            processed = true;
+                            AppendString(L"cast(DATEPART(YEAR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-01-01 00:00:00.000'");
+                        }
+                        else if (wcscmp(oper, L"MONTH") == 0)
+                        {
+                            processed = true;
+                            AppendString(L"cast(DATEPART(YEAR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-01 00:00:00.000'");
+                        }
+                        else if (wcscmp(oper, L"DAY") == 0)
+                        {
+                            processed = true;
+                            HandleExpr(mainexp);
+                        }
+                        else if (wcscmp(oper, L"HOUR") == 0)
+                        {
+                            processed = true;
+                            AppendString(L"cast(DATEPART(YEAR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-' + cast(DATEPART(DAY,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N' ' + cast(DATEPART(HOUR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N':00:00.000'");
+                        }
+                        else if (wcscmp(oper, L"MINUTE") == 0)
+                        {
+                            processed = true;
+                            AppendString(L"cast(DATEPART(YEAR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N'-' + cast(DATEPART(DAY,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N' ' + cast(DATEPART(HOUR,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N':' + cast(DATEPART(MINUTE,");
+                            HandleExpr(mainexp);
+                            AppendString(L") as nvarchar) + N':00.000'");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                propType = FdoPropertyType_DataProperty;
+                dataType = FdoDataType_Int32;
+                FdoCommonMiscUtil::GetExpressionType(functions, clsDef, mainexp, propType, dataType);
+                if (dataType == FdoDataType_String)
+                {
+                    AppendString(L"case when ");
+                    HandleExpr(exp);
+                    AppendString(L"=N'YEAR' then ");
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-01-01 00:00:00.000'");
+                    AppendString(L" when ");
+                    HandleExpr(exp);
+                    AppendString(L"=N'MONTH' then ");
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-01 00:00:00.000' ");
+                    AppendString(L" when ");
+                    HandleExpr(exp);
+                    AppendString(L"=N'DAY' then ");
+                    HandleExpr(mainexp);
+                    AppendString(L" when ");
+                    HandleExpr(exp);
+                    AppendString(L"=N'HOUR' then ");
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(DAY,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N' ' + cast(DATEPART(HOUR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N':00:00.000'");
+                    AppendString(L" when ");
+                    HandleExpr(exp);
+                    AppendString(L"=N'MINUTE' then ");
+                    AppendString(L"cast(DATEPART(YEAR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(MONTH,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N'-' + cast(DATEPART(DAY,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N' ' + cast(DATEPART(HOUR,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N':' + cast(DATEPART(MINUTE,");
+                    HandleExpr(mainexp);
+                    AppendString(L") as nvarchar) + N':00.000' end ");
+                }
+            }
+            if (!processed)
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        }
+        else
+        {
+            AppendString(L"round(");
+            HandleExpr(mainexp);
+            AppendString(L", ");
+            AppendString(L"cast(");
+            FdoPtr<FdoExpression> exp = exprCol->GetItem(1);
+            HandleExpr(exp);
+            AppendString(L" as bigint), 1)");
+        }
+    }
+}
+
+void FdoRdbmsSqlServerFilterProcessor::ProcessModFunction(FdoFunction& expr)
+{
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+    AppendString(L"ABS(");
+    HandleExpr(exp0);
+    AppendString(L")-ABS(");
+    HandleExpr(exp1);
+    AppendString(L")*FLOOR(ABS(");
+    HandleExpr(exp0);
+    AppendString(L")/ABS(");
+    HandleExpr(exp1);
+    AppendString(L"))*(case when ");
+    HandleExpr(exp0);
+    AppendString(L"<0 THEN -1.0 ELSE 1.0 END)");
 }
 
 //
@@ -556,42 +1557,28 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessZMFunction (FdoFunction& expr)
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessToDoubleFunction (FdoFunction& expr)
 {
-    // SQL Server uses a different native function name for the expression function
-    // TODOUBLE. In addition, a specific keyword needs to be added.
-    AppendString(SQLSERVER_FUNCTION_TODOUBLEFLOAT);
-    AppendString(OPEN_PARENTH);
-    AppendString(L"REAL, ");
-
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
-    for (int i = 0; i < exprCol->GetCount(); i++ )
-    {
-        if (i != 0)
-            AppendString(L", ");
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
-        FdoPtr<FdoExpression>exp = exprCol->GetItem(i);
-        HandleExpr(exp);
-    }
-    AppendString(CLOSE_PARENTH);
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    AppendString(L"convert(real,");
+    HandleExpr(exp0);
+    AppendString(L")");
 }
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessToFloatFunction (FdoFunction& expr)
 {
-    // SQL Server uses a different native function name for the expression function
-    // TOFLOAT. In addition, a specific keyword needs to be added.
-    AppendString(SQLSERVER_FUNCTION_TODOUBLEFLOAT);
-    AppendString(OPEN_PARENTH);
-    AppendString(L"FLOAT, ");
-
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
-    for (int i = 0; i < exprCol->GetCount(); i++ )
-    {
-        if (i != 0)
-            AppendString(L", ");
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
-        FdoPtr<FdoExpression>exp = exprCol->GetItem(i);
-        HandleExpr(exp);
-    }
-    AppendString(CLOSE_PARENTH);
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    AppendString(L"convert(float,");
+    HandleExpr(exp0);
+    AppendString(L")");
 }
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessToIntFunction (FdoFunction& expr)
@@ -601,7 +1588,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessToIntFunction (FdoFunction& expr)
     // as there is no native corresponding function.
     AppendString(SQLSERVER_FUNCTION_TOINT);
     AppendString(OPEN_PARENTH);
-    AppendString(L"FLOAT, ");
+    AppendString(L"REAL, ");
 
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
     for (int i = 0; i < exprCol->GetCount(); i++ )
@@ -618,67 +1605,36 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessToIntFunction (FdoFunction& expr)
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessAddMonthsFunction (FdoFunction& expr)
 {
-    // To process this function in SQL Server, there are a few of issues to consider:
-    //
-    //  - The native function name in SQL Server for this expression function from
-    //    the expression function name and hence needs to be mapped to the correct
-    //    name.
-    //  -  The expression function ADDMONTHS expects a date/time object as the first
-    //     argument and a numeric value identifying the number of months to be added
-    //     as the second parameter. For the SQL Server function, those arguments must
-    //     be reversed.
-    //  - The SQL Server function requires an additional keyword to be added.
-    //
-    // This function does not perform a syntax check for the SQL Server function. This
-    // is left to the SQL Server validation. If the number of arguments are not as ex-
-    // pected they are just added to the function call instead of handling them as
-    // explained above.
-    AppendString(SQLSERVER_FUNCTION_ADDMONTHS);
-    AppendString(OPEN_PARENTH);
-    AppendString(L"MONTH, ");
-
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
-    FdoInt32 exprColCount = exprCol->GetCount();
-    if (exprColCount != 2) 
-    {
-        for (int i = 0; i < exprCol->GetCount(); i++ )
-        {
-            if (i != 0)
-                AppendString(L", ");
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
-            FdoPtr<FdoExpression>exp = exprCol->GetItem(i);
-            HandleExpr(exp);
-        }
-    }
-    else
-    {
-        FdoPtr<FdoExpression>exp0 = exprCol->GetItem(0);
-        FdoPtr<FdoExpression>exp1 = exprCol->GetItem(1);
-        HandleExpr(exp1);
-        AppendString(L", ");
-        HandleExpr(exp0);
-    }
-    AppendString(CLOSE_PARENTH);
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    AppendString(L"DATEADD(MONTH, convert(bigint,");
+    HandleExpr(exp1);
+    AppendString(L"),");
+    HandleExpr(exp0);
+    AppendString(L")");
 }
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessMonthsBetweenFunction (FdoFunction& expr)
 {
-    // SQL Server uses a different native function name for the expression function
-    // TOFLOAT. In addition, a specific keyword needs to be added.
-    AppendString(SQLSERVER_FUNCTION_MONTHSBETWEEN);
-    AppendString(OPEN_PARENTH);
-    AppendString(L"MONTH, ");
-
     FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
-    for (int i = 0; i < exprCol->GetCount(); i++ )
-    {
-        if (i != 0)
-            AppendString(L", ");
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 2)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
-        FdoPtr<FdoExpression>exp = exprCol->GetItem(i);
-        HandleExpr(exp);
-    }
-    AppendString(CLOSE_PARENTH);
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
+
+    AppendString(L"DATEDIFF(MONTH, convert(bigint,");
+    HandleExpr(exp1);
+    AppendString(L"),");
+    HandleExpr(exp0);
+    AppendString(L")");
 }
 
 void FdoRdbmsSqlServerFilterProcessor::ProcessLogFunction (FdoFunction& expr)

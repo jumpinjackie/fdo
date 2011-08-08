@@ -398,6 +398,40 @@ int FdoRdbmsConnection::GetUserNum ()
     return mUserNum;
 }
 
+FdoClassDefinition* FdoRdbmsConnection::GetClassDefinition(FdoString* qName)
+{
+    DbiConnection  *mDbiConnection = GetDbiConnection();
+    const FdoSmLpClassDefinition *classDefinition = mDbiConnection->GetSchemaUtil()->GetClass(qName);
+    if (classDefinition != NULL)
+    {
+        FdoStringP clsName = classDefinition->GetQName();
+
+        const FdoSmLpClassDefinition* pClass = classDefinition;
+        FdoPtr<FdoIdentifier> className = FdoIdentifier::Create( clsName );
+        int leng;
+        if( className->GetScope(leng) != NULL && leng != 0 && classDefinition->GetParent() && classDefinition->GetParent()->GetParent() )
+        {
+            const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(classDefinition->GetParent()->GetParent());
+            pClass = objProp->RefClass();
+        }
+        clsName = pClass->GetQName();
+        FdoPtr<FdoRdbmsDescribeSchemaCommand>  pDescSchemaCmd = new FdoRdbmsDescribeSchemaCommand( this );
+        pDescSchemaCmd->SetSchemaName(pClass->RefLogicalPhysicalSchema()->GetName());
+        FdoStringsP classNames = FdoStringCollection::Create();
+        classNames->Add(clsName);
+        pDescSchemaCmd->SetClassNames(classNames);
+        FdoPtr<FdoFeatureSchemaCollection> schemaCollection = pDescSchemaCmd->Execute();
+
+        FdoPtr<FdoFeatureSchema> schm = schemaCollection->FindItem( pClass->RefLogicalPhysicalSchema()->GetName() );
+        if( schm )
+        {
+            FdoPtr<FdoClassCollection> classes = schm->GetClasses();
+            return classes->FindItem( pClass->GetName() );
+        }
+    }
+    return NULL;
+}
+
 // The function sets the unique user number for the current user.
 void FdoRdbmsConnection::SetUserNum (int UserNum)
 {
@@ -1016,4 +1050,9 @@ bool FdoRdbmsConnection::NeedsSecondaryFiltering( FdoRdbmsSpatialSecondaryFilter
 FdoInt32 FdoRdbmsConnection::ExecuteDdlNonQuery(FdoString* sql)
 {
     return GetDbiConnection()->GetGdbiConnection()->ExecuteNonQuery(sql);
+}
+
+FdoRdbmsSqlBuilder* FdoRdbmsConnection::GetSqlBuilder()
+{
+    return NULL;
 }

@@ -41,6 +41,7 @@
 
 #include "DbiConnection.h"
 #include "Rdbms/FdoRdbmsCommandType.h"
+#include "FdoRdbmsSqlServerProcessors.h"
 
 #include <Inc/Rdbi/proto.h>
 #include "../ODBCDriver/context.h"
@@ -230,6 +231,45 @@ FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const wchar_t* timeStr )
     return fdoTime;
 }
 
+const wchar_t* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime time, wchar_t* dest, size_t size )
+{
+    bool isDateSupplied = ((time.year != -1) || (time.month != -1) || (time.day != -1));
+    bool isValidDate    = isDateSupplied && ((time.year != -1) && (time.month != -1) && (time.day != -1));
+
+    bool isTimeSupplied = ((time.hour != -1) || (time.minute != -1));
+    bool isValidTime    = isTimeSupplied && ((time.hour != -1) && (time.minute != -1));
+
+    if ((isDateSupplied  && !isValidDate)    ||
+        (isTimeSupplied  && !isValidTime)    ||
+        (isTimeSupplied  && !isDateSupplied) ||
+        (!isDateSupplied && !isTimeSupplied)    )
+		 throw FdoException::Create(NlsMsgGet(FDORDBMS_480,
+                                              "Incomplete date/time setting."));
+
+    if (time.year >= 0 && time.year < 50)
+        time.year += 2000;
+    else if (time.year >= 50 && time.year < 99)
+        time.year += 1900;
+
+    if ((isDateSupplied) && (!isTimeSupplied))
+        swprintf (dest, size, L"%04d-%02d-%02d", time.year, time.month, time.day);
+    else
+    {
+        float sec = ((int)(time.seconds*1000.0f))/1000.0f;
+        if (sec >= 60.0f)
+            sec = 59.999f;
+
+        swprintf (dest, size, L"%04d-%02d-%02d %02d:%02d:%02.3f",
+                 time.year,
+                 time.month,
+                 time.day,
+                 time.hour,
+                 time.minute,
+                 sec);
+    }
+    return (dest);
+}
+
 //
 // Convert time_t( FdoDateTime ) to a SqlServer string date of the form.
 // It returns a statically allocated storage that can be overwritten by
@@ -267,16 +307,27 @@ const char* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime  when )
 		 throw FdoException::Create(NlsMsgGet(FDORDBMS_480,
                                               "Incomplete date/time setting."));
 
+    if (when.year >= 0 && when.year < 50)
+        when.year += 2000;
+    else if (when.year >= 50 && when.year < 99)
+        when.year += 1900;
+
     if ((isDateSupplied) && (!isTimeSupplied))
-        sprintf (ret, "%4d-%02d-%02d", when.year, when.month, when.day);
+        sprintf (ret, "%04d-%02d-%02d", when.year, when.month, when.day);
     else
-        sprintf (ret, "%4d-%02d-%02d %02d:%02d:%02.2f",
+    {
+        float sec = ((int)(when.seconds*1000.0f))/1000.0f;
+        if (sec >= 60.0f)
+            sec = 59.999f;
+
+        sprintf (ret, "%04d-%02d-%02d %02d:%02d:%02.3f",
                  when.year,
                  when.month,
                  when.day,
                  when.hour,
                  when.minute,
-                 when.seconds);
+                 sec);
+    }
 
     return (ret);
 }
@@ -669,4 +720,13 @@ void FdoRdbmsSqlServerConnection::Flush()
         FdoSchemaManagerP pschemaManager = GetSchemaManager();
         pschemaManager->Clear();
     }
+}
+
+FdoRdbmsSqlBuilder* FdoRdbmsSqlServerConnection::GetSqlBuilder()
+{
+    FdoSmPhSqsMgrP mrg = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
+    FdoSmPhOwnerP owner = mrg->GetOwner();
+    if (owner && !owner->GetHasAssocMetaSchema())
+        return new FdoRdbmsSqlServerSqlBuilder (this);
+    return NULL;    
 }

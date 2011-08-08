@@ -439,6 +439,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerProcessors.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\SQLServerSpatial.cpp"
 				>
 			</File>
@@ -505,6 +509,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerDateTimeUtils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerDeleteCommand.h"
 				>
 			</File>
@@ -526,6 +534,10 @@
 			</File>
 			<File
 				RelativePath=".\Fdo\FdoRdbmsSqlServerOptimizedAggregateReader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Fdo\FdoRdbmsSqlServerProcessors.h"
 				>
 			</File>
 			<File
