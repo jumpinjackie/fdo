@@ -24,6 +24,7 @@
 #include <vector>
 #include <limits>
 #include "FdoSpatial.h"
+#include <float.h>      // For _isnan()
 
 #include <Inc/Geometry/Fgf/AllGeometry_c.h>	
 
@@ -117,17 +118,6 @@ struct MemoryBuffer
 #define GEOM_HEADER_SIZE (2*sizeof(size_t)+2*sizeof(FdoByte))
 #define GEOM_FOOTER_SIZE(fig, shp) (2*sizeof(size_t)+(fig)*(sizeof(size_t)+sizeof(FdoByte))+(shp)*(2*sizeof(size_t)+sizeof(FdoByte)))
 #define VERY_SMALL (1.0e-17)
-
-#define BUFF_WRITE_POINT \
-    if (handle.isLatLong){ \
-    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian((dreader+1))); \
-    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader)); \
-    dreader += 2; \
-    } else { \
-    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++)); \
-    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++)); } \
-    if ((tmp&FdoDimensionality_Z) != 0) BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++)); \
-    if ((tmp&FdoDimensionality_M) != 0) BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++));
 
 #define BUFF_WRITE_POINTHXYZM \
     if (handle.isLatLong){ \
@@ -493,6 +483,14 @@ namespace sqlgeomconv
                 return OpenGISShapeType_GeometryCollection;
             }
             throw FdoException::Create(L"Invalid type!");
+        }
+        bool IsNan(double n)
+        {
+#ifdef _WIN32
+            return _isnan(n) ? true : false;
+#else
+            return isnan(n) ? true : false;
+#endif
         }
     } GeomWriteHandle;
 
@@ -1337,14 +1335,45 @@ namespace sqlgeomconv
                 BUFF_PUSH_LEINT(handle.lBuff, srid);
                 BUFF_PUSH_BYTE(handle.lBuff, 0x01); // version
                 FdoByte type = VALIDGEOM_FLAG|PTGEOM_FLAG;
-                if ((tmp&FdoDimensionality_Z) != 0)
-                    type |= ZGEOM_FLAG;
-                if ((tmp&FdoDimensionality_M) != 0)
-                    type |= MGEOM_FLAG;
-
-                BUFF_PUSH_BYTE(handle.lBuff, type);
                 double* dreader = (double*)ireader;
-                BUFF_WRITE_POINT;
+                if ((tmp&FdoDimensionality_Z) != 0)
+                {
+                    // we have Z for FDO geometry however we need to see if we have Z=NaN (in case yes avoid using it)
+                    // this is valid for points only
+                    handle.hasZ = true;
+                    if (!handle.IsNan(*(dreader+2)))
+                        type |= ZGEOM_FLAG;
+                }
+                if ((tmp&FdoDimensionality_M) != 0)
+                {
+                    // we have M for FDO geometry however we need to see if we have M=NaN (in case yes avoid using it)
+                    // this is valid for points only
+                    handle.hasM = true;
+                    if (!handle.IsNan(*(dreader+2+(int)handle.hasZ)))
+                        type |= MGEOM_FLAG;
+                }
+                BUFF_PUSH_BYTE(handle.lBuff, type);
+                if (handle.isLatLong)
+                {
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian((dreader+1)));
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader));
+                    dreader += 2;
+                }
+                else
+                {
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++));
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++));
+                }
+                if ((tmp&FdoDimensionality_Z) != 0)
+                {
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++));
+                }
+                else if (handle.hasZ)
+                    dreader++; // jump over Z in case is NaN
+
+                if ((tmp&FdoDimensionality_M) != 0)
+                    BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader++));
+
                 handle.MarkBufferLen(handle.lBuff);
             }
             break;

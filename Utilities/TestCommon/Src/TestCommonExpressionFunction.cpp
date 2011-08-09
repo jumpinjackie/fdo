@@ -2271,9 +2271,11 @@ void TestCommonExpressionFunction::CheckReaderString (
                   ? NULL
                   : data_reader->GetString(L"cmp_id");
 
+      // we can relax the "rule" here since for certain providers might be hard to
+      // return NULL when server returns empty string
       is_valid_result =
         ((id_prop_val == expected_id_value) &&
-         (((cmp_id_val == NULL) && (expected_cmp_id_value == NULL)) ||
+         (((cmp_id_val == NULL || *cmp_id_val == '\0') && (expected_cmp_id_value == NULL || expected_cmp_id_value == '\0')) ||
           ((cmp_id_val != NULL) && (expected_cmp_id_value != NULL) &&
                          (wcscmp(cmp_id_val, expected_cmp_id_value) == 0))));
       if (!is_valid_result)

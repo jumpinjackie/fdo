@@ -76,6 +76,7 @@
 #define IDX_FDO_FUNCTION_MEDIAN             37
 #define IDX_FDO_FUNCTION_AGG                38
 #define IDX_FDO_FUNCTION_SPATIALEXTENTS     39
+#define IDX_FDO_FUNCTION_CEIL               40
 
 void FdoSqlServerInvalidExpDetProcessor::ProcessFunction(FdoFunction& expr)
 {
@@ -83,7 +84,7 @@ void FdoSqlServerInvalidExpDetProcessor::ProcessFunction(FdoFunction& expr)
         return;
 
     FdoString* name = expr.GetName();
-    if (_wcsicmp(name, FDO_FUNCTION_TRANSLATE) == 0 || _wcsicmp(name, FDO_FUNCTION_MEDIAN))
+    if (_wcsicmp(name, FDO_FUNCTION_TRANSLATE) == 0 || _wcsicmp(name, FDO_FUNCTION_MEDIAN) == 0)
     {
         mExpSupported = false;
         Done();
@@ -203,13 +204,13 @@ void FdoRdbmsSqlServerSqlBuilder::LoadFunctionDefinitions()
     m_functions[FDO_FUNCTION_SQRT] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_TAN] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_FLOOR] = IDX_FDO_FUNCTION_COMMON;
-    m_functions[FDO_FUNCTION_CEIL] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_UPPER] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_LOWER] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_LTRIM] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_RTRIM] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_SOUNDEX] = IDX_FDO_FUNCTION_COMMON;
     m_functions[FDO_FUNCTION_ROUND] = IDX_FDO_FUNCTION_ROUND;
+    m_functions[FDO_FUNCTION_CEIL] = IDX_FDO_FUNCTION_CEIL;
     m_functions[FDO_FUNCTION_SIGN] = IDX_FDO_FUNCTION_SIGN;
     m_functions[FDO_FUNCTION_TRUNC] = IDX_FDO_FUNCTION_TRUNC;
     m_functions[FDO_FUNCTION_ATAN2] = IDX_FDO_FUNCTION_ATAN2;
@@ -633,10 +634,10 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessMonthsBetweenFunction (FdoFunction& exp
     FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
 
-    itm->first.append(L"DATEDIFF(MONTH, CONVERT(BIGINT,", 31);
-    exp1->Process(this);
-    itm->first.append(L"),", 2);
+    itm->first.append(L"DATEDIFF(MONTH, ");
     exp0->Process(this);
+    itm->first.append(L",", 1);
+    exp1->Process(this);
     itm->first.append(L")", 1);
 }
 
@@ -718,6 +719,21 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessRoundFunction (FdoFunction& expr)
         exp1->Process(this);
         itm->first.append(L"))", 2);
     }
+}
+
+void FdoRdbmsSqlServerSqlBuilder::ProcessCeilFunction (FdoFunction& expr)
+{
+    pair_working_stack* itm = top_stack();
+
+    FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
+    FdoInt32 colCount = exprCol->GetCount();
+    if (colCount != 1)
+        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+    itm->first.append(L"CEILING(");
+    FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
+    exp0->Process(this);
+    itm->first.append(L")", 1);
 }
 
 void FdoRdbmsSqlServerSqlBuilder::ProcessCommonFunction(FdoFunction& expr)
@@ -944,7 +960,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractFunction(FdoFunction& expr)
     catch(FdoExpression* ex) { ex->Release(); }
 
     if (dataType != FdoDataType_DateTime)
-        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACT));
 
     if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
     {
@@ -1095,7 +1111,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractToIntFunction(FdoFunction& expr)
     catch(FdoExpression* ex) { ex->Release(); }
 
     if (dataType != FdoDataType_DateTime)
-        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACTTOINT));
 
     if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
     {
@@ -1217,7 +1233,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractToDblFunction(FdoFunction& expr)
     catch(FdoExpression* ex) { ex->Release(); }
 
     if (dataType != FdoDataType_DateTime)
-        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACTTODOUBLE));
 
     if (FdoExpressionItemType_DataValue == exp0->GetExpressionType())
     {
@@ -1830,11 +1846,11 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessModFunction(FdoFunction& expr)
 
     itm->first.append(L"CAST(ABS(");
     itm->first.append(itmExp0->first);
-    itm->first.append(L" AS REAL))-ABS(");
+    itm->first.append(L") AS REAL)-ABS(");
     itm->first.append(itmExp1->first);
     itm->first.append(L")*FLOOR(CAST(ABS(");
     itm->first.append(itmExp0->first);
-    itm->first.append(L" AS REAL))/ABS(");
+    itm->first.append(L") AS REAL)/ABS(");
     itm->first.append(itmExp1->first);
     itm->first.append(L"))*(CASE WHEN ");
     itm->first.append(itmExp0->first);
@@ -2222,6 +2238,9 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessFunction(FdoFunction& expr)
         case IDX_FDO_FUNCTION_COMMON:
             ProcessCommonFunction(expr);
             break;
+        case IDX_FDO_FUNCTION_CEIL:
+            ProcessCeilFunction(expr);
+            break;            
         case IDX_FDO_FUNCTION_ROUND:
             ProcessRoundFunction(expr);
             break;
@@ -2779,6 +2798,15 @@ void FdoRdbmsSqlServerSqlBuilder::ExpandCalculations()
 FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainClass, FdoIdentifier* alias, FdoFilter* filter, FdoIdentifierCollection* selectList, 
     const std::vector<NameOrderingPair>& ordering, FdoJoinCriteriaCollection* joinCriteria)
 {
+    FdoPtr<FdoSqlServerInvalidExpDetProcessor> spDetector = FdoSqlServerInvalidExpDetProcessor::Create();
+    if (filter != NULL)
+    {
+        spDetector->StartStoppable();
+        filter->Process(spDetector);
+        if (!spDetector->IsExpressionSupported())
+            return NULL;
+    }
+
     Reset();
     m_mainClass = FDO_SAFE_ADDREF(mainClass);
     pair_working_stack* itmSelect = top_stack();
@@ -2797,6 +2825,14 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         strAlias = (jc->HasAlias()) ? jc->GetAlias() : NULL;
         FdoPtr<FdoIdentifier> jcName = jc->GetJoinClass();
         clsDef = dbiConn->GetSchemaUtil()->GetClass(jcName->GetText());
+        FdoPtr<FdoFilter> jcFlt = jc->GetFilter();
+        if (jcFlt != NULL)
+        {
+            spDetector->StartStoppable();
+            jcFlt->Process(spDetector);
+            if (!spDetector->IsExpressionSupported())
+                return NULL;
+        }
         m_usedClasses.push_back(std::make_pair(clsDef, (strAlias == NULL ? L"" : strAlias)));
     }
     AssignAliases();
@@ -2845,6 +2881,10 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         }
         else // we need to do it in a different way
         {
+            spDetector->StartStoppable();
+            idf->Process(spDetector);
+            if (!spDetector->IsExpressionSupported())
+                return NULL;
             m_hasClaculations = true;
             m_selectList.push_back(L"");
         }
@@ -2965,6 +3005,13 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         {
             FdoIdentifier* idfto = ordering[i].name;
             
+            if (idfto->GetExpressionType() != FdoExpressionItemType_Identifier)
+            {
+                spDetector->StartStoppable();
+                idfto->Process(spDetector);
+                if (!spDetector->IsExpressionSupported())
+                    return NULL;
+            }
             pair_working_stack* itmOby = push_stack();
             itmOby->second = SqlComputedEvalType_Expression;
             idfto->Process(this);

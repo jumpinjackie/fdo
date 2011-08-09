@@ -1448,15 +1448,15 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessModFunction(FdoFunction& expr)
 
     FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
-    AppendString(L"ABS(");
+    AppendString(L"CAST(ABS(");
     HandleExpr(exp0);
-    AppendString(L")-ABS(");
+    AppendString(L") AS REAL)-ABS(");
     HandleExpr(exp1);
-    AppendString(L")*FLOOR(ABS(");
+    AppendString(L")*FLOOR(CAST(ABS(");
     HandleExpr(exp0);
-    AppendString(L")/ABS(");
+    AppendString(L") AS REAL)/ABS(");
     HandleExpr(exp1);
-    AppendString(L"))*(case when ");
+    AppendString(L"))*(CASE WHEN ");
     HandleExpr(exp0);
     AppendString(L"<0 THEN -1.0 ELSE 1.0 END)");
 }
@@ -1630,10 +1630,10 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessMonthsBetweenFunction (FdoFunction
     FdoPtr<FdoExpression> exp0 = exprCol->GetItem(0);
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
 
-    AppendString(L"DATEDIFF(MONTH, convert(bigint,");
-    HandleExpr(exp1);
-    AppendString(L"),");
+    AppendString(L"DATEDIFF(MONTH, ");
     HandleExpr(exp0);
+    AppendString(L",");
+    HandleExpr(exp1);
     AppendString(L")");
 }
 

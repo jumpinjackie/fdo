@@ -248,6 +248,12 @@ void FdoUpdateTest::MainFdoUpdateTest (FdoIConnection* Conn)
             // The number of rows varies, depending on the order of tests.
             CPPUNIT_ASSERT_MESSAGE ("Update failed to update 10 records", rows_count>=10);
         }
+        catch (FdoException *ex)
+        {
+            if (connection)
+                connection->Close ();
+            TestCommonFail(ex);
+        }
         catch (...)
         {
             if (connection)

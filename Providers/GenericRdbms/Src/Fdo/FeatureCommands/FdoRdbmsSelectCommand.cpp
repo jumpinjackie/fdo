@@ -142,7 +142,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     try
     {
         // for now we support only select with joins
-        if (callerId != FdoCommandType_SelectAggregates)
+        if (callerId == (FdoInt16)FdoCommandType_Select && !doNotUseSimpleSelect)
         {
             FdoPtr<FdoRdbmsSqlBuilder> sqlBuilder = mFdoConnection->GetSqlBuilder();
             if (sqlBuilder)
