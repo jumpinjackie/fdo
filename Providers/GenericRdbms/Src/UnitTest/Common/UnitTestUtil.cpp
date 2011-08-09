@@ -1612,9 +1612,12 @@ FdoIConnection* UnitTestUtil::GetConnection(FdoString *suffix, bool bCreate, boo
 
         connection->Open();
         if ( (!bCreated) && bRecreateData ) {
-            TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"AcDb3dPolyline", NULL );
-            TestCommonMiscUtil::DeleteObjects( connection, L"L\x00e4nd", L"Parcel", NULL );
-            TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"testClass", NULL );
+            try {TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"AcDb3dPolyline", NULL );
+            }catch(FdoException* ex){ ex->Release(); }
+            try {TestCommonMiscUtil::DeleteObjects( connection, L"L\x00e4nd", L"Parcel", NULL );
+            }catch(FdoException* ex){ ex->Release(); }
+            try {TestCommonMiscUtil::DeleteObjects( connection, L"Acad", L"testClass", NULL );
+            }catch(FdoException* ex){ ex->Release(); }
         }
 
         if ( bCreated || bRecreateData ) {

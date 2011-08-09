@@ -724,9 +724,7 @@ void FdoRdbmsSqlServerConnection::Flush()
 
 FdoRdbmsSqlBuilder* FdoRdbmsSqlServerConnection::GetSqlBuilder()
 {
-    FdoSmPhSqsMgrP mrg = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
-    FdoSmPhOwnerP owner = mrg->GetOwner();
-    if (owner && !owner->GetHasAssocMetaSchema())
-        return new FdoRdbmsSqlServerSqlBuilder (this);
-    return NULL;    
+    // relax this since we check if we use association props
+    // and we avoid using this builder.
+    return new FdoRdbmsSqlServerSqlBuilder (this);
 }

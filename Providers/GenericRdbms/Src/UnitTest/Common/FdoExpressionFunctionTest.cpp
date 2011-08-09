@@ -16964,6 +16964,10 @@ void FdoExpressionFunctionTest::CheckReaderDt (
     // Navigate through the reader and perform the necessary checks.
 
     printf(" >>> Cross check result \n");
+    if (expected_cmp_id_value.year >= 0 && expected_cmp_id_value.year < 50)
+      expected_cmp_id_value.year += 2000;
+    else if (expected_cmp_id_value.year > 50 && expected_cmp_id_value.year < 100)
+      expected_cmp_id_value.year += 1900;
 
     while (data_reader->ReadNext()) {
 
@@ -17060,6 +17064,10 @@ void FdoExpressionFunctionTest::CheckReaderDt (
     // Navigate through the reader and perform the necessary checks.
 
     printf(" >>> Cross check result \n");
+    if (expected_cmp_id_value.year >= 0 && expected_cmp_id_value.year < 50)
+      expected_cmp_id_value.year += 2000;
+    else if (expected_cmp_id_value.year > 50 && expected_cmp_id_value.year < 100)
+      expected_cmp_id_value.year += 1900;
 
     while (data_reader->ReadNext()) {
 
@@ -17457,10 +17465,11 @@ void FdoExpressionFunctionTest::CheckReaderString (
       cmp_id_val  = (data_reader->IsNull(L"cmp_id"))
                   ? NULL
                   : data_reader->GetString(L"cmp_id");
-
+      // we can relax the "rule" here since for certain providers might be hard to
+      // return NULL when server returns empty string
       is_valid_result =
         ((id_prop_val == expected_id_value) &&
-         (((cmp_id_val == NULL) && (expected_cmp_id_value == NULL)) ||
+         (((cmp_id_val == NULL || *cmp_id_val == '\0') && (expected_cmp_id_value == NULL || *expected_cmp_id_value == '\0')) ||
           ((cmp_id_val != NULL) && (expected_cmp_id_value != NULL) &&
                          (wcscmp(cmp_id_val, expected_cmp_id_value) == 0))));
       if (!is_valid_result)

@@ -47,6 +47,7 @@ protected:
     bool mExpSupported;
 public:
 
+    static FdoSqlServerInvalidExpDetProcessor* Create() { return new FdoSqlServerInvalidExpDetProcessor(); }
     virtual void Dispose() { delete this; }
 
     void Done() { mState = 0x02; } // done state
@@ -293,6 +294,7 @@ private:
     void ProcessRoundFunction(FdoFunction& expr);
     void ProcessSignFunction(FdoFunction& expr);
     void ProcessTruncFunction(FdoFunction& expr);
+    void ProcessCeilFunction(FdoFunction& expr);
 
     // Math
     void ProcessAtn2Function(FdoFunction& expr); // ATN2
