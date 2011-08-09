@@ -792,7 +792,6 @@ bool FdoRdbmsSQLCommand::HandleBindValues(std::vector< std::pair< FdoParameterVa
                                             srId = (static_cast<FdoInt16Value*>(dataVal))->GetInt16();
                                     }                                    
                                 }
-                                srId = 0;
                             }
                             usedParameterValues.push_back(std::make_pair(param.p, srId));
                             tmp = lastPos;
