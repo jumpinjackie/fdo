@@ -83,16 +83,19 @@ void ReaderTest::TestDataReaderWithIndex ()
     }
 }
 
+// since we expect base class properties first we need to change a bit the logic here
 int ReaderTest::GetPropertyIndex (FdoClassDefinition* clsDef, FdoString* name)
 {
     FdoPtr<FdoClassDefinition> baseCls = clsDef->GetBaseClass();
     FdoPtr<FdoPropertyDefinitionCollection> props = clsDef->GetProperties();
     int idx = props->IndexOf(name);
     if (idx == -1 && baseCls != NULL)
+        return GetPropertyIndex (baseCls, name);
+
+    if (idx != -1 && baseCls != NULL)
     {
-        idx = GetPropertyIndex (baseCls, name);
-        if (idx != -1)
-            return idx + props->GetCount();
+        props = baseCls->GetProperties();
+        return idx + props->GetCount();
     }
     return idx;
 }
