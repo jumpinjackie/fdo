@@ -935,8 +935,9 @@ void SqlServerFdoUpdateTest::SelectGeogSpatialError( FdoPtr<FdoIConnection> conn
             0xe4
         );
 
-        FdoString* pMessage = ex->GetExceptionMessage();
-        CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
+        // Relax the error message check
+        FdoStringP pMessage = ex->GetExceptionMessage();
+        CPPUNIT_ASSERT( pMessage.Contains(L"Geometry property") && pMessage.Contains(L"cannot use FdoSpatialOperations_EnvelopeIntersects") );
 #endif
     
         succeeded = false;
@@ -961,8 +962,9 @@ void SqlServerFdoUpdateTest::SelectGeogSpatialError( FdoPtr<FdoIConnection> conn
             0xe4
         );
 
-        FdoString* pMessage = ex->GetExceptionMessage();
-        CPPUNIT_ASSERT( pMessage && expectedMessage.ICompare(pMessage) == 0 );
+        // Relax the error message check
+        FdoStringP pMessage = ex->GetExceptionMessage();
+        CPPUNIT_ASSERT( pMessage.Contains(L"Geometry property") && pMessage.Contains(L"cannot use FdoSpatialOperations_Inside") );
 #endif
     
         succeeded = false;

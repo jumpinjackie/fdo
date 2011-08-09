@@ -2393,7 +2393,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessSpatialCondition(FdoSpatialCondition& f
                     NlsMsgGet2(
                         FDORDBMS_44, 
                         "Geometry property '%1$ls' has geodetic coordinate system; cannot use %2$ls spatial operator in filter",
-                        itmPropExp->first.c_str(),
+                        propName->GetText(),
                         (FdoString*) FdoCommonMiscUtil::FdoSpatialOperationsToString(spatialOp)
                     )
                 );
