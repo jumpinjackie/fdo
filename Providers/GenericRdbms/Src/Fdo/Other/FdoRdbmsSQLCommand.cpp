@@ -574,7 +574,6 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                             m_bindHelper->BindBack(idx, pVal);
                             FDO_SAFE_ADDREF(pParVal);
                             vParams.push_back(pParVal);
-                            break;
                         }
                     }
                     // if we have at least one output parameter just process the value
