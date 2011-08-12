@@ -165,7 +165,8 @@ FdoStringCollection* SdfGetSchemaNames::Execute()
     m_schemaNames = FdoStringCollection::Create();
 
     FdoFeatureSchema* schema = m_connection->GetSchema();
-    m_schemaNames->Add(schema->GetName());
+    if (schema)
+        m_schemaNames->Add(schema->GetName());
 
     return FDO_SAFE_ADDREF(m_schemaNames);
 }
