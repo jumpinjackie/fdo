@@ -131,6 +131,58 @@ m_canAddSelectProps(false)
 	InitPropIndex(m_pStmt);
 }
 
+SltReader::SltReader(SltConnection* connection, FdoIdentifierCollection* props, FdoParameterValueCollection*  parmValues, const char* fcname, const char* sql)
+: m_refCount(1),
+m_pStmt(0),
+m_class(NULL),
+m_sprops(NULL),
+m_closeOpcode(-1),
+m_curfid(0),
+m_nMaxProps(0),
+m_nTotalProps(0),
+m_eGeomFormat(eFGF),
+m_wkbBuffer(NULL),
+m_wkbBufferLen(0),
+m_closeDB(ReaderCloseType_None),
+m_useFastStepping(false),
+m_ri(NULL),
+m_aPropNames(NULL),
+m_filter(NULL),
+m_fromwhere(),
+m_isViewSelect(false),
+m_canAddSelectProps(false)
+{
+	m_connection = FDO_SAFE_ADDREF(connection);
+    m_parmValues  = FDO_SAFE_ADDREF(parmValues);
+    
+    SltMetadata* md = m_connection->GetMetadata(fcname);
+    if (!md)
+        throw FdoCommandException::Create(L"Requested feature class does not exist in the database.");
+
+	if (props && props->GetCount())
+	{
+        FdoPtr<FdoClassDefinition> clsDef = md->ToClass();
+        SltExpressionTranslator exTrans(props, clsDef);
+		int nProps = props->GetCount();
+        m_reissueProps.Reserve(nProps);
+		for (int i=0; i<nProps; i++)
+		{
+			FdoPtr<FdoIdentifier> id = props->GetItem(i);
+            exTrans.Reset();
+            id->Process(&exTrans);
+            StringBuffer* exp = exTrans.GetExpression();
+            m_reissueProps.Add(exp->Data(), exp->Length());
+        }
+        m_nTotalProps = nProps;
+	}
+    //remember the geometry encoding format
+    m_eGeomFormat = md->GetGeomFormat();
+
+    m_mainClassName = fcname;
+    m_sql.Append(sql);
+    m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
+    InitPropIndex(m_pStmt);
+}
 
 //constructor tailored for an FDO Select command -- in cases where the
 //requested columns collection is empty, it will start out with a query
