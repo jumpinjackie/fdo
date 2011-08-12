@@ -1244,7 +1244,7 @@ FdoIDataReader* SltConnection::SelectAggregates(FdoIdentifier*              fcna
     }
     sb.Append(";", 1);
 
-    SltReader* rdr = new SltReader(this, sb.Data(), parmValues);
+    SltReader* rdr = new SltReader(this, properties, parmValues, mbfc, sb.Data());
     if (mustKeepFilterAlive)
         rdr->SetInternalFilter(filter);
 
