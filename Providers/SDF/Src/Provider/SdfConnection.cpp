@@ -601,6 +601,11 @@ SchemaDb* SdfConnection::GetSchemaDb()
 //Breaks FDO convention, but is for internal use only...
 FdoFeatureSchema* SdfConnection::GetSchema(FdoString *schemaName, bool bNewCopyFromFile)
 {
+    // in case schema name is empty string just set it to NULL 
+    // that's because we validate the name against NULL or a text
+    if (schemaName != NULL && *schemaName == '\0')
+        schemaName = NULL;
+
     FdoFeatureSchema* schema = NULL;
     if (bNewCopyFromFile)
     {
@@ -610,8 +615,9 @@ FdoFeatureSchema* SdfConnection::GetSchema(FdoString *schemaName, bool bNewCopyF
     else
         schema = m_dbSchema->GetSchema();
 
-    // Validate schema name, if one is provided:
-    if (schemaName && ((schema==NULL) || 0!=wcscmp(schema->GetName(), schemaName)))
+    FdoString* lschemaName = schema ? schema->GetName() : NULL;
+    // Validate schema name, fail when asked for one and we got nothing or we got a different one
+    if ((schemaName && !lschemaName) || (schemaName && lschemaName && wcscmp(schemaName, lschemaName)))
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_58_INVALID_SCHEMANAME)));
 
     return schema; // no addref on purpose;
