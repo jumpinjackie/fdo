@@ -3015,13 +3015,15 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
             pair_working_stack* itmOby = push_stack();
             itmOby->second = SqlComputedEvalType_Expression;
             idfto->Process(this);
+            itmSelect->first.append(itmOby->first);
             pop_stack(); // itmOby
 
             if (ordering[i].option == FdoOrderingOption_Ascending)
-                itmSelect->first.append(L" ASC ");
+                itmSelect->first.append(L" ASC,");
             else
-                itmSelect->first.append(L" DESC ");
+                itmSelect->first.append(L" DESC,");
         }
+        itmSelect->first.resize(itmSelect->first.size()-1);
     }
     // do not call pop_stack() for itmSelect
     return itmSelect->first.c_str();
