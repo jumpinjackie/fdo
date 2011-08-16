@@ -17579,6 +17579,8 @@ FdoIFeatureReader *FdoExpressionFunctionTest::ExecuteSelectCommand (
     if (filter != NULL)
         select_cmd->SetFilter(filter);
     id_col = select_cmd->GetPropertyNames();
+    id_prop = FdoIdentifier::Create(L"featid");
+    id_col->Add(id_prop);
     if (inc_id_prop) {
 
         id_prop = FdoIdentifier::Create(L"id");
@@ -18008,7 +18010,7 @@ void FdoExpressionFunctionTest::AddFeature (
       else {
 
         data_value     = FdoDataValue::Create(index);
-        property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"xid");
+        property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"featid");
         property_value->SetValue(data_value);
         FDO_SAFE_RELEASE(property_value);
         FDO_SAFE_RELEASE(data_value);
@@ -18260,7 +18262,7 @@ FdoClass *FdoExpressionFunctionTest::CreateFdoClass (FdoString *class_name)
       data_property_definitions = the_class->GetProperties();
       id_property_definitions   = the_class->GetIdentityProperties();
 
-      data_property_definition = CreateDataProperty(L"xid",
+      data_property_definition = CreateDataProperty(L"featid",
                                                     FdoDataType_Int32,
                                                     0,
                                                     0,
