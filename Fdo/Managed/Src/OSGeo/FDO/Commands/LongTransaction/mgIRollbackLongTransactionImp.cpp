@@ -35,19 +35,33 @@ IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::Name::get()
 {
-	FdoString* result;
+    FdoString* result;
 
-	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
+    EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return CHECK_STRING(result);
+    return CHECK_STRING(result);
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::Name::set(System::String^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
+    EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::KeepLongTransaction::get()
+{
+    FdoBoolean result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetKeepLongTransaction())
+
+    return result;
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::KeepLongTransaction::set(System::Boolean value)
+{
+    EXCEPTION_HANDLER(GetImpObj()->SetKeepLongTransaction(value))
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::IRollbackLongTransactionImp::Execute()
 {
-	EXCEPTION_HANDLER(GetImpObj()->Execute())
+    EXCEPTION_HANDLER(GetImpObj()->Execute())
 }

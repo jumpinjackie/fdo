@@ -48,21 +48,43 @@ public:
     /// Gets the name of the long transaction to commit as a string.
     /// 
     /// \return
-    /// Returns the name of the long transaction
+    /// Returns the name of the long transaction.
     /// 
     /// \brief
     /// Sets the name of the long transaction to commit as a string.
     /// 
     /// \param value 
-    /// Input the name of the long transaction
+    /// Input the name of the long transaction.
     /// 
     /// \return
-    /// Returns nothing
+    /// Returns nothing.
     /// 
     property System::String^ Name
     {
         System::String^ get();
         System::Void set(System::String^ value);
+    }
+
+    /// \brief
+    /// Indicates whether to keep the long transaction after it is committed.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is committed.
+    /// 
+    /// \brief
+    /// Sets whether to keep the long transaction after it is committed.
+    /// 
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the committed
+    /// long transaction.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    property System::Boolean KeepLongTransaction
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
     }
 
     /// Executes the commit long transaction command and returns an

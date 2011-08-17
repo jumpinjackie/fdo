@@ -67,20 +67,42 @@ public:
     }
 
     /// \brief
+    /// Indicates whether to keep the long transaction after it is rollbacked.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is rollbacked.
+    /// 
+    /// \brief
+    /// Sets whether to keep the long transaction after it is rollbacked.
+    /// 
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the rollbacked
+    /// long transaction.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    virtual property System::Boolean KeepLongTransaction
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
+
+    /// \brief
     /// Executes the RollbackLongTransaction command.
     /// 
     /// \return
     /// Returns nothing
     /// 
-	virtual System::Void Execute();
+    virtual System::Void Execute();
 
 internal:
-	IRollbackLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
-	{
+    IRollbackLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
+    {
 
-	}
+    }
 
-	inline FdoIRollbackLongTransaction* GetImpObj();
+    inline FdoIRollbackLongTransaction* GetImpObj();
 public:
     virtual IntPtr GetDisposableObject() override;
 };

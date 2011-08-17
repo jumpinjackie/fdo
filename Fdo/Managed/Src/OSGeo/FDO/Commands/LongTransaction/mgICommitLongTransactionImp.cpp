@@ -38,23 +38,37 @@ IntPtr NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::
 
 System::String^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::Name::get()
 {
-	FdoString* result;
+    FdoString* result;
 
-	EXCEPTION_HANDLER(result = GetImpObj()->GetName())
+    EXCEPTION_HANDLER(result = GetImpObj()->GetName())
 
-	return CHECK_STRING(result);
+    return CHECK_STRING(result);
 }
 
 System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::Name::set(System::String^ value)
 {
-	EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
+    EXCEPTION_HANDLER(GetImpObj()->SetName(StringToUni(value)))
+}
+
+System::Boolean NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::KeepLongTransaction::get()
+{
+    FdoBoolean result;
+
+    EXCEPTION_HANDLER(result = GetImpObj()->GetKeepLongTransaction())
+
+    return result;
+}
+
+System::Void NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::KeepLongTransaction::set(System::Boolean value)
+{
+    EXCEPTION_HANDLER(GetImpObj()->SetKeepLongTransaction(value))
 }
 
 NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator^ NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ICommitLongTransactionImp::Execute()
 {
-	FdoILongTransactionConflictDirectiveEnumerator* result;
+    FdoILongTransactionConflictDirectiveEnumerator* result;
 
-	EXCEPTION_HANDLER(result = GetImpObj()->Execute())
+    EXCEPTION_HANDLER(result = GetImpObj()->Execute())
 
-	return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator^>(ObjectFactory::CreateILongTransactionConflictDirectiveEnumerator(IntPtr(result), true));
+    return static_cast<NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION::ILongTransactionConflictDirectiveEnumerator^>(ObjectFactory::CreateILongTransactionConflictDirectiveEnumerator(IntPtr(result), true));
 }

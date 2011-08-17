@@ -70,21 +70,43 @@ public:
         System::Void set(System::String^ value);
     }
 
+    /// \brief
+    /// Indicates whether to keep the long transaction after it is committed.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is committed.
+    /// 
+    /// \brief
+    /// Sets whether to keep the long transaction after it is committed.
+    /// 
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the committed
+    /// long transaction.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    virtual property System::Boolean KeepLongTransaction
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
+
     /// Executes the commit long transaction command and returns an
     /// ILongTransactionConflictDirectiveEnumerator.
     /// If the returned enumerator's count is 0 then
     /// no conflicts were detected and the command was executed successfully.
     /// Otherwise conflicts were detected and the user must specify how to
     /// resolve them using the enumerator and call Execute again.
-	virtual ILongTransactionConflictDirectiveEnumerator^ Execute();
+    virtual ILongTransactionConflictDirectiveEnumerator^ Execute();
 
 internal:
-	ICommitLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
-	{
+    ICommitLongTransactionImp(System::IntPtr unmanaged, System::Boolean autoDelete) : NAMESPACE_OSGEO_FDO_COMMANDS::IFeatureCommandImp(unmanaged, autoDelete)
+    {
 
-	}
+    }
 
-	inline FdoICommitLongTransaction* GetImpObj();
+    inline FdoICommitLongTransaction* GetImpObj();
 public:
     virtual IntPtr GetDisposableObject() override;
 };
