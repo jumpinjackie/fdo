@@ -64,12 +64,34 @@ public:
     }
 
     /// \brief
+    /// Indicates whether to keep the long transaction after it is rollbacked.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is rollbacked.
+    /// 
+    /// \brief
+    /// Sets whether to keep the long transaction after it is rollbacked.
+    /// 
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the rollbacked
+    /// long transaction.
+    /// 
+    /// \return
+    /// Returns nothing.
+    /// 
+    property System::Boolean KeepLongTransaction
+    {
+        System::Boolean get();
+        System::Void set(System::Boolean value);
+    }
+
+    /// \brief
     /// Executes the RollbackLongTransaction command.
     /// 
     /// \return
     /// Returns nothing
     /// 
-	System::Void Execute();
+    System::Void Execute();
 };
 
 END_NAMESPACE_OSGEO_FDO_COMMANDS_LONGTRANSACTION

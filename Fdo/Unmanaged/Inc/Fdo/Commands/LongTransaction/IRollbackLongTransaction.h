@@ -67,6 +67,30 @@ public:
     FDO_API virtual void SetName(FdoString* value) = 0;
 
     /// \brief
+    /// Indicates whether to keep the long transaction after it is rollbacked.
+    /// Returns true if keeping the long transaction after it is rollbacked.
+    /// Returns false if removing the long transaction after it is rollbacked.
+    /// Default value for KeepLongTransaction is false.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is rollbacked.
+    /// 
+    FDO_API virtual FdoBoolean GetKeepLongTransaction () { return false; }
+
+    /// \brief
+    /// Sets whether to keep the long transaction after it is rollbacked.
+    /// Default value for KeepLongTransaction is false.
+    ///
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the rollbacked
+    /// long transaction
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    FDO_API virtual void SetKeepLongTransaction (FdoBoolean /*value*/) { }
+
+    /// \brief
     /// Gets a reference to the lock conflict reader.
     /// 
     /// \return
