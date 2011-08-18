@@ -550,11 +550,13 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                     // in case SQL was not changed use the old value
                     if (resultSQL2.size())
                         sqlToExecute = resultSQL2.c_str();
+
+                    mFdoConnection->StartStoredProcedure();
                 }
                 else
                     sqlToExecute = sqlToExecute2;
 
-                statement = m_DbiConnection->GetGdbiConnection()->Prepare(sqlToExecute);
+                statement = gdbiConn->Prepare(sqlToExecute);
                 
                 if (m_bindHelper == NULL)
                     m_bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
@@ -562,8 +564,10 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                 m_bindHelper->BindParameters(statement, &paramsUsed);
 
                 numberOfRows = statement->ExecuteNonQuery();
+                
                 if (pOutPar != NULL && m_bindHelper->HasOuParams())
                 {
+                    mFdoConnection->EndStoredProcedure();
                     std::vector<FdoParameterValue*> vParams;
                     for (size_t idx = 0; idx < paramsUsed.size(); idx++)
                     {
@@ -630,6 +634,8 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
     if( m_SqlString == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_41, "SQL string not initialized"));
 
+    GdbiConnection* gdbiConn = m_DbiConnection->GetGdbiConnection();
+
     GdbiQueryResult *query = NULL;
     FdoString* sqlToExecute = NULL;
     std::wstring resultSQL;
@@ -665,11 +671,13 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
                 // in case SQL was not changed use the old value
                 if (resultSQL2.size())
                     sqlToExecute = resultSQL2.c_str();
+
+                mFdoConnection->StartStoredProcedure();
             }
             else
                 sqlToExecute = sqlToExecute2;
 
-            statement = m_DbiConnection->GetGdbiConnection()->Prepare(sqlToExecute);
+            statement = gdbiConn->Prepare(sqlToExecute);
             
             if (m_bindHelper == NULL)
                 m_bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
@@ -681,6 +689,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
 
             if (m_bindHelper->HasOuParams())
             {
+                mFdoConnection->EndStoredProcedure();
                 std::vector<FdoParameterValue*> vParams;
                 for (size_t idx = 0; idx < paramsUsed.size(); idx++)
                 {
@@ -709,7 +718,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
         }
     }
     else
-        query = m_DbiConnection->GetGdbiConnection()->ExecuteQuery(m_SqlString);
+        query = gdbiConn->ExecuteQuery(m_SqlString);
 
     return new FdoRdbmsSQLDataReader(mFdoConnection , query );
 }

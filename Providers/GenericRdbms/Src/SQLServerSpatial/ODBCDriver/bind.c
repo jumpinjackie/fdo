@@ -100,6 +100,9 @@
 
 #define SQL_SS_LENGTH_UNLIMITED 0
 #include <limits.h>
+#define SQL_SS_VARIANT -150
+#define SQL_SS_UDT -151
+#define SQL_SS_XML -152
 
 int odbcdr_bind(
     odbcdr_context_def *context,
@@ -172,6 +175,9 @@ int odbcdr_bind(
             (sql_type != SQL_WLONGVARCHAR) &&
             (sql_type != SQL_BINARY) &&
             (sql_type != SQL_VARBINARY) &&
+            (sql_type != SQL_SS_UDT) &&
+            (sql_type != SQL_SS_VARIANT) &&
+            (sql_type != SQL_SS_XML) &&
             (sql_type != SQL_LONGVARBINARY))
 		)
 	{

@@ -19,6 +19,7 @@
 #include "Pch.h"
 #include "SqlServerConnectTests.h"
 #include "UnitTestUtil.h"
+#include "SqlServerConnectionUtil.h"
 #include "../../ODBCDriver/context.h"
 int odbcdr_rdbi_init( odbcdr_context_def **, rdbi_methods	methods );
 
@@ -41,7 +42,7 @@ int SqlServerConnectTests::do_rdbi_init (rdbi_context_def** rdbi_context)
 
 int SqlServerConnectTests::do_rdbi_connect (rdbi_context_def* rdbi_context, int& id)
 {
-    FdoStringP odbcConnectString = FdoStringP::Format(L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;Trusted_Connection=yes;SERVER=%ls", (FdoString*)(UnitTestUtil::GetEnviron("service")));
+    FdoStringP odbcConnectString = FdoStringP::Format(L"DRIVER={%ls};MARS_Connection=yes;Trusted_Connection=yes;SERVER=%ls", (FdoString*)SqlServerConnectionUtil::GetNativeClient(), (FdoString*)(UnitTestUtil::GetEnviron("service")));
     if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
     {
         return (rdbi_connectW (

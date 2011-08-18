@@ -2837,26 +2837,7 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     }
     AssignAliases();
 
-    const FdoSmLpDataPropertyDefinitionCollection *identProperties = clsDef->RefIdentityProperties();
-    std::vector< std::wstring > idtPropsAdded;
     sel_class_alias::iterator clsInfo = m_usedClasses.begin();
-    for( int i =0; identProperties!= NULL && i<identProperties->GetCount(); i++ )
-    {
-        const FdoSmLpDataPropertyDefinition* dataProp = identProperties->RefItem(i);
-        if (dataProp)
-        {
-            FdoStringP tableName = dbiConn->GetSchemaUtil()->GetDbObjectSqlName(clsInfo->first);
-            std::wstring pNameVal;
-            if (clsInfo->second.size() != 0)
-                pNameVal.append(clsInfo->second);
-            else
-                pNameVal.append((FdoString*)tableName);
-            pNameVal.append(L".", 1);
-            pNameVal.append((FdoString*)(dbiConn->GetSchemaUtil()->GetColumnSqlName(dataProp)));
-            idtPropsAdded.push_back(pNameVal);
-        }
-    }
-
     size_t cntSelLst = (m_props != NULL) ? m_props->GetCount() : 0;
     m_hasClaculations = false;
     for (size_t idx = 0; idx < cntSelLst; idx++)
@@ -2869,14 +2850,6 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
             pair_working_stack* itmIdfExp = push_stack();
             idf->Process(this);
             m_selectList.push_back(itmIdfExp->first);
-            for (size_t k = 0; k < idtPropsAdded.size(); k++)
-            {
-                if (itmIdfExp->first == idtPropsAdded.at(k))
-                {
-                    idtPropsAdded.erase(idtPropsAdded.begin()+k);
-                    break;
-                }
-            }
             pop_stack(); // itmIdfExp
         }
         else // we need to do it in a different way
@@ -2916,15 +2889,7 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         }
     }
     if (cntSelLst == 0)
-    {
         itmSelect->first.append(L" * ");
-        idtPropsAdded.clear();
-    }
-    for (size_t k = 0; k < idtPropsAdded.size(); k++)
-    {
-        itmSelect->first.append(idtPropsAdded.at(k));
-        itmSelect->first.append(L",", 1);
-    }
     itmSelect->first.resize(itmSelect->first.size()-1);
 
     itmSelect->first.append(L" FROM ", 6);

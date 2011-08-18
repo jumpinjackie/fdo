@@ -34,7 +34,9 @@
 #ifndef LLONG_MIN
 #   define LLONG_MIN    (-LLONG_MAX - 1LL)
 #endif
-
+#ifndef _WIN32
+#include <wctype.h>
+#endif
 
 // Arbitrary size which should be more than enough for the 
 // the ASCII or UNICODE representation of any numeric value.
@@ -113,17 +115,15 @@ void GdbiQueryResult::define_exec()
 
     while( m_pGdbiCommands->desc_slct( m_QueryId->GetQueryId(), idx++, name_length, colName, &colType, &colSize, &colNullAllowed) == RDBI_SUCCESS )
     {
-
-        FdoStringP  upperName = FdoStringP(colName).Upper();
-        const wchar_t* name = (const wchar_t*)upperName;
-
-		GdbiColumnInfoType*      colInfo = new GdbiColumnInfoType;
-		
+		GdbiColumnInfoType* colInfo = new GdbiColumnInfoType;
         mColList->push_back( colInfo );
 		
 		// Copy info
-		colInfo->name = new wchar_t[wcslen(name) + 1];
-		wcscpy(colInfo->name, name );
+        size_t sz = wcslen(colName);
+		colInfo->name = new wchar_t[sz + 1];
+        for (size_t i = 0; i < sz; i++)
+            colInfo->name[i] = towupper(colName[i]);
+        colInfo->name[sz] = L'\0';
 
 		colInfo->type = colType;
 		colInfo->size = colSize;
