@@ -48,13 +48,16 @@ int SqlServerStaticConnection::do_rdbi_connect (rdbi_context_def* rdbi_context, 
     FdoStringP connectString;
 
     if ( username.GetLength() > 0 ) 
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=%ls; UID=%ls; PWD=%ls", 
+        connectString = FdoStringP::Format(L"DRIVER={%ls};MARS_Connection=yes;SERVER=%ls; UID=%ls; PWD=%ls", 
+            (FdoString*)SqlServerConnectionUtil::GetNativeClient(),
             (FdoString*)pService,
             (FdoString*)username,
             (FdoString*)password
         );
     else
-        connectString = FdoStringP::Format(L"DRIVER={SQL Server Native Client 10.0};Trusted_Connection=yes;MARS_Connection=yes;SERVER=%ls", (FdoString*)pService);
+        connectString = FdoStringP::Format(L"DRIVER={%ls};Trusted_Connection=yes;MARS_Connection=yes;SERVER=%ls",
+        (FdoString*)SqlServerConnectionUtil::GetNativeClient(),
+        (FdoString*)pService);
 
     if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
     {
@@ -288,4 +291,35 @@ wchar_t SqlServerConnectionUtil::GetNlsChar( int index )
     }
 
     return ret;
+}
+
+FdoStringP SqlServerConnectionUtil::GetNativeClient()
+{
+    FdoStringP retVal;
+    wchar_t tmpBuff[3];
+    int clientNo = 10;
+    bool found = false;
+    while(clientNo < 15)
+    {
+        _itow(clientNo, tmpBuff, 10);
+        std::wstring lName(L"SQLNCLI");
+        lName.append(tmpBuff);
+        lName.append(L".DLL");
+        HMODULE hmod = ::LoadLibraryW(lName.c_str());
+        if (hmod != NULL)
+        {
+            ::FreeLibrary(hmod);
+            found = true;
+            break;
+        }
+        clientNo++;
+    }
+
+    if (!found)
+        throw FdoConnectionException::Create(L"Please install 'SQL Server Native Client 10.0' or upper to be able to use the provider");
+
+    retVal = L"SQL Server Native Client ";
+    retVal += tmpBuff;
+    retVal += L".0";
+    return retVal;
 }

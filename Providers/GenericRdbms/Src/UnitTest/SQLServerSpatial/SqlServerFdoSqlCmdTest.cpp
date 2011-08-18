@@ -752,3 +752,240 @@ void SqlServerFdoSqlCmdTest::TestInParamsStoreProcNoRet()
 		TestCommonFail (ex);
     }
 }
+
+void SqlServerFdoSqlCmdTest::TestInParamsStoreProcBigInt()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE MyRandProc @initval bigint = 0, @outval bigint OUT\nAS\nBEGIN\ndeclare @value bigint\nSET NOCOUNT ON;\n set @value = 100*rand()+@initval;  set @outval = 19999999980+@initval;\nreturn (@value);\nEND" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoInt64Value> initVal = FdoInt64Value::Create(300);
+        FdoPtr<FdoParameterValue> pInitVal = FdoParameterValue::Create(L"InitVal", initVal);
+        pInitVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pInitVal);
+        
+		FdoPtr<FdoInt64Value> outVal = FdoInt64Value::Create((FdoInt64)0);
+        FdoPtr<FdoParameterValue> pOutVal = FdoParameterValue::Create(L"OutVal", outVal);
+        pOutVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(pOutVal);
+
+        sqlCmd->SetSQLStatement( L"MyRandProc(:InitVal, :OutVal)" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+		printf("Test1 RandVal[%d] = %lld", randVal, outVal->GetInt64());
+        CPPUNIT_ASSERT( outVal->GetInt64() == 20000000280);
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE MyRandProc;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestInParamsStoreProcVariant()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP PROCEDURE TestOutVar;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        // SET NOCOUNT ON;
+        sqlCmd->SetSQLStatement( L"CREATE PROCEDURE TestOutVar @initval bigint = 0, @outval sql_variant OUT\n AS\n BEGIN \ndeclare @value bigint\n set @value = 100*rand()+@initval;\n set @outval = convert(nvarchar, 19999999980+@initval); \n return (@value);\n END" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoBLOBValue> outVal = FdoBLOBValue::Create();
+        FdoPtr<FdoParameterValue> pOutVal = FdoParameterValue::Create(L"varRet", outVal);
+        pOutVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(pOutVal);
+
+        sqlCmd->SetSQLStatement( L"TestOutVar(300, :varRet)" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+        if (outVal->IsNull())
+            throw FdoException::Create(L"Invalid return value!");
+
+        FdoPtr<FdoByteArray> arr = outVal->GetData();
+        std::wstring ret ((const wchar_t*)arr->GetData(), arr->GetCount()/sizeof(wchar_t));
+        printf("\nValue = %ls \n", ret.c_str());
+        CPPUNIT_ASSERT(ret == L"20000000280");
+        
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP PROCEDURE TestOutVar;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestNewSequence()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        sqlCmd->SetSQLStatement( L"SELECT convert(nvarchar, SERVERPROPERTY('productversion')) as av" );
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        FdoStringP var = L"0";
+        if (myReader->ReadNext())
+        {
+            if (!myReader->IsNull(0))
+            {
+                FdoStringP val = myReader->GetString(0);
+                var = val.Left(L".");
+            }
+        }
+        if (var.ToLong() < 11)
+        {
+            printf("\nTest can be run on a higher server version\n");
+            return;
+        }
+
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP SEQUENCE RangeSeq;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE SEQUENCE RangeSeq AS int START WITH 1 INCREMENT BY 1 MINVALUE 1 MAXVALUE 25 CYCLE CACHE 10;" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt32Value> idVal = FdoInt32Value::Create(0);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"RetVal", idVal);
+        pval->SetDirection(FdoParameterDirection_Output);
+        params->Add(pval);
+        
+        FdoPtr<FdoStringValue> sName = FdoStringValue::Create(L"RangeSeq");
+        FdoPtr<FdoParameterValue> psName = FdoParameterValue::Create(L"sequence_name", sName);
+        psName->SetDirection(FdoParameterDirection_Input);
+        params->Add(psName);
+        
+		FdoPtr<FdoInt64Value> rSize = FdoInt64Value::Create((FdoInt64)4);
+        FdoPtr<FdoParameterValue> prSize = FdoParameterValue::Create(L"range_size", rSize);
+        prSize->SetDirection(FdoParameterDirection_Input);
+        params->Add(prSize);
+
+        FdoPtr<FdoBLOBValue> outVal = FdoBLOBValue::Create();
+        FdoPtr<FdoParameterValue> pOutVal = FdoParameterValue::Create(L"range_first_value", outVal);
+        pOutVal->SetDirection(FdoParameterDirection_Output);
+        params->Add(pOutVal);
+
+        sqlCmd->SetSQLStatement( L"sp_sequence_get_range(:sequence_name, :range_size, :range_first_value)" );
+        int randVal = sqlCmd->ExecuteNonQuery();
+        if (outVal->IsNull())
+            throw FdoException::Create(L"Invalid sequence value!");
+
+        FdoPtr<FdoByteArray> arr = outVal->GetData();
+        FdoInt64 vv = 0;
+        if (arr->GetCount() == 4)
+            vv = *(FdoInt32*)arr->GetData();
+        else
+            vv = *(FdoInt64*)arr->GetData();
+        
+        printf("\nSequence = %lld\n", vv);
+        CPPUNIT_ASSERT(vv == 1);
+
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP SEQUENCE RangeSeq;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
+
+void SqlServerFdoSqlCmdTest::TestBigInt()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP TABLE testTable;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+        
+        sqlCmd->SetSQLStatement( L"CREATE TABLE testTable ([ID] [int] IDENTITY(1,1) NOT NULL, [G] [geometry] NULL, [vBigInt] bigint NULL)" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"insert into testTable (vBigInt) values (:bval);" );
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+
+        FdoPtr<FdoInt64Value> bVal = FdoInt64Value::Create(19999999980);
+        FdoPtr<FdoParameterValue> pParVal = FdoParameterValue::Create(L"bval", bVal);
+        pParVal->SetDirection(FdoParameterDirection_Input);
+        params->Add(pParVal);
+
+        int val = sqlCmd->ExecuteNonQuery();
+
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"select * from testTable;" );
+        FdoPtr<FdoISQLDataReader> myReader = sqlCmd->ExecuteReader();
+        int colCnt = myReader->GetColumnCount();
+        int gIdx = myReader->GetColumnIndex(L"vBigInt");
+        FdoDataType dtype = myReader->GetColumnType(gIdx);
+        CPPUNIT_ASSERT(dtype == FdoDataType_Int64);
+
+        int cnt = 0;
+        while(myReader->ReadNext())
+        {
+            CPPUNIT_ASSERT(!myReader->IsNull(gIdx));
+            CPPUNIT_ASSERT(myReader->GetInt64(gIdx) == 19999999980);
+            cnt++;
+        }
+        myReader->Close();
+
+        CPPUNIT_ASSERT(cnt == 1);
+
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP TABLE testTable;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}

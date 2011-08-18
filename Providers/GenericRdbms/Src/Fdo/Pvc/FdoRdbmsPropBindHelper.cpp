@@ -17,7 +17,14 @@
  */
 #include "stdafx.h"
 #include "Fdo/Pvc/FdoRdbmsPropBindHelper.h"
+
+#ifndef _WIN32
+#define min(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
 #define _SQL_PARAM_INPUT 1
+#define _SQL_MAX_VAR_LEN_BIND 8000
+#define _SQL_MAX_TXT_LEN_BIND 5000
 
 class FdoRdbmsPvdBindDef
 {
@@ -156,7 +163,15 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 case FdoDataType_BLOB:
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
-                        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+                        mHasOutParams = true;
+				        bind->valueNeedsFree = true;
+                        // this is used only when we call stored procedures
+                        // I could not find a way to get/rebind out blob size values
+                        // for now we just use a fixed value
+                        bind->value.strvalue = new char[_SQL_MAX_VAR_LEN_BIND];
+                        *((wchar_t*)bind->value.strvalue) = '\0';
+                        bind->len = _SQL_MAX_VAR_LEN_BIND;
+                        statement->Bind((int)(idx+1), RDBI_BLOB_ULEN, bind->len, (char *)bind->value.strvalue, bind->null_ind, paramOutType);
                     }
                     else
                     {
@@ -350,9 +365,12 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     {
                         mHasOutParams = true;
 				        bind->valueNeedsFree = true;
-                        bind->value.strvalue = new wchar_t[5000];
+                        // this is used only when we call stored procedures
+                        // I could not find a way to get/rebind out blob size values
+                        // for now we just use a fixed value
+                        bind->value.strvalue = new wchar_t[_SQL_MAX_TXT_LEN_BIND];
                         *((wchar_t*)bind->value.strvalue) = '\0';
-                        bind->len = 5000;
+                        bind->len = _SQL_MAX_TXT_LEN_BIND*sizeof(wchar_t);
                         statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
                     }
                     else
@@ -703,7 +721,14 @@ void FdoRdbmsPropBindHelper::BindBack(size_t idx, FdoLiteralValue* pVal)
             {
             case FdoDataType_BLOB:
                 {
-                    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+                    FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
+                    if (cmds->is_null(bind->null_ind, 0))
+                        v->SetNull();
+                    else
+                    {
+                        FdoPtr<FdoByteArray> arr = FdoByteArray::Create((FdoByte*)bind->value.strvalue, min(_SQL_MAX_VAR_LEN_BIND, *(int*)bind->null_ind));
+                        v->SetData(arr);
+                    }
                 }
                 break;
             case FdoDataType_DateTime:

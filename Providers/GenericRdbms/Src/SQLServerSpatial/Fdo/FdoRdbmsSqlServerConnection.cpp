@@ -523,13 +523,38 @@ FdoStringP FdoRdbmsSqlServerConnection::GenConnectionStringParm( FdoStringP conn
         
         // Supported parameters identify datastore, userid and password.
 		// We'll generate an odbc connection string in this format:
-		//  "DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=seconds;UID=username;PWD=passwd;" 
+		//  "DRIVER={SQL Server Native Client xx.0};MARS_Connection=yes;SERVER=seconds;UID=username;PWD=passwd;" 
 		// If the UID and PWD parameters are not specified, the trusted connection 
 		// (windows authentication) is assumed.
         FdoStringP dataSource = dict->GetProperty(FDO_RDBMS_CONNECTION_SERVICE);
         if (dataSource != NULL && dataSource.GetLength() > 0)
         {
-            newCs = L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=";
+            // let's detect the client!
+            wchar_t tmpBuff[3];
+            int clientNo = 10;
+            bool found = false;
+            while(clientNo < 15)
+            {
+                _itow(clientNo, tmpBuff, 10);
+                std::wstring lName(L"SQLNCLI");
+                lName.append(tmpBuff);
+                lName.append(L".DLL");
+                HMODULE hmod = ::LoadLibraryW(lName.c_str());
+                if (hmod != NULL)
+                {
+                    ::FreeLibrary(hmod);
+                    found = true;
+                    break;
+                }
+                clientNo++;
+            }
+
+            if (!found)
+                throw FdoConnectionException::Create(L"Please install 'SQL Server Native Client 10.0' or upper to be able to use the provider");
+
+            newCs = L"DRIVER={SQL Server Native Client ";
+            newCs += tmpBuff;
+            newCs += L".0};MARS_Connection=yes;SERVER=";
             newCs += dataSource;
 			FdoStringP user = dict->GetProperty(FDO_RDBMS_CONNECTION_USERNAME);
 			if (user.GetLength() > 0)
@@ -727,4 +752,19 @@ FdoRdbmsSqlBuilder* FdoRdbmsSqlServerConnection::GetSqlBuilder()
     // relax this since we check if we use association props
     // and we avoid using this builder.
     return new FdoRdbmsSqlServerSqlBuilder (this);
+}
+// mixing SQL_CURSOR_STATIC with 'SET NOCOUNT OFF' will make all calls to store procedure 
+// to retun null results this is mainly because with results from a store procedure 
+// we can move only FORWARD! On SQL_CURSOR_STATIC we can re-bind and move to a 
+// certain row, however that's not valid for store procedures
+void FdoRdbmsSqlServerConnection::StartStoredProcedure()
+{
+    GdbiConnection* gdbiConn = GetDbiConnection()->GetGdbiConnection();
+    gdbiConn->ExecuteNonQuery(L"SET NOCOUNT ON", true);
+}
+
+void FdoRdbmsSqlServerConnection::EndStoredProcedure()
+{
+    GdbiConnection* gdbiConn = GetDbiConnection()->GetGdbiConnection();
+    gdbiConn->ExecuteNonQuery(L"SET NOCOUNT OFF", true);
 }

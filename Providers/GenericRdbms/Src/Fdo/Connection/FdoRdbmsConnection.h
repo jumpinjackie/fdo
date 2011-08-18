@@ -316,6 +316,10 @@ public:
     virtual void Flush() {}
 
     virtual FdoInt32 ExecuteDdlNonQuery(FdoString* sql);
+    
+    // methods needed by SQL Server to be able to get stored procedure results
+    virtual void StartStoredProcedure() {}
+    virtual void EndStoredProcedure() {}
 
     virtual bool GetEnforceClearSchAtFlush() {return mEnforceClearSchAtFlush;}
     virtual void SetEnforceClearSchAtFlush(bool value) {mEnforceClearSchAtFlush = value;}

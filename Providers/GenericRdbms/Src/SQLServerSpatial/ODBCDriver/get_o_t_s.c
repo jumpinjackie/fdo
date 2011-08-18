@@ -108,10 +108,11 @@ void odbcdr_get_o_t_s(
         case RDBI_STRING_ULEN:
         case RDBI_WSTRING_ULEN:
             *odbcdr_datatype = SQL_C_BINARY; 
-            *odbcdr_size    = sizeof(long);
+            *odbcdr_size    = sizeof(void*);
             break;
 		case RDBI_LONGLONG:
-			*odbcdr_datatype = SQL_BIGINT;
+			*odbcdr_datatype = SQL_C_SBIGINT;
+			*odbcdr_size    = sizeof(double); // __int64
 			break;
 		default:
 			*odbcdr_datatype = SQL_C_CHAR;

@@ -275,23 +275,8 @@ int local_odbcdr_desc_slct(
             }
 			break;
         case SQL_BIGINT:
-            // When attempting to bind a int64 value using "SQL_BIGINT" as the
-            // ODBC type, the function "SQLBindParameter" will issue an error
-            // ("Program Type out of range"). To bind values of such a type,
-            // it is necessary to use a string.
-            // On the other side, the functions "SQLDescribeCol" and
-            // "SQLDescribeColW" both return the ODBC data type "SQL_BIGINT"
-            // the column is of type "BIGINT". To have a consistent way of
-            // treating the int64 cases, the ODBC type "SQL_BIGINT" is mapped
-            // to "RDBI_STRING" rather than "RDBI_LONGLONG".
-            // The question remains why the binding of an int64 value fails in
-            // the first place. One reason could be that the development en-
-            // vironment is not a 64bit one. There are also hints on the web
-            // that indicate issues for cases like this and use strings as a
-            // work-around. If a solution can be identified this code can be
-            // modified 
-			*rdbi_type	= RDBI_STRING;
-			*binary_size = (int) odbc_precision+1;
+			*rdbi_type	= RDBI_LONGLONG;
+			*binary_size = sizeof(double); // __int64
             break;
         case SQL_SS_UDT: // CLR UDT geometry/geography
 			*rdbi_type = RDBI_GEOMETRY;

@@ -36,6 +36,10 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     CPPUNIT_TEST( TestBindBigBlob );
     CPPUNIT_TEST( TestGetMaxLenTexts );
     CPPUNIT_TEST( TestInParamsStoreProcNoRet );
+    CPPUNIT_TEST( TestInParamsStoreProcBigInt );
+    CPPUNIT_TEST( TestInParamsStoreProcVariant );
+    CPPUNIT_TEST( TestNewSequence );
+    CPPUNIT_TEST( TestBigInt );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -53,6 +57,10 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     void TestBindNullBlob();
     void TestBindNotNullBlob();
     void TestBindBigBlob();
+	void TestInParamsStoreProcBigInt();
+    void TestInParamsStoreProcVariant();
+    void TestNewSequence();
+    void TestBigInt();
 
 	wchar_t *get_datetime_type() 
     { 

@@ -426,8 +426,7 @@ int	do_connect(
                 if (context->odbcdr_UseUnicode)
                 {
 			        rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-                    odbcdr_swprintf(sqlval.wString, 50, L"SET NOCOUNT OFF");
-                    rc = SQLExecDirectW(hStmt5, (SQLWCHAR*)sqlval.wString, SQL_NTS);
+                    rc = SQLExecDirectW(hStmt5, (SQLWCHAR*)L"SET NOCOUNT OFF", SQL_NTS);
 
 			        rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
 
@@ -438,9 +437,6 @@ int	do_connect(
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
-                    // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
-                    //if ( rc == SQL_ERROR )
-                    //    DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Operate in syncronous mode
 		            rc = SQLSetConnectAttrW(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
@@ -456,8 +452,7 @@ int	do_connect(
                 else
                 {
 			        rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-                    sprintf(sqlval.cString, "SET NOCOUNT OFF");
-                    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sqlval.ccString, SQL_NTS);
+                    rc = SQLExecDirect(hStmt5, (SQLCHAR*)"SET NOCOUNT OFF", SQL_NTS);
 
 			        rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
 
@@ -468,9 +463,6 @@ int	do_connect(
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_STATIC, SQL_IS_INTEGER); 
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_CONCURRENCY, (SQLPOINTER)SQL_CONCUR_READ_ONLY, SQL_IS_INTEGER); 
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ROW_ARRAY_SIZE, (SQLPOINTER)1, SQL_IS_INTEGER); 
-                    // TODO: investigate "[Microsoft][ODBC Driver Manager] Option type out of range"
-                    //if ( rc == SQL_ERROR )
-                    //    DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
 		            // Operate in syncronous mode
 		            rc = SQLSetConnectAttr(hDbc, SQL_ATTR_ASYNC_ENABLE, SQL_ASYNC_ENABLE_OFF, SQL_IS_INTEGER);
@@ -482,23 +474,6 @@ int	do_connect(
                     if ( rc == SQL_ERROR )
                         DumpError2(context, SQL_HANDLE_DBC, hDbc);
 
-                }
-            }
-            else if (ODBCDriverType_MySQL == context->odbcdr_conns[connect_id]->driver_type)
-            {
-                if (context->odbcdr_UseUnicode)
-                {
-                    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-                    odbcdr_swprintf(sqlval.wString, 50, L"set sql_mode='ANSI_QUOTES'");
-                    rc = SQLExecDirectW(hStmt5, (SQLWCHAR*)sqlval.cwString, SQL_NTS);
-                    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
-                }
-                else
-                {
-                    rc = SQLAllocHandle(SQL_HANDLE_STMT,	hDbc,&hStmt5);
-                    sprintf(sqlval.cString, "set sql_mode='ANSI_QUOTES'");
-                    rc = SQLExecDirect(hStmt5, (SQLCHAR*)sqlval.ccString, SQL_NTS);
-                    rc = SQLFreeHandle(SQL_HANDLE_STMT, hStmt5);
                 }
             }
         }
@@ -514,6 +489,11 @@ alter_session()
 	// alter session not implemented
 	return RDBI_SUCCESS;
 }
+
+#ifndef _MSC_VER
+#include<unistd.h>
+  #define _strnicmp strncasecmp
+#endif
 
 static int
 get_dbversion(
@@ -534,71 +514,20 @@ get_drivertype(
 
     SQLCHAR    szDriverName[128];
     SQLRETURN ret = SQL_SUCCESS;
-//SQLUINTEGER info = 0;
-//ret = SQLGetInfo(connData->hDbc, SQL_GETDATA_EXTENSIONS, (SQLPOINTER)&info, 0, NULL);
-
-
 
     *driver_type = ODBCDriverType_Undetermined;
 
     ret = SQLGetInfo(connData->hDbc, SQL_DRIVER_NAME, szDriverName, sizeof(szDriverName), NULL);
-    if (ret != SQL_SUCCESS)
-        goto the_exit;
-
-    if ( (0==_stricmp((const char *) szDriverName, ODBCDR_DRIVER_ORACLE_DRIVERNAME_WINDOWS_MB))
-      || (0==_strnicmp((const char*) szDriverName, ODBCDR_DRIVER_ORACLE_DRIVERNAME_LINUX_MB, strlen(ODBCDR_DRIVER_ORACLE_DRIVERNAME_LINUX_MB))) )
+    if (ret == SQL_SUCCESS)
     {
-        *driver_type = ODBCDriverType_OracleNative;
-    }
-    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB) ||
-        0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_10_MB) ||
-        0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_11_MB))
-    {
-        *driver_type = ODBCDriverType_SQLServer;
-    }
-    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SYBASE_DRIVERNAME_MB))
-    {
-        *driver_type = ODBCDriverType_Sybase;
-    }
-    else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_ACCESS_DRIVERNAME_MB))
-    {
-        *driver_type = ODBCDriverType_Access;
-    }
-    // NOTE: the MySQL ODBC reported driver names are actually *reversed* on Windows and Linux,
-    //       i.e. On Windows the reported driver name is "libmyodbc3.so" and on Linux the reported driver name is "myodbc3.dll"
-    else if ((0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_LINUX_MB))
-	     || (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_MYSQL_DRIVERNAME_WINDOWS_MB)))
-
-    {
-        *driver_type = ODBCDriverType_MySQL;
-    }
-    else
-    {
-        SQLCHAR    szDbmsName[128];
-        char *ptr= (char *) szDbmsName;
-
-        ret = SQLGetInfo(connData->hDbc, SQL_DBMS_NAME, szDbmsName, sizeof(szDbmsName), NULL);
-        if (ret != SQL_SUCCESS)
-            goto the_exit;
-        while (ptr[0] != '\0')
+        // provider supports ONLY SQL Server drivers!
+        if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB) ||
+            0==_strnicmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_X_MB, 7))
         {
-            *ptr = toupper(*ptr);
-            ptr++;
-        }
-
-        if (strstr((const char *) szDbmsName, "ORACLE") != NULL)
-        {
-            *driver_type = ODBCDriverType_OracleNonNative;
-        }
-        else
-        {
-            *driver_type = ODBCDriverType_Other;
+            *driver_type = ODBCDriverType_SQLServer;
+            rdbi_status = RDBI_SUCCESS;
         }
     }
-
-    rdbi_status = RDBI_SUCCESS;
-
-the_exit:
     return rdbi_status;
 }
 

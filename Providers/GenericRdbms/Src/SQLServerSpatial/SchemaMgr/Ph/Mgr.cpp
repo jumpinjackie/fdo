@@ -57,17 +57,14 @@ FdoStringP FdoSmPhSqsMgr::GetDbVersion()
 		    autoCmtChanged = true;
 	    }
 
-        mDbVersion = L"Unknown - 0.0";
+        mDbVersion = L"0.0";
         try {
             FdoSmPhRowP row = new FdoSmPhRow( FDO_SAFE_ADDREF(this), L"sp_ver" );
-            FdoSmPhFieldP field = new FdoSmPhField( row, L"attribute_value", row->CreateColumnChar(L"attribute_value", false, 50) );
-            FdoPtr<FdoSmPhRdQueryReader> rdr = CreateQueryReader( row, L"exec sp_server_info @attribute_id=2" );
+            FdoSmPhFieldP field = new FdoSmPhField( row, L"av", row->CreateColumnChar(L"av", false, 50) );
+            FdoPtr<FdoSmPhRdQueryReader> rdr = CreateQueryReader( row, L"SELECT convert(nvarchar, SERVERPROPERTY('productversion')) as av" );
 
-            // TODO: ReadNext() generates a "function sequence error" on Sql Server 2000. Need to 
-            // investigate why this happens. It might be due to another select being open.
-            // When this happens, version 0.0 (unknown) is returned. 
             if ( rdr->ReadNext() ) {
-                mDbVersion = rdr->GetString( L"", L"attribute_value" );
+                mDbVersion = rdr->GetString( L"", L"av" );
             }
         }
         catch ( FdoException* ex ) {
@@ -80,10 +77,8 @@ FdoStringP FdoSmPhSqsMgr::GetDbVersion()
 		    gdbiCommands->autocommit_on();
 
     }
- 
-    FdoStringP retVersion = mDbVersion.Right( L"- " ).Left( L" " );
 
-    return retVersion;
+    return mDbVersion;
 }
 
 FdoSmPhMgr::CoordinateSystemMatchLevel FdoSmPhSqsMgr::GetCoordinateSystemMatchLevel()

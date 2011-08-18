@@ -66,9 +66,9 @@ FdoStringP FdoSmPhRdGrdFieldArray::GetString()
         case RDBI_STRING:
 */
 
-		const wchar_t* value = mResults->GetString((wchar_t*)(const wchar_t*)FdoStringP( mpField->GetName() ),&mNull,
+		const wchar_t* value = mResults->GetString(mpField->GetName(),&mNull,
                 &ccode);
-        return (mNull != 0) ? FdoStringP(L"") : FdoStringP( value );
+        return (mNull != 0) ? L"" : value;
 //    }
 
     throw FdoSchemaException::Create(

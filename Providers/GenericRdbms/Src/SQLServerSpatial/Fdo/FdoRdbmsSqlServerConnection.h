@@ -151,6 +151,9 @@ public:
     
     virtual FdoInt32 ExecuteDdlNonQuery(FdoString* sql);
 
+    virtual void StartStoredProcedure();
+    virtual void EndStoredProcedure();
+
     virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
 };
 

@@ -19,6 +19,7 @@
 #include "Pch.h"
 #include "SqlServerGeometryTests.h"
 #include "UnitTestUtil.h"
+#include "SqlServerConnectionUtil.h"
 #include "../../ODBCDriver/context.h"
 int odbcdr_rdbi_init( odbcdr_context_def **, rdbi_methods	methods );
 
@@ -42,7 +43,8 @@ int SqlServerGeometryTests::do_rdbi_init ()
 int SqlServerGeometryTests::do_rdbi_connect (const char* dataStoreName, const char* userName, const char* userPassword)
 {
     FdoStringP odbcConnectString = FdoStringP::Format(
-        L"DRIVER={SQL Server Native Client 10.0};MARS_Connection=yes;SERVER=%ls; UID=%hs; PWD=%hs", 
+        L"DRIVER={%ls};MARS_Connection=yes;SERVER=%ls; UID=%hs; PWD=%hs", 
+        (FdoString*)SqlServerConnectionUtil::GetNativeClient(),
         (FdoString*)(UnitTestUtil::GetEnviron("service")), 
         userName, 
         userPassword
