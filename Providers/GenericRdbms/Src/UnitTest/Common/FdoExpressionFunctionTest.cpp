@@ -16977,6 +16977,11 @@ void FdoExpressionFunctionTest::CheckReaderDt (
           id_prop_val = data_reader->GetInt32(L"id");
       cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
 
+      if (cmp_id_val.year >= 0 && cmp_id_val.year < 50)
+          cmp_id_val.year += 2000;
+      else if (cmp_id_val.year > 50 && cmp_id_val.year < 100)
+          cmp_id_val.year += 1900;
+
       if (!is_extract_request)
           is_valid_result =
                     ((cmp_id_val.year  == expected_cmp_id_value.year ) &&
@@ -17075,7 +17080,12 @@ void FdoExpressionFunctionTest::CheckReaderDt (
 
       if (include_id_check)
           id_prop_val = data_reader->GetInt32(L"id");
-      cmp_id_val  = data_reader->GetDateTime(L"cmp_id");
+      cmp_id_val = data_reader->GetDateTime(L"cmp_id");
+
+      if (cmp_id_val.year >= 0 && cmp_id_val.year < 50)
+          cmp_id_val.year += 2000;
+      else if (cmp_id_val.year > 50 && cmp_id_val.year < 100)
+          cmp_id_val.year += 1900;
 
       if (!is_extract_request)
           is_valid_result =
