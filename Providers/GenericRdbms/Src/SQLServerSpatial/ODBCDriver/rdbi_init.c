@@ -150,7 +150,7 @@ odbcdr_rdbi_init(
 
         methods->capabilities.supports_sequence = 0;
         methods->capabilities.supports_autoincrement = 1;
-        methods->capabilities.supports_int64_binding = 0;
+        methods->capabilities.supports_int64_binding = 1;
 #ifdef _WIN32
         context->odbcdr_UseUnicode = true;
 		methods->capabilities.supports_unicode = 1;
