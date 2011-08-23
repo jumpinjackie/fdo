@@ -20,8 +20,8 @@
 #include <Sm/Error.h>
 #include <Sm/Ph/Mt/PropertyReader.h>
 
-FdoSmPhMtPropertyReader::FdoSmPhMtPropertyReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr ) : 
-    FdoSmPhReader( MakeReader(froms, schemaName, mgr) )
+FdoSmPhMtPropertyReader::FdoSmPhMtPropertyReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoStringCollection* classNames) : 
+    FdoSmPhReader( MakeReader(froms, schemaName, mgr, classNames) )
 {
 }
 
@@ -29,7 +29,7 @@ FdoSmPhMtPropertyReader::~FdoSmPhMtPropertyReader(void)
 {
 }
 
-FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr )
+FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoStringCollection* classNames)
 {
     FdoSmPhRowP from = froms->GetItem(0);
     FdoSmPhRowP fromB = froms->GetItem(1);
@@ -73,18 +73,41 @@ FdoSmPhReaderP FdoSmPhMtPropertyReader::MakeReader( FdoSmPhRowsP froms, FdoStrin
             owner->GetName()
         );
     }
-
-    // Generate the where clause
-    FdoStringP where = FdoStringP::Format( 
-        L"where f_attributedefinition.classid = f_classdefinition.classid and schemaname = %ls %ls order by %ls, %ls", 
-    	(FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
-        (FdoString*) classidRow,
-        (FdoString*) mgr->FormatOrderCol(L"classname", FdoSmPhColType_String),
-        (FdoString*) mgr->FormatOrderCol(L"attributename", FdoSmPhColType_String)
-    );
+    FdoStringP sWhere;
+    int cntCls = (classNames == NULL) ? 0 : classNames->GetCount();
+    if (cntCls == 0)
+    {
+        // Generate the where clause
+        sWhere = FdoStringP::Format( 
+            L"where f_attributedefinition.classid = f_classdefinition.classid and schemaname = %ls %ls order by %ls, %ls", 
+    	    (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
+            (FdoString*) classidRow,
+            (FdoString*) mgr->FormatOrderCol(L"classname", FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"attributename", FdoSmPhColType_String)
+        );
+    }
+    else
+    {
+        FdoStringP clsInNames;
+        for (int i = 0; i < cntCls; i++)
+        {
+            if (i)
+                clsInNames += L",";
+            clsInNames += mgr->FormatSQLVal(classNames->GetString(i), FdoSmPhColType_String);
+        }
+        // Generate the where clause
+        sWhere = FdoStringP::Format( 
+            L"where f_attributedefinition.classid = f_classdefinition.classid and classname IN(%ls) and schemaname = %ls %ls order by %ls, %ls", 
+            (FdoString*) clsInNames,
+	        (FdoString*) mgr->FormatSQLVal(schemaName, FdoSmPhColType_String),
+            (FdoString*) classidRow,
+            (FdoString*) mgr->FormatOrderCol(L"classname", FdoSmPhColType_String),
+            (FdoString*) mgr->FormatOrderCol(L"attributename", FdoSmPhColType_String)
+        );
+    }
 
     // Create a query reader to wrap around
-    FdoSmPhRdQueryReaderP pSubReader = mgr->CreateQueryReader( froms, where );
+    FdoSmPhRdQueryReaderP pSubReader = mgr->CreateQueryReader( froms, sWhere );
 
     return FDO_SAFE_ADDREF( (FdoSmPhRdQueryReader*) pSubReader );
 }

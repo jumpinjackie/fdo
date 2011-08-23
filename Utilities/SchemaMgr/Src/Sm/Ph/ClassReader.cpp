@@ -153,9 +153,12 @@ FdoSmPhClassPropertyReaderP FdoSmPhClassReader::CreateClassPropertyReader()
     FdoStringP className = GetName();
 
     if (owner && owner->GetHasAttrMetaSchema() ) {
+        // for noew we will ask only for one class.
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(className);        
         // Read properties from metaschema
 	    if ( !mPropReader ) 
-		    mPropReader = new FdoSmPhPropertyReader(mSchemaName, GetManager());
+		    mPropReader = new FdoSmPhPropertyReader(mSchemaName, GetManager(), classNames);
     
         propReader = mPropReader;
     }

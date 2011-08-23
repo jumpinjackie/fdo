@@ -41,7 +41,7 @@ public:
     ///      froms: defines the fields to read.
     /// 	schemaName: get the properties for this feature schema.
     /// 	mgr: Physical Schema Manager.
-	FdoSmPhMtPropertyReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr );
+	FdoSmPhMtPropertyReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoStringCollection* classNames = NULL);
 
     /// Deactivate the query
 	~FdoSmPhMtPropertyReader(void);
@@ -52,7 +52,7 @@ protected:
 
 private:
     /// Helper for creating inner query reader
-    FdoSmPhReaderP MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr );
+    FdoSmPhReaderP MakeReader( FdoSmPhRowsP froms, FdoStringP schemaName, FdoSmPhMgrP mgr, FdoStringCollection* classNames = NULL);
 };
 
 typedef FdoPtr<FdoSmPhMtPropertyReader> FdoSmPhMtPropertyReaderP;
