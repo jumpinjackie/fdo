@@ -149,7 +149,10 @@ class FdoRdbmsSqlServerSqlBuilder : public FdoRdbmsSqlBuilder
       }
     };
 
-    typedef std::map<FdoString*, int, ci_less> function_map;
+    typedef std::map< FdoString*, int, ci_less > function_map;
+
+    typedef std::map< std::wstring, FdoDataType > signature_map;
+    typedef std::map< FdoString*, signature_map* > function_sig_map;
 
     enum SqlComputedEvalType
     {
@@ -249,6 +252,7 @@ public:
         m_hasClaculations = false;
         m_aliasStartChar = L'A';
         m_aliasStartIdxNo = 0;
+        m_calcTypes.clear();
     }
     void SetComputedEvalType(SqlComputedEvalType type)
     {
@@ -256,6 +260,7 @@ public:
     }
     void SetParameterValues (FdoParameterValueCollection* params) { mParams = FDO_SAFE_ADDREF(params); }
     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* GetUsedParameterValues() { return &mUsedParameterValues; }
+    FdoDataType GetCalculationType(FdoString* name);
 
 private:
     // avoid calling HandleExpr(exp); after a call to push_stack()
@@ -281,6 +286,46 @@ private:
     {
         return m_builderStack.at(m_posStack);
     }
+
+    inline FdoDataType ReduceDataType(FdoDataType type)
+    {
+        FdoDataType retVal = FdoDataType_Double;
+        switch (type)
+        {
+        case FdoDataType_BLOB:
+        case FdoDataType_CLOB:
+            retVal = FdoDataType_BLOB;
+            break;
+        case FdoDataType_String:
+            retVal = FdoDataType_String;
+            break;
+        case FdoDataType_DateTime:
+            retVal = FdoDataType_DateTime;
+            break;
+        }
+        return retVal;
+    }
+
+    inline wchar_t ReduceDataTypeToChar(FdoDataType type)
+    {
+        wchar_t retVal = L'R';
+        switch (type)
+        {
+        case FdoDataType_BLOB:
+        case FdoDataType_CLOB:
+            retVal = L'B'; // we use this for geometries also
+            break;
+        case FdoDataType_String:
+            retVal = L'S';
+            break;
+        case FdoDataType_DateTime:
+            retVal = L'D';
+            break;
+        }
+        return retVal;
+    }
+
+    FdoDataType GetApproxExpressionDataType(FdoExpression* exp);
 
     void ExpandCalculations();
     void AssignAliases();
@@ -348,7 +393,9 @@ private:
 protected:
     exp_working_stack m_builderStack;
     FdoPtr<FdoIdentifierCollection> m_props;
+    FdoPtr<FdoFunctionDefinitionCollection> m_supp_functions;
     function_map m_functions;
+    function_sig_map m_fctSig;
     wchar_t m_useConv[CONV_MEM_BLOCK_SIZE];
     FdoRdbmsSqlServerConnection* m_fdoConn;
     size_t m_posStack;
@@ -370,6 +417,8 @@ protected:
     wchar_t m_aliasStartChar;
     int m_aliasStartIdxNo;
     FdoPtr<FdoIdentifier> m_mainClass;
+    // cached in case are needed
+    std::vector<FdoDataType> m_calcTypes;
 };
 
 #endif

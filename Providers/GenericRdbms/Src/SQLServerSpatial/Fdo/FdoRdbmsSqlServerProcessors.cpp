@@ -117,6 +117,10 @@ FdoRdbmsSqlServerSqlBuilder::~FdoRdbmsSqlServerSqlBuilder()
     {
         delete *it;
     }
+    for (function_sig_map::iterator it = m_fctSig.begin(); it != m_fctSig.end(); it++)
+    {
+        delete it->second;
+    }    
 }
 
 // this will generate: A-Z, A1-Z1, ...
@@ -452,17 +456,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessToStringFunction(FdoFunction& expr)
     }
     else
     {
-        FdoPropertyType propType = FdoPropertyType_DataProperty;
-        FdoDataType dataType = FdoDataType_Int32;
-        FdoPtr<FdoClassDefinition> clsDef = m_fdoConn->GetClassDefinition(m_mainClass->GetText());
-        FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
-        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-        try
-        {
-            FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp0, propType, dataType);
-        }
-        catch(FdoExpression* ex) { ex->Release(); }
-
+        FdoDataType dataType = GetApproxExpressionDataType(exp0);
         if (dataType == FdoDataType_DateTime)
         {
             FdoString* sql = NULL;
@@ -948,17 +942,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractFunction(FdoFunction& expr)
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
 
     bool processed = false;
-    FdoPropertyType propType = FdoPropertyType_DataProperty;
-    FdoDataType dataType = FdoDataType_Int32;
-    FdoPtr<FdoClassDefinition> clsDef = m_fdoConn->GetClassDefinition(m_mainClass->GetText());
-    FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
-    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-    try
-    {
-        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
-    }
-    catch(FdoExpression* ex) { ex->Release(); }
-
+    FdoDataType dataType = GetApproxExpressionDataType(exp1);
     if (dataType != FdoDataType_DateTime)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACT));
 
@@ -1099,17 +1083,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractToIntFunction(FdoFunction& expr)
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
 
     bool processed = false;
-    FdoPropertyType propType = FdoPropertyType_DataProperty;
-    FdoDataType dataType = FdoDataType_Int32;
-    FdoPtr<FdoClassDefinition> clsDef = m_fdoConn->GetClassDefinition(m_mainClass->GetText());
-    FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
-    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-    try
-    {
-        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
-    }
-    catch(FdoExpression* ex) { ex->Release(); }
-
+    FdoDataType dataType = GetApproxExpressionDataType(exp1);
     if (dataType != FdoDataType_DateTime)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACTTOINT));
 
@@ -1221,17 +1195,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessExtractToDblFunction(FdoFunction& expr)
     FdoPtr<FdoExpression> exp1 = exprCol->GetItem(1);
 
     bool processed = false;
-    FdoPropertyType propType = FdoPropertyType_DataProperty;
-    FdoDataType dataType = FdoDataType_Int32;
-    FdoPtr<FdoClassDefinition> clsDef = m_fdoConn->GetClassDefinition(m_mainClass->GetText());
-    FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
-    FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-    try
-    {
-        FdoCommonMiscUtil::GetExpressionType(functions, clsDef, exp1, propType, dataType);
-    }
-    catch(FdoExpression* ex) { ex->Release(); }
-
+    FdoDataType dataType = GetApproxExpressionDataType(exp1);
     if (dataType != FdoDataType_DateTime)
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_183_INVALID_FUNCTION_ARG, "One or more arguments for function '%1$ls' did not match the expected argument types.", FDO_FUNCTION_EXTRACTTODOUBLE));
 
@@ -1678,17 +1642,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessTruncFunction(FdoFunction& expr)
     }
     else
     {
-        FdoPropertyType propType = FdoPropertyType_DataProperty;
-        FdoDataType dataType = FdoDataType_Int32;
-        FdoPtr<FdoClassDefinition> clsDef = m_fdoConn->GetClassDefinition(m_mainClass->GetText());
-        FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
-        FdoPtr<FdoFunctionDefinitionCollection> functions = expressionCaps->GetFunctions();
-        try
-        {
-            FdoCommonMiscUtil::GetExpressionType(functions, clsDef, mainexp, propType, dataType);
-        }
-        catch(FdoExpression* ex) { ex->Release(); }
-
+        FdoDataType dataType = GetApproxExpressionDataType(mainexp);
         if (dataType == FdoDataType_DateTime)
         {
             bool processed = false;
@@ -1760,9 +1714,10 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessTruncFunction(FdoFunction& expr)
             }
             else
             {
-                propType = FdoPropertyType_DataProperty;
-                dataType = FdoDataType_Int32;
-                FdoCommonMiscUtil::GetExpressionType(functions, clsDef, mainexp, propType, dataType);
+                dataType = GetApproxExpressionDataType(mainexp);
+                //propType = FdoPropertyType_DataProperty;
+                //dataType = FdoDataType_Int32;
+                //FdoCommonMiscUtil::GetExpressionType(functions, clsDef, mainexp, propType, dataType);
                 if (dataType == FdoDataType_String)
                 {
                     pair_working_stack* itmMainExp = push_stack();
@@ -2481,6 +2436,9 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessIdentifier(FdoIdentifier& expr)
     pair_working_stack* itm = top_stack();
 
     DbiConnection  *dbiConn = m_fdoConn->GetDbiConnection();
+    const FdoSmLpPropertyDefinition* propertyDefinition = NULL;
+    sel_class_alias::iterator clsInfo;
+
     FdoInt64 idxSchema = -1;
     FdoInt64 idxScope = -1;
     FdoString* propQName = expr.GetText();
@@ -2505,8 +2463,6 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessIdentifier(FdoIdentifier& expr)
     if (idxSchema != -1 && idxScope == -1)
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
 
-    sel_class_alias::iterator clsInfo;
-    const FdoSmLpPropertyDefinition* propertyDefinition = NULL;
     // since we do not have schema or scope it must be the main class
     if (idxSchema == -1)
     {
@@ -2734,6 +2690,33 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessSubSelectExpression(FdoSubSelectExpress
     m_tempUsedClasses.pop_back(); // remove the temp alias
 }
 
+// will return -1 in case is not calculation
+FdoDataType FdoRdbmsSqlServerSqlBuilder::GetCalculationType(FdoString* name)
+{
+    FdoDataType retVal = (FdoDataType)-1;
+    //
+    int cntSelLst = (m_props != NULL) ? m_props->GetCount() : 0;
+    for (int idx = 0; idx < cntSelLst; idx++)
+    {
+        // collect first all identifiers
+        FdoPtr<FdoIdentifier> idf = m_props->GetItem(idx);
+        FdoExpressionItemType type = idf->GetExpressionType();
+        if (FdoExpressionItemType_ComputedIdentifier == type)
+        {
+            FdoComputedIdentifier* cidf = static_cast<FdoComputedIdentifier*>(idf.p);
+            if (wcscmp(name, cidf->GetName()) == 0)
+            {
+                if (m_calcTypes[idx] == (FdoDataType)-1)
+                {
+                    FdoPtr<FdoExpression> pExp = cidf->GetExpression();
+                    m_calcTypes[idx] = GetApproxExpressionDataType(pExp);
+                }
+                return m_calcTypes[idx];
+            }
+        }
+    }
+}
+
 FdoString* FdoRdbmsSqlServerSqlBuilder::FindCalculation(FdoString* name)
 {
     if (m_lastSelCompIdf.size())
@@ -2887,6 +2870,8 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
             itmSelect->first.append(cIdf->GetName());
             itmSelect->first.append(L"\",", 2);
         }
+        // we do not evaluate the type yet, we do it only if needed
+        m_calcTypes.push_back((FdoDataType)-1);
     }
     if (cntSelLst == 0)
         itmSelect->first.append(L" * ");
@@ -2992,4 +2977,252 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     }
     // do not call pop_stack() for itmSelect
     return itmSelect->first.c_str();
+}
+
+FdoDataType FdoRdbmsSqlServerSqlBuilder::GetApproxExpressionDataType(FdoExpression* exp)
+{
+    // we use double for all numbers...
+    FdoDataType retVal = FdoDataType_Double;
+    switch(exp->GetExpressionType())
+    {
+    case FdoExpressionItemType_DataValue:
+        {
+            FdoDataValue* pVal = static_cast<FdoDataValue*>(exp);
+            return ReduceDataType(pVal->GetDataType());
+        }
+        break;
+    case FdoExpressionItemType_Identifier:
+        {
+            FdoIdentifier* df = static_cast<FdoIdentifier*>(exp);
+            DbiConnection *dbiConn = m_fdoConn->GetDbiConnection();
+            const FdoSmLpPropertyDefinition* propertyDefinition = NULL;
+            sel_class_alias::iterator clsInfo;
+            FdoInt64 idxSchema = -1;
+            FdoInt64 idxScope = -1;
+            FdoString* propQName = df->GetText();
+            FdoString* tmp = propQName;
+            while(*tmp != L'\0')
+            {
+                if (*tmp == L':')
+                {
+                    if (idxSchema != -1)
+                        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+                    idxSchema = (tmp-propQName); // pos of ':'
+                }
+                else if (*tmp == L'.')
+                {
+                    if (idxScope != -1)
+                        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+                    idxScope = (tmp-propQName); // pos of '.'
+                }
+                tmp++;
+            }
+            // we cannot have schema without scope!
+            if (idxSchema != -1 && idxScope == -1)
+                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+
+            // since we do not have schema or scope it must be the main class
+            if (idxSchema == -1)
+            {
+                if (idxScope == -1)
+                {
+                    // this could be a calculation
+                    FdoDataType calcType = (m_hasClaculations) ? GetCalculationType(propQName) : (FdoDataType)-1;
+                    if (calcType == (FdoDataType)-1)
+                    {
+                        if (m_tempUsedClasses.size() != 0)
+                        {
+                            clsInfo = m_tempUsedClasses.begin() + (m_tempUsedClasses.size()-1);
+                            propertyDefinition = clsInfo->first->RefProperties()->RefItem(propQName);
+                        }
+                        if (propertyDefinition == NULL)
+                        {
+                            clsInfo = m_usedClasses.begin();
+                            propertyDefinition = clsInfo->first->RefProperties()->RefItem(propQName);
+                        }
+                    }
+                    else
+                        return calcType;
+                }
+                else // scope can be the alias or the class name
+                {
+                    std::wstring scopeName (propQName, (size_t)idxScope);
+                    std::wstring propName (propQName, (size_t)(idxScope+1), -1);
+                    if (m_tempUsedClasses.size())
+                    {
+                        clsInfo = m_tempUsedClasses.begin() + (m_tempUsedClasses.size()-1);
+                        if (clsInfo->second == scopeName)
+                            propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                        else if (scopeName == clsInfo->first->GetName())
+                            propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                    }
+                    if (propertyDefinition == NULL)
+                    {
+                        for (size_t idx = 0; idx < m_usedClasses.size(); idx++)
+                        {
+                            clsInfo = m_usedClasses.begin()+idx;
+                            if (clsInfo->second == scopeName)
+                            {
+                                propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                                break;
+                            }
+                            else if (scopeName == clsInfo->first->GetName())
+                            {
+                                propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else // schema:class.property? rare case, however let's try to handle it
+            {
+                std::wstring clsName (propQName, (size_t)idxScope);
+                std::wstring propName (propQName, (size_t)(idxScope+1), -1);
+                const FdoSmLpClassDefinition* clsDef = dbiConn->GetSchemaUtil()->GetClass(clsName.c_str());
+                if (clsDef != NULL)
+                {
+                    if (m_tempUsedClasses.size())
+                    {
+                        clsInfo = m_tempUsedClasses.begin() + (m_tempUsedClasses.size()-1);
+                        if (clsDef == clsInfo->first)
+                            propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                    }
+                    if (propertyDefinition == NULL)
+                    {
+                        for (size_t idx = 0; idx < m_usedClasses.size(); idx++)
+                        {
+                            clsInfo = m_usedClasses.begin()+idx;
+                            if (clsDef == clsInfo->first)
+                            {
+                                propertyDefinition = clsInfo->first->RefProperties()->RefItem(propName.c_str());
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (propertyDefinition == NULL)
+                throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_28, "Property '%1$ls' is not found", df->GetName() ));
+
+            if (propertyDefinition && propertyDefinition->GetPropertyType() == FdoPropertyType_DataProperty)
+            {
+                const FdoSmLpDataPropertyDefinition* dataProp = static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+                return ReduceDataType(dataProp->GetDataType());
+            }
+            else
+                return FdoDataType_BLOB;
+        }
+        break;
+    case FdoExpressionItemType_ComputedIdentifier:
+        {
+            FdoComputedIdentifier* cidf = static_cast<FdoComputedIdentifier*>(exp);
+            FdoPtr<FdoExpression> expIdf = cidf->GetExpression();
+            return GetApproxExpressionDataType(expIdf);
+        }
+        break;
+    case FdoExpressionItemType_Function:
+        {
+            if (m_supp_functions == NULL)
+            {
+                FdoPtr<FdoIExpressionCapabilities> expressionCaps = m_fdoConn->GetExpressionCapabilities();
+                m_supp_functions = expressionCaps->GetFunctions();
+            }
+            int cnt = m_supp_functions->GetCount();
+            FdoFunction* pFct = static_cast<FdoFunction*>(exp);
+            FdoString* fName = pFct->GetName();
+            for (int i = 0; i < cnt; i++)
+            {
+                FdoPtr<FdoFunctionDefinition> fct = m_supp_functions->GetItem(i);
+                if (_wcsicmp(fct->GetName(), fName) == 0)
+                {
+                    signature_map* sigdef = NULL;
+                    function_sig_map::iterator itSig = m_fctSig.find(fct->GetName());
+                    if (itSig == m_fctSig.end())
+                    {
+                        sigdef = new signature_map();
+                        m_fctSig[fct->GetName()] = sigdef;
+                        FdoPtr<FdoReadOnlySignatureDefinitionCollection> sigDefs = fct->GetSignatures();
+                        int cntSig = (sigDefs == NULL) ? 0 : sigDefs->GetCount();
+                        for (int k = 0; k < cntSig; k++)
+                        {
+                            std::wstring codeSig (L"");
+                            FdoPtr<FdoSignatureDefinition> sig = sigDefs->GetItem(k);
+                            FdoPropertyType stype = sig->GetReturnPropertyType();
+                            FdoDataType retType = (FdoPropertyType_DataProperty == stype) ? ReduceDataType(sig->GetReturnType()) : FdoDataType_BLOB;
+
+                            FdoPtr<FdoReadOnlyArgumentDefinitionCollection> argCol = sig->GetArguments();
+                            int cntArg = (argCol == NULL) ? 0 : argCol->GetCount();
+                            for (int y = 0; y < cntArg; y++)
+                            {
+                                FdoPtr<FdoArgumentDefinition> arg = argCol->GetItem(y);
+                                FdoPropertyType atype = arg->GetPropertyType();
+                                if (FdoPropertyType_DataProperty == atype)
+                                {
+                                    wchar_t strtype = ReduceDataTypeToChar(arg->GetDataType());
+                                    codeSig.append(&strtype, 1);
+                                }
+                                else // if (FdoPropertyType_GeometricProperty == atype)
+                                    codeSig.append(L"B");
+                            }
+                            signature_map::iterator itsg = sigdef->find(codeSig);
+                            if (itsg == sigdef->end())
+                                (*sigdef)[codeSig] = retType;
+                        }
+                    }
+                    else
+                        sigdef = itSig->second;
+
+                    std::wstring codeFctSig (L"");
+                    FdoPtr<FdoExpressionCollection> argColl =  pFct->GetArguments();
+                    int cntArg = (argColl == NULL) ? 0 : argColl->GetCount();
+                    for (int ii = 0; ii < cntArg; ii++)
+                    {
+                        FdoPtr<FdoExpression> expArg = argColl->GetItem(ii);
+                        wchar_t strtype = ReduceDataTypeToChar(GetApproxExpressionDataType(expArg));
+                        codeFctSig.append(&strtype, 1);
+                    }
+                    signature_map::iterator itsg = sigdef->find(codeFctSig);
+                    if (itsg != sigdef->end())
+                        return itsg->second;
+                }
+            }
+        }
+        break;
+    case FdoExpressionItemType_SubSelectExpression:
+        {
+            FdoSubSelectExpression* sSel = static_cast<FdoSubSelectExpression*>(exp);
+            FdoPtr<FdoIdentifier> clsIdf = sSel->GetFeatureClassName();
+            FdoPtr<FdoIdentifier> propIdf = sSel->GetPropertyName();
+
+            if (propIdf->GetExpressionType() == FdoExpressionItemType_ComputedIdentifier)
+            {
+                FdoComputedIdentifier* compIdf = static_cast<FdoComputedIdentifier*>(propIdf.p);
+                FdoPtr<FdoExpression> expIdf = compIdf->GetExpression();
+                return GetApproxExpressionDataType(expIdf);
+            }
+            else
+                return GetApproxExpressionDataType(propIdf);
+        }
+        break;
+    case FdoExpressionItemType_Parameter:
+        {
+            FdoParameter* pParam = static_cast<FdoParameter*>(exp);
+            FdoString* parameName = pParam->GetName();
+            int cntPar = mParams == NULL ? 0 : mParams->GetCount();
+            for (int i = 0; i < cntPar; i++)
+            {
+                FdoPtr<FdoParameterValue> par = mParams->GetItem(i);
+                if (wcscmp(parameName, par->GetName()) == 0)
+                {
+                    FdoPtr<FdoLiteralValue> lVal = par->GetValue();
+                    return GetApproxExpressionDataType(lVal);
+                }
+            }            
+        }
+        break;
+        // BinaryExpression, UnaryExpression -> double
+    }
+    return retVal;
 }

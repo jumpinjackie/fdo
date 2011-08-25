@@ -521,6 +521,7 @@ FdoSmLpClassDefinitionP FdoSmLpSchema::LoadClass(FdoStringP className, FdoString
         return cls;
     
     FdoSmPhClassReaderP classReader = mPhysicalSchema->CreateClassReader((schemaName!=NULL&&schemaName[0]!='\0')?schemaName:GetName(),className);
+    classReader->SetMultiClassReder(false);
 
     while ( classReader->ReadNext() ) {
 		FdoSmLpClassDefinitionP newClass = CreateClassDefinition( classReader );
