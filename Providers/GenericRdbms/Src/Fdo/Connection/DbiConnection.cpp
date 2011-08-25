@@ -900,6 +900,7 @@ int DbiConnection::dbi_version_commit(char *lt_names,
                                       int  len,
                                       int  conflict_flag,
                                       char *tran_id,
+                                      bool keep_version,
                                       int  *err_code)
 {
     INVOKE_DBI_FUNC( dbi_version_commit( mContext,
@@ -907,6 +908,7 @@ int DbiConnection::dbi_version_commit(char *lt_names,
                                          len,
                                          conflict_flag,
                                          tran_id,
+                                         keep_version,
                                          err_code ));
 }
 
@@ -943,6 +945,7 @@ int DbiConnection::dbi_version_rollback (char *lt_names,
                                          int  len,
                                          int  conflict_flag,
                                          char *tran_id,
+                                         bool keep_version,
                                          int  *err_code)
 {
     INVOKE_DBI_FUNC( dbi_version_rollback ( mContext,
@@ -950,6 +953,7 @@ int DbiConnection::dbi_version_rollback (char *lt_names,
                                             len,
                                             conflict_flag,
                                             tran_id,
+                                            keep_version,
                                             err_code ));
 }
 

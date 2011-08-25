@@ -76,6 +76,19 @@ class FdoRdbmsCommitLongTransaction :
 
     void SetName (FdoString *value);
 
+    //  GetKeepLongTransaction:
+    //      Indicates whether to keep the long transaction after it is committed.
+    //      Returns true if keeping the long transaction after it is committed.
+    //      Returns false if removing the long transaction after it is committed.
+    //      Default value for KeepLongTransaction is false.
+
+    FdoBoolean GetKeepLongTransaction ();
+
+    //  SetKeepLongTransaction:
+    //      Sets whether to keep the long transaction after it is committed.
+    ///     Default value for KeepLongTransaction is false.
+
+    void SetKeepLongTransaction (FdoBoolean value);
 
   protected:
 
@@ -139,6 +152,10 @@ class FdoRdbmsCommitLongTransaction :
     //      Holds the name of the long transaction provided to this command.
 
     FdoString *lt_name;
+
+    //  lt_keep_long_transaction:
+    //      Indicates whether to keep the long transaction after it is committed.
+    FdoBoolean lt_keep_long_transaction;
 
     //  fdo_i_connection:
     //      References the FDO connection.

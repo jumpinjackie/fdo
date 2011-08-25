@@ -79,6 +79,7 @@ class FdoRdbmsLongTransactionManager : public FdoLtmDisposable
 
     virtual void Commit (
                 FdoString                        *lt_name,
+                bool                             keep_long_transaction,
                 FdoILockConflictReader           **lock_conflicts,
                 bool                             *lock_conflicts_found,
                 FdoRdbmsLongTransactionConflicts **lt_conflicts        )  = 0;
@@ -184,6 +185,7 @@ class FdoRdbmsLongTransactionManager : public FdoLtmDisposable
     //      The interface allows the rolling back of a long transaction.
 
     virtual void Rollback (FdoString              *lt_name,
+                           bool                   keep_long_transaction,
                            FdoILockConflictReader **lock_conflicts,
                            bool                   *lock_conflicts_found) = 0;
 
