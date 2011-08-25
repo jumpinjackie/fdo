@@ -168,6 +168,7 @@ public:
                             int  len,
                             int  conflict_flag,
                             char *tran_id,
+                            bool keep_version,
                             int  *err_code );
 
     // See function dbi_version_load_conflicts.
@@ -188,6 +189,7 @@ public:
                               int  len,
                               int  conflict_flag,
                               char *tran_id,
+                              bool keep_version,
                               int  *err_code);
 
     // See function dbi_version_add_depend
