@@ -139,6 +139,8 @@ public:
     /// Get the next row and make it current.
 	virtual bool ReadNext();
 
+    virtual bool IsMultiClassReder() { return mbMultiClassReder; }
+    virtual void SetMultiClassReder(bool value) { mbMultiClassReder = value; }
 protected:
     /// Unused constructor needed only to build on Linux
     FdoSmPhClassReader() {}
@@ -166,6 +168,8 @@ private:
 
     bool mbTableCreatorDefined;
     bool mbReadFromMetadata; // indicates whether or not we are reading from metadata tables
+    // indicates whether we expect to have more or just one class. When we read all classes we need to avoid cache the reader and ask for one class only
+    bool mbMultiClassReder; 
 
     /// Schema Options reader
 	bool mbSchemaOptionsTableDefined;

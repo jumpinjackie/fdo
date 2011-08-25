@@ -29,21 +29,24 @@
 
 FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoSmPhMgrP physicalSchema) : 
 	FdoSmPhReader( MakeReader(schemaName, physicalSchema) ),
-	mSchemaName(schemaName)
+	mSchemaName(schemaName),
+    mbMultiClassReder(true)
 {
     mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
 }
 
 FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoStringP className, FdoSmPhMgrP physicalSchema) : 
 	FdoSmPhReader( MakeReader(schemaName, physicalSchema, className) ),
-	mSchemaName(schemaName)
+	mSchemaName(schemaName),
+    mbMultiClassReder(true)
 {
     mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
 }
 
 FdoSmPhClassReader::FdoSmPhClassReader(FdoStringP schemaName, FdoSmPhMgrP physicalSchema, bool fullLoad) : 
 	FdoSmPhReader( MakeReader(schemaName, physicalSchema, NULL, fullLoad) ),
-	mSchemaName(schemaName)
+	mSchemaName(schemaName),
+    mbMultiClassReder(true)
 {
     mpSOReader = new FdoSmPhSOReader(FdoSmPhMgr::ClassType, physicalSchema->GetOwner());
 }
@@ -153,9 +156,14 @@ FdoSmPhClassPropertyReaderP FdoSmPhClassReader::CreateClassPropertyReader()
     FdoStringP className = GetName();
 
     if (owner && owner->GetHasAttrMetaSchema() ) {
-        // for noew we will ask only for one class.
-        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
-        classNames->Add(className);        
+        // for now we will ask only for one class.
+        FdoPtr<FdoStringCollection> classNames;
+        // do not use single class read when we expect to read all classes (or a subset)
+        if (!IsMultiClassReder())
+        {
+            classNames = FdoStringCollection::Create();
+            classNames->Add(className);
+        }
         // Read properties from metaschema
 	    if ( !mPropReader ) 
 		    mPropReader = new FdoSmPhPropertyReader(mSchemaName, GetManager(), classNames);
