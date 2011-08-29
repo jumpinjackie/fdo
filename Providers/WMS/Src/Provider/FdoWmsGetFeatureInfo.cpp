@@ -366,6 +366,7 @@ FdoWmsDelegate* FdoWmsGetFeatureInfo::_getWmsDelegate ()
     FdoPtr<FdoOwsCapabilities> capa = svcMetadata->GetCapabilities ();
     FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
     ret->SetRequestMetadatas (reqMetadatas);
+    ret->SetTimeout(mConnection->GetConnectionTimeout()/1000);  //connection timeout unit is millisecond, and FdoOwsHttpHandler timeout unit is second.
 
     return FDO_SAFE_ADDREF (ret.p);
 }

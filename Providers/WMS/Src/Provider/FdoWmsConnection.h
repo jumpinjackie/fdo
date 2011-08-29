@@ -340,6 +340,7 @@ private:
     FdoStringP mCachedTimeDimension;
     FdoStringP mCachedElevation;
     FdoStringP mCachedExceptionFormat;
+    FdoInt32 mTimeout;
 };
 
 #endif // FDOWMSCONNECTION_H
