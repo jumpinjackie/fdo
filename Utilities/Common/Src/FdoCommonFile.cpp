@@ -1268,3 +1268,20 @@ void FdoCommonFile::Chmod(FdoString* filePath, bool bReadWrite)
 
 #endif
 }
+
+FdoInt64 FdoCommonFile::GetTimestamp (const wchar_t* pFilename)
+{
+#ifdef _WIN32
+    struct _stat statInfo;
+
+    return (0 == _wstat (pFilename, &statInfo)) ? statInfo.st_mtime : -1;
+
+#else // _WIN32
+    struct stat statInfo;
+    char *mbName;
+
+    conv_wide_to_utf8 (mbName, pFilename);
+    return ( 0 == stat(mbName, &statInfo)) ? statInfo.st_mtime : -1;
+
+#endif // _WIN32
+}
