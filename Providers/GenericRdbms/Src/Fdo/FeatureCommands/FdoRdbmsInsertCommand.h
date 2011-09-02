@@ -52,6 +52,7 @@ class FdoRdbmsInsertCommand : public FdoRdbmsCommand<FdoIInsert>
 
   public:
 
+      static FdoRdbmsInsertCommand* Create (FdoIConnection *connection);
       //
       // Prevent the use of the Assignment Operation by definning it and not implemeting it.
       // DO NOT IMPLEMENT
@@ -64,14 +65,8 @@ class FdoRdbmsInsertCommand : public FdoRdbmsCommand<FdoIInsert>
 
       virtual FdoBatchParameterValueCollection* GetBatchParameterValues()
       {
-#if 0
-        if (mBatchValues == NULL)
-            mBatchValues = FdoBatchParameterValueCollection::Create();
-        return mBatchValues;
-#endif
-        return NULL;
+          return NULL;
       };
-
 
       virtual FdoIdentifier* GetClassNameRef()
       {
@@ -165,7 +160,6 @@ class FdoRdbmsInsertCommand : public FdoRdbmsCommand<FdoIInsert>
     FdoPropertyValueCollection *mPropertyValues;
     FdoPropertyValueCollection *mAutoGenPropertyValues;
     wchar_t         *mCurrentClass;
-    FdoBatchParameterValueCollection *mBatchValues;
     FdoIdentifier*  m_ClassName;
 	FdoRdbmsPvcProcessor  *mPvcProcessor;
     char  LocalConversionBuffer[LOCAL_BUFFER_SIZE];

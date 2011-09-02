@@ -27,7 +27,7 @@ class FdoRdbmsFeatureInfoReader: public FdoDefaultFeatureReader
   friend class FdoRdbmsUpdateCommand;
 
   private:
-      FdoRdbmsFeatureInfoReader( FdoPropertyValueCollection    *mFeatInfo, const FdoSmLpClassDefinition *classDefinition );
+      FdoRdbmsFeatureInfoReader(FdoPropertyValueCollection *mFeatInfo, const FdoSmLpClassDefinition *classDefinition );
 
       FdoRdbmsFeatureInfoReader(const FdoRdbmsFeatureInfoReader &right);
 
@@ -40,6 +40,7 @@ protected:
     virtual void Dispose();
 
 public:
+        static FdoRdbmsFeatureInfoReader* Create(FdoPropertyValueCollection *mFeatInfo, const FdoSmLpClassDefinition *classDefinition);
 
         virtual FdoClassDefinition* GetClassDefinition();
         virtual int GetDepth();

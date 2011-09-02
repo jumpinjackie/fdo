@@ -42,7 +42,7 @@ protected:
     {
         if( connection != NULL )
             connection->AddRef();
-        this->mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(connection);
+        this->mFdoConnection = static_cast<FdoRdbmsConnection*>(connection);
         m_TimeOut = 0;
     }
 

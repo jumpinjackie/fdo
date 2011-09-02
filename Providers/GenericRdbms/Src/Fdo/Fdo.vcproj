@@ -541,6 +541,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleInsertCommand.cpp"
+					>
+				</File>
+				<File
 					RelativePath="FeatureCommands\FdoRdbmsUpdateCommand.cpp"
 					>
 				</File>
@@ -899,6 +903,10 @@
 				</File>
 				<File
 					RelativePath=".\FeatureCommands\FdoRdbmsSimpleFeatureReader.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleInsertCommand.h"
 					>
 				</File>
 				<File

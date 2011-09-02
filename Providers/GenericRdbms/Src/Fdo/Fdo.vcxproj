@@ -231,6 +231,7 @@
     <ClCompile Include="FeatureCommands\FdoRdbmsInsertCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsSelectAggregates.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsSelectCommand.cpp" />
+    <ClCompile Include="FeatureCommands\FdoRdbmsSimpleInsertCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsUpdateCommand.cpp" />
     <ClCompile Include="SpatialContext\FdoRdbmsActivateSpatialContext.cpp" />
     <ClCompile Include="SpatialContext\FdoRdbmsCreateSpatialContext.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="FeatureCommands\FdoRdbmsInsertCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsSelectAggregates.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsSelectCommand.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsSimpleInsertCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsUpdateCommand.h" />
     <ClInclude Include="SpatialContext\FdoRdbmsActivateSpatialContext.h" />
     <ClInclude Include="SpatialContext\FdoRdbmsCreateSpatialContext.h" />
