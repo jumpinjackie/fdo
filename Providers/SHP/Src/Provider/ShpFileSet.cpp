@@ -487,8 +487,23 @@ ShpSpatialIndex* ShpFileSet::GetSpatialIndex ( bool populateRtree )
 		if (!mSSI->IsNew())
 		{
 			// Validate ...
-			if ( (((int)mSSI->GetNObjects() == 0 ) && ( GetShapeIndexFile ()->GetNumObjects() > 0) ) || 
-				  ((int)mSSI->GetNObjects() > GetShapeIndexFile ()->GetNumObjects()) )
+            bool    bOutOfDateSI = false;
+ 
+            // Check the timestamps for the SI and the SHP. The IDX file is always modified after SHP
+            // but it can get stale when the SHP has been edited by 3th party applications.
+            FdoInt64 timestampIDX = FdoCommonFile::GetTimestamp( mSSIFileName );
+            if (timestampIDX >= 0)
+            {
+                FdoInt64 timestampSHP = FdoCommonFile::GetTimestamp( GetShapeFile()->FileName() );  
+                if (timestampSHP >= 0)
+                {
+                    bOutOfDateSI = ( timestampIDX < timestampSHP );
+                }
+            }
+
+			if ( bOutOfDateSI ||
+                 (((int)mSSI->GetNObjects() == 0 ) && ( GetShapeIndexFile ()->GetNumObjects() > 0) ) || 
+				 ((int)mSSI->GetNObjects() != GetShapeIndexFile ()->GetNumObjects()) )
 			{   
 				// close the existing one and try again
 				wchar_t *idx_file = (wchar_t*)alloca (sizeof (wchar_t) * (1 + wcslen (GetSpatialIndex ()->FileName ())));
