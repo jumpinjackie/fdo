@@ -610,6 +610,18 @@ public:
     /// Set this to true for read-write access, false for read-only access.
     /// 
     static void Chmod(FdoString* filePath, bool bReadWrite);
+
+    /// \brief
+    /// Determine the timestamp for the specified file.
+    /// 
+    /// \param path 
+    /// The path.
+    /// 
+    /// \return
+    /// Returns the time of last modification of the file as seconds from midnight, January 1, 1970.
+    /// Returns -1 in case of failure.
+    /// 
+    static FdoInt64 FdoCommonFile::GetTimestamp (const wchar_t* pFilename);
 };
 
 #endif // FDO_COMMON_FILE_H
