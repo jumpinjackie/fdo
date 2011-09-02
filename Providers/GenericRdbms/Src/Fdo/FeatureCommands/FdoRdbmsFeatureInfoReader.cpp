@@ -27,7 +27,7 @@ static  char  *strNotSupportedExp = "Function not supported by this reader";
 static  char  *strEndOfRecordExp = "End of feature data or NextFeature not called";
 
 // Class FdoRdbmsFeatureInfoReader
-FdoRdbmsFeatureInfoReader::FdoRdbmsFeatureInfoReader( FdoPropertyValueCollection    *mFeatInfo, const FdoSmLpClassDefinition *classDefinition  ):
+FdoRdbmsFeatureInfoReader::FdoRdbmsFeatureInfoReader( FdoPropertyValueCollection* mFeatInfo, const FdoSmLpClassDefinition *classDefinition  ):
   mFeatInfoCollection( NULL ),
   mCalled( false ),
   mClassDefinition( classDefinition )
@@ -43,6 +43,11 @@ FdoRdbmsFeatureInfoReader::~FdoRdbmsFeatureInfoReader()
   if(  mFeatInfoCollection )
     mFeatInfoCollection->Release();
 
+}
+
+FdoRdbmsFeatureInfoReader* FdoRdbmsFeatureInfoReader::Create(FdoPropertyValueCollection *mFeatInfo, const FdoSmLpClassDefinition *classDefinition)
+{
+    return new FdoRdbmsFeatureInfoReader(mFeatInfo, classDefinition);
 }
 
 FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
@@ -139,26 +144,32 @@ FdoDateTime FdoRdbmsFeatureInfoReader::GetDateTime( const wchar_t *propertyName 
 
 double FdoRdbmsFeatureInfoReader::GetDouble( const wchar_t *propertyName )
 {
-	FdoPropertyValue *featInfoProp = NULL;
-
     if( ! mCalled || mFeatInfoCollection == NULL )
 		throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
 
-	featInfoProp =  mFeatInfoCollection->GetItem( propertyName );
-        
-	FdoValueExpression *val = featInfoProp->GetValue();
-	featInfoProp->Release();
-	FdoDataValue *dataValue = (static_cast<FdoDataValue*>(val));
-	if( dataValue->GetDataType() == FdoDataType_Double || 
-	   dataValue->GetDataType() == FdoDataType_Decimal ||
-	   dataValue->GetDataType() == FdoDataType_Single )
-	{
-		FdoDoubleValue  *doubleValue = (static_cast<FdoDoubleValue*>(dataValue));
-		dataValue->Release();
-		return doubleValue->GetDouble();
-	}
-	else
-	   throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_240, strNotSupportedExp)); // This should not happen; we just created this in the insert command. But just in case
+	FdoPtr<FdoPropertyValue> featInfoProp = mFeatInfoCollection->GetItem( propertyName );
+	FdoPtr<FdoValueExpression> val = featInfoProp->GetValue();
+    FdoDataValue *dataValue = static_cast<FdoDataValue*>(val.p);
+    switch(dataValue->GetDataType())
+    {
+    case FdoDataType_Boolean:
+        return (double)(static_cast<FdoBooleanValue*>(dataValue))->GetBoolean();
+    case FdoDataType_Byte:
+        return (double)(static_cast<FdoByteValue*>(dataValue))->GetByte();
+    case FdoDataType_Double:
+    case FdoDataType_Decimal:
+        return (static_cast<FdoDoubleValue*>(dataValue))->GetDouble();
+    case FdoDataType_Single:
+        return (double)(static_cast<FdoSingleValue*>(dataValue))->GetSingle();
+    case FdoDataType_Int16:
+        return (double)(static_cast<FdoInt16Value*>(dataValue))->GetInt16();
+    case FdoDataType_Int32:
+        return (double)(static_cast<FdoInt32Value*>(dataValue))->GetInt32();
+    case FdoDataType_Int64:
+        return (double)(static_cast<FdoInt64Value*>(dataValue))->GetInt64();
+    }
+
+    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_240, strNotSupportedExp)); // This should not happen; we just created this in the insert command. But just in case
 }
 
 const wchar_t* FdoRdbmsFeatureInfoReader::GetString( const wchar_t *propertyName )
@@ -194,29 +205,27 @@ int FdoRdbmsFeatureInfoReader::GetInt32( const wchar_t *propertyName )
 
 FdoInt64 FdoRdbmsFeatureInfoReader::GetInt64( const wchar_t *propertyName )
 {
-    FdoPropertyValue *featInfoProp = NULL;
-
     if( ! mCalled || mFeatInfoCollection == NULL )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
+		throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
 
-    featInfoProp =  mFeatInfoCollection->GetItem( propertyName );
-        
-	FdoValueExpression *val = featInfoProp->GetValue();
-	featInfoProp->Release();
-	FdoDataValue *dataValue = (static_cast<FdoDataValue*>(val));
-	if( dataValue->GetDataType() == FdoDataType_Int64 ||
-	   dataValue->GetDataType() == FdoDataType_Int16 ||
-	   dataValue->GetDataType() == FdoDataType_Int32 ||
-	   dataValue->GetDataType() == FdoDataType_Byte ||
-	   dataValue->GetDataType() == FdoDataType_Boolean )
-	{
-		FdoInt64Value  *int64Value = (static_cast<FdoInt64Value*>(dataValue));
-		dataValue->Release();
-		return int64Value->GetInt64();
-	}
-	else
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_240, strNotSupportedExp)); // This should not happen; we just created this in the insert command. But just in case
+	FdoPtr<FdoPropertyValue> featInfoProp = mFeatInfoCollection->GetItem( propertyName );
+	FdoPtr<FdoValueExpression> val = featInfoProp->GetValue();
+    FdoDataValue *dataValue = static_cast<FdoDataValue*>(val.p);
+    switch(dataValue->GetDataType())
+    {
+    case FdoDataType_Boolean:
+        return (FdoInt64)(static_cast<FdoBooleanValue*>(dataValue))->GetBoolean();
+    case FdoDataType_Byte:
+        return (FdoInt64)(static_cast<FdoByteValue*>(dataValue))->GetByte();
+    case FdoDataType_Int16:
+        return (static_cast<FdoInt16Value*>(dataValue))->GetInt16();
+    case FdoDataType_Int32:
+        return (static_cast<FdoInt32Value*>(dataValue))->GetInt32();
+    case FdoDataType_Int64:
+        return (static_cast<FdoInt64Value*>(dataValue))->GetInt64();
+    }
 
+    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_240, strNotSupportedExp)); // This should not happen; we just created this in the insert command. But just in case
 }
 
 float FdoRdbmsFeatureInfoReader::GetSingle( const wchar_t *propertyName )
@@ -226,20 +235,12 @@ float FdoRdbmsFeatureInfoReader::GetSingle( const wchar_t *propertyName )
 
 bool FdoRdbmsFeatureInfoReader::IsNull( const wchar_t *propertyName )
 {
-    FdoPropertyValue *featInfoProp = NULL;
-
     if( ! mCalled || mFeatInfoCollection == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
 
-    featInfoProp =  mFeatInfoCollection->GetItem( propertyName );
-
-    FdoValueExpression *val = featInfoProp->GetValue();
-    featInfoProp->Release();
-    if( val == NULL )
-        return true;
-
-    val->Release();
-    return false;
+	FdoPtr<FdoPropertyValue> featInfoProp = mFeatInfoCollection->GetItem( propertyName );
+	FdoPtr<FdoValueExpression> val = featInfoProp->GetValue();
+    return (val == NULL || (static_cast<FdoDataValue*>(val.p))->IsNull());
 }
 
 void FdoRdbmsFeatureInfoReader::ThrowPropertyNotFountExp( const wchar_t* propertyName )

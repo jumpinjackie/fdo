@@ -25,10 +25,28 @@
 #define _SQL_PARAM_INPUT 1
 #define _SQL_MAX_VAR_LEN_BIND 8000
 #define _SQL_MAX_TXT_LEN_BIND 5000
+#define _MAX_STR_INT64 32
+
+typedef struct {
+        int     type; // FdoDataType
+		union {
+			void		*strvalue;
+			double		gvalue;
+			float		fvalue;
+			FdoInt64    llvalue;
+			int			lvalue;
+			short		svalue;
+			char		cvalue;
+		} value;
+		bool			 valueNeedsFree;
+        int				 len;
+        GDBI_NI_TYPE	 *null_ind;
+        FdoByteArray     *barray;
+} FdoRdbmsBindStrDef;
 
 class FdoRdbmsPvdBindDef
 {
-    std::vector<FdoRdbmsPvcBindDef*> params;
+    std::vector<FdoRdbmsBindStrDef*> params;
     size_t usedCnt;
 public:
     FdoRdbmsPvdBindDef()
@@ -42,35 +60,44 @@ public:
     }
     ~FdoRdbmsPvdBindDef()
     {
-        Clear();
-        std::vector<FdoRdbmsPvcBindDef*>::iterator it;
+        std::vector<FdoRdbmsBindStrDef*>::iterator it;
         for (it = params.begin(); it < params.end(); it++)
-            delete *it;
+        {
+            FdoRdbmsBindStrDef* pBind = *it;
+            if (pBind->null_ind)
+                free(pBind->null_ind);
+
+            if (NULL != pBind->value.strvalue && pBind->type != FdoDataType_BLOB)
+            {
+                if (pBind->type == FdoRdbmsDataType_Geometry)
+                    ((FdoIGeometry*)pBind->value.strvalue)->Release ();
+                else if( pBind->valueNeedsFree )
+			        delete[] (char*)pBind->value.strvalue;
+            }
+            if (pBind->barray != NULL && pBind->type == FdoDataType_BLOB)
+                ((FdoByteArray*)pBind->barray)->Release ();
+
+            delete pBind;
+        }
         params.clear();
     }
     void Clear()
     {
         for (size_t idx = 0; idx < usedCnt; idx++)
         {
-            FdoRdbmsPvcBindDef* pBind = params.at(idx);
-            if (pBind->null_ind)
-                free(pBind->null_ind);
-
+            FdoRdbmsBindStrDef* pBind = params.at(idx);
             // the BLOB value was not allocated
-            if (NULL != pBind->value.strvalue)
+            if (NULL != pBind->value.strvalue && pBind->type == FdoRdbmsDataType_Geometry)
             {
-                if (pBind->type != FdoDataType_BLOB)
-                {
-                    if (pBind->type == FdoRdbmsDataType_Geometry)
-                        ((FdoIGeometry*)pBind->value.strvalue)->Release ();
-                    else if( pBind->valueNeedsFree )
-				        delete[] (char*)pBind->value.strvalue;
-                }
+                ((FdoIGeometry*)pBind->value.strvalue)->Release ();
+                pBind->value.strvalue = NULL;
+                pBind->len = 0;
             }
             if (pBind->barray != NULL && pBind->type == FdoDataType_BLOB)
+            {
                 ((FdoByteArray*)pBind->barray)->Release ();
-
-            memset (pBind, sizeof(FdoRdbmsPvcBindDef), 0x00);
+                pBind->barray = NULL;
+            }
         }
         usedCnt = 0;
     }
@@ -78,20 +105,53 @@ public:
     {
         return usedCnt;
     }
-    FdoRdbmsPvcBindDef* at(size_t idx)
+    FdoRdbmsBindStrDef* at(size_t idx)
     {
         return params[idx];
     }
-    FdoRdbmsPvcBindDef* push_back()
+    FdoRdbmsBindStrDef* push_back()
     {
         if (usedCnt < params.size())
             return params.at(usedCnt++);
 
-        FdoRdbmsPvcBindDef* item = new FdoRdbmsPvcBindDef();
-        memset (item, sizeof(FdoRdbmsPvcBindDef), 0x00);
+        FdoRdbmsBindStrDef* item = new FdoRdbmsBindStrDef();
+        memset (item, sizeof(FdoRdbmsBindStrDef), 0x00);
+        item->type = -2;
         params.push_back(item);
         usedCnt++;
         return item;
+    }
+    bool EnsureSize(FdoRdbmsBindStrDef* item, size_t sz)
+    {
+        if (item->type != FdoDataType_String)
+            FreeResources(item);
+
+        if ((size_t)item->len < sz)
+        {
+            delete[] item->value.strvalue;
+            item->len = 2*sz;
+            item->value.strvalue = new char[2*sz];
+            item->valueNeedsFree = true;
+            return true;
+        }
+        return false;
+    }
+    void FreeResources(FdoRdbmsBindStrDef* item)
+    {
+        if (NULL != item->value.strvalue && item->type != FdoDataType_BLOB)
+        {
+            if (item->type == FdoRdbmsDataType_Geometry)
+                ((FdoIGeometry*)item->value.strvalue)->Release ();
+            else if (item->valueNeedsFree)
+		        delete[] (char*)item->value.strvalue;
+        }
+        if (item->barray != NULL && item->type == FdoDataType_BLOB)
+            ((FdoByteArray*)item->barray)->Release ();
+
+        item->len = 0;
+        item->barray = NULL;
+        item->value.strvalue = NULL;
+        item->valueNeedsFree = false;
     }
 };
 
@@ -120,19 +180,12 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
     else
         mBindParams->Clear();
 
-    char temp[32];
     GdbiCommands* cmds = statement->GetGdbiCommands();
     for (size_t idx = 0; idx < cntParams; idx++)
     {
-        FdoRdbmsPvcBindDef* bind = mBindParams->push_back();
-        if (bind->valueNeedsFree)
-        {
-            delete[] (char*)bind->value.strvalue;
-            bind->value.strvalue = NULL;
-            bind->valueNeedsFree = false;
-        }
-
-        cmds->alcnullind(1, &(bind->null_ind));
+        FdoRdbmsBindStrDef* bind = mBindParams->push_back();
+        if (!bind->null_ind)
+            cmds->alcnullind(1, &(bind->null_ind));
         cmds->set_null(bind->null_ind, 0, 0 );
 
         std::vector< std::pair< FdoParameterValue*, FdoInt64 > >::const_reference it = params->at(idx);
@@ -146,35 +199,28 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
             {
                 FdoDataValue* dval = static_cast<FdoDataValue*>(val.p);
                 FdoDataType dataType = dval->GetDataType();
-                // Initialize the bind item
-                *bind->name = L'\0';
-                *bind->propertyName = L'\0';
-                bind->type = dataType;
-                bind->len = 64;     // Set the length to be 64
-                bind->reader = NULL;
-                bind->barray = NULL;
-                bind->value.strvalue = NULL;
-				bind->valueNeedsFree = false;
-                sprintf(temp, "%d", idx+1); // Parm name are one based
                 bool isNull = dval->IsNull();
-
                 switch(dataType)
                 {
                 case FdoDataType_BLOB:
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
-				        bind->valueNeedsFree = true;
+                        if (bind->type != FdoDataType_String)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_String;
+                        
                         // this is used only when we call stored procedures
                         // I could not find a way to get/rebind out blob size values
                         // for now we just use a fixed value
-                        bind->value.strvalue = new char[_SQL_MAX_VAR_LEN_BIND];
-                        *((wchar_t*)bind->value.strvalue) = '\0';
-                        bind->len = _SQL_MAX_VAR_LEN_BIND;
-                        statement->Bind((int)(idx+1), RDBI_BLOB_ULEN, bind->len, (char *)bind->value.strvalue, bind->null_ind, paramOutType);
+                        mBindParams->EnsureSize(bind, _SQL_MAX_VAR_LEN_BIND);
+                        statement->Bind((int)(idx+1), RDBI_BLOB_ULEN, bind->len, (char*)bind->value.strvalue, bind->null_ind, paramOutType);
                     }
                     else
                     {
+                        mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_BLOB;
+
                         if (!isNull)
                         {
                             FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
@@ -187,28 +233,44 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_DateTime:
+                    if (bind->type != FdoDataType_String)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_String;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
-				        bind->valueNeedsFree = true;
-                        bind->value.strvalue = new wchar_t[100];
-                        *((wchar_t*)bind->value.strvalue) = '\0';
-                        bind->len = 100;
-                        statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        if (!cmds->SupportsUnicode())
+                        {
+                            mBindParams->EnsureSize(bind, 100);
+                            statement->Bind((int)(idx+1), bind->len, (const char*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        }
+                        else
+                        {
+                            mBindParams->EnsureSize(bind, 100* sizeof(wchar_t));
+                            statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        }
                     }
                     else
                     {
                         if (!isNull)
                         {
                             FdoDateTimeValue* v = static_cast<FdoDateTimeValue*>(dval);
-                            bind->value.strvalue = (void*)mFdoConnection->FdoToDbiTime(v->GetDateTime());
-                            statement->Bind((int)(idx+1), (int)strlen((char*)bind->value.strvalue), (char*)bind->value.strvalue);
+                            const char* dateval = mFdoConnection->FdoToDbiTime(v->GetDateTime());
+                            size_t ln = strlen(dateval)+1;
+                            mBindParams->EnsureSize(bind, ln);
+                            strcpy((char*)bind->value.strvalue, dateval);
+                            statement->Bind((int)(idx+1), (int)ln, (char*)bind->value.strvalue);
                         }
                         else
                             statement->Bind((int)(idx+1), 0, (char*)NULL, bind->null_ind);
                     }
                     break;
                 case FdoDataType_Boolean:
+                    if (bind->type != FdoDataType_Boolean)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Boolean;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -228,6 +290,10 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Byte:
+                    if (bind->type != FdoDataType_Byte)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Byte;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -247,6 +313,10 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Decimal:
+                    if (bind->type != FdoDataType_Decimal)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Decimal;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -266,6 +336,10 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Double:
+                    if (bind->type != FdoDataType_Double)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Double;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -285,6 +359,10 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Int16:
+                    if (bind->type != FdoDataType_Int16)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Int16;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -304,6 +382,10 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Int32:
+                    if (bind->type != FdoDataType_Int32)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Int32;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -323,25 +405,82 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_Int64:
-                    if (paramOutType != _SQL_PARAM_INPUT)
+                    if (cmds->SupportsInt64Binding())
                     {
-                        mHasOutParams = true;
-                        bind->value.llvalue = 0;
-                        statement->Bind((int)(idx+1), &bind->value.llvalue, bind->null_ind, paramOutType);
+                        if (bind->type != FdoDataType_Int64)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_Int64;
                     }
                     else
                     {
-                        if (!isNull)
+                        if (bind->type != FdoDataType_String)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_String;
+                    }
+
+                    if (paramOutType != _SQL_PARAM_INPUT)
+                    {
+                        mHasOutParams = true;
+                        if (!cmds->SupportsInt64Binding())
                         {
-                            FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
-                            bind->value.llvalue = v->GetInt64();
-                            statement->Bind((int)(idx+1), &bind->value.llvalue);
+                            mBindParams->EnsureSize(bind, _MAX_STR_INT64*sizeof(wchar_t));
+                            statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
                         }
                         else
-                            statement->Bind((int)(idx+1), (FdoInt64*)NULL, bind->null_ind);
+                        {
+                            bind->value.llvalue = 0;
+                            statement->Bind((int)(idx+1), &bind->value.llvalue, bind->null_ind, paramOutType);
+                        }
+                    }
+                    else
+                    {
+                        if (!cmds->SupportsInt64Binding())
+                        {
+                            if (!isNull)
+                            {
+                                FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
+				                if (!cmds->SupportsUnicode())
+                                {
+                                    mBindParams->EnsureSize(bind, _MAX_STR_INT64);
+#ifdef _WIN32
+                        			_i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+		                            sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+#endif
+                                    statement->Bind((int)(idx+1), strlen((char*)bind->value.strvalue) + sizeof(char), (char*)bind->value.strvalue);
+                                }
+                                else
+                                {
+                                    mBindParams->EnsureSize(bind, _MAX_STR_INT64*sizeof(wchar_t));
+#ifdef _WIN32
+                        			_i64tow_s(v->GetInt64(), (wchar_t*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+		                            swprintf((wchar_t*)bind->value.strvalue, _MAX_STR_INT64, L"%lld", (long long int)v->GetInt64());
+#endif
+                                    statement->Bind((int)(idx+1), wcslen((wchar_t*)bind->value.strvalue) + sizeof(wchar_t), (wchar_t*)bind->value.strvalue);
+                                }
+                            }
+                            else
+                                statement->Bind((int)(idx+1), (FdoInt32*)NULL, bind->null_ind);
+                        }
+                        else
+                        {
+                            if (!isNull)
+                            {
+                                FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
+                                bind->value.llvalue = v->GetInt64();
+                                statement->Bind((int)(idx+1), &bind->value.llvalue);
+                            }
+                            else
+                                statement->Bind((int)(idx+1), (FdoInt64*)NULL, bind->null_ind);
+                        }
                     }
                     break;
                 case FdoDataType_Single:
+                    if (bind->type != FdoDataType_Single)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Single;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
@@ -361,29 +500,58 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     }
                     break;
                 case FdoDataType_String:
+                    if (bind->type != FdoDataType_String)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_String;
+
                     if (paramOutType != _SQL_PARAM_INPUT)
                     {
                         mHasOutParams = true;
-				        bind->valueNeedsFree = true;
                         // this is used only when we call stored procedures
                         // I could not find a way to get/rebind out blob size values
                         // for now we just use a fixed value
-                        bind->value.strvalue = new wchar_t[_SQL_MAX_TXT_LEN_BIND];
-                        *((wchar_t*)bind->value.strvalue) = '\0';
-                        bind->len = _SQL_MAX_TXT_LEN_BIND*sizeof(wchar_t);
-                        statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        if (!cmds->SupportsUnicode())
+                        {
+                            mBindParams->EnsureSize(bind, _SQL_MAX_VAR_LEN_BIND);
+                            statement->Bind((int)(idx+1), bind->len, (const char*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        }
+                        else
+                        {
+                            mBindParams->EnsureSize(bind, _SQL_MAX_VAR_LEN_BIND*sizeof(wchar_t));
+                            statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue, bind->null_ind, paramOutType);
+                        }
                     }
                     else
                     {
-                        if (!isNull)
+                        if (!cmds->SupportsUnicode())
                         {
-                            FdoStringValue* v = static_cast<FdoStringValue*>(dval);
-                            bind->value.strvalue = (void*)v->GetString();
-                            bind->len = (int)(sizeof(FdoString) * (wcslen((FdoString*)bind->value.strvalue) + 1));
-                            statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue);
+                            if (!isNull)
+                            {
+                                FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                                FdoString* pStrVal = v->GetString();
+                                size_t wlen = wcslen(pStrVal);
+                                int mbslen = (int) wlen * 4 + 1;
+                                mBindParams->EnsureSize(bind, mbslen);
+                                _ut_utf8_from_unicode(pStrVal, wlen, (char*)bind->value.strvalue, mbslen);
+                                statement->Bind((int)(idx+1), mbslen, (const char*)bind->value.strvalue);
+                            }
+                            else
+                                statement->Bind((int)(idx+1), 0, (const char*)NULL, bind->null_ind);
                         }
                         else
-                            statement->Bind((int)(idx+1), 0, (FdoString*)NULL, bind->null_ind);
+                        {
+                            if (!isNull)
+                            {
+                                FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                                FdoString* strval = v->GetString();
+                                size_t wlen = (sizeof(FdoString) * (wcslen(strval) + 1));
+                                mBindParams->EnsureSize(bind, wlen);
+                                wcscpy((wchar_t*)bind->value.strvalue, strval);
+                                statement->Bind((int)(idx+1), wlen, (FdoString*)bind->value.strvalue);
+                            }
+                            else
+                                statement->Bind((int)(idx+1), 0, (FdoString*)NULL, bind->null_ind);
+                        }
                     }
                     break;
                 }
@@ -391,6 +559,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
             break;
         case FdoExpressionItemType_GeometryValue:
             {
+                mBindParams->FreeResources(bind);
                 if (paramOutType != _SQL_PARAM_INPUT)
                 {
                     throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
@@ -400,6 +569,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                     FdoGeometryValue* gval = static_cast<FdoGeometryValue*>(val.p);
                     if (!gval->IsNull())
                     {
+                        char temp[32];
                         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
                         sprintf(temp, "%d", idx+1); // Parm name are one based
                         cmds->geom_srid_set(statement->GetQueryId(), temp, (long)it.second);
@@ -430,6 +600,12 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
 
 void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params)
 {
+    GdbiCommands* cmds = statement->GetGdbiCommands();
+    BindParameters(cmds, statement->GetQueryId(), params);
+}
+
+void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params)
+{
     size_t cntParams = (params != NULL) ? params->size() : 0;
     if (cntParams == 0)
         return;
@@ -440,12 +616,12 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
         mBindParams->Clear();
 
     char temp[32];
-    GdbiCommands* cmds = statement->GetGdbiCommands();
     for (size_t idx = 0; idx < cntParams; idx++)
     {
-        FdoRdbmsPvcBindDef* bind = mBindParams->push_back();
-        cmds->alcnullind(1, &(bind->null_ind));
-        cmds->set_null(bind->null_ind, 0, 0 );
+        FdoRdbmsBindStrDef* bind = mBindParams->push_back();
+        if (!bind->null_ind)
+            cmds->alcnullind(1, &(bind->null_ind));
+        cmds->set_nnull(bind->null_ind, 0, 0 );        
 
         std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >::const_reference it = params->at(idx);
         FdoLiteralValue* val = it.first;
@@ -455,158 +631,393 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
             {
                 FdoDataValue* dval = static_cast<FdoDataValue*>(val);
                 FdoDataType dataType = dval->GetDataType();
-                // Initialize the bind item
-                *bind->name = L'\0';
-                *bind->propertyName = L'\0';
-                bind->type = dataType;
-                bind->len = 64;     // Set the length to be 64
-                bind->reader = NULL;
-                bind->barray = NULL;
-                bind->value.strvalue = NULL;
-				bind->valueNeedsFree = false;
                 sprintf(temp, "%d", idx+1); // Parm name are one based
                 bool isNull = dval->IsNull();
-
+                if (isNull)
+                    cmds->set_null(bind->null_ind, 0, 0 );
                 switch(dataType)
                 {
                 case FdoDataType_BLOB:
+                    mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_BLOB;
+
                     if (!isNull)
                     {
                         FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
                         bind->barray = v->GetData();
                         bind->value.strvalue = (void*)bind->barray->GetData();
-                        statement->Bind((int)(idx+1), RDBI_BLOB, bind->barray->GetCount(), (char*)bind->value.strvalue, NULL);
                     }
-                    else
-                        statement->Bind((int)(idx+1), RDBI_BLOB, 0, (char*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_BLOB, sizeof(void*), (char*)bind->value.strvalue, bind->null_ind);
                     break;
                 case FdoDataType_DateTime:
+                    if (bind->type != FdoDataType_String)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_String;
+
+                    mBindParams->EnsureSize(bind, 100);
                     if (!isNull)
                     {
                         FdoDateTimeValue* v = static_cast<FdoDateTimeValue*>(dval);
-                        bind->value.strvalue = (void*)mFdoConnection->FdoToDbiTime(v->GetDateTime());
-                        statement->Bind((int)(idx+1), (int)strlen((char*)bind->value.strvalue), (char*)bind->value.strvalue);
+                        strcpy((char*)bind->value.strvalue, mFdoConnection->FdoToDbiTime(v->GetDateTime()));
                     }
-                    else
-                        statement->Bind((int)(idx+1), 0, (char*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_STRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
                     break;
                 case FdoDataType_Boolean:
+                    if (bind->type != FdoDataType_Boolean)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Boolean;
+
                     if (!isNull)
                     {
                         FdoBooleanValue* v = static_cast<FdoBooleanValue*>(dval);
                         bind->value.lvalue = (int)v->GetBoolean() ? 1 : 0;
-                        statement->Bind((int)(idx+1), &bind->value.lvalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (int*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_INT, sizeof(int), (char*)&bind->value.lvalue, bind->null_ind);
                     break;
                 case FdoDataType_Byte:
+                        if (bind->type != FdoDataType_Byte)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_Byte;
+
                     if (!isNull)
                     {
                         FdoByteValue* v = static_cast<FdoByteValue*>(dval);
                         bind->value.svalue = (short)v->GetByte();
-                        statement->Bind((int)(idx+1), &bind->value.svalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (short*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_SHORT, sizeof(short), (char*)&bind->value.svalue, bind->null_ind);
                     break;
                 case FdoDataType_Decimal:
+                    if (bind->type != FdoDataType_Decimal)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Decimal;
+
                     if (!isNull)
                     {
                         FdoDecimalValue* v = static_cast<FdoDecimalValue*>(dval);
                         bind->value.gvalue = v->GetDecimal();
-                        statement->Bind((int)(idx+1), &bind->value.gvalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (double*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_DOUBLE, sizeof(double), (char*)&bind->value.gvalue, bind->null_ind);
                     break;
                 case FdoDataType_Double:
+                    if (bind->type != FdoDataType_Double)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Double;
+
                     if (!isNull)
                     {
                         FdoDoubleValue* v = static_cast<FdoDoubleValue*>(dval);
                         bind->value.gvalue = v->GetDouble();
-                        statement->Bind((int)(idx+1), &bind->value.gvalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (double*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_DOUBLE, sizeof(double), (char*)&bind->value.gvalue, bind->null_ind);
                     break;
                 case FdoDataType_Int16:
+                    if (bind->type != FdoDataType_Int16)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Int16;
+
                     if (!isNull)
                     {
                         FdoInt16Value* v = static_cast<FdoInt16Value*>(dval);
                         bind->value.svalue = v->GetInt16();
-                        statement->Bind((int)(idx+1), &bind->value.svalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (short*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_SHORT, sizeof(short), (char*)&bind->value.svalue, bind->null_ind);
                     break;
                 case FdoDataType_Int32:
+                    if (bind->type != FdoDataType_Int32)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Int32;
+
                     if (!isNull)
                     {
                         FdoInt32Value* v = static_cast<FdoInt32Value*>(dval);
                         bind->value.lvalue = v->GetInt32();
-                        statement->Bind((int)(idx+1), &bind->value.lvalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (int*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_INT, sizeof(int), (char*)&bind->value.lvalue, bind->null_ind);
                     break;
                 case FdoDataType_Int64:
-                    if (!isNull)
+                    if (!cmds->SupportsInt64Binding())
                     {
+                        if (bind->type != FdoDataType_String)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_String;
+
                         FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
-                        bind->value.llvalue = v->GetInt64();
-                        statement->Bind((int)(idx+1), &bind->value.llvalue);
+		                if (!cmds->SupportsUnicode())
+                        {
+                            mBindParams->EnsureSize(bind, _MAX_STR_INT64);
+                            if (!isNull)
+                            {
+#ifdef _WIN32
+                    			_i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+	                            sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+#endif
+                            }
+                            cmds->bind(id, temp, RDBI_STRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
+                        }
+                        else
+                        {
+                            mBindParams->EnsureSize(bind, _MAX_STR_INT64*sizeof(wchar_t));
+                            if (!isNull)
+                            {
+#ifdef _WIN32
+                			    _i64tow_s(v->GetInt64(), (wchar_t*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+                                swprintf((wchar_t*)bind->value.strvalue, _MAX_STR_INT64, L"%lld", (long long int)v->GetInt64());
+#endif
+                            }
+                            cmds->bind(id, temp, RDBI_WSTRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
+                        }
                     }
                     else
-                        statement->Bind((int)(idx+1), (FdoInt64*)NULL, bind->null_ind);
+                    {
+                        if (bind->type != FdoDataType_Int64)
+                            mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_Int64;
+
+                        if (!isNull)
+                        {
+                            FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
+                            bind->value.llvalue = v->GetInt64();
+                        }
+                        cmds->bind(id, temp, RDBI_LONGLONG, sizeof(FdoInt64), (char*)&bind->value.llvalue, bind->null_ind);
+                    }
                     break;
                 case FdoDataType_Single:
+                    if (bind->type != FdoDataType_Single)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_Single;
+
                     if (!isNull)
                     {
                         FdoSingleValue* v = static_cast<FdoSingleValue*>(dval);
                         bind->value.fvalue = v->GetSingle();
-                        statement->Bind((int)(idx+1), &bind->value.fvalue);
                     }
-                    else
-                        statement->Bind((int)(idx+1), (float*)NULL, bind->null_ind);
+                    cmds->bind(id, temp, RDBI_FLOAT, sizeof(float), (char*)&bind->value.fvalue, bind->null_ind);
                     break;
                 case FdoDataType_String:
-                    if (!isNull)
+                    if (bind->type != FdoDataType_String)
+                        mBindParams->FreeResources(bind);
+                    bind->type = FdoDataType_String;
+
+                    if (!cmds->SupportsUnicode())
                     {
-                        FdoStringValue* v = static_cast<FdoStringValue*>(dval);
-                        bind->value.strvalue = (void*)v->GetString();
-                        bind->len = (int)(sizeof(FdoString) * (wcslen((FdoString*)bind->value.strvalue) + 1));
-                        statement->Bind((int)(idx+1), bind->len, (FdoString*)bind->value.strvalue);
+                        mBindParams->EnsureSize(bind, _SQL_MAX_TXT_LEN_BIND);
+                        if (!isNull)
+                        {
+                            FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                            FdoString* pStrVal = v->GetString();
+                            size_t wlen = wcslen(pStrVal);
+                            int mbslen = (int) wlen * 4 + 1;
+                            mBindParams->EnsureSize(bind, mbslen);
+                            _ut_utf8_from_unicode(pStrVal, wlen, (char*)bind->value.strvalue, mbslen);
+                        }
+                        cmds->bind(id, temp, RDBI_STRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
                     }
                     else
-                        statement->Bind((int)(idx+1), 0, (FdoString*)NULL, bind->null_ind);
+                    {
+                        mBindParams->EnsureSize(bind, _SQL_MAX_TXT_LEN_BIND*sizeof(wchar_t));
+                        if (!isNull)
+                        {
+                            FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                            FdoString* strval = v->GetString();
+                            size_t wlen = sizeof(FdoString)*(wcslen(strval) + 1);
+                            mBindParams->EnsureSize(bind, wlen);
+                            wcscpy((wchar_t*)bind->value.strvalue, strval);
+                        }
+                        cmds->bind(id, temp, RDBI_WSTRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
+                    }
                     break;
                 }
             }
             break;
         case FdoExpressionItemType_GeometryValue:
             {
+                mBindParams->FreeResources(bind);
+                bind->type = FdoRdbmsDataType_Geometry;
+                bind->value.strvalue = NULL;
                 FdoGeometryValue* gval = static_cast<FdoGeometryValue*>(val);
                 if (!gval->IsNull())
                 {
                     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
                     sprintf(temp, "%d", idx+1); // Parm name are one based
-                    cmds->geom_srid_set(statement->GetQueryId(), temp, (long)it.second);
-                    cmds->geom_version_set(statement->GetQueryId(), temp, mFdoConnection->GetSpatialGeometryVersion());
+                    cmds->geom_srid_set(id, temp, (long)it.second);
+                    cmds->geom_version_set(id, temp, mFdoConnection->GetSpatialGeometryVersion());
                     cmds->set_nnull(bind->null_ind, 0, 0 );
                     FdoPtr<FdoByteArray> ba = gval->GetGeometry();
                     FdoIGeometry* g = gf->CreateGeometryFromFgf(ba);
                     bind->type = FdoRdbmsDataType_Geometry;
                     bind->value.strvalue = (char*)g;
                     bind->len = sizeof(gval); // 4 / 8 depends of OS
-                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), bind->len, (char*)&bind->value.strvalue, NULL);
                 }
-                else
+                cmds->bind(id, temp, (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry*)), (char*)&bind->value.strvalue, bind->null_ind);
+            }
+            break;
+        default:
+            throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_103, "Invalid parameter"));
+        }
+    }
+}
+
+void FdoRdbmsPropBindHelper::BindValues(GdbiCommands* cmds, int id, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params)
+{
+    size_t cntParams = (params != NULL) ? params->size() : 0;
+    if (cntParams == 0)
+        return;
+    
+    if (mBindParams == NULL)
+        mBindParams = new FdoRdbmsPvdBindDef(cntParams);
+    else
+        mBindParams->Clear();
+
+    char temp[32];
+    for (size_t idx = 0; idx < cntParams; idx++)
+    {
+        FdoRdbmsBindStrDef* bind = mBindParams->at(idx);
+        std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >::const_reference it = params->at(idx);
+        FdoLiteralValue* val = it.first;
+        cmds->set_null(bind->null_ind, 0, 0 );
+        switch (val->GetExpressionType())
+        {
+        case FdoExpressionItemType_DataValue:
+            {
+                FdoDataValue* dval = static_cast<FdoDataValue*>(val);
+                FdoDataType dataType = dval->GetDataType();
+                if (dval->IsNull())
+                    continue;
+                cmds->set_nnull(bind->null_ind, 0, 0 );
+
+                switch(dataType)
                 {
+                case FdoDataType_BLOB:
+                    {
+                        mBindParams->FreeResources(bind);
+                        bind->type = FdoDataType_BLOB;
+                        sprintf(temp, "%d", idx+1);
+                        FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
+                        bind->barray = v->GetData();
+                        bind->value.strvalue = (void*)bind->barray->GetData();
+                        cmds->bind(id, temp, RDBI_BLOB, bind->barray->GetCount(), (char*)bind->value.strvalue, bind->null_ind);
+                    }
+                    break;
+                case FdoDataType_DateTime:
+                    {
+                        FdoDateTimeValue* v = static_cast<FdoDateTimeValue*>(dval);
+                        strcpy((char*)bind->value.strvalue, mFdoConnection->FdoToDbiTime(v->GetDateTime()));
+                    }
+                    break;
+                case FdoDataType_Boolean:
+                    {
+                        FdoBooleanValue* v = static_cast<FdoBooleanValue*>(dval);
+                        bind->value.lvalue = (int)v->GetBoolean() ? 1 : 0;
+                    }
+                    break;
+                case FdoDataType_Byte:
+                    {
+                        FdoByteValue* v = static_cast<FdoByteValue*>(dval);
+                        bind->value.svalue = (short)v->GetByte();
+                    }
+                    break;
+                case FdoDataType_Decimal:
+                    {
+                        FdoDecimalValue* v = static_cast<FdoDecimalValue*>(dval);
+                        bind->value.gvalue = v->GetDecimal();
+                    }
+                    break;
+                case FdoDataType_Double:
+                    {
+                        FdoDoubleValue* v = static_cast<FdoDoubleValue*>(dval);
+                        bind->value.gvalue = v->GetDouble();
+                    }
+                    break;
+                case FdoDataType_Int16:
+                    {
+                        FdoInt16Value* v = static_cast<FdoInt16Value*>(dval);
+                        bind->value.svalue = v->GetInt16();
+                    }
+                    break;
+                case FdoDataType_Int32:
+                    {
+                        FdoInt32Value* v = static_cast<FdoInt32Value*>(dval);
+                        bind->value.lvalue = v->GetInt32();
+                    }
+                    break;
+                case FdoDataType_Int64:
+                    {
+                        FdoInt64Value* v = static_cast<FdoInt64Value*>(dval);
+                        if (!cmds->SupportsInt64Binding())
+                        {
+		                    if (!cmds->SupportsUnicode())
+                            {
+#ifdef _WIN32
+                			    _i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+                                sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+#endif
+                            }
+                            else
+                            {
+#ifdef _WIN32
+                    			_i64tow_s(v->GetInt64(), (wchar_t*)bind->value.strvalue, _MAX_STR_INT64, 10);
+#else
+	                            swprintf((wchar_t*)bind->value.strvalue, _MAX_STR_INT64, L"%lld", (long long int)v->GetInt64());
+#endif
+                            }
+                        }
+                        else
+                            bind->value.llvalue = v->GetInt64();
+                    }
+                    break;
+                case FdoDataType_Single:
+                    {
+                        FdoSingleValue* v = static_cast<FdoSingleValue*>(dval);
+                        bind->value.fvalue = v->GetSingle();
+                    }
+                    break;
+                case FdoDataType_String:
+                    if (!cmds->SupportsUnicode())
+                    {
+                        FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                        FdoString* pStrVal = v->GetString();
+                        size_t wlen = wcslen(pStrVal);
+                        int mbslen = (int) wlen * 4 + 1;
+                        if(mBindParams->EnsureSize(bind, mbslen))
+                        {
+                            // we re-allocated the memory, so we have to re-bind
+                            sprintf(temp, "%d", idx+1);
+                            cmds->bind(id, temp, RDBI_STRING, mbslen, (char*)bind->value.strvalue, bind->null_ind);
+                        }
+                        _ut_utf8_from_unicode(pStrVal, wlen, (char*)bind->value.strvalue, mbslen);
+                    }
+                    else
+                    {
+                        FdoStringValue* v = static_cast<FdoStringValue*>(dval);
+                        FdoString* strval = v->GetString();
+                        size_t wlen = sizeof(FdoString)*(wcslen(strval) + 1);
+                        if (mBindParams->EnsureSize(bind, wlen))
+                        {
+                            // we re-allocated the memory, so we have to re-bind
+                            sprintf(temp, "%d", idx+1);
+                            cmds->bind(id, temp, RDBI_WSTRING, wlen, (char*)bind->value.strvalue, bind->null_ind);
+                        }
+                        wcscpy((wchar_t*)bind->value.strvalue, strval);                        
+                    }
+                    break;
+                }
+            }
+            break;
+        case FdoExpressionItemType_GeometryValue:
+            {
+                mBindParams->FreeResources(bind);
+                FdoGeometryValue* gval = static_cast<FdoGeometryValue*>(val);
+                if (!gval->IsNull())
+                {
+                    cmds->set_nnull(bind->null_ind, 0, 0 );
+                    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+                    FdoPtr<FdoByteArray> ba = gval->GetGeometry();
+                    FdoIGeometry* g = gf->CreateGeometryFromFgf(ba);
                     bind->type = FdoRdbmsDataType_Geometry;
-                    bind->value.strvalue = NULL;
-                    bind->len = 0;
-                    statement->Bind((int)(idx+1), (int)(RDBI_GEOMETRY), (int)(sizeof(FdoIGeometry*)), (char*)&bind->value.strvalue, bind->null_ind);
+                    bind->value.strvalue = (char*)g;
                 }
             }
             break;
@@ -707,7 +1118,7 @@ void FdoRdbmsPropBindHelper::BindBack(size_t idx, FdoLiteralValue* pVal)
     size_t cntParams = (mBindParams != NULL) ? mBindParams->size() : 0;
     if (idx >= cntParams)
         return;
-    FdoRdbmsPvcBindDef* bind = mBindParams->at(idx);
+    FdoRdbmsBindStrDef* bind = mBindParams->at(idx);
     GdbiCommands* cmds = mFdoConnection->GetDbiConnection()->GetGdbiCommands();
 
     switch (pVal->GetExpressionType())
@@ -734,10 +1145,15 @@ void FdoRdbmsPropBindHelper::BindBack(size_t idx, FdoLiteralValue* pVal)
             case FdoDataType_DateTime:
                 {
                     FdoDateTimeValue* v = static_cast<FdoDateTimeValue*>(dval);
-                    if (cmds->is_null(bind->null_ind, 0))
-                        v->SetNull();
+                    if (!cmds->is_null(bind->null_ind, 0))
+                    {
+                        if (!cmds->SupportsUnicode())
+                            v->SetDateTime(mFdoConnection->DbiToFdoTime((char*)bind->value.strvalue));
+                        else
+                            v->SetDateTime(mFdoConnection->DbiToFdoTime((wchar_t*)bind->value.strvalue));
+                    }
                     else
-                        v->SetDateTime(mFdoConnection->DbiToFdoTime((wchar_t*)bind->value.strvalue));
+                        v->SetNull();
                 }
                 break;
             case FdoDataType_Boolean:

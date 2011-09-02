@@ -254,7 +254,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
                 buf += "STOverlaps"; // REALLY?
                 break;
             case FdoSpatialOperations_EnvelopeIntersects:
-                buf += "Filter"; 
+                buf += "STIntersects(convert(geometry, ?).STEnvelope())=1";
                 break;
             default:
                 throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
@@ -266,24 +266,8 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
     FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
     mUsedParameterValues.push_back(std::make_pair(geom, geomCol->GetSRID()));
 
-    buf += "(?)=1";
-
-
-	if ( spatialOp == FdoSpatialOperations_EnvelopeIntersects)
-	{
-        mUsedParameterValues.push_back(std::make_pair(geom, geomCol->GetSRID()));
-		buf += L" AND [";
-		buf += columnName;
-		buf += "].MakeValid().STEnvelope().STIntersects";
-		buf += "(?)=1";
-
-		// store only the first spatial index name
-		if (mSpatialIndexName == L"")
-		{
-			FdoPtr<FdoSmPhSpatialIndex> si = geomCol->GetSpatialIndex();
-			mSpatialIndexName = si->GetName();
-		}
-	}
+    if (spatialOp != FdoSpatialOperations_EnvelopeIntersects)
+        buf += "(?)=1";
 
     AppendString((const wchar_t*)buf);
 }

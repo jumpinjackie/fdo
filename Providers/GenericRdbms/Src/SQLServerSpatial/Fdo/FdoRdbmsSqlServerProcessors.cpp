@@ -2411,22 +2411,15 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessSpatialCondition(FdoSpatialCondition& f
                 itm->first.append(L"STOverlaps");
                 break;
             case FdoSpatialOperations_EnvelopeIntersects:
-                itm->first.append(L"Filter");
+                itm->first.append(L"STIntersects(convert(geometry, ?).STEnvelope())=1");
                 break;
             default:
                 throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
         }
     }
     mUsedParameterValues.push_back(std::make_pair(geom, m_lastSrid));
-    itm->first.append(L"(?)=1", 5);
-
-	if (spatialOp == FdoSpatialOperations_EnvelopeIntersects)
-	{
-        mUsedParameterValues.push_back(std::make_pair(geom, m_lastSrid));
-		itm->first.append(L" AND ", 5);
-		itm->first.append(itmPropExp->first);
-		itm->first.append(L".MakeValid().STEnvelope().STIntersects(?)=1");
-	}
+    if (spatialOp != FdoSpatialOperations_EnvelopeIntersects)
+        itm->first.append(L"(?)=1", 5);
 
     pop_stack(); // itmPropExp
 }
@@ -2715,6 +2708,7 @@ FdoDataType FdoRdbmsSqlServerSqlBuilder::GetCalculationType(FdoString* name)
             }
         }
     }
+    return retVal;
 }
 
 FdoString* FdoRdbmsSqlServerSqlBuilder::FindCalculation(FdoString* name)

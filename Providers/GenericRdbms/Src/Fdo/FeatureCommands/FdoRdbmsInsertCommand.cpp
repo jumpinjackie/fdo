@@ -33,7 +33,7 @@
 #include "SpatialManager/FdoRdbmsSpatialManager.h"
 
 
-static char* TRANSACTION_NAME = "FdoRdbmsInsertCommand::Execute";
+static char* TRANSACTION_NAME = "TrInsCmd";
 
 
 #define INSERT_CLEANUP \
@@ -50,7 +50,6 @@ FdoRdbmsInsertCommand::FdoRdbmsInsertCommand () :
     mConnection( NULL ),
     mPropertyValues(NULL),
     mAutoGenPropertyValues(NULL),
-    mBatchValues(NULL),
     m_ClassName( NULL ),
     mCurrentClass(NULL),
 	mPvcProcessor( NULL )
@@ -62,7 +61,6 @@ FdoRdbmsInsertCommand::FdoRdbmsInsertCommand (FdoIConnection *connection) :
     mPropertyValues(NULL),
     mAutoGenPropertyValues(NULL),
     m_ClassName( NULL ),
-    mBatchValues(NULL),
     FdoRdbmsCommand<FdoIInsert>(connection),
     mCurrentClass(NULL),
 	mPvcProcessor( NULL )
@@ -83,8 +81,12 @@ FdoRdbmsInsertCommand::~FdoRdbmsInsertCommand()
         delete [] mCurrentClass;
     FDO_SAFE_RELEASE(mPropertyValues);
     FDO_SAFE_RELEASE(mAutoGenPropertyValues);
-    FDO_SAFE_RELEASE(mBatchValues);
     FDO_SAFE_RELEASE(m_ClassName);
+}
+
+FdoRdbmsInsertCommand* FdoRdbmsInsertCommand::Create (FdoIConnection *connection)
+{
+    return new FdoRdbmsInsertCommand(connection);
 }
 
 FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()

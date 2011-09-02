@@ -118,6 +118,7 @@ void FdoAssociationInsertTest::masterTestNoObj( FdoAssociationInsertType type, c
         // Add an instance of the TestFeatureClass
         insertCommand->SetFeatureClassName(L"TestFeatureClass");
 	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues->Clear();
         
         // Initialize the association property
         
@@ -291,6 +292,7 @@ void FdoAssociationInsertTest::insert_ManyWithIdent()
         // Add an instance of the TestFeatureClass
         insertCommand->SetFeatureClassName(L"TestFeatureClass");
 	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues->Clear();
         
         dataValue = FdoDataValue::Create( (FdoString*)val1 );
 	    propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
@@ -352,6 +354,7 @@ void FdoAssociationInsertTest::masterTestWithObj(FdoAssociationInsertType type, 
         // Add an instance of the TestFeatureClass
         insertCommand->SetFeatureClassName(L"TestSubFeatureClass");
 	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues->Clear();
 
         // Add the id property
         dataValue = FdoDataValue::Create( name1 );

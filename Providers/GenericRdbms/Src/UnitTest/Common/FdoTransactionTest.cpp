@@ -239,14 +239,15 @@ void FdoTransactionTest::TestRollback()
         FdoPtr<FdoIInsert> insCmd = (FdoIInsert*)(mConnection->CreateCommand(FdoCommandType_Insert));
         insCmd->SetFeatureClassName(L"TestTransaction:TestTransactionClass");
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
-        FdoPtr<FdoPropertyValue> propIns;
+        FdoPtr<FdoPropertyValue> propIns1;
+        FdoPtr<FdoPropertyValue> propIns2;
         
         FdoPtr<FdoStringValue> valPropName = FdoStringValue::Create(L"MyName1");
-        propIns = FdoPropertyValue::Create(L"name", valPropName);
-        vals->Add(propIns);
+        propIns1 = FdoPropertyValue::Create(L"name", valPropName);
+        vals->Add(propIns1);
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
-        propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
-        vals->Add(propIns);
+        propIns2 = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
+        vals->Add(propIns2);
         insCmd->Execute();
 
         int count = 0;     
@@ -262,11 +263,9 @@ void FdoTransactionTest::TestRollback()
         count = 0;
         FdoPtr<FdoITransaction> trans = mConnection->BeginTransaction();
         valPropName = FdoStringValue::Create(L"MyName2");
-        propIns = FdoPropertyValue::Create(L"name", valPropName);
-        vals->Add(propIns);
+        propIns1->SetValue(valPropName);
         valPropIsTrue = FdoBooleanValue::Create(false);
-        propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
-        vals->Add(propIns);
+        propIns2->SetValue(valPropIsTrue);
         insCmd->Execute();
         
         reader = selCmd->Execute();
@@ -320,14 +319,15 @@ void FdoTransactionTest::TestRollbackSavePoint()
         FdoPtr<FdoIInsert> insCmd = (FdoIInsert*)(mConnection->CreateCommand(FdoCommandType_Insert));
         insCmd->SetFeatureClassName(L"TestTransaction:TestTransactionClass");
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
-        FdoPtr<FdoPropertyValue> propIns;
+        FdoPtr<FdoPropertyValue> propIns1;
+        FdoPtr<FdoPropertyValue> propIns2;
         
         FdoPtr<FdoStringValue> valPropName = FdoStringValue::Create(L"MyName1");
-        propIns = FdoPropertyValue::Create(L"name", valPropName);
-        vals->Add(propIns);
+        propIns1 = FdoPropertyValue::Create(L"name", valPropName);
+        vals->Add(propIns1);
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
-        propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
-        vals->Add(propIns);
+        propIns2 = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
+        vals->Add(propIns2);
         insCmd->Execute();
     
         int count = 0;     
@@ -342,11 +342,10 @@ void FdoTransactionTest::TestRollbackSavePoint()
         FdoStringP savePointName = trans->AddSavePoint(L"Test");
 
         valPropName = FdoStringValue::Create(L"MyName2");
-        propIns = FdoPropertyValue::Create(L"name", valPropName);
-        vals->Add(propIns);
+        propIns1->SetValue(valPropName);
+        
         valPropIsTrue = FdoBooleanValue::Create(false);
-        propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
-        vals->Add(propIns);
+        propIns2->SetValue(valPropIsTrue);
         insCmd->Execute();
 
         count = 0;
