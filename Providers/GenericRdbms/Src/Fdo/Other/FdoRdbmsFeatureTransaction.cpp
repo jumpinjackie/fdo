@@ -136,6 +136,11 @@ void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
     {
         throw FdoException::Create(ex->GetExceptionMessage(), ex->GetCause(), ex->GetNativeErrorCode());
     }
+
+    int index = m_savepoints->IndexOf(savePointName);
+    _ASSERT(index != -1);
+    if(index != -1)
+        m_savepoints->RemoveAt(index);
 }
 
 void FdoRdbmsFeatureTransaction::Rollback(FdoString* savePointName)
