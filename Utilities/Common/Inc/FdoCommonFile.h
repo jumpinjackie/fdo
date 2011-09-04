@@ -622,7 +622,7 @@ public:
     /// Returns the time of last modification of the file as seconds from midnight, January 1, 1970.
     /// Returns -1 in case of failure.
     /// 
-    static FdoInt64 FdoCommonFile::GetTimestamp (const wchar_t* pFilename);
+    static FdoInt64 GetTimestamp (const wchar_t* pFilename);
 };
 
 #endif // FDO_COMMON_FILE_H
