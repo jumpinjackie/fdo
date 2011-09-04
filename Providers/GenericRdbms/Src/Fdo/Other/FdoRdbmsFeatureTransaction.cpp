@@ -138,7 +138,6 @@ void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
     }
 
     int index = m_savepoints->IndexOf(savePointName);
-    _ASSERT(index != -1);
     if(index != -1)
         m_savepoints->RemoveAt(index);
 }
