@@ -96,6 +96,16 @@ bool FdoXmlFeatureReaderImpl::ReadNext()
             m_featurePropertyReader->SetFeatureSchemas(m_schemas);
         }
 		
+		// if we are reading a new feature, release old ones
+		if (m_curFeatureIndex >= (int)m_featureCollection.size())
+		{
+			while(!m_featureCollection.empty()) {
+				FDO_SAFE_RELEASE(m_featureCollection.back());
+				m_featureCollection.pop_back();
+				m_curFeatureIndex --;
+			}
+		}
+
 		m_featurePropertyReader->Parse(this, NULL, m_incrementalParsing);
 	}
 

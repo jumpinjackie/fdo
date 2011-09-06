@@ -43,7 +43,7 @@ FdoStringP FdoXmlUtilXrcs::Xrcs2Unicode( const XMLCh* chars, const XMLSize_t len
         outString = (wchar_t*) chars;  // fast assignment step (no conversion)
     else
     {
-		bool inHeap = sizeof(wchar_t)*(length+1) > 512 * 1024 ? true : false;
+		bool inHeap = sizeof(wchar_t)*(length+1) > 64 * 1024 ? true : false;
         wchar_t* target;
 		if (inHeap)
 			target = (wchar_t*)new unsigned char[sizeof(wchar_t)*(length+1)];
