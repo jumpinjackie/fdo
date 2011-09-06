@@ -128,7 +128,8 @@ public:
 
         if ((size_t)item->len < sz)
         {
-            delete[] item->value.strvalue;
+            char* ptr = (char*)item->value.strvalue;
+            delete[] ptr;
             item->len = 2*sz;
             item->value.strvalue = new char[2*sz];
             item->valueNeedsFree = true;
@@ -445,7 +446,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
 #ifdef _WIN32
                         			_i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
 #else
-		                            sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+		                            snprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
 #endif
                                     statement->Bind((int)(idx+1), strlen((char*)bind->value.strvalue) + sizeof(char), (char*)bind->value.strvalue);
                                 }
