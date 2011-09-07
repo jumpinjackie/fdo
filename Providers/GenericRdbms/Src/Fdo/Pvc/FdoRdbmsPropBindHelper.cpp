@@ -751,7 +751,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
 #ifdef _WIN32
                     			_i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
 #else
-	                            sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+	                            snprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
 #endif
                             }
                             cmds->bind(id, temp, RDBI_STRING, bind->len, (char*)bind->value.strvalue, bind->null_ind);
@@ -953,7 +953,7 @@ void FdoRdbmsPropBindHelper::BindValues(GdbiCommands* cmds, int id, std::vector<
 #ifdef _WIN32
                 			    _i64toa_s(v->GetInt64(), (char*)bind->value.strvalue, _MAX_STR_INT64, 10);
 #else
-                                sprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
+                                snprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
 #endif
                             }
                             else
