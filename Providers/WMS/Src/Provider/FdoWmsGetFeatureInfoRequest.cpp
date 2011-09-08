@@ -177,7 +177,8 @@ FdoStringP FdoWmsGetFeatureInfoRequest::EncodeKVP()
     else
         ret += FdoWmsXmlGlobals::WmsRequestX;
     ret += FdoOwsGlobals::Equal;
-    ret += FdoStringP::Format(L"%lf", mI);
+    int iRoundI = (int)mI;
+    ret += FdoStringP::Format(L"%d", iRoundI);
 
     // Add "J" parameters in the request
     ret += FdoOwsGlobals::And;
@@ -186,7 +187,8 @@ FdoStringP FdoWmsGetFeatureInfoRequest::EncodeKVP()
     else
         ret += FdoWmsXmlGlobals::WmsRequestY;
     ret += FdoOwsGlobals::Equal;
-    ret += FdoStringP::Format(L"%lf", mJ);
+    int iRoundJ = (int)mJ;
+    ret += FdoStringP::Format(L"%d", iRoundJ);
 
     // Translate to a valid HTTP request
     // NOTE: Currently, this is mainly for handling the blank space in "FORMAT"
