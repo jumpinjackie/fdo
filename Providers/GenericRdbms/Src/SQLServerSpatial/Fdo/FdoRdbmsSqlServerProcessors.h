@@ -247,7 +247,6 @@ public:
         m_lastSrid = 0;
         m_useBr = false;
         mUsedParameterValues.clear();
-        mParams = NULL;
         m_selectList.clear();
         m_hasClaculations = false;
         m_aliasStartChar = L'A';
