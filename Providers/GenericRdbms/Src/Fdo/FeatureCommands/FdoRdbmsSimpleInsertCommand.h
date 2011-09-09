@@ -23,76 +23,13 @@
 // FeatureCommand
 #include "FdoRdbmsConnection.h"
 #include "FdoRdbmsCommand.h"
+#include "Fdo/Other/FdoRdbmsSQLBuilder.h"
 
 class FdoRdbmsException;
 class FdoRdbmsPropBindHelper;
 class FdoRdbmsInsertCommand;
 
-// Class used only to detect if the property values collection has changed between 
-// two or more consecutive inserts. No other special handling is done here
-class FdoRdbmsPropertyValueCollection : public FdoPropertyValueCollection
-{
-private:
-    bool m_collChanged;
-protected:
-    FdoRdbmsPropertyValueCollection()
-    {
-        m_collChanged = false;
-    }
-    virtual ~FdoRdbmsPropertyValueCollection()
-    {
-    }
-
-    virtual void Dispose()
-    {
-        delete this;
-    }
-public:
-    static FdoRdbmsPropertyValueCollection* Create()
-    {
-        return new FdoRdbmsPropertyValueCollection();
-    }
-    virtual void SetItem(FdoInt32 index, FdoPropertyValue* value)
-    {
-        m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::SetItem(index, value);
-    }
-    virtual FdoInt32 Add(FdoPropertyValue* value)
-    {
-        m_collChanged = true;
-        return FdoCollection<FdoPropertyValue, FdoCommandException>::Add(value);
-    }
-    virtual void Insert(FdoInt32 index, FdoPropertyValue* value)
-    {
-        m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Insert(index, value);
-    }
-    virtual void Clear()
-    {
-        m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Clear();
-    }
-    virtual void Remove(const FdoPropertyValue* value)
-    {
-        m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Remove(value);
-    }
-    virtual void RemoveAt(FdoInt32 index)
-    {
-        m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::RemoveAt(index);
-    }
-    bool GetCollectionChanged()
-    {
-        return m_collChanged;
-    }
-    void SetCollectionChanged(bool value)
-    {
-        m_collChanged = value;
-    }
-};
-
-class FdoRdbmsSimpleInsertCommand : public FdoRdbmsCommand<FdoIInsert>
+class FdoRdbmsSimpleInsertCommand : public FdoIInsert
 {
 private:
     //
@@ -117,6 +54,7 @@ private:
 
 protected:
     virtual ~FdoRdbmsSimpleInsertCommand();
+    virtual void Dispose() { delete this; }
 
 public:
 
@@ -125,6 +63,16 @@ public:
     // Prevent the use of the Assignment Operation by definning it and not implemeting it.
     // DO NOT IMPLEMENT
     FdoRdbmsSimpleInsertCommand & operator=(const FdoRdbmsSimpleInsertCommand &right);
+
+    virtual FdoIConnection* GetConnection() { return FDO_SAFE_ADDREF(mFdoConnection); }
+    virtual int GetCommandTimeout() { return 0; }
+    virtual void SetCommandTimeout(int value) {}
+    virtual FdoITransaction* GetTransaction() { return NULL; }
+    virtual void SetTransaction(FdoITransaction* value) {}
+    virtual void Prepare() {}
+    virtual void Cancel() {}
+
+    virtual FdoParameterValueCollection* GetParameterValues() { return NULL; }
 
     //    Executes the insert command.
     virtual FdoIFeatureReader* Execute ();
@@ -155,6 +103,10 @@ public:
             if (classDefinition->GetIsAbstract())
                 throw FdoSchemaException::Create(NlsMsgGet1(FDORDBMS_266, "Creating/Updating a standalone instance for class '%1$ls' is not allowed", value->GetText()));
             
+            FdoString* name = value->GetText();
+            while(*name != '\0' && *name != '.') name++;
+            mIsObjectObject = (*name == L'.');
+
             mConnection->GetSchemaUtil()->CheckClass(value->GetText());
 
             mClassName = FDO_SAFE_ADDREF(value);
@@ -172,6 +124,7 @@ public:
 
 protected:
     DbiConnection* mConnection;
+    FdoRdbmsConnection* mFdoConnection;
 
 private:
     FdoRdbmsPropertyValueCollection* mPropertyValues;
@@ -183,6 +136,7 @@ private:
     std::wstring mInsertSql;
     FdoPropertyValueCollection *mLocalPropertyValues;
     bool mContainsObjectProperties;
+    bool mIsObjectObject;
     FdoRdbmsPropBindHelper* mBindHelper;
     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > mBindProps;
     bool mHasRevisionNumber;

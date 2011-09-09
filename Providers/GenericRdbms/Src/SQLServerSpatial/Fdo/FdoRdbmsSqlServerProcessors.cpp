@@ -2820,7 +2820,7 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     for (size_t idx = 0; idx < cntSelLst; idx++)
     {
         // collect first all identifiers
-        FdoPtr<FdoIdentifier> idf = m_props->GetItem(idx);
+        FdoPtr<FdoIdentifier> idf = m_props->GetItem((int)idx);
         if (FdoExpressionItemType_Identifier == idf->GetExpressionType())
         {
             // format the select property
@@ -2849,7 +2849,7 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     for (size_t idx = 0; idx < cntSelLst; idx++)
     {
         // collect first all identifiers
-        FdoPtr<FdoIdentifier> idf = m_props->GetItem(idx);
+        FdoPtr<FdoIdentifier> idf = m_props->GetItem((int)idx);
         FdoExpressionItemType expType = idf->GetExpressionType();
         if (FdoExpressionItemType_Identifier == expType)
         {
@@ -3219,4 +3219,30 @@ FdoDataType FdoRdbmsSqlServerSqlBuilder::GetApproxExpressionDataType(FdoExpressi
         // BinaryExpression, UnaryExpression -> double
     }
     return retVal;
+}
+
+FdoString* FdoRdbmsSqlServerSqlBuilder::ToUpdateFilterSqlString(FdoIdentifier* mainClass, FdoFilter* filter)
+{
+    if (filter == NULL || mainClass == NULL)
+        return NULL;
+
+    FdoPtr<FdoSqlServerInvalidExpDetProcessor> spDetector = FdoSqlServerInvalidExpDetProcessor::Create();
+    spDetector->StartStoppable();
+    filter->Process(spDetector);
+    if (!spDetector->IsExpressionSupported())
+        return NULL;
+
+    Reset();
+
+    m_mainClass = FDO_SAFE_ADDREF(mainClass);
+    pair_working_stack* itmSelect = top_stack();
+    m_props = NULL;
+    DbiConnection* dbiConn = m_fdoConn->GetDbiConnection();
+    m_usedClasses.clear();
+
+    const FdoSmLpClassDefinition* clsDef = dbiConn->GetSchemaUtil()->GetClass(mainClass->GetText());
+    m_usedClasses.push_back(std::make_pair(clsDef, L""));
+
+    filter->Process(this);
+    return itmSelect->first.c_str();
 }

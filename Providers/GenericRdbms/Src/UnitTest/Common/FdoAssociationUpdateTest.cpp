@@ -400,18 +400,14 @@ void FdoAssociationUpdateTest::update_NoIdentObjNested()
 
 FdoPropertyValue* FdoAssociationUpdateTest::AddNewProperty( FdoPropertyValueCollection* propertyValues, const wchar_t *name )
 {
-    FdoPropertyValue*  propertyValue = NULL;
-    try
+    FdoPtr<FdoPropertyValue> propertyValue = propertyValues->FindItem( name );
+
+    if (propertyValue == NULL)
     {
-        propertyValue = propertyValues->GetItem( name );
-    }
-    catch( FdoException *exp )
-    {
-        exp->Release();
         propertyValue =  FdoPropertyValue::Create();
         propertyValue->SetName( name );
         propertyValues->Add( propertyValue );
     }
     
-    return propertyValue;
+    return FDO_SAFE_ADDREF(propertyValue.p);
 }

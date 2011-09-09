@@ -33,7 +33,7 @@
 #endif
 #include "../../Gdbi/GdbiStatement.h"
 
-static char* TRANSACTION_NAME = "FdoRdbmsUpdateCommand::Execute";
+static char* TRANSACTION_NAME = "TrUpdCmd";
 
 #define UPDATE_CLEANUP \
             if( innerSelect ) {\
@@ -99,6 +99,11 @@ FdoRdbmsUpdateCommand::~FdoRdbmsUpdateCommand()
 
 	if( mPvcProcessor )
 		delete mPvcProcessor;
+}
+
+FdoRdbmsUpdateCommand* FdoRdbmsUpdateCommand::Create (FdoIConnection *connection)
+{
+    return new FdoRdbmsUpdateCommand(connection);
 }
 
 FdoInt32 FdoRdbmsUpdateCommand::Execute ()

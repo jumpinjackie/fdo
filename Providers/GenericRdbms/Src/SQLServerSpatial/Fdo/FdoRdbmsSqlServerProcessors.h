@@ -199,6 +199,7 @@ public:
     {
         return NULL;
     }
+    virtual FdoString* ToUpdateFilterSqlString(FdoIdentifier* mainClass, FdoFilter* filter);
 
     //--------------------------------------------------------------------
     // FdoIFilterProcessor

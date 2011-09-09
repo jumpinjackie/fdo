@@ -69,7 +69,7 @@ public:
             this->mFdoConnection->Release();
 
         value->AddRef();
-        this->mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(value);
+        this->mFdoConnection = static_cast<FdoRdbmsConnection*>(value);
     }
 
     // Gets the wait time before terminating the attempt to execute a command

@@ -464,7 +464,6 @@ long GdbiCommands::NextRDBMSSequenceNumber( FdoString* adbSequenceName )
     int                 select_begun = FALSE;
     int                 sqlid_coc = -1;
     FdoStringP          sql_buf;   /* place to format SQL command */
-    int                 rows_proc;
     gdbi_full_seq_def   *gptr = &mFeatureSeq;
     long                number = -1;
     int                 CURSOR = -1;

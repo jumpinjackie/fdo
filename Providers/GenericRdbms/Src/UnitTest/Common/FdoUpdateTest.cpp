@@ -434,8 +434,6 @@ void FdoUpdateTest::UpdateNonFeatureClass()
         updateCommand->Execute();
 
         featureTransaction->Commit();
-
-        connection->Close();
     }
     catch (FdoException *ex)
     {
@@ -539,8 +537,6 @@ void FdoUpdateTest::FdoUpdateTestTypes ()
         updateCommand->Execute();
 
         featureTransaction->Commit();
-
-        connection->Close();
     }
     catch (FdoCommandException *ex)
     {
@@ -857,7 +853,6 @@ void FdoUpdateTest::UpdateFeatureWithMultiGeometries()
         }
         CPPUNIT_ASSERT( rowCount == 3 );
         rdr->Close();
-        connection->Close();
     }
     catch (FdoException *ex)
     {

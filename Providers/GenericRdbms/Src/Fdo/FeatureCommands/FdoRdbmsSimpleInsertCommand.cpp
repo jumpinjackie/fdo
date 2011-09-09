@@ -33,35 +33,40 @@ static char* TRANSACTION_NAME_SINS = "TrSInsCmd";
 
 FdoRdbmsSimpleInsertCommand::FdoRdbmsSimpleInsertCommand ()
 {
+    mFdoConnection = NULL;
     mPropertyValues = NULL;
     mAutoGenPropertyValues = NULL;
     mClassName = NULL;
     mConnection = NULL;
     mContainsObjectProperties = false;
+    mIsObjectObject = false;
     mBindHelper = NULL;
     mHasRevisionNumber = false;
     mBackupCmd = NULL;
     m_qid = -1;
 }
 
-FdoRdbmsSimpleInsertCommand::FdoRdbmsSimpleInsertCommand (FdoIConnection *connection) : FdoRdbmsCommand<FdoIInsert>(connection)
+FdoRdbmsSimpleInsertCommand::FdoRdbmsSimpleInsertCommand (FdoIConnection *connection)
 {
+    mFdoConnection = static_cast<FdoRdbmsConnection*> (connection);
+    FDO_SAFE_ADDREF(mFdoConnection);
     mPropertyValues = FdoRdbmsPropertyValueCollection::Create();
     mLocalPropertyValues = FdoPropertyValueCollection::Create();
     mAutoGenPropertyValues = FdoPropertyValueCollection::Create();
-    mClassName = NULL;
     mConnection = mFdoConnection->GetDbiConnection();
     mContainsObjectProperties = false;
+    mIsObjectObject = false;
     mBindHelper = NULL;
+    mClassName = NULL;
     mHasRevisionNumber = false;
     mBackupCmd = NULL;
-    mClassName = FdoIdentifier::Create();
     m_qid = -1;
 }
 
 FdoRdbmsSimpleInsertCommand::~FdoRdbmsSimpleInsertCommand()
 {
     FlushInsert();
+    FDO_SAFE_RELEASE(mFdoConnection);
     FDO_SAFE_RELEASE(mPropertyValues);
     FDO_SAFE_RELEASE(mAutoGenPropertyValues);
     FDO_SAFE_RELEASE(mClassName);
@@ -77,8 +82,12 @@ FdoRdbmsSimpleInsertCommand* FdoRdbmsSimpleInsertCommand::Create(FdoIConnection 
 
 void FdoRdbmsSimpleInsertCommand::FlushInsert()
 {
-    if (m_qid != -1)
-        mConnection->GetGdbiCommands()->free_cursor(m_qid);
+    if (mFdoConnection->GetConnectionState() != FdoConnectionState_Closed)
+    {
+        // if user closed the connection too earlier we cannot free the cursor
+        if (m_qid != -1)
+            mConnection->GetGdbiCommands()->free_cursor(m_qid);
+    }
     m_qid = -1;
     mInsertSql.resize(0);
     mLocalPropertyValues->Clear();
@@ -98,7 +107,7 @@ void FdoRdbmsSimpleInsertCommand::PrepareInsert(const FdoSmLpClassDefinition* cl
     if (mPropertyValues->GetCount())
         SanitizePropertyValues(classDefinition, mPropertyValues, propNames.p, mContainsObjectProperties);
 
-    if (mContainsObjectProperties) // we do not support insert objects props
+    if (mContainsObjectProperties || mIsObjectObject) // we do not support insert objects props
     {
         mBindProps.clear();
         return;
@@ -375,7 +384,7 @@ FdoIFeatureReader* FdoRdbmsSimpleInsertCommand::Execute ()
     else
         RebindValues();
 
-    if (mContainsObjectProperties || mInsertSql.size() == 0)
+    if (mContainsObjectProperties || mIsObjectObject || mInsertSql.size() == 0)
     {
         if (mBackupCmd == NULL)
             mBackupCmd = FdoRdbmsInsertCommand::Create(mFdoConnection);

@@ -267,8 +267,8 @@ FdoStringP FdoSmPhSqsMgr::FormatSQLVal( FdoStringP value, FdoSmPhColType valueTy
 FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
 {
     FdoDateTime dt;
-    int start = 0;
-    int length = stringValue.GetLength();
+    size_t start = 0;
+    size_t length = stringValue.GetLength();
 
     // Numeric default values can be enclosed in (()). Remove these brackets
     if ( (wcsncmp(stringValue, L"((", 2) == 0) &&
