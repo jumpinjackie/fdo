@@ -23,9 +23,9 @@
 #define FDORDBMSSQLSERVERDATETIMEUTILS_H
 
 #ifdef _WIN32
-    #define _ITOAW(buffer, val) _itow(val, buffer, 10);
+    #define _ITOAW(buffer, val) _itow((int)val, buffer, 10);
 #else
-    #define _ITOAW(buffer, val) swprintf(buffer, 30, L"%d", val);
+    #define _ITOAW(buffer, val) swprintf(buffer, 30, L"%d", (int)val);
 #endif	
 
 enum TokenDateFormatType

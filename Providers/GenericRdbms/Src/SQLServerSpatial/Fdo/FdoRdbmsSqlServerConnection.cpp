@@ -30,6 +30,7 @@
 #include "FdoRdbmsSqlServerFilterCapabilities.h"
 #include "FdoRdbmsSqlServerExpressionCapabilities.h"
 #include "FdoRdbmsSimpleInsertCommand.h"
+#include "FdoRdbmsSimpleUpdateCommand.h"
 
 #include "../SchemaMgr/SchemaManager.h"
 #include "../SchemaMgr/Ph/Mgr.h"
@@ -94,9 +95,11 @@ FdoICommand *FdoRdbmsSqlServerConnection::CreateCommand (FdoInt32 commandType)
         case FdoCommandType_Insert:
              ret = FdoRdbmsSimpleInsertCommand::Create(this);
              break;
+        case FdoCommandType_Update:
+             ret = FdoRdbmsSimpleUpdateCommand::Create(this);
+             break;
         case FdoCommandType_Select:
         case FdoCommandType_SelectAggregates:
-        case FdoCommandType_Update:
         case FdoCommandType_DescribeSchema:
         case FdoCommandType_ApplySchema:
         case FdoCommandType_DestroySchema:

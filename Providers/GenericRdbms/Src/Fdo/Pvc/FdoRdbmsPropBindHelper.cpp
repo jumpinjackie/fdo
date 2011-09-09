@@ -38,8 +38,8 @@ typedef struct {
 			short		svalue;
 			char		cvalue;
 		} value;
-		bool			 valueNeedsFree;
-        int				 len;
+		bool             valueNeedsFree;
+        int              len;
         GDBI_NI_TYPE	 *null_ind;
         FdoByteArray     *barray;
 } FdoRdbmsBindStrDef;
@@ -448,7 +448,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
 #else
 		                            snprintf((char*)bind->value.strvalue, _MAX_STR_INT64, "%lld", (long long int)v->GetInt64());
 #endif
-                                    statement->Bind((int)(idx+1), strlen((char*)bind->value.strvalue) + sizeof(char), (char*)bind->value.strvalue);
+                                    statement->Bind((int)(idx+1), (int)(strlen((char*)bind->value.strvalue) + sizeof(char)), (char*)bind->value.strvalue);
                                 }
                                 else
                                 {
@@ -458,7 +458,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
 #else
 		                            swprintf((wchar_t*)bind->value.strvalue, _MAX_STR_INT64, L"%lld", (long long int)v->GetInt64());
 #endif
-                                    statement->Bind((int)(idx+1), wcslen((wchar_t*)bind->value.strvalue) + sizeof(wchar_t), (wchar_t*)bind->value.strvalue);
+                                    statement->Bind((int)(idx+1), (int)(wcslen((wchar_t*)bind->value.strvalue) + sizeof(wchar_t)), (wchar_t*)bind->value.strvalue);
                                 }
                             }
                             else

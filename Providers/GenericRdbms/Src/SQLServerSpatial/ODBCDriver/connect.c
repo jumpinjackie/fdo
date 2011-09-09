@@ -590,7 +590,7 @@ static void DumpError2W
     SQLINTEGER  nServerError;
     SQLSMALLINT cbMessage;
     UINT        nRec = 1;
-    int         msgSize = 0;
+    size_t      msgSize = 0;
 
     context->odbcdr_last_server_rc = 0;
     while (SQL_SUCCEEDED(SQLGetDiagRecW(eHandleType, hodbc, nRec, szState,

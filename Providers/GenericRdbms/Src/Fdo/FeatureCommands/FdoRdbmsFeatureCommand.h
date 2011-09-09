@@ -54,7 +54,7 @@ protected:
         if( connection != NULL )
             connection->AddRef();
 
-        mFdoConnection = dynamic_cast<FdoRdbmsConnection*>(connection);
+        mFdoConnection = static_cast<FdoRdbmsConnection*>(connection);
         m_TimeOut = 0;
         m_pParmeterValues = NULL;
     }

@@ -1603,7 +1603,6 @@ void FdoInsertTest::insertAutoGen()
 		    CPPUNIT_ASSERT(!myReader->IsNull(L"AttrId"));
 	    }
 	    myReader->Close();
-	    connection->Close();
     }
     catch (FdoException* e)
     {
@@ -1688,7 +1687,6 @@ void FdoInsertTest::insertLongString()
 				}
 			}
 			reader->Close();
-			connection->Close();
 		}
 		catch (...)
         {
@@ -1852,7 +1850,6 @@ void FdoInsertTest::featureReaderTest()
 #endif
         featureReader = NULL;
 
-		connection->Close();
         if (featureReaderError)
             throw FdoException::Create(L"Feature Reader Test Failed");
         printf(" >>> Feature Reader Test Succeeded\n");
@@ -2110,8 +2107,6 @@ void FdoInsertTest::testDefect1206136()
         }
 
         CPPUNIT_ASSERT( count == 5 );
-
-        connection->Close();
 
         printf( "\nDone\n" );
     }
