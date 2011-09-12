@@ -102,7 +102,8 @@ static _FunctionNameMapping_ ArcSDEFunctionsMappings [] = {
 	{FDO_FUNCTION_LENGTH2D,			-1},
 };
 
-ArcSDEFilterToSql::ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition* definition)
+ArcSDEFilterToSql::ArcSDEFilterToSql (ArcSDEConnection *conn, FdoClassDefinition* definition):
+    mGeom()
 {
     mSql = new wchar_t[8];
     wcscpy (mSql, WHERE);
@@ -915,7 +916,8 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
     FdoPtr<FdoByteArray> fgf = spatialGeometry->GetGeometry();
 
     // Convert, cropping to the coordinate reference's extents:
-    convert_fgf_to_sde_shape(m_Connection, fgf, coordRef, shape, true);
+    shape = mGeom.FgfToShape(m_Connection->mGeomFactory, fgf, m_Connection->GetConnection(), coordRef, true);
+    //convert_fgf_to_sde_shape(m_Connection, fgf, coordRef, shape, true);
     fgf = NULL;
     handle_sde_err<FdoCommandException>(m_Connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
@@ -960,12 +962,15 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
             SE_shape_free(shape);
 
             void* valuePointer = NULL;
-            convert_sde_shape_to_fgf(m_Connection, shapeWithBuffer, (FdoByteArray*&)valuePointer);
+            mGeom.LoadFromSdeGeometry(shapeWithBuffer);
+            valuePointer = (void*)mGeom.ToFGF(m_Connection->mGeomFactory);
+            //convert_sde_shape_to_fgf(m_Connection, shapeWithBuffer, (FdoByteArray*&)valuePointer);
             // free the old shape
             SE_shape_free(shapeWithBuffer);
             FdoPtr<FdoByteArray> regfgf = (FdoByteArray*)valuePointer;
             // rebuild the shape
-            convert_fgf_to_sde_shape(m_Connection, regfgf, coordRef, shapeWithBuffer, true);
+            shapeWithBuffer = mGeom.FgfToShape(m_Connection->mGeomFactory, regfgf, m_Connection->GetConnection(), coordRef, true);
+            //convert_fgf_to_sde_shape(m_Connection, regfgf, coordRef, shapeWithBuffer, true);
             
             // Debug:
             LONG lNumPointsBuffered = 0L;

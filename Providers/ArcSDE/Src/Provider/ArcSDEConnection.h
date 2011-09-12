@@ -24,8 +24,10 @@
 
 #include <sdetype.h>
 
+
 class ArcSDETransaction;
 class TableRegistry;
+class ArcSDEGeometryBuffer;
 
 class ArcSDEConnection : public FdoIConnection
 {
@@ -150,21 +152,6 @@ public:
      * Also cached geometry factory.
      */
     FdoFgfGeometryFactory *mGeomFactory;
-	double *mGeomBuffer_ordinates;
-	unsigned long mGeomBuffer_ordinates_cursize;
-    LONG *mGeomBuffer_part_offsets;
-	unsigned long mGeomBuffer_part_offsets_cursize;
-    LONG *mGeomBuffer_subpart_offsets;
-	unsigned long mGeomBuffer_subpart_offsets_cursize;
-    LONG *mGeomBuffer_offsets;
-	unsigned long mGeomBuffer_offsets_cursize;
-    SE_POINT *mGeomBuffer_pointsXY;
-	unsigned long mGeomBuffer_pointsXY_cursize;
-    LFLOAT *mGeomBuffer_pointsZ;
-	unsigned long mGeomBuffer_pointsZ_cursize;
-    LFLOAT *mGeomBuffer_pointsM;
-	unsigned long mGeomBuffer_pointsM_cursize;
-
 
 public:
      ArcSDEConnection (void);

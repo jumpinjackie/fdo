@@ -35,7 +35,8 @@ ArcSDEReader::ArcSDEReader (ArcSDEConnection *connection, FdoClassDefinition* fd
     mSelectingAggregates (false),
     mOrderingOption (FdoOrderingOption_Ascending),
     mStreamStatsIndex (-1L),
-    mRowNotValidated(true)
+    mRowNotValidated(true),
+    mGeom()
 {
     FDO_SAFE_ADDREF(mConnection.p);
     FDO_SAFE_ADDREF(mClassDef.p);
@@ -627,7 +628,9 @@ FdoByteArray* ArcSDEReader::GetGeometryHelper (ColumnDefinition* columnDef)
 
     if (NULL == columnDef->mValuePointer)
     {
-        convert_sde_shape_to_fgf(mConnection, columnDef->mBindVariable._shape, (FdoByteArray*&)columnDef->mValuePointer);
+        mGeom.LoadFromSdeGeometry(columnDef->mBindVariable._shape);
+        columnDef->mValuePointer = (void*)mGeom.ToFGF(mConnection->mGeomFactory);
+        //convert_sde_shape_to_fgf(mConnection, columnDef->mBindVariable._shape, (FdoByteArray*&)columnDef->mValuePointer);
         columnDef->mValuePointerSize = ((const FdoByteArray*)columnDef->mValuePointer)->GetCount();
     }
 

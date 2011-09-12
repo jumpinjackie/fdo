@@ -1131,6 +1131,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ArcSDEGeometryBuffer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ArcSDEGeometryBuffer.h"
+				>
+			</File>
+			<File
 				RelativePath="ArcSDEProvider.cpp"
 				>
 				<FileConfiguration

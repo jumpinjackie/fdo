@@ -28,25 +28,24 @@
 
 class ArcSDEFunctionArea2D : public FdoFunctionArea2D
 {
-    public:
+public:
+    // Function to create an instance of this class.
+    static ArcSDEFunctionArea2D *Create (ArcSDEConnection* connection, SE_COORDREF coordRef);
 
-        // Function to create an instance of this class.
-        static ArcSDEFunctionArea2D *Create (ArcSDEConnection* connection, SE_COORDREF coordRef);
+    // Evaluate 
+    virtual FdoLiteralValue *Evaluate (FdoLiteralValueCollection *literal_values);
 
-		// Evaluate 
-        virtual FdoLiteralValue *Evaluate (FdoLiteralValueCollection *literal_values);
+protected:
+    // Constructors
+    ArcSDEFunctionArea2D ();
+    ArcSDEFunctionArea2D (ArcSDEConnection* connection, SE_COORDREF coordRef);
 
-	protected:
+    // Destructor
+    ~ArcSDEFunctionArea2D ();
 
-		// Constructors
-		ArcSDEFunctionArea2D ();
-		ArcSDEFunctionArea2D (ArcSDEConnection* connection, SE_COORDREF coordRef);
-
-		// Destructor
-		~ArcSDEFunctionArea2D ();
-
-    private:
-		FdoPtr<ArcSDEConnection> mConnection;
-		SE_COORDREF				 mCoordRef;
+private:
+    FdoPtr<ArcSDEConnection> mConnection;
+    SE_COORDREF				 mCoordRef;
+    ArcSDEGeometryBuffer     mGeom;
 }; 
 #endif

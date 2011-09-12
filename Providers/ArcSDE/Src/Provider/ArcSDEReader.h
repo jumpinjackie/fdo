@@ -95,6 +95,7 @@ protected:
     FdoPtr<FdoIdentifierCollection> mOrderingIds;
     long mStreamStatsIndex;
     bool mRowNotValidated;  // Whether or not the reader has validated the current row of data
+    ArcSDEGeometryBuffer mGeom; // Geometry buffer
 
 public:
     ArcSDEReader (ArcSDEConnection *connection, FdoClassDefinition* fdoClassDef, FdoIdentifierCollection* propertiesToSelect);

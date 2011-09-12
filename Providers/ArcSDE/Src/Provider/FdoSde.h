@@ -129,6 +129,7 @@ class ArcSDEConnection;
 #include <ArcSDE/Override/FdoArcSDEClassMapping.h>
 #include <ArcSDE/Override/FdoArcSDEPropertyMapping.h>
 #include <ArcSDE/Override/FdoArcSDEIndexMapping.h>
+#include <ArcSDEGeometryBuffer.h>
 #include <ArcSDEConnection.h>
 #include <ArcSDEReader.h>
 #include <ArcSDESQLDataReader.h>
@@ -181,7 +182,6 @@ class ArcSDEConnection;
 #include <ArcSDEDataStoreReader.h>
 #include <ArcSDEGetSchemaNamesCommand.h>
 #include <ArcSDEGetClassNamesCommand.h>
-
 #endif // FDOSDE_H
 
 
