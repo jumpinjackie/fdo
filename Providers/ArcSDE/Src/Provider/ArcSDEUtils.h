@@ -72,8 +72,6 @@ FdoString* NlsMsgGetMain(int msg_num, char* default_msg, ...);
 void convert_wkb_to_fgf (unsigned char** output, unsigned char** wkb);
 void convert_fgf_to_wkb (unsigned char** outWKB, unsigned char** inFGF);
 void convert_fdo_operator_to_sde_method(FdoSpatialOperations fdoSpatialOperation, LONG &sdeSearchMethod, BOOL &sdeSearchTruth);
-void convert_fgf_to_sde_shape(ArcSDEConnection *connection, FdoByteArray* fgf, SE_COORDREF coordref, SE_SHAPE& shape, bool bCropToExtents = false);
-void convert_sde_shape_to_fgf(ArcSDEConnection* connection, SE_SHAPE shape, FdoByteArray*& fgf);
 
 
 void DebugByteArray(unsigned char pByteArray[], long lByteCount, char *strMessage);
@@ -343,6 +341,70 @@ FdoString* GetAggregateFunctionName(FdoIdentifier *id);
 FdoString* GetAggregateFunctionPropertyName(FdoFunction *fdoFunction);
 
 FdoString* RdbmsToString(long lRdbmsID);
+
+
+
+
+///////////////////////////////////////////
+// Simple buffer allocation
+///////////////////////////////////////////
+template <typename T>
+class DynamicBuffer
+{
+private:
+    T *m_buffer;
+    int m_count;
+    int m_capacity;
+
+public:
+    DynamicBuffer() :
+        m_count(0),
+        m_capacity(0),
+        m_buffer(NULL)
+    {}
+
+    ~DynamicBuffer()
+    {
+        if(m_buffer)
+            free((void*)m_buffer);
+    }
+
+    // Expands array capacity if needed. Count is the number of T elements, NOT size in bytes!
+    void SetSize(int count)
+    {
+        if(count <= 0)
+            return;
+        if(!m_buffer)
+        {
+            m_buffer = (T*)malloc(count * sizeof(T));
+            m_capacity = count;
+        }
+        else if(m_capacity < count)
+        {
+            m_buffer = (T*)realloc((void*)m_buffer, count * sizeof(T));
+            m_capacity = count;
+        }
+        m_count = count;
+    }
+
+    // Current number of requested elements (NOT bytes)
+    inline int GetCount(){return m_count;}
+
+    // Returns current pointer
+    T* GetAddr() {return m_buffer;}
+
+    // Array access operator
+    inline T& operator[](const int index)
+    {
+#ifdef _DEBUG
+        if(index >= m_count)
+        {
+            throw FdoException::Create( L"Index out of bounds");
+        }
+#endif
+        return m_buffer[index];
+    }
+};
 
 
 #endif // ARCSDEUTILS_H
