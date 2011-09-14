@@ -720,7 +720,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
     else
         query = gdbiConn->ExecuteQuery(m_SqlString);
 
-    return new FdoRdbmsSQLDataReader(mFdoConnection , query );
+    return FdoRdbmsSQLDataReader::Create (mFdoConnection , query);
 }
 
 FdoParameterValue* FdoRdbmsSQLCommand::HandleStoredProcedureFormat(const wchar_t* sql, std::wstring& resultSQL)

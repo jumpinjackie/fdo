@@ -19,6 +19,8 @@
 
 #include <FdoExpressionEngine.h>
 
+class FdoRdbmsSqlServerConnection;
+
 class FdoRdbmsSqlServerExpressionCapabilities : public FdoIExpressionCapabilities
 {
     //-------------------------------------------------------
@@ -27,7 +29,7 @@ class FdoRdbmsSqlServerExpressionCapabilities : public FdoIExpressionCapabilitie
 
     public:
         // default constructor
-        FdoRdbmsSqlServerExpressionCapabilities();
+        FdoRdbmsSqlServerExpressionCapabilities(FdoRdbmsSqlServerConnection* conn);
 
     protected:
         // default destructor
@@ -55,8 +57,11 @@ class FdoRdbmsSqlServerExpressionCapabilities : public FdoIExpressionCapabilitie
         // definitions in the array.
         virtual FdoFunctionDefinitionCollection* GetFunctions();
 
+        void ForceRemoveServerFunctions();
     private:
         FdoPtr<FdoFunctionDefinitionCollection> m_supportedFunctions;
+        FdoPtr<FdoFunctionDefinitionCollection> m_serverFunctions;
+        FdoRdbmsSqlServerConnection* m_conn;
 };
 
 #endif // FDORDBMSSQLSERVEREXPRESSIONCAPABILITIES_H

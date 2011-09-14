@@ -34,6 +34,7 @@
 
 #include "../SchemaMgr/SchemaManager.h"
 #include "../SchemaMgr/Ph/Mgr.h"
+#include "../SchemaMgr/Ph/ColTypeMapper.h"
 #include "../../Fdo/Capability/FdoRdbmsGeometryCapabilities.h"
 
 #include "FdoRdbmsSqlServerSchemaCapabilities.h"
@@ -44,6 +45,7 @@
 #include "DbiConnection.h"
 #include "Rdbms/FdoRdbmsCommandType.h"
 #include "FdoRdbmsSqlServerProcessors.h"
+#include "../../Fdo/Other/FdoRdbmsSQLDataReader.h"
 
 #include <Inc/Rdbi/proto.h>
 #include "../ODBCDriver/context.h"
@@ -403,6 +405,8 @@ FdoConnectionState FdoRdbmsSqlServerConnection::Open()
 	if( state != FdoConnectionState_Open )
 	{
   	    state = FdoRdbmsConnection::Open();
+        if (mExpressionCapabilities != NULL)
+            (static_cast<FdoRdbmsSqlServerExpressionCapabilities*>(mExpressionCapabilities))->ForceRemoveServerFunctions();
         try
         {
             CheckForUnsupportedVersion();
@@ -449,7 +453,9 @@ void FdoRdbmsSqlServerConnection::Close()
         if (ltManager)
             ltManager->Deactivate();
     }
-		
+    if (mExpressionCapabilities != NULL)
+        (static_cast<FdoRdbmsSqlServerExpressionCapabilities*>(mExpressionCapabilities))->ForceRemoveServerFunctions();
+
 	FdoRdbmsConnection::Close();
 }
 
@@ -655,7 +661,7 @@ FdoIFilterCapabilities *FdoRdbmsSqlServerConnection::GetFilterCapabilities()
 FdoIExpressionCapabilities* FdoRdbmsSqlServerConnection::GetExpressionCapabilities()
 {
 	if (mExpressionCapabilities == NULL)
-		mExpressionCapabilities = new FdoRdbmsSqlServerExpressionCapabilities();
+		mExpressionCapabilities = new FdoRdbmsSqlServerExpressionCapabilities(this);
 	FDO_SAFE_ADDREF(mExpressionCapabilities);
 	return mExpressionCapabilities;
 }
@@ -750,6 +756,8 @@ void FdoRdbmsSqlServerConnection::Flush()
     {
         FdoSchemaManagerP pschemaManager = GetSchemaManager();
         pschemaManager->Clear();
+        if (mExpressionCapabilities != NULL)
+            (static_cast<FdoRdbmsSqlServerExpressionCapabilities*>(mExpressionCapabilities))->ForceRemoveServerFunctions();
     }
 }
 
@@ -774,3 +782,311 @@ void FdoRdbmsSqlServerConnection::EndStoredProcedure()
     GdbiConnection* gdbiConn = GetDbiConnection()->GetGdbiConnection();
     gdbiConn->ExecuteNonQuery(L"SET NOCOUNT OFF", true);
 }
+
+class RdbmsArgumentDefinition
+{
+public:
+    std::wstring m_argName;
+    FdoSmPhColType m_type;
+    FdoInt64    m_len;
+    FdoInt32    m_precision;
+    FdoInt32    m_scale;
+public:
+    RdbmsArgumentDefinition()
+    {
+        m_type = FdoSmPhColType_Double;
+        m_len = 0;
+        m_precision = m_scale = 0;
+    }
+    RdbmsArgumentDefinition(FdoSmPhColType type)
+    {
+        m_type = type;
+        m_len = 0;
+        m_precision = m_scale = 0;
+    }
+    RdbmsArgumentDefinition(FdoString* argName, FdoSmPhColType type, FdoInt64 len, FdoInt32 precision, FdoInt32 scale)
+    {
+        m_argName = argName;
+        m_type = type;
+        m_len = len;
+        m_precision = precision;
+        m_scale = scale;
+    }
+    void SetValues(FdoString* argName, FdoSmPhColType type, FdoInt64 len, FdoInt32 precision, FdoInt32 scale)
+    {
+        m_argName = argName;
+        m_type = type;
+        m_len = len;
+        m_precision = precision;
+        m_scale = scale;
+    }
+};
+
+FdoDataType PhColTypeToFdo(FdoSmPhColType type)
+{
+    FdoDataType retType = FdoDataType(-2);
+    switch(type)
+    {
+    case FdoSmPhColType_BLOB:
+        retType = FdoDataType_BLOB;
+        break;
+    case FdoSmPhColType_Bool:
+        retType = FdoDataType_Boolean;
+        break;
+    case FdoSmPhColType_Byte:
+        retType = FdoDataType_Byte;
+        break;
+    case FdoSmPhColType_Int16:
+        retType = FdoDataType_Int16;
+        break;
+    case FdoSmPhColType_Int32:
+        retType = FdoDataType_Int32;
+        break;
+    case FdoSmPhColType_Int64:
+        retType = FdoDataType_Int64;
+        break;
+    case FdoSmPhColType_Single:
+        retType = FdoDataType_Single;
+        break;
+    case FdoSmPhColType_String:
+        retType = FdoDataType_String;
+        break;
+    case FdoSmPhColType_Date:
+        retType = FdoDataType_DateTime;
+        break;
+    case FdoSmPhColType_Decimal:
+        retType = FdoDataType_Decimal;
+        break;
+    case FdoSmPhColType_Double:
+        retType = FdoDataType_Double;
+        break;
+    case FdoSmPhColType_Geom:
+        retType = FdoDataType(-1);
+        break;
+    }
+    return retType;
+}
+
+void GenerateCombination(size_t step, std::vector< size_t >& genTypes, FdoSignatureDefinitionCollection* signatures, FdoArgumentDefinitionCollection* baseArgs,
+                         std::vector< FdoArgumentDefinitionCollection* >& mainArgs, std::vector< int >& params, FdoDataType retType)
+{
+    if (step == genTypes.size())
+    {
+        size_t idxParam = 0;
+        // generate sig
+        FdoPtr<FdoArgumentDefinitionCollection> newArgColl = FdoArgumentDefinitionCollection::Create();
+        for(int i = 0; i < baseArgs->GetCount(); i++)
+        {
+            FdoPtr<FdoArgumentDefinition> arg = baseArgs->GetItem(i);
+            if (params[i] == 0) // do we have a numeric?
+            {
+                FdoArgumentDefinitionCollection* ptr = mainArgs.at(idxParam);
+                FdoPtr<FdoArgumentDefinition> argNum = ptr->GetItem(genTypes.at(idxParam));
+                newArgColl->Add(argNum);
+                idxParam++;
+            }
+            else
+                newArgColl->Add(arg);
+        }
+        FdoPtr<FdoSignatureDefinition> signature = FdoSignatureDefinition::Create(retType, newArgColl);
+        signatures->Add(signature);
+    }
+    else
+    {
+        // 7 = cnt of numeric FDO types
+        for(size_t i = 0; i < 7; i++)
+        {
+            genTypes[step] = i;
+            GenerateCombination(step+1, genTypes, signatures, baseArgs, mainArgs, params, retType);
+        }
+    }
+}
+
+FdoFunctionDefinition* GenerateFunctionDefinition(FdoString* fctName, RdbmsArgumentDefinition* retFct, std::vector< RdbmsArgumentDefinition* > arguments, size_t len)
+{
+    FdoDataType retType = PhColTypeToFdo(retFct->m_type);
+
+    FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
+    FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
+    std::vector< int > params;
+    std::vector< size_t > genTypes;
+    std::vector< FdoArgumentDefinitionCollection* > mainArgs;
+    int cntRealParams = 0;
+    for(size_t idx = 0; idx < len; idx++)
+    {
+        RdbmsArgumentDefinition* argFct = *(arguments.begin()+idx);
+        FdoDataType dtType = PhColTypeToFdo(argFct->m_type);
+        if (dtType == (FdoDataType)-2)
+        {
+            for(size_t i = 0; i < mainArgs.size(); i++)
+                mainArgs.at(i)->Release();
+            return NULL;
+        }
+
+        FdoArgumentDefinitionCollection* actArgColl = NULL;
+        switch(dtType)
+        {
+        case FdoDataType_Byte:
+        case FdoDataType_Decimal:
+        case FdoDataType_Double:
+        case FdoDataType_Int16:
+        case FdoDataType_Int32:
+        case FdoDataType_Int64:
+        case FdoDataType_Single:
+            {
+                genTypes.push_back(0);
+                params.push_back(0);
+                dtType = FdoDataType_Byte;
+                actArgColl = FdoArgumentDefinitionCollection::Create();
+                cntRealParams++;
+                // we create all numeric types to avoid create lots arguments (we create only 7 for each numeric)
+                FdoPtr<FdoArgumentDefinition> arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Byte);
+                // add first to the main collection
+                args->Add(arg);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Decimal);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Double);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Int16);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Int32);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Int64);
+                actArgColl->Add(arg);
+                arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoDataType_Single);
+                actArgColl->Add(arg);
+            }
+            break;
+        default:
+            {
+                FdoPtr<FdoArgumentDefinition> arg;
+                if (dtType == (FdoDataType)-1)
+                    arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", FdoPropertyType_GeometricProperty, dtType);
+                else
+                    arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", dtType);
+                args->Add(arg);
+                params.push_back(-1);
+            }
+        }
+        mainArgs.push_back(actArgColl);
+    }
+    // we need to generate all the combinations of number values
+    if (cntRealParams == 0)
+    {
+        FdoPtr<FdoSignatureDefinition> signature = FdoSignatureDefinition::Create(retType, args);
+        signatures->Add(signature);
+    }
+    else
+        GenerateCombination(0, genTypes, signatures, args, mainArgs, params, retType);
+
+    for(size_t i = 0; i < mainArgs.size(); i++)
+    {
+        FdoArgumentDefinitionCollection* coll = mainArgs.at(i);
+        if (coll != NULL)
+            coll->Release();
+    }
+
+    FdoFunctionCategoryType ftp = FdoFunctionCategoryType_Custom;
+    switch(retType)
+    {
+    case FdoDataType_BLOB:
+    case FdoDataType(-1):
+        ftp = FdoFunctionCategoryType_Custom;
+        break;
+    case FdoDataType_Boolean: // I'm not sure yet what to do with boolean type
+    case FdoDataType_Byte:
+    case FdoDataType_Decimal:
+    case FdoDataType_Double:
+    case FdoDataType_Int16:
+    case FdoDataType_Int32:
+    case FdoDataType_Int64:
+    case FdoDataType_Single:
+        ftp = FdoFunctionCategoryType_Numeric;
+        break;
+    case FdoDataType_String:
+        ftp = FdoFunctionCategoryType_String;
+        break;
+    }
+
+    return FdoFunctionDefinition::Create (fctName, L"", false, signatures, ftp);
+}
+
+bool FdoRdbmsSqlServerConnection::GetServerSideFunctionCollection (FdoFunctionDefinitionCollection* coll)
+{
+    if (GetConnectionState() != FdoConnectionState_Open)
+        return false;
+
+    FdoSmPhSqsMgrP phMgr = GetSchemaManager()->GetPhysicalSchema()->SmartCast<FdoSmPhSqsMgr>();
+    FdoSmPhOwnerP owner = phMgr->FindOwner();
+    if (owner == NULL)
+        return false;
+
+	GdbiConnection* gdbiConn = phMgr->GetGdbiConnection();
+    GdbiQueryResult* gdbiResult = gdbiConn->ExecuteQuery(L"SELECT o.name as f_name, p.name as p_name, s.name as p_type, p.max_length as p_len, p.precision, p.scale from sys.objects o inner join sys.parameters p on (o.object_id = p.object_id) inner join sys.systypes s on p.user_type_id = s.xusertype WHERE o.type = N'FN' order by o.name, p.parameter_id");
+    FdoPtr<FdoRdbmsSQLDataReader> rdr = FdoRdbmsSQLDataReader::Create(this, gdbiResult);
+
+    std::wstring fctName;
+    std::vector< RdbmsArgumentDefinition* > arguments;
+    RdbmsArgumentDefinition* retFct = NULL;
+    try
+    {
+        size_t idxPos = 0;
+        while (rdr->ReadNext())
+        {
+            FdoString* argName = NULL;
+            if (!rdr->IsNull(1))
+                argName = rdr->GetString(1);
+
+            FdoSmPhColType colType = FdoSmPhSqsColTypeMapper::String2Type(rdr->GetString(2));
+            if (argName == NULL || *argName == L'\0')
+            {
+                // we have new function
+                if (retFct == NULL)
+                    retFct = new RdbmsArgumentDefinition(colType);
+                else
+                {
+                    // Should we return bool of Int32!? bool cannot be used in many places; we will see later
+                    //if (retFct->m_type == FdoSmPhColType_Bool)
+                    //    retFct->m_type == FdoSmPhColType_Int32;
+
+                    // we need to generate the function
+                    FdoPtr<FdoFunctionDefinition> fct = GenerateFunctionDefinition(fctName.c_str(), retFct, arguments, idxPos);
+                    if (fct != NULL)
+                        coll->Add(fct);
+                }
+                retFct->m_type = colType;
+                fctName = rdr->GetString(0);
+                idxPos = 0;
+            }
+            else
+            {
+                if (idxPos >= arguments.size())
+                    arguments.push_back(new RdbmsArgumentDefinition(argName, colType, rdr->GetInt64(3), rdr->GetInt32(4), rdr->GetInt32(5)));
+                else
+                    arguments.at(idxPos)->SetValues(argName, colType, rdr->GetInt64(3), rdr->GetInt32(4), rdr->GetInt32(5));
+                idxPos++;
+            }
+        }
+        if (idxPos != 0 && retFct != NULL)
+        {
+            FdoPtr<FdoFunctionDefinition> fct = GenerateFunctionDefinition(fctName.c_str(), retFct, arguments, idxPos);
+            if (fct != NULL)
+                coll->Add(fct);
+        }
+    }
+    catch(...)
+    {
+        for (size_t idx = arguments.size(); idx < arguments.size(); idx++)
+            delete arguments.at(idx);
+
+        delete retFct;
+        throw;
+    }
+    for (size_t idx = arguments.size(); idx < arguments.size(); idx++)
+        delete arguments.at(idx);
+    delete retFct;
+
+    return true;
+}
+

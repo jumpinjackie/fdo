@@ -25,6 +25,7 @@ static FdoSmPhSqsColTypeMapEntry blobEntry( FdoSmPhColType_BLOB, L"image" );
 static FdoSmPhSqsColTypeMapEntry binaryEntry( FdoSmPhColType_BLOB, L"binary" );
 static FdoSmPhSqsColTypeMapEntry varbinaryEntry( FdoSmPhColType_BLOB, L"varbinary" );
 static FdoSmPhSqsColTypeMapEntry dateEntry( FdoSmPhColType_Date, L"datetime" );
+static FdoSmPhSqsColTypeMapEntry dateEntry2( FdoSmPhColType_Date, L"datetime2" );
 static FdoSmPhSqsColTypeMapEntry smallDateEntry( FdoSmPhColType_Date, L"smalldatetime" );
 static FdoSmPhSqsColTypeMapEntry timestampEntry( FdoSmPhColType_Date, L"timestamp" );
 static FdoSmPhSqsColTypeMapEntry decimalEntry( FdoSmPhColType_Decimal, L"decimal" );
@@ -54,6 +55,7 @@ FdoSmPhSqsColTypeMapEntry* FdoSmPhSqsColTypeMapper::mMap[] = {
     &binaryEntry,
     &varbinaryEntry,
     &dateEntry,
+    &dateEntry2,
     &smallDateEntry,
     &timestampEntry,
     &decimalEntry,
