@@ -55,8 +55,10 @@ FdoLiteralValue *ArcSDEFunctionLength2D::Evaluate (FdoLiteralValueCollection *li
 	SE_SHAPE		result_shape; 
 
 	// Convert to SDE
-    result_shape = mGeom.FgfToShape(mConnection->mGeomFactory, fgf, mConnection->GetConnection(), mCoordRef, true);
-	//convert_fgf_to_sde_shape(mConnection, fgf, mCoordRef, result_shape, TRUE);
+    ArcSDEConnection* conn = this->mConnection;
+    FdoFgfGeometryFactory* fgfFactory = conn->mGeomFactory;
+    SE_CONNECTION seConn = conn->GetConnection();
+    result_shape = mGeom.FgfToShape(fgfFactory, fgf, seConn, mCoordRef, true);
 
 	// Compute Length
 	LONG lResult = SE_shape_get_length (result_shape, 0, &length);

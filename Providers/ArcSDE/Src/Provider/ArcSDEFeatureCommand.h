@@ -555,9 +555,11 @@ void ArcSDEFeatureCommand<FDO_COMMAND>::assignValue (ArcSDEConnection* connectio
                     FdoPtr<FdoByteArray> fgf = geometry->GetGeometry ();
                     try
                     {
-                      shape = mGeom.FgfToShape(mConnection->mGeomFactory, fgf, mConnection->GetConnection(), coordref);
-                        //convert_fgf_to_sde_shape (connection, fgf, coordref, shape);
-                      SE_coordref_free (coordref);
+                        ArcSDEConnection* conn = this->mConnection;
+                        FdoFgfGeometryFactory* fgfFactory = conn->mGeomFactory;
+                        SE_CONNECTION seConn = conn->GetConnection();
+                        shape = mGeom.FgfToShape(fgfFactory, fgf, seConn, coordref);
+                        SE_coordref_free (coordref);
                     }
                     catch (FdoException *e)
                     {
