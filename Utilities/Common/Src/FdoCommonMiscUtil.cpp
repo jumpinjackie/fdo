@@ -1215,8 +1215,8 @@ bool FdoCommonMiscUtil::IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight
                 throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
             else
             {
-                FdoByteArray* b1;
-                FdoByteArray* b2;
+                FdoPtr<FdoByteArray> b1;
+                FdoPtr<FdoByteArray> b2;
                 FdoInt32 count1;
                 FdoInt32 count2;
 
@@ -1235,8 +1235,8 @@ bool FdoCommonMiscUtil::IsEqualTo (FdoDataValue* argLeft, FdoDataValue* argRight
                 throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
             else
             {
-                FdoByteArray* b1;
-                FdoByteArray* b2;
+                FdoPtr<FdoByteArray> b1;
+                FdoPtr<FdoByteArray> b2;
                 FdoInt32 count1;
                 FdoInt32 count2;
 
