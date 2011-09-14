@@ -155,6 +155,8 @@ public:
     virtual void EndStoredProcedure();
 
     virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
+
+    bool GetServerSideFunctionCollection (FdoFunctionDefinitionCollection* coll);
 };
 
 

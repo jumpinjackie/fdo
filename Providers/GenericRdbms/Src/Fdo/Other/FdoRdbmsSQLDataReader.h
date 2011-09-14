@@ -70,11 +70,8 @@ struct StringRec
 // Therefore you must call ReadNext to begin accessing any data.
 class FdoRdbmsSQLDataReader: public FdoISQLDataReader //FdoDefaultSqlDataReader
 {
-
-    friend class FdoRdbmsSQLCommand;
-
 private:
-      FdoRdbmsSQLDataReader( FdoIConnection *connection, GdbiQueryResult   *query );
+      FdoRdbmsSQLDataReader (FdoIConnection* connection, GdbiQueryResult* query);
 
       FdoRdbmsSQLDataReader(const FdoRdbmsSQLDataReader &right);
 
@@ -89,6 +86,7 @@ protected:
     virtual void Dispose() { delete this; }
 
   public:
+    static FdoRdbmsSQLDataReader* Create(FdoIConnection* connection, GdbiQueryResult* query);
 
     // Gets the number of columns in the result set.
     FdoInt32 GetColumnCount();

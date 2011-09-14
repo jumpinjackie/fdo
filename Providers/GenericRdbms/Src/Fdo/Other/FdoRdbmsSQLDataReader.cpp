@@ -100,6 +100,11 @@ FdoRdbmsSQLDataReader::~FdoRdbmsSQLDataReader()
     delete[] mUppNameBuffer;
 }
 
+FdoRdbmsSQLDataReader* FdoRdbmsSQLDataReader::Create(FdoIConnection* connection, GdbiQueryResult* query)
+{
+    return new FdoRdbmsSQLDataReader(connection, query);
+}
+
 wchar_t* FdoRdbmsSQLDataReader::GenerateUniqueName(const wchar_t* name, wchar_t* dest, int maxLen)
 {
     int idxProp = 1;
