@@ -91,6 +91,7 @@ libArcSDEProvider91_la_SOURCES = \
   ArcSDETransaction.cpp \
   ArcSDEDataStoreReader.cpp \
   ArcSDEListDataStores.cpp \
+  ArcSDEGeometryBuffer.cpp \
   stdafx.cpp
 
 noinst_HEADERS = $(libArcSDEProvider91_la_SOURCES) \
@@ -154,6 +155,7 @@ noinst_HEADERS = $(libArcSDEProvider91_la_SOURCES) \
    ArcSDETransaction.h \
    ArcSDEUpdateCommand.h \
    ArcSDEUtils.h \
+   ArcSDEGeometryBuffer.h \
    FdoSde.h \
    resource.h \
    stdafx.h
