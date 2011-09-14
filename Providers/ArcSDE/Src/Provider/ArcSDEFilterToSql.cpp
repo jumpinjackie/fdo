@@ -916,8 +916,10 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
     FdoPtr<FdoByteArray> fgf = spatialGeometry->GetGeometry();
 
     // Convert, cropping to the coordinate reference's extents:
-    shape = mGeom.FgfToShape(m_Connection->mGeomFactory, fgf, m_Connection->GetConnection(), coordRef, true);
-    //convert_fgf_to_sde_shape(m_Connection, fgf, coordRef, shape, true);
+    ArcSDEConnection* conn = this->m_Connection;
+    FdoFgfGeometryFactory* fgfFactory = conn->mGeomFactory;
+    SE_CONNECTION seConn = conn->GetConnection();
+    shape = mGeom.FgfToShape(fgfFactory, fgf, seConn, coordRef, true);
     fgf = NULL;
     handle_sde_err<FdoCommandException>(m_Connection->GetConnection(), lResult, __FILE__, __LINE__, ARCSDE_FAILED_PROCESSING_SPATIAL_CONDITION, "Failed to process the given spatial condition.");
 
@@ -969,8 +971,10 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
             SE_shape_free(shapeWithBuffer);
             FdoPtr<FdoByteArray> regfgf = (FdoByteArray*)valuePointer;
             // rebuild the shape
-            shapeWithBuffer = mGeom.FgfToShape(m_Connection->mGeomFactory, regfgf, m_Connection->GetConnection(), coordRef, true);
-            //convert_fgf_to_sde_shape(m_Connection, regfgf, coordRef, shapeWithBuffer, true);
+            ArcSDEConnection* conn = this->m_Connection;
+            FdoFgfGeometryFactory* fgfFactory = conn->mGeomFactory;
+            SE_CONNECTION seConn = conn->GetConnection();
+            shapeWithBuffer = mGeom.FgfToShape(fgfFactory, regfgf, seConn, coordRef, true);
             
             // Debug:
             LONG lNumPointsBuffered = 0L;
