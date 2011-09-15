@@ -354,6 +354,51 @@ void FdoSmPhSqsOwner::SetCurrent()
 
 }
 
+FdoInt64 FdoSmPhSqsOwner::GetMetadataColumnSrid (FdoStringP dbObjectName, FdoStringP columnName)
+{
+    FdoInt64 srid = -1;
+    if (GetHasSCMetaSchema() && GetHasSCGeomInfoMetaSchema() && GetHasSCGroupInfoMetaSchema())
+    {
+        // we need column name without dbo.
+        if (dbObjectName.Contains(L"."))
+            dbObjectName = dbObjectName.Right(L".");
+
+        FdoStringP sqlStmt = FdoStringP::Format(
+            L"select gr.[srid] from [dbo].[f_spatialcontextgroup] gr\n"
+            L" inner join [dbo].[f_spatialcontext] sc ON(sc.[scgid]=gr.[scgid])\n"
+            L" inner join [dbo].[f_spatialcontextgeom] gm ON(sc.[scid]=gm.[scid])\n"
+            L" where gm.geomtablename='%ls' and gm.geomcolumnname='%ls'",
+            (FdoString*) dbObjectName,
+            (FdoString*) columnName
+        );
+
+	    FdoSmPhSqsMgrP mgr = this->GetManager()->SmartCast<FdoSmPhSqsMgr>();
+	    GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
+	    GdbiQueryResult *gdbiResult = NULL;
+        try
+        {
+            gdbiResult = gdbiConn->ExecuteQuery((const char*)sqlStmt);
+	        if (gdbiResult->ReadNext())
+	        {
+		        if (!gdbiResult->GetIsNull(L"srid"))
+			        srid = gdbiResult->GetInt64(L"srid", NULL, NULL);
+	        }
+	        gdbiResult->End();
+            delete gdbiResult;
+        }
+        catch(...)
+        {
+            if (gdbiResult != NULL)
+            {
+	            gdbiResult->End();
+                delete gdbiResult;
+            }
+            throw;
+        }
+    }
+    return srid;
+}
+
 FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName )
 {
 	// SRID is -1 if table is empty or geometry column has not been populated yet
@@ -370,15 +415,28 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
 
 	FdoSmPhSqsMgrP mgr = this->GetManager()->SmartCast<FdoSmPhSqsMgr>();
 	GdbiConnection* gdbiConn = mgr->GetGdbiConnection();
-	GdbiQueryResult *gdbiResult = gdbiConn->ExecuteQuery((const char*)sqlStmt);
+	GdbiQueryResult *gdbiResult = NULL;
 
-	if (gdbiResult->ReadNext())
-	{
-		if (!gdbiResult->GetIsNull(L"srid"))
-			srid = gdbiResult->GetInt64(L"srid", NULL, NULL);
-	}
-	gdbiResult->End();
-    delete gdbiResult;
+    try
+    {
+        gdbiResult = gdbiConn->ExecuteQuery((const char*)sqlStmt);
+	    if (gdbiResult->ReadNext())
+	    {
+		    if (!gdbiResult->GetIsNull(L"srid"))
+			    srid = gdbiResult->GetInt64(L"srid", NULL, NULL);
+	    }
+	    gdbiResult->End();
+        delete gdbiResult;
+    }
+    catch(...)
+    {
+        if (gdbiResult != NULL)
+        {
+            gdbiResult->End();
+            delete gdbiResult;
+        }
+        throw;
+    }
 
     return srid;
 }
