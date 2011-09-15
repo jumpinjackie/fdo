@@ -71,6 +71,34 @@ FdoExpressionType* FdoRdbmsSqlServerExpressionCapabilities::GetExpressionTypes(F
     return expressionTypes;
 }
 
+class FdoRdbmsCustomFunction : public FdoExpressionEngineINonAggregateFunction
+{
+    public:
+        static FdoRdbmsCustomFunction *Create (FdoFunctionDefinition* fctDef) { return new FdoRdbmsCustomFunction(fctDef); }
+        virtual FdoRdbmsFunctionIsValid *CreateObject () { throw FdoException::Create(L"CreateObject() is not supported!"); }
+        virtual FdoFunctionDefinition *GetFunctionDefinition () { return FDO_SAFE_ADDREF(m_fctDef.p); }
+        virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literal_values)
+        {
+            std::wstring err (L"Function '");
+            err.append(m_fctDef->GetName());
+            err.append(L"' is executed only on the server side");
+            throw FdoException::Create(err.c_str());
+        }
+
+	protected:
+        FdoRdbmsCustomFunction (FdoFunctionDefinition* fctDef)
+        {
+            m_fctDef = FDO_SAFE_ADDREF(fctDef);
+        }
+
+        ~FdoRdbmsCustomFunction () {}
+
+    private:
+        virtual void Dispose () { delete this; };
+
+        FdoPtr<FdoFunctionDefinition> m_fctDef;
+};
+
 
 // Returns an array of FunctionDefinitions the feature provider supports
 // within expressions.  The length parameter gives the number of function
@@ -93,13 +121,19 @@ FdoFunctionDefinitionCollection* FdoRdbmsSqlServerExpressionCapabilities::GetFun
     {
         m_serverFunctions = FdoFunctionDefinitionCollection::Create();
         bool rVal = m_conn->GetServerSideFunctionCollection(m_serverFunctions);
-        for(int idx = 0; idx < m_serverFunctions->GetCount(); idx++)
+        if (rVal && m_serverFunctions->GetCount())
         {
-            FdoPtr<FdoFunctionDefinition> fct = m_serverFunctions->GetItem(idx);
-            m_supportedFunctions->Add(fct);
+            FdoPtr<FdoExpressionEngineFunctionCollection> customFuncs = FdoExpressionEngineFunctionCollection::Create();
+            for(int idx = 0; idx < m_serverFunctions->GetCount(); idx++)
+            {
+                FdoPtr<FdoFunctionDefinition> fctDef = m_serverFunctions->GetItem(idx);
+                FdoPtr<FdoExpressionEngineIFunction> fct = FdoRdbmsCustomFunction::Create(fctDef);
+                customFuncs->Add (fct);
+                m_supportedFunctions->Add(fctDef);
+            }
+            FdoExpressionEngine::RegisterFunctions (customFuncs);
         }
-        // was server ready to provide them?
-        if (!rVal)
+        else // was server ready to provide them?
             m_serverFunctions = NULL;
     }
 
@@ -115,5 +149,9 @@ void FdoRdbmsSqlServerExpressionCapabilities::ForceRemoveServerFunctions()
         return;
     }
     for (int i = 0; i < cnt; i++)
-        m_supportedFunctions->RemoveAt(m_supportedFunctions->GetCount()-1);
+    {
+        FdoPtr<FdoFunctionDefinition> fctDef = m_serverFunctions->GetItem(i);
+        m_supportedFunctions->Remove(fctDef);
+    }
+    m_serverFunctions = NULL;
 }

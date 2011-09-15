@@ -2171,6 +2171,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessFunction(FdoFunction& expr)
     if (val == m_functions.end())
     {
         pair_working_stack* itm = top_stack();
+        itm->first.append(L"dbo.", 4);
         itm->first.append(expr.GetName());
         itm->first.append(L"(", 1);
         FdoPtr<FdoExpressionCollection> exprCol = expr.GetArguments();
@@ -2183,6 +2184,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessFunction(FdoFunction& expr)
         }
         if (colCount)
             itm->first.resize(itm->first.size()-1); // remove last ','
+        itm->first.append(L")", 1);
     }
     else // we found our function
     {
