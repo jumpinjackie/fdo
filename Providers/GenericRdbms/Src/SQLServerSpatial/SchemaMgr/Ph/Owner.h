@@ -134,6 +134,8 @@ public:
     //
     // Exception is thrown if the column does not exist or is not geometric.
     virtual FdoInt64 SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName );
+    
+    virtual FdoInt64 GetMetadataColumnSrid (FdoStringP dbObjectName, FdoStringP columnName);
 
     // Create a new schema and add it to the cache.
     // Schema is added to the RDBMS when it or this owner are committed.

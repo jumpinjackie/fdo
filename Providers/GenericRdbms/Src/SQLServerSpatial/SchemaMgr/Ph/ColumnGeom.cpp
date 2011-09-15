@@ -80,21 +80,24 @@ FdoSmPhSqsColumnGeom::~FdoSmPhSqsColumnGeom(void)
 
 FdoInt64 FdoSmPhSqsColumnGeom::GetSRID()
 {
+    if (mSRID != -1)
+        return mSRID;
+    // Check if SRID was encoded into spatial index name,
+    mSRID = IndexName2Srid();
+
     if (mSRID == -1)
     {
-        // Check if SRID was encoded into spatial index name,
-        mSRID = IndexName2Srid();
+        FdoSmPhSqsOwner* owner = (FdoSmPhSqsOwner*)(this->GetParent()->GetParent());
+        // try to get it from FDO metadata if we have it
+        mSRID = owner->GetMetadataColumnSrid( GetParent()->GetName(), GetName() );
 
         // If not in SI name then sample 1st geometry value.
         // SqlServer SRIDs are associated with geometry values, rather than entire column.
         // The following gets the srid from the first row.
         // The other rows might have different srids but FDO currently does not have
         // a way of handling this. 
-        
-        if ( (mSRID == -1 ) && (GetElementState() != FdoSchemaElementState_Added) ) {
-            FdoSmPhSqsOwner* owner = (FdoSmPhSqsOwner*)(this->GetParent()->GetParent());
+        if ( (mSRID == -1 ) && (GetElementState() != FdoSchemaElementState_Added) )
             mSRID = owner->SampleColumnSrid( GetParent()->GetName(), GetName() );
-        }
 
         // When SRID was not found ...
         if ( mSRID == -1 ) {
