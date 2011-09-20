@@ -201,6 +201,8 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                 FdoDataValue* dval = static_cast<FdoDataValue*>(val.p);
                 FdoDataType dataType = dval->GetDataType();
                 bool isNull = dval->IsNull();
+                if (!isNull)
+                    cmds->set_nnull(bind->null_ind, 0, 0 );
                 switch(dataType)
                 {
                 case FdoDataType_BLOB:
@@ -622,7 +624,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
         FdoRdbmsBindStrDef* bind = mBindParams->push_back();
         if (!bind->null_ind)
             cmds->alcnullind(1, &(bind->null_ind));
-        cmds->set_nnull(bind->null_ind, 0, 0 );        
+        cmds->set_null(bind->null_ind, 0, 0 );
 
         std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >::const_reference it = params->at(idx);
         FdoLiteralValue* val = it.first;
@@ -634,8 +636,8 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
                 FdoDataType dataType = dval->GetDataType();
                 sprintf(temp, "%d", idx+1); // Parm name are one based
                 bool isNull = dval->IsNull();
-                if (isNull)
-                    cmds->set_null(bind->null_ind, 0, 0 );
+                if (!isNull)
+                    cmds->set_nnull(bind->null_ind, 0, 0 );
                 switch(dataType)
                 {
                 case FdoDataType_BLOB:
@@ -837,11 +839,11 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
                 mBindParams->FreeResources(bind);
                 bind->type = FdoRdbmsDataType_Geometry;
                 bind->value.strvalue = NULL;
+                sprintf(temp, "%d", idx+1); // Parm name are one based
                 FdoGeometryValue* gval = static_cast<FdoGeometryValue*>(val);
                 if (!gval->IsNull())
                 {
                     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                    sprintf(temp, "%d", idx+1); // Parm name are one based
                     cmds->geom_srid_set(id, temp, (long)it.second);
                     cmds->geom_version_set(id, temp, mFdoConnection->GetSpatialGeometryVersion());
                     cmds->set_nnull(bind->null_ind, 0, 0 );
