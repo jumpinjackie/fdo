@@ -144,7 +144,7 @@ FdoStringP  FdoStringP::operator+=( FdoString* str2 )
     return( *this );
 }
 
-int FdoStringP::ICompare( const FdoStringP str2 ) const
+int FdoStringP::ICompare( const FdoStringP& str2 ) const
 {
 #ifdef _WIN32
     return( _wcsicmp(mwString, str2) );
@@ -806,17 +806,17 @@ size_t FdoStringP::GetBufSize()
         return 0;
 }
 
-bool FdoStringP::operator>( const FdoStringP str2 ) const
+bool FdoStringP::operator>( const FdoStringP& str2 ) const
 {
 	return( wcscmp( *this, str2 ) > 0 );
 }
 
-bool FdoStringP::operator>=( const FdoStringP str2 ) const
+bool FdoStringP::operator>=( const FdoStringP& str2 ) const
 {
 	return( wcscmp( *this, str2 ) >= 0 );
 }
 
-bool FdoStringP::operator==( const FdoStringP str2 ) const
+bool FdoStringP::operator==( const FdoStringP& str2 ) const
 {
 	return( wcscmp( *this, str2 ) == 0 );
 }
@@ -826,12 +826,12 @@ bool FdoStringP::operator==( FdoString* str2 ) const
     return( wcscmp( *this, str2 ? str2 : L"" ) == 0 );
 }
 
-bool FdoStringP::operator<=( const FdoStringP str2 ) const
+bool FdoStringP::operator<=( const FdoStringP& str2 ) const
 {
 	return( wcscmp( *this, str2 ) <= 0 );
 }
 
-bool FdoStringP::operator<( const FdoStringP str2 ) const
+bool FdoStringP::operator<( const FdoStringP& str2 ) const
 {
 	return( wcscmp( *this, str2 ) < 0 );
 }
