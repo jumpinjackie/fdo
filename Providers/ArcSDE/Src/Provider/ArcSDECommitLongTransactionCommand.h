@@ -69,6 +69,8 @@ protected:
         LONG source,
         LONG diff);
 
+	FdoBoolean m_bKeepLongTransaction;
+
 public:
     ArcSDECommitLongTransactionCommand (FdoIConnection *connection);
     virtual ~ArcSDECommitLongTransactionCommand (void);
@@ -93,6 +95,30 @@ public:
     // Otherwise conflicts were detected and the user must specify how to
     // resolve them using the enumerator and call Execute again.
     FdoILongTransactionConflictDirectiveEnumerator* Execute ();
+
+    /// \brief
+    /// Indicates whether to keep the long transaction after it is committed.
+    /// Returns true if keeping the long transaction after it is committed.
+    /// Returns false if removing the long transaction after it is committed.
+    /// Default value for KeepLongTransaction is false.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is committed.
+    /// 
+	FdoBoolean GetKeepLongTransaction () { return (m_bKeepLongTransaction); }
+
+    /// \brief
+    /// Sets whether to keep the long transaction after it is committed.
+    /// Default value for KeepLongTransaction is false.
+    ///
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the committed
+    /// long transaction
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    void SetKeepLongTransaction (FdoBoolean value) { m_bKeepLongTransaction = value; }
 };
 
 #endif // ArcSDECommitLongTransactionCommand_H

@@ -7,14 +7,23 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cppunit_dll", "cppunit\src\cppunit\cppunit_dll.vcxproj", "{F7702D5A-50BA-4BB4-97FB-46EBD0B61518}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "libcurl\lib\curllib.vcxproj", "{87EE9DA4-DE1E-4448-8324-183C98DCA588}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00D47558-B06D-4CC5-AF16-61940361BCE3} = {00D47558-B06D-4CC5-AF16-61940361BCE3}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openssl", "openssl\openssl.vcxproj", "{00D47558-B06D-4CC5-AF16-61940361BCE3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gdal", "gdal\gdal.vcxproj", "{769DD10E-E284-46BE-9172-A35184250A3A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{317315E2-24B6-490C-967D-4B77B7DF5C34} = {317315E2-24B6-490C-967D-4B77B7DF5C34}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sqlite3", "Sqlite3.3.13\Sqlite3.vcxproj", "{F3910EB6-1756-46F4-8143-C6725ED91935}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "boost", "boost\boost.vcxproj", "{317315E2-24B6-490C-967D-4B77B7DF5C34}"
+	ProjectSection(ProjectDependencies) = postProject
+		{87EE9DA4-DE1E-4448-8324-183C98DCA588} = {87EE9DA4-DE1E-4448-8324-183C98DCA588}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AllInOne", "apache\xalan\projects\Win32\VC9\AllInOne\AllInOne.vcxproj", "{E1D6306E-4FF8-474A-BE7F-45DCBA4888B6}"
 EndProject

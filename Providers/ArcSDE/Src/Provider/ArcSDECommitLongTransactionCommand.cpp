@@ -21,7 +21,8 @@
 
 ArcSDECommitLongTransactionCommand::ArcSDECommitLongTransactionCommand (FdoIConnection *connection) :
     ArcSDEFeatureCommand<FdoICommitLongTransaction> (connection),
-    mName ()
+    mName (),
+	m_bKeepLongTransaction (false)
 {
     FdoPtr<ArcSDEConnection> conn;
 
@@ -535,7 +536,10 @@ FdoILongTransactionConflictDirectiveEnumerator* ArcSDECommitLongTransactionComma
 
             // delete the long transaction if we own it, otherwise move it to the new state
             if (ArcSDELongTransactionUtility::IsOurVersion (conn, version))
-                ArcSDELongTransactionUtility::VersionDelete (conn, GetName ());
+			{
+				if (!m_bKeepLongTransaction)
+					ArcSDELongTransactionUtility::VersionDelete (conn, GetName ());
+			}
             else
             {
                 result = SE_version_change_state (conn, version, target);
