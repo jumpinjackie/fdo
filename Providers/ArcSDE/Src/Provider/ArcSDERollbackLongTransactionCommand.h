@@ -27,6 +27,7 @@ class ArcSDERollbackLongTransactionCommand :
 {
     // name of the long transaction
     FdoStringP mName;
+	FdoBoolean m_bKeepLongTransaction;
 
 protected:
     void DeleteLongTransaction (SE_CONNECTION conn, CHAR* name);
@@ -51,6 +52,31 @@ public:
     /// <summary>Executes the RollbackLongTransaction command.</summary>
     /// <returns>Returns nothing</returns> 
     void Execute ();
+
+    /// \brief
+    /// Indicates whether to keep the long transaction after it is committed.
+    /// Returns true if keeping the long transaction after it is committed.
+    /// Returns false if removing the long transaction after it is committed.
+    /// Default value for KeepLongTransaction is false.
+    /// 
+    /// \return
+    /// Returns true if keeping the long transaction after it is committed.
+    /// 
+	FdoBoolean GetKeepLongTransaction () { return (m_bKeepLongTransaction); }
+
+    /// \brief
+    /// Sets whether to keep the long transaction after it is committed.
+    /// Default value for KeepLongTransaction is false.
+    ///
+    /// \param value 
+    /// Inputs one boolean value to indicate whether to keep the committed
+    /// long transaction
+    /// 
+    /// \return
+    /// Returns nothing
+    /// 
+    void SetKeepLongTransaction (FdoBoolean value) { m_bKeepLongTransaction = value; }
+
 };
 
 #endif // ArcSDERollbackLongTransactionCommand_H

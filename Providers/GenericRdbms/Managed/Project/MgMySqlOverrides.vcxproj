@@ -304,10 +304,6 @@
     <ClCompile Include="..\Src\OSGeo\FDO\Providers\Rdbms\Override\MySQL\AssemblyVersion.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Src\SqlServer\SchemaMgr\SqlServerOverrides.vcxproj">
-      <Project>{6706a0f9-9088-4907-8208-cbd18401e59f}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="MgRdbmsOverrides.vcxproj">
       <Project>{ae480e7a-bd42-4c15-83c6-13e486a6ac94}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
