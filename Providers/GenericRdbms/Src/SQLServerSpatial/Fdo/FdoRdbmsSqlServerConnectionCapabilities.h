@@ -58,6 +58,10 @@ public:
 
     virtual bool SupportsFlush() { return true; }
 
+    virtual bool SupportsJoins() const                              { return true; }
+    virtual FdoInt32 GetJoinTypes() const                           { return (FdoInt32)(FdoJoinType_Cross|FdoJoinType_Inner|FdoJoinType_LeftOuter|FdoJoinType_RightOuter|FdoJoinType_FullOuter); }
+    virtual bool SupportsSubSelects() const                         { return true; }
+
 protected:
     ~FdoRdbmsSqlServerConnectionCapabilities(void);
     virtual void Dispose();
