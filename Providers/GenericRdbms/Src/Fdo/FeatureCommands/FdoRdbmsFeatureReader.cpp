@@ -597,8 +597,6 @@ void FdoRdbmsFeatureReader::ProcessCalculations(std::vector<int>& idxs)
                     wcscpy(mColList[colIdx].c_alias, GetDbAliasName(pId->GetName()));
                 }
             }
-            else // it is not a calculation
-                calcPropFound = true;
         }
         // in case we cannot do index match try old method
         if (!calcPropFound)
