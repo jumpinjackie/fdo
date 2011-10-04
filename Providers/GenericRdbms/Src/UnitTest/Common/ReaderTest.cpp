@@ -16,6 +16,7 @@
 #include "Pch.h"
 #include "ReaderTest.h"
 #include "UnitTestUtil.h"
+#include "FdoCommonMiscUtil.h"
 #include <ctime>
 #include <cppunit/extensions/HelperMacros.h>
 #ifndef _WIN32
@@ -255,7 +256,7 @@ void ReaderTest::TestFeatureReaderWithIndex ()
             {
                 FdoDateTime dt1 = reader2->GetDateTime(L"datetime");
                 FdoDateTime dt2 = reader2->GetDateTime(idxdatetime);
-                CPPUNIT_ASSERT(memcmp(&dt1, &dt2, sizeof(FdoDateTime))==0);
+                CPPUNIT_ASSERT(FdoCommonMiscUtil::CompareDateTimes(dt1, dt2)==0);
             }
             isnull = reader2->IsNull(idxsingle);
             CPPUNIT_ASSERT(reader2->IsNull(L"single") == isnull);
@@ -308,7 +309,7 @@ void ReaderTest::TestFeatureReaderWithIndex ()
             {
                 FdoDateTime dt1 = reader2->GetDateTime(L"datetime2");
                 FdoDateTime dt2 = reader2->GetDateTime(idxdatetime2);
-                CPPUNIT_ASSERT(memcmp(&dt1, &dt2, sizeof(FdoDateTime))==0);
+                CPPUNIT_ASSERT(FdoCommonMiscUtil::CompareDateTimes(dt1, dt2)==0);
             }
             isnull = reader2->IsNull(idxdouble2);
             CPPUNIT_ASSERT(reader2->IsNull(L"double2") == isnull);
