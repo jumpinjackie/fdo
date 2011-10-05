@@ -130,7 +130,7 @@ void FdoClassDefinition::SetBaseClass(FdoClassDefinition* value)
 
             // The system properties are the base properties of the topmost base class.
             FdoClassDefinitionP topClass = FDO_SAFE_ADDREF(m_baseClass);
-            while ( topClass->GetBaseClass() ) 
+            while ( FdoClassDefinitionP(topClass->GetBaseClass()) ) 
                 topClass = topClass->GetBaseClass();
 
             // Set the base properties from the top class base properties.

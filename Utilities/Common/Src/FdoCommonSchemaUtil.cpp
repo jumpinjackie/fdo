@@ -1061,6 +1061,10 @@ FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPr
         throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_BADALLOC)));
     }
 
+    // Insert association property into context map immediately. We might come back to this property
+    // while deep copying the associated class and want to avoid processing it twice.
+    localSchemaContext->InsertSchemaElement(property, newProperty);
+
     FdoCommonSchemaUtil::DeepCopyFdoSchemaElementDetails(newProperty, property);
 
 	newProperty->SetReverseName(property->GetReverseName());
@@ -1131,8 +1135,6 @@ FdoAssociationPropertyDefinition * FdoCommonSchemaUtil::DeepCopyFdoAssociationPr
 	if( prop != NULL )
 		associationClassProperties->Remove( prop );
 	
-    localSchemaContext->InsertSchemaElement(property, newProperty);
-
     FDO_SAFE_ADDREF(newProperty.p);
     return newProperty;
 }
