@@ -129,7 +129,7 @@ void FdoRdbmsSimpleInsertCommand::PrepareInsert(const FdoSmLpClassDefinition* cl
         classId->SetValue( clidValue );
         classId->SetName( lpSystemProp->GetName() );
         mLocalPropertyValues->Add( classId );
-        propNames->Add(L"\"ClassId\"");
+        propNames->Add(lpSystemProp->RefColumn()->GetDbName());
         mBindProps.push_back(std::make_pair(clidValue.p, 0));
     }
     lpSystemProp = FdoSmLpDataPropertyDefinition::Cast(classDefinition->RefSystemProperty(L"RevisionNumber"));
@@ -140,7 +140,7 @@ void FdoRdbmsSimpleInsertCommand::PrepareInsert(const FdoSmLpClassDefinition* cl
         revNum->SetValue( revValue );
         revNum->SetName( lpSystemProp->GetName() );
         mLocalPropertyValues->Add( revNum );
-        propNames->Add(L"\"RevisionNumber\"");
+        propNames->Add(lpSystemProp->RefColumn()->GetDbName());
         mBindProps.push_back(std::make_pair(revValue.p, 0));
         mHasRevisionNumber = true;
     }
