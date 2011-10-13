@@ -638,6 +638,10 @@ geographic</gml:derivedCRSType>
 </ScTest:Geometry5>
 <ScTest:Prop1>
 1</ScTest:Prop1>
+<ScTest:ClassId>
+4</ScTest:ClassId>
+<ScTest:RevisionNumber>
+0</ScTest:RevisionNumber>
 </ScTest:ClassB1>
 </gml:featureMember>
 </gml:FeatureCollection>
