@@ -99,7 +99,7 @@ void WmsTestCustomCommands::testSpacialFeatureClassName ()
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0");
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.3.0");
         connection->SetConnectionString((FdoString*)sServer);
         FdoConnectionState state = connection->Open ();
         

@@ -62,7 +62,7 @@ void CapabilityTest::TestCapabilities ()
         CPPUNIT_ASSERT(supportsSQL == false);
 
         bool supportsTimeout = connectionCapabilities->SupportsTimeout();
-        CPPUNIT_ASSERT(supportsTimeout == false);
+        CPPUNIT_ASSERT(supportsTimeout == true);
 
         bool supportsTransactions = connectionCapabilities->SupportsTransactions();
         CPPUNIT_ASSERT(supportsTransactions == false);
