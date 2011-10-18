@@ -54,6 +54,14 @@ bool operator()(FdoString* _Left, FdoString* _Right) const
 	}
 };
 
+// about usage more details above QueryCacheRecInfo::m_usageCount
+enum SQLiteClearActionType
+{
+    SQLiteClearActionType_All = 0,     // we clean up everything
+    SQLiteClearActionType_ReleaseUsage1 = 1, // we clean up only statements with usage = 1
+    SQLiteClearActionType_RelUsage1DecOthers = 2  // we clean up only with usage = 1 and we decrement usage for others
+};
+
 struct QueryCacheRec
 {
     QueryCacheRec() : stmt(NULL), inUse(false) {}
@@ -64,7 +72,18 @@ struct QueryCacheRec
 };
 
 typedef std::vector<QueryCacheRec> QueryCacheRecList;
-typedef std::map<char*, QueryCacheRecList, string_less> QueryCache;
+struct QueryCacheRecInfo
+{
+    QueryCacheRecInfo() : m_usageCount(1), m_usedStmt(0) {}
+
+    // this value is incremented each time a statement is used.
+    // in case a statement is only once used, next time we call clean it will be removed.
+    FdoInt64 m_usageCount;
+    FdoInt32 m_usedStmt;
+    QueryCacheRecList m_lst;
+};
+
+typedef std::map<char*, QueryCacheRecInfo*, string_less> QueryCache;
 
 typedef std::map<char*, SltMetadata*, string_less> MetadataCache;
 
@@ -245,7 +264,7 @@ public:
     
     sqlite3_stmt*   GetCachedParsedStatement(const char* sql);
     void            ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt);
-    void            ClearQueryCache();
+    void            ClearQueryCache(SQLiteClearActionType type = SQLiteClearActionType_All);
     
     bool SupportsDetailedGeomType();
     
@@ -319,6 +338,7 @@ private :
     MetadataCache                           m_mNameToMetadata;
     SpatialIndexCache                       m_mNameToSpatialIndex;
     QueryCache                              m_mCachedQueries;
+    int                                     m_cleanCount;
 
     SltCapabilities*                        m_caps;
 

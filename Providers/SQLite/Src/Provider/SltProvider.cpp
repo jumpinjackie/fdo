@@ -46,6 +46,10 @@
     #endif
 #endif
 
+// we trigger a clean after this number os statements in cache.
+#define MAX_STMTSCACHED 100
+#define MAX_DECRATIOSTMTSCACHED 1.25
+
 #include "SpatialIndexDescriptor.h"
 
 //FDO entry point
@@ -116,6 +120,7 @@ SltConnection::SltConnection() : m_refCount(1)
     m_changesAvailable = false;
     m_defSpatialContextId = -1;
     m_isReadOnlyConnection = true;
+    m_cleanCount = 0;
 }
 
 SltConnection::~SltConnection()
@@ -502,6 +507,7 @@ void SltConnection::Close()
         break;
     }
 
+    m_cleanCount = 0;
     ClearQueryCache();
     
     delete[] m_wkbBuffer;
@@ -3477,15 +3483,18 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
         }                                                                          \
 }                                                                                  \
 
-
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
     //queries can be issued on the same connection.
-    if (m_mCachedQueries.size() > 1000)
+    size_t cntq = m_mCachedQueries.size();
+    if (cntq >= MAX_STMTSCACHED)
     {
-        ClearQueryCache();
+        if (cntq >= (size_t)(MAX_STMTSCACHED*MAX_DECRATIOSTMTSCACHED))
+            ClearQueryCache(SQLiteClearActionType_RelUsage1DecOthers);
+        else
+            ClearQueryCache(SQLiteClearActionType_ReleaseUsage1);
     }
 
     sqlite3_stmt* ret = NULL;
@@ -3496,13 +3505,14 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
     {
         //found a cached statement -- take it from the cache
         //and return it
-
-        QueryCacheRecList& lst = iter->second;
-        for(size_t i=0; i<lst.size(); i++)
+        QueryCacheRecInfo* qInfo = iter->second;
+        qInfo->m_usageCount++;
+        for(size_t i=0; i<qInfo->m_lst.size(); i++)
         {
-            QueryCacheRec& rec = lst[i];
+            QueryCacheRec& rec = qInfo->m_lst[i];
             if (!rec.inUse)
             {
+                qInfo->m_usedStmt++;
                 rec.inUse = true;
                 ret = rec.stmt;
                 sqlite3_reset(ret);
@@ -3511,16 +3521,19 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
         }
         if (ret == NULL)
         {
+            qInfo->m_usedStmt++;
             // to avoid a m_mCachedQueries.find() we will clone this small part
             SQL_PREPARE_CACHEPARSEDSTM();
-            lst.push_back(QueryCacheRec(ret));
+            qInfo->m_lst.push_back(QueryCacheRec(ret));
         }
     }
     else
     {
         // to avoid a m_mCachedQueries.find() we will clone this small part
         SQL_PREPARE_CACHEPARSEDSTM();
-        m_mCachedQueries[_strdup(sql)].push_back(QueryCacheRec(ret));
+        QueryCacheRecInfo* qInfo = new QueryCacheRecInfo();
+        qInfo->m_lst.push_back(QueryCacheRec(ret));
+        m_mCachedQueries[_strdup(sql)] = qInfo;
     }
     if (ret == NULL)
         throw FdoException::Create(L"Failed to create SQL statement");
@@ -3528,17 +3541,16 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
     return ret;
 }
 
-
 void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 {
     QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
 
     if (iter != m_mCachedQueries.end())
     {
-        QueryCacheRecList& lst = iter->second;
-        for(size_t i=0; i<lst.size(); i++)
+        QueryCacheRecInfo* qInfo = iter->second;
+        for(size_t i=0; i<qInfo->m_lst.size(); i++)
         {
-            QueryCacheRec& rec = lst[i];
+            QueryCacheRec& rec = qInfo->m_lst[i];
 
             if (rec.stmt == stmt)
             {
@@ -3546,6 +3558,7 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
                 if (m_connState != FdoConnectionState_Closed)
                     sqlite3_reset(stmt);
                 rec.inUse = false;
+                qInfo->m_usedStmt--;
                 return;
             }
         }
@@ -3553,40 +3566,76 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
     sqlite3_finalize(stmt);
 }
 
-void SltConnection::ClearQueryCache()
+void SltConnection::ClearQueryCache(SQLiteClearActionType type)
 {
     //We have to keep all cached statements that are still in use, 
     //we can only free the ones that are not in use
     QueryCache newCache;
 
+    if (type == SQLiteClearActionType_ReleaseUsage1)
+    {
+        m_cleanCount++;
+        if (m_cleanCount >= 5)
+        {
+            // avoid keeping statements too long in memory even were used more than one time in the past
+            // this will fix the cases when user just uses 4 time the same statement and after that never again
+            // statement will go away after a few clean ups
+            m_cleanCount = 0;
+            type = SQLiteClearActionType_RelUsage1DecOthers;
+        }
+    }
+
     for (QueryCache::iterator iter = m_mCachedQueries.begin(); 
         iter != m_mCachedQueries.end(); iter++)
     {
-        QueryCacheRecList& lst = iter->second;
-
-        bool stringInUse = false;
-
-        for (size_t i=0; i<lst.size(); i++)
+        QueryCacheRecInfo* qInfo = iter->second;
+        if (type == SQLiteClearActionType_ReleaseUsage1)
         {
-            QueryCacheRec& rec = lst[i];
-            
-            if (rec.inUse)
+            if (qInfo->m_usageCount > 1)
             {
-                //If the query is in use, carry it over to the new cache map
-
-                stringInUse = true;
-                newCache[iter->first].push_back(rec);
+                newCache[iter->first] = qInfo;
+                continue;
             }
-            else
+        }
+        else if (type == SQLiteClearActionType_RelUsage1DecOthers)
+        {
+            if (qInfo->m_usageCount > 1)
             {
-                //otherwise free the query and the query string
+                // in case statement is not used "half life" for it
+                if (qInfo->m_usedStmt == 0)
+                    qInfo->m_usageCount = (FdoInt64)(qInfo->m_usageCount/2.0);
 
-                sqlite3_finalize(rec.stmt);
+                newCache[iter->first] = qInfo;
+                continue;
             }
         }
 
-        if (!stringInUse)
+        QueryCacheRecList lst;
+        qInfo->m_usedStmt = 0;
+        for (size_t i=0; i<qInfo->m_lst.size(); i++)
+        {
+            QueryCacheRec& rec = qInfo->m_lst[i];
+
+            if (rec.inUse)
+            {
+                //If the query is in use, carry it over to the new cache map
+                qInfo->m_usedStmt++;
+                lst.push_back(rec);
+            }
+            else //otherwise free the query and the query string
+                sqlite3_finalize(rec.stmt);
+        }
+
+        if (qInfo->m_usedStmt)
+        {
+            qInfo->m_lst = lst;
+            newCache[iter->first] = qInfo;
+        }
+        else
+        {
+            delete qInfo;
             free(iter->first); //it was created via strdup, must use free()
+        }
     }
 
     m_mCachedQueries = newCache;
