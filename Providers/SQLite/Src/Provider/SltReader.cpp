@@ -1667,7 +1667,7 @@ void SltReader::ValidateIndex(sqlite3_stmt *pStmt, int index)
         if (index >= count)
         {
             FdoPtr<FdoPropertyDefinitionCollection> pdc = m_class->GetProperties();
-            for (int i=count; i<index; i++)
+            for (int i=count; i<=index; i++)
             {
                 FdoPtr<FdoPropertyDefinition> pv = pdc->GetItem(i);
                 AddColumnToQuery(pv->GetName());
