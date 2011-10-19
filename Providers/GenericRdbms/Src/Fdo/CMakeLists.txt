@@ -50,6 +50,10 @@ set( FdoRdbms_FeatureCommands_STAT_SRCS
    FeatureCommands/FdoRdbmsFeatureReader.cpp
    FeatureCommands/FdoRdbmsUpdateCommand.cpp
    FeatureCommands/FdoRdbmsFeatureSubsetReader.cpp
+   FeatureCommands/FdoRdbmsSimpleUpdateCommand.cpp
+   FeatureCommands/FdoRdbmsSimpleSelectCommand.cpp
+   FeatureCommands/FdoRdbmsSimpleInsertCommand.cpp
+   FeatureCommands/FdoRdbmsSimpleFeatureReader.cpp
 )
 
 set( FdoRdbms_Filter_STAT_SRCS

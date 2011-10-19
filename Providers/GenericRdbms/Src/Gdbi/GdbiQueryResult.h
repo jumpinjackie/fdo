@@ -104,6 +104,8 @@ private:
 public:
     ~GdbiQueryResult(void);
 
+    static GdbiQueryResult* Create (GdbiCommands* command, GdbiQueryIdentifier *QueryId);
+
     int GetBinaryValue(
             const wchar_t *ColName,
             int length,

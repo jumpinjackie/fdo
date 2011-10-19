@@ -29,6 +29,7 @@ libFdoRdbms_FeatureCommands_la_SOURCES = \
   FdoRdbmsUpdateCommand.cpp  \
   FdoRdbmsFeatureSubsetReader.cpp \
   FdoRdbmsSimpleInsertCommand.cpp \
+  FdoRdbmsSimpleSelectCommand.cpp \
   FdoRdbmsSimpleUpdateCommand.cpp \
   FdoRdbmsSimpleFeatureReader.cpp
 
@@ -45,6 +46,7 @@ noinst_HEADERS = $(libFdoRdbms_FeatureCommands_la_SOURCES) \
   FdoRdbmsSelectCommand.h \
   FdoRdbmsUpdateCommand.h \
   FdoRdbmsSimpleInsertCommand.h \
+  FdoRdbmsSimpleSelectCommand.h \
   FdoRdbmsSimpleUpdateCommand.h \
   FdoRdbmsSimpleFeatureReader.h
 

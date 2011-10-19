@@ -19,11 +19,135 @@
  */
 
 #include <Fdo/Schema/ClassDefinition.h>
-#include <Fdo/Expression/JoinCriteriaCollection.h>
+//#include <Fdo/Expression/JoinCriteriaCollection.h>
 #include <vector>
 
 // Class used only to detect if the property values collection has changed between 
 // two or more consecutive inserts. No other special handling is done here
+class FdoRdbmsJoinCriteriaCollection : public FdoJoinCriteriaCollection
+{
+private:
+    bool m_collChanged;
+protected:
+    FdoRdbmsJoinCriteriaCollection()
+    {
+        m_collChanged = false;
+    }
+    virtual ~FdoRdbmsJoinCriteriaCollection()
+    {
+    }
+
+    virtual void Dispose()
+    {
+        delete this;
+    }
+public:
+    static FdoRdbmsJoinCriteriaCollection* Create()
+    {
+        return new FdoRdbmsJoinCriteriaCollection();
+    }
+    virtual void SetItem(FdoInt32 index, FdoJoinCriteria* value)
+    {
+        m_collChanged = true;
+        FdoJoinCriteriaCollection::SetItem(index, value);
+    }
+    virtual FdoInt32 Add(FdoJoinCriteria* value)
+    {
+        m_collChanged = true;
+        return FdoJoinCriteriaCollection::Add(value);
+    }
+    virtual void Insert(FdoInt32 index, FdoJoinCriteria* value)
+    {
+        m_collChanged = true;
+        FdoJoinCriteriaCollection::Insert(index, value);
+    }
+    virtual void Clear()
+    {
+        m_collChanged = true;
+        FdoJoinCriteriaCollection::Clear();
+    }
+    virtual void Remove(const FdoJoinCriteria* value)
+    {
+        m_collChanged = true;
+        FdoJoinCriteriaCollection::Remove(value);
+    }
+    virtual void RemoveAt(FdoInt32 index)
+    {
+        m_collChanged = true;
+        FdoJoinCriteriaCollection::RemoveAt(index);
+    }
+    bool GetCollectionChanged()
+    {
+        return m_collChanged;
+    }
+    void SetCollectionChanged(bool value)
+    {
+        m_collChanged = value;
+    }
+};
+
+class FdoRdbmsIdentifierCollection : public FdoIdentifierCollection
+{
+private:
+    bool m_collChanged;
+protected:
+    FdoRdbmsIdentifierCollection()
+    {
+        m_collChanged = false;
+    }
+    virtual ~FdoRdbmsIdentifierCollection()
+    {
+    }
+
+    virtual void Dispose()
+    {
+        delete this;
+    }
+public:
+    static FdoRdbmsIdentifierCollection* Create()
+    {
+        return new FdoRdbmsIdentifierCollection();
+    }
+    virtual void SetItem(FdoInt32 index, FdoIdentifier* value)
+    {
+        m_collChanged = true;
+        FdoIdentifierCollection::SetItem(index, value);
+    }
+    virtual FdoInt32 Add(FdoIdentifier* value)
+    {
+        m_collChanged = true;
+        return FdoIdentifierCollection::Add(value);
+    }
+    virtual void Insert(FdoInt32 index, FdoIdentifier* value)
+    {
+        m_collChanged = true;
+        FdoIdentifierCollection::Insert(index, value);
+    }
+    virtual void Clear()
+    {
+        m_collChanged = true;
+        FdoIdentifierCollection::Clear();
+    }
+    virtual void Remove(const FdoIdentifier* value)
+    {
+        m_collChanged = true;
+        FdoIdentifierCollection::Remove(value);
+    }
+    virtual void RemoveAt(FdoInt32 index)
+    {
+        m_collChanged = true;
+        FdoIdentifierCollection::RemoveAt(index);
+    }
+    bool GetCollectionChanged()
+    {
+        return m_collChanged;
+    }
+    void SetCollectionChanged(bool value)
+    {
+        m_collChanged = value;
+    }
+};
+
 class FdoRdbmsPropertyValueCollection : public FdoPropertyValueCollection
 {
 private:
@@ -49,32 +173,32 @@ public:
     virtual void SetItem(FdoInt32 index, FdoPropertyValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::SetItem(index, value);
+        FdoPropertyValueCollection::SetItem(index, value);
     }
     virtual FdoInt32 Add(FdoPropertyValue* value)
     {
         m_collChanged = true;
-        return FdoCollection<FdoPropertyValue, FdoCommandException>::Add(value);
+        return FdoPropertyValueCollection::Add(value);
     }
     virtual void Insert(FdoInt32 index, FdoPropertyValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Insert(index, value);
+        FdoPropertyValueCollection::Insert(index, value);
     }
     virtual void Clear()
     {
         m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Clear();
+        FdoPropertyValueCollection::Clear();
     }
     virtual void Remove(const FdoPropertyValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::Remove(value);
+        FdoPropertyValueCollection::Remove(value);
     }
     virtual void RemoveAt(FdoInt32 index)
     {
         m_collChanged = true;
-        FdoCollection<FdoPropertyValue, FdoCommandException>::RemoveAt(index);
+        FdoPropertyValueCollection::RemoveAt(index);
     }
     bool GetCollectionChanged()
     {
@@ -111,32 +235,32 @@ public:
     virtual void SetItem(FdoInt32 index, FdoParameterValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoParameterValue, FdoCommandException>::SetItem(index, value);
+        FdoParameterValueCollection::SetItem(index, value);
     }
     virtual FdoInt32 Add(FdoParameterValue* value)
     {
         m_collChanged = true;
-        return FdoCollection<FdoParameterValue, FdoCommandException>::Add(value);
+        return FdoParameterValueCollection::Add(value);
     }
     virtual void Insert(FdoInt32 index, FdoParameterValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoParameterValue, FdoCommandException>::Insert(index, value);
+        FdoParameterValueCollection::Insert(index, value);
     }
     virtual void Clear()
     {
         m_collChanged = true;
-        FdoCollection<FdoParameterValue, FdoCommandException>::Clear();
+        FdoParameterValueCollection::Clear();
     }
     virtual void Remove(const FdoParameterValue* value)
     {
         m_collChanged = true;
-        FdoCollection<FdoParameterValue, FdoCommandException>::Remove(value);
+        FdoParameterValueCollection::Remove(value);
     }
     virtual void RemoveAt(FdoInt32 index)
     {
         m_collChanged = true;
-        FdoCollection<FdoParameterValue, FdoCommandException>::RemoveAt(index);
+        FdoParameterValueCollection::RemoveAt(index);
     }
     bool GetCollectionChanged()
     {

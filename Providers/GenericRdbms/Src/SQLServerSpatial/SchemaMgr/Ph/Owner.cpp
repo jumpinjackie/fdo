@@ -106,8 +106,8 @@ void FdoSmPhSqsOwner::LoadFdoMetadata()
         sql.append(GetDbName());
         sql.append(L".INFORMATION_SCHEMA.TABLES T where T.TABLE_SCHEMA='dbo' AND T.TABLE_NAME IN('f_spatialcontext', 'f_classdefinition', 'f_attributedefinition', 'f_associationdefinition', 'f_attributedependencies', 'f_sad', 'f_schemaoptions', 'f_options', 'f_schemainfo', 'f_spatialcontextgeom', 'f_spatialcontextgroup')");
 
-        GdbiStatement* query = connection->Prepare ((wchar_t*)sql.c_str());
-        GdbiQueryResult* results = query->ExecuteQuery();
+        query = connection->Prepare ((wchar_t*)sql.c_str());
+        results = query->ExecuteQuery();
         while (results->ReadNext())
         {
             bool isNULL = false;

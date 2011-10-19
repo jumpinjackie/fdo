@@ -23,11 +23,6 @@ FdoJoinCriteriaCollection* FdoJoinCriteriaCollection::Create()
 	return new FdoJoinCriteriaCollection();
 }
 
-void FdoJoinCriteriaCollection::Dispose()
-{
-    delete this;
-}
-
 // Gets the item in the collection with the specified name. Throws an invalid 
 // argument exception if an item with the specified name does not exist in 
 // the collection.

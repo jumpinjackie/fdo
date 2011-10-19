@@ -53,11 +53,6 @@ public:
     {
         usedCnt = 0;
     }
-    FdoRdbmsPvdBindDef(size_t cnt)
-    {
-        params.reserve(cnt);
-        usedCnt = 0;
-    }
     ~FdoRdbmsPvdBindDef()
     {
         std::vector<FdoRdbmsBindStrDef*>::iterator it;
@@ -163,6 +158,13 @@ FdoRdbmsPropBindHelper::FdoRdbmsPropBindHelper(FdoRdbmsConnection *connection) :
 {
 }
 
+FdoRdbmsPropBindHelper::~FdoRdbmsPropBindHelper()
+{
+    if (mBindParams)
+        mBindParams->Clear();
+    delete mBindParams;
+}
+
 void FdoRdbmsPropBindHelper::Clear()
 {
     if (mBindParams != NULL)
@@ -177,7 +179,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
     
     mHasOutParams = false;
     if (mBindParams == NULL)
-        mBindParams = new FdoRdbmsPvdBindDef(cntParams);
+        mBindParams = new FdoRdbmsPvdBindDef();
     else
         mBindParams->Clear();
 
@@ -614,7 +616,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
         return;
     
     if (mBindParams == NULL)
-        mBindParams = new FdoRdbmsPvdBindDef(cntParams);
+        mBindParams = new FdoRdbmsPvdBindDef();
     else
         mBindParams->Clear();
 
@@ -869,7 +871,7 @@ void FdoRdbmsPropBindHelper::BindValues(GdbiCommands* cmds, int id, std::vector<
         return;
     
     if (mBindParams == NULL)
-        mBindParams = new FdoRdbmsPvdBindDef(cntParams);
+        mBindParams = new FdoRdbmsPvdBindDef();
     else
         mBindParams->Clear();
 

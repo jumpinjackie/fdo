@@ -91,15 +91,20 @@ mGeomIdx(-1)
     GenerateInternalMapping();
 }
 
+FdoRdbmsSimpleFeatureReader* FdoRdbmsSimpleFeatureReader::Create(FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, 
+    const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties)
+{
+    return new FdoRdbmsSimpleFeatureReader(connection, queryResult, isFeatureQuery, classDef, schmCol, properties);
+}
+
 FdoRdbmsSimpleFeatureReader::~FdoRdbmsSimpleFeatureReader()
 {
     Close();
 
-    if (mFdoClassDefinition)
-        mFdoClassDefinition->Release();
-
-    if( mProperties )
-        mProperties->Release();
+    FDO_SAFE_RELEASE(mSchemaCollection);
+    FDO_SAFE_RELEASE(mFdoClassDefinition);
+    FDO_SAFE_RELEASE(mProperties);
+    FDO_SAFE_RELEASE(mFdoConnection);
 
     delete mQueryResult;
 
@@ -107,9 +112,6 @@ FdoRdbmsSimpleFeatureReader::~FdoRdbmsSimpleFeatureReader()
         delete *it;
     mColList.clear();
 
-    if( mFdoConnection )
-        mFdoConnection->Release();
-	
     delete[] mSprops;
     delete[] mWkbBuffer;
 }
