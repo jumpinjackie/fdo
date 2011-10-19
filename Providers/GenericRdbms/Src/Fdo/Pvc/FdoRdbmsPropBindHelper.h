@@ -31,7 +31,8 @@ class FdoRdbmsPvdBindDef;
 class FdoRdbmsPropBindHelper
 {
 public:
-    FdoRdbmsPropBindHelper(FdoRdbmsConnection *connection);    
+    FdoRdbmsPropBindHelper(FdoRdbmsConnection *connection);
+    ~FdoRdbmsPropBindHelper();
 
     /// <summary>Given a PVC operation, execute the handler.</summary>
     /// <returns>Returns the number of affected objects</returns> 

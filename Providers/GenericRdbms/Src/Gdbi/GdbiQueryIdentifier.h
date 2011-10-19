@@ -43,9 +43,15 @@ public:
 		return mQueryId;
 	}
 	
+    void EnforceEmptyQueryId()
+	{
+		mQueryId = -1;
+	}
+	
 	void Dispose ()
 	{
-		mpGdbiCommands->free_cursor( mQueryId );
+        if (mQueryId != -1)
+            mpGdbiCommands->free_cursor( mQueryId );
 		delete this;
 	}
 protected:

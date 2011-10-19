@@ -33,7 +33,16 @@ class FdoJoinCriteriaCollection : public FdoCollection<FdoJoinCriteria, FdoComma
 {
 protected:
 /// \cond DOXYGEN-IGNORE
-    virtual void Dispose();
+    FdoJoinCriteriaCollection():FdoCollection<FdoJoinCriteria, FdoCommandException>()
+    {
+    }
+    virtual ~FdoJoinCriteriaCollection()
+    {
+    }
+    virtual void Dispose()
+    {
+        delete this;
+    }
 /// \endcond
 
 public:

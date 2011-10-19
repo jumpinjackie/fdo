@@ -107,6 +107,7 @@ class FdoRdbmsSelectCommand : public FdoRdbmsFeatureCommand<FdoISelect>
       FdoIdentifierCollection* GetGrouping();
 
   public:
+      static FdoRdbmsSelectCommand* Create(FdoIConnection *connection);
 
       //
       // Prevent the use of the Assignment Operation by definning it and not implemeting it.

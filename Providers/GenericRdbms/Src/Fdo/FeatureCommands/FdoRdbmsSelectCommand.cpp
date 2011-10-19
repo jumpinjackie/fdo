@@ -96,6 +96,11 @@ FdoRdbmsSelectCommand::~FdoRdbmsSelectCommand()
     delete mBindParamsHelper;
 }
 
+FdoRdbmsSelectCommand* FdoRdbmsSelectCommand::Create(FdoIConnection *connection)
+{
+    return new FdoRdbmsSelectCommand(connection);
+}
+
 void FdoRdbmsSelectCommand::SetOrderingOption(FdoString* propertyName, FdoOrderingOption option)  
 {
     FdoPtr<FdoIdentifierCollection> tmp = GetOrdering(); //force creation of the ordering props collection
@@ -167,7 +172,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
                     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* paramsUsed = sqlBuilder->GetUsedParameterValues();
 
-                    if (((paramsUsed != NULL) ? paramsUsed->size() : 0) != 0)
+                    if (paramsUsed != NULL && paramsUsed->size())
                     {
                         if (mBindParamsHelper == NULL)
                             mBindParamsHelper = new FdoRdbmsPropBindHelper(mConn);
@@ -185,7 +190,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
                     // statement will be deleted in the reader.
                     delStatement = false;
 
-                    return new FdoRdbmsSimpleFeatureReader(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
+                    return FdoRdbmsSimpleFeatureReader::Create(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
                 }
             }
         }
@@ -339,7 +344,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
 
         std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* paramsUsed = flterProcessor->GetUsedParameterValues();
 
-        if (((paramsUsed != NULL) ? paramsUsed->size() : 0) != 0)
+        if (paramsUsed != NULL && paramsUsed->size())
         {
             if (mBindParamsHelper == NULL)
                 mBindParamsHelper = new FdoRdbmsPropBindHelper(mConn);
@@ -360,7 +365,7 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
         // For now only SQL Spatial Server supports SupportsSimpleReader, later (after we add some unit tests) we can extend it to other providers
         if (!flterProcessor->ContainsCustomObjects() && flterProcessor->SupportsSimpleReader() && geometricConditions == NULL && callerId == (FdoInt16)FdoCommandType_Select && !doNotUseSimpleSelect)
         {
-            return new FdoRdbmsSimpleFeatureReader(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
+            return FdoRdbmsSimpleFeatureReader::Create(mFdoConnection, queryRslt, isFeatureClass, classDefinition, NULL, mIdentifiers);
         }
         else
         {

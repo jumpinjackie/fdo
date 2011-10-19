@@ -296,20 +296,13 @@ namespace sqlgeomconv
             gf = NULL;
             NaN = std::numeric_limits<double>::quiet_NaN();
         }
-        GeomWriteHandle(size_t cntFig, size_t cntShp)
-        {
-            isLatLong = hasArcs = hasZ = hasM = false;
-            figures.reserve(cntFig);
-            shapes.reserve(cntShp);
-            ireader = NULL;
-            lBuff = zBuff = mBuff = NULL;
-            evalCntPts = cntPoints = 0;
-            gf = NULL;
-            NaN = std::numeric_limits<double>::quiet_NaN();
-        }
         void Clear ()
         {
             isLatLong = hasArcs = hasZ = hasM = false;
+            for(std::vector<FigureDescriptor*>::iterator it = figures.begin(); it < figures.end(); it++)
+                delete *it;
+            for(std::vector<ShapeDescriptor*>::iterator it = shapes.begin(); it < shapes.end(); it++)
+                delete *it;
             figures.clear();
             shapes.clear();
             ireader = NULL;
@@ -327,14 +320,7 @@ namespace sqlgeomconv
 
         ~GeomWriteHandle()
         {
-            for(std::vector<FigureDescriptor*>::iterator it = figures.begin(); it < figures.end(); it++)
-            {
-                delete *it;
-            }
-            for(std::vector<ShapeDescriptor*>::iterator it = shapes.begin(); it < shapes.end(); it++)
-            {
-                delete *it;
-            }
+            Clear ();
             FDO_SAFE_RELEASE(gf);
         }
         inline void MarkBufferLen(FdoByte* act) { lCacheBuff.mBuffLen = act-lCacheBuff.mBuff; }

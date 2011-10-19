@@ -43,8 +43,6 @@ typedef std::map<FdoString*, std::pair<GdbiColumnDetail*, int>, wstring_less> Gd
 
 class FdoRdbmsSimpleFeatureReader : public FdoIFeatureReader
 {
-    friend class FdoRdbmsSelectCommand;
-
 protected:
     FdoRdbmsSimpleFeatureReader()
     {
@@ -77,6 +75,9 @@ protected:
     virtual void Dispose();
 
 public:
+    static FdoRdbmsSimpleFeatureReader* Create(FdoIConnection *connection, GdbiQueryResult *queryResult, bool isFeatureQuery, 
+        const FdoSmLpClassDefinition *classDef, FdoFeatureSchemaCollection *schmCol, FdoIdentifierCollection *properties = NULL);
+
     virtual FdoClassDefinition* GetClassDefinition();
 
     virtual FdoInt32 GetDepth();

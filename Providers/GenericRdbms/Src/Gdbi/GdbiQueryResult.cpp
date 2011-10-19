@@ -97,6 +97,10 @@ mHasLobs(false)
 	m_missed=0;
 }
 
+GdbiQueryResult* GdbiQueryResult::Create( GdbiCommands* command, GdbiQueryIdentifier* QueryId)
+{
+    return new GdbiQueryResult(command, QueryId);
+}
 
 void GdbiQueryResult::define_exec()
 {

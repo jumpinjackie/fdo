@@ -232,6 +232,9 @@
     <ClCompile Include="FeatureCommands\FdoRdbmsSimpleUpdateCommand.cpp">
       <Filter>Source Files\FeatureCommands</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureCommands\FdoRdbmsSimpleSelectCommand.cpp">
+      <Filter>Source Files\FeatureCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connection\DbiConnection.h">
@@ -490,6 +493,9 @@
       <Filter>Header Files\Pvc</Filter>
     </ClInclude>
     <ClInclude Include="FeatureCommands\FdoRdbmsSimpleUpdateCommand.h">
+      <Filter>Header Files\FeatureCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureCommands\FdoRdbmsSimpleSelectCommand.h">
       <Filter>Header Files\FeatureCommands</Filter>
     </ClInclude>
   </ItemGroup>
