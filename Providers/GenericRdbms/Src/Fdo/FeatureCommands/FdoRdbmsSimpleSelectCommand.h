@@ -86,8 +86,6 @@ public:
             while(*name != '\0' && *name != '.') name++;
             mIsObjectObject = (*name == L'.');
 
-            mConnection->GetSchemaUtil()->CheckClass(value->GetText());
-
             mClassName = FDO_SAFE_ADDREF(value);
         }
     }
