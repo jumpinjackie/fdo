@@ -65,6 +65,10 @@ inline FdoString* RFPNLSGetMessage(FdoInt32 msgNum, const char* defMsg, const ch
     #define NlsMsgGet5(msg_num,default_msg,arg1,arg2,arg3,arg4,arg5) RFPNLSGetMessage(msg_num, default_msg, fdorfp_cat, arg1, arg2, arg3, arg4, arg5)
 #endif
 
+    // Formats message without function and line number, regardless of whether in Debug or Release mode.
+    // Used to get localized spatial context description.
+    #define NlsMsgGetNoLine(msg_num,default_msg)  RFPNLSGetMessage(msg_num, default_msg, fdorfp_cat, NULL)
+
 
 // case insensitive string comparison
 #ifdef _WIN32
