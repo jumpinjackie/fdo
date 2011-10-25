@@ -121,7 +121,7 @@ void FdoRfpClassData::_buildUp(FdoRfpConnection *conn,
                 ext.m_minY == FdoGrfpGlobals::DefaultSpatialContextExtentMinY &&
                 wcscmp(FdoGrfpGlobals::DefaultSpatialContextName, defaultContext->GetName()) == 0 && 
                 wcscmp(FdoGrfpGlobals::DefaultSpatialContextName, defaultContext->GetCoordinateSystem()) == 0 &&
-                wcscmp(NlsMsgGet(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"), defaultContext->GetDescription()) == 0)
+                wcscmp(NlsMsgGetNoLine(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"), defaultContext->GetDescription()) == 0)
             {
                 bResetExtents = true;
             }

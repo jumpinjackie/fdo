@@ -226,7 +226,7 @@ void FdoRfpConnection::_buildUpDefaultSpatialContext()
 {
     FdoRfpSpatialContextP defaultSC = new FdoRfpSpatialContext();
     defaultSC->SetName(FdoGrfpGlobals::DefaultSpatialContextName);
-    defaultSC->SetDescription(NlsMsgGet(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"));
+    defaultSC->SetDescription(NlsMsgGetNoLine(GRFP_67_DEFAULT_SPATIAL_CONTEXT_DESC, "System generated default FDO Spatial Context"));
     defaultSC->SetCoordinateSystem(FdoGrfpGlobals::DefaultSpatialContextCoordName);
     defaultSC->SetExtent(FdoRfpUtil::CreateGeometryAgfFromRect(FdoRfpRect(
         FdoGrfpGlobals::DefaultSpatialContextExtentMinX, 
