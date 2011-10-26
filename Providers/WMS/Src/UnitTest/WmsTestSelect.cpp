@@ -430,25 +430,11 @@ void WmsTestSelect::testServer3 ()
 
 		conn->Close();
 
-        // Send http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0&REQUEST=GetCapabilities directly
-        // in browser has started to fail.
-        bool failed = false;
-        try
-        {
-		// connect the same server with 1.1.0 version
+        // connect the same server with 1.1.0 version
 	    conn->SetConnectionString (L"FeatureServer=http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?version=1.1.0");
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
-        }
-        catch ( ... )
-        {
-        failed = true;
-        }
 
-        CPPUNIT_ASSERT_MESSAGE("1.1 connect started working again", failed);
-
-// Remove #if, if connect to 1.1 starts working again.
-#if 0
-	    cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
+        cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
 		cmd->SetFeatureClassName (L"Foundation BNDTXT_1M");
 	    featReader = cmd->Execute ();
 
@@ -465,7 +451,6 @@ void WmsTestSelect::testServer3 ()
         CPPUNIT_ASSERT (enve->GetMinY() == -82.9724044799805);
         CPPUNIT_ASSERT (enve->GetMaxX() == 179.91194152832);
         CPPUNIT_ASSERT (enve->GetMaxY() == 83.61899566650389);
-#endif
     }
     catch (FdoException* e)
     {
