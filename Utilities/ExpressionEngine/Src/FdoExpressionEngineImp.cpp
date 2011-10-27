@@ -2075,11 +2075,9 @@ bool FdoExpressionEngineImp::MatchBracket (const wchar_t* pattern, const wchar_t
 
 bool FdoExpressionEngineImp::Like (FdoDataValue* argLeft, FdoDataValue* argRight)
 {
-    if (FdoDataType_String != argLeft->GetDataType ())
-        throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
-    if (FdoDataType_String != argRight->GetDataType ())
-        throw FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID (FDO_62_PROPERTYVALUEFETCHTYPEMISMATCH)));
-
+    if (FdoDataType_String != argLeft->GetDataType () || FdoDataType_String != argRight->GetDataType ())
+        return false;
+    
     return (MatchesHere (((FdoStringValue*)argRight)->GetString (), ((FdoStringValue*)argLeft)->GetString ()));
 }
 
