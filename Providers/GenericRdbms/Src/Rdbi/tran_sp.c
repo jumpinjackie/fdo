@@ -160,9 +160,6 @@ int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name)
     int status = RDBI_SUCCESS;
     debug_on("rdbi_tran_spW");
 
-    wchar_t* name = (wchar_t*)ut_vm_malloc("rdbi_tran_spW", sizeof(wchar_t) * (wcslen(sp_name) + 1));
-    wcscpy(name, sp_name);
-
     //Can only start save point operation when a transaction is active
     if(context->rdbi_cnct->tran_head == NULL)
     {
@@ -185,7 +182,7 @@ int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name)
             if(rdbi_tran_sp_existsW(context, sp_name))
             {
                 status = RDBI_38;
-                rdbi_msg_set_SW(context, RDBI_38, "Save point already exists.", name);
+                rdbi_msg_set_SW(context, RDBI_38, "Save point '%1$ls' already exists.", (wchar_t*)sp_name);
                 goto the_exit;
             }
             //Create the save point entry
@@ -201,7 +198,7 @@ int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name)
             if(found == NULL)
             {
                 status = RDBI_37;
-                rdbi_msg_set_SW(context, RDBI_37, "Save point does not exist.", name);
+                rdbi_msg_set_SW(context, RDBI_37, "Save point '%1$ls' already exists.", (wchar_t*)sp_name);
                 goto the_exit;
             }
             sp_entry_def* entry = context->rdbi_cnct->sp_head;
@@ -220,7 +217,7 @@ int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name)
             sp_entry_def* found = rdbi_find_sp_entryW(context, sp_name);
             if(found == NULL)
             {
-                rdbi_msg_set_SW(context, RDBI_37, "Save point does not exist.", name);
+                rdbi_msg_set_SW(context, RDBI_37, "Save point '%1$ls' already exists.", (wchar_t*)sp_name);
                 goto the_exit;
             }
             sp_entry_def* entry = context->rdbi_cnct->sp_head;
@@ -248,8 +245,6 @@ int rdbi_tran_spW(rdbi_context_def *context, int action, const wchar_t* sp_name)
 
 the_exit:
     context->rdbi_last_status = status;
-    if(status != RDBI_SUCCESS)
-        ut_vm_free("rdbi_tran_spW", name);
     debug_return(NULL, context->rdbi_last_status);
 }
 

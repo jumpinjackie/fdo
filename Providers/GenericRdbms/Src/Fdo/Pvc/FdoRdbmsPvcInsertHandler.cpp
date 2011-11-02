@@ -291,15 +291,13 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                                                int& bindCount,
                                                bool scanOnly )
 {
-    const   FdoSmLpPropertyDefinitionCollection *propertyDefinitions = currentClass->RefProperties();
+    FdoPtr<FdoSmLpPropertyDefinitionCollection> propertyDefinitions = ((FdoSmLpClassDefinition*)currentClass)->GetProperties();
     int     i;
     bool    emptyBlobAdded;
 
     // Make a copy of the properties with the geometries at the end of the collection
     if ( mFdoConnection->BindGeometriesLast() )
-    {
         propertyDefinitions = MoveGeometryProperties( currentClass );
-    }
         
     FdoStringP comma(L",");
 
@@ -561,9 +559,6 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                 break;
         }
     }
-    
-    if ( mFdoConnection->BindGeometriesLast() )
-        delete propertyDefinitions;
 }
 
 void FdoRdbmsPvcInsertHandler::GetStartInsertString( FdoStringP& insertStartString, const wchar_t* tableName )
@@ -1085,13 +1080,11 @@ void FdoRdbmsPvcInsertHandler::SetAditionalBindVariables(const FdoSmLpClassDefin
 void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *currentClass, 
 												const wchar_t *scope, int &bind_no, FdoPropertyValueCollection  *propValCollection, FdoRdbmsPvcBindDef *bind, int gid)
 {
-    const FdoSmLpPropertyDefinitionCollection *propertyDefinitions = currentClass->RefProperties();
+    FdoPtr<FdoSmLpPropertyDefinitionCollection> propertyDefinitions = ((FdoSmLpClassDefinition*)currentClass)->GetProperties();
 
     // Make a copy of the properties with the geometries at the end of the collection
     if ( mFdoConnection->BindGeometriesLast() )
-    {
         propertyDefinitions = MoveGeometryProperties( currentClass );
-    }
 
     int i;
     const FdoSmPhDbObject* classTab = currentClass->RefDbObject()->RefDbObject();
@@ -1458,10 +1451,6 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
                 break;
         }
     }
-
-    // Clean up
-    if ( mFdoConnection->BindGeometriesLast() )
-        delete propertyDefinitions;
 }
 
 InsertQueryDef *FdoRdbmsPvcInsertHandler::GetInsertQuery( const wchar_t *tableName, bool alloc_new )

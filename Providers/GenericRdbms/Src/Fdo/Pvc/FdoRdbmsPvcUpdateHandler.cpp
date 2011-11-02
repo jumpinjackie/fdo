@@ -161,269 +161,283 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
     const wchar_t *prmPrtName = L"FeatId";
     if ( isFeatClass && featIdProp )
         prmPrtName = featIdProp->GetName();
-   
-    for (i=0; i<propValCollection->GetCount(); i++)
+    try
     {
-        if (duplicate[i] == true)
-            continue;
-        FdoPtr<FdoPropertyValue> propertyValue = propValCollection->GetItem(i);
-        if ( propertyValue == NULL )
-            throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
-        FdoPtr<FdoIdentifier>id = propertyValue->GetName();
-        const wchar_t* name  = id->GetText();
-
-        FdoPtr<FdoValueExpression> literalExpression = propertyValue->GetValue();
-        FdoPtr<FdoIStreamReader> streamReader = propertyValue->GetStreamReader();
-
-        // Skip the streamed properties for now ...
-        if ( literalExpression == NULL && streamReader == NULL)
-            continue;  // Must not have been set
-
-        for( j =0; properties!= NULL && j<properties->GetCount(); j++ )
+        for (i=0; i<propValCollection->GetCount(); i++)
         {
-            if ( wcscmp(name, properties->RefItem(j)->GetName() ) == 0 )
-            {
-                break;
-            }
-        }
-        if( j < properties->GetCount() )
-        {
-            continue; // This is a primary key column; should appear in the where clause as: where prim_col1 = :1 and prim_col2= :2 ...
-        }
-
-        // Filter out the class feature id property if in the property value collection
-        // and not eliminated as a primary key.
-
-        if ( isFeatClass )
-        {
-            if ( wcscmp(name, prmPrtName ) == 0 )
-            {
-                skipIndex = i;
+            if (duplicate[i] == true)
                 continue;
-            }
-        }
+            FdoPtr<FdoPropertyValue> propertyValue = propValCollection->GetItem(i);
+            if ( propertyValue == NULL )
+                throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
+            FdoPtr<FdoIdentifier>id = propertyValue->GetName();
+            const wchar_t* name  = id->GetText();
 
-        FdoStringP colName;
-        const FdoSmLpPropertyDefinition *propertyDefinition = classDefinition->RefProperties()->RefItem(name);
-        FdoPropertyType propType = FdoPropertyType_DataProperty;
+            FdoPtr<FdoValueExpression> literalExpression = propertyValue->GetValue();
+            FdoPtr<FdoIStreamReader> streamReader = propertyValue->GetStreamReader();
 
-        if( propertyDefinition != NULL )
-        {
-           propType = propertyDefinition->GetPropertyType();
-           if( propType == FdoPropertyType_DataProperty )
-           {
-               const FdoSmLpDataPropertyDefinition* dataProp =
-                    static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-                const FdoSmPhColumn *column = dataProp->RefColumn();
-                colName = column->GetDbName();
-           }
-           else if ( propType == FdoPropertyType_GeometricProperty)
-           {
-                const FdoSmLpGeometricPropertyDefinition* geomProp =
-                    static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+            // Skip the streamed properties for now ...
+            if ( literalExpression == NULL && streamReader == NULL)
+                continue;  // Must not have been set
 
-				FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
-				if( columnType != FdoSmOvGeometricColumnType_Double )
-				{
-					const FdoSmPhColumn *column = geomProp->RefColumn();
-					colName = column->GetDbName();
-				}
-				else
-				{
-					const FdoSmPhColumn *columnX = geomProp->RefColumnX();
-					if( columnX != NULL )
-						colName = columnX->GetDbName();
-
-					// We'll handle the Y and Z below
-				}
-           }
-        }
-        else
-        {
-            // This must be an association property or single mapped object property
-            int  length;
-            const FdoString **scopes = id->GetScope( length );
-            const FdoString *propName = id->GetName();
-            bool  bSkip = false;
-            if( length != 0 )
+            for( j =0; properties!= NULL && j<properties->GetCount(); j++ )
             {
-                const FdoSmLpPropertyDefinition *propertyDefinition = classDefinition->RefProperties()->RefItem( scopes[0] );
-                if( propertyDefinition->GetPropertyType() == FdoPropertyType_ObjectProperty )
+                if ( wcscmp(name, properties->RefItem(j)->GetName() ) == 0 )
                 {
-                    const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
-                    const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
-                    if( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
-                        throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
-                    const FdoSmLpClassDefinition* currentClass = objProp->RefTargetClass();
-                    for( int k=1;k<length;k++ )
+                    break;
+                }
+            }
+            if( j < properties->GetCount() )
+            {
+                continue; // This is a primary key column; should appear in the where clause as: where prim_col1 = :1 and prim_col2= :2 ...
+            }
+
+            // Filter out the class feature id property if in the property value collection
+            // and not eliminated as a primary key.
+
+            if ( isFeatClass )
+            {
+                if ( wcscmp(name, prmPrtName ) == 0 )
+                {
+                    skipIndex = i;
+                    continue;
+                }
+            }
+
+            FdoStringP colName;
+            const FdoSmLpPropertyDefinition *propertyDefinition = classDefinition->RefProperties()->RefItem(name);
+            FdoPropertyType propType = FdoPropertyType_DataProperty;
+
+            if( propertyDefinition != NULL )
+            {
+               propType = propertyDefinition->GetPropertyType();
+               if( propType == FdoPropertyType_DataProperty )
+               {
+                   const FdoSmLpDataPropertyDefinition* dataProp =
+                        static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+                    const FdoSmPhColumn *column = dataProp->RefColumn();
+                    colName = column->GetDbName();
+               }
+               else if ( propType == FdoPropertyType_GeometricProperty)
+               {
+                    const FdoSmLpGeometricPropertyDefinition* geomProp =
+                        static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+
+				    FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
+				    if( columnType != FdoSmOvGeometricColumnType_Double )
+				    {
+					    const FdoSmPhColumn *column = geomProp->RefColumn();
+					    colName = column->GetDbName();
+				    }
+				    else
+				    {
+					    const FdoSmPhColumn *columnX = geomProp->RefColumnX();
+					    if( columnX != NULL )
+						    colName = columnX->GetDbName();
+
+					    // We'll handle the Y and Z below
+				    }
+               }
+            }
+            else
+            {
+                // This must be an association property or single mapped object property
+                int  length;
+                const FdoString **scopes = id->GetScope( length );
+                const FdoString *propName = id->GetName();
+                bool  bSkip = false;
+                if( length != 0 )
+                {
+                    const FdoSmLpPropertyDefinition *propertyDefinition = classDefinition->RefProperties()->RefItem( scopes[0] );
+                    if( propertyDefinition->GetPropertyType() == FdoPropertyType_ObjectProperty )
                     {
-                        propertyDefinition = classDefinition->RefProperties()->RefItem( scopes[k] );
-                        objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
-                        mappping = objProp->RefMappingDefinition();
+                        const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
+                        const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
                         if( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
                             throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
+                        const FdoSmLpClassDefinition* currentClass = objProp->RefTargetClass();
+                        for( int k=1;k<length;k++ )
+                        {
+                            propertyDefinition = classDefinition->RefProperties()->RefItem( scopes[k] );
+                            objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
+                            mappping = objProp->RefMappingDefinition();
+                            if( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
+                                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
 
-                        currentClass = objProp->RefTargetClass();
-                    }
-                    propertyDefinition = currentClass->RefProperties()->RefItem( propName );
-                    if( propertyDefinition != NULL )
-                    {
-                        propType = propertyDefinition->GetPropertyType();
-                        if( propType == FdoPropertyType_DataProperty )
-                        {
-                            const FdoSmLpDataPropertyDefinition* dataProp =
-                                static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-                            const FdoSmPhColumn *column = dataProp->RefColumn();
-                            colName = column->GetDbName();
+                            currentClass = objProp->RefTargetClass();
                         }
-                        else if ( propType == FdoPropertyType_GeometricProperty )
+                        propertyDefinition = currentClass->RefProperties()->RefItem( propName );
+                        if( propertyDefinition != NULL )
                         {
-                            const FdoSmLpGeometricPropertyDefinition* geomProp =
-                                static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
-                            const FdoSmPhColumn *column = geomProp->RefColumn();
-                            colName = column->GetDbName();
+                            propType = propertyDefinition->GetPropertyType();
+                            if( propType == FdoPropertyType_DataProperty )
+                            {
+                                const FdoSmLpDataPropertyDefinition* dataProp =
+                                    static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+                                const FdoSmPhColumn *column = dataProp->RefColumn();
+                                colName = column->GetDbName();
+                            }
+                            else if ( propType == FdoPropertyType_GeometricProperty )
+                            {
+                                const FdoSmLpGeometricPropertyDefinition* geomProp =
+                                    static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+                                const FdoSmPhColumn *column = geomProp->RefColumn();
+                                colName = column->GetDbName();
+                            }
+                            else
+                            {
+                                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
+                            }
+                        }
+                    }
+
+                    else if( propertyDefinition->GetPropertyType() == FdoPropertyType_AssociationProperty && length == 1 )
+                    {
+                        const FdoSmLpAssociationPropertyDefinition* assocProp = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
+                        const FdoSmLpDataPropertyDefinitionCollection *identprop;
+                        FdoSmLpDataPropertyDefinitionCollection props;
+                        if( assocProp->GetIdentityProperties()->GetCount() == 0 )
+                        {
+                            // The name must be part of the associated class identity properties
+                            identprop = assocProp->RefAssociatedClass()->RefIdentityProperties();
                         }
                         else
                         {
-                            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
-                        }
-                    }
-                }
-
-                else if( propertyDefinition->GetPropertyType() == FdoPropertyType_AssociationProperty && length == 1 )
-                {
-                    const FdoSmLpAssociationPropertyDefinition* assocProp = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
-                    const FdoSmLpDataPropertyDefinitionCollection *identprop;
-                    FdoSmLpDataPropertyDefinitionCollection props;
-                    if( assocProp->GetIdentityProperties()->GetCount() == 0 )
-                    {
-                        // The name must be part of the associated class identity properties
-                        identprop = assocProp->RefAssociatedClass()->RefIdentityProperties();
-                    }
-                    else
-                    {
-                        // This is one of the association identity properties
-                        for(int i=0; i<assocProp->GetIdentityProperties()->GetCount(); i++ )
-                        {
-                            FdoStringP proName = assocProp->GetIdentityProperties()->GetString( i );
-                            const FdoSmLpDataPropertyDefinition  *prop = (const FdoSmLpDataPropertyDefinition  *)assocProp->RefAssociatedClass()->RefProperties()->RefItem( proName );
-                            props.Add( (FdoSmLpDataPropertyDefinition  *)prop );
-                        }
-                        identprop = &props;
-                    }
-                    for(int i=0; i<identprop->GetCount(); i++ )
-                    {
-                        if (FdoCommonOSUtil::wcsicmp((const wchar_t*)propName, identprop->RefItem(i)->GetName() ) == 0)
-                        {
-                            // Make sure the equivalent reverse identity property is not already set
-                            if( assocProp->GetReverseIdentityProperties()->GetCount() != 0 )
+                            // This is one of the association identity properties
+                            for(int i=0; i<assocProp->GetIdentityProperties()->GetCount(); i++ )
                             {
-                                FdoStringP proName = assocProp->GetReverseIdentityProperties()->GetString( i );
-                                FdoPtr<FdoPropertyValue>propValue;
-                                try
-                                {
-                                    propValue = propValCollection->GetItem((const wchar_t*)proName );
-                                }
-                                catch(FdoException *exp) {exp->Release();/* expected exception*/}
-
-                                if( propValue != NULL )
-                                {
-                                    // Should check that both values match
-                                    FdoPtr<FdoValueExpression>assoVal = propertyValue->GetValue();
-                                    FdoPtr<FdoValueExpression>identVal = propValue->GetValue();
-                                    if( assoVal != NULL && identVal != NULL && FdoCommonOSUtil::wcsicmp(assoVal->ToString(), identVal->ToString() ) )
-                                        throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_291, "Association property '%1$ls' and property '%2$ls' must have the same value or only one should be set",
-                                                        (const wchar_t*)name, (const wchar_t*)proName ));
-
-                                    bSkip = true;
-                                }
+                                FdoStringP proName = assocProp->GetIdentityProperties()->GetString( i );
+                                const FdoSmLpDataPropertyDefinition  *prop = (const FdoSmLpDataPropertyDefinition  *)assocProp->RefAssociatedClass()->RefProperties()->RefItem( proName );
+                                props.Add( (FdoSmLpDataPropertyDefinition  *)prop );
                             }
-                            colName = assocProp->GetReverseIdentityColumns()->GetDbString( i );
-                            break;
+                            identprop = &props;
+                        }
+                        for(int i=0; i<identprop->GetCount(); i++ )
+                        {
+                            if (FdoCommonOSUtil::wcsicmp((const wchar_t*)propName, identprop->RefItem(i)->GetName() ) == 0)
+                            {
+                                // Make sure the equivalent reverse identity property is not already set
+                                if( assocProp->GetReverseIdentityProperties()->GetCount() != 0 )
+                                {
+                                    FdoStringP proName = assocProp->GetReverseIdentityProperties()->GetString( i );
+                                    FdoPtr<FdoPropertyValue>propValue;
+                                    try
+                                    {
+                                        propValue = propValCollection->GetItem((const wchar_t*)proName );
+                                    }
+                                    catch(FdoException *exp) {exp->Release();/* expected exception*/}
+
+                                    if( propValue != NULL )
+                                    {
+                                        // Should check that both values match
+                                        FdoPtr<FdoValueExpression>assoVal = propertyValue->GetValue();
+                                        FdoPtr<FdoValueExpression>identVal = propValue->GetValue();
+                                        if( assoVal != NULL && identVal != NULL && FdoCommonOSUtil::wcsicmp(assoVal->ToString(), identVal->ToString() ) )
+                                            throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_291, "Association property '%1$ls' and property '%2$ls' must have the same value or only one should be set",
+                                                            (const wchar_t*)name, (const wchar_t*)proName ));
+
+                                        bSkip = true;
+                                    }
+                                }
+                                colName = assocProp->GetReverseIdentityColumns()->GetDbString( i );
+                                break;
+                            }
                         }
                     }
                 }
+                if( bSkip )
+                {
+                    duplicate[i] = true;
+                    continue;
+                }
             }
-            if( bSkip )
+            if( colName == L"" ) //TODO: Should never happen; May be it needs an exception
+                colName =  mConnection->GetSchemaUtil()->Property2ColName( classDefinition->GetName(), name );
+
+            if( ! first )
             {
-                duplicate[i] = true;
-                continue;
+                updateString += L", ";
             }
-        }
-        if( colName == L"" ) //TODO: Should never happen; May be it needs an exception
-            colName =  mConnection->GetSchemaUtil()->Property2ColName( classDefinition->GetName(), name );
+            first = false;
+            updateProperties = true;
+            updateString += colName ;
+            updateString += L"=";
 
-        if( ! first )
-        {
-            updateString += L", ";
-        }
-        first = false;
-        updateProperties = true;
-        updateString += colName ;
-        updateString += L"=";
-
-        if ( streamReader )
-        {
-            const FdoSmLpDataPropertyDefinition* dataProp =
-                    static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-
-            if ( dataProp->GetDataType() == FdoDataType_BLOB )
+            if ( streamReader )
             {
-                hasLobsByRef = true;
-                updateString += L"EMPTY_BLOB()";
-                bindIndex++;
-                // do not increment bindIndex here
+                const FdoSmLpDataPropertyDefinition* dataProp =
+                        static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+
+                if ( dataProp->GetDataType() == FdoDataType_BLOB )
+                {
+                    hasLobsByRef = true;
+                    updateString += L"EMPTY_BLOB()";
+                    bindIndex++;
+                    // do not increment bindIndex here
+                }
+            }
+            else
+            {
+                bool isGeomProp = (propType == FdoPropertyType_GeometricProperty);
+                updateString += mFdoConnection->GetBindString( bindIndex++, propertyDefinition );
+
+			    if ( isGeomProp )
+			    {
+				    const FdoSmLpGeometricPropertyDefinition* geomProp =
+                        static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+
+				    FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
+				    if( columnType != FdoSmOvGeometricColumnType_Double )
+				    {
+					    const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
+					    const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
+					    if (NULL != columnSi1 && NULL != columnSi2)
+					    {
+						    updateString += L", ";
+						    updateString += columnSi1->GetDbName() ;
+						    updateString += L"=";
+						    updateString += mFdoConnection->GetBindString( bindIndex++ );
+						    updateString += L", ";
+						    updateString += columnSi2->GetDbName() ;
+						    updateString += L"=";
+						    updateString += mFdoConnection->GetBindString( bindIndex++ );
+					    }
+				    }
+				    else
+				    {
+					    // Handle the Y and possibly Z columns
+					    const FdoSmPhColumn *columnY = geomProp->RefColumnY();
+                        const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
+                        if (NULL != columnY )
+                        {
+						    updateString += L", ";
+						    updateString += columnY->GetDbName() ;
+						    updateString += L"=";
+						    updateString += mFdoConnection->GetBindString( bindIndex++ );
+						    if( NULL != columnZ )
+						    {
+							    updateString += L", ";
+							    updateString += columnZ->GetDbName() ;
+							    updateString += L"=";
+							    updateString += mFdoConnection->GetBindString( bindIndex++ );
+						    }
+					    }
+				    }
+			    }
             }
         }
-        else
+    }
+    catch(...)
+    {
+        delete [] duplicate;
+        for ( int i = 0; i < count; i++ ) 
         {
-            bool isGeomProp = (propType == FdoPropertyType_GeometricProperty);
-            updateString += mFdoConnection->GetBindString( bindIndex++, propertyDefinition );
-
-			if ( isGeomProp )
-			{
-				const FdoSmLpGeometricPropertyDefinition* geomProp =
-                    static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
-
-				FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
-				if( columnType != FdoSmOvGeometricColumnType_Double )
-				{
-					const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
-					const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
-					if (NULL != columnSi1 && NULL != columnSi2)
-					{
-						updateString += L", ";
-						updateString += columnSi1->GetDbName() ;
-						updateString += L"=";
-						updateString += mFdoConnection->GetBindString( bindIndex++ );
-						updateString += L", ";
-						updateString += columnSi2->GetDbName() ;
-						updateString += L"=";
-						updateString += mFdoConnection->GetBindString( bindIndex++ );
-					}
-				}
-				else
-				{
-					// Handle the Y and possibly Z columns
-					const FdoSmPhColumn *columnY = geomProp->RefColumnY();
-                    const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
-                    if (NULL != columnY )
-                    {
-						updateString += L", ";
-						updateString += columnY->GetDbName() ;
-						updateString += L"=";
-						updateString += mFdoConnection->GetBindString( bindIndex++ );
-						if( NULL != columnZ )
-						{
-							updateString += L", ";
-							updateString += columnZ->GetDbName() ;
-							updateString += L"=";
-							updateString += mFdoConnection->GetBindString( bindIndex++ );
-						}
-					}
-				}
-			}
+            if ( values[i].null_ind )
+                free(values[i].null_ind);
         }
+        delete [] values;
+
+        throw;
     }
 
     if( ! updateProperties )

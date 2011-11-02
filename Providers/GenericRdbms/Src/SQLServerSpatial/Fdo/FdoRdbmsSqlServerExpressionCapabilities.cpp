@@ -28,14 +28,13 @@
 // default constructor
 FdoRdbmsSqlServerExpressionCapabilities::FdoRdbmsSqlServerExpressionCapabilities(FdoRdbmsSqlServerConnection* conn)
 {
-    m_conn = FDO_SAFE_ADDREF(conn);
+    m_conn = conn; // no add ref since we create circular reference
 }
 
 
 // default destructor
 FdoRdbmsSqlServerExpressionCapabilities::~FdoRdbmsSqlServerExpressionCapabilities()
 {
-    FDO_SAFE_RELEASE(m_conn);
 }
 
 

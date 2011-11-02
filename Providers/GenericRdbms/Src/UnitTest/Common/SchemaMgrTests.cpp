@@ -592,14 +592,17 @@ void SchemaMgrTests::testGenDefault ()
     }
     catch (FdoException* e ) 
     {
+        delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
+        delete conn;
         throw exception;
     }
     catch (...)
     {
+        delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }

@@ -128,10 +128,7 @@ int GdbiStatement::ExecuteNonQuery( )
 GdbiQueryResult*  GdbiStatement::ExecuteQuery( )
 {
 	if( m_QueryId )
-	{
-        GdbiQueryResult* ret = new GdbiQueryResult( m_pGdbiCommands, m_QueryId);
-		return ret;
-	}
+        return GdbiQueryResult::Create( m_pGdbiCommands, m_QueryId);
 
     throw new GdbiException(L"Not a valid query");
 }

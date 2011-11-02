@@ -80,7 +80,8 @@ void FdoRdbmsFeatureTransaction::Rollback()
 
 FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestName)
 {
-    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+    FdoPtr<FdoIConnectionCapabilities> ccp = mFdoConnection->GetConnectionCapabilities();
+    if(!ccp->SupportsSavePoint())
         throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
     
     if(suggestName == NULL || wcslen(suggestName) == 0)
@@ -114,7 +115,8 @@ FdoString* FdoRdbmsFeatureTransaction::AddSavePoint(FdoString* suggestName)
 
 void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
 {
-    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+    FdoPtr<FdoIConnectionCapabilities> ccp = mFdoConnection->GetConnectionCapabilities();
+    if(!ccp->SupportsSavePoint())
         throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
  
     if(savePointName == NULL || wcslen(savePointName) == 0)
@@ -144,7 +146,8 @@ void FdoRdbmsFeatureTransaction::ReleaseSavePoint(FdoString* savePointName)
 
 void FdoRdbmsFeatureTransaction::Rollback(FdoString* savePointName)
 {
-    if(!mFdoConnection->GetConnectionCapabilities()->SupportsSavePoint())
+    FdoPtr<FdoIConnectionCapabilities> ccp = mFdoConnection->GetConnectionCapabilities();
+    if(!ccp->SupportsSavePoint())
         throw FdoException::Create(FdoException::NLSGetMessage (FDO_NLSID (FDO_186_SAVEPOINT_NOT_SUPPORTED)));
 
     if(savePointName == NULL || wcslen(savePointName) == 0)

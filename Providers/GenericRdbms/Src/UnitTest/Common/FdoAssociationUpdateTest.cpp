@@ -285,7 +285,7 @@ void FdoAssociationUpdateTest::masterTestWithObj(AssociationUpdateType type, con
         dataValue = FdoDataValue::Create( name2 );
 	    propertyValue = FdoAssociationUpdateTest::AddNewProperty( propertyValues, L"Name Two");
 	    propertyValue->SetValue(dataValue);
-        insertCommand->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
 
         // Add an instance of the TestFeatureClass with no association property initialized
         insertCommand->SetFeatureClassName(L"TestSubFeatureClass");

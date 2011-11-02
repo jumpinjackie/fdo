@@ -193,7 +193,7 @@ void SqlServerFdoUpdateTest::testDefect810181 ()
             {
 			    ba = myReader->GetGeometry(UnitTestUtil::GetNlsObjectName(L"Geometry"));
                 FdoInt32 size = ba->GetCount();
-                FdoIGeometry * geom = gf->CreateGeometryFromFgf(ba);
+                FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
                 FdoString * fgfText = geom->GetText();
 
                 FdoPtr<FdoPropertyValue> propertyValue;
@@ -266,7 +266,7 @@ void SqlServerFdoUpdateTest::testDefect810181 ()
             {
 			    ba = myReader->GetGeometry(L"Geometry");
                 FdoInt32 size = ba->GetCount();
-                FdoIGeometry * geom = gf->CreateGeometryFromFgf(ba);
+                FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(ba);
                 FdoString * fgfText = geom->GetText();
 
                 FdoPtr<FdoPropertyValue> propertyValue;
@@ -698,14 +698,16 @@ FdoIGeometry* SqlServerFdoUpdateTest::CreateGeogGeom( int idx )
             coordsBuffer[2] = -99;
             coordsBuffer[3] = 61;
 
-            lineStrings->Add( gf->CreateLineString(FdoDimensionality_XY, 4, coordsBuffer) );
+            FdoPtr<FdoILineString> gvalpl = gf->CreateLineString(FdoDimensionality_XY, 4, coordsBuffer);
+            lineStrings->Add( gvalpl );
 
             coordsBuffer[0] = -100;
             coordsBuffer[1] = 61;
             coordsBuffer[2] = -99;
             coordsBuffer[3] = 60;
 
-            lineStrings->Add( gf->CreateLineString(FdoDimensionality_XY, 4, coordsBuffer) );
+            FdoPtr<FdoILineString> gvalpl2 = gf->CreateLineString(FdoDimensionality_XY, 4, coordsBuffer);
+            lineStrings->Add( gvalpl2 );
 
             ret = gf->CreateMultiLineString(lineStrings);
         }
@@ -718,7 +720,8 @@ FdoIGeometry* SqlServerFdoUpdateTest::CreateGeogGeom( int idx )
             coordsBuffer[0] = -95;
             coordsBuffer[1] = 55;
 
-            geoms->Add( gf->CreatePoint(FdoDimensionality_XY, coordsBuffer) );
+            FdoPtr<FdoIGeometry> gvalpt = gf->CreatePoint(FdoDimensionality_XY, coordsBuffer);
+            geoms->Add( gvalpt );
 
             coordsBuffer[0] = -96;
             coordsBuffer[1] = 54;
@@ -732,7 +735,8 @@ FdoIGeometry* SqlServerFdoUpdateTest::CreateGeogGeom( int idx )
             coordsBuffer[9] = 54;
 
             FdoPtr<FdoILinearRing> ring = gf->CreateLinearRing(FdoDimensionality_XY, 10, coordsBuffer);
-            geoms->Add( gf->CreatePolygon( ring, NULL ) );
+            FdoPtr<FdoIGeometry> gvalpl = gf->CreatePolygon( ring, NULL );
+            geoms->Add( gvalpl );
 
             ret = gf->CreateMultiGeometry( geoms );
         }
@@ -795,9 +799,7 @@ void SqlServerFdoUpdateTest::SelectSpecificSpatial( FdoPtr<FdoIConnection> conne
     FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXYExt);
     FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL );
     FdoPtr<FdoGeometryValue> geomValue = FdoGeometryValue::Create(FdoPtr<FdoByteArray>(gf->GetFgf(poly)));
-    FdoPtr<FdoSpatialCondition> spatialFilter = FdoPtr<FdoSpatialCondition>(FdoSpatialCondition::Create(phMgr->GetDcColumnName(L"geometry"),
-                                                                      FdoSpatialOperations_Intersects,
-                                                                      geomValue));
+    FdoPtr<FdoSpatialCondition> spatialFilter = FdoSpatialCondition::Create(phMgr->GetDcColumnName(L"geometry"), FdoSpatialOperations_Intersects, geomValue);
 
     selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
 

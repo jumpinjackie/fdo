@@ -185,7 +185,8 @@ void FdoTransactionTest::TestBeginTransaction()
         FdoPtr<FdoStringValue> valPropName = FdoStringValue::Create(L"MyName1");
         propIns = FdoPropertyValue::Create(L"name", valPropName);
         vals->Add(propIns);
-        insCmd->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        rdr->Close();
 
         expectedExc = true;
         FdoPtr<FdoITransaction> trans2 = mConnection->BeginTransaction();
@@ -194,6 +195,8 @@ void FdoTransactionTest::TestBeginTransaction()
     {
 		if(!expectedExc)
             TestCommonFail (ex);
+        else
+            ex->Release();
     }
 }
 
@@ -213,7 +216,9 @@ void FdoTransactionTest::TestCommit()
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
         propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns);
-        insCmd->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        rdr->Close();
+
         trans->Commit();
 
         int count = 0;     
@@ -248,7 +253,8 @@ void FdoTransactionTest::TestRollback()
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
         propIns2 = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns2);
-        insCmd->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        rdr->Close();
 
         int count = 0;     
         FdoPtr<FdoISelect> selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
@@ -266,7 +272,8 @@ void FdoTransactionTest::TestRollback()
         propIns1->SetValue(valPropName);
         valPropIsTrue = FdoBooleanValue::Create(false);
         propIns2->SetValue(valPropIsTrue);
-        insCmd->Execute();
+        rdr = insCmd->Execute();
+        rdr->Close();
         
         reader = selCmd->Execute();
         while(reader ->ReadNext())
@@ -328,7 +335,8 @@ void FdoTransactionTest::TestRollbackSavePoint()
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
         propIns2 = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns2);
-        insCmd->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        rdr->Close();
     
         int count = 0;     
         FdoPtr<FdoISelect> selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
@@ -346,7 +354,8 @@ void FdoTransactionTest::TestRollbackSavePoint()
         
         valPropIsTrue = FdoBooleanValue::Create(false);
         propIns2->SetValue(valPropIsTrue);
-        insCmd->Execute();
+        rdr = insCmd->Execute();
+        rdr->Close();
 
         count = 0;
         reader = selCmd->Execute();
@@ -389,7 +398,8 @@ void FdoTransactionTest::TestReleaseSavePoint()
         FdoPtr<FdoBooleanValue> valPropIsTrue = FdoBooleanValue::Create(true);
         propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns);
-        insCmd->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        rdr->Close();
     
         int count = 0;     
         FdoPtr<FdoISelect> selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
@@ -408,7 +418,8 @@ void FdoTransactionTest::TestReleaseSavePoint()
         valPropIsTrue = FdoBooleanValue::Create(false);
         propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns);
-        insCmd->Execute();
+        rdr = insCmd->Execute();
+        rdr->Close();
 
         trans->ReleaseSavePoint(savePointName);
 
@@ -418,8 +429,8 @@ void FdoTransactionTest::TestReleaseSavePoint()
         valPropIsTrue = FdoBooleanValue::Create(true);
         propIns = FdoPropertyValue::Create(L"is_true", valPropIsTrue);
         vals->Add(propIns);
-        insCmd->Execute();
-
+        rdr = insCmd->Execute();
+        rdr->Close();
 
         trans->Rollback(savePointName);
 
@@ -437,6 +448,8 @@ void FdoTransactionTest::TestReleaseSavePoint()
     {
         if(!expectedExc)
             TestCommonFail(ex);
+        else
+            ex->Release();
     }
 }
 
