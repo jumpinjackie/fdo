@@ -45,9 +45,6 @@ typedef struct _col_type_ {
 
 class GdbiQueryResult
 {
-    friend class GdbiConnection;
-    friend class GdbiStatement;
-
 private:
     GdbiCommands*     m_pGdbiCommands;
 	int				  mArrayTCount; // total number of fetched rows
@@ -105,6 +102,7 @@ public:
     ~GdbiQueryResult(void);
 
     static GdbiQueryResult* Create (GdbiCommands* command, GdbiQueryIdentifier *QueryId);
+    static GdbiQueryResult* Create (GdbiCommands* command, int qid, bool ownsQid = true);
 
     int GetBinaryValue(
             const wchar_t *ColName,

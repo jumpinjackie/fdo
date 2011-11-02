@@ -419,9 +419,8 @@ void SpatialContextTest::XmlCopy( FdoIoStream* inStream, FdoIoStream* outStream 
         writer->SetCoordinateSystem( reader->GetCoordinateSystem() );
         writer->SetCoordinateSystemWkt( reader->GetCoordinateSystemWkt() );
         writer->SetExtentType( reader->GetExtentType() );
-        FdoByteArray* extent = reader->GetExtent();
+        FdoPtr<FdoByteArray> extent = reader->GetExtent();
         writer->SetExtent( extent );
-        extent->Release();
         writer->SetXYTolerance( reader->GetXYTolerance() );
         writer->SetZTolerance( reader->GetZTolerance() );
 

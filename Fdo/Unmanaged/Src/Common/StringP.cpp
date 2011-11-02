@@ -140,7 +140,8 @@ FdoStringP  FdoStringP::operator+=( FdoString* str2 )
             (*this) = (*this) + str2;
         }
     }
-
+    if (mBuffer)
+        mBuffer->mStringSize = -1;
     return( *this );
 }
 
@@ -195,7 +196,7 @@ char* FdoStringP::_copyAsChar( ) const
 
 size_t FdoStringP::GetLength() const
 {
-	return( wcslen(mwString) );
+    return (mBuffer != NULL && mBuffer->mStringSize != -1) ? mBuffer->mStringSize : wcslen(mwString);
 }
 
 FdoStringP FdoStringP::Left( FdoString* delimiter ) const
@@ -494,36 +495,34 @@ FdoStringP FdoStringP::Format( FdoString* wValue, ... )
 		return FdoStringP();
 	}
 
+    FdoStringP retVal;
+    retVal.AllocateBuffer(100);
+    int n = 0;
 	va_list argList;
-	va_start(argList, wValue);
 
-	// format the string. Start with just enough space
-	// to hold the format string. This ensures we
-	// use minimal space when there are no formatting parms.
-	size_t formattedSize = wcslen(wValue) + 2;
-	wchar_t* wFormattedValue = new wchar_t[formattedSize];
-	
+    while(1)
+    {
+        va_start(argList, wValue);
 #ifdef _WIN32
-	while ( _vsnwprintf( wFormattedValue, formattedSize - 1, wValue, argList ) < 0 ) {
+        n = _vsnwprintf( retVal.mwString, retVal.mBuffer->mBufSize - 1, wValue, argList );
 #else
-	while ( vswprintf( wFormattedValue, formattedSize - 1, wValue, argList ) < 0 ) {
+        n = vswprintf( retVal.mwString, retVal.mBuffer->mBufSize - 1, wValue, argList );
 #endif
-		// buffer wasn't big enough, enlarge it and retry 
-		// the formatting.
-		formattedSize = formattedSize * 2;
-		delete [] wFormattedValue;
-		wFormattedValue = new wchar_t[formattedSize];
 		va_end(argList);
-		va_start(argList, wValue);
+        if (n > -1 && n < retVal.mBuffer->mBufSize)
+        {
+            retVal.mBuffer->mStringSize = n;
+            break;
+        }
+        else // try again with more space
+        {
+            if (n > -1)
+                retVal.AllocateBuffer(n); // precisely what is needed
+            else
+                retVal.AllocateBuffer((retVal.mBuffer->mBufSize - 1)*2);
+        }
 	}
-
-	wFormattedValue[formattedSize - 1] = '\0';
-	va_end(argList);
-	
-	FdoStringP outString(wFormattedValue);
-	delete [] wFormattedValue;
-
-	return( outString );
+	return retVal;
 }
 
 int FdoStringP::Utf8FromUnicode(
@@ -646,6 +645,8 @@ void FdoStringP::SetString(FdoString* wValue, FdoBoolean bAttach)
 	        memcpy( (void*)mwString, (void*)workString, sizeof(wchar_t) * (len + 1) );
         }
     }
+    if (mBuffer)
+        mBuffer->mStringSize = -1;
 }
 
 void FdoStringP::SetString(const char* sValue) 
@@ -704,6 +705,8 @@ void FdoStringP::SetString( FdoString** values )
     }
 
     mwString[totalLength] = 0;
+    if (mBuffer)
+        mBuffer->mStringSize = -1;
 }
 
 
@@ -761,6 +764,7 @@ void FdoStringP::AllocateBuffer( size_t bufSize )
         
         // Allow space for number of wide characters, descriptor and null terminator
         mBuffer = (Descriptor*) malloc( sizeof(Descriptor) + (sizeof(wchar_t) * (bufSize + 1)) );
+        mBuffer->mStringSize = -1;
         mwString = (wchar_t*)(mBuffer + 1);
 
         // Initialize descriptor

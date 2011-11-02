@@ -576,7 +576,6 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                         {
                             FdoPtr<FdoLiteralValue> pVal = pParVal->GetValue();
                             m_bindHelper->BindBack(idx, pVal);
-                            FDO_SAFE_ADDREF(pParVal);
                             vParams.push_back(pParVal);
                         }
                     }
@@ -705,6 +704,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
                 if (vParams.size() != 0)
                 {
                     // we ran a stored procedure, in case caller will call Flush we need to release the schema
+                    delete query;
                     mFdoConnection->SetEnforceClearSchAtFlush(true);
                     return new FdoOutParamSQLDataReader(vParams);
                 }
@@ -714,6 +714,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
         catch(...)
         {
             delete statement;
+            delete query;
             throw;
         }
     }

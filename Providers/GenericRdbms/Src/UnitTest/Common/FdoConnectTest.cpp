@@ -223,6 +223,12 @@ void FdoConnectTest::connectFailAndSucceed()
     try {
         connection->Open();
     }
+    catch (FdoException *ex)
+    {
+		// valid exception
+		ex->Release();
+        failed = true;
+    }
     catch ( ... ) {
         // Connect without password should fail
         failed = true;

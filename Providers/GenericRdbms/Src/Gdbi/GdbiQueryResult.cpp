@@ -78,7 +78,6 @@ mArrayTCount( 0 ),
 mHasLobs(false)
 {
 	m_QueryId = new GdbiQueryIdentifier(command, qid);
-	define_exec();
 	m_missed=0;
 }
 GdbiQueryResult::GdbiQueryResult(GdbiCommands* command, GdbiQueryIdentifier *queryObj):
@@ -93,13 +92,37 @@ mArrayTCount( 0 ),
 mHasLobs(false)
 {
 	m_QueryId = FDO_SAFE_ADDREF(queryObj);
-	define_exec();
 	m_missed=0;
 }
 
 GdbiQueryResult* GdbiQueryResult::Create( GdbiCommands* command, GdbiQueryIdentifier* QueryId)
 {
-    return new GdbiQueryResult(command, QueryId);
+    GdbiQueryResult* retval = new GdbiQueryResult(command, QueryId);
+    try
+    {
+        retval->define_exec();
+    }
+    catch(...)
+    {
+        delete retval;
+        throw;
+    }
+    return retval;
+}
+
+GdbiQueryResult* GdbiQueryResult::Create( GdbiCommands* command, int qid, bool ownsQid)
+{
+    GdbiQueryResult* retval = new GdbiQueryResult(command, qid, ownsQid);
+    try
+    {
+        retval->define_exec();
+    }
+    catch(...)
+    {
+        delete retval;
+        throw;
+    }
+    return retval;
 }
 
 void GdbiQueryResult::define_exec()

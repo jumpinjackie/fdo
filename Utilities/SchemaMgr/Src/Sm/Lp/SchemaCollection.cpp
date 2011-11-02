@@ -1106,6 +1106,7 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
 
     FdoFeatureSchemasP pfscResult = FdoFeatureSchemaCollection::Create(NULL);
     bool bProcessFromRdClassReader = false;
+    bool hasSchOv = false;
     for (int iSchema=0; iSchema < aTodo.GetCount(); iSchema++)
     {
         FdoPtr<FdoSmLpSchema> pLpSchema = aTodo.GetItem(iSchema);
@@ -1119,6 +1120,7 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
         {
             // Inner reader is a FdoSmPhCfgClassReader.
             bProcessFromRdClassReader = false;
+            hasSchOv = true;
         }
         else
         {
@@ -1170,7 +1172,21 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
             }
         }
         else
-            pLpSchema->GetFdoSmLpClassNames(featureClasses);
+        {
+            if (!hasSchOv)
+                pLpSchema->GetFdoSmLpClassNames(featureClasses);
+            else
+            {
+                const FdoSmLpClassCollection* pLpClassDefColl = pLpSchema->RefClasses();
+            
+                for (FdoInt32 index = 0; index < pLpClassDefColl->GetCount(); index++)
+                {
+                    const FdoSmLpClassDefinition* pLpClassDefinition = (FdoSmLpClassDefinition*)pLpClassDefColl->RefItem(index);
+                    FdoStringP qname = pLpClassDefinition->GetQName();
+                    featureClasses->Add(qname);
+                }
+            }
+        }
     }
 
     /////////////////////////////////////////////

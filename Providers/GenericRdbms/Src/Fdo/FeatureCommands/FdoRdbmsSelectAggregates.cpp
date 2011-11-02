@@ -170,11 +170,6 @@ FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
 
     // The filter and the select list contain only natively supported expression
     // functions (if any). Delegate the request to the select-command.
-
-    return new FdoRdbmsDataReader(
-                FdoPtr<FdoRdbmsFeatureReader>(
-                            (FdoRdbmsFeatureReader*)pSelect->Execute(
-                                        mbDistinct,
-                                        FdoCommandType_SelectAggregates)));
-
+    FdoPtr<FdoRdbmsFeatureReader> retRdr = (FdoRdbmsFeatureReader*)pSelect->Execute(mbDistinct, FdoCommandType_SelectAggregates);
+    return new FdoRdbmsDataReader(retRdr);
 }

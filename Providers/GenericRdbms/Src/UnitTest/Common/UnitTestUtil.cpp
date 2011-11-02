@@ -1229,13 +1229,11 @@ void UnitTestUtil::Exception2String( FdoException* e, char* buffer )
     // Add ref to prevent smart pointer from destroying exception.
     FDO_SAFE_ADDREF(e);
 
-    while ( innerE->GetCause() )
+    while ( innerE )
+    {
+        sprintf( buffer, "%ls\n", innerE->GetExceptionMessage() );
         innerE = innerE->GetCause();
-
-    if ( innerE == e )
-        sprintf( buffer, "%ls", e->GetExceptionMessage() );
-    else
-        sprintf( buffer, "%ls ... %ls", innerE->GetExceptionMessage(), e->GetExceptionMessage() );
+    }
 }
 
 void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLineNo )

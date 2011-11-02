@@ -396,6 +396,7 @@ void FdoSchemaTest::eachOvXmlErr( FdoXmlFlags::ErrorLevel level, const char* mas
             throw;
 
         UnitTestUtil::PrintException( e, outFile, true );
+        FDO_SAFE_RELEASE(e);
         bFailed = true;
     }
 

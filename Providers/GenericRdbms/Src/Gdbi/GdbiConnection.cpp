@@ -57,9 +57,7 @@ GdbiQueryResult* GdbiConnection::ExecuteQuery( const char* sql )
     m_pGdbiCommands->CheckDB();
 
     if( m_pGdbiCommands->sql( (char*)sql, &qid ) == RDBI_SUCCESS )
-    {
-        return new GdbiQueryResult( m_pGdbiCommands, qid );
-    }
+        return GdbiQueryResult::Create( m_pGdbiCommands, qid );
 
     m_pGdbiCommands->ThrowException();
     return NULL; // to supress a compiler warning
@@ -72,9 +70,7 @@ GdbiQueryResult* GdbiConnection::ExecuteQuery( const wchar_t* sql )
     m_pGdbiCommands->CheckDB();
 
     if( m_pGdbiCommands->sql( (wchar_t*)sql, &qid ) == RDBI_SUCCESS )
-    {
-        return new GdbiQueryResult( m_pGdbiCommands, qid );
-    }
+        return GdbiQueryResult::Create( m_pGdbiCommands, qid );
 
     m_pGdbiCommands->ThrowException();
     return NULL; // to supress a compiler warning

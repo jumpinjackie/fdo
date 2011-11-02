@@ -108,51 +108,51 @@ void SqlServerFdoSpatialContextTest::testAdjustExtents( )
         while ( reader->ReadNext() ) {
             FdoStringP scName = reader->GetName();
             if ( scName == L"SC_XLT" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 10, 10 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 0, 10, 10 );
                 count++;
             }
             else if ( scName == L"SC_YLT" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 100, 100 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 0, 100, 100 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_TOL" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0, 5.001, 10  );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 5, 0, 5.001, 10  );
                 count++;
             }
             else if ( scName == L"SC_XEQ_1" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0, 6, 10 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 5, 0, 6, 10 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_HT_POS" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 1, 5.25, 1.25 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 5, 1, 5.25, 1.25 );
                 count++;
             }
             else if ( scName == L"SC_XEQ_HT_NEG" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 0.3, 5.7, 1 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 5, 0.3, 5.7, 1 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_TOL" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 3, 5, 3.001 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 3, 5, 3.001 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_1" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 25.3, 100, 26.3 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 25.3, 100, 26.3 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_WD_POS" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 5, 1.25, 5.1, 1.35 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 5, 1.25, 5.1, 1.35 );
                 count++;
             }
             else if ( scName == L"SC_YEQ_WD_NEG" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 4.8, 1.25, 5, 1.45 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 4.8, 1.25, 5, 1.45 );
                 count++;
             }
             else if ( scName == L"SC_XYEQ_TOL" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 0, 2.1, 2.1 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 0, 2.1, 2.1 );
                 count++;
             }
             else if ( scName == L"SC_XYEQ_1" ) {
-                TestCommonMiscUtil::VldExtent( scName, reader->GetExtent(), 0, 5, 1, 6 );
+                TestCommonMiscUtil::VldExtent( scName, (FdoPtr<FdoByteArray>)reader->GetExtent(), 0, 5, 1, 6 );
                 count++;
             }
         }

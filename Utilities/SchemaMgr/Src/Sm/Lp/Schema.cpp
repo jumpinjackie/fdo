@@ -344,7 +344,10 @@ void FdoSmLpSchema::Update(
 void FdoSmLpSchema::SynchPhysical(bool bRollbackOnly)
 {
 	for ( int i = 0; i < RefClasses()->GetCount(); i++ )
-		mClasses->GetItem(i)->SynchPhysical(bRollbackOnly);
+    {
+        FdoSmLpClassDefinitionP cls = mClasses->GetItem(i);
+		cls->SynchPhysical(bRollbackOnly);
+    }
 }
  
 void FdoSmLpSchema::SetElementState(FdoSchemaElementState elementState)

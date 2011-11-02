@@ -15574,109 +15574,80 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
     // Declare and initialize all necessary local variables.
 
-    FdoClass                           *schema_class         = NULL;
+    FdoPtr<FdoClass>                    schema_class;
 
-    FdoFeatureClass                    *schema_feature_class = NULL;
+    FdoPtr<FdoFeatureClass>             schema_feature_class;
 
-	FdoIApplySchema                    *apply_schema_cmd     = NULL;
+	FdoPtr<FdoIApplySchema>             apply_schema_cmd;
 
-    FdoClassCollection                 *classes              = NULL;
+    FdoPtr<FdoClassCollection>          classes;
 
-	FdoFeatureSchema                   *schema               = NULL;
+	FdoPtr<FdoFeatureSchema>            schema;
 
-    FdoIGeometryCapabilities           *geom_caps           = NULL;  
+    FdoPtr<FdoIGeometryCapabilities>    geom_caps;
     FdoInt32                            dimensionalities;
 
     printf(" >>> ... adding test schema \n");
 
-    try {
+    // Find out supported dimensionalities
 
-      // Find out supported dimensionalities
+    geom_caps = current_connection->GetGeometryCapabilities();
+    dimensionalities = geom_caps->GetDimensionalities();
 
-      geom_caps = current_connection->GetGeometryCapabilities();
-      dimensionalities = geom_caps->GetDimensionalities();
+    // Create a apply-schema command.
 
-      // Create a apply-schema command.
+    apply_schema_cmd = 
+    (FdoIApplySchema*) current_connection->CreateCommand(
+                                                FdoCommandType_ApplySchema);
 
-      apply_schema_cmd = 
-        (FdoIApplySchema*) current_connection->CreateCommand(
-                                                   FdoCommandType_ApplySchema);
+    // Create the lock test schema.
 
-      // Create the lock test schema.
+	schema  = CreateFeatureSchema(current_connection,
+                                    schema_name);
+    classes = schema->GetClasses();
 
-	  schema  = CreateFeatureSchema(current_connection,
-                                        schema_name);
-      classes = schema->GetClasses();
+    // Create the test classes for the unit test and add them to the schema.
 
-      // Create the test classes for the unit test and add them to the schema.
+    printf(" >>> ...... adding feature classes \n");
+    printf(" >>> ......... adding class exfct_c1 \n");
+    schema_feature_class = CreateFdoFeatureClass(L"exfct_c1", dimensionalities & FdoDimensionality_Z ? true : false);
+    classes->Add(schema_feature_class);
 
-      printf(" >>> ...... adding feature classes \n");
-      printf(" >>> ......... adding class exfct_c1 \n");
-      schema_feature_class = CreateFdoFeatureClass(L"exfct_c1", dimensionalities & FdoDimensionality_Z ? true : false);
-      classes->Add(schema_feature_class);
-      FDO_SAFE_RELEASE(schema_feature_class);
+	// Create class with XYZM geometry
 
-	  // Create class with XYZM geometry
+    printf(" >>> ......... adding class xy_point \n");
+    schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, false, false);
+    classes->Add(schema_feature_class);
 
-      printf(" >>> ......... adding class xy_point \n");
-      schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, false, false);
-      classes->Add(schema_feature_class);
-      FDO_SAFE_RELEASE(schema_feature_class);
+    if ( dimensionalities & FdoDimensionality_Z ) {
+        printf(" >>> ......... adding class xyz_point \n");
+        schema_feature_class = CreateFdoFeatureClass(XYZ_POINT_CLASS, true, false);
+        classes->Add(schema_feature_class);
+    }
 
-      if ( dimensionalities & FdoDimensionality_Z ) {
-          printf(" >>> ......... adding class xyz_point \n");
-          schema_feature_class = CreateFdoFeatureClass(XYZ_POINT_CLASS, true, false);
-          classes->Add(schema_feature_class);
-          FDO_SAFE_RELEASE(schema_feature_class);
-      }
+    if ( dimensionalities & FdoDimensionality_M ) {
+        printf(" >>> ......... adding class xym_point \n");
+        schema_feature_class = CreateFdoFeatureClass(XYM_POINT_CLASS, false, true);
+        classes->Add(schema_feature_class);
+    }
 
-      if ( dimensionalities & FdoDimensionality_M ) {
-          printf(" >>> ......... adding class xym_point \n");
-          schema_feature_class = CreateFdoFeatureClass(XYM_POINT_CLASS, false, true);
-          classes->Add(schema_feature_class);
-          FDO_SAFE_RELEASE(schema_feature_class);
-      }
+    if ( (dimensionalities & FdoDimensionality_Z) && (dimensionalities & FdoDimensionality_M) ) {
+        printf(" >>> ......... adding class xyzm_point \n");
+        schema_feature_class = CreateFdoFeatureClass(XYZM_POINT_CLASS, true, true);
+        classes->Add(schema_feature_class);
+    }
 
-      if ( (dimensionalities & FdoDimensionality_Z) && (dimensionalities & FdoDimensionality_M) ) {
-          printf(" >>> ......... adding class xyzm_point \n");
-          schema_feature_class = CreateFdoFeatureClass(XYZM_POINT_CLASS, true, true);
-          classes->Add(schema_feature_class);
-          FDO_SAFE_RELEASE(schema_feature_class);
-      }
+    printf(" >>> ...... adding non-feature classes \n");
+    printf(" >>> ......... adding class exfct_c2 \n");
+    schema_class = CreateFdoClass(L"exfct_c2");
+    if ( schema_class ) 
+        classes->Add(schema_class);
 
-      printf(" >>> ...... adding non-feature classes \n");
-      printf(" >>> ......... adding class exfct_c2 \n");
-      schema_class = CreateFdoClass(L"exfct_c2");
-      if ( schema_class ) 
-          classes->Add(schema_class);
-      FDO_SAFE_RELEASE(schema_class);
+    // Set the active schema and create it.
 
-      // Set the active schema and create it.
-
-      printf(" >>> ...... creating the schema \n");
-      apply_schema_cmd->SetFeatureSchema(schema);
-      apply_schema_cmd->Execute();
-
-      // Release the memory.
-
-      FDO_SAFE_RELEASE(classes);
-      FDO_SAFE_RELEASE(schema);
-      FDO_SAFE_RELEASE(apply_schema_cmd);
-      FDO_SAFE_RELEASE(geom_caps);
-
-    }  //  try ...
-
-    catch ( ... ) {
-
-      FDO_SAFE_RELEASE(classes);
-      FDO_SAFE_RELEASE(schema);
-      FDO_SAFE_RELEASE(apply_schema_cmd);
-      FDO_SAFE_RELEASE(geom_caps);
-
-      throw;
-
-    }  //  catch ...
-
+    printf(" >>> ...... creating the schema \n");
+    apply_schema_cmd->SetFeatureSchema(schema);
+    apply_schema_cmd->Execute();
 }  //  AddTestSchema ()
 
 FdoFeatureSchema* TestCommonExpressionFunctionW::CreateFeatureSchema (
