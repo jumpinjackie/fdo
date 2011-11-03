@@ -252,7 +252,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
             }
             //
             // Update the properties associated with this feature
-            FdoPtr<FdoRdbmsCollection<FdoRdbmsPvcOperation>> classes = mPvcProcessor->RefactorPvc(mPropertyValues, classDefinition, true);
+            FdoPtr<FdoRdbmsCollection<FdoRdbmsPvcOperation> > classes = mPvcProcessor->RefactorPvc(mPropertyValues, classDefinition, true);
             for (int i=0; i<classes->GetCount(); i++)
             {
                 FdoPtr<FdoRdbmsPvcOperation>clas = classes->GetItem(i);
@@ -263,7 +263,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
 
 				if( ltPvcProcessor != NULL )
 				{
-					FdoPtr<FdoRdbmsCollection<FdoRdbmsPvcOperation>> ltOps = ltPvcProcessor->RefactorPvc(properties, clas->GetClass(), true );
+					FdoPtr<FdoRdbmsCollection<FdoRdbmsPvcOperation> > ltOps = ltPvcProcessor->RefactorPvc(properties, clas->GetClass(), true );
 					for (int j=0; j<ltOps->GetCount(); j++)
 					{
 						FdoPtr<FdoRdbmsPvcOperation>ltPvcOp = ltOps->GetItem(j);
