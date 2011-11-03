@@ -488,8 +488,7 @@ private:
     typedef struct
     {
         long mRefCount;
-        size_t mBufSize;    // buffer size in # of wide characters
-        size_t mStringSize; // string size in # of wide characters
+        size_t mBufSize;    // size in # of wide characters
     } Descriptor;
 
     /// General functions to set this object's string value.
