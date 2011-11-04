@@ -201,21 +201,23 @@ FdoSchemaManagerP FdoRdbmsSqlServerConnection::NewSchemaManager(
 FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const char* timeStr )
 {
     FdoDateTime fdoTime;
-    int year, month, day, hour, minute, seconds;
-    year = month = day = hour = minute = seconds = 0;
+    float seconds;
+    int year, month, day, hour, minute;
+    year = month = day = hour = minute = 0;
+    seconds = 0.0;
 
     if( timeStr != NULL && *timeStr != '\0' )
     {
-        int count = sscanf(timeStr,"%4d-%02d-%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &seconds);     
+        int count = sscanf(timeStr,"%04d-%02d-%02d %02d:%02d:%06f", &year, &month, &day, &hour, &minute, &seconds);     
         if( count != 6 )
-            count = sscanf(timeStr,"%4d-%02d-%02d",&year, &month, &day);
+            count = sscanf(timeStr,"%04d-%02d-%02d",&year, &month, &day);
     }
     fdoTime.year = (FdoInt16)year;
     fdoTime.month = (FdoByte)month;
     fdoTime.day = (FdoByte)day;
     fdoTime.hour = (FdoByte)hour;
     fdoTime.minute = (FdoByte)minute;
-    fdoTime.seconds = (float)seconds;
+    fdoTime.seconds = seconds;
     return fdoTime;
 }
 
@@ -224,21 +226,23 @@ FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const char* timeStr )
 FdoDateTime  FdoRdbmsSqlServerConnection::DbiToFdoTime( const wchar_t* timeStr )
 {
     FdoDateTime fdoTime;
-    int year, month, day, hour, minute, seconds;
-    year = month = day = hour = minute = seconds = 0;
+    float seconds;
+    int year, month, day, hour, minute;
+    year = month = day = hour = minute = 0;
+    seconds = 0.0;
 
     if( timeStr != NULL && *timeStr != '\0' )
     {
-        int count = swscanf(timeStr, L"%4d-%02d-%02d %02d:%02d:%02d", &year, &month, &day, &hour, &minute, &seconds);     
+        int count = swscanf(timeStr, L"%04d-%02d-%02d %02d:%02d:%06f", &year, &month, &day, &hour, &minute, &seconds);     
         if( count != 6 )
-            count = swscanf(timeStr, L"%4d-%02d-%02d",&year, &month, &day);
+            count = swscanf(timeStr, L"%04d-%02d-%02d",&year, &month, &day);
     }
     fdoTime.year = (FdoInt16)year;
     fdoTime.month = (FdoByte)month;
     fdoTime.day = (FdoByte)day;
     fdoTime.hour = (FdoByte)hour;
     fdoTime.minute = (FdoByte)minute;
-    fdoTime.seconds = (float)seconds;
+    fdoTime.seconds = seconds;
     return fdoTime;
 }
 
@@ -270,7 +274,7 @@ const wchar_t* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime time, wcha
         if (sec >= 60.0f)
             sec = 59.999f;
 
-        swprintf (dest, size, L"%04d-%02d-%02d %02d:%02d:%02.3f",
+        swprintf (dest, size, L"%04d-%02d-%02d %02d:%02d:%06.3f",
                  time.year,
                  time.month,
                  time.day,
@@ -331,7 +335,7 @@ const char* FdoRdbmsSqlServerConnection::FdoToDbiTime( FdoDateTime  when )
         if (sec >= 60.0f)
             sec = 59.999f;
 
-        sprintf (ret, "%04d-%02d-%02d %02d:%02d:%02.3f",
+        sprintf (ret, "%04d-%02d-%02d %02d:%02d:%06.3f",
                  when.year,
                  when.month,
                  when.day,
@@ -388,7 +392,7 @@ const char* FdoRdbmsSqlServerConnection::FdoToDbiTimeFilter( FdoDateTime  when )
                 FDORDBMSODBCFILTER_TIME_FORMAT,
                 when.hour == -1 ? 0 : (int)when.hour,
                 when.minute == -1 ? 0 : (int)when.minute,
-                when.seconds == -1 ? 0: (int)when.seconds );
+                when.seconds == -1 ? 0: (float)when.seconds );
     }
 
     // Append suffix:

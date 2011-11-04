@@ -27,7 +27,7 @@
 #define FDORDBMSODBCFILTER_TIME_PREFIX                 L"{t '"
 #define FDORDBMSODBCFILTER_TIMESTAMP_PREFIX            L"{ts '"
 #define FDORDBMSODBCFILTER_DATE_FORMAT                 L"%.4d-%.2d-%.2d"
-#define FDORDBMSODBCFILTER_TIME_FORMAT                 L"%.2d:%.2d:%.2d"
+#define FDORDBMSODBCFILTER_TIME_FORMAT                 L"%.2d:%.2d:%6.3f"
 #define FDORDBMSODBCFILTER_DATETIME_SEPARATOR          L" "
 #define FDORDBMSODBCFILTER_DATETIME_SUFFIX             L"'}"
 
