@@ -300,7 +300,7 @@ FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
     // TODO: Expand to other formats.
     if ( swscanf( 
              stringValue, 
-             L"'%d-%d-%d %d:%d:%f'",
+             L"'%04d-%02d-%02d %02d:%02d:%06f'",
              &dt.year,
              &dt.month,
              &dt.day,
@@ -313,7 +313,7 @@ FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
     }
     else if ( swscanf( 
              stringValue, 
-             L"'%d-%d-%d'",
+             L"'%04d-%02d-%02d'",
              &dt.year,
              &dt.month,
              &dt.day
@@ -324,7 +324,7 @@ FdoPtr<FdoDataValue> FdoSmPhSqsMgr::ParseSQLVal( FdoStringP stringValue )
     }
     else if ( swscanf( 
              stringValue, 
-             L"'%d:%d:%f'",
+             L"'%02d:%02d:%06f'",
              &dt.hour,
              &dt.minute,
              &dt.seconds
