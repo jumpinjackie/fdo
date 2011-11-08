@@ -66,7 +66,26 @@ typedef HASHMAP::iterator                                                       
 class FdoResultsStack
 {
 public:
+    FdoResultsStack() { }
+    ~FdoResultsStack() { Clear(); }
+    void Clear() 
+    {
+        for (FdoInt32 i=0; i<(FdoInt32)m_results.size(); i++)
+        {
+            FdoByteArray *bytes = (FdoByteArray*)m_results.at(i);
+            FDO_SAFE_RELEASE(bytes);
+        }
+        m_results.clear();
+    }
+    void Add(void* ptr) { m_results.push_back(ptr); }
+    size_t GetCount() { return m_results.size(); }
+    void* GetItem(int index) { return m_results.at(index); }
+    void SetItem(int index, void* ptr) { m_results[index] = ptr; }
+
+private:
     std::vector<void*> m_results;
+
+
 };
 
 
@@ -148,7 +167,6 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
 {
     m_resultsStack = new FdoResultsStack();
     
-    m_resultsStack->m_results.clear();
     m_resultsIndex = -1;
     m_orderbyIds = FDO_SAFE_ADDREF(orderingIds);
     m_orderbyOption = eOrderingOption;
@@ -203,7 +221,7 @@ FdoExpressionEngineUtilDataReader::FdoExpressionEngineUtilDataReader(FdoFunction
             delete[] data;  //TODO: avoid copying bytes to FdoByteArray
 
             // Insert FdoByteArray into m_results:
-            m_resultsStack->m_results.push_back(FDO_SAFE_ADDREF(bytes.p));
+            m_resultsStack->Add(FDO_SAFE_ADDREF(bytes.p));
         }
     }
 
@@ -546,12 +564,7 @@ FdoIRaster* FdoExpressionEngineUtilDataReader::GetRaster(FdoInt32 index)
 
 void FdoExpressionEngineUtilDataReader::Close()
 {
-    for (FdoInt32 i=0; i<(FdoInt32)m_resultsStack->m_results.size(); i++)
-    {
-        FdoByteArray *bytes = (FdoByteArray*)m_resultsStack->m_results.at(i);
-        FDO_SAFE_RELEASE(bytes);
-    }
-    m_resultsStack->m_results.clear();
+    m_resultsStack->Clear();
 }
 
 
@@ -559,7 +572,6 @@ FdoCommonPropertyIndex* FdoExpressionEngineUtilDataReader::GetPropertyIndex()
 {
     return FDO_SAFE_ADDREF(m_propIndex);
 }
-
 
 FdoArray<FdoFunction*>* FdoExpressionEngineUtilDataReader::GetAggregateFunctions(FdoFunctionDefinitionCollection *funcDefs, FdoIdentifierCollection* selectedIds, FdoCommonExpressionType &exprType)
 {
@@ -796,7 +808,7 @@ void FdoExpressionEngineUtilDataReader::RunAggregateQuery(FdoIFeatureReader* rdr
 
         // Store the results in m_results:
         FdoByteArray* bytes = FdoByteArray::Create(wrt->GetData(), wrt->GetDataLen());  // NO RELEASE OF bytes ON PURPOSE!
-        m_resultsStack->m_results.push_back(bytes);
+        m_resultsStack->Add(bytes);
     }
 }
 
@@ -808,9 +820,9 @@ void FdoExpressionEngineUtilDataReader::PerformDistinct()
     //Dump m_results to a hashmap, to weed out duplicate rows:
     HASHMAP hashmap;
     hashmap.clear();
-    for (FdoInt32 i=0; i<(FdoInt32)m_resultsStack->m_results.size(); i++)
+    for (FdoInt32 i=0; i<(FdoInt32)m_resultsStack->GetCount(); i++)
     {
-        FdoByteArray *bytes = (FdoByteArray*)m_resultsStack->m_results.at(i);
+        FdoByteArray *bytes = (FdoByteArray*)m_resultsStack->GetItem(i);
 
         std::pair <HASHMAP_ITER, bool> testresult = hashmap.insert(HASHMAP_PAIR(bytes, (FdoByteArray *)NULL));
         // Do a release ONLY if its not been inserted into the hashmap:
@@ -819,11 +831,11 @@ void FdoExpressionEngineUtilDataReader::PerformDistinct()
     }
 
     // Dump hashmap back into m_results:
-    m_resultsStack->m_results.clear();
+    m_resultsStack->Clear();
     for (HASHMAP_ITER iter = hashmap.begin(); iter != hashmap.end(); iter++)
     {
         FdoByteArray* array = (FdoByteArray*)iter->first;
-        m_resultsStack->m_results.push_back(array);
+        m_resultsStack->Add(array);
     }
 }
 
@@ -1003,9 +1015,9 @@ void FdoExpressionEngineUtilDataReader::PerformOrderBy()
     //Dump the results to a vector that contains context information required for sorting:
     std::vector<orderby_context> orderedResults;
     orderedResults.clear();
-    for (FdoInt32 i=0; i<(FdoInt32)m_resultsStack->m_results.size(); i++)
+    for (FdoInt32 i=0; i<(FdoInt32)m_resultsStack->GetCount(); i++)
     {
-        FdoByteArray* bytes = (FdoByteArray*)m_resultsStack->m_results.at(i);
+        FdoByteArray* bytes = (FdoByteArray*)m_resultsStack->GetItem(i);
         orderby_context context(this, bytes);
         orderedResults.push_back(context);
     }
@@ -1016,7 +1028,7 @@ void FdoExpressionEngineUtilDataReader::PerformOrderBy()
     // Dump the results back into m_results:
     for (FdoInt32 i=0; i<(FdoInt32)orderedResults.size(); i++)
     {
-        m_resultsStack->m_results[i] = orderedResults.at(i).rowData;
+        m_resultsStack->SetItem(i, orderedResults.at(i).rowData);
     }
 }
 
@@ -1026,12 +1038,12 @@ bool FdoExpressionEngineUtilDataReader::ReadNext()
 {
     m_resultsIndex++;
 
-    if (m_resultsIndex >= (FdoInt32)m_resultsStack->m_results.size())
+    if (m_resultsIndex >= (FdoInt32)m_resultsStack->GetCount())
         return false;
     else
     {
         // Read next record:
-        const FdoByteArray* byteArray = (FdoByteArray*)m_resultsStack->m_results.at(m_resultsIndex);
+        const FdoByteArray* byteArray = (FdoByteArray*)m_resultsStack->GetItem(m_resultsIndex);
         m_binReader->Reset((unsigned char*)byteArray->GetData(), byteArray->GetCount());
 
         return true;
