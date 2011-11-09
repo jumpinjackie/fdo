@@ -62,6 +62,7 @@ int odbcdr_fre_cursor(
 	SQLRETURN			rc;
 	int					rdbi_status = RDBI_GENERIC_ERROR;
 	geom_srid_map*      ptr;
+    len_idf_map*        idfptr;
 
 	debug_on1("odbcdr_fre_cursor", "s:0x%p", *cursor);
 
@@ -139,6 +140,14 @@ int odbcdr_fre_cursor(
 
 	// Free the blob buffers
     ODBCDR_RDBI_ERR( odbcdr_blob_freeAllColumns( context, c ) );   
+
+    idfptr = c->len_idf_maping;
+    while(idfptr != NULL)
+    {
+        len_idf_map* tmpidf = idfptr->next;
+        ut_vm_free( _db_function, idfptr);
+        idfptr = tmpidf;
+    }
 
     ptr = c->geom_srid_maping;
     while(ptr != NULL)

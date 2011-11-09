@@ -651,8 +651,11 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
                         FdoBLOBValue* v = static_cast<FdoBLOBValue*>(dval);
                         bind->barray = v->GetData();
                         bind->value.strvalue = (void*)bind->barray->GetData();
+                        cmds->bind(id, temp, RDBI_BLOB, bind->barray->GetCount(), (char*)bind->value.strvalue, bind->null_ind);
                     }
-                    cmds->bind(id, temp, RDBI_BLOB, sizeof(void*), (char*)bind->value.strvalue, bind->null_ind);
+                    else
+                        cmds->bind(id, temp, RDBI_BLOB, 0, (char*)bind->value.strvalue, bind->null_ind);
+                    
                     break;
                 case FdoDataType_DateTime:
                     if (bind->type != FdoDataType_String)

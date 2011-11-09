@@ -73,6 +73,7 @@ odbcdr_cursor_def *odbcdr_crt_cursor(
     c->odbcdr_blob          = NULL;
     c->odbcdr_blobNI        = NULL;
     c->defined_blobs        = NULL;
+    c->len_idf_maping       = NULL;
 
 the_exit:
 	debug_return (NULL,c);

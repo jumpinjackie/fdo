@@ -110,9 +110,15 @@ typedef struct bindname_map_def {
 
 typedef struct geom_srid_map_def {
 	int		            position; 						/* position of the bind variable	*/
-	int		            geom_srid_value;				/* srid value for the gem veriable */
+	int		            geom_srid_value;				/* srid value for the geom variable */
     geom_srid_map_def*  next;
 } geom_srid_map;
+
+typedef struct len_idf_map_def {
+	int		            position; 					/* position of the bind variable	*/
+	SQLLEN	            null_idf_value;				/* len idf for the geom/blob variable */
+    len_idf_map_def*    next;
+} len_idf_map;
 
 typedef struct cursor_def {					/* Statement linked list		*/
     union
@@ -131,8 +137,6 @@ typedef struct cursor_def {					/* Statement linked list		*/
     odbcdr_geom_col_list_def *bound_geometries;   /* odbcdr -->SqlServer buffer  */
     odbcdr_geom_col_list_def *defined_geometries; /* SqlServer-->odbcdr buffer  */
  
-    SQLLEN		        lenDataParam;
-
     PBYTE               odbcdr_geom;    /* define a working area for fething bound geoms */
     SQLLEN              *odbcdr_geomNI;
 
@@ -146,6 +150,7 @@ typedef struct cursor_def {					/* Statement linked list		*/
     SQLLEN              *odbcdr_blobNI;
     odbcdr_geom_col_list_def *defined_blobs; /* SqlServer-->odbcdr blobs */
 
+    len_idf_map*      len_idf_maping;
 } odbcdr_cursor_def;
 
 
