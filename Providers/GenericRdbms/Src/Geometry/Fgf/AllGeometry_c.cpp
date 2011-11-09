@@ -305,6 +305,7 @@ namespace sqlgeomconv
                 delete *it;
             figures.clear();
             shapes.clear();
+            segments.clear();
             ireader = NULL;
             lBuff = zBuff = mBuff = NULL;
             evalCntPts = cntPoints = 0;
@@ -1019,7 +1020,7 @@ namespace sqlgeomconv
                 handle.cntPoints++;
                 size_t cntParts = *handle.ireader++;            
 
-                if (cntParts == 1)
+                if (cntParts == 1 && cntContours == 1)
                 {
                     if ((FdoGeometryComponentType)*handle.ireader == FdoGeometryComponentType_CircularArcSegment)
                         pfig->type = FigureType_ExteriorRing; // Arc
@@ -1028,7 +1029,6 @@ namespace sqlgeomconv
                 }
 
                 // copy all points and create all figures and shapes
-                size_t mixTypes = 0x00;
                 bool firstArc = true;
                 bool firstLine = true;
                 for (size_t idx = 0; idx < cntParts; idx++)
@@ -1046,7 +1046,6 @@ namespace sqlgeomconv
                             handle.ireader = (int*)dreader;
                             handle.segments.push_back(firstArc ? SegmentType_FirstArc : SegmentType_Arc);
                             firstArc = false;
-                            mixTypes |= 0x01;
                         }
                         break;
                     case FdoGeometryComponentType_LineStringSegment:
@@ -1059,7 +1058,6 @@ namespace sqlgeomconv
                                 handle.cntPoints++;
                                 handle.segments.push_back(firstLine ? SegmentType_FirstLine : SegmentType_Line);
                                 firstLine = false;
-                                mixTypes |= 0x02;
                             }
                             handle.ireader = (int*)dreader;
                         }
@@ -1068,10 +1066,6 @@ namespace sqlgeomconv
                         throw FdoException::Create(L"Invalid geometry");
                     }
                 }
-                // in case we have mixed types we need to keep the segments otherwise clear them
-                // we can do this only in case we do not have any shape parent
-                if (mixTypes != 0x03 && shpParentIdx == NEG_ONE_LE && cntParts == 1)
-                    handle.segments.clear();
             }
         }
         else

@@ -104,6 +104,43 @@
 #define SQL_SS_UDT -151
 #define SQL_SS_XML -152
 
+SQLLEN* odbcdr_get_len_idf (odbcdr_cursor_def* c, int pos) 
+{
+    SQLLEN* ret = NULL;
+    if (c->len_idf_maping == NULL)
+    {
+        c->len_idf_maping = (len_idf_map*)ut_vm_malloc( "len_idf_map", sizeof( len_idf_map ) );
+        c->len_idf_maping->null_idf_value = -1;
+        c->len_idf_maping->next = NULL;
+        c->len_idf_maping->position = pos;
+        ret = &c->len_idf_maping->null_idf_value;
+    }
+    else
+    {
+        len_idf_map* ptr = c->len_idf_maping;
+        while (ptr != NULL)
+        {
+            if (ptr->position == pos)
+            {
+                ptr->null_idf_value = -1;
+                ret = &ptr->null_idf_value;
+                break;
+            }
+            if (ptr->next == NULL)
+            {
+                ptr->next = (len_idf_map*)ut_vm_malloc( "len_idf_map", sizeof( len_idf_map ) );
+                ptr->next->null_idf_value = -1;
+                ptr->next->next = NULL;
+                ptr->next->position = pos;
+                ret = &ptr->next->null_idf_value;
+                break;
+            }
+            ptr = ptr->next;
+        }
+    }
+    return ret;
+}
+
 int odbcdr_bind(
     odbcdr_context_def *context,
 	char	*cursor,
@@ -222,8 +259,14 @@ int odbcdr_bind(
         }
         else
         {
-            c->lenDataParam = size;
-            nullid = (size > 0) ? &c->lenDataParam : null_ind;
+            if (size > 0)
+            {
+                nullid = odbcdr_get_len_idf(c, bindnum);
+                *nullid = size;
+            }
+            else
+                nullid = null_ind;
+
 		    ODBCDR_ODBC_ERR( SQLBindParameter(
 						    c->hStmt,
 						    (SQLUSMALLINT) bindnum,
@@ -252,7 +295,8 @@ int odbcdr_bind(
         */
         // "For SQL_LONGVARBINARY type, ColumnSize must be set to the total length of the data to be sent, not the precision as defined in this table.
 
-        c->lenDataParam = SQL_LEN_DATA_AT_EXEC(0);
+        nullid = odbcdr_get_len_idf(c, bindnum);
+        *nullid = SQL_LEN_DATA_AT_EXEC(0);
 
         rc = SQLBindParameter(
 						c->hStmt,
@@ -264,7 +308,7 @@ int odbcdr_bind(
 						(SQLSMALLINT) 0,
 						(SQLPOINTER) address,
 						(SQLINTEGER) SQL_SS_LENGTH_UNLIMITED, 
-						&c->lenDataParam);
+						(SQLLEN *)   nullid);
 
         if ( rc != SQL_SUCCESS_WITH_INFO ) {
             ODBCDR_ODBC_ERR( rc,

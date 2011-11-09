@@ -587,7 +587,7 @@ geom_convert_S(
     int                      wantedDim
     )
 {
-	SQLSMALLINT			     boundParmID;
+	SQLUINTEGER			     boundParmID;
     int                      rdbi_status = RDBI_GENERIC_ERROR;
 
     debug_on4( "odbcdr_geom:geom_convert_S", "%d columns, %d rows, code=%d (%s)",
@@ -1165,7 +1165,7 @@ geom_convertToSqlServer_S(
 	pByteArray_def          wkb = NULL;
     PBYTE                   pData; // It's the "data" not the FdoByteArray
     int                     rdbi_status = RDBI_GENERIC_ERROR;
-    SQLSMALLINT             boundParmID;
+    SQLUINTEGER             boundParmID;
     SDWORD                  count;
     SQLRETURN               rc;
 
