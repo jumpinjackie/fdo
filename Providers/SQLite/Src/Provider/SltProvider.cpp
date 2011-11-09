@@ -2123,6 +2123,8 @@ void SltConnection::DeleteClassFromSchema(const wchar_t* fcName)
         iter->second->Release();
         free((char*)iter->first); //it was created via strdup, must use free()
         m_mNameToSpatialIndex.erase(iter);
+        // avoid keeping un-used cached statements with invalid SI for this class
+        ClearQueryCache(SQLiteClearActionType_All);
     }
 }
 
@@ -2407,6 +2409,8 @@ void SltConnection::UpdateClassFromSchema(FdoClassCollection* classes, FdoClassD
             free((char*)iter->first); //it was created via strdup, must use free()
             m_mNameToSpatialIndex.erase(iter);
             m_mNameToSpatialIndex[_strdup(desc->GetTableName())] = desc; //Note the memory allocation
+            // avoid keeping un-used cached statements with invalid SI for this class
+            ClearQueryCache(SQLiteClearActionType_All);
         }
 
         // reset class name
