@@ -825,9 +825,9 @@ void FdoExpressionEngineUtilDataReader::PerformDistinct()
         FdoByteArray *bytes = (FdoByteArray*)m_resultsStack->GetItem(i);
 
         std::pair <HASHMAP_ITER, bool> testresult = hashmap.insert(HASHMAP_PAIR(bytes, (FdoByteArray *)NULL));
-        // Do a release ONLY if its not been inserted into the hashmap:
-        if (!testresult.second)
-            FDO_SAFE_RELEASE(bytes);
+        // Do an addref ONLY if its been inserted into the hashmap:
+        if (testresult.second)
+            FDO_SAFE_ADDREF(bytes);
     }
 
     // Dump hashmap back into m_results:
