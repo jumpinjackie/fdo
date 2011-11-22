@@ -103,8 +103,8 @@ odbcdr_rdbi_init(
         methods->set_schemaW        = (int (*)(void*, const wchar_t*))odbcdr_set_schemaW;
         methods->run_sql            = (int (*)(void*, const char*,int,int*))odbcdr_run_sql;
 		methods->run_sqlW           = (int (*)(void*, const wchar_t*,int,int*))odbcdr_run_sqlW;
-        methods->get_gen_id         = (int (*)(void*, const char*,int*))odbcdr_get_gen_id;
-        methods->get_gen_idW        = (int (*)(void*, const wchar_t*,int*))odbcdr_get_gen_idW;
+        methods->get_gen_id         = (int (*)(void*, const char*,rdbiLong*))odbcdr_get_gen_id;
+        methods->get_gen_idW        = (int (*)(void*, const wchar_t*,rdbiLong*))odbcdr_get_gen_idW;
         methods->get_next_seq       = NULL;
         methods->get_next_seqW      = NULL;
 	    methods->get_msg	        = (void (*)(void*, char*))odbcdr_get_msg;

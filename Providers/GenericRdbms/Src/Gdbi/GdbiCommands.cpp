@@ -298,7 +298,7 @@ int GdbiCommands::vndr_info(
 //
 // Use the RDBMS sequence number capability(i.e Oracle )
 // TODO: need to cache the sequences for all sequences. Currently it will only work with one sequence for feature ids
-long GdbiCommands::NextSequenceNumber(  FdoString* dbiSequenceName )
+FdoInt64 GdbiCommands::NextSequenceNumber(  FdoString* dbiSequenceName )
 {
     FdoString* dbiSeqName = dbiSequenceName;
     FdoString* adbSeqName;
@@ -330,13 +330,13 @@ long GdbiCommands::NextSequenceNumber(  FdoString* dbiSequenceName )
 // In case sequence is not supported the method simulate a sequence allocation scheme.
 // The caller should start a transaction if one is not started. Apply Schema does.
 
-long GdbiCommands::NextGDBISequenceNumber( FdoString* adbSequenceName )
+FdoInt64 GdbiCommands::NextGDBISequenceNumber( FdoString* adbSequenceName )
 {
     bool                rc = false; 
     FdoStringP          strUse;
     int                 cursor;
     int                 select_begun = FALSE;
-    int                 number = 0;
+    FdoInt64            number = 0;
     int                 rows_proc;
     double              doubleVal;
     gdbi_full_seq_def   *gptr = &mFeatureSeq;
@@ -390,7 +390,7 @@ long GdbiCommands::NextGDBISequenceNumber( FdoString* adbSequenceName )
 
     if(rows_proc == 0) goto the_exit;
 
-    number = (long)doubleVal;
+    number = (FdoInt64)doubleVal;
     gptr->size = ADB_SN_ALLOC_INCREMENT;
     for(int i=0; i<ADB_SN_ALLOC_INCREMENT;i++)
         gptr->sequence[i] = number--;
@@ -411,11 +411,27 @@ the_exit:
     return number;
 }
 
+FdoInt64 GdbiCommands::GetLastSequenceNumber()
+{
+    FdoInt64 lastId = 0;
+    if (SupportsUnicode())
+    {
+        if ( ::rdbi_get_gen_idW ( m_pRdbiContext, L"", &lastId ) != RDBI_SUCCESS )
+            ThrowException();
+    }
+    else
+    {
+        if ( ::rdbi_get_gen_id ( m_pRdbiContext, "", &lastId ) != RDBI_SUCCESS )
+            ThrowException();
+    }
+    return lastId;
+}
+
 // In case sequence is not supported this method simulate a sequence allocation scheme.
-long GdbiCommands::NextRDBMSAutoincrementNumber( FdoString* adbSequenceName )
+FdoInt64 GdbiCommands::NextRDBMSAutoincrementNumber( FdoString* adbSequenceName )
 {
     FdoStringP tableName;
-    int                 number = 0;
+    FdoInt64            number = 0;
     bool                seqSupported = true;
 
     CheckDB();

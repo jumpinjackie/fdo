@@ -491,12 +491,12 @@ int rdbi_lob_close(
 int rdbi_get_gen_id(
         rdbi_context_def  *context,
 	    const char *table_name,
-	    int  *id
+	    rdbiLong  *id
 	    );
 int rdbi_get_gen_idW(
         rdbi_context_def  *context,
 	    const wchar_t *table_name,
-	    int  *id
+	    rdbiLong  *id
 	    );
 
 int rdbi_get_next_seq(

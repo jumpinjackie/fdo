@@ -50,7 +50,7 @@
 int rdbi_get_gen_id(
     rdbi_context_def  *context,
 	const char *table_name,
-	int  *id
+	rdbiLong  *id
 	)
 {
 	int rdbi_status = RDBI_GENERIC_ERROR;
@@ -66,7 +66,7 @@ int rdbi_get_gen_id(
 int rdbi_get_gen_idW(
     rdbi_context_def  *context,
 	const wchar_t *table_name,
-	int  *id
+	rdbiLong  *id
 	)
 {
 	int rdbi_status = RDBI_GENERIC_ERROR;

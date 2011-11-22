@@ -25,10 +25,16 @@
 
 #include "local.h"
 
+#ifdef _WIN32
+    typedef _int64  rdbiLong;
+#else
+    typedef int64_t	rdbiLong;
+#endif
+
 int mysql_get_gen_id(
     mysql_context_def  *context,
 	char *table_name,
-	int  *id
+	rdbiLong  *id
 	);
 
 #endif // GEN_GET_ID_H

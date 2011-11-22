@@ -32,7 +32,7 @@ int local_odbcdr_sql(odbcdr_context_def  *context, char *cursor, rdbi_string_def
 *	#include <Inc/rdbi.h>												*
 *	odbcdr_get_gen_id(table_name, id) 								    *
 *	rdbi_string_def *table_name;										*
-*	int  *id;														    *
+*	int64  *id;														    *
 *																		*
 * Description															*
 *       This function returns the last generated value. 	 		    *
@@ -53,7 +53,7 @@ int local_odbcdr_sql(odbcdr_context_def  *context, char *cursor, rdbi_string_def
 int local_odbcdr_get_gen_id(
     odbcdr_context_def  *context,
 	rdbi_string_def     *table_name_I,
-	int  *id_O
+	rdbiLong  *id_O
 	)
 {
 	wchar_t				    sql_buf[100];
@@ -66,7 +66,8 @@ int local_odbcdr_get_gen_id(
 	int						global_identity = ODBCDRV_STRING_EMPTY(table_name_I);
     ODBCDR_ERRORINFO_VARS;
     sqlval.wString = sql_buf;
-
+    bool retLastAinc = (context->odbcdr_UseUnicode) ? (table_name_I->cwString == NULL || *table_name_I->cwString == '\0')
+        : (table_name_I->cString == NULL || *table_name_I->cString == '\0');
 #ifdef _DEBUG
     if (context->odbcdr_UseUnicode){
         debug_on1("odbcdr_get_gen_id", "table_name '%ls'", ISNULL(table_name_I->cwString));
@@ -80,7 +81,7 @@ int local_odbcdr_get_gen_id(
 	ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
 
 	/* establish cursor. Reuse the existing one */
-	if ( global_identity ) {
+	if ( global_identity || retLastAinc) {
 		
 		/* set output value to one set by most recent insert statement execution */
 		*id_O = context->odbcdr_last_autoincrement;
@@ -127,7 +128,7 @@ the_exit:
 int odbcdr_get_gen_id(
     odbcdr_context_def  *context,
 	const char *table_name_I,
-	int  *id_O
+	rdbiLong  *id_O
 	)
 {
     rdbi_string_def str;
@@ -138,7 +139,7 @@ int odbcdr_get_gen_id(
 int odbcdr_get_gen_idW(
     odbcdr_context_def  *context,
 	const wchar_t *table_name_I,
-	int  *id_O
+	rdbiLong  *id_O
 	)
 {
     rdbi_string_def str;
