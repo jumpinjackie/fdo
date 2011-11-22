@@ -191,6 +191,8 @@ public:
 
 	void End(); // end selection before reaching end-of-fetch
 
+    void Reset();
+
     int GetColumnCount( );
 
     int GetColumnDesc( int colIdx, GdbiColumnDesc &desc );

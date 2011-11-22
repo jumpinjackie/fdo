@@ -36,6 +36,12 @@
 
 #include "structs.h"
 
+#ifdef _WIN32
+    typedef _int64  rdbiLong;
+#else
+    typedef int64_t	rdbiLong;
+#endif
+
 // these structures don't have as member an rdbi_string_def structure
 // because rdbi_string_def contains pointers and we need buffers
 typedef struct
@@ -125,7 +131,7 @@ typedef struct _odbcdr_context_def
 *  executed. See odbcdr_execute()                                       *
 ************************************************************************/
 
-    int     odbcdr_last_autoincrement;
+    rdbiLong     odbcdr_last_autoincrement;
 
 /************************************************************************
 *  We keep track of the last ODBC return code returned so we can		*

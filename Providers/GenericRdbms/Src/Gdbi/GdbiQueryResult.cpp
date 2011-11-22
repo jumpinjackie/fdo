@@ -283,6 +283,13 @@ int GdbiQueryResult::ReadNext()
 	return (rc == RDBI_SUCCESS) ;
 }
 
+void GdbiQueryResult::Reset()
+{
+	mArrayPos = 0;
+	mArrayCCount = 0;
+	mArrayTCount = 0;
+}
+
 void GdbiQueryResult::Close()
 {
 	if( m_QueryId )
