@@ -55,7 +55,11 @@
 int mysql_get_gen_id(
     mysql_context_def  *context,
 	char *table_name,   // not used
-	rdbiLong  *id
+#ifdef _WIN32
+	_int64  *id
+#else
+	int64_t  *id
+#endif
 	)
 {
 	char				    sql_buf[100];

@@ -488,16 +488,14 @@ int rdbi_lob_close(
         int sqlid,
         void *lob_ref
         );
-int rdbi_get_gen_id(
-        rdbi_context_def  *context,
-	    const char *table_name,
-	    rdbiLong  *id
-	    );
-int rdbi_get_gen_idW(
-        rdbi_context_def  *context,
-	    const wchar_t *table_name,
-	    rdbiLong  *id
-	    );
+#ifdef _WIN32
+int rdbi_get_gen_id( rdbi_context_def  *context, const char *table_name, _int64  *id );
+int rdbi_get_gen_idW( rdbi_context_def  *context, const wchar_t *table_name, _int64  *id );
+#else
+int rdbi_get_gen_id( rdbi_context_def  *context, const char *table_name, int64_t  *id );
+int rdbi_get_gen_idW( rdbi_context_def  *context, const wchar_t *table_name, int64_t  *id );
+#endif
+
 
 int rdbi_get_next_seq(
         rdbi_context_def  *context,

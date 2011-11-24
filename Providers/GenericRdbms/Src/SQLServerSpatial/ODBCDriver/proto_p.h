@@ -132,8 +132,13 @@ wchar_t *odbcdr_vndr_nameW( odbcdr_context_def *context );
 
 int odbcdr_vndr_info( odbcdr_context_def *context, rdbi_vndr_info_def *vndr_info);
 
-int odbcdr_get_gen_id( odbcdr_context_def  *context, const char *table_name, rdbiLong  *id );
-int odbcdr_get_gen_idW( odbcdr_context_def  *context, const wchar_t *table_name, rdbiLong  *id );
+#ifdef _WIN32
+int odbcdr_get_gen_id( odbcdr_context_def  *context, const char *table_name, _int64  *id );
+int odbcdr_get_gen_idW( odbcdr_context_def  *context, const wchar_t *table_name, _int64  *id );
+#else
+int odbcdr_get_gen_id( odbcdr_context_def  *context, const char *table_name, int64_t  *id );
+int odbcdr_get_gen_idW( odbcdr_context_def  *context, const wchar_t *table_name, int64_t  *id );
+#endif
 
 int odbcdr_alcnullind( odbcdr_context_def *context, int n, char  **null_ind );
 

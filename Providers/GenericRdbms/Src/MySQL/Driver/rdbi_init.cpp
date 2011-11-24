@@ -125,7 +125,11 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
 			methods->capabilities.supports_unicode = 0;
             methods->capabilities.supports_int64_binding = 1;
 
-            methods->get_gen_id     = (int (*)(void*, const char*, rdbiLong*))mysql_get_gen_id;
+#ifdef _WIN32
+            methods->get_gen_id     = (int (*)(void*, const char*, _int64*))mysql_get_gen_id;
+#else
+            methods->get_gen_id     = (int (*)(void*, const char*, int64_t*))mysql_get_gen_id;
+#endif
             methods->get_next_seq   = NULL;
             methods->get_next_seqW  = NULL;
 
