@@ -55,7 +55,7 @@
 			    <Time>current</Time>
 			    <Elevation>100</Elevation>
 			    <SpatialContext>EPSG:4326</SpatialContext>
-				<Layer name="Foundation OCEANSEA_1M">
+				<Layer name="Foundation oceansea_1m">
 				</Layer>
 		    </RasterDefinition>
 	    </complexType>
