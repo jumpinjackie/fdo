@@ -411,7 +411,7 @@ void WmsTestSelect::testServer3 ()
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
 	    FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-		cmd->SetFeatureClassName (L"Foundation BNDTXT_1M");
+		cmd->SetFeatureClassName (L"Foundation bndtxt_1m");
 	    FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
 
 		CPPUNIT_ASSERT (featReader->ReadNext ());
@@ -435,7 +435,7 @@ void WmsTestSelect::testServer3 ()
 	    CPPUNIT_ASSERT (FdoConnectionState_Open == conn->Open ());
 
         cmd = static_cast<FdoISelect *> (conn->CreateCommand (FdoCommandType_Select));
-		cmd->SetFeatureClassName (L"Foundation BNDTXT_1M");
+		cmd->SetFeatureClassName (L"Foundation bndtxt_1m");
 	    featReader = cmd->Execute ();
 
 		CPPUNIT_ASSERT (featReader->ReadNext ());
@@ -881,7 +881,7 @@ void WmsTestSelect::testCubeServer ()
 #endif//_DEBUG
 
         FdoPtr<FdoISelect> cmdSelect = static_cast<FdoISelect*>(conn->CreateCommand(FdoCommandType_Select));
-        cmdSelect->SetFeatureClassName(L"Foundation LANDICEA_1M");
+        cmdSelect->SetFeatureClassName(L"Foundation landicea_1m");
 
         FdoPtr<FdoIFeatureReader> featureReader = cmdSelect->Execute();
         FdoPtr<FdoClassDefinition> classDef2 = featureReader->GetClassDefinition();
