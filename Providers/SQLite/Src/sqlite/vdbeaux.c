@@ -1595,7 +1595,8 @@ int sqlite3VdbeFrameRestore(VdbeFrame *pFrame){
   v->nMem = pFrame->nMem;
   v->apCsr = pFrame->apCsr;
   v->nCursor = pFrame->nCursor;
-  v->db->lastRowid = pFrame->lastRowid;
+  if (pFrame->lastRowid != -1) // reset value in case we have one
+      v->db->lastRowid = pFrame->lastRowid;
   v->nChange = pFrame->nChange;
   return pFrame->pc;
 }
