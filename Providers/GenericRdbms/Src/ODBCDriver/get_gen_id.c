@@ -20,6 +20,12 @@
 #include <Inc/debugext.h>
 #include "proto_p.h"
 
+#ifdef _WIN32
+    typedef _int64  rdbiLong;
+#else
+    typedef int64_t	rdbiLong;
+#endif
+
 int local_odbcdr_sql(odbcdr_context_def  *context, char *cursor, rdbi_string_def* sql, int defer,
 	char *verb, void *ptree, char *cursor_coc);
 

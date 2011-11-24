@@ -38,13 +38,6 @@
 #include <stdlib.h>
 #include <wchar.h>
 
-#ifdef _WIN32
-    typedef _int64  rdbiLong;
-#else
-    typedef int64_t	rdbiLong;
-#endif
-
-
 #define   INVOKE_RDBI_FUNC( rdbifunc ) {\
     int rc = rdbifunc; \
     if( rc != RDBI_SUCCESS ) { \
@@ -152,8 +145,13 @@ typedef struct rdbi_methods_def {
     int  (*term)(void*);
     int  (*run_sql)(void*,const char*,int,int*);
 	int  (*run_sqlW)(void*,const wchar_t*,int,int*);
-    int  (*get_gen_id)(void*,const char*,rdbiLong*);
-    int  (*get_gen_idW)(void*,const wchar_t*,rdbiLong*);
+#ifdef _WIN32
+    int  (*get_gen_id)(void*,const char*,_int64*);
+    int  (*get_gen_idW)(void*,const wchar_t*,_int64*);
+#else
+    int  (*get_gen_id)(void*,const char*,int64_t*);
+    int  (*get_gen_idW)(void*,const wchar_t*,int64_t*);
+#endif
     int  (*get_next_seq)(void*,const char*,long*);
     int  (*get_next_seqW)(void*,const wchar_t*,long*);
 	int  (*autocommit_on)(void*);
