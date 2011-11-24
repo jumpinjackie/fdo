@@ -36,12 +36,6 @@
 #include <Inc/Rdbi/context.h>
 #include <Inc/Rdbi/methods.h>
 
-#ifdef _WIN32
-    typedef _int64  rdbiLong;
-#else
-    typedef int64_t	rdbiLong;
-#endif
-
 /* GENERATED */
 
 typedef int initializer (void **contextp, rdbi_methods methods);
