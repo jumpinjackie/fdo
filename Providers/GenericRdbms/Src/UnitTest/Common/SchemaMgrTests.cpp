@@ -422,6 +422,7 @@ void SchemaMgrTests::testGenDefault ()
         mgr = NULL;
         conn->disconnect();
         delete conn;
+        conn = NULL;
 
         printf( "Creating copy schema ...\n" );
 
@@ -573,6 +574,7 @@ void SchemaMgrTests::testGenDefault ()
         mgr = NULL;
         conn->disconnect();
         delete conn;
+        conn = NULL;
 
 #if 0 
 //TODO: investigate file differences
@@ -592,17 +594,20 @@ void SchemaMgrTests::testGenDefault ()
     }
     catch (FdoException* e ) 
     {
-        delete conn;
+        if ( conn ) 
+            delete conn;
         UnitTestUtil::FailOnException(e);
     }
     catch (CppUnit::Exception exception)
     {
-        delete conn;
+        if ( conn ) 
+            delete conn;
         throw exception;
     }
     catch (...)
     {
-        delete conn;
+        if ( conn ) 
+            delete conn;
         CPPUNIT_FAIL ("unexpected exception encountered");
     }
 }
