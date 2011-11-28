@@ -467,7 +467,7 @@
         <Time />
         <Elevation />
         <SpatialContext>EPSG:4326</SpatialContext>
-        <Layer name="WMS_Schema:Foundation BARRIERL_1M" />
+        <Layer name="WMS_Schema:Foundation barrierl_1m" />
       </RasterDefinition>
     </complexType>
     <complexType name="Foundation-x20-COASTL_1MType">
