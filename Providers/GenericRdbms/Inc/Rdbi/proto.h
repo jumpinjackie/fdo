@@ -272,6 +272,18 @@ int rdbi_sqlW(
         int sqlid,
         const wchar_t *sql
         );
+int rdbi_sqlWt(
+        rdbi_context_def *context,
+        int sqlid,
+        const char *sql,
+        int type
+        );
+int rdbi_sqlWWt(
+        rdbi_context_def *context,
+        int sqlid,
+        const wchar_t *sql,
+        int type
+        );
 int rdbi_sql_d(
         rdbi_context_def *context,
         int sqlid,

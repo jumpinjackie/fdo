@@ -103,6 +103,28 @@ int GdbiCommands::sql( FdoStringP sql,  int *qid  )
     return RDBI_GENERIC_ERROR; // to supress a compiler warning
 }
 
+int GdbiCommands::sql( FdoStringP sql,  int type,  int *qid  )
+{
+    CheckDB();
+    int rc = RDBI_GENERIC_ERROR;
+
+    rc = ::rdbi_est_cursor (m_pRdbiContext, qid);
+
+    if( rc == RDBI_SUCCESS )
+	{
+		if( SupportsUnicode() )
+			rc = ::rdbi_sqlWWt (m_pRdbiContext, *qid, sql, type );
+		else
+			rc = ::rdbi_sqlWt (m_pRdbiContext, *qid, sql, type );
+	}
+
+    if( rc == RDBI_SUCCESS )
+        return rc;
+
+    ThrowException();
+    return RDBI_GENERIC_ERROR; // to supress a compiler warning
+}
+
 int GdbiCommands::execute( int qid, int count, int offset )
 {
     CheckDB();

@@ -217,7 +217,7 @@ FdoSmPhReaderP FdoSmPhRdSqsColumnReader::MakeQueryReader (
                     L" lower(c.name) as type_string,\n"
                     L" 0 as isunsigned, \n"
                     L" COLUMNPROPERTY(a.object_id, b.name, 'IsComputed') as has_computed_expression, \n"
-                    L" COLUMNPROPERTY(a.object_id, b.name, 'IsIdentity') as is_autoincremented, \n"
+                    L" b.is_identity as is_autoincremented, \n"
                     L" d.name collate latin1_general_bin as table_schema, b.object_id as ordinal_position,\n"
 					L" e.definition as default_value, \n"
 					L" b.column_id as position \n"
