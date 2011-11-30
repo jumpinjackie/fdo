@@ -165,6 +165,8 @@ public:
 
 	int sql( FdoStringP sql,  int *qid  );
 
+    int sql( FdoStringP sql,  int type, int *qid  );
+
     int execute( int qid  ) { return execute( qid, 1, 0); }
 
     int execute( int qid, int count, int offset );

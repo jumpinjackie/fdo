@@ -139,6 +139,7 @@ private:
     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > mBindProps;
     bool mHasRevisionNumber;
     int m_qid;
+    int m_qtype;
 
     FdoRdbmsInsertCommand* mBackupCmd;
 };
