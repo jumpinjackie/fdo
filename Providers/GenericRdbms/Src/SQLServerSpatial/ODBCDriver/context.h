@@ -140,8 +140,8 @@ typedef struct _odbcdr_context_def
     long    odbcdr_last_server_rc;
     union
     {
-	    char	odbcdr_last_err_msg[ODBCDR_MAX_BUFF_SIZE];
-	    wchar_t	odbcdr_last_err_msgW[ODBCDR_MAX_BUFF_SIZE];
+	    char	odbcdr_last_err_msg[ODBCDR_MAX_MSG_BUFF_SIZE];
+	    wchar_t	odbcdr_last_err_msgW[ODBCDR_MAX_MSG_BUFF_SIZE];
     };
 	long	odbcdr_nameListNextPosition_cols;
 	long	odbcdr_nameListNextPosition_pkeys;
@@ -173,7 +173,7 @@ typedef struct _odbcdr_context_def
 /************************************************************************
  *  Macros to temporarily cache the error code and message      		*
  ************************************************************************/
-#define ODBCDR_ERRORINFO_VARS  short __odbcdr_last_rc; rdbi_string_def __odbcdr_last_err_msg; wchar_t __odbcdr_last_err_msgBuf[ODBCDR_MAX_BUFF_SIZE]; \
+#define ODBCDR_ERRORINFO_VARS  short __odbcdr_last_rc; rdbi_string_def __odbcdr_last_err_msg; wchar_t __odbcdr_last_err_msgBuf[ODBCDR_MAX_MSG_BUFF_SIZE]; \
                                 __odbcdr_last_err_msg.wString=__odbcdr_last_err_msgBuf; *__odbcdr_last_err_msg.wString=L'\0'; 
 #define ODBCDR_ERRORINFO_GET __odbcdr_last_rc=context->odbcdr_last_rc; ODBCDRV_STRING_COPY_LST(&__odbcdr_last_err_msg, context->odbcdr_last_err_msg);
 #define ODBCDR_ERRORINFO_SET context->odbcdr_last_rc=__odbcdr_last_rc; ODBCDRV_STRING_COPY_RST(context->odbcdr_last_err_msg, &__odbcdr_last_err_msg);
