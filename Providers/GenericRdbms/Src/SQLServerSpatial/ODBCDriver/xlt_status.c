@@ -125,8 +125,8 @@ static int get_error_from_diag_rec(
 	int		crit_err_found = FALSE;
 	RETCODE	rec_retcode = SQL_SUCCESS;
 	RETCODE	field_retcode = SQL_SUCCESS;
-	SQLWCHAR	szSqlState[ODBCDR_MAX_BUFF_SIZE];
-	SQLWCHAR 	szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
+	SQLWCHAR	szSqlState[ODBCDR_MAX_MSG_BUFF_SIZE];
+	SQLWCHAR 	szErrorMsg[ODBCDR_MAX_MSG_BUFF_SIZE];
 	SDWORD		pfNativeError = 0L;
 	SWORD	 	pcbErrorMsg = 0;
 	SQLSMALLINT cRecNmbr = 1;
@@ -147,10 +147,10 @@ static int get_error_from_diag_rec(
 		rec_retcode = (context->odbcdr_UseUnicode) ? 
             SQLGetDiagRecW(handle_type, handle,
 					cRecNmbr, szSqlState, &pfNativeError,
-                    szErrorMsg, ODBCDR_MAX_BUFF_SIZE, &pcbErrorMsg) : 
+                    szErrorMsg, ODBCDR_MAX_MSG_BUFF_SIZE, &pcbErrorMsg) : 
             SQLGetDiagRec(handle_type, handle,
 					cRecNmbr, (SQLCHAR*)szSqlState, &pfNativeError,
-					(SQLCHAR*)szErrorMsg, ODBCDR_MAX_BUFF_SIZE, &pcbErrorMsg);
+					(SQLCHAR*)szErrorMsg, ODBCDR_MAX_MSG_BUFF_SIZE, &pcbErrorMsg);
  
 		if (rec_retcode != SQL_NO_DATA_FOUND) {
 			field_retcode = (context->odbcdr_UseUnicode) ? 
@@ -254,8 +254,8 @@ static void save_err_msg(
 	int ConnInd)	    			// Connection indicator
 {
 	RETCODE		plm_retcode = SQL_SUCCESS;
-	UCHAR		plm_szSqlState[ODBCDR_MAX_BUFF_SIZE];
-	UCHAR 	 	plm_szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
+	UCHAR		plm_szSqlState[ODBCDR_MAX_MSG_BUFF_SIZE];
+	UCHAR 	 	plm_szErrorMsg[ODBCDR_MAX_MSG_BUFF_SIZE];
 	SDWORD		plm_pfNativeError = 0L;
 	SWORD	 	plm_pcbErrorMsg = 0;
 	SQLSMALLINT 	plm_cRecNmbr = 1;
@@ -277,7 +277,7 @@ static void save_err_msg(
   	while (plm_retcode != SQL_NO_DATA_FOUND) {
 		plm_retcode = SQLGetDiagRec(plm_handle_type, plm_handle,
 					plm_cRecNmbr, plm_szSqlState, &plm_pfNativeError,
-					plm_szErrorMsg, ODBCDR_MAX_BUFF_SIZE - 1, &plm_pcbErrorMsg);
+					plm_szErrorMsg, ODBCDR_MAX_MSG_BUFF_SIZE - 1, &plm_pcbErrorMsg);
  
 		// Note that if the application has not yet made a
 		// successful connection, the SQLGetDiagField
@@ -360,8 +360,8 @@ static void save_err_msgW(
 	int ConnInd)	    			// Connection indicator
 {
 	RETCODE		plm_retcode = SQL_SUCCESS;
-	SQLWCHAR    plm_szSqlState[ODBCDR_MAX_BUFF_SIZE];
-	SQLWCHAR 	plm_szErrorMsg[ODBCDR_MAX_BUFF_SIZE];
+	SQLWCHAR    plm_szSqlState[ODBCDR_MAX_MSG_BUFF_SIZE];
+	SQLWCHAR 	plm_szErrorMsg[ODBCDR_MAX_MSG_BUFF_SIZE];
 	SDWORD		plm_pfNativeError = 0L;
 	SWORD	 	plm_pcbErrorMsg = 0;
 	SQLSMALLINT plm_cRecNmbr = 1;
@@ -383,7 +383,7 @@ static void save_err_msgW(
   	while (plm_retcode != SQL_NO_DATA_FOUND) {
 		plm_retcode = SQLGetDiagRecW(plm_handle_type, plm_handle,
 					plm_cRecNmbr, plm_szSqlState, &plm_pfNativeError,
-					plm_szErrorMsg, ODBCDR_MAX_BUFF_SIZE - 1, &plm_pcbErrorMsg);
+					plm_szErrorMsg, ODBCDR_MAX_MSG_BUFF_SIZE - 1, &plm_pcbErrorMsg);
  
 		// Note that if the application has not yet made a
 		// successful connection, the SQLGetDiagField

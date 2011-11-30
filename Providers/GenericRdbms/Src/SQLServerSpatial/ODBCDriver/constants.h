@@ -58,7 +58,10 @@
 #define ODBCDR_UBLOB_CHUNK_SIZE      (1024 * 5)  // 5KB
 
 /* Max buffer length */
-#define ODBCDR_MAX_BUFF_SIZE	RDBI_MSG_SIZE	
+#define ODBCDR_MAX_BUFF_SIZE	(RDBI_MSG_SIZE/2)
+
+/* Max msg buffer length */
+#define ODBCDR_MAX_MSG_BUFF_SIZE RDBI_MSG_SIZE
 
 /* buffer size for long varchar columns */
 #define ODBCDR_LONGVARCHAR_SIZE       16000

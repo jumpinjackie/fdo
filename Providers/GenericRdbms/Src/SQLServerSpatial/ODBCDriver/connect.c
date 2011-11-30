@@ -602,16 +602,18 @@ static void DumpError2W
         // take only first non zero error value
         if (!context->odbcdr_last_server_rc)
             context->odbcdr_last_server_rc = nServerError;
+        
+        // can we get all error messages? in case not truncate;
+        if ((cbMessage + msgSize) > (ODBCDR_MAX_MSG_BUFF_SIZE - 2))
+            break;
 
-        if ( msgSize < (ODBCDR_MAX_BUFF_SIZE - 2) )
+        if ( msgSize > 0 ) 
         {
-            if ( msgSize > 0 ) 
-            {
-                wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), L"\n", ODBCDR_MAX_BUFF_SIZE - msgSize - 1 );
-                msgSize++;
-            }
-            wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), (wchar_t*)szMessage, ODBCDR_MAX_BUFF_SIZE - msgSize - 1 );
+            wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), L"\n", ODBCDR_MAX_MSG_BUFF_SIZE - msgSize - 1 );
+            msgSize++;
         }
+        wcsncpy( &(context->odbcdr_last_err_msgW[msgSize]), (wchar_t*)szMessage, ODBCDR_MAX_MSG_BUFF_SIZE - msgSize - 1 );
+
         msgSize += wcslen(szMessage);
         nRec++;
         }
