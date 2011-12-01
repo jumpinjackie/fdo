@@ -590,8 +590,6 @@ FdoInt32 FdoRdbmsSQLCommand::ExecuteNonQuery()
                             FdoSchemaManagerP pschemaManager = m_DbiConnection->GetSchemaUtil()->GetSchemaManager();
                             pschemaManager->Clear();
                         }
-                        else // we ran a stored procedure, in case caller will call Flush we need to release the schema
-                            mFdoConnection->SetEnforceClearSchAtFlush(true);
 
                         return m_bindHelper->GetIntValueToRet(pVal);
                     }
@@ -703,9 +701,7 @@ FdoISQLDataReader* FdoRdbmsSQLCommand::ExecuteReader()
                 }
                 if (vParams.size() != 0)
                 {
-                    // we ran a stored procedure, in case caller will call Flush we need to release the schema
                     delete query;
-                    mFdoConnection->SetEnforceClearSchAtFlush(true);
                     return new FdoOutParamSQLDataReader(vParams);
                 }
             }
