@@ -218,22 +218,23 @@ int odbcdr_bind(
             (sql_type != SQL_LONGVARBINARY))
 		)
 	{
-		debug3 ("\nError=%d in SQLDescribeParam() for '%s', type=%d. Assuming type = SQL_CHAR, length = 100\n", rc, name, sql_type );
         switch (odbcdr_datatype)
         {
         case SQL_C_WCHAR:
     		sql_type = SQL_WVARCHAR;
+		    col_size = 100;
+		    decimal_digits = 0;
             break;
         case SQL_C_CHAR:
     		sql_type = SQL_VARCHAR;
+		    col_size = 100;
+		    decimal_digits = 0;
             break;
-        default:
-    		// most SQL types can be converted to SQL_CHAR
-            sql_type = SQL_CHAR;
+        default: // in case we fail to describe the parameter type use the type of the bind value
+            sql_type = odbcdr_datatype;
+            col_size = odbcdr_size;
             break;
         }
-		col_size = 100;
-		decimal_digits = 0;
 	}
 
 	/*
