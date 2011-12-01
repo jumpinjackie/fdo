@@ -2877,8 +2877,9 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     itmSelect->first.append((FdoString*)dbiConn->GetSchemaUtil()->GetDbObjectSqlName(clsInfo->first));
     if (clsInfo->second.size() != 0)
     {
-        itmSelect->first.append(L" AS ", 4);
+        itmSelect->first.append(L" AS \"", 5);
         itmSelect->first.append(clsInfo->second);
+        itmSelect->first.append(L"\"", 1);
     }
 
     for(int idx = 0; idx < cntJc; idx++)
@@ -2914,8 +2915,9 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         itmSelect->first.append((FdoString*)dbiConn->GetSchemaUtil()->GetDbObjectSqlName(clsInfo->first));
         if (clsInfo->second.size() != 0)
         {
-            itmSelect->first.append(L" AS ");
+            itmSelect->first.append(L" AS \"", 5);
             itmSelect->first.append(clsInfo->second);
+            itmSelect->first.append(L"\"", 1);
         }
 
         if (jType == FdoJoinType_Cross)
