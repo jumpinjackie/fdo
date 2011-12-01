@@ -989,3 +989,61 @@ void SqlServerFdoSqlCmdTest::TestBigInt()
 		TestCommonFail (ex);
     }
 }
+
+void SqlServerFdoSqlCmdTest::TestUnknownTypeBindParameter()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP TABLE TEST_TABLE;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"create table TEST_TABLE (ID bigint primary key, VMIN decimal (18, 10), VMAX decimal (18, 10));" );
+        sqlCmd->ExecuteNonQuery();
+        
+        sqlCmd->SetSQLStatement( L"insert into TEST_TABLE (ID, VMIN, VMAX) values (1, 0, 10);");
+        sqlCmd->ExecuteNonQuery();
+        
+        sqlCmd->SetSQLStatement( L"insert into TEST_TABLE (ID, VMIN, VMAX) values (2, 10, 20);");
+        sqlCmd->ExecuteNonQuery();
+        
+        sqlCmd->SetSQLStatement( L"insert into TEST_TABLE (ID, VMIN, VMAX) values (3, 20, 30);");
+        sqlCmd->ExecuteNonQuery();
+
+
+        FdoPtr<FdoParameterValueCollection> params = sqlCmd->GetParameterValues();
+        FdoPtr<FdoDoubleValue> dVal = FdoDoubleValue::Create(0.05);
+        FdoPtr<FdoParameterValue> pval = FdoParameterValue::Create(L"tol", dVal);
+        pval->SetDirection(FdoParameterDirection_Input);
+        params->Add(pval);
+        
+        sqlCmd->SetSQLStatement( L"select ID from TEST_TABLE where 19.97 between (VMIN - :tol) and (VMAX + :tol)" );
+        FdoPtr<FdoISQLDataReader> rdr = sqlCmd->ExecuteReader();
+        int cnt = 0;
+        while(rdr->ReadNext())
+        {
+            FdoInt64 id = 0;
+            if (!rdr->IsNull(0))
+                id = rdr->GetInt64(0);
+            cnt++;
+        }
+        rdr->Close();
+
+        CPPUNIT_ASSERT(cnt == 2);
+
+        params->Clear();
+        sqlCmd->SetSQLStatement( L"DROP TABLE TEST_TABLE;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}
