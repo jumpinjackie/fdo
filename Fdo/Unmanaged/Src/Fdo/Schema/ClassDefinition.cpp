@@ -94,7 +94,7 @@ void FdoClassDefinition::SetBaseClass(FdoClassDefinition* value)
     if (value)
     {
         // Base class must have same class type.
-        if ( GetClassType() != value->GetClassType() ) 
+        if ( GetClassType() != FdoClassType_Class && GetClassType() != value->GetClassType() ) 
              throw FdoSchemaException::Create(
                 FdoException::NLSGetMessage(FDO_NLSID(SCHEMA_141_BASETYPECONFLICT),
                 (FdoString*) GetQualifiedName(),
