@@ -655,8 +655,9 @@ void SchemaTest::testFeatureSchema()
     //
     try
     {
-        pclass->SetBaseClass(pfeatureclass);
-        FDO_CPPUNIT_ASSERT(FALSE);  // should never reach this, an exception should be thrown because pclass would become its own grandparent
+        pfeatureclass->SetBaseClass(pclass);
+        FDO_CPPUNIT_ASSERT(FALSE);  // should never reach this, an exception should be thrown because a feature class is being based
+                                    // on a non-feature class.
     }
     catch (FdoSchemaException* e)
     {
