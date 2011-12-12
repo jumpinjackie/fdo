@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="UnitTest"
 	ProjectGUID="{05A72C63-60E4-4241-920D-1C3E441B0298}"
 	RootNamespace="UnitTest"
 	Keyword="MFCProj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -73,6 +74,8 @@
 				AdditionalLibraryDirectories="D:\Development\CppUnit\cppunit-1.12.0\lib\"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -92,9 +95,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -156,6 +156,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -175,9 +177,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -241,6 +240,8 @@
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib\&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.0.1\mapguide-2.0.1\OpenSource_FDO\Fdo\Unmanaged\lib\win32\debug&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.0.1\mapguide-2.0.1\OpenSource_FDO\Utilities\Common\lib\win32\debug&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.0.1\mapguide-2.0.1\OpenSource_FDO\Utilities\ExpressionEngine\Lib\Win32\Debug&quot;;&quot;D:\Development\libKML\libkml-0.3.2\debug&quot;;&quot;D:\Development\libKML\libkml-0.3.2\third_party\zlib-1.2.3.win32\lib&quot;;&quot;C:\Program Files\Expat 2.0.1\Bin&quot;;&quot;D:\Development\MapGuide_OS\v1.1.0\mapguide-1.1.0\OpenSource_FDO\Providers\KingKML\bin\win32\deb_fdo_3_3_1&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -260,9 +261,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -324,6 +322,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -343,9 +343,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -407,6 +404,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -428,7 +427,337 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Deb_FDO_3_4|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\include\&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\Inc;..\..\..\..\..\branches\3.4\Utilities\Common\Inc;..\..\..\..\..\branches\3.4\Utilities\ExpressionEngine\Inc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\Inc\Fdo\Expression;..\..\..\..\..\branches\3.4\Providers\SDF\Src\Provider;..\..\..\..\..\branches\3.4\Utilities\SQLiteInterface;..\..\..\..\..\branches\3.4\Providers\SDF\Inc;..\..\..\..\..\branches\3.4\Providers\SDF\Src\Utils;&quot;..\..\..\..\..\branches\3.4\Thirdparty\apache\xml-xerces\c\src&quot;;..\..\inc;.\;&quot;D:\Development\libKML\libkml-1.2.0\src&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\boost_1_34_1&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\uriparser-0.7.1\include&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\zlib-1.2.3\contrib&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\zlib-1.2.3&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib libkmlbase.lib libkmldom.lib libkmlengine.lib libexpat.lib minizip.lib zlib.lib KingKmlProvider.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib\&quot;"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Rel_FDO_3_4|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
+				MinimalRebuild="false"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Deb_FDO_3_5|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="false"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm114"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\include\&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\Inc;..\..\..\..\..\branches\3.5\Utilities\Common\Inc;..\..\..\..\..\branches\3.5\Utilities\ExpressionEngine\Inc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\Inc\Fdo\Expression;..\..\..\..\..\branches\3.5\Providers\SDF\Src\Provider;..\..\..\..\..\branches\3.5\Utilities\SQLiteInterface;..\..\..\..\..\branches\3.5\Providers\SDF\Inc;..\..\..\..\..\branches\3.5\Providers\SDF\Src\Utils;&quot;..\..\..\..\..\branches\3.5\Thirdparty\apache\xml-xerces\c\src&quot;;..\..\inc;..\Provider;.\;&quot;D:\Development\libKML\libkml-1.2.0\src&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\boost_1_34_1&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\uriparser-0.7.1\include&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\zlib-1.2.3\contrib&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\zlib-1.2.3&quot;"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib ProvidersCommon.lib ExpressionEngine.lib libkmlbase.lib libkmldom.lib libkmlengine.lib libexpat.lib minizip.lib zlib.lib KingKmlProvider.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib\&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\Lib\Win32\Debug;&quot;..\..\..\..\..\branches\3.5\Thirdparty\apache\xml-xerces\c\Build\Win32\VC9\Release&quot;;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\debug;..\..\..\..\..\branches\3.5\Providers\SDF\lib\win32\debug;..\..\..\..\..\branches\3.5\Utilities\ExpressionEngine\Lib\Win32\Debug;&quot;D:\Development\libKML\libkml-1.2.0\msvc\debug&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\uriparser-0.7.5.win32\debug&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\expat.win32&quot;;&quot;D:\Development\libKML\libkml-1.2.0\third_party\zlib-1.2.3.win32\lib&quot;;..\..\bin\Win32\Deb_FDO_3_5"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Rel_FDO_3_5|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="false"
+				ValidateParameters="false"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG"
+				MinimalRebuild="false"
+				RuntimeLibrary="2"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(IntDir)"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -504,6 +833,38 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Rel_FDO_3_3_1|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Deb_FDO_3_4|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Rel_FDO_3_4|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Deb_FDO_3_5|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Rel_FDO_3_5|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
