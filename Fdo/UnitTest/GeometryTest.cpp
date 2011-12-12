@@ -787,6 +787,18 @@ void GeometryTest::testLinearRing()
 	FdoPtr<FdoILinearRing> lRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXY);
 	DumpLinearRing(lRing);
 
+    // Try a couple of rings with fewer than 3 points, since these may occur in existing data.
+
+	lRing = gf->CreateLinearRing(FdoDimensionality_XY, 2, ordsXY);
+	DumpLinearRing(lRing);
+
+    FdoPtr<FdoDirectPositionCollection> positions = FdoDirectPositionCollection::Create();
+    FdoPtr<FdoIDirectPosition> position = gf->CreatePositionXY(0.0, 0.0);
+    positions->Add(position);
+
+    lRing = gf->CreateLinearRing(positions);
+	DumpLinearRing(lRing);
+
 	delete [] ordsXY;
 }
 
