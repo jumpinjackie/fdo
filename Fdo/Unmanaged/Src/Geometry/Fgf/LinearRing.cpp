@@ -80,7 +80,7 @@ FdoFgfLinearRing::FdoFgfLinearRing(
     FdoDirectPositionCollection* positions)
     : m_pools(pools)
 {
-    if ( NULL == positions || positions->GetCount() < 3)
+    if ( NULL == positions || positions->GetCount() < 1)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_CREATION),
                                                                L"FdoFgfLinearRing",
                                                                L"positions"));
@@ -98,7 +98,7 @@ FdoFgfLinearRing::FdoFgfLinearRing(
 
 void FdoFgfLinearRing::Reset(FdoDirectPositionCollection* positions)
 {
-    if ( NULL == positions ||  positions->GetCount() < 3)
+    if ( NULL == positions ||  positions->GetCount() < 1)
 		throw FdoException::Create(FdoException::NLSGetMessage(FDO_NLSID(FDO_1_INVALID_INPUT_ON_CLASS_FUNCTION),
                                                                L"FdoFgfLinearRing::Reset",
                                                                L"positions"));
