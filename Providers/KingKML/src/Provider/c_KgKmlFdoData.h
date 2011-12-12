@@ -63,6 +63,7 @@ public:
   
   void SetFdoSchema(FdoFeatureSchema* FdoSchema);
   
+  void ClearPlacemarks();
   
 protected:
   kmldom::ElementPtr m_KmlRoot;

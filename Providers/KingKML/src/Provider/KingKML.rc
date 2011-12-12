@@ -69,14 +69,12 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "King FDO Provider for KML"
-            VALUE "CompanyName", "SL-King"
             VALUE "FileDescription", "KingKML Dynamic Link Library"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "KingKML"
-            VALUE "LegalCopyright", "Copyright SL-King© 2008"
-            VALUE "OriginalFilename", "KingKMLprovider.dll"
-            VALUE "ProductName", "King FDO Provider for Oracle Spatial"
+            VALUE "LegalCopyright", "Copyright (C) 2010"
+            VALUE "OriginalFilename", "KingKML.dll"
+            VALUE "ProductName", "KingKML Dynamic Link Library"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END

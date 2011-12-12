@@ -360,7 +360,7 @@ int c_KgKmlFdoData::ParseExistingKML(const string& FileName)
   }
  
 // Find first container - place were new placemarks will e added 
-  kmlengine::element_vector_t folder_vector;
+  kmlengine::ElementVector folder_vector;
   kmlengine::GetElementsById(m_KmlKml, kmldom::Type_Folder, &folder_vector);
   if( folder_vector.size()>=1 )
   {
@@ -370,7 +370,7 @@ int c_KgKmlFdoData::ParseExistingKML(const string& FileName)
   }
   else
   {
-    kmlengine::element_vector_t doc_vector;
+    kmlengine::ElementVector doc_vector;
     kmlengine::GetElementsById(m_KmlKml, kmldom::Type_Document, &doc_vector);
     if( doc_vector.size()>=1 )
     {
@@ -408,7 +408,7 @@ int c_KgKmlFdoData::ParseExistingKML(const string& FileName)
   
 // Now I should go and parse placemark geometries and Create Identifiers ( FdoId ).
   m_FdoIdentCounter=1;
-  kmlengine::element_vector_t elements_vector;
+  kmlengine::ElementVector elements_vector;
   kmlengine::GetElementsById(m_KmlKml, kmldom::Type_Placemark, &elements_vector);
   
   // From first placemark create Faeture class
@@ -881,8 +881,12 @@ void c_KgKmlFdoData::UpdateFdoPlacemark(c_KgFdoPlacemark * FdoPlacemark, FdoIRea
   {
     try
     {
-      FdoPtr<FdoByteArray> fdogeom = Reader->GetGeometry(fdogeomprop->GetName());
-      FdoPlacemark->SetGeometry(fdogeom);
+      if( !Reader->IsNull(fdogeomprop->GetName() ) )
+      {
+      
+        FdoPtr<FdoByteArray> fdogeom = Reader->GetGeometry(fdogeomprop->GetName());
+        FdoPlacemark->SetGeometry(fdogeom);
+      }
     }
     catch (...)
     {
@@ -904,14 +908,17 @@ void c_KgKmlFdoData::UpdateFdoPlacemark(c_KgFdoPlacemark * FdoPlacemark, FdoIRea
       FdoDataValue *dataValue = static_cast<FdoDataValue *> (litvalue.p);
 
       FdoStringP strp;
-      if( dataValue->GetDataType() == FdoDataType_String )
-      {
-        FdoStringValue * stringvalue = (FdoStringValue*)dataValue;
-        strp = stringvalue->GetString();
-      }
-      else
-      {
-        strp = dataValue->ToString();
+      if( !dataValue->IsNull() )
+      {      
+        if( dataValue->GetDataType() == FdoDataType_String )
+        {
+          FdoStringValue * stringvalue = (FdoStringValue*)dataValue;
+          strp = stringvalue->GetString();
+        }
+        else
+        {
+          strp = dataValue->ToString();
+        }
       }
       FdoPlacemark->SetPlacemarkName(strp);
     }
@@ -928,14 +935,18 @@ void c_KgKmlFdoData::UpdateFdoPlacemark(c_KgFdoPlacemark * FdoPlacemark, FdoIRea
       FdoDataValue *dataValue = static_cast<FdoDataValue *> (litvalue.p);
 
       FdoStringP strp;
-      if( dataValue->GetDataType() == FdoDataType_String )
+      if( !dataValue->IsNull() )
       {
-        FdoStringValue * stringvalue = (FdoStringValue*)dataValue;
-        strp = stringvalue->GetString();
-      }
-      else
-      {
-        strp = dataValue->ToString();
+        if( dataValue->GetDataType() == FdoDataType_String )
+        {
+          FdoStringValue * stringvalue = (FdoStringValue*)dataValue;
+          strp = stringvalue->GetString();
+        }
+        else
+        {
+          strp = dataValue->ToString();
+        }
+        
       }
       FdoPlacemark->SetPlacemarkDescription(strp);
     }
@@ -1158,4 +1169,17 @@ void c_KgKmlFdoData::Flush()
     kmlbase::File::WriteStringToFile(xmldata,m_KmlFileName);
     m_IsDataChanged=false;
   }
+}
+
+void c_KgKmlFdoData::ClearPlacemarks()
+{
+  m_FdoPlacemarks.Clear();
+  kmldom::KmlFactory * factory = kmldom::KmlFactory::GetFactory();  
+  kmldom::KmlPtr kml = factory->CreateKml(); 
+  m_KmlRoot =  kml;
+  m_KmlKml = kml;
+
+  kmldom::DocumentPtr doc = factory->CreateDocument();
+  m_KmlContainer = doc;
+  m_KmlKml->set_feature(doc);
 }

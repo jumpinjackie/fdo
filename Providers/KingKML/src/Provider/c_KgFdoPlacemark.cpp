@@ -74,7 +74,7 @@ void c_KgFdoPlacemark::ParsePlacemarkGeometry()
         int coordnum = coords->get_coordinates_array_size();
         if( coordnum >= 1 )
         {
-          kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(0);
+          kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(0);
           double ords[3];
           ords[0] = kmlvec3.get_longitude();
           ords[1] = kmlvec3.get_latitude();
@@ -100,7 +100,7 @@ void c_KgFdoPlacemark::ParsePlacemarkGeometry()
           double *ordptr=ords;
           for(int ind=0;ind<pointnum;ind++)
           {
-            kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
+            kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
             *ordptr++ = kmlvec3.get_longitude();
             *ordptr++ = kmlvec3.get_latitude();
             *ordptr++ = kmlvec3.get_altitude();            
@@ -139,7 +139,7 @@ void c_KgFdoPlacemark::ParsePlacemarkGeometry()
               double *ordptr=ords;
               for(int ind=0;ind<pointnum;ind++)
               {
-                kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
+                kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
                 *ordptr++ = kmlvec3.get_longitude();
                 *ordptr++ = kmlvec3.get_latitude();
                 *ordptr++ = kmlvec3.get_altitude();            
@@ -176,7 +176,7 @@ FdoIGeometry* c_KgFdoPlacemark::CreateFdoGeometry(const kmldom::GeometryPtr& kml
         int coordnum = coords->get_coordinates_array_size();
         if( coordnum >= 1 )
         {
-          kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(0);
+          kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(0);
           double ords[3];
           ords[0] = kmlvec3.get_longitude();
           ords[1] = kmlvec3.get_latitude();
@@ -202,7 +202,7 @@ FdoIGeometry* c_KgFdoPlacemark::CreateFdoGeometry(const kmldom::GeometryPtr& kml
           double *ordptr=ords;
           for(int ind=0;ind<pointnum;ind++)
           {
-            kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
+            kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
             *ordptr++ = kmlvec3.get_longitude();
             *ordptr++ = kmlvec3.get_latitude();
             *ordptr++ = kmlvec3.get_altitude();            
@@ -346,7 +346,7 @@ FdoIGeometry* c_KgFdoPlacemark::CreateFdoGeometry(const kmldom::GeometryPtr& kml
               double *ordptr=ords;
               for(int ind=0;ind<pointnum;ind++)
               {
-                kmldom::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
+                kmlbase::Vec3 kmlvec3 = coords->get_coordinates_array_at(ind);
                 *ordptr++ = kmlvec3.get_longitude();
                 *ordptr++ = kmlvec3.get_latitude();
                 *ordptr++ = kmlvec3.get_altitude();            
@@ -407,10 +407,10 @@ void c_KgFdoPlacemark::ParsePlacemarkData()
   if( m_Placemark->has_extendeddata() )
   {  
     kmldom::ExtendedDataPtr extdata = m_Placemark->get_extendeddata();
-    for(int i=0;i<extdata->get_extendeddatamember_array_size();i++)
+    for(int i=0;i<extdata->get_data_array_size();i++)
     {
-      const kmldom::ExtendedDataMemberPtr extmemb = extdata->get_extendeddatamember_array_at(i);
-      const kmldom::DataPtr data = kmldom::AsData(extmemb);
+      const kmldom::DataPtr data = extdata->get_data_array_at(i);
+       
       if( data && data->has_name() )
       {
         std::string dname = data->get_name();
@@ -579,13 +579,12 @@ void c_KgFdoPlacemark::SetAttribute( const std::string&  Name,const std::string&
     extdata = m_Placemark->get_extendeddata();
    
   }
-  int count = extdata->get_extendeddatamember_array_size();
+  int count = extdata->get_data_array_size();
   bool found=false;
   int ind=0;
   while(!found && ind<count )
   {
-    const kmldom::ExtendedDataMemberPtr extmemb = extdata->get_extendeddatamember_array_at(ind);
-    const kmldom::DataPtr data = kmldom::AsData(extmemb);
+    const kmldom::DataPtr data = extdata->get_data_array_at(ind);
     if( data && data->has_name() )
     {
       std::string dname = data->get_name();
@@ -608,7 +607,7 @@ void c_KgFdoPlacemark::SetAttribute( const std::string&  Name,const std::string&
     const kmldom::DataPtr newdata = factory->CreateData();
     newdata->set_name(Name);
     newdata->set_value(Value);
-    extdata->add_extendeddatamember(newdata);
+    extdata->add_data(newdata);
     
   }
 }
