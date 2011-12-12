@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2010  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,12 +17,15 @@
 #include "StdAfx.h"
 #include "c_KgKmlSchemaDesc.h"
 
-
 #include "boost/scoped_ptr.hpp"
+#include "kml/convenience/convenience.h"
 #include "kml/dom.h"
 #include "kml/engine.h"
 #include "kml/base/file.h"
 
+#include "minizip/unzip.h"
+#include "minizip/zip.h"
+#include "minizip/ioapi.h"
 #include "c_FdoKml_API.h"
 
 //#include "c_OCCI_API.h"
@@ -117,10 +120,10 @@ FdoFeatureClass* c_FdoKml_API::CreateFdoFeatureClass(FdoString* Name,const kmldo
   if( Placemark.get() && Placemark->has_extendeddata() )
   {  
     kmldom::ExtendedDataPtr extdata = Placemark->get_extendeddata();
-    for(int i=0;i<extdata->get_extendeddatamember_array_size();i++)
+    for(int i=0;i<extdata->get_data_array_size();i++)
     {
-      const kmldom::ExtendedDataMemberPtr extmemb = extdata->get_extendeddatamember_array_at(i);
-      const kmldom::DataPtr data = kmldom::AsData(extmemb);
+      const kmldom::DataPtr data = extdata->get_data_array_at(i);
+       
       if( data && data->has_name() )
       {
         std::string dname = data->get_name();

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2010  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -17,6 +17,7 @@
 #include "StdAfx.h"
 #include "c_KgKmlInsert.h"
 #include "c_FdoKml_API.h"
+#include "c_FeatureReaderFromPropValues.h"
 
 
 
@@ -176,6 +177,12 @@ FdoIFeatureReader* c_KgKmlInsert::Execute()
   sdfinsertreader = sdfinsert->Execute();
   
   
+  // I need to return feature reader to caller, also need to use feature reader to 
+  // create new kml placemark for new feature
+  FdoPtr<FdoClassDefinition> classdef2 = sdfinsertreader->GetClassDefinition();
+  FdoPtr<c_FeatureReaderFromPropValues> freader = new c_FeatureReaderFromPropValues(classdef2,sdfpropvals);
+  
+  
   if( sdfinsertreader )
   {  
     
@@ -184,7 +191,8 @@ FdoIFeatureReader* c_KgKmlInsert::Execute()
   }
 
    
- return FDO_SAFE_ADDREF(sdfinsertreader.p);
+ //return FDO_SAFE_ADDREF(sdfinsertreader.p);
+ return FDO_SAFE_ADDREF(freader.p);
   
 }//end of c_KgKmlInsert::Execute
 

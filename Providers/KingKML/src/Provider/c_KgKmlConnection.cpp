@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2006  SL-King d.o.o
+* Copyright (C) 2010  SL-King d.o.o
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of version 2.1 of the GNU Lesser
@@ -461,11 +461,11 @@ FdoICommand* c_KgKmlConnection::CreateCommand (FdoInt32 CommandId)
         case FdoCommandType_Update:
           ret = new c_KgKmlUpdate(this);
         break;
-   /*     
-         case FdoCommandType_Delete:
-          ret = new c_KgOraDelete(this);
-        break;
         
+         case FdoCommandType_Delete:
+          ret = new c_KgKmlDelete(this);
+        break;
+   /*     
         case FdoCommandType_CreateDataStore:
           ret = new c_KgKmlCreateDataStore (this);
         break;
