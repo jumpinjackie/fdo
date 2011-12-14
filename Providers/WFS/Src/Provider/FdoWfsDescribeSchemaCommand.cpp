@@ -98,17 +98,22 @@ FdoFeatureSchemaCollection* FdoWfsDescribeSchemaCommand::Execute ()
 
 	// The following lines check whether the specified schema exists in the 
 	// returned schema collection. If not found, an exception will be thrown.
-	// Note that since WFS provider now support only one "real" schema and it
-	// must be the last one in the collection, here we can simply compare the
-	// specified schema with the last one in the collection.
 	if (this->mSchemaName.GetLength())
 	{
-		FdoInt32 cnt = ret->GetCount();
-		if (cnt > 0)
-		{
-			if (mSchemaName != ret->GetItem(cnt - 1)->GetName())
-				throw FdoException::Create(L"Schema can not be found in the collection.");
-		}
+        bool existSchema = false;
+        FdoInt32 cnt = ret->GetCount();
+        for(int i=0; i<cnt; i++)
+        {
+            if(mSchemaName == ret->GetItem(i)->GetName())
+            {
+                existSchema = true;
+                break;
+            }
+        }
+        if(!existSchema)
+        {
+            throw FdoException::Create(L"Schema can not be found in the collection.");
+        }
 	}
 
     return (FDO_SAFE_ADDREF(ret.p));
