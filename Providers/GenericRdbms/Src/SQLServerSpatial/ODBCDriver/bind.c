@@ -230,6 +230,10 @@ int odbcdr_bind(
 		    col_size = 100;
 		    decimal_digits = 0;
             break;
+        case SQL_C_SBIGINT:
+            sql_type = SQL_BIGINT;
+            col_size = sizeof(double);
+            break;
         default: // in case we fail to describe the parameter type use the type of the bind value
             sql_type = odbcdr_datatype;
             col_size = odbcdr_size;
