@@ -38,6 +38,7 @@ goto usage
 
 :setvcvarsallVC10
 SET VCBEXTENSION=_vs10
+SET VC_COMPILER=vc100
 SET ACTIVENAMECHECK="Microsoft Visual Studio 10"
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 10.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
@@ -47,6 +48,7 @@ goto VSExist
 
 :setvcvarsall
 if "%2" == "VC10" goto setvcvarsallVC10
+SET VC_COMPILER=vc90
 SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
 SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
