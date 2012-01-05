@@ -957,9 +957,9 @@ void InsertTest::TestInsBLOBTypes()
             CPPUNIT_ASSERT(FdoStreamReaderType_Byte == fdoStream->GetType());
             FdoBLOBStreamReader* stream = static_cast<FdoBLOBStreamReader*>(fdoStream.p);
             CPPUNIT_ASSERT(stream->GetLength() == SZ_TXT_BLOB);
-            wchar_t buff[21];
-            buff[20] = L'\0';
-            int sz = stream->ReadNext((FdoByte*)buff, SZ_TXT_BLOB);
+            wchar_t buff[(int)(SZ_TXT_BLOB/2+1)];
+            buff[(int)(SZ_TXT_BLOB/2)] = 0;
+            int sz = stream->ReadNext((FdoByte*)buff, 0, SZ_TXT_BLOB);
             CPPUNIT_ASSERT(sz == SZ_TXT_BLOB);
         }
         else
