@@ -73,7 +73,7 @@ FdoLockType* FdoWmsConnectionCapabilities::GetLockTypes(FdoInt32& size)
 /// <returns>Returns true if the feature provider supports connection timeout.</returns> 
 bool FdoWmsConnectionCapabilities::SupportsTimeout ()
 {
-    return (false);
+    return (true);
 }
 
 /// <summary>Determines if the feature provider supports transactions.</summary>
