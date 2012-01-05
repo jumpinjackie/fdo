@@ -28,12 +28,13 @@
 #include "FdoOwsHttpHandler.h"
 #include "FdoOwsExceptionReport.h"
 
-FdoOwsDelegate::FdoOwsDelegate()
+FdoOwsDelegate::FdoOwsDelegate() : 
+    m_timeout(120)
 {
 }
 
 FdoOwsDelegate::FdoOwsDelegate(FdoString* defaultUrl, FdoString* userName, FdoString* passwd) : m_defaultUrl(defaultUrl),
-                                    m_userName(userName), m_passwd(passwd)
+                                    m_userName(userName), m_passwd(passwd), m_timeout(120)
 {
 }
 
@@ -149,8 +150,9 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
 
     FdoPtr<FdoOwsHttpHandler> httpHandler = FdoOwsHttpHandler::Create(mbUrl, bGet, mbRequestString, mbUserName, mbPasswd);
         
-    // Here we use 2 mins as the default value for "connection" timeout.
-    httpHandler->SetConnectionTimeout (60 * 2);
+    // Here we use connection timeout as the value for "connection" timeout.
+    // By default it's 120.
+    httpHandler->SetConnectionTimeout (m_timeout);
 
     // The Perform call won't return util beginning receiving http content.
     // If there are any connection related problems, exceptions

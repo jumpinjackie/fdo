@@ -296,6 +296,7 @@ private:
     // Creates a set of default physical schema mappings for the current connection
     void _buildUpDefaultPhysicalSchemaMappings();
 
+    FdoInt32 mTimeout;
 };
 
 #endif // FDOWMSCONNECTION_H

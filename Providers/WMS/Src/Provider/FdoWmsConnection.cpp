@@ -84,7 +84,7 @@ extern "C" FDOWMS_API FdoIConnection* CreateConnection ()
 }
 
 FdoWmsConnection::FdoWmsConnection (void)
-    : mState(FdoConnectionState_Closed), mConfigured (false)
+    : mState(FdoConnectionState_Closed), mConfigured (false), mTimeout(120000)
 {
 }
 
@@ -210,7 +210,7 @@ FdoConnectionState FdoWmsConnection::GetConnectionState ()
 /// <returns>Returns the time to wait (in milliseconds)</returns> 
 FdoInt32 FdoWmsConnection::GetConnectionTimeout ()
 {
-    return (0);
+    return mTimeout;
 }
 
 /// <summary>Sets the number of milliseconds to wait while trying to establish a
@@ -221,7 +221,7 @@ FdoInt32 FdoWmsConnection::GetConnectionTimeout ()
 /// <returns>Returns nothing</returns> 
 void FdoWmsConnection::SetConnectionTimeout (FdoInt32 value)
 {
-    throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_TIMEOUT_UNSUPPORTED, "Connection timeout is not supported."));
+    mTimeout = value;
 }
 
 FdoString* FdoWmsConnection::_getOriginalLayerName (FdoString* mangledLayerName)
@@ -420,6 +420,7 @@ FdoConnectionState FdoWmsConnection::Open ()
 
     FdoStringP pVersion = GetRequestWMSVersion(location);
     FdoWmsDelegateP wmsDelegate = FdoWmsDelegate::Create(location, user, password);
+    wmsDelegate->SetTimeout(mTimeout/1000);   //connection timeout unit is millisecond, and FdoOwsHttpHandler timeout unit is second.
     mWmsServiceMetadata = wmsDelegate->GetServiceMetadata(pVersion);
     if (!wcscmp(mWmsServiceMetadata->GetVersion(), L"1.0.0"))
     {
