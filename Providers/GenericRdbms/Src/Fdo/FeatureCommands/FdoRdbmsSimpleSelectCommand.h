@@ -70,7 +70,7 @@ public:
         FlushSelect();
         FDO_SAFE_RELEASE(mClassName);
 
-        if( NULL == mConnection )
+        if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
         if (value)

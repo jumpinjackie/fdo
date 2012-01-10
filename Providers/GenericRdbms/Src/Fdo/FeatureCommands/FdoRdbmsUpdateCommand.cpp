@@ -117,7 +117,7 @@ FdoInt32 FdoRdbmsUpdateCommand::Execute ()
     bool                throw_exception      = true;
     bool                containsObjectProperties = false;
 
-    if( NULL == mConnection )
+    if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
     className = this->GetClassNameRef();

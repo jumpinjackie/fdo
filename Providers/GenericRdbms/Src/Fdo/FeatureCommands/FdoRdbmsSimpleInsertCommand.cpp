@@ -333,7 +333,7 @@ void FdoRdbmsSimpleInsertCommand::UpdateCustomInsert()
 
 FdoIFeatureReader* FdoRdbmsSimpleInsertCommand::Execute ()
 {
-    if (!mConnection)
+    if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
     if (!mClassName)

@@ -142,13 +142,13 @@ int local_odbcdr_get_gen_id(
 		/* define output locations */
 		ODBCDR_RDBI_ERR( odbcdr_define( context, (char *)c, "1", RDBI_LONG, sizeof(long),
 										(char *) &identity, (SQLLEN *)&null_ind) );
-        *id_O = identity;
 		/* execute the SQL statement */
 		ODBCDR_RDBI_ERR( odbcdr_execute( context, (char *)c, 1, 0, &rows) );
 
 		/* execute the SQL statement & fetch row */
 		ODBCDR_RDBI_ERR( odbcdr_fetch( context, (char *)c, 1, &rows) );
 
+        *id_O = identity;
 		/* Note: it returns null_ind set if no value was generated during this session */
 	}
 
