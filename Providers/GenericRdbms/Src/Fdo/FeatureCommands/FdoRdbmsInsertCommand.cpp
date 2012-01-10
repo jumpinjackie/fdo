@@ -100,7 +100,7 @@ FdoIFeatureReader* FdoRdbmsInsertCommand::Execute ()
     bool                containsObjectProperties = false;
     bool                handleForeignAutoincrementedId = false;
 
-    if( NULL == mConnection )
+    if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
     className = this->GetClassNameRef();

@@ -53,6 +53,7 @@ class FdoRdbmsDeleteCommand : public FdoRdbmsFeatureCommand<FdoIDelete>
       virtual ~FdoRdbmsDeleteCommand();
 
   public:
+      static FdoRdbmsDeleteCommand* Create(FdoIConnection *connection);
 
       FdoRdbmsDeleteCommand & operator=(const FdoRdbmsDeleteCommand &right);
 

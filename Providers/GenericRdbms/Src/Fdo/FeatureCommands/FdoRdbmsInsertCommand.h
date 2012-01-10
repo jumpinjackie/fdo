@@ -84,7 +84,7 @@ class FdoRdbmsInsertCommand : public FdoRdbmsCommand<FdoIInsert>
       // Sets the name of the class to be operated upon as an Identifier.
       virtual void SetFeatureClassName(FdoIdentifier* value)
       {
-        if( NULL == mConnection )
+        if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
             throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
 

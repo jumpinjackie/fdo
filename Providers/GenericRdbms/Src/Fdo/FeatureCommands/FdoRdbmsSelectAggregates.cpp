@@ -54,16 +54,15 @@ FdoRdbmsSelectAggregates::FdoRdbmsSelectAggregates (FdoIConnection *connection)
 // the delegation to the select-command is still issued.
 FdoIDataReader *FdoRdbmsSelectAggregates::Execute ()
 {
+    if (!mIConnection || mIConnection->GetConnectionState() != FdoConnectionState_Open)
+        throw FdoCommandException::Create(
+                        NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
     if (pSelect.p == NULL)
         throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, errorMsg ));
 
     // Define some needed connection cbjects.
 
-    if (mIConnection == NULL)
-        throw FdoCommandException::Create(
-                        NlsMsgGet(FDORDBMS_13, "Connection not established"));
-    
     DbiConnection      *dbiConnection   = NULL;
     FdoRdbmsConnection *rdbmsConnection =
                                 static_cast<FdoRdbmsConnection*>(mIConnection);

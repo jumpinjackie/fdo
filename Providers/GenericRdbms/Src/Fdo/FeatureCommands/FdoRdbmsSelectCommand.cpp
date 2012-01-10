@@ -126,6 +126,8 @@ void FdoRdbmsSelectCommand::ClearOrderingOptions()
 
 FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 callerId  )
 {
+    if (!mConnection || !mFdoConnection || mFdoConnection->GetConnectionState() != FdoConnectionState_Open)
+        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
     // Flush out any outstanding modifications before selecting; so that the select
     // sees a current picture of the RDBMS.
     mIConnection->Flush();
@@ -140,9 +142,6 @@ FdoIFeatureReader *FdoRdbmsSelectCommand::Execute( bool distinct, FdoInt16 calle
     bool isForUpdate = HasLobProperty( classDefinition );
 
     bool doNotUseSimpleSelect = mHasObjectProps && (mIdentifiers == NULL || mIdentifiers->GetCount() == 0);
-
-    if( mConnection == NULL )
-        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_13, "Connection not established"));
 
     try
     {
