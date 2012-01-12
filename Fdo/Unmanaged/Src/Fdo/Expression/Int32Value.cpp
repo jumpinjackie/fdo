@@ -278,7 +278,7 @@ FdoCompareType FdoInt32Value::DoCompare( FdoDataValue* other )
     case FdoDataType_Byte:
     case FdoDataType_Int16:
         otherValue = FdoInt32Value::Create( other );
-        compare = thisValue->Compare( otherValue );
+        compare = Compare( otherValue );
         break;
 
     // Other value's type has larger range, invoke that type to do a reverse comparison.
