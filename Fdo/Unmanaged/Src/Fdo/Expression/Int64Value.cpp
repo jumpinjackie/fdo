@@ -276,7 +276,7 @@ FdoCompareType FdoInt64Value::DoCompare( FdoDataValue* other )
     case FdoDataType_Int16:
     case FdoDataType_Int32:
         otherValue = FdoInt64Value::Create( other );
-        compare = thisValue->Compare( otherValue );
+        compare = Compare( otherValue );
         break;
 
     // These floating-point type have larger range but less precision.
