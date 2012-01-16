@@ -1201,10 +1201,26 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
         //      logical operator AND.
         bool containsBinaryLogicalOperatorAnd;
 
+        //  hasBinaryLogicalOperatorAnd:
+        //      The flag is set to TRUE if the filter has meet the binary
+        //      logical operator AND.
+        bool hasBinaryLogicalOperatorAnd;
+
         //  containsBinaryLogicalOperatorOr:
         //      The flag is set to TRUE if the filter contains the binary
         //      logical operator OR.
 		bool containsBinaryLogicalOperatorOr;
+
+
+        //  hasBinaryLogicalOperatorAnd:
+        //      The flag is set to TRUE if the filter has meet the binary
+        //      logical operator OR.
+        bool hasBinaryLogicalOperatorOr;
+
+        // needUseNest:
+        //      The flag is set to TRUE if the filter contains the binary 
+        //      logical operator AND before dealing with the logical operator OR.
+        bool needUseNest;
 
         //  containsUnaryLogicalOperatorNot:
         //      The flag is set to TRUE if the filter contains the unary
@@ -1226,7 +1242,10 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
         FilterAnalyzer() 
         { 
             containsBinaryLogicalOperatorAnd = false;
+            hasBinaryLogicalOperatorAnd = false;
 			containsBinaryLogicalOperatorOr  = false;
+            hasBinaryLogicalOperatorOr = false;
+            needUseNest = false;
             containsUnaryLogicalOperatorNot  = false;
             isSpatialObjectFilter            = false;
             firstBinaryLogicalOperatorFound  = false;
@@ -1239,12 +1258,11 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
                                             FdoBinaryLogicalOperator& filter)
         {
             bool isTopBinaryLogicalOperator   = false,
-                 hasBinaryLogicalOperatorAnd  = false,
-                 hasBinaryLogicalOperatorOr   = false,
                  isSingleLeftOperandOperator  = false,
                  isSingleRightOperandOperator = false,
                  isBinaryLogicalOperatorAnd   = false,
-                 isBinaryLogicalOperatorOr    = false;
+                 isBinaryLogicalOperatorOr    = false,
+                 isBinaryLogicalOperatorOrChangeToTrue = false;
 
             FdoBinaryLogicalOperations leftOperandOperator  = FdoBinaryLogicalOperations_And,
                                        rightOperandOperator = FdoBinaryLogicalOperations_And,
@@ -1269,14 +1287,27 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
                     isBinaryLogicalOperatorAnd = true;
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                {
                     isBinaryLogicalOperatorOr = true;
+                    isBinaryLogicalOperatorOrChangeToTrue = true;
+                }
             }
             else
             {
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
                     containsBinaryLogicalOperatorAnd = true;
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
+                {
                     containsBinaryLogicalOperatorOr = true;
+                    isBinaryLogicalOperatorOrChangeToTrue = true;
+                }
+            }
+
+            if(!needUseNest && isBinaryLogicalOperatorOrChangeToTrue)
+            {
+                needUseNest = isBinaryLogicalOperatorAnd 
+                            || containsBinaryLogicalOperatorAnd
+                            || hasBinaryLogicalOperatorAnd;
             }
 
             // Parse the left operand of the binary logical operation.
@@ -1304,8 +1335,8 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
                 // Remember the settings of the flags and reset them to the
                 // inital value for the processing of the right operand of
                 // the node.
-                hasBinaryLogicalOperatorAnd      = containsBinaryLogicalOperatorAnd;
-                hasBinaryLogicalOperatorOr       = containsBinaryLogicalOperatorOr;
+                hasBinaryLogicalOperatorAnd      = containsBinaryLogicalOperatorAnd || isBinaryLogicalOperatorAnd;
+                hasBinaryLogicalOperatorOr       = containsBinaryLogicalOperatorOr || isBinaryLogicalOperatorOr;
                 containsBinaryLogicalOperatorAnd = false;
                 containsBinaryLogicalOperatorOr  = false;
             }
@@ -1385,8 +1416,7 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
             mUseGrouping = true;
         }
         else
-            mUseNesting = filterAnalyzer.containsBinaryLogicalOperatorAnd &&
-                          filterAnalyzer.containsBinaryLogicalOperatorOr;
+            mUseNesting = filterAnalyzer.needUseNest;
         mAddNegationBracket =
                         !mUseNesting &&
                         filterAnalyzer.containsUnaryLogicalOperatorNot;
