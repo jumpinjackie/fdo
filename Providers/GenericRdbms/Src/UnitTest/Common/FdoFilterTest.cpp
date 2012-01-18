@@ -633,7 +633,7 @@ void FdoFilterTest::NestedFilterSQLTest ()
       // Translate the filter into a SQL statement and check whether or not
       // nesting is used. In this case, nesting should be present.
 
-      TranslateFilter(filter, true, false, NESTEDFILTERSQLTEST);
+      TranslateFilter(filter, false, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
@@ -883,7 +883,7 @@ void FdoFilterTest::SpatialObjectFilterTest ()
       // generated SQL statement is nested. In this case, no nesting should
       // be present.
 
-      TranslateFilter(filter, true, false, SPATIALOBJECTFILTERCASE_2);
+      TranslateFilter(filter, false, false, SPATIALOBJECTFILTERCASE_2);
 
       // Execute the request.
 
