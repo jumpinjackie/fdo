@@ -104,7 +104,9 @@ FdoFeatureSchemaCollection* FdoWfsDescribeSchemaCommand::Execute ()
         FdoInt32 cnt = ret->GetCount();
         for(int i=0; i<cnt; i++)
         {
-            if(mSchemaName == ret->GetItem(i)->GetName())
+            FdoPtr<FdoSchemaElement> schema = ret->GetItem(i);
+            FdoStringP schemaName = schema->GetName();
+            if(mSchemaName == schemaName)
             {
                 existSchema = true;
                 break;
