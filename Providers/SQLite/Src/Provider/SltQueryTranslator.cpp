@@ -231,9 +231,11 @@ void SltQueryTranslator::ProcessInCondition(FdoInCondition& filter)
 
     m_sb.Reset();
     FdoPtr<FdoIdentifier> prop = filter.GetPropertyName();
-    m_sb.AppendDQuoted(prop->GetName());
+
+    m_sb.AppendIdentifier(prop->GetText());
+
     m_sb.Append(" IN(", 4);
-    
+
     if (szAfter > szBefore)
     {
         for(size_t idx = szBefore; idx < szAfter; idx++)

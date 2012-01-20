@@ -73,7 +73,7 @@ private:
     void UpdateValue(FdoIConnection* conn, int rowid, FdoString* className, FdoString* valTxtFlt);
     void CreateFeatureClass(FdoIConnection* conn, FdoString* className, FdoString* scName);
     int SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id);
-    void TestJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
+    void TestJoinType(FdoIConnection* conn, FdoJoinType jtype, FdoString* filter, int expCount);
     void TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax);
     int SelectSpatial(FdoIConnection* conn, FdoString* sql);
     void TestSpatialJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount);
