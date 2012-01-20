@@ -1326,7 +1326,7 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
 
     // ulStartOffset is read from shx file and corrupted shx file will result in unbelievable size value 
     // Besides this, the corrupted shp file probably results in the same problem.
-    if ( size > ( m_nFileLength * WORD_SIZE_IN_BYTES - ulStartOffset) )
+    if ( size > ( max(m_nFileLength, m_nFileSize) * WORD_SIZE_IN_BYTES - ulStartOffset) )
         throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", firstRecInfo->nRecordNumber, FileName ()));
 
     if ( size < SHP_SHAPE_BUFFER_MIN_SIZE )
@@ -1430,7 +1430,7 @@ void ShapeFile::ReadRecordInfo(SHPRecordInfo *pRecordInfo )
 		// in case the record is corrupted then set it to sane values (empty header), e.g. when the
         // geometry size is larger than the file size.
         if(pRecordInfo->nRecordNumber < 0 || pRecordInfo->nContentLength < 0 ||
-           pRecordInfo->nContentLength > m_nFileLength * WORD_SIZE_IN_BYTES)
+           pRecordInfo->nContentLength > max(m_nFileLength, m_nFileSize) * WORD_SIZE_IN_BYTES)
         {
             pRecordInfo->nRecordNumber = 0;
             pRecordInfo->nContentLength = 0;
