@@ -642,7 +642,7 @@ void SltMetadata::BuildMetadataInfo(SltConnection* conn, SltStringList* lst)
             Index* pIndex = pTable->pIndex;
             while (pIndex != NULL)
             {
-                if (pIndex->nColumn != 0)
+                if (pIndex->nColumn != 0 && pIndex->autoIndex)
                 {
                     FdoPtr<FdoUniqueConstraint> uqc = FdoUniqueConstraint::Create();                
                     FdoPtr<FdoDataPropertyDefinitionCollection> propsConstr = uqc->GetProperties();
