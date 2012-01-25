@@ -1021,7 +1021,11 @@ void SdfConnection::FlushAll( FdoClassDefinition *clas, bool forUpdate )
 	        (dataDb && dataDb->NeedsAFlush(true) ) ||
 	        (rt && rt->NeedsAFlush(true) ) 
           )  )
+	{
+		if (dataDb)
+			dataDb->CloseCursor();
 	    return;
+	}
 
     GetDataBase()->begin_transaction();
     if( keys )
