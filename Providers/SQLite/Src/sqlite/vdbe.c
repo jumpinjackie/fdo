@@ -4826,18 +4826,15 @@ case OP_Rewind: {        /* jump */
       }
       if (p->pSpIterator)
       {
+        /* Call first reset on SI */
+        db->xSpIteratorResetCallback(p->pSpIterator);
         do{
           /* Call read next on SI */
           siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
-          if (siKey == 0){
-              db->xSpIteratorResetCallback(p->pSpIterator);
-              siKey = db->xSpIteratorReadNextCallback(p->pSpIterator);
-          }
-
-          if (siKey != 0) /* Move to the row pointed by SI */
-              rc = sqlite3BtreeMovetoUnpacked(u.bl.pCrsr, 0, siKey, 0, &u.bl.res);
-          else
+          if (siKey == 0)
               u.bl.res = 1;
+          else /* Move to the row pointed by SI */
+              rc = sqlite3BtreeMovetoUnpacked(u.bl.pCrsr, 0, siKey, 0, &u.bl.res);
         }while(u.bl.res && siKey != 0);
         u.bl.pC->lastRowid = siKey;
         u.bl.pC->rowidIsValid = u.bl.res==0 ?1:0;
