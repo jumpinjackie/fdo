@@ -72,6 +72,8 @@ private:
     };
     static bool ExtractConstraints(Expr* node, std::vector<SQLiteExpression>& result);
     static void GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation);
+    static void FixConstraintTypeValues(FdoDataPropertyDefinition* prop);
+    static FdoDataValue* ConvertDataValue(FdoDataType dt, FdoDataValue* val);
 
     void ProcessViewProperties(Table* pTable, sqlite3_stmt** pstmtView);
     void FindSpatialContextName(int srid, std::wstring& ret);

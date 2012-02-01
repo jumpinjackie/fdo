@@ -557,6 +557,9 @@ void SltMetadata::BuildMetadataInfo(SltConnection* conn, SltStringList* lst)
                         }
                     }
 
+                    if (pTable->pSelect == NULL) // avoid this for views
+                        FixConstraintTypeValues(dpd);
+
                     int detail = (int)sqlite3_column_int(pstmtFdoCol, 3);
                     dpd->SetIsSystem((detail & 0x01) != 0);
                     if ((detail & 0x02) != 0)
@@ -973,6 +976,60 @@ FdoDataValue* SltMetadata::GenerateConstraintValue(FdoDataType type, FdoString* 
         break;
     }
     return FDO_SAFE_ADDREF(retVal.p);
+}
+
+FdoDataValue* SltMetadata::ConvertDataValue(FdoDataType dt, FdoDataValue* val)
+{
+    if (dt == FdoDataType_DateTime)
+    {
+        FdoString* strVal = val->ToString();
+        if (*strVal == L'\'')
+            strVal++; // skip ' character
+        return FdoDateTimeValue::Create(DateFromString(strVal, false));
+    }
+    else
+        return FdoDataValue::Create(dt, val);
+}
+
+void SltMetadata::FixConstraintTypeValues(FdoDataPropertyDefinition* prop)
+{
+    FdoPtr<FdoPropertyValueConstraint> constr = prop->GetValueConstraint();
+    if (constr == NULL)
+        return;
+
+    FdoDataType dt = prop->GetDataType();
+    if (constr->GetConstraintType() == FdoPropertyValueConstraintType_Range)
+    {
+        FdoPropertyValueConstraintRange* rangeConstr = static_cast<FdoPropertyValueConstraintRange*>(constr.p);
+        FdoPtr<FdoDataValue> valueMin = rangeConstr->GetMinValue();
+        if (valueMin != NULL && dt != valueMin->GetDataType() && !valueMin->IsNull())
+        {
+            FdoPtr<FdoDataValue> nv = ConvertDataValue(dt, valueMin);
+            rangeConstr->SetMinValue(nv);
+        }
+
+        FdoPtr<FdoDataValue> valueMax = rangeConstr->GetMaxValue();
+        if (valueMax != NULL && dt != valueMax->GetDataType() && !valueMax->IsNull())
+        {
+            FdoPtr<FdoDataValue> nv = ConvertDataValue(dt, valueMax); 
+            rangeConstr->SetMaxValue(nv);
+        }
+    }
+    else
+    {
+        FdoPropertyValueConstraintList* listConstr = static_cast<FdoPropertyValueConstraintList*>(constr.p);
+        FdoPtr<FdoDataValueCollection> valColl = listConstr->GetConstraintList();
+        int cnt = (valColl != NULL) ? valColl->GetCount() : 0;
+        for (int i = 0; i < cnt; i++)
+        {
+            FdoPtr<FdoDataValue> value = valColl->GetItem(i);
+            if (value != NULL && dt != value->GetDataType() && !value->IsNull())
+            {
+                FdoPtr<FdoDataValue> nv = ConvertDataValue(dt, value);
+                valColl->SetItem(i, nv);
+            }
+        }
+    }
 }
 
 void SltMetadata::GenerateConstraint(FdoDataPropertyDefinition* prop, SQLiteExpression& operation)
