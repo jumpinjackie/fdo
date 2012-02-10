@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+  <head>
+    <title>Feature Data Objects Provider for SDF</title>
+    <link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
+  </head>
+
+<body>
+  <script type="text/javascript">
+  // This code removes the project page title and information. It may need to change when
+  // the CEE platform is upgraded.
+  function replaceLinks() {
+     try {
+       var apphead = document.getElementById("apphead");
+       if (apphead != null) {
+          apphead.innerHTML = "";
+       }
+       var projecthome = document.getElementById("projecthome");
+       if (projecthome != null) {
+         var tableCollection = projecthome.getElementsByTagName("table");
+         if (tableCollection[0] != null) {
+           rowCount = tableCollection[0].rows.length;
+           for (i = 0; i < rowCount; i++) {
+              tableCollection[0].deleteRow(0);
+           }
+         }    
+       }  
+     } catch (e) {
+     }
+   }
+   window.onload=replaceLinks;
+  </script>
+
+  <table>
+    <tr>
+      <td align="left" valign="top" width="70%">
+        <div class="h2">
+		  <h2>Feature Data Objects Provider for Oracle</h2>
+		  <p>
+              The Feature Data Objects (FDO) API provides access to data in a 
+				data store. A provider is a specific implementation of the FDO 
+				API that provides access to data in a particular data store.
+		  </p>
+		  <p>
+              The FDO Provider for Oracle provides access to Oracle 
+				Spatial/Locator data in Oracle 10G, Oracle Express Edition 
+				(Oracle XE) and Oracle 9i.
+		  </p>
+
+        </div>
+
+        <div class="h2">
+		  <h2>Connecting to the Oracle Provider</h2>
+		  <p>
+              You can get binaries and more information about provider on
+				<a href="http://www.sl-king.com/fdooracle">www.sl-king.com/fdooracle</a></p>
+        </div>
+      </td>
+      <td valign="top" halign="left" width="55%">
+        <table>
+          <tr>
+            <td align="left" valign="top">
+              <div class="h2">
+				 <h2>Essentials</h2>
+					<a href="https://fdo.osgeo.org/history.html">History</a><br>
+					<a href="https://fdo.osgeo.org/productsUsingFdo.html">Products Using FDO</a><br>
+					<a href="https://fdo.osgeo.org/featureDescriptions.html">Feature Descriptions</a><br>
+                              <a href="https://fdo.osgeo.org/OSProviderOverviews.html">Provider Overviews</a><br>
+					<a href="https://fdo.osgeo.org/OSFeatureMatrix.html">Feature Matrix</a><br>
+					<a href="https://fdo.osgeo.org/systemRequirements.html">Requirements</a><br>
+                              <a href="https://fdo.osgeo.org/faq.html">FAQ</a><br>
+					<a href="https://fdo.osgeo.org/licenceAndGovernance.html">Licence and Governance</a><br>
+					<a href="https://fdo.osgeo.org/glossary.html">Glossary</a><br>
+					<a href="https://fdo.osgeo.org/documentation.html">Documentation</a><br><br>
+              </div
+            </td>
+          </tr>
+
+          <tr>
+            <td align="left" valign="top">
+              <div class="h2">
+					<h2>Get Involved</h2>
+					<a href="https://fdo.osgeo.org/user.html">As a User</a><br>
+					<a href="https://fdo.osgeo.org/developer.html">As a Contributor</a><br>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

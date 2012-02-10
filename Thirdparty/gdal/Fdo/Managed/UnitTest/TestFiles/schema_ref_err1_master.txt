@@ -1,0 +1,20 @@
+Element 'Reference Schema 2:Reference Class' references class (Reference Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:Reference Class.Object Property 2' references class (Object Property Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:Concrete Class.Object Property 2' references class (Object Property Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:Concrete Class.Association Property 2' references class (Reference Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestLayer' references class (TestLayer) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetwork' references class (TestLayer) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetwork' references class (TestNetwork) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkParentNode' references class (TestNetworkParentNode) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkParentNode.Network Association Prop' references class (TestNetwork) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkParentNode.Layer Association Prop' references class (TestLayer) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkNode' references class (TestNetworkNode) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkNode.Network Association Prop' references class (TestNetwork) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkNode.Feature Association Prop' references class (Reference Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkNode.Parent Association Prop' references class (TestNetworkParentNode) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkNode.Layer Association Prop' references class (TestLayer) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkLink' references class (TestNetworkLink) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkLink.Network Association Prop' references class (TestNetwork) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkLink.Feature Association Prop' references class (Reference Class) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkLink.Network node Association Prop' references class (TestNetworkNode) which does not belong to a feature schema. 
+Element 'Reference Schema 2:TestNetworkLink.Network node Association Prop' references class (TestNetworkNode) which does not belong to a feature schema. 

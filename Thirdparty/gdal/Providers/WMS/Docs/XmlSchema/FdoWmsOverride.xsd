@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://fdowms.osgeo.org/schemas" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:wms="http://fdowms.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdowms.osgeo.org/schemas" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="GML/referenceSystems.xsd"/>
+	<xs:import namespace="http://fdo.osgeo.org/schemas" schemaLocation="FdoOverride.xsd"/>
+	<xs:element name="SchemaMapping" type="SchemaMappingType" abstract="false" substitutionGroup="fdo:PhysicalSchemaMapping">
+		<xs:annotation>
+			<xs:documentation>A Schema Override Set for the FDO WMS Provider.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="complexType" type="complexTypeType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>A physical class override that corresponds to a logical class definition with the same name.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="RasterDefinition" type="RasterDefinitionType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>A physical Raster Property override definition that conforms to the similarly named logical Raster Property definition in the corresponding logical class.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="LayerDefinition" type="LayerDefinitionType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>A WMS Layer defined on a WMS Server.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="StyleDefinition" type="StyleDefinitionType" abstract="false">
+		<xs:annotation>
+			<xs:documentation>A WMS Style defined on a WMS Server that corresponds to a WMS Layer.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="SchemaMappingType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:PhysicalSchemaMappingType">
+				<xs:sequence>
+					<xs:element ref="complexType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="complexTypeType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement">
+				<xs:sequence>
+					<xs:element ref="RasterDefinition" type="RasterDefinitionType" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RasterDefinitionType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement">
+				<xs:sequence>
+					<xs:element name="Format" type="RasterFormatType"/>
+					<xs:element name="Transparent" type="xs::boolean"/>
+					<xs:element name="BackgroundColor" type="xs::string"/>
+					<xs:element name="Time" type="xs::string"/>
+					<xs:element name="Elevation" type="xs::string"/>
+					<xs:element name="SpatialContext" type="xs::string"/>
+					<xs:element name="Layer" type="LayerDefinitionType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LayerDefinitionType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement">
+				<xs:sequence>
+					<xs:element name="Style" type="StyleDefinitionType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="StyleDefinitionType" abstract="false">
+		<xs:complexContent>
+			<xs:extension base="fdo:SchemaMappingElement"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="RasterFormatType">
+		<xs:annotation>
+			<xs:documentation>WMS Raster Format Types</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="PNG"/>
+			<xs:enumeration value="TIF"/>
+			<xs:enumeration value="JPG"/>
+			<xs:enumeration value="GIF"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

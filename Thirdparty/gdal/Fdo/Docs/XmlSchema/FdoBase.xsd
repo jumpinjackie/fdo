@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns="http://fdo.osgeo.org/schemas" targetNamespace="http://fdo.osgeo.org/schemas" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- The attributes allow FDO-specific information, with no natural home in GML, to be specified in a GML Schema -->
+	<!-- Attributes describing the Geometry for a Feature Class. In GML Schema the Geometry is in the location element. In
+	     FDO it is in a Geometric Property 
+	-->
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/feature.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/topology.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/coverage.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/coordinateReferenceSystems.xsd"/>
+	<xs:attribute name="geometryName" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Name of the geometry property for the Feature Class for the containing complexType</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="geometricTypes" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Valid geometric types for the above geometry property</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="geometryTypes" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Valid geometry types for the above geometry property</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="geometricReadOnly" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>Whether the above geometry is read-only</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="geometryInherited" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>True when the geometry property is inherited from a base class.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="hasMeasure" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>Whether the above geometry has a measurement dimension</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="hasElevation" type="xs:boolean" default="true">
+		<xs:annotation>
+			<xs:documentation>Whether the above geometry property has elevation</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="crsName" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>Coordinate Reference System name. Must be a CRS corresponding to an FDO Spatial Context.</xs:documentation>
+			<xs:documentation>Indicates the associated spatial context for a geometric property.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="scale" type="xs:int">
+		<xs:annotation>
+			<xs:documentation>Used for carrying around negative scales for decimal properties</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Readonly attribute for Data and Geometric properties -->
+	<xs:attribute name="readOnly" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>Whether the property for the containing xs:element is read-only</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Object Property attributes -->
+	<xs:attribute name="identityProperty" type="xs:Name">
+		<xs:annotation>
+			<xs:documentation>The identityProperty for the Object Property for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="order" type="OrderType">
+		<xs:annotation>
+			<xs:documentation>The ordering of the Ordered Collection Object Property for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Raster Property attributes -->
+	<xs:attribute name="defaultImageXSize" type="fdo:int32">
+		<xs:annotation>
+			<xs:documentation>Default image width (in pixels) for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="defaultImageYSize" type="fdo:int32">
+		<xs:annotation>
+			<xs:documentation>Default image height(in pixels) for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="defaultTileXSize" type="fdo:int32">
+		<xs:annotation>
+			<xs:documentation>Default image width (in ground units) for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="defaultTileYSize" type="fdo:int32">
+		<xs:annotation>
+			<xs:documentation>Default image height (in ground units) for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Association Property Attributes -->
+	<xs:attribute name="deleteRule" type="DeleteRuleType">
+		<xs:annotation>
+			<xs:documentation>The cascading delete rule for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="lockCasade" type="fdo:NonNegIntType">
+		<xs:annotation>
+			<xs:documentation>The cascading lock rule for the containing xs:element</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:attribute name="reverseName" type="fdo:NameType">
+		<xs:annotation>
+			<xs:documentation>The name of this association as seen by the associated class</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Name adjustment attribute -->
+	<xs:attribute name="nameAdjust" type="xs:boolean" default="false">
+		<xs:annotation>
+			<xs:documentation>When ture, the containing element name is decoded when the element is deserialized from GML to FDO, even if name adjustment has been turned off.</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<!-- Substitution group for all FDO document roots -->
+	<xs:element name="AbstractDataStore" type="AbstractDataStoreType" abstract="true"/>
+	<!-- Various elements that allow FDO-specific information to be stored in a GML Schema -->
+	<!-- Schema Attribute Dictionary -->
+	<xs:element name="attribute">
+		<xs:annotation>
+			<xs:documentation>A Schema Attribute Dictionary entry</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="name" type="xs:string"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<!-- Raster-->
+	<xs:element name="RasterValue" type="xs:base64Binary" substitutionGroup="gml:_Value">
+		<xs:annotation>
+			<xs:documentation>FDO-specific Mine encoded raster for compactness.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="rangeSet" type="fdo:RangeSetType"/>
+	<xs:complexType name="RangeSetType">
+		<xs:annotation>
+			<xs:documentation>The FDO Range Set type represents the raster as a mime encoded blob.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="gml:RangeSetType">
+				<xs:choice>
+					<xs:element name="ValueArray" >
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="gml:ValueArrayType">
+									<xs:choice>
+										<xs:element name="valueComponent">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:restriction base="gml:ValueArrayPropertyType">
+														 <xs:choice>
+															<xs:element ref="fdo:RasterValue" minOccurs="1" maxOccurs="1"/>
+														 </xs:choice>
+													</xs:restriction>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:choice>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RasterPropertyType">
+		<xs:annotation>
+			<xs:documentation>Base type for Raster Properties</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="gml:RectifiedGridCoverageType">
+				<xs:sequence>
+					<xs:element ref="gml:rectifiedGridDomain"/>
+					<xs:element ref="fdo:rangeSet"/>
+					<xs:element ref="gml:coverageFunction" maxOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="dimension" type="xs:positiveInteger" use="required"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DefaultDataModel" type="RasterDataModelType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Raster property data model attributes. Must be inside an xs:element[type='RasterPropertyType']/xs:annotation/xs:appInfo.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- Topologies -->
+	<xs:element name="NetworkLayer" type="NetworkLayerType" abstract="true" substitutionGroup="gml:TopoComplex">
+		<xs:annotation>
+			<xs:documentation>Substitution group for all FDO Network Layer classes.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="NetworkPrimitiveMember" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Element that restricts network primitives to being edges</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<!-- Various base types specific to FDO -->
+	<!-- Non-Feature class -->
+	<xs:complexType name="AbstractDataStoreType" abstract="true"/>
+	<xs:complexType name="ClassType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for non-Feature Classes</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<!-- Rasters -->
+	<xs:complexType name="RasterCoverageType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for Raster Features</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractCoverageType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RasterDataModelType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Describes the data model for a raster property</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="bitsPerPixel">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="k1"/>
+					<xs:enumeration value="k8"/>
+					<xs:enumeration value="k16"/>
+					<xs:enumeration value="k32"/>
+					<xs:enumeration value="k64"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="dataModelType">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="kDataModel"/>
+					<xs:enumeration value="kRgbModel"/>
+					<xs:enumeration value="kPalettedRgbModel"/>
+					<xs:enumeration value="kGrayModel"/>
+					<xs:enumeration value="kBitonalModel"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="organization">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="pixel">
+						<xs:annotation>
+							<xs:documentation>Band Interleave by pixel</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="row">
+						<xs:annotation>
+							<xs:documentation>Band Interleave by row</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+					<xs:enumeration value="sequential">
+						<xs:annotation>
+							<xs:documentation>Band sequential</xs:documentation>
+						</xs:annotation>
+					</xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="tileSizeX" type="fdo:NonNegIntType"/>
+		<xs:attribute name="tileSizeY" type="fdo:NonNegIntType"/>
+	</xs:complexType>
+	<!-- Topologies -->
+	<xs:complexType name="TopoComplexType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for FDO Topological Networks</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:TopoComplexType"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NetworkLayerType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for FDO Topological Network Layers</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="gml:TopoComplexType">
+				<xs:sequence>
+					<xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="0"/>
+					<xs:element ref="gml:description" minOccurs="0" maxOccurs="0"/>
+					<xs:element ref="gml:name" minOccurs="0" maxOccurs="0"/>
+					<xs:element ref="gml:maximalComplex"/>
+					<xs:element ref="gml:superComplex" minOccurs="0" maxOccurs="0"/>
+					<xs:element ref="gml:subComplex" minOccurs="0" maxOccurs="0"/>
+					<xs:element name="Primitive" type="fdo:NetworkPrimitiveMemberType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="gml:topoPrimitiveMembers" minOccurs="0" maxOccurs="0"/>
+				</xs:sequence>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EdgeType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for FDO Network Edge primitives</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:EdgeType">
+				<xs:sequence>
+					<xs:element ref="gml:featureProperty" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Associated feature for this edge</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="gml:topoPrimitiveMember" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Parent edge primitive</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NodeType" abstract="true">
+		<xs:annotation>
+			<xs:documentation>Base type for FDO Network Node primitives</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:NodeType">
+				<xs:sequence>
+					<xs:element ref="gml:featureProperty" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Associated feature for this node</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="gml:topoPrimitiveMember" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Parent node primitive</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NetworkPrimitiveMemberType" abstract="false">
+		<xs:complexContent>
+			<xs:restriction base="gml:topoPrimitiveMemberType">
+				<xs:sequence>
+					<xs:element ref="NetworkPrimitiveMember"/>
+				</xs:sequence>
+				<xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<!-- CRS defined by Well Known Text-->
+	<xs:complexType name="WKTCRSType">
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractCoordinateReferenceSystemType">
+				<xs:sequence>
+					<xs:element name="WKT" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Various Simple Types -->
+	<!-- Raster -->
+	<!-- Association Property -->
+	<!-- FDO Base types -->
+	<xs:simpleType name="OrderType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Ascending"/>
+			<xs:enumeration value="Descending"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="NameCollectionType">
+		<xs:annotation>
+			<xs:documentation>Type that defines it's content as a collection of names.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="NameType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="NameType">
+		<xs:annotation>
+			<xs:documentation>Type that defines restrictions for name elements within the schema.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token"/>
+	</xs:simpleType>
+	<xs:simpleType name="ProviderType">
+		<xs:annotation>
+			<xs:documentation>Fdo Provider Type. Must be of the form company.provider.version</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="DeleteRuleType">
+		<xs:annotation>
+			<xs:documentation>specifies the action to take when a delete operation is executed on the class instance at the other end of the relation</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="Cascade"/>
+			<xs:enumeration value="Prevent"/>
+			<xs:enumeration value="Break"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- Base types for various FDO Data types -->
+	<xs:simpleType name="byte">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="-128"/>
+			<xs:maxInclusive value="127"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="int16">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="-32768"/>
+			<xs:maxInclusive value="32767"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="int32">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="-2147483648"/>
+			<xs:maxInclusive value="2147483647"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="int64">
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="-2147483648"/>
+			<xs:maxInclusive value="2147483647"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="uniqueiD">
+		<xs:restriction base="xs:int"/>
+	</xs:simpleType>
+	<xs:simpleType name="clob">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<!-- special non-negative integer type -->
+	<xs:simpleType name="NonNegIntType">
+		<xs:annotation>
+			<xs:documentation>Type that defines an integer >= 0</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
