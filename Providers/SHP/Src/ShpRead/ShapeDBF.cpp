@@ -452,7 +452,10 @@ RowData* ShapeDBF::GetRowAt(int nRecord)
         return pRowData;
 
     // Not found, seek to the given record #
-    if ( !SetFilePointer64((FdoInt64)(m_nRecordStart + (nRecord * m_DBFHeader.wRecordSize))) )
+    // Turn the record # into a int64 to avoid an overflow
+    FdoInt64 recNum = nRecord;
+	FdoInt64 offset = m_nRecordStart + (recNum * m_DBFHeader.wRecordSize);
+    if ( !SetFilePointer64(offset))
         throw FdoException::Create (NlsMsgGet(SHP_READ_FILE_ERROR, "Error occured reading file '%1$ls'.", FileName() ));
 
     // Read the entire row of data into a buffer and then parse the buffer
@@ -504,7 +507,11 @@ void ShapeDBF::SetRowAt (RowData* row, int nRecord, bool batch)
     if ((nRecord >= 0) && (nRecord < m_DBFHeader.nRecords + 1)) // can add one more to the end
     {
         // seek to given record #
-        if (!SetFilePointer64 ((FdoInt64)(m_nRecordStart + (nRecord * m_DBFHeader.wRecordSize))))
+		// Turn the record # into a int64 to avoid an overflow
+		FdoInt64 recNum = nRecord;
+		FdoInt64 offset = m_nRecordStart + (recNum * m_DBFHeader.wRecordSize);
+
+        if (!SetFilePointer64 (offset))
             throw FdoCommonFile::LastErrorToException (L"ShapeDBF::SetRowAt(SetFilePointer64)");
 
         length = m_DBFHeader.wRecordSize;
@@ -537,8 +544,11 @@ void ShapeDBF::SetRowAt (RowData* row, int nRecord, bool batch)
 void ShapeDBF::DeleteRowAt (int nRecord)
 {
     BYTE c;
+	// Turn the record # into a int64 to avoid an overflow
+    FdoInt64 recNum = nRecord;
+	FdoInt64 offset = m_nRecordStart + (recNum * m_DBFHeader.wRecordSize);
 
-    if (!SetFilePointer64 ((FdoInt64)(m_nRecordStart + (nRecord * m_DBFHeader.wRecordSize))))
+    if (!SetFilePointer64 (offset))
         throw FdoCommonFile::LastErrorToException (L"ShapeDBF::DeleteRowAt(SetFilePointer64)");
     // set Record as deleted
     c = cDELETED_RECORD_ID;
