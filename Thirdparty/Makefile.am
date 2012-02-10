@@ -281,7 +281,7 @@ thdlib_DATA = \
 	apache/xalan/lib/libxalan-c.so.111.0  \
 	apache/xalan/lib/libxalanMsg.so.111.0 \
 	apache/xerces/lib/libxerces-c-3.1.so \
-	gdal/lib/libgdal.so.1.14.1
+	gdal/lib/libgdal.so.1.16.0
 
 install-data-hook :
 	@ln -s -f $(thdlibdir)/libxalan-c.so.111.0 $(thdlibdir)/libxalan-c.so.111
@@ -289,8 +289,8 @@ install-data-hook :
 	@ln -s -f $(thdlibdir)/libxalanMsg.so.111.0 $(thdlibdir)/libxalanMsg.so.111
 	@ln -s -f $(thdlibdir)/libxalanMsg.so.111.0 $(thdlibdir)/libxalanMsg.so
 	@ln -s -f $(thdlibdir)/libxerces-c-3.1.so $(thdlibdir)/libxerces-c.so
-	@ln -s -f $(thdlibdir)/libgdal.so.1.14.1 $(thdlibdir)/libgdal.so.1
-	@ln -s -f $(thdlibdir)/libgdal.so.1.14.1 $(thdlibdir)/libgdal.so
+	@ln -s -f $(thdlibdir)/libgdal.so.1.16.0 $(thdlibdir)/libgdal.so.1
+	@ln -s -f $(thdlibdir)/libgdal.so.1.16.0 $(thdlibdir)/libgdal.so
 	
 	@chmod a+x $(thdlibdir)/libxalan-c.so.111
 	@chmod a+x $(thdlibdir)/libxalan-c.so
