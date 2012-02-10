@@ -1,2 +1,0 @@
- Schema public has errors; cannot apply it 
-Cannot delete system schema 'public' from datastore.
