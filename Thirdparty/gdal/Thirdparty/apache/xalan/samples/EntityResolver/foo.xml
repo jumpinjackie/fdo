@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<!DOCTYPE doc [
-  <!ENTITY hello SYSTEM "hello.xml">
-]>
-<doc>&hello;</doc>

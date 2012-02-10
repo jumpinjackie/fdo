@@ -1,1 +1,0 @@
- Cannot create Spatial Context 'Default', it already exists 
