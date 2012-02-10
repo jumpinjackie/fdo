@@ -132,6 +132,10 @@ void FdoFgfMultiPoint::Reset(
     FdoInt32 count
     )
 {
+    if (m_ordinates != NULL)
+        delete[] m_ordinates;
+    m_ordinates = NULL;
+
     SetFgf(byteArray, data, count);
 }
 
