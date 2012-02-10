@@ -1,0 +1,10 @@
+Invalid Oracle Schema Mapping table mapping type 'BadMapping'
+ Multiple instances of Element 'Table' not allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Only one of 'Column, GeometricColumn, PropertyMapping' allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Only one of 'element[@name=Colour]' allowed inside Oracle Schema Mapping element complexType[@name='AcDbEntity']. 
+ Only one of 'Column, GeometricColumn, PropertyMapping' allowed inside Oracle Schema Mapping element element[@name='Colour']. 
+ Multiple instances of Element 'Table' not allowed inside Oracle Schema Mapping element PropertyMapping[@name='']. 
+ Multiple instances of Element 'GeometricColumn' not allowed inside Oracle Schema Mapping element element[@name='Geometry']. 
+ Multiple instances of Element 'Column' not allowed inside Oracle Schema Mapping element element[@name='InstallDate']. 
+ Multiple instances of Element 'PropertyMapping' not allowed inside Oracle Schema Mapping element element[@name='Casing']. 
+ Only one of 'complexType[@name=Conductor]' allowed inside  Schema Mapping element SchemaMapping[@name='Electric']. 

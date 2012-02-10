@@ -1,0 +1,1160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml"
+    xmlns:fdo="http://fdo.osgeo.org/schemas"
+    xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+   <SchemaMapping
+       xmlns="http://fdo.osgeo.org/schemas/gml/mappings"
+       provider="OSGeo.GML.1.0" name="xlink"
+       targetNamespace="http://www.w3.org/1999/xlink"/>
+   <SchemaMapping
+       xmlns="http://fdo.osgeo.org/schemas/gml/mappings"
+       provider="OSGeo.GML.1.0" name="gml"
+       targetNamespace="http://www.opengis.net/gml">
+      <element name="_Geometry" classSchema="gml"
+          className="AbstractGeometryType"/>
+      <element name="_GeometryCollection"
+          classSchema="gml"
+          className="GeometryCollectionType"/>
+      <element name="geometryMember" classSchema="gml"
+          className="GeometryAssociationType"/>
+      <element name="pointMember" classSchema="gml"
+          className="PointMemberType"/>
+      <element name="lineStringMember"
+          classSchema="gml"
+          className="LineStringMemberType"/>
+      <element name="polygonMember" classSchema="gml"
+          className="PolygonMemberType"/>
+      <element name="outerBoundaryIs" classSchema="gml"
+          className="LinearRingMemberType"/>
+      <element name="innerBoundaryIs" classSchema="gml"
+          className="LinearRingMemberType"/>
+      <element name="Point" classSchema="gml"
+          className="PointType"/>
+      <element name="LineString" classSchema="gml"
+          className="LineStringType"/>
+      <element name="LinearRing" classSchema="gml"
+          className="LinearRingType"/>
+      <element name="Polygon" classSchema="gml"
+          className="PolygonType"/>
+      <element name="Box" classSchema="gml"
+          className="BoxType"/>
+      <element name="MultiGeometry" classSchema="gml"
+          className="GeometryCollectionType"/>
+      <element name="MultiPoint" classSchema="gml"
+          className="MultiPointType"/>
+      <element name="MultiLineString" classSchema="gml"
+          className="MultiLineStringType"/>
+      <element name="MultiPolygon" classSchema="gml"
+          className="MultiPolygonType"/>
+      <element name="coord" classSchema="gml"
+          className="CoordType"/>
+      <element name="coordinates" classSchema="gml"
+          className="CoordinatesType"/>
+      <element name="_Feature" classSchema="gml"
+          className="AbstractFeatureType"/>
+      <element name="_FeatureCollection"
+          classSchema="gml"
+          className="AbstractFeatureCollectionType"/>
+      <element name="featureMember" classSchema="gml"
+          className="FeatureAssociationType"/>
+      <element name="_geometryProperty"
+          classSchema="gml"
+          className="GeometryAssociationType"/>
+      <element name="geometryProperty"
+          classSchema="gml"
+          className="GeometryAssociationType"/>
+      <element name="boundedBy" classSchema="gml"
+          className="BoundingShapeType"/>
+      <element name="pointProperty" classSchema="gml"
+          className="PointPropertyType"/>
+      <element name="polygonProperty" classSchema="gml"
+          className="PolygonPropertyType"/>
+      <element name="lineStringProperty"
+          classSchema="gml"
+          className="LineStringPropertyType"/>
+      <element name="multiPointProperty"
+          classSchema="gml"
+          className="MultiPointPropertyType"/>
+      <element name="multiLineStringProperty"
+          classSchema="gml"
+          className="MultiLineStringPropertyType"/>
+      <element name="multiPolygonProperty"
+          classSchema="gml"
+          className="MultiPolygonPropertyType"/>
+      <element name="multiGeometryProperty"
+          classSchema="gml"
+          className="MultiGeometryPropertyType"/>
+      <element name="location" classSchema="gml"
+          className="PointPropertyType"/>
+      <element name="centerOf" classSchema="gml"
+          className="PointPropertyType"/>
+      <element name="position" classSchema="gml"
+          className="PointPropertyType"/>
+      <element name="extentOf" classSchema="gml"
+          className="PolygonPropertyType"/>
+      <element name="coverage" classSchema="gml"
+          className="PolygonPropertyType"/>
+      <element name="edgeOf" classSchema="gml"
+          className="LineStringPropertyType"/>
+      <element name="centerLineOf" classSchema="gml"
+          className="LineStringPropertyType"/>
+      <element name="multiLocation" classSchema="gml"
+          className="MultiPointPropertyType"/>
+      <element name="multiCenterOf" classSchema="gml"
+          className="MultiPointPropertyType"/>
+      <element name="multiPosition" classSchema="gml"
+          className="MultiPointPropertyType"/>
+      <element name="multiCenterLineOf"
+          classSchema="gml"
+          className="MultiLineStringPropertyType"/>
+      <element name="multiEdgeOf" classSchema="gml"
+          className="MultiLineStringPropertyType"/>
+      <element name="multiCoverage" classSchema="gml"
+          className="MultiPolygonPropertyType"/>
+      <element name="multiExtentOf" classSchema="gml"
+          className="MultiPolygonPropertyType"/>
+      <element name="description" classSchema="xs"
+          className="stringType"/>
+      <element name="name" classSchema="xs"
+          className="stringType"/>
+      <complexType name="AbstractGeometryType"
+          gmlName="AbstractGeometryType" wkSchema="gml"
+          wkClass="AbstractGeometryType">
+         <element name="gid" classSchema="xs"
+             className="IDType" gmlLocalName="gid"/>
+         <element name="srsName" classSchema="xs"
+             className="anyURIType" gmlLocalName="srsName"/>
+      </complexType>
+      <complexType
+          name="AbstractGeometryCollectionBaseType"
+          gmlName="AbstractGeometryCollectionBaseType"
+          wkSchema="gml"
+          wkClass="AbstractGeometryCollectionBaseType">
+         <element name="gid" classSchema="xs"
+             className="IDType" gmlLocalName="gid"/>
+         <element name="srsName" classSchema="xs"
+             className="anyURIType" gmlLocalName="srsName"/>
+      </complexType>
+      <complexType name="GeometryAssociationType"
+          gmlName="GeometryAssociationType" wkSchema="gml"
+          wkClass="GeometryAssociationType">
+         <element name="gml/_Geometry" classSchema="gml"
+             className="AbstractGeometryType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="_Geometry"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="PointMemberType"
+          gmlName="PointMemberType" wkSchema="gml"
+          wkClass="PointMemberType">
+         <element name="gml/Point" classSchema="gml"
+             className="PointType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="Point"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="LineStringMemberType"
+          gmlName="LineStringMemberType" wkSchema="gml"
+          wkClass="LineStringMemberType">
+         <element name="gml/LineString" classSchema="gml"
+             className="LineStringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="LineString"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="PolygonMemberType"
+          gmlName="PolygonMemberType" wkSchema="gml"
+          wkClass="PolygonMemberType">
+         <element name="gml/Polygon" classSchema="gml"
+             className="PolygonType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="Polygon"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="LinearRingMemberType"
+          gmlName="LinearRingMemberType" wkSchema="gml"
+          wkClass="LinearRingMemberType">
+         <element name="gml/LinearRing" classSchema="gml"
+             className="LinearRingType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="LinearRing"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="PointType" gmlName="PointType"
+          wkSchema="gml" wkClass="PointType">
+         <element name="gml/coord" classSchema="gml"
+             className="CoordType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coord"/>
+         <element name="gml/coordinates" classSchema="gml"
+             className="CoordinatesType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coordinates"/>
+      </complexType>
+      <complexType name="LineStringType"
+          gmlName="LineStringType" wkSchema="gml"
+          wkClass="LineStringType">
+         <element name="gml/coord" classSchema="gml"
+             className="CoordType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coord"/>
+         <element name="gml/coordinates" classSchema="gml"
+             className="CoordinatesType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coordinates"/>
+      </complexType>
+      <complexType name="LinearRingType"
+          gmlName="LinearRingType" wkSchema="gml"
+          wkClass="LinearRingType">
+         <element name="gml/coord" classSchema="gml"
+             className="CoordType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coord"/>
+         <element name="gml/coordinates" classSchema="gml"
+             className="CoordinatesType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coordinates"/>
+      </complexType>
+      <complexType name="BoxType" gmlName="BoxType"
+          wkSchema="gml" wkClass="BoxType">
+         <element name="gml/coord" classSchema="gml"
+             className="CoordType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coord"/>
+         <element name="gml/coordinates" classSchema="gml"
+             className="CoordinatesType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="coordinates"/>
+      </complexType>
+      <complexType name="PolygonType"
+          gmlName="PolygonType" wkSchema="gml"
+          wkClass="PolygonType">
+         <element name="gml/outerBoundaryIs"
+             classSchema="gml"
+             className="LinearRingMemberType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="outerBoundaryIs"/>
+         <element
+             name="gml/outerBoundaryIs/gml/remoteSchema"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="gml/outerBoundaryIs/type"
+             classSchema="xs" className="stringType"
+             gmlLocalName="type"/>
+         <element name="gml/outerBoundaryIs/xlink/href"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="gml/outerBoundaryIs/xlink/role"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="gml/outerBoundaryIs/xlink/arcrole"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="gml/outerBoundaryIs/xlink/title"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="gml/outerBoundaryIs/xlink/show"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="gml/outerBoundaryIs/xlink/actuate"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+         <element name="gml/innerBoundaryIs"
+             classSchema="gml"
+             className="LinearRingMemberType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="innerBoundaryIs"/>
+      </complexType>
+      <complexType name="GeometryCollectionType"
+          gmlName="GeometryCollectionType" wkSchema="gml"
+          wkClass="AbstractGeometryCollectionBaseType">
+         <element name="gml/geometryMember"
+             classSchema="gml"
+             className="GeometryAssociationType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="geometryMember"/>
+      </complexType>
+      <complexType name="MultiPointType"
+          gmlName="MultiPointType" wkSchema="gml"
+          wkClass="MultiPointType">
+         <element name="gml/pointMember" classSchema="gml"
+             className="PointMemberType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="pointMember"/>
+         <element name="gid" classSchema="xs"
+             className="IDType" gmlLocalName="gid"/>
+         <element name="srsName" classSchema="xs"
+             className="anyURIType" gmlLocalName="srsName"/>
+      </complexType>
+      <complexType name="MultiLineStringType"
+          gmlName="MultiLineStringType" wkSchema="gml"
+          wkClass="MultiLineStringType">
+         <element name="gml/lineStringMember"
+             classSchema="gml"
+             className="LineStringMemberType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="lineStringMember"/>
+         <element name="gid" classSchema="xs"
+             className="IDType" gmlLocalName="gid"/>
+         <element name="srsName" classSchema="xs"
+             className="anyURIType" gmlLocalName="srsName"/>
+      </complexType>
+      <complexType name="MultiPolygonType"
+          gmlName="MultiPolygonType" wkSchema="gml"
+          wkClass="MultiPolygonType">
+         <element name="gml/polygonMember"
+             classSchema="gml" className="PolygonMemberType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="polygonMember"/>
+         <element name="gid" classSchema="xs"
+             className="IDType" gmlLocalName="gid"/>
+         <element name="srsName" classSchema="xs"
+             className="anyURIType" gmlLocalName="srsName"/>
+      </complexType>
+      <complexType name="CoordType" gmlName="CoordType"
+          wkSchema="gml" wkClass="CoordType">
+         <element name="X" classSchema="xs"
+             className="decimalType" gmlLocalName="X"/>
+         <element name="Y" classSchema="xs"
+             className="decimalType" gmlLocalName="Y"/>
+         <element name="Z" classSchema="xs"
+             className="decimalType" gmlLocalName="Z"/>
+      </complexType>
+      <complexType name="CoordinatesType"
+          gmlName="CoordinatesType" wkSchema="gml"
+          wkClass="CoordinatesType"/>
+      <complexType name="AbstractFeatureType"
+          gmlName="AbstractFeatureType" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="gml/description" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="description"/>
+         <element name="gml/name" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="name"/>
+         <element name="gml/boundedBy" classSchema="gml"
+             className="BoundingShapeType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="boundedBy"/>
+         <element name="fid" classSchema="xs"
+             className="IDType" gmlLocalName="fid"/>
+      </complexType>
+      <complexType
+          name="AbstractFeatureCollectionBaseType"
+          gmlName="AbstractFeatureCollectionBaseType"
+          wkSchema="gml"
+          wkClass="AbstractFeatureCollectionBaseType">
+         <element name="gml/description" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="description"/>
+         <element name="gml/name" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="name"/>
+         <element name="gml/boundedBy" classSchema="gml"
+             className="BoundingShapeType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="boundedBy"/>
+         <element name="fid" classSchema="xs"
+             className="IDType" gmlLocalName="fid"/>
+      </complexType>
+      <complexType name="AbstractFeatureCollectionType"
+          gmlName="AbstractFeatureCollectionType"
+          wkSchema="gml"
+          wkClass="AbstractFeatureCollectionBaseType">
+         <element name="gml/featureMember"
+             classSchema="gml"
+             className="FeatureAssociationType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="featureMember"/>
+      </complexType>
+      <complexType name="GeometryPropertyType"
+          gmlName="GeometryPropertyType" wkSchema="gml"
+          wkClass="GeometryPropertyType">
+         <element name="gml/_Geometry" classSchema="gml"
+             className="AbstractGeometryType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="_Geometry"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="FeatureAssociationType"
+          gmlName="FeatureAssociationType" wkSchema="gml"
+          wkClass="FeatureAssociationType">
+         <element name="gml/_Feature" classSchema="gml"
+             className="AbstractFeatureType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="_Feature"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="BoundingShapeType"
+          gmlName="BoundingShapeType">
+         <element name="gml/Box" classSchema="gml"
+             className="BoxType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="Box"/>
+         <element name="null" classSchema="xs"
+             className="stringType" gmlLocalName="null"/>
+      </complexType>
+      <complexType name="PointPropertyType"
+          gmlName="PointPropertyType" wkSchema="gml"
+          wkClass="PointPropertyType">
+         <element name="gml/Point" classSchema="gml"
+             className="PointType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="Point"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="PolygonPropertyType"
+          gmlName="PolygonPropertyType" wkSchema="gml"
+          wkClass="PolygonPropertyType">
+         <element name="gml/Polygon" classSchema="gml"
+             className="PolygonType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="Polygon"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="LineStringPropertyType"
+          gmlName="LineStringPropertyType" wkSchema="gml"
+          wkClass="LineStringPropertyType">
+         <element name="gml/LineString" classSchema="gml"
+             className="LineStringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="LineString"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="MultiPointPropertyType"
+          gmlName="MultiPointPropertyType" wkSchema="gml"
+          wkClass="MultiPointPropertyType">
+         <element name="gml/MultiPoint" classSchema="gml"
+             className="MultiPointType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="MultiPoint"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="MultiLineStringPropertyType"
+          gmlName="MultiLineStringPropertyType"
+          wkSchema="gml"
+          wkClass="MultiLineStringPropertyType">
+         <element name="gml/MultiLineString"
+             classSchema="gml"
+             className="MultiLineStringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="MultiLineString"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="MultiPolygonPropertyType"
+          gmlName="MultiPolygonPropertyType"
+          wkSchema="gml"
+          wkClass="MultiPolygonPropertyType">
+         <element name="gml/MultiPolygon"
+             classSchema="gml" className="MultiPolygonType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="MultiPolygon"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="MultiGeometryPropertyType"
+          gmlName="MultiGeometryPropertyType"
+          wkSchema="gml"
+          wkClass="MultiGeometryPropertyType">
+         <element name="gml/MultiGeometry"
+             classSchema="gml"
+             className="GeometryCollectionType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="MultiGeometry"/>
+         <element name="gml/remoteSchema" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+   </SchemaMapping>
+   <SchemaMapping
+       xmlns="http://fdo.osgeo.org/schemas/gml/mappings"
+       provider="OSGeo.GML.1.0" name="ext"
+       targetNamespace="http://www.autodesk.com/External">
+      <element name="GblBool" classSchema="xs"
+          className="booleanType"/>
+      <element name="GblDouble" classSchema=""
+          className=""/>
+      <element name="GblString" classSchema=""
+          className=""/>
+      <element name="TestFeat1" classSchema="ext"
+          className="TestFeat1Type"/>
+      <element name="TestFeat2" classSchema="ext"
+          className="TestFeat2Type"/>
+      <element name="TestFeat2r" classSchema="ext"
+          className="TestFeat2rType"/>
+      <element name="TestFeat2re" classSchema="ext"
+          className="TestFeat2reType"/>
+      <element name="TestFeat3" classSchema="ext"
+          className="TestFeat3Type"/>
+      <element name="TestFeat2Property"
+          classSchema="ext"
+          className="TestFeat2PropertyType"/>
+      <element name="TestFeat3Property"
+          classSchema="ext"
+          className="TestFeat3PropertyType"/>
+      <element name="LineProperty" classSchema="ext"
+          className="LinePropertyType"/>
+      <complexType name="TestFeat1Type"
+          gmlName="TestFeat1Type" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="IntProp" classSchema="fdo"
+             className="int32Type" gmlLocalName="IntProp"/>
+         <element name="ext/GblString" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="GblString"/>
+         <element name="ext/GblBool" classSchema="xs"
+             className="booleanType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="GblBool"/>
+         <element name="GrpDouble" classSchema="xs"
+             className="doubleType" gmlLocalName="GrpDouble"/>
+         <element name="ext/GblDouble" classSchema="xs"
+             className="doubleType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="GblDouble"/>
+         <element name="GrpObject" classSchema="ext"
+             className="TestObj1Type"
+             gmlLocalName="GrpObject"/>
+         <element name="GeomBas" classSchema="gml"
+             className="PointType" gmlLocalName="GeomBas"/>
+         <element name="gml/LineString" classSchema="gml"
+             className="LineStringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="LineString"/>
+         <element name="GeomType" classSchema="ext"
+             className="PolyType" gmlLocalName="GeomType"/>
+         <element name="ext/LineProperty"
+             classSchema="ext" className="LinePropertyType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="LineProperty"/>
+         <element name="ext/LineProperty/gml/remoteSchema"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="remoteSchema"/>
+         <element name="ext/LineProperty/type"
+             classSchema="xs" className="stringType"
+             gmlLocalName="type"/>
+         <element name="ext/LineProperty/xlink/href"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="ext/LineProperty/xlink/role"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="ext/LineProperty/xlink/arcrole"
+             classSchema="xs" className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="ext/LineProperty/xlink/title"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="ext/LineProperty/xlink/show"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="ext/LineProperty/xlink/actuate"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+         <element name="FeatType" classSchema="ext"
+             className="TestFeat3PropertyType"
+             gmlLocalName="FeatType"/>
+         <element name="ext/TestFeat2Property"
+             classSchema="ext"
+             className="TestFeat2PropertyType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="TestFeat2Property"/>
+         <element name="ext/TestFeat3Property"
+             classSchema="ext"
+             className="TestFeat3PropertyType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="TestFeat3Property"/>
+         <element name="InlineAssoc" classSchema="gml"
+             className="FeatureAssociationType"
+             gmlLocalName="InlineAssoc"/>
+         <element name="AssocByType" classSchema="ext"
+             className="TestFeat2PropertyType"
+             gmlLocalName="AssocByType"/>
+         <element name="attBasType" classSchema="xs"
+             className="doubleType" gmlLocalName="attBasType"/>
+         <element name="ext/attBasRef" classSchema="xs"
+             className="intType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attBasRef"/>
+         <element name="ext/attBasStringRef"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attBasStringRef"/>
+         <element name="ext/attDollarRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attDollarRef"/>
+         <element name="ext/attSalaryRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attSalaryRef"/>
+         <element name="grpAttBool" classSchema="xs"
+             className="booleanType"
+             gmlLocalName="grpAttBool"/>
+         <element name="grpAttNonNeg" classSchema="xs"
+             className="nonNegativeIntegerType"
+             gmlLocalName="grpAttNonNeg"/>
+         <element name="ext/attPriceRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attPriceRef"/>
+      </complexType>
+      <complexType name="TestFeat2Type"
+          gmlName="TestFeat2Type" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="IntProp" classSchema="fdo"
+             className="int32Type" gmlLocalName="IntProp"/>
+         <element name="StringProp" classSchema="xs"
+             className="stringType" gmlLocalName="StringProp"/>
+         <element name="DollarProp" classSchema="xs"
+             className="decimalType"
+             gmlLocalName="DollarProp"/>
+         <element name="gml/LineString" classSchema="gml"
+             className="LineStringType"
+             gmlUri="http://www.opengis.net/gml"
+             gmlLocalName="LineString"/>
+         <element name="attBasType" classSchema="xs"
+             className="doubleType" gmlLocalName="attBasType"/>
+      </complexType>
+      <complexType name="TestFeat2rType"
+          gmlName="TestFeat2rType" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="IntProp" classSchema="fdo"
+             className="int32Type" gmlLocalName="IntProp"/>
+         <element name="StringProp" classSchema="xs"
+             className="stringType" gmlLocalName="StringProp"/>
+         <element name="attBasType" classSchema="xs"
+             className="doubleType" gmlLocalName="attBasType"/>
+      </complexType>
+      <complexType name="TestFeat2reType"
+          gmlName="TestFeat2reType" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="BoolProp" classSchema="xs"
+             className="booleanType" gmlLocalName="BoolProp"/>
+      </complexType>
+      <complexType name="TestFeat3Type"
+          gmlName="TestFeat3Type" wkSchema="gml"
+          wkClass="AbstractFeatureType">
+         <element name="ID" classSchema="fdo"
+             className="int64Type" gmlLocalName="ID"/>
+         <element name="DoubleProp" classSchema="xs"
+             className="doubleType" gmlLocalName="DoubleProp"/>
+      </complexType>
+      <complexType name="TestFeat2PropertyType"
+          gmlName="TestFeat2PropertyType" wkSchema="gml"
+          wkClass="FeatureAssociationType">
+         <element name="ext/TestFeat3"
+             classSchema="www.autodesk.com-x2f-External"
+             className="TestFeat3Type"
+             gmlLocalName="TestFeat3"/>
+         <element name="type" classSchema="xs"
+             className="stringType" gmlLocalName="type"/>
+         <element name="xlink/href" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="href"/>
+         <element name="xlink/role" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="role"/>
+         <element name="xlink/arcrole" classSchema="xs"
+             className="anyURIType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="arcrole"/>
+         <element name="xlink/title" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="title"/>
+         <element name="xlink/show" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="show"/>
+         <element name="xlink/actuate" classSchema="xs"
+             className="stringType"
+             gmlUri="http://www.w3.org/1999/xlink"
+             gmlLocalName="actuate"/>
+      </complexType>
+      <complexType name="TestFeat3PropertyType"
+          gmlName="TestFeat3PropertyType" wkSchema="gml"
+          wkClass="FeaturePropertyType"/>
+      <complexType name="TestObj1Type"
+          gmlName="TestObj1Type">
+         <element name="IntProp" classSchema="fdo"
+             className="int32Type" gmlLocalName="IntProp"/>
+         <element name="attBasType" classSchema="xs"
+             className="doubleType" gmlLocalName="attBasType"/>
+         <element name="ext/attBasRef" classSchema="xs"
+             className="intType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attBasRef"/>
+         <element name="ext/attBasStringRef"
+             classSchema="xs" className="stringType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attBasStringRef"/>
+         <element name="ext/attDollarRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attDollarRef"/>
+         <element name="ext/attSalaryRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attSalaryRef"/>
+         <element name="grpAttBool" classSchema="xs"
+             className="booleanType"
+             gmlLocalName="grpAttBool"/>
+         <element name="grpAttNonNeg" classSchema="xs"
+             className="nonNegativeIntegerType"
+             gmlLocalName="grpAttNonNeg"/>
+         <element name="ext/attPriceRef" classSchema="xs"
+             className="decimalType"
+             gmlUri="http://www.autodesk.com/External"
+             gmlLocalName="attPriceRef"/>
+      </complexType>
+      <complexType name="PolyType" gmlName="PolyType"
+          wkSchema="gml" wkClass="PolygonType">
+         <element name="PolyElem" classSchema="xs"
+             className="booleanType" gmlLocalName="PolyElem"/>
+      </complexType>
+      <complexType name="LinePropertyType"
+          gmlName="LinePropertyType" wkSchema="gml"
+          wkClass="CurvePropertyType"/>
+   </SchemaMapping>
+   <SchemaMapping
+       xmlns="http://fdo.osgeo.org/schemas/gml/mappings"
+       provider="OSGeo.GML.1.0" name="uni"
+       targetNamespace="http://www.ctn.com/Unique">
+      <complexType name="TestFeat1Type"
+          gmlName="TestFeat1Type">
+         <element name="prop1" classSchema="xs"
+             className="doubleType" gmlLocalName="prop1"/>
+      </complexType>
+      <complexType name="TestFeat2Type"
+          gmlName="TestFeat2Type"/>
+   </SchemaMapping>
+</fdo:DataStore>
