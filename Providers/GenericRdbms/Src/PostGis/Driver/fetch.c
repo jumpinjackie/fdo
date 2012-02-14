@@ -37,22 +37,6 @@
 #include<alloca.h>
 #endif
 
-#define IS_CHAR_ONE_BYTE(c) (unsigned char)(c) < 0x80
-#define IS_CHAR_THREE_BYTES(c) 0xe0 == ((unsigned char)(c) & 0xf0)
-#define IS_CHAR_FOUR_BYTES(c) 0xf0 == ((unsigned char)(c) & 0xf0)
-
-int get_bytes_num(char byte)
-{
-    if(IS_CHAR_ONE_BYTE(byte))
-        return 1;
-    else if(IS_CHAR_THREE_BYTES(byte))
-        return 3;
-    else if(IS_CHAR_FOUR_BYTES(byte))
-        return 4;
-    else
-        return 2;
-}
-
 int postgis_fetch (postgis_context_def *context,
                    char *cursor,
                    int count,
@@ -154,32 +138,10 @@ int postgis_fetch (postgis_context_def *context,
                             {
                                 assert((strlen(fvalue) + 1) <= curs->defines[i].buffer_length);
 
-                                char *utf8Char = fvalue;
-                                char *last = fvalue;
-                                int binaryLen = curs->defines[i].buffer_length;
-
-                                while(*utf8Char &&  (utf8Char - fvalue) < binaryLen)
-                                {
-	                                last = utf8Char;
-	                                utf8Char += get_bytes_num(*utf8Char);
-                                }
-
-                                if(utf8Char == fvalue)
-                                {
-	                                *((char*)curs->defines[i].buffer) = '\0';
-	                                break;
-                                }
-
-                                /*This means the buffer is too small to hold the string.
-	                                Unlikely to happen, but check anyway.*/
-                                if((utf8Char - fvalue) >= binaryLen)
-                                {
-	                                utf8Char = last;
-                                }
-
+                                fvalue_length = strlen(fvalue);
                                 buffer = (char*)curs->defines[i].buffer;
-                                strncpy(buffer, fvalue, (size_t)(utf8Char - fvalue));
-                                buffer[utf8Char - fvalue] = '\0';
+                                strncpy(buffer, fvalue, fvalue_length);
+                                buffer[fvalue_length] = '\0';
                                 break;
                             }
                         case PGSQL_TYPE_BOOL:

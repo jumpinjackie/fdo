@@ -130,8 +130,6 @@ int postgis_desc_slct (
                                         *binary_size = fsize + 1;
                                     else            /* CHAR(N) */
                                         *binary_size = fsize; 
-                                    
-                                    *binary_size *= 4;
 
                                     if ( (*binary_size) > PGSQL_VARCHAR_MAX_SIZE )
                                         *binary_size = PGSQL_VARCHAR_MAX_SIZE;
@@ -143,8 +141,6 @@ int postgis_desc_slct (
                                         /* Fetch size from typemod. */
                                         fsize = postgis_get_varchar_length(pgres, position);
                                     }
-                                    
-                                    fsize *= 4;
 
                                     if ( (fsize > 0) && (fsize < PGSQL_VARCHAR_MAX_SIZE) ) /* VARCHAR(N) */
                                         *binary_size = fsize;
