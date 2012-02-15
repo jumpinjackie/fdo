@@ -22,8 +22,8 @@
 StampVer [options] <FileName>
 
 Help:           -h
-FileVersion:    -f"value" ; e.g. "3.7.0.44"
-ProductVersion: -p"value" ; e.g. "3.7.0.0"
+FileVersion:    -f"value" ; e.g. "3.8.0.44"
+ProductVersion: -p"value" ; e.g. "3.8.0.0"
 Copyright:      -c"value" ; e.g. "Copyright (C) 2007-2011"
 FileInfo:       -v"File name"; parameter ignored!!
 FileName:       "File path"
