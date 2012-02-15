@@ -125,7 +125,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.7.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,7 +164,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.7.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -200,7 +200,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -240,7 +240,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.7.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

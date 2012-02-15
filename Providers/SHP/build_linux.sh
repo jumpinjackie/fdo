@@ -22,7 +22,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-3.7.0
+PREFIXVAL=/usr/local/fdo-3.8.0
 
 ### study parameters ###
 while test $# -gt 0
