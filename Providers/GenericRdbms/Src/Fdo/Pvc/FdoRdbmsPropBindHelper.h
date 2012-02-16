@@ -25,6 +25,7 @@
 #endif
 
 class FdoRdbmsPvdBindDef;
+class FdoRdbmsConnection;
 
 //
 // Defines an abstract class for the Property Value Collection handlers
