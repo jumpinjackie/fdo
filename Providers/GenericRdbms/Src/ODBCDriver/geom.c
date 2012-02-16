@@ -181,6 +181,23 @@ the_exit:
     return rc;
 }
 
+int odbcdr_geom_version_set ( 
+	odbcdr_context_def	*context,
+    char   *cursor,                     /* cursor associated with SQL stmnt */
+	char	*col_name,
+    long version ) 
+{
+    odbcdr_cursor_def    *c;
+    int                 rdbi_status = RDBI_GENERIC_ERROR;
+    int                 rc = FALSE;
+
+    ODBCDR_RDBI_ERR( odbcdr_get_cursor( context, cursor, &c ) );
+
+    rc = TRUE;
+the_exit:
+    return rc;
+}
+
 /*************************************************************************/
 
 int odbcdr_geom_dimens_set ( 

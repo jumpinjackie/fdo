@@ -117,14 +117,14 @@ void SqlServerFdoFilterTest::TranslateFilter (FdoFilter   *filter,
 
     if ((is_nested ) && (!is_nesting_expected)) {
 
-        printf(" ... generated SQL statement >>%s<< \n", generated_sql);
+        printf(" ... generated SQL statement >>%ls<< \n", (FdoString*) generated_sql);
         throw FdoException::Create(L"Unexpected nesting of filter in SQL");
 
     }  //  if ((is_nested ) && (!is_nesting_expected)) ...
 
     if ((!is_nested) && (is_nesting_expected )) {
 
-        printf(" ... generated SQL statement >>%s<< \n", generated_sql);
+        printf(" ... generated SQL statement >>%ls<< \n", (FdoString*) generated_sql);
         throw FdoException::Create(L"Unexpected not-nesting of filter in SQL");
 
     }  //  ((!is_nested) && (is_nesting_expected )) ...

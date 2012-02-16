@@ -35,5 +35,11 @@ int mysql_bind (
     my_bool *null_ind,
     int      typeBind);
 
+int mysql_binds_alloc( 
+    mysql_cursor_def *curs,
+    int count);
+
+
+
 #endif // BIND_H
 

@@ -86,7 +86,7 @@ FdoDouble MySqlFdoExpressionFunctionTest::GetExpectedValue (
       case COUNT_TEST_CASE_CODE_3: return 31; break;
       case COUNT_TEST_CASE_CODE_4: return 4; break;
 
-      case EXP_TEST_CASE_CODE_1  : return 1.3733829795401790e+032; break;
+      case EXP_TEST_CASE_CODE_1  : return 1.3733829795401761e+032; break;
 
       case POWER_TEST_CASE_CODE_1: return 399.89670693504; break;
 
@@ -1710,7 +1710,7 @@ void MySqlFdoExpressionFunctionTest::TestConcatFunction ()
 
       func_call   = L"(Concat(bool_val, dbl_val) as cmp_id)";
       data_reader = ExecuteSelectCommand(L"exfct_c1", filter, true, func_call);
-      CheckReaderString(data_reader, 9, L"018.8890814558059");
+      CheckReaderString(data_reader, 9, L"018.889081455805893");
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
