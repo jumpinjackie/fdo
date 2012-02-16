@@ -37,12 +37,13 @@ FdoRdbmsPvcInsertHandler::FdoRdbmsPvcInsertHandler( FdoRdbmsConnection *connecti
 	mInsertAutoIncrementProperties( false ),
 	mBindUnsetValues( false )
 {
-    memset( mInsertQueryCache, 0, sizeof(InsertQueryDef)*QUERY_CACHE_SIZE );
     mLastTableName[0] = '\0';
     for( int i = 0; i<QUERY_CACHE_SIZE; i++ )
     {
         mInsertQueryCache[i].qid = -1;
+        mInsertQueryCache[i].tableName[0] = '\0';
         mInsertQueryCache[i].bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
+        mInsertQueryCache[i].bindProps = new std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >();
         mInsertQueryCache[i].bindPropNames = FdoStringCollection::Create();
         mInsertQueryCache[i].specialValues = FdoDataValueCollection::Create();
     }
@@ -58,6 +59,7 @@ FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
             mConnection->GetGdbiCommands()->free_cursor(mInsertQueryCache[i].qid);
 			mInsertQueryCache[i].qid = -1;
             delete mInsertQueryCache[i].bindHelper;
+            delete mInsertQueryCache[i].bindProps;
             mInsertQueryCache[i].bindHelper = NULL;
         }
     }
@@ -205,9 +207,9 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
     	SetAditionalBindVariables(classDefinition, L"", propValCollection, insertQuery, gid);
 
         if ( needBind ) 
-            insertQuery->bindHelper->BindParameters(mConnection->GetGdbiCommands(), insertQuery->qid, &(insertQuery->bindProps));
+            insertQuery->bindHelper->BindParameters(mConnection->GetGdbiCommands(), insertQuery->qid, insertQuery->bindProps);
         else
-            insertQuery->bindHelper->BindValues(mConnection->GetGdbiCommands(), insertQuery->qid, &(insertQuery->bindProps));
+            insertQuery->bindHelper->BindValues(mConnection->GetGdbiCommands(), insertQuery->qid, insertQuery->bindProps);
 
         mConnection->GetGdbiCommands()->execute( insertQuery->qid );
 
@@ -642,16 +644,14 @@ void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *cu
 												const wchar_t *scope, FdoPropertyValueCollection  *propValCollection, InsertQueryDef *queryDef)
 {
     FdoStringCollection* bindPropNames = queryDef->bindPropNames;
-    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = &(queryDef->bindProps);
+    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = queryDef->bindProps;
     FdoDataValueCollection* specialValues = queryDef->specialValues;
 
 
     if ( (*scope) == 0 ) 
     {
         bindPropNames->Clear();
-        while ( bindProps->size() > 0 )
-            // TODO: find out why bindProps->clear() crashes.
-            bindProps->pop_back();
+        bindProps->clear();
         specialValues->Clear();
     }
 
@@ -702,7 +702,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariable(const FdoSmLpClassDefinition *cur
                                                 const FdoSmLpPropertyDefinition *propertyDefinition, FdoString* columnName)
 {
     FdoStringCollection* bindPropNames = queryDef->bindPropNames;
-    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = &(queryDef->bindProps);
+    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = queryDef->bindProps;
     FdoDataValueCollection* specialValues = queryDef->specialValues;
 
     FdoRdbmsSpatialManagerP spatialManager = mFdoConnection->GetSpatialManager();

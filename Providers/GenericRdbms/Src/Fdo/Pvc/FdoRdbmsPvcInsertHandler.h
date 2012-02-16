@@ -31,7 +31,7 @@ typedef  struct _insert_cache_ {
       wchar_t       tableName[GDBI_SCHEMA_ELEMENT_NAME_SIZE];
       int           qid;
       FdoRdbmsPropBindHelper* bindHelper;
-      std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > bindProps;
+      std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps;
       FdoStringsP   bindPropNames;
       FdoPtr<FdoDataValueCollection> specialValues;
 } InsertQueryDef;
