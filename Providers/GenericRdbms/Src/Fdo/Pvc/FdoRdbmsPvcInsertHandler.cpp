@@ -27,7 +27,7 @@ FdoRdbmsPvcInsertHandler::FdoRdbmsPvcInsertHandler( ) :
     mNextQidToFree(0),
 	mFdoConnection( NULL ),
 	mInsertAutoIncrementProperties( false ),
-	mBindUnsetValues( true )
+	mBindUnsetValues( false )
 {
 }
 
@@ -35,12 +35,17 @@ FdoRdbmsPvcInsertHandler::FdoRdbmsPvcInsertHandler( FdoRdbmsConnection *connecti
     mNextQidToFree(0),
 	mFdoConnection( connection ), // no addref as it is owned by a component that is already holding a reference on the connection. 
 	mInsertAutoIncrementProperties( false ),
-	mBindUnsetValues( true )
+	mBindUnsetValues( false )
 {
     memset( mInsertQueryCache, 0, sizeof(InsertQueryDef)*QUERY_CACHE_SIZE );
     mLastTableName[0] = '\0';
     for( int i = 0; i<QUERY_CACHE_SIZE; i++ )
+    {
         mInsertQueryCache[i].qid = -1;
+        mInsertQueryCache[i].bindHelper = new FdoRdbmsPropBindHelper(mFdoConnection);
+        mInsertQueryCache[i].bindPropNames = FdoStringCollection::Create();
+        mInsertQueryCache[i].specialValues = FdoDataValueCollection::Create();
+    }
 }
 
 FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
@@ -52,32 +57,8 @@ FdoRdbmsPvcInsertHandler::~FdoRdbmsPvcInsertHandler()
 		{
             mConnection->GetGdbiCommands()->free_cursor(mInsertQueryCache[i].qid);
 			mInsertQueryCache[i].qid = -1;
-		}
-        if (mInsertQueryCache[i].bind != NULL)
-        {
-            for (int j=0; j<mInsertQueryCache[i].count; j++)
-            {
-                if ( mInsertQueryCache[i].bind[j].null_ind ) 
-                    free(mInsertQueryCache[i].bind[j].null_ind);
-
-                if (NULL != mInsertQueryCache[i].bind[j].value.strvalue)
-                    // the BLOB value was not allocated
-                    if (mInsertQueryCache[i].bind[j].type != FdoDataType_BLOB)
-                        if (mInsertQueryCache[i].bind[j].type == FdoRdbmsDataType_Geometry)
-						{
-                            ((FdoIGeometry*)mInsertQueryCache[i].bind[j].value.strvalue)->Release ();
-							mInsertQueryCache[i].bind[j].value.strvalue = NULL;
-						}
-                        else if( mInsertQueryCache[i].bind[j].valueNeedsFree )
-						{
-							delete[] (char*)mInsertQueryCache[i].bind[j].value.strvalue;
-							mInsertQueryCache[i].bind[j].value.strvalue = NULL;
-							mInsertQueryCache[i].bind[j].valueNeedsFree = false;
-						}
-            }
-
-            delete [] mInsertQueryCache[i].bind;
-			mInsertQueryCache[i].bind = NULL;
+            delete mInsertQueryCache[i].bindHelper;
+            mInsertQueryCache[i].bindHelper = NULL;
         }
     }
 }
@@ -87,8 +68,8 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 	int                 i;
     int                 gid = -1;
     int                 numberOfProperties;
-    FdoRdbmsPvcBindDef  *bind = NULL;
     InsertQueryDef      *insertQuery = NULL;
+    bool                needBind = false;
 
 	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
 
@@ -161,7 +142,6 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
         {
             // CreateInsertString may modify the propValCollection in case of adding association.
             CreateInsertString( classDefinition, propValCollection, colSpecString, valuesString, bindCount, true);
-            bind = insertQuery->bind;
         }
         else
         {			
@@ -216,40 +196,18 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
 
             mConnection->GetGdbiCommands()->sql( (wchar_t *)(const wchar_t *) tmp, &gid );
 
-            // setup bind variables
-            bind = new FdoRdbmsPvcBindDef[bindCount];
-            if (!bind)
-                throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_11, "Memory error"));
-            memset (bind, 0, sizeof(FdoRdbmsPvcBindDef) * bindCount);
-
-            for ( int i = 0; i < bindCount; i++ ) 
-                mConnection->GetGdbiCommands()->alcnullind(1, &(bind[i].null_ind));
-
-            int bind_no = 0;
-            SetBindVariables(classDefinition, L"", bind_no, propValCollection, bind, gid);
-			
-			SetAditionalBindVariables(classDefinition, L"", bind_no, propValCollection, bind, gid);
-
-            insertQuery->bind = bind;
             insertQuery->qid = gid;
-            insertQuery->count = bindCount;
+            needBind = true;
         }
 
-        for (i=0; i<insertQuery->count; i++)
-        {
-            if (bind[i].type == FdoRdbmsDataType_Geometry)
-            {
-                if (NULL != bind[i].value.strvalue)
-                    ((FdoIGeometry*)bind[i].value.strvalue)->Release ();
-                bind[i].value.strvalue = NULL;
-            }
-			else if (bind[i].type != FdoDataType_BLOB && bind[i].type != FdoDataType_String && bind[i].value.strvalue )
-                memset(bind[i].value.strvalue, 0, bind[i].len );
+        SetBindVariables(classDefinition, L"", propValCollection, insertQuery);
+			
+    	SetAditionalBindVariables(classDefinition, L"", propValCollection, insertQuery, gid);
 
-            mConnection->GetGdbiCommands()->set_null( bind[i].null_ind, 0, 0 );
-        }
-
-        SetBindValues(classDefinition, propValCollection, insertQuery, handleForeignAutoincrementedId);
+        if ( needBind ) 
+            insertQuery->bindHelper->BindParameters(mConnection->GetGdbiCommands(), insertQuery->qid, &(insertQuery->bindProps));
+        else
+            insertQuery->bindHelper->BindValues(mConnection->GetGdbiCommands(), insertQuery->qid, &(insertQuery->bindProps));
 
         mConnection->GetGdbiCommands()->execute( insertQuery->qid );
 
@@ -263,13 +221,6 @@ long FdoRdbmsPvcInsertHandler::Execute( const FdoSmLpClassDefinition *classDefin
         {
             mConnection->GetGdbiCommands()->free_cursor( insertQuery->qid );
             insertQuery->qid = -1;
-            for ( int i = 0; i < insertQuery->count; i++ ) 
-            {
-                if ( insertQuery->bind[i].null_ind )
-                    free(insertQuery->bind[i].null_ind);
-            }
-            delete [] insertQuery->bind;
-            insertQuery->bind = NULL;
         }
 
         throw ex;
@@ -291,7 +242,13 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
                                                int& bindCount,
                                                bool scanOnly )
 {
+    // TODO: The logic and some of the checks in CreateInsertString must line up with those in 
+    // SetBindVariables, or the bound columns will not match those referenced in the SQL strings
+    // generated in this function. CreateInsertString() and SetBindVariables() should be merged
+    // to ensure that they do not diverge in the future.
+
     FdoPtr<FdoSmLpPropertyDefinitionCollection> propertyDefinitions = ((FdoSmLpClassDefinition*)currentClass)->GetProperties();
+    int     pass;
     int     i;
     bool    emptyBlobAdded;
 
@@ -304,259 +261,269 @@ void FdoRdbmsPvcInsertHandler::CreateInsertString(const FdoSmLpClassDefinition *
 	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
 
     const FdoSmPhDbObject* classTab = currentClass->RefDbObject()->RefDbObject();
-    for (i=0; i<propertyDefinitions->GetCount(); i++)
+
+    // In Most cases we only bind in columns for properties for which a property value was specified.
+    // This is done by pass 0. 
+    // However, if no property values were specified, then the generated SQL is invalid since the 
+    // insert statement must have a column list. 
+    // If no columns were bound in pass 0, do a pass 1, which just binds in the one column from the
+    // class table. 
+
+    for (pass=0; pass < 2; pass++)
     {
-        const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
-        FdoPropertyType  propType = propertyDefinition->GetPropertyType();
-        emptyBlobAdded = false;
-        const wchar_t* tmpName = propertyDefinition->GetName();
-        switch ( propType )
+        // Bind only 1 column in pass 1. Also quits here if pass 0 bound columns.
+        if ( (pass == 1) && (bindCount > 0) )
+            break;
+
+        for (i=0; i<propertyDefinitions->GetCount(); i++)
         {
-            case FdoPropertyType_DataProperty:
-                {
-                    if( scanOnly )
-                        break;
-
-                    const FdoSmLpSimplePropertyDefinition* simpleProp =
-                        static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDefinition);
-
-                    const FdoSmLpDataPropertyDefinition* dataProp =
-                        static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-
-                    bool autoGenerated = dataProp && dataProp->GetIsAutoGenerated();
-
-                    if( simpleProp->RefContainingDbObject() != classTab )
-                        continue;
-
-                    // We update feat id even though it's a system column.
-                    // We update read-only properties only if they are autogenerated.
-                //  if ( (simpleProp->RefIsSystem() == true ||
-                //          (simpleProp->RefReadOnly() == true && autoGenerated == false)) &&
-                //         simpleProp->RefIsFeatId() == false )
-                //      continue;
-
-                    const FdoSmPhColumn *column = simpleProp->RefColumn();
-                    if( column == NULL || ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() ) )
-                        continue;
-					// Check for property that has a default value defined
-					if (column->GetDefaultValue() && !(column->GetDefaultValue()->IsNull()))
-					{
-						//check if the column value is in propValCollection
-						// Try to find this property in the input values
-						bool found = false;
-						for (int ii = 0; (ii < propValCollection->GetCount()) && (found == false); ii++ ) 
-						{
-							FdoPtr<FdoPropertyValue>    propValue = propValCollection->GetItem(ii);
-							FdoPtr<FdoIdentifier>propName = propValue->GetName();
-							if (wcscmp(propName->GetText(), simpleProp->GetName()) == 0)
-								found = true;
-						}
-						if (found == false)
-							continue;
-					}
-						
-                    CreateInsertStringForColumn(
-                        column,
-                        propertyDefinition,
-                        propValCollection,
-                        insertString, valuesString,
-                        bindCount, emptyBlobAdded );
-                }
+            // Bind only 1 column in pass 1.
+            if ( (pass == 1) && (bindCount > 0) )
                 break;
 
-            case FdoPropertyType_GeometricProperty:
-                {
-                    if( scanOnly )
-                        break;
+            const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
+            FdoPropertyType  propType = propertyDefinition->GetPropertyType();
+            emptyBlobAdded = false;
+            const wchar_t* tmpName = propertyDefinition->GetName();
 
-                    const FdoSmLpSimplePropertyDefinition* simpleProp =
-                        static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDefinition);
+            FdoPtr<FdoValueExpression> exp;
 
-                    if( simpleProp->RefContainingDbObject() != classTab )
-                        continue;
-
-                    const FdoSmLpGeometricPropertyDefinition* geomProp =
-                        static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
-                    FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
-
-                    switch (columnType)
+            switch ( propType )
+            {
+                case FdoPropertyType_DataProperty:
                     {
-                    case FdoSmOvGeometricColumnType_Default:
-                    case FdoSmOvGeometricColumnType_BuiltIn:
-                    case FdoSmOvGeometricColumnType_Blob:
-                    case FdoSmOvGeometricColumnType_Clob:
-                    case FdoSmOvGeometricColumnType_String:
-                        {
-                            const FdoSmPhColumn *column = simpleProp->RefColumn();
-                            if (NULL != column)
-                            {
-                                CreateInsertStringForColumn(
-                                    column,
-                                    propertyDefinition,
-                                    propValCollection,
-                                    insertString, valuesString,
-                                    bindCount, emptyBlobAdded );
-                            }
-                        }
-                        break;
-                    case FdoSmOvGeometricColumnType_Double:
-                        {
-                            const FdoSmPhColumn *columnX = geomProp->RefColumnX();
-                            const FdoSmPhColumn *columnY = geomProp->RefColumnY();
-                            const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
+                        // Skip property if not in property value collection and we're on pass 0.
+                        if ( !BindThisValue(tmpName, (pass == 0) ? propValCollection : (FdoPropertyValueCollection*) NULL, exp) )
+                            break;
 
-                            if (NULL != columnX && NULL != columnY)
+                        if( scanOnly )
+                            break;
+
+                        const FdoSmLpDataPropertyDefinition* dataProp =
+                            static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+
+                        bool autoGenerated = dataProp && dataProp->GetIsAutoGenerated();
+
+                        if( dataProp->RefContainingDbObject() != classTab )
+                            continue;
+
+                        const FdoSmPhColumn *column = dataProp->RefColumn();
+                        if( column == NULL || ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() ) )
+                            continue;
+
+                        CreateInsertStringForColumn(
+                            column,
+                            propertyDefinition,
+                            propValCollection,
+                            insertString, valuesString,
+                            bindCount, emptyBlobAdded );
+                    }
+                    break;
+
+                case FdoPropertyType_GeometricProperty:
+                    {
+                        if( scanOnly )
+                            break;
+
+                        // Skip property if not in property value collection and we're on pass 0.
+                        if ( !BindThisValue(tmpName, (pass == 0) ? propValCollection : (FdoPropertyValueCollection*) NULL, exp) )
+                            break;
+
+                        const FdoSmLpGeometricPropertyDefinition* geomProp =
+                            static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+
+                        if( geomProp->RefContainingDbObject() != classTab )
+                            continue;
+
+                        FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
+
+                        switch (columnType)
+                        {
+                        case FdoSmOvGeometricColumnType_Default:
+                        case FdoSmOvGeometricColumnType_BuiltIn:
+                        case FdoSmOvGeometricColumnType_Blob:
+                        case FdoSmOvGeometricColumnType_Clob:
+                        case FdoSmOvGeometricColumnType_String:
                             {
-                                // Support ordinate column storage format.
-                                CreateInsertStringForColumn(
-                                    columnX,
-                                    propertyDefinition,
-                                    propValCollection,
-                                    insertString, valuesString,
-                                    bindCount, emptyBlobAdded );
-                                CreateInsertStringForColumn(
-                                    columnY,
-                                    propertyDefinition,
-                                    propValCollection,
-                                    insertString, valuesString,
-                                    bindCount, emptyBlobAdded );
-                                if (NULL != columnZ)
+                                const FdoSmPhColumn *column = geomProp->RefColumn();
+                                if (NULL != column)
                                 {
                                     CreateInsertStringForColumn(
-                                        columnZ,
+                                        column,
                                         propertyDefinition,
                                         propValCollection,
                                         insertString, valuesString,
                                         bindCount, emptyBlobAdded );
                                 }
                             }
-                        }
-                        break;
-                    default:
-                        // Nothing useful to do here.
-                        continue;
-                    }   // end of switch (columnType)
+                            break;
+                        case FdoSmOvGeometricColumnType_Double:
+                            {
+                                const FdoSmPhColumn *columnX = geomProp->RefColumnX();
+                                const FdoSmPhColumn *columnY = geomProp->RefColumnY();
+                                const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
 
-                    // Support spatial index columns, if present.
-                    const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
-                    const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
-                    if (NULL != columnSi1 && NULL != columnSi2)
-                    {
-                        CreateInsertStringForColumn(
-                            columnSi1,
-                            propertyDefinition,
-                            propValCollection,
-                            insertString, valuesString,
-                            bindCount, emptyBlobAdded );
+                                if (NULL != columnX && NULL != columnY)
+                                {
+                                    // Support ordinate column storage format.
+                                    CreateInsertStringForColumn(
+                                        columnX,
+                                        propertyDefinition,
+                                        propValCollection,
+                                        insertString, valuesString,
+                                        bindCount, emptyBlobAdded );
 
-                        CreateInsertStringForColumn(
-                            columnSi2,
-                            propertyDefinition,
-                            propValCollection,
-                            insertString, valuesString,
-                            bindCount, emptyBlobAdded );
-                    }
-                }
-                break;
+                                    CreateInsertStringForColumn(
+                                        columnY,
+                                        propertyDefinition,
+                                        propValCollection,
+                                        insertString, valuesString,
+                                        bindCount, emptyBlobAdded );
 
-            case FdoPropertyType_ObjectProperty:
-                {
-                    const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
-                    const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
-                    if ( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
-                        break; // We only handle the single mapping
+                                    if (NULL != columnZ)
+                                    {
+                                        CreateInsertStringForColumn(
+                                            columnZ,
+                                            propertyDefinition,
+                                            propValCollection,
+                                            insertString, valuesString,
+                                            bindCount, emptyBlobAdded );
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            // Nothing useful to do here.
+                            continue;
+                        }   // end of switch (columnType)
 
-                    const FdoSmLpPropertyMappingSingle * singleMapping = static_cast<const FdoSmLpPropertyMappingSingle*>( mappping );
-                    CreateInsertString( objProp->RefTargetClass(), propValCollection, insertString, valuesString, bindCount, scanOnly );
-                }
-                break;
-
-            case FdoPropertyType_AssociationProperty:
-                {
-                    const FdoSmLpAssociationPropertyDefinition* associationPropertyDefinition = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
-                    if( associationPropertyDefinition->GetReadOnly() )
-                    {
-                        // TODO: need to check the property value collection and not the class properties.
-
-                        // Should not happen as we don't add the read-only association property.
-                        // The caller must have added it to the collection.
-                        //throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_290, "Cannot set a read only association property"));
-                        break;
-                    }
-
-
-                    //
-                    // We only add the column if the identity properties are not set; translation: we added axtra column
-                    // to link to the associated class. If the identity properties are set, it mean we are using existing
-                    // properties/column and there is no need to add any column as those column will be added a data properties.
-                    const FdoStringsP   identCollection = associationPropertyDefinition->GetIdentityProperties();
-                    if( identCollection->GetCount() == 0  )
-                    {
-                        const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
-                        for(int i=0; i<identCols->GetCount() && ! scanOnly ; i++ )
+                        // Support spatial index columns, if present.
+                        const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
+                        const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
+                        if (NULL != columnSi1 && NULL != columnSi2)
                         {
-							CreateInsertStringForColumn(
-								(const wchar_t * ) identCols->GetDbString(i),
-								insertString, valuesString,
-								bindCount );
+                            CreateInsertStringForColumn(
+                                columnSi1,
+                                propertyDefinition,
+                                propValCollection,
+                                insertString, valuesString,
+                                bindCount, emptyBlobAdded );
+
+                            CreateInsertStringForColumn(
+                                columnSi2,
+                                propertyDefinition,
+                                propValCollection,
+                                insertString, valuesString,
+                                bindCount, emptyBlobAdded );
                         }
                     }
-                    else
+                    break;
+
+                case FdoPropertyType_ObjectProperty:
                     {
+                        const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
+                        const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
+                        if ( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
+                            break; // We only handle the single mapping
+
+                        const FdoSmLpPropertyMappingSingle * singleMapping = static_cast<const FdoSmLpPropertyMappingSingle*>( mappping );
+                        CreateInsertString( objProp->RefTargetClass(), propValCollection, insertString, valuesString, bindCount, scanOnly );
+                    }
+                    break;
+
+                case FdoPropertyType_AssociationProperty:
+                    {
+                        const FdoSmLpAssociationPropertyDefinition* associationPropertyDefinition = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
+                        if( associationPropertyDefinition->GetReadOnly() )
+                        {
+                            // TODO: need to check the property value collection and not the class properties.
+
+                            // Should not happen as we don't add the read-only association property.
+                            // The caller must have added it to the collection.
+                            //throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_290, "Cannot set a read only association property"));
+                            break;
+                        }
+
+
                         //
-                        // We may have duplicate entry for the same column. The <asso>.<ident> or the rever_ident property may both be initialized.
-                        // If both are initialized, then both values should be the same.
-                        // If only the <asso>.<ident> is set, then we (add) and/or set the rever_ident property.
-                        // If the rever_ident is set, then we do nothing
-                        const FdoStringsP   revIdentCollection = associationPropertyDefinition->GetReverseIdentityProperties();
-                        for( int i=0; i<identCollection->GetCount(); i++ )
+                        // We only add the column if the identity properties are not set; translation: we added axtra column
+                        // to link to the associated class. If the identity properties are set, it mean we are using existing
+                        // properties/column and there is no need to add any column as those column will be added a data properties.
+                        const FdoStringsP   identCollection = associationPropertyDefinition->GetIdentityProperties();
+                        if( identCollection->GetCount() == 0  )
                         {
-                            FdoStringP assoPropName = FdoStringP::Format(L"%ls.%ls",propertyDefinition->GetName(),(const wchar_t*)(identCollection->GetString(i)));
-                            FdoPtr<FdoPropertyValue> assocPropertyValue;
-                            FdoPtr<FdoPropertyValue> identPropertyValue;
-                            FdoPtr<FdoValueExpression> assoVal;
-                            FdoPtr<FdoValueExpression> identVal;
-                            assocPropertyValue = propValCollection->FindItem( (const wchar_t*)assoPropName );
-                            assoVal = assocPropertyValue ? assocPropertyValue->GetValue() : NULL;
-
-                            FdoStringP  revIdenName = revIdentCollection->GetString(i);
-                            identPropertyValue = propValCollection->FindItem( (const wchar_t*)(revIdenName) );
-                            identVal = identPropertyValue ? identPropertyValue->GetValue() : NULL;
-                            if( assocPropertyValue != NULL && identPropertyValue != NULL &&  assoVal != NULL && identVal != NULL )
+                            const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
+                            const FdoSmLpDataPropertyDefinitionCollection *identPropCol =  associationPropertyDefinition->RefAssociatedClass()->RefIdentityProperties();
+                            for(int i=0; i<identCols->GetCount() && ! scanOnly ; i++ )
                             {
-                                if( FdoRdbmsUtil::StrCmp(assoVal->ToString(), identVal->ToString() ) )
-                                    throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_291, "Association property '%1$ls' and property '%2$ls' must have the same value or only one should be set",
-                                    (const wchar_t*)assoPropName, (const wchar_t*)revIdenName ));
+                                const FdoSmLpDataPropertyDefinition *identProp = identPropCol->RefItem( i );
+                                FdoStringP qPropName = FdoStringP(tmpName, true) + L"." + identProp->GetName(); 
+                                if ( !BindThisValue(qPropName, (pass == 0) ? propValCollection : (FdoPropertyValueCollection*) NULL, exp) )
+                                    continue;
 
+							    CreateInsertStringForColumn(
+								    (const wchar_t * ) identCols->GetDbString(i),
+								    insertString, valuesString,
+								    bindCount );
                             }
-                            else if( assoVal != NULL )
+                        }
+                        else
+                        {
+                            //
+                            // We may have duplicate entry for the same column. The <asso>.<ident> or the rever_ident property may both be initialized.
+                            // If both are initialized, then both values should be the same.
+                            // If only the <asso>.<ident> is set, then we (add) and/or set the rever_ident property.
+                            // If the rever_ident is set, then we do nothing
+                            const FdoStringsP   revIdentCollection = associationPropertyDefinition->GetReverseIdentityProperties();
+                            for( int i=0; i<identCollection->GetCount(); i++ )
                             {
-                                if( identPropertyValue != NULL )
+                                FdoStringP assoPropName = FdoStringP::Format(L"%ls.%ls",propertyDefinition->GetName(),(const wchar_t*)(identCollection->GetString(i)));
+                                FdoPtr<FdoPropertyValue> assocPropertyValue;
+                                FdoPtr<FdoPropertyValue> identPropertyValue;
+                                FdoPtr<FdoValueExpression> assoVal;
+                                FdoPtr<FdoValueExpression> identVal;
+                                assocPropertyValue = propValCollection->FindItem( (const wchar_t*)assoPropName );
+                                assoVal = assocPropertyValue ? assocPropertyValue->GetValue() : NULL;
+
+                                FdoStringP  revIdenName = revIdentCollection->GetString(i);
+                                identPropertyValue = propValCollection->FindItem( (const wchar_t*)(revIdenName) );
+                                identVal = identPropertyValue ? identPropertyValue->GetValue() : NULL;
+                                if( assocPropertyValue != NULL && identPropertyValue != NULL &&  assoVal != NULL && identVal != NULL )
                                 {
-                                    // rever ident found but not set; set its value from the <asso>.<ident> property value.
-                                    // Note that this may not get executed as this property will be removed in FdoRdbmsSchemaUtil::GroupByClass
-                                    identPropertyValue->SetValue( assoVal );
+                                    if( FdoRdbmsUtil::StrCmp(assoVal->ToString(), identVal->ToString() ) )
+                                        throw FdoCommandException::Create(NlsMsgGet2(FDORDBMS_291, "Association property '%1$ls' and property '%2$ls' must have the same value or only one should be set",
+                                        (const wchar_t*)assoPropName, (const wchar_t*)revIdenName ));
+
                                 }
-                                else
+                                else if( assoVal != NULL )
                                 {
-                                    // The <asso>.<ident> is set and the rever_ident does not exist. In this case we just
-                                    // rename the <asso>.<ident> name to the rever_ident name. The correponding column is already
-                                    // by the data property case above. We only needed to hook the value of the property. That is
-                                    // easily done by renaming the property that contain the value to the name of the property
-                                    // that need the value.
-                                    assocPropertyValue->SetName( (const wchar_t*)revIdenName );
+                                    if( identPropertyValue != NULL )
+                                    {
+                                        // rever ident found but not set; set its value from the <asso>.<ident> property value.
+                                        // Note that this may not get executed as this property will be removed in FdoRdbmsSchemaUtil::GroupByClass
+                                        identPropertyValue->SetValue( assoVal );
+                                    }
+                                    else
+                                    {
+                                        // The <asso>.<ident> is set and the rever_ident does not exist. In this case we just
+                                        // rename the <asso>.<ident> name to the rever_ident name. The correponding column is already
+                                        // by the data property case above. We only needed to hook the value of the property. That is
+                                        // easily done by renaming the property that contain the value to the name of the property
+                                        // that need the value.
+                                        assocPropertyValue->SetName( (const wchar_t*)revIdenName );
+                                    }
                                 }
                             }
                         }
+                        //
+                        // Perform a constrain check before goind any further. The constrain check should be done at this point as it
+                        // depend on the processing that may happen above.
+                        AssociationConstrainCheck( associationPropertyDefinition, propValCollection );
                     }
-                    //
-                    // Perform a constrain check before goind any further. The constrain check should be done at this point as it
-                    // depend on the processing that may happen above.
-                    AssociationConstrainCheck( associationPropertyDefinition, propValCollection );
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -663,794 +630,379 @@ void FdoRdbmsPvcInsertHandler::CreateInsertStringForColumn(
     bindCount++;
 }
 
-void FdoRdbmsPvcInsertHandler::SetBindValues(const FdoSmLpClassDefinition *classDefinition, 
-											 FdoPropertyValueCollection  *propValCollection, InsertQueryDef *insertQuery,
-                                             bool handleForeignAutoincrementedId)
-{
-    int                 i;
-    int                 j;
-    FdoPtr<FdoPropertyValue> propertyValue;
-    FdoRdbmsPvcBindDef *bind = insertQuery->bind;
-
-	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
-    FdoRdbmsSpatialManagerP spatialManager = mFdoConnection->GetSpatialManager();
-
-    for (i=0; i<propValCollection->GetCount(); i++)
-    {
-        bool   isAssociation = false;
-
-        propertyValue = propValCollection->GetItem(i);
-        if (propertyValue == NULL)
-            throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
-        FdoPtr<FdoIdentifier>identifier = propertyValue->GetName();
-
-        //
-        // Only association properties will end up in the property value collection with composite names as <prop1>.<prop2>
-        int length;
-        if( identifier->GetScope( length ) && length == 1 )
-            isAssociation = true;
-
-        const FdoSmPhColumn *columnDef = NULL;
-        const FdoSmLpPropertyDefinitionCollection * propertyDefs = classDefinition->RefProperties();
-        const FdoSmLpPropertyDefinition * propertyDef = propertyDefs->RefItem(identifier->GetName());
-        if ( propertyDef && !isAssociation ) 
-        {
-            FdoPropertyType propertyDefType = propertyDef->GetPropertyType();
-            if (FdoPropertyType_DataProperty == propertyDefType)
-            {
-	            const FdoSmLpSimplePropertyDefinition* simplePropDef =
-		            static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDef);
-                if ( simplePropDef != NULL )
-                    columnDef = simplePropDef->RefColumn();
-            }
-        }
-
-        // Nothing to do if autogenerated property.
-        if( !mInsertAutoIncrementProperties && columnDef && columnDef->GetAutoincrement() )
-            continue;
-
-        const wchar_t* name  = identifier->GetText();
-        for (j=i+1; j<propValCollection->GetCount(); j++)
-        {
-            FdoPtr<FdoPropertyValue> propertyValue2 = propValCollection->GetItem(j);
-            if (!propertyValue2 )
-                throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
-            FdoPtr<FdoIdentifier> identifier = propertyValue2->GetName();
-            if (wcscmp(name, identifier->GetText()) == 0)
-                break;
-        }
-        if (j < propValCollection->GetCount())
-            continue;
-
-        FdoPtr<FdoValueExpression> literal = propertyValue->GetValue();
-        FdoPtr<FdoIStreamReader> stream = propertyValue->GetStreamReader();
-
-        if (literal == NULL && stream == NULL)
-            continue;  // TODO: Should this be an Exception?
-
-        FdoDataValue *dataValue = NULL;
-        FdoGeometryValue *geomValue = NULL;
-
-        if (literal != NULL)
-        {
-            dataValue = (dynamic_cast<FdoDataValue*>(literal.p));
-            geomValue = (dynamic_cast<FdoGeometryValue*>(literal.p));
-
-            if ( (dataValue && dataValue->IsNull()) || (geomValue && geomValue->IsNull()))
-                continue;
-        }
-
-        // We'll need the property definition and possibly spatial index values for geometries.
-        FdoStringsP geomSiKeys;
-        FdoInt32 geomBindIndex = -1;
-        const FdoSmLpGeometricPropertyDefinition * geomPropDef = NULL;
-        if (NULL != geomValue)
-        {
-            const FdoSmLpPropertyDefinitionCollection * propertyDefs = classDefinition->RefProperties();
-            const FdoSmLpPropertyDefinition * propertyDef = propertyDefs->RefItem(identifier->GetName());
-            if ( propertyDef == NULL )
-                throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_28, "Property '%1$ls' is not found", identifier->GetName()));
-            if ( FdoPropertyType_GeometricProperty != propertyDef->GetPropertyType() )
-                throw FdoFilterException::Create(NlsMsgGet1(FDORDBMS_486,
-                                                            "Expected property '%1$ls' to be a geometric property.",
-                                                            identifier->GetName()));
-            geomPropDef = static_cast<const FdoSmLpGeometricPropertyDefinition *>(propertyDef);
-        }
-
-        bool foundColumn = false;
-
-        for (j=0; j< insertQuery->count; j++)
-        {
-            if (wcscmp(name, bind[j].propertyName) == 0)
-            {
-                mConnection->GetGdbiCommands()->set_nnull( bind[j].null_ind, 0, 0 );
-
-                if (bind[j].type == FdoRdbmsDataType_Geometry) {
-
-                    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                    FdoPtr<FdoByteArray> ba = geomValue->GetGeometry();
-                    FdoIGeometry *newGeomValue = NULL;
-                    if ( ba )
-                    {
-                        newGeomValue = gf->CreateGeometryFromFgf(ba);
-
-                        mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( classDefinition, name, newGeomValue );
-                        mConnection->GetSchemaUtil()->CheckGeomPropShapeType( classDefinition, name, newGeomValue );
-                        mConnection->GetSchemaUtil()->CheckGeomPropValidity( classDefinition, name, newGeomValue );
-
-                        // Compute the SI key values.
-                        const FdoSmPhColumn *columnSi1 = geomPropDef->RefColumnSi1();
-                        const FdoSmPhColumn *columnSi2 = geomPropDef->RefColumnSi2();
-                        if (NULL != columnSi1 && NULL != columnSi2 && spatialManager != NULL )
-                        {
-                            spatialManager->InsertGeometryInLine(geomPropDef, geomValue, geomSiKeys);
-                            geomBindIndex = j;
-                        }
-                    }
-                    else
-                        mConnection->GetGdbiCommands()->set_null( bind[j].null_ind, 0, 0 );
-
-                    FdoIGeometry *oldGeomValue = (FdoIGeometry*) bind[j].value.strvalue;
-                    FDO_SAFE_RELEASE( oldGeomValue );
-                    bind[j].value.strvalue = (char*) newGeomValue;
-                    foundColumn = true;
-                    break;
-                }
-                else if (NULL != geomValue)
-                {
-                    // The property value is a geometry, but the column isn't geometric.
-                    // Check for a match against SI columns and non-built-in geometric
-                    // column storage formats.
-                    FdoString * columnNameSi1 = geomPropDef->GetColumnNameSi1();
-                    FdoString * columnNameSi2 = geomPropDef->GetColumnNameSi2();
-                    if (wcscmp(columnNameSi1, bind[j].name) == 0 ||
-                        wcscmp(columnNameSi2, bind[j].name) == 0)
-                    {
-                        ;   // Nothing to do here; SI values are handled separately, below.
-                    }
-                    else
-                    {
-                        FdoPtr<FdoByteArray>    ba = geomValue->GetGeometry();
-                        if (ba == NULL)
-                            continue;
-
-                        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                        FdoPtr<FdoIGeometry>    geomValue = gf->CreateGeometryFromFgf( ba );
-                        FdoGeometryType         geomType = geomValue->GetDerivedType();
-
-                        FdoSmOvGeometricColumnType columnType = geomPropDef->GetGeometricColumnType();
-
-                        if (FdoSmOvGeometricColumnType_Double == columnType)
-                        {
-                            if (FdoGeometryType_Point != geomType)
-                                continue;
-                            FdoIPoint * pointValue = static_cast<FdoIPoint *>(geomValue.p);
-                            
-
-                            const FdoSmPhColumn *columnX = geomPropDef->RefColumnX();
-                            const FdoSmPhColumn *columnY = geomPropDef->RefColumnY();
-                            const FdoSmPhColumn *columnZ = geomPropDef->RefColumnZ();
-                            const FdoSmPhColumn *column  = NULL;
-                            double x, y, z, m;
-                            FdoInt32 dimensionality;
-                            double doubleValue = 0.0;
- 
-                            pointValue->GetPositionByMembers(&x, &y, &z, &m, &dimensionality);
-
-                            if (NULL != columnX && wcscmp(columnX->GetName(), bind[j].name)==0)
-                            {
-                                doubleValue = x;
-                                column      = columnX;
-                            }
-                            else if (NULL != columnY && wcscmp(columnY->GetName(), bind[j].name)==0)
-                            {
-                                doubleValue = y;
-                                column      = columnY;
-                            }
-                            else if (NULL != columnZ && wcscmp(columnZ->GetName(), bind[j].name)==0)
-                            {
-                                doubleValue = z;
-                                column      = columnZ;
-                            }
-                            else
-                                continue;
-
-                            SetGeomOrdinateBindValue( (char*)bind[j].value.strvalue, doubleValue, column );
-
-                        }
-                    }
-                    foundColumn = true;
-                    continue;
-                }
-                else if (NULL == geomValue)
-                {
-                    // FdoDataType_BLOB by ref. have NULL dataValue
-                    int dataType = dataValue ? dataValue->GetDataType() : bind[j].type;
-                    // get the scale value for DOUBLE/DECIMAL types
-                    const FdoSmLpPropertyDefinitionCollection * propertyDefs = classDefinition->RefProperties();
-                    const FdoSmLpPropertyDefinition * propertyDef = propertyDefs->RefItem(bind[j].propertyName);
-                    const FdoSmLpSimplePropertyDefinition* simplePropDef =
-                        static_cast<const FdoSmLpSimplePropertyDefinition*>(propertyDef);
-
-                    int scale = -100; // -100 is not a valid scale value
-                    if (simplePropDef != NULL)
-                    {
-                        const FdoSmPhColumn *columnDef = simplePropDef->RefColumn();
-                        if (columnDef)
-                            scale = columnDef->GetScale();
-                    }
-
-                    switch ( dataType )   {
-                        case FdoDataType_Boolean:
-                            {
-                                bool boolValue = (static_cast<FdoBooleanValue*>(dataValue))->GetBoolean();
-                                sprintf((char*)bind[j].value.strvalue, "%d", boolValue);
-                            }
-                            break;
-                        case FdoDataType_Byte:
-                            {
-                                FdoByte byteValue = (static_cast<FdoByteValue*>(dataValue))->GetByte();
-                                sprintf((char*)bind[j].value.strvalue, "%d", byteValue);
-                            }
-                            break;
-
-                        case FdoDataType_DateTime:
-                            const char *timeValue;
-                            {
-                                FdoDateTime dateTime;
-                                dateTime = (static_cast<FdoDateTimeValue*>(dataValue))->GetDateTime();
-                                timeValue = mFdoConnection->FdoToDbiTime(dateTime);
-                            }
-                            strcpy((char*)bind[j].value.strvalue, timeValue);
-                            break;
-
-                        case FdoDataType_Decimal:
-                            {
-                                double decimalValue = (static_cast<FdoDecimalValue*>(dataValue))->GetDecimal();
-                                sprintf((char*)bind[j].value.strvalue, "%.*f", (scale != -100) ? scale : 8, decimalValue);
-                            }
-                            break;
-
-                        case FdoDataType_Double:
-                            {
-                                double doubleValue = (static_cast<FdoDoubleValue*>(dataValue))->GetDouble();
-                                sprintf((char*)bind[j].value.strvalue, "%.16g", doubleValue);
-                            }
-                            break;
-
-                        case FdoDataType_Int16:
-                            {
-                                FdoInt16 int16Value = (static_cast<FdoInt16Value*>(dataValue))->GetInt16();
-                                sprintf((char*)bind[j].value.strvalue, "%d", int16Value);
-                            }
-                            break;
-
-                        case FdoDataType_Int32:
-                            {
-                                // We should accept any int value precision (32,16)
-                                FdoInt32 int32Value;
-                                if( dataValue->GetDataType() == FdoDataType_Int16 )
-                                    int32Value = (static_cast<FdoInt16Value*>(dataValue))->GetInt16();
-                                else if ( dataValue->GetDataType() == FdoDataType_Int32 )
-                                    int32Value = (static_cast<FdoInt32Value*>(dataValue))->GetInt32();
-                                else
-                                    throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_293, "Property type and value type mismatch for property %1$ls", name));
-
-                                sprintf((char*)bind[j].value.strvalue, "%d", int32Value);
-                            }
-                            break;
-
-                        case FdoDataType_Int64:
-                            {
-                                // We should accept any int value precision (32,16)
-                                FdoInt64   val;
-                                if( dataValue->GetDataType() == FdoDataType_Int16 )
-                                    val = (static_cast<FdoInt16Value*>(dataValue))->GetInt16();
-                                else if ( dataValue->GetDataType() == FdoDataType_Int32 )
-                                    val = (static_cast<FdoInt32Value*>(dataValue))->GetInt32();
-                                else if ( dataValue->GetDataType() == FdoDataType_Int64 )
-                                    val = (static_cast<FdoInt64Value*>(dataValue))->GetInt64();
-                                else
-                                    throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_293, "Property type and value type mismatch for property %1$ls", name));
-#ifdef _WIN32
-                                _i64toa( val,(char*)bind[j].value.strvalue, 10 );
-#else
-                                sprintf((char*)bind[j].value.strvalue, "%lld", val);
-#endif
-                            }
-                            break;
-
-                        case FdoDataType_Single:
-                            {
-                                float singleValue = (static_cast<FdoSingleValue*>(dataValue))->GetSingle();
-                                sprintf((char*)bind[j].value.strvalue, "%.8g", singleValue);
-                            }
-                            break;
-
-                        case FdoDataType_String:
-                            {
-                                const wchar_t *wcharValue;
-                                wcharValue = (static_cast<FdoStringValue*>(dataValue))->GetString();
-								if( bind[j].type == FdoDataType_String && mConnection->GetGdbiCommands()->SupportsUnicode() )
-								{
-									wcsncpy((wchar_t*)bind[j].value.strvalue, wcharValue, bind[j].len);
-									((wchar_t*)bind[j].value.strvalue)[bind[j].len-1] = '\0';
-								}
-								else
-								{
-									FdoStringP  str = wcharValue;
-									const char* charVal = (const char*)str;
-									strncpy((char*)bind[j].value.strvalue, charVal, bind[j].len);
-									((char*)bind[j].value.strvalue)[bind[j].len-1] = '\0';
-								}
-                            }
-                            break;
-
-                        case FdoDataType_BLOB:
-                            {
-                                char temp[32];
-                                sprintf(temp, "%d", j+1);
-
-                                if ( stream != NULL )
-                                {
-                                    bind[j].value.strvalue = NULL;  // Oracle will return a LOB locator
-                                    bind[j].len = sizeof(void *);
-                                    bind[j].reader = stream;
-                                }
-                                else
-                                {
-                                    // Avoid copying the value by using directly the address of data
-                                    FdoBLOBValue * blob = static_cast<FdoBLOBValue*>(dataValue);
-
-                                    FdoPtr<FdoByteArray> byteArr = blob->GetData();
-                                    bind[j].value.strvalue = (char*) byteArr->GetData();
-                                    bind[j].len = byteArr->GetCount();
-
-                                    mConnection->GetGdbiCommands()->bind(insertQuery->qid, temp, RDBI_BLOB, bind[j].len,
-                                                        (char*)bind[j].value.strvalue, bind[j].null_ind );
-                                }
-                            }
-                            break;
-
-                        default:
-                            throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_54, "Unhandled type: %1$d", bind[j].type));
-                            break;
-                    }
-                    foundColumn = true;
-                    break;
-                }
-            }
-        }
-
-        if (!foundColumn && ! isAssociation )
-            throw FdoCommandException::Create(NlsMsgGet1(FDORDBMS_56, "Property '%1$ls' not found", name ));
-
-        // Assign SI key values to bind buffers.
-        if (NULL != geomValue && geomBindIndex >= 0 && geomSiKeys->GetCount() > 0)
-        {
-            // Rather than scanning the array of bind values again, assume that
-            // the bound columns for SI values immediately follow that of
-            // the geometry value column.  This ordering is determined by 
-            // SetBindVariables().
-
-            FdoInt32 index = geomBindIndex + 1;
-            const wchar_t *wcharValue = geomSiKeys->GetString(0);
-			if( mConnection->GetGdbiCommands()->SupportsUnicode() )
-			{
-				wcsncpy((wchar_t*)bind[index].value.strvalue, wcharValue, bind[index].len);
-				((wchar_t*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
-			}
-			else
-			{
-				const char* charVal = mConnection->GetUtility()->UnicodeToUtf8( wcharValue );
-				strncpy((char*)bind[index].value.strvalue, charVal, bind[index].len);
-				((char*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
-			}
-            mConnection->GetGdbiCommands()->set_nnull( bind[index].null_ind, 0, 0 );
-
-            if (geomSiKeys->GetCount() > 1)
-            {
-                index = geomBindIndex + 2;
-                wcharValue = geomSiKeys->GetString(1);
-			    if( mConnection->GetGdbiCommands()->SupportsUnicode() )
-			    {
-				    wcsncpy((wchar_t*)bind[index].value.strvalue, wcharValue, bind[index].len);
-				    ((wchar_t*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
-			    }
-			    else
-			    {
-				    const char* charVal = mConnection->GetUtility()->UnicodeToUtf8( wcharValue );
-				    strncpy((char*)bind[index].value.strvalue, charVal, bind[index].len);
-				    ((char*)bind[index].value.strvalue)[bind[index].len-1] = '\0';
-			    }
-                mConnection->GetGdbiCommands()->set_nnull( bind[index].null_ind, 0, 0 );
-            }
-        }
-    }
-}
-
 void FdoRdbmsPvcInsertHandler::SetAditionalBindVariables(const FdoSmLpClassDefinition *currentClass, 
-						  const wchar_t *scope, int &bind_no, 
+						  const wchar_t *scope,
 						  FdoPropertyValueCollection  *propValCollection, 
-						  FdoRdbmsPvcBindDef *bind, int gid)
+						  InsertQueryDef *insertQuery, int gid)
 {
 	// Nothing to add
 }
 
 void FdoRdbmsPvcInsertHandler::SetBindVariables(const FdoSmLpClassDefinition *currentClass, 
-												const wchar_t *scope, int &bind_no, FdoPropertyValueCollection  *propValCollection, FdoRdbmsPvcBindDef *bind, int gid)
+												const wchar_t *scope, FdoPropertyValueCollection  *propValCollection, InsertQueryDef *queryDef)
 {
+    FdoStringCollection* bindPropNames = queryDef->bindPropNames;
+    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = &(queryDef->bindProps);
+    FdoDataValueCollection* specialValues = queryDef->specialValues;
+
+
+    if ( (*scope) == 0 ) 
+    {
+        bindPropNames->Clear();
+        while ( bindProps->size() > 0 )
+            // TODO: find out why bindProps->clear() crashes.
+            bindProps->pop_back();
+        specialValues->Clear();
+    }
+
     FdoPtr<FdoSmLpPropertyDefinitionCollection> propertyDefinitions = ((FdoSmLpClassDefinition*)currentClass)->GetProperties();
 
     // Make a copy of the properties with the geometries at the end of the collection
     if ( mFdoConnection->BindGeometriesLast() )
         propertyDefinitions = MoveGeometryProperties( currentClass );
 
+    int pass;
     int i;
-    const FdoSmPhDbObject* classTab = currentClass->RefDbObject()->RefDbObject();
-	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
-    for (i=0; i<propertyDefinitions->GetCount(); i++)
+
+    // In Most cases we only bind in columns for properties for which a property value was specified.
+    // This is done by pass 0. 
+    // However, if no property values were specified, then the generated SQL is invalid since the 
+    // insert statement must have a column list. 
+    // If no columns were bound in pass 0, do a pass 1, which just binds in the one column from the
+    // class table. 
+
+    for (pass=0; pass < 2; pass++ ) 
     {
-        const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
-        FdoPropertyType  propType = propertyDefinition->GetPropertyType();
-		if( ! mBindUnsetValues )
-		{
-			FdoPtr<FdoPropertyValue>propVal = propValCollection->FindItem( propertyDefinition->GetName() );
-			if( propVal == NULL )
-				continue;
+        // Quit if on pass 1 and at least one column was bound. This also quits if pass 0 found 
+        // columns to bind.
+        if ( (pass == 1) && (bindPropNames->GetCount() > 0) )
+            break;
 
-			FdoPtr<FdoValueExpression>exp = propVal->GetValue();
-			if( exp == NULL )
-				continue;
-		}
-        switch ( propType )
+        for (i=0; i<propertyDefinitions->GetCount(); i++)
         {
-            case FdoPropertyType_DataProperty:
-            {
-                const FdoSmLpDataPropertyDefinition* dataProp =
-                    static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
-
-                if( dataProp->RefContainingDbObject() != classTab )
-                    continue;
-                // We update feat id even though it's a system column.
-                // We update read-only properties only if they are autogenerated.
-                //if ( (dataProp->RefIsSystem() == true ||
-               //       (dataProp->RefReadOnly() == true && dataProp->RefIsAutoGenerated() == false) ) &&
-                //    dataProp->RefIsFeatId() == false )
-                //  continue;
-
-
-                const FdoSmPhColumn *column = dataProp->RefColumn();
-                if (NULL == column)
-                {
-                    if ( dataProp->GetIsSystem() ) 
-                    {
-                        // It is possible for externally defined tables to not have
-                        // columns for certain system properties. In this case, 
-                        // skip these properties.
-                        continue;
-                    }
-                    else 
-                    {
-                        throw FdoRdbmsException::Create(NlsMsgGet1(
-                                FDORDBMS_485,
-                                "No column for property '%1$ls'.",
-                                dataProp->GetName()));
-                    }
-                }
-                const wchar_t *colName = column->GetName();
-
-                if ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() )
-                    continue;
-
-				//Check if property has a default value
-				if (column->GetDefaultValue() && !(column->GetDefaultValue()->IsNull()))
-				{
-					// Try to find this property in the input values
-					bool found = false;
-					for (int ii = 0; (ii < propValCollection->GetCount()) && (found == false); ii++ ) 
-					{
-						FdoPtr<FdoPropertyValue>    propValue = propValCollection->GetItem(ii);
-						FdoPtr<FdoIdentifier>propName = propValue->GetName();
-						if (wcscmp(propName->GetText(), dataProp->GetName()) == 0)
-						{
-							found = true;
-						}
-					}
-					if (found == false)
-						continue;
-				}
-
-                FdoDataType dataType =dataProp->GetDataType();
-                const FdoSmLpDataPropertyDefinition *prop = FdoSmLpDataPropertyDefinitionCollection::ColName2Property(currentClass->RefProperties(), colName);
-                FdoStringP qPropName = prop->GetName();
-                if( scope[0] != '\0' )
-                    qPropName = FdoStringP(scope) + L"." + prop->GetName();
-
-                // Initialize the bind item
-                wcscpy(bind[bind_no].name, colName);
-                wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                bind[bind_no].type = dataType;
-                bind[bind_no].len = 64;     // Set the length to be 64
-                bind[bind_no].reader = NULL;
-                bind[bind_no].barray = NULL;
-                bind[bind_no].value.strvalue = NULL;
-				bind[bind_no].valueNeedsFree = false;
-
-                char temp[32];
-                sprintf(temp, "%d", bind_no+1); // Parm name are one based
-
-                if (dataType == FdoDataType_String)
-                {
-                    // Increase the length if necessary
-                    int size = column->GetLength();
-
-                    if ( size > GDBI_MAXIMUM_STRING_SIZE )
-                        // Limit the string size to avoid running out of memory
-                        size = GDBI_MAXIMUM_STRING_SIZE + 1;
-                    else
-                        size += 1;
-
-                    if (size > bind[bind_no].len)
-                        bind[bind_no].len = size;
-                }
-
-
-                // For BLOBs by-value do binding later in SetBindValues() since the size is not known
-                // For BLOBs by-reference (using streams) in SetBindValues() too (needs to check the value)
-                if ( dataType != FdoDataType_BLOB )
-                {
-					int rdbi_type = RDBI_WSTRING;
-					if( dataType != FdoDataType_String || ! mConnection->GetGdbiCommands()->SupportsUnicode() )
-					{
-						bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-						bind[bind_no].valueNeedsFree = true;
-						rdbi_type = RDBI_STRING;
-					}
-					else
-					{
-						bind[bind_no].value.strvalue = new wchar_t[bind[bind_no].len];
-						bind[bind_no].valueNeedsFree = true;
-					}
-                    mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                }
-                bind_no++;
-
+           // Quit if on pass 1 and at least one column was bound. 
+            if ( (pass == 1) && (bindPropNames->GetCount() > 0) )
                 break;
-            }
 
-            case FdoPropertyType_GeometricProperty:
-            {
-                if ( wcscmp(propertyDefinition->GetName(), L"Bounds") == 0 )
-                    break;
+            const FdoSmLpPropertyDefinition *propertyDefinition = propertyDefinitions->RefItem(i);
 
-                const FdoSmLpGeometricPropertyDefinition* geomProp =
-                    static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
-
-                FdoStringP qPropName = geomProp->GetName();
-                if( scope[0] != '\0' )
-                    qPropName = FdoStringP(scope) + L"." + geomProp->GetName();
-                char temp[32];
-                const wchar_t *colName = NULL;
-
-                FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
-
-                switch (columnType)
-                {
-                case FdoSmOvGeometricColumnType_Default:
-                case FdoSmOvGeometricColumnType_BuiltIn:
-                case FdoSmOvGeometricColumnType_Blob:
-                case FdoSmOvGeometricColumnType_Clob:
-                case FdoSmOvGeometricColumnType_String:
-                    {
-                        const FdoSmPhColumn *column = geomProp->RefColumn();
-                        colName = column->GetName();
-                        wcscpy(bind[bind_no].name, colName);
-                        wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                        bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                        bind[bind_no].type = FdoRdbmsDataType_Geometry; // WE DON'T HAVE A FDO TYPE for GEOMETRY
-                        bind[bind_no].len = sizeof(FdoIGeometry *);
-                        sprintf(temp, "%d", bind_no+1); // Parm name are one based
-                        mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_GEOMETRY, bind[bind_no].len,
-                                            (char *)&bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                        bind_no++;
-						const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
-						FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
-						if (geomCol)
-                        {
-							mConnection->GetGdbiCommands()->geom_srid_set(gid, temp, (long)geomCol->GetSRID());
-                            mConnection->GetGdbiCommands()->geom_version_set(gid, temp, mFdoConnection->GetSpatialGeometryVersion());
-                        }
-                    }
-                    break;
-                case FdoSmOvGeometricColumnType_Double:
-                    {
-                        const FdoSmPhColumn *columnX = geomProp->RefColumnX();
-                        const FdoSmPhColumn *columnY = geomProp->RefColumnY();
-                        const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
-
-                        if (NULL != columnX && NULL != columnY)
-                        {
-                            // Handle X ordinate column.
-                            colName = columnX->GetName();
-                            wcscpy(bind[bind_no].name, colName);
-                            wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                            bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                            bind[bind_no].type = FdoDataType_Double;
-                            bind[bind_no].len = 64;     // Set the length to be 64
-                            bind[bind_no].reader = NULL;
-                            bind[bind_no].barray = NULL;
-                            sprintf(temp, "%d", bind_no+1); // Parm name are one based
-					        int rdbi_type = RDBI_STRING;
-					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-					        bind[bind_no].valueNeedsFree = true;
-                            mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                            bind_no++;
-
-                            // Handle Y ordinate column.
-                            colName = columnY->GetName();
-                            wcscpy(bind[bind_no].name, colName);
-                            wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                            bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                            bind[bind_no].type = FdoDataType_Double;
-                            bind[bind_no].len = 64;     // Set the length to be 64
-                            bind[bind_no].reader = NULL;
-                            bind[bind_no].barray = NULL;
-                            sprintf(temp, "%d", bind_no+1); // Parm name are one based
-					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-					        bind[bind_no].valueNeedsFree = true;
-                            mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                            bind_no++;
-
-                            // Handle Z ordinate column.
-                            if (NULL != columnZ)
-                            {
-                                colName = columnZ->GetName();
-                                wcscpy(bind[bind_no].name, colName);
-                                wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                                bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                                bind[bind_no].type = FdoDataType_Double;
-                                bind[bind_no].len = 64;     // Set the length to be 64
-                                bind[bind_no].reader = NULL;
-                                bind[bind_no].barray = NULL;
-                                sprintf(temp, "%d", bind_no+1); // Parm name are one based
-    					        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-					            bind[bind_no].valueNeedsFree = true;
-                                mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                                    (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                                bind_no++;
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    // Nothing useful to do here.
-                    continue;
-                }   // end of switch (columnType)
-
-                // Set up spatial index columns.
-                const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
-                const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
-                if (NULL != columnSi1 && NULL != columnSi2)
-                {
-                    colName = columnSi1->GetName();
-                    wcscpy(bind[bind_no].name, colName);
-                    wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                    bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                    bind[bind_no].type = FdoDataType_String;
-                    bind[bind_no].len = columnSi1->GetLength()+1;
-                    sprintf(temp, "%d", bind_no+1); // Parm name are one based
-					int rdbi_type = RDBI_WSTRING;
-					if( ! mConnection->GetGdbiCommands()->SupportsUnicode() )
-					{
-						bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-						rdbi_type = RDBI_STRING;
-					}
-					else
-					{
-						bind[bind_no].value.strvalue = new wchar_t[bind[bind_no].len];
-					}
-					bind[bind_no].valueNeedsFree = true;
-                    mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                    bind_no++;
-
-                    colName = columnSi2->GetName();
-                    wcscpy(bind[bind_no].name, colName);
-                    wcsncpy(bind[bind_no].propertyName, (const wchar_t*)qPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                    bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                    bind[bind_no].type = FdoDataType_String;
-                    bind[bind_no].len = columnSi2->GetLength()+1;
-                    sprintf(temp, "%d", bind_no+1); // Parm name are one based
-					rdbi_type = RDBI_WSTRING;
-					if( ! mConnection->GetGdbiCommands()->SupportsUnicode() )
-					{
-						bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-						rdbi_type = RDBI_STRING;
-					}
-					else
-					{
-						bind[bind_no].value.strvalue = new wchar_t[bind[bind_no].len];
-					}
-					bind[bind_no].valueNeedsFree = true;
-                    mConnection->GetGdbiCommands()->bind(gid, temp, rdbi_type, bind[bind_no].len,
-                                        (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-                    bind_no++;
-                }
-                break;
-            }
-
-            case FdoPropertyType_AssociationProperty:
-            {
-                const FdoSmLpAssociationPropertyDefinition* associationPropertyDefinition = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
-                if( associationPropertyDefinition->GetReadOnly() )
-                    break;
-                //
-                // We only add the column if the identity properties are not set; translation: we added axtra column
-                // to link to the associated class. And if the identity properties are set, it mean we are using existing
-                // properties/columns and there is no need to add any column as those column will be added as data properties.
-                // For the latest case, we do some sanity check to make sure the duplicate entry(if any) are the same.
-                const FdoStringsP   identCollection = associationPropertyDefinition->GetIdentityProperties();
-                if( identCollection->GetCount() == 0 )
-                {
-                    const FdoSmLpDataPropertyDefinitionCollection *identPropCol =  associationPropertyDefinition->RefAssociatedClass()->RefIdentityProperties();
-                    const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
-                    if( identCols->GetCount() != identPropCol->GetCount() )
-                        throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_292, "Association identity properties and identity columns mismatch"));
-
-                    for(int i=0; i<identCols->GetCount(); i++ )
-                    {
-                        const FdoSmLpDataPropertyDefinition *prop = identPropCol->RefItem( i );
-                        FdoStringP assoPropName = FdoStringP::Format(L"%ls.%ls",propertyDefinition->GetName(), prop->GetName());
-                        wcsncpy(bind[bind_no].propertyName, (const wchar_t *)assoPropName, GDBI_SCHEMA_ELEMENT_NAME_SIZE );
-                        bind[bind_no].propertyName[GDBI_SCHEMA_ELEMENT_NAME_SIZE-1] = '\0';
-                        bind[bind_no].type = prop->GetDataType();
-
-                        char temp[32];
-                        sprintf(temp, "%d", bind_no+1); // Parm name are one based
-                        // Set the length to be 64
-                        bind[bind_no].len = 64;
-                        if (bind[bind_no].type == FdoDataType_String)
-                        {
-                            const FdoSmPhColumn *column = prop->RefColumn();
-                            // Increase the length if necessary
-                            int size = column->GetLength()+1;
-                            if (size > bind[bind_no].len)
-                                bind[bind_no].len = size;
-                        }
-                        bind[bind_no].value.strvalue = new char[bind[bind_no].len];
-                        bind[bind_no].valueNeedsFree = true;
-                        mConnection->GetGdbiCommands()->bind(gid, temp, RDBI_STRING, bind[bind_no].len,
-                                          (char*)bind[bind_no].value.strvalue, bind[bind_no].null_ind);
-
-                        bind_no++;
-                    }
-                }
-            }
-               break;
-
-            case FdoPropertyType_ObjectProperty:
-            {
-                const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
-                const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
-                if ( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
-                    break; // We only handle the single mapping
-
-                const FdoSmLpPropertyMappingSingle * singleMapping = static_cast<const FdoSmLpPropertyMappingSingle*>( mappping );
-                FdoStringP newScope = propertyDefinition->GetName();
-                if( scope[0] != '\0' )
-                    newScope = FdoStringP(scope) + L"." + propertyDefinition->GetName();
-                SetBindVariables(objProp->RefTargetClass(),(const wchar_t*)newScope, bind_no, propValCollection, bind, gid);
-            }
-                break;
-            default:
-                break;
+            SetBindVariable(
+                currentClass, 
+                scope, 
+                (pass == 0) ? propValCollection : (FdoPropertyValueCollection*) NULL, 
+                queryDef,
+                propertyDefinition
+            );
         }
     }
+}
+
+void FdoRdbmsPvcInsertHandler::SetBindVariable(const FdoSmLpClassDefinition *currentClass, 
+												const wchar_t *scope, FdoPropertyValueCollection  *propValCollection, InsertQueryDef *queryDef,
+                                                const FdoSmLpPropertyDefinition *propertyDefinition, FdoString* columnName)
+{
+    FdoStringCollection* bindPropNames = queryDef->bindPropNames;
+    std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* bindProps = &(queryDef->bindProps);
+    FdoDataValueCollection* specialValues = queryDef->specialValues;
+
+    FdoRdbmsSpatialManagerP spatialManager = mFdoConnection->GetSpatialManager();
+
+    const FdoSmPhDbObject* classTab = currentClass->RefDbObject()->RefDbObject();
+	DbiConnection *mConnection = mFdoConnection->GetDbiConnection();
+
+    FdoPropertyType  propType = propertyDefinition->GetPropertyType();
+
+    FdoPtr<FdoValueExpression> exp;
+
+    FdoStringP qPropName = propertyDefinition->GetName();
+    if( scope[0] != '\0' )
+        qPropName = FdoStringP(scope) + L"." + propertyDefinition->GetName();
+
+    switch ( propType )
+    {
+        case FdoPropertyType_DataProperty:
+        {
+            if ( !BindThisValue(qPropName, propValCollection, exp) )
+                break;
+
+            const FdoSmLpDataPropertyDefinition* dataProp =
+                static_cast<const FdoSmLpDataPropertyDefinition*>(propertyDefinition);
+
+            if( (!columnName) && (dataProp->RefContainingDbObject() != classTab) )
+                break;
+
+            const FdoSmPhColumn *column = NULL;
+                
+            if ( columnName ) 
+                column = ((FdoSmPhDbObject*) classTab)->GetColumns()->FindItem(columnName);
+            else
+                column = dataProp->RefColumn();
+
+            if (NULL == column)
+            {
+                if ( dataProp->GetIsSystem() ) 
+                {
+                    // It is possible for externally defined tables to not have
+                    // columns for certain system properties. In this case, 
+                    // skip these properties.
+                    break;
+                }
+                else 
+                {
+                    throw FdoRdbmsException::Create(NlsMsgGet1(
+                            FDORDBMS_485,
+                            "No column for property '%1$ls'.",
+                            dataProp->GetName()));
+                }
+            }
+            const wchar_t *colName = column->GetName();
+
+            if ( ! mInsertAutoIncrementProperties && column->GetAutoincrement() )
+                break;
+
+            FdoDataType dataType = dataProp->GetDataType();
+            // Initialize the bind item
+
+            bindPropNames->Add(qPropName);
+
+            if ( !exp ) 
+            {
+                FdoDataValue* dv = FdoDataValue::Create(dataType);
+                dv->SetNull();
+                exp = dv;
+                specialValues->Add(dv);
+            }
+
+            bindProps->push_back(std::make_pair((FdoLiteralValue*)exp.p, 0));
+               
+            break;
+        }
+
+        case FdoPropertyType_GeometricProperty:
+        {
+            if ( wcscmp(propertyDefinition->GetName(), L"Bounds") == 0 )
+                break;
+
+            if ( !BindThisValue(qPropName, propValCollection, exp) )
+                break;
+
+            const FdoSmLpGeometricPropertyDefinition* geomProp =
+                static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+
+            const wchar_t *colName = NULL;
+
+            FdoSmOvGeometricColumnType columnType = geomProp->GetGeometricColumnType();
+
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoGeometryValue *geomValue = NULL;
+            FdoPtr<FdoIGeometry> geom;
+
+            if (exp != NULL)
+            {
+                geomValue = dynamic_cast<FdoGeometryValue*>(exp.p);
+                if ( geomValue ) 
+                {
+                    FdoPtr<FdoByteArray> ba = geomValue->GetGeometry();
+                    if ( ba )
+                    {
+                        geom = gf->CreateGeometryFromFgf(ba);
+
+                        if ( geom )
+                        {
+                            mConnection->GetSchemaUtil()->CheckGeomPropOrdDimensionality( currentClass, propertyDefinition->GetName(), geom );
+                            mConnection->GetSchemaUtil()->CheckGeomPropShapeType( currentClass, propertyDefinition->GetName(), geom );
+                            mConnection->GetSchemaUtil()->CheckGeomPropValidity( currentClass, propertyDefinition->GetName(), geom );
+                        }
+                    }
+                }
+            }
+
+            switch (columnType)
+            {
+            case FdoSmOvGeometricColumnType_Default:
+            case FdoSmOvGeometricColumnType_BuiltIn:
+            case FdoSmOvGeometricColumnType_Blob:
+            case FdoSmOvGeometricColumnType_Clob:
+            case FdoSmOvGeometricColumnType_String:
+                {
+                    const FdoSmPhColumn *column = geomProp->RefColumn();
+                    colName = column->GetName();
+                    FdoInt64 srid = 0;
+               
+                    const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
+					FdoSmPhColumnGeomP geomCol;
+                    if ( gColumn ) 
+                        geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
+					if (geomCol)
+						srid = geomCol->GetSRID();
+
+                    bindPropNames->Add(qPropName);
+
+                    if ( !exp )
+                        exp = FdoGeometryValue::Create();
+
+                    bindProps->push_back(std::make_pair((FdoLiteralValue*)exp.p, srid));
+                }
+                break;
+            case FdoSmOvGeometricColumnType_Double:
+                {
+                    const FdoSmPhColumn *columnX = geomProp->RefColumnX();
+                    const FdoSmPhColumn *columnY = geomProp->RefColumnY();
+                    const FdoSmPhColumn *columnZ = geomProp->RefColumnZ();
+
+                    FdoPtr<FdoDataValue> xValue;
+                    FdoPtr<FdoDataValue> yValue;
+                    FdoPtr<FdoDataValue> zValue;
+
+                    if ( geom ) 
+                    {
+                        FdoGeometryType         geomType = geom->GetDerivedType();
+                        if (FdoGeometryType_Point != geomType)
+                            break;
+                        FdoIPoint * pointValue = static_cast<FdoIPoint *>(geom.p);
+                                
+                        double x, y, z, m;
+                        FdoInt32 dimensionality;
+                        double doubleValue = 0.0;
+ 
+                        pointValue->GetPositionByMembers(&x, &y, &z, &m, &dimensionality);
+                        xValue = GetGeomOrdinateBindValue(x, columnX);
+                        yValue = GetGeomOrdinateBindValue(y, columnY);
+                        zValue = GetGeomOrdinateBindValue(z, columnZ);
+                    }
+                    else
+                    {
+                        xValue = FdoDoubleValue::Create();
+                        yValue = FdoDoubleValue::Create();
+                        zValue = FdoDoubleValue::Create();
+                    }
+
+                    if (NULL != columnX)
+                    {
+                        specialValues->Add(xValue);
+                        bindProps->push_back(std::make_pair((FdoLiteralValue*)xValue.p, 0));
+                    }
+
+                    if (NULL != columnY)
+                    {
+                        specialValues->Add(yValue);
+                        bindProps->push_back(std::make_pair((FdoLiteralValue*)yValue.p, 0));
+                    }
+                            
+                    if (NULL != columnZ)
+                    {
+                        specialValues->Add(zValue);
+                        bindProps->push_back(std::make_pair((FdoLiteralValue*)zValue.p, 0));
+                    }
+                }
+                break;
+            default:
+                // Nothing useful to do here.
+                break;
+            }   // end of switch (columnType)
+
+            // Set up spatial index columns.
+            const FdoSmPhColumn *columnSi1 = geomProp->RefColumnSi1();
+            const FdoSmPhColumn *columnSi2 = geomProp->RefColumnSi2();
+            if (NULL != columnSi1 && NULL != columnSi2  && spatialManager != NULL)
+            {
+                FdoStringsP geomSiKeys;
+                spatialManager->InsertGeometryInLine(geomProp, geomValue, geomSiKeys);
+
+                if ( !geomSiKeys )
+                    geomSiKeys = FdoStringCollection::Create();
+
+                // If not all 2 si keys set, the just set extra ones to NULL.
+                while ( geomSiKeys->GetCount() < 2 ) 
+                    geomSiKeys->Add(L"");
+
+                for ( int k = 0; k < geomSiKeys->GetCount(); k++ ) 
+                {
+                    FdoPtr<FdoStringValue> siValue = FdoStringValue::Create(geomSiKeys->GetString(k));
+                    specialValues->Add(siValue);
+                    bindPropNames->Add(qPropName);
+                    bindProps->push_back(std::make_pair((FdoLiteralValue*)siValue.p, 0));
+                }
+            }
+            break;
+        }
+
+        case FdoPropertyType_AssociationProperty:
+        {
+            const FdoSmLpAssociationPropertyDefinition* associationPropertyDefinition = static_cast<const FdoSmLpAssociationPropertyDefinition*>(propertyDefinition);
+            if( associationPropertyDefinition->GetReadOnly() )
+                break;
+            //
+            // We only add the column if the identity properties are not set; translation: we added axtra column
+            // to link to the associated class. And if the identity properties are set, it mean we are using existing
+            // properties/columns and there is no need to add any column as those column will be added as data properties.
+            // For the latest case, we do some sanity check to make sure the duplicate entry(if any) are the same.
+            const FdoStringsP   identCollection = associationPropertyDefinition->GetIdentityProperties();
+            if( identCollection->GetCount() == 0 )
+            {
+                const FdoSmLpDataPropertyDefinitionCollection *identPropCol =  associationPropertyDefinition->RefAssociatedClass()->RefIdentityProperties();
+                const FdoSmPhColumnListP identCols  = associationPropertyDefinition->GetReverseIdentityColumns();
+                if( identCols->GetCount() != identPropCol->GetCount() )
+                    throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_292, "Association identity properties and identity columns mismatch"));
+
+                for(int i=0; i<identCols->GetCount(); i++ )
+                {
+                    FdoString* revIdentColName = identCols->GetString(i);
+                    const FdoSmLpDataPropertyDefinition *prop = identPropCol->RefItem( i );
+                    SetBindVariable(currentClass, qPropName, propValCollection, queryDef, prop, revIdentColName);
+                }
+            }
+        }
+            break;
+
+        case FdoPropertyType_ObjectProperty:
+        {
+            const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
+            const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
+            if ( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
+                break; // We only handle the single mapping
+
+            const FdoSmLpPropertyMappingSingle * singleMapping = static_cast<const FdoSmLpPropertyMappingSingle*>( mappping );
+            FdoStringP newScope = propertyDefinition->GetName();
+            if( scope[0] != '\0' )
+                newScope = FdoStringP(scope) + L"." + propertyDefinition->GetName();
+            SetBindVariables(objProp->RefTargetClass(),(const wchar_t*)newScope,  propValCollection, queryDef);
+        }
+            break;
+        default:
+            break;
+    }
+}
+
+bool FdoRdbmsPvcInsertHandler::BindThisValue( FdoString* propName, FdoPropertyValueCollection  *propValCollection,FdoPtr<FdoValueExpression>& exp )
+{
+    bool ret = false;
+
+    if ( propValCollection )
+    {
+        // Property values supplied, bind property only if it has a property value
+        for (int j=0; j<propValCollection->GetCount(); j++)
+        {
+            FdoPtr<FdoPropertyValue> propertyValue = propValCollection->GetItem(j);
+            if (!propertyValue)
+                throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_39, "Property value is NULL"));
+
+            FdoPtr<FdoIdentifier> identifier = propertyValue->GetName();
+            if (wcscmp(propName, identifier->GetText()) == 0)
+            {
+                ret = true;
+                exp = propertyValue->GetValue();
+            }
+        }
+    }
+    else
+    {
+        // No property values supplied for checking, assume always binding property.
+        exp = NULL;
+        ret = true;
+    }
+
+    return ret;
 }
 
 InsertQueryDef *FdoRdbmsPvcInsertHandler::GetInsertQuery( const wchar_t *tableName, bool alloc_new )
@@ -1494,26 +1046,7 @@ InsertQueryDef *FdoRdbmsPvcInsertHandler::GetInsertQuery( const wchar_t *tableNa
     // Free the resources allocated by the previous query
     if( mInsertQueryCache[nextIdx].qid != -1 )
         mConnection->GetGdbiCommands()->free_cursor(mInsertQueryCache[nextIdx].qid);
-    if( mInsertQueryCache[nextIdx].bind != NULL )
-    {
-        for (int i=0; i<mInsertQueryCache[nextIdx].count; i++)
-		{
-			if( mInsertQueryCache[nextIdx].bind[i].value.strvalue == NULL )
-				continue;
-			if (mInsertQueryCache[nextIdx].bind[i].type == FdoRdbmsDataType_Geometry)
-			{
-                    ((FdoIGeometry*)mInsertQueryCache[nextIdx].bind[i].value.strvalue)->Release ();
-					mInsertQueryCache[nextIdx].bind[i].value.strvalue = NULL;
-			}
-            else if( mInsertQueryCache[nextIdx].bind[i].valueNeedsFree )
-		    {
-				delete [] (char*)mInsertQueryCache[nextIdx].bind[i].value.strvalue;
-				mInsertQueryCache[nextIdx].bind[i].value.strvalue = NULL;
-				mInsertQueryCache[nextIdx].bind[i].valueNeedsFree = false;
-			}
-		}
-        delete [] mInsertQueryCache[nextIdx].bind;
-    }
+
     mInsertQueryCache[nextIdx].qid = -1;
 
     // Mark it for the new table

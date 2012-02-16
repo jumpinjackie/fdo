@@ -39,8 +39,6 @@ int postgis_bind (
 {
     PGconn* postgis = NULL;
     postgis_cursor_def* curs = NULL;
-    PGSQL_BIND *binds = NULL;
-	int		*srids;
     Oid typeoid = 0;
     int index = 0;
     int ret = RDBI_GENERIC_ERROR;
@@ -78,36 +76,9 @@ int postgis_bind (
                     }
                     else
                     {
-                        if (index >= curs->bind_count)
-                        {
-                            binds = (PGSQL_BIND *)malloc((index + 1) * sizeof(PGSQL_BIND));
-                            srids = (int*)malloc((index + 1) * sizeof(int));
-                            if ((PGSQL_BIND*)NULL == binds || (int*)NULL == srids)
-                            {
-                                if ((PGSQL_BIND*)NULL != curs->binds)
-                                    free (curs->binds);
-								if ((int*)NULL != curs->srids)
-									free (curs->srids);
-                                curs->bind_count = 0;
-                            }
-                            else
-                            {
-                                memset (binds, 0, (index + 1) * sizeof(PGSQL_BIND));
-    							memset (srids, 0, (index + 1) * sizeof (int));
-                                if ((PGSQL_BIND*)NULL != curs->binds)
-                                {
-                                    memcpy (binds, curs->binds, curs->bind_count * sizeof(PGSQL_BIND));
-                                    free (curs->binds);
-									memcpy (srids, curs->srids, curs->bind_count * sizeof (int));
-									free (curs->srids);
-                                }
-                                curs->bind_count = index + 1;
-                                curs->binds = binds;
-                                curs->srids = srids;
-                            }
-                        }
-                        if (index >= curs->bind_count)
-                            ret = RDBI_MALLOC_FAILED;
+                        int ret2 = postgis_binds_alloc(curs, index + 1);
+                        if (ret2 != RDBI_SUCCESS)
+                            ret = ret2;
                         else
                         {
                             /*
@@ -132,3 +103,46 @@ int postgis_bind (
 
     return (ret);
 }
+
+int postgis_binds_alloc( 
+    postgis_cursor_def *curs,
+    int count)
+{
+    PGSQL_BIND *binds = NULL;
+	int		*srids;
+    int ret = RDBI_SUCCESS;
+    
+    if (count > curs->bind_count)
+    {
+        binds = (PGSQL_BIND *)malloc (count * sizeof (PGSQL_BIND));
+		srids = (int*)malloc(count * sizeof(int));
+        if ((PGSQL_BIND*)NULL == binds || (int*)NULL == srids)
+        {
+            if ((PGSQL_BIND*)NULL != curs->binds)
+                free (curs->binds);
+			if ((int*)NULL != curs->srids)
+				free (curs->srids);
+            curs->bind_count = 0;
+        }
+        else
+        {
+            memset (binds, 0, count * sizeof (PGSQL_BIND));
+			memset (srids, 0, count * sizeof (int));
+            if ((PGSQL_BIND*)NULL != curs->binds)
+            {
+                memcpy (binds, curs->binds, curs->bind_count * sizeof (PGSQL_BIND));
+				free (curs->binds);
+				memcpy (srids, curs->srids, curs->bind_count * sizeof (int));
+				free (curs->srids);
+            }
+            curs->bind_count = count;
+            curs->binds = binds;
+			curs->srids = srids;
+        }
+    }
+    if (count > curs->bind_count)
+        ret = RDBI_MALLOC_FAILED;
+ 
+    return ret;
+}
+

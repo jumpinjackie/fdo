@@ -33,7 +33,7 @@ protected:
 
 	virtual void AdditionalCriteria( FdoPropertyValueCollection  *propValCollection, FdoStringP & updateString, int &bindIndex );
 
-	virtual void AdditionalBinds( GdbiStatement *statement, FdoRdbmsPvcBindDef  *values, int & bindIndex  );
+	virtual void AdditionalBinds(  FdoPropertyValueCollection  *propValCollection, std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* params, int & bindIndex  );
 
 public:
 	FdoRdbmsPvcUpdateHandler( );

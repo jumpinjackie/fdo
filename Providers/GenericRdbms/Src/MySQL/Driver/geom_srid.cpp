@@ -17,6 +17,7 @@
  */
 #include "stdafx.h"
 #include "local.h"
+#include "bind.h"
 
 int mysql_geom_srid_set ( 
 	mysql_context_def	*context,
@@ -37,13 +38,18 @@ int mysql_geom_srid_set (
 		{
 			index = atoi (geom_col_name); /* numeric position */
             /* need an error if columns have not been bound yet */
-            if (index <= 0 || curs->bind_count < index)
+            if (index <= 0)
                 rc = RDBI_GENERIC_ERROR; /* need an error for unknown name */
             else
             {
-                index--; /* make it zero based */
-				if (curs->srids != (int*)NULL)
-					curs->srids[index] = (int)srid;
+                rc = mysql_binds_alloc(curs, index);
+
+                if ( rc == RDBI_SUCCESS )
+                {
+                    index--; /* make it zero based */
+				    if (curs->srids != (int*)NULL)
+					    curs->srids[index] = (int)srid;
+                }
 			}
 		}
 	}

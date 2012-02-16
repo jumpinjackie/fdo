@@ -18,6 +18,7 @@
 #include "stdafx.h"
 #include "Fdo/Pvc/FdoRdbmsPvcHandler.h"
 #include <Sm/Ph/Column.h>
+#include <math.h>
 
 void FdoRdbmsPvcHandler::SetGeomOrdinateBindValue( 
     char* buffer, 
@@ -50,4 +51,48 @@ void FdoRdbmsPvcHandler::SetGeomOrdinateBindValue(
         sprintf(buffer, "%.16g", doubleValue);
         break;
     }
+}
+
+FdoPtr<FdoDataValue> FdoRdbmsPvcHandler::GetGeomOrdinateBindValue( 
+    double doubleValue, 
+    const FdoSmPhColumn* columnDefinition 
+)
+{
+    FdoSmPhColType colType = columnDefinition ? columnDefinition->GetType() : FdoSmPhColType_Double;
+
+    FdoPtr<FdoDataValue> ret = FdoDoubleValue::Create(doubleValue);
+
+    int scale = 8;
+
+    switch ( colType ) {
+    case FdoSmPhColType_Decimal:
+        // Round decimals to defined scale
+        {
+            scale = columnDefinition->GetScale();
+            double shift = (doubleValue < 0) ? -0.5 : 0.5;
+            double mult = pow((double)10, (double)scale);
+            ret = FdoDoubleValue::Create( ((FdoDouble)(FdoInt64)(doubleValue * mult + shift)) / mult);
+        }
+        break;
+    case FdoSmPhColType_Single:
+        ret = FdoSingleValue::Create(ret);
+        break;
+    case FdoSmPhColType_Byte:
+        ret = FdoByteValue::Create(ret);
+        break;
+    case FdoSmPhColType_Int16:
+        ret = FdoInt16Value::Create(ret);
+        break;
+    case FdoSmPhColType_Int32:
+        ret = FdoInt32Value::Create(ret);
+        break;
+    case FdoSmPhColType_Int64:
+        ret = FdoInt64Value::Create(ret);
+        break;
+    default:
+        // Double or unknown type, keep it as Double.
+        break;
+    }
+
+    return ret;
 }
