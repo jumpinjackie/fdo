@@ -65,7 +65,7 @@ protected:
 
     // Given a double and a column definition, convert the double to the type defined by the column,
     // and return as a data value.
-    FdoPtr<FdoDataValue> FdoRdbmsPvcHandler::GetGeomOrdinateBindValue( 
+    FdoPtr<FdoDataValue> GetGeomOrdinateBindValue( 
         double doubleValue, 
         const FdoSmPhColumn* columnDefinition 
     );

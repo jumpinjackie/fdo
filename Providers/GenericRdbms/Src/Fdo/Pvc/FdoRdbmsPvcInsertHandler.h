@@ -108,7 +108,7 @@ private:
 	void SetBindVariables(const FdoSmLpClassDefinition *currentClass, 
 						  const wchar_t *scope, FdoPropertyValueCollection  *propValCollection, InsertQueryDef *queryDef);
 
-    void FdoRdbmsPvcInsertHandler::SetBindVariable(const FdoSmLpClassDefinition *currentClass, 
+    void SetBindVariable( const FdoSmLpClassDefinition *currentClass, 
 	              		  const wchar_t *scope, FdoPropertyValueCollection  *propValCollection, InsertQueryDef *queryDef,
                           const FdoSmLpPropertyDefinition *propertyDefinition,
                           FdoString* columnName = NULL);
