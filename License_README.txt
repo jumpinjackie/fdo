@@ -1,6 +1,6 @@
 Copyright and Licensing Information for FDO API
 
-Copyright (C) 2011  Open Geospatial (OSGeo) Foundation
+Copyright (C) 2012  Open Geospatial (OSGeo) Foundation
 
 The OSGeo Foundation FDO API is free software; you can 
 redistribute it and/or modify it under the terms of version 2.1 
@@ -1338,7 +1338,7 @@ outside sources which is not properly a part of SQLite.
 
 PostgreSQL
 
-PostgreSQL is Copyright © 1996-2010 by the PostgreSQL Global Development 
+PostgreSQL is Copyright © 1996-2012 by the PostgreSQL Global Development 
 Group and is distributed under the terms of the license of the University 
 of California below. 
 
