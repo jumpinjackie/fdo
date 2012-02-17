@@ -38,20 +38,20 @@ II. Build Notes
   In preparation for building the Windows Open Source FDO Binaries:
 
   1. The FDO open source build process supports the usage of either the Visual 
-     Studio 2008 Express, Standard or Professional editions. 
+     Studio 2010 Express, Standard or Professional editions. 
 
-     The Visual Studio 2008 Express software can be download and installed for 
+     The Visual Studio 2010 Express software can be download and installed for 
      free from the following sites.
 
-     Visual Studio 2008 C# Express Edition:
+     Visual Studio 2010 C# Express Edition:
 
-        http://www.microsoft.com/express/Downloads/
+        http://www.microsoft.com/visualstudio/en-us/products/2010-editions/express
 
-     Visual Studio 2008 C++ Express Edition: 
+     Visual Studio 2010 C++ Express Edition: 
  
-        http://www.microsoft.com/express/Downloads/#2008-Visual-CPP
+        http://www.microsoft.com/visualstudio/en-us/products/2010-editions/visual-cpp-express
         
-     You will need to download and install Windows .NET Framework 3.5 Service Pack 1.
+     You will need to download and install Windows .NET Framework 4.0 Service Pack 1.
      You can download it from the following location:
      
         http://msdn.microsoft.com/en-us/netframework/default.aspx
