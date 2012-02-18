@@ -215,7 +215,7 @@ echo copy %TYPEBUILDTHR% Thirdparty files
 copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\Xalan-C_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xalan\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\XalanMessages_1_11%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
 copy /y "apache\xerces\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_3_1%TYPEBUILDTHREX%.dll" "%FDOBINPATHTHR%"
-copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal17.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal19.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
 
@@ -303,7 +303,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Install WMS Provider Thirdparty Files
 :install_wms_files
 echo copy %TYPEBUILDTHR% Thirdparty WMS files
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal17.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal19.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%PLATFORMTHR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_42.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
@@ -323,7 +323,7 @@ if "%TYPEACTIONTHR%"=="clean" goto end
 rem # Install GDAL Provider Thirdparty Files
 :install_gdal_files
 echo copy %TYPEBUILDTHR% Thirdparty GDAL files
-copy /y "gdal\bin\Win32\%TYPEBUILDTHR%\gdal17.dll" "%FDOBINPATHTHR%"
+copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal19.dll" "%FDOBINPATHTHR%"
 rem # End GDAL part #
 
 rem # Build PostGIS Provider Thirdparty Files
