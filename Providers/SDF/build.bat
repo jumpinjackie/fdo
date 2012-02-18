@@ -139,7 +139,10 @@ if "%TYPEACTION%"=="build" goto generate_docs
 echo copy %TYPEBUILD% SDF provider output files
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SDFMessage.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SDFProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SDFMessage.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\SDFProvider.pdb" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
 copy /y "%FDOUTILITIES%\ExpressionEngine\lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
 
 echo copy header files
