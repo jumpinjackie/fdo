@@ -874,38 +874,27 @@ FdoDataType PhColTypeToFdo(FdoSmPhColType type)
     return retType;
 }
 
-void GenerateCombination(size_t step, std::vector< size_t >& genTypes, FdoSignatureDefinitionCollection* signatures, FdoArgumentDefinitionCollection* baseArgs,
-                         std::vector< FdoArgumentDefinitionCollection* >& mainArgs, std::vector< int >& params, FdoDataType retType)
+void GenerateCombination(size_t step, std::vector< size_t >& counts, FdoSignatureDefinitionCollection* signatures, std::vector< FdoArgumentDefinitionCollection* >& mainArgs, FdoDataType retType)
 {
-    if (step == genTypes.size())
+    if (step == counts.size())
     {
-        size_t idxParam = 0;
         // generate sig
         FdoPtr<FdoArgumentDefinitionCollection> newArgColl = FdoArgumentDefinitionCollection::Create();
-        for(int i = 0; i < baseArgs->GetCount(); i++)
+        for(size_t i = 0; i < mainArgs.size(); i++)
         {
-            FdoPtr<FdoArgumentDefinition> arg = baseArgs->GetItem(i);
-            if (params[i] == 0) // do we have a numeric?
-            {
-                FdoArgumentDefinitionCollection* ptr = mainArgs.at(idxParam);
-                FdoPtr<FdoArgumentDefinition> argNum = ptr->GetItem(genTypes.at(idxParam));
-                newArgColl->Add(argNum);
-                idxParam++;
-            }
-            else
-                newArgColl->Add(arg);
+            FdoArgumentDefinitionCollection* ptr = mainArgs.at(i);
+            FdoPtr<FdoArgumentDefinition> arg = ptr->GetItem(counts[i]);
+            newArgColl->Add(arg);
         }
         FdoPtr<FdoSignatureDefinition> signature = FdoSignatureDefinition::Create(retType, newArgColl);
         signatures->Add(signature);
+        return;
     }
-    else
+    size_t cntArgTypes = mainArgs[step]->GetCount();
+    for (size_t idx = 0; idx < cntArgTypes; idx++)
     {
-        // 7 = cnt of numeric FDO types
-        for(size_t i = 0; i < 7; i++)
-        {
-            genTypes[step] = i;
-            GenerateCombination(step+1, genTypes, signatures, baseArgs, mainArgs, params, retType);
-        }
+        counts[step] = idx;
+        GenerateCombination(step+1, counts, signatures, mainArgs, retType);
     }
 }
 
@@ -915,8 +904,7 @@ FdoFunctionDefinition* GenerateFunctionDefinition(FdoString* fctName, RdbmsArgum
 
     FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
     FdoPtr<FdoArgumentDefinitionCollection> args = FdoArgumentDefinitionCollection::Create();
-    std::vector< int > params;
-    std::vector< size_t > genTypes;
+    std::vector< size_t > counts;
     std::vector< FdoArgumentDefinitionCollection* > mainArgs;
     int cntRealParams = 0;
     for(size_t idx = 0; idx < len; idx++)
@@ -941,8 +929,7 @@ FdoFunctionDefinition* GenerateFunctionDefinition(FdoString* fctName, RdbmsArgum
         case FdoDataType_Int64:
         case FdoDataType_Single:
             {
-                genTypes.push_back(0);
-                params.push_back(0);
+                counts.push_back(0);
                 dtType = FdoDataType_Byte;
                 actArgColl = FdoArgumentDefinitionCollection::Create();
                 cntRealParams++;
@@ -973,7 +960,10 @@ FdoFunctionDefinition* GenerateFunctionDefinition(FdoString* fctName, RdbmsArgum
                 else
                     arg = FdoArgumentDefinition::Create(argFct->m_argName.c_str(), L"", dtType);
                 args->Add(arg);
-                params.push_back(-1);
+                counts.push_back(0);
+
+                actArgColl = FdoArgumentDefinitionCollection::Create();
+                actArgColl->Add(arg);
             }
         }
         mainArgs.push_back(actArgColl);
@@ -985,7 +975,7 @@ FdoFunctionDefinition* GenerateFunctionDefinition(FdoString* fctName, RdbmsArgum
         signatures->Add(signature);
     }
     else
-        GenerateCombination(0, genTypes, signatures, args, mainArgs, params, retType);
+        GenerateCombination(0, counts, signatures, mainArgs, retType);
 
     for(size_t i = 0; i < mainArgs.size(); i++)
     {
