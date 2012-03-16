@@ -142,7 +142,11 @@ int postgis_execute (
                                         buf_size = NUMBER_OF_DIGITS10(rdbi_int64_t);
                                         buf = (char*)malloc(buf_size);
                                         memset(buf, 0, buf_size);
+#ifdef _WIN32
                                         snprintf(buf, buf_size, "%I64d", (*((rdbi_int64_t*)curs->binds[i].buffer)));
+#else
+                                        snprintf(buf, buf_size, "%lld", (*((rdbi_int64_t*)curs->binds[i].buffer)));
+#endif
                                     }
                                     break;
                                 case PGSQL_TYPE_FLOAT:
