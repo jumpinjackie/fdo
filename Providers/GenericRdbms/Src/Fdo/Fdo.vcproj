@@ -545,6 +545,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleDeleteCommand.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\FeatureCommands\FdoRdbmsSimpleSelectCommand.cpp"
 					>
 				</File>
@@ -915,6 +919,10 @@
 				</File>
 				<File
 					RelativePath=".\FeatureCommands\FdoRdbmsSimpleInsertCommand.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FeatureCommands\FdoRdbmsSimpleDeleteCommand.h"
 					>
 				</File>
 				<File

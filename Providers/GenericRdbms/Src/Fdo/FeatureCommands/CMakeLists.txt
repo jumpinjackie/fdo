@@ -11,6 +11,7 @@ set( FdoRdbms_FeatureCommands_STAT_SRCS
    FdoRdbmsFeatureSubsetReader.cpp
    FdoRdbmsSimpleFeatureReader.cpp
    FdoRdbmsSimpleInsertCommand.cpp
+   FdoRdbmsSimpleDeleteCommand.cpp
    FdoRdbmsSimpleUpdateCommand.cpp
    FdoRdbmsSimpleSelectCommand.cpp
 )
