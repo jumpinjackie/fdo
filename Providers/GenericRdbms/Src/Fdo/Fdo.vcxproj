@@ -180,6 +180,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FeatureCommands\FdoRdbmsSimpleDeleteCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsSimpleSelectCommand.cpp" />
     <ClCompile Include="FeatureCommands\FdoRdbmsSimpleUpdateCommand.cpp" />
     <ClCompile Include="Filter\FdoRdbmsFunctionIsValid.cpp" />
@@ -266,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Custom\FdoRdbmsCreateSpatialIndex.h" />
+    <ClInclude Include="FeatureCommands\FdoRdbmsSimpleDeleteCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsSimpleSelectCommand.h" />
     <ClInclude Include="FeatureCommands\FdoRdbmsSimpleUpdateCommand.h" />
     <ClInclude Include="Filter\FdoRdbmsFunctionIsValid.h" />

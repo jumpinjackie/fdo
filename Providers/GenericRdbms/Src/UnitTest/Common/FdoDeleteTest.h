@@ -42,7 +42,7 @@ protected:
     virtual void  set_provider() {};   
     void TruncateTable(FdoIConnection* connection, FdoString* className);
 
-private:
+protected:
     wchar_t  mSuffix[12];
 };
 

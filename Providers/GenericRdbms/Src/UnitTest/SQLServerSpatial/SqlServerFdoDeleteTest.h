@@ -24,9 +24,12 @@
 class SqlServerFdoDeleteTest : public FdoDeleteTest
 {
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoDeleteTest, FdoDeleteTest);
+    CPPUNIT_TEST( DeleteTestWithParams );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
+private:
+    void DeleteTestWithParams();
 };
 
 #endif // SQLSERVER_FDODELETETEST_H

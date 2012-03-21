@@ -27,3 +27,55 @@ void SqlServerFdoDeleteTest::set_provider()
 {
 	UnitTestUtil::SetProvider( "SQLServerSpatial" );
 }
+
+void SqlServerFdoDeleteTest::DeleteTestWithParams()
+{
+    FdoPtr<FdoIConnection> connection;
+
+    try
+    {
+        connection = UnitTestUtil::GetConnection(mSuffix, true);
+        int startVal = 15;
+        for (int idx = 0; idx < 10; idx++)
+        {
+            FdoPtr<FdoIInsert> insCmd = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
+            insCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+            FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
+            
+            FdoPtr<FdoDataValue> dtValue = FdoDataValue::Create(startVal + idx); 
+            FdoPtr<FdoPropertyValue> propIns = FdoPropertyValue::Create(L"segcount", dtValue);
+            vals->Add(propIns);
+            FdoPtr<FdoIFeatureReader> rdr = insCmd->Execute();
+        }
+
+        FdoPtr<FdoIDelete> deleteCommand = (FdoIDelete *) connection->CreateCommand(FdoCommandType_Delete);
+        deleteCommand->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+	    deleteCommand->SetFilter( L"segcount = :MyPar" );
+        FdoPtr<FdoParameterValueCollection> parVals = deleteCommand->GetParameterValues();
+        FdoPtr<FdoInt32Value> dVal = FdoInt32Value::Create(startVal); 
+        FdoPtr<FdoParameterValue> pVal = FdoParameterValue::Create(L"MyPar", dVal);
+        parVals->Add(pVal);
+        
+        for (int idx = 0; idx < 8; idx++)
+        {
+            dVal->SetInt32(startVal + idx);
+            int count = deleteCommand->Execute();
+            printf ("Delete feature No %d -> %d deleted featues\n", startVal + idx, count);
+        }
+        parVals->Clear(); // this will force select command to be re-built
+        parVals->Add(pVal);
+        
+        dVal->SetInt32(startVal + 8);
+        int count = deleteCommand->Execute();
+        printf ("Delete feature No %d -> %d deleted featues\n", startVal + 8, count);
+	    
+        deleteCommand->SetFilter( L"segcount = :MyPar" );
+        dVal->SetInt32(startVal + 9);
+        count = deleteCommand->Execute();
+        printf ("Delete feature No %d -> %d deleted featues\n", startVal + 9, count);
+    }
+	catch ( FdoException* e ) 
+	{
+		UnitTestUtil::FailOnException( e );
+	}
+}

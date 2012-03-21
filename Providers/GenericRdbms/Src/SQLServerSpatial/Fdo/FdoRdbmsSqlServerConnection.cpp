@@ -32,6 +32,7 @@
 #include "FdoRdbmsSimpleInsertCommand.h"
 #include "FdoRdbmsSimpleUpdateCommand.h"
 #include "FdoRdbmsSimpleSelectCommand.h"
+#include "FdoRdbmsSimpleDeleteCommand.h"
 
 #include "../SchemaMgr/SchemaManager.h"
 #include "../SchemaMgr/Ph/Mgr.h"
@@ -92,7 +93,7 @@ FdoICommand *FdoRdbmsSqlServerConnection::CreateCommand (FdoInt32 commandType)
              break;
 
 		case FdoCommandType_Delete:
-             ret = new FdoRdbmsSqlServerDeleteCommand (this);
+             ret = FdoRdbmsSimpleDeleteCommand::Create(this);
              break;
 
         case FdoCommandType_Insert:
