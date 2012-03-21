@@ -340,34 +340,6 @@ namespace sqlgeomconv
 
         inline double SnapToZero(double n) { return (fabs(n) <= VERY_SMALL)? 0.0 : n; }
 
-        bool PointsAreClockwise(size_t dim, size_t cntPts, double* points)
-        {
-            const double *startpoint = points;
-            const double *midpoint = points+dim;
-            const double *endpoint = midpoint+dim;
-            double v21[3], v31[3];
-
-	        v21[0] =  *midpoint - *startpoint;
-	        v21[1] =  *(midpoint+1) - *(startpoint+1);
-            v21[2] =  0.0;
-
-	        v31[0] =  *endpoint - *startpoint;
-	        v31[1] =  *(endpoint+1) - *(startpoint+1);
-            v31[2] =  0.0;
-            double normalX = SnapToZero(v21[1] * v31[2] - v31[1] * v21[2]);
-            double normalY = SnapToZero(v21[2] * v31[0] - v31[2] * v21[0]);
-            double normalZ = SnapToZero(v21[0] * v31[1] - v31[0] * v21[1]);
-            // Normalize
-
-	        double a;
-	        a = (normalX*normalX) + (normalY*normalY) + (normalZ*normalZ);
-            a = SnapToZero(a);
-            if (0.0 != a)
-    	        a = 1 / sqrt ( a );
-
-            return !((a * normalZ) > 0.0);
-        }
-
         void EnsureSpaceIncrease(size_t val)
         {
             int dim = 2 + (int)hasZ + (int)hasM;
@@ -426,6 +398,14 @@ namespace sqlgeomconv
         }
         void WriteFooterGeom()
         {
+            FdoInt64 additionalLenBuffer = figures.size() * (sizeof(FdoInt32) + sizeof(FdoByte)) + 
+                shapes.size() * (2 * sizeof(FdoInt32) + sizeof(FdoByte)) +
+                segments.size() * sizeof(FdoByte);
+
+            FdoInt64 offset = lBuff - lCacheBuff.mBuff;
+            lCacheBuff.EnsureAdditionalLenBuffer(additionalLenBuffer);
+            lBuff = lCacheBuff.mBuff + offset;
+
             if (figures.size() != 0)
             {
                 BUFF_PUSH_LEINT(lBuff, figures.size()); // number of figures
@@ -497,6 +477,28 @@ namespace sqlgeomconv
         if (handle.hasM) BUFF_PUSH_DBL(myBuff, LittleEndianToDb(handle.startPt + ((2+(int)handle.hasZ)*handle.ptCnt+idx)*ADDR_INTSTEP));
     }
 
+    bool IsSameShapeGeomType(OpenGISShapeType t1, OpenGISShapeType t2)
+    {
+        switch (t1)
+        {
+        case OpenGISShapeType_CircularString:
+        case OpenGISShapeType_CompoundCurve:
+            return (t2 == OpenGISShapeType_CompoundCurve || t2 == OpenGISShapeType_CircularString);
+        case OpenGISShapeType_CurvePolygon:
+            return (t2 == OpenGISShapeType_CurvePolygon);
+        case OpenGISShapeType_Polygon:
+        case OpenGISShapeType_MultiPolygon:
+            return (t2 == OpenGISShapeType_Polygon || t2 == OpenGISShapeType_MultiPolygon);
+        case OpenGISShapeType_LineString:
+        case OpenGISShapeType_MultiLineString:
+            return (t2 == OpenGISShapeType_LineString || t2 == OpenGISShapeType_MultiLineString);
+        case OpenGISShapeType_Point:
+        case OpenGISShapeType_MultiPoint:
+            return (t2 == OpenGISShapeType_Point || t2 == OpenGISShapeType_MultiPoint);
+        }
+        return false;
+    }
+
     void ComposeSubGeometry(GeomReadHandle& handle, ShapeDescriptor* shp, FdoByte* &myBuff)
     {
         if (shp->processed)
@@ -545,10 +547,53 @@ namespace sqlgeomconv
             break;
         case OpenGISShapeType_GeometryCollection:
             {
-                BUFF_PUSH_INT(myBuff, FdoGeometryType_MultiGeometry); // geom type
+                FdoByte* ltypeBuff = myBuff;
+                BUFF_PUSH_INT(myBuff, FdoGeometryType_MultiGeometry); // geom type we will update it later
                 BUFF_PUSH_INT(myBuff, shp->cntShps); // geom count
-                for (size_t idx = 0; idx < shp->cntShps; idx++){
-                    ComposeSubGeometry(handle, handle.shapes+shp->subShapes[idx], myBuff);
+                
+                OpenGISShapeType ltype = (OpenGISShapeType)-1;
+                for (size_t idx = 0; idx < shp->cntShps; idx++)
+                {
+                    ShapeDescriptor* plShape = handle.shapes+shp->subShapes[idx];
+                    if (ltype != plShape->type)
+                    {
+                        if (ltype != (OpenGISShapeType)-1)
+                        {
+                            // we still need to see if we have obj vs multi obj
+                            if (!IsSameShapeGeomType(ltype, plShape->type))
+                                ltypeBuff = NULL;
+                        }
+                        ltype = plShape->type;
+                    }
+                    ComposeSubGeometry(handle, plShape, myBuff);
+                }
+                // we have a single type collection
+                if (ltypeBuff != NULL)
+                {
+                    FdoGeometryType gTypeUse = FdoGeometryType_MultiGeometry;
+                    switch (ltype)
+                    {
+                    case OpenGISShapeType_CircularString:
+                    case OpenGISShapeType_CompoundCurve:
+                        gTypeUse = FdoGeometryType_MultiCurveString;
+                        break;
+                    case OpenGISShapeType_CurvePolygon:
+                        gTypeUse = FdoGeometryType_MultiCurvePolygon;
+                        break;
+                    case OpenGISShapeType_Polygon:
+                    case OpenGISShapeType_MultiPolygon:
+                        gTypeUse = FdoGeometryType_MultiPolygon;
+                        break;
+                    case OpenGISShapeType_LineString:
+                    case OpenGISShapeType_MultiLineString:
+                        gTypeUse = FdoGeometryType_MultiLineString;
+                        break;
+                    case OpenGISShapeType_Point:
+                    case OpenGISShapeType_MultiPoint:
+                        gTypeUse = FdoGeometryType_MultiPoint;
+                        break;
+                    }
+                    BUFF_PUSH_INT(ltypeBuff, gTypeUse);
                 }
                 shp->processed = true;
             }
@@ -632,11 +677,7 @@ namespace sqlgeomconv
                         ReadAndPushPointByte(myBuff, handle, fig->ptIndex + idx); // second point
                         for (size_t ipt = idx+1; ipt < fig->cntPts; ipt++)
                         {
-                            SegmentType sgSubType;
-                            if (handle.sgCnt == 0)
-                                sgSubType = (fig->type == FigureType_ExteriorRing)? SegmentType_Arc : SegmentType_Line;
-                            else 
-                                sgSubType = handle.segments[handle.currSgIdx];
+                            SegmentType sgSubType = handle.segments[handle.currSgIdx];
                             if (sgSubType == SegmentType_FirstLine || sgSubType == SegmentType_Line)
                             {
                                 cntLnPts++;
@@ -680,13 +721,13 @@ namespace sqlgeomconv
                     FdoByte* pcBuff = myBuff;
                     size_t cntParts = 0;
                     BUFF_PUSH_INT(myBuff, 1); // parts count we will update it later
+                    SegmentType sgGenType = (fig->type == FigureType_CompositeCurve) ? (SegmentType)-1 
+                        : (fig->type == FigureType_ExteriorRing ? SegmentType_Arc : SegmentType_Line);
+                    
                     for (size_t idx = 1; idx < fig->cntPts; idx++)
                     {
-                        SegmentType sgType;
-                        if (handle.sgCnt == 0)
-                            sgType = (fig->type == FigureType_ExteriorRing)? SegmentType_Arc : SegmentType_Line;
-                        else 
-                            sgType = handle.segments[handle.currSgIdx++];
+                        // in case CompositeCurve we need to get segment type else use the type
+                        SegmentType sgType = (sgGenType == (SegmentType)-1) ? handle.segments[handle.currSgIdx++] : sgGenType;
                         if (sgType == SegmentType_FirstLine || sgType == SegmentType_Line)
                         {
                             // it's a line
@@ -697,16 +738,12 @@ namespace sqlgeomconv
                             ReadAndPushPointByte(myBuff, handle, fig->ptIndex + idx); // second point
                             for (size_t ipt = idx+1; ipt < fig->cntPts; ipt++)
                             {
-                                SegmentType sgSubType;
-                                if (handle.sgCnt == 0)
-                                    sgSubType = (fig->type == FigureType_ExteriorRing)? SegmentType_Arc : SegmentType_Line;
-                                else 
-                                    sgSubType = handle.segments[handle.currSgIdx];
+                                SegmentType sgSubType = (sgGenType == (SegmentType)-1) ? handle.segments[handle.currSgIdx] : sgGenType;
                                 if (sgSubType == SegmentType_FirstLine || sgSubType == SegmentType_Line)
                                 {
-                                    cntLnPts++;
-                                    if (handle.sgCnt != 0)
+                                    if (sgGenType == (SegmentType)-1)
                                         handle.currSgIdx++;
+                                    cntLnPts++;
                                     ReadAndPushPointByte(myBuff, handle, fig->ptIndex + ipt); // next point
                                     idx = ipt;
                                 }
@@ -799,8 +836,8 @@ namespace sqlgeomconv
             // shapes
             handle.shCnt = LittleEndianToInt(geom);
 
-            // allocate if necessary space for FDO geom
-            handle.EnsureLenBuffer(handle.ptCnt*(2 + (int)handle.hasZ + (handle.hasM?0x01:0x00))*sizeof(double) + 4*(handle.shCnt+handle.fgCnt)*sizeof(int));
+            // allocate a bit more space if necessary for FDO geom
+            handle.EnsureLenBuffer(2 * (handle.ptCnt*(2 + (int)handle.hasZ + (int)handle.hasM)*sizeof(double) + 4*(handle.shCnt+handle.fgCnt)*sizeof(int)));
             FdoByte* myBuff = handle.Buffer();
 
             if (handle.shCnt == 0)
@@ -926,7 +963,6 @@ namespace sqlgeomconv
         return retVal;
     }
 
-
     void BuildPolygon(GeomWriteHandle& handle, size_t shpParentIdx)
     {
         FdoGeometryType geom_type = (FdoGeometryType)*handle.ireader++;
@@ -952,38 +988,11 @@ namespace sqlgeomconv
 
                 size_t cntPts = (size_t)*handle.ireader++;
                 double* dreader = (double*)handle.ireader;
-#ifdef CHECK_CLOCKWISE
-                bool normalCopy = true;
-                if (handle.isLatLong)
+                for (size_t ip = 0; ip < cntPts; ip++)
                 {
-                    // ensure we have right clock wise
-                    bool cw = handle.PointsAreClockwise(dim, cntPts, dreader);
-                    normalCopy = !((cw && !idx) || (!cw && idx));
+                    BUFF_WRITE_POINTHXYZM;
+                    handle.cntPoints++;
                 }
-                if (normalCopy)
-                {
-#endif
-                    for (size_t ip = 0; ip < cntPts; ip++)
-                    {
-                        BUFF_WRITE_POINTHXYZM;
-                        handle.cntPoints++;
-                    }
-#ifdef CHECK_CLOCKWISE
-                }
-                else
-                {
-                    double* enddreader = dreader + cntPts * dim;
-                    dreader = enddreader;
-                    for (size_t ip = 0; ip < cntPts; ip++)
-                    {
-                        dreader -= dim;
-                        BUFF_WRITE_POINTHXYZM;
-                        handle.cntPoints++;
-                        dreader -= dim;
-                    }
-                    dreader = enddreader;
-                }
-#endif
                 handle.ireader = (int*)dreader;
             }
         }
@@ -1018,21 +1027,16 @@ namespace sqlgeomconv
                 BUFF_WRITE_POINTHXYZM;
                 handle.ireader = (int*)dreader;
                 handle.cntPoints++;
-                size_t cntParts = *handle.ireader++;            
+                size_t cntParts = *handle.ireader++;
 
-                if (cntParts == 1 && cntContours == 1)
-                {
-                    if ((FdoGeometryComponentType)*handle.ireader == FdoGeometryComponentType_CircularArcSegment)
-                        pfig->type = FigureType_ExteriorRing; // Arc
-                    else
-                        pfig->type = FigureType_Stroke; // line
-                }
+                size_t szSegments = handle.segments.size();
+                bool allPartsLines = true;
 
                 // copy all points and create all figures and shapes
-                bool firstArc = true;
-                bool firstLine = true;
                 for (size_t idx = 0; idx < cntParts; idx++)
                 {
+                    // since we cannot suport circular arcs of 4 points (circle) we can never generate 
+                    // a figure with SegmentType_Arc in this case we will have two SegmentType_FirstArc
                     FdoGeometryComponentType tpArc = (FdoGeometryComponentType)*handle.ireader++;
                     switch (tpArc)
                     {
@@ -1044,14 +1048,15 @@ namespace sqlgeomconv
                             BUFF_WRITE_POINTHXYZM;
                             handle.cntPoints++;
                             handle.ireader = (int*)dreader;
-                            handle.segments.push_back(firstArc ? SegmentType_FirstArc : SegmentType_Arc);
-                            firstArc = false;
+                            handle.segments.push_back(SegmentType_FirstArc);
+                            allPartsLines = false;
                         }
                         break;
                     case FdoGeometryComponentType_LineStringSegment:
                         {
                             size_t cntPts = (size_t)*handle.ireader++;
                             dreader = (double*)handle.ireader;
+                            bool firstLine = true;
                             for (size_t ip = 0; ip < cntPts; ip++)
                             {
                                 BUFF_WRITE_POINTHXYZM;
@@ -1065,6 +1070,13 @@ namespace sqlgeomconv
                     default:
                         throw FdoException::Create(L"Invalid geometry");
                     }
+                }
+
+                // in case the ring is made only of lines, we need to remove added segments (MS optimization)
+                if (allPartsLines)
+                {
+                    handle.segments.resize(szSegments);
+                    pfig->type = FigureType_Stroke; // line
                 }
             }
         }
@@ -1137,10 +1149,10 @@ namespace sqlgeomconv
                  pfig->type = FigureType_CompositeCurve;
             }
             // copy all points and create all figures and shapes
-            bool firstArc = true;
-            bool firstLine = true;
             for (size_t idx = 0; idx < cntParts; idx++)
             {
+                // since we cannot suport circular arcs of 4 points (circle) we can never generate 
+                // a figure with SegmentType_Arc in this case we will have two SegmentType_FirstArc
                 FdoGeometryComponentType tpArc = (FdoGeometryComponentType)*handle.ireader++;
                 switch (tpArc)
                 {
@@ -1153,16 +1165,14 @@ namespace sqlgeomconv
                         handle.cntPoints++;
                         handle.ireader = (int*)dreader;
                         if (shape->type == OpenGISShapeType_CompoundCurve)
-                        {
-                            handle.segments.push_back(firstArc ? SegmentType_FirstArc : SegmentType_Arc);
-                            firstArc = false;
-                        }
+                            handle.segments.push_back(SegmentType_FirstArc);
                     }
                     break;
                 case FdoGeometryComponentType_LineStringSegment:
                     {
                         size_t cntPts = (size_t)*handle.ireader++;
                         dreader = (double*)handle.ireader;
+                        bool firstLine = true;
                         for (size_t ip = 0; ip < cntPts; ip++)
                         {
                             BUFF_WRITE_POINTHXYZM;
