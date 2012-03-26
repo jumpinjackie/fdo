@@ -141,7 +141,7 @@ static Entry_t * cat_alloc(char *cat_name)
             if (c == (nl_catd) -1) {
                 char fullfilename[512];
                 struct stat my_stat;
-                const char *install = "/usr/local/fdo-3.7.0/nls/";
+                const char *install = "/usr/local/fdo-3.6.0/nls/";
 
                 // Determine the user-specified FDO install location
                 char *fdo_home = getenv( "FDOHOME" );
