@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionLpad.h>
-
+#include <math.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

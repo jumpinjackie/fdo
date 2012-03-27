@@ -20,7 +20,7 @@
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionConcat.h>
 #include "../../../../../Fdo/Unmanaged/Src/Common/StringUtility.h"
-
+#include <string.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

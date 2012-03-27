@@ -20,7 +20,7 @@
 #include <stdafx.h>
 #include <Functions/Aggregate/FdoFunctionCount.h>
 #include <FdoCommonStringUtil.h>
-
+#include <FdoCommonMiscUtil.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
