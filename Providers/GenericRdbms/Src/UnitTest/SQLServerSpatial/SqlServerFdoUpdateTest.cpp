@@ -791,9 +791,9 @@ void SqlServerFdoUpdateTest::SelectSpecificSpatial( FdoPtr<FdoIConnection> conne
 
     double ordsXYExt[10];
     ordsXYExt[0] = -97; ordsXYExt[1] = 53; 
-    ordsXYExt[2] = -97; ordsXYExt[3] = 57; 
+    ordsXYExt[2] = -93; ordsXYExt[3] = 53; 
     ordsXYExt[4] = -93; ordsXYExt[5] = 57; 
-    ordsXYExt[6] = -93; ordsXYExt[7] = 53; 
+    ordsXYExt[6] = -97; ordsXYExt[7] = 57; 
     ordsXYExt[8] = -97; ordsXYExt[9] = 53; 
 
     FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXYExt);
