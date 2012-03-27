@@ -225,6 +225,7 @@ set( FDOCommon_SRCS
 	Common/Xsl/XML885915Transcoder.cpp
 	Common/Gml212/Schema.cpp
 	Common/Gml212/Gml212.cpp
+	Common/Gml311/Gml311.cpp
 )
 
 set( FDOSpatial_SRCS
