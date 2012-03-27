@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Math/FdoFunctionAtan2.h>
-
+#include <math.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

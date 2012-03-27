@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionLower.h>
-
+#include <FdoCommonOSUtil.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

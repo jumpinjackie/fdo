@@ -20,7 +20,7 @@
 #include <stdafx.h>
 #include <Functions/Conversion/FdoFunctionToDate.h>
 #include <FdoCommonStringUtil.h>
-
+#include <ctype.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

@@ -19,7 +19,8 @@
 
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionSoundex.h>
-
+#include <FdoCommonOSUtil.h>
+#include <ctype.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

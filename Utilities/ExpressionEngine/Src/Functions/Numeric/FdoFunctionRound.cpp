@@ -19,6 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Numeric/FdoFunctionRound.h>
+#include <math.h>
 
 
 // ----------------------------------------------------------------------------

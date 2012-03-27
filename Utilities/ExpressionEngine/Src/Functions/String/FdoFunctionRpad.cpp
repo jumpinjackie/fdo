@@ -19,7 +19,8 @@
 
 #include <stdafx.h>
 #include <Functions/String/FdoFunctionRpad.h>
-
+#include <FdoCommonOSUtil.h>
+#include <math.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

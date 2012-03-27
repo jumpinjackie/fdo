@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Math/FdoFunctionAcos.h>
-
+#include <math.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
