@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Conversion/FdoFunctionToString.h>
-
+#include <ctype.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

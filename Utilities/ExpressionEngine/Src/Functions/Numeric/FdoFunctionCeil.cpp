@@ -19,6 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Numeric/FdoFunctionCeil.h>
+#include <math.h>
 
 
 // ----------------------------------------------------------------------------
