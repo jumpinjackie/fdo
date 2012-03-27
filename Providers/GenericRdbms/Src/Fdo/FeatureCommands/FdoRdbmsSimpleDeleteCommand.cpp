@@ -163,7 +163,16 @@ void FdoRdbmsSimpleDeleteCommand::PrepareDelete(const FdoSmLpClassDefinition* cl
     if (mFilter != NULL)
     {
         sqlBuilder->SetParameterValues(mParmeterValues);
-        FdoString* txtWhere = sqlBuilder->ToUpdateFilterSqlString(mClassName, mFilter);
+        FdoString* txtWhere = NULL;
+        try
+        {
+            txtWhere = sqlBuilder->ToUpdateFilterSqlString(mClassName, mFilter);
+        }
+        catch(FdoException* ex)
+        {
+            ex->Release();
+            txtWhere = NULL;
+        }
         if (txtWhere == NULL)
         {
             FlushDelete();
