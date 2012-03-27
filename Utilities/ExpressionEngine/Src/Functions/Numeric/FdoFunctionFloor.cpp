@@ -19,6 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Numeric/FdoFunctionFloor.h>
+#include <math.h>
 
 
 // ----------------------------------------------------------------------------

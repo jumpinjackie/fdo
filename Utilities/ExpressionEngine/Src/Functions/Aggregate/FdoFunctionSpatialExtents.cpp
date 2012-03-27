@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Aggregate/FdoFunctionSpatialExtents.h>
-
+#include <FdoCommonMiscUtil.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

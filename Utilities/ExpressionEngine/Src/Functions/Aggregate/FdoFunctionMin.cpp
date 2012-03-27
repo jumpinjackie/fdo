@@ -21,8 +21,7 @@
 #include <Functions/Aggregate/FdoFunctionMin.h>
 #include "StringUtility.h"
 #include <FdoCommonStringUtil.h>
-
-
+#include <FdoCommonMiscUtil.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --

@@ -20,7 +20,7 @@
 #include <stdafx.h>
 #include <Functions/Aggregate/FdoFunctionMedian.h>
 #include <FdoCommonStringUtil.h>
-
+#include <math.h>
 
 // ----------------------------------------------------------------------------
 // --                         Constructors/Destructors                       --
