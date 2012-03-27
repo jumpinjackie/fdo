@@ -224,9 +224,9 @@ void SqlServerFdoSelectTest::TestSpatialGeog()
             {
             case 0:
                 ordsXYExt[0] = -0.004; ordsXYExt[1] = -0.004; 
-                ordsXYExt[2] = -0.004; ordsXYExt[3] = -0.002; 
+                ordsXYExt[2] = -0.002; ordsXYExt[3] = -0.004; 
                 ordsXYExt[4] = -0.002; ordsXYExt[5] = -0.002; 
-                ordsXYExt[6] = -0.002; ordsXYExt[7] = -0.004; 
+                ordsXYExt[6] = -0.004; ordsXYExt[7] = -0.002; 
                 ordsXYExt[8] = -0.004; ordsXYExt[9] = -0.004; 
                 break;
             case 1:
@@ -238,9 +238,9 @@ void SqlServerFdoSelectTest::TestSpatialGeog()
                 break;
             case 2:
                 ordsXYExt[0] = 0.002; ordsXYExt[1] = 0.002; 
-                ordsXYExt[2] = 0.002; ordsXYExt[3] = 0.004; 
+                ordsXYExt[2] = 0.004; ordsXYExt[3] = 0.002; 
                 ordsXYExt[4] = 0.004; ordsXYExt[5] = 0.004; 
-                ordsXYExt[6] = 0.004; ordsXYExt[7] = 0.002; 
+                ordsXYExt[6] = 0.002; ordsXYExt[7] = 0.004; 
                 ordsXYExt[8] = 0.002; ordsXYExt[9] = 0.002; 
                 break;
             }
@@ -273,9 +273,9 @@ void SqlServerFdoSelectTest::TestSpatialGeog()
         // CounterClockwise polygon with Islands (some clockwise, some counterclockwise)
 
         ordsXYExt[0] = -0.005; ordsXYExt[1] = -0.005; 
-        ordsXYExt[2] = 0.005;  ordsXYExt[3] = -0.005; 
+        ordsXYExt[2] = -0.005; ordsXYExt[3] = 0.005; 
         ordsXYExt[4] = 0.005;  ordsXYExt[5] = 0.005 ; 
-        ordsXYExt[6] = -0.005; ordsXYExt[7] = 0.005; 
+        ordsXYExt[6] = 0.005;  ordsXYExt[7] = -0.005; 
         ordsXYExt[8] = -0.005; ordsXYExt[9] = -0.005; 
 
         extRing = gf->CreateLinearRing(FdoDimensionality_XY, 10, ordsXYExt);
@@ -284,14 +284,14 @@ void SqlServerFdoSelectTest::TestSpatialGeog()
 
         SpatialGeogSelect( connection, spatialArea );
 
-        // MultiPolygon with Islands. 1st polygon has CCW exterior
+        // MultiPolygon with Islands. 1st polygon has CW exterior
 
         polygons = FdoPolygonCollection::Create();
         polygons->Add( (FdoIPolygon*) spatialArea.p );
 
         ordsXYExt[0] = 0.007; ordsXYExt[1] = 0.007; 
-        ordsXYExt[2] = 0.007; ordsXYExt[3] = 0.009; 
-        ordsXYExt[4] = 0.009; ordsXYExt[5] = 0.007; 
+        ordsXYExt[2] = 0.009; ordsXYExt[3] = 0.007; 
+        ordsXYExt[4] = 0.007; ordsXYExt[5] = 0.009; 
         ordsXYExt[6] = 0.007; ordsXYExt[7] = 0.007; 
 
         extRing = gf->CreateLinearRing(FdoDimensionality_XY, 8, ordsXYExt);
