@@ -566,7 +566,7 @@ void SltMetadata::BuildMetadataInfo(SltConnection* conn, SltStringList* lst)
                     {
                         propMarkedAsReadOnly = true;
                         // if we have a view we might have an enforced PK 
-                        if (pTable->pSelect != NULL && (dt == FdoDataType_Int16 || dt == FdoDataType_Int32 || dt == FdoDataType_Int64))
+                        if (pTable->pSelect != NULL && (dt == FdoDataType_Int16 || dt == FdoDataType_Int32 || dt == FdoDataType_Int64 || dt == FdoDataType_String))
                         {
                             // in case there are more properties marked as read only avoid set a PK
                             if (!enforcedPK.size())
