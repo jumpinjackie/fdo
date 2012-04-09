@@ -150,7 +150,7 @@ void FdoWmsCapabilities::_processLayerSRSName (FdoWmsLayer* layer, FdoStringColl
 	for (FdoInt32 i=0; i<cntNames; i++)
 	{
 		FdoStringP crsName = crsNames->GetString (i);
-		if (names->IndexOf (crsName) == -1)
+		if (crsName != L"" && names->IndexOf (crsName) == -1)
 		{
 			names->Add (crsName);
 		}
