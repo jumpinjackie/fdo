@@ -322,7 +322,7 @@ private:
     bool
     operator==(const XObjectFactory&) const;
 
-    mutable MemoryManager&  m_memoryManager;
+    MemoryManager&  m_memoryManager;
 };
 
 
