@@ -125,12 +125,26 @@ Priority: optional
 Depends: \${fdogdal:Depends}
 Description:  OSGeo FDO ${FDOBUILD} GDAL Provider
 
+Package: fdo-mysql
+Architecture: ${ARCH}
+Section: misc
+Priority: optional
+Depends: \${fdomysql:Depends}
+Description:  OSGeo FDO ${FDOBUILD} MySQL Provider
+
 Package: fdo-ogr
 Architecture: ${ARCH}
 Section: misc
 Priority: optional
 Depends: \${fdoogr:Depends}
 Description:  OSGeo FDO ${FDOBUILD} OGR Provider
+
+Package: fdo-odbc
+Architecture: ${ARCH}
+Section: misc
+Priority: optional
+Depends: \${fdoodbc:Depends}
+Description:  OSGeo FDO ${FDOBUILD} ODBC Provider
 
 Package: fdo-postgis
 Architecture: ${ARCH}

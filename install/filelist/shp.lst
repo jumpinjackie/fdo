@@ -10,10 +10,8 @@
 ./include/SHP/Override/FdoShpPropertyDefinition.h
 ./include/SHP/ShpCommandType.h
 ./include/SHP/ShpCompareHandler.h
-./lib/libSHPOverrides-3.5.0.so
-./lib/libSHPOverrides.la
+./lib/libSHPOverrides-3.7.0.so
 ./lib/libSHPOverrides.so
-./lib/libSHPProvider-3.5.0.so
-./lib/libSHPProvider.la
+./lib/libSHPProvider-3.7.0.so
 ./lib/libSHPProvider.so
 ./nls/ShpMessage.cat

@@ -1,0 +1,12 @@
+./include/Rdbms/Override/Odbc/OdbcOv.h
+./include/Rdbms/Override/Odbc/OdbcOvClassCollection.h
+./include/Rdbms/Override/Odbc/OdbcOvClassDefinition.h
+./include/Rdbms/Override/Odbc/OdbcOvColumn.h
+./include/Rdbms/Override/Odbc/OdbcOvDataPropertyDefinition.h
+./include/Rdbms/Override/Odbc/OdbcOvGeometricPropertyDefinition.h
+./include/Rdbms/Override/Odbc/OdbcOvPhysicalSchemaMapping.h
+./include/Rdbms/Override/Odbc/OdbcOvPropertyDefinition.h
+./include/Rdbms/Override/Odbc/OdbcOvPropertyDefinitionCollection.h
+./include/Rdbms/Override/Odbc/OdbcOvTable.h
+./lib/libFdoODBC-3.7.0.so
+./lib/libFdoODBC.so

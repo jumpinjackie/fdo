@@ -1,4 +1,3 @@
-./lib/libWFSProvider-3.5.0.so
-./lib/libWFSProvider.la
+./lib/libWFSProvider-3.7.0.so
 ./lib/libWFSProvider.so
 ./nls/WFSMessage.cat

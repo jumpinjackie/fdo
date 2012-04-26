@@ -3,7 +3,6 @@
 ./include/SDF/IScrollableFeatureReader.h
 ./include/SDF/SdfCommandType.h
 ./include/SDF/SdfCompareHandler.h
-./lib/libSDFProvider-3.5.0.so
-./lib/libSDFProvider.la
+./lib/libSDFProvider-3.7.0.so
 ./lib/libSDFProvider.so
 ./nls/SDFMessage.cat
