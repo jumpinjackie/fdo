@@ -8,10 +8,8 @@
 ./include/GdalFile/GdalFile/Override/FdoGrfpRasterGeoreferenceLocation.h
 ./include/GdalFile/GdalFile/Override/FdoGrfpRasterImageDefinition.h
 ./include/GdalFile/GdalFile/Override/FdoGrfpRasterLocation.h
-./lib/libGRFPOverrides-3.5.0.so
-./lib/libGRFPOverrides.la
+./lib/libGRFPOverrides-3.7.0.so
 ./lib/libGRFPOverrides.so
-./lib/libGRFPProvider-3.5.0.so
-./lib/libGRFPProvider.la
+./lib/libGRFPProvider-3.7.0.so
 ./lib/libGRFPProvider.so
 ./nls/GRFPMessage.cat

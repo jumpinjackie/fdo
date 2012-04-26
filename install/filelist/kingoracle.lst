@@ -6,10 +6,8 @@
 ./include/KingOracle/KingOracle/Override/FdoKgOraPhysicalSchemaMapping.h
 ./include/KingOracle/KingOracle/Override/FdoKgOraPropertyDefinitionCollection.h
 ./include/KingOracle/KingOracle/Override/FdoKgOraPropertyDefinition.h
-./lib/libKingOracleOverrides-3.5.0.so
-./lib/libKingOracleOverrides.la
+./lib/libKingOracleOverrides-3.7.0.so
 ./lib/libKingOracleOverrides.so
-./lib/libKingOracleProvider-3.5.0.so
-./lib/libKingOracleProvider.la
+./lib/libKingOracleProvider-3.7.0.so
 ./lib/libKingOracleProvider.so
 ./nls/KgOraMessage.cat

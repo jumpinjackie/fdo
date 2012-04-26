@@ -2,6 +2,7 @@
 ./include/WMS/FdoWmsOvProvider.h
 ./include/WMS/IGetFeatureClassCRSNames.h
 ./include/WMS/IGetFeatureClassStyles.h
+./include/WMS/IGetFeatureInfo.h
 ./include/WMS/IGetImageFormats.h
 ./include/WMS/Override/FdoWmsOvClassCollection.h
 ./include/WMS/Override/FdoWmsOvClassDefinition.h
@@ -11,10 +12,8 @@
 ./include/WMS/Override/FdoWmsOvPhysicalSchemaMapping.h
 ./include/WMS/Override/FdoWmsOvRasterDefinition.h
 ./include/WMS/Override/FdoWmsOvStyleDefinition.h
-./lib/libWMSOverrides-3.5.0.so
-./lib/libWMSOverrides.la
+./lib/libWMSOverrides-3.7.0.so
 ./lib/libWMSOverrides.so
-./lib/libWMSProvider-3.5.0.so
-./lib/libWMSProvider.la
+./lib/libWMSProvider-3.7.0.so
 ./lib/libWMSProvider.so
 ./nls/FdoWmsMessage.cat
