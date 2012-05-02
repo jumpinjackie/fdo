@@ -53,15 +53,42 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 {
 	m_reader = FDO_SAFE_ADDREF(reader);
 	m_filter = FDO_SAFE_ADDREF(filter);
-	
-    FdoPtr<FdoCommonSchemaCopyContext> copyContext;
-    if (selectedIds != NULL && selectedIds->GetCount() > 0)
-        copyContext = FdoCommonSchemaCopyContext::Create(selectedIds);
-    m_classDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(classDef, copyContext);//FDO_SAFE_ADDREF(classDef);
-    
-    m_selectedIds = FDO_SAFE_ADDREF(selectedIds);
 	m_computedIds = NULL;
 
+    FdoPtr<FdoClassDefinition> usedClassDef = FDO_SAFE_ADDREF(classDef);
+	
+    if (usedClassDef == NULL && reader != NULL)
+        usedClassDef = reader->GetClassDefinition();
+
+    FdoPtr<FdoCommonSchemaCopyContext> copyContext;
+    if ((selectedIds == NULL || selectedIds->GetCount() == 0) && usedClassDef != NULL)
+    {
+        // in case we select * we need to add all class properties to m_selectedIds from the class
+        m_selectedIds = FdoIdentifierCollection::Create();
+
+        FdoPtr<FdoClassDefinition> tmpClsDef = FDO_SAFE_ADDREF(usedClassDef.p);
+        do
+        {
+            FdoPtr<FdoPropertyDefinitionCollection> props = tmpClsDef->GetProperties();
+            for (int i = 0; i < props->GetCount(); i++)
+            {
+                FdoPtr<FdoPropertyDefinition> prop = props->GetItem(i);
+                FdoPtr<FdoIdentifier> idf = FdoIdentifier::Create(prop->GetName());
+                m_selectedIds->Add(idf);
+            }
+            tmpClsDef = tmpClsDef->GetBaseClass();
+        }while(tmpClsDef != NULL);
+        // keep copyContext=NULL to enforce copy the full class definition below
+    }
+    else // we need only selected properties
+    {
+        copyContext = FdoCommonSchemaCopyContext::Create(selectedIds);
+        m_selectedIds = FDO_SAFE_ADDREF(selectedIds);
+    }
+
+    if (usedClassDef != NULL)
+        m_classDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(usedClassDef, copyContext);
+    
 	// Create a list of computed ids only.
 	if ( selectedIds )
 	{
@@ -83,7 +110,7 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
                 FdoPropertyType propType;
                 FdoDataType dataType;
 
-                FdoExpressionEngine::GetExpressionType(classDef, expr, propType, dataType);
+                FdoExpressionEngine::GetExpressionType(usedClassDef, expr, propType, dataType);
 
                 FdoPtr<FdoDataPropertyDefinition> pd = FdoDataPropertyDefinition::Create(pComputedId->GetName(), NULL);
                 pd->SetDataType(dataType);
@@ -94,7 +121,7 @@ FdoExpressionEngineUtilFeatureReader::FdoExpressionEngineUtilFeatureReader (FdoC
 	}
 
 	// In the presence of the filter, pass NULL for the list of properties (i.e. all ) 
-	m_filterExec = FdoExpressionEngine::Create (reader, classDef, 
+	m_filterExec = FdoExpressionEngine::Create (reader, usedClassDef, 
 												m_filter ? m_computedIds : m_computedIds, 
 												userDefinedFunctions);
 }
