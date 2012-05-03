@@ -81,7 +81,8 @@ DbiConnection::DbiConnection( ):
     mFilterProcessor( NULL ),
     mSchemaUtil( NULL ),
     mIndex(0),
-    mContext(NULL)
+    mContext(NULL),
+    mAvoidSetSchema(false)
 {
     // Set the flag that indicates whether or not the RDBMS user has a Workspace
     // Manager environment.
@@ -153,29 +154,37 @@ FdoConnectionState DbiConnection::Open (
             }
         }
 
-        if ( skipPending || (mParsedConnection->mSchema.GetLength() > 0) )
+        if (!mAvoidSetSchema)
         {
-            int rc;
-
-            if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
-                rc =  ::rdbi_set_schemaW( mContext, mParsedConnection->mSchema );
-            else 
-                rc =  ::rdbi_set_schema( mContext, mParsedConnection->mSchema );
-
-            if ( rc == RDBI_SUCCESS ) {
-				if ( rdbi_autocommit_off(mContext) == RDBI_SUCCESS )
-					mOpen = FdoConnectionState_Open;
-            }
-            else
+            if ( skipPending || (mParsedConnection->mSchema.GetLength() > 0) )
             {
-				wchar_t	err_msg[RDBI_MSG_SIZE+1];
-                ::rdbi_get_msg( mContext );
-                long serverRc = ::rdbi_get_server_rc (mContext);
-				wcsncpy(err_msg, mContext->last_error_msg, RDBI_MSG_SIZE);
-				err_msg[RDBI_MSG_SIZE] = '\0';
-                Close();
-				ThrowLastError(err_msg, serverRc);
+                int rc;
+
+                if ( mGdbiConnection && mGdbiConnection->GetCommands()->SupportsUnicode() ) 
+                    rc =  ::rdbi_set_schemaW( mContext, mParsedConnection->mSchema );
+                else 
+                    rc =  ::rdbi_set_schema( mContext, mParsedConnection->mSchema );
+
+                if ( rc == RDBI_SUCCESS ) {
+				    if ( rdbi_autocommit_off(mContext) == RDBI_SUCCESS )
+					    mOpen = FdoConnectionState_Open;
+                }
+                else
+                {
+				    wchar_t	err_msg[RDBI_MSG_SIZE+1];
+                    ::rdbi_get_msg( mContext );
+                    long serverRc = ::rdbi_get_server_rc (mContext);
+				    wcsncpy(err_msg, mContext->last_error_msg, RDBI_MSG_SIZE);
+				    err_msg[RDBI_MSG_SIZE] = '\0';
+                    Close();
+				    ThrowLastError(err_msg, serverRc);
+                }
             }
+        }
+        else
+        {
+			rdbi_autocommit_off(mContext);
+			mOpen = FdoConnectionState_Open;
         }
         if (this->mGdbiConnection != NULL)
             mGdbiConnection->SetIsGeometryFromOrdinatesWanted((char*)(const char*)(mParsedConnection->mIsGeometryFromOrdinatesWanted));

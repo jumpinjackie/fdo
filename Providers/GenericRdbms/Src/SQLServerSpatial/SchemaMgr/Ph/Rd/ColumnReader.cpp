@@ -83,13 +83,17 @@ bool FdoSmPhRdSqsColumnReader::ReadNext()
 
     if ( gotRow ) {
         bool isUnsigned = (GetLong( L"",L"isunsigned") != 0);
+        
+        FdoStringP typeCol = GetString(L"", L"type_string");
 
         mColType = FdoSmPhSqsColTypeMapper::String2Type( 
-            GetString(L"", L"type_string"), 
+            typeCol, 
             isUnsigned,
             GetLong( L"", L"size"), 
             GetLong( L"", L"scale" )
         );
+        if (mColType == FdoSmPhColType_Date && typeCol == L"timestamp")
+            FdoSmPhRdColumnReader::SetString(L"", L"is_autoincremented", L"1");
     }
 
     return gotRow;

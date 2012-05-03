@@ -103,6 +103,15 @@ void FdoRdbmsSimpleDeleteCommand::SetFeatureClassName(FdoIdentifier* value)
         mConnection->GetSchemaUtil()->CheckClass(value->GetText());
 
         mClassName = FDO_SAFE_ADDREF(value);
+
+        const FdoSmLpPropertyDefinitionCollection *properties = classDefinition->RefProperties();
+        for (int i = 0; i < properties->GetCount(); i++)
+        {
+            const FdoSmLpPropertyDefinition* prop = properties->RefItem(i);
+            FdoPropertyType ptype = prop->GetPropertyType();
+            if (ptype == FdoPropertyType_ObjectProperty || ptype == FdoPropertyType_AssociationProperty)
+                mIsObjectObject = true;
+        }
     }
 }
 

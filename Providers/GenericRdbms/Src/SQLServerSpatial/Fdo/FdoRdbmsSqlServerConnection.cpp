@@ -590,6 +590,16 @@ FdoStringP FdoRdbmsSqlServerConnection::GenConnectionStringParm( FdoStringP conn
 			}
             else
                 newCs += L";Trusted_Connection=yes";
+			
+            FdoStringP database = dict->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE);
+			if (database.GetLength() > 0)
+			{
+                GetDbiConnection()->SetAvoidSetSchema(true);
+				newCs += L";DATABASE=";
+				newCs += database;
+			}
+            else
+                GetDbiConnection()->SetAvoidSetSchema(false);
         }
     }
 
