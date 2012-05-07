@@ -688,7 +688,7 @@
 </xs:restriction>
 </xs:simpleType>
 </xs:element>
-<xs:element name="TIMESTAMP_COLUMN" minOccurs="0">
+<xs:element name="TIMESTAMP_COLUMN" fdo:readOnly="true" minOccurs="0">
 <xs:simpleType>
 <xs:restriction base="xs:dateTime"/>
 </xs:simpleType>
