@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:OGC980461FS="http://fdo.osgeo.org/schemas/feature/OGC980461FS" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/OGC980461FS" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>OGC Simple Features Specification for SQL</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://fdo.osgeo.org/schemas" schemaLocation="../../../../Docs/XmlSchema/FdoDocument.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="../../../../Docs/XmlSchema/Gml/geometryBasic0d1d.xsd"/>
+	<xs:element name="lakes" type="OGC980461FS:lakesType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="lakesKey">
+			<xs:selector xpath=".//lakes"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="lakesType" abstract="false" fdo:geometryName="shore" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 lakes</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a polygon defines the shoreline</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name">
+						<xs:annotation>
+							<xs:documentation>Name of the lake</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="buildings" type="OGC980461FS:buildingsType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="buildingsKey">
+			<xs:selector xpath=".//buildings"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="buildingsType" abstract="false" fdo:geometryName="footprint" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 buildings</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a polygon defines a building perimeter</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="address">
+						<xs:annotation>
+							<xs:documentation>Address of the building</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="position" type="gml:AbstractGeometryType" fdo:geometryName="position" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+						<xs:annotation>
+							<xs:documentation>position of the building</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="named_places" type="OGC980461FS:named_placesType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="named_placesKey">
+			<xs:selector xpath=".//named_places"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="named_placesType" abstract="false" fdo:geometryName="boundary" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 named places</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a polygon defines the boundary of a named place</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Name of the place</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="forests" type="OGC980461FS:forestsType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="forestsKey">
+			<xs:selector xpath=".//forests"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="forestsType" abstract="false" fdo:geometryName="boundary" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 forests</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>multiple polygons define the boundaries of a forest</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name">
+						<xs:annotation>
+							<xs:documentation>Name of the forest</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ponds" type="OGC980461FS:pondsType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="pondsKey">
+			<xs:selector xpath=".//ponds"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="pondsType" abstract="false" fdo:geometryName="shores" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 ponds</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>multiple polygons define the shorelines of ponds</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Name of the pond</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="type">
+						<xs:annotation>
+							<xs:documentation>Type of pond</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="map_neatlines" type="OGC980461FS:map_neatlinesType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="map_neatlinesKey">
+			<xs:selector xpath=".//map_neatlines"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="map_neatlinesType" abstract="false" fdo:geometryName="neatline" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="surface" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 neatline</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a polygon defines the boundary of the map</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="bridges" type="OGC980461FS:bridgesType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="bridgesKey">
+			<xs:selector xpath=".//bridges"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="bridgesType" abstract="false" fdo:geometryName="position" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="point" fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 bridges</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>A point defining location of the bridge</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name">
+						<xs:annotation>
+							<xs:documentation>Name of the bridge</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="road_segments" type="OGC980461FS:road_segmentsType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="road_segmentsKey">
+			<xs:selector xpath=".//road_segments"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="road_segmentsType" abstract="false" fdo:geometryName="centerline" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 road segments</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a linestring defines the center line of the road segment</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name">
+						<xs:annotation>
+							<xs:documentation>Name of the road segment</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="aliases" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>other names for road segment</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="num_lanes" type="fdo:int32" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>number of lanes</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="streams" type="OGC980461FS:streamsType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="streamsKey">
+			<xs:selector xpath=".//streamts"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="streamsType" abstract="false" fdo:geometryName="centerline" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 streams</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>a linestring defines the center line of the stream</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>Name of the stream</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="divided_routes" type="OGC980461FS:divided_routesType" abstract="false" substitutionGroup="gml:_Feature">
+		<xs:key name="divided_routesKey">
+			<xs:selector xpath=".//divided_routes"/>
+			<xs:field xpath="fid"/>
+		</xs:key>
+	</xs:element>
+	<xs:complexType name="divided_routesType" abstract="false" fdo:geometryName="centerlines" fdo:hasMeasure="false" fdo:hasElevation="false" fdo:geometricTypes="curve " fdo:srsName="SC_0" fdo:geometryReadOnly="false">
+		<xs:annotation>
+			<xs:documentation>OGC 98-046r1 divided routes</xs:documentation>
+			<xs:appinfo source="http://fdo.osgeo.org/schemas"/>
+			<xs:documentation>multiple linestrings define the center lines of divided routes</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gml:AbstractFeatureType">
+				<xs:sequence>
+					<xs:element name="fid" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>feature id</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="name">
+						<xs:annotation>
+							<xs:documentation>Name of the divided route</xs:documentation>
+						</xs:annotation>
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:maxLength value="64"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="num_lanes" type="fdo:int32">
+						<xs:annotation>
+							<xs:documentation>number of lanes</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

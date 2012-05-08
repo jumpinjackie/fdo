@@ -1,0 +1,1 @@
+ cannot apply feature schema 'acad' to datastore '{USER_DS}_apply_no_meta'; datastore has no fdo metadata tables (f_schemainfo, etc.) 
