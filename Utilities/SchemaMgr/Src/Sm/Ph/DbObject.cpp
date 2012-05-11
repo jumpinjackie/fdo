@@ -1600,7 +1600,8 @@ FdoSmPhColumnP FdoSmPhDbObject::NewColumn(
 			defaultValue,
             colRdr
         );
-            if (colRdr->GetBoolean(L"",L"is_autoincremented"))
+            FdoSmPhFieldP fld = colRdr->GetField(L"",L"is_autoincremented");
+            if (fld != NULL && colRdr->GetBoolean(L"",L"is_autoincremented"))
                 ret->SetReadOnly(true);
             return ret;
         }
