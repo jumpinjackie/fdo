@@ -126,7 +126,13 @@ System::Boolean NAMESPACE_OSGEO_RUNTIME::Disposable::operator==(Disposable^ left
 
 System::Int32 NAMESPACE_OSGEO_RUNTIME::Disposable::GetHashCode()
 {
-	return m_imp.ToInt32();
+    // Solution for overflow issue (http://trac.osgeo.org/fdo/ticket/830) taken from: 
+    // http://msdn.microsoft.com/en-us/library/system.object.gethashcode(v=vs.71).aspx
+    // If the data member is bigger than an Int32, you can combine the high order 
+    // bits of the value with the low order bits using an XOR operation.
+    //
+    System::Int64 i64 = m_imp.ToInt64();
+    return (System::Int32)((System::Int32)(i64) ^ (System::Int32)(i64 >> 32));
 }
 
 IntPtr NAMESPACE_OSGEO_RUNTIME::Disposable::GetDisposableObject()
