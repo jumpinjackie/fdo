@@ -244,7 +244,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                         const FdoSmLpObjectPropertyDefinition* objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
                         const FdoSmLpPropertyMappingDefinition* mappping = objProp->RefMappingDefinition();
                         if( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
-                            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
+                            throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_27, "Unsupported Property mapping type")); // Should never get here
                         const FdoSmLpClassDefinition* currentClass = objProp->RefTargetClass();
                         for( int k=1;k<length;k++ )
                         {
@@ -252,7 +252,7 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                             objProp = static_cast<const FdoSmLpObjectPropertyDefinition*>(propertyDefinition);
                             mappping = objProp->RefMappingDefinition();
                             if( mappping->GetType() != FdoSmLpPropertyMappingType_Single )
-                                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_22, "Internal error")); // Should never get here
+                                throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_27, "Unsupported Property mapping type")); // Should never get here
 
                             currentClass = objProp->RefTargetClass();
                         }
