@@ -27,6 +27,12 @@ SET FDOINSPATH=%cd%\Fdo
 SET FDOBINPATH=%cd%\Fdo\Bin
 SET FDOERROR=0
 
+REM If you want to build 64-bit with Visual C++ 2010 Express, you will need to
+REM install the Windows SDK v7.1. In addition, you need to override the default
+REM platform toolset from v100 to Windows7.1SDK. Uncommenting the line below will
+REM do this for you
+REM SET EXTRA_MSBUILD_PROPERTIES=/p:PlatformToolset=Windows7.1SDK
+
 :study_params
 if (%1)==() goto start_build
 
@@ -93,7 +99,7 @@ if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_ogr
 
 echo %MSACTION% %TYPEBUILD% OGR Provider Dlls
-msbuild OGRProvider%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild OGRProvider%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
