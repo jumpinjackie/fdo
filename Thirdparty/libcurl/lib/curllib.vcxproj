@@ -154,7 +154,7 @@
       <AssemblerListingLocation>.\Release64/</AssemblerListingLocation>
       <ObjectFileName>.\Release64/</ObjectFileName>
       <ProgramDataBaseFileName>.\Release64/</ProgramDataBaseFileName>
-      <BrowseInformation>true</BrowseInformation>
+      <BrowseInformation>false</BrowseInformation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

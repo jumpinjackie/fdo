@@ -31,6 +31,12 @@ SET DOCENABLE=skip
 SET FDOERROR=0
 SET ARCSDEVERSIONACTIVE=9
 
+REM If you want to build 64-bit with Visual C++ 2010 Express, you will need to
+REM install the Windows SDK v7.1. In addition, you need to override the default
+REM platform toolset from v100 to Windows7.1SDK. Uncommenting the line below will
+REM do this for you
+REM SET EXTRA_MSBUILD_PROPERTIES=/p:PlatformToolset=Windows7.1SDK
+
 :study_params
 if (%1)==() goto start_build
 
@@ -137,7 +143,7 @@ SET FDOACTIVEBUILD=%cd%\Src\ArcSDE%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
 
-msbuild ArcSDE%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform=%TYPEPLATFORM% /nologo /consoleloggerparameters:NoSummary
+msbuild ArcSDE%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
 
 SET FDOERROR=%errorlevel%
 if exist ArcSDE%VCBEXTENSION%_temp.sln del /Q /F ArcSDE%VCBEXTENSION%_temp.sln
