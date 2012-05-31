@@ -1039,6 +1039,10 @@ bool SdfSimpleFeatureReader::ReadNext()
             if (ret == SQLiteDB_NOTFOUND)
                 return false;
 
+            // try next feature
+            if (ret == SQLiteDB_KEYEMPTY)
+                return ReadNext();
+
             if (ret != SQLiteDB_OK)
                 throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
 
