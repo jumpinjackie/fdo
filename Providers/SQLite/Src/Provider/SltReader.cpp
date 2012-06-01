@@ -991,6 +991,7 @@ bool SltReader::ReadNext()
     //Note that we will not get both a spatial and rowid iterator.
     //The SltConntection::Select() function will pre-process data so that
     //we get either a rowid iterator or a spatial iterator, but not both.
+    bool retry = false; 
     if (m_ri)
     {
         if (m_isViewSelect)
@@ -1069,7 +1070,7 @@ bool SltReader::ReadNext()
                 //necessary for closing off the query, and we will
                 //execute this only once at the end
                 m_closeOpcode = v->pc;
-		        return true;
+                return true;
             }
             else
             {
@@ -1081,6 +1082,13 @@ bool SltReader::ReadNext()
                 //setting close opcode to -1 will reset the statement the 
                 //next time we call ReadNext().
                 m_closeOpcode = -1;
+
+                // If we go to here first time, it means the if statements in  "if (m_closeOpcode != -1)" 
+                // doesn't work, then we must try again on the same row with m_closeOpcode=-1. otherwise failure.
+                if (retry)
+                    return false;
+                m_ri->Previous();
+                retry = true;
             }
         }
     }
