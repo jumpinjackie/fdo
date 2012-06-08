@@ -20,10 +20,16 @@
 
 
 #include <time.h>
+
+#ifdef _FDO_3_5
 #include "FdoDefaultFeatureReader.h"
+#endif
 
-
-class c_KgInfFeatureReader : public c_KgInfReader< FdoDefaultFeatureReader>
+#ifdef _FDO_3_5
+class c_KgInfFeatureReader : public c_KgInfReader<FdoDefaultFeatureReader>
+#else
+class c_KgInfFeatureReader : public c_KgInfReader< FdoIFeatureReader>
+#endif
 {
     public:
         c_KgInfFeatureReader(c_KgInfConnection * Connection

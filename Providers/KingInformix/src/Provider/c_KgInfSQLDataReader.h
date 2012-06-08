@@ -16,9 +16,18 @@
 */
 #ifndef _c_KgInfSQLDataReader_h
 #define _c_KgInfSQLDataReader_h
-#include "FdoDefaultSqlDataReader.h"
 
+#ifdef _FDO_3_5
+#include "FdoDefaultSqlDataReader.h"
+#endif
+
+ 
+
+#ifdef _FDO_3_5
 class c_KgInfSQLDataReader : public FdoDefaultSqlDataReader
+#else
+class c_KgInfSQLDataReader : public FdoISQLDataReader
+#endif
 {
 public:
   c_KgInfSQLDataReader(c_KgInfConnection * Connection
