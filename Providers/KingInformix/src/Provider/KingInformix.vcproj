@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="KingInformix"
 	ProjectGUID="{4C9BC5B6-CB7C-46C8-9552-272CAA437990}"
 	RootNamespace="KingInformix"
@@ -830,7 +830,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUtilities)\Common\Inc&quot;;.\;&quot;$(FDO)\Unmanaged\Inc\Fdo\Expression&quot;;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;;.\odbcutils"
+				AdditionalIncludeDirectories="..\..\..\..\..\branches\3.4\fdo\Unmanaged\Inc;..\..\..\..\..\branches\3.4\Utilities\Common\Inc;.\;..\..\..\..\..\branches\3.4\fdo\Unmanaged\Inc\Fdo\Expression;&quot;D:\Development\IBM\Informix\Client-SDK\incl\cli&quot;;.\odbcutils"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGINF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -854,7 +854,7 @@
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\lib\win32\debug\&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Utilities\Common\lib\win32\debug\&quot;;..\Overrides\Dbg"
+				AdditionalLibraryDirectories="..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug\;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug\;..\Overrides\Dbg"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -909,7 +909,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(FDO)\Unmanaged\Inc&quot;;&quot;$(FDOUtilities)\Common\Inc&quot;;.\;&quot;$(FDO)\Unmanaged\Inc\Fdo\Expression&quot;;.\odbcutils;&quot;D:\Development\MapGuide_OS\Providers\KingInformix\IBM\Informix\Client-SDK\incl\cli&quot;"
+				AdditionalIncludeDirectories="..\..\..\..\..\branches\3.4\fdo\Unmanaged\Inc;..\..\..\..\..\branches\3.4\Utilities\Common\Inc;..\..\..\..\..\branches\3.4\fdo\Unmanaged\Inc\Fdo\Expression;.\;.\odbcutils;&quot;D:\Development\IBM\Informix\Client-SDK\incl\cli&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGINF_EXPORTS;GISSPATIAL_STATIC;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -930,7 +930,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release\&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.1\mapguide-2.1\OpenSource_FDO\Utilities\Common\lib\win32\release\&quot;;..\Overrides\Rel"
+				AdditionalLibraryDirectories="..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\release\;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\release\;..\Overrides\Rel"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
