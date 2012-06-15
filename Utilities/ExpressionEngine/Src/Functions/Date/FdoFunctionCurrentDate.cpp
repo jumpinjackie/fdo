@@ -19,7 +19,7 @@
 
 #include <stdafx.h>
 #include <Functions/Date/FdoFunctionCurrentDate.h>
-
+#include <FdoCommonOSUtil.h>
 #include <time.h>
 
 // ----------------------------------------------------------------------------

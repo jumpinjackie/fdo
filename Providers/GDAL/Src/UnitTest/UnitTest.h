@@ -129,6 +129,7 @@ void PrintException(FdoException* exception);
 //FDOGRFP_API HRESULT APIENTRY DllRegisterServer (void);
 void UnitTestMainProc();
 
+#include <cstdio>
 #include "RfpTestCase.h"
 
 // helper function to get current time.

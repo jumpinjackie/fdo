@@ -18,8 +18,19 @@
 
 #include "stdafx.h"
 #include <Util/FdoExpressionEngineUtilDataReader.h>
+#include <FdoCommonOSUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <FdoCommonBinaryReader.h>
+#include <FdoCommonBinaryWriter.h>
 #include <FdoExpressionEngine.h>
 
+#ifdef __GNUC__
+//Some pre-processor massaging to get hash_map into stdext
+#undef min
+#undef max
+#define stdext __gnu_cxx
+#include <ext/hash_map>
+#endif
 
 class my_hash_compare
 {	// traits class for hash containers
