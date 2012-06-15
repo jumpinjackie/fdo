@@ -65,6 +65,8 @@ esac
 # Save existing build tree for later comparison
 #
 pushd $FDOTARGET
+# For lazy folks who build from svn working copies instead of svn exports, we need to weed out any .svn dirs before compiling the file-list
+find . -name .svn -exec rm -rf {} \;
 find . -type f -print > ${BUILDLIST}/temp.lst
 find . -type l -print >> ${BUILDLIST}/temp.lst
 sort ${BUILDLIST}/temp.lst > ${BUILDLIST}/orig.lst
@@ -105,6 +107,8 @@ popd
 # and then using sort, unique to strip it
 #
 pushd $FDOTARGET
+# For lazy folks who build from svn working copies instead of svn exports, we need to weed out any .svn dirs before compiling the file-list
+find . -name .svn -exec rm -rf {} \;
 mkdir -p $BUILDLIST
 find . -type f -print > ${BUILDLIST}/temp.lst
 find . -type l -print >> ${BUILDLIST}/temp.lst

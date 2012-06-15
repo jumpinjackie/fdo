@@ -116,7 +116,7 @@ Architecture: ${ARCH}
 Section: misc
 Priority: optional
 Depends: \${fdordbms:Depends}
-Description:  OSGeo FDO ${FDOBUILD} RDBMS Provider
+Description:  OSGeo FDO ${FDOBUILD} Providers for ODBC, MySQL and PostgreSQL
 
 Package: fdo-gdal
 Architecture: ${ARCH}
@@ -131,13 +131,6 @@ Section: misc
 Priority: optional
 Depends: \${fdoogr:Depends}
 Description:  OSGeo FDO ${FDOBUILD} OGR Provider
-
-Package: fdo-postgis
-Architecture: ${ARCH}
-Section: misc
-Priority: optional
-Depends: \${fdopostgis:Depends}
-Description:  OSGeo FDO ${FDOBUILD} PostGIS Provider
 
 Package: fdo-kingoracle
 Architecture: ${ARCH}

@@ -18,6 +18,12 @@
  */
 
 #include <stdafx.h>
+#include <vector>
+#include <cstdio>
+#include <FdoCommonThreadMutex.h>
+#include <FdoCommonStringUtil.h>
+#include <FdoCommonMiscUtil.h>
+#include <FdoCommonSchemaUtil.h>
 #include <FdoExpressionEngineImp.h>
 
 #include <Spatial/SpatialStd.h>

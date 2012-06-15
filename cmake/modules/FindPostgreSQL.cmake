@@ -29,5 +29,9 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PostgreSQL DEFAULT_MSG
                                   POSTGRESQL_INCLUDE_DIR POSTGRESQL_LIBRARIES )
 
+if (POSTGRESQL_FOUND)
+   message(STATUS "Found PostgreSQL: ${POSTGRESQL_INCLUDE_DIR}, ${POSTGRESQL_LIBRARIES}")
+endif (POSTGRESQL_FOUND)
+
 mark_as_advanced(POSTGRESQL_INCLUDE_DIR POSTGRESQL_LIBRARIES)
 

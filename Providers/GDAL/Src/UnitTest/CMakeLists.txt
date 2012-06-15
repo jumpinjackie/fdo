@@ -13,6 +13,7 @@ set( GDALUnitTest_SRCS
    XmlFormatter.cpp
    UnitTestUtil.cpp
    RfpNoConfigTest.cpp
+   RfpNoConfigTest2.cpp
    RfpOverridesSerializeTest.cpp
    RfpRasterConversion.cpp
    RfpTestExample1.cpp
@@ -46,7 +47,4 @@ target_link_libraries( GDALUnitTest
 	ProvidersCommon
 	${CPPUNIT_LIBRARIES}
 	FDO
-	xerces-c
-	xalan-c
-	xalanMsg
 	)
