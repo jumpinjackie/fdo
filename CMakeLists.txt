@@ -16,7 +16,7 @@ include(CPack)
 # Set FDO version macros
 
 set ( FDO_VERSION_MAJOR 3 )
-set ( FDO_VERSION_MINOR 6 )
+set ( FDO_VERSION_MINOR 7 )
 set ( FDO_VERSION_RELEASE 0 )
 set ( FDO_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}" )
 set ( FDO_DISTRIBUTION_TEXT "Self compiled sources" CACHE STRING "Indicate compilation origin" )
@@ -42,6 +42,7 @@ endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 if( CMAKE_COMPILER_IS_GNUCXX )
 	add_definitions( -D__USE_GNU -Wno-deprecated )
 	set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
+	set ( CMAKE_CXX_FLAGS "-march=pentium" )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 find_package( FDOThirdparty REQUIRED )

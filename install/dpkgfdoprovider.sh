@@ -49,16 +49,13 @@ wfs) ;;
 arcsde) ;;
 rdbms) ;;
 gdal) ;;
-mysql) ;;
-odbc) ;;
 ogr) ;;
-postgis) ;;
 kingoracle) ;;
 sqlite) ;;
 *)
   echo Usage: dpkgfdoprovider.sh [i386/amd64] svnChangeNum provider
   echo Invalid provider.  Please specify one of the following providers:
-  echo sdf,shp,wms,wfs,arcsde,rdbms,gdal,ogr,postgis,kingoracle,sqlite,odbc,mysql
+  echo sdf,shp,wms,wfs,arcsde,rdbms,gdal,ogr,postgis,kingoracle,sqlite
   exit -1
   ;;
 esac

@@ -6,6 +6,8 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/Nls
         ${CMAKE_CURRENT_SOURCE_DIR}/Geometry
 		${CMAKE_CURRENT_BINARY_DIR}/Message
+	${XERCESC_INCLUDE_DIR}
+	${XALANC_INCLUDE_DIR}
 		)
 	
 if( UNIX )
@@ -288,9 +290,8 @@ add_dependencies( FDO
 	ProcessedFiles )
 
 target_link_libraries( FDO
-	xalan-c
-	xalanMsg
-	xerces-c
+	${XALANC_LIBRARIES}
+	${XERCESC_LIBRARIES}
 	pthread
 	dl
 	)

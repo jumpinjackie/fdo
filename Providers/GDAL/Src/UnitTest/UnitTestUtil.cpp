@@ -21,7 +21,7 @@
 #include <io.h>
 #include <stddef.h>
 #endif
-
+#include <cstdio>
 #include <cstring>
 
 UnitTestUtil::UnitTestUtil(void)
