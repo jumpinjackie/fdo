@@ -48,10 +48,6 @@ verifylib libGRFPOverrides
 ./buildfdoprovider.sh ogr
 verifylib libOGRProvider
 
-./buildfdoprovider.sh postgis
-verifylib libPostGISProvider
-verifylib libPostGISOverrides
-
 ./buildfdoprovider.sh kingoracle
 verifylib libKingOracleProvider
 verifylib libKingOracleOverrides

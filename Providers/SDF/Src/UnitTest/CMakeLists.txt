@@ -43,7 +43,4 @@ target_link_libraries( SDFUnitTest
 	FDO
 	${CPPUNIT_LIBRARIES}
 	dl
-	xalan-c
-	xalanMsg
-	xerces-c
 	)

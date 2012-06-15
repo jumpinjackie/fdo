@@ -59,9 +59,6 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 target_link_libraries( FdoODBC
-	xalan-c
-	xalanMsg
-	xerces-c
 	${ODBC_LIBRARY}
 	${ODBCINST_LIBRARY}
 	FDO
@@ -69,6 +66,9 @@ target_link_libraries( FdoODBC
 	ProvidersCommon
 	SchemaMgr_OV
 	SchemaMgr
+	rdbi
+	Gdbi
+	FdoRdbms
 	)
 
 

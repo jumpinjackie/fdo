@@ -42,6 +42,8 @@ popd
 # Create file and directory listing for core Fdo libraries and headers
 #
 pushd $FDOTARGET
+# For lazy folks who build from svn working copies instead of svn exports, we need to weed out any .svn dirs before compiling the file-list
+find . -name .svn -exec rm -rf {} \;
 mkdir -p $BUILDLIST
 find . -type f -print > ${BUILDLIST}/temp.lst
 find . -type l -print >> ${BUILDLIST}/temp.lst

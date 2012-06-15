@@ -46,9 +46,6 @@ set_target_properties( SHPUnitTest
 
 target_link_libraries( SHPUnitTest
 	FDO
-	xerces-c
-	xalan-c
-	xalanMsg
 	${CPPUNIT_LIBRARIES}
 	ProvidersCommon
 	TestCommon

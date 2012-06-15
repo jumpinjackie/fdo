@@ -50,7 +50,6 @@ arcsde) ;;
 rdbms) ;;
 gdal) ;;
 ogr) ;;
-postgis) ;;
 kingoracle) ;;
 sqlite) ;;
 *)
