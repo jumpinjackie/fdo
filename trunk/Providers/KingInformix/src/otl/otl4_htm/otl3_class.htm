@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>OTL 4.0, OTL classes</TITLE>
+   <META NAME="Author" CONTENT="Sergei Kuchin">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.03Gold (Win95; I) [Netscape]">
+   <META NAME="KeyWords" CONTENT="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+</HEAD>
+<BODY>
+
+<H1 ALIGN=CENTER>OTL 4.0, OTL classes</H1>
+
+<H1><A NAME="otl_class"></A>OTL classes</H1>
+
+<P>OTL 4.0 was built more like an appliance rather than just another traditional
+C++ class library: more complex [than in C++ libraries] internals but a
+very simple and self-contained interface on the outside. OTL 4.0 was influenced
+a lot by the paradigm of generic programming promoted by the author of
+the Standard Template Library (STL), Alexander Stepanov. The STL was adopted
+as part of the C++ standard of 1998.</P>
+
+<P>OTL 4.0 has a completely template framework which implements the <A HREF="otl3_str.htm">OTL
+stream concept</A>. The framework is comprised of template classes and
+inline functions. The template classes have ordinary classes as parameters.
+The parameters of the <I>class </I>type form a set of classes that provide
+the framework with an actual implementation of a database API.</P>
+
+<P>Such an implementation is called the <I>OTL-adaptor </I>for a given
+database API. In OTL 4.0, OTL-adaptors for the following database APIs
+were implemented:</P>
+
+<UL>
+<LI>Oracle Call Interface for Oracle 7 (OCI7)</LI>
+
+<LI>Oracle Call Interface for Oracle 8/8i (OCI8/8i)</LI>
+
+<LI>Open Data Base Connectivity (ODBC)</LI>
+
+<LI>DB2's Call Level Interface (CLI)</LI>
+</UL>
+
+<P>The adaptors are low level / thin wrappers around the database APIs.
+The adaptor classes are substituted directly into the framework, so the
+OTL 4.0 works <I>almost</I> at the level of the database APIs because the
+OTL templates get expanded literally into the database API function calls.</P>
+
+<P>The template framework and an OTL-adaptor substituted into the framework
+generate an instance of the following concrete OTL classes:</P>
+
+<UL>
+<LI><A HREF="otl3_stream_class.htm">otl_stream</A></LI>
+
+<LI><A HREF="otl3_connect_class.htm">otl_connect</A></LI>
+
+<LI><A HREF="otl3_exception_class.htm">otl_exception</A></LI>
+</UL>
+
+<P>These classes, together with the <A HREF="otl3_long_string.htm">otl_long_string</A>
+class, form a complete API for a given database. </P>
+
+<P>This kind of generic approach makes the OTL 4.0 an extendable library.
+Possible candidates to extend the OTL to may be Sybase (DB or CT library)
+or Informix. </P>
+
+<P>
+<HR WIDTH="100%"></P>
+
+<CENTER><P><A HREF="otl3_str.htm">Prev</A> <A HREF="otl3_stream_class.htm">Next</A>
+<A HREF="otl3.htm">Contents</A> <A HREF="home.htm">Go Home</A> </P></CENTER>
+
+<P>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <A HREF="mailto:skuchin@ispwest.com">skuchin@ispwest.com</A>,
+<A HREF="mailto:skuchin@gmail.com">skuchin@gmail.com</A>. <SCRIPT Language="JavaScript"><!-- hide from oldgmailsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i>Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100);
+ //-->
+ </SCRIPT></P>
+
+<P><I>Permission to use, copy, modify and redistribute this document for
+any purpose is hereby granted without fee, provided that the above copyright
+notice appear in all copies. </I></P>
+
+</BODY>
+</HTML>

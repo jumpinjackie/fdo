@@ -1,0 +1,14 @@
+Projection    ALBERS                                                            
+Datum         NAD27                                                             
+Zunits        NO                                                                
+Units         METERS                                                            
+Spheroid      CLARKE1866                                                        
+Xshift        0.0000000000                                                      
+Yshift        0.0000000000                                                      
+Parameters                                                                      
+ 34  0  0.000 /* 1st standard parallel                                          
+ 40 30  0.000 /* 2nd standard parallel                                          
+-120  0  0.000 /* central meridian                                              
+ 0  0  0.000 /* latitude of projection's origin                                 
+0.00000 /* false easting (meters)                                       
+-4000000.00000 /* false northing (meters)                               
