@@ -670,8 +670,7 @@ class SltInsert : public SltCommand<FdoIInsert>
                 // Provider will detect any add/move/insert/delete of properties only
                 // It's not detecting if a property value changed the name while in collection
                 // see below the comments.
-                size_t count = (size_t)m_properties->GetCount();
-                if (count != m_propNames.size())
+                if (m_properties->GetCollectionChanged())
                 {
                     FlushSQL();
                     return Execute();
