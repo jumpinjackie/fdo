@@ -34,18 +34,91 @@
 #endif
 
 //Templates? What templates?
+#if defined(__GNUC__) && defined (__GNUC_MINOR__) && ((__GNUC__ < 4) || (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
 #define SLT_IMPLEMENT_REFCOUNTING \
 public:                                                                      \
     virtual void                Dispose()           { delete this; }         \
-    virtual FdoInt32            AddRef()            { return ++m_refCount; } \
+    virtual FdoInt32            AddRef()                                     \
+    {                                                                        \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag()){                   \
+            int ret = 1;                                                     \
+            __asm__ __volatile__("lock;xaddl %0,%1"                          \
+                : "=r"(ret),"=m"(m_refCount)                                 \
+                : "0"(ret),"m"(m_refCount)                                   \
+                : "memory","cc");                                            \
+            return ret + 1;                                                  \
+        }else                                                                \
+            return ++m_refCount;                                             \
+    }                                                                        \
     virtual FdoInt32            Release()                                    \
     {                                                                        \
-        if (--m_refCount )                                                   \
-            return m_refCount;                                               \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag()){                   \
+            int ret = -1;                                                    \
+            __asm__ __volatile__("lock;xaddl %0,%1"                          \
+                : "=r"(ret),"=m"(m_refCount)                                 \
+                : "0"(ret),"m"(m_refCount)                                   \
+                : "memory","cc");                                            \
+            if (m_refCount)                                                  \
+                return m_refCount;                                           \
+        }else{                                                               \
+            if (--m_refCount)                                                \
+                return m_refCount;                                           \
+        }                                                                    \
         Dispose();                                                           \
         return 0;                                                            \
     }                                                                        \
     virtual FdoInt32            GetRefCount()       { return m_refCount; }   \
 private:                        int m_refCount;
+#elif defined (__GNUC__)
+#define SLT_IMPLEMENT_REFCOUNTING \
+public:                                                                      \
+    virtual void                Dispose()           { delete this; }         \
+    virtual FdoInt32            AddRef()                                     \
+    {                                                                        \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag())                    \
+            return __sync_add_and_fetch(&m_refCount,1);                      \
+        else                                                                 \
+            return ++m_refCount;                                             \
+    }                                                                        \
+    virtual FdoInt32            Release()                                    \
+    {                                                                        \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag()){                   \
+            if (__sync_sub_and_fetch(&m_refCount, 1))                        \
+                return m_refCount;                                           \
+        }else{                                                               \
+            if (--m_refCount)                                                \
+                return m_refCount;                                           \
+        }                                                                    \
+        Dispose();                                                           \
+        return 0;                                                            \
+    }                                                                        \
+    virtual FdoInt32            GetRefCount()       { return m_refCount; }   \
+private:                        int m_refCount;
+#elif defined(_WIN32)
+#define SLT_IMPLEMENT_REFCOUNTING \
+public:                                                                      \
+    virtual void                Dispose()           { delete this; }         \
+    virtual FdoInt32            AddRef()                                     \
+    {                                                                        \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag())                    \
+            return InterlockedIncrement((LONG*)&m_refCount);                 \
+        else                                                                 \
+            return ++m_refCount;                                             \
+    }                                                                        \
+    virtual FdoInt32            Release()                                    \
+    {                                                                        \
+        if (FdoIDisposable::GetGlobalThreadLockingFlag()){                   \
+            if (InterlockedDecrement((LONG*)&m_refCount))                    \
+                return m_refCount;                                           \
+        }else{                                                               \
+            if (--m_refCount)                                                \
+                return m_refCount;                                           \
+        }                                                                    \
+        Dispose();                                                           \
+        return 0;                                                            \
+    }                                                                        \
+    virtual FdoInt32            GetRefCount()       { return m_refCount; }   \
+private:                        int m_refCount;
+#endif
 
 typedef std::vector<std::string> SltStringList;
