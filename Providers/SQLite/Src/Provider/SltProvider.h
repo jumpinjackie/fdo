@@ -18,6 +18,9 @@
 
 #include "SltCapabilities.h"
 #include "SQLiteProvider.h"
+#ifndef _WIN32
+#include <pthread.h>
+#endif
 
 class SltMetadata;
 class SpatialIndex;
@@ -29,6 +32,22 @@ class StringBuffer;
 struct DBounds;
 
 #include "SpatialIndexDescriptor.h"
+
+#ifdef _WIN32
+#define STL_CRITICAL_SECTION CRITICAL_SECTION
+#define StlInitializeCriticalSection(a) InitializeCriticalSection(a)
+#define StlDeleteCriticalSection DeleteCriticalSection
+#define StlEnterCriticalSection EnterCriticalSection
+#define StlLeaveCriticalSection LeaveCriticalSection
+#else
+#define STL_CRITICAL_SECTION pthread_mutex_t
+#define StlInitializeCriticalSection(a) pthread_mutex_init(a, NULL)
+#define StlDeleteCriticalSection pthread_mutex_destroy
+#define StlEnterCriticalSection pthread_mutex_lock
+#define StlLeaveCriticalSection pthread_mutex_unlock
+#endif
+
+
 
 // on read connection only the provider can open (internal) transactions
 enum SQLiteActiveTransactionType
@@ -81,6 +100,21 @@ struct QueryCacheRecInfo
     FdoInt64 m_usageCount;
     FdoInt32 m_usedStmt;
     QueryCacheRecList m_lst;
+};
+
+class CriticalSectionHolder
+{
+    STL_CRITICAL_SECTION* m_cs;
+public:
+    CriticalSectionHolder(STL_CRITICAL_SECTION* cs)
+    {
+        StlEnterCriticalSection(cs);
+        m_cs = cs;
+    }
+    ~CriticalSectionHolder()
+    {
+        StlLeaveCriticalSection(m_cs);
+    }
 };
 
 typedef std::map<char*, QueryCacheRecInfo*, string_less> QueryCache;
@@ -329,6 +363,9 @@ private :
     bool                                    m_isReadOnlyConnection;
 
     sqlite3*                                m_dbWrite;
+
+    STL_CRITICAL_SECTION                    m_csMd;
+    STL_CRITICAL_SECTION                    m_csStm;
 
     std::map<std::wstring, std::wstring>*   m_mProps;
     std::wstring                            m_connStr;

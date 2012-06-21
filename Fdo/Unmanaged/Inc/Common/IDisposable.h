@@ -65,6 +65,14 @@ public:
     /// 
     FDO_API_COMMON static void EnableGlobalThreadLocking(bool enable) { m_globalThreadLockingEnabled = enable; }
 
+    /// \brief
+    /// Gets a global threading state for all disposable objects.
+    /// 
+    /// \return
+    /// Returns the global threading state flag.
+    /// 
+    FDO_API_COMMON static bool GetGlobalThreadLockingFlag() { return m_globalThreadLockingEnabled; }
+
 public:
     /// \brief
     /// Increase the reference count.
@@ -101,9 +109,11 @@ public:
     /// 
     FDO_API_COMMON virtual void EnableObjectThreadLocking(bool enable) { m_objectThreadLockingEnabled = enable; }
 
+protected:
+    bool m_objectThreadLockingEnabled;
+
 private:
     FdoInt32 m_refCount;
-    bool m_objectThreadLockingEnabled;
     static bool m_globalThreadLockingEnabled;
 };
 

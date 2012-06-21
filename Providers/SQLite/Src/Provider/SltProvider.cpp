@@ -121,6 +121,8 @@ SltConnection::SltConnection() : m_refCount(1)
     m_defSpatialContextId = -1;
     m_isReadOnlyConnection = true;
     m_cleanCount = 0;
+    StlInitializeCriticalSection(&m_csMd);
+    StlInitializeCriticalSection(&m_csStm);
 }
 
 SltConnection::~SltConnection()
@@ -128,6 +130,8 @@ SltConnection::~SltConnection()
     Close();
     delete m_mProps;
     delete m_caps;
+    StlDeleteCriticalSection(&m_csMd);
+    StlDeleteCriticalSection(&m_csStm);
 }
 
 //----------------------------------------------------------------
@@ -729,6 +733,7 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     if (!m_dbWrite)
         return NULL;
 
+    CriticalSectionHolder cs (&m_csMd);
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
     m_pSchema->Add(schema.p);
@@ -1676,6 +1681,8 @@ bool SltConnection::NeedsMetadataLoaded(const char* table)
 
 void SltConnection::AddMetadata(const char* table, SltMetadata* md)
 {
+    CriticalSectionHolder cs (&m_csMd);
+
 #ifdef _DEBUG
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
     if (iter != m_mNameToMetadata.end())
@@ -1692,6 +1699,8 @@ SltMetadata* SltConnection::FindMetadata(const char* table)
 
 SltMetadata* SltConnection::GetMetadata(const char* table)
 {
+    CriticalSectionHolder cs (&m_csMd);
+
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
 
     if (iter == m_mNameToMetadata.end())
@@ -2582,6 +2591,7 @@ void SltConnection::ApplySchema(FdoFeatureSchema* schema, bool ignoreStates)
             }
             if (changeMade)
             {
+                CriticalSectionHolder cs (&m_csMd);
                 // we need to erase the metadata to force a refresh
                 if (table.size() == 0)
                     table = W2A_SLOW(fc->GetName());
@@ -3489,6 +3499,7 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
 
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
+    CriticalSectionHolder cs (&m_csStm);
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
     //queries can be issued on the same connection.
@@ -3547,6 +3558,8 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 
 void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 {
+    CriticalSectionHolder cs (&m_csStm);
+
     QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
 
     if (iter != m_mCachedQueries.end())
