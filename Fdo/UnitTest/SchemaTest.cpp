@@ -324,14 +324,14 @@ void SchemaTest::testFeatureSchema()
 
     FdoClass*           pclass = FdoClass::Create(L"Class", L"Class Desc");
     pattrib = pclass->GetAttributes();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass) == 1);
+    FDO_CPPUNIT_ASSERT(pclass->GetRefCount() == 1);
     pClasses->Add(pclass);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass) == 2);
+    FDO_CPPUNIT_ASSERT(pclass->GetRefCount() == 2);
     pattrib->Add(L"Attribute1", L"Value1");
     pattrib->Add(L"Attribute2", L"Value2");
 
     FdoGeometricPropertyDefinition* pgeomprop = FdoGeometricPropertyDefinition::Create(L"Geom Prop", L"Geom Prop Desc");
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pgeomprop) == 1);
+    FDO_CPPUNIT_ASSERT(pgeomprop->GetRefCount() == 1);
     pgeomprop->SetGeometryTypes(FdoGeometricType_Curve);
     pgeomprop->SetReadOnly(true);
     pgeomprop->SetHasMeasure(true);
@@ -340,7 +340,7 @@ void SchemaTest::testFeatureSchema()
     pattrib->Add(L"Geom Prop Attr1", L"Value1");
 
     FdoDataPropertyDefinition* pdataprop = FdoDataPropertyDefinition::Create(L"Data Prop", L"Data Prop Desc");
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pdataprop) == 1);
+    FDO_CPPUNIT_ASSERT(pdataprop->GetRefCount() == 1);
     pdataprop->SetDataType(FdoDataType_Boolean);
     pdataprop->SetDefaultValue(L"1");
     pdataprop->SetNullable(false);
@@ -435,17 +435,17 @@ void SchemaTest::testFeatureSchema()
 
     FdoFeatureClass*    pfeatureclass = FdoFeatureClass::Create(L"FeatureClass", L"FeatureClass Desc");
     pattrib = pfeatureclass->GetAttributes();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pfeatureclass) == 1);
+    FDO_CPPUNIT_ASSERT(pfeatureclass->GetRefCount() == 1);
     pClasses->Add(pfeatureclass);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pfeatureclass) == 2);
+    FDO_CPPUNIT_ASSERT(pfeatureclass->GetRefCount() == 2);
     pattrib->Add(L"FC Attribute1", L"FC Value1");
     pattrib->Add(L"FC Attribute2", L"FC Value2");
     pfeatureclassprops = pfeatureclass->GetProperties();
     pfeatureclassidprops = pfeatureclass->GetIdentityProperties();
     pfeatureclassprops->Add(pgeomprop);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pgeomprop) == 2);
+    FDO_CPPUNIT_ASSERT(pgeomprop->GetRefCount() == 2);
     pfeatureclass->SetGeometryProperty(pgeomprop);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pgeomprop) == 3);
+    FDO_CPPUNIT_ASSERT(pgeomprop->GetRefCount() == 3);
     pfeatureclassprops->Add(pobjprop);
 
     FDO_CPPUNIT_ASSERT( pfeatureclass->GetCapabilities() == NULL );
@@ -524,9 +524,9 @@ void SchemaTest::testFeatureSchema()
     baseProps->Release();
     baseProps = NULL;
 
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass) == 3);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pfeatureclass) == 2);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pgeomprop) == 4);     // self + featureClass baseProp + featureClass prop + featureClass GeometryProperty
+    FDO_CPPUNIT_ASSERT(pclass->GetRefCount() == 3);
+    FDO_CPPUNIT_ASSERT(pfeatureclass->GetRefCount() == 2);
+    FDO_CPPUNIT_ASSERT(pgeomprop->GetRefCount() == 4);     // self + featureClass baseProp + featureClass prop + featureClass GeometryProperty
     pFSchema->AcceptChanges();
     FDO_CPPUNIT_ASSERT(pFSchema->GetElementState() == FdoSchemaElementState_Unchanged);
     FDO_CPPUNIT_ASSERT(pclass->GetElementState() == FdoSchemaElementState_Unchanged);
@@ -612,7 +612,7 @@ void SchemaTest::testFeatureSchema()
     //
     FDO_CPPUNIT_ASSERT(pFSchema->GetElementState() == FdoSchemaElementState_Unchanged);
     FdoDataPropertyDefinition* pdataprop2 = FdoDataPropertyDefinition::Create(L"Data Prop 2", L"Data Prop 2 Desc");
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pdataprop2) == 1);
+    FDO_CPPUNIT_ASSERT(pdataprop2->GetRefCount() == 1);
     pdataprop2->SetDataType(FdoDataType_Boolean);
     pdataprop2->SetDefaultValue(L"1");
     pdataprop2->SetNullable(false);
@@ -634,9 +634,9 @@ void SchemaTest::testFeatureSchema()
     // try inserting a Class -- make sure ElementState is propogated up properly
     //
     FdoClass*           pclass2 = FdoClass::Create(L"Class 2", L"Class 2 Desc");
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass2) == 1);
+    FDO_CPPUNIT_ASSERT(pclass2->GetRefCount() == 1);
     pClasses->Add(pclass2);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass2) == 2);
+    FDO_CPPUNIT_ASSERT(pclass2->GetRefCount() == 2);
     FDO_CPPUNIT_ASSERT(pclass2->GetElementState() == FdoSchemaElementState_Added);
     FDO_CPPUNIT_ASSERT(pFSchema->GetElementState() == FdoSchemaElementState_Modified);
     pclass2->Release();
@@ -706,17 +706,17 @@ void SchemaTest::testFeatureSchema()
     pFSchema->Release();
 
     FDO_CPPUNIT_ASSERT(pfeatureclass->GetParent() == NULL);
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pfeatureclass) == 1);
+    FDO_CPPUNIT_ASSERT(pfeatureclass->GetRefCount() == 1);
     pfeatureclass->Release();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pgeomprop) == 1);
+    FDO_CPPUNIT_ASSERT(pgeomprop->GetRefCount() == 1);
     pgeomprop->Release();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pdataprop) == 3);   // once for self, twice for pobjprop (m_identityProperty and m_identityPropertyCHANGED)
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass) == 3);      // once for self, twice for pobjprop (m_class and m_classCHANGED)
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pobjprop) == 1);
+    FDO_CPPUNIT_ASSERT(pdataprop->GetRefCount() == 3);   // once for self, twice for pobjprop (m_identityProperty and m_identityPropertyCHANGED)
+    FDO_CPPUNIT_ASSERT(pclass->GetRefCount() == 3);      // once for self, twice for pobjprop (m_class and m_classCHANGED)
+    FDO_CPPUNIT_ASSERT(pobjprop->GetRefCount() == 1);
     pobjprop->Release();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pdataprop) == 1);
+    FDO_CPPUNIT_ASSERT(pdataprop->GetRefCount() == 1);
     pdataprop->Release();
-    FDO_CPPUNIT_ASSERT(GET_REFCOUNT(pclass) == 1);
+    FDO_CPPUNIT_ASSERT(pclass->GetRefCount() == 1);
     pclass->Release();
 
     bFailed = false;

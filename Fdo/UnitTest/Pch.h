@@ -104,25 +104,6 @@
 
 #endif // CPPUNIT_MODERN_API
 
-// This should work on other compilers/platforms. It works 
-// because IDisposable is always the base class and its first data
-// member following the vtable is an integer that holds the 
-// refcount.  We can't just cast to FdoIDisposable because the 
-// m_refCount member is protected.
-class DbgRefCount
-{
-public:
-	// this member forces this class to have a vtable.
-	virtual     void ForceVTable() {;}
-
-	FdoInt32    m_refCount;
-};
-
-inline FdoInt32 GET_REFCOUNT(FdoIDisposable* p)
-{
-	return ((DbgRefCount*)p)->m_refCount;
-}
-
 // This is a method to dump the messages from an exception and all its parents.
 void PrintException(FdoException* exception);
 
