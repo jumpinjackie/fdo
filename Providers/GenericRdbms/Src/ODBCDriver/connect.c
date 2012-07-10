@@ -546,6 +546,11 @@ get_drivertype(
     {
         *driver_type = ODBCDriverType_OracleNative;
     }
+    else if ( (0==_stricmp((const char *) szDriverName, ODBCDR_DRIVER_TERADATA_DRIVERNAME_WINDOWS_MB))
+      || (0==_strnicmp((const char*) szDriverName, ODBCDR_DRIVER_TERADATA_DRIVERNAME_LINUX_MB, strlen(ODBCDR_DRIVER_TERADATA_DRIVERNAME_LINUX_MB))) )
+    {
+        *driver_type = ODBCDriverType_Teradata;
+    }
     else if (0==_stricmp((const char*)szDriverName, ODBCDR_DRIVER_SQLSERVER_DRIVERNAME_MB))
     {
         *driver_type = ODBCDriverType_SQLServer;
