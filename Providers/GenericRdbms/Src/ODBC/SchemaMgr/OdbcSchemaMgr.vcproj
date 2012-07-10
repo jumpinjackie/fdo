@@ -334,6 +334,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\Ph\Rd\TeraSchemaReader.cpp"
+				>
+			</File>
 			<Filter
 				Name="Lp"
 				>
@@ -772,6 +776,10 @@
 					</File>
 					<File
 						RelativePath=".\Ph\Rd\SchemaReader.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Ph\Rd\TeraSchemaReader.h"
 						>
 					</File>
 				</Filter>

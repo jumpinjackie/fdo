@@ -49,6 +49,7 @@
 #define  RDBI_DBVERSION_ODBC_ACCESS     5
 #define  RDBI_DBVERSION_ODBC_MYSQL      6
 #define  RDBI_DBVERSION_ODBC_SYBASE     7
+#define  RDBI_DBVERSION_ODBC_TERADATA   8
 
 
 typedef struct rdbi_vndr_info_def {
