@@ -1681,8 +1681,6 @@ bool SltConnection::NeedsMetadataLoaded(const char* table)
 
 void SltConnection::AddMetadata(const char* table, SltMetadata* md)
 {
-    CriticalSectionHolder cs (&m_csMd);
-
 #ifdef _DEBUG
     MetadataCache::iterator iter = m_mNameToMetadata.find((char*)table);
     if (iter != m_mNameToMetadata.end())
