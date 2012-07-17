@@ -167,6 +167,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ph\Rd\TeraSchemaReader.cpp" />
     <ClCompile Include="SchemaManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -236,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ph\Rd\OraBaseObjectReader.h" />
+    <ClInclude Include="Ph\Rd\TeraSchemaReader.h" />
     <ClInclude Include="SchemaManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Lp\Class.h" />

@@ -21,6 +21,8 @@
 #include "Owner.h"
 #include "Mgr.h"
 #include "Rd/OwnerReader.h"
+#include "../../../SchemaMgr/Ph/Rd/QueryReader.h"
+
 
 FdoSmPhOdbcDatabase::FdoSmPhOdbcDatabase(
     FdoStringP name,
@@ -99,8 +101,34 @@ FdoSmPhOwnerP FdoSmPhOdbcDatabase::NewOwner(
 
     FdoStringP OdbcSchemaName = GetManager()->GetDefaultOwnerName();
 
+    FdoStringP ownerName = (owner != L"" )? owner : OdbcSchemaName;
+
+    if ( ownerName == L"" )
+    {
+        rdbi_vndr_info_def vndr_info;
+        FdoSmPhGrdMgrP mgr = GetManager()->SmartCast<FdoSmPhGrdMgr>();
+        rdbi_vndr_info( mgr->GetRdbiContext(), &vndr_info );
+
+        if (RDBI_DBVERSION_ODBC_TERADATA == vndr_info.dbversion)
+        {
+            /* For Teradata sources, restrict access to objects in the default database. A Teradata
+               instance can have a lot of objects. Allowing the FDO connection to see all of them
+               can result in DescribeSchema taking a long time.
+            */
+
+            FdoSmPhRowP row = new FdoSmPhRow( GetManager(), L"default_database" );
+            FdoSmPhFieldP field = new FdoSmPhField( row, L"Current DataBase", row->CreateColumnChar(L"Current DataBase", false, 50) );
+        
+            FdoPtr<FdoSmPhRdQueryReader> rdr = GetManager()->CreateQueryReader( row, L"HELP SESSION" );
+
+            if ( rdr->ReadNext() ) {
+                ownerName = rdr->GetString( L"", L"Current DataBase" );
+            }
+        }
+    }
+
     return new FdoSmPhOdbcOwner(
-        owner.GetLength() > 0 ? owner : OdbcSchemaName,
+        ownerName,
         false,  // hasMetaSchema
         this,
         elementState
