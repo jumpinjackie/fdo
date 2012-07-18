@@ -140,7 +140,11 @@ FdoPtr<FdoSmPhRdConstraintReader> FdoSmPhOdbcOwner::CreateConstraintReader( FdoS
 
 FdoStringP FdoSmPhOdbcOwner::GetBestSchemaName() const
 {
-    return ( wcslen(GetName()) > 0 ) ? 
+    rdbi_vndr_info_def info;
+    FdoSmPhGrdMgrP mgr = ((FdoSmPhOdbcOwner*)this)->GetManager()->SmartCast<FdoSmPhGrdMgr>();
+    rdbi_vndr_info( mgr->GetRdbiContext(), &info );
+    
+    return ( (wcslen(GetName()) > 0) && (info.dbversion != RDBI_DBVERSION_ODBC_TERADATA) ) ? 
         FdoStringP(GetName())
 // TODO: It is currently not possible to bulk copy
 // a schema named "Default" to the Shape Provider.

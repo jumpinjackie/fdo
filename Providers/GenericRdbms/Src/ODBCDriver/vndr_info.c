@@ -97,6 +97,9 @@ int odbcdr_vndr_info(
             case ODBCDriverType_MySQL:
                 vndr_info->dbversion = RDBI_DBVERSION_ODBC_MYSQL;
                 break;
+            case ODBCDriverType_Teradata:
+                vndr_info->dbversion = RDBI_DBVERSION_ODBC_TERADATA;
+                break;
         }
     }
     debug_return(NULL,rdbi_status);
