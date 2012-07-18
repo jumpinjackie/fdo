@@ -3125,3 +3125,29 @@ SymbolicName=FDO_187_SAVEPOINT_NOT_EXIST
 Language=English
 Save point '%1$ls' does not exist.
 .
+MessageId=9195
+SymbolicName=FDO_188_SI_BAD_PARAMETER_FOR_MODE
+Language=English
+Envelope parameter not supported for selected mode.
+.
+MessageId=9196
+SymbolicName=FDO_189_SI_TOO_MANY_FEATURES_FOR_MODE
+Language=English
+Only one feature is allowed in this mode.
+.
+MessageId=9197
+SymbolicName=FDO_190_SI_BAD_DECODE_METHOD_FOR_MODE
+Language=English
+Wrong Decode method called for selected mode.
+.
+MessageId=9198
+SymbolicName=FDO_191_SI_NUMBER_PARTS_ERROR
+Language=English
+Number of feature parts too large for selected mode.
+.
+MessageId=9199
+SymbolicName=FDO_192_SI_NUMBER_SUBPARTS_ERROR
+Language=English
+Number of feature subparts too large for selected mode.
+.
+

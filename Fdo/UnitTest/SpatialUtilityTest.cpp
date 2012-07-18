@@ -3056,3 +3056,174 @@ void SpatialUtilityTest::testGetPolygonVertexOrderAction()
             true);
     CPPUNIT_ASSERT_MESSAGE("Action CheckAndFix is expected!",  action == FdoPolygonVertexOrderAction_CheckAndReverse);
 }
+
+void SpatialUtilityTest::testSpatialIndexMaster()
+{
+    ////// Test Point 
+    FdoStringP geomText = L"POINT (5 5)";
+ 	double queryPoint[4] = {5, 5, 5, 5};
+	testSpatialIndex(geomText, queryPoint, 1);
+
+	////////////  Test exceptions are thrown ///////////
+	testSpatialIndexErrors(geomText);
+
+    ////// Test LINE 
+    geomText = L"LINESTRING (0 0, 5 0, 10 0)";
+ 	double queryLine[4] = {0, 0, 5, 0};
+	testSpatialIndex(geomText, queryLine, 2);
+
+    ////// Test Polygon
+    geomText = L"POLYGON ((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3))";
+	double queryPoly[4] = {1, 1, 2, 2};
+	testSpatialIndex(geomText, queryPoly, 3);
+
+    ////// Test MultiPolygon
+    geomText = L"MULTIPOLYGON (((0 0, 5 0, 5 5, 0 5, 0 0), (1 1, 2 2, 2 1, 1 1), (3 3, 4 4, 4 3, 3 3)), ((10 0, 20 0, 20 10, 10 10, 10 0)))";
+  	double queryMultiPoly[4] = {5, 0, 5, 5};
+	testSpatialIndex(geomText, queryMultiPoly, 3);
+
+    ////// Test CurvePolygon
+	geomText = L"CURVEPOLYGON ((0 0 (CIRCULARARCSEGMENT (100 -20, 200 0), LINESTRINGSEGMENT (200 200), CIRCULARARCSEGMENT (100 220, 0 200), LINESTRINGSEGMENT (0 0))), (50 50 (CIRCULARARCSEGMENT (75 75, 100 50), LINESTRINGSEGMENT (50 50))), (120 60 (CIRCULARARCSEGMENT (130 70, 140 60), LINESTRINGSEGMENT (120 60))))";
+ 	double queryCurvePoly[4] = {200, 0, 200, 200};
+	testSpatialIndex(geomText, queryCurvePoly, 3);
+
+    ////// Test MultiCurvePolygon
+	geomText = L"MULTICURVEPOLYGON (((200 200 (CIRCULARARCSEGMENT (200 201, 201 202), LINESTRINGSEGMENT (200 200))), (300 300 (CIRCULARARCSEGMENT (300 301, 301 302), LINESTRINGSEGMENT (300 300))), (400 400 (CIRCULARARCSEGMENT (400 401, 401 402), LINESTRINGSEGMENT (400 400)))), ((201 201 (CIRCULARARCSEGMENT (201 202, 202 203), LINESTRINGSEGMENT (201 201))), (301 301 (CIRCULARARCSEGMENT (301 302, 302 303), LINESTRINGSEGMENT (301 301))), (401 401 (CIRCULARARCSEGMENT (401 402, 402 403), LINESTRINGSEGMENT (401 401)))), ((202 202 (CIRCULARARCSEGMENT (202 203, 203 204), LINESTRINGSEGMENT (202 202))), (302 302 (CIRCULARARCSEGMENT (302 303, 303 304), LINESTRINGSEGMENT (302 302))), (402 402 (CIRCULARARCSEGMENT (402 403, 403 404), LINESTRINGSEGMENT (402 402)))))";
+ 	double queryMultiCurvePoly[4] = {200, 0, 200, 200};
+	testSpatialIndex(geomText, queryMultiCurvePoly, 2);
+}
+
+void SpatialUtilityTest::testSpatialIndexErrors(FdoString* geomText)
+{
+	FdoPtr<FdoSpatialIndex> si;
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(geomText);
+	FdoPtr<FdoByteArray> ba = gf->GetFgf(geom);
+
+    si = FdoSpatialIndex::Create(FdoSpatialIndex_ByGeometriesBoundingBox);
+	
+	// Test Null arg
+	bool ok = true;
+	try
+	{
+		si->InsertObject(777, NULL); // Insert
+	} 
+	catch (FdoException* e)
+	{
+		e->Release();
+		ok = false;
+	}
+	CPPUNIT_ASSERT_MESSAGE("Test NULL arg failed", !ok);
+
+	// Test Invalid FeatId
+	ok = true;
+	try
+	{
+		si->InsertObject(0, NULL); // FeatId = 0
+	} 
+	catch (FdoException* e)
+	{
+		e->Release();
+		ok = false;
+	}
+	CPPUNIT_ASSERT_MESSAGE("Test invalid FeatId failed", !ok);
+
+	// Test Single feature mode, just one feature allowed
+	si = FdoSpatialIndex::Create(FdoSpatialIndex_BySegmentsSingleFeature);
+	ok = true;
+	try
+	{
+		si->InsertObject(777, ba); // Insert 
+		si->InsertObject(777, ba); // Insert 2nd feature, it should fail
+	} 
+	catch (FdoException* e)
+	{
+		e->Release();
+		ok = false;
+	}
+	CPPUNIT_ASSERT_MESSAGE("Test Single feature mode failed", !ok);
+}
+
+void SpatialUtilityTest::testSpatialIndex(FdoString* geomText, double* rect, int expectedSegCount)
+{
+	FdoPtr<FdoSpatialIndex> si;
+
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+    FdoPtr<FdoIGeometry> geom = gf->CreateGeometry(geomText);
+	FdoPtr<FdoByteArray> ba = gf->GetFgf(geom);
+
+	//////// Mode #1: FdoSpatialIndex_ByGeometriesBoundingBox
+    si = FdoSpatialIndex::Create(FdoSpatialIndex_ByGeometriesBoundingBox);
+    si->InsertObject(777, ba); // Insert
+
+	FdoSpatialIndexIterator iterPoint1(si, rect[0], rect[1], rect[2], rect[3]);
+
+	FdoInt32 iPart, isubpart, iSegment;
+	FdoInt64 marker = 0;
+	int	count = 0;
+	while (marker = iterPoint1.GetNextObject())
+	{
+		FdoInt64 fid = marker; // not encoded
+		
+		CPPUNIT_ASSERT_MESSAGE("Wrong FeatId.", (fid == 777));
+		count++;
+	}
+	
+	CPPUNIT_ASSERT_MESSAGE("Wrong number of features selected.", count == 1);
+
+	// Test erase
+	testSpatialIndexErase(si, 777, rect);
+
+	////////// Mode #2: FdoSpatialIndex_BySegmentsMultipleFeatures
+    si = FdoSpatialIndex::Create(FdoSpatialIndex_BySegmentsMultipleFeatures);
+    si->InsertObject(777, ba);
+
+	FdoSpatialIndexIterator iterPoint2(si, rect[0], rect[1], rect[2], rect[3]);
+
+	count = 0;
+	while (marker = iterPoint2.GetNextObject())
+	{
+		FdoInt32 fid;
+		si->DecodeMarker(marker, fid, iSegment);
+		
+		CPPUNIT_ASSERT_MESSAGE("Wrong FeatId", (fid == 777));
+		count++;
+	}
+	
+	CPPUNIT_ASSERT_MESSAGE("Wrong number of segments selected.", count == expectedSegCount);
+
+	// Test erase
+	testSpatialIndexErase(si, 777, rect);
+
+	//////// Mode #3: FdoSpatialIndex_BySegmentsSingleFeature
+    si = FdoSpatialIndex::Create(FdoSpatialIndex_BySegmentsSingleFeature);
+    si->InsertObject(0, ba); // FeatId = 0, ignored
+
+	FdoSpatialIndexIterator iterPoint3(si, rect[0], rect[1], rect[2], rect[3]);
+
+	count = 0;
+	while (marker = iterPoint3.GetNextObject())
+	{
+		si->DecodeMarker(marker, iPart, isubpart, iSegment);
+		count++;
+	}
+	
+	CPPUNIT_ASSERT_MESSAGE("Wrong number of segments selected", count == expectedSegCount);
+	
+	// Test erase
+	testSpatialIndexErase(si, 777, rect);
+}
+
+void SpatialUtilityTest::testSpatialIndexErase(FdoSpatialIndex* si, FdoInt64 featId, double* rect)
+{
+	si->EraseObject(featId, NULL);
+	FdoSpatialIndexIterator iter(si, rect[0], rect[1], rect[2], rect[3]);
+
+	if (iter.GetNextObject())
+	{	
+		CPPUNIT_ASSERT_MESSAGE("Wrong number of features after erase.", false);
+	}
+}
+
+

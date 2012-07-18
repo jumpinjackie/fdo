@@ -676,6 +676,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Src\Spatial\rtree.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Spatial\rtree.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Src\Spatial\SpatialEnvelope.cpp"
 				>
 			</File>
@@ -689,6 +697,10 @@
 			</File>
 			<File
 				RelativePath=".\Src\Spatial\SpatialGridTransform.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Src\Spatial\SpatialIndex.cpp"
 				>
 			</File>
 			<File
@@ -734,6 +746,10 @@
 			</File>
 			<File
 				RelativePath=".\Inc\Spatial\SpatialGridTransform.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Inc\Spatial\SpatialIndex.h"
 				>
 			</File>
 			<File

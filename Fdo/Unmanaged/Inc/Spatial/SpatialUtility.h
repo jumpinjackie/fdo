@@ -22,6 +22,9 @@
 #include <Spatial/SpatialGeometryValidity.h>
 #include <Fdo/Filter/SpatialCondition.h>
 #include <Fdo/Schema/PolygonVertexOrderRule.h>
+#include <Spatial/SpatialIndex.h>
+#include <vector>
+
 
 typedef struct RingArea_def
 {
@@ -249,18 +252,32 @@ public:
     static void AdjustExtentsForCurves(FdoIGeometry * geometry, double& minx, double& miny, double& maxx, double& maxy);
     static void AdjustExtentsForCurves(FdoCurveSegmentCollection * csc, double& minx, double& miny, double& maxx, double& maxy);
 
-    static bool Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside = false);
-    static bool Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
+    static bool Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
+    static bool Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
+    static bool Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
+    static bool Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside = false, FdoSpatialIndex *si = NULL);
+    static bool Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
     static bool Equals(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
     static bool CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
-    static bool Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
+    static bool Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si = NULL);
     static bool EnvelopeIntersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY);
 
+/*
+    static bool MultiPolygonIntersects(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonIntersects(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonIntersectsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY);
+    
+    static bool MultiPolygonContains(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonContains(FdoIPolygon* poly1, FdoIGeometry* geom, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+    static bool PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+    static bool PolygonContainsLineString(FdoIPolygon* poly1, FdoILineString* line, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+
+    static bool MultiPolygonDisjoint(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonDisjoint(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonDisjointPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY);
+*/
     //Intersects
     static bool MultiPolygonIntersects(FdoIMultiPolygon* mpoly, FdoIGeometry* geom, double toleranceXY);
     static bool MultiLineStringIntersects(FdoIMultiLineString* mline, FdoIGeometry* geom, double toleranceXY);
@@ -671,6 +688,65 @@ private:
     static int LineTouchesLine(FdoILineString* line1, FdoILineString* line2, double toleranceXY);
 
     static bool SegmentTouchesPolygon(double* line, FdoIPolygon* poly, double toleranceXY);
+
+
+//// Spatial index
+    static double t0;
+    static double t1;
+    static double t2;
+    static double t3;
+	static double t4;
+
+    static int    n1;
+    static int    n2;
+    static int    n3;
+
+public:
+    /// \brief
+    /// Evaluates if two FDO geometric objects spatially interact with each other 
+    /// based on a user supplied spatial operator. For example: Contains, Crosses, 
+    /// Disjoint, Equals, Intersects, Overlaps, Touches, Within, CoveredBy, Inside, 
+    /// EnvelopeIntersects.
+    /// 
+    /// \param g1 
+    /// Input Left hand Geometry to Evaluate
+    /// \param op 
+    /// Input The spatial operation to apply to the left and right hand geometries 
+    /// \param g2 
+    /// Input Right hand Geometry to Evaluate
+    /// 
+    /// \param toleranceXY
+    /// Input XY tolerance to evaluate the spatial condition
+    /// Default tolerance used is 1e-10. Valid range is >0 
+    /// If an invalid value is provided, the default then will be used
+    /// 
+    /// \return
+    /// Returns the evaluation of spatial operation.
+    FDO_SPATIAL_API static bool Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, FdoSpatialIndex* si, double toleranceXY); 
+
+    static bool MultiPolygonIntersects(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonIntersects(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonIntersectsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY);
+    
+    static bool MultiPolygonContains(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonContains(FdoIPolygon* poly1, FdoIGeometry* geom, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+    static bool PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+    static bool PolygonContainsLineString(FdoIPolygon* poly1, FdoILineString* line, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside = false);
+
+    static bool MultiPolygonDisjoint(FdoIMultiPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonDisjoint(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY);
+    static bool PolygonDisjointPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY);
+ 
+    static bool PointInPolygon(FdoIPolygon* poly, int ipart, FdoSpatialIndex* si, double x, double y, double toleranceXY, bool* isOnExtBoundary = NULL, bool* isOnIntBoundary = NULL);
+    static bool PointInRing(FdoIPolygon* poly, FdoILinearRing* ring, int ipart, int isubPart, FdoSpatialIndex* si, double x, double y, bool* isOnBoundary = NULL, double toleranceXY = 0 );
+    
+    static void runSpatialQuery(FdoSpatialIndex *si, double x0, double y0, double x1, double y1, std::vector<FdoInt64> * srows);
+    static bool polygonEnvOutsideGeometry(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si);
+    static bool polygonEnvOutsidePolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si);
+
+    FDO_SPATIAL_API static void Reset() { t0 = 0; t1 =0; t2 =0; t3 =0; t4 = 0; n1 = 0; n2 = 0; n3 =0;};
+    FDO_SPATIAL_API static void Times(double *o, double *a, double *b, double *c, double *d) { *o = t0; *a =t1; *b = t2; *c = t3; *d = t4;};
+    FDO_SPATIAL_API static void Stats(int *a, int *b, int *c) { *a =n1; *b = n2; *c = n3;};
 };
 #endif // FdoSpatialUtility___H
 

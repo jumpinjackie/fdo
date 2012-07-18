@@ -28,6 +28,21 @@
 #include <Fdo/Filter/SpatialCondition.h>
 
 #include <vector>
+#include <list>
+
+///// SPATIAL INDEX
+#include "rtree.h"
+#include <time.h>
+
+double FdoSpatialUtility::t0 = 0;
+double FdoSpatialUtility::t1 = 0;
+double FdoSpatialUtility::t2 = 0;
+double FdoSpatialUtility::t3 = 0;
+double FdoSpatialUtility::t4 = 0;
+
+int    FdoSpatialUtility::n1 = 0;
+int    FdoSpatialUtility::n2 = 0;
+int    FdoSpatialUtility::n3 = 0;
 
 // Change the value for performance tests. 
 #define CHECK_JUST_ONE_POINT_INSIDE_POLY true
@@ -1296,7 +1311,7 @@ bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoI
 
     switch (op)
     {
-    case FdoSpatialOperations_Contains:     return Contains(g1, g2, toleranceXY); 
+    case FdoSpatialOperations_Contains:     return Contains(g1, g2, toleranceXY, false); 
     case FdoSpatialOperations_Crosses:      return Crosses(g1, g2, toleranceXY);
     case FdoSpatialOperations_Disjoint:     return Disjoint(g1, g2, toleranceXY);
     case FdoSpatialOperations_Equals:       return Equals(g1, g2, toleranceXY); 
@@ -1318,7 +1333,7 @@ bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoI
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex* si)
 {
     switch (g1->GetDerivedType())
     {
@@ -1327,14 +1342,16 @@ bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double to
     case FdoGeometryType_LineString : 
         return LineStringIntersects((FdoILineString*)g1, g2, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonIntersects((FdoIPolygon*)g1, g2, toleranceXY);
+        return (si) ? PolygonIntersects((FdoIPolygon*)g1, g2, si, toleranceXY) : 
+					  PolygonIntersects((FdoIPolygon*)g1, g2, toleranceXY);
     
     case FdoGeometryType_MultiPoint : 
         return MultiPointIntersects((FdoIMultiPoint*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiLineString : 
         return MultiLineStringIntersects((FdoIMultiLineString*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonIntersects((FdoIMultiPolygon*)g1, g2, toleranceXY);
+        return (si) ? MultiPolygonIntersects((FdoIMultiPolygon*)g1, g2, si, toleranceXY) : 
+					  MultiPolygonIntersects((FdoIMultiPolygon*)g1, g2, toleranceXY);
 
     case FdoGeometryType_CurveString : 
     case FdoGeometryType_CurvePolygon : 
@@ -1342,14 +1359,14 @@ bool FdoSpatialUtility::Intersects(FdoIGeometry* g1, FdoIGeometry* g2, double to
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(g1);
-            return Intersects(flatgeom, g2, toleranceXY);
+            return Intersects(flatgeom, g2, toleranceXY, si);
         }
     default : break;
     }
     return false;
 }
 
-bool FdoSpatialUtility::Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Overlaps(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex* si)
 {
     FdoGeometryType gt2 = g2->GetDerivedType();
     switch (g1->GetDerivedType())
@@ -1631,7 +1648,7 @@ int FdoSpatialUtility::PolygonOverlapsLine(FdoIPolygon* poly, FdoILineString* li
     return 0x10; // we have touch
 }
 
-bool FdoSpatialUtility::Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex* si)
 {
     switch (g1->GetDerivedType())
     {
@@ -1722,7 +1739,7 @@ bool FdoSpatialUtility::Touches(FdoIGeometry* g1, FdoIGeometry* g2, double toler
 }
 
 
-bool FdoSpatialUtility::Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Crosses(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex* si)
 {
     FdoGeometryType gt2 = g2->GetDerivedType();
     if (gt2 == FdoGeometryType_Point || gt2 == FdoGeometryType_MultiPoint || gt2 == FdoGeometryType_MultiGeometry)
@@ -1809,9 +1826,9 @@ bool FdoSpatialUtility::Equals(FdoIGeometry* g1, FdoIGeometry* g2, double tolera
     return false;
 }
 
-bool FdoSpatialUtility::Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Within(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si)
 {
-    return Contains(g2, g1, toleranceXY, false);
+    return Contains(g2, g1, toleranceXY, false, si);
 }
 
 bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
@@ -1820,17 +1837,44 @@ bool FdoSpatialUtility::CoveredBy(FdoIGeometry* g1, FdoIGeometry* g2, double tol
     return false;
 }
 
-bool FdoSpatialUtility::Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Inside(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si)
 {
-     return Contains(g2, g1, toleranceXY, true);
+    return Contains(g2, g1, toleranceXY, true, si); // Note: the geom are reversed. g2 (the filter) is indexed.
+
+    //switch (g2->GetDerivedType())
+    //{
+    //case FdoGeometryType_Point: 
+    //    return false;
+    //case FdoGeometryType_LineString : 
+    //    return LineStringContains((FdoILineString*)g2, g1, toleranceXY);
+    //case FdoGeometryType_Polygon : 
+    //    return PolygonContains((FdoIPolygon*)g2, g1, false, toleranceXY, si);
+    //case FdoGeometryType_MultiPoint : 
+    //    return MultiPointContains((FdoIMultiPoint*)g2, g1, toleranceXY);
+    //case FdoGeometryType_MultiLineString : 
+    //    return MultiLineStringContains((FdoIMultiLineString*)g2, g1, toleranceXY);
+    //case FdoGeometryType_MultiPolygon : 
+    //    return MultiPolygonContains((FdoIMultiPolygon*)g2, g1, toleranceXY, si);
+    //
+    //case FdoGeometryType_CurveString : 
+    //case FdoGeometryType_MultiCurveString :
+    //case FdoGeometryType_CurvePolygon : 
+    //case FdoGeometryType_MultiCurvePolygon : 
+    //    {
+    //        FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(g2);
+    //        return Contains(flatgeom, g1, toleranceXY);
+    //    }
+    //default : break;
+    //}
+    //return false;
 }
 
-bool FdoSpatialUtility::Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY)
+bool FdoSpatialUtility::Disjoint(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, FdoSpatialIndex *si)
 {
-    return !Intersects(g1, g2, toleranceXY);
+    return !Intersects(g1, g2, toleranceXY, si);
 }
 
-bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside)
+bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, double toleranceXY, bool strictInside, FdoSpatialIndex *si)
 {
     switch (g1->GetDerivedType())
     {
@@ -1839,21 +1883,28 @@ bool FdoSpatialUtility::Contains(FdoIGeometry* g1, FdoIGeometry* g2, double tole
     case FdoGeometryType_LineString : 
         return LineStringContains((FdoILineString*)g1, g2, toleranceXY);
     case FdoGeometryType_Polygon : 
-        return PolygonContains((FdoIPolygon*)g1, g2, toleranceXY, strictInside);
+        {
+            if (si && polygonEnvOutsideGeometry((FdoIPolygon*)g1, g2, si))
+                return false;
+            else 
+				return (si) ? PolygonContains((FdoIPolygon*)g1, g2, 0, si, toleranceXY, strictInside) : 
+							  PolygonContains((FdoIPolygon*)g1, g2, toleranceXY, strictInside);
+        }
     case FdoGeometryType_MultiPoint : 
         return MultiPointContains((FdoIMultiPoint*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiLineString : 
         return MultiLineStringContains((FdoIMultiLineString*)g1, g2, toleranceXY);
     case FdoGeometryType_MultiPolygon : 
-        return MultiPolygonContains((FdoIMultiPolygon*)g1, g2, toleranceXY);
+		return (si) ? MultiPolygonContains((FdoIMultiPolygon*)g1, g2, si, toleranceXY) :
+					  MultiPolygonContains((FdoIMultiPolygon*)g1, g2, toleranceXY);
     
     case FdoGeometryType_CurveString : 
-    case FdoGeometryType_CurvePolygon : 
     case FdoGeometryType_MultiCurveString :
+    case FdoGeometryType_CurvePolygon : 
     case FdoGeometryType_MultiCurvePolygon : 
         {
             FdoPtr<FdoIGeometry> flatgeom = TesselateCurve(g1);
-            return Contains(flatgeom, g2, toleranceXY);
+            return Contains(flatgeom, g2, toleranceXY, strictInside, si);
         }
     default : break;
     }
@@ -3092,7 +3143,7 @@ bool FdoSpatialUtility::PointStrictOutsideLine(double x, double y, FdoILineStrin
 //
 //-----------------------------------------------------------------------------
 
-bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY)
+bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly, FdoIGeometry* geom, double toleranceXY )
 {
     switch(geom->GetDerivedType())
     {
@@ -3905,7 +3956,9 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
     //1. check if any points of p1 are inside p2
     //2. check if any points of p2 are inside p1
     //3. do pairwise edge intersection
-    
+ 
+clock_t start = clock ();
+
     //1.
     for (int i=0; i<numContours1; i++)
     {
@@ -3921,9 +3974,23 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
             GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
 
             if (PointInPolygon(poly2, x0, y0, toleranceXY))
+            {
+                clock_t finish = clock ();
+                double elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                FdoSpatialUtility::t1 += elapsed;
+
+                FdoSpatialUtility::n1++;
+                //printf("1 - ");
                 return true;
+            }
         }
     }
+
+clock_t finish = clock ();
+double elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t1 += elapsed;
+
+start = clock ();
 
     //2.
     for (int i=0; i<numContours2; i++)
@@ -3940,9 +4007,22 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
             GET_ITEM(ring2, j, &x0, &y0, &dim_ring2);
 
             if (PointInPolygon(poly1, x0, y0, toleranceXY))
+            {
+                finish = clock ();
+                elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                FdoSpatialUtility::t2 += elapsed;
+                FdoSpatialUtility::n2++;
+                //printf("2 - ");
                 return true;
+            }
         }
     }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t2 += elapsed;
+
+start = clock ();
 
     //3.
     for (int i=0; i<numContours1; i++)
@@ -3984,11 +4064,23 @@ bool FdoSpatialUtility::PolygonsIntersect(FdoIPolygon* poly1, FdoIPolygon* poly2
                     pts[7] = y3;
 
                     if (line_segment_intersect(pts, pts+4, pts+8, toleranceXY) > 0)
+                    {
+                        finish = clock ();
+                        elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                        FdoSpatialUtility::t3 += elapsed;
+                        FdoSpatialUtility::n3++;
+
+                        //printf("3 -");
                         return true;
+                    }
                 }
             }
         }
     }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t3 += elapsed;
 
     return false;
 }
@@ -6393,3 +6485,1333 @@ FdoPolygonVertexOrderAction FdoSpatialUtility::GetPolygonVertexOrderAction(
 
 }
 
+
+/////////////////// Spatial Index //////////////////////////////////
+bool FdoSpatialUtility::Evaluate(FdoIGeometry* g1, FdoSpatialOperations op, FdoIGeometry* g2, FdoSpatialIndex *si, double toleranceXY)
+{
+    if (si == NULL || (si->GetMode() != FdoSpatialIndex_BySegmentsSingleFeature))
+        return Evaluate(g1, op, g2, toleranceXY);
+
+    switch (op)
+    {
+    case FdoSpatialOperations_Contains:     return Contains(g1, g2, toleranceXY, false, si); // g2 is indexed ??); 
+    case FdoSpatialOperations_Crosses:      return Crosses(g1, g2, toleranceXY, si);
+    case FdoSpatialOperations_Disjoint:     return Disjoint(g1, g2, toleranceXY, si);
+    case FdoSpatialOperations_Equals:       return Equals(g1, g2, toleranceXY); // not implemented
+    case FdoSpatialOperations_Intersects:   return Intersects(g1, g2, toleranceXY, si);
+    case FdoSpatialOperations_Overlaps:     return Overlaps(g1, g2, toleranceXY, si);
+    case FdoSpatialOperations_Touches:      return Touches(g1, g2, toleranceXY, si); 
+    case FdoSpatialOperations_Within:       return Within(g1, g2, toleranceXY, si); 
+    case FdoSpatialOperations_CoveredBy:    return CoveredBy(g1, g2, toleranceXY); // not implemented
+    case FdoSpatialOperations_Inside:       return Inside(g1, g2, toleranceXY, si);
+    case FdoSpatialOperations_EnvelopeIntersects: return EnvelopeIntersects(g1, g2, toleranceXY); // Not the case
+    default: break;
+    }
+
+    return false;
+}
+
+
+void FdoSpatialUtility::runSpatialQuery(FdoSpatialIndex *si, double x0, double y0, double x1, double y1, std::vector<FdoInt64> * srows)
+{
+    
+    // Run Spatial Query
+    FdoSpatialIndexIterator iter(si, min(x0, x1), min(y0, y1), max(x0, x1), max(y0, y1));
+ 
+    // Get results
+    FdoInt64 fid;
+    while (fid = iter.GetNextObject())
+    {
+        srows->push_back(fid);
+    }
+}
+
+////////////////// INTERSECT /////////////////////////
+bool FdoSpatialUtility::MultiPolygonIntersects(FdoIMultiPolygon* mpoly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY)
+{
+    bool ret = false;
+
+    for (int i = 0; i < mpoly1->GetCount() && !ret; i++)
+    {
+        FdoPtr<FdoIPolygon> poly1 = mpoly1->GetItem(i);
+        ret = PolygonIntersects(poly1, geom, si, toleranceXY);
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::PolygonIntersects(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY)
+{
+    bool ret = false;
+    
+    // Only for Polygons and Multipolygons
+    if (geom->GetDerivedType() == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* poly2 = (FdoIPolygon *)geom;
+        ret = PolygonIntersectsPolygon(poly1, poly2, 0, si, toleranceXY);
+    }
+    else
+    {
+        FdoIMultiPolygon* mpoly = (FdoIMultiPolygon *)geom;
+
+        for (int i = 0; i < mpoly->GetCount() && !ret; i++)
+        {
+            FdoPtr<FdoIPolygon> poly2 = mpoly->GetItem(i);  
+            ret = PolygonIntersectsPolygon(poly1, poly2, i, si, toleranceXY);
+        }
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::polygonEnvOutsideGeometry(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si)
+{
+    bool outside = true;
+    
+    // Only for Polygons and Multipolygons
+    if (geom->GetDerivedType() == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* poly2 = (FdoIPolygon *)geom;
+        outside = polygonEnvOutsidePolygon(poly2, poly1, 0, si);
+    }
+    else
+    {
+        FdoIMultiPolygon* mpoly = (FdoIMultiPolygon *)geom;
+
+        for (int i = 0; i < mpoly->GetCount() && outside; i++)
+        {
+            FdoPtr<FdoIPolygon> poly2 = mpoly->GetItem(i);  
+            outside = polygonEnvOutsidePolygon(poly1, poly2, i, si);
+        }
+    }
+
+    return outside;
+}
+
+bool FdoSpatialUtility::polygonEnvOutsidePolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si)
+{
+    // poly2 is spatial indexed
+
+    FdoPtr<FdoILinearRing> ring1;
+    FdoPtr<FdoILinearRing> ring2;
+    double x0, y0;
+
+    int dim_ring1;
+    
+clock_t finish;
+double elapsed;
+clock_t start = clock ();
+
+    // Get the envelope as the bbox
+    FdoPtr<FdoILinearRing>  extRing1 = poly1->GetExteriorRing();
+
+    double minx = DBL_MAX;
+    double miny = DBL_MAX;
+    double maxx = -DBL_MAX;
+    double maxy = -DBL_MAX;
+
+    for (int j=0; j<extRing1->GetCount() - 1; j++)
+    {
+        GET_ITEM(extRing1, j, &x0, &y0, &dim_ring1);
+        minx = min(minx, x0);
+        miny = min(miny, y0);
+        maxx = max(maxx, x0);
+        maxy = max(maxy, y0);
+    }
+
+    // 0.
+    // Bail out if the candidate bbox is outside the filter polygon
+
+    // Run Spatial Query
+    std::vector<FdoInt64> srows1;
+    (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows1);
+
+    // NOTE: GetXRing() is recreating the ring!!
+    FdoPtr<FdoILinearRing> extRing2 = poly2->GetExteriorRing();
+
+    // Nothing retrieved, the polygon is either completly inside or outside. 
+    // Do a quick point in polygon check.
+    //bool outside = (srows1.size() == 0 && !PointInRingFast(extRing2, minx, miny, 0));
+    bool outside = (srows1.size() == 0 && !PointInRing(poly2, extRing2, ipart, 0, si, minx, miny));
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t0 += elapsed;
+
+    return outside;
+}
+
+bool FdoSpatialUtility::PolygonIntersectsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY)
+{
+    // poly2 is spatial indexed
+
+    FdoPtr<FdoILinearRing> ring1;
+    FdoPtr<FdoILinearRing> ring2;
+    double x0, y0;
+    double x1, y1;
+    double x2, y2;
+    double x3, y3;
+    int dim_ring1, dim_ring2;
+    
+    double TOL = 0.00001;
+
+    double pts[12];
+
+    int numContours1 = poly1->GetInteriorRingCount() + 1;
+    int numContours2 = poly2->GetInteriorRingCount() + 1;
+
+    //Here is the algorithm we are using here:
+    //0. check if p1 is totally outside p2 
+    //1. check if any points of p1 are inside p2
+    //2. check if any points of p2 are inside p1
+    //3. do pairwise edge intersection
+
+clock_t finish;
+double elapsed;
+clock_t start = clock ();
+
+    // If all the bbox points are outside the polygon then return false
+    FdoPtr<FdoILinearRing>  extRing1 = poly1->GetExteriorRing();
+
+    double minx = DBL_MAX;
+    double miny = DBL_MAX;
+    double maxx = -DBL_MAX;
+    double maxy = -DBL_MAX;
+
+    for (int j=0; j<extRing1->GetCount(); j++)
+    {
+        GET_ITEM(extRing1, j, &x0, &y0, &dim_ring1);
+        minx = min(minx, x0);
+        miny = min(miny, y0);
+        maxx = max(maxx, x0);
+        maxy = max(maxy, y0);
+    }
+
+    // 0.
+    // Bail out if the candidate bbox is outside the filter polygon
+
+    // Run Spatial Query
+    std::vector<FdoInt64> srows1;
+    (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows1);
+
+    // NOTE: GetXRing() is recreating the ring!!
+start = clock ();
+
+    FdoPtr<FdoILinearRing> extRing2 = poly2->GetExteriorRing();
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t4 += elapsed;
+
+    // Nothing retrieved, the polygon is either completly inside or outside. 
+    // Do a quick point in polygon check.
+    //bool outside = (srows1.size() == 0 && !PointInRingFast(extRing2, minx, miny, 0));
+    bool outside = (srows1.size() == 0 && !PointInRing(poly2, extRing2, ipart, 0, si, minx, miny));
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t0 += elapsed;
+
+    if (outside)
+        return false;
+
+start = clock ();
+
+    //1.
+    for (int i=0; i<numContours1; i++)
+    {
+        if (i==0)
+            ring1 = extRing1;
+        else
+            ring1 = poly1->GetInteriorRing(i-1);
+
+        int numverts1 = ring1->GetCount();
+
+        // Point by point
+        for (int j=0; j<numverts1-1; j++)
+        {
+            GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
+
+            if (PointInPolygon(poly2, ipart, si, x0, y0, toleranceXY))
+            {
+                finish = clock ();
+                elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                FdoSpatialUtility::t1 += elapsed;
+                FdoSpatialUtility::n1++;
+
+                return true;
+            }
+        }
+    }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t1 += elapsed;
+
+start = clock ();
+
+   // 2.
+   for (int i=0; i<numContours2; i++)
+   {
+       // test only against the current candidate external loop
+       ring1 = extRing1;
+
+       if (i==0)
+       {
+             // For each selected segment check each point until one is found inside
+            for (int j = 0; j < (int) srows1.size(); j++)
+            {
+                FdoInt64 segId = srows1.at(j);
+
+                FdoInt32 iPart, iRing, ivertex, iSegment;
+                si->DecodeMarker(segId, iPart, iRing, iSegment);
+				ivertex = iSegment - 1;
+
+                // look for the segments belonging to this part (exterior ring)
+                if (iPart != ipart || iRing != 0)
+                    continue;
+
+                GET_ITEM(extRing2, ivertex, &x0, &y0, &dim_ring1);
+
+                //if (PointInPolygon(poly1, x0, y0))
+				bool inside = false;
+
+				// Tried with various sizes to use a spatial index on polygon #1 for point in polygon
+				// test. It does't seem to make a difference performance like.
+				if (false/*ring1->GetCount() >= 300*/)
+				{
+					FdoPtr<FdoSpatialIndex> si1 = FdoSpatialIndex::Create(FdoSpatialIndex_BySegmentsSingleFeature);
+					FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+					FdoPtr<FdoByteArray> baPoly1 = gf->GetFgf(poly1);
+
+					si1->InsertObject(0, baPoly1);
+					inside = PointInRing(poly1, ring1, 0, 0, si1, x0, y0);
+				}
+				else
+				{
+					inside = PointInRingFast(ring1, x0, y0, 0);
+				}
+
+                if (inside)
+                {
+                    finish = clock ();
+                    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                    FdoSpatialUtility::t2 += elapsed;
+                    FdoSpatialUtility::n2++;
+
+                    return true;
+                }
+                // TODO: do for ivertex-1 as well!!
+            }
+       }
+       else
+       {
+           // Do it old way
+            ring2 = poly2->GetInteriorRing(i-1);
+            int numverts2 = ring2->GetCount();
+
+            for (int j=0; j<numverts2-1; j++)
+            {
+                GET_ITEM(ring2, j, &x0, &y0, &dim_ring2);
+
+                //if (PointInPolygon(poly1, x0, y0))
+                if (PointInRingFast(ring1, x0, y0, 0))
+                {
+                    finish = clock ();
+                    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                    FdoSpatialUtility::t2 += elapsed;
+                    FdoSpatialUtility::n2++;
+
+                    return true;
+                }
+            }
+       }
+    }
+
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t2 += elapsed;
+
+start = clock ();
+
+    //3.
+    for (int i=0; i<numContours1; i++)
+    {
+        //DBounds bbox;
+
+        if (i==0)
+        {
+            ring1 = extRing1;
+            //bbox = bbox1;
+        }
+        else
+        {
+            ring1 = poly1->GetInteriorRing(i-1);
+
+            FdoPtr<FdoIEnvelope>  env = ring1->GetEnvelope();
+            /*bbox.min[0]*/ minx = env->GetMinX();
+            /*bbox.min[1]*/ miny = env->GetMinY();
+            /*bbox.max[0]*/ maxx = env->GetMaxX();
+            /*bbox.max[1]*/ maxy= env->GetMaxY();
+        }
+
+        // Run Spatial Query
+        std::vector<FdoInt64> srows;
+        (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows);
+
+        int numverts = srows.size(); 
+
+        if (numverts == 0)
+            continue;  // no intersection with ext loop
+
+        int numverts1 = ring1->GetCount();
+
+        // For each selected segment...
+        for (int j=0; j<numverts1-1; j++)
+        {
+            GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
+            GET_ITEM(ring1, j+1, &x1, &y1, &dim_ring1);
+
+            pts[0] = x0;
+            pts[1] = y0;
+            pts[2] = x1;
+            pts[3] = y1;
+            
+            // Only 
+            for (int k=0; k<numContours2; k++)
+            {
+                // For the exterior ring use the SI
+                if (k==0)
+                {
+                    // Run Spatial Query
+                    std::vector<FdoInt64> srows1;
+                    (void) runSpatialQuery(si, x0, y0, x1, y1, &srows1);
+
+                    for (int n = 0; n < (int)srows1.size(); n++)
+                    {
+                        FdoInt64 segId = srows1.at(n);
+
+                        FdoInt32 iPart, iRing, iSegment, ivertex;
+                        si->DecodeMarker(segId, iPart, iRing, iSegment);
+						ivertex = iSegment - 1;
+
+                        if (iPart != ipart || iRing != 0)
+                            continue;
+
+                        GET_ITEM(extRing2, (int)ivertex, &x2, &y2, &dim_ring2);
+                        GET_ITEM(extRing2, (int)ivertex + 1, &x3, &y3, &dim_ring2);
+
+                        pts[4] = x2;
+                        pts[5] = y2;
+                        pts[6] = x3;
+                        pts[7] = y3;
+
+                        if (line_segment_intersect(pts, pts+4, pts+8, 0.0) > 0)
+                        {
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t3 += elapsed;
+                            FdoSpatialUtility::n3++;
+
+                            return true;
+                        }
+                    }
+                }
+                else
+                {
+                    //////////////////////////////////
+                    ring2 = poly2->GetInteriorRing(k-1);
+                    int numverts2 = ring2->GetCount();
+
+                    for (int l=0; l<numverts2-1; l++)
+                    {
+                        GET_ITEM(ring2, l, &x2, &y2, &dim_ring2);
+                        GET_ITEM(ring2, l+1, &x3, &y3, &dim_ring2);
+                        
+                        pts[4] = x2;
+                        pts[5] = y2;
+                        pts[6] = x3;
+                        pts[7] = y3;
+
+                        if (line_segment_intersect(pts, pts+4, pts+8, 0.0) > 0)
+                        {
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t3 += elapsed;
+                            FdoSpatialUtility::n3++;
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t3 += elapsed;
+
+    return false;
+}
+
+/////////////// INSIDE (i.e. CONTAINS) //////////////////
+bool FdoSpatialUtility::MultiPolygonContains(FdoIMultiPolygon* mpoly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY)
+{
+    bool ret = false;
+
+    // mpoly1 is indexed!
+
+    for (int i = 0; i < mpoly1->GetCount() && !ret; i++)
+    {
+        FdoPtr<FdoIPolygon> poly1 = mpoly1->GetItem(i);
+        ret = PolygonContains(poly1, geom, i, si, 0.0);  
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::PolygonContains(FdoIPolygon* poly1, FdoIGeometry* geom, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside)
+{
+    bool ret = false;
+    
+    // poly1 is indexed!
+
+    // Only for Polygons and Multipolygons
+    if (geom->GetDerivedType() == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* poly2 = (FdoIPolygon *)geom;
+        ret = PolygonContainsPolygon(poly1, poly2, ipart, si, toleranceXY, strictInside);
+    }
+    else
+    {
+        FdoIMultiPolygon* mpoly = (FdoIMultiPolygon *)geom;
+
+        for (int i = 0; i < mpoly->GetCount() && !ret; i++)
+        {
+            FdoPtr<FdoIPolygon> poly2 = mpoly->GetItem(i);  
+            ret = PolygonContainsPolygon(poly1, poly2, ipart, si, toleranceXY, strictInside); 
+        }
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::PolygonContainsPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside)
+{
+    bool    poly2_inside = true;
+    int     numContours2 = poly2->GetInteriorRingCount() + 1;
+    
+    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        
+    // All the linestrings of poly2 need to be inside poly1 (they may touch poly2,
+    // depending on strictInside flag).
+
+    for ( int i = 0; i < numContours2 && poly2_inside; i++)
+    {
+        FdoPtr<FdoILinearRing> ring2 = (i == 0) ? poly2->GetExteriorRing() : poly2->GetInteriorRing(i-1); 
+
+        FdoPtr<FdoDirectPositionCollection> pos2 = ring2->GetPositions();
+        FdoPtr<FdoILineString> line2 = gf->CreateLineString( pos2 );
+
+        poly2_inside = PolygonContainsLineString( poly1, line2, ipart, si, toleranceXY, strictInside );
+    }
+
+    return poly2_inside;
+}
+
+
+
+
+bool FdoSpatialUtility::PolygonContainsLineString(FdoIPolygon* poly, FdoILineString* line, int ipart, FdoSpatialIndex* si, double toleranceXY, bool strictInside)
+{
+    //  CHECK_JUST_ONE_POINT_INSIDE_POLY=false
+    //Here is the algorithm we are using here:
+    //1. check if all points of line are inside poly 
+    //2. if #1 succeeds do pairwise edge intersection for all the rings.
+
+    //  CHECK_JUST_ONE_POINT_INSIDE_POLY=true
+    // Changed for performance:
+    //1. check if at least one point of line is inside polygon
+    //2. if #1 succeeds do pairwise edge intersection for all the rings (segment by segment)
+    //3. if intersections found check both end points of the segment to be inside polygon
+    // Note: if no itersection for a segment is found we don't know whether it's 
+    // completly inside or completly outside polygon. But will be at least one other segment 
+    // that will intersect the polygon. But we know from 1. that at least one point is inside.
+
+    FdoPtr<FdoILinearRing> ring1;
+    double  x0, y0;
+    double  x1, y1;
+    double  x2, y2;
+    double  x3, y3;
+    int     dim_ring1, dim_line;
+    bool    pt_on_ext;
+    bool    pt_on_int;
+    bool    pt1_on_ring;
+    bool    pt2_on_ring;
+    bool    pt_inside = true;
+
+    double pts[12];
+
+    int numContours = poly->GetInteriorRingCount() + 1;
+    int numLinePts = line->GetCount();
+   
+clock_t finish;
+double elapsed;
+clock_t start = clock ();
+
+    // If all the bbox points are outside the polygon then return false
+    //FdoPtr<FdoIEnvelope>    env = poly2->GetEnvelope(); //VERY EXPENSIVE!
+
+
+    FdoPtr<FdoILinearRing>  extRing2 = poly->GetExteriorRing();
+
+    double minx = DBL_MAX;
+    double miny = DBL_MAX;
+    double maxx = -DBL_MAX;
+    double maxy = -DBL_MAX;
+
+    for (int j=0; j<numLinePts; j++)
+    {
+        
+        GET_ITEM(line, j, &x0, &y0, &dim_ring1);
+        minx = min(minx, x0);
+        miny = min(miny, y0);
+        maxx = max(maxx, x0);
+        maxy = max(maxy, y0);
+    }
+
+
+    // NOTE: GetXRing() is recreating the ring!!
+    //FdoPtr<FdoILinearRing> extRing1 = poly1->GetExteriorRing();
+
+    // 0.
+    // Bail out if the candidate bbox is outside the filter polygon
+    std::vector<FdoInt64> srows2;
+    (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows2);
+
+    // Nothing retrieved, the polygon is either completly inside or outside. 
+    // Do a quick point in polygon check.
+    //bool outside = (srows2.size() == 0 && !PointInRingFast(extRing2, minx, miny, 0));
+    bool outside = (srows2.size() == 0 && !PointInRing(poly, extRing2, ipart, 0, si, minx, miny));
+
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t0 += elapsed;
+
+    if (outside)
+        return false;
+
+
+ ///////////
+start = clock ();
+
+    //1.
+    for (int j = 0; j < numLinePts && pt_inside; j++)
+    {
+        GET_ITEM(line, j, &x0, &y0, &dim_line);
+
+        // This checks the interior rings as well
+        pt_inside = PointInPolygon( poly, ipart, si, x0, y0, toleranceXY, &pt_on_ext, &pt_on_int);
+
+        // If the check is strict...
+        if ( pt_inside && strictInside && ( pt_on_ext || pt_on_int ) )
+            pt_inside = false;
+    }
+
+    // Not all the points are inside. The line is not contained.
+    if ( !pt_inside )
+    {
+        finish = clock ();
+        elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+        FdoSpatialUtility::t1 += elapsed;
+
+        return false;
+    }
+
+    finish = clock ();
+    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+    FdoSpatialUtility::t1 += elapsed;
+    FdoSpatialUtility::n1++;
+
+
+start = clock();
+
+    //2.
+    for (int i = 0; i < numContours; i++)
+    {
+        bool    is_ext_ring = ( i == 0 );
+
+        ring1 = is_ext_ring ? extRing2 : poly->GetInteriorRing(i-1);
+
+        if (is_ext_ring)
+        {            
+            GET_ITEM(line, 0, &x2, &y2, &dim_line);
+
+            for (int k=1; k<numLinePts; k++)
+            {
+                GET_ITEM(line, k, &x3, &y3, &dim_line);
+
+                pts[0] = x2;
+                pts[1] = y2;
+                pts[2] = x3;
+                pts[3] = y3;
+
+                // Run Spatial Query
+                std::vector<FdoInt64> srows;
+                (void) runSpatialQuery(si, x2, y2, x3, y3, &srows);
+
+                for (int n = 0; n < (int)srows.size(); n++)
+                {
+                    FdoInt64 segId = srows.at(n);
+
+                    FdoInt32 iPart, iRing, iSegment, ivertex;
+                    si->DecodeMarker(segId, iPart, iRing, iSegment);
+					ivertex = iSegment - 1;
+
+                    if (iPart != ipart || (iRing != i))
+                        continue;
+
+                    GET_ITEM(ring1, (int)ivertex, &x0, &y0, &dim_ring1);
+                    GET_ITEM(ring1, (int)ivertex + 1, &x1, &y1, &dim_ring1);
+
+                    pts[4] = x0;
+                    pts[5] = y0;
+                    pts[6] = x1;
+                    pts[7] = y1;
+
+                    int numIntersections = line_segment_intersect(pts, pts+4, pts+8, toleranceXY);
+
+                    // The line segments found intersecting?
+                    if ( numIntersections > 0 && strictInside )
+                    {
+                        finish = clock ();
+                        elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                        FdoSpatialUtility::t2 += elapsed;
+ 
+                        return false;
+                    }
+                }
+
+                // swap
+                x2 = x3;
+                y2 = y3;
+            }
+        }
+        else // interior ring
+        {
+            for (int j = 0; j < ring1->GetCount() - 1; j++)
+            {
+                GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
+                GET_ITEM(ring1, j+1, &x1, &y1, &dim_ring1);
+
+                pts[0] = x0;
+                pts[1] = y0;
+                pts[2] = x1;
+                pts[3] = y1;
+            
+                GET_ITEM(line, 0, &x2, &y2, &dim_line);
+
+                for (int k=1; k<numLinePts; k++)
+                {
+                    GET_ITEM(line, k, &x3, &y3, &dim_line);
+
+                    pts[4] = x2;
+                    pts[5] = y2;
+                    pts[6] = x3;
+                    pts[7] = y3;
+
+                    //
+                    int numIntersections = line_segment_intersect(pts, pts+4, pts+8, toleranceXY);
+
+                    // The line segments found intersecting?
+                    if ( numIntersections > 0 && strictInside )
+                    {
+                        finish = clock ();
+                        elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                        FdoSpatialUtility::t2 += elapsed;
+
+                        return false;
+                    }
+
+                    if ( CHECK_JUST_ONE_POINT_INSIDE_POLY )
+                    {
+                        if ( numIntersections == 1 )
+                        {
+                            // Both end points should be inside polygon
+                            //pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x2, y2, &pt1_on_ring, toleranceXY );
+                            pt_inside = PointInRing( poly, ring1, ipart, i, si, x2, y2, &pt1_on_ring, toleranceXY);
+
+                            if ( pt_inside )
+                                //pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, x3, y3, &pt2_on_ring, toleranceXY );
+                                pt_inside = PointInRing( poly, ring1, ipart, i, si, x3, y3, &pt2_on_ring, toleranceXY );
+
+                            // Ambiguous case: line segment with both end points of the ring.
+                            // Decide by checking the midpoint 
+                            if ( pt_inside && pt1_on_ring && pt2_on_ring )
+                            {
+                                /*pt_inside = PointInRing2( ring1, is_ext_ring, strictInside, 
+                                                            (x2+x3)/2.0, (y2+y3)/2.0, &pt2_on_ring, toleranceXY ); */
+
+                                pt_inside = PointInRing( poly, ring1, ipart, i, si, 
+                                                            (x2+x3)/2.0, (y2+y3)/2.0, &pt2_on_ring, toleranceXY );  
+
+                                // Imagine a "S" shape polygon: (start, mid, end) points are on the
+                                // boundary. This makes the segment "outside".
+                                if ( pt_inside && pt2_on_ring )
+                                    pt_inside = false;
+                            }
+
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t2 += elapsed;
+                            if (pt_inside) FdoSpatialUtility::n2++;
+
+                            return pt_inside;
+                        }
+                        else if ( numIntersections == 2 && !is_ext_ring )
+                        {
+                            // Collinear vertices, acceptable only on the external boundary
+
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t2 += elapsed;
+
+                            return false;
+                        }
+                    }
+                    x2 = x3;
+                    y2 = y3;
+                }
+            }
+        }
+    }
+
+    finish = clock ();
+    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+    FdoSpatialUtility::t2 += elapsed;
+    FdoSpatialUtility::n2++;
+
+    return true;
+}
+
+////////////////// DISJOINT /////////////////////////
+bool FdoSpatialUtility::MultiPolygonDisjoint(FdoIMultiPolygon* mpoly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY)
+{
+    bool ret = true;
+
+    for (int i = 0; i < mpoly1->GetCount() && ret; i++)
+    {
+        FdoPtr<FdoIPolygon> poly1 = mpoly1->GetItem(i);
+        ret = PolygonDisjoint(poly1, geom, si, toleranceXY);
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::PolygonDisjoint(FdoIPolygon* poly1, FdoIGeometry* geom, FdoSpatialIndex* si, double toleranceXY)
+{
+    bool ret = true;
+    
+    // Only for Polygons and Multipolygons
+    if (geom->GetDerivedType() == FdoGeometryType_Polygon)
+    {
+        FdoIPolygon* poly2 = (FdoIPolygon *)geom;
+        ret = PolygonDisjointPolygon(poly1, poly2, 0, si, toleranceXY);
+    }
+    else
+    {
+        FdoIMultiPolygon* mpoly = (FdoIMultiPolygon *)geom;
+
+        for (int i = 0; i < mpoly->GetCount() && ret; i++)
+        {
+            FdoPtr<FdoIPolygon> poly2 = mpoly->GetItem(i);  
+            ret = PolygonDisjointPolygon(poly1, poly2, i, si, toleranceXY);
+        }
+    }
+
+    return ret;
+}
+
+bool FdoSpatialUtility::PolygonDisjointPolygon(FdoIPolygon* poly1, FdoIPolygon* poly2, int ipart, FdoSpatialIndex* si, double toleranceXY)
+{
+
+    FdoPtr<FdoILinearRing> ring1;
+    FdoPtr<FdoILinearRing> ring2;
+    double x0, y0;
+    double x1, y1;
+    double x2, y2;
+    double x3, y3;
+    int dim_ring1, dim_ring2;
+    
+    double TOL = 0.00001;
+
+    double pts[12];
+
+    int numContours1 = poly1->GetInteriorRingCount() + 1;
+    int numContours2 = poly2->GetInteriorRingCount() + 1;
+
+    //Here is the algorithm we are using here:
+    //0. check if p1 is totally outside p2 
+    //1. check if any points of p1 are inside p2
+    //2. check if any points of p2 are inside p1
+    //3. do pairwise edge intersection
+
+clock_t finish;
+double elapsed;
+clock_t start = clock ();
+
+    // If all the bbox points are outside the polygon then return false
+    //FdoPtr<FdoIEnvelope>    env = poly1->GetEnvelope(); //VERY EXPENSIVE!
+    FdoPtr<FdoILinearRing>  extRing1 = poly1->GetExteriorRing();
+
+    double minx = DBL_MAX;
+    double miny = DBL_MAX;
+    double maxx = -DBL_MAX;
+    double maxy = -DBL_MAX;
+
+    for (int j=0; j<extRing1->GetCount() - 1; j++)
+    {
+        GET_ITEM(extRing1, j, &x0, &y0, &dim_ring1);
+        minx = min(minx, x0);
+        miny = min(miny, y0);
+        maxx = max(maxx, x0);
+        maxy = max(maxy, y0);
+    }
+
+
+    // NOTE: GetXRing() is recreating the ring!!
+    FdoPtr<FdoILinearRing> extRing2 = poly2->GetExteriorRing();
+
+    // 0.
+    // Bail out if the candidate bbox is outside the filter polygon
+    //DBounds bbox1;
+    //bbox1.min[0] = minx;
+    //bbox1.min[1] = miny;
+    //bbox1.max[0] = maxx;
+    //bbox1.max[1] = maxy;
+
+     // Run Spatial Query
+    std::vector<FdoInt64> srows1;
+    (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows1);
+    
+    // Nothing retrieved, the polygon is either completly inside or outside. 
+    // Do a quick point in polygon check.
+    bool onBoundary = false;
+    bool outside = (srows1.size() == 0 && !PointInRing(poly2, extRing2, ipart, 0, si, minx, miny, &onBoundary));
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t0 += elapsed;
+
+    if (outside)
+        return true;
+
+start = clock ();
+
+    //1.
+    for (int i=0; i<numContours1; i++)
+    {
+        if (i==0)
+            ring1 = extRing1;
+        else
+            ring1 = poly1->GetInteriorRing(i-1);
+
+        int numverts1 = ring1->GetCount();
+
+        // Point by point
+        for (int j=0; j<numverts1-1; j++)
+        {
+            GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
+
+            if (PointInPolygon(poly2, ipart, si, x0, y0, toleranceXY))
+            {
+                finish = clock ();
+                elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                FdoSpatialUtility::t1 += elapsed;
+                FdoSpatialUtility::n1++;
+
+                return false;
+            }
+        }
+    }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t1 += elapsed;
+
+start = clock ();
+
+   // 2.
+   for (int i=0; i<numContours2; i++)
+   {
+       // test only against the current candidate external loop
+       ring1 = extRing1;
+
+       if (i==0)
+       {
+             // For each selected segment check each point until one is found inside
+            for (int j = 0; j < (int) srows1.size(); j++)
+            {
+                FdoInt64 segId = srows1.at(j);
+
+                FdoInt32 iPart, iRing, iSegment, ivertex;
+                si->DecodeMarker(segId, iPart, iRing, iSegment);
+                ivertex = iSegment - 1;
+
+                // look for the segments belonging to this part (exterior ring)
+                if (iPart != ipart || iRing != 0)
+                    continue;
+
+                GET_ITEM(extRing2, ivertex, &x0, &y0, &dim_ring1);
+
+                //if (PointInPolygon(poly1, x0, y0))
+                if (PointInRingFast(ring1, x0, y0, 0))
+                {
+                    finish = clock ();
+                    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                    FdoSpatialUtility::t2 += elapsed;
+                    FdoSpatialUtility::n2++;
+
+                    return false;
+                }
+                // TODO: do for ivertex-1 as well!!
+            }
+       }
+       else
+       {
+           // Do it old way
+            ring2 = poly2->GetInteriorRing(i-1);
+            int numverts2 = ring2->GetCount();
+
+            for (int j=0; j<numverts2-1; j++)
+            {
+                GET_ITEM(ring2, j, &x0, &y0, &dim_ring2);
+
+                //if (PointInPolygon(poly1, x0, y0))
+                if (PointInRingFast(ring1, x0, y0, 0))
+                {
+                    finish = clock ();
+                    elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                    FdoSpatialUtility::t2 += elapsed;
+                    FdoSpatialUtility::n2++;
+
+                    return false;
+                }
+            }
+       }
+    }
+
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t2 += elapsed;
+
+start = clock ();
+
+    //3.
+    for (int i=0; i<numContours1; i++)
+    {
+        //DBounds bbox;
+
+        if (i==0)
+        {
+            ring1 = extRing1;
+            //bbox = bbox1;
+        }
+        else
+        {
+            ring1 = poly1->GetInteriorRing(i-1);
+
+            FdoPtr<FdoIEnvelope>  env = ring1->GetEnvelope();
+            /*bbox.min[0]*/ minx = env->GetMinX();
+            /*bbox.min[1]*/ miny = env->GetMinY();
+            /*bbox.max[0]*/ maxx = env->GetMaxX();
+            /*bbox.max[1]*/ maxy = env->GetMaxY();
+        }
+
+        // Run Spatial Query
+        std::vector<FdoInt64> srows;
+        (void) runSpatialQuery(si, minx, miny, maxx, maxy, &srows);
+
+        int numverts = srows.size(); //ring->GetCount();
+
+        if (numverts == 0)
+            continue;  // no intersection with ext loop
+
+        int numverts1 = ring1->GetCount();
+
+        // For each selected segment...
+        for (int j=0; j<numverts1-1; j++)
+        {
+            GET_ITEM(ring1, j, &x0, &y0, &dim_ring1);
+            GET_ITEM(ring1, j+1, &x1, &y1, &dim_ring1);
+
+            pts[0] = x0;
+            pts[1] = y0;
+            pts[2] = x1;
+            pts[3] = y1;
+            
+            // Only 
+            for (int k=0; k<numContours2; k++)
+            {
+                // For the exterior ring use the SI
+                if (k==0)
+                {                 
+                    // Run Spatial Query
+                    std::vector<FdoInt64> srows1;
+                    (void) runSpatialQuery(si, x0, y0, x1, y1, &srows1);
+
+                    for (int n = 0; n < (int)srows1.size(); n++)
+                    {
+                        FdoInt64 segId = srows1.at(n);
+
+                        FdoInt32 iPart, iRing, iSegment, ivertex;
+                        si->DecodeMarker(segId, iPart, iRing, iSegment);
+						ivertex = iSegment - 1;
+
+                        if (iPart != ipart || iRing != 0)
+                            continue;
+
+                        GET_ITEM(extRing2, (int)ivertex, &x2, &y2, &dim_ring2);
+                        GET_ITEM(extRing2, (int)ivertex + 1, &x3, &y3, &dim_ring2);
+
+                        pts[4] = x2;
+                        pts[5] = y2;
+                        pts[6] = x3;
+                        pts[7] = y3;
+
+                        if (line_segment_intersect(pts, pts+4, pts+8, 0.0) > 0)
+                        {
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t3 += elapsed;
+                            FdoSpatialUtility::n3++;
+
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    //////////////////////////////////
+                    ring2 = poly2->GetInteriorRing(k-1);
+                    int numverts2 = ring2->GetCount();
+
+                    for (int l=0; l<numverts2-1; l++)
+                    {
+                        GET_ITEM(ring2, l, &x2, &y2, &dim_ring2);
+                        GET_ITEM(ring2, l+1, &x3, &y3, &dim_ring2);
+                        
+                        pts[4] = x2;
+                        pts[5] = y2;
+                        pts[6] = x3;
+                        pts[7] = y3;
+
+                        if (line_segment_intersect(pts, pts+4, pts+8, 0.0) > 0)
+                        {
+                            finish = clock ();
+                            elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+                            FdoSpatialUtility::t3 += elapsed;
+                            FdoSpatialUtility::n3++;
+
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+finish = clock ();
+elapsed = (double)(finish - start) / CLOCKS_PER_SEC;
+FdoSpatialUtility::t3 += elapsed;
+
+    return true;
+}
+
+///////////////////////////////////
+
+bool FdoSpatialUtility::PointInPolygon(FdoIPolygon* poly, int ipart, FdoSpatialIndex* si, double x, double y, double toleranceXY, bool* isOnExtBoundary, bool* isOnIntBoundary)
+{
+    int numContours = poly->GetInteriorRingCount() + 1;
+
+    bool ext_inside_flag = false;
+    bool int_inside_flag = false;
+    bool on_ext_boundary = false;
+    bool on_int_boundary = false;
+    bool on_ring_flag    = false;
+
+    FdoPtr<FdoILinearRing> ring = poly->GetExteriorRing();
+    
+    bool USE_SI = (si != NULL);
+
+    if ( USE_point_in_ring )
+        ext_inside_flag = point_in_ring( ring, x, y, false, &on_ext_boundary, toleranceXY );
+    else
+        ext_inside_flag = USE_SI? PointInRing( poly, ring, ipart, 0, si, x, y, &on_ext_boundary) : 
+                                  PointInRing( ring, x, y, &on_ext_boundary );
+
+    // The point should be inside the exterior ring and outside any interior ring
+    if ( ext_inside_flag )
+    {
+        for (int i = 0; i < poly->GetInteriorRingCount() && !int_inside_flag; i++)
+        {
+            FdoPtr<FdoILinearRing> ring = poly->GetInteriorRing(i);
+    
+            if ( USE_point_in_ring )
+                int_inside_flag = point_in_ring( ring, x, y, true, &on_ring_flag, toleranceXY );
+            else
+                int_inside_flag = PointInRing( ring, x, y, &on_ring_flag );
+
+            if ( on_ring_flag )
+                on_int_boundary = true;
+        }
+    }
+
+    if ( isOnExtBoundary != NULL )
+        *isOnExtBoundary = on_ext_boundary;
+
+    if ( isOnIntBoundary != NULL )
+        *isOnIntBoundary = on_int_boundary;
+
+    return ext_inside_flag && !int_inside_flag;
+}
+
+
+
+bool FdoSpatialUtility::PointInRing(FdoIPolygon* poly, FdoILinearRing* ring, int ipart, int isubPart, FdoSpatialIndex* si, double x, double y, bool *isOnBoundary, double toleranceXY)
+{
+    bool yflag0, yflag1;
+    double vtx0X, vtx0Y, vtx1X, vtx1Y;
+    int dimptr;
+
+    bool isInside = false;
+    int count = 0;
+    double TOL = 0;//0.1;
+
+    if (isOnBoundary)
+        *isOnBoundary = false;
+
+    // SI 
+    FdoPtr<FdoIEnvelope> env = si->GetTotalExtent();
+
+    // The X-ray
+    // Run Spatial Query
+    FdoSpatialIndexIterator iter(si, env->GetMinX() - TOL, y - TOL, env->GetMaxX() + TOL, y + TOL);
+
+    // Get results
+    FdoInt64 fid;
+    
+    int N = 100;
+    FdoInt64 *sorted = (FdoInt64 *)malloc(sizeof(FdoInt64) * N);
+    int k = 0;
+    while (fid = iter.GetNextObject())
+    {
+        if (k >= N - 2)
+        {
+            N *= 2;  // double the size
+            sorted = (FdoInt64 *) realloc(sorted, sizeof(FdoInt64) * N);
+        }
+
+        if (k != 0 && fid != sorted[k-1])
+            sorted[k++] = fid;
+
+        // add the next segment too to avoid on boundary cases
+        sorted[k++] = ++fid;
+    }
+     
+    int numverts = k;
+
+    // no intersection with the x-ray
+    if (k == 0)
+        return false;
+
+    FdoInt64 i, j, temp;
+ 
+    // std::list.sort() is not quite fast. Do bubble sort since the size is guarranted to be small.
+    for (i = (numverts - 1); i > 0; i--)
+    {
+        for (j = 1; j <= i; j++)
+        {
+            if (sorted[j-1] > sorted[j])
+            {
+                temp = sorted[j-1];
+                sorted[j-1] = sorted[j];
+                sorted[j] = temp;
+            }
+        }
+    }
+
+    // Find the beginning of the list of segments (if any) belonging to this part #.
+    FdoInt32 iPart, iRing, iSegment, ivertex;
+
+    bool found = false;
+    for (i = 0; i < numverts && !found; i++)
+    {
+        FdoInt64 segId = sorted[i]; // 1-based segment index
+        si->DecodeMarker(segId, iPart, iRing, iSegment);
+		ivertex = iSegment - 1;
+
+        if (iPart == ipart && iRing == isubPart)
+        {
+            GET_ITEM(ring, (int)(ivertex - 1), &vtx0X, &vtx0Y, &dimptr);
+            found = true;
+        }
+    }
+
+	i--;
+
+	if (!found)
+		return false;
+
+    // get test bit for above/below X axis
+    yflag0 = (vtx0Y >= y);
+
+    while (i < numverts)
+    {
+        FdoInt64 segId = sorted[i];
+        si->DecodeMarker(segId, iPart, iRing, iSegment);
+		ivertex = iSegment - 1;
+
+        // End of part? (the segments are sorted)
+        if (iPart != ipart || iRing != isubPart)
+            break;
+ 
+		// The vertex index is 1-based
+		GET_ITEM(ring, int(ivertex - 1), &vtx0X, &vtx0Y, &dimptr);
+        GET_ITEM(ring, (int)ivertex, &vtx1X, &vtx1Y, &dimptr);
+      
+        bool  isOn = pt_is_on_line2( vtx0X, vtx0Y, vtx1X, vtx1Y, x, y, 0 );
+
+        if (isOn)
+        {
+            if (isOnBoundary)
+                *isOnBoundary = true;
+
+            free(sorted);
+            return true;
+        }
+
+		//yflag0 = (vtx0Y >= y);
+        yflag1 = (vtx1Y >= y);
+
+        if (yflag0 != yflag1)
+        {
+            if (((vtx1Y-y)*(vtx0X-vtx1X) >=
+                 (vtx1X-x)*(vtx0Y-vtx1Y)) == yflag1)
+            {
+                isInside  = !isInside;
+            }
+        }
+
+        // move to the next pair of vertices
+		yflag0 = yflag1;
+ 		i++;
+    }
+
+    free(sorted);
+
+    return isInside;
+} 
