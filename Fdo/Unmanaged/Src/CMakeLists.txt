@@ -237,6 +237,8 @@ set( FDOSpatial_SRCS
 	Spatial/SpatialUtilityGeometryExtents.cpp
 	Spatial/SpatialUtilityCircularArc.cpp
 	Spatial/SpatialGeometryConverter.cpp
+	Spatial/SpatialIndex.cpp
+	Spatial/rtree.cpp
 )
 
 set( FDOGeometry_SRCS

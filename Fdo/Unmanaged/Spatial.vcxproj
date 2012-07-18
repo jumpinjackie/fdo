@@ -251,15 +251,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Src\Spatial\MathUtility.cpp" />
+    <ClCompile Include="Src\Spatial\rtree.cpp" />
     <ClCompile Include="Src\Spatial\SpatialEnvelope.cpp" />
     <ClCompile Include="Src\Spatial\SpatialGeometryConverter.cpp" />
     <ClCompile Include="Src\Spatial\SpatialGridTransform.cpp" />
+    <ClCompile Include="Src\Spatial\SpatialIndex.cpp" />
     <ClCompile Include="Src\Spatial\SpatialUtility.cpp" />
     <ClCompile Include="Src\Spatial\SpatialUtilityCircularArc.cpp" />
     <ClCompile Include="Src\Spatial\SpatialUtilityGeometryExtents.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Inc\Spatial\SpatialIndex.h" />
     <ClInclude Include="Src\Spatial\MathUtility.h" />
+    <ClInclude Include="Src\Spatial\rtree.h" />
     <ClInclude Include="Src\Spatial\SpatialEnvelope.h" />
     <ClInclude Include="Src\Spatial\SpatialUtilityCircularArc.h" />
     <ClInclude Include="Src\Spatial\SpatialUtilityGeometryExtents.h" />
