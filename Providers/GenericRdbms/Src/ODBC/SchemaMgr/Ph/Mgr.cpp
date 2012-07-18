@@ -22,6 +22,7 @@
 #include "TempObject.h"
 #include <Rdbms/Override/ODBC/OdbcOvPhysicalSchemaMapping.h>
 #include <Sm/Ph/Rd/ClassReader.h>
+#include "Rd/TeraSchemaReader.h"
 
 FdoSmPhOdbcMgr::OdbcStringMap FdoSmPhOdbcMgr::mOdbcReservedDbObjectNames;
 
@@ -68,7 +69,13 @@ FdoPtr<FdoSmPhCfgPropertyReader> FdoSmPhOdbcMgr::CreateCfgPropertyReader( FdoStr
 
 FdoPtr<FdoSmPhRdSchemaReader> FdoSmPhOdbcMgr::CreateRdSchemaReader( FdoSmPhRowsP rows, FdoSmPhOwnerP owner, bool dsInfo )
 {
-    return new FdoSmPhRdOdbcSchemaReader( rows, owner, dsInfo );
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info(GetRdbiContext(), &info );
+    
+    if( info.dbversion == RDBI_DBVERSION_ODBC_TERADATA )
+        return new FdoSmPhRdTeraSchemaReader( rows, GetDatabase(), owner );
+    else
+        return new FdoSmPhRdOdbcSchemaReader( rows, owner, dsInfo );
 }
 
 FdoPtr<FdoSmPhRdClassReader> FdoSmPhOdbcMgr::CreateRdClassReader( 

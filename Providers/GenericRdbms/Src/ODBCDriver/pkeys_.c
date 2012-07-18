@@ -432,9 +432,11 @@ int local_odbcdr_pkeys_act(
 
     /*********************************************************************************
      * Approach #5: Find all non-nullable columns and use them as the identity property.
+	 *
+	 * Do not use this approach for Teradata sources since it pick a wrong key for views.
      *********************************************************************************/
 
-    if (!bFoundIdentityProperties)
+    if ((!bFoundIdentityProperties) && !(ODBCDriverType_Teradata == connData->driver_type ))
     {
 	    int  length;
 	    int  scale;

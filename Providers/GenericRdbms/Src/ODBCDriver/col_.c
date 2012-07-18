@@ -710,8 +710,26 @@ the_exit:
     }
     if (rdbi_status != RDBI_SUCCESS || context->odbcdr_last_rc != ODBCDR_SUCCESS)
     {
-        /* Try the SQLColumns approach. */
-        rdbi_status = odbcdr_col_act_SQLColumns(context, owner, object_name);
+        if ( ODBCDriverType_Teradata == connData->driver_type )
+        {
+            /* Skip the SQLColumns approach when connected to a Teradata server.
+               For Teradata, we only allow access to objects in the default database.
+               odbcdr_col_act_SQLColumns will grab columns for tables in all databases,
+               with the same name as object_name. It will also pick up columns for which the 
+               current user has no select privileges. Therefore, we end up with a bunch of columns
+               from multiple tables, some of which the user can't access.
+               
+               Just return success but with no columns found.
+            */
+            context->odbcdr_nameListNextPosition_cols = 0;
+            rdbi_status = RDBI_SUCCESS;
+            context->odbcdr_last_rc = ODBCDR_SUCCESS;
+        }
+        else
+        {
+            /* Try the SQLColumns approach. */
+            rdbi_status = odbcdr_col_act_SQLColumns(context, owner, object_name);
+        }
     }
     debug_return(NULL, rdbi_status);
 }
