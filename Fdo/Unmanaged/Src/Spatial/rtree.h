@@ -16,7 +16,11 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
-#define USE_SSE 1
+#ifdef _WIN32
+	#define USE_SSE 1
+#else
+	#define USE_SSE 0
+#endif
 
 #include "float.h"
 
@@ -54,7 +58,11 @@ namespace fdo
 {
 
 //The type to use for feature IDs. Must be a signed type, int or __int64!
-typedef __int64 fid_t;
+#ifdef _WIN32
+	typedef _int64 fid_t;
+#else
+	typedef int64_t fid_t;
+#endif
 
 //The type to use for node IDs. Generally should match fid_t.
 typedef fid_t id_t;
