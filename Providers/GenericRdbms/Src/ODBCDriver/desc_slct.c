@@ -116,6 +116,7 @@ int local_odbcdr_desc_slct(
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
 	SQLSMALLINT			column_name_length;
 	SQLSMALLINT			num_cols;
+	odbcdr_connData_def	*connData;
 
 	debug_on3("odbcdr_desc_slct", "c:%#x Position: %d, max name length %d",
 							cursor, position, name_size);
@@ -198,6 +199,17 @@ int local_odbcdr_desc_slct(
 		case SQL_TYPE_TIMESTAMP :
             *rdbi_type	 = RDBI_DATE;
 			*binary_size = ODBCDR_DATE_SIZE + 1;
+			break;
+		case SQL_TYPE_DATE :
+			ODBCDR_RDBI_ERR( odbcdr_get_curr_conn( context, &connData ) );
+
+			// For now, be cautious and expose date columns only for Teradata sources,
+			// until we can test the other sources.
+			if ( ODBCDriverType_Teradata == connData->driver_type )
+			{
+				*rdbi_type	 = RDBI_DATE;
+				*binary_size = ODBCDR_DATE_SIZE + 1;
+			}
 			break;
         case SQL_DOUBLE:
 			*rdbi_type = RDBI_DOUBLE;

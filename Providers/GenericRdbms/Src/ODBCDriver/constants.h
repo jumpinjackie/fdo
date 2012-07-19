@@ -105,6 +105,7 @@ typedef enum
     ODBCDriverType_Sybase,
     ODBCDriverType_Access,
     ODBCDriverType_MySQL,
+    ODBCDriverType_Teradata,
     ODBCDriverType_Other  // determined, but not an ODBC driver we distinguish specifically
 } odbcdr_DriverType;
 
@@ -118,6 +119,8 @@ typedef enum
 #define ODBCDR_DRIVER_MYSQL_DRIVERNAME_WINDOWS_MB "MYODBC3.DLL"
 #define ODBCDR_DRIVER_MYSQL_DRIVERNAME_LINUX_UNIQUELENGTH   9
 #define ODBCDR_DRIVER_MYSQL_DRIVERNAME_WINDOWS_UNIQUELENGTH 6
+#define ODBCDR_DRIVER_TERADATA_DRIVERNAME_WINDOWS_MB        "TDATA32.DLL"
+#define ODBCDR_DRIVER_TERADATA_DRIVERNAME_LINUX_MB          "tdata.so"
 #define ODBCDR_DRIVER_ORACLE_ROWID_NAME           "ROWID"
 #define ODBCDR_DRIVER_ORACLE_OWM_TABLE_SUFFIX     "_LT"
 #define ODBCDR_DRIVER_ORACLE_OWM_COLUMN_VERSION   "VERSION"
