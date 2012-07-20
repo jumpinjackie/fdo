@@ -40,7 +40,7 @@ FdoSpatialIndex::~FdoSpatialIndex()
 
 void FdoSpatialIndex::Dispose()
 {
-    delete this;
+	delete (fdo::rtree *)this;
 }
 
 FdoSpatialIndexMode FdoSpatialIndex::GetMode()
@@ -162,7 +162,7 @@ void FdoSpatialIndex::EraseObject(FdoInt64 objectId, FdoIEnvelope *ext)
 	else // FdoSpatialIndex_BySegmentsSingleFeature
 	{
 		// Just remove and recreate the rtree.
-		delete m_si;
+		delete (fdo::rtree *)m_si;
 		m_si = new fdo::rtree();
 		m_count = 0;
 	}
