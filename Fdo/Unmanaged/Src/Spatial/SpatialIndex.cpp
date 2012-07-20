@@ -35,12 +35,12 @@ FdoSpatialIndex::FdoSpatialIndex(FdoSpatialIndexMode mode)
 
 FdoSpatialIndex::~FdoSpatialIndex()
 {
-    delete m_si;
+    delete (fdo::rtree *)m_si;
 }
 
 void FdoSpatialIndex::Dispose()
 {
-	delete (fdo::rtree *)this;
+	delete this;
 }
 
 FdoSpatialIndexMode FdoSpatialIndex::GetMode()
