@@ -37,7 +37,6 @@ noinst_HEADERS = $(libFDOSpatial_la_SOURCES) \
   SpatialUtilityCircularArc.h \
   SpatialUtilityGeometryExtents.h \
   SpatialUtilityVectorAngle.h \
-  SpatialIndex.h \
   rtree.h
 
 INCLUDES = -I../../Inc

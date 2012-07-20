@@ -20,6 +20,8 @@
 	#define USE_SSE 1
 #else
 	#define USE_SSE 0
+    #include <string.h>
+    #include <stdlib.h>
 #endif
 
 #include "float.h"
