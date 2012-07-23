@@ -24,6 +24,7 @@ set( FdoRdbmsODBC_SchemaMgr_Ph_STAT_SRCS
    Rd/OwnerReader.cpp
    Rd/SchemaReader.cpp
    Rd/PkeyReader.cpp
+   Rd/TeraSchemaReader.cpp
 )
 
 add_library( FdoRdbmsODBC_SchemaMgr_Ph STATIC ${FdoRdbmsODBC_SchemaMgr_Ph_STAT_SRCS} )
