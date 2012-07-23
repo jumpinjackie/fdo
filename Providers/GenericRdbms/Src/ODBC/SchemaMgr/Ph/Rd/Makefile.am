@@ -31,7 +31,8 @@ OraDbObjectReader.cpp \
 OraPkeyReader.cpp \
 OwnerReader.cpp \
 SchemaReader.cpp \
-PkeyReader.cpp
+PkeyReader.cpp \
+TeraSchemaReader.cpp
 
 noinst_HEADERS = $(libFdoRdbmsODBC_SchemaMgr_Ph_Rd_la_SOURCES) \
   ColumnReader.h \
@@ -44,7 +45,8 @@ noinst_HEADERS = $(libFdoRdbmsODBC_SchemaMgr_Ph_Rd_la_SOURCES) \
   OraDbObjectReader.h \
   OraPkeyReader.h \
   OwnerReader.h \
-  PkeyReader.h
+  PkeyReader.h \
+  TeraSchemaReader.h
 
 INCLUDES = \
   -I../../../ \
