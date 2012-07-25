@@ -26,19 +26,22 @@ class SqlServerFdoSelectTest : public FdoSelectTest
     CPPUNIT_TEST_SUB_SUITE (SqlServerFdoSelectTest, FdoSelectTest);
     CPPUNIT_TEST (TestDateFilter);
     CPPUNIT_TEST (TestSpatialGeog);
+	CPPUNIT_TEST (TestSpatialGeogValidSpatialOperators);
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
     void TestDateFilter();
     void TestSpatialGeog();
+	void TestSpatialGeogValidSpatialOperators();
 
 	void spatial_query_defect813611();
 
 protected:
     void SpatialGeogSchema( FdoIConnection* connection );
     void SpatialGeogData( FdoIConnection* connection );
-    void SpatialGeogSelect( FdoIConnection* connection, FdoIGeometry* spatialArea );
-    FdoStringsP SpatialGeogSelectNames( FdoIConnection* connection, FdoIGeometry* spatialArea, FdoStringP propName );
+    void SpatialGeogSelect( FdoIConnection* connection, FdoIGeometry* spatialArea);
+    bool SpatialGeogSelectWithSpOp( FdoIConnection* connection, FdoIGeometry* spatialArea, FdoSpatialOperations spOp );
+	FdoStringsP SpatialGeogSelectNames( FdoIConnection* connection, FdoIGeometry* spatialArea, FdoStringP propName );
 
     virtual bool spatial_or_attribute_query_should_fail () {return false;}
 
