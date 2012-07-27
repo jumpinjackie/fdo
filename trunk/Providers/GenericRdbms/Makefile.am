@@ -1,0 +1,117 @@
+##
+## Copyright (C) 2004-2006  Autodesk, Inc.
+## 
+## This library is free software; you can redistribute it and/or
+## modify it under the terms of version 2.1 of the GNU Lesser
+## General Public License as published by the Free Software Foundation.
+## 
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## Lesser General Public License for more details.
+## 
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+##
+
+AUTOMAKE_OPTIONS = foreign
+
+SUBDIRS = Nls Src Inc com Docs
+
+DIST_SUBDIRS = Nls Src Inc com Docs
+
+EXTRA_DIST = \
+build_linux.sh \
+methods.vbs \
+preparebuilds.wsf \
+Managed/Project/MgMySqlOverrides.vcproj \
+Managed/Project/MgOdbcOverrides.vcproj \
+Managed/Project/MgRdbms.vcproj \
+Managed/Project/MgRdbmsOverrides.vcproj \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgCommandType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgICreateSpatialIndex.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgICreateSpatialIndexImp.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgIDestroySpatialIndex.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgIDestroySpatialIndexImp.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgIGetSpatialIndexes.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgIGetSpatialIndexesImp.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgISpatialIndexReader.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgISpatialIndexReaderImp.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgObjectFactory.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgSpatialIndexDimensionType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/mgSpatialIndexType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Namespace.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/resource.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/stdafx.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgIOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgIOvPropertyMappingDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgIOvPropertyMappingRelation.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgObjectFactory.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvAssociationPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvClassCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvClassDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvColumn.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvDataPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvGeometricColumn.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvGeometricColumnType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvGeometricContentType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvGeometricPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvObjectPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPhysicalSchemaMapping.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyDefinitionCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyMappingClass.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyMappingConcrete.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyMappingDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyMappingRelation.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvPropertyMappingSingle.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvReadOnlyClassCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvReadOnlyPropertyDefinitionCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvSchemaAutoGeneration.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvTable.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/mgOvTableMappingType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/Namespace.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/resource.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/stdafx.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgIOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgObjectFactory.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvClassCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvClassDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvColumn.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvDataPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvGeometricPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvPhysicalSchemaMapping.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvPropertyDefinitionCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/mgOvTable.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/Namespace.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/resource.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/ODBC/stdafx.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgIOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgIOvPropertyMappingDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgIOvPropertyMappingRelation.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgObjectFactory.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvAssociationPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvClassCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvClassDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvColumn.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvDataPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvDataPropertyDefinitionCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvGeometricColumn.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvGeometricPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvObjectPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPhysicalSchemaMapping.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyDefinitionCollection.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyMappingClass.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyMappingConcrete.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyMappingDefinition.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyMappingRelation.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvPropertyMappingSingle.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvStorageEngineType.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/mgOvTable.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/Namespace.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/resource.h \
+Managed/Src/OSGeo/FDO/Providers/Rdbms/Override/MySQL/stdafx.h
+
