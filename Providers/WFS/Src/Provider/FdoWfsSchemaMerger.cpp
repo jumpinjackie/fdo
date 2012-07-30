@@ -300,6 +300,13 @@ FdoStringP FdoWfsSchemaMerger::_getFullLocation(FdoString* relativeLocation, Fdo
             rv = rv.Mid(0, i + 1) + relativeLocation;
     }
 
+    // Strip out any ./ parts in the full URI. These don't make any difference in an absolute path.
+    // They also get tacked on indefinitely when processing recursive schema includes, causing infinite
+    // recursion. The Schema Merger does not recognize when a schema is processed twice, since the extra ./
+    // makes it look like a different schema.
+    while (rv.Contains(L"/./"))
+        rv = rv.Replace(L"/./",L"/");
+
     return rv;
 }
 
