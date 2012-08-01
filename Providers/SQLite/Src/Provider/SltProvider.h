@@ -113,7 +113,14 @@ public:
     }
     ~CriticalSectionHolder()
     {
-        StlLeaveCriticalSection(m_cs);
+        if (m_cs != NULL)
+            StlLeaveCriticalSection(m_cs);
+    }
+    void ForceLeaveCriticalSection()
+    {
+        if (m_cs != NULL)
+            StlLeaveCriticalSection(m_cs);
+        m_cs = NULL;
     }
 };
 

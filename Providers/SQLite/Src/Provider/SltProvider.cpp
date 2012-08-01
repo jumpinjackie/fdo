@@ -733,13 +733,13 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     if (!m_dbWrite)
         return NULL;
 
-    CriticalSectionHolder cs (&m_csMd);
     m_pSchema = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
     m_pSchema->Add(schema.p);
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();
     
     SltMetadata::BuildMetadataInfo(this);
+    CriticalSectionHolder cs (&m_csMd);
     for (MetadataCache::iterator iter = m_mNameToMetadata.begin(); iter != m_mNameToMetadata.end(); iter++)
     {
         SltMetadata* md = iter->second;
@@ -3480,24 +3480,8 @@ FdoInt64 SltConnection::GetFeatureCount(const char* table)
     return -1;
 }
 
-// Do not use it in other functions than GetCachedParsedStatement
-// Statement is not cached -- make one, and also add an entry for it
-// into the cache table
-#define SQL_PREPARE_CACHEPARSEDSTM() {                                           \
-    const char* tail = NULL;                                                       \
-    int rc = sqlite3_prepare_v2(m_dbWrite, sql, -1, &ret, &tail);   \
-    if (rc != SQLITE_OK || ret == NULL){                                           \
-        const char* err = sqlite3_errmsg(m_dbWrite);                \
-        if (err != NULL)                                                           \
-            throw FdoException::Create(A2W_SLOW(err).c_str(), rc);                 \
-        else                                                                       \
-            throw FdoException::Create(L"Failed to parse SQL statement", rc);      \
-        }                                                                          \
-}                                                                                  \
-
 sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
 {
-    CriticalSectionHolder cs (&m_csStm);
     //Don't let too many queries get cached.
     //There are legitimate cases where lots of different
     //queries can be issued on the same connection.
@@ -3509,8 +3493,10 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
         else
             ClearQueryCache(SQLiteClearActionType_ReleaseUsage1);
     }
+    CriticalSectionHolder cs (&m_csStm);
 
     sqlite3_stmt* ret = NULL;
+    const char* tail = NULL;
 
     QueryCache::iterator iter = m_mCachedQueries.find((char*)sql);
     
@@ -3528,6 +3514,8 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
                 qInfo->m_usedStmt++;
                 rec.inUse = true;
                 ret = rec.stmt;
+                // reset might call spatial index and we need leave CS
+                cs.ForceLeaveCriticalSection();
                 sqlite3_reset(ret);
                 break;
             }
@@ -3535,18 +3523,42 @@ sqlite3_stmt* SltConnection::GetCachedParsedStatement(const char* sql)
         if (ret == NULL)
         {
             qInfo->m_usedStmt++;
-            // to avoid a m_mCachedQueries.find() we will clone this small part
-            SQL_PREPARE_CACHEPARSEDSTM();
-            qInfo->m_lst.push_back(QueryCacheRec(ret));
+            qInfo->m_lst.push_back(QueryCacheRec(ret)); // we add NULL however we will update it later
+            QueryCacheRec& qr = qInfo->m_lst.back();
+            // prepare might call again GetCachedParsedStatement() and we need leave CS
+            cs.ForceLeaveCriticalSection();
+            int rc = sqlite3_prepare_v2(m_dbWrite, sql, -1, &ret, &tail);
+            if (rc != SQLITE_OK || ret == NULL)
+            {
+                const char* err = sqlite3_errmsg(m_dbWrite);
+                if (err != NULL)
+                    throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+                else
+                    throw FdoException::Create(L"Failed to parse SQL statement", rc);
+            }
+            else
+                qr.stmt = ret;            
         }
     }
     else
     {
-        // to avoid a m_mCachedQueries.find() we will clone this small part
-        SQL_PREPARE_CACHEPARSEDSTM();
         QueryCacheRecInfo* qInfo = new QueryCacheRecInfo();
-        qInfo->m_lst.push_back(QueryCacheRec(ret));
+        qInfo->m_lst.push_back(QueryCacheRec(ret)); // we add NULL however we will update it later
+        QueryCacheRec& qr = qInfo->m_lst.back();
         m_mCachedQueries[_strdup(sql)] = qInfo;
+        // prepare might call again GetCachedParsedStatement() and we need leave CS
+        cs.ForceLeaveCriticalSection();
+        int rc = sqlite3_prepare_v2(m_dbWrite, sql, -1, &ret, &tail);
+        if (rc != SQLITE_OK || ret == NULL)
+        {
+            const char* err = sqlite3_errmsg(m_dbWrite);
+            if (err != NULL)
+                throw FdoException::Create(A2W_SLOW(err).c_str(), rc);
+            else
+                throw FdoException::Create(L"Failed to parse SQL statement", rc);
+        }
+        else
+            qr.stmt = ret;
     }
     if (ret == NULL)
         throw FdoException::Create(L"Failed to create SQL statement");
@@ -3583,6 +3595,8 @@ void SltConnection::ReleaseParsedStatement(const char* sql, sqlite3_stmt* stmt)
 
 void SltConnection::ClearQueryCache(SQLiteClearActionType type)
 {
+    CriticalSectionHolder cs (&m_csStm);
+
     //We have to keep all cached statements that are still in use, 
     //we can only free the ones that are not in use
     QueryCache newCache;
