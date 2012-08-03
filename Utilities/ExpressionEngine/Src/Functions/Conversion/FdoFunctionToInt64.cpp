@@ -242,7 +242,7 @@ FdoLiteralValue *FdoFunctionToInt64::Evaluate (
                         FdoException::NLSGetMessage(
                         FUNCTION_DATA_VALUE_ERROR, 
                         "Expression Engine: Invalid value for execution of function '%1$ls'",
-                        FDO_FUNCTION_TODOUBLE));
+                        FDO_FUNCTION_TOINT64));
 
             }  //  else ...
 
