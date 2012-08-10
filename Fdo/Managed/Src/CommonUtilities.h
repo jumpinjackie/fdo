@@ -119,13 +119,37 @@ inline FdoString** UnwrapStringArray(array<System::String^>^ mgArray)
 
 inline System::DateTime FdoDateTimeToDateTime(FdoDateTime& date)
 {
-    if ( date.hour == -1 ) 
-    	return System::DateTime(date.year, date.month, date.day);
+    FdoInt8 hour = date.hour;
+    FdoInt8 minute = date.minute;
+    float seconds = date.seconds;
+    FdoInt8 day = date.day;
+    FdoInt8 month = date.month;
+    FdoInt16 year = date.year;
+
+    if (date.IsDate())
+    {
+        if ((day   > 0  &&  day   <= 31)     &&
+            (month > 0  &&  month <= 12)     &&
+            (year  > 0  &&  year  <= 9999))
+        {
+    	    return System::DateTime(year, month, day);
+        }
+    }
     else
     {
-        int seconds = System::Int32(date.seconds);
-        return System::DateTime(date.year, date.month, date.day, date.hour, date.minute, seconds, System::Int32((date.seconds-System::Single(seconds))*1000.0f));
+        if ((day     >  0  &&  day     <= 31)     &&
+            (month   >  0  &&  month   <= 12)     &&
+            (year    >  0  &&  year    <= 9999)   &&
+            (hour    >= 0  &&  hour    <  24)     &&
+            (minute  >= 0  &&  minute  <  60)     &&
+            (seconds >= 0  &&  seconds <  60))
+        {
+            int intSeconds = System::Int32(seconds);
+            return System::DateTime(year, month, day, hour, minute, intSeconds, System::Int32((seconds-System::Single(intSeconds))*1000.0f));
+        }
     }
+
+    return System::DateTime();
 }
 
 inline FdoDateTime SystemDateToFdoDateTime(System::DateTime date)
