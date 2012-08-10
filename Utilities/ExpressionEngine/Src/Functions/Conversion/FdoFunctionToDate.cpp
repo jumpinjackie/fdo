@@ -1224,7 +1224,7 @@ FdoInt16 FdoFunctionToDate::ProcessYear (FdoStringP year)
     bool is_valid_year = false;
 
     // Check if the provided information to represent a month is valid. If it
-    // is no valid, issue an exception. Otherwise return the numeric value back
+    // is not valid, issue an exception. Otherwise return the numeric value back
     // to the calling routine.
 
     is_valid_year = ((year.IsNumber()            ) &&
@@ -1238,7 +1238,13 @@ FdoInt16 FdoFunctionToDate::ProcessYear (FdoStringP year)
               "Expression Engine: Invalid value for execution of function '%1$ls'",
               FDO_FUNCTION_TODATE));
 
-    return (FdoInt16) year.ToDouble();
+    // If we come accross a year value that is <= 0, be a little forgiving and set it to the default value of 1.
+
+    FdoInt16 yr = year.ToDouble();
+    if (yr < 1)
+      yr = 1;
+
+    return yr;
 
 }  //  ProcessYear ()
 
