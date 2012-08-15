@@ -630,9 +630,9 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
         case ParsingState_FeatureCollection:
             {
                 // similar as above
-                if ((wcscmp(elementUri, FdoXml::mGmlUri) == 0 &&
-                    wcscmp(elementName, L"featureMember") == 0) ||
-                    isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation, false))
+                if ((wcscmp(elementUri, FdoXml::mGmlUri) == 0 
+                    && (wcscmp(elementName, L"featureMember") == 0 || wcscmp(elementName, L"featureMembers") == 0))  
+                    || isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation, false)) 
                     rv = GmlBaseType_FeatureAssociation;
                 else if (wcscmp(elementUri, FdoXml::mGmlUri) == 0 &&
                     wcscmp(elementName, L"boundedBy") == 0)
