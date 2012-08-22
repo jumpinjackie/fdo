@@ -84,7 +84,7 @@ namespace fdo {
             id_t ret = _freenodes;
             node* n = get_node(ret);
             _freenodes = n->children[0];
-            n->children[0] = NULL_ID;
+            n->set_empty();
             return ret;
         }
 
@@ -141,15 +141,12 @@ namespace fdo {
 
                 while (ptr < end)
                 {
-                    ptr->set_all_boxes(empty);
-                    ptr->children[0] = ++i;
+                    ptr->set_empty();
 
-                    for (int i=1; i<MAX_BRANCH; i++)
-                        ptr->children[i] = NULL_ID;
-
+                    ptr->children[0] = ++i; //link to next free node
                     ptr++;
                 }
-                (ptr-1)->children[0] = NULL_ID;
+                (ptr-1)->children[0] = NULL_ID; //terminate linked list with last node
             }
 
         }
@@ -174,6 +171,7 @@ namespace fdo {
         _nodes = new node_mgr;
         _root = _nodes->new_node();
         _root_level = 0;
+		_num_items = 0;
     }
 
     rtree::rtree(const wchar_t* name)
@@ -182,6 +180,7 @@ namespace fdo {
         _nodes = new node_mgr;
         _root = _nodes->new_node();
         _root_level = 0;
+		_num_items = 0;
     }
 
 
@@ -204,6 +203,9 @@ namespace fdo {
         box b;
         node_mgr* nodes = _nodes;
 
+        _num_items ++; //the only way insert will fail is with catastrophic failure
+                       //so let's just increment here.
+
         node* n = nodes->get_node(_root);
         if (n->children[0] == NULL_ID)
         {
@@ -219,7 +221,7 @@ namespace fdo {
 
         offset_box(b, db);
 
-        insert(b, INT_MAX, fid_to_id(fid));
+        insert(b, 0 /* 0 = leaf level */, fid_to_id(fid));
     }
 
 
@@ -238,15 +240,13 @@ namespace fdo {
 #if USE_SSE
         box4_soa bwide(b);
 #endif
-        int curlevel = 0;
-
         //assumes that the root node is not empty
         while (1)
         {
             node* n = nodes->get_node(curnode);
 
             //have we reached the insertion level
-            if (n->is_leaf() || curlevel == level)
+            if (n->is_leaf())
             {
                 top->inode = curnode;
                 break;
@@ -261,12 +261,24 @@ namespace fdo {
             top->inode = curnode;
             top->child = i;
             ++top;
-            ++curlevel;
 
             curnode = n->children[i];
         }
-        assert(curlevel<_root_level+2);
+        //go back up to the insertion level we need (0 = leaf)
+        //TODO: this is inefficient for delete, but storing
+        //the level in each node is inefficient always.
+        //Not sure whether we can count levels from the top down
+        //instead -- needs checking.
+        int curlevel = 0;
+        while (curlevel < level)
+        {
+            --top;
+            curlevel++;
+        }
+        curnode = top->inode;
 
+        assert(top >= node_stack);
+        assert(curlevel<=_root_level);
         //At this point, curnode/n contains the node where we want to
         //insert the new item and the stack contains the path we took
         //through the tree to get there (including n).
@@ -862,6 +874,13 @@ namespace fdo {
 
     bool rtree::erase(const fid_t& fid, const dbox& b)
     {
+        /*
+        if (debug_dump(_root))
+        {
+            printf("break;");
+        }
+        */
+
         node_mgr* nodes = _nodes;
         erase_data data;
         data.id = fid_to_id(fid);
@@ -869,7 +888,8 @@ namespace fdo {
 
         //recursively descend the tree to find and
         //delete the item
-        if (erase_rec(_root, 0, &data) == -1)
+        int reinsert_level = 0;
+        if (erase_rec(_root, reinsert_level, &data) == -1)
             return false;
         
         //We are done recursing. Now, we have to add back
@@ -886,8 +906,12 @@ namespace fdo {
                 
                 box b;
                 n->child_bbox(j, b);
-                insert(b, /*n->is_leaf() ? INT_MAX :*/ data.reinsert_level[i], n->children[j]);
-            }
+                insert(b, data.reinsert_level[i], n->children[j]);
+
+                //must refresh the n pointer because insert() may result
+                //in resize of the node array if a node is split.
+                n = nodes->get_node(data.reinsert_list[i]);
+			}
 
             //free the node, once its children are back into the tree
             nodes->free_node(data.reinsert_list[i]);
@@ -907,11 +931,19 @@ namespace fdo {
             _root_level--;
         }
 
+        /*
+        if (debug_dump(_root))
+        {
+            printf("break2;");
+        }
+        */
+
+        _num_items --;
         return true;
     }
 
 
-    int rtree::erase_rec(id_t nid, int level, erase_data* pdata)
+    int rtree::erase_rec(id_t nid, int& level, erase_data* pdata)
     {
         node_mgr* nodes = _nodes;
         node* n = nodes->get_node(nid);
@@ -943,7 +975,7 @@ namespace fdo {
                 if (!(maskptr[0] & 1))
                 {
                     //recurse...
-                    int res = erase_rec(n->children[i], level+1, pdata);
+                    int res = erase_rec(n->children[i], level, pdata);
                    
                     n = nodes->get_node(nid); //update the n pointer -- necessary for out of core node storage
 
@@ -966,10 +998,11 @@ namespace fdo {
                         {
                             //child is now less than half full --
                             //remove it and mark it for reinsertion
-                            pdata->add(n->children[i], level+1);
+                            pdata->add(n->children[i], level);
                             disconnect_branch(n, i);
                         }
-
+						
+						level++;
                         return i;
                     }
                 }
@@ -1008,54 +1041,105 @@ namespace fdo {
     }
 
 
-     void rtree::debug_dump(id_t root, int tabs)
+     bool rtree::debug_dump(id_t root, int level, bool verbose)
      {
          if (root == NULL_ID)
              root = _root;
+
+         bool have_error = false;
 
          static const char* tab = "    ";
 
          node* n = _nodes->get_node(root);
 
+         //check for completely empty tree
+         if (level == 0 && n->children[0] == NULL_ID)
+             return false;
+
          if (n->is_leaf())
          {
-             for (int i=0; i<tabs; i++)
-                 fprintf(stderr, "%s", tab);
-             fprintf(stderr, "L %d: ", (int)root);
+             if (level != _root_level)
+             {
+                 have_error = true;
+                 fprintf(stderr, "RT ERROR: Leaf node not at the expected level.\n");
+             }
 
-             for (int i=0; i<MAX_BRANCH; i++)
+             for (int i=1; i<MAX_BRANCH; i++)
              {
                  if (n->children[i] == NULL_ID)
                      break;
-                 fprintf(stderr, "fid %d, ", (int)n->children[i]);                 
+
+                 if (!is_leaf(n->children[i]))
+                 {
+                     have_error = true;
+                     fprintf(stderr, "RT ERROR: Non leaf node inserted among leafs.\n");
+                 }
              }
 
-             fprintf(stderr, "\n");
+             if (verbose)
+             {
+                 for (int i=0; i<level; i++)
+                     fprintf(stderr, "%s", tab);
+                 fprintf(stderr, "L %d: ", (int)root);
+
+                 for (int i=0; i<MAX_BRANCH; i++)
+                 {
+                     if (n->children[i] == NULL_ID)
+                         break;
+                     fprintf(stderr, "fid %d, ", (int)n->children[i]);                 
+                 }
+
+                 fprintf(stderr, "\n");
+             }
          }
          else
          {
-             for (int i=0; i<tabs; i++)
-                 fprintf(stderr, "%s", tab);
-             fprintf(stderr, "N %d: ", (int)root);
+             if (level == _root_level)
+             {
+                 have_error = true;
+                 fprintf(stderr, "RT_ERROR: Non-leaf node at leaf level.\n");
+             }
 
-             for (int i=0; i<MAX_BRANCH; i++)
+             for (int i=1; i<MAX_BRANCH; i++)
              {
                  if (n->children[i] == NULL_ID)
                      break;
-                 fprintf(stderr, "%d, ", (int)n->children[i]);                 
+
+                 if (is_leaf(n->children[i]))
+                 {
+                     have_error = true;
+                     fprintf(stderr, "RT ERROR: Leaf node inserted among non-leafs.\n");
+                 }
              }
 
-             fprintf(stderr, "\n");
+
+             if (verbose)
+             {
+                 for (int i=0; i<level; i++)
+                     fprintf(stderr, "%s", tab);
+                 fprintf(stderr, "N %d: ", (int)root);
+
+                 for (int i=0; i<MAX_BRANCH; i++)
+                 {
+                     if (n->children[i] == NULL_ID)
+                         break;
+                     fprintf(stderr, "%d, ", (int)n->children[i]);                 
+                 }
+
+                 fprintf(stderr, "\n");
+             }
 
              for (int i=0; i<MAX_BRANCH; i++)
              {
                  if (n->children[i] == NULL_ID)
                      break;
                  
-                 debug_dump(n->children[i], tabs+1);
+                 have_error = have_error | debug_dump(n->children[i], level + 1);
                  n = _nodes->get_node(root);
              }
          }
+
+         return have_error;
      }
 
 

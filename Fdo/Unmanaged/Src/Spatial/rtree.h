@@ -521,6 +521,15 @@ ALGNW struct node4
         child_bounds.copy(val);
     }
 
+    inline void set_empty()
+    {
+        static const box4_soa empty(0);
+        set_all_boxes(empty);
+
+        for (int i=0; i<max_branch; i++)
+            children[i] = NULL_ID;
+    }
+
 #if USE_SSE
     inline void overlap_mask(char* ret, const box4_soa& b) const
     {
@@ -606,6 +615,15 @@ ALGNW struct node_generic_mul4
         {
             child_bounds[i].copy(val);
         }
+    }
+
+    inline void set_empty()
+    {
+        static const box4_soa empty(0);
+        set_all_boxes(empty);
+
+        for (int i=0; i<MAX_BRANCH; i++)
+            children[i] = NULL_ID;
     }
 
 #if USE_SSE
@@ -730,8 +748,7 @@ public:
     bool erase(const fid_t& fid, const dbox& b);
     void get_total_extent(dbox& db);
 
-
-    void debug_dump(id_t root = NULL_ID, int level = 0);
+    bool debug_dump(id_t root = NULL_ID, int level = 0, bool verbose = false);
     
 private:
 
@@ -747,11 +764,12 @@ private:
 
     void offset_box(box& b, const dbox& db) const;
 
-    int erase_rec(id_t nid, int level, erase_data* pdata);
+    int erase_rec(id_t nid, int& level, erase_data* pdata);
     
     node_mgr* _nodes;
     id_t _root;
     int _root_level;
+	size_t _num_items;
     double _offset[2]; //double precision offset into local space   
 };
 
