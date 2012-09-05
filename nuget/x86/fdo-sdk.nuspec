@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>fdo-sdk-x86</id>
+    <version>3.7.0.0</version>
+    <authors>OSGeo</authors>
+    <owners>OSGeo</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-2.1.html</licenseUrl>
+    <projectUrl>http://fdo.osgeo.org</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FDO SDK meta-package (.net 4.0, 32-bit). Does not include .net provider-specific override assemblies. Install these packages separately if you require them</description>
+    <copyright>Copyright 2012</copyright>
+    <tags>fdo data gis spatial sdk</tags>
+    <dependencies>
+      <dependency id="fdo-core-x86" version="3.7" />
+      <dependency id="fdo-core-mgd-x86" version="3.7" />
+      <dependency id="fdo-rdbms-x86" version="3.7" />
+      <dependency id="fdo-provider-arcsde-x86" version="3.7" />
+      <dependency id="fdo-provider-gdal-x86" version="3.7" />
+      <dependency id="fdo-provider-mysql-x86" version="3.7" />
+      <dependency id="fdo-provider-odbc-x86" version="3.7" />
+      <dependency id="fdo-provider-ogr-x86" version="3.7" />
+      <dependency id="fdo-provider-oracle-x86" version="3.7" />
+      <dependency id="fdo-provider-postgresql-x86" version="3.7" />
+      <dependency id="fdo-provider-sdf-x86" version="3.7" />
+      <dependency id="fdo-provider-shp-x86" version="3.7" />
+      <dependency id="fdo-provider-sqlite-x86" version="3.7" />
+      <dependency id="fdo-provider-sqlspatial-x86" version="3.7" />
+      <dependency id="fdo-provider-wfs-x86" version="3.7" />
+      <dependency id="fdo-provider-wms-x86" version="3.7" />
+    </dependencies>
+  </metadata>
+</package>

@@ -1,0 +1,2 @@
+SQLServerSpatialOverrides.dll
+SQLServerSpatialProvider.dll

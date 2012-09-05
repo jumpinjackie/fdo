@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>fdo-rdbms-x64</id>
+    <version>3.7.0.0</version>
+    <authors>OSGeo</authors>
+    <owners>OSGeo</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-2.1.html</licenseUrl>
+    <projectUrl>http://fdo.osgeo.org</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FDO GenericRdbms Framework (64-bit)</description>
+    <copyright>Copyright 2012</copyright>
+    <tags>fdo data gis spatial</tags>
+    <dependencies>
+      <dependency id="fdo-core-x64" version="3.7" />
+    </dependencies>
+  </metadata>
+</package>
