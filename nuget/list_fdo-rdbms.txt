@@ -1,0 +1,6 @@
+com\fdo_sys.sql
+com\fdo_sys_idx.sql
+com\fdosys_sys.sql
+RdbmsMsg.dll
+RdbmsOverrides.dll
+SmMessage.dll

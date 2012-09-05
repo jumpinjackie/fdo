@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>fdo-provider-sqlspatial-mgd-x64</id>
+    <version>3.7.0.0</version>
+    <authors>OSGeo</authors>
+    <owners>OSGeo</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-2.1.html</licenseUrl>
+    <projectUrl>http://fdo.osgeo.org</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SQL Server Spatial FDO Provider .net components (.net 4.0, 64-bit)</description>
+    <copyright>Copyright 2012</copyright>
+    <tags>fdo data gis spatial sqlserver</tags>
+    <dependencies>
+      <!--
+      <dependency id="fdo-core-x64" version="3.7" />
+      <dependency id="fdo-rdbms-x64" version="3.7" />
+      <dependency id="fdo-core-mgd-x64" version="3.7" />
+      -->
+      <dependency id="fdo-rdbms-mgd-x64" version="3.7" />
+      <dependency id="fdo-provider-sqlspatial-x64" version="3.7" />
+    </dependencies>
+  </metadata>
+</package>

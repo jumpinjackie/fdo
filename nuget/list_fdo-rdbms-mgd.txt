@@ -1,0 +1,2 @@
+OSGeo.FDO.Providers.Rdbms.dll
+OSGeo.FDO.Providers.Rdbms.Overrides.dll

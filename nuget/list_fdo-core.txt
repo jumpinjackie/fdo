@@ -1,0 +1,14 @@
+boost_date_time-vc100-mt-1_42.dll
+boost_thread-vc100-mt-1_42.dll
+ExpressionEngine.dll
+Fdo.dll
+FDOCommon.dll
+FDOGeometry.dll
+FDOMessage.dll
+FDOSpatial.dll
+gdal17.dll
+OWS.dll
+providers.xml
+Xalan-C_1_11.dll
+XalanMessages_1_11.dll
+xerces-c_3_1.dll

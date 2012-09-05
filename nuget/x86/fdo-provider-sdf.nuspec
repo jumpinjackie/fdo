@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>fdo-provider-sdf-x86</id>
+    <version>3.7.0.0</version>
+    <authors>OSGeo</authors>
+    <owners>OSGeo</owners>
+    <licenseUrl>http://www.gnu.org/licenses/lgpl-2.1.html</licenseUrl>
+    <projectUrl>http://fdo.osgeo.org</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FDO Provider for Autodesk SDF files</description>
+    <copyright>Copyright 2012</copyright>
+    <tags>fdo data gis spatial autodesk sdf</tags>
+    <dependencies>
+      <dependency id="fdo-core-x86" version="3.7" />
+    </dependencies>
+  </metadata>
+</package>
