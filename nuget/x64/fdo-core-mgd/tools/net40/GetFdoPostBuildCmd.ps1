@@ -2,4 +2,4 @@
 $path = $installPath.Replace($solutionDir, "`$(SolutionDir)")
 
 $FdoPostBuildCmd = "
-copy /y `"`$(ProjectDir)fdo-libs\*`" `"`$(TargetDir)`""
+copy /y `"`$(SolutionDir)fdo-staging-x64\*`" `"`$(TargetDir)`""

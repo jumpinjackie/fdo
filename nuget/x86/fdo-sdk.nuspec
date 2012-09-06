@@ -13,7 +13,6 @@
     <tags>fdo data gis spatial sdk</tags>
     <dependencies>
       <dependency id="fdo-core-x86" version="3.7" />
-      <dependency id="fdo-core-mgd-x86" version="3.7" />
       <dependency id="fdo-rdbms-x86" version="3.7" />
       <dependency id="fdo-provider-arcsde-x86" version="3.7" />
       <dependency id="fdo-provider-gdal-x86" version="3.7" />
