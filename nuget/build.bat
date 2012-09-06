@@ -13,6 +13,7 @@ SET TMP_FILE_LIST=tmp_exclude.txt
 SET FX_VERSION=net40
 SET PACKAGE_ROOT=
 SET PACKAGE_LIB=
+SET PACKAGE_TOOLS=
 SET PACKAGE_CONTENT=
 SET CURRENT_PACKAGE=
 SET CPU_PLATFORM=x64
@@ -39,7 +40,8 @@ rem preparation mechanism. So copy the files manually
 echo === Making lib package: fdo-core-mgd ===
 SET PACKAGE_ROOT=%CD%\%CPU_PLATFORM%\fdo-core-mgd
 SET PACKAGE_LIB=%PACKAGE_ROOT%\lib\%FX_VERSION%
-SET PACKAGE_CONTENT=%PACKAGE_ROOT%\content\%FX_VERSION%\fdo-libs
+SET PACKAGE_TOOLS=%PACKAGE_ROOT%\tools
+SET PACKAGE_CONTENT=%PACKAGE_ROOT%\fdo-libs\%FX_VERSION%
 copy /Y "%FDO_BIN_SRC%\OSGeo.FDO.dll" "%PACKAGE_LIB%"
 copy /Y "%FDO_BIN_SRC%\OSGeo.FDO.Common.dll" "%PACKAGE_LIB%"
 copy /Y "%FDO_BIN_SRC%\OSGeo.FDO.Geometry.dll" "%PACKAGE_LIB%"
@@ -68,8 +70,10 @@ echo === Making content package: %CURRENT_PACKAGE% ===
 call prepare_exclude.bat %CURRENT_PACKAGE%
 SET PACKAGE_ROOT=%CD%\%CPU_PLATFORM%\%CURRENT_PACKAGE%
 SET PACKAGE_LIB=%PACKAGE_ROOT%\lib\%FX_VERSION%
-SET PACKAGE_CONTENT=%PACKAGE_ROOT%\content\%FX_VERSION%\fdo-libs
+SET PACKAGE_TOOLS=%PACKAGE_ROOT%\tools
+SET PACKAGE_CONTENT=%PACKAGE_ROOT%\fdo-libs\%FX_VERSION%
 xcopy /S /Y /I "%FDO_BIN_SRC%\*" "%PACKAGE_CONTENT%" /EXCLUDE:tmp_exclude_list.txt
+copy /Y FdoUtils.ps1 "%PACKAGE_TOOLS%"
 pushd %CPU_PLATFORM%
 nuget pack %CURRENT_PACKAGE%.nuspec -BasePath %CURRENT_PACKAGE% -Version %FDO_VERSION%
 popd
@@ -81,7 +85,8 @@ echo === Making lib package: %CURRENT_PACKAGE% ===
 call prepare_exclude.bat %CURRENT_PACKAGE%
 SET PACKAGE_ROOT=%CD%\%CPU_PLATFORM%\%CURRENT_PACKAGE%
 SET PACKAGE_LIB=%PACKAGE_ROOT%\lib\%FX_VERSION%
-SET PACKAGE_CONTENT=%PACKAGE_ROOT%\content\%FX_VERSION%\fdo-libs
+SET PACKAGE_TOOLS=%PACKAGE_ROOT%\tools
+SET PACKAGE_CONTENT=%PACKAGE_ROOT%\fdo-libs\%FX_VERSION%
 xcopy /S /Y /I "%FDO_BIN_SRC%\*" "%PACKAGE_LIB%" /EXCLUDE:tmp_exclude_list.txt
 pushd %CPU_PLATFORM%
 nuget pack %CURRENT_PACKAGE%.nuspec -BasePath %CURRENT_PACKAGE% -Version %FDO_VERSION%
