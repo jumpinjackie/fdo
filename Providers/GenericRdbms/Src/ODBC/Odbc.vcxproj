@@ -264,6 +264,7 @@
     <ClCompile Include="Fdo\FdoRdbmsOdbcFilterCapabilities.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsOdbcFilterProcessor.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsOdbcSchemaCapabilities.cpp" />
+    <ClCompile Include="Fdo\FdoRdbmsOdbcSpatialSecondaryFilterLocal.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsOdbcSpatialManager.cpp" />
     <ClCompile Include="Fdo\FdoRdbmsOdbcSpatialSqlFilter.cpp" />
     <ClCompile Include="Odbc.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Fdo\FdoRdbmsOdbcGeometryCapabilities.h" />
     <ClInclude Include="Fdo\FdoRdbmsOdbcProviderInfo.h" />
     <ClInclude Include="Fdo\FdoRdbmsOdbcSchemaCapabilities.h" />
+    <ClInclude Include="Fdo\FdoRdbmsOdbcSpatialSecondaryFilterLocal.h" />
     <ClInclude Include="Fdo\FdoRdbmsOdbcSpatialManager.h" />
     <ClInclude Include="Fdo\FdoRdbmsOdbcSpatialSqlFilter.h" />
     <ClInclude Include="stdafx.h" />

@@ -477,6 +477,102 @@ void OdbcAccessFdoSelectTest::ComparisonFilterTable1Test()
     }
 }
 
+void OdbcAccessFdoSelectTest::SpatialFilterTable1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // create a comparison filter: Geometry within rectangle (8,8) to (28,28)
+            FdoPtr<FdoIdentifier> geomPropID = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoIEnvelope> pEnvelope = gf->CreateEnvelopeXY(8, 8, 28, 28);
+            FdoPtr<FdoIGeometry> pGeometry = gf->CreateGeometry(pEnvelope);
+            FdoPtr<FdoByteArray> pByteArray = gf->GetFgf(pGeometry);
+            FdoPtr<FdoGeometryValue> pValue = FdoGeometryValue::Create(pByteArray);
+            FdoPtr<FdoSpatialCondition> pSpatialCond = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(pSpatialCond);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+            // the features which geometries are (11,21) and (20,25) are selected
+            CPPUNIT_ASSERT_MESSAGE("Expected 2 features", 2==numFeatures);
+
+            // close the reader
+            reader->Close();
+
+            // now create a new comparison filter which envelope is (8,8) to (28,28): Geometry within triangle (8,8), (28,8), (8,28).
+            geomPropID = FdoIdentifier::Create(L"Geometry");
+            gf = FdoFgfGeometryFactory::GetInstance();
+            
+            double ordsXY[] = 
+            {
+                8, 8,
+                28, 8,
+                8, 28,
+                8, 8,
+            };
+
+            FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY, 8, ordsXY);
+            FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL);
+            pByteArray = gf->GetFgf(poly);
+            pValue = FdoGeometryValue::Create(pByteArray);
+            pSpatialCond = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(pSpatialCond);
+
+            // execute the command
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+            // the feature which geometry is (11, 21) is selected.
+            CPPUNIT_ASSERT_MESSAGE("Expected 1 features", 1==numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
 void OdbcAccessFdoSelectTest::RestrictedPropertiesTable1Test()
 {
     if( mConnection != NULL )
