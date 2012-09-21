@@ -229,6 +229,15 @@ void FdoRdbmsOdbcFilterProcessor::ProcessSpatialCondition(FdoSpatialCondition& f
         AppendString("1=1");    // No spatial index.
     else
         AppendString(spatialSqlFilter->FilterToSql());
+
+    // Upcast manually to make sure types match in list management.
+    FdoGeometricCondition * gc = &filter;
+    // Add filter to the filter processor's list for later secondary filtering.
+    FdoPtr<FdoRdbmsSpatialSecondaryFilter> secondaryFilter =
+        spatialManager->GetSecondaryFilter(NULL, gc);
+    if (mSecondarySpatialFilters == NULL)
+        mSecondarySpatialFilters = FdoRdbmsSecondarySpatialFilterCollection::Create();
+    mSecondarySpatialFilters->Add(secondaryFilter);
 }
 
 void FdoRdbmsOdbcFilterProcessor::AppendTablesHints( SqlCommandType cmdType, bool forUpdate )
