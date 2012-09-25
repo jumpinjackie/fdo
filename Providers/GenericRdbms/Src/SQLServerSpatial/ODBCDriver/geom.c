@@ -141,7 +141,12 @@ static bool col_list_freeSqlServerGeometries_S( odbcdr_context_def	*context, odb
 static int col_list_setNumRows_S( odbcdr_geom_col_list_def *list, int numRows_I );
 static odbcdr_geom_col_def *col_list_getColumnByIndex_S( odbcdr_geom_col_list_def *list, long indx );
 static odbcdr_geom_col_def *col_list_getColumnByPosition_S( odbcdr_geom_col_list_def *list, int position_I );
-static long odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos);
+#ifdef _WIN32
+static _int64 odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos);
+#else
+static int64_t odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos);
+#endif
+static char odbcdr_geom_type_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos);
 
 static int geom_convertFromSqlServer_S( odbcdr_context_def	*context, odbcdr_cursor_def	*cursor, 
                                      int position,
@@ -169,7 +174,11 @@ int odbcdr_geom_srid_set (
 	odbcdr_context_def	*context,
     char   *cursor,                     /* cursor associated with SQL stmnt */
 	char	*col_name,
-    long srid ) 
+#ifdef _WIN32
+    _int64 srid ) 
+#else
+    int64_t srid ) 
+#endif
 {
     odbcdr_cursor_def    *c;
     int                 rdbi_status = RDBI_GENERIC_ERROR;
@@ -210,9 +219,18 @@ the_exit:
     return rc;
 }
 
-long odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos)
+#ifdef _WIN32
+_int64
+#else
+int64_t
+#endif
+  odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, int pos)
 {
-    long            ret = 0;
+#ifdef _WIN32
+    _int64            ret = 0;
+#else
+    int64_t            ret = 0;
+#endif
     geom_srid_map*  ptr = c->geom_srid_maping;
 
     while (ptr != NULL)
@@ -225,6 +243,76 @@ long odbcdr_geom_srid_get ( odbcdr_context_def *context, odbcdr_cursor_def* c, i
         ptr = ptr->next;
     }
     return ret;
+}
+
+int odbcdr_geom_type_set ( 
+	odbcdr_context_def	*context,
+    char   *cursor,                     /* cursor associated with SQL stmnt */
+	char	*col_name,
+    char type ) 
+{
+    odbcdr_cursor_def    *c;
+    int                 rdbi_status = RDBI_GENERIC_ERROR;
+    int                 rc = FALSE;
+    int                 pos = atoi(col_name);
+
+    ODBCDR_RDBI_ERR( odbcdr_get_cursor( context, cursor, &c ) );
+    if (c->geom_type_maping == NULL)
+    {
+        c->geom_type_maping = (geom_type_map*)ut_vm_malloc( "geom_type_map", sizeof( geom_type_map ) );
+        c->geom_type_maping->geom_type_value = type;
+        c->geom_type_maping->next = NULL;
+        c->geom_type_maping->position = pos;
+    }
+    else
+    {
+        geom_type_map* ptr = c->geom_type_maping;
+        while (ptr != NULL)
+        {
+            if (ptr->position == pos)
+            {
+                ptr->geom_type_value = type;
+                break;
+            }
+            if (ptr->next == NULL)
+            {
+                ptr->next = (geom_type_map*)ut_vm_malloc( "geom_type_map", sizeof( geom_type_map ) );
+                ptr->next->geom_type_value = type;
+                ptr->next->next = NULL;
+                ptr->next->position = pos;
+                break;
+            }
+            ptr = ptr->next;
+        }
+    }
+    rc = TRUE;
+the_exit:
+    return rc;
+}
+
+char odbcdr_geom_type_get (odbcdr_context_def *context, odbcdr_cursor_def* c, int pos)
+{
+    char            ret = -1;
+    int             cnt = 0;
+    char            lval = 0;
+    geom_type_map*  ptr = c->geom_type_maping;
+
+    while (ptr != NULL)
+    {
+        lval = ptr->geom_type_value;
+        cnt++;
+        if (ptr->position == pos)
+        {
+            ret = ptr->geom_type_value;
+            break;
+        }
+        ptr = ptr->next;
+    }
+    // in case we are looking for a type and we have only one, 
+    // however the posistion is not the expected one, just get the first
+    // this can help a lot in cases where we do 'select * ' and geometry can 
+    // show-up on a different position.
+    return (ret != -1) ? ret : (cnt == 1 ? lval : -1);
 }
 
 int odbcdr_geom_version_set ( 
@@ -1120,7 +1208,7 @@ geom_convertFromSqlServer_S(
         cursor->odbcdr_geom_handle = IGeometry_CreateGeometryHandleConvertor();
 
     // Create the geometry
-    if ( !IGeometry_CreateGeometryFromMsWkb(cursor->odbcdr_geom_handle, wkb, visionGeom_O, l_visionGeom_0 ) )
+    if ( !CreateFdoGeometryFromMs(cursor->odbcdr_geom_handle, wkb, visionGeom_O, l_visionGeom_0, odbcdr_geom_type_get(context, cursor, position)) )
     {
 		rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
         goto the_exit;
@@ -1195,7 +1283,7 @@ geom_convertToSqlServer_S(
             cursor->odbcdr_geom_handle = IGeometry_CreateGeometryHandleConvertor();
 
         // Get the data, as a regular array of bytes
-        if ( !IGeometry_GetMsWkb(cursor->odbcdr_geom_handle, visionGeom_I, odbcdr_geom_srid_get(context, cursor, position), cursor->geom_version_value, &wkb ) )
+        if ( !CreateMsGeometryFromFdo(cursor->odbcdr_geom_handle, visionGeom_I, odbcdr_geom_srid_get(context, cursor, position), cursor->geom_version_value, &wkb ) )
 		{
 			rdbi_status = RDBI_GEOMETRY_CONVERION_ERROR;
             goto the_exit;

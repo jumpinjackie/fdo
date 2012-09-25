@@ -104,7 +104,12 @@ int mysql_rdbi_init (void **contextp, rdbi_methods methods)
             methods->set_schema = (int (*)(void*, const char*))mysql_set_schema;
             methods->set_schemaW = NULL;
             methods->vndr_info  = (int (*)(void*, rdbi_vndr_info_def*))mysql_vndr_info;
-            methods->geom_srid_set = (int  (*)(void*,char*,char*, long))mysql_geom_srid_set;
+#ifdef _WIN32
+            methods->geom_srid_set = (int  (*)(void*,char*,char*, _int64))mysql_geom_srid_set;
+#else
+            methods->geom_srid_set = (int  (*)(void*,char*,char*, int64_t))mysql_geom_srid_set;
+#endif
+            methods->geom_type_set = NULL;
             methods->geom_version_set = NULL;
             methods->geom_dimens_set = NULL;
             methods->get_geoms_ext = NULL;

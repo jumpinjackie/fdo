@@ -62,6 +62,7 @@ int odbcdr_fre_cursor(
 	SQLRETURN			rc;
 	int					rdbi_status = RDBI_GENERIC_ERROR;
 	geom_srid_map*      ptr;
+    geom_type_map*      ptrt;
     len_idf_map*        idfptr;
 
 	debug_on1("odbcdr_fre_cursor", "s:0x%p", *cursor);
@@ -155,6 +156,14 @@ int odbcdr_fre_cursor(
         geom_srid_map* tmp = ptr->next;
         ut_vm_free( _db_function, ptr);
         ptr = tmp;
+    }
+    
+    ptrt = c->geom_type_maping;
+    while(ptrt != NULL)
+    {
+        geom_type_map* tmp2 = ptrt->next;
+        ut_vm_free( _db_function, ptrt);
+        ptrt = tmp2;
     }
 
 	ut_vm_free( _db_function, (char *)c );

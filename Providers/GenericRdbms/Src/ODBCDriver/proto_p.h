@@ -172,7 +172,11 @@ int odbcdr_geom_freeSqlServerGeometries( odbcdr_context_def *context, odbcdr_cur
 
 int odbcdr_geom_freeAllColumns( odbcdr_context_def *context, odbcdr_cursor_def *cursor );
 
-int odbcdr_geom_srid_set ( odbcdr_context_def *context, char *cursor, char* col_name, long srid );
+#ifdef _WIN32
+int odbcdr_geom_srid_set ( odbcdr_context_def *context, char *cursor, char* col_name, _int64 srid );
+#else
+int odbcdr_geom_srid_set ( odbcdr_context_def *context, char *cursor, char* col_name, int64_t srid );
+#endif
 
 int odbcdr_geom_version_set ( odbcdr_context_def *context, char *cursor, char* col_name, long version );
 

@@ -246,8 +246,10 @@ public:
         m_posStack = 0;
         m_lastGtype = SqlGeometryType_Geometry;
         m_lastSrid = 0;
+        m_lastIdfWasGeom = false;
         m_useBr = false;
         mUsedParameterValues.clear();
+        mSelectedGeomTypes.clear();
         m_selectList.clear();
         m_hasClaculations = false;
         m_aliasStartChar = L'A';
@@ -260,6 +262,8 @@ public:
     }
     void SetParameterValues (FdoParameterValueCollection* params) { mParams = FDO_SAFE_ADDREF(params); }
     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* GetUsedParameterValues() { return &mUsedParameterValues; }
+    std::vector< std::pair< int, char > >* GetSelectGeometryTypes() { return &mSelectedGeomTypes; }
+
     FdoDataType GetCalculationType(FdoString* name);
 
 private:
@@ -330,6 +334,7 @@ private:
     void ExpandCalculations();
     void AssignAliases();
     FdoString* AssignTempAlias(const FdoSmLpClassDefinition* clsDef);
+    void ProcessGeometryTypes();
 
     // ABS(), ACOS(), ASIN(), ATAN(), COS(), EXP(), SIN(), SQRT(), TAN()
     // FLOOR(), CEIL(), UPPER(), LOWER(), LTRIM(), RTRIM(), SOUNDEX()
@@ -405,7 +410,11 @@ protected:
     // in case identifier was a geometry
     SqlGeometryType m_lastGtype; 
     FdoInt64        m_lastSrid;
+    bool            m_lastIdfWasGeom;
 
+    // We can use a trick, since SRID for SQL Server is an int 32 and 
+    // we need in ODBC interface if column is a geometry or a geography we can use higher part of int 64 to pass geometry/geography info
+    // this info is requires only for SQL server and it makes no sense to add an extra method on our ODBC interface
     std::vector<std::pair<FdoLiteralValue*, FdoInt64> > mUsedParameterValues; // value and optional the SRID for geometries
     FdoPtr<FdoParameterValueCollection> mParams;
     sel_class_alias m_usedClasses;
@@ -419,6 +428,7 @@ protected:
     FdoPtr<FdoIdentifier> m_mainClass;
     // cached in case are needed
     std::vector<FdoDataType> m_calcTypes;
+    std::vector< std::pair< int, char > > mSelectedGeomTypes; // index in select and type geometry 0 - geometry; 1 - geography
 };
 
 #endif

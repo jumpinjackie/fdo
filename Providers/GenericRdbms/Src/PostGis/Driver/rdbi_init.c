@@ -101,7 +101,12 @@ int postgis_rdbi_init (void **contextp, rdbi_methods methods)
         methods->set_schema   = (int (*)(void*, const char*))postgis_set_database;
         methods->set_schemaW  = NULL;
         methods->vndr_info    = (int (*)(void*, rdbi_vndr_info_def*))postgis_vndr_info;
-        methods->geom_srid_set   = (int (*)(void*, char*, char*, long))postgis_geom_srid_set;
+#ifdef _WIN32
+        methods->geom_srid_set   = (int (*)(void*, char*, char*, _int64))postgis_geom_srid_set;
+#else
+        methods->geom_srid_set   = (int (*)(void*, char*, char*, int64_t))postgis_geom_srid_set;
+#endif
+        methods->geom_type_set   = NULL;
         methods->geom_version_set = NULL;
         methods->geom_dimens_set = NULL;
         methods->get_geoms_ext   = NULL;

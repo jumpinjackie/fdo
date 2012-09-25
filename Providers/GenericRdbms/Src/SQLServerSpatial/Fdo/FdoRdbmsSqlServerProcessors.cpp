@@ -105,6 +105,7 @@ FdoRdbmsSqlServerSqlBuilder::FdoRdbmsSqlServerSqlBuilder (FdoRdbmsSqlServerConne
     m_posStack = 0;
     m_lastGtype = SqlGeometryType_Geometry;
     m_lastSrid = 0;
+    m_lastIdfWasGeom = false;
     m_useBr = false;
     m_hasClaculations = false;
     m_aliasStartChar = L'A';
@@ -2452,6 +2453,7 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessSpatialCondition(FdoSpatialCondition& f
 
 void FdoRdbmsSqlServerSqlBuilder::ProcessIdentifier(FdoIdentifier& expr)
 {
+    m_lastIdfWasGeom = false;
     pair_working_stack* itm = top_stack();
 
     DbiConnection  *dbiConn = m_fdoConn->GetDbiConnection();
@@ -2607,12 +2609,15 @@ void FdoRdbmsSqlServerSqlBuilder::ProcessIdentifier(FdoIdentifier& expr)
 
                 m_lastGtype = SqlGeometryType_Geometry;
                 m_lastSrid = 0;
+                m_lastIdfWasGeom = true;
                 const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
                 if (geomColumn)
                 {
                     m_lastGtype = (_wcsicmp(L"geometry", geomColumn->GetTypeName()) == 0) ? SqlGeometryType_Geometry : SqlGeometryType_Geography;
                     FdoSmPhColumnGeomP geomCol = ((FdoSmPhColumn*)geomColumn)->SmartCast<FdoSmPhColumnGeom>();
                     m_lastSrid = geomCol->GetSRID();
+                    if (m_lastGtype == SqlGeometryType_Geography)
+                        m_lastSrid |= 0x100000000; // add the flag for geography.
                 }
             }
             break;
@@ -2798,6 +2803,28 @@ void FdoRdbmsSqlServerSqlBuilder::ExpandCalculations()
     }
 }
 
+void FdoRdbmsSqlServerSqlBuilder::ProcessGeometryTypes()
+{
+    int idxGeom = 0;
+    for (size_t idx = 0; idx < m_usedClasses.size(); idx++)
+    {
+        sel_class_alias::iterator clsInfo = m_usedClasses.begin()+idx;
+        const FdoSmLpPropertyDefinitionCollection* propDefinitions = clsInfo->first->RefProperties();
+        for (int i = 0; i < propDefinitions->GetCount(); i++)
+        {
+            const FdoSmLpPropertyDefinition* propertyDefinition = propDefinitions->RefItem(i);
+            if (propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty)
+            {
+                const FdoSmLpGeometricPropertyDefinition* geomProp = static_cast<const FdoSmLpGeometricPropertyDefinition*>(propertyDefinition);
+                const FdoSmPhColumn* geomColumn = geomProp ? geomProp->RefColumn() : (const FdoSmPhColumn*) NULL;
+                if (geomColumn)
+                    mSelectedGeomTypes.push_back(std::make_pair(idxGeom, (char)(_wcsicmp(L"geometry", geomColumn->GetTypeName()) ? 1 : 0)));
+            }
+            idxGeom++;
+        }
+    }
+}
+
 FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainClass, FdoIdentifier* alias, FdoFilter* filter, FdoIdentifierCollection* selectList, 
     const std::vector<NameOrderingPair>& ordering, FdoJoinCriteriaCollection* joinCriteria)
 {
@@ -2816,6 +2843,7 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     m_props = FDO_SAFE_ADDREF(selectList);
     DbiConnection* dbiConn = m_fdoConn->GetDbiConnection();
     m_usedClasses.clear();
+    mSelectedGeomTypes.clear();
 
     const FdoSmLpClassDefinition* clsDef = dbiConn->GetSchemaUtil()->GetClass(mainClass->GetText());
     FdoString* strAlias = (alias != NULL) ? alias->GetName() : NULL;
@@ -2854,6 +2882,9 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
             idf->Process(this);
             m_selectList.push_back(itmIdfExp->first);
             pop_stack(); // itmIdfExp
+            
+            if (m_lastIdfWasGeom)
+                mSelectedGeomTypes.push_back(std::make_pair((int)idx, (char)(m_lastGtype == SqlGeometryType_Geography ? 1 : 0)));
         }
         else // we need to do it in a different way
         {
@@ -2894,7 +2925,10 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
         m_calcTypes.push_back((FdoDataType)-1);
     }
     if (cntSelLst == 0)
+    {
         itmSelect->first.append(L" * ");
+        ProcessGeometryTypes();
+    }
     itmSelect->first.resize(itmSelect->first.size()-1);
 
     itmSelect->first.append(L" FROM ", 6);

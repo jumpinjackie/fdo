@@ -168,7 +168,11 @@ int odbcdr_geom_srid_set (
 	odbcdr_context_def	*context,
     char   *cursor,                     /* cursor associated with SQL stmnt */
 	char	*col_name,
-    long srid ) 
+#ifdef _WIN32
+    _int64 srid ) 
+#else
+    int64_t srid ) 
+#endif
 {
     odbcdr_cursor_def    *c;
     int                 rdbi_status = RDBI_GENERIC_ERROR;

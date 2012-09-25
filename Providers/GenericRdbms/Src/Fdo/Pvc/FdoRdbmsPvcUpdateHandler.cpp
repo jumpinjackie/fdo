@@ -608,9 +608,8 @@ long FdoRdbmsPvcUpdateHandler::Execute( const FdoSmLpClassDefinition *classDefin
                                 geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
                             FdoInt64 srid = 0;
 							if (geomCol)
-                            {
-								srid = geomCol->GetSRID();
-                            }
+                                srid = mFdoConnection->GetProcessedSRID(gColumn->GetTypeName(), geomCol->GetSRID());
+
                             bindProps.push_back(std::make_pair(static_cast<FdoLiteralValue*>(literalExpression.p), (long)srid));
 
 							FdoStringsP geomSiKeys;

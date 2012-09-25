@@ -179,6 +179,7 @@ private:
     bool mContainsObjectProperties;
     bool mIsObjectObject;
     FdoRdbmsPropBindHelper* mBindHelper;
+    FdoRdbmsSqlBuilder* mSqlBuilder;
     std::vector< std::pair< FdoLiteralValue*, FdoInt64 > > mBindProps;
     std::vector< std::pair< size_t, size_t > > mParamMapping;
     //std::vector< GdbiQueryIdentifier* > mStatements;

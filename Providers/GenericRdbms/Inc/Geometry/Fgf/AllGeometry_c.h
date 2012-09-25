@@ -52,8 +52,12 @@ int             IGeometry_GetByteArrayData( pByteArray_def, unsigned char **, in
 pByteArray_def  IByteArray_Create(unsigned char* bytes, int count);
 void			IByteArray_Release( pByteArray_def );
 
-int             IGeometry_GetMsWkb(void* , pIGeometry_def, int, int, pByteArray_def * );
-int             IGeometry_CreateGeometryFromMsWkb(void* , pByteArray_def, pIGeometry_def *, pIGeometry_def* );
+#ifdef _WIN32
+int             CreateMsGeometryFromFdo(void* , pIGeometry_def, _int64, int, pByteArray_def * );
+#else
+int             CreateMsGeometryFromFdo(void* , pIGeometry_def, int64_t, int, pByteArray_def * );
+#endif
+int             CreateFdoGeometryFromMs(void* , pByteArray_def, pIGeometry_def *, pIGeometry_def*, char);
 int             IGeometry_GetFgf( pIGeometry_def, pByteArray_def * );
 int             IGeometry_CreateGeometryFromFgf( pByteArray_def, pIGeometry_def *, pIGeometry_def* );
 

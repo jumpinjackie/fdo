@@ -120,7 +120,7 @@ struct MemoryBuffer
 #define VERY_SMALL (1.0e-17)
 
 #define BUFF_WRITE_POINTHXYZM \
-    if (handle.isLatLong){ \
+    if (handle.isGeography){ \
     BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian((dreader+1))); \
     BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader)); \
     dreader += 2; \
@@ -214,7 +214,7 @@ namespace sqlgeomconv
     {
         bool hasZ;
         bool hasM;
-        bool isLatLong;
+        bool isGeography;
         size_t ptCnt;
         size_t fgCnt;
         size_t shCnt;
@@ -229,7 +229,7 @@ namespace sqlgeomconv
 
         GeomReadHandle()
         {
-            isLatLong = hasZ = hasM = false;
+            isGeography = hasZ = hasM = false;
             currSgIdx = ptCnt = fgCnt = shCnt = sgCnt = 0;
             startPt = NULL;
             figures = NULL;
@@ -246,7 +246,7 @@ namespace sqlgeomconv
         }
         void Clear()
         {
-            isLatLong = hasZ = hasM = false;
+            isGeography = hasZ = hasM = false;
             currSgIdx = ptCnt = fgCnt = shCnt = sgCnt = 0;
             delete[] figures;
             figures = NULL;
@@ -270,7 +270,7 @@ namespace sqlgeomconv
     {
         bool hasZ;
         bool hasM;
-        bool isLatLong;
+        bool isGeography;
         std::vector<FigureDescriptor*> figures;
         std::vector<ShapeDescriptor*> shapes;
         std::vector<SegmentType> segments;
@@ -289,7 +289,7 @@ namespace sqlgeomconv
 
         GeomWriteHandle()
         {
-            isLatLong = hasArcs = hasZ = hasM = false;
+            isGeography = hasArcs = hasZ = hasM = false;
             ireader = NULL;
             lBuff = zBuff = mBuff = NULL;
             evalCntPts = cntPoints = 0;
@@ -298,7 +298,7 @@ namespace sqlgeomconv
         }
         void Clear ()
         {
-            isLatLong = hasArcs = hasZ = hasM = false;
+            isGeography = hasArcs = hasZ = hasM = false;
             for(std::vector<FigureDescriptor*>::iterator it = figures.begin(); it < figures.end(); it++)
                 delete *it;
             for(std::vector<ShapeDescriptor*>::iterator it = shapes.begin(); it < shapes.end(); it++)
@@ -463,7 +463,7 @@ namespace sqlgeomconv
 
     void ReadAndPushPointByte(FdoByte* &myBuff, GeomReadHandle& handle, size_t idx)
     {
-        if (handle.isLatLong) // switch X with Y
+        if (handle.isGeography) // switch X with Y
         {
             BUFF_PUSH_DBL(myBuff, LittleEndianToDb(handle.startPt + (2*idx+1)*ADDR_INTSTEP));
             BUFF_PUSH_DBL(myBuff, LittleEndianToDb(handle.startPt + 2*idx*ADDR_INTSTEP));
@@ -774,13 +774,14 @@ namespace sqlgeomconv
         }
     }
 
-    FdoByteArray* ConvertMsToFdoGeometry(GeomReadHandle& handle, FdoByte* &geom, FdoByte* end, size_t srid, FdoByte vers)
+    FdoByteArray* ConvertMsToFdoGeometry(GeomReadHandle& handle, FdoByte* &geom, FdoByte* end, size_t srid, FdoByte vers, char isGeography)
     {
         FdoByte sp = *geom++;
         handle.Clear();
         handle.hasZ = GEOM_HASZ(sp);
         handle.hasM = GEOM_HASM(sp);
-        handle.isLatLong = (srid >= 4120 && srid <= 4999);
+        // this will handle cases when SQL commands will be used
+        handle.isGeography = (isGeography == 0) ? false : (srid >= 4120 && srid <= 4999);
         if (!GEOM_ISVALID(sp))
         {
             // not sure what we can do here
@@ -937,7 +938,7 @@ namespace sqlgeomconv
         throw FdoException::Create(L"Invalid geometry!");
     }
 
-    FdoIGeometry* ConvertMsToFdoGeometry(GeomReadHandle* handle, FdoByte* geom, size_t size)
+    FdoIGeometry* ConvertMsToFdoGeometry(GeomReadHandle* handle, FdoByte* geom, size_t size, char isGeography)
     {
         FdoIGeometry* retVal = NULL;
         FdoByte* end = geom + size;
@@ -951,7 +952,7 @@ namespace sqlgeomconv
         case 0x02: // version 2
         case 0x01: // version 1
             {
-                FdoPtr<FdoByteArray> retArr = ConvertMsToFdoGeometry(*handle, geom, end, srid, vers);
+                FdoPtr<FdoByteArray> retArr = ConvertMsToFdoGeometry(*handle, geom, end, srid, vers, isGeography);
                 FdoFgfGeometryFactory* gf = handle->GetGeometryFactory();
                 retVal = gf->CreateGeometryFromFgf(retArr);
             }
@@ -1302,7 +1303,7 @@ namespace sqlgeomconv
         }
     }
 
-    FdoByte* ConvertFdoToMsGeometry(GeomWriteHandle& handle, FdoIGeometry* igeom, size_t vers, int srid, size_t* len)
+    FdoByte* ConvertFdoToMsGeometry(GeomWriteHandle& handle, FdoIGeometry* igeom, size_t vers, FdoInt64 lsrid, size_t* len)
     {
         handle.Clear();
         FdoFgfGeometryFactory* gf = handle.GetGeometryFactory();
@@ -1312,7 +1313,10 @@ namespace sqlgeomconv
         int* ireader = (int*)fgf;
         // the geometry type
         FdoGeometryType geom_type = (FdoGeometryType)*ireader;
-        handle.isLatLong = (srid >= 4120 && srid <= 4999);
+        
+        // srid is in lower int32 part of the lsrid
+        int srid = (int)(lsrid&0xFFFFFFFF);
+        handle.isGeography = ((lsrid&0x100000000) != 0);
 
         switch (geom_type)
         {
@@ -1343,7 +1347,7 @@ namespace sqlgeomconv
                         type |= MGEOM_FLAG;
                 }
                 BUFF_PUSH_BYTE(handle.lBuff, type);
-                if (handle.isLatLong)
+                if (handle.isGeography)
                 {
                     BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian((dreader+1)));
                     BUFF_PUSH_INT64(handle.lBuff, DbToLittleEndian(dreader));
@@ -1705,7 +1709,7 @@ void IByteArray_Release(pByteArray_def baIn)
 }
 
 ///////////////////////////////////////////////////////////////////////
-int IGeometry_GetMsWkb(void* handle, pIGeometry_def geometry, int srid, int vers, pByteArray_def *baOut )
+int CreateMsGeometryFromFdo(void* handle, pIGeometry_def geometry, FdoInt64 srid, int vers, pByteArray_def *baOut )
 {
     sqlgeomconv::GeometryHandles* ptr = (sqlgeomconv::GeometryHandles*)handle;
 
@@ -1784,7 +1788,7 @@ int IGeometry_GetByteArrayData( pByteArray_def ba, unsigned char **data, int *si
 }
 
 ///////////////////////////////////////////////////////////////////////
-int  IGeometry_CreateGeometryFromMsWkb(void* handle, pByteArray_def ba, pIGeometry_def *geomOut, pIGeometry_def *geomOutCopy )
+int CreateFdoGeometryFromMs(void* handle, pByteArray_def ba, pIGeometry_def *geomOut, pIGeometry_def *geomOutCopy, char isGeography)
 {
     sqlgeomconv::GeometryHandles* ptr = (sqlgeomconv::GeometryHandles*)handle;
   
@@ -1801,7 +1805,7 @@ int  IGeometry_CreateGeometryFromMsWkb(void* handle, pByteArray_def ba, pIGeomet
             if (ptr->readHandle == NULL)
                 ptr->readHandle = new sqlgeomconv::GeomReadHandle();
 
-            *geomOut = (pIGeometry_def)sqlgeomconv::ConvertMsToFdoGeometry(ptr->readHandle, arr->GetData(), arr->GetCount());
+            *geomOut = (pIGeometry_def)sqlgeomconv::ConvertMsToFdoGeometry(ptr->readHandle, arr->GetData(), arr->GetCount(), isGeography);
         }
 		if ( geomOutCopy )
 			*geomOutCopy = *geomOut;

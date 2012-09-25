@@ -294,7 +294,7 @@ void FdoRdbmsSimpleInsertCommand::SanitizePropertyValues( const FdoSmLpClassDefi
                 propNames->Add(geomColumn->GetDbName());
 
                 FdoSmPhColumnGeomP geomCol = ((FdoSmPhColumn*)geomColumn)->SmartCast<FdoSmPhColumnGeom>();
-                mBindProps.push_back(std::make_pair(static_cast<FdoLiteralValue*>(exp.p), geomCol->GetSRID()));
+                mBindProps.push_back(std::make_pair(static_cast<FdoLiteralValue*>(exp.p), mFdoConnection->GetProcessedSRID(geomColumn->GetTypeName(), geomCol->GetSRID())));
             }
             break;
         }
