@@ -23,7 +23,11 @@ int mysql_geom_srid_set (
 	mysql_context_def	*context,
     char   *cursor,                     /* cursor associated with SQL stmnt */
 	char	*geom_col_name,
-    long srid ) 
+#ifdef _WIN32
+    _int64 srid ) 
+#else
+    int64_t srid ) 
+#endif
 {
     mysql_cursor_def    *curs;
 	int index;

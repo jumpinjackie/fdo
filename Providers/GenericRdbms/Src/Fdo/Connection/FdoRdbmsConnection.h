@@ -325,6 +325,14 @@ public:
     virtual void SetEnforceClearSchAtFlush(bool value) {mEnforceClearSchAtFlush = value;}
 
     virtual FdoRdbmsSqlBuilder* GetSqlBuilder();
+
+    // This method allows some providers to return a valid SRID for the server
+    // depending of the type name. e.g.: SQL Server Spatial will look at typeName
+    // and in case it has geography will change the value, in case of geometry will 
+    // return passed SRID. Most of the providers do not require this and this is why this method is virtual.
+    // Also different providers can have a different mapping depending of the name of the column.
+    // By default this method returns the SRID.
+    virtual FdoInt64 GetProcessedSRID(FdoString* typeName, FdoInt64 srid) { return srid; }
 protected:
     //Instantiates the right Schema Manager for this connection's provider.
     virtual FdoSchemaManagerP NewSchemaManager(

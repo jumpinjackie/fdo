@@ -41,6 +41,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     CPPUNIT_TEST( TestNewSequence );
     CPPUNIT_TEST( TestBigInt );
     CPPUNIT_TEST( TestUnknownTypeBindParameter );
+    CPPUNIT_TEST( TestGeometryGeographyLatLong );
     CPPUNIT_TEST_SUITE_END ();
 
     void  set_provider();
@@ -63,6 +64,7 @@ class SqlServerFdoSqlCmdTest : public FdoSqlCmdTest
     void TestInParamsStoreProcVariant();
     void TestNewSequence();
     void TestBigInt();
+    void TestGeometryGeographyLatLong();
 
 	wchar_t *get_datetime_type() 
     { 

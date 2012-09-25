@@ -834,7 +834,7 @@ void FdoRdbmsPvcInsertHandler::SetBindVariable(const FdoSmLpClassDefinition *cur
                     if ( gColumn ) 
                         geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
 					if (geomCol)
-						srid = geomCol->GetSRID();
+                        srid = mFdoConnection->GetProcessedSRID(gColumn->GetTypeName(), geomCol->GetSRID());
 
                     bindPropNames->Add(qPropName);
 

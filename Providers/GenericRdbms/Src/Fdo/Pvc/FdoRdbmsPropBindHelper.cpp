@@ -577,7 +577,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiStatement* statement, std::vecto
                         char temp[32];
                         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
                         sprintf(temp, "%d", idx+1); // Parm name are one based
-                        cmds->geom_srid_set(statement->GetQueryId(), temp, (long)it.second);
+                        cmds->geom_srid_set(statement->GetQueryId(), temp, it.second);
                         cmds->geom_version_set(statement->GetQueryId(), temp, mFdoConnection->GetSpatialGeometryVersion());
                         cmds->set_nnull(bind->null_ind, 0, 0 );
                         FdoPtr<FdoByteArray> ba = gval->GetGeometry();
@@ -849,7 +849,7 @@ void FdoRdbmsPropBindHelper::BindParameters(GdbiCommands* cmds, int id, std::vec
                 if (!gval->IsNull())
                 {
                     FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-                    cmds->geom_srid_set(id, temp, (long)it.second);
+                    cmds->geom_srid_set(id, temp, it.second);
                     cmds->geom_version_set(id, temp, mFdoConnection->GetSpatialGeometryVersion());
                     cmds->set_nnull(bind->null_ind, 0, 0 );
                     FdoPtr<FdoByteArray> ba = gval->GetGeometry();

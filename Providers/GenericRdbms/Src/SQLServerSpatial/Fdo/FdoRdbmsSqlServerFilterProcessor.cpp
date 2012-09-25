@@ -187,6 +187,10 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
         buf += columnName;
         buf += "].";
     }
+    
+    FdoInt64 geomSrid = 0;
+	const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
+    FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
 
     if ( geomType == L"geography" ) 
     {
@@ -247,6 +251,7 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
                     (FdoString*) FdoCommonMiscUtil::FdoSpatialOperationsToString(spatialOp)
                 )
             );
+        geomSrid = geomCol->GetSRID() | 0x100000000; // add the geography flag
     }
     else
     {
@@ -288,12 +293,11 @@ void FdoRdbmsSqlServerFilterProcessor::ProcessSpatialCondition(FdoSpatialConditi
             default:
                 throw FdoFilterException::Create(NlsMsgGet(FDORDBMS_111, "Unsupported spatial operation"));
         } // of switch Operation
+        geomSrid = geomCol->GetSRID();
     }
 
     // Set the SRID
-	const FdoSmPhColumnP gColumn = ((FdoSmLpSimplePropertyDefinition*)geomProp)->GetColumn();
-    FdoSmPhColumnGeomP geomCol = gColumn.p->SmartCast<FdoSmPhColumnGeom>();
-    mUsedParameterValues.push_back(std::make_pair(geom, geomCol->GetSRID()));
+    mUsedParameterValues.push_back(std::make_pair(geom, geomSrid));
 
     if (spatialOp != FdoSpatialOperations_EnvelopeIntersects)
         buf += "(?)=1";

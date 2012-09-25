@@ -117,7 +117,13 @@ odbcdr_rdbi_init(
         methods->get_server_rc      = (long (*)(void*))odbcdr_get_server_rc;
 	    methods->vndr_name	        = (char*(*)(void*))odbcdr_vndr_name;
 	    methods->vndr_nameW	        = (wchar_t*(*)(void*))odbcdr_vndr_nameW;
-        methods->geom_srid_set      = (int  (*)(void*,char*,char*,long))odbcdr_geom_srid_set;
+#ifdef _WIN32
+        methods->geom_srid_set      = (int  (*)(void*,char*,char*,_int64))odbcdr_geom_srid_set;
+#else
+        methods->geom_srid_set      = (int  (*)(void*,char*,char*,int64_t))odbcdr_geom_srid_set;
+#endif
+        methods->geom_type_set   = (int  (*)(void*,char*,char*,char))odbcdr_geom_type_set;
+
         methods->geom_version_set   = (int  (*)(void*,char*,char*,long))odbcdr_geom_version_set;
 
         methods->close_cursor       = (int (*)(void*, char*))odbcdr_close_cursor;

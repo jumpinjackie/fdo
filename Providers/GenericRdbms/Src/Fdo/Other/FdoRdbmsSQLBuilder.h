@@ -305,6 +305,8 @@ public:
                                                 FdoJoinCriteriaCollection* joinCriteria) = 0;
     virtual void SetParameterValues (FdoParameterValueCollection* params) = 0;
     virtual std::vector< std::pair< FdoLiteralValue*, FdoInt64 > >* GetUsedParameterValues() = 0;
+    virtual std::vector< std::pair< int, char > >* GetSelectGeometryTypes() = 0;
+    virtual void Reset() = 0;
 };
 
 #endif // FDORDBMSSQLBUILDER_H

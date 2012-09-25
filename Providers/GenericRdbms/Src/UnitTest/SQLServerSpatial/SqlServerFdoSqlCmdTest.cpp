@@ -1047,3 +1047,112 @@ void SqlServerFdoSqlCmdTest::TestUnknownTypeBindParameter()
 		TestCommonFail (ex);
     }
 }
+
+#define EPSILON 1e-10
+
+void SqlServerFdoSqlCmdTest::TestGeometryGeographyLatLong()
+{
+    try
+    {
+        FdoPtr<FdoISQLCommand> sqlCmd;
+        sqlCmd = (FdoISQLCommand*)mConnection->CreateCommand( FdoCommandType_SQLCommand );
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP TABLE testTableGeomLL;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+        try
+        {
+            sqlCmd->SetSQLStatement( L"DROP TABLE testTableGeogLL;" );
+            sqlCmd->ExecuteNonQuery();
+        }
+        catch(FdoException *e)
+        {e->Release();}
+
+        sqlCmd->SetSQLStatement( L"CREATE TABLE testTableGeomLL(ID INT IDENTITY(1,1) NOT NULL, G geometry);" );
+        sqlCmd->ExecuteNonQuery();
+        
+        sqlCmd->SetSQLStatement( L"CREATE TABLE testTableGeogLL(ID INT IDENTITY(1,1) NOT NULL, G geography);" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTableGeomLL (G) VALUES (geometry::STGeomFromText('LINESTRING (4 2, 5 3)', 4326));" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTableGeogLL (G) VALUES (geography::STGeomFromText('LINESTRING (4 2, 5 3)', 4326));" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTableGeomLL (G) VALUES (geometry::STGeomFromText('POLYGON ((0.5 0.5, 3 0, 3 3, 0 3, 0.5 0.5), (1 1, 1 2, 2 2, 2 1, 1 1))', 4326));" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"INSERT INTO testTableGeogLL (G) VALUES (geography::STGeomFromText('POLYGON ((0.5 0.5, 3 0, 3 3, 0 3, 0.5 0.5), (1 1, 1 2, 2 2, 2 1, 1 1))', 4326));" );
+        sqlCmd->ExecuteNonQuery();
+
+        FdoPtr<FdoIFeatureReader> myReaderG;
+        FdoPtr<FdoISelect> selCmdG;
+
+        selCmdG = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+        selCmdG->SetFeatureClassName(L"dbo:testTableGeomLL");
+        myReaderG = selCmdG->Execute();
+
+        FdoPtr<FdoIFeatureReader> myReaderH;
+        FdoPtr<FdoISelect> selCmdH;
+
+        selCmdH = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+        selCmdH->SetFeatureClassName(L"dbo:testTableGeogLL");
+        myReaderH = selCmdH->Execute();
+
+        while ( myReaderG->ReadNext() && myReaderH->ReadNext())
+        {
+            FdoPtr<FdoByteArray> gG = myReaderG->GetGeometry(L"G");
+            FdoPtr<FdoByteArray> gH = myReaderH->GetGeometry(L"G");
+            // it's OK just to compare first point only to see if it's switched
+            int* ireaderG = (int*)gG->GetData();
+            int* ireaderH = (int*)gH->GetData();
+            // we know we have only a line and a polygon
+            int geom_type = (FdoGeometryType) ireaderG[0];
+
+            switch (geom_type)
+            {
+            case FdoGeometryType_LineString :
+                {
+                    ireaderG += 3; //skip past geom_type, dimensionality, and point cnt
+                    double* dreaderG = (double*) ireaderG;
+                    
+                    ireaderH += 3; //skip past geom_type, dimensionality, and point cnt
+                    double* dreaderH = (double*) ireaderH;
+                    
+                    double dx = *dreaderG - *dreaderH;
+                    CPPUNIT_ASSERT (fabs(dx) <= EPSILON);
+                    dreaderG++;
+                    dreaderH++;
+                    dx = *dreaderG - *dreaderH;
+                    CPPUNIT_ASSERT (fabs(dx) <= EPSILON);
+                }
+                break;
+            case FdoGeometryType_Polygon :
+                {
+                    //skip past geom_type, dimensionality, and point cnt
+                    double* dreaderG = (double*)&ireaderG[4];
+                    double* dreaderH = (double*)&ireaderH[4];
+                    double dx = *dreaderG - *dreaderH;
+                    CPPUNIT_ASSERT (fabs(dx) <= EPSILON);
+                    dreaderG++;
+                    dreaderH++;
+                    dx = *dreaderG - *dreaderH;
+                    CPPUNIT_ASSERT (fabs(dx) <= EPSILON);
+                }
+            }
+        }
+        sqlCmd->SetSQLStatement( L"DROP TABLE testTableGeomLL;" );
+        sqlCmd->ExecuteNonQuery();
+
+        sqlCmd->SetSQLStatement( L"DROP TABLE testTableGeogLL;" );
+        sqlCmd->ExecuteNonQuery();
+    }
+    catch( FdoException *ex )
+    {
+		TestCommonFail (ex);
+    }
+}

@@ -158,12 +158,26 @@ int GdbiStatement::set_array_size(int arraySize)
 
 int GdbiStatement::geom_srid_set(
 				int		parmIndex,
-				long	srid
+#ifdef _WIN32
+				_int64	srid
+#else
+				int64_t	srid
+#endif
 				)
 {
 	return m_pGdbiCommands->geom_srid_set(m_QueryId->GetQueryId(), 
 		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
 										  srid);
+}
+
+int GdbiStatement::geom_type_set(
+				int		parmIndex,
+				char	type
+				)
+{
+	return m_pGdbiCommands->geom_type_set(m_QueryId->GetQueryId(), 
+		                                  FdoCommonOSUtil::itoa(parmIndex, buffer),
+										  type);
 }
 
 int GdbiStatement::geom_version_set(

@@ -430,7 +430,17 @@ int rdbi_geom_srid_set (
         rdbi_context_def *context,
         int sqlid,
 		char *col_name,
-        long srid );
+#ifdef _WIN32
+        _int64 srid );
+#else
+        int64_t srid );
+#endif
+
+int rdbi_geom_type_set (
+        rdbi_context_def *context,
+        int sqlid,
+		char *col_name,
+        char type );
 
 int rdbi_geom_version_set (
         rdbi_context_def *context,

@@ -94,7 +94,15 @@ public:
 
 	int geom_srid_set(
 			int				parmIndex,
-			long			srid );
+#ifdef _WIN32
+			_int64			srid );
+#else
+			int64_t			srid );
+#endif
+
+	int geom_type_set(
+			int				parmIndex,
+			char			type );
 
 	int geom_version_set(
 			int				parmIndex,
