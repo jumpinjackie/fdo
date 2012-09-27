@@ -1316,7 +1316,11 @@ namespace sqlgeomconv
         
         // srid is in lower int32 part of the lsrid
         int srid = (int)(lsrid&0xFFFFFFFF);
+#ifdef _WIN32
         handle.isGeography = ((lsrid&0x100000000) != 0);
+#else
+        handle.isGeography = ((lsrid&4294967296LL) != 0LL);
+#endif
 
         switch (geom_type)
         {
