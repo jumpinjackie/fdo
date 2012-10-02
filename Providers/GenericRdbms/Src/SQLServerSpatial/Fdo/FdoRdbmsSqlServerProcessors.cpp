@@ -2926,7 +2926,34 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
     }
     if (cntSelLst == 0)
     {
-        itmSelect->first.append(L" * ");
+        //select * => add all properties;
+        itmSelect->first.append(L" ");
+        for (size_t idx = 0; idx < m_usedClasses.size(); idx++)
+        {
+            sel_class_alias::iterator clsInfo = m_usedClasses.begin()+idx;
+            const FdoSmLpPropertyDefinitionCollection* propDefinitions = clsInfo->first->RefProperties();
+            const FdoSmLpDbObject* lpDbObject = clsInfo->first->RefDbObject();
+            if (lpDbObject != NULL)
+            {
+                const FdoSmPhDbObject* phDbObject = lpDbObject->RefDbObject();
+                if (phDbObject != NULL)
+                {
+                    for (int i = 0; i < propDefinitions->GetCount(); i++)
+                    {
+                        const FdoSmLpPropertyDefinition* propertyDefinition = propDefinitions->RefItem(i);
+                        FdoString* pName = propertyDefinition->GetName();
+                        if (phDbObject != propertyDefinition->RefContainingDbObject() || 
+                            (propertyDefinition->GetIsSystem() && propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty))
+                            continue;
+                        itmSelect->first.append(L"\"");
+                        itmSelect->first.append(clsInfo->second);
+                        itmSelect->first.append(L"\".\"");
+                        itmSelect->first.append(pName);
+                        itmSelect->first.append(L"\",");
+                    }
+                }
+            }
+        }
         ProcessGeometryTypes();
     }
     itmSelect->first.resize(itmSelect->first.size()-1);
