@@ -2941,15 +2941,23 @@ FdoString* FdoRdbmsSqlServerSqlBuilder::ToSelectSqlString(FdoIdentifier* mainCla
                     for (int i = 0; i < propDefinitions->GetCount(); i++)
                     {
                         const FdoSmLpPropertyDefinition* propertyDefinition = propDefinitions->RefItem(i);
-                        FdoString* pName = propertyDefinition->GetName();
-                        if (phDbObject != propertyDefinition->RefContainingDbObject() || 
-                            (propertyDefinition->GetIsSystem() && propertyDefinition->GetPropertyType() == FdoPropertyType_GeometricProperty))
-                            continue;
-                        itmSelect->first.append(L"\"");
-                        itmSelect->first.append(clsInfo->second);
-                        itmSelect->first.append(L"\".\"");
-                        itmSelect->first.append(pName);
-                        itmSelect->first.append(L"\",");
+                        FdoPropertyType ptype = propertyDefinition->GetPropertyType();
+                        if (ptype == FdoPropertyType_GeometricProperty || ptype == FdoPropertyType_DataProperty)
+                        {
+                            if (phDbObject != propertyDefinition->RefContainingDbObject() || 
+                                (propertyDefinition->GetIsSystem() && ptype == FdoPropertyType_GeometricProperty))
+                                continue;
+                            const FdoSmLpSimplePropertyDefinition* pLpSimplePropDef = FdoSmLpSimplePropertyDefinition::Cast(propertyDefinition);
+                            const FdoSmPhColumn* pColumn = pLpSimplePropDef->RefColumn();
+                            if (pColumn != NULL)
+                            {
+                                itmSelect->first.append(L"\"");
+                                itmSelect->first.append(clsInfo->second);
+                                itmSelect->first.append(L"\".\"");
+                                itmSelect->first.append(pColumn->GetName());
+                                itmSelect->first.append(L"\",");
+                            }
+                        }
                     }
                 }
             }
