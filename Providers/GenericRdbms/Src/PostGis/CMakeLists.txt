@@ -16,7 +16,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 		-Wl,-whole-archive
 		FdoRdbms
 		rdbi
-		PostGisdr
+		postgisdr
 		Gdbi
 		LTManager
 		LockManager
@@ -38,7 +38,7 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 	target_link_libraries( FdoPostgreSQL
 		FdoRdbms
 		rdbi
-		PostGisdr
+		postgisdr
 		Gdbi
 		LTManager
 		LockManager
@@ -58,10 +58,7 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 target_link_libraries( FdoPostgreSQL
-	xalan-c
-	xalanMsg
-	xerces-c
-	${PostGis_LIBRARIES}
+	${POSTGRESQL_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	FDO
 	ExpressionEngine

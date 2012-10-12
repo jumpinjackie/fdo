@@ -10,6 +10,7 @@ set( FdoRdbmsODBC_Fdo_STAT_SRCS
    FdoRdbmsOdbcFilterProcessor.cpp
    FdoRdbmsOdbcSchemaCapabilities.cpp
    FdoRdbmsOdbcSpatialManager.cpp
+   FdoRdbmsOdbcSpatialSecondaryFilterLocal.cpp
    FdoRdbmsOdbcSpatialSqlFilter.cpp
 )
 
