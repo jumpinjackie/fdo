@@ -1,6 +1,6 @@
 include_directories( 
 	BEFORE
-	${postgis_INCLUDE_DIR}
+	${POSTGRESQL_INCLUDE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	)
 
@@ -12,6 +12,7 @@ set( postgisdr_STAT_SRCS
   conn_status.c
   define.c
   desc_bind.c
+  desc_slct.c
   disconnect.c
   est_cursor.c
   execute.c
@@ -25,6 +26,7 @@ set( postgisdr_STAT_SRCS
   null.c
   pgconn_status.c
   pgresult_clear.c
+  pgresult_error.c
   pgresult_status.c
   rdbi_init.c
   run_sql.c
