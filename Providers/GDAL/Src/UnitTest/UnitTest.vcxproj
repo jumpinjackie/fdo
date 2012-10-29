@@ -248,6 +248,7 @@
     <ClCompile Include="RfpTestSpatialContext.cpp" />
     <ClCompile Include="RfpTestSpatialQuery.cpp" />
     <ClCompile Include="RfpTestThorough.cpp" />
+    <ClCompile Include="RfpTestResample.cpp" />
     <ClCompile Include="RfpUnitTest.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="UnitTest.cpp">
@@ -291,6 +292,7 @@
     <ClInclude Include="RfpTestSpatialContext.h" />
     <ClInclude Include="RfpTestSpatialQuery.h" />
     <ClInclude Include="RfpTestThorough.h" />
+    <ClInclude Include="RfpTestResample.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnitTest.h" />
     <ClInclude Include="UnitTestUtil.h" />

@@ -568,6 +568,10 @@
 				>
 			</File>
 			<File
+				RelativePath="FdoRfpStreamReaderByTileResample.cpp"
+				>
+			</File>
+			<File
 				RelativePath="FdoRfpStreamReaderRGB24.cpp"
 				>
 			</File>
@@ -822,6 +826,10 @@
 			</File>
 			<File
 				RelativePath="FdoRfpStreamReaderByTile.h"
+				>
+			</File>
+			<File
+				RelativePath="FdoRfpStreamReaderByTileResample.h"
 				>
 			</File>
 			<File

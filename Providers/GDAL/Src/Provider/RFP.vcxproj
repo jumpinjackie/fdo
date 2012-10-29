@@ -300,6 +300,7 @@
     <ClCompile Include="FdoRfpSpatialContext.cpp" />
     <ClCompile Include="FdoRfpSpatialContextReader.cpp" />
     <ClCompile Include="FdoRfpStreamReaderByTile.cpp" />
+    <ClCompile Include="FdoRfpStreamReaderByTileResample.cpp" />
     <ClCompile Include="FdoRfpStreamReaderRGB24.cpp" />
     <ClCompile Include="FdoRfpVariant.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -361,6 +362,7 @@
     <ClInclude Include="FdoRfpSelectCommand.h" />
     <ClInclude Include="FdoRfpSpatialContext.h" />
     <ClInclude Include="FdoRfpSpatialContextReader.h" />
+    <ClInclude Include="FdoRfpStreamReaderByTileResample.h" />
     <ClInclude Include="FdoRfpStreamReaderByTile.h" />
     <ClInclude Include="FdoRfpStreamReaderRGB24.h" />
     <ClInclude Include="..\FdoRfpUtil.h" />

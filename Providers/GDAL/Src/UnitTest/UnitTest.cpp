@@ -46,6 +46,7 @@
 #include "RfpTestPng.h"
 #include "RfpTestJpg.h"
 #include "RfpTestSpatialQuery.h"
+#include "RfpTestResample.h"
 
 #include <iostream>
 
@@ -68,6 +69,7 @@
 #define TEST_JPG
 #define TEST_SPATIAL_CONTEXT
 #define TEST_SPATIAL_QUERY
+#define TEST_RESAMPLE
 
 
 //#define TEST_ECW
@@ -159,6 +161,10 @@ void UnitTestMainProc()
 
 #ifdef TEST_SPATIAL_QUERY
 	runner.addTest(RfpTestSpatialQuery::suite());
+#endif
+
+#ifdef TEST_RESAMPLE
+	runner.addTest(RfpTestResample::suite());
 #endif
 
 #ifndef LOG_TESTS_RESULT

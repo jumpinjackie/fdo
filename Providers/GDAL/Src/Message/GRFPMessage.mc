@@ -351,6 +351,11 @@ SymbolicName=GRFP_70_DEFAULT_RASTER_FILE_LOCATION
 Language=English
 DefaultRasterFileLocation
 .
+MessageId=71
+SymbolicName=GRFP_71_RESAMPLING_METHOD
+Language=English
+ResamplingMethod
+.
 MessageId=72
 SymbolicName=GRFP_72_LOCK_NOT_SUPPORTED
 Language=English

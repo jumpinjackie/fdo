@@ -23,7 +23,7 @@
  *
  */
 #ifndef FDORFPSTREAMREADERBYTILE_H
-#define FDORFPSTREAMREADERYTILE_H
+#define FDORFPSTREAMREADERBYTILE_H
 
 #ifdef _WIN32
 #pragma once
@@ -35,11 +35,15 @@
 // class forward declarations
 //
 class FdoRfpBandRasterGdal;
+class FdoRfpBandRaster;
+class FdoRfpStreamReaderGdalByTileResample;
 class FdoRfpImage;
 
 class FdoRfpStreamReaderGdalByTile : public FdoBLOBStreamReader
 {
+    friend class FdoRfpBandRaster;
     friend class FdoRfpBandRasterGdal;
+    friend class FdoRfpStreamReaderGdalByTileResample;
 //
 // Data members
 //
@@ -82,9 +86,11 @@ private:
     // length of the stream
     FdoInt64			m_length;
 	
-    // the data pointer to the current tile being read
+    // the data pointer and size of the current tile being read
     GDALDataType                m_gdalDataType;
-    GByte*			m_tileData;	
+    GByte*			m_tileData;
+    int m_wrkBlockXSize;
+    int m_wrkBlockYSize;
 
 //
 // Constructor(s), destructor, factory function(s)
@@ -148,16 +154,19 @@ public:
                                    const FdoInt32 offset,
                                    const FdoInt32 count = -1 ); 
 
+    // move the cursor to the position
+    void _moveTo(int row, int col, int offset);
+
 //
 // Internally used helper functions
 //
 private:
-    // move the cursor to the position
-    void _moveTo(int row, int col, int offset);
     // calculate the number of bits of specified tile
     FdoInt32 _numBitsTile(int row, int col);
+
+protected:
     // get current tile
-    void _getTile();
+    virtual void _getTile();
 };
 
 

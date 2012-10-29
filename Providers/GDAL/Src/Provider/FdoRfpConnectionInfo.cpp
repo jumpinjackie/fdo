@@ -98,6 +98,23 @@ FdoIConnectionPropertyDictionary* FdoRfpConnectionInfo::GetConnectionProperties 
                         NlsMsgGet(GRFP_70_DEFAULT_RASTER_FILE_LOCATION, mbServerName),
                         L"", false, false, false, false, false, false, false, 0, NULL);
         mPropertyDictionary->AddProperty(fileLocationProperty);
+
+        wchar_t** pResamplingVals = new wchar_t*[4];
+        pResamplingVals[0] = new wchar_t[wcslen(FdoGrfpGlobals::ResamplingBilinear)+1];
+        pResamplingVals[1] = new wchar_t[wcslen(FdoGrfpGlobals::ResamplingCubic)+1];
+        pResamplingVals[2] = new wchar_t[wcslen(FdoGrfpGlobals::ResamplingCubicSpline)+1];
+        pResamplingVals[3] = new wchar_t[wcslen(FdoGrfpGlobals::ResamplingLanczos)+1];
+        wcscpy(pResamplingVals[0], FdoGrfpGlobals::ResamplingBilinear);
+        wcscpy(pResamplingVals[1], FdoGrfpGlobals::ResamplingCubic);
+        wcscpy(pResamplingVals[2], FdoGrfpGlobals::ResamplingCubicSpline);
+        wcscpy(pResamplingVals[3], FdoGrfpGlobals::ResamplingLanczos);
+
+        wide_to_multibyte(mbServerName, FdoGrfpGlobals::ResamplingMethod);
+        FdoPtr<ConnectionProperty> resamplingMethodProperty = new ConnectionProperty (
+                        FdoGrfpGlobals::ResamplingMethod,
+                        NlsMsgGet(GRFP_71_RESAMPLING_METHOD, mbServerName),
+                        L"", false, false, true, false, false, false, false, 4, (const wchar_t**)pResamplingVals);
+        mPropertyDictionary->AddProperty(resamplingMethodProperty);
     }
 
     return (FDO_SAFE_ADDREF(mPropertyDictionary.p));

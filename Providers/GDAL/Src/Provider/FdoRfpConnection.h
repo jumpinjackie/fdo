@@ -72,6 +72,7 @@ private:
     //The connection string and the parameters contained in it.
     FdoStringP                            m_connectionString;
     FdoStringP                            m_defaultRasterLocation;
+    FdoStringP                            m_resamplingMethod;
 
     // The connection state
     FdoConnectionState                    m_state;
@@ -136,6 +137,10 @@ public:
     /// <param name="value">Input the connection string</param> 
     /// <returns>Returns nothing</returns> 
     virtual void SetConnectionString(FdoString* value);
+
+    /// <summary>Gets the resampling method for the connection.</summary>
+    /// <returns>Returns the resampling method</returns> 
+    virtual FdoString* GetResamplingMethod();
 
     /// <summary>Gets an FdoIConnectionInfo interface that can be used to interrogate and set connection properties.</summary>
     /// <returns>Returns the connection info</returns> 
