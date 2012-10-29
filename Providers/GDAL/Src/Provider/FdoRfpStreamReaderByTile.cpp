@@ -149,9 +149,6 @@ FdoRfpStreamReaderGdalByTile::FdoRfpStreamReaderGdalByTile(
     // Allocate tile buffer - TODO: We should really use VSIMalloc() and
     // throw some sort of an exception if it fails.
     m_tileData = (GByte *) CPLMalloc(m_numTileBytes);
-
-    // check out the tile at (0, 0)
-    _getTile();
 }
 
 FdoRfpStreamReaderGdalByTile::~FdoRfpStreamReaderGdalByTile()
@@ -363,8 +360,8 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
     // need to trip the read window.
     int fileXSize = m_image->m_xSize;
     int fileYSize = m_image->m_ySize;
-    int wrkBlockXSize = m_blockXSize;
-    int wrkBlockYSize = m_blockYSize;
+    m_wrkBlockXSize = m_blockXSize;
+    m_wrkBlockYSize = m_blockYSize;
 
     if( fileWinXOff + fileWinXSize > fileXSize )
     {
@@ -372,7 +369,7 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
             / (double) fileWinXSize;
 
         fileWinXSize = fileXSize - fileWinXOff;
-        wrkBlockXSize = (int) (wrkBlockXSize * xRatio + 0.5);
+        m_wrkBlockXSize = (int) (m_wrkBlockXSize * xRatio + 0.5);
     }
     
     if( fileWinYOff + fileWinYSize > fileYSize )
@@ -381,7 +378,7 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
             / (double) fileWinYSize;
 
         fileWinYSize = fileYSize - fileWinYOff;
-        wrkBlockYSize = (int) (wrkBlockYSize * yRatio + 0.5);
+        m_wrkBlockYSize = (int) (m_wrkBlockYSize * yRatio + 0.5);
     }
 
     // Figure out the interleaving values to use based on the data
@@ -420,7 +417,7 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
     FdoGdalMutexHolder oHolder;
     eErr = GDALDatasetRasterIO( m_image->GetDS(), GF_Read, 
                                 fileWinXOff, fileWinYOff, fileWinXSize, fileWinYSize,
-                                m_tileData, wrkBlockXSize, wrkBlockYSize, 
+                                m_tileData, m_wrkBlockXSize, m_wrkBlockYSize, 
                                 m_gdalDataType, 
                                 wrkComponents, m_bandList, 
                                 pixelStep, lineStep, bandStep );
@@ -433,4 +430,55 @@ void FdoRfpStreamReaderGdalByTile::_getTile()
     }
 
     m_image->ReleaseDS();
+
+
+    // If we have a color table for the source imagery, apply it to the final image
+    // The greyscale image returned from GDALDatasetRasterIO should contain color table entries
+    FdoRasterDataModelType modelType = m_dataModel->GetDataModelType();
+    if ((modelType == FdoRasterDataModelType_RGB || modelType == FdoRasterDataModelType_RGBA) 
+        && m_image->m_components == 1)
+    {
+
+        GDALColorTableH colorTable = NULL;
+        int colorEntries = 0;
+        GDALDatasetH inDataset = m_image->GetDS();
+        GDALRasterBandH inBand = GDALGetRasterBand( inDataset, 1 );
+        colorTable = GDALGetRasterColorTable(inBand);
+        if (colorTable != NULL)
+        {
+            colorEntries = GDALGetColorEntryCount(colorTable);
+        }
+        
+        if (colorTable != NULL && colorEntries > 0)
+        {
+            GByte* outData = m_tileData;
+            short bitMask = ((m_bytesPerSample<<8) - 1);
+            for (int i=0; i<m_wrkBlockYSize; i++)
+            {
+                for (int j=0; j<m_wrkBlockXSize; j++)
+                {
+                    GByte color = *outData;
+                    if (color < colorEntries)
+                    {
+                        GDALColorEntry colorEntry;
+                        if (GDALGetColorEntryAsRGB(colorTable, color, &colorEntry) == TRUE)
+                        {
+                            *outData = colorEntry.c1 & bitMask;
+                            outData += m_bytesPerSample;
+                            *outData = colorEntry.c2 & bitMask;
+                            outData += m_bytesPerSample;
+                            *outData = colorEntry.c3 & bitMask;
+                            outData += m_bytesPerSample;
+                            if (m_components == 4)
+                            {
+                                *outData = colorEntry.c4 & bitMask;
+                                outData += m_bytesPerSample;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        m_image->ReleaseDS();
+    }
 }

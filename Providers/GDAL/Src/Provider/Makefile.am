@@ -44,6 +44,7 @@ libGRFPProviderSrc_la_SOURCES = \
 	FdoRfpRasterPropertyDictionary.cpp \
 	FdoRfpRasterUtil.cpp \
 	FdoRfpStreamReaderByTile.cpp \
+	FdoRfpStreamReaderByTileResample.cpp \
 	FdoRfpRect.cpp \
 	FdoRfpSchemaCapabilities.cpp \
 	FdoRfpSchemaData.cpp \
@@ -103,6 +104,7 @@ noinst_HEADERS = $(libGRFPProviderSrc_la_SOURCES) \
 	FdoRfpSpatialContextReader.h \
 	FdoRfpFilterCapabilities.h \
 	FdoRfpStreamReaderByTile.h \
+	FdoRfpStreamReaderByTileResample.h \
 	FdoRfpFilterEvaluator.h \
 	FdoRfpStreamReaderRGB24.h \
 	FdoRfpGeoBandRaster.h \

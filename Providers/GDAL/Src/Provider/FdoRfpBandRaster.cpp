@@ -29,6 +29,7 @@
 #include "FdoRfpRasterCapabilities.h"
 #include "FdoRfpGeoRaster.h"
 #include "FdoRfpStreamReaderByTile.h"
+#include "FdoRfpStreamReaderByTileResample.h"
 #include "FdoRfpRasterPropertyDictionary.h"
 #include "FdoRfpImage.h"
 #include "FdoRfpEnvelope.h"
@@ -196,16 +197,28 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
     FdoGdalMutexHolder oHolder;
     FdoPtr<FdoRasterDataModel> dataModel = FdoRasterDataModel::Create();
     FdoPtr<FdoRfpImage> image =m_geoBandRaster->GetImage();
-
-    if( image->m_components == 4 )
+    FdoStringP resamplingMethod = m_geoBandRaster->GetResamplingMethod();
+    
+    if (resamplingMethod.GetLength() > 0)
+    {
         dataModel->SetDataModelType(FdoRasterDataModelType_RGBA);
-    else if( image->m_components == 3 )
-        dataModel->SetDataModelType(FdoRasterDataModelType_RGB);
-    else if( GDALGetRasterColorInterpretation( GDALGetRasterBand(image->GetDS(), image->m_bandList[0]) ) 
-             == GCI_PaletteIndex )
-        dataModel->SetDataModelType(FdoRasterDataModelType_Palette);
+        dataModel->SetBitsPerPixel( 32 );
+    }
     else
-        dataModel->SetDataModelType(FdoRasterDataModelType_Gray);
+    {
+        if( image->m_components == 4 )
+            dataModel->SetDataModelType(FdoRasterDataModelType_RGBA);
+        else if( image->m_components == 3 )
+            dataModel->SetDataModelType(FdoRasterDataModelType_RGB);
+        else if( GDALGetRasterColorInterpretation( GDALGetRasterBand(image->GetDS(), image->m_bandList[0]) ) 
+             == GCI_PaletteIndex )
+            dataModel->SetDataModelType(FdoRasterDataModelType_Palette);
+        else
+            dataModel->SetDataModelType(FdoRasterDataModelType_Gray);
+
+        dataModel->SetBitsPerPixel( image->m_bytesPerPixel * 8 );
+    }
+    
 
     if( image->m_gdalDataType == GDT_Float32 
         || image->m_gdalDataType == GDT_Float64 )
@@ -215,8 +228,7 @@ FdoRasterDataModel* FdoRfpBandRaster::GetDataModel ()
         dataModel->SetDataType( FdoRasterDataType_Integer );
     else
         dataModel->SetDataType( FdoRasterDataType_UnsignedInteger );
-
-    dataModel->SetBitsPerPixel( image->m_bytesPerPixel * 8 );
+  
 
     // set organization to pixel
     dataModel->SetOrganization( FdoRasterDataOrganization_Pixel );
@@ -607,10 +619,32 @@ FdoIStreamReader* FdoRfpBandRaster::GetStreamReader()
 
     _computePixelWindow( image, winXOff, winYOff, winXSize, winYSize );
 
-    streamReader = new FdoRfpStreamReaderGdalByTile(image, 
-                                                    targetDataModel,
-                                                    winXOff, winYOff, winXSize, winYSize, 
-                                                    GetImageXSize(), GetImageYSize());
+    FdoStringP resamplingMethod = m_geoBandRaster->GetResamplingMethod();
+
+    FdoPtr<FdoRfpStreamReaderGdalByTile> reader;
+
+    if (resamplingMethod.GetLength() == 0)
+    {
+        reader = new FdoRfpStreamReaderGdalByTile(image, 
+                                                targetDataModel,
+                                                winXOff, winYOff, winXSize, winYSize, 
+                                                GetImageXSize(), GetImageYSize());
+    }
+    else
+    {      
+        reader = new FdoRfpStreamReaderGdalByTileResample(image, 
+                                        targetDataModel, resamplingMethod,
+                                        winXOff, winYOff, winXSize, winYSize, 
+                                        GetImageXSize(), GetImageYSize());
+    }
+
+    if (reader.p != NULL)
+    {
+        // check out the tile at (0, 0)
+        reader->_getTile();
+        streamReader = reader;
+    }
+
 
     return FDO_SAFE_ADDREF(streamReader.p);
 }

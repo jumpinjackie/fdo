@@ -456,6 +456,10 @@
 				>
 			</File>
 			<File
+				RelativePath="RfpTestResample.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RfpUnitTest.cpp"
 				>
 			</File>
@@ -646,6 +650,10 @@
 			</File>
 			<File
 				RelativePath="RfpTestThorough.h"
+				>
+			</File>
+			<File
+				RelativePath="RfpTestResample.h"
 				>
 			</File>
 			<File

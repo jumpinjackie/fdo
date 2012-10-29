@@ -66,6 +66,7 @@ public:
     FdoString*      GetId();
     FdoRfpImage*    GetImage();
     bool            GetKeyColor(FdoPtr<FdoRfpKeyColorCollection>& keyColorColl);
+    FdoString*      GetResamplingMethod();
 
 //
 // exposed and virtual functions

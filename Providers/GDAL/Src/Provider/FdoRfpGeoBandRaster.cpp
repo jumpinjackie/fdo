@@ -69,6 +69,11 @@ bool FdoRfpGeoBandRaster::GetKeyColor(FdoPtr<FdoRfpKeyColorCollection>& keyColor
     return FdoRfpRasterUtil::GetKeyColor(m_imagePath, keyColorColl);
 }
 
+FdoString* FdoRfpGeoBandRaster::GetResamplingMethod()
+{
+    return m_connection->GetResamplingMethod();
+}
+
 FdoRfpGeoBandRasterCollection* FdoRfpGeoBandRasterCollection::Create()
 {
     return new FdoRfpGeoBandRasterCollection();

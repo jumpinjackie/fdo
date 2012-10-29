@@ -42,6 +42,12 @@ namespace FdoGrfpGlobals
     static FdoString* GRFPFeatureDataObjectsVersion		= L"3.8.0.0";
 
     static FdoString* DefaultRasterFileLocation			= L"DefaultRasterFileLocation";
+    static FdoString* ResamplingMethod      			= L"ResamplingMethod";
+    static FdoString* ResamplingBilinear      			= L"BILINEAR";
+    static FdoString* ResamplingCubic      	    		= L"CUBIC";
+    static FdoString* ResamplingCubicSpline    			= L"CUBICSPLINE";
+    static FdoString* ResamplingLanczos      			= L"LANCZOS";
+
 	
     static FdoString* MosaicFunctionName			    = L"MOSAIC";
     static FdoString* ClipFunctionName				    = L"CLIP";
