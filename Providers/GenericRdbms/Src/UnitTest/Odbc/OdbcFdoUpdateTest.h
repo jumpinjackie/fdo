@@ -55,6 +55,8 @@ public:
     int compareDbl( double num1, double num2 );
 
 protected:
+    virtual FdoString * GetClassNameCities()            { return mSetup.GetClassNameCities(); }
+
     OdbcBaseSetup mSetup;
     FdoPtr<FdoIConnection> mConnection;
 };
@@ -97,6 +99,7 @@ class OdbcSqlServerFdoUpdateTest : public OdbcBaseFdoUpdateTest
 
     OdbcSqlServerFdoUpdateTest(void)   { this->mSetup.SetTypeDB(DataBaseType_SqlServer); }
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcSqlServer" ); }
+    virtual FdoString * GetClassNameCities()            { return L"dbo:cities"; }
 };
 
 class OdbcAccessFdoUpdateTest : public OdbcBaseFdoUpdateTest

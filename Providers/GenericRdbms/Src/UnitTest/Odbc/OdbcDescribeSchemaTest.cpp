@@ -161,7 +161,7 @@ void OdbcSqlServerDescribeSchemaTest::getClassNames()
             CPPUNIT_FAIL("FAILED - GetClassNames returned NULL collection\n");
 
         FdoInt32 numClasses = classNames->GetCount();
-        CPPUNIT_ASSERT(numClasses == 7);
+        CPPUNIT_ASSERT(numClasses == 9);
         for (int i=0; i<numClasses; i++)
         {
             FdoStringP className = classNames->GetItem(i)->GetString();
@@ -175,6 +175,8 @@ void OdbcSqlServerDescribeSchemaTest::getClassNames()
         CPPUNIT_ASSERT(classNames->GetItem(4)->GetString() == L"dbo:table7");
         CPPUNIT_ASSERT(classNames->GetItem(5)->GetString() == L"dbo:table8");
         CPPUNIT_ASSERT(classNames->GetItem(6)->GetString() == L"dbo:view1");
+        CPPUNIT_ASSERT(classNames->GetItem(7)->GetString() == L"guest:cities");
+        CPPUNIT_ASSERT(classNames->GetItem(8)->GetString() == L"guest:table3");
     }
     catch (FdoException *ex)
     {

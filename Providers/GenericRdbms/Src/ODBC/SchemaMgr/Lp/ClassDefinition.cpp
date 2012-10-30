@@ -21,6 +21,7 @@
 #include "Utilities/SchemaMgr/Overrides/TableMappingTypeMapper.h"
 #include "Schema.h"
 #include <Rdbms/Override/ODBC/OdbcOvPhysicalSchemaMapping.h>
+#include "../Ph/Mgr.h"
 #include "../Ph/Table.h"
 #include "DataPropertyDefinition.h"
 #include "Sm/Lp/DataPropertyDefinitionCollection.h"
@@ -123,11 +124,16 @@ bool FdoSmLpOdbcClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP cla
     if ( bIncludeDefaults || 
          ((tableMappingType != FdoSmOvTableMappingType_BaseTable) && GetIsFixedDbObject())
     ) {
+        FdoSmPhOdbcMgrP pPhysical = ((FdoSmLpSchema*) RefLogicalPhysicalSchema())->GetPhysicalSchema()->SmartCast<FdoSmPhOdbcMgr>();
+
+        // Include owner if not default owner and data source supports qualified table names.
+        FdoStringP dbObjectName = pPhysical->CanQualifyTableNameOverride() ? GetDbObjectQName() : GetDbObjectName();
+
         // For foreign schemas override table name is the root (foreign) table.
         FdoOdbcOvTableP tableMapping = FdoOdbcOvTable::Create( 
             wcslen(GetRootDbObjectName()) > 0 ?
                 GetRootDbObjectName() :
-                GetDbObjectName()    
+                dbObjectName   
         );
         
         if ( dbObject ) {
@@ -174,6 +180,25 @@ void FdoSmLpOdbcClassDefinition::Update(
         L"",
         tableOverrides 
     );
+
+    // Table name can be overridden to a table in an owner other than the default one. 
+    // In this case the format is <owner>.<table>. Set this class's physical owner in this case.
+
+    FdoSmPhOdbcMgrP pPhysical = GetLogicalPhysicalSchema()->GetPhysicalSchema()->SmartCast<FdoSmPhOdbcMgr>();
+
+    // When source is Text, tableName can be <filename>.csv. Don't parse out owner name in this case.
+    // For text source, CanQualifyTablenameOverride returns false. 
+    if ( pPhysical->CanQualifyTableNameOverride() )
+    {
+        FdoStringP dbObjectName = GetDbObjectName();
+
+        if ( dbObjectName.Contains(L".") )
+        {
+            // table name qualified. Break out owner and unqualified table name. 
+            SetOwner(dbObjectName.Left(L"."));
+            SetDbObjectName(dbObjectName.Right(L"."));
+        }
+    }
 
     //TODO: do we support modifying any of the ODBC-specific overrides (filegroups, etc) ?
 }
