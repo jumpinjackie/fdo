@@ -103,6 +103,8 @@ class OdbcSqlServerFdoInsertTest : public OdbcBaseFdoInsertTest
 
     OdbcSqlServerFdoInsertTest(void) { this->mSetup.SetTypeDB(DataBaseType_SqlServer); }
     virtual void set_provider()      { UnitTestUtil::SetProvider( "OdbcSqlServer" ); }
+
+    virtual FdoString * GetClassNameCities()            { return L"dbo:cities"; }
 };
 
 class OdbcAccessFdoInsertTest : public OdbcBaseFdoInsertTest

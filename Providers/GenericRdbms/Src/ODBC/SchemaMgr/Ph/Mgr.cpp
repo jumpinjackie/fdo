@@ -207,6 +207,24 @@ bool FdoSmPhOdbcMgr::SupportsAnsiQuotes()
     return supportsAnsiQuotes;
 }
 
+bool FdoSmPhOdbcMgr::CanQualifyTableNameOverride()
+{
+    bool canQualify = false;
+
+    rdbi_vndr_info_def vndr_info;
+    rdbi_vndr_info( GetRdbiContext(), &vndr_info );
+
+    // For now be cautious and return true only for these 3 RDBMS 
+    // data sources. 
+    if ((RDBI_DBVERSION_ODBC_MYSQL == vndr_info.dbversion) ||
+        (RDBI_DBVERSION_ODBC_ORACLE == vndr_info.dbversion) ||
+        (RDBI_DBVERSION_ODBC_SQLSERVER == vndr_info.dbversion))
+        canQualify = true;
+
+    return canQualify;
+}
+
+
 FdoSmPhOdbcMgr::OdbcStringMap::OdbcStringMap()
 {
     // The following are reserved words specific to Odbc.

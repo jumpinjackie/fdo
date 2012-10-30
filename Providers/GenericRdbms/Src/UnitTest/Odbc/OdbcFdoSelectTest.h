@@ -50,7 +50,10 @@ public:
 
     virtual int numPropertiesInPolylineClass() { return 16; };
 
+
 protected:
+    void ValidateGeometryRead(FdoIFeatureReader* reader, FdoString* geomName, FdoString* expectedValue);
+
     OdbcBaseSetup mSetup;
 };
 
@@ -160,6 +163,7 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
 {
     CPPUNIT_TEST_SUB_SUITE (OdbcSqlServerFdoSelectTest, OdbcFdoSelectTest);
     CPPUNIT_TEST (View1Test);
+    CPPUNIT_TEST (MultiSchemaTest);
     CPPUNIT_TEST_SUITE_END ();
 
     virtual void concurrent_select() {};    // Need to set up "testClass" class to run this.
@@ -177,6 +181,7 @@ class OdbcSqlServerFdoSelectTest : public OdbcFdoSelectTest
     virtual int numPropertiesInPolylineClass() { return 17; };
 
     virtual void View1Test();
+    virtual void MultiSchemaTest();
 };
 
 class OdbcAccessFdoSelectTest : public OdbcFdoSelectTest

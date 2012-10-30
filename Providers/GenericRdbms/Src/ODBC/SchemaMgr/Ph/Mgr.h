@@ -115,6 +115,10 @@ public:
 
     virtual bool SupportsAnsiQuotes();
 
+    // Returns true if the current data source allows table names to be
+    // qualified by owner name.
+    virtual bool CanQualifyTableNameOverride();
+
 protected:
 
     virtual FdoSmPhDatabaseP CreateDatabase(FdoStringP database);

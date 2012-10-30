@@ -106,7 +106,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
     {
         FdoPtr<FdoIUpdate> updateCommand =
             (FdoIUpdate *) mConnection->CreateCommand(FdoCommandType_Update);
-        updateCommand->SetFeatureClassName(mSetup.GetClassNameCities());
+        updateCommand->SetFeatureClassName(GetClassNameCities());
         FdoPtr<FdoPropertyValueCollection> propertyValues =
             updateCommand->GetPropertyValues();
 
@@ -134,7 +134,7 @@ void OdbcBaseFdoUpdateTest::updateCities()
         // Now change it back so that other tests pass.
         updateCommand =
             (FdoIUpdate *) mConnection->CreateCommand(FdoCommandType_Update);
-        updateCommand->SetFeatureClassName(mSetup.GetClassNameCities());
+        updateCommand->SetFeatureClassName(GetClassNameCities());
         propertyValues = updateCommand->GetPropertyValues();
 
         dataValue = FdoDataValue::Create(L"Boop");

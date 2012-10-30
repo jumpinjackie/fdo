@@ -149,6 +149,20 @@ void OdbcFdoSelectTest::feature_query()
     }
 }
 
+void OdbcFdoSelectTest::ValidateGeometryRead(FdoIFeatureReader* reader, FdoString* geomName, FdoString* expectedValue)
+{
+    CPPUNIT_ASSERT( reader->IsNull(geomName) == (expectedValue == NULL) );
+    
+    if ( expectedValue != NULL )
+    {
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoByteArray> geomVal = reader->GetGeometry(geomName);
+        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomVal);
+        FdoStringP geomText = geom->GetText();
+        CPPUNIT_ASSERT( geomText == expectedValue );
+    }
+}
+
 void OdbcOracleFdoSelectTest::View1Test()
 {
     if( mConnection != NULL )
@@ -336,6 +350,171 @@ void OdbcSqlServerFdoSelectTest::View1Test()
         }
         catch (FdoException* e)
         {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcSqlServerFdoSelectTest::MultiSchemaTest()
+{
+    if( mConnection != NULL )
+    {
+        bool configSet = false;
+
+        try
+        {
+            FdoIoMemoryStreamP configStream = FdoIoMemoryStream::Create();
+
+            UnitTestUtil::ExportDb(mConnection, configStream);
+
+            mConnection->Close();
+            configStream->Reset();
+            mConnection->SetConfiguration(configStream);
+            configSet = true;
+            mConnection->Open();
+
+
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"guest:table3");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"featid1") );
+                CPPUNIT_ASSERT( reader->GetInt32(L"featid1") == 1 );
+
+                CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"GuestName") == 0 );
+
+                CPPUNIT_ASSERT( !reader->IsNull(L"amount") );
+                CPPUNIT_ASSERT( reader->GetInt32(L"amount") == 5005 );
+
+                ValidateGeometryRead(reader, L"Geometry", L"POINT (10.25 15.125)");
+
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 1);
+
+            // close the reader
+            reader->Close();
+
+            selectCmd->SetFeatureClassName(L"guest:cities");
+
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"cityid") );
+                switch( reader->GetInt32(L"cityid") )
+                {
+                case 1:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Cedarville") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (25 85)");
+
+                    break;
+
+                case 2:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Lakeview") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (48 23)");
+
+                    break;
+
+                case 3:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Sandborough") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (10 39)");
+
+                    break;
+
+                default:
+                    CPPUNIT_FAIL("Unexpected value for guest.cities.cityid");
+                    break;
+                }
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 3);
+
+            // close the reader
+            reader->Close();
+
+            selectCmd->SetFeatureClassName(L"dbo:cities");
+
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"cityid") );
+                switch( reader->GetInt32(L"cityid") )
+                {
+                case 1:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Marin") == 0 );
+
+                    CPPUNIT_ASSERT( !reader->IsNull(L"city") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"city"), L"San Rafael") == 0 );
+
+                    break;
+
+                case 2:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Boop") == 0 );
+
+                    CPPUNIT_ASSERT( !reader->IsNull(L"city") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"city"), L"San Bebop") == 0 );
+
+                    break;
+                default:
+                    CPPUNIT_FAIL("Unexpected value for dbo.cities.cityid");
+                    break;
+                }
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 2);
+
+            // close the reader
+            reader->Close();
+
+            reader = NULL;
+
+            selectCmd = NULL;
+
+            mConnection->Close();
+            mConnection->SetConfiguration(NULL);
+            mConnection->Open();
+
+            configSet = false;
+        }
+        catch (FdoException* e)
+        {
+            if (configSet)
+            {
+                try
+                {
+                    mConnection->Close();
+                    mConnection->SetConfiguration(NULL);
+                    mConnection->Open();
+                }
+                catch (...)
+                {
+                }
+            }
+
             TestCommonFail (e);
         }
     }
