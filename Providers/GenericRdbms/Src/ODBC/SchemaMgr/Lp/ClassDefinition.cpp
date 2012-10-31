@@ -127,13 +127,13 @@ bool FdoSmLpOdbcClassDefinition::SetSchemaMappings( FdoPhysicalClassMappingP cla
         FdoSmPhOdbcMgrP pPhysical = ((FdoSmLpSchema*) RefLogicalPhysicalSchema())->GetPhysicalSchema()->SmartCast<FdoSmPhOdbcMgr>();
 
         // Include owner if not default owner and data source supports qualified table names.
-        FdoStringP dbObjectName = pPhysical->CanQualifyTableNameOverride() ? GetDbObjectQName() : GetDbObjectName();
+        FdoStringP dbObjectName = pPhysical->CanQualifyTableNameOverride() ? GetDbObjectQName() : FdoStringP(GetDbObjectName());
 
         // For foreign schemas override table name is the root (foreign) table.
         FdoOdbcOvTableP tableMapping = FdoOdbcOvTable::Create( 
             wcslen(GetRootDbObjectName()) > 0 ?
                 GetRootDbObjectName() :
-                dbObjectName   
+                (FdoString*) dbObjectName   
         );
         
         if ( dbObject ) {
