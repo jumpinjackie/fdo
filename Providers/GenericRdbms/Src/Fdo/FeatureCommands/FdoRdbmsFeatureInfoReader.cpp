@@ -52,7 +52,7 @@ FdoRdbmsFeatureInfoReader* FdoRdbmsFeatureInfoReader::Create(FdoPropertyValueCol
 
 FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
 {
-    if( ! mCalled || mFeatInfoCollection == NULL )
+    if(mFeatInfoCollection == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
 
     FdoPtr<FdoDataPropertyDefinition> property;
