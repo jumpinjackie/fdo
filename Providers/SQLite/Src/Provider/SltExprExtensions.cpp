@@ -1608,7 +1608,7 @@ static void spatialOpFunc(sqlite3_context *context, int argc, sqlite3_value **ar
     }
 
     // in case we have set 1 to aux arg the we have return since function was already evaluated
-    if((int)sqlite3_get_auxdata(context, 1) == 1)
+    if((intptr_t)sqlite3_get_auxdata(context, 1) == 1)
     {
         sqlite3_result_int(context, 1);
         return;
@@ -1847,7 +1847,7 @@ static void geomFunc(sqlite3_context *context, int argc, sqlite3_value **argv)
         optype = 0;
 
     
-    bool computeGeodetic = ((int)sqlite3_get_auxdata(context, 0) == 1);
+    bool computeGeodetic = ((intptr_t)sqlite3_get_auxdata(context, 0) == 1);
 
     switch(optype)
     {
