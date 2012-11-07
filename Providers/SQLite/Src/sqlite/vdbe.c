@@ -1298,10 +1298,12 @@ case OP_Halt: {
   if( pOp->p4.z ){
     assert( p->rc!=SQLITE_OK );
     sqlite3SetString(&p->zErrMsg, db, "%s", pOp->p4.z);
+    sqlite3Error(db, p->rc, "%s", pOp->p4.z);
     testcase( sqlite3GlobalConfig.xLog!=0 );
     sqlite3_log(pOp->p1, "abort at %d in [%s]: %s", pc, p->zSql, pOp->p4.z);
   }else if( p->rc ){
     testcase( sqlite3GlobalConfig.xLog!=0 );
+    sqlite3Error(db, p->rc, "constraint failed at %d in [%s]", pc, p->zSql);
     sqlite3_log(pOp->p1, "constraint failed at %d in [%s]", pc, p->zSql);
   }
   rc = sqlite3VdbeHalt(p);
