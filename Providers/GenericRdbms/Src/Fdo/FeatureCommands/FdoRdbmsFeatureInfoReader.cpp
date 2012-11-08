@@ -52,7 +52,7 @@ FdoRdbmsFeatureInfoReader* FdoRdbmsFeatureInfoReader::Create(FdoPropertyValueCol
 
 FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
 {
-    if( ! mCalled || mFeatInfoCollection == NULL )
+    if(mFeatInfoCollection == NULL )
         throw FdoCommandException::Create(NlsMsgGet(FDORDBMS_57, strEndOfRecordExp));
 
     FdoPtr<FdoDataPropertyDefinition> property;
@@ -72,6 +72,8 @@ FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
 
     classDefinition->SetIsAbstract(false);
     properties = classDefinition->GetProperties();
+    FdoPtr<FdoDataPropertyDefinitionCollection> idProps = classDefinition->GetIdentityProperties();
+    const FdoSmLpDataPropertyDefinitionCollection * idPropDefs = mClassDefinition->RefIdentityProperties();
 
     for (int i=0; i<mFeatInfoCollection->GetCount(); i++)
     {
@@ -84,6 +86,11 @@ FdoClassDefinition *FdoRdbmsFeatureInfoReader::GetClassDefinition()
         property->SetDataType(dataValue->GetDataType());
         dataValue->Release();
         properties->Add(property);
+
+        if (idPropDefs->IndexOf(id->GetName()) >= 0) 
+        {
+            idProps->Add(property);
+        }
     }
 
     return classDefinition;
