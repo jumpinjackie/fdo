@@ -218,7 +218,7 @@ public:
         if (m_parent)
         {
             // Cast drops const
-            FdoPtr<OBJ>    pitem = (OBJ*)value;
+            OBJ*            pitem = (OBJ*)value;
             FdoPhysicalElementMappingP   pparent = pitem->GetParent();
 
             if ( pparent == m_parent )
