@@ -131,12 +131,28 @@ int local_odbcdr_pkeys_act(
     if (context->odbcdr_UseUnicode)
     {
         charType = SQL_C_WCHAR;
-        ret = SQLPrimaryKeysW( c->hStmt, NULL, 0, NULL, 0, (SQLWCHAR*)object->cwString,  SQL_NTS);
+        ret = SQLPrimaryKeysW( 
+            c->hStmt, 
+            NULL, 
+            0, 
+            (SQLWCHAR*)owner->cwString, 
+            (owner->cwString == NULL) ? 0 : SQL_NTS, 
+            (SQLWCHAR*)object->cwString,  
+            SQL_NTS
+        );
     }
     else
     {
         charType = SQL_C_CHAR;
-        ret = SQLPrimaryKeys( c->hStmt, NULL, 0, NULL, 0, (SQLCHAR*)object->ccString,  SQL_NTS);
+        ret = SQLPrimaryKeys(
+            c->hStmt, 
+            NULL, 
+            0, 
+            (SQLCHAR*)owner->ccString, 
+            (owner->ccString == NULL) ? 0 : SQL_NTS, 
+            (SQLCHAR*)object->ccString,  
+            SQL_NTS
+        );
     }
 
     if (ret == SQL_SUCCESS)
