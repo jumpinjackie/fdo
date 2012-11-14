@@ -24,6 +24,9 @@
 #include <float.h>                      // for _isnan()
 #include <math.h>
 
+#define	EPS2               0.00000001
+#define MArePositionsEqualXY(x1, y1, x2, y2) ( (fabs(x1-x2) < EPS2) && (fabs(y1-y2) < EPS2) )
+#define MDistanceBetweenPositionsXY(x1, y1, x2, y2) sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2))
 #ifndef M_PI
 #define M_PI		3.14159265358979323846
 #endif
@@ -32,6 +35,338 @@
 // In the future, this should change to numeric_limits<double>::quiet_NaN(),
 // once AutoCAD Map is able to handle NaN's.
 const double FdoExpressionEngineGeometryUtil::m_nullOrd = -1.25e126;
+
+// Begin clone code from 
+// trunk\Providers\SQLite\Src\SpatialIndex\SltGeomUtils.cpp
+
+struct ArcSegmentDetails
+{
+    bool isCounterClockWise;
+    bool isCircle;
+    double center[2];
+    double length;
+    double radius;
+    double thetaEndAngle;
+    double thetaStartAngle;
+};
+
+bool GetCircularArcSegmentDetails(const double *startpoint, const double *midpoint, const double *endpoint, ArcSegmentDetails* details);
+bool ComputeCenterFromThreePositions(const double *startpoint, const double *midpoint, const double *endpoint, double* center);
+
+#define MATRIX(i, j) ( *( ptr_matrix + ( (i)*dim + (j) ) ) )
+#define VERY_SMALL (1.0e-17)
+double SnapToZero(double n)
+{
+    return (fabs(n) <= VERY_SMALL)? 0.0 : n;
+}
+
+int LUDecompose(int n, double a[], int eindex[])
+{
+    /* 
+     * Decompose a into LU, where L is lower triangular matrix and U is upper
+     * triangular matrix. We also have L[i][i] = 1 for i=1,2,...
+     */
+
+    int dim = 0;
+    double *ptr_matrix = NULL;
+    int i, j, k, col_max;
+    int sign = 1;   /* det(matrix) sign change as a result of row exchange */
+    double largest; /* the pivot element */
+    double tmp, *scale = NULL;
+
+    /* initialize static vars */
+
+    if ( n <= 0 || a == NULL || eindex == NULL )
+        return 0;
+
+    dim = n;
+    ptr_matrix = a;
+
+    /* fill scale for each row */   
+    scale = new double[n];
+    if (NULL == scale)
+        return 0;
+
+    for ( i = 0; i < n; ++i ) {
+        largest = 0;
+        for ( j = 0; j < n; ++j ) {
+            if ( ( tmp=fabs(MATRIX(i,j)) ) > largest )
+                largest = tmp;
+        }
+        if ( SnapToZero(largest) == 0.0 ) {
+            delete [] scale;
+            return 0;
+        }
+        scale[i] = 1.0 / largest;
+    }
+
+    for ( j = 0; j < n; ++j ) {
+        for ( i = 0; i <= j; ++i ) {
+            for ( k = 0; k < i; ++k ) {
+                MATRIX(i,j) -= MATRIX(i,k) * MATRIX(k,j);
+            }
+        }
+        col_max = j;
+        largest = scale[j]*fabs(MATRIX(j,j));
+        for ( i = j + 1; i < n; ++i ) {
+            for ( k = 0; k < j; ++k ) {
+                MATRIX(i,j) -= MATRIX(i,k) * MATRIX(k,j);
+            }
+            if ( ( tmp = scale[i]*fabs(MATRIX(i,j)) ) > largest ) {
+                col_max = i;
+                largest = tmp;
+            }
+        }
+        if ( j != col_max ) {
+            /* interchange rows */
+            for ( k=0; k<n; ++k ) {
+                tmp = MATRIX(j,k);
+                MATRIX(j,k) = MATRIX(col_max, k);
+                MATRIX(col_max, k) = tmp;
+            }
+            /* interchange the scale factor */
+            scale[col_max] = scale[j];
+            sign = -sign;
+        }
+        eindex[j] = col_max;
+        if ( SnapToZero(largest) == 0.0 ) {
+            /* if pivot element is near zero, matrix is singular */
+            delete [] scale;
+            return 0;
+        }
+        /* devided by pivot element */
+        if ( j < n-1 ) {
+            tmp = 1.0 / MATRIX(j,j);
+            for ( i = j+1; i < n; ++i ) {
+                MATRIX(i,j) *= tmp;
+            }
+        }
+    }
+    delete [] scale;
+    return sign;
+}
+
+/************************************************************************
+*         Find the center point of the circular arc determined by three *
+*         given points                                                  *
+*                                                                       *
+*   Denote V, V1, V2, V3 the vectors of center, start, mid, end         *
+*       respectively,                                                   *
+*   then V = (x,y,z) satisfies the following equtions:                  *
+*   ( V - ( V1 + V2 ) / 2 ) * ( V2 - V1 ) = 0                           *
+*   ( V - ( V1 + V3 ) / 2 ) * ( V3 - V1 ) = 0                           *
+*   ( V - V1 ) * ( ( V2 - V1 ) X ( V3 - V1 ) ) = 0                      *
+*                                                                       *
+*   i.e.,                                                               *
+*                                                                       *
+*   x21 * x + y21 * y + z21 * z = ( ||V2||^2 - ||V1||^2 ) / 2           *
+*   x31 * x + y31 * y + z31 * z = ( ||V3||^2 - ||V1||^2 ) / 2           *
+*   Dyz * x + Dzx * y + Dxy * z = Dxyz                                  *
+*                                                                       *
+*   where                                                               *
+*   ( x21, y21, z21 ) = V2 - V1,                                        *
+*   ( x31, y31, z31 ) = V3 - V1,                                        *
+*   Dyz = y21 * z31 - y31 * z21,                                        *
+*   Dzx = z21 * x31 - z31 * x21,                                        *
+*   Dxy = x21 * y31 - x31 * y21,                                        *
+*                                                                       *
+*   Dxyz = V1 * ( V2 X V3 )                                             *
+*                                                                       *
+*         | x1  y1  z1  |                                               *
+*       = | x21 y21 z21 | = x1 * Dyz + y1 * Dzx + z1 * Dxy              *
+*         | x31 y31 z31 |                                               *
+*                                                                       *
+*   ||Vi||^2 = xi*xi + yi*yi + zi*zi                                    *
+*                                                                       *
+************************************************************************/
+// no support for 3D yet
+bool ComputeCenterFromThreePositions(const double *startpoint, const double *midpoint, const double *endpoint, double* center)
+{
+    double a[9], b[3], tmp;
+    int eindex[3];
+    int i;
+
+    a[0] = *(midpoint) - *(startpoint); /* x21 */
+    a[1] = *(midpoint+1) - *(startpoint+1); /* y21 */
+    a[2] = 0.0; /* z21 */
+
+    a[3] = *(endpoint) - *(startpoint); /* x31 */
+    a[4] = *(endpoint+1) - *(startpoint+1); /* y31 */
+    a[5] = 0.0; /* z31 */
+
+              /* y21 * z31 - y31 * z21 */
+    a[6] = a[1] * a[5] - a[4] * a[2]; /* Dyz */
+              /* z21 * x31 - z31 * x21 */
+    a[7] = a[2] * a[3] - a[5] * a[0]; /* Dzx */
+              /* x21 * y31 - x31 * y21 */
+    a[8] = a[0] * a[4] - a[3] * a[1]; /* Dxy */
+
+    tmp = *(startpoint) * *(startpoint) + *(startpoint+1) * *(startpoint+1);
+
+    b[0] = *(midpoint) * *(midpoint) + *(midpoint+1) * *(midpoint+1);
+
+    b[1] = *(endpoint) * *(endpoint) + *(endpoint+1) * *(endpoint+1);
+
+    b[0] -= tmp;
+    b[1] -= tmp;
+    b[0] *= 0.5;
+    b[1] *= 0.5;
+    /* Dxyz = x1 * Dyz + y1 * Dzx + z1 * Dxy */
+    b[2] = *(startpoint) * a[6] + *(startpoint+1) * a[7];
+
+    /* Decompose a into LU */
+    if ( LUDecompose( 3, a, eindex ) == 0 )
+    {
+        // Zero result means that points were collinear.
+        return false;
+    }
+
+    /* Perform row exchanges for b */
+    for ( i = 0; i < 3; ++i ) {
+        if ( eindex[i] != i ) {
+            tmp = b[i];
+            b[i] = b[eindex[i]];
+            b[eindex[i]] = tmp;
+        }
+    }
+
+    /* Use L (UV) = b to solve UV */
+    b[1] -= a[3] * b[0];
+    b[2] -= a[6] * b[0] + a[7] * b[1];
+
+    /* Use UV = b to solve V, the center */
+    *(center+1) = b[1] / a[4];
+    *(center) = (b[0] - a[1] * *(center+1)) / a[0];
+
+    return true;
+}
+
+bool IsDirectionCounterClockWise(const double *startpoint, const double *midpoint, const double *endpoint)
+{
+    double xVect1 = *midpoint - *startpoint;
+    double yVect1 = *(midpoint+1) - *(startpoint+1);
+    
+    double xVect2 = *endpoint - *midpoint;
+    double yVect2 = *(endpoint+1) - *(midpoint+1);
+
+    return (xVect1*yVect2 - yVect1*xVect2) >= 0.0;
+}
+
+bool GetCircularArcSegmentDetails(const double *startpoint, const double *midpoint, const double *endpoint, ArcSegmentDetails* details)
+{
+    details->isCircle = false;
+    // Special cases
+    if (MArePositionsEqualXY(*startpoint, *(startpoint+1), *(endpoint), *(endpoint+1)))
+    {
+        // This might be a supported circle case.
+        if (MArePositionsEqualXY(*startpoint, *(startpoint+1), *midpoint, *(midpoint+1)))
+        {
+            details->length = 0.0; // Degenerated arc, all 3 points are coincident.
+		    return false;
+        }
+	    else
+        {
+            details->radius = MDistanceBetweenPositionsXY(*startpoint, *(startpoint+1), *midpoint, *(midpoint+1)) / 2.0;
+            details->length = M_PI * details->radius;
+            details->isCircle = true;
+            details->center[0] = (*midpoint+*startpoint)*0.5;
+            details->center[1] = (*(midpoint+1)+*(startpoint+1))*0.5;
+		    return true; // Full circle.
+        }
+    }
+
+    double* center = &details->center[0]; // 2D only
+    if(ComputeCenterFromThreePositions(startpoint, midpoint, endpoint, &center[0]))
+    {
+        details->radius = MDistanceBetweenPositionsXY(*startpoint, *(startpoint+1), *center, *(center+1));
+        details->thetaStartAngle = atan2(*(startpoint+1) - *(center+1), *startpoint - *center);
+        if (details->thetaStartAngle == -M_PI)
+            details->thetaStartAngle = M_PI;
+        details->thetaEndAngle = atan2(*(endpoint+1) - *(center+1), *(endpoint) - *center);
+        if (details->thetaEndAngle == -M_PI)
+            details->thetaEndAngle = M_PI;
+
+        details->isCounterClockWise = IsDirectionCounterClockWise(startpoint, midpoint, endpoint);
+
+        // Make sure that angles' magnitudes reflect direction.
+        if ( details->isCounterClockWise && details->thetaStartAngle > details->thetaEndAngle )
+            details->thetaEndAngle += 2.0 * M_PI;
+        else if ( !details->isCounterClockWise && details->thetaStartAngle < details->thetaEndAngle )
+            details->thetaEndAngle -= 2.0 * M_PI;
+
+        details->length = details->radius * fabs(details->thetaEndAngle - details->thetaStartAngle);
+        return true;
+    }
+    details->length = 0.0;
+    return false;
+}
+
+double ComputeArcSegmentArea(const double *startpoint, const double *midpoint, const double *endpoint)
+{
+    ArcSegmentDetails details;
+    if(!GetCircularArcSegmentDetails(startpoint, midpoint, endpoint, &details))
+        return 0.0;
+
+    double radius = details.radius;
+    double xCenterToStart = *startpoint - details.center[0];
+    double yCenterToStart = *(startpoint+1) - details.center[1];
+    
+    double xCenterToEnd = *(endpoint) - details.center[0];
+    double yCenterToEnd = *(endpoint+1) - details.center[1];
+    
+    double crossProduct = xCenterToStart * yCenterToEnd - xCenterToEnd * yCenterToStart;
+    double dotProduct = xCenterToStart * xCenterToEnd + yCenterToStart * yCenterToEnd;   
+    double radiusSquared = radius * radius;
+    double alpha;
+
+    if (fabs(crossProduct) < fabs(dotProduct))
+    {
+        // use cross product to get angle value (more accurate in this situation)
+        // use sign of cross and dot product to decide which quadrant
+        // alpha should not be NaN because we select the 'better' function
+        alpha = asin(crossProduct / radiusSquared);
+        if (!details.isCounterClockWise)
+        {
+            // alpha must be negative at end; also, alpha is the wrong part of the circle right now
+            if (dotProduct <= 0)
+                alpha = -M_PI - alpha;
+            else if (alpha > 0)
+                alpha -= 2.0*M_PI;
+        }
+        else
+        {
+            // alpha must be positive at end
+            if (dotProduct <= 0)
+                alpha = M_PI - alpha;
+            else if (alpha < 0)
+                alpha += 2.0*M_PI;
+        }
+    }
+    else
+    {
+        // use dot product to get angle value (more accurate in this situation)
+        // use sign of cross product to decide which half
+        // alpha should not be NaN because we select the 'better' function
+        alpha = acos(dotProduct / (radius * radius));
+        if (!details.isCounterClockWise)
+        {
+            // alpha must be negative at end; also, alpha is the wrong part of the circle right now
+            if (crossProduct >= 0)
+                alpha -= 2.0*M_PI;
+            else
+                alpha = -alpha;
+        }
+        else if (crossProduct < 0) // alpha must be positive at end
+            alpha = 2.0*M_PI - alpha;
+    }
+
+    // calculate it, using the cross product value for the area of the triangle
+    double area = (alpha * radiusSquared - crossProduct)*0.5;
+    return area;
+}
+
+// End clone code from 
+// trunk\Providers\SQLite\Src\SpatialIndex\SltGeomUtils.cpp
 
 /************************************************************************/
 /* ComputeGeometryLength												*/
@@ -557,46 +892,68 @@ void FdoExpressionEngineGeometryUtil::ComputeCurveSegmentArea(FdoBoolean compute
 	switch (geomType)
 	{
 	case FdoGeometryComponentType_CircularArcSegment:
-		{			
-			// Needs tesselation. Create a geometry out of this curve.
-			FdoPtr<FdoCurveSegmentCollection>	segs = FdoCurveSegmentCollection::Create();
-            segs->Add(curveSeg);
+		{
+            if (computeGeodetic)
+            {
+			    // Needs tesselation. Create a geometry out of this curve.
+			    FdoPtr<FdoCurveSegmentCollection>	segs = FdoCurveSegmentCollection::Create();
+                segs->Add(curveSeg);
 
-			FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
-            FdoPtr<FdoIGeometry> geom = gf->CreateCurveString(segs);
+			    FdoPtr<FdoFgfGeometryFactory>	gf = FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoIGeometry> geom = gf->CreateCurveString(segs);
 
-			FdoPtr<FdoIGeometry> geometry = FdoSpatialUtility::TesselateCurve(geom);
+			    FdoPtr<FdoIGeometry> geometry = FdoSpatialUtility::TesselateCurve(geom);
 
-			// If the geometry is a simple line string, process here to avoid recursion.
-			if ( geometry->GetDerivedType() == FdoGeometryType_LineString )
-			{
-				FdoILineString * ls = static_cast<FdoILineString *>(geometry.p);
-        		FdoInt32 dimensionality = ls->GetDimensionality();
-				FdoInt32 numPositions = ls->GetCount();
+			    // If the geometry is a simple line string, process here to avoid recursion.
+			    if ( geometry->GetDerivedType() == FdoGeometryType_LineString )
+			    {
+				    FdoILineString * ls = static_cast<FdoILineString *>(geometry.p);
+        		    FdoInt32 dimensionality = ls->GetDimensionality();
+				    FdoInt32 numPositions = ls->GetCount();
+				    FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
+				    FdoInt32 numOrds = numPositions * numOrdsPerPos;
+				    const double * ordinates = ls->GetOrdinates();
+				    *area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
+			    }
+			    else if ( geometry->GetDerivedType() == FdoGeometryType_MultiLineString )
+			    {
+			        FdoIMultiLineString * mls = static_cast<FdoIMultiLineString *>(geometry.p);
+				    for ( int i = 0; i < mls->GetCount(); i++ )
+				    {
+					    FdoPtr<FdoILineString>	ls = mls->GetItem(i);
+    				    FdoInt32 dimensionality = ls->GetDimensionality();
+					    FdoInt32 numPositions = ls->GetCount();
+					    FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
+					    FdoInt32 numOrds = numPositions * numOrdsPerPos;
+					    const double * ordinates = ls->GetOrdinates();
+					    *area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
+				    }
+			    }
+			    else
+			    {
+				    // Must be a polygon or multipolygon
+				    FdoExpressionEngineGeometryUtil::ComputeGeometryArea( computeGeodetic, compute3D, geometry, area );
+			    }
+            }
+            else
+            {
+                FdoICircularArcSegment* arc = static_cast<FdoICircularArcSegment *>(curveSeg);
+        		FdoInt32 dimensionality = arc->GetDimensionality();
+				FdoInt32 numPositions = 2; // start & end pos
 				FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
 				FdoInt32 numOrds = numPositions * numOrdsPerPos;
-				const double * ordinates = ls->GetOrdinates();
-				*area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
-			}
-			else if ( geometry->GetDerivedType() == FdoGeometryType_MultiLineString )
-			{
-			    FdoIMultiLineString * mls = static_cast<FdoIMultiLineString *>(geometry.p);
-				for ( int i = 0; i < mls->GetCount(); i++ )
-				{
-					FdoPtr<FdoILineString>	ls = mls->GetItem(i);
-    				FdoInt32 dimensionality = ls->GetDimensionality();
-					FdoInt32 numPositions = ls->GetCount();
-					FdoInt32 numOrdsPerPos = FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(dimensionality);
-					FdoInt32 numOrds = numPositions * numOrdsPerPos;
-					const double * ordinates = ls->GetOrdinates();
-					*area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
-				}
-			}
-			else
-			{
-				// Must be a polygon or multipolygon
-				FdoExpressionEngineGeometryUtil::ComputeGeometryArea( computeGeodetic, compute3D, geometry, area );
-			}
+                
+                double ordinates[8]; // put max points possible
+                FdoPtr<FdoIDirectPosition> midPos = arc->GetMidPoint();
+                FdoPtr<FdoIDirectPosition> startPos = arc->GetStartPosition();
+                memcpy(ordinates, startPos->GetOrdinates(), sizeof(double)*numOrdsPerPos);
+                FdoPtr<FdoIDirectPosition> endPos = arc->GetEndPosition();
+                memcpy(ordinates+numOrdsPerPos, endPos->GetOrdinates(), sizeof(double)*numOrdsPerPos);
+                // first calculate area using a line between start and end pos
+                *area += FdoExpressionEngineGeometryUtil::ComputeArea(computeGeodetic, compute3D, numOrdsPerPos, numOrds, ordinates);
+                // now adjust the area depending of the arc
+                *area -= (ComputeArcSegmentArea(startPos->GetOrdinates(), midPos->GetOrdinates(), endPos->GetOrdinates())*2.0);
+            }
 			break;
 		}
 
@@ -732,8 +1089,6 @@ FdoInt32 FdoExpressionEngineGeometryUtil::DimensionalityToNumOrdinates(FdoInt32 
 /************************************************************************/
 /*  ComputeArcSegmentLength                                             */
 /************************************************************************/
-
-#define	EPS2               0.00000001
 
 void FdoExpressionEngineGeometryUtil::ComputeArcSegmentLength(FdoBoolean computeGeodetic, FdoBoolean compute3D, FdoICircularArcSegment* arcSeg, FdoDouble *length)
 {    
