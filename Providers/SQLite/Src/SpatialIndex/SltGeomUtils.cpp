@@ -88,6 +88,7 @@ double ComputeLinearRingArea(int point_count, unsigned int dim, const double *or
 double ComputeLinearRingAreaWithStartPoint(int point_count, unsigned int dim, const double *startpoint, const double *ordinates, bool computeGeodetic);
 bool GetCircularArcSegmentDetails(unsigned int dim, const double *startpoint, const double *ordinates, ArcSegmentDetails* details);
 double ComputeUsingTesselateArcSegment(unsigned int dim, const double *startpoint, const double *ordinates, bool computeGeodetic, bool isAreaCalculation);
+double ComputeArcSegmentArea(unsigned int dim, const double *startpoint, const double *ordinates);
 
 #ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
@@ -962,7 +963,13 @@ double ComputeGeometryArea(const unsigned char* fgf, bool computeGeodetic)
                             // start point is the last point of the previous segment.
                             int num_pts = 2;
                             const double* ordinates = (const double*)ireader;
-                            ringArea += ComputeUsingTesselateArcSegment(dim, startpt, ordinates, computeGeodetic, true);
+                            if (!computeGeodetic)
+                            {
+                                ringArea += ComputeLinearRingAreaWithStartPoint(1, dim, startpt, ordinates+dim, computeGeodetic);
+                                ringArea -= (ComputeArcSegmentArea(dim, startpt, ordinates)*2.0);
+                            }
+                            else
+                                ringArea += ComputeUsingTesselateArcSegment(dim, startpt, ordinates, computeGeodetic, true);
                             // remember last point for next segment
                             startpt = ordinates + dim * (num_pts - 1); 
                             ireader = (int*)(ordinates + num_pts * dim);
@@ -1506,27 +1513,13 @@ bool ComputeCenterFromThreePositions(unsigned int dim, const double *startpoint,
 
 bool IsDirectionCounterClockWise(const double *startpoint, const double *midpoint, const double *endpoint)
 {
-    double v21[3], v31[3];
+    double xVect1 = *midpoint - *startpoint;
+    double yVect1 = *(midpoint+1) - *(startpoint+1);
+    
+    double xVect2 = *endpoint - *midpoint;
+    double yVect2 = *(endpoint+1) - *(midpoint+1);
 
-	v21[0] =  *midpoint - *startpoint;
-	v21[1] =  *(midpoint+1) - *(startpoint+1);
-    v21[2] =  0.0;
-
-	v31[0] =  *endpoint - *startpoint;
-	v31[1] =  *(endpoint+1) - *(startpoint+1);
-    v31[2] =  0.0;
-    double normalX = SnapToZero(v21[1] * v31[2] - v31[1] * v21[2]);
-    double normalY = SnapToZero(v21[2] * v31[0] - v31[2] * v21[0]);
-    double normalZ = SnapToZero(v21[0] * v31[1] - v31[0] * v21[1]);
-    // Normalize
-
-	double a;
-	a = (normalX*normalX) + (normalY*normalY) + (normalZ*normalZ);
-    a = SnapToZero(a);
-    if (0.0 != a)
-    	a = 1 / sqrt ( a );
-
-    return ((a * normalZ) > 0.0);
+    return (xVect1*yVect2 - yVect1*xVect2) >= 0.0;
 }
 
 double ComputeLengthWithStartPoint(int point_count, unsigned int dim, const double *startpoint, const double *ordinates, bool computeGeodetic)
@@ -1801,6 +1794,70 @@ double ComputeUsingTesselateArcSegment(unsigned int dim, const double *startpoin
         delete[] newpoints;
     }
     return retVal;
+}
+
+double ComputeArcSegmentArea(unsigned int dim, const double *startpoint, const double *ordinates)
+{
+    ArcSegmentDetails details;
+    if(!GetCircularArcSegmentDetails(dim, startpoint, ordinates, &details))
+        return 0.0;
+
+    double radius = details.radius;
+    double xCenterToStart = *startpoint - details.center[0];
+    double yCenterToStart = *(startpoint+1) - details.center[1];
+    
+    double xCenterToEnd = *(ordinates+dim) - details.center[0];
+    double yCenterToEnd = *(ordinates+dim+1) - details.center[1];
+    
+    double crossProduct = xCenterToStart * yCenterToEnd - xCenterToEnd * yCenterToStart;
+    double dotProduct = xCenterToStart * xCenterToEnd + yCenterToStart * yCenterToEnd;   
+    double radiusSquared = radius * radius;
+    double alpha;
+
+    if (fabs(crossProduct) < fabs(dotProduct))
+    {
+        // use cross product to get angle value (more accurate in this situation)
+        // use sign of cross and dot product to decide which quadrant
+        // alpha should not be NaN because we select the 'better' function
+        alpha = asin(crossProduct / radiusSquared);
+        if (!details.isCounterClockWise)
+        {
+            // alpha must be negative at end; also, alpha is the wrong part of the circle right now
+            if (dotProduct <= 0)
+                alpha = -M_PI - alpha;
+            else if (alpha > 0)
+                alpha -= 2.0*M_PI;
+        }
+        else
+        {
+            // alpha must be positive at end
+            if (dotProduct <= 0)
+                alpha = M_PI - alpha;
+            else if (alpha < 0)
+                alpha += 2.0*M_PI;
+        }
+    }
+    else
+    {
+        // use dot product to get angle value (more accurate in this situation)
+        // use sign of cross product to decide which half
+        // alpha should not be NaN because we select the 'better' function
+        alpha = acos(dotProduct / (radius * radius));
+        if (!details.isCounterClockWise)
+        {
+            // alpha must be negative at end; also, alpha is the wrong part of the circle right now
+            if (crossProduct >= 0)
+                alpha -= 2.0*M_PI;
+            else
+                alpha = -alpha;
+        }
+        else if (crossProduct < 0) // alpha must be positive at end
+            alpha = 2.0*M_PI - alpha;
+    }
+
+    // calculate it, using the cross product value for the area of the triangle
+    double area = (alpha * radiusSquared - crossProduct)*0.5;
+    return area;
 }
 
 #define __dX     *(ordinates+dim)-*startpoint
