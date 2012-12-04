@@ -683,12 +683,12 @@ bool FdoCommonFile::IsDirectory (const wchar_t* name)
     }
 
 #ifdef _WIN32
-    struct _stat64 statInfo;
+    struct _stat statInfo;
     // Root directory is a special case that _stat() doesn't understand, so handle it differently:
     if (FileExists(name) && (wcslen(name) > 1) && ((name[wcslen(name)-1]==L':') || (name[wcslen(name)-2]==L':')))
         return true;
     else
-        return (0==_wstat64 (_name, &statInfo)) ? (statInfo.st_mode & _S_IFDIR) > 0 : false;
+        return (0==_wstat (_name, &statInfo)) ? (statInfo.st_mode & _S_IFDIR) > 0 : false;
 #else // _WIN32
     struct stat statInfo;
     char *mbName;
@@ -1271,9 +1271,9 @@ void FdoCommonFile::Chmod(FdoString* filePath, bool bReadWrite)
 FdoInt64 FdoCommonFile::GetTimestamp (const wchar_t* pFilename)
 {
 #ifdef _WIN32
-    struct _stat64 statInfo;
+    struct _stat statInfo;
 
-    return (0 == _wstat64 (pFilename, &statInfo)) ? statInfo.st_mtime : -1;
+    return (0 == _wstat (pFilename, &statInfo)) ? statInfo.st_mtime : -1;
 
 #else // _WIN32
     struct stat statInfo;
