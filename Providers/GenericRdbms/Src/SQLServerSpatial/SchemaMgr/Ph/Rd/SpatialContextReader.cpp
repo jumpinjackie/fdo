@@ -157,10 +157,25 @@ bool FdoSmPhRdSqsSpatialContextReader::ReadNext()
         // Check if SRID was encoded into spatial index name,
         FdoInt64 srid = static_cast<FdoSmPhSqsMgr*>(GetManager().p)->IndexName2Srid( FdoSmPhReader::GetString(L"", L"indexname") );
         
-        // If not encoded in name then determine associated SRID by sampling 
-        // first geometry for the column.
-        if ( srid == -1 ) 
-            srid = mOwner->SampleColumnSrid( mGeomTableName, mGeomColumnName );
+        bool hasPartSchSpContext = (!mOwner->GetHasMetaSchema() && mOwner->GetHasSCGroupInfoMetaSchema() && mOwner->GetHasSCGeomInfoMetaSchema() && mOwner->GetHasSCMetaSchema());
+
+        if (hasPartSchSpContext)
+        {
+            if ( srid == -1 ) // at least for spatial context reader we can skip the views
+                srid = FdoSmPhReader::GetInt64(L"", L"srid");
+
+            // If not encoded in name then determine associated SRID by sampling 
+            // first geometry for the column.
+            if ( srid == -1 && !mIsDerived) // we can skip the views
+                srid = mOwner->SampleColumnSrid( mGeomTableName, mGeomColumnName );
+        }
+        else // keep old behavior
+        {
+            // If not encoded in name then determine associated SRID by sampling 
+            // first geometry for the column.
+            if ( srid == -1)
+                srid = mOwner->SampleColumnSrid( mGeomTableName, mGeomColumnName, mIsDerived );
+        }
 
         mSrid = 0;
         mWKT = L"";

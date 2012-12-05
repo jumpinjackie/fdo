@@ -133,7 +133,7 @@ public:
     // Returns -1 if the dbobject has no rows.
     //
     // Exception is thrown if the column does not exist or is not geometric.
-    virtual FdoInt64 SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName );
+    virtual FdoInt64 SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName, bool isview = false );
     
     virtual FdoInt64 GetMetadataColumnSrid (FdoStringP dbObjectName, FdoStringP columnName);
 
