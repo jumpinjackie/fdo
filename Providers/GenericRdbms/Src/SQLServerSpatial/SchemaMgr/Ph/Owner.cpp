@@ -159,7 +159,7 @@ bool FdoSmPhSqsOwner::GetHasSCMetaSchema()
 {
     if (!mFdoMetadataLoaded)
         LoadFdoMetadata();
-    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontext) != 0);
+    return ((mTableFlags&cd_f_spatialcontext) != 0);
 }
 
 bool FdoSmPhSqsOwner::GetHasClassMetaSchema()
@@ -222,14 +222,14 @@ bool FdoSmPhSqsOwner::GetHasSCGeomInfoMetaSchema()
 {
     if (!mFdoMetadataLoaded)
         LoadFdoMetadata();
-    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontextgeom) != 0);
+    return ((mTableFlags&cd_f_spatialcontextgeom) != 0);
 }
 
 bool FdoSmPhSqsOwner::GetHasSCGroupInfoMetaSchema()
 {
     if (!mFdoMetadataLoaded)
         LoadFdoMetadata();
-    return GetHasMetaSchema() && ((mTableFlags&cd_f_spatialcontextgroup) != 0);
+    return ((mTableFlags&cd_f_spatialcontextgroup) != 0);
 }
 
 bool FdoSmPhSqsOwner::IsRdbObjNameAscii7()
@@ -399,7 +399,7 @@ FdoInt64 FdoSmPhSqsOwner::GetMetadataColumnSrid (FdoStringP dbObjectName, FdoStr
     return srid;
 }
 
-FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName )
+FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP columnName, bool isview )
 {
 	// SRID is -1 if table is empty or geometry column has not been populated yet
     FdoInt64 srid = -1;
@@ -407,7 +407,7 @@ FdoInt64 FdoSmPhSqsOwner::SampleColumnSrid( FdoStringP dbObjectName, FdoStringP 
 
     // Delimit column name with []. Can't use " when part of function.
 	FdoStringP sqlStmt = FdoStringP::Format(
-		L"select top 1 [%ls].STSrid as srid from %ls.%ls", 
+        isview ? L"select [%ls].STSrid as srid from %ls.%ls" : L"select top 1 [%ls].STSrid as srid from %ls.%ls", 
         (FdoString*) columnName,
         (FdoString*) this->GetDbName(),
         (FdoString*) fmtObjectName

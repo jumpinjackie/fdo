@@ -25,6 +25,10 @@
 
 #include <Src/Common/StringUtility.h>
 
+#ifndef _WIN32
+#define _wcsicmp wcscasecmp
+#endif
+
 #ifndef ASSERT
 #ifdef _DEBUG
     #include <CrtDbg.h>
@@ -1147,6 +1151,9 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
             // Bulk fetch the table and views, but skip bulk loading of columns and keys.
             pSchemaOwner->CacheDbObjects(false);
 
+            // do we have only the spatial context metadata, then use it?
+            bool hasPartSchSpContext = (!pSchemaOwner->GetHasMetaSchema() && pSchemaOwner->GetHasSCGroupInfoMetaSchema() && pSchemaOwner->GetHasSCGeomInfoMetaSchema() && pSchemaOwner->GetHasSCMetaSchema());
+
             FdoInt32 indexDbObject = 0;
             FdoSmPhDbObjectP pDbObject = pSchemaOwner->GetCachedDbObject(indexDbObject);
             FdoStringP className = L"";
@@ -1155,8 +1162,23 @@ FdoStringCollection* FdoSmLpSchemaCollection::GetClassNames(FdoStringP schemaNam
             while (pDbObject != NULL)
             {
                 className = pDbObject->GetBestClassName(pLpSchema->GetName());
-                if ( ((const wchar_t*)className)[0] != '\0' )
+                FdoString* cname = className;
+                if (*cname != '\0' )
                 {
+                    if (hasPartSchSpContext)
+                    {
+                        // we can look for f_s first to avoid any performance issues
+                        if ((*cname == 'f' || *cname == 'F') && *(cname+1) == '_' && *(cname+2) != '\0' && (*(cname+2) == 's' || *(cname+2) == 'S'))
+                        {
+                            // it might be f_spatialcontextgeom or f_spatialcontextgroup or f_spatialcontext
+                            if (_wcsicmp(cname, L"f_spatialcontext") == 0 || _wcsicmp(cname, L"f_spatialcontextgeom") == 0 || _wcsicmp(cname, L"f_spatialcontextgroup") == 0)
+                            {
+                                pDbObject = pSchemaOwner->GetCachedDbObject(++indexDbObject);
+                                continue;
+                            }
+                        }
+                    }
+
                     schemaName = pDbObject->GetBestSchemaName();
                     if (schemaName.GetLength() > 0)
                     {

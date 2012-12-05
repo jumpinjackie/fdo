@@ -117,7 +117,7 @@ FdoSmPhReaderP FdoSmPhSpatialContextGroupReader::MakeReader( FdoSmPhMgrP mgr )
     // }
     // else
     // {
-        if ( FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema() &&
+        if ( FdoSmPhOwnerP(mgr->GetOwner())->GetHasSCGroupInfoMetaSchema() &&
              FdoSmPhDbObjectP(scgRow->GetDbObject())->GetExists() ) {
             // F_SPATIALCONTEXTGROUP exists, read from MetaSchema
             pSubReader = MakeMtReader( rows, mgr );

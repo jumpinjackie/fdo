@@ -72,7 +72,7 @@ FdoSmPhReaderP FdoSmPhSpatialContextGeomReader::MakeReader( FdoSmPhMgrP mgr )
     // }
     // else
     // {
-        if ( FdoSmPhOwnerP(mgr->GetOwner())->GetHasMetaSchema() &&
+        if ( FdoSmPhOwnerP(mgr->GetOwner())->GetHasSCGeomInfoMetaSchema() &&
              FdoSmPhDbObjectP(scRow->GetDbObject())->GetExists() ) {
             // F_SPATIALCONTEXTGEOM exists; read from MetaSchema
             pSubReader = MakeMtReader( rows, mgr );

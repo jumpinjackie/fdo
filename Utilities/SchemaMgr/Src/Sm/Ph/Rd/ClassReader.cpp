@@ -22,6 +22,12 @@
 #include <Sm/Ph/SpatialIndex.h>
 #include <Sm/Ph/Rd/QueryReader.h>
 
+#include <Src/Common/StringUtility.h>
+
+#ifndef _WIN32
+#define _wcsicmp wcscasecmp
+#endif
+
 bool FdoSmPhRdClassReader::IsOrdinate(FdoSmPhColumnP column)
 {
     bool isOrdinate = false;
@@ -116,6 +122,8 @@ bool FdoSmPhRdClassReader::ReadNext()
     FdoStringP classifiedObjectName;
     int eof = IsEOF() ? 1 : 0;
     bool found = false;
+    
+    bool hasPartSchSpContext = ( mOwner && !mOwner->GetHasMetaSchema() && mOwner->GetHasSCGroupInfoMetaSchema() && mOwner->GetHasSCGeomInfoMetaSchema() && mOwner->GetHasSCMetaSchema());
 
     // Keep going until we find a valid table or run out of objects
     while ( !eof && !found  ) {
@@ -134,7 +142,22 @@ bool FdoSmPhRdClassReader::ReadNext()
             if ( ClassifyObjectType(pObject, mClassifyDefaultTypes) ) {
                 // Check if class can be generated from this table or view.
                 classifiedObjectName = ClassifyObject( pObject );
-                if ( ((const wchar_t*)classifiedObjectName)[0] != '\0' )  {
+
+                FdoString* cname = classifiedObjectName;
+                if (*cname != '\0')  {
+
+                    if (hasPartSchSpContext)
+                    {
+                        // we can look for f_s or F_S first to avoid any performance issues
+                        if ((*cname == 'f' || *cname == 'F') && *(cname+1) == '_' && *(cname+2) != '\0' && (*(cname+2) == 's' || *(cname+2) == 'S'))
+                        {
+                            // it might be f_spatialcontextgeom or f_spatialcontextgroup or f_spatialcontext
+                            if (_wcsicmp(cname, L"f_spatialcontext") == 0 || _wcsicmp(cname, L"f_spatialcontextgeom") == 0 || _wcsicmp(cname, L"f_spatialcontextgroup") == 0)
+                            {
+                                continue;
+                            }
+                        }
+                    }
                     found = true;
 
                     FdoSmPhColumnsP cols = pObject->GetColumns();
