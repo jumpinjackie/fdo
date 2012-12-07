@@ -410,9 +410,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
 {
     public:
         SltUpdate(SltConnection* connection) 
-            : SltFeatureCommand<FdoIUpdate>(connection),
-              m_updateCount(0),
-              m_bInTransaction(false)
+            : SltFeatureCommand<FdoIUpdate>(connection)
         {
             m_properties = FdoPropertyValueCollection::Create();
             m_db = m_connection->GetDbConnection();
@@ -421,9 +419,6 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
     protected:
         virtual ~SltUpdate()
         {
-            if (m_bInTransaction)
-                m_connection->CommitTransaction();
-
             FDO_SAFE_RELEASE(m_properties);
         }
 
@@ -435,39 +430,29 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
         virtual FdoPropertyValueCollection* GetPropertyValues() { return FDO_SAFE_ADDREF(m_properties); }
         virtual FdoInt32 Execute()
         {
-            //Commit a bulk update if we reached the limit
-            if (m_updateCount == BULK_OP_SIZE)
+            bool inTransaction = (!m_connection->IsTransactionStarted() && m_connection->StartTransaction() == SQLITE_OK);
+            int retVal = 0;
+            try
             {
-                if (m_bInTransaction)
-                {
+                retVal = m_connection->Update(m_className, 
+                                            m_filter, 
+                                            m_properties,
+                                            m_pParmeterValues);
+                if (inTransaction)
                     m_connection->CommitTransaction();
-                    m_bInTransaction = false;
-                }
-
-                m_updateCount = 0;
             }
-
-            //Begin a bulk update transaction
-            if (m_updateCount == 0)
+            catch(...)
             {
-                if (m_connection->StartTransaction() == SQLITE_OK)
-                    m_bInTransaction = true;                    
+                if (inTransaction)
+                    m_connection->RollbackTransaction();
+                throw;
             }
-
-            m_updateCount++;
-
-            return m_connection->Update(m_className, 
-                                        m_filter, 
-                                        m_properties,
-                                        m_pParmeterValues);
         }
         virtual FdoILockConflictReader* GetLockConflicts()      { return NULL; }
 
     private:
         FdoPropertyValueCollection* m_properties;
         sqlite3*                    m_db;
-        int                         m_updateCount;
-        bool                        m_bInTransaction;
 };
 
 
