@@ -383,11 +383,11 @@ FdoConnectionState SltConnection::Open()
     bool isInMemory = (_wcsicmp(dsw, L":memory:") == 0);
 
 #ifdef _WIN32
-    struct _stat statInfo;
-    memset(&statInfo, 0x00, sizeof(struct _stat));
+    struct _stat64 statInfo;
+    memset(&statInfo, 0x00, sizeof(struct _stat64));
     if (!isInMemory)
     {
-        if (0 != _wstat (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
+        if (0 != _wstat64 (dsw, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0)
             throw FdoConnectionException::Create(L"File does not exist!");
         if ((statInfo.st_mode&_S_IREAD) == 0)
             throw FdoConnectionException::Create(L"File cannot be accessed!");
