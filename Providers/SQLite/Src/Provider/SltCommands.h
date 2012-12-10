@@ -447,6 +447,7 @@ class SltUpdate : public SltFeatureCommand<FdoIUpdate>
                     m_connection->RollbackTransaction();
                 throw;
             }
+            return retVal;
         }
         virtual FdoILockConflictReader* GetLockConflicts()      { return NULL; }
 
