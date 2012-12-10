@@ -263,8 +263,8 @@ FdoConnectionState SdfConnection::Open( SdfCompareHandler* cmpHandler )
     {
 #ifdef _WIN32
         FdoStringP fileNamew = m_mbsFullPath;
-        struct _stat statInfo;
-        if (0 != _wstat ((const wchar_t*)fileNamew, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0 || ((statInfo.st_mode&_S_IREAD) == 0))
+        struct _stat64 statInfo;
+        if (0 != _wstat64 ((const wchar_t*)fileNamew, &statInfo) || (statInfo.st_mode&_S_IFREG) == 0 || ((statInfo.st_mode&_S_IREAD) == 0))
             throw FdoConnectionException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_50_NONEXISTING_FILE), "SDF connect failed. File does not exist or cannot be opened in specified access mode."));
         if (!m_bReadOnly)
             m_bReadOnly = ((statInfo.st_mode&_S_IWRITE)==0);
