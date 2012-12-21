@@ -117,7 +117,7 @@ void IndexTests::populate ()
         for (int i = 0; i < shx.GetNumObjects (); i++)
         {
             shx.GetObjectAt (i, offset, length);
-            shape = shp.GetObjectAt (offset, type);
+            shape = shp.GetObjectAt (i, offset, type);
             shape->GetBoundingBoxEx (box);
             if (limit.xMin > box.xMin)
                 limit.xMin = box.xMin;
@@ -170,7 +170,7 @@ void IndexTests::query ()
         for (int i = 0; i < shx.GetNumObjects (); i++)
         {
             shx.GetObjectAt (i, offset, length);
-            shape = shp.GetObjectAt (offset, type);
+            shape = shp.GetObjectAt (i, offset, type);
             shape->GetBoundingBoxEx (box);
             index.InsertObject (type, &box, offset);
             delete shape;
@@ -263,7 +263,7 @@ void IndexTests::check_z ()
             for (int i = 0; i < shx.GetNumObjects (); i++)
             {
                 shx.GetObjectAt (i, offset, length);
-                shape = shp.GetObjectAt (offset, type);
+                shape = shp.GetObjectAt (i, offset, type);
                 shape->GetBoundingBoxEx (box);
                 if (limit.xMin > box.xMin)
                     limit.xMin = box.xMin;

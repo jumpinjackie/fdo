@@ -22,6 +22,8 @@
 #include "BoundingBox.h"
 #include "ShapeFile.h"
 #include "Constants.h"
+#include "ShapeIndex.h"
+
 #include <limits>
 using namespace std;
 #undef min
@@ -55,6 +57,7 @@ ShapeFile::ShapeFile(const WCHAR* wszFilename)
 
     m_nCacheHits = 0;
     m_nCacheMisses = 0;
+    m_shx = NULL;
 }
 
 ShapeFile::ShapeFile(const WCHAR* wszFilename, eShapeTypes shape_type, bool has_m)
@@ -67,6 +70,7 @@ ShapeFile::ShapeFile(const WCHAR* wszFilename, eShapeTypes shape_type, bool has_
     ClearRowShapeCache();
 
 	CloseFile();
+    m_shx = NULL;
 }
 
 /*****************************************************************************
@@ -168,7 +172,7 @@ int ShapeFile::ReadRecordHeader (ULONG ulOffset, ULONG& ulNextObjectOffset, int&
  * Notes        : N/A
  *
  *****************************************************************************/
-Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
+Shape* ShapeFile::GetObjectAt (int idx, ULONG nOffset, eShapeTypes& nShapeType)
 {
     _FDORPT1(0, ">>>>>>>>>> GetObjectAt() Offset:%d <<<<<<<<<<\n",nOffset);
 
@@ -183,7 +187,7 @@ Shape* ShapeFile::GetObjectAt (ULONG nOffset, eShapeTypes& nShapeType)
     // If not, then refresh the read buffer
     if ( p == NULL )
     {
-        (void) ReadRawDataBlock (nOffset);
+        (void) ReadRawDataBlock (idx, nOffset);
         p = GetRowShapeFromCache( nOffset, nRecordNumber );           
     }
 
@@ -1304,7 +1308,7 @@ void ShapeFile::SetObjectAt (Shape* shape, bool batch)
  *
  *****************************************************************************/
 
-void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
+void ShapeFile::ReadRawDataBlock(int idx, ULONG ulStartOffset )
 {
     _FDORPT0(0, "ReadRawDataBlock()\n");
     ULONG   nOffset = ulStartOffset;
@@ -1326,7 +1330,7 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
 
     // ulStartOffset is read from shx file and corrupted shx file will result in unbelievable size value 
     // Besides this, the corrupted shp file probably results in the same problem.
-    if ( size > ( max(m_nFileLength, m_nFileSize) * WORD_SIZE_IN_BYTES - ulStartOffset) )
+    if ( size > ( max(m_nFileLength, m_nFileSize) * WORD_SIZE_IN_BYTES - ulStartOffset) || firstRecInfo->nContentLength < 0)
         throw FdoException::Create (NlsMsgGet(SHP_INVALID_RECORD_NUMBER_ERROR, "Invalid record number %1$ld for file '%2$ls'.", firstRecInfo->nRecordNumber, FileName ()));
 
     if ( size < SHP_SHAPE_BUFFER_MIN_SIZE )
@@ -1376,6 +1380,18 @@ void ShapeFile::ReadRawDataBlock(ULONG ulStartOffset )
         // These are stored in BigEndian so they must be swapped
         pRecordInfo->nRecordNumber = SWAPLONG(header.nRecordNumber);
         pRecordInfo->nContentLength = SWAPLONG(header.nContentLength);
+
+        if (m_shx != NULL)
+        {
+            ULONG offSetRow = 0;
+            int idxRowLen = 0;
+            bool recFound = m_shx->GetObjectAt(idx+i, offSetRow, idxRowLen, false);
+            if (pRecordInfo->nRecordNumber < 0 || (recFound && (pRecordInfo->nContentLength*WORD_SIZE_IN_BYTES) != idxRowLen))
+            {
+                pRecordInfo->bOffsetValid = false;
+                break;
+            }
+        }
 
         // Compute the next record's offset
         nOffset = pRecordInfo->nOffset + sizeof(SHPRecordHeader) + pRecordInfo->nContentLength * WORD_SIZE_IN_BYTES;

@@ -140,7 +140,7 @@ void FileAccessTests::object ()
     ShapeFile shp (SHP_FILE);
 
     shp.GetFilePointer (loff);
-    shape = shp.GetObjectAt (loff, type);
+    shape = shp.GetObjectAt (0, loff, type);
 	CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == type);
 
 	CPPUNIT_ASSERT_MESSAGE ("record number bad", 1 == shape->GetRecordNum ());

@@ -34,6 +34,7 @@
 #include "MultiPointMShape.h"
 #include "MultiPatchShape.h"
 #include "ShapeFileBase.h"
+class ShapeIndex;
 
 class ShapeFile : public ShapeFileBase
 {
@@ -59,11 +60,12 @@ public:
     static Shape* ShapeFromGeometry (FdoByteArray* bytes, int nRecordNumber);
 
     // Data access methods
-    Shape* GetObjectAt(ULONG nOffset, eShapeTypes& nShapeTypes);
+    Shape* GetObjectAt(int idx, ULONG nOffset, eShapeTypes& nShapeTypes);
     int ReadRecordHeader(ULONG ulOffset, ULONG& ulNextObjectOffset, int& nRecordNumber);
     void SetObjectAt (Shape* shape, bool batch = false);
     void WriteRecordHeader (int number, int length);
     void PutShape (Shape* shape);
+    void SetShapeIndex(ShapeIndex* shx) {m_shx = shx;}
 private:
     // Cache Info
     BYTE*               m_szRowBuffer;
@@ -73,10 +75,11 @@ private:
     // Statistics
     int                 m_nCacheHits;
     int                 m_nCacheMisses;
+    ShapeIndex*         m_shx;
 
 private:
     void    ReadRecordInfo(SHPRecordInfo *pRecordInfo);
-    void    ReadRawDataBlock(ULONG ulStartOffset );
+    void    ReadRawDataBlock(int idx, ULONG ulStartOffset );
     BYTE*   GetRowShapeFromCache(ULONG ulOffset, int& nRecordNumber);
     void    ClearRowShapeCache();
 
