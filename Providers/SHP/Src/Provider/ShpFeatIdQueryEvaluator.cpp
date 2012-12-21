@@ -275,7 +275,7 @@ void ShpFeatIdQueryEvaluator::DoSecondaryFilter(FdoIGeometry *filterGeom, FdoSpa
 
         // Get info from the file.
         fileSet->GetShapeIndexFile()->GetObjectAt( featNum, offset, length);
-        shape = fileSet->GetShapeFile()->GetObjectAt (offset, type);
+        shape = fileSet->GetShapeFile()->GetObjectAt (featNum, offset, type);
 		
         FdoPtr<FdoByteArray>  geomLeftFgf = shape->GetGeometry ();
         FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
@@ -448,7 +448,7 @@ void ShpFeatIdQueryEvaluator::ProcessSpatialCondition(FdoSpatialCondition& filte
 
                 // Get info from the file.
                 fileSet->GetShapeIndexFile()->GetObjectAt( featNum, offset, length);
-                shape = fileSet->GetShapeFile()->GetObjectAt (offset, type);
+                shape = fileSet->GetShapeFile()->GetObjectAt (featNum, offset, type);
 
                 FdoPtr<FdoByteArray>  geomLeftFgf = shape->GetGeometry ();
                 FdoPtr<FdoIGeometry>  geomLeft = gf->CreateGeometryFromFgf( geomLeftFgf );
