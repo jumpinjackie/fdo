@@ -1,0 +1,15 @@
+./include/KingOracle/KingOracle/FdoKgOraOverrides.h
+./include/KingOracle/KingOracle/fdokgoraprovider.h
+./include/KingOracle/KingOracle/Override/FdoKgOraClassCollection.h
+./include/KingOracle/KingOracle/Override/FdoKgOraClassDefinition.h
+./include/KingOracle/KingOracle/Override/FdoKgOraColumnDefinition.h
+./include/KingOracle/KingOracle/Override/FdoKgOraPhysicalSchemaMapping.h
+./include/KingOracle/KingOracle/Override/FdoKgOraPropertyDefinitionCollection.h
+./include/KingOracle/KingOracle/Override/FdoKgOraPropertyDefinition.h
+./lib/libKingOracleOverrides-3.5.0.so
+./lib/libKingOracleOverrides.la
+./lib/libKingOracleOverrides.so
+./lib/libKingOracleProvider-3.5.0.so
+./lib/libKingOracleProvider.la
+./lib/libKingOracleProvider.so
+./nls/KgOraMessage.cat

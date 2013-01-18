@@ -1,0 +1,3390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:simpleType name="NullEnumeration">
+      <xs:union>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="inapplicable"/>
+            <xs:enumeration value="missing"/>
+            <xs:enumeration value="template"/>
+            <xs:enumeration value="unknown"/>
+            <xs:enumeration value="withheld"/>
+          </xs:restriction>
+        </xs:simpleType>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="other:\w{2,}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:union>
+    </xs:simpleType>
+    <xs:simpleType name="NullType">
+      <xs:union memberTypes="gml:NullEnumeration anyURI"/>
+    </xs:simpleType>
+    <xs:element name="Null" type="gml:NullType"/>
+    <xs:simpleType name="SignType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="-"/>
+        <xs:enumeration value="+"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="booleanOrNull">
+      <xs:union memberTypes="gml:NullEnumeration boolean anyURI"/>
+    </xs:simpleType>
+    <xs:simpleType name="booleanOrNullList">
+      <xs:list itemType="gml:booleanOrNull"/>
+    </xs:simpleType>
+    <xs:simpleType name="booleanList">
+      <xs:list itemType="boolean"/>
+    </xs:simpleType>
+    <xs:simpleType name="stringOrNull">
+      <xs:union memberTypes="gml:NullEnumeration string anyURI"/>
+    </xs:simpleType>
+    <xs:simpleType name="NameOrNull">
+      <xs:union memberTypes="gml:NullEnumeration Name anyURI"/>
+    </xs:simpleType>
+    <xs:simpleType name="NameOrNullList">
+      <xs:list itemType="gml:NameOrNull"/>
+    </xs:simpleType>
+    <xs:simpleType name="NameList">
+      <xs:list itemType="Name"/>
+    </xs:simpleType>
+    <xs:simpleType name="doubleOrNull">
+      <xs:union memberTypes="gml:NullEnumeration double anyURI"/>
+    </xs:simpleType>
+    <xs:simpleType name="doubleOrNullList">
+      <xs:list itemType="gml:doubleOrNull"/>
+    </xs:simpleType>
+    <xs:simpleType name="doubleList">
+      <xs:list itemType="double"/>
+    </xs:simpleType>
+    <xs:simpleType name="integerOrNull">
+      <xs:union memberTypes="gml:NullEnumeration integer anyURI"/>
+    </xs:simpleType>
+    <xs:simpleType name="integerOrNullList">
+      <xs:list itemType="gml:integerOrNull"/>
+    </xs:simpleType>
+    <xs:simpleType name="integerList">
+      <xs:list itemType="integer"/>
+    </xs:simpleType>
+    <xs:complexType name="CodeType">
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="codeSpace" type="xs:anyURI" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="CodeListType">
+      <xs:simpleContent>
+        <xs:extension base="gml:NameList">
+          <xs:attribute name="codeSpace" type="xs:anyURI" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="CodeOrNullListType">
+      <xs:simpleContent>
+        <xs:extension base="gml:NameOrNullList">
+          <xs:attribute name="codeSpace" type="xs:anyURI" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="MeasureType">
+      <xs:simpleContent>
+        <xs:extension base="xs:double">
+          <xs:attribute name="uom" type="xs:anyURI" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="MeasureListType">
+      <xs:simpleContent>
+        <xs:extension base="gml:doubleList">
+          <xs:attribute name="uom" type="xs:anyURI" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="MeasureOrNullListType">
+      <xs:simpleContent>
+        <xs:extension base="gml:doubleOrNullList">
+          <xs:attribute name="uom" type="xs:anyURI" use="required"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="CoordinatesType">
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attribute name="decimal" type="xs:string" default="."/>
+          <xs:attribute name="cs" type="xs:string" default=","/>
+          <xs:attribute name="ts" type="xs:string" default=" "/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="NCNameList">
+      <xs:list itemType="NCName"/>
+    </xs:simpleType>
+    <xs:simpleType name="QNameList">
+      <xs:list itemType="QName"/>
+    </xs:simpleType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.w3.org/1999/xlink" version="2.1.2">
+    <xs:attribute name="href" type="xs:anyURI"/>
+    <xs:attribute name="role" type="xs:anyURI"/>
+    <xs:attribute name="arcrole" type="xs:anyURI"/>
+    <xs:attribute name="title" type="xs:string"/>
+    <xs:attribute name="show">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="new"/>
+          <xs:enumeration value="replace"/>
+          <xs:enumeration value="embed"/>
+          <xs:enumeration value="other"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="actuate">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="onLoad"/>
+          <xs:enumeration value="onRequest"/>
+          <xs:enumeration value="other"/>
+          <xs:enumeration value="none"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="label" type="xs:string"/>
+    <xs:attribute name="from" type="xs:string"/>
+    <xs:attribute name="to" type="xs:string"/>
+    <xs:attributeGroup name="simpleLink">
+      <xs:attribute name="type" type="xs:string" use="optional" fixed="simple" form="qualified"/>
+      <xs:attribute ref="xlink:href" use="optional"/>
+      <xs:attribute ref="xlink:role" use="optional"/>
+      <xs:attribute ref="xlink:arcrole" use="optional"/>
+      <xs:attribute ref="xlink:title" use="optional"/>
+      <xs:attribute ref="xlink:show" use="optional"/>
+      <xs:attribute ref="xlink:actuate" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="extendedLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="extended" form="qualified"/>
+      <xs:attribute ref="xlink:role" use="optional"/>
+      <xs:attribute ref="xlink:title" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="locatorLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="locator" form="qualified"/>
+      <xs:attribute ref="xlink:href" use="required"/>
+      <xs:attribute ref="xlink:role" use="optional"/>
+      <xs:attribute ref="xlink:title" use="optional"/>
+      <xs:attribute ref="xlink:label" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="arcLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="arc" form="qualified"/>
+      <xs:attribute ref="xlink:arcrole" use="optional"/>
+      <xs:attribute ref="xlink:title" use="optional"/>
+      <xs:attribute ref="xlink:show" use="optional"/>
+      <xs:attribute ref="xlink:actuate" use="optional"/>
+      <xs:attribute ref="xlink:from" use="optional"/>
+      <xs:attribute ref="xlink:to" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="resourceLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="resource" form="qualified"/>
+      <xs:attribute ref="xlink:role" use="optional"/>
+      <xs:attribute ref="xlink:title" use="optional"/>
+      <xs:attribute ref="xlink:label" use="optional"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="titleLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="title" form="qualified"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="emptyLink">
+      <xs:attribute name="type" type="xs:string" use="required" fixed="empty" form="qualified"/>
+    </xs:attributeGroup>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="_Object" abstract="true">			</xs:element>
+    <xs:element name="_GML" type="gml:AbstractGMLType" abstract="true" substitutionGroup="gml:_Object">			</xs:element>
+    <xs:group name="StandardObjectProperties">
+      <xs:sequence>
+        <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="gml:description" minOccurs="0"/>
+        <xs:element ref="gml:name" minOccurs="0" maxOccurs="unbounded">							</xs:element>
+      </xs:sequence>
+    </xs:group>
+    <xs:complexType name="AbstractGMLType" abstract="true">
+      <xs:sequence>
+        <xs:group ref="gml:StandardObjectProperties"/>
+      </xs:sequence>
+      <xs:attribute ref="gml:id" use="optional"/>
+    </xs:complexType>
+    <xs:element name="Bag" type="gml:BagType" substitutionGroup="gml:_GML">			</xs:element>
+    <xs:complexType name="BagType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType">
+          <xs:sequence>
+            <xs:element ref="gml:member" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:members" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Array" type="gml:ArrayType" substitutionGroup="gml:_GML">			</xs:element>
+    <xs:complexType name="ArrayType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType">
+          <xs:sequence>
+            <xs:element ref="gml:members" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_MetaData" type="gml:AbstractMetaDataType" abstract="true" substitutionGroup="gml:_Object">			</xs:element>
+    <xs:complexType name="AbstractMetaDataType" abstract="true" mixed="true">
+      <xs:attribute ref="gml:id" use="optional"/>
+    </xs:complexType>
+    <xs:element name="GenericMetaData" type="gml:GenericMetaDataType" substitutionGroup="gml:_MetaData">			</xs:element>
+    <xs:complexType name="GenericMetaDataType" mixed="true">
+      <xs:complexContent mixed="true">
+        <xs:extension base="gml:AbstractMetaDataType">
+          <xs:sequence>
+            <xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_association" type="gml:AssociationType" abstract="true"/>
+    <xs:element name="_strictAssociation" type="gml:AssociationType" abstract="true">			</xs:element>
+    <xs:element name="member" type="gml:AssociationType"/>
+    <xs:complexType name="AssociationType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Object"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_reference" type="gml:ReferenceType" abstract="true"/>
+    <xs:complexType name="ReferenceType">
+      <xs:sequence/>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="members" type="gml:ArrayAssociationType"/>
+    <xs:complexType name="ArrayAssociationType">
+      <xs:sequence>
+        <xs:element ref="gml:_Object" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="metaDataProperty" type="gml:MetaDataPropertyType">			</xs:element>
+    <xs:complexType name="MetaDataPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:any processContents="lax"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+      <xs:attribute name="about" type="xs:anyURI" use="optional"/>
+    </xs:complexType>
+    <xs:attribute name="id" type="xs:ID">			</xs:attribute>
+    <xs:attribute name="remoteSchema" type="xs:anyURI">			</xs:attribute>
+    <xs:attributeGroup name="AssociationAttributeGroup">
+      <xs:attributeGroup ref="xlink:simpleLink"/>
+      <xs:attribute ref="gml:remoteSchema" use="optional"/>
+    </xs:attributeGroup>
+    <xs:element name="name" type="gml:CodeType">			</xs:element>
+    <xs:element name="description" type="gml:StringOrRefType">			</xs:element>
+    <xs:complexType name="StringOrRefType">
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:group name="StandardDefinitionProperties">
+      <xs:sequence>
+        <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="gml:description" minOccurs="0"/>
+        <xs:element ref="gml:name" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:group>
+    <xs:element name="Definition" type="gml:DefinitionType" substitutionGroup="gml:_GML"/>
+    <xs:complexType name="DefinitionType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractGMLType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:description" minOccurs="0"/>
+            <xs:element ref="gml:name" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Dictionary" type="gml:DictionaryType" substitutionGroup="gml:Definition"/>
+    <xs:element name="DefinitionCollection" type="gml:DictionaryType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="DictionaryType">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:choice>
+              <xs:element ref="gml:dictionaryEntry">													</xs:element>
+              <xs:element ref="gml:indirectEntry">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="dictionaryEntry" type="gml:DictionaryEntryType"/>
+    <xs:element name="definitionMember" type="gml:DictionaryEntryType" substitutionGroup="gml:dictionaryEntry"/>
+    <xs:complexType name="DictionaryEntryType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:Definition">							</xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="indirectEntry" type="gml:IndirectEntryType"/>
+    <xs:complexType name="IndirectEntryType">
+      <xs:sequence>
+        <xs:element ref="gml:DefinitionProxy"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="DefinitionProxy" type="gml:DefinitionProxyType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="DefinitionProxyType">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:definitionRef">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="definitionRef" type="gml:ReferenceType"/>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="unitOfMeasure" type="gml:UnitOfMeasureType"/>
+    <xs:complexType name="UnitOfMeasureType">
+      <xs:sequence/>
+      <xs:attribute name="uom" type="xs:anyURI" use="required">					</xs:attribute>
+    </xs:complexType>
+    <xs:element name="UnitDefinition" type="gml:UnitDefinitionType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="UnitDefinitionType">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:quantityType"/>
+            <xs:element ref="gml:catalogSymbol" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="BaseUnit" type="gml:BaseUnitType" substitutionGroup="gml:UnitDefinition"/>
+    <xs:complexType name="BaseUnitType">
+      <xs:complexContent>
+        <xs:extension base="gml:UnitDefinitionType">
+          <xs:sequence>
+            <xs:element name="unitsSystem" type="gml:ReferenceType"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="DerivedUnit" type="gml:DerivedUnitType" substitutionGroup="gml:UnitDefinition"/>
+    <xs:complexType name="DerivedUnitType">
+      <xs:complexContent>
+        <xs:extension base="gml:UnitDefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:derivationUnitTerm" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ConventionalUnit" type="gml:ConventionalUnitType" substitutionGroup="gml:UnitDefinition"/>
+    <xs:complexType name="ConventionalUnitType">
+      <xs:complexContent>
+        <xs:extension base="gml:UnitDefinitionType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="gml:conversionToPreferredUnit"/>
+              <xs:element ref="gml:roughConversionToPreferredUnit"/>
+            </xs:choice>
+            <xs:element ref="gml:derivationUnitTerm" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="quantityType" type="gml:StringOrRefType">			</xs:element>
+    <xs:element name="catalogSymbol" type="gml:CodeType">			</xs:element>
+    <xs:element name="derivationUnitTerm" type="gml:DerivationUnitTermType"/>
+    <xs:complexType name="DerivationUnitTermType">
+      <xs:complexContent>
+        <xs:extension base="gml:UnitOfMeasureType">
+          <xs:attribute name="exponent" type="xs:integer"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="conversionToPreferredUnit" type="gml:ConversionToPreferredUnitType">			</xs:element>
+    <xs:element name="roughConversionToPreferredUnit" type="gml:ConversionToPreferredUnitType">			</xs:element>
+    <xs:complexType name="ConversionToPreferredUnitType">
+      <xs:complexContent>
+        <xs:extension base="gml:UnitOfMeasureType">
+          <xs:choice>
+            <xs:element name="factor" type="xs:double">											</xs:element>
+            <xs:element name="formula" type="gml:FormulaType">											</xs:element>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="FormulaType">
+      <xs:sequence>
+        <xs:element name="a" type="xs:double" minOccurs="0"/>
+        <xs:element name="b" type="xs:double"/>
+        <xs:element name="c" type="xs:double"/>
+        <xs:element name="d" type="xs:double" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="measure" type="gml:MeasureType"/>
+    <xs:complexType name="LengthType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="ScaleType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="TimeType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="GridLengthType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="AreaType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="VolumeType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="SpeedType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="AngleChoiceType">
+      <xs:choice>
+        <xs:element ref="gml:angle"/>
+        <xs:element ref="gml:dmsAngle"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:element name="angle" type="gml:MeasureType"/>
+    <xs:complexType name="AngleType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureType"/>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="dmsAngle" type="gml:DMSAngleType"/>
+    <xs:complexType name="DMSAngleType">
+      <xs:sequence>
+        <xs:element ref="gml:degrees"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="gml:decimalMinutes"/>
+          <xs:sequence>
+            <xs:element ref="gml:minutes"/>
+            <xs:element ref="gml:seconds" minOccurs="0"/>
+          </xs:sequence>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="degrees" type="gml:DegreesType"/>
+    <xs:complexType name="DegreesType">
+      <xs:simpleContent>
+        <xs:extension base="gml:DegreeValueType">
+          <xs:attribute name="direction">
+            <xs:simpleType>
+              <xs:union>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:enumeration value="N"/>
+                    <xs:enumeration value="E"/>
+                    <xs:enumeration value="S"/>
+                    <xs:enumeration value="W"/>
+                  </xs:restriction>
+                </xs:simpleType>
+                <xs:simpleType>
+                  <xs:restriction base="gml:SignType"/>
+                </xs:simpleType>
+              </xs:union>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="DegreeValueType">
+      <xs:restriction base="xs:nonNegativeInteger">
+        <xs:maxInclusive value="359"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="decimalMinutes" type="gml:DecimalMinutesType"/>
+    <xs:simpleType name="DecimalMinutesType">
+      <xs:restriction base="xs:decimal">
+        <xs:minInclusive value="0.00"/>
+        <xs:maxExclusive value="60.00"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="minutes" type="gml:ArcMinutesType"/>
+    <xs:simpleType name="ArcMinutesType">
+      <xs:restriction base="xs:nonNegativeInteger">
+        <xs:maxInclusive value="59"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="seconds" type="gml:ArcSecondsType"/>
+    <xs:simpleType name="ArcSecondsType">
+      <xs:restriction base="xs:decimal">
+        <xs:minInclusive value="0.00"/>
+        <xs:maxExclusive value="60.00"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="_Geometry" type="gml:AbstractGeometryType" abstract="true" substitutionGroup="gml:_GML">			</xs:element>
+    <xs:complexType name="GeometryPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Geometry"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="GeometryArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_Geometry" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AbstractGeometryType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType">
+          <xs:attribute name="gid" type="xs:string" use="optional">									</xs:attribute>
+          <xs:attributeGroup ref="gml:SRSReferenceGroup"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:attributeGroup name="SRSReferenceGroup">
+      <xs:attribute name="srsName" type="xs:anyURI" use="optional">					</xs:attribute>
+      <xs:attribute name="srsDimension" type="xs:positiveInteger" use="optional">					</xs:attribute>
+      <xs:attributeGroup ref="gml:SRSInformationGroup"/>
+    </xs:attributeGroup>
+    <xs:attributeGroup name="SRSInformationGroup">
+      <xs:attribute name="axisLabels" type="gml:NCNameList" use="optional">					</xs:attribute>
+      <xs:attribute name="uomLabels" type="gml:NCNameList" use="optional">					</xs:attribute>
+    </xs:attributeGroup>
+    <xs:element name="_GeometricPrimitive" type="gml:AbstractGeometricPrimitiveType" abstract="true" substitutionGroup="gml:_Geometry">			</xs:element>
+    <xs:complexType name="AbstractGeometricPrimitiveType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometryType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GeometricPrimitivePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_GeometricPrimitive"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="Point" type="gml:PointType" substitutionGroup="gml:_GeometricPrimitive"/>
+    <xs:complexType name="PointType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricPrimitiveType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="gml:pos"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+              <xs:element ref="gml:coord">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="pointProperty" type="gml:PointPropertyType">			</xs:element>
+    <xs:element name="pointRep" type="gml:PointPropertyType">			</xs:element>
+    <xs:complexType name="PointPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:Point"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="pointArrayProperty" type="gml:PointArrayPropertyType"/>
+    <xs:complexType name="PointArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:Point" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="_Curve" type="gml:AbstractCurveType" abstract="true" substitutionGroup="gml:_GeometricPrimitive">			</xs:element>
+    <xs:complexType name="AbstractCurveType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricPrimitiveType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="curveProperty" type="gml:CurvePropertyType">			</xs:element>
+    <xs:complexType name="CurvePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Curve"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="curveArrayProperty" type="gml:CurveArrayPropertyType"/>
+    <xs:complexType name="CurveArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_Curve" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="LineString" type="gml:LineStringType" substitutionGroup="gml:_Curve"/>
+    <xs:complexType name="LineStringType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="2" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+                <xs:element ref="gml:coord">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="pos" type="gml:DirectPositionType">			</xs:element>
+    <xs:complexType name="DirectPositionType">
+      <xs:simpleContent>
+        <xs:extension base="gml:doubleList">
+          <xs:attributeGroup ref="gml:SRSReferenceGroup"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="posList" type="gml:DirectPositionListType">			</xs:element>
+    <xs:complexType name="DirectPositionListType">
+      <xs:simpleContent>
+        <xs:extension base="gml:doubleList">
+          <xs:attributeGroup ref="gml:SRSReferenceGroup"/>
+          <xs:attribute name="count" type="xs:positiveInteger" use="optional">									</xs:attribute>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="vector" type="gml:VectorType">			</xs:element>
+    <xs:complexType name="VectorType">
+      <xs:simpleContent>
+        <xs:extension base="gml:doubleList">
+          <xs:attributeGroup ref="gml:SRSReferenceGroup"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:group name="geometricPositionGroup">
+      <xs:choice>
+        <xs:element ref="gml:pos"/>
+        <xs:element ref="gml:pointProperty"/>
+      </xs:choice>
+    </xs:group>
+    <xs:group name="geometricPositionListGroup">
+      <xs:choice>
+        <xs:element ref="gml:posList"/>
+        <xs:group ref="gml:geometricPositionGroup" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:group>
+    <xs:element name="coordinates" type="gml:CoordinatesType">			</xs:element>
+    <xs:element name="Envelope" type="gml:EnvelopeType"/>
+    <xs:complexType name="EnvelopeType">
+      <xs:choice>
+        <xs:sequence>
+          <xs:element name="lowerCorner" type="gml:DirectPositionType"/>
+          <xs:element name="upperCorner" type="gml:DirectPositionType"/>
+        </xs:sequence>
+        <xs:element ref="gml:coord" minOccurs="2" maxOccurs="2">							</xs:element>
+        <xs:element ref="gml:pos" minOccurs="2" maxOccurs="2">							</xs:element>
+        <xs:element ref="gml:coordinates">							</xs:element>
+      </xs:choice>
+      <xs:attributeGroup ref="gml:SRSReferenceGroup"/>
+    </xs:complexType>
+    <xs:element name="coord" type="gml:CoordType">			</xs:element>
+    <xs:complexType name="CoordType">
+      <xs:sequence>
+        <xs:element name="X" type="xs:decimal"/>
+        <xs:element name="Y" type="xs:decimal" minOccurs="0"/>
+        <xs:element name="Z" type="xs:decimal" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="lineStringProperty" type="gml:LineStringPropertyType">			</xs:element>
+    <xs:complexType name="LineStringPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:LineString"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="_Surface" type="gml:AbstractSurfaceType" abstract="true" substitutionGroup="gml:_GeometricPrimitive">			</xs:element>
+    <xs:complexType name="AbstractSurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricPrimitiveType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="surfaceProperty" type="gml:SurfacePropertyType">			</xs:element>
+    <xs:complexType name="SurfacePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Surface"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="surfaceArrayProperty" type="gml:SurfaceArrayPropertyType"/>
+    <xs:complexType name="SurfaceArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_Surface" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Polygon" type="gml:PolygonType" substitutionGroup="gml:_Surface"/>
+    <xs:complexType name="PolygonType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfaceType">
+          <xs:sequence>
+            <xs:element ref="gml:exterior" minOccurs="0"/>
+            <xs:element ref="gml:interior" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_Ring" type="gml:AbstractRingType" abstract="true" substitutionGroup="gml:_Geometry">			</xs:element>
+    <xs:complexType name="AbstractRingType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometryType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="exterior" type="gml:AbstractRingPropertyType">			</xs:element>
+    <xs:element name="interior" type="gml:AbstractRingPropertyType">			</xs:element>
+    <xs:element name="outerBoundaryIs" type="gml:AbstractRingPropertyType" substitutionGroup="gml:exterior">			</xs:element>
+    <xs:element name="innerBoundaryIs" type="gml:AbstractRingPropertyType" substitutionGroup="gml:interior">			</xs:element>
+    <xs:complexType name="AbstractRingPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_Ring"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="LinearRing" type="gml:LinearRingType" substitutionGroup="gml:_Ring"/>
+    <xs:complexType name="LinearRingType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractRingType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="4" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+              <xs:element ref="gml:coord" minOccurs="4" maxOccurs="unbounded">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LinearRingPropertyType">
+      <xs:choice>
+        <xs:element ref="gml:LinearRing"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:element name="polygonProperty" type="gml:PolygonPropertyType">			</xs:element>
+    <xs:complexType name="PolygonPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:Polygon"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="_TimeObject" type="gml:AbstractTimeObjectType" abstract="true" substitutionGroup="gml:_GML">			</xs:element>
+    <xs:complexType name="AbstractTimeObjectType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_TimePrimitive" type="gml:AbstractTimePrimitiveType" abstract="true" substitutionGroup="gml:_TimeObject">			</xs:element>
+    <xs:complexType name="AbstractTimePrimitiveType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeObjectType">
+          <xs:sequence>
+            <xs:element name="relatedTime" type="gml:RelatedTimeType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimePrimitivePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_TimePrimitive"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:complexType name="RelatedTimeType">
+      <xs:complexContent>
+        <xs:extension base="gml:TimePrimitivePropertyType">
+          <xs:attribute name="relativePosition">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="Before"/>
+                <xs:enumeration value="After"/>
+                <xs:enumeration value="Begins"/>
+                <xs:enumeration value="Ends"/>
+                <xs:enumeration value="During"/>
+                <xs:enumeration value="Equals"/>
+                <xs:enumeration value="Contains"/>
+                <xs:enumeration value="Overlaps"/>
+                <xs:enumeration value="Meets"/>
+                <xs:enumeration value="OverlappedBy"/>
+                <xs:enumeration value="MetBy"/>
+                <xs:enumeration value="BegunBy"/>
+                <xs:enumeration value="EndedBy"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_TimeComplex" type="gml:AbstractTimeComplexType" abstract="true" substitutionGroup="gml:_TimeObject">			</xs:element>
+    <xs:complexType name="AbstractTimeComplexType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeObjectType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_TimeGeometricPrimitive" type="gml:AbstractTimeGeometricPrimitiveType" abstract="true" substitutionGroup="gml:_TimePrimitive">			</xs:element>
+    <xs:complexType name="AbstractTimeGeometricPrimitiveType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimePrimitiveType">
+          <xs:attribute name="frame" type="xs:anyURI" use="optional" default="#ISO-8601"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeGeometricPrimitivePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_TimeGeometricPrimitive"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TimeInstant" type="gml:TimeInstantType" substitutionGroup="gml:_TimeGeometricPrimitive"/>
+    <xs:complexType name="TimeInstantType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeGeometricPrimitiveType">
+          <xs:sequence>
+            <xs:element ref="gml:timePosition"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeInstantPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimeInstant"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TimePeriod" type="gml:TimePeriodType" substitutionGroup="gml:_TimeGeometricPrimitive"/>
+    <xs:complexType name="TimePeriodType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeGeometricPrimitiveType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element name="beginPosition" type="gml:TimePositionType"/>
+              <xs:element name="begin" type="gml:TimeInstantPropertyType"/>
+            </xs:choice>
+            <xs:choice>
+              <xs:element name="endPosition" type="gml:TimePositionType"/>
+              <xs:element name="end" type="gml:TimeInstantPropertyType"/>
+            </xs:choice>
+            <xs:group ref="gml:timeLength" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimePeriodPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimePeriod"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:group name="timeLength">
+      <xs:choice>
+        <xs:element ref="gml:duration"/>
+        <xs:element ref="gml:timeInterval"/>
+      </xs:choice>
+    </xs:group>
+    <xs:element name="duration" type="xs:duration">			</xs:element>
+    <xs:element name="timeInterval" type="gml:TimeIntervalLengthType">			</xs:element>
+    <xs:complexType name="TimeIntervalLengthType" final="#all">
+      <xs:simpleContent>
+        <xs:extension base="xs:decimal">
+          <xs:attribute name="unit" type="gml:TimeUnitType" use="required"/>
+          <xs:attribute name="radix" type="xs:positiveInteger" use="optional"/>
+          <xs:attribute name="factor" type="xs:integer" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="TimeUnitType">
+      <xs:union>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="year"/>
+            <xs:enumeration value="day"/>
+            <xs:enumeration value="hour"/>
+            <xs:enumeration value="minute"/>
+            <xs:enumeration value="second"/>
+          </xs:restriction>
+        </xs:simpleType>
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="other:\w{2,}"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:union>
+    </xs:simpleType>
+    <xs:element name="timePosition" type="gml:TimePositionType">			</xs:element>
+    <xs:complexType name="TimePositionType" final="#all">
+      <xs:simpleContent>
+        <xs:extension base="gml:TimePositionUnion">
+          <xs:attribute name="frame" type="xs:anyURI" use="optional" default="#ISO-8601"/>
+          <xs:attribute name="calendarEraName" type="xs:string" use="optional"/>
+          <xs:attribute name="indeterminatePosition" type="gml:TimeIndeterminateValueType" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="TimePositionUnion">
+      <xs:union memberTypes="gml:CalDate time dateTime anyURI decimal"/>
+    </xs:simpleType>
+    <xs:simpleType name="CalDate">
+      <xs:union memberTypes="date gYearMonth gYear"/>
+    </xs:simpleType>
+    <xs:simpleType name="TimeIndeterminateValueType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="after"/>
+        <xs:enumeration value="before"/>
+        <xs:enumeration value="now"/>
+        <xs:enumeration value="unknown"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="validTime" type="gml:TimePrimitivePropertyType"/>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="_Feature" type="gml:AbstractFeatureType" abstract="true" substitutionGroup="gml:_GML"/>
+    <xs:complexType name="AbstractFeatureType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType">
+          <xs:sequence>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:location" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="boundedBy" type="gml:BoundingShapeType"/>
+    <xs:complexType name="BoundingShapeType">
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="gml:Envelope"/>
+          <xs:element ref="gml:Null"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="EnvelopeWithTimePeriod" type="gml:EnvelopeWithTimePeriodType" substitutionGroup="gml:Envelope"/>
+    <xs:complexType name="EnvelopeWithTimePeriodType">
+      <xs:complexContent>
+        <xs:extension base="gml:EnvelopeType">
+          <xs:sequence>
+            <xs:element ref="gml:timePosition" minOccurs="2" maxOccurs="2"/>
+          </xs:sequence>
+          <xs:attribute name="frame" type="xs:anyURI" use="optional" default="#ISO-8601"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="featureMember" type="gml:FeaturePropertyType"/>
+    <xs:element name="featureProperty" type="gml:FeaturePropertyType"/>
+    <xs:complexType name="FeaturePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Feature"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="featureMembers" type="gml:FeatureArrayPropertyType"/>
+    <xs:complexType name="FeatureArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_Feature" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="_FeatureCollection" type="gml:AbstractFeatureCollectionType" abstract="true" substitutionGroup="gml:_Feature"/>
+    <xs:complexType name="AbstractFeatureCollectionType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element ref="gml:featureMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:featureMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="FeatureCollection" type="gml:FeatureCollectionType" substitutionGroup="gml:_Feature"/>
+    <xs:complexType name="FeatureCollectionType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureCollectionType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="LocationKeyWord" type="gml:CodeType"/>
+    <xs:element name="LocationString" type="gml:StringOrRefType"/>
+    <xs:element name="centerOf" type="gml:PointPropertyType"/>
+    <xs:element name="position" type="gml:PointPropertyType"/>
+    <xs:element name="edgeOf" type="gml:CurvePropertyType"/>
+    <xs:element name="centerLineOf" type="gml:CurvePropertyType"/>
+    <xs:element name="extentOf" type="gml:SurfacePropertyType"/>
+    <xs:complexType name="BoundedFeatureType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy"/>
+            <xs:element ref="gml:location" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="location" type="gml:LocationPropertyType">			</xs:element>
+    <xs:complexType name="LocationPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:choice>
+          <xs:element ref="gml:_Geometry"/>
+          <xs:element ref="gml:LocationKeyWord"/>
+          <xs:element ref="gml:LocationString"/>
+          <xs:element ref="gml:Null"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="priorityLocation" type="gml:PriorityLocationPropertyType" substitutionGroup="gml:location">			</xs:element>
+    <xs:complexType name="PriorityLocationPropertyType">
+      <xs:complexContent>
+        <xs:extension base="gml:LocationPropertyType">
+          <xs:attribute name="priority" type="xs:string" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:group name="Value">
+      <xs:choice>
+        <xs:group ref="gml:ValueObject"/>
+        <xs:element ref="gml:_Object"/>
+        <xs:element ref="gml:Null"/>
+      </xs:choice>
+    </xs:group>
+    <xs:group name="ValueObject">
+      <xs:choice>
+        <xs:group ref="gml:ScalarValue"/>
+        <xs:group ref="gml:ScalarValueList"/>
+        <xs:group ref="gml:ValueExtent"/>
+        <xs:element ref="gml:CompositeValue"/>
+      </xs:choice>
+    </xs:group>
+    <xs:group name="ScalarValue">
+      <xs:choice>
+        <xs:element ref="gml:Boolean"/>
+        <xs:element ref="gml:Category"/>
+        <xs:element ref="gml:Quantity"/>
+        <xs:element ref="gml:Count"/>
+      </xs:choice>
+    </xs:group>
+    <xs:group name="ScalarValueList">
+      <xs:choice>
+        <xs:element ref="gml:BooleanList"/>
+        <xs:element ref="gml:CategoryList"/>
+        <xs:element ref="gml:QuantityList"/>
+        <xs:element ref="gml:CountList"/>
+      </xs:choice>
+    </xs:group>
+    <xs:element name="Boolean" type="xs:boolean">			</xs:element>
+    <xs:element name="BooleanList" type="gml:booleanOrNullList">			</xs:element>
+    <xs:element name="Category" type="gml:CodeType">			</xs:element>
+    <xs:element name="CategoryList" type="gml:CodeOrNullListType">			</xs:element>
+    <xs:element name="Quantity" type="gml:MeasureType">			</xs:element>
+    <xs:element name="QuantityList" type="gml:MeasureOrNullListType">			</xs:element>
+    <xs:element name="Count" type="xs:integer">			</xs:element>
+    <xs:element name="CountList" type="gml:integerOrNullList">			</xs:element>
+    <xs:complexType name="CompositeValueType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGMLType">
+          <xs:sequence>
+            <xs:element ref="gml:valueComponent" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:valueComponents" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="CompositeValue" type="gml:CompositeValueType">			</xs:element>
+    <xs:complexType name="ValueArrayType">
+      <xs:complexContent>
+        <xs:extension base="gml:CompositeValueType">
+          <xs:attributeGroup ref="gml:referenceSystem"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ValueArray" type="gml:ValueArrayType" substitutionGroup="gml:CompositeValue">			</xs:element>
+    <xs:attributeGroup name="referenceSystem">
+      <xs:attribute name="codeSpace" type="xs:anyURI" use="optional"/>
+      <xs:attribute name="uom" type="xs:anyURI" use="optional"/>
+    </xs:attributeGroup>
+    <xs:group name="ValueExtent">
+      <xs:choice>
+        <xs:element ref="gml:CategoryExtent"/>
+        <xs:element ref="gml:QuantityExtent"/>
+        <xs:element ref="gml:CountExtent"/>
+      </xs:choice>
+    </xs:group>
+    <xs:element name="QuantityExtent" type="gml:QuantityExtentType">			</xs:element>
+    <xs:complexType name="QuantityExtentType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:MeasureOrNullListType">
+          <xs:length value="2"/>
+        </xs:restriction>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="CategoryExtent" type="gml:CategoryExtentType">			</xs:element>
+    <xs:complexType name="CategoryExtentType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:CodeOrNullListType">
+          <xs:length value="2"/>
+        </xs:restriction>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="CountExtent" type="gml:CountExtentType">			</xs:element>
+    <xs:simpleType name="CountExtentType">
+      <xs:restriction base="gml:integerOrNullList">
+        <xs:length value="2"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="valueProperty" type="gml:ValuePropertyType">			</xs:element>
+    <xs:element name="valueComponent" type="gml:ValuePropertyType">			</xs:element>
+    <xs:complexType name="ValuePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:group ref="gml:Value"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="valueComponents" type="gml:ValueArrayPropertyType">			</xs:element>
+    <xs:complexType name="ValueArrayPropertyType">
+      <xs:sequence>
+        <xs:group ref="gml:Value" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ScalarValuePropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ValuePropertyType">
+          <xs:sequence minOccurs="0">
+            <xs:group ref="gml:ScalarValue"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="BooleanPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ValuePropertyType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:Boolean"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CategoryPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ValuePropertyType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:Category"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="QuantityPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ValuePropertyType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:Quantity"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CountPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ValuePropertyType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:Count"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="_ImplicitGeometry" type="gml:AbstractGeometryType" abstract="true" substitutionGroup="gml:_Geometry"/>
+    <xs:element name="Grid" type="gml:GridType" substitutionGroup="gml:_ImplicitGeometry"/>
+    <xs:complexType name="GridType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometryType">
+          <xs:sequence>
+            <xs:element name="limits" type="gml:GridLimitsType"/>
+            <xs:element name="axisName" type="xs:string" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="dimension" type="xs:positiveInteger" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GridLimitsType">
+      <xs:sequence>
+        <xs:element name="GridEnvelope" type="gml:GridEnvelopeType"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GridEnvelopeType">
+      <xs:sequence>
+        <xs:element name="low" type="gml:integerList"/>
+        <xs:element name="high" type="gml:integerList"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="RectifiedGrid" type="gml:RectifiedGridType" substitutionGroup="gml:_ImplicitGeometry">			</xs:element>
+    <xs:complexType name="RectifiedGridType">
+      <xs:complexContent>
+        <xs:extension base="gml:GridType">
+          <xs:sequence>
+            <xs:element name="origin" type="gml:PointPropertyType"/>
+            <xs:element name="offsetVector" type="gml:VectorType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="Curve" type="gml:CurveType" substitutionGroup="gml:_Curve"/>
+    <xs:complexType name="CurveType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveType">
+          <xs:sequence>
+            <xs:element ref="gml:segments">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="baseCurve" type="gml:CurvePropertyType">			</xs:element>
+    <xs:element name="OrientableCurve" type="gml:OrientableCurveType" substitutionGroup="gml:_Curve"/>
+    <xs:complexType name="OrientableCurveType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveType">
+          <xs:sequence>
+            <xs:element ref="gml:baseCurve">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="orientation" type="gml:SignType" default="+">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_CurveSegment" type="gml:AbstractCurveSegmentType" abstract="true">			</xs:element>
+    <xs:complexType name="AbstractCurveSegmentType" abstract="true">
+      <xs:sequence/>
+      <xs:attribute name="numDerivativesAtStart" type="xs:integer" use="optional" default="0">					</xs:attribute>
+      <xs:attribute name="numDerivativesAtEnd" type="xs:integer" use="optional" default="0">					</xs:attribute>
+      <xs:attribute name="numDerivativeInterior" type="xs:integer" use="optional" default="0">					</xs:attribute>
+    </xs:complexType>
+    <xs:element name="segments" type="gml:CurveSegmentArrayPropertyType">			</xs:element>
+    <xs:complexType name="CurveSegmentArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:_CurveSegment" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="LineStringSegment" type="gml:LineStringSegmentType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="LineStringSegmentType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="2" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="linear">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ArcString" type="gml:ArcStringType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="ArcStringType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="3" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="circularArc3Points">									</xs:attribute>
+          <xs:attribute name="numArc" type="xs:integer" use="optional">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Arc" type="gml:ArcType" substitutionGroup="gml:ArcString"/>
+    <xs:complexType name="ArcType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ArcStringType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="3" maxOccurs="3">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+          </xs:sequence>
+          <xs:attribute name="numArc" type="xs:integer" use="optional" fixed="1">									</xs:attribute>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Circle" type="gml:CircleType" substitutionGroup="gml:Arc"/>
+    <xs:complexType name="CircleType">
+      <xs:complexContent>
+        <xs:extension base="gml:ArcType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ArcStringByBulge" type="gml:ArcStringByBulgeType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="ArcStringByBulgeType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="2" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="bulge" type="xs:double" maxOccurs="unbounded">											</xs:element>
+            <xs:element name="normal" type="gml:VectorType" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="circularArc2PointWithBulge">									</xs:attribute>
+          <xs:attribute name="numArc" type="xs:integer" use="optional">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ArcByBulge" type="gml:ArcByBulgeType" substitutionGroup="gml:ArcStringByBulge"/>
+    <xs:complexType name="ArcByBulgeType">
+      <xs:complexContent>
+        <xs:restriction base="gml:ArcStringByBulgeType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="2" maxOccurs="2">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="bulge" type="xs:double">											</xs:element>
+            <xs:element name="normal" type="gml:VectorType">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="numArc" type="xs:integer" use="optional" fixed="1">									</xs:attribute>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ArcByCenterPoint" type="gml:ArcByCenterPointType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="ArcByCenterPointType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice>
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="radius" type="gml:LengthType">											</xs:element>
+            <xs:element name="startAngle" type="gml:AngleType" minOccurs="0">											</xs:element>
+            <xs:element name="endAngle" type="gml:AngleType" minOccurs="0">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="circularArcCenterPointWithRadius">									</xs:attribute>
+          <xs:attribute name="numArc" type="xs:integer" use="required" fixed="1">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="CircleByCenterPoint" type="gml:CircleByCenterPointType" substitutionGroup="gml:ArcByCenterPoint"/>
+    <xs:complexType name="CircleByCenterPointType">
+      <xs:complexContent>
+        <xs:extension base="gml:ArcByCenterPointType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="OffsetCurve" type="gml:OffsetCurveType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="OffsetCurveType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:element name="offsetBase" type="gml:CurvePropertyType">											</xs:element>
+            <xs:element name="distance" type="gml:LengthType">											</xs:element>
+            <xs:element name="refDirection" type="gml:VectorType" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="AffinePlacement" type="gml:AffinePlacementType"/>
+    <xs:complexType name="AffinePlacementType">
+      <xs:sequence>
+        <xs:element name="location" type="gml:DirectPositionType">							</xs:element>
+        <xs:element name="refDirection" type="gml:VectorType" maxOccurs="unbounded">							</xs:element>
+        <xs:element name="inDimension" type="xs:positiveInteger">							</xs:element>
+        <xs:element name="outDimension" type="xs:positiveInteger">							</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Clothoid" type="gml:ClothoidType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="ClothoidType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:element name="refLocation">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element ref="gml:AffinePlacement">																	</xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="scaleFactor" type="xs:decimal">											</xs:element>
+            <xs:element name="startParameter" type="xs:double">											</xs:element>
+            <xs:element name="endParameter" type="xs:double">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="GeodesicString" type="gml:GeodesicStringType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="GeodesicStringType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:choice>
+            <xs:element ref="gml:posList"/>
+            <xs:group ref="gml:geometricPositionGroup" minOccurs="2" maxOccurs="unbounded"/>
+          </xs:choice>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="geodesic">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Geodesic" type="gml:GeodesicType" substitutionGroup="gml:GeodesicString"/>
+    <xs:complexType name="GeodesicType">
+      <xs:complexContent>
+        <xs:extension base="gml:GeodesicStringType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="CubicSpline" type="gml:CubicSplineType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="CubicSplineType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="2" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="vectorAtStart" type="gml:VectorType">											</xs:element>
+            <xs:element name="vectorAtEnd" type="gml:VectorType">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="cubicSpline">									</xs:attribute>
+          <xs:attribute name="degree" type="xs:integer" fixed="3">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="KnotType">
+      <xs:sequence>
+        <xs:element name="value" type="xs:double">							</xs:element>
+        <xs:element name="multiplicity" type="xs:nonNegativeInteger">							</xs:element>
+        <xs:element name="weight" type="xs:double">							</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="KnotPropertyType">
+      <xs:sequence>
+        <xs:element name="Knot" type="gml:KnotType"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="BSpline" type="gml:BSplineType" substitutionGroup="gml:_CurveSegment"/>
+    <xs:complexType name="BSplineType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCurveSegmentType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="degree" type="xs:nonNegativeInteger">											</xs:element>
+            <xs:element name="knot" type="gml:KnotPropertyType" minOccurs="2" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" default="polynomialSpline">									</xs:attribute>
+          <xs:attribute name="isPolynomial" type="xs:boolean" use="optional">									</xs:attribute>
+          <xs:attribute name="knotType" type="gml:KnotTypesType" use="optional">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Bezier" type="gml:BezierType" substitutionGroup="gml:BSpline"/>
+    <xs:complexType name="BezierType">
+      <xs:complexContent>
+        <xs:restriction base="gml:BSplineType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="gml:pos"/>
+                <xs:element ref="gml:pointProperty"/>
+                <xs:element ref="gml:pointRep">															</xs:element>
+              </xs:choice>
+              <xs:element ref="gml:posList"/>
+              <xs:element ref="gml:coordinates">													</xs:element>
+            </xs:choice>
+            <xs:element name="degree" type="xs:nonNegativeInteger">											</xs:element>
+            <xs:element name="knot" type="gml:KnotPropertyType" minOccurs="2" maxOccurs="2">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:CurveInterpolationType" fixed="polynomialSpline">									</xs:attribute>
+          <xs:attribute name="isPolynomial" type="xs:boolean" fixed="true">									</xs:attribute>
+          <xs:attribute name="knotType" type="gml:KnotTypesType" use="prohibited">									</xs:attribute>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Surface" type="gml:SurfaceType" substitutionGroup="gml:_Surface"/>
+    <xs:complexType name="SurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfaceType">
+          <xs:sequence>
+            <xs:element ref="gml:patches">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="baseSurface" type="gml:SurfacePropertyType">			</xs:element>
+    <xs:element name="OrientableSurface" type="gml:OrientableSurfaceType" substitutionGroup="gml:_Surface"/>
+    <xs:complexType name="OrientableSurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfaceType">
+          <xs:sequence>
+            <xs:element ref="gml:baseSurface">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="orientation" type="gml:SignType" default="+">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_SurfacePatch" type="gml:AbstractSurfacePatchType" abstract="true">			</xs:element>
+    <xs:complexType name="AbstractSurfacePatchType" abstract="true">
+      <xs:sequence/>
+    </xs:complexType>
+    <xs:element name="patches" type="gml:SurfacePatchArrayPropertyType">			</xs:element>
+    <xs:complexType name="SurfacePatchArrayPropertyType">
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="gml:_SurfacePatch"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="PolygonPatch" type="gml:PolygonPatchType" substitutionGroup="gml:_SurfacePatch"/>
+    <xs:complexType name="PolygonPatchType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfacePatchType">
+          <xs:sequence>
+            <xs:element ref="gml:exterior" minOccurs="0"/>
+            <xs:element ref="gml:interior" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:SurfaceInterpolationType" fixed="planar">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Triangle" type="gml:TriangleType" substitutionGroup="gml:_SurfacePatch"/>
+    <xs:complexType name="TriangleType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfacePatchType">
+          <xs:sequence>
+            <xs:element ref="gml:exterior">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:SurfaceInterpolationType" fixed="planar">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Rectangle" type="gml:RectangleType" substitutionGroup="gml:_SurfacePatch"/>
+    <xs:complexType name="RectangleType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfacePatchType">
+          <xs:sequence>
+            <xs:element ref="gml:exterior">											</xs:element>
+          </xs:sequence>
+          <xs:attribute name="interpolation" type="gml:SurfaceInterpolationType" fixed="planar">									</xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="curveMember" type="gml:CurvePropertyType">			</xs:element>
+    <xs:element name="Ring" type="gml:RingType" substitutionGroup="gml:_Ring"/>
+    <xs:complexType name="RingType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractRingType">
+          <xs:sequence>
+            <xs:element ref="gml:curveMember" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RingPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:Ring"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:group name="PointGrid">
+      <xs:sequence>
+        <xs:element name="row" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:group ref="gml:geometricPositionListGroup"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:group>
+    <xs:element name="_ParametricCurveSurface" type="gml:AbstractParametricCurveSurfaceType" abstract="true" substitutionGroup="gml:_SurfacePatch"/>
+    <xs:complexType name="AbstractParametricCurveSurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSurfacePatchType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_GriddedSurface" type="gml:AbstractGriddedSurfaceType" abstract="true" substitutionGroup="gml:_ParametricCurveSurface"/>
+    <xs:complexType name="AbstractGriddedSurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractParametricCurveSurfaceType">
+          <xs:sequence>
+            <xs:group ref="gml:PointGrid">											</xs:group>
+            <xs:element name="rows" type="xs:integer" minOccurs="0">											</xs:element>
+            <xs:element name="columns" type="xs:integer" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Cone" type="gml:ConeType" substitutionGroup="gml:_GriddedSurface"/>
+    <xs:complexType name="ConeType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGriddedSurfaceType">
+          <xs:attribute name="horizontalCurveType" type="gml:CurveInterpolationType" fixed="circularArc3Points"/>
+          <xs:attribute name="verticalCurveType" type="gml:CurveInterpolationType" fixed="linear"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Cylinder" type="gml:CylinderType" substitutionGroup="gml:_GriddedSurface"/>
+    <xs:complexType name="CylinderType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGriddedSurfaceType">
+          <xs:attribute name="horizontalCurveType" type="gml:CurveInterpolationType" fixed="circularArc3Points"/>
+          <xs:attribute name="verticalCurveType" type="gml:CurveInterpolationType" fixed="linear"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Sphere" type="gml:SphereType" substitutionGroup="gml:_GriddedSurface"/>
+    <xs:complexType name="SphereType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGriddedSurfaceType">
+          <xs:attribute name="horizontalCurveType" type="gml:CurveInterpolationType" fixed="circularArc3Points"/>
+          <xs:attribute name="verticalCurveType" type="gml:CurveInterpolationType" fixed="circularArc3Points"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="PolyhedralSurface" type="gml:PolyhedralSurfaceType" substitutionGroup="gml:Surface"/>
+    <xs:complexType name="PolyhedralSurfaceType">
+      <xs:complexContent>
+        <xs:restriction base="gml:SurfaceType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:polygonPatches">											</xs:element>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="polygonPatches" type="gml:PolygonPatchArrayPropertyType" substitutionGroup="gml:patches">			</xs:element>
+    <xs:complexType name="PolygonPatchArrayPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:SurfacePatchArrayPropertyType">
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="gml:PolygonPatch"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="trianglePatches" type="gml:TrianglePatchArrayPropertyType" substitutionGroup="gml:patches">			</xs:element>
+    <xs:complexType name="TrianglePatchArrayPropertyType">
+      <xs:complexContent>
+        <xs:restriction base="gml:SurfacePatchArrayPropertyType">
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="gml:Triangle"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="TriangulatedSurface" type="gml:TriangulatedSurfaceType" substitutionGroup="gml:Surface"/>
+    <xs:complexType name="TriangulatedSurfaceType">
+      <xs:complexContent>
+        <xs:restriction base="gml:SurfaceType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:trianglePatches">											</xs:element>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Tin" type="gml:TinType" substitutionGroup="gml:TriangulatedSurface"/>
+    <xs:complexType name="TinType">
+      <xs:complexContent>
+        <xs:extension base="gml:TriangulatedSurfaceType">
+          <xs:sequence>
+            <xs:element name="stopLines" type="gml:LineStringSegmentArrayPropertyType" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element name="breakLines" type="gml:LineStringSegmentArrayPropertyType" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element name="maxLength" type="gml:LengthType">											</xs:element>
+            <xs:element name="controlPoint">
+              <xs:complexType>
+                <xs:choice>
+                  <xs:element ref="gml:posList"/>
+                  <xs:group ref="gml:geometricPositionGroup" minOccurs="3" maxOccurs="unbounded"/>
+                </xs:choice>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="LineStringSegmentArrayPropertyType">
+      <xs:sequence>
+        <xs:element ref="gml:LineStringSegment" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="_Solid" type="gml:AbstractSolidType" abstract="true" substitutionGroup="gml:_GeometricPrimitive">			</xs:element>
+    <xs:complexType name="AbstractSolidType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricPrimitiveType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="solidProperty" type="gml:SolidPropertyType">			</xs:element>
+    <xs:complexType name="SolidPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Solid"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="solidArrayProperty" type="gml:SolidArrayPropertyType"/>
+    <xs:complexType name="SolidArrayPropertyType">
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="gml:_Solid"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Solid" type="gml:SolidType" substitutionGroup="gml:_Solid"/>
+    <xs:complexType name="SolidType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractSolidType">
+          <xs:sequence>
+            <xs:element name="exterior" type="gml:SurfacePropertyType" minOccurs="0">											</xs:element>
+            <xs:element name="interior" type="gml:SurfacePropertyType" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="CurveInterpolationType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="linear"/>
+        <xs:enumeration value="geodesic"/>
+        <xs:enumeration value="circularArc3Points"/>
+        <xs:enumeration value="circularArc2PointWithBulge"/>
+        <xs:enumeration value="circularArcCenterPointWithRadius"/>
+        <xs:enumeration value="elliptical"/>
+        <xs:enumeration value="clothoid"/>
+        <xs:enumeration value="conic"/>
+        <xs:enumeration value="polynomialSpline"/>
+        <xs:enumeration value="cubicSpline"/>
+        <xs:enumeration value="rationalSpline"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SurfaceInterpolationType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="none"/>
+        <xs:enumeration value="planar"/>
+        <xs:enumeration value="spherical"/>
+        <xs:enumeration value="elliptical"/>
+        <xs:enumeration value="conic"/>
+        <xs:enumeration value="tin"/>
+        <xs:enumeration value="parametricCurve"/>
+        <xs:enumeration value="polynomialSpline"/>
+        <xs:enumeration value="rationalSpline"/>
+        <xs:enumeration value="triangulatedSpline"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="KnotTypesType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="uniform"/>
+        <xs:enumeration value="quasiUniform"/>
+        <xs:enumeration value="piecewiseBezier"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron">
+    <xs:element name="_GeometricAggregate" type="gml:AbstractGeometricAggregateType" abstract="true" substitutionGroup="gml:_Geometry">			</xs:element>
+    <xs:complexType name="AbstractGeometricAggregateType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometryType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="MultiGeometry" type="gml:MultiGeometryType" substitutionGroup="gml:_GeometricAggregate"/>
+    <xs:complexType name="MultiGeometryType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:geometryMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:geometryMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiGeometryProperty" type="gml:MultiGeometryPropertyType">			</xs:element>
+    <xs:complexType name="MultiGeometryPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_GeometricAggregate"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="MultiPoint" type="gml:MultiPointType" substitutionGroup="gml:_GeometricAggregate"/>
+    <xs:complexType name="MultiPointType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:pointMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:pointMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiPointProperty" type="gml:MultiPointPropertyType">			</xs:element>
+    <xs:complexType name="MultiPointPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiPoint"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="MultiCurve" type="gml:MultiCurveType" substitutionGroup="gml:_GeometricAggregate"/>
+    <xs:complexType name="MultiCurveType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:curveMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:curveMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiCurveProperty" type="gml:MultiCurvePropertyType">			</xs:element>
+    <xs:complexType name="MultiCurvePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiCurve"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="MultiSurface" type="gml:MultiSurfaceType" substitutionGroup="gml:_GeometricAggregate"/>
+    <xs:complexType name="MultiSurfaceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:surfaceMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:surfaceMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiSurfaceProperty" type="gml:MultiSurfacePropertyType">			</xs:element>
+    <xs:complexType name="MultiSurfacePropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiSurface"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="MultiSolid" type="gml:MultiSolidType" substitutionGroup="gml:_GeometricAggregate"/>
+    <xs:complexType name="MultiSolidType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:solidMember" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:solidMembers" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiSolidProperty" type="gml:MultiSolidPropertyType">			</xs:element>
+    <xs:complexType name="MultiSolidPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiSolid"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="MultiPolygon" type="gml:MultiPolygonType" substitutionGroup="gml:_GeometricAggregate">			</xs:element>
+    <xs:element name="MultiLineString" type="gml:MultiLineStringType" substitutionGroup="gml:_GeometricAggregate">			</xs:element>
+    <xs:complexType name="MultiLineStringType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:lineStringMember" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MultiLineStringPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiLineString"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:complexType name="MultiPolygonType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeometricAggregateType">
+          <xs:sequence>
+            <xs:element ref="gml:polygonMember" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="MultiPolygonPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:MultiPolygon"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup">					</xs:attributeGroup>
+    </xs:complexType>
+    <xs:element name="geometryMember" type="gml:GeometryPropertyType">			</xs:element>
+    <xs:element name="geometryMembers" type="gml:GeometryArrayPropertyType">			</xs:element>
+    <xs:element name="pointMember" type="gml:PointPropertyType">			</xs:element>
+    <xs:element name="pointMembers" type="gml:PointArrayPropertyType">			</xs:element>
+    <xs:element name="curveMembers" type="gml:CurveArrayPropertyType">			</xs:element>
+    <xs:element name="surfaceMember" type="gml:SurfacePropertyType">			</xs:element>
+    <xs:element name="surfaceMembers" type="gml:SurfaceArrayPropertyType">			</xs:element>
+    <xs:element name="solidMember" type="gml:SolidPropertyType">			</xs:element>
+    <xs:element name="solidMembers" type="gml:SolidArrayPropertyType">			</xs:element>
+    <xs:element name="multiCenterOf" type="gml:MultiPointPropertyType"/>
+    <xs:element name="multiPosition" type="gml:MultiPointPropertyType"/>
+    <xs:element name="multiCenterLineOf" type="gml:MultiCurvePropertyType"/>
+    <xs:element name="multiEdgeOf" type="gml:MultiCurvePropertyType"/>
+    <xs:element name="multiCoverage" type="gml:MultiSurfacePropertyType"/>
+    <xs:element name="multiExtentOf" type="gml:MultiSurfacePropertyType"/>
+    <xs:element name="multiLocation" type="gml:MultiPointPropertyType">			</xs:element>
+    <xs:element name="lineStringMember" type="gml:LineStringPropertyType">			</xs:element>
+    <xs:element name="polygonMember" type="gml:PolygonPropertyType">			</xs:element>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="_Coverage" type="gml:AbstractCoverageType" abstract="true" substitutionGroup="gml:_Feature"/>
+    <xs:complexType name="AbstractCoverageType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element ref="gml:domainSet"/>
+            <xs:element ref="gml:rangeSet"/>
+          </xs:sequence>
+          <xs:attribute name="dimension" type="xs:positiveInteger" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_ContinuousCoverage" type="gml:AbstractContinuousCoverageType" abstract="true" substitutionGroup="gml:_Coverage"/>
+    <xs:complexType name="AbstractContinuousCoverageType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoverageType">
+          <xs:sequence>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="_DiscreteCoverage" type="gml:AbstractDiscreteCoverageType" abstract="true" substitutionGroup="gml:_Coverage"/>
+    <xs:complexType name="AbstractDiscreteCoverageType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoverageType">
+          <xs:sequence>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="domainSet" type="gml:DomainSetType"/>
+    <xs:complexType name="DomainSetType">
+      <xs:sequence minOccurs="0">
+        <xs:choice>
+          <xs:element ref="gml:_Geometry"/>
+          <xs:element ref="gml:_TimeObject"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="rangeSet" type="gml:RangeSetType"/>
+    <xs:complexType name="RangeSetType">
+      <xs:choice>
+        <xs:element ref="gml:ValueArray" maxOccurs="unbounded">							</xs:element>
+        <xs:group ref="gml:ScalarValueList" maxOccurs="unbounded">							</xs:group>
+        <xs:element ref="gml:DataBlock">							</xs:element>
+        <xs:element ref="gml:File">							</xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:element name="coverageFunction" type="gml:CoverageFunctionType"/>
+    <xs:complexType name="CoverageFunctionType">
+      <xs:choice>
+        <xs:element ref="gml:MappingRule"/>
+        <xs:element ref="gml:GridFunction"/>
+      </xs:choice>
+    </xs:complexType>
+    <xs:element name="DataBlock" type="gml:DataBlockType"/>
+    <xs:complexType name="DataBlockType">
+      <xs:sequence>
+        <xs:element ref="gml:rangeParameters"/>
+        <xs:choice>
+          <xs:element ref="gml:tupleList"/>
+          <xs:element ref="gml:doubleOrNullTupleList"/>
+        </xs:choice>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="tupleList" type="gml:CoordinatesType"/>
+    <xs:element name="doubleOrNullTupleList" type="gml:doubleOrNullList"/>
+    <xs:element name="File" type="gml:FileType"/>
+    <xs:complexType name="FileType">
+      <xs:sequence>
+        <xs:element ref="gml:rangeParameters"/>
+        <xs:element name="fileName" type="xs:anyURI"/>
+        <xs:element name="fileStructure" type="gml:FileValueModelType"/>
+        <xs:element name="mimeType" type="xs:anyURI" minOccurs="0"/>
+        <xs:element name="compression" type="xs:anyURI" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="FileValueModelType">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="Record Interleaved"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="rangeParameters" type="gml:RangeParametersType"/>
+    <xs:complexType name="RangeParametersType">
+      <xs:sequence minOccurs="0">
+        <xs:group ref="gml:ValueObject"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="MappingRule" type="gml:StringOrRefType">			</xs:element>
+    <xs:element name="GridFunction" type="gml:GridFunctionType"/>
+    <xs:complexType name="GridFunctionType">
+      <xs:sequence>
+        <xs:element name="sequenceRule" type="gml:SequenceRuleType" minOccurs="0">							</xs:element>
+        <xs:element name="startPoint" type="gml:integerList" minOccurs="0">							</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="IndexMap" type="gml:IndexMapType" substitutionGroup="gml:GridFunction"/>
+    <xs:complexType name="IndexMapType">
+      <xs:complexContent>
+        <xs:extension base="gml:GridFunctionType">
+          <xs:sequence>
+            <xs:element name="lookUpTable" type="gml:integerList"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="SequenceRuleType">
+      <xs:simpleContent>
+        <xs:extension base="gml:SequenceRuleNames">
+          <xs:attribute name="order" type="gml:IncrementOrder" use="optional"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="SequenceRuleNames">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="Linear"/>
+        <xs:enumeration value="Boustrophedonic"/>
+        <xs:enumeration value="Cantor-diagonal"/>
+        <xs:enumeration value="Spiral"/>
+        <xs:enumeration value="Morton"/>
+        <xs:enumeration value="Hilbert"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="IncrementOrder">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="+x+y"/>
+        <xs:enumeration value="+y+x"/>
+        <xs:enumeration value="+x-y"/>
+        <xs:enumeration value="-x-y"/>
+      </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="MultiPointCoverage" type="gml:MultiPointCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="MultiPointCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:multiPointDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiPointDomain" type="gml:MultiPointDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="MultiPointDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:MultiPoint"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="MultiCurveCoverage" type="gml:MultiCurveCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="MultiCurveCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:multiCurveDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiCurveDomain" type="gml:MultiCurveDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="MultiCurveDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:MultiCurve"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="MultiSurfaceCoverage" type="gml:MultiSurfaceCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="MultiSurfaceCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:multiSurfaceDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiSurfaceDomain" type="gml:MultiSurfaceDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="MultiSurfaceDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:MultiSurface"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="MultiSolidCoverage" type="gml:MultiSolidCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="MultiSolidCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:multiSolidDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="multiSolidDomain" type="gml:MultiSolidDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="MultiSolidDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:MultiSolid"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="GridCoverage" type="gml:GridCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="GridCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:gridDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="gridDomain" type="gml:GridDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="GridDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:Grid"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="RectifiedGridCoverage" type="gml:RectifiedGridCoverageType" substitutionGroup="gml:_DiscreteCoverage"/>
+    <xs:complexType name="RectifiedGridCoverageType">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractDiscreteCoverageType">
+          <xs:sequence>
+            <xs:group ref="gml:StandardObjectProperties"/>
+            <xs:element ref="gml:boundedBy" minOccurs="0"/>
+            <xs:element ref="gml:rectifiedGridDomain"/>
+            <xs:element ref="gml:rangeSet"/>
+            <xs:element ref="gml:coverageFunction" minOccurs="0"/>
+          </xs:sequence>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="rectifiedGridDomain" type="gml:RectifiedGridDomainType" substitutionGroup="gml:domainSet"/>
+    <xs:complexType name="RectifiedGridDomainType">
+      <xs:complexContent>
+        <xs:restriction base="gml:DomainSetType">
+          <xs:sequence minOccurs="0">
+            <xs:element ref="gml:RectifiedGrid"/>
+          </xs:sequence>
+          <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="_ReferenceSystem" type="gml:AbstractReferenceSystemType" abstract="true" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="AbstractReferenceSystemBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:srsName"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="srsName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="AbstractReferenceSystemType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:srsID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:validArea" minOccurs="0"/>
+            <xs:element ref="gml:scope" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="srsID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="referenceSystemRef" type="gml:ReferenceSystemRefType"/>
+    <xs:complexType name="ReferenceSystemRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_ReferenceSystem"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_CRS" type="gml:AbstractReferenceSystemType" abstract="true" substitutionGroup="gml:_ReferenceSystem">			</xs:element>
+    <xs:element name="crsRef" type="gml:CRSRefType"/>
+    <xs:complexType name="CRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_CRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:complexType name="IdentifierType">
+      <xs:sequence>
+        <xs:element ref="gml:name">							</xs:element>
+        <xs:element ref="gml:version" minOccurs="0"/>
+        <xs:element ref="gml:remarks" minOccurs="0">							</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="version" type="xs:string">			</xs:element>
+    <xs:element name="remarks" type="gml:StringOrRefType">			</xs:element>
+    <xs:element name="scope" type="xs:string">			</xs:element>
+    <xs:element name="validArea" type="gml:ExtentType">			</xs:element>
+    <xs:complexType name="ExtentType">
+      <xs:sequence>
+        <xs:element ref="gml:description" minOccurs="0">							</xs:element>
+        <xs:choice>
+          <xs:element ref="gml:boundingBox" minOccurs="0" maxOccurs="unbounded">									</xs:element>
+          <xs:element ref="gml:boundingPolygon" minOccurs="0" maxOccurs="unbounded">									</xs:element>
+        </xs:choice>
+        <xs:element ref="gml:verticalExtent" minOccurs="0" maxOccurs="unbounded">							</xs:element>
+        <xs:element ref="gml:temporalExtent" minOccurs="0" maxOccurs="unbounded">							</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="boundingBox" type="gml:EnvelopeType">			</xs:element>
+    <xs:element name="boundingPolygon" type="gml:PolygonType">			</xs:element>
+    <xs:element name="verticalExtent" type="gml:EnvelopeType">			</xs:element>
+    <xs:element name="temporalExtent" type="gml:TimePeriodType">			</xs:element>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="CoordinateSystemAxis" type="gml:CoordinateSystemAxisType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="CoordinateSystemAxisBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:name">											</xs:element>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CoordinateSystemAxisType">
+      <xs:complexContent>
+        <xs:extension base="gml:CoordinateSystemAxisBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:axisID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:axisAbbrev"/>
+            <xs:element ref="gml:axisDirection"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:uom" use="required"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="axisID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="axisAbbrev" type="gml:CodeType">			</xs:element>
+    <xs:element name="axisDirection" type="gml:CodeType">			</xs:element>
+    <xs:attribute name="uom" type="xs:anyURI">			</xs:attribute>
+    <xs:element name="coordinateSystemAxisRef" type="gml:CoordinateSystemAxisRefType"/>
+    <xs:complexType name="CoordinateSystemAxisRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:CoordinateSystemAxis"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_CoordinateSystem" type="gml:AbstractCoordinateSystemType" abstract="true" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="AbstractCoordinateSystemBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:csName"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="csName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="AbstractCoordinateSystemType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:csID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:usesAxis" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="csID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="usesAxis" type="gml:CoordinateSystemAxisRefType">			</xs:element>
+    <xs:element name="coordinateSystemRef" type="gml:CoordinateSystemRefType"/>
+    <xs:complexType name="CoordinateSystemRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_CoordinateSystem"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="EllipsoidalCS" type="gml:EllipsoidalCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="EllipsoidalCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="ellipsoidalCSRef" type="gml:EllipsoidalCSRefType"/>
+    <xs:complexType name="EllipsoidalCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:EllipsoidalCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="CartesianCS" type="gml:CartesianCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="CartesianCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="cartesianCSRef" type="gml:CartesianCSRefType"/>
+    <xs:complexType name="CartesianCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:CartesianCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="VerticalCS" type="gml:VerticalCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="VerticalCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="verticalCSRef" type="gml:VerticalCSRefType"/>
+    <xs:complexType name="VerticalCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:VerticalCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TemporalCS" type="gml:TemporalCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="TemporalCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="temporalCSRef" type="gml:TemporalCSRefType"/>
+    <xs:complexType name="TemporalCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TemporalCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="LinearCS" type="gml:LinearCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="LinearCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="linearCSRef" type="gml:LinearCSRefType"/>
+    <xs:complexType name="LinearCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:LinearCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="UserDefinedCS" type="gml:UserDefinedCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="UserDefinedCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="userDefinedCSRef" type="gml:UserDefinedCSRefType"/>
+    <xs:complexType name="UserDefinedCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:UserDefinedCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="SphericalCS" type="gml:SphericalCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="SphericalCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="sphericalCSRef" type="gml:SphericalCSRefType"/>
+    <xs:complexType name="SphericalCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:SphericalCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="PolarCS" type="gml:PolarCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="PolarCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="polarCSRef" type="gml:PolarCSRefType"/>
+    <xs:complexType name="PolarCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:PolarCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="CylindricalCS" type="gml:CylindricalCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="CylindricalCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="cylindricalCSRef" type="gml:CylindricalCSRefType"/>
+    <xs:complexType name="CylindricalCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:CylindricalCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="ObliqueCartesianCS" type="gml:ObliqueCartesianCSType" substitutionGroup="gml:_CoordinateSystem"/>
+    <xs:complexType name="ObliqueCartesianCSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateSystemType"/>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="obliqueCartesianCSRef" type="gml:ObliqueCartesianCSRefType"/>
+    <xs:complexType name="ObliqueCartesianCSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:ObliqueCartesianCS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="_positionalAccuracy" type="gml:AbstractPositionalAccuracyType" abstract="true"/>
+    <xs:complexType name="AbstractPositionalAccuracyType" abstract="true">
+      <xs:sequence>
+        <xs:element ref="gml:measureDescription" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="measureDescription" type="gml:CodeType">			</xs:element>
+    <xs:element name="absoluteExternalPositionalAccuracy" type="gml:AbsoluteExternalPositionalAccuracyType" substitutionGroup="gml:_positionalAccuracy"/>
+    <xs:complexType name="AbsoluteExternalPositionalAccuracyType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractPositionalAccuracyType">
+          <xs:sequence>
+            <xs:element ref="gml:result"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="relativeInternalPositionalAccuracy" type="gml:RelativeInternalPositionalAccuracyType" substitutionGroup="gml:_positionalAccuracy"/>
+    <xs:complexType name="RelativeInternalPositionalAccuracyType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractPositionalAccuracyType">
+          <xs:sequence>
+            <xs:element ref="gml:result"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="result" type="gml:MeasureType">			</xs:element>
+    <xs:element name="covarianceMatrix" type="gml:CovarianceMatrixType" substitutionGroup="gml:_positionalAccuracy"/>
+    <xs:complexType name="CovarianceMatrixType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractPositionalAccuracyType">
+          <xs:sequence>
+            <xs:element ref="gml:unitOfMeasure" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:includesElement" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="includesElement" type="gml:CovarianceElementType"/>
+    <xs:complexType name="CovarianceElementType">
+      <xs:sequence>
+        <xs:element ref="gml:rowIndex"/>
+        <xs:element ref="gml:columnIndex"/>
+        <xs:element ref="gml:covariance"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:element name="rowIndex" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="columnIndex" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="covariance" type="xs:double">			</xs:element>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="_CoordinateOperation" type="gml:AbstractCoordinateOperationType" abstract="true" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="AbstractCoordinateOperationBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:coordinateOperationName"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="coordinateOperationName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="AbstractCoordinateOperationType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateOperationBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:coordinateOperationID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:operationVersion" minOccurs="0"/>
+            <xs:element ref="gml:validArea" minOccurs="0"/>
+            <xs:element ref="gml:scope" minOccurs="0"/>
+            <xs:element ref="gml:_positionalAccuracy" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:sourceCRS" minOccurs="0"/>
+            <xs:element ref="gml:targetCRS" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="coordinateOperationID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="operationVersion" type="xs:string">			</xs:element>
+    <xs:element name="sourceCRS" type="gml:CRSRefType">			</xs:element>
+    <xs:element name="targetCRS" type="gml:CRSRefType">			</xs:element>
+    <xs:element name="coordinateOperationRef" type="gml:CoordinateOperationRefType"/>
+    <xs:complexType name="CoordinateOperationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_CoordinateOperation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="ConcatenatedOperation" type="gml:ConcatenatedOperationType" substitutionGroup="gml:_CoordinateOperation"/>
+    <xs:complexType name="ConcatenatedOperationType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateOperationType">
+          <xs:sequence>
+            <xs:element ref="gml:usesSingleOperation" minOccurs="2" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesSingleOperation" type="gml:SingleOperationRefType">			</xs:element>
+    <xs:element name="concatenatedOperationRef" type="gml:ConcatenatedOperationRefType"/>
+    <xs:complexType name="ConcatenatedOperationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:ConcatenatedOperation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_SingleOperation" type="gml:AbstractCoordinateOperationType" abstract="true" substitutionGroup="gml:_CoordinateOperation">			</xs:element>
+    <xs:element name="singleOperationRef" type="gml:SingleOperationRefType"/>
+    <xs:complexType name="SingleOperationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_SingleOperation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="PassThroughOperation" type="gml:PassThroughOperationType" substitutionGroup="gml:_SingleOperation"/>
+    <xs:complexType name="PassThroughOperationType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractCoordinateOperationType">
+          <xs:sequence>
+            <xs:element ref="gml:modifiedCoordinate" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:usesOperation"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="modifiedCoordinate" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="usesOperation" type="gml:OperationRefType">			</xs:element>
+    <xs:element name="passThroughOperationRef" type="gml:PassThroughOperationRefType"/>
+    <xs:complexType name="PassThroughOperationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:PassThroughOperation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_Operation" type="gml:AbstractCoordinateOperationType" abstract="true" substitutionGroup="gml:_SingleOperation">			</xs:element>
+    <xs:element name="operationRef" type="gml:OperationRefType"/>
+    <xs:complexType name="OperationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_Operation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_GeneralConversion" type="gml:AbstractGeneralConversionType" abstract="true" substitutionGroup="gml:_Operation"/>
+    <xs:complexType name="AbstractGeneralConversionType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractCoordinateOperationType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:coordinateOperationName"/>
+            <xs:element ref="gml:coordinateOperationID" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:remarks" minOccurs="0"/>
+            <xs:element ref="gml:validArea" minOccurs="0"/>
+            <xs:element ref="gml:scope" minOccurs="0"/>
+            <xs:element ref="gml:_positionalAccuracy" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="generalConversionRef" type="gml:GeneralConversionRefType"/>
+    <xs:complexType name="GeneralConversionRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_GeneralConversion"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="Conversion" type="gml:ConversionType" substitutionGroup="gml:_GeneralConversion"/>
+    <xs:complexType name="ConversionType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralConversionType">
+          <xs:sequence>
+            <xs:element ref="gml:usesMethod"/>
+            <xs:element ref="gml:usesValue" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesMethod" type="gml:OperationMethodRefType">			</xs:element>
+    <xs:element name="usesValue" type="gml:ParameterValueType">			</xs:element>
+    <xs:element name="conversionRef" type="gml:ConversionRefType"/>
+    <xs:complexType name="ConversionRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:Conversion"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_GeneralTransformation" type="gml:AbstractGeneralTransformationType" abstract="true" substitutionGroup="gml:_Operation"/>
+    <xs:complexType name="AbstractGeneralTransformationType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractCoordinateOperationType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:coordinateOperationName"/>
+            <xs:element ref="gml:coordinateOperationID" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:remarks" minOccurs="0"/>
+            <xs:element ref="gml:operationVersion"/>
+            <xs:element ref="gml:validArea" minOccurs="0"/>
+            <xs:element ref="gml:scope" minOccurs="0"/>
+            <xs:element ref="gml:_positionalAccuracy" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:sourceCRS"/>
+            <xs:element ref="gml:targetCRS"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="generalTransformationRef" type="gml:GeneralTransformationRefType"/>
+    <xs:complexType name="GeneralTransformationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_GeneralTransformation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="Transformation" type="gml:TransformationType" substitutionGroup="gml:_GeneralTransformation"/>
+    <xs:complexType name="TransformationType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralTransformationType">
+          <xs:sequence>
+            <xs:element ref="gml:usesMethod"/>
+            <xs:element ref="gml:usesValue" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="transformationRef" type="gml:TransformationRefType"/>
+    <xs:complexType name="TransformationRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:Transformation"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_generalParameterValue" type="gml:AbstractGeneralParameterValueType" abstract="true"/>
+    <xs:complexType name="AbstractGeneralParameterValueType" abstract="true">
+      <xs:sequence/>
+    </xs:complexType>
+    <xs:element name="parameterValue" type="gml:ParameterValueType" substitutionGroup="gml:_generalParameterValue"/>
+    <xs:complexType name="ParameterValueType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralParameterValueType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="gml:value"/>
+              <xs:element ref="gml:dmsAngleValue"/>
+              <xs:element ref="gml:stringValue"/>
+              <xs:element ref="gml:integerValue"/>
+              <xs:element ref="gml:booleanValue"/>
+              <xs:element ref="gml:valueList"/>
+              <xs:element ref="gml:integerValueList"/>
+              <xs:element ref="gml:valueFile"/>
+            </xs:choice>
+            <xs:element ref="gml:valueOfParameter"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="value" type="gml:MeasureType">			</xs:element>
+    <xs:element name="dmsAngleValue" type="gml:DMSAngleType">			</xs:element>
+    <xs:element name="stringValue" type="xs:string">			</xs:element>
+    <xs:element name="integerValue" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="booleanValue" type="xs:boolean">			</xs:element>
+    <xs:element name="valueList" type="gml:MeasureListType">			</xs:element>
+    <xs:element name="integerValueList" type="gml:integerList">			</xs:element>
+    <xs:element name="valueFile" type="xs:anyURI">			</xs:element>
+    <xs:element name="valueOfParameter" type="gml:OperationParameterRefType">			</xs:element>
+    <xs:element name="parameterValueGroup" type="gml:ParameterValueGroupType" substitutionGroup="gml:_generalParameterValue"/>
+    <xs:complexType name="ParameterValueGroupType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralParameterValueType">
+          <xs:sequence>
+            <xs:element ref="gml:includesValue" minOccurs="2" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:valuesOfGroup"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="includesValue" type="gml:AbstractGeneralParameterValueType" substitutionGroup="gml:_generalParameterValue">			</xs:element>
+    <xs:element name="valuesOfGroup" type="gml:OperationParameterGroupRefType">			</xs:element>
+    <xs:element name="OperationMethod" type="gml:OperationMethodType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="OperationMethodBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:methodName"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="methodName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="OperationMethodType">
+      <xs:complexContent>
+        <xs:extension base="gml:OperationMethodBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:methodID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:methodFormula"/>
+            <xs:element ref="gml:sourceDimensions"/>
+            <xs:element ref="gml:targetDimensions"/>
+            <xs:element ref="gml:usesParameter" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="methodID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="methodFormula" type="gml:CodeType">			</xs:element>
+    <xs:element name="sourceDimensions" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="targetDimensions" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="usesParameter" type="gml:AbstractGeneralOperationParameterRefType">			</xs:element>
+    <xs:element name="operationMethodRef" type="gml:OperationMethodRefType"/>
+    <xs:complexType name="OperationMethodRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:OperationMethod"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_GeneralOperationParameter" type="gml:AbstractGeneralOperationParameterType" abstract="true" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="AbstractGeneralOperationParameterType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element ref="gml:minimumOccurs" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="minimumOccurs" type="xs:nonNegativeInteger">			</xs:element>
+    <xs:element name="abstractGeneralOperationParameterRef" type="gml:AbstractGeneralOperationParameterRefType"/>
+    <xs:complexType name="AbstractGeneralOperationParameterRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_GeneralOperationParameter"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="OperationParameter" type="gml:OperationParameterType" substitutionGroup="gml:_GeneralOperationParameter"/>
+    <xs:complexType name="OperationParameterBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractGeneralOperationParameterType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:parameterName"/>
+            <xs:element ref="gml:minimumOccurs" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="parameterName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="OperationParameterType">
+      <xs:complexContent>
+        <xs:extension base="gml:OperationParameterBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:parameterID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="parameterID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="operationParameterRef" type="gml:OperationParameterRefType"/>
+    <xs:complexType name="OperationParameterRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:OperationParameter"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="OperationParameterGroup" type="gml:OperationParameterGroupType" substitutionGroup="gml:_GeneralOperationParameter"/>
+    <xs:complexType name="OperationParameterGroupBaseType" abstract="true">
+      <xs:complexContent>
+        <xs:restriction base="gml:AbstractGeneralOperationParameterType">
+          <xs:sequence>
+            <xs:element ref="gml:metaDataProperty" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="gml:groupName"/>
+            <xs:element ref="gml:minimumOccurs" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute ref="gml:id" use="required"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="groupName" type="gml:CodeType" substitutionGroup="gml:name">			</xs:element>
+    <xs:complexType name="OperationParameterGroupType">
+      <xs:complexContent>
+        <xs:extension base="gml:OperationParameterGroupBaseType">
+          <xs:sequence>
+            <xs:element ref="gml:groupID" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element ref="gml:remarks" minOccurs="0">											</xs:element>
+            <xs:element ref="gml:maximumOccurs" minOccurs="0"/>
+            <xs:element ref="gml:includesParameter" minOccurs="2" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="groupID" type="gml:IdentifierType">			</xs:element>
+    <xs:element name="maximumOccurs" type="xs:positiveInteger">			</xs:element>
+    <xs:element name="includesParameter" type="gml:AbstractGeneralOperationParameterRefType">			</xs:element>
+    <xs:element name="operationParameterGroupRef" type="gml:OperationParameterRefType"/>
+    <xs:complexType name="OperationParameterGroupRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:OperationParameterGroup"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:lang="en">
+    <xs:element name="_CoordinateReferenceSystem" type="gml:AbstractReferenceSystemType" abstract="true" substitutionGroup="gml:_CRS">			</xs:element>
+    <xs:element name="coordinateReferenceSystemRef" type="gml:CoordinateReferenceSystemRefType"/>
+    <xs:complexType name="CoordinateReferenceSystemRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:_CoordinateReferenceSystem"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="CompoundCRS" type="gml:CompoundCRSType" substitutionGroup="gml:_CRS"/>
+    <xs:complexType name="CompoundCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:includesCRS" minOccurs="2" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="includesCRS" type="gml:CoordinateReferenceSystemRefType">			</xs:element>
+    <xs:element name="compoundCRSRef" type="gml:CompoundCRSRefType"/>
+    <xs:complexType name="CompoundCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:CompoundCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="GeographicCRS" type="gml:GeographicCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="GeographicCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:usesEllipsoidalCS"/>
+            <xs:element ref="gml:usesGeodeticDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesEllipsoidalCS" type="gml:EllipsoidalCSRefType">			</xs:element>
+    <xs:element name="usesGeodeticDatum" type="gml:GeodeticDatumRefType">			</xs:element>
+    <xs:element name="geographicCRSRef" type="gml:GeographicCRSRefType"/>
+    <xs:complexType name="GeographicCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:GeographicCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="VerticalCRS" type="gml:VerticalCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="VerticalCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:usesVerticalCS"/>
+            <xs:element ref="gml:usesVerticalDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesVerticalCS" type="gml:VerticalCSRefType">			</xs:element>
+    <xs:element name="usesVerticalDatum" type="gml:VerticalDatumRefType">			</xs:element>
+    <xs:element name="verticalCRSRef" type="gml:VerticalCRSRefType"/>
+    <xs:complexType name="VerticalCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:VerticalCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="GeocentricCRS" type="gml:GeocentricCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="GeocentricCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="gml:usesCartesianCS"/>
+              <xs:element ref="gml:usesSphericalCS"/>
+            </xs:choice>
+            <xs:element ref="gml:usesGeodeticDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesCartesianCS" type="gml:CartesianCSRefType">			</xs:element>
+    <xs:element name="usesSphericalCS" type="gml:SphericalCSRefType">			</xs:element>
+    <xs:element name="geocentricCRSRef" type="gml:GeocentricCRSRefType"/>
+    <xs:complexType name="GeocentricCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:GeocentricCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="_GeneralDerivedCRS" type="gml:AbstractGeneralDerivedCRSType" abstract="true" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="AbstractGeneralDerivedCRSType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:baseCRS"/>
+            <xs:element ref="gml:definedByConversion"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="baseCRS" type="gml:CoordinateReferenceSystemRefType">			</xs:element>
+    <xs:element name="definedByConversion" type="gml:GeneralConversionRefType">			</xs:element>
+    <xs:element name="ProjectedCRS" type="gml:ProjectedCRSType" substitutionGroup="gml:_GeneralDerivedCRS"/>
+    <xs:complexType name="ProjectedCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralDerivedCRSType">
+          <xs:sequence>
+            <xs:element ref="gml:usesCartesianCS"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="projectedCRSRef" type="gml:ProjectedCRSRefType"/>
+    <xs:complexType name="ProjectedCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:ProjectedCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="DerivedCRS" type="gml:DerivedCRSType" substitutionGroup="gml:_GeneralDerivedCRS"/>
+    <xs:complexType name="DerivedCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractGeneralDerivedCRSType">
+          <xs:sequence>
+            <xs:element ref="gml:derivedCRSType"/>
+            <xs:element ref="gml:usesCS"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="derivedCRSType" type="gml:DerivedCRSTypeType"/>
+    <xs:complexType name="DerivedCRSTypeType">
+      <xs:simpleContent>
+        <xs:restriction base="gml:CodeType">
+          <xs:attribute name="codeSpace" type="xs:anyURI" use="required">									</xs:attribute>
+        </xs:restriction>
+      </xs:simpleContent>
+    </xs:complexType>
+    <xs:element name="usesCS" type="gml:CoordinateSystemRefType">			</xs:element>
+    <xs:element name="derivedCRSRef" type="gml:DerivedCRSRefType"/>
+    <xs:complexType name="DerivedCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:DerivedCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="EngineeringCRS" type="gml:EngineeringCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="EngineeringCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:usesCS"/>
+            <xs:element ref="gml:usesEngineeringDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesEngineeringDatum" type="gml:EngineeringDatumRefType">			</xs:element>
+    <xs:element name="engineeringCRSRef" type="gml:EngineeringCRSRefType"/>
+    <xs:complexType name="EngineeringCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:EngineeringCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="ImageCRS" type="gml:ImageCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="ImageCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element ref="gml:usesCartesianCS"/>
+              <xs:element ref="gml:usesObliqueCartesianCS"/>
+            </xs:choice>
+            <xs:element ref="gml:usesImageDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesObliqueCartesianCS" type="gml:ObliqueCartesianCSRefType">			</xs:element>
+    <xs:element name="usesImageDatum" type="gml:ImageDatumRefType">			</xs:element>
+    <xs:element name="imageCRSRef" type="gml:ImageCRSRefType"/>
+    <xs:complexType name="ImageCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:ImageCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TemporalCRS" type="gml:TemporalCRSType" substitutionGroup="gml:_CoordinateReferenceSystem"/>
+    <xs:complexType name="TemporalCRSType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractReferenceSystemType">
+          <xs:sequence>
+            <xs:element ref="gml:usesTemporalCS"/>
+            <xs:element ref="gml:usesTemporalDatum"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="usesTemporalCS" type="gml:TemporalCSRefType">			</xs:element>
+    <xs:element name="usesTemporalDatum" type="gml:TemporalDatumRefType">			</xs:element>
+    <xs:element name="temporalCRSRef" type="gml:TemporalCRSRefType"/>
+    <xs:complexType name="TemporalCRSRefType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TemporalCRS"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="direction" type="gml:DirectionPropertyType"/>
+    <xs:complexType name="DirectionPropertyType">
+      <xs:choice>
+        <xs:element ref="gml:DirectionVector"/>
+        <xs:element ref="gml:CompassPoint"/>
+        <xs:element name="DirectionKeyword" type="gml:CodeType"/>
+        <xs:element name="DirectionString" type="gml:StringOrRefType"/>
+      </xs:choice>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="DirectionVector" type="gml:DirectionVectorType"/>
+    <xs:complexType name="DirectionVectorType">
+      <xs:choice>
+        <xs:element ref="gml:vector"/>
+        <xs:sequence>
+          <xs:element name="horizontalAngle" type="gml:AngleType"/>
+          <xs:element name="verticalAngle" type="gml:AngleType"/>
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+    <xs:element name="CompassPoint" type="gml:CompassPointEnumeration"/>
+    <xs:simpleType name="CompassPointEnumeration">
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="N"/>
+        <xs:enumeration value="NNE"/>
+        <xs:enumeration value="NE"/>
+        <xs:enumeration value="ENE"/>
+        <xs:enumeration value="E"/>
+        <xs:enumeration value="ESE"/>
+        <xs:enumeration value="SE"/>
+        <xs:enumeration value="SSE"/>
+        <xs:enumeration value="S"/>
+        <xs:enumeration value="SSW"/>
+        <xs:enumeration value="SW"/>
+        <xs:enumeration value="WSW"/>
+        <xs:enumeration value="W"/>
+        <xs:enumeration value="WNW"/>
+        <xs:enumeration value="NW"/>
+        <xs:enumeration value="NNW"/>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="using" type="gml:FeaturePropertyType">			</xs:element>
+    <xs:element name="target" type="gml:TargetPropertyType">			</xs:element>
+    <xs:element name="subject" type="gml:TargetPropertyType" substitutionGroup="gml:target">			</xs:element>
+    <xs:complexType name="TargetPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:choice>
+          <xs:element ref="gml:_Feature"/>
+          <xs:element ref="gml:_Geometry"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="resultOf" type="gml:AssociationType">			</xs:element>
+    <xs:element name="Observation" type="gml:ObservationType" substitutionGroup="gml:_Feature"/>
+    <xs:complexType name="ObservationType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element ref="gml:validTime"/>
+            <xs:element ref="gml:using" minOccurs="0"/>
+            <xs:element ref="gml:target" minOccurs="0"/>
+            <xs:element ref="gml:resultOf"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="DirectedObservation" type="gml:DirectedObservationType" substitutionGroup="gml:Observation"/>
+    <xs:complexType name="DirectedObservationType">
+      <xs:complexContent>
+        <xs:extension base="gml:ObservationType">
+          <xs:sequence>
+            <xs:element ref="gml:direction"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="DirectedObservationAtDistance" type="gml:DirectedObservationAtDistanceType" substitutionGroup="gml:DirectedObservation"/>
+    <xs:complexType name="DirectedObservationAtDistanceType">
+      <xs:complexContent>
+        <xs:extension base="gml:DirectedObservationType">
+          <xs:sequence>
+            <xs:element name="distance" type="gml:MeasureType"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" version="3.1.1">
+    <xs:element name="_TimeReferenceSystem" type="gml:AbstractTimeReferenceSystemType" abstract="true" substitutionGroup="gml:Definition">			</xs:element>
+    <xs:complexType name="AbstractTimeReferenceSystemType" abstract="true">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element name="domainOfValidity" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="TimeCoordinateSystem" type="gml:TimeCoordinateSystemType" substitutionGroup="gml:_TimeReferenceSystem"/>
+    <xs:complexType name="TimeCoordinateSystemType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeReferenceSystemType">
+          <xs:sequence>
+            <xs:choice>
+              <xs:element name="originPosition" type="gml:TimePositionType"/>
+              <xs:element name="origin" type="gml:TimeInstantPropertyType"/>
+            </xs:choice>
+            <xs:element name="interval" type="gml:TimeIntervalLengthType"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="TimeOrdinalReferenceSystem" type="gml:TimeOrdinalReferenceSystemType" substitutionGroup="gml:_TimeReferenceSystem"/>
+    <xs:complexType name="TimeOrdinalReferenceSystemType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeReferenceSystemType">
+          <xs:sequence>
+            <xs:element name="component" type="gml:TimeOrdinalEraPropertyType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="TimeOrdinalEra" type="gml:TimeOrdinalEraType"/>
+    <xs:complexType name="TimeOrdinalEraType">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element name="relatedTime" type="gml:RelatedTimeType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="start" type="gml:TimeNodePropertyType"/>
+            <xs:element name="end" type="gml:TimeNodePropertyType"/>
+            <xs:element name="extent" type="gml:TimePeriodPropertyType" minOccurs="0"/>
+            <xs:element name="member" type="gml:TimeOrdinalEraPropertyType" minOccurs="0" maxOccurs="unbounded">											</xs:element>
+            <xs:element name="group" type="gml:ReferenceType" minOccurs="0">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeOrdinalEraPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimeOrdinalEra"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TimeCalendar" type="gml:TimeCalendarType" substitutionGroup="gml:_TimeReferenceSystem"/>
+    <xs:complexType name="TimeCalendarType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeReferenceSystemType">
+          <xs:sequence>
+            <xs:element name="referenceFrame" type="gml:TimeCalendarEraPropertyType" maxOccurs="unbounded">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeCalendarPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimeCalendar"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TimeCalendarEra" type="gml:TimeCalendarEraType" substitutionGroup="gml:Definition"/>
+    <xs:complexType name="TimeCalendarEraType">
+      <xs:complexContent>
+        <xs:extension base="gml:DefinitionType">
+          <xs:sequence>
+            <xs:element name="referenceEvent" type="gml:StringOrRefType">											</xs:element>
+            <xs:element name="referenceDate" type="xs:date" default="0001-01-01" minOccurs="0">											</xs:element>
+            <xs:element name="julianReference" type="xs:decimal">											</xs:element>
+            <xs:element name="epochOfUse" type="gml:TimePeriodPropertyType">											</xs:element>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeCalendarEraPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimeCalendarEra"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+    <xs:element name="TimeClock" type="gml:TimeClockType" substitutionGroup="gml:_TimeReferenceSystem"/>
+    <xs:complexType name="TimeClockType" final="#all">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractTimeReferenceSystemType">
+          <xs:sequence>
+            <xs:element name="referenceEvent" type="gml:StringOrRefType">											</xs:element>
+            <xs:element name="referenceTime" type="xs:time">											</xs:element>
+            <xs:element name="utcReference" type="xs:time">											</xs:element>
+            <xs:element name="dateBasis" type="gml:TimeCalendarPropertyType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="TimeClockPropertyType">
+      <xs:sequence minOccurs="0">
+        <xs:element ref="gml:TimeClock"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+    </xs:complexType>
+  </xs:schema>
+  <xs:schema targetNamespace="http://www.opengis.net/gml" elementFormDefault="qualified" attributeFormDefault="unqualified" version="3.1.1" xmlns:sch="http://www.ascc.net/xml/schematron"></xs:schema>
+  <xs:schema targetNamespace="http://www.isotc211.org/19112" elementFormDefault="qualified" version="1.0" xmlns:iso19112="http://www.isotc211.org/19112">
+    <xs:element name="SI_LocationInstance" type="iso19112:SI_LocationInstanceType" substitutionGroup="gml:_Feature"/>
+    <xs:complexType name="SI_LocationInstanceType">
+      <xs:complexContent>
+        <xs:extension base="gml:AbstractFeatureType">
+          <xs:sequence>
+            <xs:element name="geographicIdentifier" type="xs:string"/>
+            <xs:element name="alternativeGeographicIdentifier" type="xs:string"/>
+            <xs:element name="temporalExtent" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="geographicExtentString" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="administrator" type="xs:string"/>
+            <xs:element ref="gml:pointArrayProperty"/>
+            <xs:element name="locationType_Name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:schema>
+</fdo:DataStore>
