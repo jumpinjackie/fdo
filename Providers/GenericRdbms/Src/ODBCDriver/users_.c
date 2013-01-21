@@ -75,6 +75,8 @@ int local_odbcdr_users_act(
     wchar_t    schemaToGet[10];
     SQLWCHAR    szSchemaBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def szSchema;
+    SQLWCHAR     szDebugBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szDebug;
     SQLLEN      cbSchema = 0;
     SQLRETURN   ret = SQL_SUCCESS;
     long        i;
@@ -82,6 +84,7 @@ int local_odbcdr_users_act(
     SQLSMALLINT charType;
     odbcdr_NameListEntry_user_def * nle;
     szSchema.wString = (wchar_t *)szSchemaBuf;
+    szDebug.wString = (wchar_t *)szDebugBuf;
 
     if (context->odbcdr_UseUnicode)
     {
@@ -136,11 +139,30 @@ int local_odbcdr_users_act(
          * fetching all results and storing the unique ones in a local list.
          */
         if (context->odbcdr_UseUnicode){
+  			swprintf(
+				szDebug.wString, 
+				ODBCDR_MAX_BUFF_SIZE - 1, 
+				L"fetch schemas: SQLTablesW((odbc_cursor_handle_def*) %lx, NULL, 0, '%ls', SQL_NTS, NULL, 0, '%ls', SQL_NTS)",
+				c->hStmt,
+				(schemaToGet != NULL) ? schemaToGet : L"(NULL)",
+				(TABLESTYPESW != NULL) ? TABLESTYPESW : L"(NULL)"
+			);
+			debug_trace(NULL, szDebug.wString, NULL);
+
             ODBCDR_ODBC_ERR( SQLTablesW(c->hStmt, NULL, 0, (SQLWCHAR*)schemaToGet,  SQL_NTS,
                 NULL, 0, (SQLWCHAR*)TABLESTYPESW,  SQL_NTS ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching schemas");
         }else{
-            ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR*)schemaToGet,  SQL_NTS,
+  			sprintf(
+				szDebug.cString, 
+				"fetch schemas: SQLTables((odbc_cursor_handle_def*) %lx, NULL, 0, '%s', SQL_NTS, NULL, 0, '%s', SQL_NTS)",
+				c->hStmt,
+				(schemaToGet != NULL) ? (char*) schemaToGet : "(NULL)",
+				(TABLESTYPES != NULL) ? TABLESTYPES : "(NULL)"
+			);
+			debug_trace(szDebug.cString, NULL, NULL);
+
+			ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR*)schemaToGet,  SQL_NTS,
                 NULL, 0, (SQLCHAR*)TABLESTYPES,  SQL_NTS ),
                 SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching schemas");
         }

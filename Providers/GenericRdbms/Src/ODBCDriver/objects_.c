@@ -86,6 +86,8 @@ int local_odbcdr_objects_act(
     rdbi_string_def szObjectName;
     SQLWCHAR     szObjectTypeBuf[ODBCDR_MAX_BUFF_SIZE];
     rdbi_string_def szObjectType;
+    SQLWCHAR     szDebugBuf[ODBCDR_MAX_BUFF_SIZE];
+    rdbi_string_def szDebug;
 	odbcdr_cursor_def	*c;
 	odbcdr_connData_def	*connData = NULL;
 	int 				rdbi_status = RDBI_GENERIC_ERROR;
@@ -100,6 +102,7 @@ int local_odbcdr_objects_act(
     SQLSMALLINT charType;
     szObjectName.wString = (wchar_t *)szObjectNameBuf;
     szObjectType.wString = (wchar_t *)szObjectTypeBuf;
+    szDebug.wString = (wchar_t *)szDebugBuf;
 
 	debug_on("odbcdr_objects_act");
 
@@ -134,6 +137,16 @@ int local_odbcdr_objects_act(
 
         charType = SQL_C_WCHAR;
 
+  	    swprintf(
+			szDebug.wString, 
+			ODBCDR_MAX_BUFF_SIZE - 1, 
+			L"SQLTablesW((odbc_cursor_handle_def*) %lx, NULL, 0, '%ls', SQL_NTS, NULL, 0, '%ls', SQL_NTS)",
+			c->hStmt,
+			(owner_set ? owner->cwString : L"(NULL)"),
+			(table_typesw != NULL) ? table_typesw : L"(NULL)"
+        );
+		debug_trace(NULL, szDebug.wString, NULL);
+
         ODBCDR_ODBC_ERR( SQLTablesW(c->hStmt, NULL, 0, (SQLWCHAR *) (owner_set ? owner->cwString : NULL), 
             SQL_NTS, NULL, 0, table_typesw,  SQL_NTS), 
             SQL_HANDLE_STMT, c->hStmt, "SQLTables", "Fetching tables and views");
@@ -143,6 +156,15 @@ int local_odbcdr_objects_act(
             table_types = (SQLCHAR *)TABLE_TYPES2;
 
         charType = SQL_C_CHAR;
+
+  	    sprintf(
+			szDebug.cString, 
+			"SQLTables((odbc_cursor_handle_def*) %lx, NULL, 0, '%s', SQL_NTS, NULL, 0, '%s', SQL_NTS)",
+			c->hStmt,
+			(owner_set ? owner->ccString : "(NULL)"),
+			(table_types != NULL) ? (const char*) table_types : "(NULL)"
+        );
+		debug_trace(szDebug.cString, NULL, NULL);
 
         ODBCDR_ODBC_ERR( SQLTables(c->hStmt, NULL, 0, (SQLCHAR *) (owner_set ? owner->ccString : NULL), 
             SQL_NTS, NULL, 0, table_types,  SQL_NTS), 
@@ -219,6 +241,13 @@ int local_odbcdr_objects_act(
         	context->odbcdr_nameListNextPosition_objs = 0;
         }
     } /* end while (ret != SQL_NO_DATA) */
+
+    sprintf(
+		szDebug.cString, 
+		"SQLTables[W] found %d distinct tables and views",
+		context->odbcdr_nameList_objs.size
+    );
+	debug_trace(szDebug.cString, NULL, NULL);
 
 the_exit:
 	if (NULL != connData && NULL != connData->objects)
