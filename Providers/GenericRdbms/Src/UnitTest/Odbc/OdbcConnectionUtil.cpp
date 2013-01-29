@@ -1003,6 +1003,7 @@ void OdbcConnectionUtil::SetupMySqlDSN()
     sprintf (teststr, "DSN=%s%cDescription=Test MySql DSN for FDO ODBC provider%cSERVER=%s%cDATABASE=%ls%cOPTION=3%c%c", (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"DSNMySql" ), 
         '\0','\0', (const char*)(FdoStringP)m_SetupValues->GetPropertyValue( L"serviceMySql" ), '\0', (FdoString*)(UnitTestUtil::GetEnviron("datastore", L"")), '\0', '\0', '\0');
     m_SetupMySqlDSNdone = true;
+#if 0
     if (!SQLConfigDataSource (NULL, ODBC_ADD_DSN, (const char*)MYSQL_ODBC_DRIVER_NAME, teststr))
     {
         DWORD error;
@@ -1011,6 +1012,7 @@ void OdbcConnectionUtil::SetupMySqlDSN()
         printf (teststr);
         throw FdoException::Create (L"MySql DSN setup failed");
     }
+#endif
 }
 
 void OdbcConnectionUtil::TeardownAccessDSN()
@@ -1087,6 +1089,7 @@ void OdbcConnectionUtil::TeardownSqlServerDSN()
 
 void OdbcConnectionUtil::TeardownMySqlDSN()
 {
+#if 0
     char pString[SQL_MAX_MESSAGE_LENGTH];
     DWORD error;
     WORD count;
@@ -1097,6 +1100,7 @@ void OdbcConnectionUtil::TeardownMySqlDSN()
         printf ("\nMySql DSN teardown failed:\n");
         printf (pString);
     }
+#endif
 }
 
 void OdbcConnectionUtil::TeardownOracleDSN()
