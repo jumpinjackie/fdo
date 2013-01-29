@@ -20,6 +20,7 @@
 #include "stdafx.h"
 #include <FdoRdbmsUtil.h>
 #include "Schema.h"
+#include "../Ph/Mgr.h"
 #include <Sm/Lp/SchemaCollection.h>
 #include "DataPropertyDefinition.h"
 #include "GeometricPropertyDefinition.h"
@@ -71,12 +72,19 @@ FdoSmPhOwnerP FdoSmLpOdbcSchema::GetPhysicalOwner()
     FdoFeatureSchemasP configSchemas = GetPhysicalSchema()->GetConfigSchemas();
     FdoSchemaMappingsP configMappings = GetPhysicalSchema()->GetConfigMappings();
 
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info(GetPhysicalSchema()->SmartCast<FdoSmPhOdbcMgr>()->GetRdbiContext(), &info );
+    
     // The following is similar to what FdoSmPhOdbcMgr::::CreateRdClassReader() does
     // to map a logical schema to the owner containing its physical objects.
     // When no config document was passed to the connection, each non-default schema
     // maps to an owner of the same name. Each owner maps to a physical schema.
+	//
+	// For SQLServer sources the "Fdo" schema is not treated specially since it can be the 
+	// name of a physical schema in the SQL Server database.
     if ( (configSchemas == NULL) && (configMappings == NULL ) &&
-         (schemaName.GetLength() > 0) && (schemaName != GetPhysicalSchema()->RdSchemaPrefix) )
+         (schemaName.GetLength() > 0) && 
+		 (info.dbversion == RDBI_DBVERSION_ODBC_SQLSERVER || schemaName != GetPhysicalSchema()->RdSchemaPrefix) )
     {
         owner = GetPhysicalSchema()->GetOwner(schemaName);
     }

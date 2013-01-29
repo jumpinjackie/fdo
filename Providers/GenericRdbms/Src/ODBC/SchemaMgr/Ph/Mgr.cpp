@@ -87,13 +87,19 @@ FdoPtr<FdoSmPhRdClassReader> FdoSmPhOdbcMgr::CreateRdClassReader(
     FdoStringP owner
 )
 {
+    rdbi_vndr_info_def info;
+	rdbi_vndr_info(GetRdbiContext(), &info );
+    
 #pragma message ("TODO: look up schema object to get owner name")
     // Ideally, we would not exclude based on RdSchemaPrefix, but rather
     // look up an approprate owner name, based on schemaName, or adjust the calling
     // code to pass in the right owner name -- which may be an empty string
     // on data sources that do not support named physical schemas.
+	//
+	// For SQL Server sources, there could be a physical schema called "Fdo" so don't
+	// treat it specially, use it as the owner name.
     if (schemaName != NULL && schemaName.GetLength() > 0 &&
-        schemaName != this->RdSchemaPrefix &&
+        (info.dbversion == RDBI_DBVERSION_ODBC_SQLSERVER || schemaName != this->RdSchemaPrefix) &&
         (owner == NULL || owner.GetLength() <= 0) )
     {
         owner = schemaName;
