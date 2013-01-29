@@ -30,6 +30,7 @@ class OdbcMySqlFdoConnectTest : public FdoConnectTest
     void  set_provider();
     void connect() {};
     void query () {};
+    virtual void connectPending() {};
     virtual void connectFailAndSucceed() {};
     
 	void ConnectByDsn();
@@ -46,6 +47,7 @@ class OdbcOracleFdoConnectTest : public FdoConnectTest
 
     void connect() {};
     void query () {};
+    virtual void connectPending() {};
     virtual void connectFailAndSucceed() {};
 
     void ConfigFileTest();
@@ -85,6 +87,7 @@ class OdbcAccessFdoConnectTest : public FdoConnectTest
     void StringTest();
     void OpenTest();
     void ConfigFileTest();
+    virtual void connectPending() {};
 	virtual void connectWithInvalidString(){};
     virtual void connectFailAndSucceed() {};
 
