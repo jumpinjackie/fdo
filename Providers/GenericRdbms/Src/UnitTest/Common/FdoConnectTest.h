@@ -24,6 +24,7 @@ class FdoConnectTest : public CppUnit::TestCase
 {
     CPPUNIT_TEST_SUITE( FdoConnectTest );
 	CPPUNIT_TEST ( connectPropDictionaryTest );
+	CPPUNIT_TEST ( connectPending );
 	CPPUNIT_TEST ( connectWithInvalidString );
     CPPUNIT_TEST( query );
     CPPUNIT_TEST( connectWithExtraneousSpaces );
@@ -41,6 +42,7 @@ protected:
     virtual void connect ();
     virtual void query ();
 	virtual void connectPropDictionaryTest(){};
+	virtual void connectPending();
 	virtual void connectWithInvalidString();
     virtual void connectWithExtraneousSpaces();
     virtual void connectFailAndSucceed();

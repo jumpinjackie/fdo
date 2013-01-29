@@ -164,6 +164,42 @@ void FdoConnectTest::query ()
     }
 }
 
+void FdoConnectTest::connectPending()
+{
+	FdoPtr<FdoIConnection> oConn;
+	try
+	{
+		oConn = UnitTestUtil::GetConnection(L"", true);
+		oConn->Close();
+
+   	    wchar_t *connectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
+        oConn->SetConnectionString(connectString);
+        oConn->Open();
+
+        connectString = UnitTestUtil::GetConnectionString(Connection_WithDatastore);
+        oConn->SetConnectionString(connectString);
+        oConn->Open();
+
+        FdoPtr<FdoISelect>selCmd = (FdoISelect*)oConn->CreateCommand(  FdoCommandType_Select );
+        selCmd->SetFeatureClassName(L"Acad:AcDb3dPolyline");
+        FdoPtr<FdoIFeatureReader> rdr = selCmd->Execute( );
+        rdr->ReadNext();
+        rdr = NULL;
+        selCmd = NULL;
+
+        oConn->Close();
+    }
+    catch (FdoException *ex)
+    {
+		// valid exception
+		UnitTestUtil::FailOnException(ex);
+    }
+	catch (...)
+	{
+		CPPUNIT_FAIL("Unknown exception");
+	}
+}
+
 void FdoConnectTest::connectWithInvalidString()
 {
 	FdoPtr<FdoIConnection> oConn;

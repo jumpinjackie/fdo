@@ -593,7 +593,13 @@ FdoStringP FdoRdbmsSqlServerConnection::GenConnectionStringParm( FdoStringP conn
             FdoStringP database = dict->GetProperty(FDO_RDBMS_CONNECTION_DATASTORE);
 			if (database.GetLength() > 0)
 			{
-                GetDbiConnection()->SetAvoidSetSchema(true);
+				// Connect to server will not be performed when connection state is 
+				// Pending or Open, so setting schema still needed in this case. 
+				if ( state == FdoConnectionState_Closed )
+	                GetDbiConnection()->SetAvoidSetSchema(true);
+				else
+	                GetDbiConnection()->SetAvoidSetSchema(false);
+
 				newCs += L";DATABASE=";
 				newCs += database;
 			}
