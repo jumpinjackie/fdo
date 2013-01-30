@@ -512,53 +512,6 @@ int local_odbcdr_pkeys_act(
         ODBCDR_RDBI_ERR( odbcdr_col_deac(context) );
     }
 
-    /*********************************************************************************
-     * Approach #5: Find all non-nullable columns and use them as the identity property.
-	 *
-	 * Do not use this approach for Teradata sources since it pick a wrong key for views.
-     *********************************************************************************/
-
-    if ((!bFoundIdentityProperties) && !(ODBCDriverType_Teradata == connData->driver_type ))
-    {
-	    int  length;
-	    int  scale;
-	    int  nullable;
-        int  is_autoincrement;
-	    int  position;
-	    int  eof = FALSE;
-
-        ODBCDR_RDBI_ERR( local_odbcdr_col_act( context, owner, object, &dbaselink ) );
-
-        while (!eof && rdbi_status == RDBI_SUCCESS)
-        {
-            rdbi_status = local_odbcdr_col_get(
-                context,
-	            &szColumnName,
-	            &szTypeName,
-	            &length,
-	            &scale,
-	            &nullable,
-                &is_autoincrement,
-	            &position,
-	            &eof
-	            );
-
-            if (!eof && rdbi_status == RDBI_SUCCESS && !nullable)
-            {
-                odbcdr_NameListEntry_pkey_def newNle;
-                ODBCDRV_STRING_COPY_RST(newNle.name, &szColumnName);
-                if (NULL == ut_da_append( &context->odbcdr_nameList_pkeys, 1L, (void *) &newNle ))
-                {
-                    rdbi_status = RDBI_MALLOC_FAILED;
-                    goto the_exit;
-                }
-                bFoundIdentityProperties = true;
-            }
-        }
-
-        ODBCDR_RDBI_ERR( odbcdr_col_deac(context) );
-    }
-
     /*********************************************************************************/
 
 	context->odbcdr_nameListNextPosition_pkeys = 0;
