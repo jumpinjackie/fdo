@@ -143,7 +143,7 @@ int local_odbcdr_objects_act(
 			L"SQLTablesW((odbc_cursor_handle_def*) %lx, NULL, 0, '%ls', SQL_NTS, NULL, 0, '%ls', SQL_NTS)",
 			c->hStmt,
 			(owner_set ? owner->cwString : L"(NULL)"),
-			(table_typesw != NULL) ? table_typesw : L"(NULL)"
+			(table_typesw != NULL) ? (const wchar_t*) table_typesw : L"(NULL)"
         );
 		debug_trace(NULL, szDebug.wString, NULL);
 
