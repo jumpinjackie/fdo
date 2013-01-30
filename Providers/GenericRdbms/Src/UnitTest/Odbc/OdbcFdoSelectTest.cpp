@@ -278,10 +278,11 @@ void OdbcMySqlFdoSelectTest::View1Test()
                 {
                     FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
                     printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    // Shouldn't get here anymore. 
                     CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
                 }
                 printf("  Found total %d identity properties.\n", numIdProps);
-                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 0 identity properties", 0==numIdProps);
             }
 
             // read through all the features
@@ -329,10 +330,11 @@ void OdbcSqlServerFdoSelectTest::View1Test()
                 {
                     FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
                     printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    // Shouldn't get here any more 
                     CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
                 }
                 printf("  Found total %d identity properties.\n", numIdProps);
-                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 0 identity property", 0==numIdProps);
             }
 
             // read through all the features
