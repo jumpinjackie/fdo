@@ -121,7 +121,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning $(Projectname).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,7 +161,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning $(Projectname).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -193,7 +193,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning $(Projectname).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -228,7 +228,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning $(Projectname).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

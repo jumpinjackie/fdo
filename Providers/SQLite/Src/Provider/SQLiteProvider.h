@@ -19,8 +19,8 @@
 #define SQLITE_PROVIDER_NAME				L"OSGeo.SQLite.3.8"
 #define SQLITE_PROVIDER_DISPLAY_NAME	    L"OSGeo FDO Provider for SQLite (Spatial)"
 #define SQLITE_PROVIDER_DESCRIPTION         L"FDO Access to SQLite Data Sources."
-#define SQLITE_PROVIDER_VERSION				L"3.8.0.0"
-#define SQLITE_FDO_VERSION					L"3.8.0.0"
+#define SQLITE_PROVIDER_VERSION				L"3.8.1.0"
+#define SQLITE_FDO_VERSION					L"3.8.1.0"
 
 #define PROP_NAME_FILENAME      L"File"
 #define PROP_NAME_FDOMETADATA   L"UseFdoMetadata"

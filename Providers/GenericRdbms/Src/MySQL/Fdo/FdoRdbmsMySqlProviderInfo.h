@@ -22,7 +22,7 @@
 #define RDBMS_MYSQL_PROVIDER_NAME L"OSGeo.MySQL.3.8"
 #define RDBMS_MYSQL_PROVIDER_DEFAULT_DISPLAY_NAME "OSGeo FDO Provider for MySQL"
 #define RDBMS_MYSQL_PROVIDER_DEFAULT_DESCRIPTION "Read/write access to MySQL-based data store. Supports spatial data types and spatial query operations."
-#define RDBMS_MYSQL_PROVIDER_VERSION L"3.8.0.0"
-#define RDBMS_MYSQL_FDO_VERSION L"3.8.0.0"
+#define RDBMS_MYSQL_PROVIDER_VERSION L"3.8.1.0"
+#define RDBMS_MYSQL_FDO_VERSION L"3.8.1.0"
 
 #endif

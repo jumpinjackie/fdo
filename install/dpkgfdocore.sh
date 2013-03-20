@@ -6,13 +6,13 @@
 #   changelog - generated changelog file
 #   substvars - subst params created by dpkg-shlibdeps
 #   fdocore/ - directory to build FDO Base libs package
-#     usr/local/fdo-3.8.0/ - copied tree for core fdo libs
+#     usr/local/fdo-3.8.1/ - copied tree for core fdo libs
 #     DEBIAN/
 #       control - control file generated from dpkg-gencontrol
 #       symbols - symbols file generated from dpkg-gensymbols
 # 
 BUILDROOT=`pwd`
-FDOBUILD=3.8.0
+FDOBUILD=3.8.1
 FDO=usr/local/fdo-${FDOBUILD}
 ROOT=${BUILDROOT}/debian/fdocore
 TREE=${BUILDROOT}/debian

@@ -20,7 +20,7 @@
 #define RDBMS_POSTGIS_PROVIDER_NAME L"OSGeo.PostgreSQL.3.8"
 #define RDBMS_POSTGIS_PROVIDER_DEFAULT_DISPLAY_NAME "OSGeo FDO Provider for PostgreSQL/PostGIS"
 #define RDBMS_POSTGIS_PROVIDER_DEFAULT_DESCRIPTION "Read/write access to PostgreSQL/PostGIS-based data store. Supports spatial data types and spatial query operations."
-#define RDBMS_POSTGIS_PROVIDER_VERSION L"3.8.0.0"
-#define RDBMS_POSTGIS_FDO_VERSION L"3.8.0.0"
+#define RDBMS_POSTGIS_PROVIDER_VERSION L"3.8.1.0"
+#define RDBMS_POSTGIS_FDO_VERSION L"3.8.1.0"
 
 #endif // FDORDBMSPOSTGISPROVIDERINFO_H

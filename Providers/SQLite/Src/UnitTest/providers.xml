@@ -5,8 +5,8 @@
     <DisplayName>OSGeo FDO Provider for SQLite (spatial)</DisplayName>
     <Description>Read/write access to feature data in a SQLite file.</Description>
     <IsManaged>False</IsManaged>
-    <Version>3.8.0.0</Version>
-    <FeatureDataObjectsVersion>3.8.0.0</FeatureDataObjectsVersion>
+    <Version>3.8.1.0</Version>
+    <FeatureDataObjectsVersion>3.8.1.0</FeatureDataObjectsVersion>
     <LibraryPath>.\SQLiteProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

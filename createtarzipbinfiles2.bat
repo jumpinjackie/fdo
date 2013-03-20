@@ -36,7 +36,7 @@ SET SQLSPATIALENABLE=yes
 SET SHOWHELP=no
 SET FDOTARZIPFOLDER=c:\OpenSource_FDO
 SET FDOBUILDNUMBER=FXXX
-SET FDORELNUMBER=3.8.0
+SET FDORELNUMBER=3.8.1
 SET FDOZIPTEMP=7zTemp
 SET FILEPPLATFORMPREFIX=Win32
 
@@ -501,7 +501,7 @@ echo NOTE: To use the createtarzipbinfiles script, download and install the
 echo       GnuWin32 command-line and Windows shell utilities for manipulating 
 echo       tar archives. 
 echo *
-echo Example: createtarzipbinfiles.bat -i=C:\G029 -o=C:\G029 -b=K001 -r=3.8.0
+echo Example: createtarzipbinfiles.bat -i=C:\G029 -o=C:\G029 -b=L001 -r=3.8.1
 echo *
 echo createtarzipbinfiles.bat [-h] 
 echo                          [-i=InFolder] 

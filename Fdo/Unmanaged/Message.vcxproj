@@ -131,7 +131,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning FDOMessage.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -169,7 +169,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning FDOMessage.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -204,7 +204,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning FDOMessage.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -241,7 +241,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning FDOMessage.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\SubDoc\Fdo.version" $(OutDir)FDOMessage.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
