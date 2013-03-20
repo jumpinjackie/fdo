@@ -38,8 +38,8 @@ namespace FdoGrfpGlobals
     static FdoString* GRFPProviderName				    = L"OSGeo.Gdal.3.8";
     static FdoString* GRFPProviderDisplayName			= L"OSGeo FDO Provider for Raster";
     static FdoString* GRFPProviderDescription			= L"Read access to various raster-based file formats. Supports georeferenced file-based raster images.";
-    static FdoString* GRFPProviderVersion			    = L"3.8.0.0";
-    static FdoString* GRFPFeatureDataObjectsVersion		= L"3.8.0.0";
+    static FdoString* GRFPProviderVersion			    = L"3.8.1.0";
+    static FdoString* GRFPFeatureDataObjectsVersion		= L"3.8.1.0";
 
     static FdoString* DefaultRasterFileLocation			= L"DefaultRasterFileLocation";
     static FdoString* ResamplingMethod      			= L"ResamplingMethod";

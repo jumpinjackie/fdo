@@ -19,7 +19,7 @@
 
 TYPEACTION=buildinstall
 TYPECONFIGURE=configure
-PREFIXVAL=/usr/local/fdo-3.8.0
+PREFIXVAL=/usr/local/fdo-3.8.1
 
 DEFMODIFY=no
 ALLENABLE=yes

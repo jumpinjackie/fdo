@@ -139,7 +139,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -186,7 +186,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -233,7 +233,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -279,7 +279,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

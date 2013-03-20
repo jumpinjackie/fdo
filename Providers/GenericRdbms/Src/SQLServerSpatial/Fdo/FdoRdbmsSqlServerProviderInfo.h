@@ -22,7 +22,7 @@
 #define RDBMS_SQLSERVER_PROVIDER_NAME L"OSGeo.SQLServerSpatial.3.8"
 #define RDBMS_SQLSERVER_PROVIDER_DEFAULT_DISPLAY_NAME "OSGeo FDO Provider for SQL Server Spatial"
 #define RDBMS_SQLSERVER_PROVIDER_DEFAULT_DESCRIPTION "Read/write access to feature data in a MS SQL Server Spatial data store. Supports geospatial and nongeospatial data and schema R/W access."
-#define RDBMS_SQLSERVER_PROVIDER_VERSION L"3.8.0.0"
-#define RDBMS_SQLSERVER_FDO_VERSION L"3.8.0.0"
+#define RDBMS_SQLSERVER_PROVIDER_VERSION L"3.8.1.0"
+#define RDBMS_SQLSERVER_FDO_VERSION L"3.8.1.0"
 
 #endif
