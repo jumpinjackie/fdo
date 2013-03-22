@@ -1,0 +1,1253 @@
+/*
+ * Copyright (C) 2004-2006  Autodesk, Inc.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 2.1 of the GNU Lesser
+ * General Public License as published by the Free Software Foundation.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+#include "Pch.h"
+#include "OdbcFdoSelectTest.h"
+#include "UnitTestUtil.h"
+#include "OdbcBaseSetup.h"
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcOracleFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "OdbcOracleFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcOracleFdoSelectTest, "OdbcOracleTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSybaseFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "OdbcSybaseFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSybaseFdoSelectTest, "OdbcSybaseTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcMySqlFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSelectTest, "OdbcMySqlFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcMySqlFdoSelectTest, "OdbcMySqlTests");
+
+#ifdef _WIN32
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcSqlServerFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoSelectTest, "OdbcSqlServerFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcSqlServerFdoSelectTest, "OdbcSqlServerTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcAccessFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "OdbcAccessFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcAccessFdoSelectTest, "OdbcAccessTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcDbaseFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "OdbcDbaseFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcDbaseFdoSelectTest, "OdbcDbaseTests");
+
+CPPUNIT_TEST_SUITE_REGISTRATION( OdbcExcelFdoSelectTest );
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "FdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "OdbcExcelFdoSelectTest");
+CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( OdbcExcelFdoSelectTest, "OdbcExcelTests");
+
+#endif
+
+
+void OdbcFdoSelectTest::setUp ()
+{
+    mConnection = NULL;
+
+    set_provider();
+
+    connect();
+}
+
+void OdbcFdoSelectTest::tearDown ()
+{
+    if (mConnection != NULL)
+    {
+        mConnection->Close();
+        mConnection = NULL;
+    }
+}
+
+void OdbcFdoSelectTest::connect ()
+{
+    try
+    {
+		mConnection = UnitTestUtil::GetProviderConnectionObject();
+        if (DataBaseType_None != mSetup.GetTypeDB() )
+        {
+            // Set up databases that are not prefabricated.
+            StringConnTypeRequest connectionType = Connection_NoDatastore;
+            if (DataBaseType_Oracle == mSetup.GetTypeDB() )
+                connectionType = Connection_OraSetup;
+		    mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(connectionType) );
+		    mConnection->Open();
+		    mSetup.CreateDataStore(mConnection, L"");
+		    mSetup.CreateAcadSchema(mConnection);
+		    mSetup.CreateNonAcadSchema(mConnection);
+
+		    mConnection->Close();
+        }
+		mConnection->SetConnectionString ( UnitTestUtil::GetConnectionString(Connection_WithDSN) );
+		mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+        mConnection = NULL;
+        TestCommonFail (ex);
+    }
+}
+
+void OdbcFdoSelectTest::feature_query()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = mSetup.GetClassNameAcdb3dpolyline();
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+
+                FdoClassDefinitionP classDef = reader->GetClassDefinition();
+                FdoPropertiesP props = classDef->GetProperties();
+                FdoPtr<FdoReadOnlyPropertyDefinitionCollection> baseProps = classDef->GetBaseProperties();
+
+                CPPUNIT_ASSERT( props->GetCount() == numPropertiesInPolylineClass() );
+                CPPUNIT_ASSERT( baseProps->GetCount() == 0 );
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcFdoSelectTest::ValidateGeometryRead(FdoIFeatureReader* reader, FdoString* geomName, FdoString* expectedValue)
+{
+    CPPUNIT_ASSERT( reader->IsNull(geomName) == (expectedValue == NULL) );
+    
+    if ( expectedValue != NULL )
+    {
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        FdoPtr<FdoByteArray> geomVal = reader->GetGeometry(geomName);
+        FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomVal);
+        FdoStringP geomText = geom->GetText();
+        CPPUNIT_ASSERT( geomText == expectedValue );
+    }
+}
+
+void OdbcOracleFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"VIEW1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named FEATID1", 0==wcscmp(L"FEATID1", idPropDef->GetName()));
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+
+void OdbcMySqlFdoSelectTest::ConfigFileTest()
+{
+    if( mConnection != NULL ) try
+    {
+        // Re-open the connection with a configuration document in place.
+        mConnection->Close();
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        mConnection->SetConfiguration(fileStream);
+        mConnection->Open();
+
+        // Read the features.
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+        selectCmd->SetFeatureClassName(L"Acdb:Polyline");
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+        printf("   %i feature(s) read\n", numFeatures);
+        reader->Close();
+
+        // This is not currently written to a file for checking, but it is handy
+        // for debugging.
+        FdoPtr<FdoIDescribeSchema> describeSchemaCmd =
+            (FdoIDescribeSchema*)mConnection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describeSchemaCmd->Execute();
+        FdoIoMemoryStreamP schemaStream = FdoIoMemoryStream::Create();
+        schemas->WriteXml(schemaStream);
+
+        // Set the connection back to having no configuration document.
+        mConnection->Close();
+        mConnection->SetConfiguration(NULL);
+        mConnection->Open();
+    }
+    catch (FdoException *ex)
+    {
+		TestCommonFail(ex);
+    }
+}
+
+void OdbcMySqlFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"view1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+#ifdef _WIN32
+
+void OdbcSqlServerFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"view1");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                    CPPUNIT_ASSERT_MESSAGE("Expected identity property named featid1", 0==wcscmp(L"featid1", idPropDef->GetName()));
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcSqlServerFdoSelectTest::MultiSchemaTest()
+{
+    if( mConnection != NULL )
+    {
+        bool configSet = false;
+
+        try
+        {
+            FdoIoMemoryStreamP configStream = FdoIoMemoryStream::Create();
+
+            UnitTestUtil::ExportDb(mConnection, configStream);
+
+            mConnection->Close();
+            configStream->Reset();
+            mConnection->SetConfiguration(configStream);
+            configSet = true;
+            mConnection->Open();
+
+
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            selectCmd->SetFeatureClassName(L"guest:table3");
+
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"featid1") );
+                CPPUNIT_ASSERT( reader->GetInt32(L"featid1") == 1 );
+
+                CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"GuestName") == 0 );
+
+                CPPUNIT_ASSERT( !reader->IsNull(L"amount") );
+                CPPUNIT_ASSERT( reader->GetInt32(L"amount") == 5005 );
+
+                ValidateGeometryRead(reader, L"Geometry", L"POINT (10.25 15.125)");
+
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 1);
+
+            // close the reader
+            reader->Close();
+
+            selectCmd->SetFeatureClassName(L"guest:cities");
+
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"cityid") );
+                switch( reader->GetInt32(L"cityid") )
+                {
+                case 1:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Cedarville") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (25 85)");
+
+                    break;
+
+                case 2:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Lakeview") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (48 23)");
+
+                    break;
+
+                case 3:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Sandborough") == 0 );
+
+                    ValidateGeometryRead(reader, L"Geometry", L"POINT (10 39)");
+
+                    break;
+
+                default:
+                    CPPUNIT_FAIL("Unexpected value for guest.cities.cityid");
+                    break;
+                }
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 3);
+
+            // close the reader
+            reader->Close();
+
+            selectCmd->SetFeatureClassName(L"dbo:cities");
+
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                CPPUNIT_ASSERT( !reader->IsNull(L"cityid") );
+                switch( reader->GetInt32(L"cityid") )
+                {
+                case 1:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Marin") == 0 );
+
+                    CPPUNIT_ASSERT( !reader->IsNull(L"city") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"city"), L"San Rafael") == 0 );
+
+                    break;
+
+                case 2:
+                    CPPUNIT_ASSERT( !reader->IsNull(L"name") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"name"), L"Boop") == 0 );
+
+                    CPPUNIT_ASSERT( !reader->IsNull(L"city") );
+                    CPPUNIT_ASSERT( wcscmp(reader->GetString(L"city"), L"San Bebop") == 0 );
+
+                    break;
+                default:
+                    CPPUNIT_FAIL("Unexpected value for dbo.cities.cityid");
+                    break;
+                }
+                numFeatures++;
+            }
+
+            CPPUNIT_ASSERT(numFeatures == 2);
+
+            // close the reader
+            reader->Close();
+
+            reader = NULL;
+
+            selectCmd = NULL;
+
+            mConnection->Close();
+            mConnection->SetConfiguration(NULL);
+            mConnection->Open();
+
+            configSet = false;
+        }
+        catch (FdoException* e)
+        {
+            if (configSet)
+            {
+                try
+                {
+                    mConnection->Close();
+                    mConnection->SetConfiguration(NULL);
+                    mConnection->Open();
+                }
+                catch (...)
+                {
+                }
+            }
+
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::Table1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::TestDefect889655()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            // This works much like any other Select, but includes a column (NAME) that internally
+            // maps to an ODBC SQL_WCHAR column type.
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+            selectCmd->SetFeatureClassName(L"hospital");
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::ComparisonFilterTable1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selectCmd->SetFeatureClassName(fcn);
+
+#if 0
+            // create a comparison filter: Name == 'MyName'
+            FdoPtr<FdoIdentifier>          dataPropID = FdoIdentifier::Create(L"NAME");
+            FdoPtr<FdoDataValue>           dataValue  = FdoStringValue::Create(L"MyName");
+            FdoPtr<FdoComparisonCondition> compCond   = FdoComparisonCondition::Create(
+                dataPropID,
+                FdoComparisonOperations_EqualTo,
+                dataValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(compCond);
+#else
+            // create a comparison filter: Geometry within rectangle (8,8) to (17,17)
+            FdoPtr<FdoIdentifier> geomPropID = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoIEnvelope> pEnvelope = gf->CreateEnvelopeXY(8, 8, 17, 17);
+            FdoPtr<FdoIGeometry> pGeometry = gf->CreateGeometry(pEnvelope);
+            FdoPtr<FdoByteArray> pByteArray = gf->GetFgf(pGeometry);
+            FdoPtr<FdoGeometryValue> pValue = FdoGeometryValue::Create(pByteArray);
+            FdoPtr<FdoSpatialCondition> pSpatialCond = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(pSpatialCond);
+#endif
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::SpatialFilterTable1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // create a comparison filter: Geometry within rectangle (8,8) to (28,28)
+            FdoPtr<FdoIdentifier> geomPropID = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            FdoPtr<FdoIEnvelope> pEnvelope = gf->CreateEnvelopeXY(8, 8, 28, 28);
+            FdoPtr<FdoIGeometry> pGeometry = gf->CreateGeometry(pEnvelope);
+            FdoPtr<FdoByteArray> pByteArray = gf->GetFgf(pGeometry);
+            FdoPtr<FdoGeometryValue> pValue = FdoGeometryValue::Create(pByteArray);
+            FdoPtr<FdoSpatialCondition> pSpatialCond = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(pSpatialCond);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+            // the features which geometries are (11,21) and (20,25) are selected
+            CPPUNIT_ASSERT_MESSAGE("Expected 2 features", 2==numFeatures);
+
+            // close the reader
+            reader->Close();
+
+            // now create a new comparison filter which envelope is (8,8) to (28,28): Geometry within triangle (8,8), (28,8), (8,28).
+            geomPropID = FdoIdentifier::Create(L"Geometry");
+            gf = FdoFgfGeometryFactory::GetInstance();
+            
+            double ordsXY[] = 
+            {
+                8, 8,
+                28, 8,
+                8, 28,
+                8, 8,
+            };
+
+            FdoPtr<FdoILinearRing> extRing = gf->CreateLinearRing(FdoDimensionality_XY, 8, ordsXY);
+            FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(extRing, NULL);
+            pByteArray = gf->GetFgf(poly);
+            pValue = FdoGeometryValue::Create(pByteArray);
+            pSpatialCond = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+            // set the filter on the command
+            selectCmd->SetFilter(pSpatialCond);
+
+            // execute the command
+            reader = selectCmd->Execute();
+
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+            // the feature which geometry is (11, 21) is selected.
+            CPPUNIT_ASSERT_MESSAGE("Expected 1 features", 1==numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::RestrictedPropertiesTable1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP className = GetSchemaName();
+            className += L":" L"TABLE1";
+            selectCmd->SetFeatureClassName(className);
+
+            // restrict the set of properties to the named property
+            FdoPtr<FdoIdentifier> propID1 = FdoIdentifier::Create(L"NAME");
+            FdoPtr<FdoIdentifier> propID2 = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoIdentifierCollection> propIDs = selectCmd->GetPropertyNames();
+            propIDs->Add(propID1);
+            propIDs->Add(propID2);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+// A test that is hard-coded for a known table.
+// Table2 is notable for:
+//    -- AutoNumber property type
+//    -- Yes/No (boolean) property type
+//    -- ordinate columns in the order (Y,X,...Z)
+//    -- ordinate columns not as last columns
+//    -- ordinate columns interleaved with non-ordinate columns
+void OdbcAccessFdoSelectTest::Table2Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP className = GetSchemaName();
+            className += L":" L"TABLE2";
+            selectCmd->SetFeatureClassName(className);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            CPPUNIT_ASSERT_MESSAGE("Wrong class type from reader", classDef->GetClassType()==FdoClassType_FeatureClass);
+            FdoFeatureClass* featureClassDef = static_cast<FdoFeatureClass*>(classDef.p);
+            FdoPtr<FdoGeometricPropertyDefinition> geomPropertyDef = featureClassDef->GetGeometryProperty();
+            CPPUNIT_ASSERT_MESSAGE("feature class missing geometry property", geomPropertyDef!=NULL);
+            FdoPtr<FdoPropertyDefinitionCollection> propertyDefs = featureClassDef->GetProperties();
+            FdoPtr<FdoPropertyDefinition> propertyDef = propertyDefs->FindItem(geomPropertyDef->GetName());
+            CPPUNIT_ASSERT_MESSAGE("feature class missing geometry property", propertyDef!=NULL);
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+
+                // Test geometry explicitly, since we'll skip testing it if it's missing from the reader's class definition
+                if (!reader->IsNull(L"Geometry"))
+                {
+                    FdoPtr<FdoByteArray> bytes = reader->GetGeometry(L"Geometry");
+                }
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+
+            // Try another selection with restricted properties.
+            // This is avoid any internal special handling of the all-column case.
+
+            selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            selectCmd->SetFeatureClassName(className);
+
+            // restrict the set of properties to the named property
+            FdoPtr<FdoIdentifier> propID1 = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoIdentifierCollection> propIDs = selectCmd->GetPropertyNames();
+            propIDs->Add(propID1);
+
+            // execute the command
+            reader = selectCmd->Execute();
+            // read through all the features
+            numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::View1Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"VIEW1";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected no identity properties", 0==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::View2Test()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"VIEW2";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+            FdoPtr<FdoDataPropertyDefinitionCollection> idPropDefs = classDef->GetIdentityProperties();
+            FdoInt32 numIdProps = 0;
+            if (idPropDefs != NULL)
+            {
+                numIdProps = idPropDefs->GetCount();
+                for (FdoInt32 i=0;  i < numIdProps;  i++)
+                {
+                    FdoPtr<FdoDataPropertyDefinition> idPropDef = idPropDefs->GetItem(i);
+                    printf("    Found identity property '%ls'.\n", idPropDef->GetName());
+                }
+                printf("  Found total %d identity properties.\n", numIdProps);
+                CPPUNIT_ASSERT_MESSAGE("Expected 1 identity property", 1==numIdProps);
+            }
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcAccessFdoSelectTest::TestDefect779194()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            // Make sure that GetPropertyCount succeeds when no identifiers are specified.
+
+            FdoPtr<FdoISelectAggregates> selectAggrCmd = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
+            FdoStringP className = GetSchemaName();
+            className += L":" L"EMPLOYEES";
+            selectAggrCmd->SetFeatureClassName(className);
+
+            // Execute the command:
+            FdoPtr<FdoIDataReader> dataReader = selectAggrCmd->Execute();
+            FdoInt32 propertyCount = dataReader->GetPropertyCount();
+            CPPUNIT_ASSERT_MESSAGE("Expected some columns, got zero", propertyCount>0);
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+void OdbcAccessFdoSelectTest::spatial_or_attribute_query()
+{
+    FdoPtr<FdoIFeatureReader> myReader;
+    FdoPtr<FdoISelect> selCmd;
+
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            
+            selCmd = (FdoISelect*)mConnection->CreateCommand( FdoCommandType_Select );
+            
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"TABLE1";
+            selCmd->SetFeatureClassName(fcn);
+
+            FdoPtr<FdoFilter> attributeFilter = FdoFilter::Parse(L"NAME = 'MY NAME'");
+
+            FdoPtr<FdoIdentifier> geomPropID = FdoIdentifier::Create(L"Geometry");
+            FdoPtr<FdoIEnvelope> pEnvelope = gf->CreateEnvelopeXY(8, 8, 17, 17);
+            FdoPtr<FdoIGeometry> pGeometry = gf->CreateGeometry(pEnvelope);
+            FdoPtr<FdoByteArray> pByteArray = gf->GetFgf(pGeometry);
+            FdoPtr<FdoGeometryValue> pValue = FdoGeometryValue::Create(pByteArray);
+            FdoPtr<FdoSpatialCondition> spatialFilter = FdoSpatialCondition::Create(
+                geomPropID, 
+                FdoSpatialOperations_Within, 
+                pValue);
+
+
+            FdoPtr<FdoFilter> totalFilter = FdoFilter::Combine( attributeFilter, FdoBinaryLogicalOperations_Or, spatialFilter);
+            selCmd->SetFilter(totalFilter);
+
+            bool failed = false;
+            try
+            {
+                myReader = selCmd->Execute();
+            }
+            catch( FdoException *ex )
+            {
+                // Provider does not support this type of filter
+                // so exception expected
+                FDO_SAFE_RELEASE(ex);
+                failed = true;
+            }
+
+            CPPUNIT_ASSERT(failed);
+
+            selCmd->SetFilter(attributeFilter);
+            myReader = selCmd->Execute();
+            selCmd->SetFilter(spatialFilter);
+            myReader = selCmd->Execute();
+        }
+        catch( FdoException *ex )
+        {
+            TestCommonFail (ex);
+        }
+    }
+}
+
+
+void OdbcExcelFdoSelectTest::AllTypesTest()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"ALLTYPES";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+
+void OdbcExcelFdoSelectTest::AllTypesConfigFileTest()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile(), L"r");
+        connection->SetConfiguration(fileStream);
+
+        // Now open the database with the given 
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+
+        // must set the feature class name
+        FdoStringP fcn = L"Fdo";
+        fcn += L":";
+        fcn = L"ALLTYPES";
+        selectCmd->SetFeatureClassName(fcn);
+
+        // execute the command
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+        FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+        FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+        // read through all the features
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+
+        printf("   %i feature(s) read\n", numFeatures);
+
+        // close the reader
+        reader->Close();
+        connection->Close();
+    }
+    catch (FdoException* e)
+    {
+        TestCommonFail (e);
+    }
+}
+
+void OdbcExcelFdoSelectTest::AllTypesConfigFileTest_defect814052()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
+        if (connection == NULL)
+            CPPUNIT_FAIL("FAILED - CreateConnection returned NULL\n");
+        // Use the config file that does not define an identifer property.
+        FdoIoFileStreamP fileStream = FdoIoFileStream::Create(GetConfigFile2(), L"r");
+        connection->SetConfiguration(fileStream);
+
+        connection->SetConnectionString(GetConnectString());
+        connection->Open();
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)connection->CreateCommand(FdoCommandType_Select);
+
+        FdoStringP fcn = L"Fdo";
+        fcn += L":";
+        fcn = L"ALLTYPES";
+        selectCmd->SetFeatureClassName(fcn);
+
+        // execute the command
+        FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+        FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+        FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+        // read through all the features
+        int numFeatures = 0;
+        while (reader->ReadNext())
+        {
+            numFeatures++;
+            UnitTestUtil::ProcessFeature(reader);
+        }
+
+        printf("   %i feature(s) read\n", numFeatures);
+
+        // close the reader
+        reader->Close();
+        connection->Close();
+    }
+    catch (FdoException* e)
+    {
+        TestCommonFail (e);
+    }
+}
+
+void OdbcExcelFdoSelectTest::CityTest()
+{
+    if( mConnection != NULL )
+    {
+        try
+        {
+            FdoPtr<FdoISelect> selectCmd = (FdoISelect*)mConnection->CreateCommand(FdoCommandType_Select);
+
+            // must set the feature class name
+            FdoStringP fcn = GetSchemaName();
+            fcn += L":";
+            fcn += L"CITY";
+            selectCmd->SetFeatureClassName(fcn);
+
+            // execute the command
+            FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
+
+            FdoPtr<FdoClassDefinition> classDef = reader->GetClassDefinition();
+            FdoDataPropertiesP idProps = classDef->GetIdentityProperties();
+            
+            CPPUNIT_ASSERT_MESSAGE("Class should not have identity, otherwise need to try another class", idProps->GetCount() == 0);
+            FdoFeatureSchemaP pSchema =  classDef->GetFeatureSchema(); 
+
+            // read through all the features
+            int numFeatures = 0;
+            while (reader->ReadNext())
+            {
+                if ( numFeatures < 5 ) 
+                    printf( "%ls, %ls\n", reader->GetString(L"NAME"), reader->GetString(L"COUNTRY") );
+                numFeatures++;
+                UnitTestUtil::ProcessFeature(reader);
+            }
+
+            printf("   %i feature(s) read\n", numFeatures);
+
+            // close the reader
+            reader->Close();
+        }
+        catch (FdoException* e)
+        {
+            TestCommonFail (e);
+        }
+    }
+}
+#endif
