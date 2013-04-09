@@ -1,0 +1,2 @@
+ Schema dbo has errors; cannot apply it 
+Cannot delete system schema 'dbo' from datastore.

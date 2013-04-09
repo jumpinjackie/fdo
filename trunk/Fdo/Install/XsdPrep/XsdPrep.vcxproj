@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3537C460-23CD-4C7E-95D0-A94184E381CD}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>md ..\Temp
+md ..\Temp\XmlSchema
+md ..\Temp\XmlSchema\Gml
+md ..\Temp\XmlSchema\XLink
+md ..\Temp\XmlSchema\XmlSchema
+copy ..\..\Docs\XmlSchema\Gml\* ..\Temp\XmlSchema\Gml\*
+copy ..\..\Docs\XmlSchema\XLink\* ..\Temp\XmlSchema\XLink\*
+copy ..\..\Docs\XmlSchema\XmlSchema\* ..\Temp\XmlSchema\XmlSchema\*
+..\XsdInstallPaths\Debug\XsdInstallPaths ..\..\Docs\XmlSchema ..\Temp\XmlSchema
+..\XsdInstallPaths\Debug\XsdInstallPaths ..\..\..\Providers\Oracle\docs\XmlSchema ..\Temp\XmlSchema
+..\XsdInstallPaths\Debug\XsdInstallPaths ..\..\..\Providers\GenericRdbms\docs\XmlSchema ..\Temp\XmlSchema
+
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>md ..\Temp
+md ..\Temp\XmlSchema
+md ..\Temp\XmlSchema\Gml
+md ..\Temp\XmlSchema\XLink
+md ..\Temp\XmlSchema\XmlSchema
+copy ..\..\Docs\XmlSchema\Gml\* ..\Temp\XmlSchema\Gml\*
+copy ..\..\Docs\XmlSchema\XLink\* ..\Temp\XmlSchema\XLink\*
+copy ..\..\Docs\XmlSchema\XmlSchema\* ..\Temp\XmlSchema\XmlSchema\*
+..\XsdInstallPaths\Release\XsdInstallPaths ..\..\Docs\XmlSchema ..\Temp\XmlSchema
+..\XsdInstallPaths\Release\XsdInstallPaths ..\..\..\Providers\Oracle\docs\XmlSchema ..\Temp\XmlSchema
+..\XsdInstallPaths\Release\XsdInstallPaths ..\..\..\Providers\GenericRdbms\docs\XmlSchema ..\Temp\XmlSchema
+</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XsdInstallPaths\XsdInstallPaths.vcxproj">
+      <Project>{2c6b359f-c391-402b-a7cb-7b227763f55b}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

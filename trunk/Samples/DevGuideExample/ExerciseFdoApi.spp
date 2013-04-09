@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+	<Folder FolderName="XML Files" ExtStr="xml;cml;math;mtx;rdf;smil;svg;wml"/>
+	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
+	<Folder FolderName="HTML Files" ExtStr="html;htm;xhtml;asp"/>
+	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
+		<File FilePath="..\..\Docs\XmlSchema\Gml\basicTypes.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\coordinateOperations.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\coordinateReferenceSystems.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\coordinateSystems.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\coverage.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\dataQuality.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\datums.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\defaultStyle.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\dictionary.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\direction.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\dynamicFeature.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\FdoBase.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\FdoDocument.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\FdoDocumentSample.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\FdoOverride.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\feature.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\geometryAggregates.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\geometryBasic0d1d.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\geometryBasic2d.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\geometryComplexes.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\geometryPrimitives.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\gml.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\gmlBase.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\grids.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\measures.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\observation.xsd" HomeFolder="Yes"/>
+		<File FilePath=".\Ogc98046FeatureSchema.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\referenceSystems.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\temporal.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\topology.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\units.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Gml\valueObjects.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\Xlink\xlinks.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\XmlSchema\xml.xsd" HomeFolder="Yes"/>
+		<File FilePath="..\..\Docs\XmlSchema\XmlSchema\XMLSchema.xsd" HomeFolder="Yes"/>
+	</Folder>
+	<Folder FolderName="Entities" ExtStr="ent"/>
+</Project>
