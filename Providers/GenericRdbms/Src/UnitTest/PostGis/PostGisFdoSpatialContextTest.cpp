@@ -129,6 +129,9 @@ void PostGisFdoSpatialContextTest::testAxes()
                 else if ( removed == L",AXIS[\"none\",EAST],AXIS[\"none\",NORTH]" )
                 {
                 }
+                else if ( removed == L",AXIS[\"none\",NORTH],AXIS[\"none\",EAST]" )
+                {
+                }
                 else
                 {
                     bool success = true;
@@ -154,6 +157,12 @@ void PostGisFdoSpatialContextTest::testAxes()
                         XName = L"\"E(X)\"";
                         YName = L"\"N(Y)\"";
                         len = 37;
+                    }
+
+                    if ( removed.Contains(L"M") )
+                    {
+                        XName = L"\"M\"";
+                        YName = L"\"P\"";
                     }
 
                     if ( removed.GetLength() != len )

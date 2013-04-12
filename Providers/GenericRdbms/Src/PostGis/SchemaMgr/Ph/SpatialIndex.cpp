@@ -158,7 +158,7 @@ bool FdoSmPhPostGisSpatialIndex::Add()
                 indexName = indexName.Right(L"."); // no schema
 
             sqlStmt = FdoStringP::Format(
-                L"CREATE INDEX \"%ls\"  ON %ls USING GIST (\"%ls\" GIST_GEOMETRY_OPS)",
+                L"CREATE INDEX \"%ls\"  ON %ls USING GIST (\"%ls\")",
                 (FdoString*) indexName,
                 (FdoString*) tableDbQName, // no dbo. prefix etc.
                 column->GetName()
