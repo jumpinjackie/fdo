@@ -438,6 +438,8 @@ copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(O
     <ResourceCompile Include="$(FDOTHIRDPARTY)\cppunit\HostApp\HostApp.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="gml3_write_masterT.txt" />
+    <None Include="gml_write_masterT.txt" />
     <None Include="g_coords.txt" />
     <None Include="gml_blob.xml" />
     <None Include="gml_blob_hex.xml" />

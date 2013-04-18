@@ -405,6 +405,86 @@ void GmlWriteTest::testGML3SimpleFeature()
 
 }
 
+void GmlWriteTest::testSimpleFeatureTransform() 
+{
+    FdoPtr<FdoIFeatureReader> featureReader = new MyFeatureReader();
 
+    FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
+    flags->SetWriteCollection(true);
+    flags->SetWriteMember(true);
+    flags->SetCollectionUri(L"http://www.opengis.net/wfs");
+    flags->SetCollectionName(L"FeatureCollection");
+    flags->SetMemberName(L"featureMember");
+    flags->SetMemberUri(L"http://www.opengis.net/gml");
+    // set schemaLocation
+    // gml schema location
+    flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/2.1.2/feature.xsd");
+    // wfs schema location
+    flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd");
+    // default namespace schema location
+    flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
+    // set the default namespace
+    flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+    // set coordinate system and srs name
+    flags->SetSrsName(L"EPSG:4267");
+    FdoPtr<TransformTest> transform = new TransformTest();
+    flags->SetCoordinateSystemTransform(transform);
+
+    FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(L"gml_writeT.xml", false);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter, flags);
+    FdoPtr<FdoXmlFeatureWriter> featureWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
+
+    FdoXmlFeatureSerializer::XmlSerialize(featureReader, featureWriter, flags);
+
+#ifdef _WIN32
+        // Compare output against expected results.
+        UnitTestUtil::CheckOutput( "gml_writeT_master.txt", "gml_writeT.xml" );
+#endif
+}
+
+void GmlWriteTest::testGML3SimpleFeatureTransform() 
+{
+	FdoPtr<FdoIFeatureReader> featureReader = new MyFeatureReader();
+
+    FdoPtr<FdoXmlFeatureFlags> flags = FdoXmlFeatureFlags::Create();
+    flags->SetWriteCollection(true);
+    flags->SetWriteMember(true);
+    flags->SetCollectionUri(L"http://www.opengis.net/wfs");
+    flags->SetCollectionName(L"FeatureCollection");
+    flags->SetMemberName(L"featureMember");
+    flags->SetMemberUri(L"http://www.opengis.net/gml");
+    // set schemaLocation
+    flags->SetSchemaLocation(L"http://www.opengis.net/gml", L"http://schemas.opengis.net/gml/3.1.1/base/feature.xsd");
+    // wfs schema location
+    flags->SetSchemaLocation(L"http://www.opengis.net/wfs", L"http://schemas.opengis.net/wfs/1.1.0/WFS.xsd");
+    // default namespace schema location
+    flags->SetSchemaLocation(L"http://www.mynamespace.com/myns", L"http://www.mynamespace.com/myns/myns.xsd");
+    // set the default namespace
+    flags->SetDefaultNamespace(L"http://www.mynamespace.com/myns");
+	// set the GML version
+	flags->SetGmlVersion(FdoGmlVersion_311);
+    // set coordinate system and srs name
+    flags->SetSrsName(L"EPSG:4267");
+    FdoPtr<TransformTest> transform = new TransformTest();
+    flags->SetCoordinateSystemTransform(transform);
+
+    FdoPtr<FdoXmlWriter> xmlWriter = FdoXmlWriter::Create(L"gml3_writeT.xml", false);
+    FdoPtr<FdoXmlFeaturePropertyWriter> propWriter = FdoXmlFeaturePropertyWriter::Create(xmlWriter,flags);
+    FdoPtr<FdoXmlFeatureWriter> featureWriter = FdoXmlFeatureWriter::Create(propWriter, flags);
+
+    FdoXmlFeatureSerializer::XmlSerialize(featureReader, featureWriter, flags);
+
+#ifdef _WIN32
+        // Compare output against expected results.
+        UnitTestUtil::CheckOutput( "gml3_writeT_master.txt", "gml3_writeT.xml" );
+#endif
+
+}
+
+FdoIDirectPosition* TransformTest::CoordinateSystemTransform(FdoIDirectPosition* sourceGeometry)
+{
+    FdoPtr<FdoDirectPositionImpl> posImpl = FdoDirectPositionImpl::Create(1, 2, 3);
+    return FDO_SAFE_ADDREF(posImpl.p);
+}
 
 
