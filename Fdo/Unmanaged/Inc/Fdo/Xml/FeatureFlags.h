@@ -25,6 +25,8 @@
 #include <FdoStd.h>
 #include <Fdo/Xml/Flags.h>
 
+class FdoCoordinateSystemTransform;
+
 /// \brief
 /// FdoXmlFeatureFlags extends FdoXmlFlags to specify flags specific to feature 
 /// serialization.
@@ -363,6 +365,38 @@ public:
     /// 
     FDO_API virtual FdoString* GetGmlDescriptionRelatePropertyName();
 
+    /// \brief
+    /// Sets the srs name which is going to be used when serialize geometry.
+    /// 
+    /// \param srsName 
+    /// the srs name request for serialize geometry to GML format
+    ///
+    FDO_API virtual void SetSrsName(FdoString* srsName);
+
+    /// \brief
+    /// Gets the srs name which is going to be used when serialize geometry.
+    /// 
+    /// \return
+    /// Returns the srs name request for serialize geometry to GML format
+    /// 
+    FDO_API virtual FdoString* GetSrsName();
+
+    /// \brief
+    /// Sets the coordinate system transformation when serialize geometry.
+    /// 
+    /// \param transform 
+    /// the coordinate system transformation when serialize geometry.
+    ///
+    FDO_API virtual void SetCoordinateSystemTransform(FdoCoordinateSystemTransform *transform);
+
+    /// \brief
+    /// Gets the coordinate system transformation when serialize geometry.
+    /// 
+    /// \return
+    /// Returns the coordinate system transformation when serialize geometry.
+    /// 
+    FDO_API virtual FdoCoordinateSystemTransform* GetCoordinateSystemTransform();
+
 protected:
 	FdoXmlFeatureFlags();
     FdoXmlFeatureFlags(FdoString* url, ErrorLevel errorLevel, FdoBoolean nameAdjust, ConflictOption conflictOption);
@@ -384,12 +418,30 @@ private:
 	FdoPtr<FdoStringCollection> mGmlIDRelatePropertyNames;
 	FdoStringP mGmlNameRelatePropertyName;
 	FdoStringP mGmlDescriptionRelatePropertyName;
+    FdoStringP mSrsName;
+    FdoCoordinateSystemTransform *mTransform;
 };
 
 /// \ingroup (typedefs)
 /// \brief
 /// FdoXmlFeatureFlagsP is a FdoPtr on FdoXmlFeatureFlags, provided for convenience.
 typedef FdoPtr<FdoXmlFeatureFlags> FdoXmlFeatureFlagsP;
+
+/// \brief
+/// FdoCoordinateSystemTransform is a class provide the capability of transform coordinate system. 
+/// It's used in FdoGMLGeometrySerializer to do coordinate system transformation when serialize GML, for example create WFS xml.
+class FdoCoordinateSystemTransform : public FdoDisposable
+{
+public:
+    /// <summary>
+    /// This is the function to do coordinate system transformation.
+    /// If the coordinate system transformation succeed, return the transformed gemotry. 
+    /// If the coordinate system transformation fail, return the sourceGeometry. No exception thrown.
+    /// </summary>
+    /// <param name="sourceGeometry">The geometry before coordinate system transformation.</param>
+    /// <returns>The geometry after coordinate system transformation.</returns>
+    FDO_API  virtual FdoIDirectPosition* CoordinateSystemTransform(FdoIDirectPosition* sourceGeometry);
+};
 
 #endif
 
