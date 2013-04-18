@@ -150,7 +150,7 @@ FdoStringP FdoGML212GeometrySerializer::GetDirectPositionCoordinates(FdoIDirectP
     }
     else 
     {
-        pos = position;
+        pos = FDO_SAFE_ADDREF(position);
     }
 
     static const int SIZE = 256;
@@ -373,7 +373,7 @@ FdoStringP FdoGML311GeometrySerializer::GetDirectPositionCoordinates(FdoIDirectP
     }
     else 
     {
-        pos = position;
+        pos = FDO_SAFE_ADDREF(position);
     }
 
     static const int SIZE = 256;
