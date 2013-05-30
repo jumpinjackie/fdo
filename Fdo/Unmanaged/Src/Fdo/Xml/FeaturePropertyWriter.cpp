@@ -239,9 +239,27 @@ void FdoXmlFeaturePropertyWriter::WriteGeometricProperty(
 	}
 
 	if (m_flags != NULL)
-		FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, scName,m_flags->GetGmlVersion());	
+    {
+        FdoXmlFeatureFlags *featureFlags = dynamic_cast<FdoXmlFeatureFlags *>(m_flags.p);
+        if (featureFlags != NULL)
+        {
+            FdoPtr<FdoCoordinateSystemTransform> transform = featureFlags->GetCoordinateSystemTransform();
+            FdoStringP srsName = featureFlags->GetSrsName();
+            if (srsName == NULL)
+            {
+                srsName = scName;
+            }
+		    FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, srsName, m_flags->GetGmlVersion(), transform);	
+        }
+        else 
+        {
+            FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, scName, m_flags->GetGmlVersion());	
+        }
+    }
 	else
+    {
 		FdoGeometrySerializer::SerializeGeometry(geometry, m_writer, scName,FdoGmlVersion_212);	
+    }
 
     if (!valueOnly)
         m_writer->WriteEndElement();
