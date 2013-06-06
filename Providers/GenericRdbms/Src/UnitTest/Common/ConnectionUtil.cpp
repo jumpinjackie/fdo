@@ -348,7 +348,7 @@ FdoStringP ConnectionUtil::GetEnviron(const char *name, FdoString *suffix)
         FdoStringP source;
         FdoStringP datastore = GetEnv("datastore");
         if (datastore == NULL)
-            source = FdoStringP::Format( L"fdo_%hs", uname);
+            source = FdoStringP::Format( L"fdo_%hs", uname).Lower();
         else
             source = datastore;
         source = source + suffix;
