@@ -23,6 +23,7 @@
 #include <Spatial/SpatialUtility.h>		// for TesselateCurve()
 #include <float.h>                      // for _isnan()
 #include <math.h>
+#include <cstring>
 
 #define	EPS2               0.00000001
 #define MArePositionsEqualXY(x1, y1, x2, y2) ( (fabs(x1-x2) < EPS2) && (fabs(y1-y2) < EPS2) )
