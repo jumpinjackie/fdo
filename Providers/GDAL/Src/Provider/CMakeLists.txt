@@ -29,6 +29,7 @@ set( GRFPProvider_SRCS
    FdoRfpRasterPropertyDictionary.cpp
    FdoRfpRasterUtil.cpp
    FdoRfpStreamReaderByTile.cpp
+   FdoRfpStreamReaderByTileResample.cpp
    FdoRfpRect.cpp
    FdoRfpSchemaCapabilities.cpp
    FdoRfpSchemaData.cpp

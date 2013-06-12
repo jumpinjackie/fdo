@@ -20,6 +20,7 @@ set( GDALUnitTest_SRCS
    RfpTestGeotiff.cpp
    RfpTestGetRaster.cpp
    RfpTestMosaic.cpp
+   RfpTestResample.cpp
    RfpTestSpatialContext.cpp
    RfpTestThorough.cpp
    RfpUnitTest.cpp
