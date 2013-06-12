@@ -34,6 +34,8 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 		SmPhCfgGrd
 		SmPhGrd
 		SmPhRdGrd
+		ProvidersCommon
+		SchemaMgr
 		-Wl,-no-whole-archive
  )
 else( CMAKE_COMPILER_IS_GNUCXX )
@@ -55,6 +57,8 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 		SmPhCfgGrd
 		SmPhGrd
 		SmPhRdGrd
+		ProvidersCommon
+		SchemaMgr
  )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
@@ -63,15 +67,11 @@ target_link_libraries( FdoODBC
 	${ODBCINST_LIBRARY}
 	FDO
 	ExpressionEngine
-	ProvidersCommon
 	SchemaMgr_OV
-	SchemaMgr
 	rdbi
 	Gdbi
 	FdoRdbms
-	)
-
-
+)
 
 set_target_properties( FdoODBC PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 install( TARGETS FdoODBC DESTINATION ${LIB_INSTALL_DIR} )

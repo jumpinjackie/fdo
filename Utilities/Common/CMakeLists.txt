@@ -33,9 +33,9 @@ set( ProvidersCommon_SRCS
    Src/FdoDefaultSqlDataReader.cpp
 )
 
-add_library( ProvidersCommon SHARED ${ProvidersCommon_SRCS} )
+add_library( ProvidersCommon STATIC ${ProvidersCommon_SRCS} )
 add_dependencies( ProvidersCommon FDO FDOMessage )
 target_link_libraries( ProvidersCommon FDO )
 
 set_target_properties( ProvidersCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS ProvidersCommon DESTINATION ${LIB_INSTALL_DIR} )
+#install( TARGETS ProvidersCommon DESTINATION ${LIB_INSTALL_DIR} )

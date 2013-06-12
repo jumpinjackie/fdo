@@ -32,6 +32,8 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 		SmPhCfgGrd
 		SmPhGrd
 		SmPhRdGrd
+        ProvidersCommon
+    	SchemaMgr
 		-Wl,-no-whole-archive
  	)
 else( CMAKE_COMPILER_IS_GNUCXX )
@@ -54,6 +56,8 @@ else( CMAKE_COMPILER_IS_GNUCXX )
 		SmPhCfgGrd
 		SmPhGrd
 		SmPhRdGrd
+        ProvidersCommon
+    	SchemaMgr
  	)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
@@ -62,10 +66,8 @@ target_link_libraries( FdoMySQL
 	${ZLIB_LIBRARIES}
 	FDO
 	ExpressionEngine
-	ProvidersCommon
 	SchemaMgr_OV
-	SchemaMgr
-	)
+)
 
 set_target_properties( FdoMySQL PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
 
