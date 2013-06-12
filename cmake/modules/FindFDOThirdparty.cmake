@@ -111,7 +111,7 @@ else( NOT INTERNAL_BOOST )
 	set( Boost_INCLUDE_DIRS ${FDOTHIRDPARTY}/boost/ )
 	exec_program(
 	      ${CMAKE_CXX_COMPILER}
-	      ARGS                    --version
+	      ARGS                    -dumpversion
 	      OUTPUT_VARIABLE _compiler_output)
 	string(REGEX REPLACE ".* ([0-9]\\.[0-9]\\.[0-9]) .*" "\\1"
 	         gcc_compiler_version ${_compiler_output})
