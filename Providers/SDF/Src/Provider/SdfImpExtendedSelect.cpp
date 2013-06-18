@@ -61,7 +61,7 @@ typedef struct _SortElement_ {
 
 
 
-static int PositionReader(int recordIndex, SdfBinaryReader*  dataReader, PropertyIndex* pi, int datalength )
+static int PositionReader(int recordIndex, BinaryReader*  dataReader, PropertyIndex* pi, int datalength )
 {
     //position where offset to property value is stored
     dataReader->SetPosition(sizeof(FCID_STORAGE) + recordIndex * sizeof(int));
@@ -387,7 +387,7 @@ SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteFastScrollable( )
 SdfIScrollableFeatureReader* SdfImpExtendedSelect::ExecuteScrollable()
 {
 	const wchar_t*	tmpStr;
-	SdfBinaryReader	rdr1;
+	BinaryReader	rdr1;
 	FdoPtr<SdfSimpleFeatureReader> reader;
 	FdoPtr<FdoIdentifierCollection> selectList;
 	SQLiteData		key;

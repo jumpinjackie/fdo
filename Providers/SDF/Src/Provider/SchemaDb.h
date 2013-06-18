@@ -45,8 +45,8 @@ public:
     FdoFeatureSchema* ReadSchema(FdoString *schemaName = NULL);
 
     //Coordinate system support
-    void ReadCoordinateSystemRecord(SdfBinaryWriter& wrt);
-    void WriteCoordinateSystemRecord(SdfBinaryWriter& wrt);
+    void ReadCoordinateSystemRecord(BinaryWriter& wrt);
+    void WriteCoordinateSystemRecord(BinaryWriter& wrt);
 
     //Other metadata support -- add here
     void ReadMetadata(unsigned char& major, unsigned char& minor);
@@ -70,11 +70,11 @@ private:
     void RollbackPhysical( SdfSchemaMergeContextP mergeContext );
 
     void ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema);
-    void ReadGeometricPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc, FdoClassCapabilities* classcaps);
-    void ReadDataPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
-    void ReadObjectPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
-	void ReadAssociationPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
-    FdoDataValue* ReadDataValue(SdfBinaryReader& rdr);
+    void ReadGeometricPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc, FdoClassCapabilities* classcaps);
+    void ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
+    void ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
+	void ReadAssociationPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc);
+    FdoDataValue* ReadDataValue(BinaryReader& rdr);
       
 	void PostReadSchema( FdoFeatureSchema* schema );
 
@@ -82,11 +82,11 @@ private:
 
     void WriteSchema(FdoFeatureSchema* schema);
     void WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, FdoClassCollection* classes);
-    void WriteDataPropertyDefinition(SdfBinaryWriter& wrt, FdoDataPropertyDefinition* dpd);
-    void WriteGeometricPropertyDefinition(SdfBinaryWriter& wrt, FdoGeometricPropertyDefinition* dpd);
-    void WriteObjectPropertyDefinition(SdfBinaryWriter& wrt, FdoObjectPropertyDefinition* dpd);
-	void WriteAssociationPropertyDefinition(SdfBinaryWriter& wrt, FdoAssociationPropertyDefinition* apd);
-    void WriteDataValue(SdfBinaryWriter& wrt, FdoDataValue* dataValue);
+    void WriteDataPropertyDefinition(BinaryWriter& wrt, FdoDataPropertyDefinition* dpd);
+    void WriteGeometricPropertyDefinition(BinaryWriter& wrt, FdoGeometricPropertyDefinition* dpd);
+    void WriteObjectPropertyDefinition(BinaryWriter& wrt, FdoObjectPropertyDefinition* dpd);
+	void WriteAssociationPropertyDefinition(BinaryWriter& wrt, FdoAssociationPropertyDefinition* apd);
+    void WriteDataValue(BinaryWriter& wrt, FdoDataValue* dataValue);
 
 private:
     SQLiteTable* m_db;

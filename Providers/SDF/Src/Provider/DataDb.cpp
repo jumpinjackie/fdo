@@ -354,7 +354,7 @@ int DataDb::GetFeatureAt(SQLiteData* key, SQLiteData* data, FdoPropertyValueColl
 			    return FindFeatureAt( key, data, pvc );  // Performs a table scan
 	    }
     }
-	SdfBinaryWriter wrtkey(64);
+	BinaryWriter wrtkey(64);
 	DataIO::MakeKey(m_Fc, m_Pi, pvc, wrtkey, 1);
 
 	key->set_data(wrtkey.GetData());
@@ -419,7 +419,7 @@ REC_NO DataDb::InsertFeatureExclusive(FdoClassDefinition* clas, PropertyIndex* p
     //insert feature into database
     SQLiteData keyfeat;
 //
-	SdfBinaryWriter wrtkey(64);
+	BinaryWriter wrtkey(64);
 	if( m_Ids && m_CompareHandler!= NULL )
 	{
 		DataIO::MakeKey(clas, reader, wrtkey);

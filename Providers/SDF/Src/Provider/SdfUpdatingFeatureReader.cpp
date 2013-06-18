@@ -110,11 +110,11 @@ bool SdfUpdatingFeatureReader::ReadNext()
     if (m_bUpdateKey)
     {
         //old key val
-        SdfBinaryWriter wrt(16);
+        BinaryWriter wrt(16);
         DataIO::MakeKey(m_class, this, wrt);
 
         //new key val
-        SdfBinaryWriter wrt2(16);
+        BinaryWriter wrt2(16);
         DataIO::UpdateKey(m_class, m_propVals, this, wrt2);
 
         //update key only if the key is actually changing
@@ -181,7 +181,7 @@ bool SdfUpdatingFeatureReader::ReadNext()
 
     //finally update current feature record,
     //by overwriting the current record   
-    SdfBinaryWriter wrtdata(256);
+    BinaryWriter wrtdata(256);
 
     DataIO::UpdateDataRecord(m_class, m_propIndex, m_propVals, this, wrtdata);
     SQLiteData data(wrtdata.GetData(), wrtdata.GetDataLen());
