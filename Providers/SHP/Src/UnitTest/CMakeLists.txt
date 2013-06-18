@@ -45,11 +45,11 @@ set_target_properties( SHPUnitTest
 	PROPERTIES OUTPUT_NAME "UnitTest" )
 
 target_link_libraries( SHPUnitTest
-	FDO
+	FDO-${FDO_VERSION}
 	${CPPUNIT_LIBRARIES}
 	ProvidersCommon
 	TestCommon
-	SHPOverrides
+	SHPOverrides-${FDO_VERSION}
 	SHPRead
 	SHPSpatialIndex
 	)

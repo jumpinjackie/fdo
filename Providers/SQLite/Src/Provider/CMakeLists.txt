@@ -21,31 +21,29 @@ set( SQLiteProvider_SRCS
 	) 
 
 if( UNIX )
-	add_definitions(-msse -msse2 -mmmx -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_PROGRESS_CALLBACK)
+	add_definitions(-msse -msse2 -mmmx -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE -D_FILE_OFFSET_BITS=64)
 endif( UNIX )
 
-add_library (SQLiteProvider SHARED ${SQLiteProvider_SRCS} )
+add_library (SQLiteProvider-${FDO_VERSION} SHARED ${SQLiteProvider_SRCS} )
 
-target_link_libraries ( SQLiteProvider 
+target_link_libraries ( SQLiteProvider-${FDO_VERSION} 
 	ProvidersCommon 
-	ExpressionEngine
-	FDO 
+	ExpressionEngine-${FDO_VERSION}
+	FDO-${FDO_VERSION} 
 	) 
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SQLiteProvider
+	target_link_libraries( SQLiteProvider-${FDO_VERSION}
 		-Wl,-whole-archive
 		SQLiteSpatialIndex 
 		sqlitefdoprovider3
 		-Wl,-no-whole-archive
 		)
 else( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SQLiteProvider
+	target_link_libraries( SQLiteProvider-${FDO_VERSION}
 		SQLiteSpatialIndex 
 		sqlitefdoprovider3
 		)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-set_target_properties( SQLiteProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-
-install( TARGETS SQLiteProvider DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS SQLiteProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )

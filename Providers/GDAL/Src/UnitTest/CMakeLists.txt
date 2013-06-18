@@ -44,8 +44,8 @@ set_target_properties( GDALUnitTest
 	PROPERTIES OUTPUT_NAME "UnitTest" )
 
 target_link_libraries( GDALUnitTest
-	GRFPOverrides
+	GRFPOverrides-${FDO_VERSION}
 	ProvidersCommon
 	${CPPUNIT_LIBRARIES}
-	FDO
+	FDO-${FDO_VERSION}
 	)

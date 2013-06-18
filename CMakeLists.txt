@@ -17,7 +17,7 @@ include(CPack)
 
 set ( FDO_VERSION_MAJOR 3 )
 set ( FDO_VERSION_MINOR 8 )
-set ( FDO_VERSION_RELEASE 0 )
+set ( FDO_VERSION_RELEASE 1 )
 set ( FDO_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}" )
 set ( FDO_DISTRIBUTION_TEXT "Self compiled sources" CACHE STRING "Indicate compilation origin" )
 

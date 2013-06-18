@@ -80,12 +80,11 @@ set( ExpressionEngine_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( ExpressionEngine SHARED ${ExpressionEngine_LIB_SRCS} )
+add_library( ExpressionEngine-${FDO_VERSION} SHARED ${ExpressionEngine_LIB_SRCS} )
 
-target_link_libraries( ExpressionEngine
-	FDO
+target_link_libraries( ExpressionEngine-${FDO_VERSION}
+	FDO-${FDO_VERSION}
 	ProvidersCommon
  )
 
-set_target_properties( ExpressionEngine PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS ExpressionEngine DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS ExpressionEngine-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
