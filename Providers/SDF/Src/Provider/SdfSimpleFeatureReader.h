@@ -23,7 +23,7 @@
 class SdfConnection;
 class PropertyIndex;
 class FdoExpressionEngine;
-class BinaryReader;
+class SdfBinaryReader;
 class DataDb;
 struct PropertyStub;
 
@@ -205,7 +205,7 @@ protected:
 
     unsigned int m_currentFCID;
 
-	BinaryReader* m_dataReader;
+	SdfBinaryReader* m_dataReader;
 
 	std::map<std::wstring, wchar_t*> m_stringPropsCache;   
   

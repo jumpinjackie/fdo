@@ -89,55 +89,55 @@ FdoPropertyType SdfDataReader::GetPropertyType(FdoString* propertyName)
 bool SdfDataReader::GetBoolean(FdoString* propertyName)
 {
     PERFORM_CHECKS(Boolean);
-    return GetBinaryReader()->ReadByte() != 0;
+    return GetSdfBinaryReader()->ReadByte() != 0;
 }
 
 FdoByte SdfDataReader::GetByte(FdoString* propertyName)
 {
     PERFORM_CHECKS(Byte);
-    return GetBinaryReader()->ReadByte();
+    return GetSdfBinaryReader()->ReadByte();
 }
 
 FdoDateTime SdfDataReader::GetDateTime(FdoString* propertyName)
 {
     PERFORM_CHECKS(DateTime);
-    return GetBinaryReader()->ReadDateTime();
+    return GetSdfBinaryReader()->ReadDateTime();
 }
 
 double SdfDataReader::GetDouble(FdoString* propertyName)
 {
    PERFORM_CHECKS(Double);
-   return GetBinaryReader()->ReadDouble();
+   return GetSdfBinaryReader()->ReadDouble();
 }
 
 FdoInt16 SdfDataReader::GetInt16(FdoString* propertyName)
 {
    PERFORM_CHECKS(Int16);
-   return GetBinaryReader()->ReadInt16();
+   return GetSdfBinaryReader()->ReadInt16();
 }
 
 FdoInt32 SdfDataReader::GetInt32(FdoString* propertyName)
 {
    PERFORM_CHECKS(Int32);
-   return GetBinaryReader()->ReadInt32();
+   return GetSdfBinaryReader()->ReadInt32();
 }
 
 FdoInt64 SdfDataReader::GetInt64(FdoString* propertyName)
 {
    PERFORM_CHECKS(Int64);
-   return GetBinaryReader()->ReadInt64();
+   return GetSdfBinaryReader()->ReadInt64();
 }
 
 float SdfDataReader::GetSingle(FdoString* propertyName)
 {
    PERFORM_CHECKS(Single);
-   return GetBinaryReader()->ReadSingle();
+   return GetSdfBinaryReader()->ReadSingle();
 }
 
 FdoString* SdfDataReader::GetString(FdoString* propertyName)
 {
    PERFORM_CHECKS(String);
-   return GetBinaryReader()->ReadRawString(len);
+   return GetSdfBinaryReader()->ReadRawString(len);
 }
 
 FdoLOBValue* SdfDataReader::GetLOB(FdoString* propertyName)
@@ -182,7 +182,7 @@ FdoByteArray* SdfDataReader::GetGeometry(FdoString* propertyName)
                                                                                 
     _ASSERT(len != 0);
 
-    void* ptr = GetBinaryReader()->GetDataAtCurrentPosition();
+    void* ptr = GetSdfBinaryReader()->GetDataAtCurrentPosition();
 
     return FdoByteArray::Create((unsigned char*)ptr, len);
 }
@@ -199,7 +199,7 @@ void SdfDataReader::Close()
 
 int SdfDataReader::PositionReader(int recordIndex)
 {
-    BinaryReader* reader = GetBinaryReader();
+    SdfBinaryReader* reader = GetSdfBinaryReader();
 
     //make sure we have data
     if (!reader || (reader->GetDataLen() == 0))

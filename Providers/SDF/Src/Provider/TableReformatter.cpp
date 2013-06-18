@@ -117,7 +117,7 @@ void TableReformatter::Reformat()
                         )
                     );
 
-                BinaryReader rdr( (unsigned char*)(data.get_data()), data.get_size() );
+                SdfBinaryReader rdr( (unsigned char*)(data.get_data()), data.get_size() );
                 unsigned short oldClassId = rdr.ReadUInt16();
 				if( previousClsId != oldClassId )
 				{
@@ -126,11 +126,11 @@ void TableReformatter::Reformat()
 					previousClsId = oldClassId;
 				}
 
-				BinaryWriter *destwrt = NULL;
+				SdfBinaryWriter *destwrt = NULL;
 				if( GetAddedProperties() )
 				{					
-					BinaryReader srcrdr( (unsigned char*)(data.get_data()), data.get_size() );
-					destwrt = new BinaryWriter(data.get_size()+4);
+					SdfBinaryReader srcrdr( (unsigned char*)(data.get_data()), data.get_size() );
+					destwrt = new SdfBinaryWriter(data.get_size()+4);
 					PropertyIndex *srcpi = mConnection->GetPropertyIndex( srcClass );
 					DataIO::MakeDataRecord(srcpi, srcrdr , destClass, *destwrt );
 					data.set_size( destwrt->GetDataLen() );

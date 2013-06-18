@@ -99,7 +99,7 @@ private:
 	
 	REC_NO m_lastRec;
 
-    BinaryWriter m_wrtData;
+    SdfBinaryWriter m_wrtData;
 
 	FdoClassDefinition* m_Fc;
 	
@@ -111,8 +111,8 @@ private:
 
 	FdoPtr<FdoDataPropertyDefinitionCollection> m_Ids;
 
-	BinaryReader  m_Reader1;
-	BinaryReader  m_Reader2;
+	SdfBinaryReader  m_Reader1;
+	SdfBinaryReader  m_Reader2;
 	int*		  m_Offsets1;
 	int*		  m_Offsets2;
 };

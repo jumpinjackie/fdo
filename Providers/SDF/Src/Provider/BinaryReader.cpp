@@ -25,14 +25,14 @@
 //uses 0 as default empty values.
 const int ADD_TO_OFFSET = 1;
 
-BinaryReader::BinaryReader(unsigned char* data, int len, int propCount )
+SdfBinaryReader::SdfBinaryReader(unsigned char* data, int len, int propCount )
 {
 	Init(propCount);
     m_data = data;
     m_len = len;
 }
 
-BinaryReader::BinaryReader(unsigned char* data, int len )
+SdfBinaryReader::SdfBinaryReader(unsigned char* data, int len )
 {
     Init(SDF_STRING_CACHE_COUNT);
     m_data = data;
@@ -40,12 +40,12 @@ BinaryReader::BinaryReader(unsigned char* data, int len )
 	
 }
 
-BinaryReader::BinaryReader()
+SdfBinaryReader::SdfBinaryReader()
 {
     Init(SDF_STRING_CACHE_COUNT);
 }
 
-void BinaryReader::Init( int propCount )
+void SdfBinaryReader::Init( int propCount )
 {
 	m_data = NULL;
     m_len = 0;
@@ -64,7 +64,7 @@ void BinaryReader::Init( int propCount )
     }
 }
 
-BinaryReader::~BinaryReader()
+SdfBinaryReader::~SdfBinaryReader()
 {
     if( m_wcsStringCache != NULL )
     {
@@ -80,7 +80,7 @@ BinaryReader::~BinaryReader()
         delete [] m_wcsCache;
 }
 
-void BinaryReader::Reset(unsigned char* data, int len)
+void SdfBinaryReader::Reset(unsigned char* data, int len)
 {
     
     m_data = data;
@@ -95,27 +95,27 @@ void BinaryReader::Reset(unsigned char* data, int len)
     }
 }
 
-void BinaryReader::SetPosition(int offset)
+void SdfBinaryReader::SetPosition(int offset)
 {
     m_pos = offset;
 }
 
-int BinaryReader::GetPosition()
+int SdfBinaryReader::GetPosition()
 {
     return m_pos;
 }
 
-unsigned char* BinaryReader::GetDataAtCurrentPosition()
+unsigned char* SdfBinaryReader::GetDataAtCurrentPosition()
 {
     return m_data + m_pos;
 }
 
-unsigned BinaryReader::GetDataLen()
+unsigned SdfBinaryReader::GetDataLen()
 {
     return m_len;
 }
 
-double BinaryReader::ReadDouble()
+double SdfBinaryReader::ReadDouble()
 {
     if (m_pos > (m_len - (int)sizeof(double)))
     {
@@ -129,7 +129,7 @@ double BinaryReader::ReadDouble()
     return ret;
 }
 
-float BinaryReader::ReadSingle()
+float SdfBinaryReader::ReadSingle()
 {
     if (m_pos > (m_len - (int)sizeof(float)))
     {
@@ -143,7 +143,7 @@ float BinaryReader::ReadSingle()
     return ret;
 }
 
-int BinaryReader::ReadInt32()
+int SdfBinaryReader::ReadInt32()
 {
     if (m_pos > (m_len - (int)sizeof(int)))
     {
@@ -157,7 +157,7 @@ int BinaryReader::ReadInt32()
     return ret;
 }
 
-unsigned BinaryReader::ReadUInt32()
+unsigned SdfBinaryReader::ReadUInt32()
 {
     if (m_pos > (m_len - (int)sizeof(int)))
     {
@@ -171,7 +171,7 @@ unsigned BinaryReader::ReadUInt32()
     return ret;
 }
 
-short BinaryReader::ReadInt16()
+short SdfBinaryReader::ReadInt16()
 {
     if (m_pos > (m_len - (int)sizeof(short)))
     {
@@ -185,7 +185,7 @@ short BinaryReader::ReadInt16()
     return ret;
 }
 
-unsigned short BinaryReader::ReadUInt16()
+unsigned short SdfBinaryReader::ReadUInt16()
 {
     if (m_pos > (m_len - (int)sizeof(unsigned short)))
     {
@@ -199,7 +199,7 @@ unsigned short BinaryReader::ReadUInt16()
     return ret;
 }
 
-FdoInt64 BinaryReader::ReadInt64()
+FdoInt64 SdfBinaryReader::ReadInt64()
 {
     if (m_pos > (m_len - (int)sizeof(FdoInt64)))
     {
@@ -214,7 +214,7 @@ FdoInt64 BinaryReader::ReadInt64()
 }
 
 
-unsigned char BinaryReader::ReadByte()
+unsigned char SdfBinaryReader::ReadByte()
 {
     if (m_pos > (m_len - (int)sizeof(unsigned char)))
     {
@@ -228,7 +228,7 @@ unsigned char BinaryReader::ReadByte()
     return ret;
 }
 
-char BinaryReader::ReadChar()
+char SdfBinaryReader::ReadChar()
 {
     if (m_pos > (m_len - (int)sizeof(char)))
     {
@@ -242,7 +242,7 @@ char BinaryReader::ReadChar()
     return ret;
 }
 
-const wchar_t* BinaryReader::ReadString()
+const wchar_t* SdfBinaryReader::ReadString()
 {
     //read string length (number of bytes, not characters!!!)
     //this includes null terminator character
@@ -255,7 +255,7 @@ const wchar_t* BinaryReader::ReadString()
 #pragma warning(push)
 #pragma warning(disable: 4018)  // '<' : signed/unsigned mismatch
 
-const wchar_t* BinaryReader::ReadRawString( unsigned mbstrlen, int index )
+const wchar_t* SdfBinaryReader::ReadRawString( unsigned mbstrlen, int index )
 {
     if( mbstrlen <= 1 )
     {
@@ -296,7 +296,7 @@ const wchar_t* BinaryReader::ReadRawString( unsigned mbstrlen, int index )
 // string to stay around until the next reset. It uses a circular buffer of
 // SDF_STRING_CACHE_COUNT elements and the individual elements may get overwriten before the reset. 
 // The Fdo requirement for feature reader is that string stays around untill the next ReadNext. 
-const wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
+const wchar_t* SdfBinaryReader::ReadRawString(unsigned mbstrlen)
 {
     if( mbstrlen <= 1 )
     {
@@ -323,7 +323,7 @@ const wchar_t* BinaryReader::ReadRawString(unsigned mbstrlen)
 }
 
 //deserializes a FdoDateTime
-FdoDateTime BinaryReader::ReadDateTime()
+FdoDateTime SdfBinaryReader::ReadDateTime()
 {
     FdoDateTime ret;
 
@@ -338,7 +338,7 @@ FdoDateTime BinaryReader::ReadDateTime()
 }
 
 
-FdoDataValue* BinaryReader::ReadDataValue()
+FdoDataValue* SdfBinaryReader::ReadDataValue()
 {
     FdoDataType dataValueType = (FdoDataType)ReadByte();
     FdoPtr<FdoDataValue> retDataValue;
@@ -457,7 +457,7 @@ FdoDataValue* BinaryReader::ReadDataValue()
     return FDO_SAFE_ADDREF(retDataValue.p);
 }
 
-const wchar_t* BinaryReader::ReadRawStringNoCache(unsigned mbstrlen)
+const wchar_t* SdfBinaryReader::ReadRawStringNoCache(unsigned mbstrlen)
 {    
 
     //make sure wchar_t cache size is big enough

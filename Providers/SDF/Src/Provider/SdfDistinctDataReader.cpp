@@ -55,7 +55,7 @@ SdfDistinctDataReader::SdfDistinctDataReader(FdoIFeatureReader* reader, FdoIdent
 
     _ASSERT(ret == 0);
 
-    m_binReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
+    m_binReader = new SdfBinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
     m_currentKey = new SQLiteData();
 
@@ -92,7 +92,7 @@ void SdfDistinctDataReader::Close()
     }
 }
  
-BinaryReader* SdfDistinctDataReader::GetBinaryReader()
+SdfBinaryReader* SdfDistinctDataReader::GetSdfBinaryReader()
 {
     return m_binReader;
 }
@@ -129,7 +129,7 @@ void SdfDistinctDataReader::RunQuery()
         throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_10_ERROR_ACCESSING_SDFDB)));
     }
 
-    BinaryWriter wrt(256);
+    SdfBinaryWriter wrt(256);
 
     //just a placeholder data value... all
     //we will care about are the key values of 

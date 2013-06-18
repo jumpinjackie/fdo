@@ -1,5 +1,5 @@
-#ifndef _BINARYREADER_H
-#define _BINARYREADER_H
+#ifndef _SdfBinaryReader_H
+#define _SdfBinaryReader_H
 // 
 //  Copyright (C) 2004-2006  Autodesk, Inc.
 //  
@@ -34,14 +34,14 @@ using namespace std;
 
 #define SDF_STRING_CACHE_COUNT 10
 
-class BinaryReader
+class SdfBinaryReader
 {
 public:
 
-    BinaryReader(unsigned char* data, int len );
-    BinaryReader(unsigned char* data, int len, int propCount );
-	BinaryReader();
-    virtual ~BinaryReader();
+    SdfBinaryReader(unsigned char* data, int len );
+    SdfBinaryReader(unsigned char* data, int len, int propCount );
+	SdfBinaryReader();
+    virtual ~SdfBinaryReader();
     void Init( int propCount );
     void Reset(unsigned char* data, int len);
     void SetPosition(int offset);

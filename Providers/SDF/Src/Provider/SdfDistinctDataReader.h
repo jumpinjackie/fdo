@@ -45,7 +45,7 @@ public:
     // SdfDataReader
     //------------------------------------------------------------
 
-    SDF_API virtual BinaryReader* GetBinaryReader();
+    SDF_API virtual SdfBinaryReader* GetSdfBinaryReader();
 
 private:
 
@@ -55,7 +55,7 @@ private:
     SQLiteCursor* m_dbc;
     SQLiteData* m_currentKey;
     SQLiteData* m_currentData;
-    BinaryReader* m_binReader;
+    SdfBinaryReader* m_binReader;
 
     FdoIdentifierCollection* m_idents;
     FdoClassDefinition* m_class;

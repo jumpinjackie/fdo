@@ -18,7 +18,7 @@
 
 class KeyDb;
 class DataDb;
-class BinaryWriter;
+class SdfBinaryWriter;
 
 class SdfUpdatingFeatureReader : public SdfSimpleFeatureReader
 {

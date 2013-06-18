@@ -888,7 +888,7 @@ void SdfConnection::RegenRtree(FdoClassDefinition *clas, SdfRTree* rtree, DataDb
         return;
     }
 
-    BinaryReader *dataReader = new BinaryReader(NULL, 0);
+    SdfBinaryReader *dataReader = new SdfBinaryReader(NULL, 0);
 
     //get the geometry property and the value of the geometry
     FdoPtr<FdoGeometricPropertyDefinition> gpd = PropertyIndex::FindGeomProp(clas);
@@ -975,7 +975,7 @@ void SdfConnection::RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *
     }
 
     
-    BinaryReader *dataReader = new BinaryReader(NULL, 0);
+    SdfBinaryReader *dataReader = new SdfBinaryReader(NULL, 0);
 
 
     do
@@ -984,7 +984,7 @@ void SdfConnection::RegenIndex( FdoClassDefinition *clas, KeyDb* keys, DataDb  *
         REC_NO recno = *(REC_NO*)(currentKey->get_data());
 
         //construct feature key
-        BinaryWriter wrtkey(64);
+        SdfBinaryWriter wrtkey(64);
         SQLiteData key(NULL, 0);
         dataReader->Reset((unsigned char*)currentData->get_data(), currentData->get_size());
         if ( propIndex->HasAutoGen() )

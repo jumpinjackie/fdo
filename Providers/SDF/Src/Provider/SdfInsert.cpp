@@ -195,7 +195,7 @@ FdoIFeatureReader* SdfInsert::Execute()
 	if( m_ValidationFlag != SdfDataValidationType_None )
 		SdfDataValidator::Validate( m_connection, clas, m_Properties, m_ValidationFlag, false );
     //construct feature key
-    BinaryWriter wrtkey(64);
+    SdfBinaryWriter wrtkey(64);
 
     KeyDb* keydb = m_connection->GetKeyDb(clas);
     SQLiteData key(NULL, 0);

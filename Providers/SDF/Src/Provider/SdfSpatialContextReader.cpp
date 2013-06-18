@@ -146,7 +146,7 @@ bool SdfSpatialContextReader::ReadNext()
         return false;
 
     //obtain the coord sys data record
-    BinaryWriter wrt(256);
+    SdfBinaryWriter wrt(256);
     m_connection->GetSchemaDb()->ReadCoordinateSystemRecord(wrt);
 
     //if there is no coord sys stored in the SDF+, return
@@ -158,12 +158,12 @@ bool SdfSpatialContextReader::ReadNext()
 
     //now we will read all the coord sys properties from the 
     //binary record
-    BinaryReader rdr(wrt.GetData(), wrt.GetDataLen());
+    SdfBinaryReader rdr(wrt.GetData(), wrt.GetDataLen());
 
     size_t len = 0;
     
     //make copy of all string properties since they are returned in
-    //buffer memory owned by the BinaryReader
+    //buffer memory owned by the SdfBinaryReader
     FdoString* csName = rdr.ReadString();
     if (csName != NULL)
     {
