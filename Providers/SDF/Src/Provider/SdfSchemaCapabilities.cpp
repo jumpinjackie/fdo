@@ -73,7 +73,7 @@ FdoClassType* SdfSchemaCapabilities::GetClassTypes(FdoInt32& length)
 // The length parameter gives the number of data types in the array.
 FdoDataType* SdfSchemaCapabilities::GetDataTypes(FdoInt32& length)
 {
-    //TODO: need to implement some of these in the BinaryReader/Writer
+    //TODO: need to implement some of these in the SdfBinaryReader/Writer
     static FdoDataType dataTypes[] =
     {
         FdoDataType_Boolean,

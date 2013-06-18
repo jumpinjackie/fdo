@@ -80,7 +80,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader(SdfConnection* connection, FdoCla
     //this prop index stays fixed
     m_basePropIndex = m_propIndex;
 
-    m_dataReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
+    m_dataReader = new SdfBinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
     if (m_filter)
     {
@@ -139,7 +139,7 @@ SdfSimpleFeatureReader::SdfSimpleFeatureReader( SdfSimpleFeatureReader& reader )
     m_filterExec = FdoExpressionEngine::Create(this, m_class, NULL, NULL);
 
 
-    m_dataReader = new BinaryReader(NULL, 0, m_propIndex->GetNumProps() );
+    m_dataReader = new SdfBinaryReader(NULL, 0, m_propIndex->GetNumProps() );
 
 	m_currentFeatureRecno = reader.m_currentFeatureRecno;
 
@@ -645,7 +645,7 @@ FdoString* SdfSimpleFeatureReader::GetString(FdoString* propertyName)
     if (len == 0)
         throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_51_NULL_VALUE), "Property value is null."));
 
-    //returns a pointer to the BinaryReader string cache memory
+    //returns a pointer to the SdfBinaryReader string cache memory
     //the pointer is valid until the next call to ReadNext(), when
     //the binary reader is reset
     FdoString* st = m_dataReader->ReadRawString(len, ps->m_recordIndex );
@@ -1106,7 +1106,7 @@ bool SdfSimpleFeatureReader::ReadNext()
     //available until the following call to ReadNext()
     //This means we store them in a map which we now have to clean up
     //if needed. Note that this is only used for computed properties,
-    //attribute properties have their own handling in BinaryReader.
+    //attribute properties have their own handling in SdfBinaryReader.
     if (!m_stringPropsCache.empty())
     {
         std::map<std::wstring, wchar_t*>::iterator iter = m_stringPropsCache.begin();

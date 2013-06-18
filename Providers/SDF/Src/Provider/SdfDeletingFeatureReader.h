@@ -19,7 +19,7 @@
 
 class KeyDb;
 class DataDb;
-class BinaryWriter;
+class SdfBinaryWriter;
 
 class SdfDeletingFeatureReader : public SdfSimpleFeatureReader
 {
@@ -61,7 +61,7 @@ private:
 
     recno_list m_recsToDelete;
     std::vector<Bounds> m_boundsToDelete;
-    std::vector<BinaryWriter*> m_keysToDelete;
+    std::vector<SdfBinaryWriter*> m_keysToDelete;
 };
 
 

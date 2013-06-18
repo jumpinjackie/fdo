@@ -102,7 +102,7 @@ void ExInfoDb::ReadExtendedInfo(FdoFeatureSchema* schema)
     }
 
     // Check that we have something in there
-    BinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
+    SdfBinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
 
     // Read each extended schema info element:
     while (rdr.GetPosition() < rdr.GetDataLen())
@@ -186,8 +186,8 @@ void ExInfoDb::WriteExtendedSchemaInfo(FdoFeatureSchema* schema)
         return;
     }
 
-    BinaryWriter wrt(256);
-    BinaryWriter wrtTemp(256);
+    SdfBinaryWriter wrt(256);
+    SdfBinaryWriter wrtTemp(256);
 
     // Write each extended schema info element:
     FdoPtr<FdoClassCollection> classDefs = schema->GetClasses();

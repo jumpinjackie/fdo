@@ -236,7 +236,7 @@ void SdfCreateSpatialContext::Execute()
     if (readOnly)
 		throw FdoCommandException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_4_CONNECTION_IS_READONLY)));
 
-    BinaryWriter wrt(256);
+    SdfBinaryWriter wrt(256);
 
     wrt.WriteString(m_scName);
     wrt.WriteString(m_description);
@@ -257,7 +257,7 @@ void SdfCreateSpatialContext::Execute()
     wrt.WriteDouble(m_zTolerance);
 
     
-    BinaryWriter oldCs(256);
+    SdfBinaryWriter oldCs(256);
 
     m_connection->GetSchemaDb()->ReadCoordinateSystemRecord(oldCs);
 

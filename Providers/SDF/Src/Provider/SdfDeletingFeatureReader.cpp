@@ -105,7 +105,7 @@ bool SdfDeletingFeatureReader::ReadNext()
         //delete key from KeyDb
         for (unsigned i=0; i<m_keysToDelete.size(); i++)
         {
-            BinaryWriter* wrt = m_keysToDelete[i];
+            SdfBinaryWriter* wrt = m_keysToDelete[i];
 
             SQLiteData key(wrt->GetData(), wrt->GetDataLen());
 
@@ -130,7 +130,7 @@ bool SdfDeletingFeatureReader::ReadNext()
     m_recsToDelete.push_back(m_currentFeatureRecno);
 
     //remember key we will delete
-    BinaryWriter* wrtkey = new BinaryWriter(16);
+    SdfBinaryWriter* wrtkey = new SdfBinaryWriter(16);
     DataIO::MakeKey(m_class, this, *wrtkey);
     m_keysToDelete.push_back(wrtkey);
     

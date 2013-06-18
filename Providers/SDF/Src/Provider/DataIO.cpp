@@ -20,7 +20,7 @@
 #include "PropertyIndex.h"
 
 
-void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv, BinaryWriter& wrt, bool forAssociation)
+void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv, SdfBinaryWriter& wrt, bool forAssociation)
 {
     FdoDataPropertyDefinition* dpd = NULL;
     FdoPtr<FdoValueExpression> expression;
@@ -116,7 +116,7 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoPropertyValue* pv, Bina
 
 }
 
-bool DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, FdoPropertyValueCollection* pvc, BinaryWriter& wrt)
+bool DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, FdoPropertyValueCollection* pvc, SdfBinaryWriter& wrt)
 {
 	bool  errorIfSet = apd->GetIsReadOnly();
     bool  oneIdentIsNull = false;
@@ -165,7 +165,7 @@ bool DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, Fdo
 	return written;
 }
 
-void DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, FdoIFeatureReader* reader, BinaryWriter& wrt)
+void DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, FdoIFeatureReader* reader, SdfBinaryWriter& wrt)
 {
 	if( apd->GetIsReadOnly() )
 		return;
@@ -196,7 +196,7 @@ void DataIO::WriteAssociationProperty(FdoAssociationPropertyDefinition* apd, Fdo
 	}
 }
 
-void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatureReader* reader, BinaryWriter& wrt)
+void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatureReader* reader, SdfBinaryWriter& wrt)
 {
     FdoDataPropertyDefinition* dpd = NULL;
     
@@ -279,7 +279,7 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, FdoIFeatureReader* reader,
     }
 }
 
-void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, BinaryReader* reader, BinaryWriter& wrt)
+void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, SdfBinaryReader* reader, SdfBinaryWriter& wrt)
 {
     FdoDataPropertyDefinition* dpd = NULL;
     
@@ -361,7 +361,7 @@ void DataIO::WriteProperty(FdoPropertyDefinition* pd, PropertyIndex* propIndex, 
     }
 }
 
-void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, BinaryWriter& wrtkey, REC_NO recno)
+void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, SdfBinaryWriter& wrtkey, REC_NO recno)
 {
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
 
@@ -406,7 +406,7 @@ void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValue
 }
 
 
-void DataIO::MakeKey(FdoClassDefinition* fc, FdoIFeatureReader* reader, BinaryWriter& wrtkey)
+void DataIO::MakeKey(FdoClassDefinition* fc, FdoIFeatureReader* reader, SdfBinaryWriter& wrtkey)
 {
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
 
@@ -443,7 +443,7 @@ void DataIO::MakeKey(FdoClassDefinition* fc, FdoIFeatureReader* reader, BinaryWr
     }
 }
 
-void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* propIndex,  BinaryReader* reader, BinaryWriter& wrtkey, REC_NO recno )
+void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* propIndex,  SdfBinaryReader* reader, SdfBinaryWriter& wrtkey, REC_NO recno )
 {
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
 
@@ -491,7 +491,7 @@ void DataIO::MakeKey(FdoClassDefinition* fc, PropertyIndex* propIndex,  BinaryRe
 //with property values in the given FeatureReader. The PropertyValueCollection
 //represents properties to be updated in an old feature record represented by
 //the given FeatureReader.
-void DataIO::UpdateKey(FdoClassDefinition* fc, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, BinaryWriter& wrtkey)
+void DataIO::UpdateKey(FdoClassDefinition* fc, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, SdfBinaryWriter& wrtkey)
 {
     FdoPtr<FdoDataPropertyDefinitionCollection> idpdc = FindIDProps(fc);
 
@@ -528,7 +528,7 @@ void DataIO::UpdateKey(FdoClassDefinition* fc, FdoPropertyValueCollection* pvc, 
 
 
 //serializes a collection of feature properties into a byte array
-void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, BinaryWriter& wrtdata)
+void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, SdfBinaryWriter& wrtdata)
 {
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -630,7 +630,7 @@ void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoProper
 //with property values in the given FeatureReader. The PropertyValueCollection
 //represents properties to be updated in an old feature record represented by
 //the given FeatureReader.
-void DataIO::UpdateDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, BinaryWriter& wrtdata)
+void DataIO::UpdateDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoPropertyValueCollection* pvc, FdoIFeatureReader* reader, SdfBinaryWriter& wrtdata)
 {
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -755,7 +755,7 @@ FdoDataPropertyDefinitionCollection* DataIO::FindIDProps(FdoClassDefinition* fc)
     return (FDO_SAFE_ADDREF (idpdc.p));
 }
 
-void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatureReader* reader, FdoPropertyValueCollection* defaultPvc, BinaryWriter& wrtdata)
+void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatureReader* reader, FdoPropertyValueCollection* defaultPvc, SdfBinaryWriter& wrtdata)
 {
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = fc->GetBaseProperties();
     FdoPtr<FdoPropertyDefinitionCollection> pdc = fc->GetProperties();
@@ -831,7 +831,7 @@ void DataIO::MakeDataRecord(FdoClassDefinition* fc, PropertyIndex* pi, FdoIFeatu
     }
 }
 
-void DataIO::MakeDataRecord(PropertyIndex* srcpi, BinaryReader& reader , FdoClassDefinition* destfc, BinaryWriter& wrtdata)
+void DataIO::MakeDataRecord(PropertyIndex* srcpi, SdfBinaryReader& reader , FdoClassDefinition* destfc, SdfBinaryWriter& wrtdata)
 {
     FdoPtr<FdoReadOnlyPropertyDefinitionCollection> bpdc = destfc->GetBaseProperties();
     FdoPtr<FdoPropertyDefinitionCollection> pdc = destfc->GetProperties();
