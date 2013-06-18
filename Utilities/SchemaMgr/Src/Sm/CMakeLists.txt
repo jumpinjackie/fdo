@@ -23,7 +23,7 @@ add_library( SchemaMgr STATIC ${SchemaMgr_SRCS} )
 
 target_link_libraries( SchemaMgr
 	ProvidersCommon
-	FDO )
+	FDO-${FDO_VERSION} )
 
 add_dependencies( SchemaMgr SMMessage )
 
@@ -53,4 +53,4 @@ endif( CMAKE_COMPILER_IS_GNUCXX )
 
 
 set_target_properties( SchemaMgr PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-#install( TARGETS SchemaMgr DESTINATION ${LIB_INSTALL_DIR} )
+

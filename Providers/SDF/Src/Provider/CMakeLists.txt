@@ -61,30 +61,30 @@ set( SDFProvider_SRCS
    SDF.cpp
 )
 
-add_library( SDFProvider SHARED ${SDFProvider_SRCS} )
+add_library( SDFProvider-${FDO_VERSION} SHARED ${SDFProvider_SRCS} )
 
-target_link_libraries( SDFProvider
-	FDO
-	ExpressionEngine
-	ProvidersCommon
+target_link_libraries( SDFProvider-${FDO_VERSION}
+	FDO-${FDO_VERSION}
+	ExpressionEngine-${FDO_VERSION}
  )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SDFProvider
+	target_link_libraries( SDFProvider-${FDO_VERSION}
 		-Wl,-whole-archive
+    	ProvidersCommon
 		SDFUtils	
 		SQLiteInterface
 		sqlite3fdo
 		-Wl,-no-whole-archive
 		)
 else( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SDFProvider
+	target_link_libraries( SDFProvider-${FDO_VERSION}
+    	ProvidersCommon
 		SDFUtils	
 		SQLiteInterface
 		sqlite3fdo
 		)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-set_target_properties( SDFProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS SDFProvider DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS SDFProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 

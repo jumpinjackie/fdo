@@ -43,16 +43,15 @@ set( WFSProvider_SRCS
 	FdoWfsSpatialExtentsAggregateReader.cpp
 )
 
-add_library( WFSProvider SHARED ${WFSProvider_SRCS} )
-add_dependencies( WFSProvider WFSMessage )
+add_library( WFSProvider-${FDO_VERSION} SHARED ${WFSProvider_SRCS} )
+add_dependencies( WFSProvider-${FDO_VERSION} WFSMessage )
 
-target_link_libraries( WFSProvider
-	FDO
+target_link_libraries( WFSProvider-${FDO_VERSION}
+	FDO-${FDO_VERSION}
 	ProvidersCommon
-	ExpressionEngine
-	FdoOws
+	ExpressionEngine-${FDO_VERSION}
+	FdoOws-${FDO_VERSION}
 	pthread
  )
 
-set_target_properties( WFSProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS WFSProvider DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS WFSProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )

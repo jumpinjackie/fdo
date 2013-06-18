@@ -9,10 +9,10 @@ set( FdoPostGis_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( FdoPostgreSQL SHARED ${FdoPostGis_LIB_SRCS} )
+add_library( FdoPostgreSQL-${FDO_VERSION} SHARED ${FdoPostGis_LIB_SRCS} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( FdoPostgreSQL
+	target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
 		-Wl,-whole-archive
 		FdoRdbms
 		rdbi
@@ -35,7 +35,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
 		-Wl,-no-whole-archive
  	)
 else( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( FdoPostgreSQL
+	target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
 		FdoRdbms
 		rdbi
 		postgisdr
@@ -57,17 +57,15 @@ else( CMAKE_COMPILER_IS_GNUCXX )
  	)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-target_link_libraries( FdoPostgreSQL
+target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
 	${POSTGRESQL_LIBRARIES}
 	${ZLIB_LIBRARIES}
-	FDO
-	ExpressionEngine
+	FDO-${FDO_VERSION}
+	ExpressionEngine-${FDO_VERSION}
 	ProvidersCommon
-	SchemaMgr_OV
+	SchemaMgr_OV-${FDO_VERSION}
 	SchemaMgr
 	)
 
-set_target_properties( FdoPostgreSQL PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-
-install( TARGETS FdoPostgreSQL DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS FdoPostgreSQL-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 

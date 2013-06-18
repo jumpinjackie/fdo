@@ -5,7 +5,7 @@ include_directories(
 	)
 
 if( UNIX )
-	add_definitions( -DHAVE_GEOM_INFO_TYPE )
+	add_definitions( -D__USE_GNU -DLINUX -DLINUX_IA32 -pthread -DHAVE_GEOM_INFO_TYPE )
 endif( UNIX )
 
 set( ProvidersCommon_SRCS
@@ -35,7 +35,6 @@ set( ProvidersCommon_SRCS
 
 add_library( ProvidersCommon STATIC ${ProvidersCommon_SRCS} )
 add_dependencies( ProvidersCommon FDO FDOMessage )
-target_link_libraries( ProvidersCommon FDO )
-
-set_target_properties( ProvidersCommon PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-#install( TARGETS ProvidersCommon DESTINATION ${LIB_INSTALL_DIR} )
+target_link_libraries( ProvidersCommon 
+    FDO-${FDO_VERSION}
+)

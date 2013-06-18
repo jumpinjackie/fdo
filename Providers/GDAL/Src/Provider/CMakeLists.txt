@@ -50,14 +50,13 @@ set( GRFPProvider_SRCS
    stdafx.cpp
 )
 
-add_library( GRFPProvider SHARED ${GRFPProvider_SRCS} )
+add_library( GRFPProvider-${FDO_VERSION} SHARED ${GRFPProvider_SRCS} )
 
-target_link_libraries( GRFPProvider
-	GRFPOverrides
+target_link_libraries( GRFPProvider-${FDO_VERSION}
+	GRFPOverrides-${FDO_VERSION}
 	ProvidersCommon
-	FDO
+	FDO-${FDO_VERSION}
 	${GDAL_LIBRARY}
  )
 
-set_target_properties( GRFPProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS GRFPProvider DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS GRFPProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )

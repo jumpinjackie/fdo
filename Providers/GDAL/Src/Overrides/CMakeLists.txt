@@ -18,12 +18,11 @@ set( GRFPOverrides_SRCS
    FdoGrfpRasterGeoreferenceLocation.cpp
 )
 
-add_library( GRFPOverrides SHARED ${GRFPOverrides_SRCS} )
+add_library( GRFPOverrides-${FDO_VERSION} SHARED ${GRFPOverrides_SRCS} )
 
-target_link_libraries( GRFPOverrides
+target_link_libraries( GRFPOverrides-${FDO_VERSION}
 	ProvidersCommon
-	FDO
+	FDO-${FDO_VERSION}
  )
 
-set_target_properties( GRFPOverrides PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-install( TARGETS GRFPOverrides DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS GRFPOverrides-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )

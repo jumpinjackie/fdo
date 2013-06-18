@@ -38,9 +38,9 @@ set_target_properties( SDFUnitTest
 
 target_link_libraries( SDFUnitTest
 	TestCommon
-	ExpressionEngine
+	ExpressionEngine-${FDO_VERSION}
 	ProvidersCommon
-	FDO
+	FDO-${FDO_VERSION}
 	${CPPUNIT_LIBRARIES}
 	dl
 	)

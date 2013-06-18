@@ -284,21 +284,19 @@ set( FDO_SRCS
 	${FDONLS_SRCS}
 	)
 
-add_library( FDO SHARED ${FDO_SRCS} )
-add_dependencies( FDO 
+add_library( FDO-${FDO_VERSION} SHARED ${FDO_SRCS} )
+add_dependencies( FDO-${FDO_VERSION}
 	McToMsf 
 	FDOMessage 
 	SchemaFromInternal 
 	ProcessedFiles )
 
-target_link_libraries( FDO
+target_link_libraries( FDO-${FDO_VERSION}
 	${XALANC_LIBRARIES}
 	${XERCESC_LIBRARIES}
 	pthread
 	dl
 	)
 
-set_target_properties( FDO PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-
-install( TARGETS FDO DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS FDO-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 

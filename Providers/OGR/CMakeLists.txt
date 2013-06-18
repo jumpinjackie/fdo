@@ -24,16 +24,14 @@ set( OGRProvider_SRCS
 	ProjConverter.cpp
 )
 
-add_library( OGRProvider SHARED ${OGRProvider_SRCS} )
+add_library( OGRProvider-${FDO_VERSION} SHARED ${OGRProvider_SRCS} )
 
-target_link_libraries( OGRProvider
-	FDO
+target_link_libraries( OGRProvider-${FDO_VERSION}
+	FDO-${FDO_VERSION}
 	ProvidersCommon
 	${GDAL_LIBRARY}
  )
 
-set_target_properties( OGRProvider PROPERTIES VERSION ${FDO_VERSION} SOVERSION ${FDO_VERSION_MAJOR} )
-
-install( TARGETS OGRProvider DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS OGRProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 
 
