@@ -141,14 +141,14 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
     SQLiteData data;
 
 	// Initialize the spatial context name needed by all the geometry properties
-	SdfBinaryWriter wrt(256);
+	BinaryWriter wrt(256);
     ReadCoordinateSystemRecord(wrt);
 
     if (wrt.GetDataLen() != 0)
     {
 		//read all the coord sys properties from the 
 		//binary record
-		SdfBinaryReader rdr(wrt.GetData(), wrt.GetDataLen());
+		BinaryReader rdr(wrt.GetData(), wrt.GetDataLen());
 
 		FdoString* csName = rdr.ReadString();
 		if (csName != NULL)
@@ -174,7 +174,7 @@ FdoFeatureSchema* SchemaDb::ReadSchema(FdoString *schemaName)
     //check that we have something in there
     _ASSERT(data.get_size() > 0);
 
-    SdfBinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
+    BinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
 
     //first, read name of schema
     FdoString *dbSchemaName = rdr.ReadString();
@@ -452,7 +452,7 @@ void SchemaDb::ReadFeatureClass(REC_NO classRecno, FdoFeatureSchema* schema)
     //check that we have something in there
     _ASSERT(data.get_size() > 0);
 
-    SdfBinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
+    BinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
 
     //read type of class -- feature or ordinary
 	unsigned int header = rdr.ReadUInt32();
@@ -631,7 +631,7 @@ void CompleteFeatureClass(FdoClassDefinition* clas)
 {
 }
 
-void SchemaDb::ReadDataPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
+void SchemaDb::ReadDataPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
 {
     //create property
     FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create();
@@ -743,7 +743,7 @@ void SchemaDb::ReadDataPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefin
 }
 
 void SchemaDb::ReadGeometricPropertyDefinition(
-    SdfBinaryReader& rdr,
+    BinaryReader& rdr,
     FdoPropertyDefinitionCollection* pdc,
     FdoClassCapabilities* classcaps)
 {
@@ -770,7 +770,7 @@ void SchemaDb::ReadGeometricPropertyDefinition(
     classcaps->SetPolygonVertexOrderStrictness(gpd->GetName(), false);
 }
 
-void SchemaDb::ReadObjectPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
+void SchemaDb::ReadObjectPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
 {
     throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_22_OBJECT_PROPERTY)));
 }
@@ -786,7 +786,7 @@ void SchemaDb::WriteSchema(FdoFeatureSchema* schema)
     }
 
     //now write schema to database-GUI
-    SdfBinaryWriter wrt(256);
+    BinaryWriter wrt(256);
     wrt.WriteString(schema->GetName());
     wrt.WriteString(schema->GetDescription());
 
@@ -862,9 +862,9 @@ void SchemaDb::WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, Fdo
     classes->Remove(clas);
 
 
-    //TODO: for optimization, we can reuse the SdfBinaryWriter from WriteSchema
+    //TODO: for optimization, we can reuse the BinaryWriter from WriteSchema
     //if we pass it in as argument... it is not vital when writing a schema though
-    SdfBinaryWriter wrt(256);
+    BinaryWriter wrt(256);
 	
 	//write common stuff first
 	unsigned int header = clas->GetClassType();
@@ -945,7 +945,7 @@ void SchemaDb::WriteClassDefinition(REC_NO& recno, FdoClassDefinition* clas, Fdo
 }
 
 
-void SchemaDb::WriteDataPropertyDefinition(SdfBinaryWriter& wrt, FdoDataPropertyDefinition* dpd)
+void SchemaDb::WriteDataPropertyDefinition(BinaryWriter& wrt, FdoDataPropertyDefinition* dpd)
 {
     wrt.WriteString(dpd->GetName());
     wrt.WriteString(dpd->GetDescription());
@@ -1002,7 +1002,7 @@ void SchemaDb::WriteDataPropertyDefinition(SdfBinaryWriter& wrt, FdoDataProperty
     }
 }
 
-void SchemaDb::WriteGeometricPropertyDefinition(SdfBinaryWriter& wrt, FdoGeometricPropertyDefinition* gpd)
+void SchemaDb::WriteGeometricPropertyDefinition(BinaryWriter& wrt, FdoGeometricPropertyDefinition* gpd)
 {
     wrt.WriteString(gpd->GetName());
     wrt.WriteString(gpd->GetDescription());
@@ -1012,13 +1012,13 @@ void SchemaDb::WriteGeometricPropertyDefinition(SdfBinaryWriter& wrt, FdoGeometr
     wrt.WriteByte(gpd->GetReadOnly() ? 1 : 0);
 }
 
-void SchemaDb::WriteObjectPropertyDefinition(SdfBinaryWriter& wrt, FdoObjectPropertyDefinition* opd)
+void SchemaDb::WriteObjectPropertyDefinition(BinaryWriter& wrt, FdoObjectPropertyDefinition* opd)
 {
     throw FdoException::Create(NlsMsgGetMain(FDO_NLSID(SDFPROVIDER_22_OBJECT_PROPERTY)));
 }
 
 
-void SchemaDb::ReadCoordinateSystemRecord(SdfBinaryWriter& wrt)
+void SchemaDb::ReadCoordinateSystemRecord(BinaryWriter& wrt)
 {
     //retrieve root coord sys record -- it is stored in position 1 of the db
     REC_NO csRecno = DB_COORDSYS_RECNO;
@@ -1038,7 +1038,7 @@ void SchemaDb::ReadCoordinateSystemRecord(SdfBinaryWriter& wrt)
 	m_db->close_cursor();
 }
 
-void SchemaDb::WriteCoordinateSystemRecord(SdfBinaryWriter& wrt)
+void SchemaDb::WriteCoordinateSystemRecord(BinaryWriter& wrt)
 {
     //we will just overwrite the old coordinate system record, if any
 
@@ -1078,7 +1078,7 @@ void SchemaDb::ReadMetadata(unsigned char& major, unsigned char& minor)
         }
         else
         {
-            SdfBinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
+            BinaryReader rdr((unsigned char*)data.get_data(), data.get_size());
             major = rdr.ReadByte();
             minor = rdr.ReadByte();
         }
@@ -1090,7 +1090,7 @@ void SchemaDb::ReadMetadata(unsigned char& major, unsigned char& minor)
 
 void SchemaDb::WriteMetadata(unsigned char major, unsigned char minor)
 {
-    SdfBinaryWriter wrt(8);
+    BinaryWriter wrt(8);
     wrt.WriteByte(major);
     wrt.WriteByte(minor);
 
@@ -1115,7 +1115,7 @@ void SchemaDb::CloseCursor()
 	m_db->close_cursor();
 }
 
-void SchemaDb::WriteAssociationPropertyDefinition(SdfBinaryWriter& wrt, FdoAssociationPropertyDefinition* apd)
+void SchemaDb::WriteAssociationPropertyDefinition(BinaryWriter& wrt, FdoAssociationPropertyDefinition* apd)
 {
 	FdoPtr<FdoClassDefinition> cls = apd->GetAssociatedClass();
 	if( cls.p == NULL )
@@ -1162,7 +1162,7 @@ void SchemaDb::WriteAssociationPropertyDefinition(SdfBinaryWriter& wrt, FdoAssoc
 		wrt.WriteInt32( 0 ); // No identity properties
 }
 
-void SchemaDb::ReadAssociationPropertyDefinition(SdfBinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
+void SchemaDb::ReadAssociationPropertyDefinition(BinaryReader& rdr, FdoPropertyDefinitionCollection* pdc)
 {
     if( rdr.ReadByte() ==1 ) // Read only association will be created from the owning association
         return;

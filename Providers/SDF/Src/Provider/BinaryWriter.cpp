@@ -20,7 +20,7 @@
 #include "utf8_.h"
 
 
-SdfBinaryWriter::SdfBinaryWriter(int initialLen)
+BinaryWriter::BinaryWriter(int initialLen)
 {
     m_len = initialLen;
 
@@ -33,7 +33,7 @@ SdfBinaryWriter::SdfBinaryWriter(int initialLen)
     m_strCache = NULL;
 }
 
-SdfBinaryWriter::~SdfBinaryWriter()
+BinaryWriter::~BinaryWriter()
 {
     delete [] m_data;
 
@@ -42,28 +42,28 @@ SdfBinaryWriter::~SdfBinaryWriter()
 }
 
 
-void SdfBinaryWriter::Reset()
+void BinaryWriter::Reset()
 {
     m_pos = 0;
 }
 
 
-unsigned char* SdfBinaryWriter::GetData()
+unsigned char* BinaryWriter::GetData()
 {
     return m_data;
 }
 
-int SdfBinaryWriter::GetDataLen()
+int BinaryWriter::GetDataLen()
 {
     return m_pos;
 }
 
-int SdfBinaryWriter::GetPosition()
+int BinaryWriter::GetPosition()
 {
     return m_pos;
 }
 
-void SdfBinaryWriter::WriteDouble(double d)
+void BinaryWriter::WriteDouble(double d)
 {
     CheckResize(sizeof(double));
     //TODO: endian
@@ -72,7 +72,7 @@ void SdfBinaryWriter::WriteDouble(double d)
 }
 
 
-void SdfBinaryWriter::WriteSingle(float f)
+void BinaryWriter::WriteSingle(float f)
 {
     CheckResize(sizeof(float));
     //TODO: endian
@@ -80,7 +80,7 @@ void SdfBinaryWriter::WriteSingle(float f)
     m_pos += sizeof(float);
 }
 
-void SdfBinaryWriter::WriteInt32(int i)
+void BinaryWriter::WriteInt32(int i)
 {
     CheckResize(sizeof(int));
     //TODO: endian
@@ -88,7 +88,7 @@ void SdfBinaryWriter::WriteInt32(int i)
     m_pos += sizeof(int);
 }
 
-void SdfBinaryWriter::WriteUInt32(unsigned i)
+void BinaryWriter::WriteUInt32(unsigned i)
 {
     CheckResize(sizeof(unsigned));
     //TODO: endian
@@ -96,7 +96,7 @@ void SdfBinaryWriter::WriteUInt32(unsigned i)
     m_pos += sizeof(unsigned);
 }
 
-void SdfBinaryWriter::WriteInt16(short s)
+void BinaryWriter::WriteInt16(short s)
 {
     CheckResize(sizeof(short));
     //TODO: endian
@@ -104,7 +104,7 @@ void SdfBinaryWriter::WriteInt16(short s)
     m_pos += sizeof(short);
 }
 
-void SdfBinaryWriter::WriteUInt16(unsigned short us)
+void BinaryWriter::WriteUInt16(unsigned short us)
 {
     CheckResize(sizeof(unsigned short));
     //TODO: endian
@@ -112,7 +112,7 @@ void SdfBinaryWriter::WriteUInt16(unsigned short us)
     m_pos += sizeof(unsigned short);
 }
 
-void SdfBinaryWriter::WriteInt64(FdoInt64 ll)
+void BinaryWriter::WriteInt64(FdoInt64 ll)
 {
     CheckResize(sizeof(FdoInt64));
     //TODO: endian
@@ -120,21 +120,21 @@ void SdfBinaryWriter::WriteInt64(FdoInt64 ll)
     m_pos += sizeof(FdoInt64);
 }
 
-void SdfBinaryWriter::WriteByte(unsigned char b)
+void BinaryWriter::WriteByte(unsigned char b)
 {
     CheckResize(sizeof(unsigned char));
     *(m_data+m_pos) = b;
     m_pos += sizeof(unsigned char);
 }
 
-void SdfBinaryWriter::WriteChar(char c)
+void BinaryWriter::WriteChar(char c)
 {
     CheckResize(sizeof(char));
     *(m_data+m_pos) = c;
     m_pos += sizeof(char);
 }
 
-void SdfBinaryWriter::WriteString(const wchar_t* src)
+void BinaryWriter::WriteString(const wchar_t* src)
 {
     unsigned srcLen = 0;
     
@@ -174,7 +174,7 @@ void SdfBinaryWriter::WriteString(const wchar_t* src)
 }
 
 
-void SdfBinaryWriter::WriteRawString(const wchar_t* src)
+void BinaryWriter::WriteRawString(const wchar_t* src)
 {
     int srcLen = 0;
     
@@ -227,7 +227,7 @@ void SdfBinaryWriter::WriteRawString(const wchar_t* src)
 
 //checks if the data write buffer has enough space and
 //resizes it if needed
-void SdfBinaryWriter::CheckResize(unsigned len)
+void BinaryWriter::CheckResize(unsigned len)
 {
     if (m_pos + len < m_len)
         return;
@@ -246,7 +246,7 @@ void SdfBinaryWriter::CheckResize(unsigned len)
 }
 
 //writes a byte array 
-void SdfBinaryWriter::WriteBytes(unsigned char* buf, int len)
+void BinaryWriter::WriteBytes(unsigned char* buf, int len)
 {
     CheckResize(len);
     
@@ -255,7 +255,7 @@ void SdfBinaryWriter::WriteBytes(unsigned char* buf, int len)
 }
 
 //serializes a FdoDateTime
-void SdfBinaryWriter::WriteDateTime(FdoDateTime dt)
+void BinaryWriter::WriteDateTime(FdoDateTime dt)
 {
     WriteInt16(dt.year);
     WriteChar(dt.month);
@@ -266,7 +266,7 @@ void SdfBinaryWriter::WriteDateTime(FdoDateTime dt)
 }
 
 
-void SdfBinaryWriter::WriteDataValue(FdoDataValue* dataValue)
+void BinaryWriter::WriteDataValue(FdoDataValue* dataValue)
 {
     // Write data type and isnull:
     if (!dataValue)

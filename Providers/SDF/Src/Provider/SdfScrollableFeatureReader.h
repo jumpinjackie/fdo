@@ -21,7 +21,7 @@
 
 class KeyDb;
 class DataDb;
-class SdfBinaryWriter;
+class BinaryWriter;
 
 class SdfScrollableFeatureReader : public SdfSimpleFeatureReader
 {

@@ -17,12 +17,12 @@
 #define SDFDATAREADER_H
 
 class PropertyIndex;
-class SdfBinaryReader;
+class BinaryReader;
 
 
 //A somewhat generic data reader, based on the PropertyIndex and
-//SdfBinaryReader helper classes. The PropertyIndex is used to obtain
-//information about a property and the SdfBinaryReader is used to get the
+//BinaryReader helper classes. The PropertyIndex is used to obtain
+//information about a property and the BinaryReader is used to get the
 //value of a property. This class is abstract and the ReadNext()
 //function needs to be implemented by child classes.
 //TODO: this class can eventually become a base class for the 
@@ -178,7 +178,7 @@ public:
     // SdfDataReader
     //------------------------------------------------------------
 
-    SDF_API virtual SdfBinaryReader* GetSdfBinaryReader() = 0;
+    SDF_API virtual BinaryReader* GetBinaryReader() = 0;
         
 
 protected:

@@ -13,17 +13,17 @@
 //  You should have received a copy of the GNU Lesser General Public
 //  License along with this library; if not, write to the Free Software
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#ifndef SdfBinaryWriter_H
-#define SdfBinaryWriter_H
+#ifndef BINARYWRITER_H
+#define BINARYWRITER_H
 
 #define SDF_UNDEFINED_DATATYPE 255
 
-class SdfBinaryWriter
+class BinaryWriter
 {
 public:
 
-    SdfBinaryWriter(int initialLen);
-    ~SdfBinaryWriter();
+    BinaryWriter(int initialLen);
+    ~BinaryWriter();
 
     void Reset();
 
