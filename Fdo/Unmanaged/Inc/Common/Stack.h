@@ -53,24 +53,24 @@ public:
     /// 
     virtual OBJ* Peek(void) const
     {
-        if ( IsEmpty() ) 
+        if ( this->IsEmpty() ) 
             return NULL;
 
-        return GetItem(FdoCollection <OBJ, EXC>::GetCount() - 1);
+        return this->GetItem(FdoCollection <OBJ, EXC>::GetCount() - 1);
     }
 
     /// \brief
     /// Pushes the given item onto the stack
     /// 
     /// \param value 
-    /// Input the item to push. This item becomes the top item.
+    /// Input the item to push. This item becomes the top item.	
     /// 
     /// \return
     /// Returns nothing
     /// 
     virtual void Push(OBJ* value)
     {
-        Add(value);
+        this->Add(value);
     }
 
     /// \brief
@@ -105,8 +105,8 @@ public:
             );
 
 
-        OBJ* pItem = Peek();
-        RemoveAt(FdoCollection <OBJ, EXC>::GetCount() - 1);
+        OBJ* pItem = this->Peek();
+        this->RemoveAt(FdoCollection <OBJ, EXC>::GetCount() - 1);
 
         return pItem;
     }
@@ -143,12 +143,12 @@ protected:
     /// or level is out of range (less than 0 or greater or equal to 
     /// the number of elements in the stack
     /// 
-	FDO_API_COMMON   virtual OBJ* Peek(int level) const
+    FDO_API_COMMON virtual OBJ* Peek(int level) const
     {
         if ( level < 0 || (level >= FdoCollection <OBJ, EXC>::GetCount()) ) 
             return NULL;
 
-        return GetItem(FdoCollection <OBJ, EXC>::GetCount() - level - 1);
+        return this->GetItem(FdoCollection <OBJ, EXC>::GetCount() - level - 1);
     }
 
 private:
