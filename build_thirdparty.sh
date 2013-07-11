@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Copyright (C) 2004-2006  Autodesk, Inc.
+## Copyright (C) 2013  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -18,7 +18,9 @@
 ##
 
 TYPEACTION=buildinstall
+TYPEBUILD=release
 TYPECONFIGURE=configure
+TYPEARCHITECTURE=32
 PREFIXVAL=/usr/local/fdo-3.8.1
 
 DEFMODIFY=no
@@ -40,6 +42,15 @@ do
     SHOWHELP=yes
     break
     ;;
+  -b | --b | --build)
+    if test "$1" == ""; then
+        echo "$arg Invalid parameter $1"
+        exit 1
+    else
+        TYPEARCHITECTURE="$1"
+    fi
+    shift
+    ;;
   -p | --p | --prefix)
     if test "$1" == ""; then
         echo "$arg Invalid parameter $1"
@@ -56,7 +67,7 @@ do
         TYPECONFIGURE=noconfigure
     else
         echo "$arg Invalid parameter $1"
-	    exit 1
+	exit 1
     fi
     shift
     ;;
@@ -73,7 +84,18 @@ do
         TYPEACTION=clean
     else
         echo "$arg Invalid parameter $1"
-	    exit 1
+	exit 1
+    fi
+    shift
+    ;;
+  -c | --c | --config)
+    if test "$1" == debug; then
+        TYPEBUILD=debug
+    elif test "$1" == release; then
+        TYPEBUILD=release
+    else
+        echo "$arg Invalid parameter $1"
+    exit 1
     fi
     shift
     ;;
@@ -139,29 +161,63 @@ if test "$SHOWHELP" == yes; then
    echo "*******************************************************************"
    echo "build_thirdparty.sh [--h]"
    echo "                    [--a Action]"
+   echo "                    [--c BuildType]" 
    echo "                    [--w WithModule]"
    echo "                    [--m ConfigMakefiles]"
    echo "                    [--p Prefix]"
+   echo "                    [--b BuildArchicture]"
    echo " "
-   echo "Help:            --h[elp]"
-   echo "Action:          --a[ction] buildinstall(default), "
-   echo "                            build,"
-   echo "                            install,"
-   echo "                            uninstall,"
-   echo "                            clean"
-   echo "WithModule:      --w[ith] all(default),"
-   echo "                          fdo,"
-   echo "                          sdf,"
-   echo "                          wms,"
-   echo "                          wfs,"
-   echo "                          gdal"
-   echo "                          ogr"
-   echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
-   echo "Prefix:          --p[refix] <fdo install location>"
+   echo "Help:                  --h[elp]"
+   echo "BuildType:             --c[onfig] release(default), debug"
+   echo "Action:                --a[ction] buildinstall(default), "
+   echo "                                  build,"
+   echo "                                  install,"
+   echo "                                  uninstall,"
+   echo "                                  clean"
+   echo "WithModule:            --w[ith] all(default),"
+   echo "                                fdo,"
+   echo "                                sdf,"
+   echo "                                wms,"
+   echo "                                wfs,"
+   echo "                                gdal"
+   echo "                                ogr"
+   echo "ConfigMakefiles:       --m[akefile] configure(default), noconfigure"
+   echo "BuildArchitecture:     --b[uild] 32(default), 64"
+   echo "Prefix:                --p[refix] <fdo install location>"
    echo "*******************************************************************"
 
    exit 0
 fi
+
+
+if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CFLAGS: "$CFLAGS""
+export CFLAGS
+fi
+
+if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
+if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting LDFLAGS: "$LDFLAGS""
+export LDFLAGS
+fi
+
+if test "$TYPEARCHITECTURE" == "32" ; then
+if test "$HOSTTYPE" == "i686" ; then
+if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
+CPPFLAGS="$CPPFLAGS -march=i686"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+fi
+fi
+
 
 if test "$TYPECONFIGURE" == configure ; then
   echo "Configuring FDO Makefiles"
@@ -169,8 +225,14 @@ if test "$TYPECONFIGURE" == configure ; then
   libtoolize --force
   automake --add-missing --copy
   autoconf
+
   chmod a+x ./configure
-  ./configure --prefix="$PREFIXVAL"
+
+  if test "$TYPEBUILD" == release; then
+     ./configure --prefix="$PREFIXVAL"
+  else
+     ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+  fi
 fi
 
 if test ! -e "Thirdparty/Thirdparty.sh"; then
@@ -178,40 +240,43 @@ if test ! -e "Thirdparty/Thirdparty.sh"; then
   exit 1;
 fi
 
+CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
+
 pushd "Thirdparty" >& /dev/null
 
 if test "$TYPEACTION" == clean ; then
-    sudo -E make clean
+  sudo make clean
 fi
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-    if test "$ALLENABLE" == yes ; then
-	  chmod a+x ./Thirdparty.sh
-      sudo -E sh ./Thirdparty.sh
-    elif test "$FDOENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_fdo.sh
-      sudo -E sh ./Thirdparty_fdo.sh
-    elif test "$SDFENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_sdf.sh
-      sudo -E sh ./Thirdparty_sdf.sh
-    elif test "$WMSENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_wms.sh
-      sudo -E sh ./Thirdparty_wms.sh
-    elif test "$WFSENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_wfs.sh
-      sudo -E sh ./Thirdparty_wfs.sh
-    elif test "$GDALENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_gdal.sh
-      sudo -E sh ./Thirdparty_gdal.sh
-    elif test "$OGRENABLE" == yes ; then
-	  chmod a+x ./Thirdparty_ogr.sh
-      sudo -E sh ./Thirdparty_ogr.sh
-    fi
+
+if test "$ALLENABLE" == yes ; then
+  chmod a+x ./Thirdparty.sh
+  sudo sh ./Thirdparty.sh $CMDEX
+elif test "$FDOENABLE" == yes ; then
+  chmod a+x ./Thirdparty_fdo.sh
+  sudo sh ./Thirdparty_fdo.sh $CMDEX
+elif test "$SDFENABLE" == yes ; then
+  chmod a+x ./Thirdparty_sdf.sh
+  sudo sh ./Thirdparty_sdf.sh $CMDEX
+elif test "$WMSENABLE" == yes ; then
+  chmod a+x ./Thirdparty_wms.sh
+  sudo sh ./Thirdparty_wms.sh $CMDEX
+elif test "$WFSENABLE" == yes ; then
+  chmod a+x ./Thirdparty_wfs.sh
+  sudo sh ./Thirdparty_wfs.sh $CMDEX
+elif test "$GDALENABLE" == yes ; then
+  chmod a+x ./Thirdparty_gdal.sh
+  sudo sh ./Thirdparty_gdal.sh $CMDEX
+elif test "$OGRENABLE" == yes ; then
+  chmod a+x ./Thirdparty_ogr.sh
+  sudo sh ./Thirdparty_ogr.sh $CMDEX
 fi
+
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-    sudo -E make install
+  sudo make install
 fi
+
 if test "$TYPEACTION" == uninstall ; then
-    sudo -E make uninstall
+  sudo make uninstall
 fi
 
 popd >& /dev/null

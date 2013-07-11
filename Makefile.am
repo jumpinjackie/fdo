@@ -17,6 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = Fdo Utilities
 
 DIST_SUBDIRS = Fdo Utilities Thirdparty
