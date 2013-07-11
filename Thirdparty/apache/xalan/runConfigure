@@ -407,6 +407,9 @@ if test $bitsToBuild = 64; then
            hp-11-ia64)
               bitstobuildDefines=" +DD64 "
               bitstobuildLink=" +DD64 " ;;
+           linux)
+              bitstobuildDefines=" -DXML_BITSTOBUILD_64 -m64 "
+              bitstobuildLink=" -DXML_BITSTOBUILD_64 -m64 " ;;
            *)
             ;;
         esac
