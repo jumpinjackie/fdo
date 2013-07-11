@@ -407,8 +407,8 @@ export THREADS
 #  hp-10 | freebsd | netbsd | irix | openserver | unixware | os400 | ptx | tru64 | macosx
 #
 if test $bitsToBuild = 64; then
-    bitstobuildDefines=" -DXML_BITSTOBUILD_64 "
-    bitstobuildLink=" "
+    bitstobuildDefines=" -DXML_BITSTOBUILD_64 -m64 "
+    bitstobuildLink=" -DXML_BITSTOBUILD_64 -m64 "
     if test $platform; then
         case $platform in
            solaris)
