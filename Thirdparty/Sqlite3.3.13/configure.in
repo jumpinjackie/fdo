@@ -1,0 +1,46 @@
+##
+## Copyright (C) 2013  Autodesk, Inc.
+## 
+## This library is free software; you can redistribute it and/or
+## modify it under the terms of version 2.1 of the GNU Lesser
+## General Public License as published by the Free Software Foundation.
+## 
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## Lesser General Public License for more details.
+## 
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+##
+
+AC_INIT(SQLITE,3.3.13,http://fdo.osgeo.org)
+AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_SRCDIR(configure.in)
+AM_INIT_AUTOMAKE
+
+AC_PREFIX_DEFAULT(/usr/local/fdo-3.8.1)
+
+AC_LANG_C
+AC_PROG_CC
+AC_LANG_CPLUSPLUS
+AC_PROG_CXX
+AC_PROG_YACC
+AC_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+AC_SUBST(VERSION, "3.3.13")
+
+CXXFLAGS="-O2 -MMD -MT "
+AC_SUBST(CXXFLAGS, ["-O2 -MMD -MT "])
+
+CXXFLAGS_SQLITE="-O2"
+AC_SUBST(CXXFLAGS_SQLITE, ["-O2"])
+
+AC_CONFIG_FILES(Makefile)
+
+AC_CONFIG_FILES([Src/Makefile])
+
+AC_OUTPUT
+
