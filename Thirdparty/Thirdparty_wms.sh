@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Copyright (C) 2004-2006  Autodesk, Inc.
+## Copyright (C) 2013  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -22,74 +22,113 @@
 ## boost, libcurl, openssl, gdal           ##
 #############################################
 
+
+TYPEACTION=buildinstall
+TYPEARCHITECTURE=32
+
+### study parameters ###
+while test $# -gt 0
+do
+  arg="$1"
+  shift
+  case $arg in
+  -h |--h | --help)
+    SHOWHELP=yes
+    break
+    ;;
+  -b | --b | --build)
+    if test "$1" == ""; then
+        echo "$arg Invalid parameter $1"
+        exit 1
+    else
+        TYPEARCHITECTURE="$1"
+    fi
+    shift
+    ;;
+  -a | --a | --action)
+    if test "$1" == buildinstall; then
+        TYPEACTION=buildinstall
+    elif test "$1" == build; then
+        TYPEACTION=build
+    elif test "$1" == install; then
+        TYPEACTION=install
+    elif test "$1" == uninstall; then
+        TYPEACTION=uninstall
+    elif test "$1" == clean; then
+        TYPEACTION=clean
+    else
+        echo "$arg Invalid parameter $1"
+	exit 1
+    fi
+    shift
+    ;;
+  -*)
+    echo "The command option is not recognized: $arg"
+    echo "Please use the format:"
+    SHOWHELP=yes
+    break
+    ;;
+
+  *)
+    echo "The command is not recognized: $arg"
+    echo "Please use the format:"
+    SHOWHELP=yes
+    break
+    ;;
+  esac
+done
+### end of study parameters ###
+
+if test "$SHOWHELP" == yes; then
+
+   echo "*******************************************************************"
+   echo "Thirdparty_wms.sh   [--h]"
+   echo "                    [--a Action]"
+   echo "                    [--b BuildArchicture]"
+   echo " "
+   echo "Help:                  --h[elp]"
+   echo "Action:                --a[ction] buildinstall(default), build, install, uninstall, clean"
+   echo "ConfigArchitecture:    --b[uild] 32(default), 64"
+   echo "*******************************************************************"
+
+   exit 0
+fi
+
+CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
+
+## Boost
 pushd . >& /dev/null
 cd boost
 echo Building boost
-cd tools/jam/src
 chmod a+x ./build.sh
-sudo -E sh ./build.sh
-cd ../../../
-./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
+sudo sh ./build.sh $CMDEX
 popd >& /dev/null
 
+
+## LibCURL
 pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
-chmod a+x ./configure
-./configure --without-libidn --disable-ldap
-sudo -E make
-mkdir -p lib/linux
-rm -f ./lib/linux/*.*
-cp -f ./lib/.libs/libcurl.a ./lib/linux
+chmod a+x ./build.sh
+sudo sh ./build.sh $CMDEX
 popd >& /dev/null
 
+
+## OpenSSL
 pushd . >& /dev/null
 cd openssl
 echo Building openssl
-mkdir -p lib/linux
-rm -f ./lib/linux/*.*
-chmod a+x ./config
-./config
-sudo -E make
-mv -f ./libssl.a ./lib/linux/libssl.a
-mv -f ./libcrypto.a ./lib/linux/libcrypto.a
+chmod a+x ./build.sh
+sudo sh ./build.sh $CMDEX
 popd >& /dev/null
 
-## Thirdparty_WMS/GDAL
-if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then
-    pushd . >& /dev/null
-    cd gdal
-    echo Building gdal
-    mkdir -p lib
-    mkdir -p include
-    rm -f lib/*.libgdal.a    
-    rm -f lib/*.libgdal.so    
-    rm -f lib/*.libgdal.so.1    
-    rm -f lib/*.libgdal.so.1.16.0   
-    rm -f include/*
-    chmod a+x ./configure
-    echo Build GDAL library with the following settings:
-    echo     gif support         - internal
-    echo     jpeg support        - internal
-    echo     png support         - internal
-    echo     tiff support        - internal
-    echo     geotiff support     - internal
-    echo     libz support        - internal
-    echo     python support      - no
-    echo     OGR support         - yes
-    echo     postgreSQL support  - no
-    echo     odbc support        - no
-    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal --with-odbc=no
-    sudo -E make
-    cp -f .libs/libgdal.a lib/
-    cp -f .libs/libgdal.so lib/
-    cp -f .libs/libgdal.so.1 lib/
-    cp -f .libs/libgdal.so.1.16.0 lib/
-    cp -f port/*.h include/
-    cp -f gcore/*.h include/
-    cp -f alg/*.h include/
-    cp -f ogr/*.h include/
-    popd >& /dev/null
-else
-    echo "Building of the Thirdparty/GDAL libraries has been skipped. Environment variable FDOGDAL points to a previously installed version of GDAL at $FDOGDAL. This version of GDAL will be used to build the FDO WMS and GDAL providers."
-fi
+
+## GDAL
+pushd . >& /dev/null
+cd gdal
+echo Building gdal
+chmod a+x ./build.sh
+sudo sh ./build.sh $CMDEX
+popd >& /dev/null
+
+
