@@ -19,6 +19,7 @@
 
 TYPEACTION=buildinstall
 TYPEBUILD=release
+TYPEARCHITECTURE=32
 TYPECONFIGURE=configure
 BUILDDOCS=no
 PREFIXVAL=/usr/local/fdo-3.8.1
@@ -32,6 +33,15 @@ do
   -h | --h | --help)
     SHOWHELP=yes
     break
+    ;;
+  -b | --b | --build)
+    if test "$1" == ""; then
+        echo "$arg Invalid parameter $1"
+        exit 1
+    else
+        TYPEARCHITECTURE="$1"
+    fi
+    shift
     ;;
   -a | --a | --action)
     if test "$1" == buildinstall; then
@@ -116,14 +126,49 @@ if test "$SHOWHELP" == yes; then
    echo "               [--a Action]" 
    echo "               [--m ConfigMakefiles]"
    echo "               [--p Prefix]"
+   echo "               [--b BuildArchicture]"
    echo " "
-   echo "Help:            --h[elp]"
-   echo "BuildType:       --c[onfig] release(default), debug"
-   echo "Action:          --a[ction] buildinstall(default), build, install, uninstall, clean"
-   echo "ConfigMakefiles: --m[akefile] configure(default), noconfigure"
-   echo "Prefix:          --p[refix] <fdo install location>"
+   echo "Help:                  --h[elp]"
+   echo "BuildType:             --c[onfig] release(default), debug"
+   echo "Action:                --a[ction] buildinstall(default), build, install, uninstall, clean"
+   echo "BuildDocs:             --d[ocs] skip(default), build"
+   echo "ConfigMakefiles:       --m[akefile] configure(default), noconfigure"
+   echo "BuildArchitecture:     --b[uild] 32(default), 64"
+   echo "Prefix:                --p[refix] <fdo install location>"
    echo "************************************************************************************************************"
    exit 0
+fi
+
+if test "$TYPEARCHITECTURE" == "64" ; then
+echo "The 64bit build type is not yet suppoted: $TYPEARCHITECTURE"
+fi
+
+if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CFLAGS: "$CFLAGS""
+export CFLAGS
+fi
+
+if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
+if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting LDFLAGS: "$LDFLAGS""
+export LDFLAGS
+fi
+
+if test "$TYPEARCHITECTURE" == "32" ; then
+if test "$HOSTTYPE" == "i686" ; then
+if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
+CPPFLAGS="$CPPFLAGS -march=i686"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+fi
 fi
 
 ### start build ###
@@ -141,19 +186,19 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
    
 if test "$TYPEACTION" == clean ; then
-  sudo -E make clean
+  sudo make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo -E make
+   sudo make
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   sudo -E make install
+   sudo make install
 fi
 
 if test "$TYPEACTION" == uninstall ; then
-   sudo -E make uninstall
+   sudo make uninstall
 fi
 
 exit 0

@@ -17,6 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = src inc
 
 DIST_SUBDIRS = src inc
