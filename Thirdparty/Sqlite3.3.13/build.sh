@@ -128,11 +128,11 @@ chmod a+x ./configure
 ./configure
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
 fi
 
 if test "$TYPEACTION" == clean ; then
-   sudo make clean
+   make clean
 fi
 
 popd >& /dev/null

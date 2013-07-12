@@ -125,11 +125,11 @@ chmod a+x ./config
 
 if test "$TYPEACTION" == clean ; then
    rm -f ./lib/linux/*.*
-   sudo make clean
+   make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
    rm -f ./lib/linux/*.*
    mv -f ./libssl.a ./lib/linux/libssl.a
    mv -f ./libcrypto.a ./lib/linux/libcrypto.a

@@ -113,11 +113,11 @@ chmod a+x config/pretty-make
 ./runConfigure -p linux -P "$XERCESCROOT" -b "$TYPEARCHITECTURE"
 
 if test "$TYPEACTION" == clean ; then
-   sudo make clean
+   make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
@@ -136,11 +136,11 @@ chmod a+x ./runConfigure
 ./runConfigure -p linux -P "$XALANCROOT" -b "$TYPEARCHITECTURE"
 
 if test "$TYPEACTION" == clean ; then
-   sudo make clean
+   make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
 fi
 
 popd >& /dev/null

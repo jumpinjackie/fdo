@@ -143,11 +143,11 @@ fi
 fi
 fi
 
-sudo ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal --with-odbc=no
+./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal --with-odbc=no
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
 
-sudo make
+make
 
 cp -f .libs/libgdal.a lib/
 cp -f .libs/libgdal.so lib/
@@ -168,7 +168,7 @@ rm -rf lib/libgdal.so
 rm -rf lib/libgdal.so.1
 rm -rf lib/libgdal.so.1.16.0
 
-sudo make clean
+make clean
 
 fi
 

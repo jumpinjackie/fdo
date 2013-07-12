@@ -245,30 +245,30 @@ CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
 pushd "Thirdparty" >& /dev/null
 
 if test "$TYPEACTION" == clean ; then
-  sudo make clean
+  make clean
 fi
 
 if test "$ALLENABLE" == yes ; then
   chmod a+x ./Thirdparty.sh
-  sudo sh ./Thirdparty.sh $CMDEX
+  sh ./Thirdparty.sh $CMDEX
 elif test "$FDOENABLE" == yes ; then
   chmod a+x ./Thirdparty_fdo.sh
-  sudo sh ./Thirdparty_fdo.sh $CMDEX
+  sh ./Thirdparty_fdo.sh $CMDEX
 elif test "$SDFENABLE" == yes ; then
   chmod a+x ./Thirdparty_sdf.sh
-  sudo sh ./Thirdparty_sdf.sh $CMDEX
+  sh ./Thirdparty_sdf.sh $CMDEX
 elif test "$WMSENABLE" == yes ; then
   chmod a+x ./Thirdparty_wms.sh
-  sudo sh ./Thirdparty_wms.sh $CMDEX
+  sh ./Thirdparty_wms.sh $CMDEX
 elif test "$WFSENABLE" == yes ; then
   chmod a+x ./Thirdparty_wfs.sh
-  sudo sh ./Thirdparty_wfs.sh $CMDEX
+  sh ./Thirdparty_wfs.sh $CMDEX
 elif test "$GDALENABLE" == yes ; then
   chmod a+x ./Thirdparty_gdal.sh
-  sudo sh ./Thirdparty_gdal.sh $CMDEX
+  sh ./Thirdparty_gdal.sh $CMDEX
 elif test "$OGRENABLE" == yes ; then
   chmod a+x ./Thirdparty_ogr.sh
-  sudo sh ./Thirdparty_ogr.sh $CMDEX
+  sh ./Thirdparty_ogr.sh $CMDEX
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then

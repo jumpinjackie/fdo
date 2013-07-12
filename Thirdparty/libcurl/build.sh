@@ -125,11 +125,11 @@ mkdir -p lib/linux
 
 if test "$TYPEACTION" == clean ; then
    rm -f ./lib/linux/*.*
-   sudo make clean
+   make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
    rm -f ./lib/linux/*.*
    cp -f ./lib/.libs/libcurl.a ./lib/linux
 fi

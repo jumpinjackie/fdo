@@ -186,11 +186,11 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
    
 if test "$TYPEACTION" == clean ; then
-  sudo make clean
+  make clean
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then

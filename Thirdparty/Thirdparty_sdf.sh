@@ -102,7 +102,7 @@ pushd . >& /dev/null
 cd Sqlite3.3.13
 echo Building Sqlite3.3.13
 chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+sh ./build.sh $CMDEX
 popd >& /dev/null
 
 
