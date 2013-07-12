@@ -23,6 +23,10 @@
 #include <sys/param.h>          /* for def'n of MAXPATHLEN */
 #include <mkcatdefs.h>          /* for def'n of char_t, ... */
 
+/* Hacked build fix */
+#ifndef L_cuserid
+#define L_cuserid 100
+#endif
 
 /*
  *  usage - print usage and quit
