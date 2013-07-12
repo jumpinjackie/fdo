@@ -17,6 +17,8 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = Nls Src Inc com Docs
 
 DIST_SUBDIRS = Nls Src Inc com Docs
