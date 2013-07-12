@@ -68,6 +68,12 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
 #include "FdoExpressionEngine.h"
 #include "FdoCommonOSUtil.h"
 #include "FdoCommonMiscUtil.h"
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
+
 const wchar_t* CONSTRAINS_FILE = L"../../TestData/Constrains.sdf";
 const wchar_t* SHP_PATH = L"../../TestData/World_Countries.sdf";
 const wchar_t* SHP_PATH2 = L"../../TestData/province.sdf";
@@ -85,9 +91,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( MasterTest, "MasterTest");
 
 MasterTest::MasterTest()
 {
-
 }
-
 
 MasterTest::~MasterTest()
 {
@@ -180,7 +184,6 @@ void MasterTest::updateTest()
 
         openConnection(conn, DESTINATION_FILE);    
 
-
         FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
 
         update->SetFeatureClassName(L"Parcel");
@@ -213,7 +216,6 @@ void MasterTest::concurencyTest()
     FdoPtr<FdoIConnection> update_conn = CreateConnection();
     openConnection(update_conn, DESTINATION_FILE);    
 
-
     FdoPtr<FdoIUpdate> update = (FdoIUpdate*)update_conn->CreateCommand(FdoCommandType_Update); 
 
     update->SetFeatureClassName(L"Parcel");
@@ -233,26 +235,26 @@ void MasterTest::concurencyTest()
        
     int count = update->Execute();
 
-	printf("\n\nUpdated %d features\n", count);
+    printf("\n\nUpdated %d features\n", count);
 
-	UnitTestUtil::CreateData( false, NULL, 200 );
+    UnitTestUtil::CreateData( false, NULL, 200 );
 
     update_conn->Close();
 }
 
 void MasterTest::concurencyRtreeTest()
 {
-	FdoPtr<FdoIConnection> conn1 = CreateConnection();
+    FdoPtr<FdoIConnection> conn1 = CreateConnection();
 
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 0);
+    UnitTestUtil::CreateData( true , conn, 0);
     conn->Close();
-	openConnection(conn, DESTINATION_FILE);
+    openConnection(conn, DESTINATION_FILE);
 
-	UnitTestUtil::CreateData( false , conn1, 4000);
+    UnitTestUtil::CreateData( false , conn1, 4000);
 
-	conn1->Close();
-	openConnection(conn1, DESTINATION_FILE);    
+    conn1->Close();
+    openConnection(conn1, DESTINATION_FILE);    
 
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
@@ -298,7 +300,7 @@ void MasterTest::concurencyRtreeTest()
     printf("Count = %d  time: %2.3f seconds \n", count2, (double)(finish - start) / CLOCKS_PER_SEC);
     //correct R-Tree will return that many features!
     CPPUNIT_ASSERT(count2 == 20);
-	conn->Close();
+    conn->Close();
 }
 
 void MasterTest::keyFilterBeforeDelete()
@@ -402,13 +404,13 @@ void MasterTest::keyFilterAfterDelete()
 
 void MasterTest::dataTypeKeyFilter()
 {
-	FdoPtr<FdoIConnection> connection;
+    FdoPtr<FdoIConnection> connection;
 
     try {
-		// delete, re-create and open the datastore
-		printf( "Initializing Connection ... \n" );
-		connection = UnitTestUtil::OpenConnection( DATA_TYPE_FILTER_TEST_FILE, true );
-	
+        // delete, re-create and open the datastore
+        printf( "Initializing Connection ... \n" );
+        connection = UnitTestUtil::OpenConnection( DATA_TYPE_FILTER_TEST_FILE, true );
+    
         dataTypeFilter_CreateData( connection );
 
         FdoString* expected1[] = { L"D", NULL };
@@ -628,19 +630,19 @@ void MasterTest::dataTypeKeyFilter()
 
     }
     catch ( CppUnit::Exception e ) 
-	{
-		throw e;
-	}
-	catch ( FdoException* e ) 
-	{
-		TestCommonFail( e );
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
+    {
+        throw e;
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+        
+    printf( "Done\n" );
 }
 
 
@@ -1154,7 +1156,7 @@ void MasterTest::selectSpatialExtentsTest()
     printf("Testing Select SpatialExtents:\n");
 
     try 
-	{
+    {
         FdoPtr<FdoISelectAggregates> selAggr;
         FdoPtr<FdoIDataReader> rdr;
         FdoPtr<FdoIdentifierCollection> ids;
@@ -1164,87 +1166,87 @@ void MasterTest::selectSpatialExtentsTest()
 
         FdoPtr<FdoIConnection> conn = CreateConnection();
         openConnection(conn, SHP_PATH2, true);
-		CPPUNIT_ASSERT(conn->Open() == FdoConnectionState_Open);
+        CPPUNIT_ASSERT(conn->Open() == FdoConnectionState_Open);
 
         FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		
+        
         // test optimized SelectAggregates(SpatialExtents) -- NO FILTER
         FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
         advsel->SetFeatureClassName(L"province");
-	    ids = advsel->GetPropertyNames();
-	    expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
-	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	    ids->Add(cid);
-	    rdr = advsel->Execute();
+        ids = advsel->GetPropertyNames();
+        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+        ids->Add(cid);
+        rdr = advsel->Execute();
 
-	    count = 0;
-	    FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
-	    while (rdr->ReadNext())
-	    {
-		    if ( rdr->IsNull(L"MBR") )
-			    CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
+        count = 0;
+        FdoPtr<FdoIEnvelope> envelopeAllWithoutFilter;
+        while (rdr->ReadNext())
+        {
+            if ( rdr->IsNull(L"MBR") )
+                CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
             
-		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
-		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+            FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
 
             FdoGeometryType geomType = geom->GetDerivedType();
             if (geomType != FdoGeometryType_Polygon)
-			    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+                CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
-		    envelopeAllWithoutFilter = geom->GetEnvelope();
+            envelopeAllWithoutFilter = geom->GetEnvelope();
 
-		    if (envelopeAllWithoutFilter->GetIsEmpty())
-			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+            if (envelopeAllWithoutFilter->GetIsEmpty())
+                CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
 
-		    count++;
-	    }
-	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
 
-	    rdr->Close();
+        rdr->Close();
 
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
 
         // test non-optimized SelectAggregates(SpatialExtents) -- WITH FILTER
         advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
         advsel->SetFeatureClassName(L"province");
-	    ids = advsel->GetPropertyNames();
-	    expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
-	    cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	    ids->Add(cid);
+        ids = advsel->GetPropertyNames();
+        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+        cid = FdoComputedIdentifier::Create(L"MBR", expr);
+        ids->Add(cid);
         advsel->SetFilter(L"AREA > 0");
-	    rdr = advsel->Execute();
+        rdr = advsel->Execute();
 
-	    count = 0;
-	    while (rdr->ReadNext())
-	    {
-		    if ( rdr->IsNull(L"MBR") )
-			    CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
+        count = 0;
+        while (rdr->ReadNext())
+        {
+            if ( rdr->IsNull(L"MBR") )
+                CPPUNIT_FAIL("NULL MBR geometry returned for SpatialExtents()");
             
-		    FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
-		    FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+            FdoPtr<FdoByteArray> geomBytes = rdr->GetGeometry(L"MBR");
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
 
             FdoGeometryType geomType = geom->GetDerivedType();
             if (geomType != FdoGeometryType_Polygon)
-			    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+                CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
-		    envelopeAllWithoutFilter = geom->GetEnvelope();
+            envelopeAllWithoutFilter = geom->GetEnvelope();
 
-		    if (envelopeAllWithoutFilter->GetIsEmpty())
-			    CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
+            if (envelopeAllWithoutFilter->GetIsEmpty())
+                CPPUNIT_FAIL("Expected non-empty envelope for SpatialExtents() result");
 
-		    count++;
-	    }
-	    CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
+            count++;
+        }
+        CPPUNIT_ASSERT_MESSAGE("Expected exactly one row of aggregate data", count==1);
 
-	    rdr->Close();
+        rdr->Close();
 
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
-	    CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinX)", fabs(envelopeAllWithoutFilter->GetMinX() - (-141.003)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MinY)", fabs(envelopeAllWithoutFilter->GetMinY() - (41.913)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxX)", fabs(envelopeAllWithoutFilter->GetMaxX() - (-52.620)) < 0.001);
+        CPPUNIT_ASSERT_MESSAGE("SpatialExtents results don't match (MaxY)", fabs(envelopeAllWithoutFilter->GetMaxY() - (83.108)) < 0.001);
 
         // test expected error conditions
         bool failed = false;
@@ -1252,11 +1254,11 @@ void MasterTest::selectSpatialExtentsTest()
         {
             advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
             advsel->SetFeatureClassName(L"foo");
-	        ids = advsel->GetPropertyNames();
-	        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
-	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	        ids->Add(cid);
-	        rdr = advsel->Execute();
+            ids = advsel->GetPropertyNames();
+            expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+            cid = FdoComputedIdentifier::Create(L"MBR", expr);
+            ids->Add(cid);
+            rdr = advsel->Execute();
         }
         catch ( FdoException *ex )
         {
@@ -1273,11 +1275,11 @@ void MasterTest::selectSpatialExtentsTest()
         {
             advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
             advsel->SetFeatureClassName(L"province");
-	        ids = advsel->GetPropertyNames();
-	        expr = FdoExpression::Parse(L"SpatialExtents(foo)");
-	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	        ids->Add(cid);
-	        rdr = advsel->Execute();
+            ids = advsel->GetPropertyNames();
+            expr = FdoExpression::Parse(L"SpatialExtents(foo)");
+            cid = FdoComputedIdentifier::Create(L"MBR", expr);
+            ids->Add(cid);
+            rdr = advsel->Execute();
         }
         catch ( FdoException *ex )
         {
@@ -1294,11 +1296,11 @@ void MasterTest::selectSpatialExtentsTest()
         {
             advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
             advsel->SetFeatureClassName(L"province");
-	        ids = advsel->GetPropertyNames();
-	        expr = FdoExpression::Parse(L"foo(SHPGEOM)");
-	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	        ids->Add(cid);
-	        rdr = advsel->Execute();
+            ids = advsel->GetPropertyNames();
+            expr = FdoExpression::Parse(L"foo(SHPGEOM)");
+            cid = FdoComputedIdentifier::Create(L"MBR", expr);
+            ids->Add(cid);
+            rdr = advsel->Execute();
         }
         catch ( FdoException *ex )
         {
@@ -1316,10 +1318,10 @@ void MasterTest::selectSpatialExtentsTest()
             advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
             advsel->SetFeatureClassName(L"province");
 
-	        ids = advsel->GetPropertyNames();
-	        expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
-	        cid = FdoComputedIdentifier::Create(L"MBR", expr);
-	        ids->Add(cid);
+            ids = advsel->GetPropertyNames();
+            expr = FdoExpression::Parse(L"SpatialExtents(SHPGEOM)");
+            cid = FdoComputedIdentifier::Create(L"MBR", expr);
+            ids->Add(cid);
 
             double coords[] = {7.2, 43.6, 7.2, 43.6, 7.2, 43.7, 7.2, 43.7, 7.2, 43.6}; 
             FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
@@ -1330,7 +1332,7 @@ void MasterTest::selectSpatialExtentsTest()
             FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
             advsel->SetFilter(filter);
 
-	        rdr = advsel->Execute();
+            rdr = advsel->Execute();
         }
         catch ( FdoException *ex )
         {
@@ -1342,7 +1344,7 @@ void MasterTest::selectSpatialExtentsTest()
             CPPUNIT_FAIL("FAILED - SelectAggregates allowed specifiecation of a spatial filter\n");
         }
     }
-	catch( FdoException *ex )
+    catch( FdoException *ex )
     {
         CPPUNIT_FAIL((const char*)(FdoStringP(ex->GetExceptionMessage())));
         ex->Release();
@@ -1451,14 +1453,14 @@ void MasterTest::test_aggregates_datetime_string(void)
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         FdoCommonFile::Delete(AGGR_PATH, true);
-	    FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(connection->CreateCommand(SdfCommandType_CreateSDFFile));
-	    crsdf->SetCoordinateSystemWKT(L"[LL84]");
-	    crsdf->SetFileName(AGGR_PATH);
-	    crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
-	    crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
-	    crsdf->SetXYTolerance(17.0);
-	    crsdf->SetZTolerance(3.14159);
-	    crsdf->Execute();
+        FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(connection->CreateCommand(SdfCommandType_CreateSDFFile));
+        crsdf->SetCoordinateSystemWKT(L"[LL84]");
+        crsdf->SetFileName(AGGR_PATH);
+        crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
+        crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
+        crsdf->SetXYTolerance(17.0);
+        crsdf->SetZTolerance(3.14159);
+        crsdf->Execute();
 
         // Connect to new file:
         wchar_t connString[500];
@@ -1474,46 +1476,46 @@ void MasterTest::test_aggregates_datetime_string(void)
         // Create new schema:
         FdoPtr<FdoFeatureSchema> pSchema = FdoFeatureSchema::Create(L"MySchema", L"");
 
-	    // Create a new Feature Class:
-	    FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"MyClass", L"" );
-	    pClass->SetIsAbstract(false);
+        // Create a new Feature Class:
+        FdoPtr<FdoFeatureClass> pClass = FdoFeatureClass::Create( L"MyClass", L"" );
+        pClass->SetIsAbstract(false);
 
-	    // Add featid property
+        // Add featid property
 
-	    FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
-	    pProp->SetDataType( FdoDataType_Int32 );
-	    pProp->SetNullable(false);
+        FdoPtr<FdoDataPropertyDefinition> pProp = FdoDataPropertyDefinition::Create( L"FeatId", L"id" );
+        pProp->SetDataType( FdoDataType_Int32 );
+        pProp->SetNullable(false);
         pProp->SetIsAutoGenerated(true);
-	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+        FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	    // Add geometry property
+        // Add geometry property
 
-	    FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
-	    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
-	    pGeomProp->SetHasElevation(true);
+        FdoPtr<FdoGeometricPropertyDefinition> pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location and shape" );
+        pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+        pGeomProp->SetHasElevation(true);
         FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	    pClass->SetGeometryProperty( pGeomProp );
+        pClass->SetGeometryProperty( pGeomProp );
 
-	    // Add data properties of various types
+        // Add data properties of various types
 
-	    pProp = FdoDataPropertyDefinition::Create( L"MyString", L"A, B or C" );
-	    pProp->SetDataType( FdoDataType_String );
-	    pProp->SetLength(200);
-	    pProp->SetNullable(false);
-	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+        pProp = FdoDataPropertyDefinition::Create( L"MyString", L"A, B or C" );
+        pProp->SetDataType( FdoDataType_String );
+        pProp->SetLength(200);
+        pProp->SetNullable(false);
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	    pProp = FdoDataPropertyDefinition::Create( L"MyDate", L"" );
-	    pProp->SetDataType( FdoDataType_DateTime );
-	    pProp->SetNullable(true);
-	    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+        pProp = FdoDataPropertyDefinition::Create( L"MyDate", L"" );
+        pProp->SetDataType( FdoDataType_DateTime );
+        pProp->SetNullable(true);
+        FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	    FdoClassesP(pSchema->GetClasses())->Add( pClass );
+        FdoClassesP(pSchema->GetClasses())->Add( pClass );
 
         // Now do ApplySchema:
-	    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
-	    pCmd->SetFeatureSchema( pSchema );
-	    pCmd->Execute();
+        FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
+        pCmd->SetFeatureSchema( pSchema );
+        pCmd->Execute();
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -1580,153 +1582,153 @@ void MasterTest::test_aggregates_datetime_string(void)
 }
 void MasterTest::selectFunctionTest()
 {
-	try
-	{
-		FdoPtr<FdoIConnection> conn = CreateConnection();
+    try
+    {
+        FdoPtr<FdoIConnection> conn = CreateConnection();
 
-		openConnection(conn, SHP_PATH, true);
+        openConnection(conn, SHP_PATH, true);
 
-		FdoPtr<FdoISelect> select = (FdoISelect*)(conn->CreateCommand(FdoCommandType_Select));
+        FdoPtr<FdoISelect> select = (FdoISelect*)(conn->CreateCommand(FdoCommandType_Select));
 
-		select->SetFeatureClassName(L"World_Countries");
-	    
-		select->SetFilter(L"Upper(NAME) LIKE '%TU%'");
-		FdoPtr<FdoIReader> rdr = select->Execute();
-		int count = 0;
-		while (rdr->ReadNext())
-		{
-			//printf("%ls\n", rdr->GetString(L"NAME"));
-			count++;
-		}
-		rdr->Close();
-		
-		//printf("Upper count: %d\n", count);
-		CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Upper filter", count==14);
+        select->SetFeatureClassName(L"World_Countries");
+        
+        select->SetFilter(L"Upper(NAME) LIKE '%TU%'");
+        FdoPtr<FdoIReader> rdr = select->Execute();
+        int count = 0;
+        while (rdr->ReadNext())
+        {
+            //printf("%ls\n", rdr->GetString(L"NAME"));
+            count++;
+        }
+        rdr->Close();
+        
+        //printf("Upper count: %d\n", count);
+        CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Upper filter", count==14);
 
-		select->SetFilter(L"Lower(NAME) LIKE '%tu%'");
-		rdr = select->Execute();
-		count = 0;
-		while (rdr->ReadNext())
-		{
-			//printf("%ls\n", rdr->GetString(L"NAME"));
-			count++;
-		}
-		rdr->Close();
-		//printf("Upper count: %d\n", count);
-		CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Lower filter", count==14);
-	    
-		select->SetFilter(L"Ceil(Autogenerated_ID) < 10");
-		rdr = select->Execute();
-		count = 0;
-		while (rdr->ReadNext())
-		{
-			//printf("%ls\n", rdr->GetString(L"NAME"));
-			count++;
-		}
-		rdr->Close();
-		//printf("Ceil count: %d\n", count);
-		CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Lower filter", count==9);
+        select->SetFilter(L"Lower(NAME) LIKE '%tu%'");
+        rdr = select->Execute();
+        count = 0;
+        while (rdr->ReadNext())
+        {
+            //printf("%ls\n", rdr->GetString(L"NAME"));
+            count++;
+        }
+        rdr->Close();
+        //printf("Upper count: %d\n", count);
+        CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Lower filter", count==14);
+        
+        select->SetFilter(L"Ceil(Autogenerated_ID) < 10");
+        rdr = select->Execute();
+        count = 0;
+        while (rdr->ReadNext())
+        {
+            //printf("%ls\n", rdr->GetString(L"NAME"));
+            count++;
+        }
+        rdr->Close();
+        //printf("Ceil count: %d\n", count);
+        CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Lower filter", count==9);
 
-		select->SetFilter(L"Floor(Autogenerated_ID) < 10");
-		rdr = select->Execute();
-		count = 0;
-		while (rdr->ReadNext())
-		{
-			//printf("%ls\n", rdr->GetString(L"NAME"));
-			count++;
-		}
-		rdr->Close();
-		//printf("Floor count: %d\n", count);
-		CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Floor filter", count==9);
+        select->SetFilter(L"Floor(Autogenerated_ID) < 10");
+        rdr = select->Execute();
+        count = 0;
+        while (rdr->ReadNext())
+        {
+            //printf("%ls\n", rdr->GetString(L"NAME"));
+            count++;
+        }
+        rdr->Close();
+        //printf("Floor count: %d\n", count);
+        CPPUNIT_ASSERT_MESSAGE("Unexpected number of records returned by a Floor filter", count==9);
 
-		conn->Close();    
-	}
-	catch(FdoException *exp )
-	{
-		printf("Function test failed: %ls\n", exp->GetExceptionMessage() );
-		exp->Release();
-		CPPUNIT_FAIL("Function test failed");
-	}
+        conn->Close();    
+    }
+    catch(FdoException *exp )
+    {
+        printf("Function test failed: %ls\n", exp->GetExceptionMessage() );
+        exp->Release();
+        CPPUNIT_FAIL("Function test failed");
+    }
 }
 void MasterTest::rtreeCacheTest()
 {
-		try
-	{
-		FdoPtr<FdoIConnection> conn = CreateConnection();
+        try
+    {
+        FdoPtr<FdoIConnection> conn = CreateConnection();
 
-	    
-		UnitTestUtil::CreateData( true , conn, 4000);
+        
+        UnitTestUtil::CreateData( true , conn, 4000);
 
-		//Enabling the next 2 lines would make the select read from the file and not from the cached data.
-		//conn->Close();
-		//openConnection(conn, DESTINATION_FILE);    
+        //Enabling the next 2 lines would make the select read from the file and not from the cached data.
+        //conn->Close();
+        //openConnection(conn, DESTINATION_FILE);    
 
-		FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
-		select->SetFeatureClassName(L"Parcel");
-	    
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        select->SetFeatureClassName(L"Parcel");
+        
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
 
-		double coords[] = { 7.2068, 43.7556, 
-							7.2088, 43.7556, 
-							7.2088, 43.7574, 
-							7.2068, 43.7574, 
-							7.2068, 43.7556 }; //last pt equals first for rings
+        double coords[] = { 7.2068, 43.7556, 
+                            7.2088, 43.7556, 
+                            7.2088, 43.7574, 
+                            7.2068, 43.7574, 
+                            7.2068, 43.7556 }; //last pt equals first for rings
 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
 
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
 
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
-		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
-	    
-		printf("\n\n\nR-Tree filter");
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
+        
+        printf("\n\n\nR-Tree filter");
 
-		select->SetFilter(filter);
-	   
-		FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        select->SetFilter(filter);
+       
+        FdoPtr<FdoIFeatureReader> rdr = select->Execute();
 
-		int count2 = 0;
-		bool found = false;
-		while (rdr->ReadNext())
-		{
-			const wchar_t* something = rdr->GetString(L"Name");
-			if( wcscmp( something, L"AB0039") == 0 )
-				found = true;
-			count2++;
-		}
-		rdr->Close();
-		CPPUNIT_ASSERT(found);
+        int count2 = 0;
+        bool found = false;
+        while (rdr->ReadNext())
+        {
+            const wchar_t* something = rdr->GetString(L"Name");
+            if( wcscmp( something, L"AB0039") == 0 )
+                found = true;
+            count2++;
+        }
+        rdr->Close();
+        CPPUNIT_ASSERT(found);
 
-		FdoPtr<FdoIDelete> del = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-		del->SetFeatureClassName(L"Parcel");
-		FdoPtr<FdoFilter> delfilter = FdoFilter::Parse(L"Name ='AB0039'");
-		del->SetFilter(delfilter);
-		CPPUNIT_ASSERT( del->Execute() == 1 );
+        FdoPtr<FdoIDelete> del = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        del->SetFeatureClassName(L"Parcel");
+        FdoPtr<FdoFilter> delfilter = FdoFilter::Parse(L"Name ='AB0039'");
+        del->SetFilter(delfilter);
+        CPPUNIT_ASSERT( del->Execute() == 1 );
 
-		// Let's make sure the feature is removed
-		rdr = select->Execute();
-		count2 = 0;
-		found = false;
-		while (rdr->ReadNext())
-		{
-			const wchar_t* something = rdr->GetString(L"Name");
-			if( wcscmp( something, L"AB0039") == 0 )
-				found = true;
-			count2++;
-		}
-		rdr->Close();
-		CPPUNIT_ASSERT(!found);    
-		CPPUNIT_ASSERT(count2 == 18);
-		conn->Close();
-	}
-	catch(FdoException *e )
-	{
-		wprintf(L"%s\n", e->GetExceptionMessage());
+        // Let's make sure the feature is removed
+        rdr = select->Execute();
+        count2 = 0;
+        found = false;
+        while (rdr->ReadNext())
+        {
+            const wchar_t* something = rdr->GetString(L"Name");
+            if( wcscmp( something, L"AB0039") == 0 )
+                found = true;
+            count2++;
+        }
+        rdr->Close();
+        CPPUNIT_ASSERT(!found);    
+        CPPUNIT_ASSERT(count2 == 18);
+        conn->Close();
+    }
+    catch(FdoException *e )
+    {
+        wprintf(L"%s\n", e->GetExceptionMessage());
         e->Release();
-		CPPUNIT_FAIL("Unexpected FdoException");
-	}
+        CPPUNIT_FAIL("Unexpected FdoException");
+    }
 }
 
 void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
@@ -1736,11 +1738,9 @@ void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
     //first delete the destination file if it exists already -- cleanup that is
 #ifdef _WIN32
     SetFileAttributesW(CONSTRAINS_FILE, FILE_ATTRIBUTE_NORMAL);
-	DeleteFileW( CONSTRAINS_FILE );
-
+    DeleteFileW( CONSTRAINS_FILE );
     wchar_t fullpath[1024];
     _wfullpath(fullpath, CONSTRAINS_FILE, 1024);
-
 #else
     char cpath[1024];
     char cfullpath[1024];
@@ -1750,27 +1750,28 @@ void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
     wchar_t fullpath[1024];
     mbstowcs(fullpath, cfullpath, 1024);
 #endif
-	FdoPtr<FdoICreateDataStore>	pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
 
-	FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
+    FdoPtr<FdoICreateDataStore>    pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
 
-	int	count;
-	FdoString **names = dictionary->GetPropertyNames(count);
+    FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
 
-	CPPUNIT_ASSERT_MESSAGE("Wrong number of properties for create cmd", count==1 );
+    int    count;
+    FdoString **names = dictionary->GetPropertyNames(count);
 
-	dictionary->SetProperty( names[0], fullpath );
+    CPPUNIT_ASSERT_MESSAGE("Wrong number of properties for create cmd", count==1 );
 
-	pCreateCmd->Execute();	
-	openConnection(conn, CONSTRAINS_FILE);   
-	FdoPtr<FdoICreateSpatialContext>	pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-	pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"[LL84]");
-	pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
-	pCreateCreateSpatialContext->SetName( L"World Geodetic Coordinate System, 1984" );
-	pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
-	pCreateCreateSpatialContext->SetZTolerance(3.14159);
-	pCreateCreateSpatialContext->Execute();
-	
+    dictionary->SetProperty( names[0], fullpath );
+
+    pCreateCmd->Execute();    
+    openConnection(conn, CONSTRAINS_FILE);   
+    FdoPtr<FdoICreateSpatialContext>    pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"[LL84]");
+    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+    pCreateCreateSpatialContext->SetName( L"World Geodetic Coordinate System, 1984" );
+    pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
+    pCreateCreateSpatialContext->SetZTolerance(3.14159);
+    pCreateCreateSpatialContext->Execute();
+    
 
     //apply schema
     FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
@@ -1843,7 +1844,7 @@ void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
 
 void MasterTest::testConstraints()
 {
-	FdoPtr<FdoIConnection> conn = CreateConnection();
+    FdoPtr<FdoIConnection> conn = CreateConnection();
     FdoPtr<FdoDataPropertyDefinition> dpd;
 
     CreateEmptyShpFileWithConstraints(conn);
@@ -2062,57 +2063,57 @@ void MasterTest::testConstraints()
     }
 
 
-	conn->Close();
+    conn->Close();
 }
 
 void MasterTest::noGeomObject()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 10 );
+    UnitTestUtil::CreateData( true , conn, 10 );
 
-	// Let's insert more feature with no geometry
-	FdoPtr<FdoIInsert> insert = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
+    // Let's insert more feature with no geometry
+    FdoPtr<FdoIInsert> insert = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
 
     FdoPtr<FdoPropertyValueCollection> propvals = insert->GetPropertyValues();
 
-	FdoPtr<FdoStringValue> svname = FdoStringValue::Create(L"");
+    FdoPtr<FdoStringValue> svname = FdoStringValue::Create(L"");
     FdoPtr<FdoStringValue> svkey = FdoStringValue::Create(L"");
-	FdoPtr<FdoPropertyValue> pvname = FdoPropertyValue::Create(L"Name", svname);
+    FdoPtr<FdoPropertyValue> pvname = FdoPropertyValue::Create(L"Name", svname);
     FdoPtr<FdoPropertyValue> pvkey = FdoPropertyValue::Create(L"Key", svkey);
 
-	FdoPtr<FdoGeometryValue> gvgeom = FdoGeometryValue::Create();
-	gvgeom->SetNullValue();
-	FdoPtr<FdoPropertyValue> pvgeom = FdoPropertyValue::Create(L"Data", gvgeom);
+    FdoPtr<FdoGeometryValue> gvgeom = FdoGeometryValue::Create();
+    gvgeom->SetNullValue();
+    FdoPtr<FdoPropertyValue> pvgeom = FdoPropertyValue::Create(L"Data", gvgeom);
 
-	
-	insert->SetFeatureClassName(L"Parcel");  
-
-	propvals->Add(pvname);
-    propvals->Add(pvkey);
-	propvals->Add(pvgeom);
-
-	svname->SetString(L"My Test Object");
-	svkey->SetString(L"AB002X3B");
-	FdoPtr<FdoIFeatureReader>rdr = insert->Execute();
-	CPPUNIT_ASSERT_MESSAGE("Unable to create an object with no geometry", rdr->ReadNext() );
-	printf("Insert new object: ID(%d)\n", rdr->GetInt32(L"ID") );
     
-	FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
-	CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"Parcel",cls->GetName())==0);
-	
-	conn->Close();
+    insert->SetFeatureClassName(L"Parcel");  
+
+    propvals->Add(pvname);
+    propvals->Add(pvkey);
+    propvals->Add(pvgeom);
+
+    svname->SetString(L"My Test Object");
+    svkey->SetString(L"AB002X3B");
+    FdoPtr<FdoIFeatureReader>rdr = insert->Execute();
+    CPPUNIT_ASSERT_MESSAGE("Unable to create an object with no geometry", rdr->ReadNext() );
+    printf("Insert new object: ID(%d)\n", rdr->GetInt32(L"ID") );
+    
+    FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
+    CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"Parcel",cls->GetName())==0);
+    
+    conn->Close();
 }
 
 void MasterTest::numberFilter()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 10 );
-	conn->Close();
-	UnitTestUtil::CreateData( false , conn, 10, L"ParcelChild" );
+    UnitTestUtil::CreateData( true , conn, 10 );
     conn->Close();
-	UnitTestUtil::CreateData( false , conn, 400 );
-	conn->Close();
-	openConnection(conn, DESTINATION_FILE);
+    UnitTestUtil::CreateData( false , conn, 10, L"ParcelChild" );
+    conn->Close();
+    UnitTestUtil::CreateData( false , conn, 400 );
+    conn->Close();
+    openConnection(conn, DESTINATION_FILE);
 
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
@@ -2129,28 +2130,28 @@ void MasterTest::numberFilter()
 
 
     FdoPtr<FdoByteArray> geom;
-	int id = 0;
+    int id = 0;
     while (rdr->ReadNext())
     {
-		FdoPtr<FdoPropertyDefinition> gp;
-		FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
+        FdoPtr<FdoPropertyDefinition> gp;
+        FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
         const wchar_t* something = rdr->GetString(L"Key");
-		if( (id=rdr->GetInt32(L"ID")) <= 10 )
-		{
-			CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"Parcel",cls->GetName())==0);
-		    gp = (FdoPtr<FdoPropertyDefinitionCollection>(cls->GetProperties()))->GetItem(L"Data");
-		}
-		else if ( (id=rdr->GetInt32(L"ID")) <= 20  )
-		{
-			CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
-			gp = (FdoPtr<FdoReadOnlyPropertyDefinitionCollection>(cls->GetBaseProperties()))->GetItem(L"Data");
-		}
-		//printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
-	    if( gp != NULL )
-		{
-			FdoGeometricPropertyDefinition *geom = (FdoGeometricPropertyDefinition*)gp.p;
-			CPPUNIT_ASSERT_MESSAGE("Expected a not null geometry property Spatial context", geom->GetSpatialContextAssociation() != NULL );
-		}
+        if( (id=rdr->GetInt32(L"ID")) <= 10 )
+        {
+            CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"Parcel",cls->GetName())==0);
+            gp = (FdoPtr<FdoPropertyDefinitionCollection>(cls->GetProperties()))->GetItem(L"Data");
+        }
+        else if ( (id=rdr->GetInt32(L"ID")) <= 20  )
+        {
+            CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
+            gp = (FdoPtr<FdoReadOnlyPropertyDefinitionCollection>(cls->GetBaseProperties()))->GetItem(L"Data");
+        }
+        //printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
+        if( gp != NULL )
+        {
+            FdoGeometricPropertyDefinition *geom = (FdoGeometricPropertyDefinition*)gp.p;
+            CPPUNIT_ASSERT_MESSAGE("Expected a not null geometry property Spatial context", geom->GetSpatialContextAssociation() != NULL );
+        }
         count2++;
     }
 
@@ -2158,24 +2159,24 @@ void MasterTest::numberFilter()
     rdr->Close();
     conn->Close();
 
-	CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==300 );
+    CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==300 );
 }
 
 void MasterTest::inFilter()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 200 );
-	UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
-	UnitTestUtil::CreateData( false , conn, 400 );
+    UnitTestUtil::CreateData( true , conn, 200 );
+    UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
+    UnitTestUtil::CreateData( false , conn, 400 );
    
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
     select->SetFeatureClassName(L"ParcelChild");
-	FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
+    FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
     select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L"Numb in (120,150,170,191)")));
     
     FdoPtr<FdoIFeatureReader> rdr = select->Execute();
@@ -2186,33 +2187,33 @@ void MasterTest::inFilter()
 
     while (rdr->ReadNext())
     {
-		CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
-		
+        CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
+        
         const wchar_t* something = rdr->GetString(L"Key");
-		FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
-		CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
-		//printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
-		printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
+        FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
+        CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
+        //printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
+        printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
         count2++;
-		CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
-		
-	}
+        CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
+        
+    }
 
     rdr->Close();
     conn->Close();
 
-	CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==4 );
+    CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==4 );
 }
 
 void MasterTest::inFilterOptimize()
 {
-	FdoPtr<FdoIConnection> connection;
+    FdoPtr<FdoIConnection> connection;
 
     try {
-		// delete, re-create and open the datastore
-		printf( "Initializing Connection ... \n" );
-		connection = UnitTestUtil::OpenConnection( IN_FILTER_OPTIMIZE_TEST_FILE, true );
-	
+        // delete, re-create and open the datastore
+        printf( "Initializing Connection ... \n" );
+        connection = UnitTestUtil::OpenConnection( IN_FILTER_OPTIMIZE_TEST_FILE, true );
+    
         inFilterOptimize_CreateData( connection );
 
         FdoString* expected1[] = { L"4", NULL };
@@ -2389,36 +2390,36 @@ void MasterTest::inFilterOptimize()
 
     }
     catch ( CppUnit::Exception e ) 
-	{
-		throw e;
-	}
-	catch ( FdoException* e ) 
-	{
-		TestCommonFail( e );
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
+    {
+        throw e;
+    }
+    catch ( FdoException* e ) 
+    {
+        TestCommonFail( e );
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+        
+    printf( "Done\n" );
 }
 
 void MasterTest::likeFilter()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 200 );
-	UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
-	UnitTestUtil::CreateData( false , conn, 400 );
+    UnitTestUtil::CreateData( true , conn, 200 );
+    UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
+    UnitTestUtil::CreateData( false , conn, 400 );
    
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
     select->SetFeatureClassName(L"ParcelChild");
-	FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
+    FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
     select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L"Key like 'AB007%'")));
     
     FdoPtr<FdoIFeatureReader> rdr = select->Execute();
@@ -2429,40 +2430,40 @@ void MasterTest::likeFilter()
 
     while (rdr->ReadNext())
     {
-		CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
-		
+        CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
+        
         const wchar_t* something = rdr->GetString(L"Key");
-		FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
-		CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
-		//printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
-		printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
+        FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
+        CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
+        //printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
+        printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
         count2++;
-		CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
-		
-	}
+        CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
+        
+    }
 
     rdr->Close();
     conn->Close();
 
-	CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==10 );
+    CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==10 );
 }
 
 void MasterTest::orFilter()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 200 );
-	UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
-	UnitTestUtil::CreateData( false , conn, 400 );
+    UnitTestUtil::CreateData( true , conn, 200 );
+    UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
+    UnitTestUtil::CreateData( false , conn, 400 );
    
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
 
     select->SetFeatureClassName(L"ParcelChild");
-	FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
-	props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
-	select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L" 1=0 or (Numb = 120 and Key like 'AB007%') or (Numb = 150 and Key like 'AB0%') or Numb = 170 or Numb = 191")));
+    FdoPtr<FdoIdentifierCollection> props = select->GetPropertyNames();
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"DblNumb1")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Key")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"ID")) );
+    props->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Numb")) );
+    select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L" 1=0 or (Numb = 120 and Key like 'AB007%') or (Numb = 150 and Key like 'AB0%') or Numb = 170 or Numb = 191")));
     
     FdoPtr<FdoIFeatureReader> rdr = select->Execute();
 
@@ -2472,61 +2473,61 @@ void MasterTest::orFilter()
 
     while (rdr->ReadNext())
     {
-		CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
-		
+        CPPUNIT_ASSERT_MESSAGE("Property should be NULL", rdr->IsNull(L"DblNumb1") );
+        
         const wchar_t* something = rdr->GetString(L"Key");
-		FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
-		CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
-		//printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
-		printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
+        FdoPtr<FdoClassDefinition>cls = rdr->GetClassDefinition();
+        CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"ParcelChild",cls->GetName())==0);
+        //printf("Class name = %ls Numb=%d\n", cls->GetName(), rdr->GetInt32(L"Numb") );
+        printf("key(%ls) ID(%d) number(%d) \n",something, rdr->GetInt32(L"ID"), rdr->GetInt32(L"Numb"));
         count2++;
-		CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
-		
-	}
+        CPPUNIT_ASSERT_MESSAGE( "The property should be NULL", rdr->IsNull(L"DblNumb2") );
+        
+    }
 
     rdr->Close();
     conn->Close();
 
-	CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==4 );
+    CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count2==4 );
 }
 
 void MasterTest::dateFilter()
 {
     FdoPtr<FdoIConnection> conn = CreateConnection();
-	UnitTestUtil::CreateData( true , conn, 200 );
-	//conn->Close();
-	UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
+    UnitTestUtil::CreateData( true , conn, 200 );
+    //conn->Close();
+    UnitTestUtil::CreateData( false , conn, 200, L"ParcelChild" );
     //conn->Close();
    
     FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
     try
-	{
-		select->SetFeatureClassName(L"ParcelChild");  
-		select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L"datetime = TIMESTAMP '2006-04-21 19:40:10.0001'")));
-	/*
-	    // The object version of the same filter
-		FdoPtr<FdoComparisonCondition>pCompare = FdoComparisonCondition::Create(
-							FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"datetime")), 
-							FdoComparisonOperations_EqualTo, 
-							FdoPtr<FdoDateTimeValue>( FdoDateTimeValue::Create(FdoDateTime(2006,4,21,19,40,10.0001) ) ) ); 
-		select->SetFilter(pCompare);
-	*/
-	    
-		int   gold_data[] = {100,160,220,280};
-		int count = 0;
-		FdoPtr<FdoIFeatureReader> rdr = select->Execute();
-		while (rdr->ReadNext())
-		{
-			if( count < 4 )
-				CPPUNIT_ASSERT_MESSAGE("Wrong return value", gold_data[count++]==rdr->GetInt32(L"Numb") );
-		}
-		CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count==4 );
-	}
-	catch(FdoException *exp )
-	{
-		printf("Exception: %ls \n", exp->GetExceptionMessage() );
-		throw;
-	}
+    {
+        select->SetFeatureClassName(L"ParcelChild");  
+        select->SetFilter(FdoPtr<FdoFilter>(FdoFilter::Parse(L"datetime = TIMESTAMP '2006-04-21 19:40:10.0001'")));
+    /*
+        // The object version of the same filter
+        FdoPtr<FdoComparisonCondition>pCompare = FdoComparisonCondition::Create(
+                            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"datetime")), 
+                            FdoComparisonOperations_EqualTo, 
+                            FdoPtr<FdoDateTimeValue>( FdoDateTimeValue::Create(FdoDateTime(2006,4,21,19,40,10.0001) ) ) ); 
+        select->SetFilter(pCompare);
+    */
+        
+        int   gold_data[] = {100,160,220,280};
+        int count = 0;
+        FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        while (rdr->ReadNext())
+        {
+            if( count < 4 )
+                CPPUNIT_ASSERT_MESSAGE("Wrong return value", gold_data[count++]==rdr->GetInt32(L"Numb") );
+        }
+        CPPUNIT_ASSERT_MESSAGE("Wrong number of returned objects", count==4 );
+    }
+    catch(FdoException *exp )
+    {
+        printf("Exception: %ls \n", exp->GetExceptionMessage() );
+        throw;
+    }
     conn->Close();
 }
 
@@ -2535,67 +2536,67 @@ void MasterTest::testSpecialClassNames()
 #ifdef _WIN32
     DeleteFileW( DEST_PATH2 );
 #else
-	size_t len = wcstombs(NULL, DEST_PATH2, 0);
+    size_t len = wcstombs(NULL, DEST_PATH2, 0);
     char* mbsPath = new char[len+1];
     wcstombs(mbsPath, DEST_PATH2, len+1);
-	unlink( mbsPath );
-	delete mbsPath;
+    unlink( mbsPath );
+    delete mbsPath;
 #endif
-	try
-	{
-		FdoPtr<FdoIConnection> conn = CreateConnection();
-		FdoPtr<FdoICreateDataStore>	pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
-		FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
+    try
+    {
+        FdoPtr<FdoIConnection> conn = CreateConnection();
+        FdoPtr<FdoICreateDataStore>    pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
+        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
 
-		int	count;
-		FdoString **names = dictionary->GetPropertyNames(count);
-		dictionary->SetProperty( names[0], DEST_PATH2 );
-		pCreateCmd->Execute();	
+        int    count;
+        FdoString **names = dictionary->GetPropertyNames(count);
+        dictionary->SetProperty( names[0], DEST_PATH2 );
+        pCreateCmd->Execute();    
 
 
-		openConnection(conn, DEST_PATH2); 
-		FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
-		
-		FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"SDFTestSchema",L"Schema to test special class names");
+        openConnection(conn, DEST_PATH2); 
+        FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
+        
+        FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"SDFTestSchema",L"Schema to test special class names");
 
-		FdoPtr<FdoFeatureClass> clas = FdoFeatureClass::Create(L"special-class",L"");    
-		FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
-	        
-		FdoPtr<FdoPropertyDefinitionCollection> properties = clas->GetProperties();
+        FdoPtr<FdoFeatureClass> clas = FdoFeatureClass::Create(L"special-class",L"");    
+        FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
+            
+        FdoPtr<FdoPropertyDefinitionCollection> properties = clas->GetProperties();
 
-		FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
-		dpd->SetDataType(FdoDataType_String);
-		properties->Add(dpd);
+        FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
+        dpd->SetDataType(FdoDataType_String);
+        properties->Add(dpd);
 
-		dpd = FdoDataPropertyDefinition::Create(L"ID", L"The autogenerated sequence ID of the object");
-		dpd->SetDataType(FdoDataType_Int32);
-		dpd->SetIsAutoGenerated(true);
-		properties->Add(dpd);
-		FdoPtr<FdoDataPropertyDefinitionCollection>(clas->GetIdentityProperties())->Add(dpd);
+        dpd = FdoDataPropertyDefinition::Create(L"ID", L"The autogenerated sequence ID of the object");
+        dpd->SetDataType(FdoDataType_Int32);
+        dpd->SetIsAutoGenerated(true);
+        properties->Add(dpd);
+        FdoPtr<FdoDataPropertyDefinitionCollection>(clas->GetIdentityProperties())->Add(dpd);
 
-		clas = FdoFeatureClass::Create(L"special*class",L"");    
-		FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
-	        
-		properties = clas->GetProperties();
+        clas = FdoFeatureClass::Create(L"special*class",L"");    
+        FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
+            
+        properties = clas->GetProperties();
 
-		dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
-		dpd->SetDataType(FdoDataType_String);
-		properties->Add(dpd);
+        dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
+        dpd->SetDataType(FdoDataType_String);
+        properties->Add(dpd);
 
-		dpd = FdoDataPropertyDefinition::Create(L"ID", L"The autogenerated sequence ID of the object");
-		dpd->SetDataType(FdoDataType_Int32);
-		dpd->SetIsAutoGenerated(true);
-		properties->Add(dpd);
-		FdoPtr<FdoDataPropertyDefinitionCollection>(clas->GetIdentityProperties())->Add(dpd);
+        dpd = FdoDataPropertyDefinition::Create(L"ID", L"The autogenerated sequence ID of the object");
+        dpd->SetDataType(FdoDataType_Int32);
+        dpd->SetIsAutoGenerated(true);
+        properties->Add(dpd);
+        FdoPtr<FdoDataPropertyDefinitionCollection>(clas->GetIdentityProperties())->Add(dpd);
 
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
-	}
-	catch(FdoException* e)
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
+    }
+    catch(FdoException* e)
     {
         wprintf(L"%s\n", e->GetExceptionMessage());
         e->Release();
-		CPPUNIT_FAIL("Unexpected FdoException");
+        CPPUNIT_FAIL("Unexpected FdoException");
     }
 }
 
@@ -2641,7 +2642,7 @@ void MasterTest::selectAggregatesSpatialExtentsTest()
 
         FdoGeometryType geomType = geom->GetDerivedType();
         if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+            CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
         envelopeAllWithoutFilter = geom->GetEnvelope();
         if (envelopeAllWithoutFilter->GetIsEmpty())
@@ -2668,7 +2669,7 @@ void MasterTest::selectAggregatesSpatialExtentsTest()
 
         FdoGeometryType geomType = geom->GetDerivedType();
         if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+            CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
         envelopeAllWithFilter = geom->GetEnvelope();
         if (envelopeAllWithFilter->GetIsEmpty())
@@ -2724,7 +2725,7 @@ void MasterTest::selectAggregatesSpatialExtentsTest()
 
         FdoGeometryType geomType = geom->GetDerivedType();
         if (geomType != FdoGeometryType_Polygon)
-		    CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+            CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
         envelopeAllWithoutFilterMultipleIds = geom->GetEnvelope();
         if (envelopeAllWithoutFilterMultipleIds->GetIsEmpty())
@@ -2879,99 +2880,99 @@ void MasterTest::selectAggregatesSpatialExtentsTest()
 void MasterTest::inFilterOptimize_CreateData( FdoIConnection* conn )
 {
 
-	FdoFeatureSchemaP pSchema = FdoFeatureSchema::Create( L"InFilter", L"" );
+    FdoFeatureSchemaP pSchema = FdoFeatureSchema::Create( L"InFilter", L"" );
     FdoClassesP pClasses = pSchema->GetClasses();
 
     // Feature Class with integer id.
 
-	FdoFeatureClassP pClass = FdoFeatureClass::Create( L"IntKey", L"" );
-	pClass->SetIsAbstract(false);
+    FdoFeatureClassP pClass = FdoFeatureClass::Create( L"IntKey", L"" );
+    pClass->SetIsAbstract(false);
     pClasses->Add(pClass);
 
-	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(false);
+    FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(false);
     pProp->SetIsAutoGenerated(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty(pGeomProp);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    pClass->SetGeometryProperty(pGeomProp);
 
     // Feature Class with double precision id
 
-	pClass = FdoFeatureClass::Create( L"DoubleKey", L"" );
-	pClass->SetIsAbstract(false);
+    pClass = FdoFeatureClass::Create( L"DoubleKey", L"" );
+    pClass->SetIsAbstract(false);
     pClasses->Add(pClass);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
-	pProp->SetDataType( FdoDataType_Double );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
+    pProp->SetDataType( FdoDataType_Double );
+    pProp->SetNullable(false);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty(pGeomProp);
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    pClass->SetGeometryProperty(pGeomProp);
 
     // Feature Class with composite id.
 
-	pClass = FdoFeatureClass::Create( L"CompKey", L"" );
-	pClass->SetIsAbstract(false);
+    pClass = FdoFeatureClass::Create( L"CompKey", L"" );
+    pClass->SetIsAbstract(false);
     pClasses->Add(pClass);
 
-	pProp = FdoDataPropertyDefinition::Create( L"Id1", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    pProp = FdoDataPropertyDefinition::Create( L"Id1", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(false);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Id2", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Id2", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    pProp->SetNullable(false);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop2", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty(pGeomProp);
+    pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    pClass->SetGeometryProperty(pGeomProp);
 
-	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) conn->CreateCommand(FdoCommandType_ApplySchema);
+    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) conn->CreateCommand(FdoCommandType_ApplySchema);
     pCmd->SetFeatureSchema(pSchema);
     pCmd->Execute();
 
@@ -3118,7 +3119,7 @@ FdoStringP MasterTest::inFilterOptimize_GetIdValue(
 
 void MasterTest::dataTypeFilter_CreateData( FdoIConnection* conn )
 {
-	FdoFeatureSchemaP pSchema = FdoFeatureSchema::Create( L"DataTypeFilter", L"" );
+    FdoFeatureSchemaP pSchema = FdoFeatureSchema::Create( L"DataTypeFilter", L"" );
     FdoClassesP pClasses = pSchema->GetClasses();
 
     dataTypeFilter_CreateClass( pClasses, L"ClassByte", FdoDataType_Byte );
@@ -3131,34 +3132,34 @@ void MasterTest::dataTypeFilter_CreateData( FdoIConnection* conn )
 
     // Feature Class with composite id.
 
-	FdoFeatureClassP pClass = FdoFeatureClass::Create( L"ClassComp", L"" );
-	pClass->SetIsAbstract(false);
+    FdoFeatureClassP pClass = FdoFeatureClass::Create( L"ClassComp", L"" );
+    pClass->SetIsAbstract(false);
     pClasses->Add(pClass);
 
-	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id1", L"" );
-	pProp->SetDataType( FdoDataType_Int32 );
-	pProp->SetNullable(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id1", L"" );
+    pProp->SetDataType( FdoDataType_Int32 );
+    pProp->SetNullable(false);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Id2", L"" );
-	pProp->SetDataType( FdoDataType_Int64 );
+    pProp = FdoDataPropertyDefinition::Create( L"Id2", L"" );
+    pProp->SetDataType( FdoDataType_Int64 );
     pProp->SetLength(20);
-	pProp->SetNullable(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    pProp->SetNullable(false);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty(pGeomProp);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    pClass->SetGeometryProperty(pGeomProp);
 
-	FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) conn->CreateCommand(FdoCommandType_ApplySchema);
+    FdoPtr<FdoIApplySchema>  pCmd = (FdoIApplySchema*) conn->CreateCommand(FdoCommandType_ApplySchema);
     pCmd->SetFeatureSchema(pSchema);
     pCmd->Execute();
 
@@ -3236,24 +3237,24 @@ void MasterTest::dataTypeFilter_CreateData( FdoIConnection* conn )
 
 void MasterTest::dataTypeFilter_CreateClass( FdoClassesP pClasses, FdoString* className, FdoDataType idType )
 {
-	FdoFeatureClassP pClass = FdoFeatureClass::Create( className, L"" );
-	pClass->SetIsAbstract(false);
+    FdoFeatureClassP pClass = FdoFeatureClass::Create( className, L"" );
+    pClass->SetIsAbstract(false);
     pClasses->Add(pClass);
 
-	FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
-	pProp->SetDataType( idType );
-	pProp->SetNullable(false);
+    FdoDataPropertyP pProp = FdoDataPropertyDefinition::Create( L"Id", L"" );
+    pProp->SetDataType( idType );
+    pProp->SetNullable(false);
     pProp->SetIsAutoGenerated(false);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
-	FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    FdoDataPropertiesP(pClass->GetIdentityProperties())->Add( pProp );
 
-	pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
-	pProp->SetDataType( FdoDataType_String );
+    pProp = FdoDataPropertyDefinition::Create( L"Prop1", L"" );
+    pProp->SetDataType( FdoDataType_String );
     pProp->SetLength(20);
-	pProp->SetNullable(true);
-	FdoPropertiesP(pClass->GetProperties())->Add( pProp );
+    pProp->SetNullable(true);
+    FdoPropertiesP(pClass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
-	FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
-	pClass->SetGeometryProperty(pGeomProp);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"" );
+    FdoPropertiesP(pClass->GetProperties())->Add( pGeomProp );
+    pClass->SetGeometryProperty(pGeomProp);
 }

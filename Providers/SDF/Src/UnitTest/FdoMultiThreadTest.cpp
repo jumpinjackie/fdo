@@ -21,11 +21,12 @@
 
 #ifndef _WIN32
 #include <dlfcn.h>
+#include <time.h>
+#include <errno.h>
 #endif
 
-
-
 #define   NUMBER_OF_THREADS     10
+
 static    bool   use_threads = true;
 static    bool   supports_multiple_writers = false;
 static    int    select_loop_count = 10;
@@ -34,12 +35,28 @@ static    int    insert_loop_count = 20;
 CPPUNIT_TEST_SUITE_REGISTRATION( FdoMultiThreadTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( FdoMultiThreadTest, "FdoMultiThreadTest");
 
-void wait_a_bit(int ms)
+void wait_a_bit(int msec)
 {
 #ifdef _WIN32
-        Sleep(ms);
+    Sleep(msec);
 #else
-        sleep((ms+999)/1000);
+    struct timespec req, rem;
+    int err;
+    req.tv_sec = msec / 1000;
+    req.tv_nsec = (msec % 1000) * 1000000;
+    while ((req.tv_sec != 0) || (req.tv_nsec != 0)) {
+        if (nanosleep(&req, &rem) == 0)
+            break;
+        err = errno;
+        // Interrupted; continue
+        if (err == EINTR) {
+            req.tv_sec = rem.tv_sec;
+            req.tv_nsec = rem.tv_nsec;
+        }
+        // Unhandleable error (EFAULT (bad pointer), EINVAL (bad timeval in tv_nsec), or ENOSYS (function not supported))
+        break;
+    }
+    // sleep((ms+999)/1000); // http://stackoverflow.com/questions/10976176/error-sleep-was-not-declared-in-this-scope
 #endif
 }
 
@@ -50,62 +67,62 @@ void* StartQuery( void *lpParameter)
 #endif
 {
     ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
-	char buffer[1024];
-	int  *counts = (int*)alloca( select_loop_count*sizeof(int) );
+    char buffer[1024];
+    int  *counts = (int*)alloca( select_loop_count*sizeof(int) );
     try
-	{
-		wait_a_bit(200); // Give the insert thread a head start
-		printf("Start query Thread(%d)\n",cnInfo->connectionId );
+    {
+        wait_a_bit(200); // Give the insert thread a head start
+        printf("Start query Thread(%d)\n",cnInfo->connectionId );
 
-		FdoPtr<FdoISelect> select = (FdoISelect*)cnInfo->mConn->CreateCommand(FdoCommandType_Select); 
+        FdoPtr<FdoISelect> select = (FdoISelect*)cnInfo->mConn->CreateCommand(FdoCommandType_Select); 
 
-		select->SetFeatureClassName(L"Parcel");
+        select->SetFeatureClassName(L"Parcel");
 
-		//FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Key LIKE 'DI%'");
+        //FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Key LIKE 'DI%'");
 
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							7.2088, 43.7556, 
-							7.2088, 43.7574, 
-							7.2068, 43.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
-		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            7.2088, 43.7556, 
+                            7.2088, 43.7574, 
+                            7.2068, 43.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Data", FdoSpatialOperations_EnvelopeIntersects, gv);
 
-		select->SetFilter(filter);
-	    int count2 = 0;
-		for( int i=0; i<select_loop_count; i++ )
-		{
-			FdoPtr<FdoIFeatureReader> rdr = select->Execute();
-			while (rdr->ReadNext())
-			{
-				const wchar_t* something = rdr->GetString(L"Name");
-				count2++;
-			}
-			counts[i] = count2;
-			rdr->Close();
-			wait_a_bit(100);
-		}
-		char tmp[12];
-		buffer[0]=0;
-		for( int i=0; i<select_loop_count; i++ )
-		{
-			strcat( buffer, FdoCommonOSUtil::itoa(counts[i],tmp) );
-			strcat( buffer, " ");
-		}
+        select->SetFilter(filter);
+        int count2 = 0;
+        for( int i=0; i<select_loop_count; i++ )
+        {
+            FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+            while (rdr->ReadNext())
+            {
+                const wchar_t* something = rdr->GetString(L"Name");
+                count2++;
+            }
+            counts[i] = count2;
+            rdr->Close();
+            wait_a_bit(100);
+        }
+        char tmp[12];
+        buffer[0]=0;
+        for( int i=0; i<select_loop_count; i++ )
+        {
+            strcat( buffer, FdoCommonOSUtil::itoa(counts[i],tmp) );
+            strcat( buffer, " ");
+        }
 
-		printf("Thread(%d) is done Counts: %s \n",cnInfo->connectionId, buffer );
-		
-	}
-	catch (FdoException *ex )
-	{
-		sprintf(buffer,"Query: FDO error: %ls\n", ex->GetExceptionMessage());
-		ex->Release();
-		CPPUNIT_FAIL(buffer);
-	}
+        printf("Thread(%d) is done Counts: %s \n",cnInfo->connectionId, buffer );
+        
+    }
+    catch (FdoException *ex )
+    {
+        sprintf(buffer,"Query: FDO error: %ls\n", ex->GetExceptionMessage());
+        ex->Release();
+        CPPUNIT_FAIL(buffer);
+    }
 
     return 0;
 }
@@ -116,21 +133,21 @@ DWORD WINAPI StartInsert(LPVOID lpParameter)
 void* StartInsert( void *lpParameter) 
 #endif
 {
-	try
-	{
-		ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
-		printf("Start insert Thread(%d)\n",cnInfo->connectionId );
-		for(int i=0; i<insert_loop_count; i++ )
-			UnitTestUtil::CreateData(false, cnInfo->mConn ,100, NULL, cnInfo->connectionId);
-		printf("Thread(%d) done insert\n",cnInfo->connectionId );
-	}
-	catch (FdoException *ex )
-	{
-		char buffer[1024];
-		sprintf(buffer,"Insert: FDO error: %ls\n", ex->GetExceptionMessage());
-		ex->Release();
-		CPPUNIT_FAIL(buffer);
-	}
+    try
+    {
+        ConnectInfo  *cnInfo = (ConnectInfo*)lpParameter;
+        printf("Start insert Thread(%d)\n",cnInfo->connectionId );
+        for(int i=0; i<insert_loop_count; i++ )
+            UnitTestUtil::CreateData(false, cnInfo->mConn ,100, NULL, cnInfo->connectionId);
+        printf("Thread(%d) done insert\n",cnInfo->connectionId );
+    }
+    catch (FdoException *ex )
+    {
+        char buffer[1024];
+        sprintf(buffer,"Insert: FDO error: %ls\n", ex->GetExceptionMessage());
+        ex->Release();
+        CPPUNIT_FAIL(buffer);
+    }
     return 0;
 }
 
@@ -145,7 +162,7 @@ FdoMultiThreadTest::~FdoMultiThreadTest(void)
 
 void FdoMultiThreadTest::setUp ()
 {
-	UnitTestUtil::CreateData( true, NULL ,10000);
+    UnitTestUtil::CreateData( true, NULL ,10000);
 }
 
 void FdoMultiThreadTest::OpenConnection(FdoIConnection* conn, const wchar_t* path )
@@ -177,40 +194,40 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
 #else
     pthread_t phThreads[NUMBER_OF_THREADS];
 #endif
-	
-	FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
+    
+    FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
 
     ConnectInfo   info[NUMBER_OF_THREADS];
     int i;
     try
     {
         for (int i = 0; i < NUMBER_OF_THREADS; i++)
-	    {
+        {
             info[i].connectionId = i;
             info[i].mConn = manager->CreateConnection (L"OSGeo.SDF");
-			OpenConnection(info[i].mConn,DESTINATION_FILE);
-	    } 
+            OpenConnection(info[i].mConn,DESTINATION_FILE);
+        } 
     }
     catch (FdoException *ex )
-	{
-		printf("FDO error: %ls\n", ex->GetExceptionMessage());
+    {
+        printf("FDO error: %ls\n", ex->GetExceptionMessage());
         return;
-	}
+    }
 
     bool  toggle = true;
-	
-	if( ! supports_multiple_writers && use_threads )
-	{
+    
+    if( ! supports_multiple_writers && use_threads )
+    {
 #ifdef _WIN32
-		phThreads[0] = CreateThread(NULL, 0, funInfo->Function2, &info[0], 0, &dwThreadId);
+        phThreads[0] = CreateThread(NULL, 0, funInfo->Function2, &info[0], 0, &dwThreadId);
 #else
-		pthread_create( &phThreads[0], NULL, funInfo->Function2, (void*) &info[0]);
+        pthread_create( &phThreads[0], NULL, funInfo->Function2, (void*) &info[0]);
 #endif
-	}
+    }
 
-	i = ( supports_multiple_writers )?0:1;
+    i = ( supports_multiple_writers )?0:1;
     for ( ; i < NUMBER_OF_THREADS; i++)
-	{
+    {
         if( use_threads )
 #ifdef _WIN32
             phThreads[i] = CreateThread(NULL, 0, (toggle)?funInfo->Function1:funInfo->Function2, &info[i], 0, &dwThreadId);
@@ -220,15 +237,15 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
         else
             StartQuery( &info[i] );
 
-		if( supports_multiple_writers )
-			toggle = !toggle;
-	} 
+        if( supports_multiple_writers )
+            toggle = !toggle;
+    } 
 
-	
+    
 
 #ifdef _WIN32
     if( use_threads )
-	    WaitForMultipleObjects(NUMBER_OF_THREADS, phThreads, TRUE, INFINITE);
+        WaitForMultipleObjects(NUMBER_OF_THREADS, phThreads, TRUE, INFINITE);
 #else
     for ( i = 0; i < NUMBER_OF_THREADS && use_threads; i++)
         pthread_join( phThreads[i], NULL); 
@@ -238,8 +255,8 @@ void FdoMultiThreadTest::StartTest ( FunctionInfo *funInfo )
         info[i].mConn->Release();
 
 #ifdef _WIN32
-	for (i = 0; i < NUMBER_OF_THREADS && use_threads; i++)
-		CloseHandle(phThreads[i]);
+    for (i = 0; i < NUMBER_OF_THREADS && use_threads; i++)
+        CloseHandle(phThreads[i]);
 #endif
 }
 
@@ -270,6 +287,6 @@ void FdoMultiThreadTest::InitInsertFunction( LPTHREAD_START_ROUTINE & Funct )
 void FdoMultiThreadTest::InitInsertFunction( void* (*Funct)(void *) )
 #endif
 {
-	Funct = StartInsert;
+    Funct = StartInsert;
 }
 
