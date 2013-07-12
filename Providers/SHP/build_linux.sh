@@ -224,11 +224,11 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/SHP"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/SHP"
+   sudo mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/SHP"; then
-      cp --force --recursive "Docs/HTML/SHP" "$PREFIXVAL/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/SHP_managed" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/SHP" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/SHP_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 

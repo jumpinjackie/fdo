@@ -123,7 +123,7 @@ if test -e "m4"; then
 else
    mkdir m4
 fi
- 
+
 aclocal
 libtoolize --force
 automake --add-missing --copy

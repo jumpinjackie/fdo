@@ -260,34 +260,34 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL"
    if test -e "Docs/HTML/MySQL"; then
-      cp --force --recursive "Docs/HTML/MySQL" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/MySQL" "$PREFIXVAL/docs/HTML/Providers"
    fi
 
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL_managed"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/MySQL_managed"
    if test -e "Docs/HTML/MySQL_managed"; then
-      cp --force --recursive "Docs/HTML/MySQL_managed" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/MySQL_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC"
    if test -e "Docs/HTML/ODBC"; then
-      cp --force --recursive "Docs/HTML/ODBC" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/ODBC" "$PREFIXVAL/docs/HTML/Providers"
    fi
 
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC_managed"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/ODBC_managed"
    if test -e "Docs/HTML/ODBC"; then
-      cp --force --recursive "Docs/HTML/ODBC_managed" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/ODBC_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial"
    if test -e "Docs/HTML/SQLServerSpatial"; then
-      cp --force --recursive "Docs/HTML/SQLServerSpatial" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/SQLServerSpatial" "$PREFIXVAL/docs/HTML/Providers"
    fi
 
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial_managed"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLServerSpatial_managed"
    if test -e "Docs/HTML/SQLServerSpatial_managed"; then
-      cp --force --recursive "Docs/HTML/SQLServerSpatial_managed" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/SQLServerSpatial_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 
