@@ -17,12 +17,6 @@
 ## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ##
 
-##########################################
-## build third party libraries for fdo: ##
-## apache, linux/cppunit                ##
-##########################################
-
-
 TYPEACTION=buildinstall
 TYPEARCHITECTURE=32
 
@@ -79,58 +73,61 @@ do
 done
 ### end of study parameters ###
 
-
 if test "$SHOWHELP" == yes; then
 
    echo "*******************************************************************"
-   echo "Thirdparty_fdo.sh   [--h]"
-   echo "                    [--a Action]"
-   echo "                    [--b BuildArchicture]"
+   echo "build.sh   [--h]"
+   echo "           [--a Action]"
+   echo "           [--b BuildArchicture]"
    echo " "
    echo "Help:                  --h[elp]"
    echo "Action:                --a[ction] buildinstall(default), build, install, uninstall, clean"
-   echo "ConfigArchitecture:    --b[uild] 32(default), 64"
+   echo "ConfigArchitecture:    --b[build] 32(default), 64"
    echo "*******************************************************************"
 
    exit 0
 fi
 
-CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
+if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CFLAGS: "$CFLAGS""
+export CFLAGS
+fi
 
-## mkcatdefs
-pushd . >& /dev/null
-cd linux/mkcatdefs
-echo Building mkcatdefs
-chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
+if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
+echo "Exporting LDFLAGS: "$LDFLAGS""
+export LDFLAGS
+fi
+
+if test "$TYPEARCHITECTURE" == "32" ; then
+if test "$HOSTTYPE" == "i686" ; then
+if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
+CPPFLAGS="$CPPFLAGS -march=i686"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+fi
+fi
+
+pushd src >& /dev/null
+
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+   ./build 
+   mv mkcatdefs .. 
+fi
+
+if test "$TYPEACTION" == clean ; then
+   rm -f mkcatdefs
+   rm -f ../mkcatdefs
+fi
+
 popd >& /dev/null
-
-
-## Apache Xalan/Xerces
-pushd . >& /dev/null
-cd apache
-echo Building apche
-chmod a+x ./build2.sh
-sudo sh ./build2.sh $CMDEX
-popd >& /dev/null
-
-
-## CPPUnit
-pushd . >& /dev/null
-cd linux/cppunit
-echo Building linux/cppunit
-chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
-popd >& /dev/null
-
-
-## GDAL
-pushd . >& /dev/null
-cd gdal
-echo Building gdal
-chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
-popd >& /dev/null
-
 
 

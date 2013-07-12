@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Copyright (C) 2004-2010  Autodesk, Inc.
+## Copyright (C) 2013  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser

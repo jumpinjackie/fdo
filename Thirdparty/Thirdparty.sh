@@ -96,6 +96,16 @@ fi
 
 CMDEX="-b $TYPEARCHITECTURE -a $TYPEACTION"
 
+
+## mkcatdefs
+pushd . >& /dev/null
+cd linux/mkcatdefs
+echo Building mkcatdefs
+chmod a+x ./build.sh
+sudo sh ./build.sh $CMDEX
+popd >& /dev/null
+
+
 ## Apache Xalan/Xerces
 pushd . >& /dev/null
 cd apache
