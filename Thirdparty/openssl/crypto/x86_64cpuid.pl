@@ -14,7 +14,7 @@ else		{ $arg1="%rdi"; $arg2="%rsi"; }
 print<<___;
 .extern		OPENSSL_cpuid_setup
 .section	.init
-	call	OPENSSL_cpuid_setup
+	call	OPENSSL_cpuid_setup\@PLT
 
 .text
 
