@@ -221,6 +221,13 @@ fi
 
 if test "$TYPECONFIGURE" == configure ; then
   echo "Configuring FDO Makefiles"
+
+  if test -e "m4"; then
+     echo "m4 directory exists"
+  else
+     mkdir m4
+  fi
+  
   aclocal
   libtoolize --force
   automake --add-missing --copy

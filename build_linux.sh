@@ -315,6 +315,13 @@ fi
 if test "$TYPECONFIGURE" == configure ; then
    if test "$FDOCOREENABLE" == yes || test "$THRPENABLE" == yes || test "$FDOENABLE" == yes || test "$UTILENABLE" == yes; then
       echo "configuring fdocore"
+	  
+      if test -e "m4"; then
+         echo "m4 directory exists"
+      else
+         mkdir m4
+      fi
+   
       aclocal
       libtoolize --force
       automake --add-missing --copy
