@@ -22,6 +22,7 @@ dnl Configure.in for OSGeo FDO WFS Provider
 # Following are the makefile directories 
 #----------------------------------------------------------------------
 AC_INIT(FDOWFS,3.8.1,http://fdo.osgeo.org)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(configure.in)
 AM_INIT_AUTOMAKE
 
