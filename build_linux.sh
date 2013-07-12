@@ -336,11 +336,11 @@ CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE --p $PRE
 #build all of fdocore
 if test "$FDOCOREENABLE" == yes; then
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      sudo make
+      make
    fi
 
    if test "$TYPEACTION" == clean ; then
-      sudo make clean
+      make clean
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
@@ -357,11 +357,11 @@ if test "$FDOENABLE" == yes; then
    pushd Fdo >& /dev/null
    
    if test "$TYPEACTION" == clean ; then
-      sudo make clean
+      make clean
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      sudo make
+      make
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
@@ -408,56 +408,56 @@ if test "$UTILENABLE" == yes; then
 
    if test "$TYPEACTION" == clean ; then
       pushd Utilities/Common >& /dev/null
-      sudo make clean
+      make clean
       popd >& /dev/null
 
       pushd Utilities/TestCommon >& /dev/null
-      sudo make clean
+      make clean
       popd >& /dev/null
 
       pushd Utilities/ExpressionEngine >& /dev/null
-      sudo make clean
+      make clean
       popd >& /dev/null
 
       pushd Utilities/SchemaMgr >& /dev/null
-      sudo make clean
+      make clean
       popd >& /dev/null
 
       pushd Utilities/SQLiteInterface >& /dev/null
-      sudo make clean
+      make clean
       popd >& /dev/null
 
       if test "$TYPEARCHITECTURE" == "32" ; then
          pushd Utilities/OWS >& /dev/null
-         sudo make clean
+         make clean
          popd >& /dev/null
       fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       pushd Utilities/Common >& /dev/null
-      sudo make
+      make
       popd >& /dev/null
 
       pushd Utilities/TestCommon >& /dev/null
-      sudo make
+      make
       popd >& /dev/null
 
       pushd Utilities/ExpressionEngine >& /dev/null
-      sudo make
+      make
       popd >& /dev/null
 
       pushd Utilities/SchemaMgr >& /dev/null
-      sudo make
+      make
       popd >& /dev/null
 
       pushd Utilities/SQLiteInterface >& /dev/null
-      sudo make
+      make
       popd >& /dev/null
 
       if test "$TYPEARCHITECTURE" == "32" ; then
          pushd Utilities/OWS >& /dev/null
-         sudo make
+         make
          popd >& /dev/null
       fi
    fi
@@ -524,7 +524,7 @@ if test "$SHPENABLE" == yes; then
    if test -e "Providers/SHP/build_linux.sh"; then
        pushd Providers/SHP >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -534,7 +534,7 @@ if test "$SDFENABLE" == yes; then
    if test -e "Providers/SDF/build_linux.sh"; then
        pushd Providers/SDF >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -545,7 +545,7 @@ if test "$TYPEARCHITECTURE" == "32" ; then
    if test -e "Providers/WFS/build_linux.sh"; then
        pushd Providers/WFS >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -557,7 +557,7 @@ if test "$TYPEARCHITECTURE" == "32" ; then
    if test -e "Providers/WMS/build_linux.sh"; then
        pushd Providers/WMS >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -569,7 +569,7 @@ if test "$ARCENABLE" == yes; then
    if test -e "Providers/ArcSDE/build_linux.sh"; then
        pushd Providers/ArcSDE >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -581,7 +581,7 @@ if test "$RDBMSENABLE" == yes; then
    if test -e "Providers/GenericRdbms/build_linux.sh"; then
        pushd Providers/GenericRdbms >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -592,7 +592,7 @@ if test "$GDALENABLE" == yes; then
    if test -e "Providers/GDAL/build_linux.sh"; then
        pushd Providers/GDAL >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -602,7 +602,7 @@ if test "$OGRENABLE" == yes; then
    if test -e "Providers/OGR/build_linux.sh"; then
        pushd Providers/OGR >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -613,7 +613,7 @@ if test "$KINGORACLEENABLE" == yes; then
    if test -e "Providers/KingOracle/build_linux.sh"; then
        pushd Providers/KingOracle >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi
@@ -624,7 +624,7 @@ if test "$SQLITEENABLE" == yes; then
    if test -e "Providers/SQLite/build_linux.sh"; then
        pushd Providers/SQLite >& /dev/null
        chmod a+x ./build_linux.sh
-       sudo sh ./build_linux.sh $CMDEX
+       sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
 fi

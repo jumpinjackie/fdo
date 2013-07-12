@@ -124,7 +124,7 @@ cd tools/jam/src
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
 
 chmod a+x ./build.sh
-sudo sh ./build.sh
+sh ./build.sh
 cd ../../../
 if test "$TYPEARCHITECTURE" == "32"; then
     ./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage

@@ -100,7 +100,7 @@ pushd . >& /dev/null
 cd boost
 echo Building boost
 chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+sh ./build.sh $CMDEX
 popd >& /dev/null
 
 
@@ -109,7 +109,7 @@ pushd . >& /dev/null
 cd libcurl
 echo Building libcurl
 chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+sh ./build.sh $CMDEX
 popd >& /dev/null
 
 
@@ -118,7 +118,7 @@ pushd . >& /dev/null
 cd openssl
 echo Building openssl
 chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+sh ./build.sh $CMDEX
 popd >& /dev/null
 
 

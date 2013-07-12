@@ -128,7 +128,7 @@ cd cppunit-1.9.0
 ./configure --enable-shared=false
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-   sudo make
+   make
 fi
 
 popd >& /dev/null

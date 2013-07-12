@@ -99,7 +99,7 @@ pushd . >& /dev/null
 cd gdal
 echo Building gdal
 chmod a+x ./build.sh
-sudo sh ./build.sh $CMDEX
+sh ./build.sh $CMDEX
 popd >& /dev/null
 
 
