@@ -221,10 +221,10 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/WFS"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/WFS"
+   sudo mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/WFS"; then
-      cp --force --recursive "Docs/HTML/WFS" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/WFS" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 

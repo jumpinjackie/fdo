@@ -217,10 +217,10 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLite"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/SQLite"
+   sudo mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/SQLite"; then
-      cp --force --recursive "Docs/HTML/SQLite" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/SQLite" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 

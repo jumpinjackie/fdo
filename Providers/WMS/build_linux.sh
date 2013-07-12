@@ -180,7 +180,7 @@ if test "$TYPECONFIGURE" == configure ; then
    else
       mkdir m4
    fi
-   
+  
    aclocal
    libtoolize --force
    automake --add-missing --copy
@@ -228,11 +228,11 @@ if test "$BUILDDOCS" == yes ; then
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-   rm -rf "$PREFIXVAL/docs/HTML/Providers/WMS"
-   mkdir -p "$PREFIXVAL/docs/HTML/Providers"
+   sudo rm -rf "$PREFIXVAL/docs/HTML/Providers/WMS"
+   sudo mkdir -p "$PREFIXVAL/docs/HTML/Providers"
    if test -e "Docs/HTML/WMS"; then
-      cp --force --recursive "Docs/HTML/WMS" "$PREFIXVAL/docs/HTML/Providers"
-      cp --force --recursive "Docs/HTML/WMS_managed" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/WMS" "$PREFIXVAL/docs/HTML/Providers"
+      sudo cp --force --recursive "Docs/HTML/WMS_managed" "$PREFIXVAL/docs/HTML/Providers"
    fi
 fi
 
