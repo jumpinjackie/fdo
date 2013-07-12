@@ -113,7 +113,7 @@ noinst_HEADERS = $(libArcSDEProvider92_la_SOURCES) \
    ../Provider/ArcSDEFilterToSql.h \
    ../Provider/ArcSDEFunctionLength2D.h \
    ../Provider/ArcSDEFunctionArea2D.h \
-   ../Provider/ArcSDEGetClassNamesCommand.h \   
+   ../Provider/ArcSDEGetClassNamesCommand.h \
    ../Provider/ArcSDEGetLockedObjectsCommand.h \
    ../Provider/ArcSDEGetLockInfoCommand.h \
    ../Provider/ArcSDEGetLockOwnersCommand.h \
