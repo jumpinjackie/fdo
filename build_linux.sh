@@ -414,115 +414,19 @@ fi
 if test "$UTILENABLE" == yes; then
 
    if test "$TYPEACTION" == clean ; then
-      pushd Utilities/Common >& /dev/null
       make clean
-      popd >& /dev/null
-
-      pushd Utilities/TestCommon >& /dev/null
-      make clean
-      popd >& /dev/null
-
-      pushd Utilities/ExpressionEngine >& /dev/null
-      make clean
-      popd >& /dev/null
-
-      pushd Utilities/SchemaMgr >& /dev/null
-      make clean
-      popd >& /dev/null
-
-      pushd Utilities/SQLiteInterface >& /dev/null
-      make clean
-      popd >& /dev/null
-
-      if test "$TYPEARCHITECTURE" == "32" ; then
-         pushd Utilities/OWS >& /dev/null
-         make clean
-         popd >& /dev/null
-      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
-      pushd Utilities/Common >& /dev/null
       make
-      popd >& /dev/null
-
-      pushd Utilities/TestCommon >& /dev/null
-      make
-      popd >& /dev/null
-
-      pushd Utilities/ExpressionEngine >& /dev/null
-      make
-      popd >& /dev/null
-
-      pushd Utilities/SchemaMgr >& /dev/null
-      make
-      popd >& /dev/null
-
-      pushd Utilities/SQLiteInterface >& /dev/null
-      make
-      popd >& /dev/null
-
-      if test "$TYPEARCHITECTURE" == "32" ; then
-         pushd Utilities/OWS >& /dev/null
-         make
-         popd >& /dev/null
-      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
-      pushd Utilities/Common >& /dev/null
       sudo make install
-      popd >& /dev/null
-
-      pushd Utilities/TestCommon >& /dev/null
-      sudo make install
-      popd >& /dev/null
-
-      pushd Utilities/ExpressionEngine >& /dev/null
-      sudo make install
-      popd >& /dev/null
-
-      pushd Utilities/SchemaMgr >& /dev/null
-      sudo make install
-      popd >& /dev/null
-
-      pushd Utilities/SQLiteInterface >& /dev/null
-      sudo make install
-      popd >& /dev/null
-
-      if test "$TYPEARCHITECTURE" == "32" ; then
-         pushd Utilities/OWS >& /dev/null
-         sudo make install
-         popd >& /dev/null
-      fi
    fi
 
    if test "$TYPEACTION" == uninstall ; then
-      pushd Utilities/Common >& /dev/null
       sudo make uninstall
-      popd >& /dev/null
-
-      pushd Utilities/TestCommon >& /dev/null
-      sudo make uninstall
-      popd >& /dev/null
-
-      pushd Utilities/ExpressionEngine >& /dev/null
-      sudo make uninstall
-      popd >& /dev/null
-
-      pushd Utilities/SchemaMgr >& /dev/null
-      sudo make uninstall
-      popd >& /dev/null
-
-      pushd Utilities/SQLiteInterface >& /dev/null
-      sudo make uninstall
-      popd >& /dev/null
-
-      if test "$TYPEARCHITECTURE" == "32" ; then
-         pushd Utilities/OWS >& /dev/null
-         sudo make uninstall
-         popd >& /dev/null
-      fi
    fi
 fi
 
@@ -548,7 +452,6 @@ fi
 
 #build WFS Provider -- Temporalily disabled for 64bit builds
 if test "$WFSENABLE" == yes; then
-if test "$TYPEARCHITECTURE" == "32" ; then
    if test -e "Providers/WFS/build_linux.sh"; then
        pushd Providers/WFS >& /dev/null
        chmod a+x ./build_linux.sh
@@ -556,18 +459,15 @@ if test "$TYPEARCHITECTURE" == "32" ; then
        popd >& /dev/null
    fi
 fi
-fi
 
 #build WMS Provider -- Temporalily disabled for 64bit builds
 if test "$WMSENABLE" == yes; then
-if test "$TYPEARCHITECTURE" == "32" ; then
    if test -e "Providers/WMS/build_linux.sh"; then
        pushd Providers/WMS >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
-fi
 fi
 
 #build ArcSDE Provider -- Temporalily disabled for 64bit builds
@@ -583,7 +483,6 @@ fi
 fi
 
 #build GenericRdbms Providers -- Temporalily disabled for 64bit builds
-if test "$TYPEARCHITECTURE" == "32" ; then
 if test "$RDBMSENABLE" == yes; then
    if test -e "Providers/GenericRdbms/build_linux.sh"; then
        pushd Providers/GenericRdbms >& /dev/null
@@ -591,7 +490,6 @@ if test "$RDBMSENABLE" == yes; then
        sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
-fi
 fi
 
 #build GDAL Provider
@@ -615,7 +513,6 @@ if test "$OGRENABLE" == yes; then
 fi
 
 #build KingOracle Provider -- Temporalily disabled for 64bit builds
-if test "$TYPEARCHITECTURE" == "32" ; then
 if test "$KINGORACLEENABLE" == yes; then
    if test -e "Providers/KingOracle/build_linux.sh"; then
        pushd Providers/KingOracle >& /dev/null
@@ -623,7 +520,6 @@ if test "$KINGORACLEENABLE" == yes; then
        sh ./build_linux.sh $CMDEX
        popd >& /dev/null
    fi
-fi
 fi
 
 #build SQLite Provider
