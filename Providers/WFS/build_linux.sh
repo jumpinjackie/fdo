@@ -140,10 +140,6 @@ if test "$SHOWHELP" == yes; then
    exit 0
 fi
 
-if test "$TYPEARCHITECTURE" == "64" ; then
-echo "The 64bit build type is not yet suppoted: $TYPEARCHITECTURE"
-fi
-
 if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
 CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
 echo "Exporting CFLAGS: "$CFLAGS""

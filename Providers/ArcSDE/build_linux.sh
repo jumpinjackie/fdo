@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ##
-## Copyright (C) 2004-2006  Autodesk, Inc.
+## Copyright (C) 2013  Autodesk, Inc.
 ## 
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of version 2.1 of the GNU Lesser
@@ -142,6 +142,7 @@ fi
 
 if test "$TYPEARCHITECTURE" == "64" ; then
 echo "The 64bit build type is not yet suppoted: $TYPEARCHITECTURE"
+exit 0
 fi
 
 if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
