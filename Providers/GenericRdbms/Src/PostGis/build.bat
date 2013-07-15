@@ -164,6 +164,8 @@ copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\PostgreSQLOverrides.lib" "%FDOL
 copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATH%\com"
 copy /y "..\..\com\fdo_sys_idx.sql" "%FDOBINPATH%\com"
 copy /y "..\..\com\fdo_sys.sql" "%FDOBINPATH%\com"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 
 rem copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.PostgreSQL.Overrides.dll" "%FDOBINPATH%"
 rem copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.PostgreSQL.Overrides.pdb" "%FDOBINPATH%"
