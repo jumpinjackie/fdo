@@ -419,10 +419,20 @@ bool FdoSmPhPostGisOwner::Add()
     GdbiConnection* gdbiConn = NULL;
     gdbiConn = mgr->GetGdbiConnection();
 
-     FdoStringP sqlStmt = FdoStringP::Format(
-     L"CREATE DATABASE %ls TEMPLATE template_postgis ENCODING 'UTF8'", static_cast<FdoString*>(GetDbName()));
-   
-    gdbiConn->ExecuteNonQuery(static_cast<const char*>(sqlStmt), true);
+    FdoStringP sqlStmt = FdoStringP::Format(
+    L"CREATE DATABASE %ls TEMPLATE template_postgis_20 ENCODING 'UTF8'", static_cast<FdoString*>(GetDbName()));
+    try
+    {
+        gdbiConn->ExecuteNonQuery(static_cast<const char*>(sqlStmt), true);
+    }
+    catch(...)
+    {
+        // On error, try old template
+        sqlStmt = FdoStringP::Format(
+        L"CREATE DATABASE %ls TEMPLATE template_postgis ENCODING 'UTF8'", static_cast<FdoString*>(GetDbName()));
+
+        gdbiConn->ExecuteNonQuery(static_cast<const char*>(sqlStmt), true);
+    }
 
     // Put datastore description into the database comments. 
     // While listing datastores, it is not easy to look into each 
