@@ -807,6 +807,9 @@ wchar_t *FdoRegistryUtility::GetFileName()
 
             // try where we are
             me = SELFPATH;
+            if (NULL == me)
+                me = "";
+
             home = (char*)alloca (strlen (me) + 1);
             strcpy (home, me);
             last = strrchr (home, '/');
