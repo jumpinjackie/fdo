@@ -119,17 +119,18 @@ fi
 fi
 
 pushd . >& /dev/null
-cd tools/jam/src
+
+chmod +x ./bootstrap.sh
+chmod +x ./tools/build/v2/engine/build.sh
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
 
-chmod a+x ./build.sh
-sudo sh ./build.sh
-cd ../../../
 if test "$TYPEARCHITECTURE" == "32"; then
-    sudo ./tools/jam/src/bin.linuxx86/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
+    sudo ./bootstrap.sh
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system stage --with-date_time --with-program_options --with-thread
 else
-    sudo ./tools/jam/src/bin.linuxx86_64/bjam toolset=gcc variant=release threading=multi link=static --layout=system stage
+    sudo ./bootstrap.sh
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system stage --with-date_time --with-program_options --with-thread
 fi
 
 fi
