@@ -90,52 +90,24 @@ if test "$SHOWHELP" == yes; then
 fi
 
 
-if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting CFLAGS: "$CFLAGS""
-export CFLAGS
-fi
-
-if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting CPPFLAGS: "$CPPFLAGS""
-export CPPFLAGS
-fi
-
-if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting LDFLAGS: "$LDFLAGS""
-export LDFLAGS
-fi
-
-if test "$TYPEARCHITECTURE" == "32" ; then
-if test "$HOSTTYPE" == "i686" ; then
-if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
-CPPFLAGS="$CPPFLAGS -march=i686"
-echo "Exporting CPPFLAGS: "$CPPFLAGS""
-export CPPFLAGS
-fi
-fi
-fi
-
 pushd . >& /dev/null
 
 chmod +x ./bootstrap.sh
 chmod +x ./tools/build/v2/engine/build.sh
 
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+sudo ./bootstrap.sh
 
-if test "$TYPEARCHITECTURE" == "32"; then
-    sudo ./bootstrap.sh
-    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system stage --with-date_time --with-program_options --with-thread
-else
-    sudo ./bootstrap.sh
-    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system stage --with-date_time --with-program_options --with-thread
+if test "$TYPEACTION" == clean ; then
+  sudo ./b2 --clean-all
 fi
 
+if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+  if test "$TYPEARCHITECTURE" == "32"; then
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system --with-date_time --with-program_options --with-thread stage
+  else
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static cflags=-fPIC cflags=-m64 cxxflags=-fPIC cxxflags=-m64 linkflags=-fPIC linkflags=-m64 --layout=system --with-date_time --with-program_options --with-thread stage
+  fi
 fi
 
 popd >& /dev/null
-
-
 
