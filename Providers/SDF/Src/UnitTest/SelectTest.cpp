@@ -104,6 +104,10 @@ void SelectTest::DoTest (
     FdoStringP exclProp
 )
 {
+// HACK: test Crashing. TODO: resolve
+CPPUNIT_FAIL("SelectTest::DoTest Disabled!!");
+return;
+
     FdoPtr<FdoIConnection> connection;
     FdoInt32 baseCount;
     FdoInt32 propCount;
@@ -119,7 +123,7 @@ void SelectTest::DoTest (
         propCount = props->GetCount();
     }
 
-	try {
+    try {
         connection = CreateDb();
 
         FdoPtr<FdoISelect> selectCommand = (FdoISelect *) connection->CreateCommand(FdoCommandType_Select);
@@ -145,7 +149,7 @@ void SelectTest::DoTest (
             names->Add(name);
         }
 
-		FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = selectCommand->Execute();
         rdr->ReadNext();
 
         FdoClassDefinitionP classDef = rdr->GetClassDefinition();
@@ -178,13 +182,13 @@ void SelectTest::DoTest (
                 CPPUNIT_ASSERT( !props->Contains(exclBaseProp) );
         }
     }
-	catch ( FdoException* e ) 
-	{
+    catch ( FdoException* e ) 
+    {
         connection->Close();
         TestCommonFail(e);
-	}
+    }
 
-	connection->Close();
+    connection->Close();
 }
 
 FdoIConnection* SelectTest::CreateDb() 
@@ -192,42 +196,42 @@ FdoIConnection* SelectTest::CreateDb()
     FdoIConnection* connection;
 
 #ifdef _WIN32
-	wchar_t fullpath[1024];
-	_wfullpath(fullpath, SELECT_TEST_FILE, 1024);
+    wchar_t fullpath[1024];
+    _wfullpath(fullpath, SELECT_TEST_FILE, 1024);
 #else
-	char cpath[1024];
-	char cfullpath[1024];
-	wcstombs(cpath, SELECT_TEST_FILE, 1024);
-	realpath(cpath, cfullpath);
-	wchar_t fullpath[1024];
-	mbstowcs(fullpath, cfullpath, 1024);
+    char cpath[1024];
+    char cfullpath[1024];
+    wcstombs(cpath, SELECT_TEST_FILE, 1024);
+    realpath(cpath, cfullpath);
+    wchar_t fullpath[1024];
+    mbstowcs(fullpath, cfullpath, 1024);
 #endif
 
     size_t len = wcstombs(NULL, SELECT_TEST_FILE, 0);
-	char* mbsPath = new char[len+1];
-	wcstombs(mbsPath, SELECT_TEST_FILE, len+1);
+    char* mbsPath = new char[len+1];
+    wcstombs(mbsPath, SELECT_TEST_FILE, len+1);
 
 #ifdef _WIN32    
-	SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
-	DeleteFile(mbsPath);
+    SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
+    DeleteFile(mbsPath);
 #else
-	unlink(mbsPath);
+    unlink(mbsPath);
 #endif
 
-	delete[] mbsPath;
+    delete[] mbsPath;
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
     connection = manager->CreateConnection (L"OSGeo.SDF");
 
     FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(connection->CreateCommand(SdfCommandType_CreateSDFFile));
 
-	crsdf->SetCoordinateSystemWKT(L"[LL84]");
+    crsdf->SetCoordinateSystemWKT(L"[LL84]");
     crsdf->SetFileName(fullpath);
-	crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
-	crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
-	crsdf->SetXYTolerance(17.0);
-	crsdf->SetZTolerance(3.14159);
+    crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
+    crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
+    crsdf->SetXYTolerance(17.0);
+    crsdf->SetZTolerance(3.14159);
 
-	crsdf->Execute();
+    crsdf->Execute();
 
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
     connection->SetConnectionString(connStr.c_str());

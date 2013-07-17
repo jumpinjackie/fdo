@@ -71,8 +71,8 @@ CPPUNIT_ASSERT_ASSERTION_PASS(assertion)   CPPUNIT_ASSERT_NO_THROW( assertion )
 
 #ifndef _WIN32
 #include <unistd.h>
+#include <limits.h>
 #endif
-
 
 const wchar_t* CONSTRAINS_FILE = L"../../TestData/Constrains.sdf";
 const wchar_t* SHP_PATH = L"../../TestData/World_Countries.sdf";
@@ -125,12 +125,12 @@ void MasterTest::openConnection(FdoIConnection* conn, const wchar_t* path, bool 
     wchar_t fullpath[1024];
     _wfullpath(fullpath, path, 1024);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, path, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, path, PATH_MAX);
     realpath(cpath, cfullpath);
-    wchar_t fullpath[1024];
-    mbstowcs(fullpath, cfullpath, 1024);
+    wchar_t fullpath[PATH_MAX];
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
@@ -1742,13 +1742,13 @@ void MasterTest::CreateEmptyShpFileWithConstraints(FdoIConnection* conn)
     wchar_t fullpath[1024];
     _wfullpath(fullpath, CONSTRAINS_FILE, 1024);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, CONSTRAINS_FILE, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, CONSTRAINS_FILE, PATH_MAX);
     unlink(cpath);
     realpath(cpath, cfullpath);
-    wchar_t fullpath[1024];
-    mbstowcs(fullpath, cfullpath, 1024);
+    wchar_t fullpath[PATH_MAX];
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     FdoPtr<FdoICreateDataStore>    pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
