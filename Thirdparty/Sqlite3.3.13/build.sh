@@ -88,16 +88,18 @@ if test "$SHOWHELP" == yes; then
    exit 0
 fi
 
-if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting CFLAGS: "$CFLAGS""
-export CFLAGS
-fi
-
 if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
 CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
 echo "Exporting CPPFLAGS: "$CPPFLAGS""
 export CPPFLAGS
+fi
+
+if test "$TYPEARCHITECTURE" == "64" ; then
+if [[ "$CPPFLAGS" != *"-fPIC"* ]]; then
+CPPFLAGS="$CPPFLAGS -fPIC"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
 fi
 
 if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
