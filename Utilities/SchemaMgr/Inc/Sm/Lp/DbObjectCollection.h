@@ -28,7 +28,7 @@ class FdoSmLpDbObjectCollection : public FdoSmNamedCollection<FdoSmLpDbObject>
 {
 public:
 	FdoSmLpDbObjectCollection(void) :
-		FdoSmNamedCollection<FdoSmLpDbObject>(false)
+		FdoSmNamedCollection<FdoSmLpDbObject>(NULL, false)
 	{}
 	~FdoSmLpDbObjectCollection(void) {}
 };
