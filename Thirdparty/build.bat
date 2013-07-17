@@ -224,6 +224,8 @@ copy /y "apache\xerces\Build\%INTERMEDIATEDIR%\vc9\%TYPEBUILDTHR%\xerces-c_3_1%T
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal19.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 
 rem # Build FDO API Thirdparty Files
 :rebuild_fdo
@@ -283,6 +285,8 @@ rem # Install WFS Provider Thirdparty Files
 echo copy %TYPEBUILDTHR% Thirdparty WFS files
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 rem # End WFS part #
 
 rem # Build WMS Provider Thirdparty Files
@@ -313,6 +317,8 @@ echo copy %TYPEBUILDTHR% Thirdparty WMS files
 copy /y "gdal\bin\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\gdal19.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 rem # End WMS part #
 
 rem # Build GDAL Provider Thirdparty Files
@@ -353,6 +359,8 @@ rem # Install PostGIS Provider Thirdparty Files
 echo copy %TYPEBUILDTHR% Thirdparty PostGIS dlls
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 rem # End PostGIS part 
 
 :end

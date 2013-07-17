@@ -163,6 +163,8 @@ copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.
 copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\WMSOverrides.lib" "%FDOLIBPATH%"
 copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATH%\WMS\"
