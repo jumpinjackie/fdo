@@ -23,6 +23,7 @@
 #include <dlfcn.h>
 #include <time.h>
 #include <errno.h>
+#include <limits.h>
 #endif
 
 #define   NUMBER_OF_THREADS     30
@@ -170,12 +171,12 @@ void FdoMultiThreadTest::OpenConnection(FdoIConnection* conn, const wchar_t* pat
     wchar_t fullpath[1024];
     _wfullpath(fullpath, path, 1024);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, path, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, path, PATH_MAX);
     realpath(cpath, cfullpath);
-    wchar_t fullpath[1024];
-    mbstowcs(fullpath, cfullpath, 1024);
+    wchar_t fullpath[PATH_MAX];
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);

@@ -19,6 +19,7 @@
 #include "FdoCommonFile.h"
 #ifndef _WIN32
 #include <unistd.h>
+#include <limits.h>
 #endif
 
 const wchar_t* SOURCE_FILE = L"../../TestData/PARCEL_Source.sqlite";
@@ -38,6 +39,7 @@ FdoFeatureSchema* UnitTestUtil::CreateSLTSchema(FdoGeometryType singleType)
         geometry->SetSpecificGeometryTypes(&singleType, 1);
     else
         geometry->SetGeometryTypes(7); // Point, Line, Polygon
+    
     properties->Add(geometry);
 
     clas->SetGeometryProperty(geometry);
@@ -50,7 +52,8 @@ FdoFeatureSchema* UnitTestUtil::CreateSLTSchema(FdoGeometryType singleType)
         geometry2->SetSpecificGeometryTypes(&singleType, 1);
     else
         geometry2->SetGeometryTypes(7); // Point, Line, Polygon
-	geometry2->SetSpatialContextAssociation( L"World Geodetic Coordinate System, 1984" );
+    
+    geometry2->SetSpatialContextAssociation( L"World Geodetic Coordinate System, 1984" );
     properties->Add(geometry2);
 
     FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name",
@@ -79,31 +82,31 @@ FdoFeatureSchema* UnitTestUtil::CreateSLTSchema(FdoGeometryType singleType)
 
     FdoPtr<FdoFeatureClass> clas2 = FdoFeatureClass::Create(L"ParcelChild",L"");    
     clas2->SetBaseClass(clas);
-	properties = clas2->GetProperties();
+    properties = clas2->GetProperties();
 
-	dpd = FdoDataPropertyDefinition::Create(L"Numb", L"A number property");
+    dpd = FdoDataPropertyDefinition::Create(L"Numb", L"A number property");
     dpd->SetDataType(FdoDataType_Int32);
     properties->Add(dpd);
 
-	dpd = FdoDataPropertyDefinition::Create(L"datetime", L"A date time property");
+    dpd = FdoDataPropertyDefinition::Create(L"datetime", L"A date time property");
     dpd->SetDataType(FdoDataType_DateTime);
     properties->Add(dpd);
 
-	dpd = FdoDataPropertyDefinition::Create(L"DblNumb1", L"A double number property(1)");
+    dpd = FdoDataPropertyDefinition::Create(L"DblNumb1", L"A double number property(1)");
     dpd->SetDataType(FdoDataType_Double);
     properties->Add(dpd);
 
-	dpd = FdoDataPropertyDefinition::Create(L"DblNumb2", L"A double number property(2)");
+    dpd = FdoDataPropertyDefinition::Create(L"DblNumb2", L"A double number property(2)");
     dpd->SetDataType(FdoDataType_Double);
     properties->Add(dpd);
 
     FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas2);
 
-	clas = FdoFeatureClass::Create(L"AbsClass",L"");    
+    clas = FdoFeatureClass::Create(L"AbsClass",L"");    
     FdoPtr<FdoClassCollection>(schema->GetClasses())->Add(clas);
     clas->SetIsAbstract( true );
     properties = clas->GetProperties();
-	dpd = FdoDataPropertyDefinition::Create(L"Numb", L"A number property");
+    dpd = FdoDataPropertyDefinition::Create(L"Numb", L"A number property");
     dpd->SetDataType(FdoDataType_Int32);
     properties->Add(dpd);
 
@@ -120,80 +123,80 @@ FdoIConnection* UnitTestUtil::CreateConnection()
 FdoIConnection* UnitTestUtil::OpenMemoryConnection( bool add_spc, FdoIConnection  *inConn)
 {
     FdoIConnection *conn = inConn;
-	if( conn == NULL )
-		conn = UnitTestUtil::CreateConnection();
-	// Open the connection
+    if( conn == NULL )
+        conn = UnitTestUtil::CreateConnection();
+    // Open the connection
     std::wstring connStr = L"File=\":memory:\";UseFdoMetadata=TRUE;";
-	conn->SetConnectionString(connStr.c_str());
-	FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
-	FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
-	conn->Open();
+    conn->SetConnectionString(connStr.c_str());
+    FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
+    FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
+    conn->Open();
 
     if (add_spc)
     {
-	    // Create spatial context
-	    FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-	    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
-	    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
-	    pCreateCreateSpatialContext->SetName( L"LL84" );
-	    pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
-	    pCreateCreateSpatialContext->SetZTolerance(3.14159);
-	    pCreateCreateSpatialContext->Execute();
+        // Create spatial context
+        FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+        pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"LL84");
+        pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+        pCreateCreateSpatialContext->SetName( L"LL84" );
+        pCreateCreateSpatialContext->SetXYTolerance( 17.0 );
+        pCreateCreateSpatialContext->SetZTolerance(3.14159);
+        pCreateCreateSpatialContext->Execute();
     }
-	return conn;
+    return conn;
 }
 
 FdoIConnection* UnitTestUtil::OpenConnection( FdoString* fileName, bool re_create, bool add_spc, FdoIConnection *inConn )
 {
 #ifdef _WIN32
-	wchar_t fullpath[1024];
-	_wfullpath(fullpath, fileName, 1024);
+    wchar_t fullpath[1024];
+    _wfullpath(fullpath, fileName, 1024);
 #else
-	char cpath[1024];
-	char cfullpath[1024];
-	wcstombs(cpath, fileName, 1024);
-	realpath(cpath, cfullpath);
-	wchar_t fullpath[1024];
-	mbstowcs(fullpath, cfullpath, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, fileName, PATH_MAX);
+    realpath(cpath, cfullpath);
+    wchar_t fullpath[PATH_MAX];
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
     FdoIConnection *conn = inConn;
-	if( conn == NULL )
-		conn = UnitTestUtil::CreateConnection();
-	if( re_create )
-	{
-		// Clean up the existing file
+    if( conn == NULL )
+        conn = UnitTestUtil::CreateConnection();
+    if( re_create )
+    {
+        // Clean up the existing file
         FdoCommonFile::Delete(fullpath, true);
 
-		// Crate the SQLite file
-		FdoPtr<FdoICreateDataStore>	pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
-		FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
-		int	count;
-		FdoString **names = dictionary->GetPropertyNames(count);
-		CPPUNIT_ASSERT_MESSAGE("Wrong number of properties for create cmd", count==2 );
-		dictionary->SetProperty( names[0], fullpath );
-		dictionary->SetProperty( names[1], L"TRUE" );
-		pCreateCmd->Execute();	
+        // Crate the SQLite file
+        FdoPtr<FdoICreateDataStore>    pCreateCmd = (FdoICreateDataStore*) conn->CreateCommand(FdoCommandType_CreateDataStore);
+        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pCreateCmd->GetDataStoreProperties();
+        int    count;
+        FdoString **names = dictionary->GetPropertyNames(count);
+        CPPUNIT_ASSERT_MESSAGE("Wrong number of properties for create cmd", count==2 );
+        dictionary->SetProperty( names[0], fullpath );
+        dictionary->SetProperty( names[1], L"TRUE" );
+        pCreateCmd->Execute();    
 
-		// Open the connection
-		std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath) + L";UseFdoMetadata=TRUE;";
-		conn->SetConnectionString(connStr.c_str());
-		FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
-		FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
-		conn->Open();
+        // Open the connection
+        std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath) + L";UseFdoMetadata=TRUE;";
+        conn->SetConnectionString(connStr.c_str());
+        FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> prop = info->GetConnectionProperties();
+        conn->Open();
 
         if (add_spc)
         {
-		    // Create spatial context
-		    FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-		    pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
-		    pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
-		    pCreateCreateSpatialContext->SetName( L"LL84" );
-		    pCreateCreateSpatialContext->Execute();
+            // Create spatial context
+            FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+            pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
+            pCreateCreateSpatialContext->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+            pCreateCreateSpatialContext->SetName( L"LL84" );
+            pCreateCreateSpatialContext->Execute();
         }
-		return conn;
-	}
+        return conn;
+    }
 
-	// Just open the connection
+    // Just open the connection
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath) + L";UseFdoMetadata=TRUE;";
     conn->SetConnectionString(connStr.c_str());
     FdoPtr<FdoIConnectionInfo>info = conn->GetConnectionInfo();
@@ -306,7 +309,7 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                 }
             }
 #else
-		fprintf( fp, " %ls \n", pMessage );
+        fprintf( fp, " %ls \n", pMessage );
 #endif
         }
         else {
@@ -335,33 +338,33 @@ void UnitTestUtil::PrintException( FdoException* e, const char* fileName, FdoBoo
 void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCount, FdoString* className, int threadId  )
 {
     //first delete the destination file if it exists already -- cleanup that is
-	FdoPtr<FdoIConnection> conn;
-	if( inConn != NULL )
-	{
-		inConn->AddRef();
-		conn = inConn;
-	}
+    FdoPtr<FdoIConnection> conn;
+    if( inConn != NULL )
+    {
+        inConn->AddRef();
+        conn = inConn;
+    }
 
     if( create )
-	{
-		try
-		{
-			if( conn == NULL )
-				conn = UnitTestUtil::CreateConnection();
+    {
+        try
+        {
+            if( conn == NULL )
+                conn = UnitTestUtil::CreateConnection();
 
-			UnitTestUtil::OpenConnection( DESTINATION_FILE, true, true, conn );
-			 //apply schema
-			FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
-			FdoPtr<FdoFeatureSchema> schema = CreateSLTSchema();
-			applyschema->SetFeatureSchema(schema);
-			applyschema->Execute();
-		}
-		catch(FdoException *exp )
-		{
-			PrintException( exp, stdout, false);
-			CPPUNIT_FAIL("Insert failed");
-		}
-	}
+            UnitTestUtil::OpenConnection( DESTINATION_FILE, true, true, conn );
+             //apply schema
+            FdoPtr<FdoIApplySchema> applyschema = (FdoIApplySchema*)conn->CreateCommand(FdoCommandType_ApplySchema);
+            FdoPtr<FdoFeatureSchema> schema = CreateSLTSchema();
+            applyschema->SetFeatureSchema(schema);
+            applyschema->Execute();
+        }
+        catch(FdoException *exp )
+        {
+            PrintException( exp, stdout, false);
+            CPPUNIT_FAIL("Insert failed");
+        }
+    }
     else if( inConn == NULL || inConn->GetConnectionState() != FdoConnectionState_Open )
         conn = UnitTestUtil::OpenConnection(DESTINATION_FILE, false);    
 
@@ -382,14 +385,14 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
     CPPUNIT_ASSERT (caps->GetPolygonVertexOrderRule (L"Data2") == FdoPolygonVertexOrderRule_None);
     CPPUNIT_ASSERT (caps->GetPolygonVertexOrderStrictness (L"Data2") == false);
     
-	FdoPtr<FdoPropertyDefinition> gpd = pdc->GetItem(L"Data2");
+    FdoPtr<FdoPropertyDefinition> gpd = pdc->GetItem(L"Data2");
     CPPUNIT_ASSERT_MESSAGE("Expected a geometry property type", gpd->GetPropertyType() == FdoPropertyType_GeometricProperty );
-	FdoGeometricPropertyDefinition *geom = (FdoGeometricPropertyDefinition*)gpd.p;
-	CPPUNIT_ASSERT_MESSAGE("Expected a not null geometry property Spatial context", geom->GetSpatialContextAssociation() != NULL );
+    FdoGeometricPropertyDefinition *geom = (FdoGeometricPropertyDefinition*)gpd.p;
+    CPPUNIT_ASSERT_MESSAGE("Expected a not null geometry property Spatial context", geom->GetSpatialContextAssociation() != NULL );
 
-	cdef = ccol->GetItem(L"AbsClass");
+    cdef = ccol->GetItem(L"AbsClass");
     // TODO: we don't support abstract classes
-	//CPPUNIT_ASSERT_MESSAGE("Expected an abstract class", cdef->GetIsAbstract() );
+    //CPPUNIT_ASSERT_MESSAGE("Expected an abstract class", cdef->GetIsAbstract() );
 
     //set up the insert command
     //we will execute it multiple times with different property values
@@ -400,22 +403,22 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
     FdoPtr<FdoStringValue> svname = FdoStringValue::Create(L"");
     FdoPtr<FdoStringValue> svkey = FdoStringValue::Create(L"");
     FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"");
-	FdoPtr<FdoInt32Value> svNumb = FdoInt32Value::Create();
+    FdoPtr<FdoInt32Value> svNumb = FdoInt32Value::Create();
 
     FdoPtr<FdoGeometryValue> gvgeom = FdoGeometryValue::Create(NULL);
     FdoPtr<FdoGeometryValue> gvgeom2 = FdoGeometryValue::Create(NULL);
 
     FdoPtr<FdoPropertyValue> pvname = FdoPropertyValue::Create(L"Name", svname);
     FdoPtr<FdoPropertyValue> pvkey = FdoPropertyValue::Create(L"Key", svkey);
-	FdoPtr<FdoPropertyValue> pvurl = FdoPropertyValue::Create(L"Url", svurl);
+    FdoPtr<FdoPropertyValue> pvurl = FdoPropertyValue::Create(L"Url", svurl);
     FdoPtr<FdoPropertyValue> pvgeom = FdoPropertyValue::Create(L"Data", gvgeom);
     FdoPtr<FdoPropertyValue> pvgeom2 = FdoPropertyValue::Create(L"Data2", gvgeom2);
 
-	FdoPtr<FdoPropertyValue> pvNumb = FdoPropertyValue::Create(L"Numb", svNumb);
+    FdoPtr<FdoPropertyValue> pvNumb = FdoPropertyValue::Create(L"Numb", svNumb);
 
-	FdoDateTime dt(2006,4,21,19,40,(float)10.0001);
-	FdoPtr<FdoDateTimeValue> dtv = FdoDateTimeValue::Create(dt);
-	FdoPtr<FdoPropertyValue> pvDateTime = FdoPropertyValue::Create(L"datetime", dtv);
+    FdoDateTime dt(2006,4,21,19,40,(float)10.0001);
+    FdoPtr<FdoDateTimeValue> dtv = FdoDateTimeValue::Create(dt);
+    FdoPtr<FdoPropertyValue> pvDateTime = FdoPropertyValue::Create(L"datetime", dtv);
 
     propvals->Add(pvname);
     propvals->Add(pvkey);
@@ -423,59 +426,59 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
     propvals->Add(pvgeom);
     propvals->Add(pvgeom2);
 
-	if( className == NULL )
-		insert->SetFeatureClassName(L"Parcel");  
-	else
-	{
-		propvals->Add(pvNumb);
-		propvals->Add(pvDateTime);
-		insert->SetFeatureClassName(className);
-	}
+    if( className == NULL )
+        insert->SetFeatureClassName(L"Parcel");  
+    else
+    {
+        propvals->Add(pvNumb);
+        propvals->Add(pvDateTime);
+        insert->SetFeatureClassName(className);
+    }
 
-	clock_t start;
+    clock_t start;
     clock_t finish;
-	if( threadId == -1 )
-		start = clock ();
+    if( threadId == -1 )
+        start = clock ();
 
-	FdoPtr<FdoIConnection> shpConn = UnitTestUtil::OpenConnection( SOURCE_FILE, false);
-	FdoPtr<FdoISelect> select = (FdoISelect*)shpConn->CreateCommand (FdoCommandType_Select);
+    FdoPtr<FdoIConnection> shpConn = UnitTestUtil::OpenConnection( SOURCE_FILE, false);
+    FdoPtr<FdoISelect> select = (FdoISelect*)shpConn->CreateCommand (FdoCommandType_Select);
     select->SetFeatureClassName (L"DaKlass");
-	FdoPtr<FdoIFeatureReader> shpReader = select->Execute();
+    FdoPtr<FdoIFeatureReader> shpReader = select->Execute();
 
-	int count = 1;
-	int numbProp = 100;
-	char tmp[32];
-	tmp[0] = '\0';
-	while( shpReader->ReadNext() )
-	{
-		if( ! shpReader->IsNull(L"Data") )
-		{
-			gvgeom->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) );
-			gvgeom2->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) ); 
-		}
-		else
-		{
-			gvgeom->SetGeometry( NULL );
-			gvgeom2->SetGeometry( NULL );
-		}
-		if( ! shpReader->IsNull(L"Name") )
-			svname->SetString( shpReader->GetString(L"Name") );
-		else
-			svname->SetString( L"" );
+    int count = 1;
+    int numbProp = 100;
+    char tmp[32];
+    tmp[0] = '\0';
+    while( shpReader->ReadNext() )
+    {
+        if( ! shpReader->IsNull(L"Data") )
+        {
+            gvgeom->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) );
+            gvgeom2->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) ); 
+        }
+        else
+        {
+            gvgeom->SetGeometry( NULL );
+            gvgeom2->SetGeometry( NULL );
+        }
+        if( ! shpReader->IsNull(L"Name") )
+            svname->SetString( shpReader->GetString(L"Name") );
+        else
+            svname->SetString( L"" );
 
-		if( ! shpReader->IsNull(L"Key") )
-			svkey->SetString( shpReader->GetString(L"Key") );
-		else
-			svkey->SetString( L"" );
+        if( ! shpReader->IsNull(L"Key") )
+            svkey->SetString( shpReader->GetString(L"Key") );
+        else
+            svkey->SetString( L"" );
 
-		if( ! shpReader->IsNull(L"Url") )
-			svurl->SetString( shpReader->GetString(L"Url") );
-		else
-			svurl->SetString( L"" );
+        if( ! shpReader->IsNull(L"Url") )
+            svurl->SetString( shpReader->GetString(L"Url") );
+        else
+            svurl->SetString( L"" );
 
-		dt.minute = numbProp%60;
-		dtv->SetDateTime( dt );
-		svNumb->SetInt32( numbProp++ );
+        dt.minute = numbProp%60;
+        dtv->SetDateTime( dt );
+        svNumb->SetInt32( numbProp++ );
 
         FdoPtr<FdoIFeatureReader> rdr = insert->Execute();
         if ( (count % 1000) == 0 && threadId == -1)
@@ -491,21 +494,21 @@ void UnitTestUtil::CreateData( bool create, FdoIConnection  *inConn, int featCou
                 CPPUNIT_ASSERT(id == count);
             }
         }
-	   count++;
+       count++;
        if( featCount != -1 && count>featCount )
-			break;
+            break;
     };
 
     conn->Flush();
 
     if( threadId == -1 )
-	{
-		for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
-		sprintf(tmp,"Count = %d",count);
-		printf(tmp);
-		finish = clock ();
-		printf ("  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
-	}
-	if( inConn == NULL )
-		conn->Close();
+    {
+        for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
+        sprintf(tmp,"Count = %d",count);
+        printf(tmp);
+        finish = clock ();
+        printf ("  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
+    }
+    if( inConn == NULL )
+        conn->Close();
 }
