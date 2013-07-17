@@ -66,7 +66,10 @@ libFdoOws_la_LIBADD =  \
   $(FDO)/Unmanaged/Src/Geometry/libFDOGeometry.la  \
   $(FDO)/Unmanaged/Src/Common/libFDOCommon.la  \
   $(FDOUTILITIES)/Common/libProvidersCommon.la \
+  $(FDOTHIRDPARTY)/boost/stage/lib/libboost_system.a \
   $(FDOTHIRDPARTY)/boost/stage/lib/libboost_thread.a \
+  $(FDOTHIRDPARTY)/boost/stage/lib/libboost_chrono.a \
+  $(FDOTHIRDPARTY)/boost/stage/lib/libboost_program_options.a \
   $(FDOTHIRDPARTY)/libcurl/lib/linux/libcurl.a  \
   -lz \
   -lrt \
