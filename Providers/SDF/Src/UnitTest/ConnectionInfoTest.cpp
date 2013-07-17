@@ -44,10 +44,14 @@ void ConnectionInfoTest::setUp ()
 // reported.
 void ConnectionInfoTest::TestProviderInfo ()
 {
+// HACK: test Crashing. TODO: resolve
+CPPUNIT_FAIL("ConnectionInfoTest::TestProviderInfo Disabled!!");
+return;
+
     FdoPtr<FdoIConnection> connection;
 
     printf("Checking for Provider Type and Dependent List Info \n");
-	try {
+    try {
         connection = CreateDb();
         FdoPtr<FdoIConnectionInfo> connectionInfo = connection->GetConnectionInfo();
         printf(" ...> Checking for Provider Type\n");
@@ -95,56 +99,56 @@ void ConnectionInfoTest::TestProviderInfo ()
         else
             throw FdoException::Create(L"Unexpected empty list of dependent files");
 
-	    connection->Close();
+        connection->Close();
 
     }
-	catch ( FdoException *e ) 
-	{
+    catch ( FdoException *e ) 
+    {
         connection->Close();
         printf( "Exception: %ls\n", e->GetExceptionMessage() );
-	}
+    }
 }
 
 FdoIConnection *ConnectionInfoTest::CreateDb() 
 {
     FdoIConnection *connection;
 #ifdef _WIN32
-	wchar_t fullpath[1024];
-	_wfullpath(fullpath, CI_TEST_FILE, 1024);
+    wchar_t fullpath[1024];
+    _wfullpath(fullpath, CI_TEST_FILE, 1024);
 #else
-	char cpath[1024];
-	char cfullpath[1024];
-	wcstombs(cpath, CI_TEST_FILE, 1024);
-	realpath(cpath, cfullpath);
-	wchar_t fullpath[1024];
-	mbstowcs(fullpath, cfullpath, 1024);
+    char cpath[1024];
+    char cfullpath[1024];
+    wcstombs(cpath, CI_TEST_FILE, 1024);
+    realpath(cpath, cfullpath);
+    wchar_t fullpath[1024];
+    mbstowcs(fullpath, cfullpath, 1024);
 #endif
 
     size_t len = wcstombs(NULL, CI_TEST_FILE, 0);
-	char *mbsPath = new char[len+1];
-	wcstombs(mbsPath, CI_TEST_FILE, len+1);
+    char *mbsPath = new char[len+1];
+    wcstombs(mbsPath, CI_TEST_FILE, len+1);
 
 #ifdef _WIN32    
-	SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
-	DeleteFile(mbsPath);
+    SetFileAttributes(mbsPath, FILE_ATTRIBUTE_NORMAL);
+    DeleteFile(mbsPath);
 #else
-	unlink(mbsPath);
+    unlink(mbsPath);
 #endif
 
-	delete[] mbsPath;
+    delete[] mbsPath;
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();
     connection = manager->CreateConnection (L"OSGeo.SDF");
 
     FdoPtr<FdoICreateSDFFile> crsdf = (FdoICreateSDFFile*)(connection->CreateCommand(SdfCommandType_CreateSDFFile));
 
-	crsdf->SetCoordinateSystemWKT(L"[LL84]");
+    crsdf->SetCoordinateSystemWKT(L"[LL84]");
     crsdf->SetFileName(fullpath);
-	crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
-	crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
-	crsdf->SetXYTolerance(17.0);
-	crsdf->SetZTolerance(3.14159);
+    crsdf->SetSpatialContextDescription(L"World Coordinate System, Degrees, what else do you need to know?");
+    crsdf->SetSpatialContextName(L"World Geodetic Coordinate System, 1984");
+    crsdf->SetXYTolerance(17.0);
+    crsdf->SetZTolerance(3.14159);
 
-	crsdf->Execute();
+    crsdf->Execute();
 
     std::wstring connStr = std::wstring(L"File=") + std::wstring(fullpath);
     connection->SetConnectionString(connStr.c_str());

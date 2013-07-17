@@ -763,16 +763,20 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest ()
 
     try {
 
+#ifdef _WIN32
     wchar_t fullpath[1024];
+#else
+    wchar_t fullpath[PATH_MAX];
+#endif
 
 #ifdef _WIN32
     _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, PATH_MAX);
     realpath(cpath, cfullpath);
-    mbstowcs(fullpath, cfullpath, 1024);
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     std::wstring connStr = std::wstring(L"File=") + fullpath;
@@ -860,16 +864,20 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest2 ()
 
     try {
 
+#ifdef _WIN32
     wchar_t fullpath[1024];
+#else
+    wchar_t fullpath[PATH_MAX];
+#endif
 
 #ifdef _WIN32
-    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
+    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, PATH_MAX);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, EE_HOSPITAL_TEST_FILE, PATH_MAX);
     realpath(cpath, cfullpath);
-    mbstowcs(fullpath, cfullpath, 1024);
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     std::wstring connStr = std::wstring(L"File=") + fullpath;
