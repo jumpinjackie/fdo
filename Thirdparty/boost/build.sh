@@ -103,9 +103,9 @@ fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
   if test "$TYPEARCHITECTURE" == "32"; then
-    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system --with-date_time --with-program_options --with-thread stage
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static --layout=system --with-date_time --with-program_options --with-thread --with-system --with-chrono stage
   else
-    sudo ./b2 toolset=gcc variant=release threading=multi link=static cflags=-fPIC cflags=-m64 cxxflags=-fPIC cxxflags=-m64 linkflags=-fPIC linkflags=-m64 --layout=system --with-date_time --with-program_options --with-thread stage
+    sudo ./b2 toolset=gcc variant=release threading=multi link=static cflags=-fPIC cflags=-m64 cxxflags=-fPIC cxxflags=-m64 linkflags=-fPIC linkflags=-m64 --layout=system --with-date_time --with-program_options --with-thread --with-system --with-chrono stage
   fi
 fi
 
