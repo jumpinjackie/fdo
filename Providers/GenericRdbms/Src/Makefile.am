@@ -75,8 +75,7 @@ libFdoPostgreSQL_la_LIBADD =  \
 libFdoPostgreSQL_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L$(FDOPOSTGRESQL)/lib \
-  -L$(FDOTHIRDPARTY)/pgsql/lib \
+  -L$(FDOPOSTGRESQL)/lib$(LIB64) \
   -L$(FDOTHIRDPARTY)/apache/xalan/lib \
   -L$(FDOTHIRDPARTY)/apache/xerces/lib
 
@@ -138,7 +137,8 @@ libFdoODBC_la_SOURCES =
 nodist_EXTRA_libFdoODBC_la_SOURCES = dummy.cpp
 
 libFdoODBC_la_LIBADD =  \
-  -lxalan-c -lxalanMsg \
+  -lxalan-c \
+  -lxalanMsg \
   -lxerces-c \
   -lodbc \
   -lodbcinst \
@@ -174,7 +174,7 @@ libFdoODBC_la_LDFLAGS = \
   -release $(VERSION)  \
   -L$(FDOTHIRDPARTY)/apache/xalan/lib \
   -L$(FDOTHIRDPARTY)/apache/xerces/lib \
-  -L$(FDOODBC)/lib
+  -L$(FDOODBC)/lib$(LIB64)
 
 libSchemaMgr_OV_la_SOURCES =
 ## building libSchemaMgr_OV.so
@@ -190,3 +190,4 @@ libSchemaMgr_OV_la_LIBADD =  \
 libSchemaMgr_OV_la_LDFLAGS = \
   -shared \
   -release $(VERSION)
+
