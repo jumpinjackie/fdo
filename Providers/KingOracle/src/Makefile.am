@@ -59,5 +59,5 @@ libKingOracleProvider_la_LIBADD =  \
 libKingOracleProvider_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L/usr/lib/oracle/11.2/client/lib \
+  -L/usr/lib/oracle/11.2/client$(LIB64)/lib \
   -L$(FDOORACLE)/lib
