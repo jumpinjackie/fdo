@@ -92,7 +92,7 @@ libFdoMySQL_la_LIBADD =  \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c \
-  -lmysql \
+  -lmysqlclient \
   -lz \
   MySQL/libFdoRdbmsMySQL.la  \
   Fdo/libFdoRdbms.la   \
@@ -124,8 +124,8 @@ libFdoMySQL_la_LIBADD =  \
 libFdoMySQL_la_LDFLAGS = \
   -shared \
   -release $(VERSION) \
-  -L/usr/lib/mysql \
-  -L$(FDOMYSQL)/lib \
+  -L/usr/lib$(LIB64)/mysql \
+  -L$(FDOMYSQL)/lib$(LIB64) \
   -L$(FDOTHIRDPARTY)/apache/xalan/lib \
   -L$(FDOTHIRDPARTY)/apache/xerces/lib
 
