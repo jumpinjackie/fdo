@@ -169,6 +169,11 @@ fi
 fi
 fi
 
+if test "$TYPEARCHITECTURE" == "64" ; then
+LIB64=64
+export LIB64
+fi
+
 ### start build ###
 if test "$TYPECONFIGURE" == configure ; then
    if test -e "m4"; then

@@ -104,7 +104,7 @@ UnitTestMySql_LDADD =  \
   -lxalanMsg \
   -lxerces-c \
   -lz \
-  -lmysql \
+  -lmysqlclient \
   ./Common/libCommonUnitTests.la \
   ./MySql/libMySqlUnitTests.la  \
   ../MySQL/libFdoRdbmsMySQL.la  \
@@ -137,12 +137,12 @@ UnitTestMySql_LDADD =  \
   $(FDOUTILITIES)/SchemaMgr/Src/Sm/Ov/libSmOverrides.la \
   ../Rdbi/librdbi.la \
   ../Util/libutil.la \
-  -lmysql \
+  -lmysqlclient \
   -lz
 
 UnitTestMySql_LDFLAGS = \
-  -L/usr/lib/mysql \
-  -L$(FDOMYSQL)/lib
+  -L/usr/lib$(LIB64)/mysql \
+  -L$(FDOMYSQL)/lib$(LIB64)
 
 #Odbc
 UnitTestOdbc_SOURCES = OdbcTestRegister.cpp
