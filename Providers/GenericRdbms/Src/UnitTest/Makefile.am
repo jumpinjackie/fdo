@@ -193,7 +193,7 @@ UnitTestOdbc_LDADD =  \
   -lz
 
 UnitTestOdbc_LDFLAGS = \
-  -L$(FDOODBC)/lib
+  -L$(FDOODBC)/lib$(LIB64)
   
 #PostGis
 UnitTestPostGis_SOURCES = PostGisTestRegister.cpp
@@ -246,7 +246,7 @@ UnitTestPostGis_LDADD =  \
   -lcom_err
 
 UnitTestPostGis_LDFLAGS = \
-  -L$(FDOTHIRDPARTY)/pgsql/lib
+  -L$(FDOPOSTGRESQL)/lib$(LIB64)
   
 INCLUDES = \
   -I$(FDO)/Unmanaged/Inc \
@@ -268,7 +268,7 @@ INCLUDES = \
   -I../Fdo/FeatureCommands \
   -I./Common \
   -I./MySql \
-  -I./Odbc  \
+  -I./Odbc \
   -I./PostGis
 
 CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32 -D__STDC_LIMIT_MACROS -DRDBI_STATIC
