@@ -116,7 +116,7 @@
     <Link>
       <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;PostGisDriver.lib;libpq.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;Gdbi.lib;util.lib;SchemaMgr_OVNew.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)PostgreSQLProvider.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOPOSTGRESQL)\lib\ms;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOPOSTGRESQL)\lib\ms;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -159,7 +159,7 @@
     <Link>
       <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;PostGisDriver.lib;libpqdll.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;Gdbi.lib;util.lib;SchemaMgr_OVNew.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)PostgreSQLProvider.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOPOSTGRESQL)\lib\ms\Win64;$(FDOTHIRDPARTY)\pgsql\lib\ms\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOPOSTGRESQL)\lib\ms\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -199,7 +199,7 @@
     <Link>
       <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;PostGisDriver.lib;libpq.lib;FDO.lib;geometry_fgf.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;Gdbi.lib;LongTransactionManager.lib;SchemaMgr_OVNew.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)PostgreSQLProvider.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOPOSTGRESQL)\lib\ms;$(FDOTHIRDPARTY)\pgsql\lib\ms;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOPOSTGRESQL)\lib\ms;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)PostgreSQLProvider.pdb</ProgramDatabaseFile>
@@ -247,7 +247,7 @@
     <Link>
       <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;PostGisDriver.lib;libpqdll.lib;FDO.lib;geometry_fgf.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;Gdbi.lib;LongTransactionManager.lib;SchemaMgr_OVNew.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)PostgreSQLProvider.dll</OutputFile>
-      <AdditionalLibraryDirectories>..\..\Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOPOSTGRESQL)\lib\ms\Win64;$(FDOTHIRDPARTY)\pgsql\lib\ms\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOPOSTGRESQL)\lib\ms\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)PostgreSQLProvider.pdb</ProgramDatabaseFile>
