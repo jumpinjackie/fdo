@@ -871,7 +871,7 @@ void FdoExpressionFunctionTest::RunEmbeddedIntersectsTest2 ()
 #endif
 
 #ifdef _WIN32
-    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, PATH_MAX);
+    _wfullpath(fullpath, EE_HOSPITAL_TEST_FILE, 1024);
 #else
     char cpath[PATH_MAX];
     char cfullpath[PATH_MAX];
