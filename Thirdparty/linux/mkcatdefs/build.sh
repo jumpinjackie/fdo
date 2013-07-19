@@ -120,6 +120,9 @@ pushd src >& /dev/null
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    ./build 
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
    mv mkcatdefs .. 
 fi
 

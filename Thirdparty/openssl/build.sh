@@ -123,15 +123,26 @@ mkdir -p lib/linux
 chmod a+x ./config
 
 ./config
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
 
 if test "$TYPEACTION" == clean ; then
    rm -f ./lib/linux/*.*
    make clean
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
+   
    rm -f ./lib/linux/*.*
+   
    mv -f ./libssl.a ./lib/linux/libssl.a
    mv -f ./libcrypto.a ./lib/linux/libcrypto.a
 fi
