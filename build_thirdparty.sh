@@ -229,16 +229,37 @@ if test "$TYPECONFIGURE" == configure ; then
   fi
   
   aclocal
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
+  
   libtoolize --force
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
+
   automake --add-missing --copy
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
+
   autoconf
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 
   chmod a+x ./configure
 
   if test "$TYPEBUILD" == release; then
      ./configure --prefix="$PREFIXVAL"
+    if [ "$?" -ne 0 ] ; then
+      exit 1
+    fi
   else
      ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+    if [ "$?" -ne 0 ] ; then
+      exit 1
+    fi
   fi
 fi
 
@@ -258,32 +279,59 @@ fi
 if test "$ALLENABLE" == yes ; then
   chmod a+x ./Thirdparty.sh
   sh ./Thirdparty.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$FDOENABLE" == yes ; then
   chmod a+x ./Thirdparty_fdo.sh
   sh ./Thirdparty_fdo.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$SDFENABLE" == yes ; then
   chmod a+x ./Thirdparty_sdf.sh
   sh ./Thirdparty_sdf.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$WMSENABLE" == yes ; then
   chmod a+x ./Thirdparty_wms.sh
   sh ./Thirdparty_wms.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$WFSENABLE" == yes ; then
   chmod a+x ./Thirdparty_wfs.sh
   sh ./Thirdparty_wfs.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$GDALENABLE" == yes ; then
   chmod a+x ./Thirdparty_gdal.sh
   sh ./Thirdparty_gdal.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 elif test "$OGRENABLE" == yes ; then
   chmod a+x ./Thirdparty_ogr.sh
   sh ./Thirdparty_ogr.sh $CMDEX
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
   sudo make install
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 fi
 
 if test "$TYPEACTION" == uninstall ; then
   sudo make uninstall
+  if [ "$?" -ne 0 ] ; then
+    exit 1
+  fi
 fi
 
 popd >& /dev/null
