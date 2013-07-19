@@ -323,9 +323,24 @@ if test "$TYPECONFIGURE" == configure ; then
       fi
    
       aclocal
-      libtoolize --force
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
+      
+	  libtoolize --force
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
+
       automake --add-missing --copy
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
+
       autoconf
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
 
       chmod a+x ./configure
 
@@ -344,18 +359,30 @@ CMDEX="--c $TYPEBUILD --a $TYPEACTION --d $BUILDDOCS --m $TYPECONFIGURE --p $PRE
 if test "$FDOCOREENABLE" == yes; then
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       make
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == clean ; then
       make clean
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo make install
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == uninstall ; then
       sudo make uninstall
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 fi
 
@@ -365,18 +392,30 @@ if test "$FDOENABLE" == yes; then
    
    if test "$TYPEACTION" == clean ; then
       make clean
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       make
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo make install
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == uninstall ; then
       sudo make uninstall
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
    
    if test "$BUILDDOCS" == build ; then
@@ -415,18 +454,30 @@ if test "$UTILENABLE" == yes; then
 
    if test "$TYPEACTION" == clean ; then
       make clean
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
       make
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
       sudo make install
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 
    if test "$TYPEACTION" == uninstall ; then
       sudo make uninstall
+      if [ "$?" -ne 0 ] ; then
+        exit 1
+      fi
    fi
 fi
 
@@ -436,6 +487,9 @@ if test "$SHPENABLE" == yes; then
        pushd Providers/SHP >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -446,6 +500,9 @@ if test "$SDFENABLE" == yes; then
        pushd Providers/SDF >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -456,6 +513,9 @@ if test "$WFSENABLE" == yes; then
        pushd Providers/WFS >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -466,6 +526,9 @@ if test "$WMSENABLE" == yes; then
        pushd Providers/WMS >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -477,6 +540,9 @@ if test "$ARCENABLE" == yes; then
        pushd Providers/ArcSDE >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -488,6 +554,9 @@ if test "$RDBMSENABLE" == yes; then
        pushd Providers/GenericRdbms >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -498,6 +567,9 @@ if test "$GDALENABLE" == yes; then
        pushd Providers/GDAL >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -508,6 +580,9 @@ if test "$OGRENABLE" == yes; then
        pushd Providers/OGR >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -518,6 +593,9 @@ if test "$KINGORACLEENABLE" == yes; then
        pushd Providers/KingOracle >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
@@ -528,6 +606,9 @@ if test "$SQLITEENABLE" == yes; then
        pushd Providers/SQLite >& /dev/null
        chmod a+x ./build_linux.sh
        sh ./build_linux.sh $CMDEX
+       if [ "$?" -ne 0 ] ; then
+         exit 1
+       fi
        popd >& /dev/null
    fi
 fi
