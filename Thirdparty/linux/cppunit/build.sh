@@ -129,6 +129,9 @@ cd cppunit-1.9.0
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 popd >& /dev/null

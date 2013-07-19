@@ -126,10 +126,16 @@ mkdir -p lib/linux
 if test "$TYPEACTION" == clean ; then
    rm -f ./lib/linux/*.*
    make clean
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
    rm -f ./lib/linux/*.*
    cp -f ./lib/.libs/libcurl.a ./lib/linux
 fi

@@ -111,17 +111,29 @@ chmod a+x ./runConfigure
 chmod a+x config/pretty-make
 
 ./runConfigure -p linux -P "$XERCESCROOT" -b "$TYPEARCHITECTURE"
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
 
 if test "$TYPEACTION" == clean ; then
    make clean
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    sudo make install
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 popd >& /dev/null
@@ -134,16 +146,23 @@ chmod a+x ./configure
 chmod a+x ./runConfigure
 
 ./runConfigure -p linux -P "$XALANCROOT" -b "$TYPEARCHITECTURE"
+if [ "$?" -ne 0 ] ; then
+   exit 1
+fi
 
 if test "$TYPEACTION" == clean ; then
    make clean
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+      exit 1
+   fi
 fi
 
 popd >& /dev/null
-
-
 

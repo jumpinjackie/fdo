@@ -52,7 +52,7 @@ do
         TYPEACTION=clean
     else
         echo "$arg Invalid parameter $1"
-	exit 1
+    exit 1
     fi
     shift
     ;;
@@ -92,89 +92,98 @@ fi
 
 if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then 
 
-mkdir -p lib
-mkdir -p include
+    mkdir -p lib
+    mkdir -p include
 
-rm -f lib/*.libgdal.a    
-rm -f lib/*.libgdal.so    
-rm -f lib/*.libgdal.so.1    
-rm -f lib/*.libgdal.so.1.16.0   
-rm -f include/*
+    rm -f lib/*.libgdal.a    
+    rm -f lib/*.libgdal.so    
+    rm -f lib/*.libgdal.so.1    
+    rm -f lib/*.libgdal.so.1.16.0   
+    rm -f include/*
 
-chmod a+x ./configure
+    chmod a+x ./configure
 
-echo Build GDAL library with the following settings:
-echo     gif support         - internal
-echo     jpeg support        - internal
-echo     png support         - internal
-echo     tiff support        - internal
-echo     geotiff support     - internal
-echo     libz support        - internal
-echo     python support      - no
-echo     OGR support         - yes
-echo     postgreSQL support  - no
-echo     odbc support        - no
+    echo Build GDAL library with the following settings:
+    echo     gif support         - internal
+    echo     jpeg support        - internal
+    echo     png support         - internal
+    echo     tiff support        - internal
+    echo     geotiff support     - internal
+    echo     libz support        - internal
+    echo     python support      - no
+    echo     OGR support         - yes
+    echo     postgreSQL support  - no
+    echo     odbc support        - no
 
-if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting CFLAGS: "$CFLAGS""
-export CFLAGS
-fi
+    if [[ "$CFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+    CFLAGS="$CFLAGS -m$TYPEARCHITECTURE"
+    echo "Exporting CFLAGS: "$CFLAGS""
+    export CFLAGS
+    fi
 
-if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting CPPFLAGS: "$CPPFLAGS""
-export CPPFLAGS
-fi
+    if [[ "$CPPFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+    CPPFLAGS="$CPPFLAGS -m$TYPEARCHITECTURE"
+    echo "Exporting CPPFLAGS: "$CPPFLAGS""
+    export CPPFLAGS
+    fi
 
-if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
-LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
-echo "Exporting LDFLAGS: "$LDFLAGS""
-export LDFLAGS
-fi
+    if [[ "$LDFLAGS" != *"-m$TYPEARCHITECTURE"* ]]; then
+    LDFLAGS="$LDFLAGS -m$TYPEARCHITECTURE"
+    echo "Exporting LDFLAGS: "$LDFLAGS""
+    export LDFLAGS
+    fi
 
-if test "$TYPEARCHITECTURE" == "32" ; then
-if test "$HOSTTYPE" == "i686" ; then
-if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
-CPPFLAGS="$CPPFLAGS -march=i686"
-echo "Exporting CPPFLAGS: "$CPPFLAGS""
-export CPPFLAGS
-fi
-fi
-fi
+    if test "$TYPEARCHITECTURE" == "32" ; then
+    if test "$HOSTTYPE" == "i686" ; then
+    if [[ "$CPPFLAGS" != *"-march=i686"* ]]; then
+    CPPFLAGS="$CPPFLAGS -march=i686"
+    echo "Exporting CPPFLAGS: "$CPPFLAGS""
+    export CPPFLAGS
+    fi
+    fi
+    fi
 
-./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal --with-odbc=no
+    ./configure --with-gif=internal --with-jpeg=internal --with-png=internal --with-libtiff=internal --with-geotiff=internal --with-pg=no --with-python=no --with-libz=internal --with-odbc=no
+    if [ "$?" -ne 0 ] ; then
+       exit 1
+    fi
 
-if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
+    if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
 
-make
+        make
+        if [ "$?" -ne 0 ] ; then
+           exit 1
+        fi
 
-cp -f .libs/libgdal.a lib/
-cp -f .libs/libgdal.so lib/
-cp -f .libs/libgdal.so.1 lib/
-cp -f .libs/libgdal.so.1.16.0 lib/
+        cp -f .libs/libgdal.a lib/
+        cp -f .libs/libgdal.so lib/
+        cp -f .libs/libgdal.so.1 lib/
+        cp -f .libs/libgdal.so.1.16.0 lib/
 
-cp -f port/*.h include/
-cp -f gcore/*.h include/
-cp -f alg/*.h include/
-cp -f ogr/*.h include/
+        cp -f port/*.h include/
+        cp -f gcore/*.h include/
+        cp -f alg/*.h include/
+        cp -f ogr/*.h include/
 
-fi
+    fi
 
-if test "$TYPEACTION" == clean ; then
+    if test "$TYPEACTION" == clean ; then
 
-rm -rf lib/libgdal.a
-rm -rf lib/libgdal.so
-rm -rf lib/libgdal.so.1
-rm -rf lib/libgdal.so.1.16.0
+        rm -rf lib/libgdal.a
+        rm -rf lib/libgdal.so
+        rm -rf lib/libgdal.so.1
+        rm -rf lib/libgdal.so.1.16.0
 
-make clean
+        make clean
+        if [ "$?" -ne 0 ] ; then
+           exit 1
+        fi
 
-fi
+    fi
 
 else
 
-echo "Building of the Thirdparty/GDAL libraries has been skipped. Environment variable FDOGDAL points to a previously installed version of GDAL at $FDOGDAL"
+    echo "Building of the Thirdparty/GDAL libraries has been skipped. Environment variable FDOGDAL points to a previously installed version of GDAL at $FDOGDAL"
 
 fi
 

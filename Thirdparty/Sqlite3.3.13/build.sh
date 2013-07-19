@@ -127,22 +127,45 @@ else
 fi
 
 aclocal
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
+
 libtoolize --force
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
+
 automake --add-missing --copy
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
+
 autoconf
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
 
 chmod a+x ./configure
 
 ./configure
+if [ "$?" -ne 0 ] ; then
+  exit 1
+fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == clean ; then
    make clean
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 popd >& /dev/null
-
 
