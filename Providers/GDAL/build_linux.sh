@@ -177,9 +177,24 @@ if test "$TYPECONFIGURE" == configure ; then
    fi
    
    aclocal
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
+
    libtoolize --force
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
+
    automake --add-missing --copy
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
+
    autoconf
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 
    if test "$TYPEBUILD" == release; then
       ./configure --prefix="$PREFIXVAL"
@@ -189,19 +204,31 @@ if test "$TYPECONFIGURE" == configure ; then
 fi
    
 if test "$TYPEACTION" == clean ; then
-  make clean
+   make clean
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == build ; then
    make
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == buildinstall || test "$TYPEACTION" == install ; then
    sudo make install
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 if test "$TYPEACTION" == uninstall ; then
    sudo make uninstall
+   if [ "$?" -ne 0 ] ; then
+     exit 1
+   fi
 fi
 
 exit 0
