@@ -311,6 +311,18 @@ fi
 fi
 fi
 
+if [[ "$CPPFLAGS" != *"-Wno-write-strings"* ]]; then
+CPPFLAGS="$CPPFLAGS -Wno-write-strings"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
+if [[ "$CPPFLAGS" != *"-Wno-deprecated"* ]]; then
+CPPFLAGS="$CPPFLAGS -Wno-deprecated"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
 ### configure build ###
 if test "$TYPECONFIGURE" == configure ; then
    if test "$FDOCOREENABLE" == yes || test "$THRPENABLE" == yes || test "$FDOENABLE" == yes || test "$UTILENABLE" == yes; then
