@@ -24,8 +24,7 @@
 #include "UnitTestUtil.h"
 
 #ifndef _WIN32
-#   define LLONG_MAX    9223372036854775807LL
-#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#include <limits.h> 
 #endif
 
 CPPUNIT_TEST_SUITE_REGISTRATION (FilterParseTest);
