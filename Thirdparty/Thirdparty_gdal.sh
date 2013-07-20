@@ -100,6 +100,9 @@ cd gdal
 echo Building gdal
 chmod a+x ./build.sh
 sh ./build.sh $CMDEX
+if [ "$?" -ne 0 ] ; then
+exit 1
+fi
 popd >& /dev/null
 
 
