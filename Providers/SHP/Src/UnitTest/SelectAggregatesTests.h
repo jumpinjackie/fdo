@@ -36,10 +36,12 @@ class SelectAggregatesTests :
     CPPUNIT_TEST (select_orderby_decimal);
     CPPUNIT_TEST (select_orderby_scrambled_property_ids);
     CPPUNIT_TEST (select_orderby_empty_select_list);
+#ifdef _WIN32
     // TODO: Determine cause of test aborting on Linux 64
     // HACK: Comment out test aborting on Linux 64. 
-    // CPPUNIT_TEST (selectAggregatesSpatialExtentsTest);
-    // CPPUNIT_TEST (performance_count_mbr);
+    CPPUNIT_TEST (selectAggregatesSpatialExtentsTest);
+    CPPUNIT_TEST (performance_count_mbr);
+#endif
     CPPUNIT_TEST (select_aggregates_fdoclass);
     CPPUNIT_TEST_SUITE_END ();
 
