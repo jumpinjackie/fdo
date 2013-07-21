@@ -32,7 +32,7 @@
 CPPUNIT_TEST_SUITE_REGISTRATION (SelectAggregatesTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (SelectAggregatesTests, "SelectAggregatesTests");
 
-#define		USE_MONSTER_SHP		false  // for perpormance test only. 
+#define USE_MONSTER_SHP false  // for perpormance test only. 
 
 FdoPtr<FdoIConnection> SelectAggregatesTests::mConnection;
 
@@ -1040,53 +1040,53 @@ void SelectAggregatesTests::performance_count_mbr ()
     clock_t start;
     clock_t finish;
 
+    FdoPtr<FdoIConnection> connection = NULL;
+    FdoPtr<FdoIDataReader> datareader = NULL;
+
     try
     {
-
-        FdoPtr<FdoIConnection>	connection = ShpTests::GetConnection ();
+        connection = ShpTests::GetConnection ();
 #ifdef _WIN32
-		connection->SetConnectionString (USE_MONSTER_SHP? L"DefaultFileLocation=C:\\bugs\\USA_3G" :
-															  L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
+        connection->SetConnectionString (USE_MONSTER_SHP? L"DefaultFileLocation=C:\\bugs\\USA_3G" : L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
 #else
         connection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
 #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)connection->CreateCommand (FdoCommandType_SelectAggregates);
+	FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+	FdoPtr<FdoISelectAggregates> select = (FdoISelectAggregates*)connection->CreateCommand (FdoCommandType_SelectAggregates);
  
-		select->SetFeatureClassName (USE_MONSTER_SHP? L"USA_S0_line" : L"Trees");
+	select->SetFeatureClassName (USE_MONSTER_SHP? L"USA_S0_line" : L"Trees");
 
         select->SetDistinct(false);
 
         FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
         selectedIds->Clear();
  
-		        //////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
         // Try function count() only:
         //////////////////////////////////////////////////////////////////////
-		printf("--- Try Count():\n");
+        printf("--- Try Count():\n");
 
         selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"Total", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(\"FeatId\")")))));
-  	 
-        long	 count = 0;
-		FdoInt64 total = 0;
+        long  count = 0;
+	FdoInt64 total = 0;
 
-		start = clock();
+        start = clock();
 
-		FdoPtr<FdoIDataReader> datareader = select->Execute ();
+        datareader = select->Execute ();
 
         while (datareader->ReadNext ())
         {
             total = datareader->GetInt64(L"Total");
-			printf("total=%ld\n", total);
-			CPPUNIT_ASSERT_MESSAGE("Count wrong", total == (USE_MONSTER_SHP? 28049359 : 45569));
+	    printf("total=%ld\n", total);
+	    CPPUNIT_ASSERT_MESSAGE("Count wrong", total == (USE_MONSTER_SHP? 28049359 : 45569));
             count++;
         }
         CPPUNIT_ASSERT_MESSAGE("Wrong count(*) rowcount", count==1);
 
-		finish = clock();
-		printf("Seconds to read Count() from SHP file containing %ld records: %g\n", (long)total, (double)((finish-start)/CLOCKS_PER_SEC));
+        finish = clock();
+        printf("Seconds to read Count() from SHP file containing %ld records: %g\n", (long)total, (double)((finish-start)/CLOCKS_PER_SEC));
 
         datareader->Close();
         datareader = NULL;
@@ -1094,82 +1094,87 @@ void SelectAggregatesTests::performance_count_mbr ()
         //////////////////////////////////////////////////////////////////////
         // Try function SpatialExtents() only:
         //////////////////////////////////////////////////////////////////////
-		printf("--- Try SpatialExtents():\n");
+        printf("--- Try SpatialExtents():\n");
 
         selectedIds->Clear();
         selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"MBR", FdoPtr<FdoExpression>(FdoExpression::Parse(L"SpatialExtents(\"Geometry\")")))));
   	 
-		start = clock();
+        start = clock();
 
-		datareader = select->Execute ();
+        datareader = select->Execute ();
 
-		count = 0;
+        count = 0;
         while (datareader->ReadNext ())
         {
             FdoPtr<FdoByteArray> geomBytes = datareader->GetGeometry(L"MBR");
             CPPUNIT_ASSERT_MESSAGE("spatial extents NULL", geomBytes != NULL );
 
-			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
 
-			FdoGeometryType geomType = geom->GetDerivedType();
-			if (geomType != FdoGeometryType_Polygon)
-				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
+            FdoGeometryType geomType = geom->GetDerivedType();
+            if (geomType != FdoGeometryType_Polygon)
+                CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
-			FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
-			printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
+            FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
+            printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
 
-			count++;
+           count++;
         }
         CPPUNIT_ASSERT_MESSAGE("Wrong count for SpatialExtents", count==1);
 
-		finish = clock();
-		printf("Seconds to get SpatialExtents(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
+        finish = clock();
+        printf("Seconds to get SpatialExtents(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
 
         datareader->Close();
         datareader = NULL;
 
-		//////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////
         // Try function SpatialExtents() + Count() :
         //////////////////////////////////////////////////////////////////////
-		printf("--- Try SpatialExtents() + Count():\n");
+        printf("--- Try SpatialExtents() + Count():\n");
 
-		selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"Total", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(\"FeatId\")")))));
+        selectedIds->Add(FdoPtr<FdoComputedIdentifier>(FdoComputedIdentifier::Create(L"Total", FdoPtr<FdoExpression>(FdoExpression::Parse(L"Count(\"FeatId\")")))));
   	 
-		start = clock();
+        start = clock();
 
-		datareader = select->Execute ();
+        datareader = select->Execute ();
 
-		count = 0;
+        count = 0;
         while (datareader->ReadNext ())
         {
-            FdoInt64	total = datareader->GetInt64(L"Total");
-			printf("total=%ld\n", total);
+            FdoInt64 total = datareader->GetInt64(L"Total");
+            printf("total=%ld\n", total);
             CPPUNIT_ASSERT_MESSAGE("Count wrong", total == (USE_MONSTER_SHP? 28049359 : 45569));
 
             FdoPtr<FdoByteArray> geomBytes = datareader->GetGeometry(L"MBR");
             CPPUNIT_ASSERT_MESSAGE("spatial extents NULL", geomBytes != NULL );
+            
+            FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+            FdoGeometryType geomType = geom->GetDerivedType();
+            if (geomType != FdoGeometryType_Polygon)
+               CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
 
-			FdoPtr<FdoIGeometry> geom = gf->CreateGeometryFromFgf(geomBytes);
+            FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
+            //printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
 
-			FdoGeometryType geomType = geom->GetDerivedType();
-			if (geomType != FdoGeometryType_Polygon)
-				CPPUNIT_FAIL("Expected Polygon geometry for SpatialExtents() result");
-
-			FdoPtr<FdoIEnvelope>  env = geom->GetEnvelope();
-			//printf("env: (%lf, %lf)(%lf, %lf)\n", env->GetMinX(), env->GetMinY(), env->GetMaxX(), env->GetMaxY());
-
-			count++;
+            count++;
         }
         CPPUNIT_ASSERT_MESSAGE("Wrong count for SpatialExtents", count==1);
 
-		finish = clock();
-		printf("Seconds to get SpatialExtents() + Count(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
+        finish = clock();
+        printf("Seconds to get SpatialExtents() + Count(): %g\n", (double)((finish-start)/CLOCKS_PER_SEC));
 
         datareader->Close();
         datareader = NULL;
     }
     catch (FdoException* e)
     {
+        if (connection)
+            connection->Close();
+        connection - NULL;
+        if (datareader)
+            datareader->Close();
+        datareader = NULL;
         TestCommonFail(e);
     }
 }
