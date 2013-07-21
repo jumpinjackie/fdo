@@ -118,6 +118,21 @@ fi
 fi
 fi
 
+if test "$TYPEARCHITECTURE" == "64" ; then
+if [[ "$CFLAGS" != *"-fPIC"* ]]; then
+CFLAGS="$CFLAGS -fPIC"
+echo "Exporting CFLAGS: "$CFLAGS""
+export CFLAGS
+fi
+
+if [[ "$CPPFLAGS" != *"-fPIC"* ]]; then
+CPPFLAGS="$CPPFLAGS -fPIC"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+fi
+
+
 mkdir -p lib/linux
 
 chmod a+x ./config
