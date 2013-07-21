@@ -63,13 +63,13 @@ void SpatialContextTest::TestFdo309 ()
 
         FdoPtr<FdoIApplySchema>pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
         pCmd->SetFeatureSchema( pTestSchema );
-	    pCmd->Execute();
+        pCmd->Execute();
         pTestSchema = NULL;
 
         connection->Close();
         connection = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
-		FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)connection->CreateCommand( FdoCommandType_GetSpatialContexts );
+        FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)connection->CreateCommand( FdoCommandType_GetSpatialContexts );
 
         // Get a SC reader
         FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
@@ -77,24 +77,24 @@ void SpatialContextTest::TestFdo309 ()
         // Iterate ...
         while ( reader->ReadNext() )
         {
-			reader->GetExtent();
-		}
+            reader->GetExtent();
+        }
 
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+        
+    printf( "Done\n" );
 }
 
 FdoFeatureSchemaP SpatialContextTest::InitSchema ( FdoIConnection* connection )
@@ -127,11 +127,11 @@ FdoFeatureClassP SpatialContextTest::InitFeatureClass( FdoStringP className )
     pProp->SetNullable(false);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
-	pGeomProp->SetHasElevation(true);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
+    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+    pGeomProp->SetHasElevation(true);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pGeomProp );
-	pfeatureclass->SetGeometryProperty( pGeomProp );
+    pfeatureclass->SetGeometryProperty( pGeomProp );
 
     return pfeatureclass;
 }

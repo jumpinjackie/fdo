@@ -23,16 +23,16 @@
 #include <Fdo.h>
 #include <TestCommonConstraints.h>
 
-#define DBG(x)		//x
-#define DBG_MAX(x)		//x
+#define DBG(x)        //x
+#define DBG_MAX(x)        //x
 
 class ConstraintsTest : TestCommonConstraints
 {
-	CPPUNIT_TEST_SUB_SUITE( ConstraintsTest, TestCommonConstraints );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUB_SUITE( ConstraintsTest, TestCommonConstraints );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	ConstraintsTest(void);
+    ConstraintsTest(void);
     virtual ~ConstraintsTest(void);
 //    void setUp ();
 
@@ -41,4 +41,4 @@ protected:
     virtual FdoBoolean FdoValidatesData();
 };
 
-#endif	//CONSTRAINTSTEST_H
+#endif    //CONSTRAINTSTEST_H

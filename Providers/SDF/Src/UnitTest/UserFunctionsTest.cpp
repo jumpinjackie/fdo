@@ -102,68 +102,68 @@ void UserFunctionsTest::tearDown()
 }
 
 class UserFdoFunctionConcat : public FdoExpressionEngineINonAggregateFunction
-	
+    
 {
 public:
 
-	static UserFdoFunctionConcat* Create() {return new UserFdoFunctionConcat();};
+    static UserFdoFunctionConcat* Create() {return new UserFdoFunctionConcat();};
 
-	virtual FdoFunctionDefinition* GetFunctionDefinition()
-	{
+    virtual FdoFunctionDefinition* GetFunctionDefinition()
+    {
 
-		if (!func)
-		{
-			FdoString *desc = NULL;
-			FdoPtr<FdoArgumentDefinition>strParm;
-			FdoPtr<FdoArgumentDefinitionCollection>strParms = FdoArgumentDefinitionCollection::Create();
-		 
-			desc = L"Argument that represents a string";
-			strParm = FdoArgumentDefinition::Create(L"strValue1", desc, FdoDataType_String);
-			strParms->Add(strParm);
-			strParm = FdoArgumentDefinition::Create(L"strValue2", desc, FdoDataType_String);
-			strParms->Add(strParm);
-			desc = L"UserConcat";
-			FdoPtr<FdoSignatureDefinition> concatSignatureDef = FdoSignatureDefinition::Create(FdoDataType_String, strParms);
-			FdoPtr<FdoSignatureDefinitionCollection> concatSignatureDefCol = FdoSignatureDefinitionCollection::Create();
-			concatSignatureDefCol->Add(concatSignatureDef);
-			func = FdoFunctionDefinition::Create(L"UserConcat", desc, false, concatSignatureDefCol);
-		}
+        if (!func)
+        {
+            FdoString *desc = NULL;
+            FdoPtr<FdoArgumentDefinition>strParm;
+            FdoPtr<FdoArgumentDefinitionCollection>strParms = FdoArgumentDefinitionCollection::Create();
+         
+            desc = L"Argument that represents a string";
+            strParm = FdoArgumentDefinition::Create(L"strValue1", desc, FdoDataType_String);
+            strParms->Add(strParm);
+            strParm = FdoArgumentDefinition::Create(L"strValue2", desc, FdoDataType_String);
+            strParms->Add(strParm);
+            desc = L"UserConcat";
+            FdoPtr<FdoSignatureDefinition> concatSignatureDef = FdoSignatureDefinition::Create(FdoDataType_String, strParms);
+            FdoPtr<FdoSignatureDefinitionCollection> concatSignatureDefCol = FdoSignatureDefinitionCollection::Create();
+            concatSignatureDefCol->Add(concatSignatureDef);
+            func = FdoFunctionDefinition::Create(L"UserConcat", desc, false, concatSignatureDefCol);
+        }
 
-		return FDO_SAFE_ADDREF(func);
-	}
+        return FDO_SAFE_ADDREF(func);
+    }
 
 
 
-	virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues)
-	{
-		wchar_t res[1000];
-		FdoPtr<FdoStringValue> string1 = (FdoStringValue *) literalValues->GetItem(0);
-		FdoPtr<FdoStringValue> string2 = (FdoStringValue *) literalValues->GetItem(1);
-		wcscpy (res, string1->GetString());
-		wcscat (res, string2->GetString());
-		string->SetString(res);
+    virtual FdoLiteralValue* Evaluate(FdoLiteralValueCollection *literalValues)
+    {
+        wchar_t res[1000];
+        FdoPtr<FdoStringValue> string1 = (FdoStringValue *) literalValues->GetItem(0);
+        FdoPtr<FdoStringValue> string2 = (FdoStringValue *) literalValues->GetItem(1);
+        wcscpy (res, string1->GetString());
+        wcscat (res, string2->GetString());
+        string->SetString(res);
         string->AddRef();
-		return string;
+        return string;
 
-	}
+    }
 
-	virtual UserFdoFunctionConcat* CreateObject() { return new UserFdoFunctionConcat();};
+    virtual UserFdoFunctionConcat* CreateObject() { return new UserFdoFunctionConcat();};
 private:
-	FdoFunctionDefinition* func;
-	FdoStringValue *string;
-	UserFdoFunctionConcat()
-	{
-		string = FdoStringValue::Create();
-		func = NULL;
-	};
+    FdoFunctionDefinition* func;
+    FdoStringValue *string;
+    UserFdoFunctionConcat()
+    {
+        string = FdoStringValue::Create();
+        func = NULL;
+    };
 
-	~UserFdoFunctionConcat()
-	{
-		string->Release();
-		FDO_SAFE_RELEASE(func);
-	}
+    ~UserFdoFunctionConcat()
+    {
+        string->Release();
+        FDO_SAFE_RELEASE(func);
+    }
 
-	virtual void Dispose()
+    virtual void Dispose()
     {
         delete this;
     }
@@ -173,66 +173,66 @@ private:
 
 
 class FdoFunctionMax2 : public FdoExpressionEngineIAggregateFunction
-	
+    
 {
 public:
 
-	static FdoFunctionMax2* Create() {return new FdoFunctionMax2();};
+    static FdoFunctionMax2* Create() {return new FdoFunctionMax2();};
 
-	virtual FdoFunctionDefinition* GetFunctionDefinition()
-	{
+    virtual FdoFunctionDefinition* GetFunctionDefinition()
+    {
 
-		if (!function)
-		{
-			FdoString *desc = L"Returns the maximum value of an expression";
-			function = FdoCommonMiscUtil::CreateFunctionDefinition(L"UserDefinedMax", desc, true, 7,
-			//function = FdoCommonMiscUtil::CreateFunctionDefinition(L"Max", desc, true, 7,
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
-				FdoPropertyType_DataProperty, FdoDataType_DateTime, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime,
-				FdoPropertyType_DataProperty, FdoDataType_String, 1, FdoPropertyType_DataProperty, FdoDataType_String,
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
-				FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
+        if (!function)
+        {
+            FdoString *desc = L"Returns the maximum value of an expression";
+            function = FdoCommonMiscUtil::CreateFunctionDefinition(L"UserDefinedMax", desc, true, 7,
+            //function = FdoCommonMiscUtil::CreateFunctionDefinition(L"Max", desc, true, 7,
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Double, 
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Single, 
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Decimal, 
+                FdoPropertyType_DataProperty, FdoDataType_DateTime, 1, FdoPropertyType_DataProperty, FdoDataType_DateTime,
+                FdoPropertyType_DataProperty, FdoDataType_String, 1, FdoPropertyType_DataProperty, FdoDataType_String,
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Byte, 
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int16, 
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int32, 
+                FdoPropertyType_DataProperty, FdoDataType_Double, 1, FdoPropertyType_DataProperty, FdoDataType_Int64);
 
-		}
+        }
 
-		return FDO_SAFE_ADDREF(function);
-	}
+        return FDO_SAFE_ADDREF(function);
+    }
 
-	virtual void Process(FdoLiteralValueCollection *literalValues)
-	{
-		FdoPtr<FdoInt32Value> int32 = (FdoInt32Value *) literalValues->GetItem(0);
-		if (int32->GetInt32() > m_Max)
-			m_Max = int32->GetInt32();
-	}
+    virtual void Process(FdoLiteralValueCollection *literalValues)
+    {
+        FdoPtr<FdoInt32Value> int32 = (FdoInt32Value *) literalValues->GetItem(0);
+        if (int32->GetInt32() > m_Max)
+            m_Max = int32->GetInt32();
+    }
 
-	virtual FdoLiteralValue* GetResult()
-	{
-		return FdoDoubleValue::Create(m_Max);
-	}
+    virtual FdoLiteralValue* GetResult()
+    {
+        return FdoDoubleValue::Create(m_Max);
+    }
 
-	virtual FdoFunctionMax2* CreateObject() { return new FdoFunctionMax2();};
+    virtual FdoFunctionMax2* CreateObject() { return new FdoFunctionMax2();};
 
 private:
-	double m_Max;
+    double m_Max;
 
-	FdoFunctionMax2()
-	{
-		m_Max = -1E100;
-		function = NULL;
-	};
+    FdoFunctionMax2()
+    {
+        m_Max = -1E100;
+        function = NULL;
+    };
 
-	~FdoFunctionMax2()
-	{
-		FDO_SAFE_RELEASE(function);
-	}
+    ~FdoFunctionMax2()
+    {
+        FDO_SAFE_RELEASE(function);
+    }
 
-	FdoFunctionDefinition* function;
+    FdoFunctionDefinition* function;
 
-	virtual void Dispose()
+    virtual void Dispose()
     {
         delete this;
     }
@@ -449,14 +449,14 @@ void UserFunctionsTest::selectUserDefinedNonAggregatesTest()
         userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(UserFdoFunctionConcat::Create()));
         FdoPtr<FdoClass> classDef = FdoClass::Create(L"TestClass", L"test class");
         FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
-		FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
-		dpd->SetDataType(FdoDataType_String);
-		properties->Add(dpd);
+        FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
+        dpd->SetDataType(FdoDataType_String);
+        properties->Add(dpd);
 
-		dpd = FdoDataPropertyDefinition::Create(L"ID", L"The id");
-		dpd->SetDataType(FdoDataType_Int32);
-		dpd->SetIsAutoGenerated(false);
-		properties->Add(dpd);
+        dpd = FdoDataPropertyDefinition::Create(L"ID", L"The id");
+        dpd->SetDataType(FdoDataType_Int32);
+        dpd->SetIsAutoGenerated(false);
+        properties->Add(dpd);
 
         FdoPtr<FdoExpressionEngine> engine = FdoExpressionEngine::Create(testReader, classDef, userDefinedFunctions);
 
@@ -493,14 +493,14 @@ void UserFunctionsTest::selectUserDefinedAggregatesTest()
         userDefinedFunctions->Add(FdoPtr<FdoExpressionEngineIFunction>(UserFdoFunctionConcat::Create()));
         FdoPtr<FdoClass> classDef = FdoClass::Create(L"TestClass", L"test class");
         FdoPtr<FdoPropertyDefinitionCollection> properties = classDef->GetProperties();
-		FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
-		dpd->SetDataType(FdoDataType_String);
-		properties->Add(dpd);
+        FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(L"Name", L"The name of the object");
+        dpd->SetDataType(FdoDataType_String);
+        properties->Add(dpd);
 
-		dpd = FdoDataPropertyDefinition::Create(L"ID", L"The id");
-		dpd->SetDataType(FdoDataType_Int32);
-		dpd->SetIsAutoGenerated(false);
-		properties->Add(dpd);
+        dpd = FdoDataPropertyDefinition::Create(L"ID", L"The id");
+        dpd->SetDataType(FdoDataType_Int32);
+        dpd->SetIsAutoGenerated(false);
+        properties->Add(dpd);
 
         FdoPtr<FdoExpressionEngine> engine = FdoExpressionEngine::Create(testReader, classDef, userDefinedFunctions);
 

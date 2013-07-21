@@ -30,7 +30,7 @@
  */
 
 enum AssociationInsertType {
-	NoSchema,
+    NoSchema,
     NoIdentity,
     WithIdentityBothSet,
     WithIdentityParent,
@@ -62,14 +62,14 @@ public:
     void insert_NoIdent();
     void insert_NoIdentAssocFeatClass ();
     void insert_WithIdent();
-	void insert_Cardinality_1_1();
+    void insert_Cardinality_1_1();
     void insert_WithIdentNoFeatClass();
     void insert_ManyWithIdent();
     void insert_WithIdentParent();
     void insert_WithIdentAssociated();
     void insert_WithIdentError();
 
-	FdoIConnection* openConnection( bool re_create=true) { return schemaUtil.openConnection(re_create); }
+    FdoIConnection* openConnection( bool re_create=true) { return schemaUtil.openConnection(re_create); }
 
 private:
     void masterTestNoObj( AssociationInsertType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat=false, bool ownerIsFeat=true );

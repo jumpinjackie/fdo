@@ -45,9 +45,9 @@ enum FgfGeometryType
 // the type of coordinates used for this object.
 enum FgfCoordinateType
 {
-	FgfCoordinateType_XY	= 0,
-	FgfCoordinateType_XYZ	= 1,
-	FgfCoordinateType_M	= 2
+    FgfCoordinateType_XY    = 0,
+    FgfCoordinateType_XYZ    = 1,
+    FgfCoordinateType_M    = 2
 };
 
 // A stream writer for the FGF geometry data

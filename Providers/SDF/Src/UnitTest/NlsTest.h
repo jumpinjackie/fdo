@@ -40,7 +40,7 @@ public:
     NlsTest(void);
     virtual ~NlsTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     // Test without reconnecting between create schema, insert features, select features
     void Test1 ();

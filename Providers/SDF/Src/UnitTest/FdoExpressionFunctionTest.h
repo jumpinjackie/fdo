@@ -80,7 +80,7 @@ protected:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
 
-	void Connect ();
+    void Connect ();
 
     //-------------------------------------------------------------------------
     //                     Combination Unit Test Functions
