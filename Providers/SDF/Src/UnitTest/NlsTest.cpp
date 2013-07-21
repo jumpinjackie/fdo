@@ -87,7 +87,7 @@ void NlsTest::DoTest ( bool reconnect )
 
         FdoPtr<FdoIApplySchema>pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
         pCmd->SetFeatureSchema( pTestSchema );
-	    pCmd->Execute();
+        pCmd->Execute();
         pTestSchema = NULL;
 
         FdoPtr<FdoIDescribeSchema>pDescSchemaCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -111,11 +111,11 @@ void NlsTest::DoTest ( bool reconnect )
         SelectFeatures( connection, GetClass2Name(), true );
     }
     catch ( FdoException* e )
-	{
+    {
         printf("Test1 Error: %ls\n", e->GetExceptionMessage() );
         e->Release();
-		throw "Association schema TestLoad exception";
-	}
+        throw "Association schema TestLoad exception";
+    }
 }
 
 FdoFeatureSchemaP NlsTest::InitSchema ( FdoIConnection* connection )
@@ -154,11 +154,11 @@ FdoFeatureClassP NlsTest::InitFeatureClass( FdoStringP className )
     pProp->SetNullable(false);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
-	pGeomProp->SetHasElevation(true);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
+    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+    pGeomProp->SetHasElevation(true);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pGeomProp );
-	pfeatureclass->SetGeometryProperty( pGeomProp );
+    pfeatureclass->SetGeometryProperty( pGeomProp );
 
     return pfeatureclass;
 }

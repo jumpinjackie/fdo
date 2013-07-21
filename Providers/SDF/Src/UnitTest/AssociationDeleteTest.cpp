@@ -34,7 +34,7 @@ void AssociationDeleteTest::masterTestNoObj( AssociationDeleteType type, FdoDele
     int  deletedCount = 1;
     try
     {
-		AssociationSchemaTest::SetDeleteRule( deleteRule );
+        AssociationSchemaTest::SetDeleteRule( deleteRule );
         // Setup the data
        if( assocIsFeat )
             insertUtil.insert_NoIdentAssocFeatClass();
@@ -43,40 +43,40 @@ void AssociationDeleteTest::masterTestNoObj( AssociationDeleteType type, FdoDele
            // The rule used to create the schema; this is should be the first call to this method
            // for this schema
             if( type == Delete_NoIdentity )
-				insertUtil.insert_NoIdent();
+                insertUtil.insert_NoIdent();
             else
                 insertUtil.insert_WithIdent();
        }
 
-	   if( deleteRule == FdoDeleteRule_Prevent )
-			shouldFail = true;
+       if( deleteRule == FdoDeleteRule_Prevent )
+            shouldFail = true;
 
-	   //reset the delete rule
-	   AssociationSchemaTest::SetDeleteRule( FdoDeleteRule_Break );
+       //reset the delete rule
+       AssociationSchemaTest::SetDeleteRule( FdoDeleteRule_Break );
 
-	   FdoPtr<FdoIConnection> connection = insertUtil.openConnection(false);
+       FdoPtr<FdoIConnection> connection = insertUtil.openConnection(false);
 
         FdoPtr<FdoIDelete>deleteCmd = (FdoIDelete*)connection->CreateCommand( FdoCommandType_Delete );
-		deleteCmd->SetFeatureClassName(L"TestFeatureClass");
+        deleteCmd->SetFeatureClassName(L"TestFeatureClass");
         FdoPtr<FdoComparisonCondition>pFilter;
         if( type == Delete_NoIdentity  && ! assocIsFeat )
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Id") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(10) ) ); 
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Id") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(10) ) ); 
             //deleteCmd->SetFilter(L"Association Prop1.Id=10");
         else
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Name One") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Name One") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
             //deleteCmd->SetFilter(L"'Association Prop1'.'Name One'='Karim'");
 
         deleteCmd->SetFilter( pFilter );
         int count = deleteCmd->Execute();
       
-		if( deleteRule == FdoDeleteRule_Cascade )
-			deletedCount = 2;
+        if( deleteRule == FdoDeleteRule_Cascade )
+            deletedCount = 2;
         if( deletedCount != count )
         {
             printf("Number of deleted object should be %d\n", deletedCount );
@@ -88,11 +88,11 @@ void AssociationDeleteTest::masterTestNoObj( AssociationDeleteType type, FdoDele
         if( ! shouldFail )
         {
             printf("Association delete test unexpected error: %ls\n", exp->GetExceptionMessage() );
-			CPPUNIT_ASSERT(false);
+            CPPUNIT_ASSERT(false);
         }
         exp->Release();
         return;
-	}
+    }
 
     if( shouldFail )
     {
@@ -114,19 +114,19 @@ void AssociationDeleteTest::masterTestNoObjReverse( AssociationDeleteType type  
         FdoPtr<FdoIConnection> connection = insertUtil.openConnection(false);
 
         FdoPtr<FdoIDelete>deleteCmd = (FdoIDelete*)connection->CreateCommand( FdoCommandType_Delete );
-		deleteCmd->SetFeatureClassName(L"TestClass");
+        deleteCmd->SetFeatureClassName(L"TestClass");
         FdoPtr<FdoComparisonCondition>pFilter;
         if( type == Delete_NoIdentity )
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"10") ) ); 
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"10") ) ); 
             //deleteCmd->SetFilter(L"Id=10");
         else
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Name One") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Name One") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
             //deleteCmd->SetFilter(L"'Name One'='Karim'");
 
         deleteCmd->SetFilter( pFilter );
@@ -138,7 +138,7 @@ void AssociationDeleteTest::masterTestNoObjReverse( AssociationDeleteType type  
         printf("Delete Master Test(NO OBJ REVERSE)Error: %ls\n", exp->GetExceptionMessage() );
         exp->Release();
         return;
-	}
+    }
 }
 
 // The next 3 tests should be run in that order

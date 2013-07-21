@@ -49,12 +49,12 @@ AssociationUpdateTest::~AssociationUpdateTest(void)
 
 void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat, bool ownerIsFeat  )
 {
-	static wchar_t* rev_mult = L"0_1";
-	static wchar_t* old_rev_mult = L"1";
+    static wchar_t* rev_mult = L"0_1";
+    static wchar_t* old_rev_mult = L"1";
     try
     {
-		if( type != WithIdentityError )
-			schemaUtil.SetRevMultiplicity( rev_mult );
+        if( type != WithIdentityError )
+            schemaUtil.SetRevMultiplicity( rev_mult );
         // Setup the schema
        if( assocIsFeat )
              schemaUtil.TestCreate_NoIdentAssocFeatClass ();
@@ -66,54 +66,54 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
             else
                schemaUtil.TestCreate_WithIdent();
         }
-		schemaUtil.SetRevMultiplicity( old_rev_mult );
+        schemaUtil.SetRevMultiplicity( old_rev_mult );
         // Get a connection object
         FdoPtr<FdoIConnection> connection = schemaUtil.openConnection( false );
 
         FdoPtr<FdoIInsert>insertCommand = (FdoIInsert *) connection->CreateCommand(FdoCommandType_Insert);
         // Add an instance of the TestClass
         insertCommand->SetFeatureClassName(L"TestClass");
-	    FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
         // Add the id property
         FdoPtr<FdoDataValue>dataValue;
         FdoPtr<FdoPropertyValue>propertyValue;
         if( ! assocIsFeat )
         {
             dataValue = FdoDataValue::Create( id );
-	        propertyValue = AddNewProperty( propertyValues, L"Id");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Id");
+            propertyValue->SetValue(dataValue);
         }
         // Add the name one property
         dataValue = FdoDataValue::Create( L"Olfa" );
-	    propertyValue = AddNewProperty( propertyValues, L"Name One");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name One");
+        propertyValue->SetValue(dataValue);
         // Add the name two property
         dataValue = FdoDataValue::Create( name2 );
-	    propertyValue = AddNewProperty( propertyValues, L"Name Two");
-	    propertyValue->SetValue(dataValue);
-		if( type == NoAssocUpdate )
-		{
-			dataValue = FdoDataValue::Create( L"Olfa" );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
-	        propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name Two");
+        propertyValue->SetValue(dataValue);
+        if( type == NoAssocUpdate )
+        {
+            dataValue = FdoDataValue::Create( L"Olfa" );
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
+            propertyValue->SetValue(dataValue);
             // Add the name two property
             dataValue = FdoDataValue::Create( name2 );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
-	        propertyValue->SetValue(dataValue);
-		}
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
+            propertyValue->SetValue(dataValue);
+        }
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
         if( assocIsFeat && reader->ReadNext() )
         {
             id = (long)reader->GetInt32(L"FeatId");
         }
-			
+            
 
         // Add an instance of the TestFeatureClass
         if( type == WithIdentityParent )
             insertCommand->SetFeatureClassName(L"TestSubFeatureClass");
         else
             insertCommand->SetFeatureClassName(L"TestFeatureClass");
-	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues = insertCommand->GetPropertyValues();
         
 /*     
         if( type == WithIdentityParent || 
@@ -123,12 +123,12 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
         {
 */
             dataValue = FdoDataValue::Create( name1 );
-	        propertyValue = AddNewProperty( propertyValues, L"First Name");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"First Name");
+            propertyValue->SetValue(dataValue);
             // Add the name two property
             dataValue = FdoDataValue::Create( name2 );
-	        propertyValue = AddNewProperty( propertyValues, L"Last Name");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Last Name");
+            propertyValue->SetValue(dataValue);
 /*
         }
 */
@@ -138,13 +138,13 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
         if( ! ownerIsFeat )
         {
             dataValue = FdoDataValue::Create( 19 );
-	        propertyValue = AddNewProperty( propertyValues, L"Id");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Id");
+            propertyValue->SetValue(dataValue);
             reader = insertCommand->Execute();
             pFilter = FdoComparisonCondition::Create(
-		            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
-		            FdoComparisonOperations_EqualTo, 
-		            FdoPtr<FdoDataValue>(FdoDataValue::Create(19) ) ); 
+                    FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
+                    FdoComparisonOperations_EqualTo, 
+                    FdoPtr<FdoDataValue>(FdoDataValue::Create(19) ) ); 
         }
         else
         {
@@ -156,9 +156,9 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
             }
 
             pFilter = FdoComparisonCondition::Create(
-		            FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
-		            FdoComparisonOperations_EqualTo, 
-		            FdoPtr<FdoDataValue>(FdoDataValue::Create(featId) ) ); 
+                    FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId") ), 
+                    FdoComparisonOperations_EqualTo, 
+                    FdoPtr<FdoDataValue>(FdoDataValue::Create(featId) ) ); 
         }
         // Create and initialize the update command
         FdoPtr<FdoIUpdate>updateCommand = (FdoIUpdate *) connection->CreateCommand(FdoCommandType_Update);
@@ -167,7 +167,7 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
         else
             updateCommand->SetFeatureClassName(L"TestFeatureClass");
         updateCommand->SetFilter(pFilter);
-	    propertyValues = updateCommand->GetPropertyValues();
+        propertyValues = updateCommand->GetPropertyValues();
         if( type == NoIdentity )
         {
             // Initialize the association property
@@ -175,8 +175,8 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
             if( assocIsFeat )
                 propertyValue = AddNewProperty( propertyValues, L"Association Prop1.FeatId");
             else
-	            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Id");
-	        propertyValue->SetValue(dataValue);
+                propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Id");
+            propertyValue->SetValue(dataValue);
         }
         else if( type == WithIdentityParent || 
             type == WithIdentityAssociated || 
@@ -188,30 +188,30 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
                 dataValue = FdoDataValue::Create( L"BOGUS" );
             else
                 dataValue = FdoDataValue::Create( L"Olfa" );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
+            propertyValue->SetValue(dataValue);
             // Add the name two property
             dataValue = FdoDataValue::Create( name2 );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
+            propertyValue->SetValue(dataValue);
             if( type == WithIdentityBothSet ||
                 type == WithIdentityError )
             {
                 dataValue = FdoDataValue::Create( L"Olfa" );
-	            propertyValue = AddNewProperty( propertyValues, L"First Name");
-	            propertyValue->SetValue(dataValue);
+                propertyValue = AddNewProperty( propertyValues, L"First Name");
+                propertyValue->SetValue(dataValue);
                 // Add the name two property
                 dataValue = FdoDataValue::Create( name2 );
-	            propertyValue = AddNewProperty( propertyValues, L"Last Name");
-	            propertyValue->SetValue(dataValue);
+                propertyValue = AddNewProperty( propertyValues, L"Last Name");
+                propertyValue->SetValue(dataValue);
             }
         }
-		else if( type == NoAssocUpdate )
-		{
-			dataValue = FdoDataValue::Create( L"Test data" );
-	        propertyValue = AddNewProperty( propertyValues, L"PlaceHolder");
-	        propertyValue->SetValue(dataValue);
-		}
+        else if( type == NoAssocUpdate )
+        {
+            dataValue = FdoDataValue::Create( L"Test data" );
+            propertyValue = AddNewProperty( propertyValues, L"PlaceHolder");
+            propertyValue->SetValue(dataValue);
+        }
     
         updateCommand->Execute();
     }
@@ -221,7 +221,7 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
         {
             printf("Update Master Test(NO OBJ) Error: %ls\n", exp->GetExceptionMessage() );
             exp->Release();
-		    throw "Update Master Test(NO OBJ) exception";
+            throw "Update Master Test(NO OBJ) exception";
         }
         else
         {
@@ -229,7 +229,7 @@ void AssociationUpdateTest::masterTestNoObj( AssociationUpdateType type, const w
             exp->Release();
             return;
         }
-	}
+    }
     if( type == WithIdentityError )
     {
         printf("Update Master Test(NO OBJ) SHOULD Fail");

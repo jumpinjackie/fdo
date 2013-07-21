@@ -48,12 +48,12 @@ public:
     AssociationSchemaTest(void);
     virtual ~AssociationSchemaTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestCreate_NoIdent () { TestCreate( false, false ); }
     void TestCreate_NoIdentAssocFeatClass () { TestCreate( false, false,false,false,true,true ); }
     void TestCreate_WithIdent (){ TestCreate( true, false ); }
-	void TestCreate_Cardinality_1_1 ();
+    void TestCreate_Cardinality_1_1 ();
     void TestCreate_WithIdentNoFeatClass (){ TestCreate( true, false, false, false, true, false, false ); }
     void TestCreate_WithIdentNoFeatClassSubClass (){ TestCreate( true, false, false, false, true, false, false, true ); }
     void TestCreate_Rollback () { TestCreate( false, false, false, true, false ); }
@@ -64,14 +64,14 @@ public:
     void TestCreateMultiple();
     void TestLoadMultiple();
 
-	FdoIConnection* openConnection( bool re_create=true);
+    FdoIConnection* openConnection( bool re_create=true);
 
-	void SetMultiplicity( wchar_t *val );
-	void SetRevMultiplicity( wchar_t *val );
-	static void SetDeleteRule( FdoDeleteRule rule );
+    void SetMultiplicity( wchar_t *val );
+    void SetRevMultiplicity( wchar_t *val );
+    static void SetDeleteRule( FdoDeleteRule rule );
 
 private:
-	void CheckResult( FdoIConnection* connection, bool useIdent, bool addToSubclass );
+    void CheckResult( FdoIConnection* connection, bool useIdent, bool addToSubclass );
     char dataSource[128];
 };
 

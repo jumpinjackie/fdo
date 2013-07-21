@@ -68,20 +68,20 @@ CPPUNIT_TEST_SUITE_PROPERTY(APropertyKey, APropertyValue)
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
 #ifdef __CPPUNIT_MFC_APP
     #ifdef WIN32
-	    #ifdef _DEBUG
-		    #pragma comment(lib, "testrunnerd.lib")
-	    #else
-		    #pragma comment(lib, "testrunner.lib")
-	    #endif
+        #ifdef _DEBUG
+            #pragma comment(lib, "testrunnerd.lib")
+        #else
+            #pragma comment(lib, "testrunner.lib")
+        #endif
     #endif
 #endif
 
 class MasterTest : public CppUnit::TestFixture
 {
     CPPUNIT_TEST_SUITE(MasterTest);
-	CPPUNIT_TEST(rtreeCacheTest); // Leave this test first as most of the other tests depend on insertTest
-	CPPUNIT_TEST(testConstraints); 
-	CPPUNIT_TEST(insertTest);
+    CPPUNIT_TEST(rtreeCacheTest); // Leave this test first as most of the other tests depend on insertTest
+    CPPUNIT_TEST(testConstraints); 
+    CPPUNIT_TEST(insertTest);
     CPPUNIT_TEST(rtreeFilter);
     CPPUNIT_TEST(spatialFilter);
     CPPUNIT_TEST(spatialInsideFilter);
@@ -97,20 +97,20 @@ class MasterTest : public CppUnit::TestFixture
     CPPUNIT_TEST(selectDistinctTests);
     CPPUNIT_TEST(selectAggregatesTest);
     CPPUNIT_TEST(selectAggregatesFailureTests);
-	CPPUNIT_TEST(selectSpatialExtentsTest);
-	CPPUNIT_TEST(concurencyTest);
-	CPPUNIT_TEST(noGeomObject); 
-	CPPUNIT_TEST(numberFilter); 
-	CPPUNIT_TEST(inFilter); 
-	CPPUNIT_TEST(inFilterOptimize); 
-	CPPUNIT_TEST(likeFilter);
-	CPPUNIT_TEST(orFilter);
-	CPPUNIT_TEST(dateFilter); 
-	CPPUNIT_TEST(concurencyRtreeTest);
+    CPPUNIT_TEST(selectSpatialExtentsTest);
+    CPPUNIT_TEST(concurencyTest);
+    CPPUNIT_TEST(noGeomObject); 
+    CPPUNIT_TEST(numberFilter); 
+    CPPUNIT_TEST(inFilter); 
+    CPPUNIT_TEST(inFilterOptimize); 
+    CPPUNIT_TEST(likeFilter);
+    CPPUNIT_TEST(orFilter);
+    CPPUNIT_TEST(dateFilter); 
+    CPPUNIT_TEST(concurencyRtreeTest);
     CPPUNIT_TEST(descReadOnly);
     CPPUNIT_TEST(test_aggregates_datetime_string);
-	CPPUNIT_TEST(selectFunctionTest);
-	CPPUNIT_TEST(testSpecialClassNames); 
+    CPPUNIT_TEST(selectFunctionTest);
+    CPPUNIT_TEST(testSpecialClassNames); 
     CPPUNIT_TEST(selectAggregatesSpatialExtentsTest);
     CPPUNIT_TEST_SUITE_END();
 
@@ -129,7 +129,7 @@ public:
 
     void setUp();
     void tearDown();
-	void insertTest() { UnitTestUtil::CreateData(true); }
+    void insertTest() { UnitTestUtil::CreateData(true); }
     void deleteTest();
     void updateTest();
     void keyFilterBeforeDelete();
@@ -144,28 +144,28 @@ public:
     void selectDistinctTests();
     void selectAggregatesTest();
     void selectAggregatesFailureTests();
-	void concurencyTest();
-	void concurencyRtreeTest();
+    void concurencyTest();
+    void concurencyRtreeTest();
     void selectSpatialExtentsTest();
     void descReadOnly();
     void test_aggregates_datetime_string();
-	void selectFunctionTest();
+    void selectFunctionTest();
 
-	void rtreeCacheTest();
-	void testConstraints();
-	void noGeomObject();
-	void numberFilter();
-	void inFilter();
+    void rtreeCacheTest();
+    void testConstraints();
+    void noGeomObject();
+    void numberFilter();
+    void inFilter();
 
     // Tests that the query optimizer handles in conditions properly.
-	void inFilterOptimize();
-	void likeFilter();
-	void orFilter();
-	void dateFilter();
-	void testSpecialClassNames();
-	void selectAggregatesSpatialExtentsTest();
+    void inFilterOptimize();
+    void likeFilter();
+    void orFilter();
+    void dateFilter();
+    void testSpecialClassNames();
+    void selectAggregatesSpatialExtentsTest();
 
-	void CreateEmptyShpFileWithConstraints(FdoIConnection* conn);
+    void CreateEmptyShpFileWithConstraints(FdoIConnection* conn);
 
     void inFilterOptimize_CreateData( FdoIConnection* conn );
     void inFilterOptimize_Select( 

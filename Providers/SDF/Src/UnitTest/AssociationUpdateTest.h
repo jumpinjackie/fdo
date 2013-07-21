@@ -63,7 +63,7 @@ public:
     void update_WithIdentNoFeatClass();
     void update_WithIdentParent();
     void update_WithIdentError();
-	void update_NoAssocSet();
+    void update_NoAssocSet();
 
 private:
     void masterTestNoObj( AssociationUpdateType type, const wchar_t* name1, const wchar_t* name2, int id, bool assocIsFeat=false, bool ownerIsFeat=true );

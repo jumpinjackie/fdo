@@ -53,19 +53,19 @@ void AssociationSelectTest::masterTestNoObj( AssociationSelectType type, bool as
 
 
         FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
-		selCmd->SetFeatureClassName(L"TestFeatureClass");
+        selCmd->SetFeatureClassName(L"TestFeatureClass");
         FdoPtr<FdoComparisonCondition>pFilter;
         if( type == Select_NoIdentity && ! assocIsFeat )
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Id") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt32)10) ) ); 
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Id") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt32)10) ) ); 
         else
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Name One") ), 
-						//FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"First Name") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Association Prop1.Name One") ), 
+                        //FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"First Name") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
 
         selCmd->SetFilter( pFilter );
         FdoPtr<FdoIFeatureReader>myReader = selCmd->Execute();
@@ -110,7 +110,7 @@ void AssociationSelectTest::masterTestNoObj( AssociationSelectType type, bool as
         printf("Select Master Test abnormal Error: %ls\n", exp->GetExceptionMessage() );
         exp->Release();
         CPPUNIT_ASSERT( false );
-	}
+    }
     CPPUNIT_ASSERT( ! failed );
 }
 
@@ -129,19 +129,19 @@ void AssociationSelectTest::masterTestNoObjReverse( AssociationSelectType type  
 
 
         FdoPtr<FdoISelect>selCmd = (FdoISelect*)connection->CreateCommand( FdoCommandType_Select );
-		selCmd->SetFeatureClassName(L"TestClass");
+        selCmd->SetFeatureClassName(L"TestClass");
         FdoPtr<FdoComparisonCondition>pFilter;
         if( type == Select_NoIdentity )
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt32)10) ) ); 
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Id") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create((FdoInt32)10) ) ); 
             //selCmd->SetFilter(L"Id=10");
         else
             pFilter = FdoComparisonCondition::Create(
-		                FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Name One") ), 
-		                FdoComparisonOperations_EqualTo, 
-		                FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
+                        FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"Name One") ), 
+                        FdoComparisonOperations_EqualTo, 
+                        FdoPtr<FdoDataValue>(FdoDataValue::Create(L"Karim") ) );
             //selCmd->SetFilter(L"'Name One'='Karim'");
 
         selCmd->SetFilter( pFilter );
@@ -156,7 +156,7 @@ void AssociationSelectTest::masterTestNoObjReverse( AssociationSelectType type  
                     if( assocReader && assocReader->ReadNext() )
                     {
                         //printf("Association Name( REVERSE ) = %ls\n", assocReader->GetString(L"First Name") );
-						CPPUNIT_ASSERT( ( wcscmp(assocReader->GetString(L"First Name"),L"Karim") == 0 ) );
+                        CPPUNIT_ASSERT( ( wcscmp(assocReader->GetString(L"First Name"),L"Karim") == 0 ) );
                         failed = false;
                     }
                }
@@ -169,7 +169,7 @@ void AssociationSelectTest::masterTestNoObjReverse( AssociationSelectType type  
         printf("Select Master Test abnormal Error: %ls\n", exp->GetExceptionMessage() );
         exp->Release();
         CPPUNIT_ASSERT( false );
-	}
+    }
     CPPUNIT_ASSERT( ! failed );
 }
 

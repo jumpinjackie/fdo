@@ -38,7 +38,7 @@ class UnitTestUtil
 {
 
 public:
-	static FdoIConnection* CreateConnection();
+    static FdoIConnection* CreateConnection();
 
     static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create, FdoIConnection  *inConn = NULL );
 
@@ -55,7 +55,7 @@ public:
     // Print an exception, and all it's cause exceptions to the given file.
     static void PrintException( FdoException* e, const char* fileName, FdoBoolean stripLineNo = false );
 
-	static void CreateData( bool create,FdoIConnection  *inConn = NULL/* open a new connection*/, int featCount = -1/* all */, FdoString* className=NULL, int threadId = -1 );
+    static void CreateData( bool create,FdoIConnection  *inConn = NULL/* open a new connection*/, int featCount = -1/* all */, FdoString* className=NULL, int threadId = -1 );
 };
 
 #endif

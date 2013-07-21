@@ -49,22 +49,22 @@ public:
     virtual void setUp ();
 
 protected:
-	void MainTest(bool fileSort, bool extendProps);
-	void FileBasedTest() { MainTest(true,false); }
-	void MemoryBasedTest() { MainTest(false,false); }
-	void ExtendedPropTest() { MainTest(true,true); }
-	void WorldTest(FdoIConnection* conn);
-	void WorldTestWFile(FdoIConnection* conn);
-	void WorldTestWoFile(FdoIConnection* conn);
-	void WorldTest_SDF();
-	void WorldTest_SDF_name1();
-	void WorldTest_SDF_name2();
-	void WorldTest_SDF_name3();
-	void WorldTest_SDF_name4();
-	void CreateSDF_SPchars();
+    void MainTest(bool fileSort, bool extendProps);
+    void FileBasedTest() { MainTest(true,false); }
+    void MemoryBasedTest() { MainTest(false,false); }
+    void ExtendedPropTest() { MainTest(true,true); }
+    void WorldTest(FdoIConnection* conn);
+    void WorldTestWFile(FdoIConnection* conn);
+    void WorldTestWoFile(FdoIConnection* conn);
+    void WorldTest_SDF();
+    void WorldTest_SDF_name1();
+    void WorldTest_SDF_name2();
+    void WorldTest_SDF_name3();
+    void WorldTest_SDF_name4();
+    void CreateSDF_SPchars();
     void Test_Fix823645();
-	void UpdateTest();
-	void OpenConnection(FdoIConnection* conn, const wchar_t* path, bool placeDQ = false);
+    void UpdateTest();
+    void OpenConnection(FdoIConnection* conn, const wchar_t* path, bool placeDQ = false);
 };
 
 

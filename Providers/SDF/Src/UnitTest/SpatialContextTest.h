@@ -41,7 +41,7 @@ public:
     SpatialContextTest(void);
     virtual ~SpatialContextTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     // Tests FDO309 fix regression.
     void TestFdo309 ();

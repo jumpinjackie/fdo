@@ -40,7 +40,7 @@ public:
     SchemaTest(void);
     virtual ~SchemaTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestMultipleGeom();
 

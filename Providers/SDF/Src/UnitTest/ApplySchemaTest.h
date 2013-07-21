@@ -53,38 +53,38 @@ protected:
     // is added to a class definition.
     void TestReformatTable ();
 
-	void CreateAcadSchema( FdoIConnection* connection );
-	void CreateElectricSchema( FdoIConnection* connection );
-	void CreateLandSchema( FdoIConnection* connection );
+    void CreateAcadSchema( FdoIConnection* connection );
+    void CreateElectricSchema( FdoIConnection* connection );
+    void CreateLandSchema( FdoIConnection* connection );
     void CreateLandSchema( FdoFeatureSchemaCollection* pSchemas );
-	void CreateLongStringSchema( FdoIConnection* connection );
-	void CreateErrorSchema( FdoIConnection* connection );
-	void CreateDlteSchema( FdoIConnection* connection );
-	void CreateRefmtSchema( FdoIConnection* connection );
+    void CreateLongStringSchema( FdoIConnection* connection );
+    void CreateErrorSchema( FdoIConnection* connection );
+    void CreateDlteSchema( FdoIConnection* connection );
+    void CreateRefmtSchema( FdoIConnection* connection );
 
-	void DeleteAcadSchema( FdoIConnection* connection );
+    void DeleteAcadSchema( FdoIConnection* connection );
 
     void ModElectricSchema( FdoIConnection* connection );
     void ModElectricSchema( FdoFeatureSchemaCollection* pSchemas );
 /*
-	void ModLandSchema( FdoIConnection* connection );
+    void ModLandSchema( FdoIConnection* connection );
 */
-	void RedefineGeometry( FdoIConnection* connection );
+    void RedefineGeometry( FdoIConnection* connection );
 /*
-	void DelPropertyError( FdoIConnection* connection );
+    void DelPropertyError( FdoIConnection* connection );
 */
-	void ModDelSchemas( FdoIConnection* connection );
+    void ModDelSchemas( FdoIConnection* connection );
     void ModDelElectricSchema( FdoFeatureSchemaCollection* pSchemas );
     void ModDelAcadSchema( FdoFeatureSchemaCollection* pSchemas );
-	void ModDlteSchema( FdoIConnection* connection );
+    void ModDlteSchema( FdoIConnection* connection );
     void ModDlteSchema2( FdoIConnection* connection );
-	void ModRefmtSchema( FdoIConnection* connection );
-	void ModAddProperty( FdoIConnection* connection );
-	void ModDelProperty( FdoIConnection* connection );
-	void ModDescription( FdoIConnection* connection );
-	void ReAddElements( FdoIConnection* connection );
-	void ModErrors( FdoIConnection* connection );
-	void ModErrors2( FdoIConnection* connection );
+    void ModRefmtSchema( FdoIConnection* connection );
+    void ModAddProperty( FdoIConnection* connection );
+    void ModDelProperty( FdoIConnection* connection );
+    void ModDescription( FdoIConnection* connection );
+    void ReAddElements( FdoIConnection* connection );
+    void ModErrors( FdoIConnection* connection );
+    void ModErrors2( FdoIConnection* connection );
 /*
     virtual void GetClassCapabilities( FdoIConnection* connection );
     void CheckBaseProperties( FdoIConnection* connection );
@@ -94,11 +94,11 @@ protected:
         FdoFeatureSchemaCollection* pSchemas2
     );
 
-	void CreateDlteData( FdoIConnection* connection );
-	void VldDlteSchema( FdoIConnection* connection );
+    void CreateDlteData( FdoIConnection* connection );
+    void VldDlteSchema( FdoIConnection* connection );
 
-	void CreateRefmtData( FdoIConnection* connection );
-	void VldRefmtSchema( FdoIConnection* connection );
+    void CreateRefmtData( FdoIConnection* connection );
+    void VldRefmtSchema( FdoIConnection* connection );
 
     void CreateClassGroup( FdoFeatureSchema* pSchema, FdoInt32 idx );
     void DeleteDlteClass( FdoIConnection* connection, FdoFeatureSchema* pSchema, FdoInt32 idx, bool delCls=true );

@@ -45,23 +45,23 @@ void AssociationInsertTest::masterTestNoObj( AssociationInsertType type, const w
     try
     {
         // Setup the schema
-		if( type != NoSchema )
-		{
-			if( assocIsFeat && ownerIsFeat )
-				schemaUtil.TestCreate_NoIdentAssocFeatClass ();
-			else if( !ownerIsFeat )
-			{
-				schemaUtil.TestCreate_WithIdentNoFeatClass();
-			}
-			else
-			{
-	            
-				if( type == NoIdentity )
-					schemaUtil.TestCreate_NoIdent();
-				else
-					schemaUtil.TestCreate_WithIdent();
-			}
-		}
+        if( type != NoSchema )
+        {
+            if( assocIsFeat && ownerIsFeat )
+                schemaUtil.TestCreate_NoIdentAssocFeatClass ();
+            else if( !ownerIsFeat )
+            {
+                schemaUtil.TestCreate_WithIdentNoFeatClass();
+            }
+            else
+            {
+                
+                if( type == NoIdentity )
+                    schemaUtil.TestCreate_NoIdent();
+                else
+                    schemaUtil.TestCreate_WithIdent();
+            }
+        }
         // Get a connection object
         FdoPtr<FdoIConnection> connection = schemaUtil.openConnection( false );
         
@@ -69,35 +69,35 @@ void AssociationInsertTest::masterTestNoObj( AssociationInsertType type, const w
 
         // Add an instance of the TestClass
         insertCommand->SetFeatureClassName(L"TestClass");
-	    FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
+        FdoPtr<FdoPropertyValueCollection> propertyValues = insertCommand->GetPropertyValues();
         // Add the id property
         FdoPtr<FdoDataValue>dataValue;
         FdoPtr<FdoPropertyValue>propertyValue;
         if( ! assocIsFeat )
         {
             dataValue = FdoDataValue::Create( id );
-	        propertyValue = AddNewProperty( propertyValues, L"Id");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Id");
+            propertyValue->SetValue(dataValue);
         }
         // Add the name one property
         dataValue = FdoDataValue::Create( name1 );
-	    propertyValue = AddNewProperty( propertyValues, L"Name One");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name One");
+        propertyValue->SetValue(dataValue);
         // Add the name two property
         dataValue = FdoDataValue::Create( name2 );
-	    propertyValue = AddNewProperty( propertyValues, L"Name Two");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name Two");
+        propertyValue->SetValue(dataValue);
         FdoPtr<FdoIFeatureReader> reader = insertCommand->Execute();
         if( assocIsFeat && ownerIsFeat && reader->ReadNext() )
         {
             id = (long)reader->GetInt32(L"FeatId");
-			FdoPtr<FdoClassDefinition>cls = reader->GetClassDefinition();
-			CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"TestClass",cls->GetName())==0);
+            FdoPtr<FdoClassDefinition>cls = reader->GetClassDefinition();
+            CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"TestClass",cls->GetName())==0);
         }
 
         // Add an instance of the TestFeatureClass
         insertCommand->SetFeatureClassName(L"TestFeatureClass");
-	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues = insertCommand->GetPropertyValues();
         
         // Initialize the association property
         
@@ -114,15 +114,15 @@ void AssociationInsertTest::masterTestNoObj( AssociationInsertType type, const w
             if( assocIsFeat )
                 propertyValue = AddNewProperty( propertyValues, L"Association Prop1.FeatId");
             else
-	            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Id");
-	        propertyValue->SetValue(dataValue);
+                propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Id");
+            propertyValue->SetValue(dataValue);
 
             // Initialize the second association
             if( assocIsFeat )
                 propertyValue = AddNewProperty( propertyValues, L"Association Prop2.FeatId");
             else
-	            propertyValue = AddNewProperty( propertyValues, L"Association Prop2.Id");
-	        propertyValue->SetValue(dataValue);
+                propertyValue = AddNewProperty( propertyValues, L"Association Prop2.Id");
+            propertyValue->SetValue(dataValue);
         }
         
 /*
@@ -133,41 +133,41 @@ void AssociationInsertTest::masterTestNoObj( AssociationInsertType type, const w
         {
 */
             dataValue = FdoDataValue::Create( name1 );
-	        propertyValue = AddNewProperty( propertyValues, L"First Name");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"First Name");
+            propertyValue->SetValue(dataValue);
             // Add the name two property
             dataValue = FdoDataValue::Create( name2 );
-	        propertyValue = AddNewProperty( propertyValues, L"Last Name");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Last Name");
+            propertyValue->SetValue(dataValue);
 /*
         }
 */
         if( type == WithIdentityAssociated || 
             type == WithIdentityBothSet ||
             type == WithIdentityError ||
-			type == NoSchema )
+            type == NoSchema )
         {
             // Add the name one property
             if( type == WithIdentityError )
                 dataValue = FdoDataValue::Create( L"BOGUS" );
             else
                 dataValue = FdoDataValue::Create( name1 );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
+            propertyValue->SetValue(dataValue);
             // Add the name two property
             dataValue = FdoDataValue::Create( name2 );
-	        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
-	        propertyValue->SetValue(dataValue);
+            propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
+            propertyValue->SetValue(dataValue);
         }
 
-		dataValue = FdoDataValue::Create( L"Test data" );
+        dataValue = FdoDataValue::Create( L"Test data" );
         propertyValue = AddNewProperty( propertyValues, L"PlaceHolder");
         propertyValue->SetValue(dataValue);
 
 
         reader = insertCommand->Execute();
-		FdoPtr<FdoClassDefinition>cls = reader->GetClassDefinition();
-		CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"TestFeatureClass",cls->GetName())==0);
+        FdoPtr<FdoClassDefinition>cls = reader->GetClassDefinition();
+        CPPUNIT_ASSERT_MESSAGE("Wrong class name",wcscmp(L"TestFeatureClass",cls->GetName())==0);
     }
     catch(FdoException *exp )
     {
@@ -175,17 +175,17 @@ void AssociationInsertTest::masterTestNoObj( AssociationInsertType type, const w
         {
             printf("Insert Master Test Error: %ls\n", exp->GetExceptionMessage() );
             exp->Release();
-		    throw "Insert Master Test exception";
+            throw "Insert Master Test exception";
         }
         else
         {
             // Insert Master Test Expected Error
-			// TODO: should check for the specific exception
+            // TODO: should check for the specific exception
             exp->Release();
             return;
         }
-	}
-	CPPUNIT_ASSERT_MESSAGE("Insert Master Test SHOULD Fail",!(type == WithIdentityError));
+    }
+    CPPUNIT_ASSERT_MESSAGE("Insert Master Test SHOULD Fail",!(type == WithIdentityError));
 }
 
 void AssociationInsertTest::insert_NoIdent(  )
@@ -205,7 +205,7 @@ void AssociationInsertTest::insert_WithIdent()
 
 void AssociationInsertTest::insert_Cardinality_1_1()
 {
-	schemaUtil.TestCreate_Cardinality_1_1();
+    schemaUtil.TestCreate_Cardinality_1_1();
     masterTestNoObj( NoSchema, L"Karim", L"Makram", 10 );
 }
 
@@ -220,8 +220,8 @@ void AssociationInsertTest::insert_ManyWithIdent()
 {
     FdoStringP name1 = L"FirstName";
     FdoStringP name2 = L"LastName";
-	
-	insert_WithIdent();
+    
+    insert_WithIdent();
     
     FdoPtr<FdoIConnection> connection = schemaUtil.openConnection( false );
 
@@ -230,7 +230,7 @@ void AssociationInsertTest::insert_ManyWithIdent()
 
     // Add instances of the TestClass
     
-	FdoPtr<FdoPropertyValueCollection> propertyValues;
+    FdoPtr<FdoPropertyValueCollection> propertyValues;
     FdoPtr<FdoDataValue>dataValue;
     FdoPtr<FdoPropertyValue>propertyValue;
     FdoPtr<FdoIFeatureReader> reader;
@@ -245,38 +245,38 @@ void AssociationInsertTest::insert_ManyWithIdent()
         insertCommand->SetFeatureClassName(L"TestClass");
         propertyValues = insertCommand->GetPropertyValues();
         dataValue = FdoDataValue::Create( i );
-	    propertyValue = AddNewProperty( propertyValues, L"Id");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Id");
+        propertyValue->SetValue(dataValue);
         // Add the name one property
         dataValue = FdoDataValue::Create( (FdoString*)val1 );
-	    propertyValue = AddNewProperty( propertyValues, L"Name One");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name One");
+        propertyValue->SetValue(dataValue);
         // Add the name two property
         dataValue = FdoDataValue::Create( (FdoString*)val2 );
-	    propertyValue = AddNewProperty( propertyValues, L"Name Two");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Name Two");
+        propertyValue->SetValue(dataValue);
         reader = insertCommand->Execute();
 
         // Add an instance of the TestFeatureClass
         insertCommand->SetFeatureClassName(L"TestFeatureClass");
-	    propertyValues = insertCommand->GetPropertyValues();
+        propertyValues = insertCommand->GetPropertyValues();
         
         dataValue = FdoDataValue::Create( L"Jim" );
-	    propertyValue = AddNewProperty( propertyValues, L"First Name");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"First Name");
+        propertyValue->SetValue(dataValue);
         dataValue = FdoDataValue::Create( L"Slim" );
-	    propertyValue = AddNewProperty( propertyValues, L"Last Name");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Last Name");
+        propertyValue->SetValue(dataValue);
         dataValue = FdoDataValue::Create( L"Some placeholder value" );
-	    propertyValue = AddNewProperty( propertyValues, L"PlaceHolder");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"PlaceHolder");
+        propertyValue->SetValue(dataValue);
         dataValue = FdoDataValue::Create( (FdoString*)val1 );
-	    propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name One");
+        propertyValue->SetValue(dataValue);
         // Add the name two property
         dataValue = FdoDataValue::Create( (FdoString*)val2 );
-	    propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
-	    propertyValue->SetValue(dataValue);
+        propertyValue = AddNewProperty( propertyValues, L"Association Prop1.Name Two");
+        propertyValue->SetValue(dataValue);
         reader = insertCommand->Execute();
     }
 }
