@@ -24,11 +24,11 @@
 
 class InsertTests2 : TestCommonInsert
 {
-	CPPUNIT_TEST_SUB_SUITE( InsertTests2, TestCommonInsert );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUB_SUITE( InsertTests2, TestCommonInsert );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	InsertTests2(void);
+    InsertTests2(void);
     virtual ~InsertTests2(void);
 
 protected:
@@ -39,4 +39,4 @@ protected:
     virtual FdoDataType GetAutoIncrementType();
 };
 
-#endif	//INSERTTESTS2_H
+#endif    //INSERTTESTS2_H

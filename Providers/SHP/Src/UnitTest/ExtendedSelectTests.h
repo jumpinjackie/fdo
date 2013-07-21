@@ -21,7 +21,7 @@ public:
     virtual void setUp ();
 
 protected:
-	void WorldTest();
+    void WorldTest();
 };
 
 

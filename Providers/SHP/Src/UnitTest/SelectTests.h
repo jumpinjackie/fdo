@@ -49,7 +49,7 @@ class SelectTests :
     CPPUNIT_TEST (select_with_aggregates_should_fail);
     CPPUNIT_TEST (upper_lower);
     CPPUNIT_TEST (ceil_floor);
-	CPPUNIT_TEST (select_length_area );
+    CPPUNIT_TEST (select_length_area );
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -57,11 +57,11 @@ class SelectTests :
 public:
     SelectTests (void);
     virtual ~SelectTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void select();
+    void select();
     void get_spatial_contexts ();
     void get_class_definition ();
     void requery ();
@@ -69,7 +69,7 @@ protected:
     void select_all ();
     void select_mixed_decimals ();
     void get_spatial_context_text ();
-	void select_only_geometry();
+    void select_only_geometry();
     void select_hawaii ();
     void select_states ();
     void select_date_time ();
@@ -78,13 +78,13 @@ protected:
     void select_with_aggregates_should_fail();
     void upper_lower();
     void ceil_floor();
-	void select_length_area();
+    void select_length_area();
 
 private:
     // utility methods:
     void get_spatial_context (FdoIConnection* connection, FdoString* cs_name, int expected_num_sc);
     void create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData, bool bUseDoubleType);
-	void select_length_area2(bool GEODETIC);
+    void select_length_area2(bool GEODETIC);
 };
 
 #endif // SELECTTESTS_H

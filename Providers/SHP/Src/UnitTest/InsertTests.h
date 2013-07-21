@@ -59,29 +59,29 @@ class InsertTests :
     CPPUNIT_TEST (null_data_insert);
     CPPUNIT_TEST (insert_large_first_geometry);
     CPPUNIT_TEST (insert_no_geometry);
-	CPPUNIT_TEST (insert_2connects);
-	CPPUNIT_TEST (insert_2connects_flush);
+    CPPUNIT_TEST (insert_2connects);
+    CPPUNIT_TEST (insert_2connects_flush);
     //CPPUNIT_TEST (wide2mbPerformaceTest);
     CPPUNIT_TEST (insert_with_locale);
-	CPPUNIT_TEST (insert_integers);
-	CPPUNIT_TEST (insert_integers2);
-	CPPUNIT_TEST_SUITE_END ();
+    CPPUNIT_TEST (insert_integers);
+    CPPUNIT_TEST (insert_integers2);
+    CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
 
 public:
     InsertTests (void);
     virtual ~InsertTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
     // Test methods:
-	void insert ();
-	void insert_with_locale ();
-	void insert_locale (char *orig_locale, char *new_locale, FdoString *expected_cpg, const wchar_t *value);
-    	void wide2mbPerformaceTest();
-	void wide2multibyte(char *mb, wchar_t *in, int cpgWin, char *cpgLinux);
+    void insert ();
+    void insert_with_locale ();
+    void insert_locale (char *orig_locale, char *new_locale, FdoString *expected_cpg, const wchar_t *value);
+        void wide2mbPerformaceTest();
+    void wide2multibyte(char *mb, wchar_t *in, int cpgWin, char *cpgLinux);
     void insert_geometry_point_xy ();
     void insert_geometry_point_xyz ();
     void insert_geometry_point_xym ();
@@ -112,15 +112,15 @@ protected:
     void null_data_insert ();
     void insert_large_first_geometry ();
     void insert_no_geometry ();
-	void insert_integers ();
-	void insert_integers2 ();
-	void insert_2connects();
-	void insert_2connects_flush();
+    void insert_integers ();
+    void insert_integers2 ();
+    void insert_2connects();
+    void insert_2connects_flush();
 
     // Helper methods:
-	void insert_connection( FdoIConnection* connection,  FdoIInsert *pInsert, FdoString* className, FdoString* id);
-	int  get_count( FdoIConnection* connection, FdoString* class_name );
-	void TestGeometrylessClass(FdoString* schemaName, FdoString* className, FdoClassType classType);
+    void insert_connection( FdoIConnection* connection,  FdoIInsert *pInsert, FdoString* className, FdoString* id);
+    int  get_count( FdoIConnection* connection, FdoString* class_name );
+    void TestGeometrylessClass(FdoString* schemaName, FdoString* className, FdoClassType classType);
 
 private:
     void create_schema (FdoGeometricType type, bool elevation, bool measure);

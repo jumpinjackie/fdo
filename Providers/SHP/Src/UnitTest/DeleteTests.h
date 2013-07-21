@@ -39,12 +39,12 @@ class DeleteTests :
 public:
     DeleteTests (void);
     virtual ~DeleteTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void del ();
-	void del_geometry ();
+    void del ();
+    void del_geometry ();
     void del_one ();
     void del_without_dbf ();
 

@@ -16,7 +16,7 @@
 #define LOCATION L"../../TestData/World_Countries"
 #endif
 
-#define	CLASS_NAME	L"World_Countries"
+#define    CLASS_NAME    L"World_Countries"
 
 CPPUNIT_TEST_SUITE_REGISTRATION (ExtendedSelectTests);
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (ExtendedSelectTests, "ExtendedSelectTests");
@@ -40,7 +40,7 @@ void ExtendedSelectTests::WorldTest()
 
     try
     {
-		FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
+        FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
 
         connection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
@@ -54,76 +54,76 @@ void ExtendedSelectTests::WorldTest()
         selecProperties->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"KEY")) );
         selecProperties->Add(FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"FeatId")) );
 
-		// Naked select, no ordering properties.
-		clock_t start;
+        // Naked select, no ordering properties.
+        clock_t start;
         clock_t finish;
         start = clock ();
 
-        FdoPtr<FdoIScrollableFeatureReader>	reader = select->ExecuteScrollable();
+        FdoPtr<FdoIScrollableFeatureReader>    reader = select->ExecuteScrollable();
 
         finish = clock ();
         printf ("Creation  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
  
 
-		///// Try ReadAt() with no ordering properties.
+        ///// Try ReadAt() with no ordering properties.
 
-		FdoString*	keyName = L"Tunisia";
-		FdoInt32	keyFeatid = 9;
+        FdoString*    keyName = L"Tunisia";
+        FdoInt32    keyFeatid = 9;
 
         FdoPtr<FdoPropertyValueCollection> key1 = FdoPropertyValueCollection::Create();
         FdoPtr<FdoStringValue> svname1 = FdoStringValue::Create(L"Tunisia");
         key1->Add( FdoPropertyValue::Create(L"NAME", svname1) );
 
         start = clock ();
-		count = 0;
+        count = 0;
         if( reader->ReadAt( key1 ) )
         {
-			count++;
-			const wchar_t *name = reader->GetString(L"NAME");
-			FdoInt32 featid = reader->GetInt32( L"FeatId" );
-			printf("name: %ls \t featid: %d\n", name, featid );
+            count++;
+            const wchar_t *name = reader->GetString(L"NAME");
+            FdoInt32 featid = reader->GetInt32( L"FeatId" );
+            printf("name: %ls \t featid: %d\n", name, featid );
             CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyName", wcscmp(name, keyName)==0 );
-			CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
+            CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
         }
 
         finish = clock ();
         printf ("Jump to record '%ls' (featid=%d)  time: %2.3f seconds\n\n\n", keyName, keyFeatid, (double)(finish - start) / CLOCKS_PER_SEC);
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==1 );
 
-		/// Should get the same result with IndexOf()
-		unsigned int rowid = reader->IndexOf( key1 );
-		CPPUNIT_ASSERT_MESSAGE("Unexpected rowid", rowid == keyFeatid );
+        /// Should get the same result with IndexOf()
+        unsigned int rowid = reader->IndexOf( key1 );
+        CPPUNIT_ASSERT_MESSAGE("Unexpected rowid", rowid == keyFeatid );
 
-		// Try ReadAt() with no ordering properties.
+        // Try ReadAt() with no ordering properties.
         FdoPtr<FdoPropertyValueCollection> key0 = FdoPropertyValueCollection::Create();
-		FdoPtr<FdoInt32Value> svname0 = FdoInt32Value::Create(keyFeatid);
+        FdoPtr<FdoInt32Value> svname0 = FdoInt32Value::Create(keyFeatid);
         key0->Add( FdoPropertyValue::Create(L"FeatId", svname0) );
 
         start = clock ();
-		count = 0;
+        count = 0;
         if( reader->ReadAt( key0 ) )
         {
-			count++;
-			FdoInt32 featid = reader->GetInt32( L"FeatId" );
-			const wchar_t *name = reader->GetString(L"NAME");
+            count++;
+            FdoInt32 featid = reader->GetInt32( L"FeatId" );
+            const wchar_t *name = reader->GetString(L"NAME");
             CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyName", wcscmp(name, keyName)==0 );
-			CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
+            CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
         }
 
         finish = clock ();
         printf ("Jump to record featid=%d ('%ls') time: %2.3f seconds\n\n\n", keyFeatid, keyName, (double)(finish - start) / CLOCKS_PER_SEC);
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==1 );
 
-		// Double check
-		bool status = reader->ReadAtIndex( keyFeatid );
-		CPPUNIT_ASSERT_MESSAGE("ReadAtIndex", status );
+        // Double check
+        bool status = reader->ReadAtIndex( keyFeatid );
+        CPPUNIT_ASSERT_MESSAGE("ReadAtIndex", status );
 
-		{
-			FdoInt32 featid = reader->GetInt32( L"FeatId" );
-			const wchar_t *name = reader->GetString(L"NAME");
+        {
+            FdoInt32 featid = reader->GetInt32( L"FeatId" );
+            const wchar_t *name = reader->GetString(L"NAME");
             CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyName", wcscmp(name, keyName)==0 );
-			CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
-		}
+            CPPUNIT_ASSERT_MESSAGE("Unexpected value for keyFeatid", featid == keyFeatid );
+        }
 
         // Iterate in the forward direction from first to last, no ordering
         wchar_t*   expected0[] = {L"South Africa",L"Namibia",L"Botswana",L"Algeria",L"Libya",L"Morocco",L"Western Sahara",L"Sudan",L"Tunisia",L"Egypt"};
@@ -145,13 +145,13 @@ void ExtendedSelectTests::WorldTest()
         printf ("Read forward no ordering(%d)  time: %2.3f seconds\n\n\n",count, (double)(finish - start) / CLOCKS_PER_SEC);
         CPPUNIT_ASSERT_MESSAGE("Unexpected number of records", count==419 );
 
-		// Use ordering properties
+        // Use ordering properties
         FdoPtr<FdoIdentifierCollection> orders = select->GetOrdering();
         orders->Add( FdoPtr<FdoIdentifier>(FdoIdentifier::Create(L"NAME")));
         select->SetOrderingOption(L"NAME", FdoOrderingOption_Ascending);
 
-		// Reexecute!!!
-		reader = select->ExecuteScrollable();
+        // Reexecute!!!
+        reader = select->ExecuteScrollable();
 
         // Iterate in the forward direction from first to last
         wchar_t*   expected[] = {L"Afghanistan",L"Albania",L"Algeria",L"Andorra",L"Angola",L"Angola",L"Antigua and Barbuda",L"Argentina",L"Argentina",L"Argentina"};
@@ -163,7 +163,7 @@ void ExtendedSelectTests::WorldTest()
             if( count++ < 10 )
             {
                 const wchar_t *name = reader->GetString(L"NAME");
-				CPPUNIT_ASSERT_MESSAGE("Unexpected value", wcscmp(name,expected[count-1])==0 );
+                CPPUNIT_ASSERT_MESSAGE("Unexpected value", wcscmp(name,expected[count-1])==0 );
                 printf("%ls \t %d\n", name, reader->GetInt32( L"FeatId" ) );
             }
         }while( reader->ReadNext() );

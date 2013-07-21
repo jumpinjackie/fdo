@@ -36,11 +36,11 @@ class PerformanceTests :
 public:
     PerformanceTests (void);
     virtual ~PerformanceTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void select ();
+    void select ();
 };
 
 #endif // PERFORMANCETESTS_H

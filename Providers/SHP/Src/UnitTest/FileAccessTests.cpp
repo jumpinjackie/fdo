@@ -63,21 +63,21 @@ void FileAccessTests::open_shp ()
 {
     ShapeFile shp (SHP_FILE);
 
-	// general information methods
-	CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shp.GetFileCode ());
-	CPPUNIT_ASSERT_MESSAGE ("length bad", 13822 == shp.GetFileLength ());
-	CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shp.GetFileVersion ());
-	CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == shp.GetFileShapeType ());
+    // general information methods
+    CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shp.GetFileCode ());
+    CPPUNIT_ASSERT_MESSAGE ("length bad", 13822 == shp.GetFileLength ());
+    CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shp.GetFileVersion ());
+    CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == shp.GetFileShapeType ());
 
     // bounding box methods
-	CPPUNIT_ASSERT_MESSAGE ("min x bad", 196983.92187500000 == shp.GetBoundingBoxMinX ());
-	CPPUNIT_ASSERT_MESSAGE ("max x bad", 1766771.6250000000 == shp.GetBoundingBoxMaxX ());
-	CPPUNIT_ASSERT_MESSAGE ("min y bad", 11675054.000000000 == shp.GetBoundingBoxMinY ());
-	CPPUNIT_ASSERT_MESSAGE ("max y bad", 13366321.000000000 == shp.GetBoundingBoxMaxY ());
-	CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shp.GetBoundingBoxMinZ ());
-	CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shp.GetBoundingBoxMaxZ ());
-	CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shp.GetBoundingBoxMinM ());
-	CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shp.GetBoundingBoxMaxM ());
+    CPPUNIT_ASSERT_MESSAGE ("min x bad", 196983.92187500000 == shp.GetBoundingBoxMinX ());
+    CPPUNIT_ASSERT_MESSAGE ("max x bad", 1766771.6250000000 == shp.GetBoundingBoxMaxX ());
+    CPPUNIT_ASSERT_MESSAGE ("min y bad", 11675054.000000000 == shp.GetBoundingBoxMinY ());
+    CPPUNIT_ASSERT_MESSAGE ("max y bad", 13366321.000000000 == shp.GetBoundingBoxMaxY ());
+    CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shp.GetBoundingBoxMinZ ());
+    CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shp.GetBoundingBoxMaxZ ());
+    CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shp.GetBoundingBoxMinM ());
+    CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shp.GetBoundingBoxMaxM ());
 }
 
 void FileAccessTests::open_dbf ()
@@ -86,8 +86,8 @@ void FileAccessTests::open_dbf ()
     ShapeDBF dbf (DBF_FILE);
 
     // meta data
-	CPPUNIT_ASSERT_MESSAGE ("number of records bad", 1 == dbf.GetNumRecords ());
-	CPPUNIT_ASSERT_MESSAGE ("record size bad", 47 == dbf.GetRecordSize ());
+    CPPUNIT_ASSERT_MESSAGE ("number of records bad", 1 == dbf.GetNumRecords ());
+    CPPUNIT_ASSERT_MESSAGE ("record size bad", 47 == dbf.GetRecordSize ());
     ColumnInfo* info = dbf.GetColumnInfo ();
     CPPUNIT_ASSERT_MESSAGE ("wrong number of columns", 4 == info->GetNumColumns ());
     CPPUNIT_ASSERT_MESSAGE ("wrong name", 0 == wcscmp (L"AREA", info->GetColumnNameAt (0)));
@@ -112,22 +112,22 @@ void FileAccessTests::open_shx ()
 {
     ShapeIndex shx (SHX_FILE);
 
-	// general information methods
-	CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
-	CPPUNIT_ASSERT_MESSAGE ("length bad", 54 == shx.GetFileLength ()); // only difference
-	CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
-	CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == shx.GetFileShapeType ());
-	CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1 == shx.GetNumObjects ());
+    // general information methods
+    CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
+    CPPUNIT_ASSERT_MESSAGE ("length bad", 54 == shx.GetFileLength ()); // only difference
+    CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
+    CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == shx.GetFileShapeType ());
+    CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1 == shx.GetNumObjects ());
 
     // bounding box methods
-	CPPUNIT_ASSERT_MESSAGE ("min x bad", 196983.92187500000 == shx.GetBoundingBoxMinX ());
-	CPPUNIT_ASSERT_MESSAGE ("max x bad", 1766771.6250000000 == shx.GetBoundingBoxMaxX ());
-	CPPUNIT_ASSERT_MESSAGE ("min y bad", 11675054.000000000 == shx.GetBoundingBoxMinY ());
-	CPPUNIT_ASSERT_MESSAGE ("max y bad", 13366321.000000000 == shx.GetBoundingBoxMaxY ());
-	CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shx.GetBoundingBoxMinZ ());
-	CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shx.GetBoundingBoxMaxZ ());
-	CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shx.GetBoundingBoxMinM ());
-	CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shx.GetBoundingBoxMaxM ());
+    CPPUNIT_ASSERT_MESSAGE ("min x bad", 196983.92187500000 == shx.GetBoundingBoxMinX ());
+    CPPUNIT_ASSERT_MESSAGE ("max x bad", 1766771.6250000000 == shx.GetBoundingBoxMaxX ());
+    CPPUNIT_ASSERT_MESSAGE ("min y bad", 11675054.000000000 == shx.GetBoundingBoxMinY ());
+    CPPUNIT_ASSERT_MESSAGE ("max y bad", 13366321.000000000 == shx.GetBoundingBoxMaxY ());
+    CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shx.GetBoundingBoxMinZ ());
+    CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shx.GetBoundingBoxMaxZ ());
+    CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shx.GetBoundingBoxMinM ());
+    CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shx.GetBoundingBoxMaxM ());
 }
 
 void FileAccessTests::object ()
@@ -141,13 +141,13 @@ void FileAccessTests::object ()
 
     shp.GetFilePointer (loff);
     shape = shp.GetObjectAt (0, loff, type);
-	CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == type);
+    CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolygonShape == type);
 
-	CPPUNIT_ASSERT_MESSAGE ("record number bad", 1 == shape->GetRecordNum ());
+    CPPUNIT_ASSERT_MESSAGE ("record number bad", 1 == shape->GetRecordNum ());
 
     // this only works because there is a single shape:
     box = shape->GetBoundingBox ();
-	CPPUNIT_ASSERT_MESSAGE ("min x bad", box->xMin == shp.GetBoundingBoxMinX ());
+    CPPUNIT_ASSERT_MESSAGE ("min x bad", box->xMin == shp.GetBoundingBoxMinX ());
     CPPUNIT_ASSERT_MESSAGE ("max x bad", box->xMax == shp.GetBoundingBoxMaxX ());
     CPPUNIT_ASSERT_MESSAGE ("min y bad", box->yMin == shp.GetBoundingBoxMinY ());
     CPPUNIT_ASSERT_MESSAGE ("max y bad", box->yMax == shp.GetBoundingBoxMaxY ());
@@ -375,13 +375,13 @@ void FileAccessTests::delete_shp ()
     CPPUNIT_ASSERT_MESSAGE("dbf file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.dbf"));
     CPPUNIT_ASSERT_MESSAGE("shx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.shx"));
     CPPUNIT_ASSERT_MESSAGE("idx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.idx"));
-	CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.cpg"));
+    CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario\\Test.cpg"));
 #else
     CPPUNIT_ASSERT_MESSAGE("shp file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.shp"));
     CPPUNIT_ASSERT_MESSAGE("dbf file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.dbf"));
     CPPUNIT_ASSERT_MESSAGE("shx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.shx"));
     CPPUNIT_ASSERT_MESSAGE("idx file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.idx"));
-	CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.cpg"));
+    CPPUNIT_ASSERT_MESSAGE("cpg file not deleted", FdoCommonFile::Delete (ROOT_DATA_PATH L"Ontario/Test.cpg"));
 #endif
 }
 

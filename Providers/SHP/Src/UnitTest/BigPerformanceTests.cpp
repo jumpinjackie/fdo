@@ -52,7 +52,7 @@ void BigPerformanceTests::setUp ()
 void BigPerformanceTests::tearDown ()
 {
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void BigPerformanceTests::select ()

@@ -16,7 +16,7 @@
  */
 
 #ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN        // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 #include <float.h>
 #include <crtdbg.h>
@@ -29,11 +29,11 @@
 // NOTE: Define __CPPUNIT_MFC_APP in order to have the CPPUNIT UI appear... 
 #ifdef __CPPUNIT_MFC_APP
     #ifdef WIN32
-	    #ifdef _DEBUG
-		    #pragma comment(lib, "testrunnerd.lib")
-	    #else
-		    #pragma comment(lib, "testrunner.lib")
-	    #endif
+        #ifdef _DEBUG
+            #pragma comment(lib, "testrunnerd.lib")
+        #else
+            #pragma comment(lib, "testrunner.lib")
+        #endif
     #endif
 #endif
 

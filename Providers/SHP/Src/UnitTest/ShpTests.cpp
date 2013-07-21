@@ -257,7 +257,7 @@ FdoExpression* ShpTests::ParseByDataType(const wchar_t* data, FdoDataType dataTy
             {
                 FdoInt32Value* value = dynamic_cast<FdoInt32Value*>(expr.p);
                 if (value==NULL)  throw FdoException::Create(L"Wrong data type!");
-				expr = FdoInt16Value::Create((FdoInt16)value->GetInt32());
+                expr = FdoInt16Value::Create((FdoInt16)value->GetInt32());
             }
         }
         break;
@@ -290,11 +290,11 @@ FdoExpression* ShpTests::ParseByDataType(const wchar_t* data, FdoDataType dataTy
             {
                 FdoInt64Value* value = dynamic_cast<FdoInt64Value*>(expr.p);
                 if (value==NULL)  
-				{
-					FdoInt32Value* value = dynamic_cast<FdoInt32Value*>(expr.p);
-					if (value==NULL) throw FdoException::Create(L"Wrong data type!");
-					expr = FdoInt64Value::Create((FdoInt64)value->GetInt32());
-				}
+                {
+                    FdoInt32Value* value = dynamic_cast<FdoInt32Value*>(expr.p);
+                    if (value==NULL) throw FdoException::Create(L"Wrong data type!");
+                    expr = FdoInt64Value::Create((FdoInt64)value->GetInt32());
+                }
             }
         }
         break;
@@ -585,8 +585,8 @@ void ShpTests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCo
 {
     FdoPtr<FdoClassDefinition> classDef = featureReader->GetClassDefinition();
     FdoPtr<FdoPropertyDefinitionCollection> propColl = classDef->GetProperties();
-	bool bShouldBeIn = false;
-	bool bFound = false;
+    bool bShouldBeIn = false;
+    bool bFound = false;
     bool bIsNull = false;
 
 
@@ -595,24 +595,24 @@ void ShpTests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCo
     {
         FdoPtr<FdoPropertyDefinition> prop = propColl->GetItem(i);
         FdoString* propName = prop->GetName();
-		bFound = false;
+        bFound = false;
 
-		// Determine if this property should be in the reader or not:
-		bShouldBeIn = false;
-		if (NULL==IDs)
-			bShouldBeIn = true;
-		else
-		{
-			for (FdoInt32 i=0; i<IDs->GetCount(); i++)
-			{
-				FdoPtr<FdoIdentifier> ID = IDs->GetItem(i);
-				if (0==wcscmp(propName, ID->GetName()))
-				{
-					bShouldBeIn = true;
-					break;
-				}
-			}
-		}
+        // Determine if this property should be in the reader or not:
+        bShouldBeIn = false;
+        if (NULL==IDs)
+            bShouldBeIn = true;
+        else
+        {
+            for (FdoInt32 i=0; i<IDs->GetCount(); i++)
+            {
+                FdoPtr<FdoIdentifier> ID = IDs->GetItem(i);
+                if (0==wcscmp(propName, ID->GetName()))
+                {
+                    bShouldBeIn = true;
+                    break;
+                }
+            }
+        }
 
         try
         {
@@ -629,105 +629,105 @@ void ShpTests::ProcessFeature (FdoIFeatureReader* featureReader, FdoIdentifierCo
             bFound = true;
         }
         else if (prop->GetPropertyType() == FdoPropertyType_DataProperty)
-		{
-			FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)prop.p;
-			FdoDataType propDataType = dataProp->GetDataType();
+        {
+            FdoDataPropertyDefinition* dataProp = (FdoDataPropertyDefinition*)prop.p;
+            FdoDataType propDataType = dataProp->GetDataType();
 
-			try
-			{
-				switch (propDataType)
-				{
-					case FdoDataType_Boolean:
-						featureReader->GetBoolean(propName);
-						break;
-					case FdoDataType_Byte:
-						featureReader->GetByte(propName);
-						break;
-					case FdoDataType_DateTime:
-						featureReader->GetDateTime(propName);
-						break;
-					case FdoDataType_Decimal:
-						featureReader->GetDouble(propName);
-						break;
-					case FdoDataType_Double:
-						featureReader->GetDouble(propName);
-						break;
-					case FdoDataType_Int16:
-						featureReader->GetInt16(propName);
-						break;
-					case FdoDataType_Int32:
-						featureReader->GetInt32(propName);
-						break;
-					case FdoDataType_Int64:
-						featureReader->GetInt64(propName);
-						break;
-					case FdoDataType_Single:
-						featureReader->GetSingle(propName);
-						break;
-					case FdoDataType_String:
-						featureReader->GetString(propName);
-						break;
-					case FdoDataType_BLOB:
-						CPPUNIT_FAIL("Need to test BLOB properly!");
-						//TODO:featureReader->GetBLOB(propName);
-						break;
-					/* NOT SUPPORTD IN R1:
-					case FdoDataType_CLOB:
-						featureReader->GetCLOB(propName);
-						break;
-					*/
-				}
+            try
+            {
+                switch (propDataType)
+                {
+                    case FdoDataType_Boolean:
+                        featureReader->GetBoolean(propName);
+                        break;
+                    case FdoDataType_Byte:
+                        featureReader->GetByte(propName);
+                        break;
+                    case FdoDataType_DateTime:
+                        featureReader->GetDateTime(propName);
+                        break;
+                    case FdoDataType_Decimal:
+                        featureReader->GetDouble(propName);
+                        break;
+                    case FdoDataType_Double:
+                        featureReader->GetDouble(propName);
+                        break;
+                    case FdoDataType_Int16:
+                        featureReader->GetInt16(propName);
+                        break;
+                    case FdoDataType_Int32:
+                        featureReader->GetInt32(propName);
+                        break;
+                    case FdoDataType_Int64:
+                        featureReader->GetInt64(propName);
+                        break;
+                    case FdoDataType_Single:
+                        featureReader->GetSingle(propName);
+                        break;
+                    case FdoDataType_String:
+                        featureReader->GetString(propName);
+                        break;
+                    case FdoDataType_BLOB:
+                        CPPUNIT_FAIL("Need to test BLOB properly!");
+                        //TODO:featureReader->GetBLOB(propName);
+                        break;
+                    /* NOT SUPPORTD IN R1:
+                    case FdoDataType_CLOB:
+                        featureReader->GetCLOB(propName);
+                        break;
+                    */
+                }
 
-				bFound = true;
-			}
-			catch (FdoException *e)
-			{
-				bFound = false;
-				e->Release();
-			}
-		}
-		else if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
-		{
-			// access the geometric property
+                bFound = true;
+            }
+            catch (FdoException *e)
+            {
+                bFound = false;
+                e->Release();
+            }
+        }
+        else if (prop->GetPropertyType() == FdoPropertyType_GeometricProperty)
+        {
+            // access the geometric property
             FdoFeatureClass* featureClassDef = dynamic_cast<FdoFeatureClass*>(classDef.p);
             if (featureClassDef)
             {
-    			FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
-    			if (0!=wcscmp(propName, geomProp->GetName()))
-	    			CPPUNIT_FAIL("Expecting at most one geometric property, found at least two");
+                FdoPtr<FdoGeometricPropertyDefinition> geomProp = featureClassDef->GetGeometryProperty();
+                if (0!=wcscmp(propName, geomProp->GetName()))
+                    CPPUNIT_FAIL("Expecting at most one geometric property, found at least two");
             }
 
-			// access the FGF geometric data
-			FdoPtr<FdoByteArray> fgf;
-			try
-			{
-				fgf = featureReader->GetGeometry(propName);
-				bFound = true;
-			}
-			catch (FdoException *e)
-			{
-				bFound = false;
-				e->Release();
-			}
+            // access the FGF geometric data
+            FdoPtr<FdoByteArray> fgf;
+            try
+            {
+                fgf = featureReader->GetGeometry(propName);
+                bFound = true;
+            }
+            catch (FdoException *e)
+            {
+                bFound = false;
+                e->Release();
+            }
 
-			if (bFound)
-			{
-				FdoInt32 numBytes = fgf->GetCount();
+            if (bFound)
+            {
+                FdoInt32 numBytes = fgf->GetCount();
 
-				// make a geometry
-				FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
-				FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf(fgf);
-				FdoPtr<FdoIEnvelope> bbox = geom->GetEnvelope();
-			}
-		}
+                // make a geometry
+                FdoPtr<FdoFgfGeometryFactory> factory = FdoFgfGeometryFactory::GetInstance();
+                FdoPtr<FdoIGeometry> geom = factory->CreateGeometryFromFgf(fgf);
+                FdoPtr<FdoIEnvelope> bbox = geom->GetEnvelope();
+            }
+        }
 
-		// fail if this property SHOULD NOT have been in the reader:
-		if (bFound && !bShouldBeIn)
-			CPPUNIT_FAIL("Property should NOT have been in the reader, but was.");
+        // fail if this property SHOULD NOT have been in the reader:
+        if (bFound && !bShouldBeIn)
+            CPPUNIT_FAIL("Property should NOT have been in the reader, but was.");
 
-		// fail if this property SHOULD have been in the reader:
-		if (!bFound && bShouldBeIn)
-			CPPUNIT_FAIL("Property SHOULD have been in the reader, but was not.");
+        // fail if this property SHOULD have been in the reader:
+        if (!bFound && bShouldBeIn)
+            CPPUNIT_FAIL("Property SHOULD have been in the reader, but was not.");
     }
 }
 
@@ -849,7 +849,7 @@ void ShpTests::copy_schema (FdoIConnection* target_connection, FdoString* target
     FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)target_connection->CreateCommand (FdoCommandType_ApplySchema);
     apply->SetFeatureSchema (schema);
     apply->Execute ();
-	SaveSchema(target_connection);
+    SaveSchema(target_connection);
 }
 
 /// <summary>Duplicate a class.</summary>
@@ -892,7 +892,7 @@ void ShpTests::copy (FdoIConnection* target_connection, FdoString* target_class,
     connection->SetConnectionString (connect_string);
     CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-	// Create a new spatial context
+    // Create a new spatial context
     FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)target_connection->CreateCommand( FdoCommandType_CreateSpatialContext );
 
     cscCmd->SetName(L""); // Leave it empty to avoid confict with WKT
@@ -902,25 +902,25 @@ void ShpTests::copy (FdoIConnection* target_connection, FdoString* target_class,
     cscCmd->SetXYTolerance(.02);
     cscCmd->SetZTolerance(.001);
     
-	// Copy the spatial contexts from source to target
-	FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)connection->CreateCommand (FdoCommandType_GetSpatialContexts);
+    // Copy the spatial contexts from source to target
+    FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)connection->CreateCommand (FdoCommandType_GetSpatialContexts);
     FdoPtr<FdoISpatialContextReader> pScReader = spatialContexts->Execute();
     int cnt = 0;
-	FdoStringP	scname;
+    FdoStringP    scname;
 
     while (pScReader->ReadNext())
     {
-		FdoStringP	scName = pScReader->GetName();
-		FdoStringP	wkt = pScReader->GetCoordinateSystemWkt();
+        FdoStringP    scName = pScReader->GetName();
+        FdoStringP    wkt = pScReader->GetCoordinateSystemWkt();
 
-		if ( wkt != L"" )
-		{
-			cscCmd->SetCoordinateSystemWkt(wkt);
-			cscCmd->Execute();
-		}
+        if ( wkt != L"" )
+        {
+            cscCmd->SetCoordinateSystemWkt(wkt);
+            cscCmd->Execute();
+        }
     }
 
-	// Now copy the classes
+    // Now copy the classes
     FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)connection->CreateCommand (FdoCommandType_DescribeSchema);
     FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute ();
     dup = false;
@@ -939,7 +939,7 @@ void ShpTests::copy (FdoIConnection* target_connection, FdoString* target_class,
                     apply->SetFeatureSchema (schema);
                     apply->SetIgnoreStates (true);
                     apply->Execute ();
-					SaveSchema(target_connection);
+                    SaveSchema(target_connection);
                     dup = true;
                 }
                 else
@@ -1004,23 +1004,23 @@ void ShpTests::copy (FdoIConnection* target_connection, FdoString* target_class,
 
 void ShpTests::SaveSchema(FdoIConnection* connection)
 {
-	FdoStringP pLocation = ShpTests::sLocation;
-	if (ShpTests::sLocation[pLocation.GetLength()-1] != FILE_PATH_DELIMITER)
-	{
-		wchar_t Sep[2];
-		Sep[0] = FILE_PATH_DELIMITER;
-		Sep[1] = L'\0';
-		pLocation += Sep;
-	}
-	pLocation += L"schema.xml";
-	FdoPtr <FdoXmlWriter> writersv = FdoXmlWriter::Create (pLocation, true, FdoXmlWriter::LineFormat_Indent, 128);
-	
-	FdoPtr<FdoIDescribeSchema> describe_schemasv = (FdoIDescribeSchema*)connection->CreateCommand (FdoCommandType_DescribeSchema);
-	FdoPtr<FdoFeatureSchemaCollection> schemassv = describe_schemasv->Execute ();
-	schemassv->WriteXml (writersv, NULL);
-	FdoPtr<FdoIDescribeSchemaMapping> describe_mappingsv = (FdoIDescribeSchemaMapping*)connection->CreateCommand (FdoCommandType_DescribeSchemaMapping);
-	FdoPtr<FdoPhysicalSchemaMappingCollection> mappingssv = describe_mappingsv->Execute ();
-	if (0 != mappingssv->GetCount ())
-		mappingssv->WriteXml (writersv, NULL);
-	writersv = NULL;
+    FdoStringP pLocation = ShpTests::sLocation;
+    if (ShpTests::sLocation[pLocation.GetLength()-1] != FILE_PATH_DELIMITER)
+    {
+        wchar_t Sep[2];
+        Sep[0] = FILE_PATH_DELIMITER;
+        Sep[1] = L'\0';
+        pLocation += Sep;
+    }
+    pLocation += L"schema.xml";
+    FdoPtr <FdoXmlWriter> writersv = FdoXmlWriter::Create (pLocation, true, FdoXmlWriter::LineFormat_Indent, 128);
+    
+    FdoPtr<FdoIDescribeSchema> describe_schemasv = (FdoIDescribeSchema*)connection->CreateCommand (FdoCommandType_DescribeSchema);
+    FdoPtr<FdoFeatureSchemaCollection> schemassv = describe_schemasv->Execute ();
+    schemassv->WriteXml (writersv, NULL);
+    FdoPtr<FdoIDescribeSchemaMapping> describe_mappingsv = (FdoIDescribeSchemaMapping*)connection->CreateCommand (FdoCommandType_DescribeSchemaMapping);
+    FdoPtr<FdoPhysicalSchemaMappingCollection> mappingssv = describe_mappingsv->Execute ();
+    if (0 != mappingssv->GetCount ())
+        mappingssv->WriteXml (writersv, NULL);
+    writersv = NULL;
 }

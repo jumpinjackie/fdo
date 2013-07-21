@@ -39,11 +39,11 @@ class ConnectionInfoTests : public ShpTests
 public:
     ConnectionInfoTests ();
     virtual ~ConnectionInfoTests ();
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void TestProviderInfo();
+    void TestProviderInfo();
 
 };
 

@@ -139,10 +139,10 @@ void OverridesTest::TestCreateSchemaOverrides()
             TestNewConfiguration(config, i);
         }
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
+    }
 }
 
 void OverridesTest::TestNewConfiguration(FdoShpOvPhysicalSchemaMapping* schemaMapping, FdoInt32 schemaIndex)
@@ -184,10 +184,10 @@ void OverridesTest::TestNewConfiguration(FdoShpOvPhysicalSchemaMapping* schemaMa
             }
         }
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
+    }
 }
 
 // TestSimple() reads in a simple ODBC Schema override into a memory stream and 
@@ -225,14 +225,14 @@ void OverridesTest::TestSimple ()
         // throw FdoCommandException::Create(L"Test Not Supported yet on Linux");
 #endif
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
-	catch (char* error) 
+    }
+    catch (char* error) 
     {
         TestCommonFail (error);
-	}
+    }
 }
 
 void OverridesTest::Stream2File( FdoIoStream* stream, FdoString* fileName )
@@ -261,14 +261,14 @@ void OverridesTest::TestConfiguration(FdoShpOvPhysicalSchemaMapping* schemaMappi
             }
         }
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
-	catch (char* error) 
+    }
+    catch (char* error) 
     {
         TestCommonFail (error);
-	}
+    }
 }
 
 void OverridesTest::TestBaseProperties(FdoPhysicalElementMapping* elementMapping)
@@ -279,14 +279,14 @@ void OverridesTest::TestBaseProperties(FdoPhysicalElementMapping* elementMapping
         FdoPtr<FdoPhysicalElementMapping> parentMapping = elementMapping->GetParent();
         FdoPtr<FdoPhysicalSchemaMapping> schemaMapping = elementMapping->GetSchemaMapping();
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
-	catch (char* error) 
+    }
+    catch (char* error) 
     {
         TestCommonFail (error);
-	}
+    }
 }
 
 void OverridesTest::TestSetConfiguration()
@@ -327,10 +327,10 @@ void OverridesTest::TestSetConfiguration()
 
         connection->Close();
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
+    }
 }
 
 
@@ -368,10 +368,10 @@ void OverridesTest::TestSetEmptyConfiguration ()
 
         connection->Close();
     }
-	catch (FdoException* e) 
+    catch (FdoException* e) 
     {
         TestCommonFail (e);
-	}
+    }
 }
 
 /* Test describe/select operations with schema overrides. */
@@ -759,17 +759,17 @@ void OverridesTest::TestWriteWithOverrides ()
         apply->SetPhysicalMapping(schemaMapping);
         apply->Execute();
 
-		FdoStringP sSchema = ROOT_LOCATION L"schema.xml";
-		FdoPtr <FdoXmlWriter> writer = FdoXmlWriter::Create (sSchema, true, FdoXmlWriter::LineFormat_Indent, 128);
+        FdoStringP sSchema = ROOT_LOCATION L"schema.xml";
+        FdoPtr <FdoXmlWriter> writer = FdoXmlWriter::Create (sSchema, true, FdoXmlWriter::LineFormat_Indent, 128);
 
-		FdoPtr<FdoIDescribeSchema> describe_schema = (FdoIDescribeSchema*)conn->CreateCommand (FdoCommandType_DescribeSchema);
-		FdoPtr<FdoFeatureSchemaCollection> schemas = describe_schema->Execute ();
-		schemas->WriteXml (writer, NULL);
-		FdoPtr<FdoIDescribeSchemaMapping> describe_mapping = (FdoIDescribeSchemaMapping*)conn->CreateCommand (FdoCommandType_DescribeSchemaMapping);
-		FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = describe_mapping->Execute ();
-		if (0 != mappings->GetCount ())
-			mappings->WriteXml (writer, NULL);
-		writer = NULL;
+        FdoPtr<FdoIDescribeSchema> describe_schema = (FdoIDescribeSchema*)conn->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe_schema->Execute ();
+        schemas->WriteXml (writer, NULL);
+        FdoPtr<FdoIDescribeSchemaMapping> describe_mapping = (FdoIDescribeSchemaMapping*)conn->CreateCommand (FdoCommandType_DescribeSchemaMapping);
+        FdoPtr<FdoPhysicalSchemaMappingCollection> mappings = describe_mapping->Execute ();
+        if (0 != mappings->GetCount ())
+            mappings->WriteXml (writer, NULL);
+        writer = NULL;
 
         // Verify the schema looks the way we want:
         ////////////////////////////////////////////////////////////////

@@ -55,7 +55,7 @@ class SchemaTests :
     CPPUNIT_TEST (ignore_states);
     CPPUNIT_TEST (describe_Fix784301);
     CPPUNIT_TEST (read_only_files);
-	CPPUNIT_TEST (test_create_PRJ);
+    CPPUNIT_TEST (test_create_PRJ);
     CPPUNIT_TEST_SUITE_END ();
 
     static FdoPtr<FdoIConnection> mConnection;
@@ -63,11 +63,11 @@ class SchemaTests :
 public:
     SchemaTests (void);
     virtual ~SchemaTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void describe();
+    void describe();
     void describe_bogus ();
     void apply ();
     void apply_nameless ();
@@ -118,17 +118,17 @@ protected:
     // Test the ignorestates flag:
     void ignore_states();
 
-	void apply_schema();
+    void apply_schema();
     void describe_Fix784301 ();
     void read_only_files ();
 
-	void test_create_PRJ ();
+    void test_create_PRJ ();
 
     // Helper methods
     ///////////////////////////////////////////////////////////////////////////
 
     // Prints to stdout verbose info about the given schema collection:
-	void show_schema (FdoFeatureSchemaCollection* schemas);
+    void show_schema (FdoFeatureSchemaCollection* schemas);
 
     // Helper method; iterates the given schema mappings, comparing the mappings to 
     // the logical schema (if one is given).

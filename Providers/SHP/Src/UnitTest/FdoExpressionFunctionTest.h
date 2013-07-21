@@ -131,7 +131,7 @@ class FdoExpressionFunctionTest : public CppUnit::TestCase
     // =========================================
     // ====         XYZM UNIT TESTS         ====
     // =========================================
-	// CPPUNIT_TEST(TestXYZMFunction);
+    // CPPUNIT_TEST(TestXYZMFunction);
     // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
@@ -182,7 +182,7 @@ protected:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
 
-	void Connect ();
+    void Connect ();
 
     //  CreateDataProperty :
     //      The function creates a data property object based on the provided
@@ -200,7 +200,7 @@ protected:
     //      identifying the class name.
 
     FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name);
-	FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name, FdoInt32 geometry_type, bool has_elevation, bool has_measure);
+    FdoFeatureClass *CreateFdoFeatureClass (FdoString *class_name, FdoInt32 geometry_type, bool has_elevation, bool has_measure);
 
     //  CreateGeometricProperty:
     //      The function creates the named geometry property and returns it
@@ -555,12 +555,12 @@ protected:
 
     void TestUpperFunction ();
 
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     //                     XYZM function Unit Test Functions
     //-------------------------------------------------------------------------
-	void TestXYZMFunction ();
-	void AddXYZMFeature ( FdoIConnection *current_connection );
-	void TestXYZMClass( FdoString *class_name );
+    void TestXYZMFunction ();
+    void AddXYZMFeature ( FdoIConnection *current_connection );
+    void TestXYZMClass( FdoString *class_name );
 
     //-------------------------------------------------------------------------
     //                       Special Unit Test Functions

@@ -49,7 +49,7 @@ void DeleteTests::setUp ()
     if (!FdoCommonFile::FileExists (LOCATION))
         FdoCommonFile::MkDir (LOCATION);
     mConnection = ShpTests::GetConnection ();
-	ShpTests::sLocation = LOCATION;
+    ShpTests::sLocation = LOCATION;
     mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
     CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 }
@@ -61,9 +61,9 @@ void DeleteTests::tearDown ()
 
     mConnection->Close ();
 
-	// On Linux it makes a difference to release here instead of destructor
-	// (apparently the global list of files to compress gets trashed too early).
-	FDO_SAFE_RELEASE(mConnection.p);
+    // On Linux it makes a difference to release here instead of destructor
+    // (apparently the global list of files to compress gets trashed too early).
+    FDO_SAFE_RELEASE(mConnection.p);
 
     if (FdoCommonFile::FileExists (LOCATION SCHEMA_NAME))
         FdoCommonFile::Delete (LOCATION SCHEMA_NAME);
@@ -130,7 +130,7 @@ void DeleteTests::create_schema (FdoGeometricType type, bool elevation, bool mea
     FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*)mConnection->CreateCommand (FdoCommandType_ApplySchema);
     apply->SetFeatureSchema (schema);
     apply->Execute ();
-	SaveSchema(mConnection);
+    SaveSchema(mConnection);
 }
 
 void DeleteTests::del ()
@@ -238,13 +238,13 @@ void DeleteTests::del_one ()
     {
         create_schema (FdoGeometricType_Point, false, false);
 
-		// Do insert/delete on 1st connection
-		FdoIConnection *mConnection1 = ShpTests::GetConnection ();
-		ShpTests::sLocation = LOCATION;
-		mConnection1->SetConnectionString (L"DefaultFileLocation=" LOCATION);
-		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection1->Open ());
+        // Do insert/delete on 1st connection
+        FdoIConnection *mConnection1 = ShpTests::GetConnection ();
+        ShpTests::sLocation = LOCATION;
+        mConnection1->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection1->Open ());
 
-		// Do select on 2nd connection
+        // Do select on 2nd connection
         FdoIInsert *insert = (FdoIInsert*)mConnection1->CreateCommand (FdoCommandType_Insert);
         insert->SetFeatureClassName (L"Test");
         FdoPtr<FdoPropertyValueCollection> values = insert->GetPropertyValues ();
@@ -271,7 +271,7 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
-		reader->Release();
+        reader->Release();
 
         // feat #2
         expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"9191", FdoDataType_Decimal);
@@ -291,7 +291,7 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
-		reader->Release();
+        reader->Release();
 
         // feat #3
         expression = (FdoValueExpression*)ShpTests::ParseByDataType (L"46", FdoDataType_Decimal);
@@ -311,16 +311,16 @@ void DeleteTests::del_one ()
             featids[index++] = reader->GetInt32 (L"FeatId");
         }
         reader->Close ();
-		reader->Release();
+        reader->Release();
 
         if (2 > index)
             CPPUNIT_FAIL ("too few features inserted");
 
-		int refsi = insert->Release();
-		CPPUNIT_ASSERT_MESSAGE ("Leaking insert cmd", refsi == 0);
+        int refsi = insert->Release();
+        CPPUNIT_ASSERT_MESSAGE ("Leaking insert cmd", refsi == 0);
 
 
-		///////////// Delete
+        ///////////// Delete
         FdoIDelete* del = (FdoIDelete*)mConnection1->CreateCommand (FdoCommandType_Delete);
         del->SetFeatureClassName (L"Test");
         wchar_t buffer[1024];
@@ -328,35 +328,35 @@ void DeleteTests::del_one ()
         del->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (buffer)));
         FdoInt32 n = del->Execute ();
 
-		// Cleanup conn1
-		del->Release();
-		mConnection1->Close();
-		int refs1 = mConnection1->Release();
-		CPPUNIT_ASSERT_MESSAGE ("Leaking connections1", refs1 == 0);
+        // Cleanup conn1
+        del->Release();
+        mConnection1->Close();
+        int refs1 = mConnection1->Release();
+        CPPUNIT_ASSERT_MESSAGE ("Leaking connections1", refs1 == 0);
 
-		// Close/open the static connection in order to force compression NOW
-		mConnection->Close();
-		FDO_SAFE_RELEASE(mConnection.p); 
+        // Close/open the static connection in order to force compression NOW
+        mConnection->Close();
+        FDO_SAFE_RELEASE(mConnection.p); 
 
-	    mConnection = ShpTests::GetConnection ();
-		ShpTests::sLocation = LOCATION;
-		mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
-		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+        mConnection = ShpTests::GetConnection ();
+        ShpTests::sLocation = LOCATION;
+        mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 
-		////////////////////
+        ////////////////////
         FdoPtr<FdoFgfGeometryFactory> agf = FdoFgfGeometryFactory::GetInstance();
 
-		// Do select on 2nd connection
-		FdoIConnection *mConnection2 = ShpTests::GetConnection ();
-		ShpTests::sLocation = LOCATION;
-		mConnection2->SetConnectionString (L"DefaultFileLocation=" LOCATION);
-		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection2->Open ());
+        // Do select on 2nd connection
+        FdoIConnection *mConnection2 = ShpTests::GetConnection ();
+        ShpTests::sLocation = LOCATION;
+        mConnection2->SetConnectionString (L"DefaultFileLocation=" LOCATION);
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection2->Open ());
 
         // check by doing a select
-		FdoISelect *select = (FdoISelect*)mConnection2->CreateCommand (FdoCommandType_Select);
+        FdoISelect *select = (FdoISelect*)mConnection2->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"Test");
 
- 		FdoIFeatureReader *reader2 = select->Execute ();
+         FdoIFeatureReader *reader2 = select->Execute ();
 
         // Check feature #1:
         CPPUNIT_ASSERT_MESSAGE ("not enough features", reader2->ReadNext ());
@@ -385,19 +385,19 @@ void DeleteTests::del_one ()
         // Make sure nothing is left:
         CPPUNIT_ASSERT_MESSAGE ("still features left", !reader2->ReadNext ());
 
-		// Cleanup
+        // Cleanup
         reader2->Close ();
-		reader2->Release();
-		select->Release();
-		mConnection2->Close();
-		int refs2 = mConnection2->Release();
+        reader2->Release();
+        select->Release();
+        mConnection2->Close();
+        int refs2 = mConnection2->Release();
 
-		CPPUNIT_ASSERT_MESSAGE ("Leaking connections2", refs2 == 0);
+        CPPUNIT_ASSERT_MESSAGE ("Leaking connections2", refs2 == 0);
 
-		// NOTE: to test the file Compression after delete: 
-		// 1) run only this test. 
-		// 2) comment out CleanUpClass() etc. in TearDown().
-		// 3) check the /testing/Test.shp with ESRI viewers.
+        // NOTE: to test the file Compression after delete: 
+        // 1) run only this test. 
+        // 2) comment out CleanUpClass() etc. in TearDown().
+        // 3) check the /testing/Test.shp with ESRI viewers.
     }
     catch (FdoException* ge) 
     {

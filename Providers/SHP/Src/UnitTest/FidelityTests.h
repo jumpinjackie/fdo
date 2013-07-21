@@ -39,8 +39,8 @@ class FidelityTests :
 public:
     FidelityTests (void);
     virtual ~FidelityTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
     void ontario ();

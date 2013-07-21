@@ -47,7 +47,7 @@ void FilterTests::setUp ()
 void FilterTests::tearDown ()
 {
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void FilterTests::equal ()
@@ -56,7 +56,7 @@ void FilterTests::equal ()
     {
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"lakes");
-		select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FeatId = 42")));
+        select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FeatId = 42")));
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int count = 0;
         while (reader->ReadNext ())
@@ -229,10 +229,10 @@ void FilterTests::combined ()
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"roads");
 
-		//// Spatial query combined with a logical one. Spatial query returns [17,18,24,25]
+        //// Spatial query combined with a logical one. Spatial query returns [17,18,24,25]
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON XY ((250893.43750 12616630.00000, 250893.43750 12617222.00000, 252774.15625 12617222.00000, 252774.15625 12616630.00000, 250893.43750 12616630.00000 ))') and (FeatId=17 or FeatId=18 or FeatId=99)")));
 
-		FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
         int count = 0;
         while (reader->ReadNext ())
         {
@@ -245,10 +245,10 @@ void FilterTests::combined ()
         }
         CPPUNIT_ASSERT_MESSAGE ("not 2 features selected", 2 == count);
 
-		//// Try the same thing but reversed
+        //// Try the same thing but reversed
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"(FeatId=17 or FeatId=18 or FeatId=99) and Geometry ENVELOPEINTERSECTS GeomFromText('POLYGON XY ((250893.43750 12616630.00000, 250893.43750 12617222.00000, 252774.15625 12617222.00000, 252774.15625 12616630.00000, 250893.43750 12616630.00000 ))')")));
 
-		FdoPtr<FdoIFeatureReader> reader2 = select->Execute ();
+        FdoPtr<FdoIFeatureReader> reader2 = select->Execute ();
         int count2 = 0;
         while (reader2->ReadNext ())
         {
@@ -503,39 +503,39 @@ void FilterTests::non_existent_featid ()
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"lakes");
 
-		// Try a non-existing feature. No exception should occur (defect #742445)
+        // Try a non-existing feature. No exception should occur (defect #742445)
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FeatId = 100042")));
 
-		try {
-			FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-			int count = 0;
-			while (reader->ReadNext ()) {
-				count++;
-			}
-			CPPUNIT_ASSERT_MESSAGE ("Not 0 feature selected", 0 == count);
-		}
-		catch (FdoException *e)
-		{
-			e->Release();
-			CPPUNIT_ASSERT_MESSAGE ("No exception should be thrown", false);
-		}
+        try {
+            FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+            int count = 0;
+            while (reader->ReadNext ()) {
+                count++;
+            }
+            CPPUNIT_ASSERT_MESSAGE ("Not 0 feature selected", 0 == count);
+        }
+        catch (FdoException *e)
+        {
+            e->Release();
+            CPPUNIT_ASSERT_MESSAGE ("No exception should be thrown", false);
+        }
 
-		// Try a non-existing features. No exception should occur (defect #742445)
+        // Try a non-existing features. No exception should occur (defect #742445)
         select->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (L"FeatId in (42, 100042)")));
 
-		try {
-			FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-			int count = 0;
-			while (reader->ReadNext ()) {
-				count++;
-			}
-			CPPUNIT_ASSERT_MESSAGE ("Not 1 feature selected", 1 == count);
-		}
-		catch (FdoException *e)
-		{
-			e->Release();
-			CPPUNIT_ASSERT_MESSAGE ("No exception should be thrown", false);
-		}
+        try {
+            FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+            int count = 0;
+            while (reader->ReadNext ()) {
+                count++;
+            }
+            CPPUNIT_ASSERT_MESSAGE ("Not 1 feature selected", 1 == count);
+        }
+        catch (FdoException *e)
+        {
+            e->Release();
+            CPPUNIT_ASSERT_MESSAGE ("No exception should be thrown", false);
+        }
     }
     catch (FdoException *e)
     {
@@ -552,8 +552,8 @@ int FilterTests::featid_roads_query (FdoString* query, int numRuns, int numExpec
 {
     int count = 0;
 
-	if (VERBOSE)
-		printf("--  %ls ---\n", query);
+    if (VERBOSE)
+        printf("--  %ls ---\n", query);
 
     FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
     select->SetFeatureClassName (L"roads");
@@ -574,17 +574,17 @@ int FilterTests::featid_roads_query (FdoString* query, int numRuns, int numExpec
             /*if (VERBOSE)*/
                 //printf("%d. %ld\n", count, fn);
 
-			if ( featidsExpected ) {
-				bool found = false;
-				for ( int j =0; j < numExpected && !found; j++ ) {
-					found = ( fn == featidsExpected[j]);
-				}
-				if ( !found )
-					CPPUNIT_ASSERT_MESSAGE ("Expected featId not found", found );
-			}
+            if ( featidsExpected ) {
+                bool found = false;
+                for ( int j =0; j < numExpected && !found; j++ ) {
+                    found = ( fn == featidsExpected[j]);
+                }
+                if ( !found )
+                    CPPUNIT_ASSERT_MESSAGE ("Expected featId not found", found );
+            }
         }
-		if ( numExpected != -1 )
-			CPPUNIT_ASSERT_MESSAGE ("Not the expected features selected", ( count == numExpected ));
+        if ( numExpected != -1 )
+            CPPUNIT_ASSERT_MESSAGE ("Not the expected features selected", ( count == numExpected ));
     }
     if (VERBOSE)
         printf("  >> count %ld\n", count );
@@ -599,69 +599,69 @@ void FilterTests::featid_optimizer_tests ()
     {
         int         count = 0;
         FdoString*  query;
-		
-		long	 expected[100];
+        
+        long     expected[100];
 
         query = L"FeatId = 10 - 20";
         count = featid_roads_query( query, 1, 0, NULL );
 
-		// Write more binary expressions...
+        // Write more binary expressions...
 
         query = L"FeatId = 41";
-		expected[0] = 41; 
+        expected[0] = 41; 
         count = featid_roads_query( query, 1, 1, expected );
 
         query = L"not FeatId = 41";
         count = featid_roads_query( query, 1, 1087, NULL );
 
         query = L"not FeatId <> 41";
-		expected[0] = 41; 
+        expected[0] = 41; 
         count = featid_roads_query( query, 1, 1, expected );
 
         query = L"FeatId in (41, 42, 43)";
-		expected[0] = 41; expected[1] = 42; expected[2] = 43;
+        expected[0] = 41; expected[1] = 42; expected[2] = 43;
         count = featid_roads_query( query, 1, 3, expected );
 
         query = L"not FeatId in (41, 42, 43)";
         count = featid_roads_query( query, 1, 1085, NULL );
 
         query = L"(FeatId=1 or FeatId=2) and (FeatId=1 or FeatId=15)";
-		expected[0] = 1; 
+        expected[0] = 1; 
         count = featid_roads_query( query, 1, 1, expected );
 
         query = L"(FeatId=1 or FeatId=2) and (FeatId=14 or FeatId=15)";
         count = featid_roads_query( query, 1, 0, expected );
 
         query = L"FeatId in (41, 42, 43) and not FeatId=42";
-		expected[0] = 41; expected[1] = 43;
+        expected[0] = 41; expected[1] = 43;
         count = featid_roads_query( query, 1 );
 
         query = L"FeatId=1 or FeatId=2 and FeatId in (2,3)";
-		expected[0] = 1; expected[1] = 2;
+        expected[0] = 1; expected[1] = 2;
         count = featid_roads_query( query, 1, 2, expected  );
 
         query = L"FeatId in (2,3) and FeatId=1 or FeatId=2";
-		expected[0] = 2;
+        expected[0] = 2;
         count = featid_roads_query( query, 1, 1, expected );
 
         query = L"FeatId in (2,3) and (FeatId=1 or FeatId=2)";
-		expected[0] = 2;
+        expected[0] = 2;
         count = featid_roads_query( query, 1, 1, expected );
 
-		query = L"FeatId IN (17, 18, 28) and (FeatId=17 or FeatId=18 or FeatId=24)";
-		expected[0] = 17; expected[1] = 18;
+        query = L"FeatId IN (17, 18, 28) and (FeatId=17 or FeatId=18 or FeatId=24)";
+        expected[0] = 17; expected[1] = 18;
         count = featid_roads_query( query, 1, 2, expected );
 
-		query = L"(FeatId=17 or FeatId=18 or FeatId=24) and FeatId IN (17, 18, 28)";
-		expected[0] = 17; expected[1] = 18;
+        query = L"(FeatId=17 or FeatId=18 or FeatId=24) and FeatId IN (17, 18, 28)";
+        expected[0] = 17; expected[1] = 18;
         count = featid_roads_query( query, 1, 2, expected );
 
-		query = L"(FeatId=17 or FeatId=18 or FeatId=24) and (FeatId IN (17, 18, 28))";
-		expected[0] = 17; expected[1] = 18;
+        query = L"(FeatId=17 or FeatId=18 or FeatId=24) and (FeatId IN (17, 18, 28))";
+        expected[0] = 17; expected[1] = 18;
         count = featid_roads_query( query, 1 );
 
-		query = L"(FeatId=17 or FeatId=18 or FeatId=24) and ((FeatId = 17 or FeatId = 18) and not (FeatId = 18))";
-		expected[0] = 17; 
+        query = L"(FeatId=17 or FeatId=18 or FeatId=24) and ((FeatId = 17 or FeatId = 18) and not (FeatId = 18))";
+        expected[0] = 17; 
         count = featid_roads_query( query, 1, 1, expected );
 
     }
@@ -692,7 +692,7 @@ void FilterTests::featid_performance_tests ()
         double elapsed = time2 - time1;
 
         if (VERBOSE)
-			printf("Elapsed: %lf sec\n",elapsed);
+            printf("Elapsed: %lf sec\n",elapsed);
     }
     catch (FdoException *e)
     {

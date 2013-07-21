@@ -32,14 +32,14 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION (SpatialFilterTests, "SpatialFilterTests")
     #define DEFAULT_LOCATION    L"DefaultFileLocation=..\\..\\TestData\\Ontario"
     #define DEFAULT_PATH        L"..\\..\\TestData\\Ontario"
 
-    #define DEFAULT_LOCATION_USA_3G		L"DefaultFileLocation=..\\..\\..\\..\\..\\bugs\\USA_3G"
-    #define DEFAULT_PATH_USA_3G			L"..\\..\\..\\..\\..\\bugs\\USA_3G"
+    #define DEFAULT_LOCATION_USA_3G        L"DefaultFileLocation=..\\..\\..\\..\\..\\bugs\\USA_3G"
+    #define DEFAULT_PATH_USA_3G            L"..\\..\\..\\..\\..\\bugs\\USA_3G"
 #else
     #define DEFAULT_LOCATION    L"DefaultFileLocation=../../TestData/Ontario"
     #define DEFAULT_PATH        L"../../TestData/Ontario"
 
-    #define DEFAULT_LOCATION_USA_3G		L"DefaultFileLocation=../../../../../bugs/USA_3G"
-    #define DEFAULT_PATH_USA_3G			L"../../../../../bugs/USA_3G"
+    #define DEFAULT_LOCATION_USA_3G        L"DefaultFileLocation=../../../../../bugs/USA_3G"
+    #define DEFAULT_PATH_USA_3G            L"../../../../../bugs/USA_3G"
 #endif
 
 #define CLASS_NAME_ROADS    L"roads"
@@ -98,7 +98,7 @@ void SpatialFilterTests::setUp ()
 void SpatialFilterTests::tearDown ()
 {
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void SpatialFilterTests::SelectAll ()
@@ -146,12 +146,12 @@ void SpatialFilterTests::SelectAll ()
         }
     }
 
-	// Make sure this test is run first. Check the fact the spatial index was not populated
-	// (the IDX file is not new)
+    // Make sure this test is run first. Check the fact the spatial index was not populated
+    // (the IDX file is not new)
  //   FdoPtr<ShpLpClassDefinition> lpClass = ShpSchemaUtilities::GetLpClassDefinition (mConnection, CLASS_NAME_ROADS));
  //   ShpFileSet* fileset = lpClass->GetPhysicalFileSet ();
  //   ShpSpatialIndex* ssi = fileset->GetSpatialIndex(false);
-	//CPPUNIT_ASSERT_MESSAGE ("Spatial Index should not have been loaded", ssi->GetNObjects() == 0);
+    //CPPUNIT_ASSERT_MESSAGE ("Spatial Index should not have been loaded", ssi->GetNObjects() == 0);
 
 }
 
@@ -163,70 +163,70 @@ void SpatialFilterTests::SelectAll_USA_3G ()
     FdoStringP  file_name;
 
 #ifdef _WIN32
-	file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"\\", class_name, L".shx" );
+    file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"\\", class_name, L".shx" );
 #else
-	file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"/", class_name, L".shx" );  
+    file_name = FdoStringP::Format(L"%ls%ls%ls%ls", DEFAULT_PATH_USA_3G, L"/", class_name, L".shx" );  
 #endif
 
-	try
-	{
-		ShapeIndex shpi (file_name);
+    try
+    {
+        ShapeIndex shpi (file_name);
 
-		long     numObjs = shpi.GetNumObjects ();
+        long     numObjs = shpi.GetNumObjects ();
 
-		if (VERBOSE)
-			printf("--- FILE: '%ls'  numObjects %ld\n", (const wchar_t*) file_name, numObjs);
+        if (VERBOSE)
+            printf("--- FILE: '%ls'  numObjects %ld\n", (const wchar_t*) file_name, numObjs);
 
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance ();
 
 #ifdef _WIN32       
-		double time1 = TestCommonMiscUtil::GetTime_S();
+        double time1 = TestCommonMiscUtil::GetTime_S();
 #endif
 
-		FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
-		connection->SetConnectionString (DEFAULT_LOCATION_USA_3G);
+        FdoPtr<FdoIConnection> connection = ShpTests::GetConnection ();
+        connection->SetConnectionString (DEFAULT_LOCATION_USA_3G);
 
-		CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-		FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);
-		select->SetFeatureClassName( class_name );
-		FdoPtr<FdoIFeatureReader> reader = select->Execute ();
+        FdoPtr<FdoISelect> select = (FdoISelect*)connection->CreateCommand (FdoCommandType_Select);
+        select->SetFeatureClassName( class_name );
+        FdoPtr<FdoIFeatureReader> reader = select->Execute ();
 
 #ifdef _WIN32       
-		double time2 = TestCommonMiscUtil::GetTime_S();
-		double elapsed = time2 - time1;
-		printf("Elapsed select->Execute(): %lf sec\n",elapsed);
+        double time2 = TestCommonMiscUtil::GetTime_S();
+        double elapsed = time2 - time1;
+        printf("Elapsed select->Execute(): %lf sec\n",elapsed);
 #endif
 
 #ifdef _WIN32       
-		time1 = TestCommonMiscUtil::GetTime_S();
+        time1 = TestCommonMiscUtil::GetTime_S();
 #endif
 
-		int count = 0;
-		while (reader->ReadNext ())
-		{
-			count++;
-			reader->GetInt32 (L"FeatId");
-			FdoPtr<FdoByteArray> geom_fgf = reader->GetGeometry (L"Geometry");
+        int count = 0;
+        while (reader->ReadNext ())
+        {
+            count++;
+            reader->GetInt32 (L"FeatId");
+            FdoPtr<FdoByteArray> geom_fgf = reader->GetGeometry (L"Geometry");
 
-			FdoPtr<FdoIGeometry>   geom = gf->CreateGeometryFromFgf( geom_fgf );
-			FdoPtr<FdoIEnvelope>   ext = geom->GetEnvelope();
+            FdoPtr<FdoIGeometry>   geom = gf->CreateGeometryFromFgf( geom_fgf );
+            FdoPtr<FdoIEnvelope>   ext = geom->GetEnvelope();
 
-			if (VERBOSE)
-			{
-				printf("--FeatId %ld\n", count-1 );
-				printf("  %s   extents (%lf, %lf)(%lf, %lf)\n", "xxx", 
-										ext->GetMinX(), ext->GetMinY(), 
-										ext->GetMaxX(), ext->GetMaxY());
-			}
-		}
+            if (VERBOSE)
+            {
+                printf("--FeatId %ld\n", count-1 );
+                printf("  %s   extents (%lf, %lf)(%lf, %lf)\n", "xxx", 
+                                        ext->GetMinX(), ext->GetMinY(), 
+                                        ext->GetMaxX(), ext->GetMaxY());
+            }
+        }
 #ifdef _WIN32       
-		time2 = TestCommonMiscUtil::GetTime_S();
-		elapsed = time2 - time1;
-		printf("Elapsed select->ReadNext(): %lf sec\n",elapsed);
+        time2 = TestCommonMiscUtil::GetTime_S();
+        elapsed = time2 - time1;
+        printf("Elapsed select->ReadNext(): %lf sec\n",elapsed);
 #endif
-		connection->Close ();
-	}
+        connection->Close ();
+    }
     catch( FdoException* ex)
     {
         TestCommonFail (ex);
@@ -290,7 +290,7 @@ int SpatialFilterTests::runSpatialQuery( FdoString* class_name, FdoSpatialOperat
         double time2 = TestCommonMiscUtil::GetTime_S();
         double elapsed = time2 - time1;
         if (VERBOSE)
-			printf("Elapsed: %lf sec\n",elapsed);
+            printf("Elapsed: %lf sec\n",elapsed);
 #endif
     }
     catch( FdoException* ex)
@@ -475,16 +475,16 @@ void SpatialFilterTests::Touches()
     {
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select); 
         select->SetFeatureClassName (CLASS_NAME_ROADS);
-		select->SetFilter (L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((754585.841880672 1379595.67650762 0, 754695.110872774 1379848.11708386 0, 754441.744600538 1379964.26325997 0, 754332.471512436 1379711.82268373 0, 754585.841880672 1379595.67650762 0))')");
+        select->SetFilter (L"Geometry TOUCHES GeomFromText('POLYGON XYZ ((754585.841880672 1379595.67650762 0, 754695.110872774 1379848.11708386 0, 754441.744600538 1379964.26325997 0, 754332.471512436 1379711.82268373 0, 754585.841880672 1379595.67650762 0))')");
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-		int count = 0;
-		while (reader->ReadNext ())
+        int count = 0;
+        while (reader->ReadNext ())
         {
-			wprintf (L"\n%s", reader->GetString (L"FCODE"));
-			count++;
-		}			
-		wprintf (L"\nNumber of features returned: %ld", count);
-		reader->Close ();
+            wprintf (L"\n%s", reader->GetString (L"FCODE"));
+            count++;
+        }            
+        wprintf (L"\nNumber of features returned: %ld", count);
+        reader->Close ();
         CPPUNIT_FAIL ("no exception for FdoSpatialOperations_Touches");
     }
     catch (FdoException* ge)
@@ -502,16 +502,16 @@ void SpatialFilterTests::Bogus ()
     {
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select); 
         select->SetFeatureClassName (CLASS_NAME_ROADS);
-		select->SetFilter (L"SHAPE WITHIN geomfromtext('POLYGON XY( ( 400000 1400000, 500000 1400000, 500000 1550000, 400000 1550000, 400000 1400000) )') and (FCODE like 'DA249%' or MNRCODE = 106)");
+        select->SetFilter (L"SHAPE WITHIN geomfromtext('POLYGON XY( ( 400000 1400000, 500000 1400000, 500000 1550000, 400000 1550000, 400000 1400000) )') and (FCODE like 'DA249%' or MNRCODE = 106)");
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
-		int count = 0;
-		while (reader->ReadNext ())
+        int count = 0;
+        while (reader->ReadNext ())
         {
-			wprintf (L"\n%d", reader->GetInt32 (L"FeatId"));
-			count++;
-		}			
-		wprintf (L"\nNumber of features returned: %ld", count);
-		reader->Close ();
+            wprintf (L"\n%d", reader->GetInt32 (L"FeatId"));
+            count++;
+        }            
+        wprintf (L"\nNumber of features returned: %ld", count);
+        reader->Close ();
         CPPUNIT_FAIL ("no exception for invalid property name");
     }
     catch (FdoException* ge)

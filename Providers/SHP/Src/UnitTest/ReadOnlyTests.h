@@ -54,11 +54,11 @@ class ReadOnlyTests :
 public:
     ReadOnlyTests (void);
     virtual ~ReadOnlyTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void select();
+    void select();
     void apply_schema ();
     void insert ();
     void update ();

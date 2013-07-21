@@ -36,11 +36,11 @@ class BigPerformanceTests :
 public:
     BigPerformanceTests (void);
     virtual ~BigPerformanceTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void select ();
+    void select ();
 };
 
 #endif // BIGPERFORMANCETESTS_H
