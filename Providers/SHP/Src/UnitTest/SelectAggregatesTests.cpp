@@ -1171,7 +1171,7 @@ void SelectAggregatesTests::performance_count_mbr ()
     {
         if (connection)
             connection->Close();
-        connection - NULL;
+        connection = NULL;
         if (datareader)
             datareader->Close();
         datareader = NULL;
