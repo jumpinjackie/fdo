@@ -105,8 +105,8 @@ void SelectTest::DoTest (
 )
 {
 // HACK: test Crashing. TODO: resolve
-CPPUNIT_FAIL("SelectTest::DoTest Disabled!!");
-return;
+// CPPUNIT_FAIL("SelectTest::DoTest Disabled!!");
+// return;
 
     FdoPtr<FdoIConnection> connection;
     FdoInt32 baseCount;

@@ -45,8 +45,8 @@ void ConnectionInfoTest::setUp ()
 void ConnectionInfoTest::TestProviderInfo ()
 {
 // HACK: test Crashing. TODO: resolve
-CPPUNIT_FAIL("ConnectionInfoTest::TestProviderInfo Disabled!!");
-return;
+// CPPUNIT_FAIL("ConnectionInfoTest::TestProviderInfo Disabled!!");
+// return;
 
     FdoPtr<FdoIConnection> connection;
 
