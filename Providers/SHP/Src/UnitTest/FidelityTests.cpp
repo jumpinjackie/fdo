@@ -51,7 +51,7 @@ void FidelityTests::setUp ()
             FdoCommonFile::MkDir (LOCATION);
         mConnection = ShpTests::GetConnection ();
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
-		ShpTests::sLocation = LOCATION;
+        ShpTests::sLocation = LOCATION;
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
     }
     catch (FdoException* ge)
@@ -69,7 +69,7 @@ void FidelityTests::tearDown ()
         TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"coundist01_n83");
 
         mConnection->Close ();
-		FDO_SAFE_RELEASE(mConnection.p);
+        FDO_SAFE_RELEASE(mConnection.p);
 
     if (FdoCommonFile::FileExists (LOCATION SCHEMA_NAME))
         FdoCommonFile::Delete (LOCATION SCHEMA_NAME);

@@ -64,7 +64,7 @@ IndexTests::~IndexTests (void)
 
 void IndexTests::create ()
 {
-	if (FdoCommonFile::FileExists (IDX_FILE))
+    if (FdoCommonFile::FileExists (IDX_FILE))
         CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE, true));
 
     // close the file when exiting this block
@@ -92,22 +92,22 @@ void IndexTests::populate ()
         ShpSpatialIndex index (IDX_FILE, NULL, shp.GetFileShapeType (), shp.HasMData ());
         shx.GetFileSize (size);
 
-	    // general information methods
-	    CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
-	    CPPUNIT_ASSERT_MESSAGE ("length bad", size == 2 * shx.GetFileLength ()); // 16 bit words
-	    CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
-	    CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolylineShape == shx.GetFileShapeType ());
-	    CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1088 == shx.GetNumObjects ());
+        // general information methods
+        CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
+        CPPUNIT_ASSERT_MESSAGE ("length bad", size == 2 * shx.GetFileLength ()); // 16 bit words
+        CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
+        CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolylineShape == shx.GetFileShapeType ());
+        CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1088 == shx.GetNumObjects ());
 
         // bounding box methods
-	    CPPUNIT_ASSERT_MESSAGE ("min x bad", 202293.67187500000 == shx.GetBoundingBoxMinX ());
-	    CPPUNIT_ASSERT_MESSAGE ("max x bad", 1763872.6250000000 == shx.GetBoundingBoxMaxX ());
-	    CPPUNIT_ASSERT_MESSAGE ("min y bad", 11709796.000000000 == shx.GetBoundingBoxMinY ());
-	    CPPUNIT_ASSERT_MESSAGE ("max y bad", 12897880.000000000 == shx.GetBoundingBoxMaxY ());
-	    CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shx.GetBoundingBoxMinZ ());
-	    CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shx.GetBoundingBoxMaxZ ());
-	    CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shx.GetBoundingBoxMinM ());
-	    CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shx.GetBoundingBoxMaxM ());
+        CPPUNIT_ASSERT_MESSAGE ("min x bad", 202293.67187500000 == shx.GetBoundingBoxMinX ());
+        CPPUNIT_ASSERT_MESSAGE ("max x bad", 1763872.6250000000 == shx.GetBoundingBoxMaxX ());
+        CPPUNIT_ASSERT_MESSAGE ("min y bad", 11709796.000000000 == shx.GetBoundingBoxMinY ());
+        CPPUNIT_ASSERT_MESSAGE ("max y bad", 12897880.000000000 == shx.GetBoundingBoxMaxY ());
+        CPPUNIT_ASSERT_MESSAGE ("min z bad", 0.0 == shx.GetBoundingBoxMinZ ());
+        CPPUNIT_ASSERT_MESSAGE ("max z bad", 0.0 == shx.GetBoundingBoxMaxZ ());
+        CPPUNIT_ASSERT_MESSAGE ("min m bad", 0.0 == shx.GetBoundingBoxMinM ());
+        CPPUNIT_ASSERT_MESSAGE ("max m bad", 0.0 == shx.GetBoundingBoxMaxM ());
 
         BoundingBox limit;
         limit.xMin = numeric_limits<double>::max ();
@@ -133,14 +133,14 @@ void IndexTests::populate ()
 
         CPPUNIT_ASSERT_MESSAGE ("wrong count of index entries", shx.GetNumObjects () == index.GetNObjects ());
         index.GetSSIExtent (extents);
-	    CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == shx.GetBoundingBoxMinX ());
-	    CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == shx.GetBoundingBoxMaxX ());
-	    CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == shx.GetBoundingBoxMinY ());
-	    CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == shx.GetBoundingBoxMaxY ());
-	    CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == limit.xMin);
-	    CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == limit.xMax);
-	    CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == limit.yMin);
-	    CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == limit.yMax);
+        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == shx.GetBoundingBoxMinX ());
+        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == shx.GetBoundingBoxMaxX ());
+        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == shx.GetBoundingBoxMinY ());
+        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == shx.GetBoundingBoxMaxY ());
+        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == limit.xMin);
+        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == limit.xMax);
+        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == limit.yMin);
+        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == limit.yMax);
     }
 
     CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE, true));
@@ -236,22 +236,22 @@ void IndexTests::check_z ()
             ShpSpatialIndex index (IDX_FILE2, NULL, shp.GetFileShapeType (), shp.HasMData ());
             shx.GetFileSize (size);
 
-	        // general information methods
-	        CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
-	        CPPUNIT_ASSERT_MESSAGE ("length bad", size == 2 * shx.GetFileLength ()); // 16 bit words
-	        CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
-	        CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolylineZShape == shx.GetFileShapeType ());
-	        CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1303 == shx.GetNumObjects ());
+            // general information methods
+            CPPUNIT_ASSERT_MESSAGE ("file code bad", 9994 == shx.GetFileCode ());
+            CPPUNIT_ASSERT_MESSAGE ("length bad", size == 2 * shx.GetFileLength ()); // 16 bit words
+            CPPUNIT_ASSERT_MESSAGE ("version bad", 1000 == shx.GetFileVersion ());
+            CPPUNIT_ASSERT_MESSAGE ("shape type bad", ePolylineZShape == shx.GetFileShapeType ());
+            CPPUNIT_ASSERT_MESSAGE ("number of objects bad", 1303 == shx.GetNumObjects ());
 
             // bounding box methods
-	        CPPUNIT_ASSERT_MESSAGE ("min x bad", -10383.223000000000 == shx.GetBoundingBoxMinX ());
-	        CPPUNIT_ASSERT_MESSAGE ("max x bad", -6482.8280000000004 == shx.GetBoundingBoxMaxX ());
-	        CPPUNIT_ASSERT_MESSAGE ("min y bad", -41236.980000000003 == shx.GetBoundingBoxMinY ());
-	        CPPUNIT_ASSERT_MESSAGE ("max y bad", -24352.287000000000 == shx.GetBoundingBoxMaxY ());
-	        CPPUNIT_ASSERT_MESSAGE ("min z bad", -38.270000000000003 == shx.GetBoundingBoxMinZ ());
-	        CPPUNIT_ASSERT_MESSAGE ("max z bad", 8.2400000000000002 == shx.GetBoundingBoxMaxZ ());
-	        CPPUNIT_ASSERT_MESSAGE ("min m bad", shx.GetBoundingBoxMinM () < -1e-38);
-	        CPPUNIT_ASSERT_MESSAGE ("max m bad", shx.GetBoundingBoxMaxM () < -1e-38);
+            CPPUNIT_ASSERT_MESSAGE ("min x bad", -10383.223000000000 == shx.GetBoundingBoxMinX ());
+            CPPUNIT_ASSERT_MESSAGE ("max x bad", -6482.8280000000004 == shx.GetBoundingBoxMaxX ());
+            CPPUNIT_ASSERT_MESSAGE ("min y bad", -41236.980000000003 == shx.GetBoundingBoxMinY ());
+            CPPUNIT_ASSERT_MESSAGE ("max y bad", -24352.287000000000 == shx.GetBoundingBoxMaxY ());
+            CPPUNIT_ASSERT_MESSAGE ("min z bad", -38.270000000000003 == shx.GetBoundingBoxMinZ ());
+            CPPUNIT_ASSERT_MESSAGE ("max z bad", 8.2400000000000002 == shx.GetBoundingBoxMaxZ ());
+            CPPUNIT_ASSERT_MESSAGE ("min m bad", shx.GetBoundingBoxMinM () < -1e-38);
+            CPPUNIT_ASSERT_MESSAGE ("max m bad", shx.GetBoundingBoxMaxM () < -1e-38);
 
             BoundingBoxEx limit;
             limit.xMin = numeric_limits<double>::max ();
@@ -283,18 +283,18 @@ void IndexTests::check_z ()
 
             CPPUNIT_ASSERT_MESSAGE ("wrong count of index entries", shx.GetNumObjects () == index.GetNObjects ());
             index.GetSSIExtent (extents);
-	        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == shx.GetBoundingBoxMinX ());
-	        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == shx.GetBoundingBoxMaxX ());
-	        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == shx.GetBoundingBoxMinY ());
-	        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == shx.GetBoundingBoxMaxY ());
-	        CPPUNIT_ASSERT_MESSAGE ("min z bad", extents.zMin == shx.GetBoundingBoxMinZ ());
-	        CPPUNIT_ASSERT_MESSAGE ("max z bad", extents.zMax == shx.GetBoundingBoxMaxZ ());
-	        CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == limit.xMin);
-	        CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == limit.xMax);
-	        CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == limit.yMin);
-	        CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == limit.yMax);
-	        CPPUNIT_ASSERT_MESSAGE ("min z bad", extents.zMin == limit.zMin);
-	        CPPUNIT_ASSERT_MESSAGE ("max z bad", extents.zMax == limit.zMax);
+            CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == shx.GetBoundingBoxMinX ());
+            CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == shx.GetBoundingBoxMaxX ());
+            CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == shx.GetBoundingBoxMinY ());
+            CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == shx.GetBoundingBoxMaxY ());
+            CPPUNIT_ASSERT_MESSAGE ("min z bad", extents.zMin == shx.GetBoundingBoxMinZ ());
+            CPPUNIT_ASSERT_MESSAGE ("max z bad", extents.zMax == shx.GetBoundingBoxMaxZ ());
+            CPPUNIT_ASSERT_MESSAGE ("min x bad", extents.xMin == limit.xMin);
+            CPPUNIT_ASSERT_MESSAGE ("max x bad", extents.xMax == limit.xMax);
+            CPPUNIT_ASSERT_MESSAGE ("min y bad", extents.yMin == limit.yMin);
+            CPPUNIT_ASSERT_MESSAGE ("max y bad", extents.yMax == limit.yMax);
+            CPPUNIT_ASSERT_MESSAGE ("min z bad", extents.zMin == limit.zMin);
+            CPPUNIT_ASSERT_MESSAGE ("max z bad", extents.zMax == limit.zMax);
         }
 
         CPPUNIT_ASSERT_MESSAGE ("cannot delete file", FdoCommonFile::Delete (IDX_FILE2, true));

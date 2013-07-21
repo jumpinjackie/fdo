@@ -57,7 +57,7 @@ void UpdateTests::tearDown ()
     TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test");
 
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 
     if (FdoCommonFile::FileExists (LOCATION))
         FdoCommonFile::RmDir (LOCATION);
@@ -166,10 +166,10 @@ void UpdateTests::update ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", featid);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
-	    value = FdoPropertyValue::Create ();
+        values = update->GetPropertyValues ();
+        value = FdoPropertyValue::Create ();
         value->SetName (L"Street");
-		value->SetValue (L"'88 Noodle Court'");
+        value->SetValue (L"'88 Noodle Court'");
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");
@@ -233,11 +233,11 @@ void UpdateTests::update_geometry_point_xy ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", featid);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
+        values = update->GetPropertyValues ();
         geometry = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POINT XY ( 25626 2929 )')");
         value = FdoPropertyValue::Create (L"Geometry", geometry);
         value->SetName (L"Geometry");
-		value->SetValue (geometry);
+        value->SetValue (geometry);
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");
@@ -337,11 +337,11 @@ void UpdateTests::update_geometry_line_xy ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", id);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
+        values = update->GetPropertyValues ();
         FdoPtr<FdoGeometryValue> geometry3 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('LINESTRING XY ( 123.45 872.45, 891.23 828.77, 882.99 728.34, 677.92 776.43, 552.52 928.45)')");
         value = FdoPropertyValue::Create (L"Geometry", geometry3);
         value->SetName (L"Geometry");
-		value->SetValue (geometry3);
+        value->SetValue (geometry3);
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");
@@ -469,11 +469,11 @@ void UpdateTests::update_geometry_polygon_xy ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", id);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
+        values = update->GetPropertyValues ();
         FdoPtr<FdoGeometryValue> geometry3 = (FdoGeometryValue*)FdoExpression::Parse (L"GEOMFROMTEXT ('POLYGON XY ((5108.8 5104.7, 5109.02 5104.97, 5109.2 5138.67, 5108.8 5104.7))')");
         value = FdoPropertyValue::Create (L"Geometry", geometry3);
         value->SetName (L"Geometry");
-		value->SetValue (geometry3);
+        value->SetValue (geometry3);
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");
@@ -579,14 +579,14 @@ void UpdateTests::update_null_data_values ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", featid);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
-	    value = FdoPropertyValue::Create ();
+        values = update->GetPropertyValues ();
+        value = FdoPropertyValue::Create ();
         value->SetName (L"Street");
-		//Leave NULL: value->SetValue ( ... );
+        //Leave NULL: value->SetValue ( ... );
         values->Add (value);
-	    value = FdoPropertyValue::Create ();
+        value = FdoPropertyValue::Create ();
         value->SetName (L"Id");
-		//Leave NULL: value->SetValue ( ... );
+        //Leave NULL: value->SetValue ( ... );
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");
@@ -651,7 +651,7 @@ void UpdateTests::update_int32 ()
         if (-1 == featid)
             CPPUNIT_FAIL ("too few features inserted");
 
-		// Read back the values
+        // Read back the values
         FdoPtr<FdoISelect> select1 = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
         select1->SetFeatureClassName (L"TheSchema:Test");
         reader = select1->Execute ();
@@ -676,14 +676,14 @@ void UpdateTests::update_int32 ()
         wchar_t filter[1024];
         FdoCommonOSUtil::swprintf (filter, ELEMENTS(filter), L"%ls = %d", L"FeatId", featid);
         update->SetFilter (FdoPtr<FdoFilter>(FdoFilter::Parse (filter)));
-	    values = update->GetPropertyValues ();
-	    value = FdoPropertyValue::Create ();
+        values = update->GetPropertyValues ();
+        value = FdoPropertyValue::Create ();
         value->SetName (L"Age");
-		value->SetValue (L"2147483646");
+        value->SetValue (L"2147483646");
         values->Add (value);
-	    value = FdoPropertyValue::Create ();
+        value = FdoPropertyValue::Create ();
         value->SetName (L"Id");
-		//Leave NULL: value->SetValue ( ... );
+        //Leave NULL: value->SetValue ( ... );
         values->Add (value);
         if (1 != update->Execute ())
             CPPUNIT_FAIL ("update execute failed");

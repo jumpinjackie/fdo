@@ -114,7 +114,7 @@ public:
     virtual ~ShpTests (void);
 
     static bool VERBOSE;
-	static wchar_t* sLocation;
+    static wchar_t* sLocation;
     static FdoIConnection* GetConnection ();
 
     // Parses the given Fdo string into an FdoExpression, making sure to validate and convert to the given type:
@@ -148,7 +148,7 @@ public:
     /// <param name="file_name">Pass the file set name (full path but no extension).</param> 
     void copy (FdoIConnection* target_connection, FdoString* target_class, const wchar_t* file_name, bool ignore_states = false);
 
-	void SaveSchema(FdoIConnection* connection);
+    void SaveSchema(FdoIConnection* connection);
 };
 
 #endif // CPP_UNIT_SHPTESTS_H

@@ -64,7 +64,7 @@ void SelectTests::tearDown ()
     }
 
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void SelectTests::create_schema (FdoString *schemaName, FdoString* className, FdoGeometricType type, bool elevation, bool measure, bool bInsertTestData, bool bUseDoubleType)
@@ -342,15 +342,15 @@ void SelectTests::get_spatial_contexts()
 #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-		// Expect just one spatial context, no default (see spr 792011.02)
+        // Expect just one spatial context, no default (see spr 792011.02)
         get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 1);
 
-		// Do it again, the default SC must have been removed.
-		get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 1);
+        // Do it again, the default SC must have been removed.
+        get_spatial_context( connection, L"NAD_1983_HARN_UTM_Zone_17N", 1);
 
         connection->Close();
 
-		// Test #3. Multiple PRJ file present, but the same content
+        // Test #3. Multiple PRJ file present, but the same content
         connection = ShpTests::GetConnection ();
 #ifdef _WIN32
         connection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
@@ -359,11 +359,11 @@ void SelectTests::get_spatial_contexts()
 #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == connection->Open ());
 
-		// Expect just one spatial context, no default (see spr 792011.02)
+        // Expect just one spatial context, no default (see spr 792011.02)
         get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 1 );
 
-		// Do it again, the default SC must have been removed.
-		get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 1 );
+        // Do it again, the default SC must have been removed.
+        get_spatial_context( connection, L"WGS84 Lat/Long's, Degrees, -180 ==> +180", 1 );
 
         connection->Close();
 
@@ -391,12 +391,12 @@ void SelectTests::get_spatial_context (FdoIConnection* connection, FdoString* ex
         while (reader->ReadNext ())
             count++;
 
-		// The flag is ignored...
+        // The flag is ignored...
         get->SetActiveOnly (true);
         reader = get->Execute ();
         count = 0;
-		bool found = false;
-		FdoStringP  wkt_save;
+        bool found = false;
+        FdoStringP  wkt_save;
         FdoString*  cs_save;
 
         while (reader->ReadNext () && !found)
@@ -404,35 +404,35 @@ void SelectTests::get_spatial_context (FdoIConnection* connection, FdoString* ex
             FdoStringP  wkt = reader->GetCoordinateSystemWkt ();
             FdoString*  cs = reader->GetCoordinateSystem();
 
-			if ( 0 == wcscmp (expected_cs_name, L"") )
-				found = ( 0 == wcscmp( L"", cs ));
-			else if ( !found )
-				found = ( 0 == wcscmp( expected_cs_name, cs ));
+            if ( 0 == wcscmp (expected_cs_name, L"") )
+                found = ( 0 == wcscmp( L"", cs ));
+            else if ( !found )
+                found = ( 0 == wcscmp( expected_cs_name, cs ));
 
-			if ( found )
-			{
-				wkt_save = wkt;
-				cs_save = cs;
-			}
-			FdoPtr<FdoByteArray>  fgf_box = reader->GetExtent();
-			FdoPtr<FdoIGeometry>  geom_box = factory->CreateGeometryFromFgf( fgf_box );
-			FdoPtr<FdoIEnvelope>  box = geom_box->GetEnvelope();       
+            if ( found )
+            {
+                wkt_save = wkt;
+                cs_save = cs;
+            }
+            FdoPtr<FdoByteArray>  fgf_box = reader->GetExtent();
+            FdoPtr<FdoIGeometry>  geom_box = factory->CreateGeometryFromFgf( fgf_box );
+            FdoPtr<FdoIEnvelope>  box = geom_box->GetEnvelope();       
 
-			printf("%d. %ls= (%lf, %lf)(%lf, %lf)\n", count, (const wchar_t*)cs,
-						box->GetMinX(), box->GetMinY(), box->GetMaxX(), box->GetMaxY());
+            printf("%d. %ls= (%lf, %lf)(%lf, %lf)\n", count, (const wchar_t*)cs,
+                        box->GetMinX(), box->GetMinY(), box->GetMaxX(), box->GetMaxY());
 
             count++;
         }
 
-		if ( !found )
-			CPPUNIT_ASSERT_MESSAGE ("Coordinate System name not found", false);
+        if ( !found )
+            CPPUNIT_ASSERT_MESSAGE ("Coordinate System name not found", false);
 
-		CPPUNIT_ASSERT_MESSAGE ("Coordinate System name is not set", 0 == wcscmp (expected_cs_name, cs_save));
-		
-		if ( 0 != wcscmp (expected_cs_name, L"") )
-			CPPUNIT_ASSERT_MESSAGE ("Coordinate System WKT is not set", 0 != wcscmp (L"", wkt_save));
-		
-		CPPUNIT_ASSERT_MESSAGE ("Wrong number of Spatial Contexts", count == expected_num_sc );
+        CPPUNIT_ASSERT_MESSAGE ("Coordinate System name is not set", 0 == wcscmp (expected_cs_name, cs_save));
+        
+        if ( 0 != wcscmp (expected_cs_name, L"") )
+            CPPUNIT_ASSERT_MESSAGE ("Coordinate System WKT is not set", 0 != wcscmp (L"", wkt_save));
+        
+        CPPUNIT_ASSERT_MESSAGE ("Wrong number of Spatial Contexts", count == expected_num_sc );
     }
     catch (FdoException* ge)
     {
@@ -631,15 +631,15 @@ void SelectTests::get_spatial_context_text ()
         reader = get->Execute ();
         FdoStringP text = L"PROJCS[\"NAD_1983_UTM_Zone_4N\",GEOGCS[\"GCS_North_American_1983\",DATUM[\"D_North_American_1983\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-159.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]";
 
-		bool		found = false;
-		FdoStringP	wkt;
-		while (reader->ReadNext () && !found)
+        bool        found = false;
+        FdoStringP    wkt;
+        while (reader->ReadNext () && !found)
         {
             wkt = reader->GetCoordinateSystemWkt ();
-			found = ( 0 == wcscmp (wkt, text ) );
+            found = ( 0 == wcscmp (wkt, text ) );
         }
-		CPPUNIT_ASSERT_MESSAGE ("WKT not found", found );
-		CPPUNIT_ASSERT_MESSAGE ("wrong WKT text length", wcslen (text) == wcslen (wkt));
+        CPPUNIT_ASSERT_MESSAGE ("WKT not found", found );
+        CPPUNIT_ASSERT_MESSAGE ("wrong WKT text length", wcslen (text) == wcslen (wkt));
         CPPUNIT_ASSERT_MESSAGE ("wrong WKT text", (0 == wcscmp (wkt, text)) );
     }
     catch (FdoException* ge)
@@ -803,18 +803,18 @@ void SelectTests::select_states ()
         }
         CPPUNIT_ASSERT_MESSAGE ("no statesp020 features selected", 0 != count);
 
-		CPPUNIT_ASSERT_MESSAGE("This test should not succeed because of duplicated fields", false);
+        CPPUNIT_ASSERT_MESSAGE("This test should not succeed because of duplicated fields", false);
     }
     catch (FdoException* ge)
     {
-		FdoStringP   msg = FdoStringP(ge->GetExceptionMessage());
+        FdoStringP   msg = FdoStringP(ge->GetExceptionMessage());
 
-		if ( msg.Contains(L"Duplicate field") ) {
-			printf("Expected error '%ls'\n", ge->GetExceptionMessage());
-			ge->Release();
-		}
-		else
-			TestCommonFail(ge);
+        if ( msg.Contains(L"Duplicate field") ) {
+            printf("Expected error '%ls'\n", ge->GetExceptionMessage());
+            ge->Release();
+        }
+        else
+            TestCommonFail(ge);
     }
     catch (CppUnit::Exception error)
     {
@@ -829,8 +829,8 @@ void SelectTests::select_states ()
 
 void SelectTests::select_length_area ()
 {
-	select_length_area2( false );
-	select_length_area2( true );
+    select_length_area2( false );
+    select_length_area2( true );
 }
 
 void SelectTests::select_length_area2 (bool GEODETIC)
@@ -841,15 +841,15 @@ void SelectTests::select_length_area2 (bool GEODETIC)
     {
         mConnection->Close ();
         #ifdef _WIN32
-		if (GEODETIC)
-	       mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
-		else
-			mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Florida");
+        if (GEODETIC)
+           mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Sheboygan");
+        else
+            mConnection->SetConnectionString (L"DefaultFileLocation=..\\..\\TestData\\Florida");
 
         #else
-		if (GEODETIC)
-	       mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
-		else
+        if (GEODETIC)
+           mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Sheboygan");
+        else
         mConnection->SetConnectionString (L"DefaultFileLocation=../../TestData/Florida");
         #endif
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
@@ -857,26 +857,26 @@ void SelectTests::select_length_area2 (bool GEODETIC)
 
         FdoPtr<FdoISelect> select = (FdoISelect*)mConnection->CreateCommand (FdoCommandType_Select);
 
-		if (GEODETIC)
-			select->SetFeatureClassName (L"Parcels");
-		else
-			select->SetFeatureClassName (L"plss24");
+        if (GEODETIC)
+            select->SetFeatureClassName (L"Parcels");
+        else
+            select->SetFeatureClassName (L"plss24");
 
         FdoPtr<FdoIdentifierCollection> selectedIds = select->GetPropertyNames();
         selectedIds->Clear();
 
-		if (!GEODETIC)
-		{
-			FdoPtr <FdoIdentifier> id1= FdoIdentifier::Create (L"SHAPE_LEN");
-			selectedIds->Add(id1);
-			FdoPtr <FdoIdentifier> id2= FdoIdentifier::Create (L"SHAPE_AREA");
-			selectedIds->Add(id2);
-		}
+        if (!GEODETIC)
+        {
+            FdoPtr <FdoIdentifier> id1= FdoIdentifier::Create (L"SHAPE_LEN");
+            selectedIds->Add(id1);
+            FdoPtr <FdoIdentifier> id2= FdoIdentifier::Create (L"SHAPE_AREA");
+            selectedIds->Add(id2);
+        }
 
         FdoPtr<FdoComputedIdentifier> cid3 = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Length2D(Geometry)) AS TestLength2D");
-		selectedIds->Add(cid3);
+        selectedIds->Add(cid3);
         FdoPtr<FdoComputedIdentifier> cid4 = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Area2D(Geometry)) AS TestArea2D");
-		selectedIds->Add(cid4);
+        selectedIds->Add(cid4);
 
         FdoPtr<FdoIFeatureReader> reader = select->Execute ();
 
@@ -886,26 +886,26 @@ void SelectTests::select_length_area2 (bool GEODETIC)
         {
             count++;
             double length = reader->GetDouble (L"TestLength2D");
-			double area = reader->GetDouble (L"TestArea2D");
+            double area = reader->GetDouble (L"TestArea2D");
 
-			printf("%d. Computed: length = %lf  area = %lf\n", count, length, area);
+            printf("%d. Computed: length = %lf  area = %lf\n", count, length, area);
 
-			if (!GEODETIC)
-			{
-				double length0 = reader->GetDouble (L"SHAPE_LEN");
-				double area0 = reader->GetDouble (L"SHAPE_AREA");
+            if (!GEODETIC)
+            {
+                double length0 = reader->GetDouble (L"SHAPE_LEN");
+                double area0 = reader->GetDouble (L"SHAPE_AREA");
 
-				printf("%d. Original: length = %lf  area = %lf\n", count, length0, area0);
-			}
-			// A polygon has a open ring and the test fails
-			if ( count > 10)
-				break;
+                printf("%d. Original: length = %lf  area = %lf\n", count, length0, area0);
+            }
+            // A polygon has a open ring and the test fails
+            if ( count > 10)
+                break;
         }
         CPPUNIT_ASSERT_MESSAGE ("no features selected", 0 != count);
     }
     catch (FdoException* ge)
     {
-		TestCommonFail(ge);
+        TestCommonFail(ge);
     }
     catch (CppUnit::Exception error)
     {
@@ -1295,16 +1295,16 @@ void SelectTests::upper_lower ()
         selectedIds->Clear();
 
         FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(Street)) AS TestUpper");
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
-		FdoPtr<FdoIReader>  datareader = select->Execute ();
+        FdoPtr<FdoIReader>  datareader = select->Execute ();
 
         long count = 0;
         while (datareader->ReadNext ())
         {
             FdoString *street = datareader->GetString(L"TestUpper");
             CPPUNIT_ASSERT_MESSAGE("Upper wrong",          
-				(0==wcscmp(street, L"SLATER")) || (0==wcscmp(street, L"ALBERT")) || (0==wcscmp(street, L"QUEEN")) );
+                (0==wcscmp(street, L"SLATER")) || (0==wcscmp(street, L"ALBERT")) || (0==wcscmp(street, L"QUEEN")) );
 
             count++;
         }
@@ -1322,16 +1322,16 @@ void SelectTests::upper_lower ()
 
         cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Lower(Street)) AS TestLower");
 
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
-		datareader = select->Execute ();
+        datareader = select->Execute ();
 
         count = 0;
         while (datareader->ReadNext ())
         {
             FdoString *street = datareader->GetString(L"TestLower");
             CPPUNIT_ASSERT_MESSAGE("Lower wrong",          
-				(0==wcscmp(street, L"slater")) || (0==wcscmp(street, L"albert")) || (0==wcscmp(street, L"queen")) );
+                (0==wcscmp(street, L"slater")) || (0==wcscmp(street, L"albert")) || (0==wcscmp(street, L"queen")) );
 
             count++;
         }
@@ -1343,27 +1343,27 @@ void SelectTests::upper_lower ()
         // Try some wrong datatypes:
         //////////////////////////////////////////////////////////////////////
 
-		bool error = false;
+        bool error = false;
 
         selectedIds->Clear();
 
-		cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(LotSize)) AS TestUpper");
+        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Upper(LotSize)) AS TestUpper");
 
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
-		try
-		{
-			datareader = select->Execute ();
-		}
-		catch (FdoException* e)
-		{
-			e->Release();
-			error = true;
-		}
+        try
+        {
+            datareader = select->Execute ();
+        }
+        catch (FdoException* e)
+        {
+            e->Release();
+            error = true;
+        }
 
         datareader = NULL;
 
-		CPPUNIT_ASSERT_MESSAGE("Upper succeeded with wrong datatype", error == true );
+        CPPUNIT_ASSERT_MESSAGE("Upper succeeded with wrong datatype", error == true );
     }
     catch (FdoException* e)
     {
@@ -1398,11 +1398,11 @@ void SelectTests::ceil_floor ()
         selectedIds->Clear();
 
         FdoPtr<FdoComputedIdentifier> cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(LotSize)) AS TestCeil");
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
-		FdoPtr<FdoIReader> datareader = select->Execute ();
+        FdoPtr<FdoIReader> datareader = select->Execute ();
 
-		// [2702.7, 10000]
+        // [2702.7, 10000]
         long count = 0;
         while (datareader->ReadNext ())
         {
@@ -1421,11 +1421,11 @@ void SelectTests::ceil_floor ()
         selectedIds->Clear();
 
         cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(LotSize)) AS TestFloor");
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
-		datareader = select->Execute ();
+        datareader = select->Execute ();
 
-		// [2702.7, 10000]
+        // [2702.7, 10000]
         count = 0;
         while (datareader->ReadNext ())
         {
@@ -1445,20 +1445,20 @@ void SelectTests::ceil_floor ()
         selectedIds->Clear();
 
         cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Floor(FeatId)) AS TestFloor");
-		selectedIds->Add(cid);
+        selectedIds->Add(cid);
 
         bool error = false;
-		try
-		{
-			datareader = select->Execute ();
-		}
-		catch (FdoException* e)
-		{
-			e->Release();
-			error = true;
-		}
+        try
+        {
+            datareader = select->Execute ();
+        }
+        catch (FdoException* e)
+        {
+            e->Release();
+            error = true;
+        }
 
-		CPPUNIT_ASSERT_MESSAGE("Floor succeeded with wrong datatype Int32", error == true );
+        CPPUNIT_ASSERT_MESSAGE("Floor succeeded with wrong datatype Int32", error == true );
         datareader = NULL;
 */
 
@@ -1466,23 +1466,23 @@ void SelectTests::ceil_floor ()
         // Try Ceil() on a string (should fail):
         //////////////////////////////////////////////////////////////////////
 
-		bool error = false;
-		selectedIds->Clear();
-		cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(Street)) AS TestCeil");
-		selectedIds->Add(cid);
+        bool error = false;
+        selectedIds->Clear();
+        cid = (FdoComputedIdentifier*)FdoExpression::Parse(L"(Ceil(Street)) AS TestCeil");
+        selectedIds->Add(cid);
 
-		try
-		{
-			datareader = select->Execute ();
-		}
-		catch (FdoException* e)
-		{
-			e->Release();
-			error = true;
-		}
-		datareader = NULL;
+        try
+        {
+            datareader = select->Execute ();
+        }
+        catch (FdoException* e)
+        {
+            e->Release();
+            error = true;
+        }
+        datareader = NULL;
 
-		CPPUNIT_ASSERT_MESSAGE("Ceil succeeded with wrong datatype", error == true );
+        CPPUNIT_ASSERT_MESSAGE("Ceil succeeded with wrong datatype", error == true );
     }
     catch (FdoException* e)
     {

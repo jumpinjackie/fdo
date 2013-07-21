@@ -49,7 +49,7 @@ void ReadOnlyTests::setUp ()
 void ReadOnlyTests::tearDown ()
 {
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 void ReadOnlyTests::create_schema (FdoGeometricType type, bool elevation, bool measure)
@@ -243,7 +243,7 @@ void ReadOnlyTests::update ()
     {
         FdoPtr<FdoIUpdate> update = (FdoIUpdate*)mConnection->CreateCommand (FdoCommandType_Update);
         update->SetFeatureClassName (L"ontario");
-	    FdoPtr<FdoPropertyValueCollection> values = update->GetPropertyValues ();
+        FdoPtr<FdoPropertyValueCollection> values = update->GetPropertyValues ();
         FdoPtr<FdoValueExpression> expression = FdoDecimalValue::Create (99.9999);
         FdoPtr<FdoPropertyValue> value = FdoPropertyValue::Create (L"ONTARIO_ID", expression);
         values->Add (value);

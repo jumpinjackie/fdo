@@ -50,48 +50,48 @@ void ConnectionInfoTests::setUp ()
 void ConnectionInfoTests::tearDown ()
 {
     mConnection->Close ();
-	FDO_SAFE_RELEASE(mConnection.p);
+    FDO_SAFE_RELEASE(mConnection.p);
 }
 
 #define VERBOSE false
 
 void ConnectionInfoTests::TestProviderInfo ()
 {
-	if (VERBOSE)
+    if (VERBOSE)
         printf("Checking for Provider Type and Dependent List Info \n");
 
-	try {
+    try {
 
         FdoPtr<FdoIConnectionInfo> connectionInfo = mConnection->GetConnectionInfo();
-	    if (VERBOSE)
+        if (VERBOSE)
             printf(" ...> Checking for Provider Type\n");
         FdoProviderDatastoreType providerType = connectionInfo->GetProviderDatastoreType();
 
         switch (providerType) {
 
             case FdoProviderDatastoreType_DatabaseServer:
-	            if (VERBOSE)
+                if (VERBOSE)
                     printf(" ......> Found: 'Database Server' (unexpected result)\n");
                 throw FdoException::Create(L"Unexpected provider type 'Database Server' when expecting 'File'");
                 break;
             case FdoProviderDatastoreType_File:
-            	if (VERBOSE)
+                if (VERBOSE)
                     printf(" ......> Found: 'File' (expected result)\n");
                 break;
             case FdoProviderDatastoreType_WebServer:
-	            if (VERBOSE)
+                if (VERBOSE)
                     printf(" ......> Found: 'Web Server' (unexpected result)\n");
                 throw FdoException::Create(L"Unexpected provider type 'Web Server' when expecting 'File'");
                 break;
             case FdoProviderDatastoreType_Unknown:
-            	if (VERBOSE)
+                if (VERBOSE)
                     printf(" ......> Found: 'Unknown' (unexpected result)\n");
                 throw FdoException::Create(L"Unexpected provider type 'Unknown' when expecting 'File'");
                 break;
 
         }
 
-	    if (VERBOSE)
+        if (VERBOSE)
             printf(" ...> Checking for list of dependent files\n");
         FdoPtr<FdoStringCollection> stringCollection = connectionInfo->GetDependentFileNames();
         if (stringCollection == NULL)
@@ -104,7 +104,7 @@ void ConnectionInfoTests::TestProviderInfo ()
 
                 FdoPtr<FdoStringElement> stringCollectionElement = stringCollection->GetItem(index);
                 FdoStringP dependentFileName = stringCollectionElement->GetString();
-	            if (VERBOSE)
+                if (VERBOSE)
                     printf(" ......> Found: '%ls'\n", (FdoString *) dependentFileName);
 
             }
@@ -115,10 +115,10 @@ void ConnectionInfoTests::TestProviderInfo ()
 
     }
 
-	catch (FdoException *e) 
-	{
+    catch (FdoException *e) 
+    {
         printf( "Exception: %ls\n", e->GetExceptionMessage() );
-	}
+    }
 
 }
 

@@ -60,19 +60,19 @@ SchemaTests::~SchemaTests (void)
 
 void SchemaTests::setUp ()
 {
-	VERBOSE = false;
+    VERBOSE = false;
 
     try
     {
         if (!FdoCommonFile::FileExists (LOCATION))
             FdoCommonFile::MkDir (LOCATION);
         mConnection = ShpTests::GetConnection ();
-		ShpTests::sLocation = LOCATION;
+        ShpTests::sLocation = LOCATION;
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 
-		// Extra location
-		if (!FdoCommonFile::FileExists (LOCATION7))
+        // Extra location
+        if (!FdoCommonFile::FileExists (LOCATION7))
             FdoCommonFile::MkDir (LOCATION7);
     }
     catch (FdoException* ge)
@@ -91,7 +91,7 @@ void SchemaTests::tearDown ()
         TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, L"Test2");
 
         mConnection->Close ();
-		FDO_SAFE_RELEASE(mConnection.p);
+        FDO_SAFE_RELEASE(mConnection.p);
 
         if (FdoCommonFile::FileExists (LOCATION L"schema.xml"))
             FdoCommonFile::Delete (LOCATION L"schema.xml");
@@ -108,7 +108,7 @@ void SchemaTests::tearDown ()
 
 void SchemaTests::show_schema (FdoFeatureSchemaCollection* schemas)
 {
-	FdoPtr<FdoISchemaCapabilities>  schemaCapabilities = mConnection->GetSchemaCapabilities();
+    FdoPtr<FdoISchemaCapabilities>  schemaCapabilities = mConnection->GetSchemaCapabilities();
 
     printf ("\tSchema Capabilities:\n");
     printf ("\t\tSupports Association Properties: %s\n", schemaCapabilities->SupportsAssociationProperties() ? "yes" : "no");
@@ -116,7 +116,7 @@ void SchemaTests::show_schema (FdoFeatureSchemaCollection* schemas)
     printf ("\t\tSupports Composite Unique Value Constraints: %s\n", schemaCapabilities->SupportsCompositeUniqueValueConstraints() ? "yes" : "no");
     printf ("\t\tSupports MultipleSchemas: %s\n", schemaCapabilities->SupportsMultipleSchemas() ? "yes" : "no");
 
-	// Many others here, too boring...
+    // Many others here, too boring...
 
 
     for (int i = 0; i < schemas->GetCount (); i++)
@@ -335,7 +335,7 @@ void SchemaTests::apply_nameless ()
             classes->Add (feature);
             apply->SetFeatureSchema (schema);
             apply->Execute ();
-			SaveSchema(mConnection);
+            SaveSchema(mConnection);
             applied = true;
         }
         catch (FdoException* ge)
@@ -359,7 +359,7 @@ void SchemaTests::apply_nameless ()
             definition->Delete ();
             apply->SetFeatureSchema (schema);
             apply->Execute ();
-			SaveSchema(mConnection);
+            SaveSchema(mConnection);
         }
         CPPUNIT_ASSERT_MESSAGE ("nameless schema applied", !applied);
         CPPUNIT_ASSERT_MESSAGE ("class found from nameless schema apply", 0 == count);
@@ -415,7 +415,7 @@ void SchemaTests::create_nameless ()
             classes->Add (feature);
             apply->SetFeatureSchema (schema);
             apply->Execute ();
-			SaveSchema(mConnection);
+            SaveSchema(mConnection);
             applied = true;
         }
         catch (FdoException* ge)
@@ -439,7 +439,7 @@ void SchemaTests::create_nameless ()
             definition->Delete ();
             apply->SetFeatureSchema (schema);
             apply->Execute ();
-			SaveSchema(mConnection);
+            SaveSchema(mConnection);
         }
         CPPUNIT_ASSERT_MESSAGE ("nameless class created", !applied);
         CPPUNIT_ASSERT_MESSAGE ("class found from nameless schema apply", 0 == count);
@@ -461,7 +461,7 @@ void SchemaTests::schema_mapping_defaults_test()
 #else
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION3);
 #endif
-		ShpTests::sLocation = LOCATION3;
+        ShpTests::sLocation = LOCATION3;
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
 
         FdoPtr<FdoIDescribeSchemaMapping> describeSchemaMappingCmd =
@@ -560,11 +560,11 @@ void SchemaTests::_TestSchemaMappings(FdoPhysicalSchemaMappingCollection* mappin
             FdoStringP defaultShapefileNameNoExt = connProps->GetProperty(CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION);
             FdoCommonFile::DelimitPath(defaultShapefileNameNoExt);
             defaultShapefileNameNoExt += className;
-			
-			defaultShapefileNameNoExt += L".shp";
-			FdoStringP pFullFileName = FdoCommonFile::GetAbsolutePath(defaultShapefileNameNoExt);
-			FdoStringP pFullFolderName = FdoCommonFile::GetAbsolutePath(connProps->GetProperty(CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION));
-			defaultShapefileNameNoExt = FdoCommonFile::GetRelativePath(pFullFolderName, pFullFileName);
+            
+            defaultShapefileNameNoExt += L".shp";
+            FdoStringP pFullFileName = FdoCommonFile::GetAbsolutePath(defaultShapefileNameNoExt);
+            FdoStringP pFullFolderName = FdoCommonFile::GetAbsolutePath(connProps->GetProperty(CONNECTIONPROPERTY_DEFAULT_FILE_LOCATION));
+            defaultShapefileNameNoExt = FdoCommonFile::GetRelativePath(pFullFolderName, pFullFileName);
 
             FdoPtr<FdoClassDefinition> logicalClass;
             if (logicalClasses != NULL)
@@ -662,7 +662,7 @@ void SchemaTests::add_class ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -741,7 +741,7 @@ void SchemaTests::apply_two ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -771,7 +771,7 @@ void SchemaTests::apply_two ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -812,7 +812,7 @@ void SchemaTests::apply_three ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -841,7 +841,7 @@ void SchemaTests::apply_three ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -884,7 +884,7 @@ void SchemaTests::add_class_no_identity ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -944,7 +944,7 @@ void SchemaTests::switch_schema ()
 #else
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION4);
 #endif
-		ShpTests::sLocation = LOCATION4;
+        ShpTests::sLocation = LOCATION4;
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
         describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         schemas = describe->Execute ();
@@ -959,7 +959,7 @@ void SchemaTests::switch_schema ()
 #else
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION5);
 #endif
-		ShpTests::sLocation = LOCATION5;
+        ShpTests::sLocation = LOCATION5;
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
         describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         schemas = describe->Execute ();
@@ -993,28 +993,28 @@ void SchemaTests::destroy_schema ()
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
         FdoPtr<FdoIDestroySchema> destroy = (FdoIDestroySchema*)mConnection->CreateCommand (FdoCommandType_DestroySchema);
         
-		try 
-		{
-			destroy->SetSchemaName (L"Default");
-			destroy->Execute ();
-			CPPUNIT_ASSERT_MESSAGE ("Destroy schema should not succeed", false);
-		}
-		catch (FdoException* ge)
-		{
-			ge->Release();
-		}
+        try 
+        {
+            destroy->SetSchemaName (L"Default");
+            destroy->Execute ();
+            CPPUNIT_ASSERT_MESSAGE ("Destroy schema should not succeed", false);
+        }
+        catch (FdoException* ge)
+        {
+            ge->Release();
+        }
 
-		// Delete data
-		FdoPtr<FdoIDelete> del = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
+        // Delete data
+        FdoPtr<FdoIDelete> del = (FdoIDelete*)mConnection->CreateCommand (FdoCommandType_Delete);
 
-		del->SetFeatureClassName(L"Test1");
-		del->Execute();
-		del->SetFeatureClassName(L"Test2");
-		del->Execute();
+        del->SetFeatureClassName(L"Test1");
+        del->Execute();
+        del->SetFeatureClassName(L"Test2");
+        del->Execute();
 
-		// Now it shoud succeed
-		destroy->Execute ();
-		SaveSchema(mConnection);
+        // Now it shoud succeed
+        destroy->Execute ();
+        SaveSchema(mConnection);
 
         // check that it's not there
         FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
@@ -1026,7 +1026,7 @@ void SchemaTests::destroy_schema ()
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
         describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
         schemas = describe->Execute ();
-		// schema.xml is not generated any more during the ::copy operation, so we should find the default schema
+        // schema.xml is not generated any more during the ::copy operation, so we should find the default schema
         CPPUNIT_ASSERT_MESSAGE ("Expecting 0 schemas after reopen", 0 == schemas->GetCount ());
     }
     catch (FdoException* ge)
@@ -1090,7 +1090,7 @@ void SchemaTests::non_ascii_property_name ()
         setlocale(LC_ALL, "ja_JP.eucjp");
 #endif
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -1127,7 +1127,7 @@ void SchemaTests::non_ascii_property_name ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -1155,8 +1155,8 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         id32->SetPrecision(10);
         id32->SetScale(0);
 
-		// Exercise the internal conversion from DECIMAL to INT
-		FdoPtr<FdoDataPropertyDefinition> id16 = FdoDataPropertyDefinition::Create (L"IdInt16", L"integer");
+        // Exercise the internal conversion from DECIMAL to INT
+        FdoPtr<FdoDataPropertyDefinition> id16 = FdoDataPropertyDefinition::Create (L"IdInt16", L"integer");
         id16->SetDataType (FdoDataType_Decimal);
         id16->SetPrecision(6);
         id16->SetScale(0);
@@ -1251,8 +1251,8 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         FdoPtr<FdoFeatureClass> feature = FdoFeatureClass::Create (NEW_CLASS_NAME, L"test class created with apply schema");
         FdoPtr<FdoPropertyDefinitionCollection> properties = feature->GetProperties ();
         properties->Add (id32);
-		properties->Add (id16);
-		properties->Add (id64);
+        properties->Add (id16);
+        properties->Add (id64);
         properties->Add (streetA);
         properties->Add (streetB);
         properties->Add (area1);
@@ -1286,7 +1286,7 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
 #endif
 
         apply->Execute ();
-		
+        
         // NO MAPPING!
         // SaveSchema(mConnection);
 
@@ -1306,18 +1306,18 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
         // check it's contents
         properties = cls->GetProperties ();
 
-		// FdoDataType_Decimal with scale=0 has been turned into Int
+        // FdoDataType_Decimal with scale=0 has been turned into Int
         FdoPtr<FdoDataPropertyDefinition> featid32 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt32");
         CPPUNIT_ASSERT_MESSAGE ("IdInt32 wrong type", FdoDataType_Int32 == featid32->GetDataType ());
-		CPPUNIT_ASSERT_MESSAGE ("IdInt32 wrong precision", 10 == featid32->GetPrecision ());
+        CPPUNIT_ASSERT_MESSAGE ("IdInt32 wrong precision", 10 == featid32->GetPrecision ());
 
-		FdoPtr<FdoDataPropertyDefinition> featid16 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt16");
+        FdoPtr<FdoDataPropertyDefinition> featid16 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt16");
         CPPUNIT_ASSERT_MESSAGE ("IdInt16 wrong type", FdoDataType_Int16 == featid16->GetDataType ());
-		CPPUNIT_ASSERT_MESSAGE ("IdInt16 wrong precision", 6 == featid16->GetPrecision ());
+        CPPUNIT_ASSERT_MESSAGE ("IdInt16 wrong precision", 6 == featid16->GetPrecision ());
 
         FdoPtr<FdoDataPropertyDefinition> featid64 = (FdoDataPropertyDefinition*)properties->GetItem (L"IdInt64");
         CPPUNIT_ASSERT_MESSAGE ("IdInt64 wrong type", FdoDataType_Int64 == featid64->GetDataType ());
-		CPPUNIT_ASSERT_MESSAGE ("IdInt64 wrong precision", 17 == featid64->GetPrecision ());
+        CPPUNIT_ASSERT_MESSAGE ("IdInt64 wrong precision", 17 == featid64->GetPrecision ());
 
 
         streetA = (FdoDataPropertyDefinition*)properties->GetItem (L"StreetTooLo");
@@ -1443,7 +1443,7 @@ void SchemaTests::ascii_property_name_with_puctuation ()
         apply->SetFeatureSchema (schema);
 
         apply->Execute ();
-		
+        
         // NO MAPPING!
         // SaveSchema(mConnection);
 
@@ -1552,7 +1552,7 @@ void SchemaTests::non_ascii_class_name1 ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -1589,7 +1589,7 @@ void SchemaTests::non_ascii_class_name1 ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -1651,7 +1651,7 @@ void SchemaTests::non_ascii_class_name2 ()
 #endif
 
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -1688,7 +1688,7 @@ void SchemaTests::non_ascii_class_name2 ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -1742,7 +1742,7 @@ void SchemaTests::non_ascii_schema_name ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -1779,7 +1779,7 @@ void SchemaTests::non_ascii_schema_name ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {
@@ -1798,7 +1798,7 @@ void SchemaTests::non_ascii_directory ()
                 FdoCommonFile::MkDir (LOCATION2);
             mConnection = ShpTests::GetConnection ();
             mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION2);
-			ShpTests::sLocation = LOCATION2;
+            ShpTests::sLocation = LOCATION2;
             CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
         }
         catch (FdoException* ge)
@@ -1847,7 +1847,7 @@ void SchemaTests::non_ascii_directory ()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // close and reopen the connection
         mConnection->Close ();
@@ -1884,7 +1884,7 @@ void SchemaTests::non_ascii_directory ()
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         mConnection->Close ();
         if (FdoCommonFile::FileExists (LOCATION2 L"schema.xml"))
@@ -1892,7 +1892,7 @@ void SchemaTests::non_ascii_directory ()
         if (FdoCommonFile::FileExists (LOCATION2))
             FdoCommonFile::RmDir (LOCATION2);
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION);
-		ShpTests::sLocation = LOCATION;
+        ShpTests::sLocation = LOCATION;
         CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
     }
     catch (FdoException* ge) 
@@ -1950,7 +1950,7 @@ void SchemaTests::modify_class()
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
 
         // Modify the empty class (add 1 property, remove 1 property, should work with no exceptions thrown):
@@ -2094,7 +2094,7 @@ void SchemaTests::ignore_states()
         apply->SetFeatureSchema (schemaCopy);
         apply->SetIgnoreStates(true);  // ignore element states
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // Verify that the class was added, event though its element state at the time of ApplySchema was set to "Unchanged":
         FdoPtr<FdoIDescribeSchema> descSchema = (FdoIDescribeSchema*)mConnection->CreateCommand(FdoCommandType_DescribeSchema);
@@ -2115,49 +2115,49 @@ void SchemaTests::ignore_states()
 void SchemaTests::apply_schema()
 {
     try
-	{
-		FdoString* fileName = L"test";
+    {
+        FdoString* fileName = L"test";
 
         mConnection->Close ();
 
-		FdoPtr<FdoIConnectionInfo> cinfo = mConnection->GetConnectionInfo();
-		FdoPtr<FdoIConnectionPropertyDictionary> didc = cinfo->GetConnectionProperties();
-		didc->SetProperty(L"DefaultFileLocation", LOCATION);
-		didc->SetProperty(L"TemporaryFileLocation",L"");
+        FdoPtr<FdoIConnectionInfo> cinfo = mConnection->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> didc = cinfo->GetConnectionProperties();
+        didc->SetProperty(L"DefaultFileLocation", LOCATION);
+        didc->SetProperty(L"TemporaryFileLocation",L"");
 
-		mConnection->Open();
-		//Generating default data property
-		FdoPtr<FdoDataPropertyDefinition> featid = FdoDataPropertyDefinition::Create(L"FeatId",L"Default identity property");
-		featid->SetDataType(::FdoDataType_Int32);
-		featid->SetIsAutoGenerated(false);
-		featid->SetNullable(false);
-	    
-		//Generating default geometric property
-		FdoPtr<FdoGeometricPropertyDefinition> geometry=FdoGeometricPropertyDefinition::Create(L"Geometry",L"Default geometry property");
-		geometry->SetGeometryTypes(FdoGeometricType_Point);
-	    
-		//Generating default feature class
-		FdoPtr<FdoFeatureClass> featureclass1=FdoFeatureClass::Create(L"FeatureClass1",L"Default feature class");
-		FdoPtr<FdoPropertyDefinitionCollection> properties=featureclass1->GetProperties();
-		properties->Add(featid);
-		properties->Add(geometry);
-		FdoPtr<FdoDataPropertyDefinitionCollection> identifier=featureclass1->GetIdentityProperties();
-		identifier->Add(featid);
-		featureclass1->SetGeometryProperty(geometry);
+        mConnection->Open();
+        //Generating default data property
+        FdoPtr<FdoDataPropertyDefinition> featid = FdoDataPropertyDefinition::Create(L"FeatId",L"Default identity property");
+        featid->SetDataType(::FdoDataType_Int32);
+        featid->SetIsAutoGenerated(false);
+        featid->SetNullable(false);
+        
+        //Generating default geometric property
+        FdoPtr<FdoGeometricPropertyDefinition> geometry=FdoGeometricPropertyDefinition::Create(L"Geometry",L"Default geometry property");
+        geometry->SetGeometryTypes(FdoGeometricType_Point);
+        
+        //Generating default feature class
+        FdoPtr<FdoFeatureClass> featureclass1=FdoFeatureClass::Create(L"FeatureClass1",L"Default feature class");
+        FdoPtr<FdoPropertyDefinitionCollection> properties=featureclass1->GetProperties();
+        properties->Add(featid);
+        properties->Add(geometry);
+        FdoPtr<FdoDataPropertyDefinitionCollection> identifier=featureclass1->GetIdentityProperties();
+        identifier->Add(featid);
+        featureclass1->SetGeometryProperty(geometry);
 
-		//Generating default schema
-		FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(L"Schema1",L"Default schema");
-		FdoClassesP(schema1->GetClasses())->Add(featureclass1);
+        //Generating default schema
+        FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(L"Schema1",L"Default schema");
+        FdoClassesP(schema1->GetClasses())->Add(featureclass1);
 
-		//FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
-		FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
-		FdoPtr<FdoClassDefinition> def = coll->GetItem(0);      
-		def->SetName(fileName);               
-	 
-		FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
-		apply->SetFeatureSchema(schema1);
-		apply->Execute();
-	}
+        //FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
+        FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
+        FdoPtr<FdoClassDefinition> def = coll->GetItem(0);      
+        def->SetName(fileName);               
+     
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
+        apply->SetFeatureSchema(schema1);
+        apply->Execute();
+    }
     catch (FdoException* ge) 
     {
         TestCommonFail (ge);
@@ -2166,40 +2166,40 @@ void SchemaTests::apply_schema()
 
 void SchemaTests::test_create_PRJ()
 {
-	FdoString	*wkt = L"PROJCS[\"NAD_1927_StatePlane_California_I_FIPS_0401\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",2000000],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-122],PARAMETER[\"Standard_Parallel_1\",40],PARAMETER[\"Standard_Parallel_2\",41.66666666666666],PARAMETER[\"Latitude_Of_Origin\",39.33333333333334],UNIT[\"Foot_US\",0.30480060960121924]]";
+    FdoString    *wkt = L"PROJCS[\"NAD_1927_StatePlane_California_I_FIPS_0401\",GEOGCS[\"GCS_North_American_1927\",DATUM[\"D_North_American_1927\",SPHEROID[\"Clarke_1866\",6378206.4,294.9786982]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic\"],PARAMETER[\"False_Easting\",2000000],PARAMETER[\"False_Northing\",0],PARAMETER[\"Central_Meridian\",-122],PARAMETER[\"Standard_Parallel_1\",40],PARAMETER[\"Standard_Parallel_2\",41.66666666666666],PARAMETER[\"Latitude_Of_Origin\",39.33333333333334],UNIT[\"Foot_US\",0.30480060960121924]]";
     
-	try
-	{
+    try
+    {
         FdoString* NEW_SCHEMA_NAME = L"NewSchema";
         FdoString* NEW_CLASS_NAME = L"TestSC";
 
         mConnection->Close ();
 
-		///////// STEP I - create a spatial context, a class and an geometry association
-		FdoPtr<FdoIConnectionInfo> cinfo = mConnection->GetConnectionInfo();
-		FdoPtr<FdoIConnectionPropertyDictionary> didc = cinfo->GetConnectionProperties();
-		didc->SetProperty(L"DefaultFileLocation", LOCATION7);
-		didc->SetProperty(L"TemporaryFileLocation",L"");
+        ///////// STEP I - create a spatial context, a class and an geometry association
+        FdoPtr<FdoIConnectionInfo> cinfo = mConnection->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> didc = cinfo->GetConnectionProperties();
+        didc->SetProperty(L"DefaultFileLocation", LOCATION7);
+        didc->SetProperty(L"TemporaryFileLocation",L"");
 
-		mConnection->Open();
+        mConnection->Open();
 
-		// Clean up leftovers from previous tests:
+        // Clean up leftovers from previous tests:
         TestCommonSchemaUtil::CleanUpClass(mConnection, NULL, NEW_CLASS_NAME);
 
-		//Generating default data property
-		FdoPtr<FdoDataPropertyDefinition> featid = FdoDataPropertyDefinition::Create(L"FeatId",L"Default identity property");
-		featid->SetDataType(::FdoDataType_Int32);
-		featid->SetIsAutoGenerated(false);
-		featid->SetNullable(false);
-	    
-		//Generating default geometric property
-		FdoPtr<FdoGeometricPropertyDefinition> geometry=FdoGeometricPropertyDefinition::Create(L"Geometry",L"Default geometry property");
-		geometry->SetGeometryTypes(FdoGeometricType_Point);
-	    
-		// Create a new spatial context
+        //Generating default data property
+        FdoPtr<FdoDataPropertyDefinition> featid = FdoDataPropertyDefinition::Create(L"FeatId",L"Default identity property");
+        featid->SetDataType(::FdoDataType_Int32);
+        featid->SetIsAutoGenerated(false);
+        featid->SetNullable(false);
+        
+        //Generating default geometric property
+        FdoPtr<FdoGeometricPropertyDefinition> geometry=FdoGeometricPropertyDefinition::Create(L"Geometry",L"Default geometry property");
+        geometry->SetGeometryTypes(FdoGeometricType_Point);
+        
+        // Create a new spatial context
         FdoPtr<FdoICreateSpatialContext> cscCmd = (FdoICreateSpatialContext *)mConnection->CreateCommand( FdoCommandType_CreateSpatialContext );
 
-        cscCmd->SetName(L"");	// Leave it empty to avoid confict with WKT
+        cscCmd->SetName(L"");    // Leave it empty to avoid confict with WKT
         cscCmd->SetDescription(L"test");
         cscCmd->SetCoordinateSystem(L""); // Leave it empty to avoid confict with WKT
 
@@ -2208,85 +2208,85 @@ void SchemaTests::test_create_PRJ()
         cscCmd->SetXYTolerance(.02);
         cscCmd->SetZTolerance(.001);
         
-		cscCmd->SetCoordinateSystemWkt(wkt);
+        cscCmd->SetCoordinateSystemWkt(wkt);
 
         cscCmd->Execute();
-		
-		// Verify
-		FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
+        
+        // Verify
+        FdoPtr<FdoIGetSpatialContexts> spatialContexts = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
         FdoPtr<FdoISpatialContextReader> pScReader = spatialContexts->Execute();
         int cnt = 0;
-		FdoStringP	scname;
+        FdoStringP    scname;
         while (pScReader->ReadNext())
         {
             FdoStringP pName = pScReader->GetName();
-			FdoStringP wkt2 = pScReader->GetCoordinateSystemWkt();
+            FdoStringP wkt2 = pScReader->GetCoordinateSystemWkt();
 
-			if ( wkt2 == wkt )
-				scname = pScReader->GetName();
+            if ( wkt2 == wkt )
+                scname = pScReader->GetName();
             cnt++;
         }
-		// The default spatial context was removed since it was not used (see #792011.02). Thefore expect 2 SCs.
+        // The default spatial context was removed since it was not used (see #792011.02). Thefore expect 2 SCs.
         CPPUNIT_ASSERT_MESSAGE ("Expecting 1 Spatial Context", 1 == cnt);
-		CPPUNIT_ASSERT_MESSAGE ("Expecting existing spatial context", scname != L"");
+        CPPUNIT_ASSERT_MESSAGE ("Expecting existing spatial context", scname != L"");
 
-		// Associate with the newly created SC. This will cause PRJ creation.
-		geometry->SetSpatialContextAssociation(scname);
+        // Associate with the newly created SC. This will cause PRJ creation.
+        geometry->SetSpatialContextAssociation(scname);
 
-		//Generating default feature class
-		FdoPtr<FdoFeatureClass> featureclass1=FdoFeatureClass::Create(NEW_CLASS_NAME, L"Default feature class");
-		FdoPtr<FdoPropertyDefinitionCollection> properties=featureclass1->GetProperties();
-		properties->Add(featid);
-		properties->Add(geometry);
-		FdoPtr<FdoDataPropertyDefinitionCollection> identifier=featureclass1->GetIdentityProperties();
-		identifier->Add(featid);
+        //Generating default feature class
+        FdoPtr<FdoFeatureClass> featureclass1=FdoFeatureClass::Create(NEW_CLASS_NAME, L"Default feature class");
+        FdoPtr<FdoPropertyDefinitionCollection> properties=featureclass1->GetProperties();
+        properties->Add(featid);
+        properties->Add(geometry);
+        FdoPtr<FdoDataPropertyDefinitionCollection> identifier=featureclass1->GetIdentityProperties();
+        identifier->Add(featid);
 
-		featureclass1->SetGeometryProperty(geometry);
+        featureclass1->SetGeometryProperty(geometry);
 
-		//Generating default schema
-		FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(NEW_SCHEMA_NAME, L"Default schema");
-		FdoClassesP(schema1->GetClasses())->Add(featureclass1);
+        //Generating default schema
+        FdoPtr<FdoFeatureSchema> schema1=FdoFeatureSchema::Create(NEW_SCHEMA_NAME, L"Default schema");
+        FdoClassesP(schema1->GetClasses())->Add(featureclass1);
 
-		//FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
-		FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
-		FdoPtr<FdoClassDefinition> def = coll->GetItem(0);      
-		def->SetName(NEW_CLASS_NAME);               
-	 
-		FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
-		apply->SetFeatureSchema(schema1);
-		apply->Execute();
+        //FdoPtr<FdoFeatureSchema> schema = schema1->GetItem(0);
+        FdoPtr<FdoClassCollection> coll = schema1->GetClasses();
+        FdoPtr<FdoClassDefinition> def = coll->GetItem(0);      
+        def->SetName(NEW_CLASS_NAME);               
+     
+        FdoPtr<FdoIApplySchema> apply = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
+        apply->SetFeatureSchema(schema1);
+        apply->Execute();
 
-		mConnection->Close ();
+        mConnection->Close ();
 
-		///////// STEP II - read back the spatial contexts
+        ///////// STEP II - read back the spatial contexts
 
-		FdoPtr<FdoIConnectionInfo> cinfo2 = mConnection->GetConnectionInfo();
-		FdoPtr<FdoIConnectionPropertyDictionary> didc2 = cinfo->GetConnectionProperties();
-		didc2->SetProperty(L"DefaultFileLocation", LOCATION7);
-		didc2->SetProperty(L"TemporaryFileLocation",L"");
+        FdoPtr<FdoIConnectionInfo> cinfo2 = mConnection->GetConnectionInfo();
+        FdoPtr<FdoIConnectionPropertyDictionary> didc2 = cinfo->GetConnectionProperties();
+        didc2->SetProperty(L"DefaultFileLocation", LOCATION7);
+        didc2->SetProperty(L"TemporaryFileLocation",L"");
 
-		mConnection->Open();
+        mConnection->Open();
 
-		// Verify
-		FdoPtr<FdoIGetSpatialContexts> spatialContexts2 = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
+        // Verify
+        FdoPtr<FdoIGetSpatialContexts> spatialContexts2 = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
         FdoPtr<FdoISpatialContextReader> pScReader2 = spatialContexts2->Execute();
         int cnt2 = 0;
-		FdoStringP	wkt2;
+        FdoStringP    wkt2;
         while (pScReader2->ReadNext())
         {
             FdoStringP pName = pScReader2->GetName();
-			wkt2 = pScReader2->GetCoordinateSystemWkt();
+            wkt2 = pScReader2->GetCoordinateSystemWkt();
 
             cnt2++;
         }
         CPPUNIT_ASSERT_MESSAGE ("Expecting 1 Spatial Context", 1 == cnt2);
-		CPPUNIT_ASSERT_MESSAGE ("Wrong value for spatial context wkt", wkt2 == wkt);
+        CPPUNIT_ASSERT_MESSAGE ("Wrong value for spatial context wkt", wkt2 == wkt);
 
-		//////  STEP III - change the spatial context of the class. The PRJ should dissapear.
+        //////  STEP III - change the spatial context of the class. The PRJ should dissapear.
         FdoPtr<FdoIDescribeSchema> descSchema = (FdoIDescribeSchema*)mConnection->CreateCommand(FdoCommandType_DescribeSchema);
         descSchema->SetSchemaName(L"Default"/*NEW_SCHEMA_NAME*/);
         FdoPtr<FdoFeatureSchemaCollection> schemas = descSchema->Execute();
-        FdoPtr<FdoFeatureSchema>	schema = schemas->GetItem(L"Default"/*NEW_SCHEMA_NAME*/);
+        FdoPtr<FdoFeatureSchema>    schema = schemas->GetItem(L"Default"/*NEW_SCHEMA_NAME*/);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses();
         FdoPtr<FdoClassDefinition> classDef = classes->GetItem(NEW_CLASS_NAME);
         FdoPtr<FdoPropertyDefinitionCollection> props = classDef->GetProperties();
@@ -2295,26 +2295,26 @@ void SchemaTests::test_create_PRJ()
         FdoPtr<FdoPropertyDefinition> removedProp = props->GetItem(L"Geometry");
         props->Remove(removedProp);
  
-		// Apply changes
-		FdoPtr<FdoIApplySchema> apply3 = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
-		apply3->SetFeatureSchema(schema);
+        // Apply changes
+        FdoPtr<FdoIApplySchema> apply3 = (FdoIApplySchema*) mConnection->CreateCommand(FdoCommandType_ApplySchema);
+        apply3->SetFeatureSchema(schema);
         apply3->Execute();
 
-		// Verify
-		FdoPtr<FdoIGetSpatialContexts> spatialContexts3 = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
+        // Verify
+        FdoPtr<FdoIGetSpatialContexts> spatialContexts3 = (FdoIGetSpatialContexts*)mConnection->CreateCommand (FdoCommandType_GetSpatialContexts);
         FdoPtr<FdoISpatialContextReader> pScReader3 = spatialContexts3->Execute();
         int cnt3 = 0;
         while (pScReader3->ReadNext())
         {
             FdoStringP pName = pScReader2->GetName();
-			FdoStringP wkt2 = pScReader2->GetCoordinateSystemWkt();
+            FdoStringP wkt2 = pScReader2->GetCoordinateSystemWkt();
 
             cnt3++;
         }
-		// The spatial context is still there
+        // The spatial context is still there
         CPPUNIT_ASSERT_MESSAGE ("Expecting 1 Spatial Context", 1 == cnt3);
 
-	}
+    }
     catch (FdoException* ge) 
     {
         TestCommonFail (ge);
@@ -2327,7 +2327,7 @@ void SchemaTests::describe_Fix784301 ()
     try
     {
         // switch to yet another default file location.
-		// 2 classes, 2 .prj files the coordinate system name is the same but diffrent WKTs.
+        // 2 classes, 2 .prj files the coordinate system name is the same but diffrent WKTs.
         mConnection->Close ();
         mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION6);
         ShpTests::sLocation = LOCATION6;
@@ -2343,7 +2343,7 @@ void SchemaTests::describe_Fix784301 ()
             FdoStringP pName = pScReader->GetName();
             cnt++;
         }
-		// The default spatial context was removed since it was not used (see #792011.02). Thefore expect 2 SCs.
+        // The default spatial context was removed since it was not used (see #792011.02). Thefore expect 2 SCs.
         CPPUNIT_ASSERT_MESSAGE ("Expecting 2 Spatial Context", 2 == cnt);
         FdoPtr<FdoFeatureSchema> schema = schemas->GetItem (0);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses ();
@@ -2379,10 +2379,10 @@ void SchemaTests::read_only_files ()
     {
         FdoStringP userName = FdoCommonOSUtil::GetCurrentUserName();
         if (userName == L"root")
-	{
-	    printf("User 'root' detected; skipping read-only SHP file test (root is able to open any file in write mode)\n");
+    {
+        printf("User 'root' detected; skipping read-only SHP file test (root is able to open any file in write mode)\n");
             return;
-	}
+    }
 
         // Make a file read-only:
         SetShpFileAccess(L"../../TestData/Ontario/roads", false);
@@ -2514,7 +2514,7 @@ void SchemaTests::apply_helper(bool bUseSpecificGeometryTypes)
         classes->Add (feature);
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
 
         // Flush the schema cache:
         mConnection->Close();
@@ -2563,7 +2563,7 @@ void SchemaTests::apply_helper(bool bUseSpecificGeometryTypes)
         definition->Delete ();
         apply->SetFeatureSchema (schema);
         apply->Execute ();
-		SaveSchema(mConnection);
+        SaveSchema(mConnection);
     }
     catch (FdoException* ge) 
     {

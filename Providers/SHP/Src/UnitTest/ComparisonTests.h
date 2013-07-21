@@ -39,12 +39,12 @@ class ComparisonTests :
 public:
     ComparisonTests (void);
     virtual ~ComparisonTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void compare1 ();
-	void compare2 ();
+    void compare1 ();
+    void compare2 ();
 };
 
 #endif // COMPARISONTESTS_H

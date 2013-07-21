@@ -41,11 +41,11 @@ class UpdateTests :
 public:
     UpdateTests (void);
     virtual ~UpdateTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void update ();
+    void update ();
     void update_geometry_point_xy ();
     void update_geometry_line_xy ();
     void update_geometry_polygon_xy ();

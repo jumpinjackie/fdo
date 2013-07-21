@@ -40,7 +40,7 @@ class FilterTests :
     CPPUNIT_TEST (greater);
     CPPUNIT_TEST (not_equal);
     CPPUNIT_TEST (in);
-	CPPUNIT_TEST (combined);
+    CPPUNIT_TEST (combined);
     CPPUNIT_TEST (is_null);
     CPPUNIT_TEST (arithmetic_expression);
     CPPUNIT_TEST (logical_expression);
@@ -48,7 +48,7 @@ class FilterTests :
     CPPUNIT_TEST (functions);
     CPPUNIT_TEST (computed);
     CPPUNIT_TEST (computed_geometry);
-	CPPUNIT_TEST (non_existent_featid);
+    CPPUNIT_TEST (non_existent_featid);
     CPPUNIT_TEST (featid_optimizer_tests );
  //   CPPUNIT_TEST (featid_performance_tests);
     CPPUNIT_TEST_SUITE_END ();
@@ -58,16 +58,16 @@ class FilterTests :
 public:
     FilterTests (void);
     virtual ~FilterTests (void);
-	void setUp ();
-	void tearDown ();
+    void setUp ();
+    void tearDown ();
 
 protected:
-	void equal ();
+    void equal ();
     void less ();
     void greater ();
     void not_equal ();
     void in ();
-	void combined ();
+    void combined ();
     void is_null ();
     void arithmetic_expression ();
     void logical_expression ();
@@ -75,7 +75,7 @@ protected:
     void functions ();
     void computed ();
     void computed_geometry ();
-	void non_existent_featid ();
+    void non_existent_featid ();
     void featid_optimizer_tests();
     void featid_performance_tests();
 
