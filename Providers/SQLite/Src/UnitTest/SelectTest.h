@@ -83,7 +83,7 @@ public:
     SelectTest(void);
     virtual ~SelectTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestSimpleSelect ();
     void TestBindSelect ();

@@ -41,7 +41,7 @@ public:
     ApplySchemaTest(void);
     virtual ~ApplySchemaTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestClassRename ();
 };

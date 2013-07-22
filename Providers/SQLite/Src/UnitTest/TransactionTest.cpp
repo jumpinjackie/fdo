@@ -62,8 +62,8 @@ void TransactionTest::InsertOneValue(FdoIConnection* conn, FdoString* nameProp, 
 
 bool TransactionTest::CheckForValue(FdoIConnection* conn, FdoString* filter)
 {
-	FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	select->SetFeatureClassName(L"ParcelChild");
+    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    select->SetFeatureClassName(L"ParcelChild");
     select->SetFilter(filter);
     FdoPtr<FdoIFeatureReader> rdr = select->Execute();
     return rdr->ReadNext();
@@ -75,8 +75,8 @@ bool TransactionTest::CheckForValue(FdoIConnection* conn, FdoString* filter)
 // user closes it by opening a transaction
 void TransactionTest::TestStartTransaction()
 {
- 	try
- 	{
+     try
+     {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
         UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
@@ -90,8 +90,8 @@ void TransactionTest::TestStartTransaction()
 
         // enforce transaction destroy for testing
         bool expectedExc = false;
- 	    try
- 	    {
+         try
+         {
             FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
             FdoPtr<FdoStringValue> valIns = FdoStringValue::Create(L"testTr");
             InsertOneValue(conn, L"Name", valIns);
@@ -144,19 +144,19 @@ void TransactionTest::TestStartTransaction()
         FdoPtr<FdoIFeatureReader> rdr2 = insCmd->Execute();
         CPPUNIT_ASSERT(rdr2->ReadNext());
         rdr2->Close();
- 	}
- 	catch(FdoException *exp )
- 	{
+     }
+     catch(FdoException *exp )
+     {
         UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestStartTransaction failed");
- 	}
+     }
 }
 
 void TransactionTest::TestCommit()
 {
- 	try
- 	{
+     try
+     {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
         UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
@@ -206,19 +206,19 @@ void TransactionTest::TestCommit()
         CPPUNIT_ASSERT(rdr2->ReadNext());
         rdr2->Close();
         CPPUNIT_ASSERT(CheckForValue(conn, L"Name='name2'"));
- 	}
- 	catch(FdoException *exp )
- 	{
+     }
+     catch(FdoException *exp )
+     {
         UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestCommit failed");
- 	}
+     }
 }
 
 void TransactionTest::TestRollback()
 {
- 	try
- 	{
+     try
+     {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
         UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
@@ -268,13 +268,13 @@ void TransactionTest::TestRollback()
         CPPUNIT_ASSERT(rdr2->ReadNext());
         rdr2->Close();
         CPPUNIT_ASSERT(CheckForValue(conn, L"Name='name2'"));
- 	}
- 	catch(FdoException *exp )
- 	{
+     }
+     catch(FdoException *exp )
+     {
         UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestRollback failed");
- 	}
+     }
 }
 
 void TransactionTest::TestAddSavePoint()
@@ -483,26 +483,26 @@ void TransactionTest::TestCommitOnApplySchemaNoUsrTr()
         classColl->Add(fc2);
 
         bool failed = false;
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
-		applyschema->SetFeatureSchema(sch);
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        applyschema->SetFeatureSchema(sch);
         try
         {
-		    applyschema->Execute();
+            applyschema->Execute();
         }
         catch ( FdoException* e )
-	    {
+        {
             printf ("\nExpected exception: %ls\n", e->GetExceptionMessage());
             e->Release();
             failed = true;
-	    }
-	    catch ( CppUnit::Exception e ) 
-	    {
+        }
+        catch ( CppUnit::Exception e ) 
+        {
             failed = true;
-	    }
-   	    catch (...)
-   	    {
+        }
+           catch (...)
+           {
             failed = true;
-   	    }
+           }
         if (failed)
         {
             // add auto-generated property to PK and try again
@@ -511,18 +511,18 @@ void TransactionTest::TestCommitOnApplySchemaNoUsrTr()
         }        
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void TransactionTest::TestCommitOnApplySchemaUsrTr()
@@ -570,27 +570,27 @@ void TransactionTest::TestCommitOnApplySchemaUsrTr()
         classColl->Add(fc2);
 
         bool failed = false;
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
-		applyschema->SetFeatureSchema(sch);
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        applyschema->SetFeatureSchema(sch);
         try
         {
-		    applyschema->Execute();
+            applyschema->Execute();
         }
         catch ( FdoException* e )
-	    {
+        {
             printf ("\nExpected exception: %ls\n", e->GetExceptionMessage());
             e->Release();
             tr->Rollback();
             failed = true;
-	    }
-	    catch ( CppUnit::Exception e ) 
-	    {
+        }
+        catch ( CppUnit::Exception e ) 
+        {
             failed = true;
-	    }
-   	    catch (...)
-   	    {
+        }
+           catch (...)
+           {
             failed = true;
-   	    }
+           }
         if (failed)
         {
             // add auto-generated property to PK and try again
@@ -605,16 +605,16 @@ void TransactionTest::TestCommitOnApplySchemaUsrTr()
         }            
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }

@@ -71,8 +71,8 @@ void SelectTest::TestSimpleSelect ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    SelectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 30");
         SelectCmd->SetFilter(filter);
@@ -84,18 +84,18 @@ void SelectTest::TestSimpleSelect ()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestBindSelect ()
@@ -110,8 +110,8 @@ void SelectTest::TestBindSelect ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    SelectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm");
         SelectCmd->SetFilter(filter);
@@ -127,18 +127,18 @@ void SelectTest::TestBindSelect ()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialSelect ()
@@ -153,8 +153,8 @@ void SelectTest::TestSpatialSelect ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    SelectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID > :lowerbound AND ID < :upperbound AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         SelectCmd->SetFilter(filter);
@@ -180,18 +180,18 @@ void SelectTest::TestSpatialSelect ()
         CPPUNIT_ASSERT(rez == 4954);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestComplexSelect ()
@@ -206,8 +206,8 @@ void SelectTest::TestComplexSelect ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    SelectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 10000 AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         SelectCmd->SetFilter(filter);
@@ -219,18 +219,18 @@ void SelectTest::TestComplexSelect ()
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestComplexWithBindSelect ()
@@ -245,8 +245,8 @@ void SelectTest::TestComplexWithBindSelect ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    SelectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> SelectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        SelectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         SelectCmd->SetFilter(filter);
@@ -262,18 +262,18 @@ void SelectTest::TestComplexWithBindSelect ()
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::BooleanDataTest ()
@@ -282,33 +282,33 @@ void SelectTest::BooleanDataTest ()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchBooleanTest.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         {
             FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
             FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
             FdoPtr<FdoPropertyValue> propIns;
             
-		    FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		    double coords[] = { 7.2068, 43.7556, 
-							    7.2088, 43.7556, 
-							    7.2088, 43.7574, 
-							    7.2068, 43.7574, 
-							    7.2068, 43.7556 }; 
-		    FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		    FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		    FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		    FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+            FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+            double coords[] = { 7.2068, 43.7556, 
+                                7.2088, 43.7556, 
+                                7.2088, 43.7574, 
+                                7.2068, 43.7574, 
+                                7.2068, 43.7556 }; 
+            FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+            FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+            FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+            FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
             FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
             vals->Add(propGeomIns);
@@ -419,19 +419,19 @@ void SelectTest::BooleanDataTest ()
         reader->Close();
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+        
+    printf( "Done\n" );
 }
 
 void SelectTest::TestAggregatesSelect ()
@@ -447,7 +447,7 @@ void SelectTest::TestAggregatesSelect ()
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
         FdoPtr<FdoISelectAggregates> selectCmd = static_cast<FdoISelectAggregates*>(conn->CreateCommand(FdoCommandType_SelectAggregates));
-	    selectCmd->SetFeatureClassName(L"DaKlass");
+        selectCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID > 1");
         selectCmd->SetFilter(filter);
@@ -480,18 +480,18 @@ void SelectTest::TestAggregatesSelect ()
         rdr->Close();
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSelectInsertLowerId ()
@@ -507,8 +507,8 @@ void SelectTest::TestSelectInsertLowerId ()
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
         FdoPtr<FdoFilter> qfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.2946747590295 43.7578741868765 0, 7.2946747590295 43.7391013130616 0, 7.33112234364711 43.7391013130616 0, 7.33112234364711 43.7578741868765 0, 7.2946747590295 43.7578741868765 0))\')");
-	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    selectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selectCmd->SetFeatureClassName(L"DaKlass");
         selectCmd->SetFilter(qfilter);
 
         // step (1) how many objects are there
@@ -580,18 +580,18 @@ void SelectTest::TestSelectInsertLowerId ()
         }
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSelectInsertLowerIdSQL ()
@@ -607,8 +607,8 @@ void SelectTest::TestSelectInsertLowerIdSQL ()
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
         FdoPtr<FdoFilter> qfilter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText(\'POLYGON XYZ ((7.2946747590295 43.7578741868765 0, 7.2946747590295 43.7391013130616 0, 7.33112234364711 43.7391013130616 0, 7.33112234364711 43.7578741868765 0, 7.2946747590295 43.7578741868765 0))\')");
-	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    selectCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selectCmd->SetFeatureClassName(L"DaKlass");
         selectCmd->SetFilter(qfilter);
 
         // step (1) how many objects are there
@@ -678,18 +678,18 @@ void SelectTest::TestSelectInsertLowerIdSQL ()
         }
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 int SelectTest::SelectObjects(FdoIConnection* conn, FdoString* txt, FdoString* clsName)
@@ -789,11 +789,11 @@ void SelectTest::TestDualConnection ()
         conn1 = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true );
         CreateFeatureClass(conn1, L"TestClass", L"LL84");
         conn2 = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
-	    
+        
         FdoPtr<FdoIDescribeSchema> decrCmd1 = (FdoIDescribeSchema*)conn1->CreateCommand(FdoCommandType_DescribeSchema); 
         FdoPtr<FdoFeatureSchemaCollection> schColl1 = decrCmd1->Execute();
 
-	    FdoPtr<FdoIDescribeSchema> decrCmd2 = (FdoIDescribeSchema*)conn2->CreateCommand(FdoCommandType_DescribeSchema); 
+        FdoPtr<FdoIDescribeSchema> decrCmd2 = (FdoIDescribeSchema*)conn2->CreateCommand(FdoCommandType_DescribeSchema); 
         FdoPtr<FdoFeatureSchemaCollection> schColl2 = decrCmd2->Execute();
 
         InsertValue(conn1, L"TestClass", L"Geometry INTERSECTS GeomFromText('POINT XYZ (-77.2727843079006 39.0938931173285 0)')");
@@ -841,18 +841,18 @@ void SelectTest::TestDualConnection ()
         conn1->Close();
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSelectMultipleCS ()
@@ -865,11 +865,11 @@ void SelectTest::TestSelectMultipleCS ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true );
         {
-	        FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
-	        pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"PROJCS[\"CA83IIIF\",GEOGCS[\"LL83\",DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",6561666.667],PARAMETER[\"false_northing\",1640416.667],PARAMETER[\"central_meridian\",-120.50000000000000],PARAMETER[\"latitude_of_origin\",36.50000000000000],PARAMETER[\"standard_parallel_1\",38.43333333333333],PARAMETER[\"standard_parallel_2\",37.06666666666666],UNIT[\"Foot_US\",0.30480060960122]]");
-	        pCreateCreateSpatialContext->SetDescription(L"CA83IIIF Coordinate System" );
-	        pCreateCreateSpatialContext->SetName( L"CA83IIIF" );
-	        pCreateCreateSpatialContext->Execute();
+            FdoPtr<FdoICreateSpatialContext> pCreateCreateSpatialContext = (FdoICreateSpatialContext*) conn->CreateCommand(FdoCommandType_CreateSpatialContext);
+            pCreateCreateSpatialContext->SetCoordinateSystemWkt(L"PROJCS[\"CA83IIIF\",GEOGCS[\"LL83\",DATUM[\"NAD83\",SPHEROID[\"GRS1980\",6378137.000,298.25722210]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.017453292519943295]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"false_easting\",6561666.667],PARAMETER[\"false_northing\",1640416.667],PARAMETER[\"central_meridian\",-120.50000000000000],PARAMETER[\"latitude_of_origin\",36.50000000000000],PARAMETER[\"standard_parallel_1\",38.43333333333333],PARAMETER[\"standard_parallel_2\",37.06666666666666],UNIT[\"Foot_US\",0.30480060960122]]");
+            pCreateCreateSpatialContext->SetDescription(L"CA83IIIF Coordinate System" );
+            pCreateCreateSpatialContext->SetName( L"CA83IIIF" );
+            pCreateCreateSpatialContext->Execute();
         }
         CreateFeatureClass(conn, L"TestClassLL84", L"LL84");
         CreateFeatureClass(conn, L"TestClassCA83IIIF", L"CA83IIIF");
@@ -906,18 +906,18 @@ void SelectTest::TestSelectMultipleCS ()
         }
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 int SelectTest::SelectObjects(FdoIConnection* conn, FdoFilter* filter, FdoString* clsName, FdoString* id)
@@ -966,18 +966,18 @@ void SelectTest::TestViewSelects ()
         CPPUNIT_ASSERT(cnt12 == cnt22);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestJoinViewSelects ()
@@ -1010,18 +1010,18 @@ void SelectTest::TestJoinViewSelects ()
         CPPUNIT_ASSERT(cnt12 == cnt22);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 
@@ -1056,18 +1056,18 @@ void SelectTest::TestSubSelect ()
         CPPUNIT_ASSERT(cnt == 5);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestJoinType (FdoIConnection* conn, FdoJoinType jtype, FdoString* filter, int expCount)
@@ -1132,18 +1132,18 @@ void SelectTest::TestJoin ()
         TestJoinType(conn, FdoJoinType_Inner, incondition,  7);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestMSelect ()
@@ -1196,18 +1196,18 @@ void SelectTest::TestMSelect ()
         CPPUNIT_ASSERT(cnt == 7);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestJoinTypeAggregates (FdoIConnection* conn, FdoJoinType jtype, int expMax)
@@ -1265,18 +1265,18 @@ void SelectTest::TestJoinAggregatesSelect ()
         TestJoinTypeAggregates(conn, FdoJoinType_LeftOuter, 695);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestMAggregatesSelect ()
@@ -1325,18 +1325,18 @@ void SelectTest::TestMAggregatesSelect ()
         CPPUNIT_ASSERT(cnt == 1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 int SelectTest::SelectSpatial(FdoIConnection* conn, FdoString* sql)
@@ -1378,18 +1378,18 @@ void SelectTest::TestSpatialJoins ()
         printf ("\nCnt = %d\n", cnt1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialJoinsWFilter1 ()
@@ -1420,18 +1420,18 @@ void SelectTest::TestSpatialJoinsWFilter1 ()
         printf ("\nCnt = %d\n", cnt1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialJoinsWFilter2 ()
@@ -1462,18 +1462,18 @@ void SelectTest::TestSpatialJoinsWFilter2 ()
         printf ("\nCnt = %d\n", cnt1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialJoinsWFilter3 ()
@@ -1504,18 +1504,18 @@ void SelectTest::TestSpatialJoinsWFilter3 ()
         printf ("\nCnt = %d\n", cnt1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialJoinsComplexFilter ()
@@ -1546,18 +1546,18 @@ void SelectTest::TestSpatialJoinsComplexFilter ()
         printf ("\nCnt = %d\n", cnt1);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSpatialJoinType(FdoIConnection* conn, FdoJoinType jtype, int expCount)
@@ -1618,18 +1618,18 @@ void SelectTest::TestSpatialJoinsFdo ()
         TestSpatialJoinType(conn, FdoJoinType_LeftOuter, 11);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestReleaseSchema ()
@@ -1659,18 +1659,18 @@ void SelectTest::TestReleaseSchema ()
         CPPUNIT_ASSERT(1 == schColl->GetCount());
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 int SelectTest::SelectSpatial(FdoIConnection* conn, FdoFilter* filter)
@@ -1735,19 +1735,19 @@ void SelectTest::TestCrosses ()
         CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestOverlaps ()
@@ -1797,19 +1797,19 @@ void SelectTest::TestOverlaps ()
         CPPUNIT_ASSERT(2 == SelectSpatial(conn, filter));
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestTouches ()
@@ -1859,19 +1859,19 @@ void SelectTest::TestTouches ()
         CPPUNIT_ASSERT(1 == SelectSpatial(conn, filter));
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestCachedStmWithRollback ()
@@ -1886,8 +1886,8 @@ void SelectTest::TestCachedStmWithRollback ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoISelect> selcmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    selcmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoISelect> selcmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selcmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText('POLYGON XYZ ((7.18647526717365 43.7516876726629 0, 7.18647526717365 43.7433670616738 0, 7.21480038790375 43.7433670616738 0, 7.21480038790375 43.7516876726629 0, 7.18647526717365 43.7516876726629 0))')");
         selcmd->SetFilter(filter);
@@ -1933,18 +1933,18 @@ void SelectTest::TestCachedStmWithRollback ()
         }
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSelSubSelectType1 ()
@@ -1987,18 +1987,18 @@ void SelectTest::TestSelSubSelectType1 ()
         CPPUNIT_ASSERT(cnt == 10);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SelectTest::TestSelSubSelectType2 ()
@@ -2040,16 +2040,16 @@ void SelectTest::TestSelSubSelectType2 ()
         CPPUNIT_ASSERT(cnt == 10);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }

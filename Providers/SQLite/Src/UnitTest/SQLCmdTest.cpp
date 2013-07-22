@@ -49,16 +49,16 @@ void SQLCmdTest::tearDown ()
 
 void SQLCmdTest::TestSimpleBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
-		 //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
         conn->Close();
         conn->Open();
 
@@ -95,27 +95,27 @@ void SQLCmdTest::TestSimpleBind ()
         key->SetString(L"Key4");
         dblVal->SetDouble(4325.009);
         CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );               
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestBindBasicTypes failed");
-	}
+    }
 }
 
 void SQLCmdTest::TestErrorMessageSimpleBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
-		 //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
         conn->Close();
         conn->Open();
 
@@ -139,25 +139,25 @@ void SQLCmdTest::TestErrorMessageSimpleBind ()
         CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
 
         CPPUNIT_FAIL("TestErrorMessageSimpleBind: Expected exception not found, test should fail!");
-	}
-	catch(FdoException *exp )
-	{
+    }
+    catch(FdoException *exp )
+    {
         FdoStringP expErr = L"no such table: parcelchild2";
         CPPUNIT_ASSERT(expErr == exp->GetExceptionMessage());
         printf("\nExpected exception:\n");
-		UnitTestUtil::PrintException( exp, stdout, false);
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
-	}
+    }
 }
 
 void SQLCmdTest::TestUpdateWithBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );
-		 
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );
+         
 
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
         sqlCmd->SetSQLStatement(L"update parcelchild set key=? where Name=?");
@@ -172,23 +172,23 @@ void SQLCmdTest::TestUpdateWithBind ()
 
         CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
 
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestBindBasicTypes failed");
-	}
+    }
 }
 
 void SQLCmdTest::TestDeleteWithBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );
-		 
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );
+         
 
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
         sqlCmd->SetSQLStatement(L"delete from parcelchild where key=?");
@@ -200,22 +200,22 @@ void SQLCmdTest::TestDeleteWithBind ()
 
         CPPUNIT_ASSERT(sqlCmd->ExecuteNonQuery() == 1 );
 
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestBindBasicTypes failed");
-	}
+    }
 }
 
 void SQLCmdTest::TestSelectWithBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );		 
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );         
 
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
         sqlCmd->SetSQLStatement(L"select f.Name from parcelchild f where f.Key=:parm1 and f.id>=:parm2");
@@ -245,22 +245,22 @@ void SQLCmdTest::TestSelectWithBind ()
         CPPUNIT_ASSERT(reader->ReadNext() );
         CPPUNIT_ASSERT(wcscmp(reader->GetString(L"Name"),L"Betty") == 0 );
 
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestBindBasicTypes failed");
-	}
+    }
 }
 
 void SQLCmdTest::TestExpressionWithBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );		 
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false, conn );         
 
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(conn->CreateCommand(FdoCommandType_SQLCommand));
         sqlCmd->SetSQLStatement(L"select (max(f.id))+1,null,Name from parcelchild f where f.Key=:key and f.id>=:id");
@@ -281,28 +281,28 @@ void SQLCmdTest::TestExpressionWithBind ()
         int idxColName = reader->GetColumnIndex(L"Name");
         FdoStringP nameCol = reader->GetColumnName(idxColName);
         CPPUNIT_ASSERT(wcscmp(nameCol,L"Name")==0);
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestExpressionWithBind failed");
-	}
+    }
 }
 
 
 void SQLCmdTest::TestComplexBind ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
-		 //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
         conn->Close();
         conn->Open();
 
@@ -331,54 +331,54 @@ void SQLCmdTest::TestComplexBind ()
         parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"Data2", gvgeom2)));
 
         FdoDateTime dt(2006,4,21,19,40,(float)10.0001);
-	    FdoPtr<FdoDateTimeValue> dtv = FdoDateTimeValue::Create(dt);
+        FdoPtr<FdoDateTimeValue> dtv = FdoDateTimeValue::Create(dt);
         parmVals->Add(FdoPtr<FdoParameterValue>(FdoParameterValue::Create(L"datetime", dtv)));
 
         FdoPtr<FdoIConnection> shpConn = UnitTestUtil::OpenConnection( SOURCE_FILE, false);
-	    FdoPtr<FdoISelect> select = (FdoISelect*)shpConn->CreateCommand (FdoCommandType_Select);
+        FdoPtr<FdoISelect> select = (FdoISelect*)shpConn->CreateCommand (FdoCommandType_Select);
         select->SetFeatureClassName (L"DaKlass");
-	    FdoPtr<FdoIFeatureReader> shpReader = select->Execute();
+        FdoPtr<FdoIFeatureReader> shpReader = select->Execute();
 
         clock_t start;
         clock_t finish;
-		start = clock ();
+        start = clock ();
 
         char tmp[32];
-	    tmp[0] = '\0';
+        tmp[0] = '\0';
 
-	    int numbProp = 1;
+        int numbProp = 1;
 
         FdoPtr<FdoITransaction> trans = conn->BeginTransaction();
 
-	    while( shpReader->ReadNext() )
-	    {
-		    if( ! shpReader->IsNull(L"Data") )
-		    {
-			    gvgeom->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) );
-			    gvgeom2->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) ); 
-		    }
-		    else
-		    {
-			    gvgeom->SetGeometry( NULL );
-			    gvgeom2->SetGeometry( NULL );
-		    }
-		    if( ! shpReader->IsNull(L"Name") )
-			    name->SetString( shpReader->GetString(L"Name") );
-		    else
-			    name->SetString( L"" );
+        while( shpReader->ReadNext() )
+        {
+            if( ! shpReader->IsNull(L"Data") )
+            {
+                gvgeom->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) );
+                gvgeom2->SetGeometry( FdoPtr<FdoByteArray>( shpReader->GetGeometry(L"Data") ) ); 
+            }
+            else
+            {
+                gvgeom->SetGeometry( NULL );
+                gvgeom2->SetGeometry( NULL );
+            }
+            if( ! shpReader->IsNull(L"Name") )
+                name->SetString( shpReader->GetString(L"Name") );
+            else
+                name->SetString( L"" );
 
-		    if( ! shpReader->IsNull(L"Key") )
-			    key->SetString( shpReader->GetString(L"Key") );
-		    else
-			    key->SetString( L"" );
+            if( ! shpReader->IsNull(L"Key") )
+                key->SetString( shpReader->GetString(L"Key") );
+            else
+                key->SetString( L"" );
 
-		    if( ! shpReader->IsNull(L"Url") )
-			    url->SetString( shpReader->GetString(L"Url") );
-		    else
-			    url->SetString( L"" );
+            if( ! shpReader->IsNull(L"Url") )
+                url->SetString( shpReader->GetString(L"Url") );
+            else
+                url->SetString( L"" );
 
-		    dt.minute = numbProp%60;
-		    dtv->SetDateTime( dt );	    
+            dt.minute = numbProp%60;
+            dtv->SetDateTime( dt );        
 
             dblVal->SetDouble(numbProp*0.00009);
 
@@ -395,17 +395,17 @@ void SQLCmdTest::TestComplexBind ()
         trans->Commit();
 
         for(unsigned int i=0;i<strlen(tmp);i++)putchar(8);
-		sprintf(tmp,"Count = %d",numbProp);
-		printf(tmp);
-		finish = clock ();
-		printf ("  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+        sprintf(tmp,"Count = %d",numbProp);
+        printf(tmp);
+        finish = clock ();
+        printf ("  time: %2.3f seconds\n", (double)(finish - start) / CLOCKS_PER_SEC);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestComplexBind failed");
-	}
+    }
 }
 
 void SQLCmdTest::TestSelectWithTrans()
@@ -438,7 +438,7 @@ void SQLCmdTest::TestSelectWithTrans()
         {
             FdoString* prop = reader->GetPropertyName(0);
             FdoPropertyType tp = rdr->GetPropertyType(prop);
-		}
+        }
         // added just to force dispose transaction
         if (reader)
         {
@@ -454,18 +454,18 @@ void SQLCmdTest::TestSelectWithTrans()
         FdoPtr<FdoITransaction> tr2 = conn->BeginTransaction();
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void SQLCmdTest::TestSelectWithIdtNames()
@@ -491,11 +491,11 @@ void SQLCmdTest::TestSelectWithIdtNames()
         pt = rdr->GetPropertyType(L"FeatId*33");
         pt = rdr->GetPropertyType(L"FeatId*33$1");
         pt = rdr->GetPropertyType(L"FeatId*33$2");
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("TestBindBasicTypes failed");
-	}
+    }
 }

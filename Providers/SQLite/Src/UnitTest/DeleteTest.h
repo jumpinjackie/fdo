@@ -45,7 +45,7 @@ public:
     DeleteTest(void);
     virtual ~DeleteTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestSimpleDelete ();
     void TestBindDelete ();

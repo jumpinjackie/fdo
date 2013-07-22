@@ -45,7 +45,7 @@ public:
     ReaderTest(void);
     virtual ~ReaderTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestDataReaderWithIndex ();
 
@@ -72,4 +72,4 @@ private:
     FdoPtr<FdoIConnection> m_connection;
 };
 
-#endif	//ReaderTest_H
+#endif    //ReaderTest_H

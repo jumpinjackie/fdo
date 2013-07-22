@@ -61,14 +61,14 @@ public:
     virtual void setUp ();
 
 protected:
-	void StartTest (FunctionInfo *funcInfo );
-	void OpenConnection(FdoIConnection* conn, const wchar_t* path );
+    void StartTest (FunctionInfo *funcInfo );
+    void OpenConnection(FdoIConnection* conn, const wchar_t* path );
     void QueryTest();
     void InsertQueryTest();
 #ifdef _WIN32
-	virtual void InitInsertFunction( LPTHREAD_START_ROUTINE & Funct );
+    virtual void InitInsertFunction( LPTHREAD_START_ROUTINE & Funct );
 #else
-	virtual void InitInsertFunction( void* (*Funct)(void *) );
+    virtual void InitInsertFunction( void* (*Funct)(void *) );
 #endif
 };
 

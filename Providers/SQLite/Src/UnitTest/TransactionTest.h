@@ -41,7 +41,7 @@ public:
     TransactionTest(void);
     ~TransactionTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestStartTransaction();
     void TestCommit();

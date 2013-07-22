@@ -63,7 +63,7 @@ void SpatialContextTest::TestFdo309 ()
 
         FdoPtr<FdoIApplySchema>pCmd = (FdoIApplySchema*) connection->CreateCommand(FdoCommandType_ApplySchema);
         pCmd->SetFeatureSchema( pTestSchema );
-	    pCmd->Execute();
+        pCmd->Execute();
         pTestSchema = NULL;
         // case where we have a class but no row in SC
         {
@@ -73,8 +73,8 @@ void SpatialContextTest::TestFdo309 ()
             // Iterate ...
             while ( reader->ReadNext() )
             {
-			    FdoPtr<FdoByteArray> ext = reader->GetExtent();
-		    }
+                FdoPtr<FdoByteArray> ext = reader->GetExtent();
+            }
         }
         // let's add an empty row and test again
         FdoPtr<FdoISQLCommand> sqlCmd = static_cast<FdoISQLCommand*>(connection->CreateCommand(FdoCommandType_SQLCommand));
@@ -87,16 +87,16 @@ void SpatialContextTest::TestFdo309 ()
             // Iterate ...
             while ( reader->ReadNext() )
             {
-			    FdoPtr<FdoByteArray> ext = reader->GetExtent();
-		    }
+                FdoPtr<FdoByteArray> ext = reader->GetExtent();
+            }
         }
         // create a new SC and set this SC to all classes
-	    FdoPtr<FdoICreateSpatialContext> pCreateSC = (FdoICreateSpatialContext*) connection->CreateCommand(FdoCommandType_CreateSpatialContext);
-	    pCreateSC->SetCoordinateSystemWkt(L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
-	    pCreateSC->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
-	    pCreateSC->SetName( L"LL84" );
+        FdoPtr<FdoICreateSpatialContext> pCreateSC = (FdoICreateSpatialContext*) connection->CreateCommand(FdoCommandType_CreateSpatialContext);
+        pCreateSC->SetCoordinateSystemWkt(L"GEOGCS[\"LL84\",DATUM[\"WGS84\",SPHEROID[\"WGS84\",6378137.000,298.25722293]],PRIMEM[\"Greenwich\",0],UNIT[\"Degree\",0.01745329251994]]");
+        pCreateSC->SetDescription(L"World Coordinate System, Degrees, what else do you need to know?" );
+        pCreateSC->SetName( L"LL84" );
         pCreateSC->SetXYTolerance(0.004);
-	    pCreateSC->Execute();
+        pCreateSC->Execute();
         sqlCmd->SetSQLStatement(L"update geometry_columns set srid=1;");
         sqlCmd->ExecuteNonQuery();
 
@@ -105,30 +105,30 @@ void SpatialContextTest::TestFdo309 ()
         // add a valid SC when reopen the file
         connection = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
-		gscCmd = (FdoIGetSpatialContexts *)connection->CreateCommand( FdoCommandType_GetSpatialContexts );
+        gscCmd = (FdoIGetSpatialContexts *)connection->CreateCommand( FdoCommandType_GetSpatialContexts );
         // Get a SC reader
         FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
         // Iterate ...
         while ( reader->ReadNext() )
         {
-			FdoPtr<FdoByteArray> ext = reader->GetExtent();
-		}
+            FdoPtr<FdoByteArray> ext = reader->GetExtent();
+        }
 
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-		
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+        
+    printf( "Done\n" );
 }
 
 FdoFeatureSchemaP SpatialContextTest::InitSchema ( FdoIConnection* connection )
@@ -161,11 +161,11 @@ FdoFeatureClassP SpatialContextTest::InitFeatureClass( FdoStringP className )
     pProp->SetNullable(false);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pProp );
 
-	FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
-	pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
-	pGeomProp->SetHasElevation(true);
+    FdoGeometricPropertyP pGeomProp = FdoGeometricPropertyDefinition::Create( L"Geometry", L"location" );
+    pGeomProp->SetGeometryTypes( FdoGeometricType_Point | FdoGeometricType_Curve );
+    pGeomProp->SetHasElevation(true);
     FdoPtr<FdoPropertyDefinitionCollection>(pfeatureclass->GetProperties())->Add( pGeomProp );
-	pfeatureclass->SetGeometryProperty( pGeomProp );
+    pfeatureclass->SetGeometryProperty( pGeomProp );
 
     return pfeatureclass;
 }

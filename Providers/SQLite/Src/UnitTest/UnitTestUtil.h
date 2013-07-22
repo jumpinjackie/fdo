@@ -39,7 +39,7 @@ class UnitTestUtil
 public:
     static FdoFeatureSchema* CreateSLTSchema(FdoGeometryType singleType = FdoGeometryType_None);
 
-	static FdoIConnection* CreateConnection();
+    static FdoIConnection* CreateConnection();
     
     static FdoIConnection* OpenConnection( FdoString* fileName, bool re_create, bool add_spc = true, FdoIConnection  *inConn = NULL );
     
@@ -47,7 +47,7 @@ public:
 
     static void ExportDb (FdoIConnection* connection, FdoIoStream* stream, FdoXmlSpatialContextFlags* flags = NULL );
 
-	static void CreateData( bool create, FdoIConnection  *inConn = NULL/* open a new connection*/, int featCount = -1/* all */, FdoString* className=NULL, int threadId = -1 );
+    static void CreateData( bool create, FdoIConnection  *inConn = NULL/* open a new connection*/, int featCount = -1/* all */, FdoString* className=NULL, int threadId = -1 );
 
     // Print an exception, and all it's cause exceptions to a file
     // or stdout by default.
