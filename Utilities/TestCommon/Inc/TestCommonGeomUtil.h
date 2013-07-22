@@ -17,7 +17,7 @@
 */
 
 #ifndef TESTCOMMONGEOMUTIL___H
-#define TESTCOMMONGEOMUTIL___H	1
+#define TESTCOMMONGEOMUTIL___H    1
 
 #ifdef _WIN32
 #pragma once

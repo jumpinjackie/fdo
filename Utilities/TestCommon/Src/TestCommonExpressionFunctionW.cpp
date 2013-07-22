@@ -15082,7 +15082,7 @@ void TestCommonExpressionFunctionW::AddFeature (
 
     FdoDateTime                dt;
 
-	FdoPtr<FdoDataValue>       data_value;
+    FdoPtr<FdoDataValue>       data_value;
 
     FdoPtr<FdoByteArray>       byte_array;
 
@@ -15090,7 +15090,7 @@ void TestCommonExpressionFunctionW::AddFeature (
 
     FdoPtr<FdoGeometryValue>   geometry_value;
 
-	FdoPtr<FdoPropertyValue>   property_value;
+    FdoPtr<FdoPropertyValue>   property_value;
 
     FdoPtr<FdoIFeatureReader>  feature_reader;
 
@@ -15111,7 +15111,7 @@ void TestCommonExpressionFunctionW::AddFeature (
 
       // Get hold of the class property set.
 
-	  property_values = insert_command->GetPropertyValues();
+      property_values = insert_command->GetPropertyValues();
 
       // Add the geometry information for the new object.
 
@@ -15281,22 +15281,22 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
    // Declare and initialize all necessary local variables.
 
     double                     coordinate_2D_buffer[4][2];
-	double                     coordinate_3D_buffer[4];
-	double                     coordinate_3D_null_buffer[4];
-	double                     coordinate_3D_nan_buffer[4];
-	double                     coordinate_4D_buffer[5];
-	double                     coordinate_4D_null_buffer[5];
-	double                     coordinate_4D_nan_buffer[5];
-	double                     coordinate_line_buffer[7];
+    double                     coordinate_3D_buffer[4];
+    double                     coordinate_3D_null_buffer[4];
+    double                     coordinate_3D_nan_buffer[4];
+    double                     coordinate_4D_buffer[5];
+    double                     coordinate_4D_null_buffer[5];
+    double                     coordinate_4D_nan_buffer[5];
+    double                     coordinate_line_buffer[7];
     FdoPtr<FdoIInsert>         insert_command;
     FdoPtr<FdoILineString>     line_str;
-	FdoPtr<FdoIPoint>          point;
+    FdoPtr<FdoIPoint>          point;
     FdoPtr<FdoGeometryValue>   geometry_value;
-	FdoPtr<FdoPropertyValue>   property_value;
+    FdoPtr<FdoPropertyValue>   property_value;
     FdoPtr<FdoFgfGeometryFactory> geometry_factory;
     FdoPtr<FdoPropertyValueCollection> property_values;
     FdoPtr<FdoByteArray>       byte_array;
-	FdoPtr<FdoIFeatureReader>  feature_reader;
+    FdoPtr<FdoIFeatureReader>  feature_reader;
     FdoPtr<FdoIGeometryCapabilities>   geom_caps;
     FdoInt32                    dimensionalities;
 
@@ -15316,7 +15316,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
       // Get hold of the class property set.
 
-	  property_values = insert_command->GetPropertyValues();
+      property_values = insert_command->GetPropertyValues();
 
       // Add the geometry information for the new object.
       coordinate_2D_buffer[0][0] = 201.0;
@@ -15327,37 +15327,37 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
       coordinate_2D_buffer[2][1] = 201.0;
       coordinate_2D_buffer[3][0] = 202.0;
       coordinate_2D_buffer[3][1] = 202.0;
-	  
-	  coordinate_3D_buffer[0] = 301.0;
+      
+      coordinate_3D_buffer[0] = 301.0;
       coordinate_3D_buffer[1] = 302.0;
       coordinate_3D_buffer[2] = 303.0;
 
-	  coordinate_3D_null_buffer[0] = 301.0;
+      coordinate_3D_null_buffer[0] = 301.0;
       coordinate_3D_null_buffer[1] = 302.0;
       coordinate_3D_null_buffer[2] = GetNullOrdinate();
 
-	  coordinate_3D_nan_buffer[0] = 301.0;
+      coordinate_3D_nan_buffer[0] = 301.0;
       coordinate_3D_nan_buffer[1] = 302.0;
       coordinate_3D_nan_buffer[2] = GetNaNOrdinate();
 
-	  coordinate_4D_buffer[0] = 400.0;
+      coordinate_4D_buffer[0] = 400.0;
       coordinate_4D_buffer[1] = 401.0;
       coordinate_4D_buffer[2] = 402.0;
       coordinate_4D_buffer[3] = 403.0;
 
-	  coordinate_4D_null_buffer[0] = 400.0;
+      coordinate_4D_null_buffer[0] = 400.0;
       coordinate_4D_null_buffer[1] = 401.0;
       coordinate_4D_null_buffer[2] = GetNullOrdinate();
       coordinate_4D_null_buffer[3] = GetNullOrdinate();
 
-	  coordinate_4D_nan_buffer[0] = 400.0;
+      coordinate_4D_nan_buffer[0] = 400.0;
       coordinate_4D_nan_buffer[1] = 401.0;
       coordinate_4D_nan_buffer[2] = GetNaNOrdinate();
       coordinate_4D_nan_buffer[3] = GetNaNOrdinate();
 
-	  coordinate_line_buffer[0] = 301.0;
+      coordinate_line_buffer[0] = 301.0;
       coordinate_line_buffer[1] = 302.0;
-	  coordinate_line_buffer[2] = 311.0;
+      coordinate_line_buffer[2] = 311.0;
       coordinate_line_buffer[3] = 312.0;
 
       geometry_factory = FdoFgfGeometryFactory::GetInstance();
@@ -15372,7 +15372,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 0, idx, GetFeatId(feature_reader) );
       }
@@ -15388,7 +15388,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
       property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
       property_value->SetValue(geometry_value);
 
-	  feature_reader = insert_command->Execute();
+      feature_reader = insert_command->Execute();
       feature_reader->ReadNext();
       SetXYZMIndex( 0, idx, GetFeatId(feature_reader) );
 
@@ -15401,7 +15401,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
           // Get hold of the class property set.
 
-	      property_values = insert_command->GetPropertyValues();
+          property_values = insert_command->GetPropertyValues();
 
           // Add a point XYZ geometry.
 
@@ -15412,7 +15412,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 0, GetFeatId(feature_reader) );
 
@@ -15423,7 +15423,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 1, GetFeatId(feature_reader) );
 
@@ -15434,12 +15434,12 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 1, 2, GetFeatId(feature_reader) );
       }
 
-	  // Add a point XYZM geometry.
+      // Add a point XYZM geometry.
 
       if ( (dimensionalities & FdoDimensionality_Z) && (dimensionalities & FdoDimensionality_M) ) {
           insert_command = 
@@ -15450,7 +15450,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
           // Get hold of the class property set.
 
-	      property_values = insert_command->GetPropertyValues();
+          property_values = insert_command->GetPropertyValues();
 
           point = geometry_factory->CreatePoint(
                    FdoDimensionality_XY | FdoDimensionality_Z | FdoDimensionality_M,
@@ -15459,7 +15459,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 0, GetFeatId(feature_reader) );
 
@@ -15470,7 +15470,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 1, GetFeatId(feature_reader) );
 
@@ -15481,12 +15481,12 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 2, 2, GetFeatId(feature_reader) );
       }
 
-	  // Add a point XYM geometry.
+      // Add a point XYM geometry.
 
       if ( dimensionalities & FdoDimensionality_M ) {
           insert_command = 
@@ -15497,7 +15497,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
 
           // Get hold of the class property set.
 
-	      property_values = insert_command->GetPropertyValues();
+          property_values = insert_command->GetPropertyValues();
 
           point = geometry_factory->CreatePoint(
                                     FdoDimensionality_XY |  FdoDimensionality_M,
@@ -15506,7 +15506,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 0, GetFeatId(feature_reader) );
 
@@ -15517,7 +15517,7 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 1, GetFeatId(feature_reader) );
 
@@ -15528,11 +15528,11 @@ void TestCommonExpressionFunctionW::AddXYZMFeature (
           geometry_value = FdoGeometryValue::Create(byte_array);
           property_value = TestCommonMiscUtil::AddNewProperty(property_values, L"RDBMS_GEOM");
           property_value->SetValue(geometry_value);
-	      feature_reader = insert_command->Execute();
+          feature_reader = insert_command->Execute();
           feature_reader->ReadNext();
           SetXYZMIndex( 3, 2, GetFeatId(feature_reader) );
       }
-	}  //  try ...
+    }  //  try ...
 
     catch ( FdoException* e) {
         throw e;
@@ -15578,11 +15578,11 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
     FdoPtr<FdoFeatureClass>             schema_feature_class;
 
-	FdoPtr<FdoIApplySchema>             apply_schema_cmd;
+    FdoPtr<FdoIApplySchema>             apply_schema_cmd;
 
     FdoPtr<FdoClassCollection>          classes;
 
-	FdoPtr<FdoFeatureSchema>            schema;
+    FdoPtr<FdoFeatureSchema>            schema;
 
     FdoPtr<FdoIGeometryCapabilities>    geom_caps;
     FdoInt32                            dimensionalities;
@@ -15602,7 +15602,7 @@ void TestCommonExpressionFunctionW::AddTestSchema (
 
     // Create the lock test schema.
 
-	schema  = CreateFeatureSchema(current_connection,
+    schema  = CreateFeatureSchema(current_connection,
                                     schema_name);
     classes = schema->GetClasses();
 
@@ -15613,7 +15613,7 @@ void TestCommonExpressionFunctionW::AddTestSchema (
     schema_feature_class = CreateFdoFeatureClass(L"exfct_c1", dimensionalities & FdoDimensionality_Z ? true : false);
     classes->Add(schema_feature_class);
 
-	// Create class with XYZM geometry
+    // Create class with XYZM geometry
 
     printf(" >>> ......... adding class xy_point \n");
     schema_feature_class = CreateFdoFeatureClass(XY_POINT_CLASS, false, false);
@@ -15683,10 +15683,10 @@ FdoDataPropertyDefinition *TestCommonExpressionFunctionW::CreateDataProperty (
 
     // Create the property object and initialize it using the given data.
 
-	data_property_definition =
+    data_property_definition =
                             FdoDataPropertyDefinition::Create(property_name,
                                                               property_name);
-	data_property_definition->SetDataType(data_type);
+    data_property_definition->SetDataType(data_type);
 
     if (data_type == FdoDataType_String)
         data_property_definition->SetLength(data_size);
@@ -15698,7 +15698,7 @@ FdoDataPropertyDefinition *TestCommonExpressionFunctionW::CreateDataProperty (
 
     }  //  if (data_type == FdoDataType_Decimal) ...
 
-	data_property_definition->SetNullable(is_nullable);
+    data_property_definition->SetNullable(is_nullable);
 
     // Return the handle on the created object.
 
@@ -15734,8 +15734,8 @@ FdoFeatureClass *TestCommonExpressionFunctionW::CreateFdoFeatureClass (
 
       // Create the class and set the abstract property.
 
-	  the_class = FdoFeatureClass::Create(class_name, class_name);
-	  the_class->SetIsAbstract(false);
+      the_class = FdoFeatureClass::Create(class_name, class_name);
+      the_class->SetIsAbstract(false);
 
       // Define each of the class properties and add it to the proper collection.
       // If the property identifies the primary key add it to the class' primary
@@ -15753,73 +15753,73 @@ FdoFeatureClass *TestCommonExpressionFunctionW::CreateFdoFeatureClass (
 
       data_property_definition =
            CreateDataProperty(L"bool_val", FdoDataType_Boolean, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"byte_val", FdoDataType_Byte, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"dt_val", FdoDataType_DateTime, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"dt2_val", FdoDataType_DateTime, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"dcl_val", FdoDataType_Decimal, 8, 2, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"dbl_val", FdoDataType_Double, 10, 5, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"i16_val", FdoDataType_Int16, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"i32_val", FdoDataType_Int32, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"sgl_val", FdoDataType_Single, 10, 3, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"str_val", FdoDataType_String, 30, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"str2_val", FdoDataType_String, 30, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"dtstr_val", FdoDataType_String, 30, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       data_property_definition =
            CreateDataProperty(L"id", FdoDataType_Int32, 0, 0, true);
-	  data_property_definitions->Add(data_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      data_property_definitions->Add(data_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
 
       geometric_property_definition = CreateGeometricProperty(L"RDBMS_GEOM", has_elevation, has_measure);
-	  data_property_definitions->Add(geometric_property_definition);
+      data_property_definitions->Add(geometric_property_definition);
       the_class->SetGeometryProperty(geometric_property_definition);
-	  FDO_SAFE_RELEASE(geometric_property_definition);
+      FDO_SAFE_RELEASE(geometric_property_definition);
 
       FDO_SAFE_RELEASE(id_property_definitions);
       FDO_SAFE_RELEASE(data_property_definitions);
@@ -15834,8 +15834,8 @@ FdoFeatureClass *TestCommonExpressionFunctionW::CreateFdoFeatureClass (
 
     catch ( ... ) {
 
-	  FDO_SAFE_RELEASE(geometric_property_definition);
-	  FDO_SAFE_RELEASE(data_property_definition);
+      FDO_SAFE_RELEASE(geometric_property_definition);
+      FDO_SAFE_RELEASE(data_property_definition);
       FDO_SAFE_RELEASE(id_property_definitions);
       FDO_SAFE_RELEASE(data_property_definitions);
 
@@ -15869,7 +15869,7 @@ FdoGeometricPropertyDefinition
 
     // Create the property object and initialize it using the given data.
 
-	geometric_property_definition = 
+    geometric_property_definition = 
                         FdoGeometricPropertyDefinition::Create(property_name,
                                                                property_name);
     geometric_property_definition->SetGeometryTypes(
@@ -15900,7 +15900,7 @@ void TestCommonExpressionFunctionW::AddTestFeatures(FdoIConnection* connection)
         AddFeature(connection, L"exfct_c1", i);
 
     printf(" >>> ...... for class %ls \n", XYZM_POINT_CLASS);
-	AddXYZMFeature(connection, XYZM_POINT_CLASS); 	
+    AddXYZMFeature(connection, XYZM_POINT_CLASS);     
 }
 
 void TestCommonExpressionFunctionW::DeleteTestFeatures(FdoIConnection* connection)
@@ -15913,7 +15913,7 @@ void TestCommonExpressionFunctionW::DeleteTestFeatures(FdoIConnection* connectio
     //   > The spatial features.
     printf(" >>> ... deleting features from class exfct_c1 \n");
     TestCommonMiscUtil::DeleteObjects(connection, GetSchemaName(), L"exfct_c1", NULL );
-	DeleteXYZMFeature(connection); 	
+    DeleteXYZMFeature(connection);     
 }
 
 void TestCommonExpressionFunctionW::InsertTestFeatures(FdoIConnection* connection)

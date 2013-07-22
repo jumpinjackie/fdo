@@ -19,14 +19,14 @@
 
 class TestCommonInsert : public CppUnit::TestCase
 {
-	CPPUNIT_TEST_SUITE( TestCommonInsert );
+    CPPUNIT_TEST_SUITE( TestCommonInsert );
 
     CPPUNIT_TEST( TestDefaultValues );
 
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	TestCommonInsert(void);
+    TestCommonInsert(void);
     virtual ~TestCommonInsert(void);
     virtual void setUp ();
 
@@ -82,4 +82,4 @@ protected:
 
 };
 
-#endif	//TESTCOMMONINSERT_H
+#endif    //TESTCOMMONINSERT_H

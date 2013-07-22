@@ -24,56 +24,56 @@
 
 void TestCommonFileUtil::CompareFilesAndThrow( const char* masterFileName, const char* outFileName )
 {
-	if ( CompareFiles( masterFileName, outFileName ) != 0 ) {
-		char buffer[5000];
-		sprintf( buffer, "Output file %s differs from expected output file %s", outFileName, masterFileName );
+    if ( CompareFiles( masterFileName, outFileName ) != 0 ) {
+        char buffer[5000];
+        sprintf( buffer, "Output file %s differs from expected output file %s", outFileName, masterFileName );
         CPPUNIT_FAIL (buffer);
-	}
+    }
 }
 
 FdoInt32 TestCommonFileUtil::CompareFiles( const char* file1Name, const char* file2Name )
 {
-	char buffer[500];
-	char buffer1[5000];
-	char buffer2[5000];
+    char buffer[500];
+    char buffer1[5000];
+    char buffer2[5000];
 
-	FdoInt32 retcode = -1;
+    FdoInt32 retcode = -1;
 
-	FILE* fp1 = fopen( file1Name, "r" );
-	FILE* fp2 = fopen( file2Name, "r" );
-	
-	if ( fp1 == NULL ) {
-		sprintf( buffer, "TestCommonFileUtil::CompareFiles: failed to open file %s", file1Name );
+    FILE* fp1 = fopen( file1Name, "r" );
+    FILE* fp2 = fopen( file2Name, "r" );
+    
+    if ( fp1 == NULL ) {
+        sprintf( buffer, "TestCommonFileUtil::CompareFiles: failed to open file %s", file1Name );
         CPPUNIT_FAIL (buffer);
-	}
+    }
 
-	if ( fp2 == NULL ) {
-    	fclose(fp1);
-		sprintf( buffer, "TestCommonFileUtil::CompareFiles: failed to open file %s", file2Name );
+    if ( fp2 == NULL ) {
+        fclose(fp1);
+        sprintf( buffer, "TestCommonFileUtil::CompareFiles: failed to open file %s", file2Name );
         CPPUNIT_FAIL (buffer);
-	}
+    }
 
-	while ( fgets( buffer1, sizeof(buffer1-1), fp1 ) != NULL ) {
-		if ( !fgets( buffer2, sizeof(buffer2-1), fp2  ) ) 
-			// different: file2 has fewer lines.
-			goto the_exit;
+    while ( fgets( buffer1, sizeof(buffer1-1), fp1 ) != NULL ) {
+        if ( !fgets( buffer2, sizeof(buffer2-1), fp2  ) ) 
+            // different: file2 has fewer lines.
+            goto the_exit;
 
-		if ( strcmp( buffer1, buffer2 ) )
-			// different: a line is different
-			goto the_exit;
-	}
+        if ( strcmp( buffer1, buffer2 ) )
+            // different: a line is different
+            goto the_exit;
+    }
 
-	if ( fgets( buffer2, sizeof(buffer2-1), fp2 ) ) 
-		// different: file2 has more lines.
-		goto the_exit;
+    if ( fgets( buffer2, sizeof(buffer2-1), fp2 ) ) 
+        // different: file2 has more lines.
+        goto the_exit;
 
-	retcode = 0;
+    retcode = 0;
 
 the_exit:
-	fclose(fp1);
-	fclose(fp2);
+    fclose(fp1);
+    fclose(fp2);
 
-	return( retcode );
+    return( retcode );
 }
 
 
@@ -102,9 +102,9 @@ void TestCommonFileUtil::CompareFiles (const wchar_t* file1Name, const wchar_t* 
             while (file1.ReadFile (&buffer1, 1L))
                 if (file2.ReadFile (&buffer2, 1L))
                 {
-					// The 29th byte is LDID. The original file might not have it set but (i.e. is 0) but the 
-					// copy file does (takes the locale into account).
-					bool isLDID = ((count + startByteOffset) == 29);
+                    // The 29th byte is LDID. The original file might not have it set but (i.e. is 0) but the 
+                    // copy file does (takes the locale into account).
+                    bool isLDID = ((count + startByteOffset) == 29);
                     if ((buffer1 != buffer2) && (buffer1 != 0 && isLDID))
                     {
                         char message[1024];

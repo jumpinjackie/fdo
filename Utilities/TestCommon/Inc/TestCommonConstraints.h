@@ -17,21 +17,21 @@
 #ifndef TESTCOMMONCONSTRAINTS_H
 #define TESTCOMMONCONSTRAINTS_H
 
-#define DBG(x)		//x
-#define DBG_MAX(x)		//x
+#define DBG(x)        //x
+#define DBG_MAX(x)        //x
 
 class TestCommonConstraints : public CppUnit::TestCase
 {
-	CPPUNIT_TEST_SUITE( TestCommonConstraints );
+    CPPUNIT_TEST_SUITE( TestCommonConstraints );
 
-	CPPUNIT_TEST( TestCreateConstraints );
-	CPPUNIT_TEST( TestDescribeConstraints );
-	CPPUNIT_TEST( TestUpdateUniqueConstraints );
+    CPPUNIT_TEST( TestCreateConstraints );
+    CPPUNIT_TEST( TestDescribeConstraints );
+    CPPUNIT_TEST( TestUpdateUniqueConstraints );
     CPPUNIT_TEST( TestUpdateCheckConstraints );
-	CPPUNIT_TEST( TestDescribeUpdatedConstraints );
+    CPPUNIT_TEST( TestDescribeUpdatedConstraints );
     CPPUNIT_TEST( TestRestrictCheckConstraints );
     CPPUNIT_TEST( TestCheckConstraintsData );
-	CPPUNIT_TEST( TestDateTimeConstraints );
+    CPPUNIT_TEST( TestDateTimeConstraints );
     CPPUNIT_TEST( TestBaseReferences );
     CPPUNIT_TEST( TestCreateLTConstraints );
     CPPUNIT_TEST( TestDescribeLTConstraints );
@@ -39,26 +39,26 @@ class TestCommonConstraints : public CppUnit::TestCase
     CPPUNIT_TEST( TestUpdateLTCheckConstraints );
     CPPUNIT_TEST( TestDescribeLTUpdatedConstraints );
 
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
-	TestCommonConstraints(void);
+    TestCommonConstraints(void);
     virtual ~TestCommonConstraints(void);
     virtual void setUp ();
 
     virtual void TestCreateConstraints(void);
-	virtual void TestDescribeConstraints(void);
-	virtual void TestUpdateUniqueConstraints(void);
-	virtual void TestUpdateCheckConstraints(void);
-	virtual void TestDescribeUpdatedConstraints(void);
-	virtual void TestRestrictCheckConstraints(void);
-	virtual void TestCheckConstraintsData(void);
-	virtual void TestDateTimeConstraints(void);
+    virtual void TestDescribeConstraints(void);
+    virtual void TestUpdateUniqueConstraints(void);
+    virtual void TestUpdateCheckConstraints(void);
+    virtual void TestDescribeUpdatedConstraints(void);
+    virtual void TestRestrictCheckConstraints(void);
+    virtual void TestCheckConstraintsData(void);
+    virtual void TestDateTimeConstraints(void);
     virtual void TestCreateLTConstraints(void);
-	virtual void TestDescribeLTConstraints(void);
-	virtual void TestUpdateLTUniqueConstraints(void);
-	virtual void TestUpdateLTCheckConstraints(void);
-	virtual void TestDescribeLTUpdatedConstraints(void);
+    virtual void TestDescribeLTConstraints(void);
+    virtual void TestUpdateLTUniqueConstraints(void);
+    virtual void TestUpdateLTCheckConstraints(void);
+    virtual void TestDescribeLTUpdatedConstraints(void);
 
 protected:
     virtual FdoString* GetDefaultSchemaName(void);
@@ -74,21 +74,21 @@ protected:
     };
 
     void DoTestCreateConstraints(Context& context);
-	void DoTestDescribeConstraints(Context& context);
-	void DoTestUpdateUniqueConstraints(Context& context);
-	void DoTestUpdateCheckConstraints(Context& context);
-	void DoTestDescribeUpdatedConstraints(Context& context);
+    void DoTestDescribeConstraints(Context& context);
+    void DoTestUpdateUniqueConstraints(Context& context);
+    void DoTestUpdateCheckConstraints(Context& context);
+    void DoTestDescribeUpdatedConstraints(Context& context);
 
     // Tests unique constraints that reference base properties.
-	virtual void TestBaseReferences(void);
+    virtual void TestBaseReferences(void);
 
     void CreateConstraintsSchema(Context& context);
-	void DescribeConstraintsSchema(Context& context, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);
-	void UpdateCheckConstraints(Context& context);
-	void UpdateUniqueConstraints(Context& context);
-	void RestrictCheckConstraints(Context& context);
-	void CheckConstraintsData(Context& context);
-	void DateTimeConstraints(Context& context);
+    void DescribeConstraintsSchema(Context& context, FdoString *className, int numUkeys, int numCkeys, bool afterUpdate);
+    void UpdateCheckConstraints(Context& context);
+    void UpdateUniqueConstraints(Context& context);
+    void RestrictCheckConstraints(Context& context);
+    void CheckConstraintsData(Context& context);
+    void DateTimeConstraints(Context& context);
 
     virtual void CreateConnection( Context& context, FdoBoolean recreateDb = false );
     virtual FdoBoolean CanRestrictCheckConstraint();
@@ -174,7 +174,7 @@ protected:
         bool expectedSuccess
     );
 
-    FdoStringP	FixDatetimeFormat( FdoDataValue*  val );
+    FdoStringP    FixDatetimeFormat( FdoDataValue*  val );
     
     template< class T> void CheckListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount )
     {
@@ -184,21 +184,21 @@ protected:
         );
 
         for ( int j = 0; j < masterCount; j++ ) {
-		    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[j] );
-		    bool					valMatched = false;
+            FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[j] );
+            bool                    valMatched = false;
 
-    	    for ( int k = 0; k < pList->GetCount() && !valMatched; k++ ) {
-	    	    FdoPtr<FdoDataValue>	val = pList->GetItem(k);
-			    valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
-		    }	
+            for ( int k = 0; k < pList->GetCount() && !valMatched; k++ ) {
+                FdoPtr<FdoDataValue>    val = pList->GetItem(k);
+                valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
+            }    
 
             CPPUNIT_ASSERT_MESSAGE( 
                 (const char*) FdoStringP::Format( L"Missing List Value %ls", pPropName ),
                 valMatched
             );
-		    DBG(printf("%ls,", val1->ToString()));
-	    }
-	    DBG(printf("))\n"));
+            DBG(printf("%ls,", val1->ToString()));
+        }
+        DBG(printf("))\n"));
     }    
     
     template< class T> void CheckDoubleListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, T* pMaster, FdoInt32 masterCount, FdoDataType dataType )
@@ -208,22 +208,22 @@ protected:
             pList->GetCount() == masterCount     
         );
 
-	    for ( int j = 0; j < pList->GetCount(); j++ ) {
-		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
-		    bool					valMatched = false;
+        for ( int j = 0; j < pList->GetCount(); j++ ) {
+            FdoPtr<FdoDataValue>    val = pList->GetItem(j);
+            bool                    valMatched = false;
 
             for ( int k = 0; k < masterCount && !valMatched; k++ ) {
-			    FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[k], dataType );
-			    valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
-		    }	
+                FdoPtr<FdoDataValue>   val1 = FdoDataValue::Create( pMaster[k], dataType );
+                valMatched = ( wcscmp(val->ToString(), val1->ToString()) == 0 );
+            }    
 
             CPPUNIT_ASSERT_MESSAGE( 
                 (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
                 valMatched
             );
-		    DBG(printf("%ls,", val->ToString()));
-	    }
-	    DBG(printf("))\n"));
+            DBG(printf("%ls,", val->ToString()));
+        }
+        DBG(printf("))\n"));
     }    
     
     void CheckDateListConstraint(FdoString* pPropName, FdoPtr<FdoDataValueCollection> pList, FdoString** pMaster, FdoInt32 masterCount )
@@ -233,25 +233,25 @@ protected:
             pList->GetCount() == masterCount     
         );
 
-	    for ( int j = 0; j < pList->GetCount(); j++ ) {
-		    FdoPtr<FdoDataValue>	val = pList->GetItem(j);
-		    bool					valMatched = false;
+        for ( int j = 0; j < pList->GetCount(); j++ ) {
+            FdoPtr<FdoDataValue>    val = pList->GetItem(j);
+            bool                    valMatched = false;
 
             if ( val->GetDataType() != FdoDataType_DateTime ) 
                 CPPUNIT_ASSERT_MESSAGE( "Wrong type for datetime constraint returned", false);
 
             for ( int k = 0; k < masterCount && !valMatched; k++ ) {
-		        valMatched = ( FixDatetimeFormat(val) == pMaster[k] );
-	        }	
+                valMatched = ( FixDatetimeFormat(val) == pMaster[k] );
+            }    
 
             CPPUNIT_ASSERT_MESSAGE( 
                 (const char*) FdoStringP::Format( L"Wrong List Value %ls", pPropName ),
                 valMatched
             );
 
-		    DBG(printf("%ls,", val->ToString()));
-	    }
-	    DBG(printf("))\n"));
+            DBG(printf("%ls,", val->ToString()));
+        }
+        DBG(printf("))\n"));
     }    
 
     template< class T> FdoPtr<FdoDataPropertyDefinition> AddRangeProperty(
@@ -448,4 +448,4 @@ protected:
     }
 };
 
-#endif	//TESTCOMMONCONSTRAINTS_H
+#endif    //TESTCOMMONCONSTRAINTS_H

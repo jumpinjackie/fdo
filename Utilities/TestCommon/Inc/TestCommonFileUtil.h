@@ -17,7 +17,7 @@
 */
 
 #ifndef TESTCOMMONFILEUTIL___H
-#define TESTCOMMONFILEUTIL___H	1
+#define TESTCOMMONFILEUTIL___H    1
 
 #ifdef _WIN32
 #pragma once

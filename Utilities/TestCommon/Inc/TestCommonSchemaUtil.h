@@ -17,7 +17,7 @@
 */
 
 #ifndef TESTCOMMONSCHEMAUTIL___H
-#define TESTCOMMONSCHEMAUTIL___H	1
+#define TESTCOMMONSCHEMAUTIL___H    1
 
 #ifdef _WIN32
 #pragma once

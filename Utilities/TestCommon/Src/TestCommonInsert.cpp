@@ -255,7 +255,7 @@ void TestCommonInsert::DoSubtestDefaultValues(
     propertyValues = insertCmd->GetPropertyValues();
 
     descCmd = (FdoIDescribeSchema*) connection->CreateCommand(FdoCommandType_DescribeSchema);
-  	schemas = descCmd->Execute();
+      schemas = descCmd->Execute();
     FdoFeatureSchemaP schema2 = schemas->FindItem(GetDefaultSchemaName());
     CPPUNIT_ASSERT(schema2);
     FdoClassesP classes2 = schema2->GetClasses();
@@ -372,106 +372,106 @@ void TestCommonInsert::VldDateTime( FdoStringP expected, FdoIFeatureReader* rdr,
 
 FdoPtr<FdoDataValue> TestCommonInsert::FixDataValueType( FdoPtr<FdoDataValue> val, FdoDataType propType )
 {
-	FdoInt32		valInt32;
-	FdoInt64		valInt64;
-	FdoDouble		valDouble;
+    FdoInt32        valInt32;
+    FdoInt64        valInt64;
+    FdoDouble        valDouble;
 
-	FdoPtr<FdoDataValue>	ret = val;
+    FdoPtr<FdoDataValue>    ret = val;
 
-	// Fast return if nothing to do
-	if ( val == NULL )
-		return ret;
+    // Fast return if nothing to do
+    if ( val == NULL )
+        return ret;
 
-	FdoDataType	constrType = val->GetDataType();
+    FdoDataType    constrType = val->GetDataType();
 
-	if ( constrType != propType ) 
-	{
-		FdoDataValue	*newData = NULL;
+    if ( constrType != propType ) 
+    {
+        FdoDataValue    *newData = NULL;
 
         switch (constrType) {
 
         case FdoDataType_Int32:
-			valInt32 = ((FdoInt32Value*)(FdoDataValue*)val)->GetInt32();
+            valInt32 = ((FdoInt32Value*)(FdoDataValue*)val)->GetInt32();
 
             switch (propType) {
             case FdoDataType_Byte:
-			    newData = FdoDataValue::Create( (FdoByte)valInt32 );
+                newData = FdoDataValue::Create( (FdoByte)valInt32 );
                 break;
 
             case FdoDataType_Int16:
-			    newData = FdoDataValue::Create( (FdoInt16)valInt32 );
+                newData = FdoDataValue::Create( (FdoInt16)valInt32 );
                 break;
 
             case FdoDataType_Int64:
-			    newData = FdoDataValue::Create( (FdoInt64)valInt32);
+                newData = FdoDataValue::Create( (FdoInt64)valInt32);
                 break;
 
             case FdoDataType_Single:
-			    newData = FdoDataValue::Create( (FdoFloat)valInt32);
+                newData = FdoDataValue::Create( (FdoFloat)valInt32);
                 break;
 
             case FdoDataType_Double:
             case FdoDataType_Decimal:
-    			newData = FdoDataValue::Create( (FdoDouble) valInt32, propType );
+                newData = FdoDataValue::Create( (FdoDouble) valInt32, propType );
                 break;
             }
 
             break;
 
         case FdoDataType_Int64:
-			valInt64 = ((FdoInt64Value*)(FdoDataValue*)val)->GetInt64();
+            valInt64 = ((FdoInt64Value*)(FdoDataValue*)val)->GetInt64();
 
             switch (propType) {
             case FdoDataType_Byte:
-			    newData = FdoDataValue::Create( (FdoByte)valInt64 );
+                newData = FdoDataValue::Create( (FdoByte)valInt64 );
                 break;
 
             case FdoDataType_Int16:
-			    newData = FdoDataValue::Create( (FdoInt16)valInt64 );
+                newData = FdoDataValue::Create( (FdoInt16)valInt64 );
                 break;
 
             case FdoDataType_Int32:
-			    newData = FdoDataValue::Create( (FdoInt32)valInt64);
+                newData = FdoDataValue::Create( (FdoInt32)valInt64);
                 break;
 
             case FdoDataType_Single:
-			    newData = FdoDataValue::Create( (FdoFloat)valInt64);
+                newData = FdoDataValue::Create( (FdoFloat)valInt64);
                 break;
 
             case FdoDataType_Double:
             case FdoDataType_Decimal:
-    			newData = FdoDataValue::Create( (FdoDouble) valInt64, propType );
+                newData = FdoDataValue::Create( (FdoDouble) valInt64, propType );
                 break;
             }
 
             break;
 
         case FdoDataType_Double:
-			valDouble = ((FdoDoubleValue*)(FdoDataValue*)val)->GetDouble();
+            valDouble = ((FdoDoubleValue*)(FdoDataValue*)val)->GetDouble();
 
             switch (propType) {
             case FdoDataType_Byte:
-			    newData = FdoDataValue::Create( (FdoByte)valDouble );
+                newData = FdoDataValue::Create( (FdoByte)valDouble );
                 break;
 
             case FdoDataType_Int16:
-			    newData = FdoDataValue::Create( (FdoInt16)valDouble );
+                newData = FdoDataValue::Create( (FdoInt16)valDouble );
                 break;
 
             case FdoDataType_Int32:
-			    newData = FdoDataValue::Create( (FdoInt32)valDouble );
+                newData = FdoDataValue::Create( (FdoInt32)valDouble );
                 break;
 
             case FdoDataType_Int64:
-			    newData = FdoDataValue::Create( (FdoInt64)valDouble);
+                newData = FdoDataValue::Create( (FdoInt64)valDouble);
                 break;
 
             case FdoDataType_Single:
-			    newData = FdoDataValue::Create( (FdoFloat)valDouble);
+                newData = FdoDataValue::Create( (FdoFloat)valDouble);
                 break;
 
             case FdoDataType_Decimal:
-    			newData = FdoDataValue::Create( valDouble, propType );
+                newData = FdoDataValue::Create( valDouble, propType );
                 break;
             }
 
@@ -480,8 +480,8 @@ FdoPtr<FdoDataValue> TestCommonInsert::FixDataValueType( FdoPtr<FdoDataValue> va
         }
 
         ret = newData;
-	}
-	return ret;
+    }
+    return ret;
 }
 
 
