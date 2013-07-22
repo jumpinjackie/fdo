@@ -23,8 +23,8 @@
 #include <Fdo.h>
 #include <TestCommonConstraints.h>
 
-#define DBG(x)		//x
-#define DBG_MAX(x)		//x
+#define DBG(x)        //x
+#define DBG_MAX(x)        //x
 
 class ConstraintsTest : TestCommonConstraints
 {
@@ -63,4 +63,4 @@ protected:
 
 };
 
-#endif	//CONSTRAINTSTEST_H
+#endif    //CONSTRAINTSTEST_H

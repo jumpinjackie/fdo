@@ -28,7 +28,7 @@
 
 class InsertTest : public TestCommonInsert
 {
-	CPPUNIT_TEST_SUB_SUITE( InsertTest, TestCommonInsert );
+    CPPUNIT_TEST_SUB_SUITE( InsertTest, TestCommonInsert );
     CPPUNIT_TEST( TestInsInvalidGeomTypes );
     CPPUNIT_TEST( TestConstraints1 );
     CPPUNIT_TEST( TestConstraints1InMemConn );
@@ -36,13 +36,13 @@ class InsertTest : public TestCommonInsert
     CPPUNIT_TEST( TestCompPK );
     CPPUNIT_TEST( TestNoPK );
     CPPUNIT_TEST( TestInsBLOBTypes );
-	CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     InsertTest(void);
     virtual ~InsertTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestInsInvalidGeomTypes ();
     void TestConstraints1 ();
@@ -65,4 +65,4 @@ private:
     void TestConstraints1WithOption (FdoBoolean inMemConn = false);
 };
 
-#endif	//INSERTTEST_H
+#endif    //INSERTTEST_H

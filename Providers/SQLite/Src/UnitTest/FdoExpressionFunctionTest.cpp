@@ -122,32 +122,32 @@ void FdoExpressionFunctionTest::TestDateStringConv()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchPKTest.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							77.2088, 43.7556, 
-							77.2088, 143.7574, 
-							7.2068, 143.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            77.2088, 43.7556, 
+                            77.2088, 143.7574, 
+                            7.2068, 143.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         // insert test
@@ -187,7 +187,7 @@ void FdoExpressionFunctionTest::TestDateStringConv()
         try
         {
             FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	        select->SetFeatureClassName(L"TestCompPK");
+            select->SetFeatureClassName(L"TestCompPK");
             FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"PropDT IN ( TIMESTAMP '2005-01-22 08:05:01', TIMESTAMP '2009-07-10 22:57:56')");
 
             select->SetFilter(filter);
@@ -239,15 +239,15 @@ void FdoExpressionFunctionTest::TestDateStringConv()
         }
 
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void FdoExpressionFunctionTest::TestConcat()
@@ -256,11 +256,11 @@ void FdoExpressionFunctionTest::TestConcat()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
+        conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
         try
         {
             FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	        select->SetFeatureClassName(L"exfct_c1");
+            select->SetFeatureClassName(L"exfct_c1");
 
             FdoPtr<FdoIdentifierCollection> selColl = select->GetPropertyNames();
             
@@ -301,15 +301,15 @@ void FdoExpressionFunctionTest::TestConcat()
             CPPUNIT_FAIL("\nUnexpected exception: ");
         }
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 
 }
 
@@ -323,13 +323,13 @@ public:
     static FdoFunctionDefinition* CreateFunctionDefinition()
     {
         FdoPtr<FdoSignatureDefinitionCollection> signatures = FdoSignatureDefinitionCollection::Create();
-	    return FdoFunctionDefinition::Create(
-									    L"CustomFunction", //NOXLATE
-									    L"Test Function.", //NOXLATE
-									    false,
-									    signatures,
-									    FdoFunctionCategoryType_Unspecified,
-									    true);
+        return FdoFunctionDefinition::Create(
+                                        L"CustomFunction", //NOXLATE
+                                        L"Test Function.", //NOXLATE
+                                        false,
+                                        signatures,
+                                        FdoFunctionCategoryType_Unspecified,
+                                        true);
     }
     virtual FdoFunctionDefinition* GetFunctionDefinition()
     {
@@ -367,7 +367,7 @@ private:
     {
         delete this;
     }
-	
+    
     FdoFunctionDefinition* m_functionDefinition;
 };
 
@@ -375,7 +375,7 @@ void FdoExpressionFunctionTest::TestCustomFunction()
 {
     FdoPtr<FdoIConnection> conn;
 
-	conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
+    conn = UnitTestUtil::OpenConnection( EXPFCT_TEST_FILE, false, false);
     try
     {
         bool expExc = false;
@@ -385,10 +385,10 @@ void FdoExpressionFunctionTest::TestCustomFunction()
             select->SetFeatureClassName(L"exfct_c1");
             FdoPtr<FdoIFeatureReader> rdr = select->Execute();
 
-	        FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
+            FdoPtr<FdoExpressionEngineFunctionCollection> userDefinedFunctions = FdoExpressionEngineFunctionCollection::Create();
 
-	        FdoPtr<FdoExpressionEngineIFunction> function = FdoCustomUserFunctionTest::Create();
-	        userDefinedFunctions->Add(function);
+            FdoPtr<FdoExpressionEngineIFunction> function = FdoCustomUserFunctionTest::Create();
+            userDefinedFunctions->Add(function);
             FdoExpressionEngine::RegisterFunctions(userDefinedFunctions);
 
             FdoPtr<FdoExpression> exp = FdoExpression::Parse(L"CustomFunction(233)");
@@ -427,13 +427,13 @@ void FdoExpressionFunctionTest::TestCustomFunction()
         exc->Release();
         CPPUNIT_FAIL("\nUnexpected exception: ");
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }

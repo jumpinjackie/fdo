@@ -50,16 +50,16 @@ void InsertTest::tearDown ()
 
 void InsertTest::TestInsInvalidGeomTypes ()
 {
-	try
-	{
+    try
+    {
         FdoPtr<FdoIConnection> conn = UnitTestUtil::CreateConnection();
 
-		UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
-		 //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true, conn );
+         //apply schema
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchema> schema = UnitTestUtil::CreateSLTSchema(FdoGeometryType_Point);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         UnitTestUtil::CreateData(false, conn, 100);
         conn->Close();
@@ -80,25 +80,25 @@ void InsertTest::TestInsInvalidGeomTypes ()
         FdoGeometryType* types = geomProp->GetSpecificGeometryTypes(length);
         CPPUNIT_ASSERT(length == 1);
         CPPUNIT_ASSERT(*types == FdoGeometryType_Point);        
-	}
-	catch(FdoException *exp )
-	{
-		UnitTestUtil::PrintException( exp, stdout, false);
+    }
+    catch(FdoException *exp )
+    {
+        UnitTestUtil::PrintException( exp, stdout, false);
         FDO_SAFE_RELEASE(exp);
         CPPUNIT_FAIL("Insert failed");
-	}
+    }
 }
 
 bool InsertTest::TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoString* propName, FdoInt32 id, FdoDateTime* expVal)
 {
-	FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	select->SetFeatureClassName(clsName);
+    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    select->SetFeatureClassName(clsName);
     FdoStringP filterTxt = FdoStringP::Format(L"FeatId=%d", id);
     FdoPtr<FdoFilter> filter = FdoFilter::Parse(filterTxt);
     select->SetFilter(filter);
-	FdoPtr<FdoIFeatureReader> rdr = select->Execute();
-	if (rdr->ReadNext())
-	{
+    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+    if (rdr->ReadNext())
+    {
         if (rdr->IsNull(propName))
             return (expVal == NULL);
 
@@ -108,7 +108,7 @@ bool InsertTest::TestForDateValue(FdoIConnection* conn, FdoString* clsName, FdoS
         FdoDateTime dt = rdr->GetDateTime(propName);
         return (dt.day == expVal->day) && (dt.hour == expVal->hour) && (dt.minute == expVal->minute) && (dt.month == expVal->month)
             && (dt.seconds == expVal->seconds) && (dt.year == expVal->year);
-	}
+    }
     return false;
 }
 
@@ -121,32 +121,32 @@ void InsertTest::TestConstraints1WithOption (FdoBoolean inMemConn)
         if (inMemConn)
             conn = UnitTestUtil::OpenMemoryConnection();
         else
-		    conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+            conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchConstraintsTest1.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							7.2088, 43.7556, 
-							7.2088, 43.7574, 
-							7.2068, 43.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            7.2088, 43.7556, 
+                            7.2088, 43.7574, 
+                            7.2068, 43.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         vals->Add(propGeomIns);
@@ -292,15 +292,15 @@ void InsertTest::TestConstraints1WithOption (FdoBoolean inMemConn)
             CPPUNIT_FAIL("\nUnexpected exception: ");
         }
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void InsertTest::TestConstraints1 ()
@@ -314,32 +314,32 @@ void InsertTest::TestConstraints2 ()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchConstraintsTest2.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							7.2088, 43.7556, 
-							7.2088, 43.7574, 
-							7.2068, 43.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            7.2088, 43.7556, 
+                            7.2088, 43.7574, 
+                            7.2068, 43.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         vals->Add(propGeomIns);
@@ -483,21 +483,21 @@ void InsertTest::TestConstraints2 ()
             CPPUNIT_FAIL("\nUnexpected exception: ");
         }
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void InsertTest::TestInsertData(FdoIConnection* conn, FdoString* className, FdoInt32 expectedProps, FdoIdentifierCollection* propNames)
 {
-	FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	select->SetFeatureClassName(className);
+    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+    select->SetFeatureClassName(className);
     if (propNames != NULL && propNames->GetCount() != 0)
     {
         FdoPtr<FdoIdentifierCollection> selColl = select->GetPropertyNames();
@@ -523,32 +523,32 @@ void InsertTest::TestCompPK ()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchPKTest.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							77.2088, 43.7556, 
-							77.2088, 143.7574, 
-							7.2068, 143.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            77.2088, 43.7556, 
+                            77.2088, 143.7574, 
+                            7.2068, 143.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         // insert test
@@ -672,7 +672,7 @@ void InsertTest::TestCompPK ()
         conn->Close();
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
-		FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)conn->CreateCommand( FdoCommandType_GetSpatialContexts );
+        FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)conn->CreateCommand( FdoCommandType_GetSpatialContexts );
 
         // Get a SC reader
         FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
@@ -680,18 +680,18 @@ void InsertTest::TestCompPK ()
         // Iterate ...
         while ( reader->ReadNext() )
         {
-			FdoPtr<FdoByteArray> ext = reader->GetExtent();
-		}
+            FdoPtr<FdoByteArray> ext = reader->GetExtent();
+        }
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void InsertTest::TestNoPK ()
@@ -700,32 +700,32 @@ void InsertTest::TestNoPK ()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchPKTest.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
         
         FdoPtr<FdoFeatureSchema> schema = schColl->GetItem(0);
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							77.2088, 43.7556, 
-							77.2088, 143.7574, 
-							7.2068, 143.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            77.2088, 43.7556, 
+                            77.2088, 143.7574, 
+                            7.2068, 143.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         // insert test
@@ -790,8 +790,8 @@ void InsertTest::TestNoPK ()
         }
 
         // select values
-	    FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    select->SetFeatureClassName(L"TestNoPK");
+        FdoPtr<FdoISelect> select = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        select->SetFeatureClassName(L"TestNoPK");
         FdoPtr<FdoIdentifierCollection> collProps = select->GetPropertyNames();
         
         FdoPtr<FdoIdentifier> idfName = FdoIdentifier::Create(L"Name");
@@ -804,12 +804,12 @@ void InsertTest::TestNoPK ()
         FdoPtr<FdoIdentifier> idfCalc = FdoComputedIdentifier::Create(L"Calc", exp);
         collProps->Add(idfCalc);
 
-		FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Geometry", FdoSpatialOperations_EnvelopeIntersects, gv);
+        FdoPtr<FdoSpatialCondition> filter = FdoSpatialCondition::Create(L"Geometry", FdoSpatialOperations_EnvelopeIntersects, gv);
         select->SetFilter(filter);
-	    FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = select->Execute();
         int cnt = 0;
-	    while (rdr->ReadNext())
-	    {
+        while (rdr->ReadNext())
+        {
             cnt++;
             if (!rdr->IsNull(L"Name"))
             {
@@ -826,14 +826,14 @@ void InsertTest::TestNoPK ()
                 double calc = rdr->GetDouble(L"Calc");
                 printf("Calc=%g\n", calc);
             }
-	    }
+        }
         CPPUNIT_ASSERT(cnt == 2);
 
         rdr->Close();
         conn->Close();
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false );
 
-		FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)conn->CreateCommand( FdoCommandType_GetSpatialContexts );
+        FdoPtr<FdoIGetSpatialContexts> gscCmd = (FdoIGetSpatialContexts *)conn->CreateCommand( FdoCommandType_GetSpatialContexts );
 
         // Get a SC reader
         FdoPtr<FdoISpatialContextReader> reader = gscCmd->Execute();
@@ -841,18 +841,18 @@ void InsertTest::TestNoPK ()
         // Iterate ...
         while ( reader->ReadNext() )
         {
-			FdoPtr<FdoByteArray> ext = reader->GetExtent();
-		}
+            FdoPtr<FdoByteArray> ext = reader->GetExtent();
+        }
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 FdoString* InsertTest::GetDefaultSchemaName(void)
@@ -884,10 +884,10 @@ void InsertTest::TestInsBLOBTypes()
 
     try
     {
-		conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
-		 
+        conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, true, true);
+         
         //apply schema
-		FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
+        FdoPtr<FdoIApplySchema> applyschema = static_cast<FdoIApplySchema*>(conn->CreateCommand(FdoCommandType_ApplySchema));
         FdoPtr<FdoFeatureSchemaCollection> schColl = FdoFeatureSchemaCollection::Create(NULL);
         schColl->ReadXml(L"SchConstraintsTest1.xml");
         CPPUNIT_ASSERT(schColl->GetCount() == 1);
@@ -900,24 +900,24 @@ void InsertTest::TestInsBLOBTypes()
         blobProp->SetDataType(FdoDataType_BLOB);
         propsToAdd->Add(blobProp);
 
-		applyschema->SetFeatureSchema(schema);
-		applyschema->Execute();
+        applyschema->SetFeatureSchema(schema);
+        applyschema->Execute();
 
         {
         FdoPtr<FdoIInsert> insCmd = static_cast<FdoIInsert*>(conn->CreateCommand(FdoCommandType_Insert));
         FdoPtr<FdoPropertyValueCollection> vals = insCmd->GetPropertyValues();
         FdoPtr<FdoPropertyValue> propIns;
         
-		FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
-		double coords[] = { 7.2068, 43.7556, 
-							7.2088, 43.7556, 
-							7.2088, 43.7574, 
-							7.2068, 43.7574, 
-							7.2068, 43.7556 }; 
-		FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
-		FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
-		FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
-		FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
+        FdoPtr<FdoFgfGeometryFactory> gf = FdoFgfGeometryFactory::GetInstance();
+        double coords[] = { 7.2068, 43.7556, 
+                            7.2088, 43.7556, 
+                            7.2088, 43.7574, 
+                            7.2068, 43.7574, 
+                            7.2068, 43.7556 }; 
+        FdoPtr<FdoILinearRing> outer = gf->CreateLinearRing(0, 10, coords);
+        FdoPtr<FdoIPolygon> poly = gf->CreatePolygon(outer, NULL);
+        FdoPtr<FdoByteArray> polyfgf = gf->GetFgf(poly);
+        FdoPtr<FdoGeometryValue> gv = FdoGeometryValue::Create(polyfgf);
 
         FdoPtr<FdoPropertyValue> propGeomIns = FdoPropertyValue::Create(L"Geometry", gv);
         vals->Add(propGeomIns);
@@ -937,8 +937,8 @@ void InsertTest::TestInsBLOBTypes()
         rdr->Close();
         }
 
-	    FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
-	    selectCmd->SetFeatureClassName(L"TestRange");
+        FdoPtr<FdoISelect> selectCmd = (FdoISelect*)conn->CreateCommand(FdoCommandType_Select); 
+        selectCmd->SetFeatureClassName(L"TestRange");
         FdoPtr<FdoIFeatureReader> reader = selectCmd->Execute();
         CPPUNIT_ASSERT(reader->ReadNext());
 
@@ -973,15 +973,15 @@ void InsertTest::TestInsBLOBTypes()
         exc->Release();
         CPPUNIT_FAIL("\nUnexpected exception: ");
     }
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 

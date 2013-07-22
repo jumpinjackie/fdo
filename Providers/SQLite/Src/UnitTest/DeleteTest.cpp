@@ -65,8 +65,8 @@ void DeleteTest::TestSimpleDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        deleteCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 30");
         deleteCmd->SetFilter(filter);
@@ -78,18 +78,18 @@ void DeleteTest::TestSimpleDelete ()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void DeleteTest::TestBindDelete ()
@@ -104,8 +104,8 @@ void DeleteTest::TestBindDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        deleteCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm");
         deleteCmd->SetFilter(filter);
@@ -121,18 +121,18 @@ void DeleteTest::TestBindDelete ()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void DeleteTest::TestSpatialDelete ()
@@ -147,8 +147,8 @@ void DeleteTest::TestSpatialDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        deleteCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         deleteCmd->SetFilter(filter);
@@ -160,18 +160,18 @@ void DeleteTest::TestSpatialDelete ()
         CPPUNIT_ASSERT(rez == 21884);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void DeleteTest::TestComplexDelete ()
@@ -186,8 +186,8 @@ void DeleteTest::TestComplexDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        deleteCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < 10000 AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         deleteCmd->SetFilter(filter);
@@ -199,18 +199,18 @@ void DeleteTest::TestComplexDelete ()
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void DeleteTest::TestComplexWithBindDelete ()
@@ -225,8 +225,8 @@ void DeleteTest::TestComplexWithBindDelete ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
-	    deleteCmd->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIDelete> deleteCmd = (FdoIDelete*)conn->CreateCommand(FdoCommandType_Delete); 
+        deleteCmd->SetFeatureClassName(L"DaKlass");
 
         FdoPtr<FdoFilter> filter = FdoFilter::Parse(L"ID < :parm AND Data2 INSIDE GeomFromText('POLYGON XYZ ((7.1770013502456 43.7501967446194 0, 7.1770013502456 43.6912771493358 0, 7.27407112243824 43.6912771493358 0, 7.27407112243824 43.7501967446194 0, 7.1770013502456 43.7501967446194 0))')");
         deleteCmd->SetFilter(filter);
@@ -242,16 +242,16 @@ void DeleteTest::TestComplexWithBindDelete ()
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }

@@ -53,7 +53,7 @@ public:
     SQLCmdTest(void);
     virtual ~SQLCmdTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestSimpleBind ();
 
@@ -74,4 +74,4 @@ public:
     void TestSelectWithIdtNames();
 };
 
-#endif	//SQLCmdTest_H
+#endif    //SQLCmdTest_H

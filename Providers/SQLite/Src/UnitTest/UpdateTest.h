@@ -44,7 +44,7 @@ public:
     UpdateTest(void);
     virtual ~UpdateTest(void);
     void setUp ();
-	void tearDown ();
+    void tearDown ();
 
     void TestSimpleUpdate ();
     void TestParmBindUpdate ();

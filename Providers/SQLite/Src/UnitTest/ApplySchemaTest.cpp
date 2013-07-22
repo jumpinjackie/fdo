@@ -76,7 +76,7 @@ void ApplySchemaTest::TestClassRename ()
 
         FdoPtr<FdoDataPropertyDefinition> propId = FdoDataPropertyDefinition::Create(L"NEW_PROP", L"");
         propId->SetDataType(FdoDataType_String);
-		propId->SetDefaultValue(L"test");
+        propId->SetDefaultValue(L"test");
         propId->SetNullable(true);
         props->Add(propId);
         
@@ -86,16 +86,16 @@ void ApplySchemaTest::TestClassRename ()
         applyschema->Execute();
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }

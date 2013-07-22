@@ -65,8 +65,8 @@ void UpdateTest::TestSimpleUpdate ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
-	    update->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+        update->SetFeatureClassName(L"DaKlass");
         FdoPtr<FdoPropertyValueCollection> updColl = update->GetPropertyValues();
 
         FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"ID<30");
@@ -83,18 +83,18 @@ void UpdateTest::TestSimpleUpdate ()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void UpdateTest::TestParmBindUpdate()
@@ -109,8 +109,8 @@ void UpdateTest::TestParmBindUpdate()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
-	    update->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+        update->SetFeatureClassName(L"DaKlass");
         FdoPtr<FdoPropertyValueCollection> updColl = update->GetPropertyValues();
 
         FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"ID<30");
@@ -132,18 +132,18 @@ void UpdateTest::TestParmBindUpdate()
         CPPUNIT_ASSERT(rez == 29);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 
@@ -159,8 +159,8 @@ void UpdateTest::TestSpatialUpdate ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
-	    update->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+        update->SetFeatureClassName(L"DaKlass");
         FdoPtr<FdoPropertyValueCollection> updColl = update->GetPropertyValues();
 
         FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"SpatialCond");
@@ -177,18 +177,18 @@ void UpdateTest::TestSpatialUpdate ()
         CPPUNIT_ASSERT(rez == 21884);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
 
 void UpdateTest::TestComplexUpdate ()
@@ -203,8 +203,8 @@ void UpdateTest::TestComplexUpdate ()
 
         conn = UnitTestUtil::OpenConnection( SC_TEST_FILE, false, false );
         
-	    FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
-	    update->SetFeatureClassName(L"DaKlass");
+        FdoPtr<FdoIUpdate> update = (FdoIUpdate*)conn->CreateCommand(FdoCommandType_Update); 
+        update->SetFeatureClassName(L"DaKlass");
         FdoPtr<FdoPropertyValueCollection> updColl = update->GetPropertyValues();
 
         FdoPtr<FdoStringValue> svurl = FdoStringValue::Create(L"SpatialCond");
@@ -221,16 +221,16 @@ void UpdateTest::TestComplexUpdate ()
         CPPUNIT_ASSERT(rez == 9471);
     }
     catch ( FdoException* e )
-	{
-		TestCommonFail( e );
-	}
-	catch ( CppUnit::Exception e ) 
-	{
-		throw;
-	}
-   	catch (...)
-   	{
-   		CPPUNIT_FAIL ("caught unexpected exception");
-   	}
-	printf( "Done\n" );
+    {
+        TestCommonFail( e );
+    }
+    catch ( CppUnit::Exception e ) 
+    {
+        throw;
+    }
+       catch (...)
+       {
+           CPPUNIT_FAIL ("caught unexpected exception");
+       }
+    printf( "Done\n" );
 }
