@@ -103,7 +103,7 @@ void TestCommonExpressionFunctionR::doTestXYZMRdOnly( FdoString* className, FdoS
 
         select->SetFeatureClassName(className);
 
-    	FdoPtr<FdoIFeatureReader> rdr = select->Execute();
+        FdoPtr<FdoIFeatureReader> rdr = select->Execute();
 
         int nnullPtCount = 0;
 

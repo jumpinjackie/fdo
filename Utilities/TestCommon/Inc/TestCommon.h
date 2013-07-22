@@ -23,7 +23,7 @@
  */
 
 #ifndef TESTCOMMON___H
-#define TESTCOMMON___H	1
+#define TESTCOMMON___H    1
 
 #ifdef _WIN32
 #pragma once

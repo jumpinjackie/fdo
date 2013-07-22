@@ -212,17 +212,17 @@ void TestCommonGeomUtil::PrintGeometryAnalysis( const wchar_t *class_name, int i
 
     switch (geom->GetDerivedType())
     {
-   	case FdoGeometryType_LineString:
+       case FdoGeometryType_LineString:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_LineString!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_Point:
+    case FdoGeometryType_Point:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_Point!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_Polygon:
+    case FdoGeometryType_Polygon:
         {
             FdoIPolygon *poly = (FdoIPolygon *)geom;
             FdoILinearRing *extRing = poly->GetExteriorRing();
@@ -242,24 +242,24 @@ void TestCommonGeomUtil::PrintGeometryAnalysis( const wchar_t *class_name, int i
 
             FDO_SAFE_RELEASE(extRing);
         }
-		break;
+        break;
 
-	case FdoGeometryType_MultiPoint:
+    case FdoGeometryType_MultiPoint:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_MultiPoint!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_MultiGeometry:
+    case FdoGeometryType_MultiGeometry:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_MultiGeometry!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_MultiLineString:
+    case FdoGeometryType_MultiLineString:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_MultiLineString!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_MultiPolygon:
+    case FdoGeometryType_MultiPolygon:
         {
             if (verbose)
                 printf("%ls-%d. FdoGeometryType_MultiPolygon (%lf)\n", class_name, index, area0);
@@ -286,27 +286,27 @@ void TestCommonGeomUtil::PrintGeometryAnalysis( const wchar_t *class_name, int i
                 FDO_SAFE_RELEASE(extRing);
             }
         }
-		break;
+        break;
 
-	case FdoGeometryType_CurveString:
+    case FdoGeometryType_CurveString:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_CurveString!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_MultiCurveString:
+    case FdoGeometryType_MultiCurveString:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_MultiCurveString!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_CurvePolygon:
+    case FdoGeometryType_CurvePolygon:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_CurvePolygon!\n", class_name, index);
-		break;
+        break;
 
-	case FdoGeometryType_MultiCurvePolygon:
+    case FdoGeometryType_MultiCurvePolygon:
         if (verbose)
             printf("%ls-%d. FdoGeometryType_MultiCurvePolygon!\n", class_name, index);
-		break;
+        break;
  
     default:
         ;

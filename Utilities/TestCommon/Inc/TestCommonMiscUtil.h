@@ -17,7 +17,7 @@
 */
 
 #ifndef TESTCOMMONMISCUTIL___H
-#define TESTCOMMONMISCUTIL___H	1
+#define TESTCOMMONMISCUTIL___H    1
 
 #ifdef _WIN32
 #pragma once
@@ -32,7 +32,7 @@ namespace FdoCommonUtilTypes
         {}
         pair(const T1& val1, const T2& val2)
             : first(val1), second(val2)
-	    {}
+        {}
         T1 first;
         T2 second;
     };
@@ -76,7 +76,7 @@ namespace FdoCommonUtilTypes
             m_objects[m_size] = val;
             m_size++;
         }
-	    T& operator[](size_t pos)
+        T& operator[](size_t pos)
         {
             if (pos < m_size)
                 return m_objects[pos];

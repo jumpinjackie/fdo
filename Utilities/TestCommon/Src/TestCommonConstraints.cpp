@@ -20,24 +20,23 @@
 #include "Parse/Parse.h"
 
 #ifndef _WIN32
-#   define LLONG_MAX    9223372036854775807LL
-#   define LLONG_MIN    (-LLONG_MAX - 1LL)
+#include <limits.h> 
 #endif
 
 #define            SCHEMA_NAME            L"constraints"
 #define            CLASS_NAME             L"cdataclass"    // lower case to compensate for MySQl on Linux
 #define            CLASS_NAME2            L"cdataclass2"    // lower case to compensate for MySQl on Linux
 #define            CLASS_NAME_BASE        L"CDataBaseClass"
-#define            CLASS_NAME_SUB        L"CDataSubClass"
+#define            CLASS_NAME_SUB         L"CDataSubClass"
 
 #define            PROP_FEATID            L"FeatureId"
 
 #define            PROP_UNIQUE1           L"unique1"
 #define            PROP_UNIQUE2_1         L"unique2_1"
 #define            PROP_UNIQUE2_2         L"unique2_2"
-#define			   PROP_UNIQUE3_1		  L"unique3_1"
-#define			   PROP_UNIQUE3_2		  L"unique3_2"
-#define			   PROP_UNIQUE3_3		  L"unique3_3"
+#define            PROP_UNIQUE3_1         L"unique3_1"
+#define            PROP_UNIQUE3_2         L"unique3_2"
+#define            PROP_UNIQUE3_3         L"unique3_3"
 
 #define            PROP_BYTE_R            L"ByteRange"
 #define            PROP_DATE_R            L"DateRange"
@@ -325,7 +324,7 @@ void TestCommonConstraints::TestRestrictCheckConstraints ()
             printf( "Initializing Connection ... \n" );
             CreateConnection( context, true );
 
-             printf( "Creating Constraints Schema ... \n" );
+            printf( "Creating Constraints Schema ... \n" );
             CreateConstraintsSchema( context );
 
             printf( "Restrict Constraints  ... \n" );
@@ -545,7 +544,7 @@ void TestCommonConstraints::TestBaseReferences ()
                 (FdoString*) NULL
             );
 
-            bool    uniqueSuccess1 = true;
+            bool uniqueSuccess1 = true;
             try {
                 TestCommonMiscUtil::InsertObject(
                     context.connection,
@@ -1079,33 +1078,33 @@ void TestCommonConstraints::CreateConstraintsSchema( Context& context )
         constraints->Add( newUniqueConstr2 );
 
         //////////////  3rd unique property - Composite ///////////////
-	    FdoPtr<FdoDataPropertyDefinition> pUnique31Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_1, L"" );
-	    pUnique31Int->SetDataType( FdoDataType_Int32 );
-	    pUnique31Int->SetNullable(true);
-	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique31Int  );
+        FdoPtr<FdoDataPropertyDefinition> pUnique31Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_1, L"" );
+        pUnique31Int->SetDataType( FdoDataType_Int32 );
+        pUnique31Int->SetNullable(true);
+        FdoPropertiesP(pCData->GetProperties())->Add( pUnique31Int  );
 
-	    FdoPtr<FdoDataPropertyDefinition> pUnique32Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_2, L"" );
-	    pUnique32Int->SetDataType( FdoDataType_Int32 );
-	    pUnique32Int->SetNullable(true);
-	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique32Int  );
+        FdoPtr<FdoDataPropertyDefinition> pUnique32Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_2, L"" );
+        pUnique32Int->SetDataType( FdoDataType_Int32 );
+        pUnique32Int->SetNullable(true);
+        FdoPropertiesP(pCData->GetProperties())->Add( pUnique32Int  );
 
-	    FdoPtr<FdoDataPropertyDefinition> pUnique33Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_3, L"" );
-	    pUnique33Int->SetDataType( FdoDataType_Int32 );
-	    pUnique33Int->SetNullable(true);
-	    FdoPropertiesP(pCData->GetProperties())->Add( pUnique33Int  );
+        FdoPtr<FdoDataPropertyDefinition> pUnique33Int = FdoDataPropertyDefinition::Create( PROP_UNIQUE3_3, L"" );
+        pUnique33Int->SetDataType( FdoDataType_Int32 );
+        pUnique33Int->SetNullable(true);
+        FdoPropertiesP(pCData->GetProperties())->Add( pUnique33Int  );
 
-	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr3 = FdoUniqueConstraint::Create();
-	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique31Int );
-	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique32Int );
-	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique33Int );
-	    constraints->Add( newUniqueConstr3 );
+        FdoPtr<FdoUniqueConstraint>  newUniqueConstr3 = FdoUniqueConstraint::Create();
+        FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique31Int );
+        FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique32Int );
+        FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr3->GetProperties())->Add( pUnique33Int );
+        constraints->Add( newUniqueConstr3 );
 
-	    //////////////  4th unique constraint - on identity property ///////////////
+        //////////////  4th unique constraint - on identity property ///////////////
         //////////////  should be silently ignored                   ///////////////
 
-	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr4 = FdoUniqueConstraint::Create();
-	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr4->GetProperties())->Add( pIdProp );
-	    constraints->Add( newUniqueConstr4 );
+        FdoPtr<FdoUniqueConstraint>  newUniqueConstr4 = FdoUniqueConstraint::Create();
+        FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr4->GetProperties())->Add( pIdProp );
+        constraints->Add( newUniqueConstr4 );
     }
 
     // Create a new class based on the previous ...
@@ -1852,17 +1851,17 @@ void TestCommonConstraints::DescribeConstraintsSchema( Context& context, FdoStri
                     CPPUNIT_ASSERT_MESSAGE("Wrong Min Value Prop4R",  wcscmp(valMin->ToString(), val1->ToString()) == 0 );
                     CPPUNIT_ASSERT_MESSAGE("Wrong Max Value Prop4R (not null)",  valMax == NULL );
                 }
-			    else if ( wcscmp( pProp->GetName(), PROP_DATE_R) == 0 ) 
-			    {
-				    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == true );
-				    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == true );
+                else if ( wcscmp( pProp->GetName(), PROP_DATE_R) == 0 ) 
+                {
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MinInclusive", pConstrR->GetMinInclusive() == true );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong MaxInclusive", pConstrR->GetMaxInclusive() == true );
 
-				    FdoDataValue*	valMin = pConstrR->GetMinValue();
-				    FdoDataValue*	valMax = pConstrR->GetMaxValue();
+                    FdoDataValue*    valMin = pConstrR->GetMinValue();
+                    FdoDataValue*    valMax = pConstrR->GetMaxValue();
 
-				    CPPUNIT_ASSERT_MESSAGE("Wrong Min Value PropDateR",  wcscmp(FixDatetimeFormat(valMin), DATETIME_RANGE[0]) == 0 );
-				    CPPUNIT_ASSERT_MESSAGE("Wrong Max Value PropDateR",  wcscmp(FixDatetimeFormat(valMax), DATETIME_RANGE[1]) == 0 );
-			    }
+                    CPPUNIT_ASSERT_MESSAGE("Wrong Min Value PropDateR",  wcscmp(FixDatetimeFormat(valMin), DATETIME_RANGE[0]) == 0 );
+                    CPPUNIT_ASSERT_MESSAGE("Wrong Max Value PropDateR",  wcscmp(FixDatetimeFormat(valMax), DATETIME_RANGE[1]) == 0 );
+                }
                 
                 count++;
             }
@@ -2060,19 +2059,19 @@ void TestCommonConstraints::UpdateUniqueConstraints( Context& context )
         pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
           pUniqueCs = pClass2->GetUniqueConstraints();
 
-	    // Add unique constraint on identity property. Should be ignored.
-	    FdoPtr<FdoDataPropertyDefinition> pUnique5 = FdoDataPropertiesP(pClass2->GetIdentityProperties())->GetItem(0);
-	    FdoPtr<FdoUniqueConstraint>  newUniqueConstr5 = FdoUniqueConstraint::Create();
-	    FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr5->GetProperties())->Add( pUnique5 );
-	    pUniqueCs->Add( newUniqueConstr5 );
+        // Add unique constraint on identity property. Should be ignored.
+        FdoPtr<FdoDataPropertyDefinition> pUnique5 = FdoDataPropertiesP(pClass2->GetIdentityProperties())->GetItem(0);
+        FdoPtr<FdoUniqueConstraint>  newUniqueConstr5 = FdoUniqueConstraint::Create();
+        FdoPtr<FdoDataPropertyDefinitionCollection>(newUniqueConstr5->GetProperties())->Add( pUnique5 );
+        pUniqueCs->Add( newUniqueConstr5 );
 
-	    pApplyCmd->Execute();
+        pApplyCmd->Execute();
 
-	    pSchemas2 = pDescCmd->Execute();
-	    pSchema2 = pSchemas2->GetItem( GetDefaultSchemaName() );
+        pSchemas2 = pDescCmd->Execute();
+        pSchema2 = pSchemas2->GetItem( GetDefaultSchemaName() );
         pClasses2 = pSchema2->GetClasses();
-	    pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
-	    pUniqueCs = pClass2->GetUniqueConstraints();
+        pClass2 = pClasses2->GetItem( CLASS_NAME_BASE );
+        pUniqueCs = pClass2->GetUniqueConstraints();
         
         // Check results
         for ( int i = 0; i < pUniqueCs->GetCount(); i++ ) {
@@ -2315,8 +2314,8 @@ void TestCommonConstraints::UpdateCheckConstraints( Context& context )
                 // Getting "String or binary data would be truncated" error.
                 FdoString*              newValue = L"semiclosed";
                 FdoPtr<FdoDataValue>    newVal = FdoDataValue::Create( newValue );
-				FdoString*				newValue2 = L"'enclosed'";
-				FdoPtr<FdoDataValue>    newVal2 = FdoDataValue::Create( newValue2 );
+                FdoString*                newValue2 = L"'enclosed'";
+                FdoPtr<FdoDataValue>    newVal2 = FdoDataValue::Create( newValue2 );
                
                 FdoInt32 i;
                 for ( i = 0; i < pList->GetCount(); i++ ) 
@@ -3884,16 +3883,16 @@ FdoInt32 TestCommonConstraints::GetNextFeatId( FdoIConnection* connection, FdoSt
     return nextFeatId; 
 }
 
-FdoStringP	TestCommonConstraints::FixDatetimeFormat( FdoDataValue*  val )
+FdoStringP    TestCommonConstraints::FixDatetimeFormat( FdoDataValue*  val )
 {
-	FdoStringP	val2 = val->ToString();
+    FdoStringP    val2 = val->ToString();
 
-	val2 = val2.Replace(L"'", L"");
-	val2 = val2.Replace(L"TIMESTAMP ", L"");
-	val2 = val2.Replace(L" ", L"-");
-	val2 = val2.Replace(L":", L"-");
+    val2 = val2.Replace(L"'", L"");
+    val2 = val2.Replace(L"TIMESTAMP ", L"");
+    val2 = val2.Replace(L" ", L"-");
+    val2 = val2.Replace(L":", L"-");
    
-	return val2;
+    return val2;
 }
 
 TestCommonConstraints::Context::Context( FdoInt32 ltMethodIn ) 

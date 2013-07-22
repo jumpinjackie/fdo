@@ -24,12 +24,12 @@
 
 void TestCommonFeatureCommands::duplicateComputedIdTest (FdoIConnection* conn, FdoString* className, FdoString* propName)
 {
-	FdoPtr<FdoIFeatureReader> myReader;
+    FdoPtr<FdoIFeatureReader> myReader;
     wchar_t buff[256];
 
     try
     {
-    	FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );
+        FdoPtr<FdoISelect> selCmd = (FdoISelect*)conn->CreateCommand( FdoCommandType_Select );
         selCmd->SetFeatureClassName(className);
         FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"(%ls*2) AS %ls", propName, propName);  // same name as real property/column!
         FdoPtr<FdoComputedIdentifier> cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(buff);
@@ -54,7 +54,7 @@ void TestCommonFeatureCommands::duplicateComputedIdTest (FdoIConnection* conn, F
 
     try
     {
-    	FdoPtr<FdoISelectAggregates> selAggrCmd = (FdoISelectAggregates*)conn->CreateCommand( FdoCommandType_SelectAggregates );
+        FdoPtr<FdoISelectAggregates> selAggrCmd = (FdoISelectAggregates*)conn->CreateCommand( FdoCommandType_SelectAggregates );
         selAggrCmd->SetFeatureClassName(className);
         FdoCommonOSUtil::swprintf(buff, ELEMENTS(buff), L"(%ls*2) AS %ls", propName, propName);  // same name as real property/column!
         FdoPtr<FdoComputedIdentifier> cmpId = (FdoComputedIdentifier*)FdoExpression::Parse(buff);
@@ -83,8 +83,8 @@ void TestCommonFeatureCommands::duplicateComputedIdTest (FdoIConnection* conn, F
 
 void TestCommonFeatureCommands::secondComputedIdTest (FdoIConnection* conn, FdoString* className, FdoString* numericPropName)
 {
-	FdoPtr<FdoIFeatureReader>myReader;
-	FdoPtr<FdoISelect>selCmd;
+    FdoPtr<FdoIFeatureReader>myReader;
+    FdoPtr<FdoISelect>selCmd;
 
     if( conn != NULL )
     {

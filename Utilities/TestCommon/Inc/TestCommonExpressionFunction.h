@@ -77,7 +77,7 @@ class TestCommonExpressionFunction : public CppUnit::TestCase
     // =========================================
     // ====  GEOMTRY FUNCTION UNIT TESTS    ====
     // =========================================
-	// CPPUNIT_TEST(TestXYZMFunction);
+    // CPPUNIT_TEST(TestXYZMFunction);
     // =========================================
     // ====    MATH FUNCTION UNIT TESTS     ====
     // =========================================
@@ -126,7 +126,7 @@ class TestCommonExpressionFunction : public CppUnit::TestCase
     // =========================================
     // CPPUNIT_TEST(NumberToStringComparison);
     // CPPUNIT_TEST(RoundNumberToStringComparison);
-	// =========================================
+    // =========================================
     // ====       RUN ALL UNIT TESTS        ====
     // =========================================
     CPPUNIT_TEST( RunAllExpFctTests );
@@ -166,7 +166,7 @@ protected:
     //      The function establishes the connection to the data store used in
     //      the executed test suites.
 
-	virtual void Connect ();
+    virtual void Connect ();
 
     //  SetupUnitTestEnvironment:
     //      The function controls the establishing of the test environment in

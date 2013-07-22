@@ -97,7 +97,7 @@ FdoPtr<FdoIInsert>  TestCommonMiscUtil::InsertObject( FdoIConnection* connection
         propName = va_arg(arguments,FdoString*);
     }
         
-	FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
+    FdoPtr<FdoIFeatureReader> rdr = insertCommand->Execute();
 
     va_end(arguments);
 
@@ -145,7 +145,7 @@ FdoPtr<FdoLiteralValue> TestCommonMiscUtil::ArgsToLiteral( va_list& arguments )
 
     switch ( dataType ) {
     case FdoDataType_Boolean:
-		boolArg = va_arg(arguments,int) == 1 ? true : false;
+        boolArg = va_arg(arguments,int) == 1 ? true : false;
         literalValue = FdoDataValue::Create(boolArg);
         break;
     case FdoDataType_Byte:
@@ -301,19 +301,19 @@ double TestCommonMiscUtil::GetTime_S(void)
  
 #else
 
-	struct timeval			this_time;
-	static struct timezone	time_zone = { 0, 0 };
-	double					sec, micro, time;
+    struct timeval            this_time;
+    static struct timezone    time_zone = { 0, 0 };
+    double                    sec, micro, time;
 
 
-	if (gettimeofday(&this_time, &time_zone) == -1)
-		return (double) 0.0;
+    if (gettimeofday(&this_time, &time_zone) == -1)
+        return (double) 0.0;
 
-	micro = (double) ((double) this_time.tv_usec / (double) 1000000.0);
-	sec = (double) this_time.tv_sec;
-	time = micro + sec;
-	return time;
-	
+    micro = (double) ((double) this_time.tv_usec / (double) 1000000.0);
+    sec = (double) this_time.tv_sec;
+    time = micro + sec;
+    return time;
+    
 #endif 
 }
 
@@ -420,7 +420,7 @@ FdoStringP TestCommonMiscUtil::Trim( FdoStringP in )
     FdoStringP out = in;
     wchar_t* outStr = (wchar_t*) (FdoString*) out;
 
-    int posn;
+    size_t posn;
     for ( posn = (wcslen(outStr) - 1); (posn >= 0) && (outStr[posn] == ' '); posn-- );
 
     out = out.Mid(0, posn + 1);

@@ -1300,7 +1300,7 @@ void TestCommonExpressionFunction::CheckXYZMCapabilities()
       this_func = (FdoFunctionDefinition *) func_col->FindItem(L"X");
       if (this_func == NULL)
           func_check_error = true;
-	  
+      
       this_func = (FdoFunctionDefinition *) func_col->FindItem(L"Y");
       if (this_func == NULL)
           func_check_error = true;
@@ -2354,7 +2354,7 @@ void TestCommonExpressionFunction::CheckXYZMValue (
 
       }  //  else ...
 
-	}  //  while ...
+    }  //  while ...
 
     // Close the reader.
 
