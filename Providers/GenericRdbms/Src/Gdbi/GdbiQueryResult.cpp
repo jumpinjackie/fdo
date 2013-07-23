@@ -28,7 +28,7 @@
 #ifdef HAVE_GEOM_INFO_TYPE
 #include <inc/geometry/fgf/AllGeometry_c.h>
 #endif
-#ifndef _LLONG_MAX
+#ifndef LLONG_MAX
 #   define LLONG_MAX    9223372036854775807LL
 #endif
 #ifndef LLONG_MIN
