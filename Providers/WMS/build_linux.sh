@@ -168,6 +168,17 @@ fi
 fi
 fi
 
+if [[ "$CPPFLAGS" != *"-Wno-write-strings"* ]]; then
+CPPFLAGS="$CPPFLAGS -Wno-write-strings"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
+
+if [[ "$CPPFLAGS" != *"-Wno-deprecated"* ]]; then
+CPPFLAGS="$CPPFLAGS -Wno-deprecated"
+echo "Exporting CPPFLAGS: "$CPPFLAGS""
+export CPPFLAGS
+fi
 
 ### start build ###
 if test "$TYPECONFIGURE" == configure ; then
