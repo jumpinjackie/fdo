@@ -127,7 +127,7 @@ echo %MSACTION% %TYPEBUILD% SQLite provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\SQLiteProvider%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SQLiteProvider%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild SQLiteProvider%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist SQLiteProvider%VCBEXTENSION%_temp.sln del /Q /F SQLiteProvider%VCBEXTENSION%_temp.sln
 popd

@@ -135,7 +135,7 @@ if "%TYPEACTION%"=="install" goto install_files_sqlspatial
 echo %MSACTION% %TYPEBUILD% SQLServer Spatial Provider DLLs
 SET FDOACTIVEBUILD=%cd%\SQLServerSpatial%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild SQLServerSpatial%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild SQLServerSpatial%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist SQLServerSpatial%VCBEXTENSION%_temp.sln del /Q /F SQLServerSpatial%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error

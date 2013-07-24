@@ -132,7 +132,7 @@ echo %MSACTION% %TYPEBUILD% GdalFile provider dlls
 pushd Src
 SET FDOACTIVEBUILD=%cd%\RFP%VCBEXTENSION%
 cscript //job:prepare ../../../preparebuilds.wsf
-msbuild RFP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild RFP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist RFP%VCBEXTENSION%_temp.sln del /Q /F RFP%VCBEXTENSION%_temp.sln
 popd

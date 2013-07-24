@@ -138,7 +138,7 @@ if "%TYPEACTION%"=="install" goto install_files
 echo %MSACTION% %TYPEBUILD% PostgreSQL Provider DLLs
 SET FDOACTIVEBUILD=%cd%\PostGIS%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild PostGIS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild PostGIS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist PostGIS%VCBEXTENSION%_temp.sln del /Q /F PostGIS%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error

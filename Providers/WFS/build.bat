@@ -133,7 +133,7 @@ echo %MSACTION% %TYPEBUILD% WFS provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\WFSOS%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild WFSOS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild WFSOS%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist WFSOS%VCBEXTENSION%_temp.sln del /Q /F WFSOS%VCBEXTENSION%_temp.sln
 popd

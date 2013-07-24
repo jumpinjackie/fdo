@@ -140,7 +140,7 @@ if "%TYPEACTION%"=="install" goto install_files
 echo %MSACTION% %TYPEBUILD% MySQL provider dlls
 SET FDOACTIVEBUILD=%cd%\MySQL%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild MySQL%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild MySQL%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist MySQL%VCBEXTENSION%_temp.sln del /Q /F MySQL%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error

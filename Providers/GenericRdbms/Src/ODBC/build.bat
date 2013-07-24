@@ -135,7 +135,7 @@ if "%TYPEACTION%"=="install" goto install_files
 echo %MSACTION% %TYPEBUILD% ODBC provider dlls
 SET FDOACTIVEBUILD=%cd%\Odbc%VCBEXTENSION%
 cscript //Nologo //job:prepare ../../preparebuilds.wsf
-msbuild Odbc%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild Odbc%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist Odbc%VCBEXTENSION%_temp.sln del /Q /F Odbc%VCBEXTENSION%_temp.sln
 if "%FDOERROR%"=="1" goto error
