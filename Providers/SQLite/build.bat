@@ -145,8 +145,11 @@ if "%DOCENABLE%"=="skip" goto install_docs
 echo Creating SQLite provider html and chm documentation
 if exist "Docs\HTML\SQLite" rmdir /S /Q "Docs\HTML\SQLite"
 if not exist "Docs\HTML\SQLite" mkdir "Docs\HTML\SQLite"
+copy ..\..\DocResources\geospatial.css Docs\HTML\SQLite
 copy ..\..\DocResources\geospatial.js Docs\HTML\SQLite
 copy ..\..\DocResources\osgeo.css Docs\HTML\SQLite
+if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs\HTML\SQLite
+if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\SQLite
 if exist Docs\SQLite_Provider_API.chm attrib -r Docs\SQLite_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_SQLite
