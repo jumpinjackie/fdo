@@ -158,9 +158,12 @@ xcopy /S /C /Q /R /Y Inc\GdalFile\*.h "%FDOINCPATH%\GdalFile\"
 if "%DOCENABLE%"=="skip" goto install_docs
 echo Creating GDAL provider html and chm documentation
 if exist "Docs\HTML\GDAL" rmdir /S /Q "Docs\HTML\GDAL"
-if not exist "Docs\HTMLGDAL" mkdir "Docs\HTML\GDAL"
+if not exist "Docs\HTML\GDAL" mkdir "Docs\HTML\GDAL"
+copy ..\..\DocResources\geospatial.css Docs\HTML\GDAL
 copy ..\..\DocResources\geospatial.js Docs\HTML\GDAL
 copy ..\..\DocResources\osgeo.css Docs\HTML\GDAL
+if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs\HTML\GDAL
+if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\GDAL
 if exist Docs\GDAL_Provider_API.chm attrib -r Docs\GDAL_Provider_API.chm
 pushd Docs\doc_src
 doxygen Doxyfile_GDAL
