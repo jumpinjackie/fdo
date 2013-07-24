@@ -95,7 +95,7 @@ if "%TYPEACTIONFDO%"=="install" goto install_files
 if "%TYPEACTIONFDO%"=="builddocsonly" goto end
 
 echo %MSACTIONFDO% %TYPEBUILDFDO% Fdo dlls
-msbuild Sample.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform=%TYPEPLATFORMFDO% /nologo /consoleloggerparameters:NoSummary
+msbuild Sample.sln /t:%MSACTIONFDO% /p:Configuration=%TYPEBUILDFDO% /p:Platform=%TYPEPLATFORMFDO% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 

@@ -138,7 +138,7 @@ echo %MSACTION% %TYPEBUILD% SHP provider dlls
 SET FDOACTIVEBUILD=%cd%\Src\SHP%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
-msbuild SHP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild SHP%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if exist SHP%VCBEXTENSION%_temp.sln del /Q /F SHP%VCBEXTENSION%_temp.sln
 popd

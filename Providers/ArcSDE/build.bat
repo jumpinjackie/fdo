@@ -143,7 +143,7 @@ SET FDOACTIVEBUILD=%cd%\Src\ArcSDE%VCBEXTENSION%
 cscript //Nologo //job:prepare preparebuilds.wsf
 pushd Src
 
-msbuild ArcSDE%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary
+msbuild ArcSDE%VCBEXTENSION%_temp.sln /t:%MSACTION% /p:Configuration=%ARCSDEVERSIONACTIVE% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 
 SET FDOERROR=%errorlevel%
 if exist ArcSDE%VCBEXTENSION%_temp.sln del /Q /F ArcSDE%VCBEXTENSION%_temp.sln

@@ -80,7 +80,7 @@ if "%TYPEACTIONKMSS%"=="clean" SET MSACTIONKMSS=Clean
 if "%TYPEACTIONKMSS%"=="install" goto install_files_KMSS
 
 echo %MSACTIONKMSS% %TYPEBUILDKMSS% King SQLServer Provider Dlls
-msbuild Src/KingMssProvider%VCBEXTENSION%.sln /t:%MSACTIONKMSS% /p:Configuration=%TYPEBUILDKMSS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary
+msbuild Src/KingMssProvider%VCBEXTENSION%.sln /t:%MSACTIONKMSS% /p:Configuration=%TYPEBUILDKMSS% /p:Platform="Win32" /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTIONKMSS%"=="clean" goto end
