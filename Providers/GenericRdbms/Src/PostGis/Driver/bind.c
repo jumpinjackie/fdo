@@ -40,7 +40,7 @@ int postgis_bind (
     PGconn* postgis = NULL;
     postgis_cursor_def* curs = NULL;
     Oid typeoid = 0;
-    int index = 0;
+    long index = 0;
     int ret = RDBI_GENERIC_ERROR;
 
     if (-1 == context->postgis_current_connect)

@@ -148,8 +148,8 @@ FdoInt32Value* FdoInt32Value::Create(
                 ret = Convert<FdoDecimalValue, FdoInt32Value, FdoDouble, FdoInt32>(
                     src2,
                     src2->GetDecimal(), 
-                    LONG_MIN, 
-                    LONG_MAX, 
+                    INT_MIN, 
+                    INT_MAX, 
                     pow((double)2, (double)31),
                     0.5,
                     nullIfIncompatible, 
@@ -168,8 +168,8 @@ FdoInt32Value* FdoInt32Value::Create(
                 ret = Convert<FdoDoubleValue, FdoInt32Value, FdoDouble, FdoInt32>(
                     src2,
                     src2->GetDouble(), 
-                    LONG_MIN, 
-                    LONG_MAX,
+                    INT_MIN, 
+                    INT_MAX,
                     pow((double)2, (double)31),
                     0.5,
                     nullIfIncompatible, 
@@ -194,8 +194,8 @@ FdoInt32Value* FdoInt32Value::Create(
             // Copy with possible truncation
             ret = Convert<FdoInt32Value, FdoInt64, FdoInt32>( 
                 static_cast<FdoInt64Value*>(src)->GetInt64(), 
-                LONG_MIN, 
-                LONG_MAX, 
+                INT_MIN, 
+                INT_MAX, 
                 nullIfIncompatible, 
                 truncate, 
                 FdoDataTypeMapper::Type2String(FdoDataType_Int32)
@@ -210,8 +210,8 @@ FdoInt32Value* FdoInt32Value::Create(
                 ret = Convert<FdoSingleValue, FdoInt32Value, FdoFloat, FdoInt32>(
                     src2,
                     src2->GetSingle(), 
-                    LONG_MIN, 
-                    LONG_MAX,
+                    INT_MIN, 
+                    INT_MAX,
                     (FdoFloat)pow((double)2, (double)31),
                     (FdoFloat) 0.5,
                     nullIfIncompatible, 

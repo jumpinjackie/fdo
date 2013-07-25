@@ -340,7 +340,7 @@ bool FdoLexFgft::getnumber(bool sign)
         wchar_t *end;
         rnum =  wcstod(str, &end);
 #endif
-        if (rnum < (double)LONG_MAX && rnum > (double)LONG_MIN) 
+        if (rnum < (double)INT_MAX && rnum > (double)INT_MIN) 
 		{
 			try  
 			{

@@ -81,9 +81,9 @@ void CommonTest::testTypes()
 	i16 = 32767;					// SHRT_MAX
 	FDO_CPPUNIT_ASSERT(i16 == 32767);
 
-	FdoInt32	i32 = (-2147483647-1);	// INT_MIN/LONG_MIN
+	FdoInt32	i32 = (-2147483647-1);	// INT_MIN
 	FDO_CPPUNIT_ASSERT(i32 == (-2147483647-1));
-	i32 = 2147483647;					// INT_MAX/LONG_MAX
+	i32 = 2147483647;					// INT_MAX
 	FDO_CPPUNIT_ASSERT(i32 == 2147483647);
 
 	// TODO: byte comparision for big-endian little-endian

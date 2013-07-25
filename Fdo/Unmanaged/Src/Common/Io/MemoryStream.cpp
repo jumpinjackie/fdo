@@ -133,8 +133,8 @@ void FdoIoMemoryStream::Write( FdoIoStream* stream, FdoSize count )
     // Write the data to this internal and its following buffers, until all bytes
     // have been written.
     while ( lCount > 0 ) {
-        // Our buffer array can't have more than LONG_MAX members
-        if ( bufNum >= LONG_MAX )
+        // Our buffer array can't have more than INT_MAX members
+        if ( bufNum >= INT_MAX )
             throw FdoException::Create(
                 FdoException::NLSGetMessage(
                     FDO_NLSID(FDO_34_MEMORYSTREAMOVERFLOW),

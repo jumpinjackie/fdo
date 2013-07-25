@@ -938,7 +938,7 @@ void ArcSDEFilterToSql::ProcessGeometricCondition (FdoIdentifier* fdoPropertyNam
         {
             // NOTE: ArcSDE's buffer-generation API requires we pass a "maximum number of points" to the buffer-generation
             //       function.  If the number is too low, the error SE_INVALID_NUM_OF_PTS is returned.
-            //       If we put in something like LONG_MAX, we get the error SE_OUT_OF_CLMEM (out of client memory)
+            //       If we put in something like INT_MAX, we get the error SE_OUT_OF_CLMEM (out of client memory)
             //       since it's trying to allocate the point array to the size we specify.  To work around this strange
             //       behavior, we start by allocating double the original number of points, then keep doubling until we
             //       get success (or out of memory!).

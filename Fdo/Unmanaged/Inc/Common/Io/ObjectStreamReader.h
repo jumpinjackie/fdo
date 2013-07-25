@@ -226,13 +226,13 @@ public:
             byteRemaining = mStream->GetLength() - mStream->GetIndex();
             remaining = byteRemaining / sizeof(T);
 
-            if ( remaining > LONG_MAX ) 
+            if ( remaining > INT_MAX ) 
 				throw FdoException::Create(
 					FdoException::NLSGetMessage(
 						FDO_NLSID(FDO_46_REMAININGSTREAMSIZE),
 						"%1$s: Cannot read remainder of stream, there are more than %$2d items remaining.",
 						"FdoIoObjectStreamReader::ReadNext(FdoArray<T>,FdoInt32,FdoInt32)",
-						LONG_MAX
+						INT_MAX
 					)
 				);
 

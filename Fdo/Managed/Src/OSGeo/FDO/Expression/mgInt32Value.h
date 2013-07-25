@@ -94,8 +94,8 @@ public:
     ///         false - throw an exception
     /// \param truncate 
     /// Input determines what to do if source value is outside the FdoInt32 range
-    //  ( LONG_MIN to LONG_MAX ):
-    ///     true - convert values less than LONG_MIN to LONG_MIN, convert values greater than LONG_MAX to LONG_MAX
+    ///  ( INT_MIN to INT_MAX ):
+    ///     true - convert values less than INT_MIN to INT_MIN, convert values greater than INT_MAX to INT_MAX
     ///     false - behaviour depends on nullIfIncompatible:
     ///         true - return NULL.
     ///         false - throw an exception
