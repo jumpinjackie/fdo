@@ -80,7 +80,7 @@ static FdoString* DATETIME_RANGE[2]       = { L"2005-05-15-00-02-01", L"2006-02-
 static FdoByte    BYTE_LIST[3]            = {1, 2, 3};
 static FdoString* DATETIME_LIST[3]        = {L"2003-10-31-03-02-01", L"2005-10-31-03-02-01", L"2005-10-31-15-02-01"};
 static FdoDouble  DOUBLE_LIST[3]          = {0.123456789012345678901234567890, 100, 0.123456789012345678901234567890};
-static FdoInt32   INT32_LIST[5]           = {10, 20, 30, LONG_MIN, LONG_MAX};
+static FdoInt32   INT32_LIST[5]           = {10, 20, 30, INT_MIN, INT_MAX};
 static FdoInt64   INT64_LIST[4]           = {LLONG_MIN, 52, LLONG_MAX - 1, LLONG_MAX};
 static FdoFloat   SINGLE_LIST[3]          = { (float) 0.1234567, (float) 100, (float) 1.12345678};
 static FdoString* STRING_LIST[]           = { L"op'eN", L"close" };
@@ -88,7 +88,7 @@ static wchar_t    LARGE_STRING_LIST[395][20];
 
 static FdoByte    UPD_BYTE_RANGE[2]       = {11, 23};
 static FdoInt32   UPD_INT32_RANGE[2]      = {10, 2001};
-static FdoInt32   UPD_INT32_LIST[6]       = {10, 20, 30, LONG_MIN, LONG_MAX, 77};
+static FdoInt32   UPD_INT32_LIST[6]       = {10, 20, 30, INT_MIN, INT_MAX, 77};
 static FdoString* UPD_STRING_LIST[]       = { L"semiclosed", L"close", L"'enclosed'" };
 
 
@@ -2993,11 +2993,11 @@ void TestCommonConstraints::RestrictCheckConstraints( Context& context )
                 
                 FdoPtr<FdoDataValue> val = constrR->GetMinValue();
                 FdoInt32Value* int32Val = (FdoInt32Value*) val.p;
-                int32Val->SetInt32( LONG_MIN + abs(idx) );
+                int32Val->SetInt32( INT_MIN + abs(idx) );
                 
                 val = constrR->GetMaxValue();
                 int32Val = (FdoInt32Value*) val.p;
-                int32Val->SetInt32( LONG_MAX - abs(idx) );
+                int32Val->SetInt32( INT_MAX - abs(idx) );
                 
                 dataProp->SetValueConstraint(constr);
             }

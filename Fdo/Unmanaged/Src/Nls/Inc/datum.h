@@ -71,10 +71,10 @@ typedef UInt64          u_longlong_t;
 typedef unsigned char   u_char;
 
 #ifndef INT32_MIN
-#define INT32_MIN   LONG_MIN
+#define INT32_MIN   INT_MIN
 #endif
 #ifndef INT32_MAX
-#define INT32_MAX   LONG_MAX
+#define INT32_MAX   INT_MAX
 #endif
 
 #ifndef _SIZE_T_DEFINED
@@ -127,11 +127,11 @@ typedef double          Double64;
 #include <stdint.h>
 #else
 #ifndef INT32_MIN
-#define INT32_MIN       LONG_MIN
+#define INT32_MIN       INT_MIN
 #endif 
 
 #ifndef INT32_MAX
-#define INT32_MAX       LONG_MAX
+#define INT32_MAX       INT_MAX
 #endif 
 #endif /* LINUX */
 

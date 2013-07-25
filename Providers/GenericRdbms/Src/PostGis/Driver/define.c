@@ -44,7 +44,7 @@ int postgis_define (
     PGSQL_BIND* defines = NULL;
     int nfields = 0;
     Oid typeoid = 0;
-    int index = 0;
+    long index = 0;
     int ret = RDBI_GENERIC_ERROR;
 
     assert(NULL != context);
