@@ -54,13 +54,7 @@ protected:
     virtual void TestRestrictCheckConstraints(void) {};
     virtual void TestCheckConstraintsData(void) {};
     virtual void TestDateTimeConstraints(void) {};
-
-    // TODO - Fix UnitTests!
-    // HACK: Disable hanging unit test on linux 64bit until further investigation can determine exact cause -- EXPRESSION_21_VALUETRUNCATED?
-#ifndef _WIN32
     virtual void TestBaseReferences(void) {};
-#endif
-
 };
 
 #endif    //CONSTRAINTSTEST_H
