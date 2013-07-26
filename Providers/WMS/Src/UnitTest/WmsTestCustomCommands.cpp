@@ -105,7 +105,7 @@ void WmsTestCustomCommands::testSpacialFeatureClassName ()
         
         //test for get styles command
         FdoPtr<FdoWmsIGetFeatureClassStyles> cmdGLS = static_cast<FdoWmsIGetFeatureClassStyles *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassStyles));
-        cmdGLS->SetFeatureClassName(L"Foundation barrierl_1m"); // layer name is Foundation.barrierl_1m
+        cmdGLS->SetFeatureClassName(L"Foundation coastl_1m"); // layer name is Foundation.barrierl_1m
         FdoStringsP styles = cmdGLS->Execute();
         CPPUNIT_ASSERT(styles->GetCount() == 1);
 #ifdef _DEBUG
@@ -116,7 +116,7 @@ void WmsTestCustomCommands::testSpacialFeatureClassName ()
 #endif
         //test for get CRS command
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
-        cmdGLCRS->SetFeatureClassName(L"Foundation barrierl_1m");//layer name is Foundation.barrierl_1m
+        cmdGLCRS->SetFeatureClassName(L"Foundation coastl_1m");//layer name is Foundation.barrierl_1m
         FdoStringsP crsNames = cmdGLCRS->Execute();
         CPPUNIT_ASSERT(crsNames->GetCount() == 1);
 #ifdef _DEBUG

@@ -34,8 +34,10 @@ class WmsTestSelect : public WmsTests
 	CPPUNIT_TEST (testServer1);
 	CPPUNIT_TEST (testNestedClip);
 	CPPUNIT_TEST (testGetBounds);
-	// disabled because the server cannot connect
-	//CPPUNIT_TEST (testHttpBasicAuthentification);
+#if 0
+    // NOTE: disabled because the server cannot connect
+	CPPUNIT_TEST (testHttpBasicAuthentification);
+#endif
 #endif
 
     CPPUNIT_TEST (testURLEcoding);
@@ -45,20 +47,25 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testResample);
     CPPUNIT_TEST (testClip);
     CPPUNIT_TEST (testDefaultHeight);
-    CPPUNIT_TEST (testNASAServer);      // Todo: might need to replace server
-    CPPUNIT_TEST (testNASAServer2);     // Todo: might need to replace server
-    // disabled because the server cannot connect
-    //CPPUNIT_TEST (testIntegraphWorld);
+    CPPUNIT_TEST (testNASAServer);			// TODO: might need to replace server
+    CPPUNIT_TEST (testNASAServer2);			// TODO: might need to replace server
     CPPUNIT_TEST (testCubeServer);
-    CPPUNIT_TEST (testMultiLayers);     // Todo: might need to replace server
+    CPPUNIT_TEST (testMultiLayers);			// TODO: might need to replace server
+
+#if 0
+    // NOTE: disabled because the server cannot connect
+    CPPUNIT_TEST (testDefect786029);
+    CPPUNIT_TEST (testIntegraphWorld);
     CPPUNIT_TEST (testTerraService);
-    //CPPUNIT_TEST (testDefect786029);
-    // disabled because the server cannot connect
-    //CPPUNIT_TEST (testEusoils);
-    //CPPUNIT_TEST (testEusoilsPesera);
-    //CPPUNIT_TEST (testEusoilsMeusis);
-    CPPUNIT_TEST (testSelectSpatialExtents);
+    CPPUNIT_TEST (testEusoils);
+    CPPUNIT_TEST (testEusoilsPesera);
+    CPPUNIT_TEST (testEusoilsMeusis);
     CPPUNIT_TEST (testTerraServiceThumbnail);
+    CPPUNIT_TEST (testLibcwms);
+    CPPUNIT_TEST (testLinuxgurrl); 
+#endif
+
+    CPPUNIT_TEST (testSelectSpatialExtents);
     CPPUNIT_TEST (testNS_TOPO_1000);
     CPPUNIT_TEST (testNS_CRS);
     CPPUNIT_TEST (testMapConnect_SDE);
@@ -67,12 +74,9 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);
-    // disabled because the server cannot connect
-    //CPPUNIT_TEST (testLibcwms);
-    CPPUNIT_TEST (testStoboWms);     // Todo: might need to replace server
-    CPPUNIT_TEST (testLinuxgurrl); 
-    CPPUNIT_TEST (testOpenmaps);     // Todo: might need to replace server
-    CPPUNIT_TEST (testquestionmarkend);     // Todo: might need to replace server
+    CPPUNIT_TEST (testStoboWms);			// TODO: might need to replace server
+    CPPUNIT_TEST (testOpenmaps);			// TODO: might need to replace server
+    CPPUNIT_TEST (testquestionmarkend);     // TODO: might need to replace server
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -81,7 +85,7 @@ private:
 
 public:
 	WmsTestSelect(void);
-	~WmsTestSelect(void);
+	virtual ~WmsTestSelect(void);
 
 	void _setUp () {}
 	void _tearDown () {}

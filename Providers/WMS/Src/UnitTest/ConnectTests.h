@@ -30,29 +30,29 @@ class ConnectTests :  public WmsTests
     CPPUNIT_TEST_SUITE (ConnectTests);
     CPPUNIT_TEST (TestConnection1);
     CPPUNIT_TEST (TestConnection2);
-    // disabled because the server cannot connect
-    //CPPUNIT_TEST (TestConnection3);
     CPPUNIT_TEST (TestConnection4);
     CPPUNIT_TEST (TestConnection5);
     CPPUNIT_TEST (TestConnection6);
-    CPPUNIT_TEST (TestConnection7);   // Todo: might need to replace server
+    CPPUNIT_TEST (TestConnection7);		// TODO: might need to replace server
     CPPUNIT_TEST (TestConnection8);    
-    // disabled because the server cannot connect
     CPPUNIT_TEST (TestConnection9);
-    // disabled because the server cannot connect
     CPPUNIT_TEST (TestConnection10);
-    // disabled because the server cannot connect
-    //CPPUNIT_TEST (TestConnection11);
     CPPUNIT_TEST (TestConnection12);
-    CPPUNIT_TEST (TestConnection13);    // Todo: might need to replace server
-    // disabled because the server respond with page not found
-    //CPPUNIT_TEST (TestConnection14);
+    CPPUNIT_TEST (TestConnection13);    // TODO: might need to replace server
 
-    // Currently the provider does not support "transfer" timeout. And connecting
-    // to this server always cause timeout.
-    // CPPUNIT_TEST (TestConnectionTimeout);
-    // Disabled because the propxy server is unreachable for the testing machine.
-    //CPPUNIT_TEST(TestConnectionWithProxy);
+#if 0
+    // NOTE: disabled because the server cannot connect
+    CPPUNIT_TEST (TestConnection3);
+    CPPUNIT_TEST (TestConnection11);
+    // NOTE: disabled because the server respond with page not found
+    CPPUNIT_TEST (TestConnection14);
+    // NOTE: Currently the provider does not support "transfer" timeout. 
+    // And connecting to this server always cause timeout.
+    CPPUNIT_TEST (TestConnectionTimeout);
+    // NOTE: Disabled because the propxy server is unreachable for the testing machine.
+    CPPUNIT_TEST(TestConnectionWithProxy);
+#endif
+
     CPPUNIT_TEST_SUITE_END ();
 
 public:
