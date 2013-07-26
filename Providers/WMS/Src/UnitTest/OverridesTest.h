@@ -28,22 +28,20 @@
 class OverridesTest : public WmsTests
 {
   CPPUNIT_TEST_SUITE( OverridesTest );
+
   CPPUNIT_TEST( TestCreateSchemaOverrides );
   CPPUNIT_TEST( TestSimple );
   CPPUNIT_TEST( TestImageFormatBackwardsComp);
   CPPUNIT_TEST( TestConflictImageFormatConfig);
   CPPUNIT_TEST( TestDefaultImageFormat);
   CPPUNIT_TEST( TestSetConfiguration );
-
-//#ifdef _FDO_RUN_INTERNAL_TEST
-  CPPUNIT_TEST( TestSetConfiguration2);    // Todo: might need to replace server
-//#endif
-  CPPUNIT_TEST( TestSetConfiguration3);    // Todo: might need to replace server
-
+  CPPUNIT_TEST( TestSetConfiguration2);			// TODO: might need to replace server
+  CPPUNIT_TEST( TestSetConfiguration3);			// TODO: might need to replace server
   CPPUNIT_TEST( TestRequestSpcialImageFormat);
   CPPUNIT_TEST( TestRequestUnsupportedImage);
   CPPUNIT_TEST( TestNoDefaultDataModel ); 
   CPPUNIT_TEST( TestQualifiedName );
+
   CPPUNIT_TEST_SUITE_END();
 
 public:

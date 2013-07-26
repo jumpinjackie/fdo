@@ -56,7 +56,7 @@ void ConnectTests::TestConnection(FdoString* connString, bool expectedExc)
 
 void ConnectTests::TestConnection1 ()
 {
-    TestConnection(L"FeatureServer=http://www.terraservice.net/ogccapabilities.ashx");
+    TestConnection(L"FeatureServer=http://mapconnect.ga.gov.au/wmsconnector/com.esri.wms.Esrimap?Servicename=GDA94_MapConnect_SDE_250kmap_WMS");
 }
 
 void ConnectTests::TestConnection2 ()
