@@ -107,7 +107,7 @@
       Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll .\
       Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal19.dll .\
+      Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal110.dll .\
 
       Copy  ..\..\..\..\..\..\Utilities\OWS\bin\win32\debug\OWS.dll .\
 
