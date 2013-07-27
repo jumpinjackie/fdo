@@ -96,7 +96,7 @@ if test "$FDOGDAL" == ""; then
 	
 fi
 
-if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal-1.10"; then 
+if test "$FDOGDAL" == "$FDOTHIRDPARTY/gdal"; then 
 
     mkdir -p lib
     mkdir -p include
