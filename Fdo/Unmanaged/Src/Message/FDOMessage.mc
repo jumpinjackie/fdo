@@ -2628,7 +2628,7 @@ Access to file '%1$ls' was denied.
 MessageId=9095
 SymbolicName=FDO_95_FILE_IO_ERROR
 Language=English
-File '%1$ls' I/O error in context '%2$ls': %3$ls
+File '%1$ls' I/O error in context '%2$ls': '%3$ls'.
 .
 MessageId=9096
 SymbolicName=FDO_96_READ_ONLY
@@ -3149,5 +3149,10 @@ MessageId=9199
 SymbolicName=FDO_192_SI_NUMBER_SUBPARTS_ERROR
 Language=English
 Number of feature subparts too large for selected mode.
+.
+MessageId=9200
+SymbolicName=FDO_193_FILE_IO_ERROR_S
+Language=English
+File '%1$ls' I/O error in context '%2$ls': '%3$s'.
 .
 
