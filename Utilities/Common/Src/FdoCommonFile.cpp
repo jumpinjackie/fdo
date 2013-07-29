@@ -596,15 +596,12 @@ FdoException* FdoCommonFile::LastErrorToException (const wchar_t* context, const
 
 #else // _WIN32
 
-    char message[2048];
-    wchar_t* msg;
-
     if (0 != errno)
     {
-        strerror_r (errno, message, sizeof (message));
-        multibyte_to_wide (msg, message);
+        char message[4098];
+        char* errormsg = strerror_r (errno, message, sizeof (message));
         // File '%1$s' I/O error in context '%2$s': %3$s
-        ret = FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID(FDO_95_FILE_IO_ERROR), FileName (), context, message));
+        ret = FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID(FDO_193_FILE_IO_ERROR_S), FileName (), context, errormsg ? errormsg : "<Unknown Error>"));
     }
     else // Error occured reading file '%1$ls'.
         ret = FdoException::Create (FdoException::NLSGetMessage (FDO_NLSID(FDO_185_READ_FILE_ERROR), (!fileName) ? FileName() : fileName));
