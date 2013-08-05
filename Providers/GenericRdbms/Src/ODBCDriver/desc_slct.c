@@ -160,6 +160,8 @@ int local_odbcdr_desc_slct(
 	rdbi_status = RDBI_SUCCESS;
 	*null_ok = odbc_nullable; 
 
+    SQLULEN double_precision;
+
 	switch(odbc_type) {
 		case SQL_CHAR :
             if (odbc_precision == 1 ) {
@@ -217,14 +219,29 @@ int local_odbcdr_desc_slct(
             break;
 		case SQL_FLOAT:
         case SQL_REAL:
+            // Default initialization for double precision not Oracle
+            double_precision = 53;
+
+            odbcdr_get_curr_conn( context, &connData );
+            if(ODBCDriverType_OracleNative == connData->driver_type ||
+                ODBCDriverType_OracleNonNative == connData->driver_type)
+            {
+                /*
+                 Oracles NUMBER and FLOAT column types have double precision
+                 So they have to be handled like this:
+                 NUMBER prec = 38
+                 FLOAT prec = 19
+                */
+                double_precision = 19;
+            }
             /* 
              * Fixed precision and scale numeric data from -10^38 +1 through 10^38 1. [prec = 24]
              * Double precision is a float [prec = 53]
              * Float is float [prec = 53]
              * Real is a float [prec = 24]
              */
-            *rdbi_type =  (odbc_precision >= 53)? RDBI_DOUBLE : RDBI_FLOAT;
-            *binary_size = (odbc_precision >= 53)? sizeof(double) : sizeof(float);
+            *rdbi_type =  (odbc_precision >= double_precision)? RDBI_DOUBLE : RDBI_FLOAT;
+            *binary_size = (odbc_precision >= double_precision)? sizeof(double) : sizeof(float);
             break;
 		case SQL_INTEGER:
 			*rdbi_type	= RDBI_INT;

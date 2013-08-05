@@ -67,10 +67,12 @@ class OdbcOracleFdoUpdateTest : public OdbcBaseFdoUpdateTest
     CPPUNIT_TEST( updateCities );
     CPPUNIT_TEST( updateTable1 );
     CPPUNIT_TEST( updateNonDblGeom );
+    CPPUNIT_TEST( updateNonDblGeomBinary );
     CPPUNIT_TEST_SUITE_END ();
 
 public:
     OdbcOracleFdoUpdateTest(void)   { this->mSetup.SetTypeDB(DataBaseType_Oracle); }
+    void updateNonDblGeomBinary();
     virtual void set_provider()     { UnitTestUtil::SetProvider( "OdbcOracle" ); }
 };
 
