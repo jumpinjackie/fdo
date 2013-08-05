@@ -1,4 +1,0 @@
-OSGeo.FDO.dll
-OSGeo.FDO.Common.dll
-OSGeo.FDO.Geometry.dll
-OSGeo.FDO.Spatial.dll

@@ -1,3 +1,0 @@
-KingOracleMessage.dll
-KingOracleOverrides.dll
-KingOracleProvider.dll

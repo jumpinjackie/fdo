@@ -1,3 +1,0 @@
-WMSMessage.dll
-WMSOverrides.dll
-WMSProvider.dll

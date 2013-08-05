@@ -1,2 +1,0 @@
-WFSMessage.dll
-WFSProvider.dll

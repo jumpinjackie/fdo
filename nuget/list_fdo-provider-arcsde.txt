@@ -1,4 +1,0 @@
-ArcSDEMessage.dll
-ArcSDEProvider.dll
-ArcSDEProvider91.dll
-ArcSDEProvider92.dll

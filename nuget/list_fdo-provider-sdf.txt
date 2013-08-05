@@ -1,2 +1,0 @@
-SDFMessage.dll
-SDFProvider.dll
