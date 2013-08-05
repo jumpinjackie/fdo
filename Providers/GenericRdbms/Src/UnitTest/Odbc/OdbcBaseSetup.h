@@ -76,6 +76,7 @@ public:
     FdoString * GetClassNameTable6()            { return LikesUC() ? L"TABLE6"  : L"table6"; }
     FdoString * GetClassNameTable7()            { return LikesUC() ? L"TABLE7"  : L"table7"; }
     FdoString * GetClassNameTable8()            { return LikesUC() ? L"TABLE8"  : L"table8"; }
+    FdoString * GetClassNameTable9()            { return LikesUC() ? L"TABLE9"  : L"table9"; }
     FdoString * GetPropertyNameTable1FeatId()   { return LikesUC() ? L"FEATID1" : L"featid1"; }
     FdoString * GetPropertyNameTable1Name()     { return LikesUC() ? L"NAME"    : L"name"; }
 
