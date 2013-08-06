@@ -397,6 +397,28 @@ int OdbcBaseFdoUpdateTest::compareDbl( double num1, double num2 )
     return strcmp( string1, string2 );
 }
 
+
+// Test the correct reading of Oracle BINARY_FLOAT and _DOUBLE values.
+void OdbcOracleFdoUpdateTest::updateNonDblGeomBinary()
+{
+    if (mConnection != NULL) try
+    {
+        UnitTestUtil::Sql2Db(L"delete from table9", static_cast<FdoIConnection *>(mConnection.p));
+        
+        // Table9 has   X as BINARY_FLOAT
+        //              Y as BINARY_DOUBLE
+        //              Z as NUMBER
+        insertNonDblGeomRow( mSetup.GetClassNameTable9(), 1, 123.456789123456, 123.456789123456, 123.456789123456 );
+        
+        // Cast the expected value to float as the value read from the DB will have the same casting
+        vldNonDblGeomRow( mSetup.GetClassNameTable9(), 1, (float) 123.45679, 123.456789123456, 123.456789123456);
+    }
+    catch (FdoException *ex)
+    {
+        TestCommonFail (ex);
+    }
+}
+
 #ifdef _WIN32
 
 void OdbcAccessFdoUpdateTest::updateCities()
@@ -607,26 +629,6 @@ void OdbcExcelFdoUpdateTest::updateTable1()
     }
 }
 
-// Test the correct reading of Oracle BINARY_FLOAT and _DOUBLE values.
-void OdbcOracleFdoUpdateTest::updateNonDblGeomBinary()
-{
-    if (mConnection != NULL) try
-    {
-        UnitTestUtil::Sql2Db(L"delete from table9", static_cast<FdoIConnection *>(mConnection.p));
-        
-        // Table9 has   X as BINARY_FLOAT
-        //              Y as BINARY_DOUBLE
-        //              Z as NUMBER
-        insertNonDblGeomRow( mSetup.GetClassNameTable9(), 1, 123.456789123456, 123.456789123456, 123.456789123456 );
-        
-        // Cast the expected value to float as the value read from the DB will have the same casting
-        vldNonDblGeomRow( mSetup.GetClassNameTable9(), 1, (float) 123.45679, 123.456789123456, 123.456789123456);
-    }
-    catch (FdoException *ex)
-    {
-        TestCommonFail (ex);
-    }
-}
 
 extern OdbcConnectionUtil pOdbcConnectionUtil;
 FdoString* OdbcExcelFdoUpdateTest::GetConnectString() 

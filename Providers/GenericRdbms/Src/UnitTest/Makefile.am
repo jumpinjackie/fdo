@@ -103,8 +103,6 @@ UnitTestMySql_LDADD =  \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c \
-  -lz \
-  -lmysqlclient \
   ./Common/libCommonUnitTests.la \
   ./MySql/libMySqlUnitTests.la  \
   ../MySQL/libFdoRdbmsMySQL.la  \
@@ -141,6 +139,7 @@ UnitTestMySql_LDADD =  \
   -lz
 
 UnitTestMySql_LDFLAGS = \
+  -L/usr/lib$(LIB64) \
   -L/usr/lib$(LIB64)/mysql \
   -L$(FDOMYSQL)/lib$(LIB64)
 
@@ -151,9 +150,6 @@ UnitTestOdbc_LDADD =  \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c \
-  -lz \
-  -lodbc \
-  -lodbcinst \
   ./Common/libCommonUnitTests.la \
   ./Odbc/libOdbcUnitTests.la  \
   ../ODBC/libFdoRdbmsODBC.la  \
@@ -202,8 +198,6 @@ UnitTestPostGis_LDADD =  \
   -lxalan-c \
   -lxalanMsg \
   -lxerces-c \
-  -lz \
-  -lpq \
   -lcrypt \
   ./Common/libCommonUnitTests.la \
   ./PostGis/libPostGisUnitTests.la  \
