@@ -25,6 +25,8 @@
 #endif
 
 #include "float.h"
+#include <new>
+#include <new.h>
 
 #ifdef _MSC_VER
   #define ALGNW __declspec(align(16))
@@ -794,6 +796,18 @@ public:
 
 	void initialize(const rtree* rt, const dbox& db);
 	void clear();
+
+	void* operator new(size_t size)
+	{
+		void* p = _aligned_malloc(size, 16);
+		if(p==0) throw std::bad_alloc();
+		return p;
+	}
+
+	void operator delete(void* p)
+	{
+		_aligned_free(p);
+	}
 
 private:
 #if USE_SSE
