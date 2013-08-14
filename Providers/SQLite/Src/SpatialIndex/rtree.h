@@ -19,8 +19,11 @@
 #define USE_SSE 1
 
 #include "float.h"
+
+#ifdef _WIN32
 #include <new>
 #include <new.h>
+#endif
 
 #ifdef _MSC_VER
   #define ALGNW __declspec(align(16))
@@ -788,7 +791,8 @@ public:
    
     fid_t next();
 
-	void* operator new(size_t size)
+#ifdef _WIN32
+    void* operator new(size_t size)
 	{
 		void* p = _aligned_malloc(size, 16);
 		if(p==0) throw std::bad_alloc();
@@ -799,6 +803,7 @@ public:
 	{
 		_aligned_free(p);
 	}
+#endif
 
 private:
 #if USE_SSE
