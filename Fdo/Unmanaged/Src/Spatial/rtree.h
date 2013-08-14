@@ -25,8 +25,11 @@
 #endif
 
 #include "float.h"
+
+#ifdef _WIN32
 #include <new>
 #include <new.h>
+#endif
 
 #ifdef _MSC_VER
   #define ALGNW __declspec(align(16))
@@ -797,6 +800,7 @@ public:
 	void initialize(const rtree* rt, const dbox& db);
 	void clear();
 
+#ifdef _WIN32
 	void* operator new(size_t size)
 	{
 		void* p = _aligned_malloc(size, 16);
@@ -808,6 +812,7 @@ public:
 	{
 		_aligned_free(p);
 	}
+#endif
 
 private:
 #if USE_SSE
