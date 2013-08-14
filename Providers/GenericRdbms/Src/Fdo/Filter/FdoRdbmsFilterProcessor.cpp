@@ -43,6 +43,8 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor():
  mUseTableAliases( true ),
  mUseNesting( true ),
  mUseGrouping( false ),
+ mFoundTopLevel( false ),
+ mParenthesizeTopLevelOperands( false ),
  mAddNegationBracket( false ),
  mContainsCustomObjects (false)
 {
@@ -60,6 +62,8 @@ FdoRdbmsFilterProcessor::FdoRdbmsFilterProcessor(FdoRdbmsConnection *connection)
  mUseTableAliases( true ),
  mUseNesting( true ),
  mUseGrouping( false ),
+ mFoundTopLevel( false ),
+ mParenthesizeTopLevelOperands( false ),
  mAddNegationBracket( false ),
  mContainsCustomObjects (false)
 {
@@ -775,6 +779,12 @@ void FdoRdbmsFilterProcessor::ProcessGeometryValue(FdoGeometryValue& expr)
 void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOperator& filter)
 {
     bool useGrouping = false;
+    bool isTopLevel = false;
+    if (!mFoundTopLevel)
+    {
+        mFoundTopLevel = true;
+        isTopLevel = true;
+    }
 
     FdoPtr<FdoFilter>leftOperand = filter.GetLeftOperand();
     FdoPtr<FdoFilter>rightOperand = filter.GetRightOperand();
@@ -791,7 +801,7 @@ void FdoRdbmsFilterProcessor::ProcessBinaryLogicalOperator(FdoBinaryLogicalOpera
         AppendString (OPEN_PARENTH, 3);
     if( filter.GetOperation() == FdoBinaryLogicalOperations_And )
     {
-        useGrouping  = mUseGrouping;
+        useGrouping  = mUseGrouping || (isTopLevel && mParenthesizeTopLevelOperands);
         mUseGrouping = false;
         if (useGrouping)
             AppendString (OPEN_PARENTH, 3);
@@ -1240,6 +1250,12 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
         //      consists of a single binary logical operator only.
         bool isSpatialObjectFilter;
 
+        // parenthesizeTopLevelOperands:
+        //      A flag to determine whether to parenthesize the top-level operands. Spatial 
+        //      filter component and the attribute filter components have to be grouped separately
+        //      should both of them be specified and operator is a binary logical operator AND
+        bool parenthesizeTopLevelOperands;
+
         // Constructor.
         FilterAnalyzer() 
         { 
@@ -1251,6 +1267,7 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
             containsUnaryLogicalOperatorNot  = false;
             isSpatialObjectFilter            = false;
             firstBinaryLogicalOperatorFound  = false;
+            parenthesizeTopLevelOperands     = false;
         }  
 
         // Processes a binary logical operator node. Depending on the used
@@ -1287,7 +1304,12 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
             if (isTopBinaryLogicalOperator)
             {
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_And)
+                {
                     isBinaryLogicalOperatorAnd = true;
+                    //#864: Have to parenthesise top-level operands otherwise a FdoFilter that is a combination attribute and spatial filter
+                    //will be incorrectly translated especially if the attribute filter is a chain of OR binary conditions
+                    parenthesizeTopLevelOperands = true;
+                }
                 if (binaryLogicalOperator == FdoBinaryLogicalOperations_Or)
                 {
                     isBinaryLogicalOperatorOr = true;
@@ -1398,13 +1420,17 @@ void FdoRdbmsFilterProcessor::AnalyzeFilter (FdoFilter *filter)
 
     // Initialize the member variables that are set by this routine. The default
     // value should reflect the current behavior.
+    mFoundTopLevel      = false; //Reset on each analysis
     mUseNesting         = true;
     mUseGrouping        = false;
     mAddNegationBracket = false;
+    mParenthesizeTopLevelOperands = false;
 
     // Analyze the filter.
     FilterAnalyzer filterAnalyzer;
     filter->Process(&filterAnalyzer);
+
+    mParenthesizeTopLevelOperands = filterAnalyzer.parenthesizeTopLevelOperands;
 
     // Check the result of the analyzing process and set the corresponding
     // member variables that control the generation of the SQL statement
