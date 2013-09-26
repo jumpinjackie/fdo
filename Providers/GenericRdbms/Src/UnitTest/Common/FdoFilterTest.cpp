@@ -590,9 +590,17 @@ void FdoFilterTest::NestedFilterSQLTest ()
             BuildSingleOperationFilter(1, 10, FdoBinaryLogicalOperations_And);
 
       // Translate the filter into a SQL statement and check whether or not
-      // nesting is used. In this case, no nesting should be present.
-
-      TranslateFilter(filter, false, false, NESTEDFILTERSQLTEST);
+      // nesting is used. In this case, nesting should be present.
+      // The nesting has changed after revision 6959:
+      // #864: Fix incorrect SQL generated for a FdoFilter containing a regular filter and a spatial filter. 
+      //    This submission forces parentheses around the root operands of the generated WHERE clause
+      // old filter ( D.ID = 1 )  AND  ( D.ID = 2 )  AND  ( D.ID = 3 )  AND  ( D.ID = 4 )  AND  ( D.ID = 5 )  AND 
+      //            ( D.ID = 6 )  AND  ( D.ID = 7 )  AND  ( D.ID = 8 )  AND  ( D.ID = 9 )  AND  ( D.ID = 10 ) 
+      // new filter (  ( D.ID = 1 )  AND  ( D.ID = 2 )  AND  ( D.ID = 3 )  AND  ( D.ID = 4 )  AND  ( D.ID = 5 )  AND  
+      //                ( D.ID = 6 )  AND  ( D.ID = 7 )  AND  ( D.ID = 8 )  AND  ( D.ID = 9 )  )  AND  (  ( D.ID = 10 )  )
+      // The new filter is valid for Oracle and Sql Server 
+      // The result will be the same, so we can change the expected nesting
+      TranslateFilter(filter, true, false, NESTEDFILTERSQLTEST);
       printf(" >>> Test succeeded \n");
 
     }  //  try ...
