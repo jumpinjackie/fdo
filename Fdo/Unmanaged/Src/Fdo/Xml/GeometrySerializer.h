@@ -58,6 +58,13 @@ public:
 	/// <returns>Returns nothing</returns>
 	static void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform = NULL);
 
+    /// <summary>Serializes the curve string object to OGC format.</summary>
+	/// <param name="curveString">An instance of the curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	static void SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform = NULL);
+
 	/// <summary>Serializes the polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the polygon.</param>
@@ -78,6 +85,13 @@ public:
     /// <param name="transform">Coordinate system transformation.</param>
 	/// <returns>Returns nothing</returns>
 	static void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform = NULL);
+
+    /// <summary>Serializes the multi curve string object to OGC format.</summary>
+	/// <param name="mcString">An instance of the multi curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	static void SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform = NULL);
 	
 	/// <summary>Serializes the multi polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi polygon type.</param>
@@ -133,6 +147,13 @@ public:
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL) = 0;
 
+    /// <summary>Serializes the curve string object to OGC format.</summary>
+	/// <param name="curveString">An instance of the curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL) = 0;
+
 	/// <summary>Serializes the polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the polygon.</param>
@@ -153,6 +174,13 @@ public:
     /// <param name="transform">Coordinate system transformation.</param>
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL) = 0;
+
+    /// <summary>Serializes the multi curve string object to OGC format.</summary>
+	/// <param name="mcString">An instance of the multi curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL) = 0;
 	
 	/// <summary>Serializes the multi polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi polygon type.</param>
@@ -223,6 +251,13 @@ public:
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
 
+    /// <summary>Serializes the curve string object to OGC format.</summary>
+	/// <param name="curveString">An instance of the curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
+
 	/// <summary>Serializes the polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the polygon.</param>
@@ -243,6 +278,13 @@ public:
     /// <param name="transform">Coordinate system transformation.</param>
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
+
+    /// <summary>Serializes the multi curve string object to OGC format.</summary>
+	/// <param name="mcString">An instance of the multi curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
 	
 	/// <summary>Serializes the multi polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi polygon type.</param>
@@ -316,6 +358,13 @@ public:
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeLinearRing(FdoILinearRing* linearRing, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
 
+    /// <summary>Serializes the curve string object to OGC format.</summary>
+	/// <param name="curveString">An instance of the curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
+
 	/// <summary>Serializes the polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the polygon type.</param>
 	/// <param name="writer">An instance of FdoXmlWriter to serialize the polygon.</param>
@@ -336,6 +385,13 @@ public:
     /// <param name="transform">Coordinate system transformation.</param>
 	/// <returns>Returns nothing</returns>
 	virtual void SerializeMultiLineString(FdoIMultiLineString* mlString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
+
+    /// <summary>Serializes the multi curve string object to OGC format.</summary>
+	/// <param name="mcString">An instance of the multi curve string type.</param>
+	/// <param name="writer">An instance of FdoXmlWriter to serialize the multi line string.</param>
+    /// <param name="transform">Coordinate system transformation.</param>
+	/// <returns>Returns nothing</returns>
+	virtual void SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform = NULL);
 	
 	/// <summary>Serializes the multi polygon object to OGC format.</summary>
 	/// <param name="linearRing">An instance of the multi polygon type.</param>
