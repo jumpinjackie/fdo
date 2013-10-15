@@ -48,6 +48,12 @@ void FdoGeometrySerializer::SerializeLinearRing(FdoILinearRing* linearRing, FdoX
     gmlGeometrySerializer->SerializeLinearRing(linearRing, writer, transform);
 }
 
+void FdoGeometrySerializer::SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform)
+{
+    FdoGMLGeometrySerializerP gmlGeometrySerializer = FdoGMLGeometrySerializer::Create(gmlversion);
+    gmlGeometrySerializer->SerializeCurveString(curveString, writer, transform);
+}
+
 void FdoGeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName, FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform)
 {
     FdoGMLGeometrySerializerP gmlGeometrySerializer = FdoGMLGeometrySerializer::Create(gmlversion);
@@ -64,6 +70,12 @@ void FdoGeometrySerializer::SerializeMultiLineString(FdoIMultiLineString* mlStri
 {
     FdoGMLGeometrySerializerP gmlGeometrySerializer = FdoGMLGeometrySerializer::Create(gmlversion);
     gmlGeometrySerializer->SerializeMultiLineString(mlString, writer, transform);
+}
+
+void FdoGeometrySerializer::SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer,FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform)
+{
+    FdoGMLGeometrySerializerP gmlGeometrySerializer = FdoGMLGeometrySerializer::Create(gmlversion);
+    gmlGeometrySerializer->SerializeMultiCurveString(mcString, writer, transform);
 }
 
 void FdoGeometrySerializer::SerializeMultiPolygon(FdoIMultiPolygon* mPolygon, FdoXmlWriter* writer, FdoString* srsName, FdoGmlVersion gmlversion, FdoCoordinateSystemTransform *transform)
@@ -230,6 +242,11 @@ void FdoGML212GeometrySerializer::SerializeLinearRing(FdoILinearRing* linearRing
     writer->WriteEndElement();
 }
 
+void FdoGML212GeometrySerializer::SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform)
+{
+    throw FdoException::Create(L"Unsupported geometry types");
+}
+
 void FdoGML212GeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName, FdoCoordinateSystemTransform *transform)
 {
     writer->WriteStartElement(L"gml:Polygon");
@@ -284,6 +301,11 @@ void FdoGML212GeometrySerializer::SerializeMultiLineString(FdoIMultiLineString* 
     }
 
     writer->WriteEndElement();
+}
+
+void FdoGML212GeometrySerializer::SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform)
+{
+    throw FdoException::Create(L"Unsupported geometry types");
 }
 
 void FdoGML212GeometrySerializer::SerializeMultiPolygon(FdoIMultiPolygon* mPolygon, FdoXmlWriter* writer, FdoString* srsName, FdoCoordinateSystemTransform *transform)
@@ -353,10 +375,14 @@ void FdoGML311GeometrySerializer::SerializeGeometry(FdoIGeometry* geometry, FdoX
     case FdoGeometryType_MultiGeometry:
         SerializeMultiGeometry((FdoIMultiGeometry*)geometry, writer, srsName, transform);
         break;
-
     case FdoGeometryType_CurveString:
-    case FdoGeometryType_CurvePolygon:
+        SerializeCurveString((FdoICurveString*)geometry, writer, transform);
+        break;
     case FdoGeometryType_MultiCurveString:
+        SerializeMultiCurveString((FdoIMultiCurveString*)geometry, writer, transform);
+        break;
+
+    case FdoGeometryType_CurvePolygon:
     case FdoGeometryType_MultiCurvePolygon:
         // TODO: what to do?
         throw FdoException::Create(L"Unsupported geometry types");
@@ -457,6 +483,41 @@ void FdoGML311GeometrySerializer::SerializeLinearRing(FdoILinearRing* linearRing
     writer->WriteEndElement();
 }
 
+void FdoGML311GeometrySerializer::SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform)
+{
+    writer->WriteStartElement(L"gml:Curve"); // Write gml:Curve instead of gml:LineString elements. 
+    writer->WriteStartElement(L"gml:segments");
+    writer->WriteStartElement(L"gml:ArcString");
+    writer->WriteStartElement(L"gml:posList"); //"coordinates" is deprecated with GML version 3.1.1. Use "posList" instead.
+
+    FdoInt32 cnt = curveString->GetCount();
+    // The coordinates are separated by a blank(" ").
+    if (cnt > 0)
+    {
+        FdoPtr<FdoICurveSegmentAbstract> curve = curveString->GetItem(0);
+        FdoPtr<FdoIDirectPosition> startPos = curve->GetStartPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(startPos, transform));
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoIDirectPosition> endPos = curve->GetEndPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(endPos, transform));
+    }
+    for (FdoInt32 i=1; i<cnt; i++)
+    {
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoICurveSegmentAbstract> curve = curveString->GetItem(i);
+        FdoPtr<FdoIDirectPosition> startPos = curve->GetStartPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(startPos, transform));
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoIDirectPosition> endPos = curve->GetEndPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(endPos, transform));
+    }
+
+    writer->WriteEndElement();
+    writer->WriteEndElement();
+    writer->WriteEndElement();
+    writer->WriteEndElement();
+}
+
 void FdoGML311GeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName, FdoCoordinateSystemTransform *transform)
 {
     writer->WriteStartElement(L"gml:Surface"); //Write gml:Surface instead of gml:Polygon elements. 
@@ -513,6 +574,23 @@ void FdoGML311GeometrySerializer::SerializeMultiLineString(FdoIMultiLineString* 
 
         writer->WriteStartElement(L"gml:curveMember");
         SerializeLineString(lString, writer, transform);
+        writer->WriteEndElement();
+    }
+
+    writer->WriteEndElement();
+}
+
+void FdoGML311GeometrySerializer::SerializeMultiCurveString(FdoIMultiCurveString* mcString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform)
+{
+    writer->WriteStartElement(L"gml:MultiCurve"); //Write gml:MultiCurve instead of gml:MultiLineString. 
+
+    FdoInt32 cntCurveString = mcString->GetCount();
+    for (FdoInt32 i=0; i<cntCurveString; i++)
+    {
+        FdoPtr<FdoICurveString> cString = mcString->GetItem(i);
+
+        writer->WriteStartElement(L"gml:curveMember");
+        SerializeCurveString(cString, writer, transform);
         writer->WriteEndElement();
     }
 
