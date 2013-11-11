@@ -176,6 +176,9 @@
     <ClInclude Include="Inc\Parse\yyConstraintWin.h">
       <Filter>Header Files\Parse</Filter>
     </ClInclude>
+    <ClInclude Include="Inc\FdoCommonHash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Src\Parse\yyConstraint.y">

@@ -19,11 +19,6 @@ rem
 
 SET PARAM1=%1
 
-if "%2" == "VC10" goto studyParam
-
-if not "%2" == "" goto usage
-
-:studyParam
 if "%1" == ""          goto setvcvarsall
 if "%1" == "x86"       goto setvcvarsall
 if "%1" == "amd64"     goto setvcvarsall
@@ -32,28 +27,19 @@ if "%1" == "ia64"      goto setvcvarsall
 if "%1" == "x86_amd64" goto setvcvarsall
 if "%1" == "x86_ia64"  goto setvcvarsall
 
-SET PARAM1=x86
-if "%1" == "VC10"      goto setvcvarsallVC10
 goto usage
 
-:setvcvarsallVC10
-SET VCBEXTENSION=_vs10
-SET VC_COMPILER=vc100
-SET ACTIVENAMECHECK="Microsoft Visual Studio 10"
-SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 10.0\VC"
-if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC"
-if exist %ACTIVEPATHCHECK% goto VSExist
-goto VSExist
-
 :setvcvarsall
-if "%2" == "VC10" goto setvcvarsallVC10
-SET VC_COMPILER=vc90
-SET ACTIVENAMECHECK="Microsoft Visual Studio 9"
-SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 9.0\VC"
+rem VS 2012 will be default from now
+SET VCBEXTENSION=_vs12
+SET VC_COMPILER=vc110
+SET ACTIVENAMECHECK="Microsoft Visual Studio 11"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 11.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
+
+goto error
 
 :VSExist
 call %ACTIVEPATHCHECK%\vcvarsall.bat %PARAM1%
@@ -155,12 +141,12 @@ goto end
 
 :usage
 echo Error in script usage. The correct usage is:
-echo     %0 [option] [VC Option]
-echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^| VC10
-echo where [VC Option] can be: VC10
+echo     %0 [option]
+echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^
 echo:
 echo For example:
-echo     %0 x64 VC10
+echo     %0 x64
+echo VS 2012 will be the default VC compiler
 exit /B 1
 
 :end

@@ -26,22 +26,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -64,7 +64,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Bin/Win32/Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release/SmMessage\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
@@ -125,7 +124,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,7 +163,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -200,7 +199,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -240,7 +239,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating Library and Versioning $(ProjectName).dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)$(ProjectName).dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ABE63099-2E2A-4DE7-888B-95BCC247E8EE}</ProjectGuid>
     <RootNamespace>MgCommon</RootNamespace>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>OSGeo.FDO.Common</ProjectName>
   </PropertyGroup>
@@ -30,25 +30,25 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -71,7 +71,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30128.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\Win32\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Obj\MgCommon\Win32\Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
@@ -138,7 +137,7 @@
       <CLRImageType>Default</CLRImageType>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -181,7 +180,7 @@
       <CLRImageType>Default</CLRImageType>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -212,7 +211,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -246,7 +245,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%FDO_VERSION%" -v"..\Managed\Fdo.version" $(OutDir)OSGeo.FDO.Common.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -22,29 +22,29 @@
     <ProjectGuid>{DFC59C58-1267-42A0-A8EE-4E4FC19040B7}</ProjectGuid>
     <RootNamespace>MySql</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ProjectName>MySQLProvider</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -67,7 +67,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../Bin/Win32/Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
@@ -95,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;../../../Oracle\inc\Fdo\fdo;$(FDOTHIRDPARTY)/oracle/oci/include;$(FDOUTILITIES)/SchemaMgr/inc;../../../Oracle;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;MYSQL_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -131,7 +130,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MySQLProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -139,7 +138,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm149 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;../../../Oracle\inc\Fdo\fdo;$(FDOTHIRDPARTY)/oracle/oci/include;$(FDOUTILITIES)/SchemaMgr/inc;../../../Oracle;$(FDOUTILITIES)\Common\inc;..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;MYSQL_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -175,12 +174,12 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MySQLProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
@@ -218,7 +217,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MySQLProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -226,7 +225,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm130 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
@@ -263,7 +262,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MySQLProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)MySQLProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

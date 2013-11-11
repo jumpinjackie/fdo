@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\SQLiteProvider.vcxproj", "{8F5CFBEE-539A-4054-8A76-1BF85DD1A716}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Converter", "Converter\SQLiteConverter.vcxproj", "{C9E1C61D-91DE-4D26-9C77-F7C24EF26B1E}"

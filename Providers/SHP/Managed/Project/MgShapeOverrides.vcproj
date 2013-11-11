@@ -99,7 +99,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.SHP.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.8.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.9.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -183,7 +183,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.SHP.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.8.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.9.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -266,7 +266,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.SHP.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.8.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.9.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
 			/>
 		</Configuration>
 		<Configuration
@@ -350,7 +350,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Versioning OSGeo.FDO.Providers.SHP.Overrides.dll"
-				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.8.1.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
+				CommandLine="$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v&quot;$(FDO)\Managed\Fdo.version&quot; -f&quot;3.9.0.0%PROVIDERS_VERSION%&quot; $(OutDir)\OSGeo.FDO.Providers.SHP.Overrides.dll"
 			/>
 		</Configuration>
 	</Configurations>

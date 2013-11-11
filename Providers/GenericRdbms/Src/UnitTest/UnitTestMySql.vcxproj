@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{15F6A280-879F-4F7A-BDD9-7D1235D7066A}</ProjectGuid>
     <RootNamespace>UnitTestMySql</RootNamespace>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -69,7 +69,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Dbg\MySql\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
@@ -107,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm110 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm141 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -140,7 +139,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm110 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm153 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -166,7 +165,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm110 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm132 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libmySQL.lib;Rdbi.lib;gdbi.lib;schemamgrnew.lib;MySQLDriver.lib;mysqloverrides.lib;mysqlschemamgr.lib;ProvidersCommon.lib;rdbmsoverrides.lib;mysql.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -190,7 +189,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm110 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm142 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FdoGeneric.lib;libmySQL.lib;Rdbi.lib;gdbi.lib;schemamgrnew.lib;MySQLDriver.lib;mysqloverrides.lib;mysqlschemamgr.lib;ProvidersCommon.lib;rdbmsoverrides.lib;mysql.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;SchemaMgr_OVNew.lib;grdschemamgr.lib;util.lib;Advapi32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>

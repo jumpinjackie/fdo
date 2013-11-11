@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExpressionEngine", "ExpressionEngine.vcxproj", "{34FF1437-0853-44D4-B786-48ACB3AACBB5}"
 EndProject
 Global

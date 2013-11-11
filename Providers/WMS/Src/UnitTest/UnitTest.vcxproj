@@ -43,49 +43,49 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -124,7 +124,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Bin\Win32\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\Bin\Win64\Debug\</OutDir>
@@ -786,14 +785,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll  $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
@@ -801,14 +800,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll  $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc100-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll;$(FDOGDAL)\bin\win64\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll;$(FDOGDAL)\bin\win64\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='DebugInternal|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll $(OutDir)
@@ -816,14 +815,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll $(OutDir)
@@ -831,14 +830,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc100-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunnerd.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunitd_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\Xalan-C_1_11D.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll;$(FDOGDAL)\bin\win32\debug\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
@@ -846,14 +845,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\release\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc100-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc100-mt-1_54.dll;$(FDOGDAL)\bin\win32\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc110-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc110-mt-1_54.dll;$(FDOGDAL)\bin\win32\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
@@ -861,14 +860,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\release\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc100-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc100-mt-1_54.dl;$(FDOGDAL)\bin\win64\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc110-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc110-mt-1_54.dl;$(FDOGDAL)\bin\win64\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='ReleaseInternal|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll $(OutDir)
@@ -876,14 +875,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\release\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc100-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc100-mt-1_54.dll;$(FDOGDAL)\bin\win32\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(FDOTHIRDPARTY)\cppunit\Lib\Win32\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win32\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_thread-vc110-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win32\release\lib\boost_date_time-vc110-mt-1_54.dll;$(FDOGDAL)\bin\win32\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying thirdparty dlls</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll $(OutDir)
@@ -891,14 +890,14 @@ copy $(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc100-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc100-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\release\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc100-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc100-mt-1_54.dl;$(FDOGDAL)\bin\win64\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(FDOTHIRDPARTY)\cppunit\Lib\Win64\testrunner.dll;$(FDOTHIRDPARTY)\cppunit\Lib\Win64\cppunit_dll.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\Xalan-C_1_11.dll;$(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Release\XalanMessages_1_11.dll;$(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Release\xerces-c_3_1.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_thread-vc110-mt-1_54.dll;$(FDOTHIRDPARTY)\boost\stage\win64\release\lib\boost_date_time-vc110-mt-1_54.dl;$(FDOGDAL)\bin\win64\release\gdal110.dll;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(OutDir)CopyThirdparty.ilk;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="FakeInstall">

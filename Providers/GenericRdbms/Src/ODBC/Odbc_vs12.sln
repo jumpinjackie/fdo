@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ODBCProvider", "Odbc.vcxproj", "{FFEABF23-6BD8-4377-BD4C-66EA94F63134}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FdoGeneric", "..\Fdo\Fdo.vcxproj", "{F40C3E7C-1A1B-42D4-BD5A-24AADD5D77F1}"

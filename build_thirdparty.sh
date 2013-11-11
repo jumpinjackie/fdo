@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 TYPEARCHITECTURE=32
-PREFIXVAL=/usr/local/fdo-3.8.1
+PREFIXVAL=/usr/local/fdo-3.9.0
 
 DEFMODIFY=no
 ALLENABLE=yes

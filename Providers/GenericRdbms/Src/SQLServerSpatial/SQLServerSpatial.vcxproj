@@ -22,29 +22,29 @@
     <ProjectGuid>{769007F6-7840-44D7-9416-45F3D9BB0243}</ProjectGuid>
     <RootNamespace>SQLServerSpatial</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ProjectName>SQLServerSpatialProvider</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -67,7 +67,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">../../Bin/Win32/Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
@@ -95,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;..\Fdo\FeatureCommands;../Fdo/Filter;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -128,7 +127,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning SQLServerSpatialProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,7 +135,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm122 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm149 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;..\Fdo\Capability;..\Fdo\FeatureCommands;../Fdo/Filter;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -169,12 +168,12 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning SQLServerSpatialProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm112 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\Fdo\Capability;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Filter;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -209,7 +208,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MsSqlServerProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -217,7 +216,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm112 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>..\Fdo\Capability;..\..\inc\fdo;../../inc/rdbi;../;../../;../../inc;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Custom;../Fdo/Schema;../Fdo/Filter;../Fdo/SpatialContext;$(FDO)\Unmanaged;$(FDO)\Unmanaged\inc;$(FDOUTILITIES)/SchemaMgr/inc;$(FDOUTILITIES)\Common\inc;..\Gdbi;$(FDOUTILITIES)\ExpressionEngine\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;SQLSERVER_EXPORTS;FDORDBMS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;FDO_SPATIAL_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -252,7 +251,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning MsSqlServerProvider.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.8.1.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\SubDoc\Providers.version" -f"3.9.0.0%PROVIDERS_VERSION%"  $(OutDir)SQLServerSpatialProvider.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

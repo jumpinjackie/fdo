@@ -21,29 +21,29 @@
   <PropertyGroup Label="Globals">
     <ProjectName>RdbmsMsg</ProjectName>
     <ProjectGuid>{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}</ProjectGuid>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <RootNamespace>fdordbmsmsg</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,7 +66,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">../Bin/Win32/Release\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
@@ -139,7 +138,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -186,7 +185,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -233,7 +232,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -279,7 +278,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Creating library and Versioning RdbmsMsg.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.8.1.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -f"3.9.0.0%PROVIDERS_VERSION%" -v"..\..\SubDoc\Providers.version" $(OutDir)RdbmsMsg.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
