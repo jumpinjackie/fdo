@@ -22,4 +22,4 @@
 
 static MySqlConnectionUtil pMySqlConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pMySqlConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.MySQL.3.8";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.MySQL.3.9";

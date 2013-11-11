@@ -18,7 +18,7 @@
 ##
 
 
-cp /usr/local/fdo-3.8.1/lib/providers.xml .
+cp /usr/local/fdo-3.9.0/lib/providers.xml .
 rm -rf ../../TestData
 svn update ../../TestData
 make

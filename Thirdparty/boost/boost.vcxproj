@@ -22,28 +22,28 @@
     <ProjectGuid>{317315E2-24B6-490C-967D-4B77B7DF5C34}</ProjectGuid>
     <RootNamespace>boost_1_34_0</RootNamespace>
     <Keyword>MakeFileProj</Keyword>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -66,14 +66,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">call .\bootstrap
-call .\b2 toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">call .\bootstrap
 call .\b2 --clean-all
-call .\b2 toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=debug link=shared runtime-link=shared threading=multi --stagedir=stage/win32/debug --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">call .\bootstrap
 call .\b2 --clean-all</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">boost_1_54_0</NMakeOutput>
@@ -85,10 +84,10 @@ call .\b2 --clean-all</NMakeCleanCommandLine>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">call .\bootstrap
-call .\b2 toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">call .\bootstrap
 call .\b2 --clean-all
-call .\b2 toolset=msvc-10.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=debug link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/debug --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">call .\bootstrap
 call .\b2 --clean-all
 </NMakeCleanCommandLine>
@@ -101,11 +100,11 @@ call .\b2 --clean-all
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">call .\bootstrap
-call .\b2 toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release --with-date_time --with-program_options --with-thread stage
+call .\b2 toolset=msvc-11.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release --with-date_time --with-program_options --with-thread stage
 </NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">call .\bootstrap
 call .\b2 --clean-all
-call .\b2 toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=release link=shared runtime-link=shared threading=multi --stagedir=stage/win32/release --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">call .\bootstrap
 call .\b2 --clean-all</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">boost_1_54_0</NMakeOutput>
@@ -117,10 +116,10 @@ call .\b2 --clean-all</NMakeCleanCommandLine>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</IntDir>
     <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">call .\bootstrap
-call .\b2 toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release --with-date_time --with-program_options --with-thread stage</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">call .\bootstrap
 call .\b2 --clean-all
-call .\b2 toolset=msvc-10.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
+call .\b2 toolset=msvc-11.0 variant=release link=shared runtime-link=shared threading=multi address-model=64 --stagedir=stage/win64/release --with-date_time --with-program_options --with-thread stage</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">call .\bootstrap
 call .\b2 --clean-all</NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">boost_1_54_0</NMakeOutput>

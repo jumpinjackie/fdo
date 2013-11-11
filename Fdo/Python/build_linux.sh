@@ -31,7 +31,7 @@
 #
 
 #
-# Merge the standard FDO header file (found in /usr/local/fdo-3.8.1/include/)
+# Merge the standard FDO header file (found in /usr/local/fdo-3.9.0/include/)
 # with the local 'overriding' header files (found in ./Fdo_Inc).  The merged
 # files will be put in ./Inc_Merged
 #

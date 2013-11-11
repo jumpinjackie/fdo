@@ -22,7 +22,7 @@
     <ProjectGuid>{DC8DB773-A408-4608-BFA4-4F51FAAC1DC0}</ProjectGuid>
     <RootNamespace>MySqlOverrides</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ProjectName>OSGeo.FDO.Providers.MySQL.Overrides</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -31,26 +31,26 @@
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>NotSet</CharacterSet>
     <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v100</PlatformToolset>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -69,7 +69,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Bin\Debug\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\Obj\MgFdoMySqlOverrides\Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
@@ -126,7 +125,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -161,7 +160,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -192,7 +191,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -226,7 +225,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning OSGeo.FDO.Providers.MySQL.Overrides.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.8.1.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"$(FDO)\Managed\Fdo.version" -f"3.9.0.0%PROVIDERS_VERSION%" $(OutDir)OSGeo.FDO.Providers.MySQL.Overrides.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

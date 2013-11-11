@@ -1,14 +1,14 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "..\..\..\Utilities\Common\FdoCommon.vcxproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ProvidersCommon", "..\..\..\Utilities\Common\FdoCommon.vcxproj", "{9037A345-04EB-418C-98D0-3D5B19FC9D55}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SQLiteInterface", "..\..\..\Utilities\SQLiteInterface\SQLiteInterface.vcxproj", "{C196E844-E8B2-4226-B949-5898007E3A34}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Message", "Message\SDFMessage.vcxproj", "{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDFMessage", "Message\SDFMessage.vcxproj", "{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Provider", "Provider\SDF.vcxproj", "{C8A43164-7819-4EDE-805F-7C02097B3B99}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDFProvider", "Provider\SDF.vcxproj", "{C8A43164-7819-4EDE-805F-7C02097B3B99}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utils", "Utils\FDOUtils.vcxproj", "{45604865-D231-47BF-8E23-86D694AF3BA3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FDOUtils", "Utils\FDOUtils.vcxproj", "{45604865-D231-47BF-8E23-86D694AF3BA3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest", "UnitTest\UnitTest.vcxproj", "{D21428C0-F639-4410-9A29-421493E0F217}"
 EndProject

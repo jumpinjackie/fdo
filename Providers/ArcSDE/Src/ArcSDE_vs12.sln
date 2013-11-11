@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcSDEProvider", "Provider\ArcSDEProvider.vcxproj", "{6C04EF62-A3C2-4C4C-9BAB-30BE6AFC5762}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArcSDEMessage", "Message\ArcSDEMessage.vcxproj", "{B840E617-C94F-4E23-BEBA-4A9F3FBD92DB}"
