@@ -94,7 +94,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm150 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;"$(FDO)\Unmanaged";"$(FDO)\Unmanaged\inc";"$(FDOUTILITIES)/SchemaMgr/inc";"$(FDOUTILITIES)\Common\inc";..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;"$(FDOUTILITIES)\ExpressionEngine\inc";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -137,7 +137,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm150 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../inc/rdbi;../;../../;../../inc;../../inc/fdo;../Fdo/Capability;../Fdo/Connection;../Fdo/Other;../Fdo/FeatureCommands;../Fdo/Filter;../Fdo/Custom;../Fdo/Schema;../Fdo/Lt;../Fdo/Lock;../Fdo/SpatialContext;"$(FDO)\Unmanaged";"$(FDO)\Unmanaged\inc";"$(FDOUTILITIES)/SchemaMgr/inc";"$(FDOUTILITIES)\Common\inc";..\Gdbi;..\LongTransactionManager;..\GenericLongTransactionManager;..\LockManager;"$(FDOUTILITIES)\ExpressionEngine\inc";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;FDORDBMS_EXPORTS;_USRDLL;POSTGIS_EXPORTS;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -191,7 +191,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>-Zm127 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <PreLinkEvent>
       <Command>if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release</Command>
@@ -237,7 +237,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>-Zm137 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_VC80_UPGRADE=0x0710;%(PreprocessorDefinitions)</PreprocessorDefinitions>
