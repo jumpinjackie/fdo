@@ -93,7 +93,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm141 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm155 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -125,7 +125,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm141 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm155 %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -154,7 +154,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalOptions>-Zm141 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm155 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -178,7 +178,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>-Zm141 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm155 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;Inc;..\;..\..\Inc;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../../;PostGis;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
