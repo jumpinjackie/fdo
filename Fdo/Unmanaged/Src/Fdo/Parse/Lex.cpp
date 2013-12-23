@@ -20,6 +20,7 @@
 #include <ctime>
 #include <cwctype>
 #include <cstring>
+#include <locale.h>
 #include "Parse.h"
 #include "StringUtility.h"
 
@@ -895,7 +896,13 @@ bool FdoLex::getnumber(FdoParse *pParse, bool sign)
     if (m_ch == '.') 
 	{
 		// Point follows: Real number 
-		*pstr = m_ch;
+		// Fix a locale issue 
+		struct lconv *nls = localeconv();
+		if (nls != NULL)
+			*pstr = nls->decimal_point[0];
+		else
+		    *pstr = m_ch;
+
 		pstr++;
         m_ch = if_getch(pParse);
         pstr = getdigits(pParse, pstr);
