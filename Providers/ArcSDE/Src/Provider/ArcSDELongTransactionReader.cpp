@@ -24,10 +24,10 @@ ArcSDELongTransactionReader::ArcSDELongTransactionReader (ArcSDEConnection* conn
     mConnection (connection),
     mCount (count),
     mInfo (info),
-    mIndex (-1),
-    mName (NULL),
-    mDescription (NULL),
-    mOwner (NULL)
+    mIndex (-1)//,
+    //mName (NULL),
+    //mDescription (NULL),
+    //mOwner (NULL)
 {
 }
 
@@ -46,6 +46,8 @@ void ArcSDELongTransactionReader::Dispose ()
 
 void ArcSDELongTransactionReader::reset ()
 {
+
+/*
     if (NULL != mName)
     {
         delete[] mName;
@@ -54,8 +56,11 @@ void ArcSDELongTransactionReader::reset ()
 
     if (NULL != mDescription)
     {
+		// According to experiments this delete causes a memory corruption (this object)
+		// One explanation is that the caller (Map3D) is not copying the GetDescription() 
+		// string and it is releasing the memory hold by this member.
         delete[] mDescription;
-        mDescription = NULL;
+        mDescription = NULL; // MEMORY LEAK!
     }
 
     if (NULL != mOwner)
@@ -63,6 +68,7 @@ void ArcSDELongTransactionReader::reset ()
         delete[] mOwner;
         mOwner = NULL;
     }
+*/
 }
 
 void ArcSDELongTransactionReader::validate ()
@@ -83,11 +89,11 @@ FdoString* ArcSDELongTransactionReader::GetName ()
     wchar_t* temp;
 
     validate ();
-    if (NULL == mName)
+    //if (NULL == mName)
         if (SE_SUCCESS == SE_versioninfo_get_name (mInfo[mIndex], name))
         {
             sde_multibyte_to_wide (temp, name);
-            mName = new wchar_t[wcslen (temp) + 1];
+            //mName = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mName, temp);
         }
 
@@ -98,15 +104,15 @@ FdoString* ArcSDELongTransactionReader::GetName ()
 /// <returns>Returns the description of the long transaction.</returns> 
 FdoString* ArcSDELongTransactionReader::GetDescription ()
 {
-    CHAR description[SE_MAX_DESCRIPTION_LEN];
+    CHAR description[2*SE_MAX_DESCRIPTION_LEN];
     wchar_t* temp;
 
     validate ();
-    if (NULL == mDescription)
+    //if (NULL == mDescription)
         if (SE_SUCCESS == SE_versioninfo_get_description (mInfo[mIndex], description))
         {
             sde_multibyte_to_wide (temp, description);
-            mDescription = new wchar_t[wcslen (temp) + 1];
+            //mDescription = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mDescription, temp);
         }
 
@@ -122,7 +128,7 @@ FdoString* ArcSDELongTransactionReader::GetOwner ()
     wchar_t* temp;
 
     validate ();
-    if (NULL == mOwner)
+    //if (NULL == mOwner)
         if (SE_SUCCESS == SE_versioninfo_get_name (mInfo[mIndex], owner))
         {
             // truncate after the owner
@@ -132,7 +138,7 @@ FdoString* ArcSDELongTransactionReader::GetOwner ()
             else
                 *q = '\0';
             sde_multibyte_to_wide (temp, owner);
-            mOwner = new wchar_t[wcslen (temp) + 1];
+            //mOwner = new wchar_t[wcslen (temp) + 1];
             wcscpy ((wchar_t*)mOwner, temp);
         }
 
