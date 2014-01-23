@@ -30,9 +30,12 @@ class ArcSDELongTransactionReader :
     LONG mCount;
     LONG mIndex; // current record index
     // cached values:
-    FdoString* mName;
+ /*   FdoString* mName;
     FdoString* mDescription;
-    FdoString* mOwner;
+    FdoString* mOwner;*/
+	wchar_t mName[2*SE_MAX_VERSION_LEN];
+	wchar_t mDescription[2*SE_MAX_DESCRIPTION_LEN];
+	wchar_t mOwner[2*SE_MAX_VERSION_LEN];
 
 public:
     ArcSDELongTransactionReader (ArcSDEConnection* connection, LONG count, SE_VERSIONINFO* info);
