@@ -631,7 +631,7 @@ StampVer
 
 StampVer - Win32 Version Resource Stamping
 Written by Paul Dixon (paul@elphin.com) Jan 1998
-http://www.elphin.com/products/stampver.html
+http://www.elphin.com/downloads/stampver/
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 UpdateVersion
@@ -915,7 +915,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-FDO, GSAR and CppUnit are each licensed under the GNU Lesser General 
+FDO and CppUnit are each licensed under the GNU Lesser General 
 Public License.
 
 https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt
