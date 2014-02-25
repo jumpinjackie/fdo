@@ -28,7 +28,7 @@
 #include <locale.h>
 #include "Constants.h"
 #include "ShapeCPG.h"
-
+#include <locale>
 
 using namespace std;
 
@@ -110,23 +110,23 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
 	FdoStringP  pLocale = FdoStringP( locale );
 	FdoStringP  codePageESRI = L"";
 
-    // Save current
-	char*  localeSave = NULL;
-	const char* tmpStr = setlocale(LC_ALL, NULL);
-	if( tmpStr != NULL )
-	{
-   		localeSave = (char*)alloca( strlen( tmpStr ) + 1 );
-		strcpy(localeSave, tmpStr);
-	}
-    if ( locale == NULL )
+    if (locale == NULL || !pLocale.Contains(L"." ))
     {
-        // Just query the locale
-        pLocale = FdoStringP(setlocale(LC_ALL, NULL));
-    }
+        //Just query the locale
+        pLocale = setlocale(LC_ALL, NULL );
 
-	// setlocale() is supposed to return: "lang[_country_region[.code_page]]
-	if ( !pLocale.Contains(L"." ) )
-		pLocale = FdoStringP(setlocale(LC_ALL, ""));
+        if( !pLocale.Contains(L".") )
+        {
+            std::locale global_app_locale = std::locale();
+            pLocale = global_app_locale.c_str();
+
+            if ( !pLocale.Contains(L".") )
+            {
+                std::locale system_default_locale("");
+                pLocale = system_default_locale.c_str();
+            }
+        }
+    }
 
 	codePageESRI = pLocale.Right(L".");
 #ifndef _WIN32
@@ -156,10 +156,6 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
 			cpg += 60000;
 		codePageESRI = FdoStringP::Format(L"%ld", cpg);
 	}
-
-    // Restore
-    if ( localeSave != NULL && !(strlen(localeSave) == 1 && localeSave[0] == 'C' ))
-		setlocale(LC_ALL, localeSave);
 
     mCodePageESRI = codePageESRI;
 }
