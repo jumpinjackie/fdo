@@ -23,7 +23,7 @@
 #include "ShpProvider.h"
 #include "FdoCommonFile.h"
 #include "FdoCommonSchemaUtil.h"
-
+#include <locale>
 
 #ifdef _WIN32
 #define LOCATION L"..\\..\\TestData\\Testing\\"
@@ -1096,9 +1096,14 @@ void SchemaTests::non_ascii_property_name ()
         ///  Very important!!! ///////////
 
 #ifdef _WIN32
-        setlocale(LC_ALL, "Japanese");
+        std::locale lc("Japanese");
+        std::locale::global (lc);
+
+        FdoStringP pLocale = FdoStringP(setlocale(LC_ALL, NULL));
+        pLocale = FdoStringP(setlocale(LC_ALL, ""));
 #else
-        setlocale(LC_ALL, "ja_JP.eucjp");
+        std::locale lc("ja_JP.eucjp");
+        std::locale::global (lc);
 #endif
         apply->Execute ();
         SaveSchema(mConnection);
@@ -1291,9 +1296,11 @@ void SchemaTests::non_ascii_property_name_no_mapping ()
 
         ///  Very important!!! ///////////
 #ifdef _WIN32
-        setlocale(LC_ALL, "Japanese");
+        std::locale lc("Japanese");
+        std::locale::global (lc);
 #else
-        setlocale(LC_ALL, "ja_JP.eucjp");
+        std::locale lc("ja_JP.eucjp");
+        std::locale::global (lc);
 #endif
 
         apply->Execute ();
@@ -1656,9 +1663,11 @@ void SchemaTests::non_ascii_class_name2 ()
 
         ///  Very important!!! ///////////
 #ifdef _WIN32
-        setlocale(LC_ALL, "Japanese");
+        std::locale lc("Japanese");
+        std::locale::global (lc);
 #else
-        setlocale(LC_ALL, "ja_JP.eucjp");
+        std::locale lc("ja_JP.eucjp");
+        std::locale::global (lc);
 #endif
 
         apply->Execute ();
