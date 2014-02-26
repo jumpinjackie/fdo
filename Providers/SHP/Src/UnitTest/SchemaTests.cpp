@@ -1098,9 +1098,6 @@ void SchemaTests::non_ascii_property_name ()
 #ifdef _WIN32
         std::locale lc("Japanese");
         std::locale::global (lc);
-
-        FdoStringP pLocale = FdoStringP(setlocale(LC_ALL, NULL));
-        pLocale = FdoStringP(setlocale(LC_ALL, ""));
 #else
         std::locale lc("ja_JP.eucjp");
         std::locale::global (lc);
