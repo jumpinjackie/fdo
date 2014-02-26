@@ -118,12 +118,12 @@ void ShapeCPG::SetCodePageESRIFromLocale( char *locale )
         if( !pLocale.Contains(L".") )
         {
             std::locale global_app_locale = std::locale();
-            pLocale = global_app_locale.c_str();
+            pLocale = global_app_locale.name().c_str();
 
             if ( !pLocale.Contains(L".") )
             {
                 std::locale system_default_locale("");
-                pLocale = system_default_locale.c_str();
+                pLocale = system_default_locale.name().c_str();
             }
         }
     }
