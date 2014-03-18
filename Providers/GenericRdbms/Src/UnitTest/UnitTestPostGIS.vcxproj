@@ -76,8 +76,8 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rel\PostGIS\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Rel64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Rel64\PostGIS\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -560,7 +560,7 @@ copy PostGisInit.txt $(OutDir)
 copy g_coords.txt $(OutDir)
 copy polyAttr.txt $(OutDir)
 mkdir $(OutDir)com
-copy com\postgis*.sql $(OutDir)com
+copy ..\..\com\postgis*.sql $(OutDir)com
 copy *.xml $(OutDir)
 del /F $(OutDir)*_master.txt
 copy *_master.txt $(OutDir)
@@ -583,7 +583,7 @@ copy PostGisInit.txt $(OutDir)
 copy g_coords.txt $(OutDir)
 copy polyAttr.txt $(OutDir)
 mkdir $(OutDir)com
-copy com\postgis*sql $(OutDir)com
+copy ..\..\com\postgis*.sql $(OutDir)com
 copy Oracle\com\storage.sql $(OutDir)com
 copy *.xml $(OutDir)
 del /F $(OutDir)*_master.txt

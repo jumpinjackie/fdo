@@ -898,7 +898,7 @@ geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False
 </table>
 </tables>
 <error >
-(Src\Sm\Lp\FeatureClass.cpp: 347) Cannot set Feature Class Electric'l:Pole geometry to non-existent property Geometry </error>
+Cannot set Feature Class Electric'l:Pole geometry to non-existent property Geometry </error>
 </class>
 <class xsi:type="Class" name="Street" description=""
  baseClass="" abstract="False"
@@ -1125,7 +1125,7 @@ geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False
 </table>
 </tables>
 <error >
-(Src\Sm\Lp\FeatureClass.cpp: 347) Cannot set Feature Class Electric'l:class_with__25__char_name geometry to non-existent property Geometry </error>
+Cannot set Feature Class Electric'l:class_with__25__char_name geometry to non-existent property Geometry </error>
 </class>
 </schema >
 <schema name="F_MetaClass" description="Special classes for FDO Feature metaclasses" >

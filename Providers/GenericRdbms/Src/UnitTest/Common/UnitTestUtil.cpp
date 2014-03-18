@@ -128,6 +128,7 @@ void UnitTestUtil::Sql2Db(const wchar_t** sCommands, FdoIConnection* connection)
     // for each element in the commands array.
     // (Stop when the NULL element is reached.
     for ( pCmd = sCommands; (*pCmd); pCmd++ ) {
+        lineBuffer[0] = (wchar_t)0;
         wcscpy( lineBuffer, *pCmd );
         size_t len = wcslen(lineBuffer);
 
