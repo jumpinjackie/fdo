@@ -35,6 +35,7 @@ class FilterTests :
     public ShpTests
 {
     CPPUNIT_TEST_SUITE (FilterTests);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (equal);
     CPPUNIT_TEST (less);
     CPPUNIT_TEST (greater);
@@ -49,6 +50,7 @@ class FilterTests :
     CPPUNIT_TEST (computed);
     CPPUNIT_TEST (computed_geometry);
     CPPUNIT_TEST (non_existent_featid);
+#endif
     CPPUNIT_TEST (featid_optimizer_tests );
  //   CPPUNIT_TEST (featid_performance_tests);
     CPPUNIT_TEST_SUITE_END ();

@@ -30,7 +30,9 @@ class IndexTests :
     CPPUNIT_TEST (create);
     CPPUNIT_TEST (populate);
     CPPUNIT_TEST (query);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (check_z);
+#endif
     CPPUNIT_TEST (check_limits);
     CPPUNIT_TEST (check_remove);
     CPPUNIT_TEST (check_defragment);

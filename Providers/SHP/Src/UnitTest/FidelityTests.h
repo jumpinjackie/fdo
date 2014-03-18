@@ -28,9 +28,11 @@ class FidelityTests :
     public ShpTests
 {
     CPPUNIT_TEST_SUITE (FidelityTests);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (ontario);
     CPPUNIT_TEST (lakes);
     CPPUNIT_TEST (nanboku);
+#endif
     CPPUNIT_TEST (ignore_states);
     CPPUNIT_TEST_SUITE_END ();
 

@@ -27,10 +27,12 @@ class FileAccessTests :
     public ShpTests
 {
     CPPUNIT_TEST_SUITE (FileAccessTests);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (open_shp);
     CPPUNIT_TEST (open_dbf);
     CPPUNIT_TEST (open_shx);
     CPPUNIT_TEST (object);
+#endif
     CPPUNIT_TEST (create_shx);
     CPPUNIT_TEST (only_shp);
     CPPUNIT_TEST (delete_shp);

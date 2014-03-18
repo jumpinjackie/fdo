@@ -32,7 +32,9 @@ class OverridesTest : public ShpTests
   CPPUNIT_TEST( TestSimple );
   CPPUNIT_TEST( TestSetConfiguration );
   CPPUNIT_TEST( TestSetEmptyConfiguration );
+#ifdef ADSK_FDO
   CPPUNIT_TEST( TestReadWithOverrides );
+#endif
   CPPUNIT_TEST( TestWriteWithOverrides );
   CPPUNIT_TEST_SUITE_END();
 
