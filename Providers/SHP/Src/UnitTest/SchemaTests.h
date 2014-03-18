@@ -34,7 +34,9 @@ class SchemaTests :
     CPPUNIT_TEST (apply_schema);
     CPPUNIT_TEST (apply_nameless);
     CPPUNIT_TEST (create_nameless);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (schema_mapping_defaults_test);
+#endif
     CPPUNIT_TEST (schema_mapping_no_defaults_test);
     CPPUNIT_TEST (add_class);
     CPPUNIT_TEST (apply_two);

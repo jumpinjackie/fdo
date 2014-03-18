@@ -35,7 +35,9 @@ class ConnectTests :
     CPPUNIT_TEST (dual_connect);
     CPPUNIT_TEST (connect_no_slash);
     CPPUNIT_TEST (connect_back_slash);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (connect_double_slash);
+#endif
     CPPUNIT_TEST (connect_wrong_params);
     CPPUNIT_TEST (connect_wrong_params2);
     CPPUNIT_TEST (connect_params1);

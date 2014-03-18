@@ -33,8 +33,10 @@ class SpatialFilterTests :
     CPPUNIT_TEST (Within);
     CPPUNIT_TEST (Inside);
     CPPUNIT_TEST (Intersects);
+#ifdef ADSK_FDO
     CPPUNIT_TEST (PerformanceTests_Roads);
     CPPUNIT_TEST (PerformanceTests_Lakes);
+#endif
     CPPUNIT_TEST (Crosses);
     CPPUNIT_TEST (Touches);
     CPPUNIT_TEST (Bogus);
