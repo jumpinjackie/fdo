@@ -1,2 +1,2 @@
- Cannot delete a property 'Acad:Conductor.Conductivity'; its class has objects 
- Unsupport Schema modification; Cannot delete property 'Acad:Conductor.Conductivity' 
+Cannot delete a property 'Acad:Conductor.Conductivity'; its class has objects 
+Unsupport Schema modification; Cannot delete property 'Acad:Conductor.Conductivity' 

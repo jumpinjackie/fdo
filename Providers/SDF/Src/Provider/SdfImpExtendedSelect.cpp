@@ -218,7 +218,11 @@ SdfConnection* SdfImpExtendedSelect::CreateCacheFile( FdoClassDefinition* fdocla
 {
 	bool  inMemory = false;
 	bool  fileExits = false;
+#ifdef _WIN32
 	wchar_t fullpath[1024];
+#else
+	wchar_t fullpath[PATH_MAX];
+#endif
 	SdfConnection*  conn = SdfConnection::Create();
 	if( wcscmp(L":memory:",sdfFile)==0)
 	{
@@ -237,12 +241,12 @@ SdfConnection* SdfImpExtendedSelect::CreateCacheFile( FdoClassDefinition* fdocla
 		}
 	//	_wremove(fullpath)
 #else
-		char cpath[1024];
-		char cfullpath[1024];
-		wcstombs(cpath, sdfFile, 1024);
+		char cpath[PATH_MAX];
+		char cfullpath[PATH_MAX];
+		wcstombs(cpath, sdfFile, PATH_MAX);
 		realpath(cpath, cfullpath);
 	    
-		mbstowcs(fullpath, cfullpath, 1024);
+		mbstowcs(fullpath, cfullpath, PATH_MAX);
 		FILE *fp = fopen((const char*)FdoStringP(fullpath), "r");
 		if( fp )
 		{
