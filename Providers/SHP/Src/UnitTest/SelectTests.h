@@ -40,8 +40,8 @@ class SelectTests :
     CPPUNIT_TEST (get_class_definition);
     CPPUNIT_TEST (requery);
     CPPUNIT_TEST (select_subset);
-#endif
     CPPUNIT_TEST (select_all);
+#endif
     CPPUNIT_TEST (select_mixed_decimals);
     CPPUNIT_TEST (get_spatial_context_text);
 #ifdef ADSK_FDO
