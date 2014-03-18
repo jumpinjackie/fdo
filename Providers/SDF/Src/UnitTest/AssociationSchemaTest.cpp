@@ -55,12 +55,12 @@ FdoIConnection* AssociationSchemaTest::openConnection( bool re_create )
     wchar_t fullpath[1024];
     _wfullpath(fullpath, TEST_FILE, 1024);
 #else
-    char cpath[1024];
-    char cfullpath[1024];
-    wcstombs(cpath, TEST_FILE, 1024);
+    char cpath[PATH_MAX];
+    char cfullpath[PATH_MAX];
+    wcstombs(cpath, TEST_FILE, PATH_MAX);
     realpath(cpath, cfullpath);
-    wchar_t fullpath[1024];
-    mbstowcs(fullpath, cfullpath, 1024);
+    wchar_t fullpath[PATH_MAX];
+    mbstowcs(fullpath, cfullpath, PATH_MAX);
 #endif
 
     FdoPtr<IConnectionManager> manager = FdoFeatureAccessManager::GetConnectionManager ();

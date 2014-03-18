@@ -519,6 +519,7 @@ echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Copying FDO files</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy $(FDO)\unmanaged\Bin\Win32\Release\FDO.dll $(OutDir)
+copy $(FDO)\unmanaged\Bin\Win32\Release\FDOMessage.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win32\Release\FDOSpatial.dll $(OutDir)
@@ -532,6 +533,7 @@ echo "delete me please"&gt;$(OutDir)CopyFdo.ilk
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)CopyFdo.ilk;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Copying FDO files</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy $(FDO)\unmanaged\Bin\Win64\Release\FDO.dll $(OutDir)
+copy $(FDO)\unmanaged\Bin\Win64\Release\FDOMessage.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOCommon.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOGeometry.dll $(OutDir)
 copy $(FDO)\unmanaged\Bin\Win64\Release\FDOSpatial.dll $(OutDir)
