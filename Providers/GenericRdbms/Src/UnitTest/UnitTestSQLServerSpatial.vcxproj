@@ -597,6 +597,7 @@ mkdir $(OutDir)com
 copy ..\..\com\fdo_sys.sql $(OutDir)com
 copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
 copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy ExtendedCoordSys.txt $(OutDir)com
 copy *.xml $(OutDir)
 del /F $(OutDir)*_master.*
 copy *_master.* $(OutDir)
@@ -622,6 +623,7 @@ mkdir $(OutDir)com
 copy ..\..\com\fdo_sys.sql $(OutDir)com
 copy ..\..\com\fdo_sys_idx.sql $(OutDir)com
 copy ..\..\com\fdosys_sys.sql $(OutDir)com
+copy ExtendedCoordSys.txt $(OutDir)com
 copy *.xml $(OutDir)
 del /F $(OutDir)*_master.*
 copy *_master.* $(OutDir)
