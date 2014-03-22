@@ -119,7 +119,7 @@ fi
 
 chmod a+x ./configure
 
-./configure --without-libidn --disable-ldap
+./configure --enable-silent-rules --without-libidn --disable-ldap
 
 mkdir -p lib/linux
 

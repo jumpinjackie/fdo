@@ -357,9 +357,9 @@ if test "$TYPECONFIGURE" == configure ; then
       chmod a+x ./configure
 
       if test "$TYPEBUILD" == release; then
-         ./configure --prefix="$PREFIXVAL"
+         ./configure --enable-silent-rules --prefix="$PREFIXVAL"
       else
-         ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+         ./configure --enable-silent-rules --enable-debug=yes --prefix="$PREFIXVAL"
       fi
    fi
 fi

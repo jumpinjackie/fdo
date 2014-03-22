@@ -148,7 +148,7 @@ fi
 
 chmod a+x ./configure
 
-./configure
+./configure --enable-silent-rules
 if [ "$?" -ne 0 ] ; then
   exit 1
 fi
