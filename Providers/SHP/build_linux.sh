@@ -210,12 +210,12 @@ if test "$TYPECONFIGURE" == configure ; then
    fi
 
    if test "$TYPEBUILD" == release; then
-      ./configure --prefix="$PREFIXVAL"
+      ./configure --enable-silent-rules --prefix="$PREFIXVAL"
       if [ "$?" -ne 0 ] ; then
         exit 1
       fi
    else
-      ./configure --enable-debug=yes --prefix="$PREFIXVAL"
+      ./configure --enable-silent-rules --enable-debug=yes --prefix="$PREFIXVAL"
       if [ "$?" -ne 0 ] ; then
         exit 1
       fi

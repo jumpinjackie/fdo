@@ -127,6 +127,8 @@ dnl figure out the libcurl version
 CURLVERSION=`$SED -ne 's/^#define LIBCURL_VERSION "\(.*\)"/\1/p' ${srcdir}/include/curl/curlver.h`
 XC_CHECK_PROG_CC
 AM_INIT_AUTOMAKE
+# Enable silent rules if supported. Allows for less verbose output while still displaying any compiler/linker warnings/errors
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AC_MSG_CHECKING([curl version])
 AC_MSG_RESULT($CURLVERSION)
 
