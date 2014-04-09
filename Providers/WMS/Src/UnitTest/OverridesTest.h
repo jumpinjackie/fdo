@@ -34,16 +34,16 @@ class OverridesTest : public WmsTests
   CPPUNIT_TEST( TestImageFormatBackwardsComp);
   CPPUNIT_TEST( TestConflictImageFormatConfig);
   CPPUNIT_TEST( TestDefaultImageFormat);
-  CPPUNIT_TEST( TestSetConfiguration );
   CPPUNIT_TEST( TestSetConfiguration2);			// TODO: might need to replace server
-  CPPUNIT_TEST( TestSetConfiguration3);			
   CPPUNIT_TEST( TestRequestSpcialImageFormat);
   CPPUNIT_TEST( TestRequestUnsupportedImage);
 
 #if 0
-  // NOTE: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
+  // NOTE: need to replace server http://wms.jpl.nasa.gov/wms.cgi
+  CPPUNIT_TEST( TestSetConfiguration );
   CPPUNIT_TEST( TestNoDefaultDataModel );
   CPPUNIT_TEST( TestQualifiedName );
+  CPPUNIT_TEST( TestSetConfiguration3);			
 #endif
 
   CPPUNIT_TEST_SUITE_END();

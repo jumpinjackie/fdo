@@ -47,13 +47,13 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testResample);
     CPPUNIT_TEST (testClip);
     CPPUNIT_TEST (testDefaultHeight);
-    CPPUNIT_TEST (testNASAServer);			// TODO: might need to replace server
     CPPUNIT_TEST (testCubeServer);
-    CPPUNIT_TEST (testMultiLayers);			// TODO: might need to replace server
 
 #if 0
-    // NOTE: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
-    CPPUNIT_TEST (testNASAServer2);			
+    // NOTE: need to replace server http://wms.jpl.nasa.gov/wms.cgi
+    CPPUNIT_TEST (testMultiLayers);
+    CPPUNIT_TEST (testNASAServer);
+    CPPUNIT_TEST (testNASAServer2);
     CPPUNIT_TEST (testNASAServerDefaultOverrides);
     CPPUNIT_TEST (testSelectSpatialExtents);
 
@@ -67,13 +67,13 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testTerraServiceThumbnail);
     CPPUNIT_TEST (testLibcwms);
     CPPUNIT_TEST (testLinuxgurrl); 
+    CPPUNIT_TEST (testCeoware2);
 #endif
 
     CPPUNIT_TEST (testNS_TOPO_1000);
     CPPUNIT_TEST (testNS_CRS);
     CPPUNIT_TEST (testMapConnect_SDE);
     CPPUNIT_TEST (testNS_TOPO_5000);
-    CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);
     CPPUNIT_TEST (testStoboWms);			// TODO: might need to replace server
