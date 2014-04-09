@@ -72,7 +72,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunner.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\Win32\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\Release;..\..\..\..\Utilities\Common\lib\win32\Release;&quot;$(FDOORACLE)\lib\msvc&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -133,7 +132,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Provider;..\..\inc;..\..\..\..\Fdo\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;&quot;$(FDOORACLE)\include&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\include&quot;"
+				AdditionalIncludeDirectories="..\..\inc;..\Provider;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;&quot;$(FDOORACLE64)\include&quot;;..\..\..\..\Thirdparty\CppUnit\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_AFX_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -157,8 +156,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunner.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;..\..\lib\Win64\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\Release;..\..\..\..\Utilities\Common\lib\win64\Release;&quot;$(FDOORACLE)\lib\msvc&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win64&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\lib\Win64\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\Release;..\..\..\..\Utilities\Common\lib\win64\Release;&quot;$(FDOORACLE64)\lib\msvc&quot;;..\..\..\..\Thirdparty\CppUnit\Lib\Win64"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -242,7 +240,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.0.2.3011\mapguide-2.0.2\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release&quot;;D:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -327,7 +324,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib\&quot;;&quot;D:\Development\MapGuide_OS\mapguide-2.0.2.3011\mapguide-2.0.2\OpenSource_FDO\Fdo\Unmanaged\lib\win32\release&quot;;D:\oracle\product\10.2.0\client_1\oci\lib\msvc;&quot;..\Overrides\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -413,7 +409,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -497,7 +492,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\debug;..\..\oracle\instantclient_10_2\sdk\lib\msvc;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -581,7 +575,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunnerd.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\Win32\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;&quot;$(FDOORACLE)\lib\msvc&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -640,7 +633,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\inc;..\Provider;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;&quot;$(FDOORACLE)\include&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\include&quot;"
+				AdditionalIncludeDirectories="..\..\inc;..\Provider;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;&quot;$(FDOORACLE64)\include&quot;;..\..\..\..\Thirdparty\CppUnit\include"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_AFX_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -664,9 +657,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="oci.lib cppunit.lib testrunnerd.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\lib\Win64\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;$(FDOORACLE)\lib\msvc&quot;;&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win64&quot;"
+				AdditionalDependencies="oci.lib cppunitd.lib testrunnerd.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
+				AdditionalLibraryDirectories="&quot;..\..\lib\Win64\$(ConfigurationName)&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;$(FDOORACLE64)\lib\msvc&quot;;..\..\..\..\Thirdparty\CppUnit\Lib\Win64"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -693,6 +685,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy_debug_unittest.bat"
 			/>
 		</Configuration>
 		<Configuration
@@ -748,7 +741,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(FDOTHIRDPARTY)\CppUnit\Lib\Win32&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\Release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\Release;..\..\oracle\instantclient_10_2\sdk\lib\msvc;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -833,7 +825,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\..\..\..\branches\3.4\Fdo\Unmanaged\lib\win32\Release;..\..\..\..\..\branches\3.4\Utilities\Common\lib\win32\Release;..\..\oracle\instantclient_10_2\sdk\lib\msvc;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -919,7 +910,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -1003,7 +993,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunitd.lib testrunnerud.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\oracle\instantclient_10_2\sdk\lib\msvc;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -1086,7 +1075,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\oracle\instantclient_10_2\sdk\lib\msvc;&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\Release;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -1171,7 +1159,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib cppunit.lib testrunneru.lib fdo.lib FdoCommon.lib ProvidersCommon.lib FdoGeometry.lib FdoSpatial.lib KingOracleOverrides.lib KingOracleProvider.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\oracle\instantclient_10_2\sdk\lib\msvc;&quot;D:\Development\CppUnit\cppunit-1.12.0\lib&quot;;..\..\..\..\..\branches\3.5\Fdo\Unmanaged\lib\win32\release;..\..\..\..\..\branches\3.5\Utilities\Common\lib\win32\Release;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -1366,10 +1353,6 @@
 			</File>
 			<File
 				RelativePath=".\UnitTestDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ut_ApplySchema.cpp"
 				>
 			</File>
 			<File

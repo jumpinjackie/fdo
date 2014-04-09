@@ -664,6 +664,7 @@ call KingStampVersion $(OutDir)
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="c_FdoOra_API3.h" />
     <ClInclude Include="KgOraProvider.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="c_KgOraCommandCapabilities.h" />
@@ -719,6 +720,7 @@ call KingStampVersion $(OutDir)
     <ClInclude Include="FDO_31_Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="c_FdoOra_API3.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_FDO_3_4|x64'">Create</PrecompiledHeader>

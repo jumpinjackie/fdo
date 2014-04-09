@@ -174,3 +174,16 @@ void c_KgOraSpatialContext::SetOraSridDesc(const c_KgOraSridDesc& SridDesc)
 {
   m_OraSridDesc = SridDesc;
 }//end of c_KgOraSpatialContext::SetOraSridDesc
+
+c_KgOraSpatialContext* c_KgOraSpatialContextCollection::GetDefaultSpatialContext()
+{
+  c_KgOraSpatialContext* spctx; 
+  spctx = FindItem(D_SPATIALCONTEXT_DEFAULT_NAME);
+  if( !spctx )
+  {
+    spctx = new c_KgOraSpatialContext();
+    Add(spctx);
+  }
+  
+  return spctx;
+}

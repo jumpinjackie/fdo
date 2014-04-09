@@ -168,48 +168,8 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
     c_KgOraSridDesc orasrid;
     m_Connection->GetOracleSridDesc(classdef,orasrid);
     
-    /*
-    if( !m_PropertyNames.p || (m_PropertyNames->GetCount()==0) )
-    {
-      FdoPtr<FdoPropertyDefinition> propdef;        
-      FdoPtr<FdoPropertyDefinitionCollection> propcol = classdef->GetProperties();
-      int count = propcol->GetCount();
-      for( int ind = 0; ind < count; ind++ )
-      {
-        propdef = propcol->GetItem(ind);
-        FdoString* propname = propdef->GetName();
-              
-        if( propdef->GetPropertyType() == FdoPropertyType_GeometricProperty )
-        {
-          FdoGeometricPropertyDefinition* geomprop = (FdoGeometricPropertyDefinition*)propdef.p;
-          
-          m_Connection->GetOracleSridDesc(geomprop,orasrid);
-          
-          
-        }
-      }
-    }
-    /*
-    else
-    {
-      int propcount = -1; 
-      if( m_PropertyNames.p )
-        propcount = m_PropertyNames->GetCount();
-        
-      FdoPtr<FdoIdentifier> ident = m_PropertyNames->GetItem(0);
-      //ident->
-      FdoComputedIdentifier *compident = dynamic_cast<FdoComputedIdentifier*>(ident.p);
-      if( compident )
-      {
-        FdoString * pstr = compident->ToString();
-        FdoString * pstr2 = compident->ToString();
-      }
-    }
-    */
     
-    
-    
-    c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+    c_KgOraFilterProcessor fproc(m_Connection,schemadesc,classdef,orasrid);
     std::wstring sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols);
     
     D_KGORA_ELOG_WRITE2("c_KgOraSelectCommand%d::Execute class_name = '%s'",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name));
@@ -232,7 +192,7 @@ FdoIFeatureReader* c_KgOraSelectCommand::Execute ()
       //occi_stm->setPrefetchRowCount(400);
       //occi_stm->setPrefetchMemorySize(64*1024);
       
-      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm);
       
       if( phys_class && phys_class->GetIsSdeClass() )
         oci_stm->ExecuteSelectAndDefine(4);

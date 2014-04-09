@@ -60,6 +60,12 @@ FdoIConnection* c_KgOraUtil::OpenUnitTestConnection_Elektro()
   return c_KgOraUtil::OpentConnection(L"Username=elektro;Password=elektro;Service=//192.168.0.38:1522/epdb;OracleSchema=elektro");    
 }
 
+FdoIConnection* c_KgOraUtil::OpenUnitTestConnection_DeeoAmazon()
+{
+  //return c_KgOraUtil::OpentConnection(L"Username=unittest;Password=unittest;Service=//temp10gr2/ora10gr2;OracleSchema=UNITTEST");    
+  return c_KgOraUtil::OpentConnection(L"Service=//deeo.sl-king.com:1521/DEEO;Username=DEEODB4;Password=DEEODB4;KINGFDOCLASS=MYFDOCLASS;OracleSchema=DEEODB4;");    
+}
+
 FdoIConnection* c_KgOraUtil::OpenPerfomanceTestConnection()
 {
   return c_KgOraUtil::OpentConnection(L"Username=unittest;Password=unittest;Service=//temp10gr2/ora10gr2;OracleSchema=UNITTEST");    

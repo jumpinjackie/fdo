@@ -57,7 +57,8 @@ void c_LogAPI::WriteLog0(const char* Text)
 
       fprintf(GisDebugFile, "\n<%d-%d-%d %d:%d:%d>",newtime.tm_yday,newtime.tm_mon,newtime.tm_mday,newtime.tm_hour,newtime.tm_min,newtime.tm_sec);
 
-      fprintf(GisDebugFile, Text);
+      //fprintf(GisDebugFile, Text);
+      fputs(Text,GisDebugFile);
       fclose(GisDebugFile);
       
       
@@ -108,7 +109,8 @@ void c_LogAPI::WriteLog(const char* text,...)
       cbuff[2047]=0;
       vsnprintf(cbuff,2040,text,args);
       
-      fprintf(GisDebugFile, cbuff);
+      //fprintf(GisDebugFile, cbuff);
+      fputs(cbuff,GisDebugFile);
       fclose(GisDebugFile);
       
       delete cbuff;

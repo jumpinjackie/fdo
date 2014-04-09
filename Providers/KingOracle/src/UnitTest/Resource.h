@@ -7,6 +7,7 @@
 #define IDD_ABOUTBOX					100
 #define IDS_ABOUTBOX					101
 #define IDD_UNITTEST_DIALOG				102
+#define IDC_STATIC				1000
 
 // Next default values for new objects
 // 

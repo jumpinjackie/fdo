@@ -486,7 +486,7 @@ template <class FDO_READER> FdoInt64 c_KgOraReader<FDO_READER>::GetInt64(FdoStri
   if( m_OciStatement && (oraind >= 1) )
   {
     //long val = m_OciStatement->getInt(oraind);    
-    long val = m_OciStatement->GetLong(oraind);    
+    FdoInt64 val = m_OciStatement->GetInt64(oraind);    
     return val;
   }
   

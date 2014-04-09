@@ -31,15 +31,23 @@
 #define D_FILTER_ARITHMETIC_DIV     L" / "
 
 
-c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* StrBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc,int ParamNumberOffset)
+c_KgOraExpressionProcessor::c_KgOraExpressionProcessor(c_FilterStringBuffer* StrBuff,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoClassDefinition* ClassDef
+                        ,const c_KgOraSridDesc& OraSridDesc,int ParamNumberOffset)
 {
   m_StringBuff = StrBuff;
   
   m_KgOraSchemaDesc = KgOraSchemaDesc;
   FDO_SAFE_ADDREF(m_KgOraSchemaDesc.p);
   
-  m_ClassId = ClassId;
-  FDO_SAFE_ADDREF(m_ClassId.p);
+  
+  FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
+  FdoPtr<FdoKgOraClassDefinition> phys_class;
+  if( KgOraSchemaDesc && ClassDef )
+  {
+    phschemamapping = KgOraSchemaDesc->GetPhysicalSchemaMapping();
+    m_phys_class = phschemamapping->FindByClassName( ClassDef->GetName() );
+
+  }
   
   m_OraSridDesc = OraSridDesc;
   
@@ -138,29 +146,24 @@ void c_KgOraExpressionProcessor::ProcessFunction(FdoFunction& expr)
   {
     FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
     FdoPtr<FdoKgOraClassDefinition> phys_class;
-    if( m_KgOraSchemaDesc.p && m_ClassId.p )
-    {
-      phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
-      phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
-
-    }
     
-    if( phys_class && phys_class->GetIsSdeClass() )
+    
+    if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
     {
       AppendString( L"min(" );
-      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( m_phys_class->GetSdeGeomTableAlias() );
       AppendString( L".eminx)" );
       
       AppendString( L",min(" );
-      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( m_phys_class->GetSdeGeomTableAlias() );
       AppendString( L".eminy)" );
       
       AppendString( L",max(" );
-      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( m_phys_class->GetSdeGeomTableAlias() );
       AppendString( L".emaxx)" );
 
       AppendString( L",max(" );
-      AppendString( phys_class->GetSdeGeomTableAlias() );
+      AppendString( m_phys_class->GetSdeGeomTableAlias() );
       AppendString( L".emaxy) " );
       
       return;
@@ -230,29 +233,24 @@ void c_KgOraExpressionProcessor::ProcessComputedIdentifier(FdoComputedIdentifier
       {
         FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
         FdoPtr<FdoKgOraClassDefinition> phys_class;
-        if( m_KgOraSchemaDesc.p && m_ClassId.p )
-        {
-          phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
-          phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
+        
 
-        }
-
-        if( phys_class && phys_class->GetIsSdeClass() )
+        if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
         {
           AppendString( L"min(" );
-          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( m_phys_class->GetSdeGeomTableAlias() );
           AppendString( L".eminx)" );
 
           AppendString( L",min(" );
-          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( m_phys_class->GetSdeGeomTableAlias() );
           AppendString( L".eminy)" );
 
           AppendString( L",max(" );
-          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( m_phys_class->GetSdeGeomTableAlias() );
           AppendString( L".emaxx)" );
 
           AppendString( L",max(" );
-          AppendString( phys_class->GetSdeGeomTableAlias() );
+          AppendString( m_phys_class->GetSdeGeomTableAlias() );
           AppendString( L".emaxy) " );
 
 
@@ -274,17 +272,13 @@ void c_KgOraExpressionProcessor::ProcessIdentifier( FdoIdentifier& Expr)
 {
   
   
-  if( m_KgOraSchemaDesc.p && m_ClassId.p )
-  {
-    FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
-    FdoPtr<FdoKgOraClassDefinition> phys_class = phschemamapping->FindByClassName( m_ClassId->GetName() );
-    
-    if( phys_class && !phys_class->GetIsPointGeometry() )
-    {      
-      AppendString( phys_class->GetOraTableAlias() );
-      AppendString( L"." );
-    }
+  
+  if( m_phys_class && !m_phys_class->GetIsPointGeometry() )
+  {      
+    AppendString( m_phys_class->GetOraTableAlias() );
+    AppendString( L"." );
   }
+
   
   
   
@@ -607,25 +601,25 @@ void c_KgOraExpressionProcessor::ProcessCLOBValue(FdoCLOBValue& Expr)
 
 void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
 {
+  long size = m_ParamList.size() + m_ParamNumberOffset;
+  size++;
+  FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
+  AppendString( L":" );
+  AppendString( (FdoString*)chbuff );
+  
+  
   if( Expr.IsNull() )
   {  
     c_KgOraSqlParamDesc* pdesc = new c_KgOraSqlParamDesc();
-    pdesc->SetGeometry(NULL);
-    m_ParamList.push_back( pdesc );  
-    
-    return; 
+    pdesc->SetGeometry(NULL,m_OraSridDesc);
+    m_ParamList.push_back( pdesc );      
   }
- 
-  FdoPtr<FdoByteArray> fgf = Expr.GetGeometry();    
+  else
+  {
+    FdoPtr<FdoByteArray> fgf = Expr.GetGeometry();          
+    m_ParamList.push_back( new c_KgOraSqlParamDesc(fgf,m_OraSridDesc) );  
+  }
   
-    long size = m_ParamList.size() + m_ParamNumberOffset;
-    size++;
-    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
-    AppendString( L":" );
-    AppendString( (FdoString*)chbuff );
-      
-      
-    m_ParamList.push_back( new c_KgOraSqlParamDesc(fgf) );  
   
   
   
@@ -638,10 +632,16 @@ void c_KgOraExpressionProcessor::ProcessGeometryValue(FdoGeometryValue& Expr)
 // If geometry used in spatial filter is Rectangle then query will return correct features
 void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr)
 {
+  long size = m_ParamList.size() + m_ParamNumberOffset;
+  size++;
+  FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
+  AppendString( L":" );
+  AppendString( (FdoString*)chbuff );
+  
   if( Expr.IsNull() )
   {  
     c_KgOraSqlParamDesc* pdesc = new c_KgOraSqlParamDesc();
-    pdesc->SetGeometry(NULL);
+    pdesc->SetGeometry(NULL,m_OraSridDesc);
     m_ParamList.push_back( pdesc );  
     
     return; 
@@ -681,14 +681,10 @@ void c_KgOraExpressionProcessor::ProcessGeometryValueRect(FdoGeometryValue& Expr
   //SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy);
         
          
-    long size = m_ParamList.size() + m_ParamNumberOffset;
-    size++;
-    FdoStringP chbuff = FdoStringP::Format(L"%ld",size);
-    AppendString( L":" );
-    AppendString( (FdoString*)chbuff );
+   
       
       
-   m_ParamList.push_back( new c_KgOraSqlParamDesc(m_OraSridDesc.m_OraSrid,minx,miny,maxx,maxy) );  
+   m_ParamList.push_back( new c_KgOraSqlParamDesc(m_OraSridDesc,minx,miny,maxx,maxy) );  
   
   
 }//end of c_KgOraExpressionProcessor::ProcessGeometryValueRect
@@ -699,7 +695,7 @@ int c_KgOraExpressionProcessor::GetSqlParametersCount()
       
 }//end of c_KgOraExpressionProcessor::GetSqlParametersCount
 
-void c_KgOraExpressionProcessor::ApplySqlParameters(c_Oci_Statement* OciStm,bool IsGeodeticCS,long OraSrid,int ParamOffest/*=0*/)
+void c_KgOraExpressionProcessor::ApplySqlParameters(c_Oci_Statement* OciStm,int ParamOffest/*=0*/)
 {
   if( m_ParamList.size() > 0 )
   {
@@ -708,7 +704,7 @@ void c_KgOraExpressionProcessor::ApplySqlParameters(c_Oci_Statement* OciStm,bool
     {
       FdoStringP paramname = FdoStringP::Format(L"%d",pind+1+ParamOffest);
       //m_ParamList[pind]->ApplySqlParameter(OciStm,IsGeodeticCS,OraSrid,pind+1+ParamOffest);      
-      m_ParamList[pind]->ApplySqlParameter(OciStm,IsGeodeticCS,OraSrid,paramname);      
+      m_ParamList[pind]->ApplySqlParameter(OciStm,paramname);      
     }
   }
       
@@ -717,4 +713,9 @@ void c_KgOraExpressionProcessor::ApplySqlParameters(c_Oci_Statement* OciStm,bool
 void c_KgOraExpressionProcessor::SetConstantSpatialExtent( const wchar_t* ConstantSpatialExtent )
 {
   m_ConstantSpatialExtent=ConstantSpatialExtent ? ConstantSpatialExtent : L"";
+}
+
+void c_KgOraExpressionProcessor::SetOracleSrid( const c_KgOraSridDesc& orasrid )
+{ 
+  m_OraSridDesc=orasrid;
 }
