@@ -484,7 +484,7 @@ void ut_KgOraSdeSchema::TestBigGeometry()
       FdoPtr<FdoGeometryValue> geomval = FdoGeometryValue::Create( fgf );
       strval=geomval->ToString();
       #ifdef DEBUG
-        cout << strval;
+      std::cout << strval;
       #endif
 
       count++;

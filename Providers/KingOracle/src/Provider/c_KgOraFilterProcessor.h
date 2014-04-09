@@ -33,19 +33,22 @@
 class c_KgOraFilterProcessor : public virtual FdoIFilterProcessor 
 {
 public:
-  c_KgOraFilterProcessor(int OracleMainVersion,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSrid);
+  c_KgOraFilterProcessor(c_KgOraConnection* KgOraConn,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoClassDefinition* ClassDef,const c_KgOraSridDesc& OraSrid);
 public:
   ~c_KgOraFilterProcessor(void);
   virtual void Dispose() { delete this; }  
 
 protected:
+  c_KgOraConnection* m_KgOraConn;
   FdoPtr<c_KgOraSchemaDesc> m_KgOraSchemaDesc;
-  FdoPtr<FdoIdentifier> m_ClassId;  
+  //FdoPtr<FdoIdentifier> m_ClassId;  
   
-  FdoPtr<FdoKgOraClassDefinition> m_ClassDef;  
-  c_KgOraSridDesc m_OraSridDesc;
+  FdoPtr<FdoKgOraClassDefinition> m_phys_class;  
+  FdoPtr<FdoClassDefinition> m_ClassDef;    
+  //FdoPtr<FdoKgOraClassDefinition> m_phys_class;
   
-  int m_OracleMainVersion;
+  //c_KgOraSridDesc m_OraSridDesc;  
+  //int m_OracleMainVersion;
   
 public:  
   std::wstring m_SDE_SelectSpatialIndex; // this is where select sql is stored for spatial index when filter encounters spatial condition 
@@ -147,8 +150,9 @@ protected:
     c_FilterStringBuffer m_StringBuff;
     
     void ProcessFilter(FdoFilter* Filter); 
-    void ProcessExpresion( FdoExpression* Expr,bool IsSpatialCondition=false,bool IsEnvelopeIntersect=false);
-    
+    void ProcessGeomExpresion( FdoExpression* Expr,c_KgOraSridDesc& OraSrid);
+    void ProcessExpresion( FdoExpression* Expr );
+
     void AppendString(const wchar_t *Str);
 
     void PrependString(const wchar_t *Str);

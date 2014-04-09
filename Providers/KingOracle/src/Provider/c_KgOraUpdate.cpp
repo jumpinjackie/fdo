@@ -78,7 +78,7 @@ FdoInt32 c_KgOraUpdate::Execute()
   if( m_PropertyValues.p )
   {
     c_FilterStringBuffer strbuff;
-    c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classid,orasrid);
+    c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classdef,orasrid);
     
     
     FdoStringP colupdates;
@@ -93,6 +93,13 @@ FdoInt32 c_KgOraUpdate::Execute()
       FdoPtr<FdoValueExpression> expr = propval->GetValue();
                        
       strbuff.ClearBuffer();
+      
+      c_KgOraSridDesc orasrid;
+      if( m_Connection->GetOracleSridDesc(classdef,propid->GetName(),orasrid) )
+      {
+        expproc.SetOracleSrid(orasrid);
+      }
+      
       expr->Process( &expproc );
       
       colupdates += sep + propid->GetName() + L" = " + strbuff.GetString();      
@@ -111,7 +118,7 @@ FdoInt32 c_KgOraUpdate::Execute()
     
     // process filter
     const wchar_t* filtertext=NULL;
-    c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+    c_KgOraFilterProcessor fproc(m_Connection,schemadesc,classdef,orasrid);
     fproc.GetExpressionProcessor().SetParamNumberOffset(expproc.GetSqlParametersCount());
     if( m_Filter )
     {      
@@ -142,9 +149,9 @@ FdoInt32 c_KgOraUpdate::Execute()
       #endif
       
       // fist apply binds from update values
-      expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+      expproc.ApplySqlParameters(oci_stm);
       // then apply sql binds from filter expresion
-      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid,expproc.GetSqlParametersCount());
+      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,expproc.GetSqlParametersCount());
       
       
       update_num = oci_stm->ExecuteNonQuery();

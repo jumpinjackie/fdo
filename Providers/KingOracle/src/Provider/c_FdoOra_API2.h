@@ -23,6 +23,8 @@
 #include "c_KgOraSpatialContext.h"
 #include "c_KgOraSchemaDesc.h"
 
+#define CLASS_FDOORAPI c_FdoOra_API2
+
 class FDOKGORA_API c_FdoOra_API2
 {
 public:
@@ -49,10 +51,12 @@ protected:
   static void c_FdoOra_API2::DescribeSchemaSQL(oracle::occi::Connection * OraConn,oracle::occi::Statement* OraStm
                                               ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9=false);
 */                                              
-  static bool DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection);
+  static bool DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection,c_KgOraSpatialContextCollection* SC_Collection);
   //static void DescribeSchemaSQL(c_Oci_Connection * OciConn,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9 );
   static void DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString ,bool BindOwner,const wchar_t* ConnectionOraSchema,const wchar_t* Owner,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9 );
   static void DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* Owner ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum );
+  static bool CheckIfVersionedTableName(c_Oci_Connection * OciConn,const std::wstring& Owner,const std::wstring& ora_tablename,std::wstring& orig_tablename);
+  static c_KgOraSpatialContext* CreateSpatialContext(c_Oci_Connection * OciConn,const wchar_t* Owner,const wchar_t* Table,const wchar_t* GeometryColumn,c_KgOraSpatialContextCollection* SC_Collection);
 };
 
 #endif

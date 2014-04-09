@@ -42,6 +42,7 @@
 
 
 #include <afxdisp.h>        // MFC Automation classes
+#include <iostream>
 
 
 

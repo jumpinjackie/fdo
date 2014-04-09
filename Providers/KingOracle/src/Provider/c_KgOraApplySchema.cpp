@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 #include "c_KgOraApplySchema.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_Ora_API2.h"
 
 c_KgOraApplySchema::c_KgOraApplySchema(c_KgOraConnection *Conn)
@@ -174,7 +174,7 @@ try
         FdoPtr<FdoPropertyDefinition> propdef = props->GetItem(propind);
         
         proporatype = L"";
-        if( !c_FdoOra_API2::FdoPropertyToOraDataType(propdef.p,proporatype) )
+        if( !c_FdoOra_API3::FdoPropertyToOraDataType(propdef.p,proporatype) )
         {
           if( occi_stm ) m_Connection->OCI_TerminateStatement(occi_stm);
           throw FdoCommandException::Create( L"c_KgOraApplySchema::Execute: Unkown Property Definition ");  

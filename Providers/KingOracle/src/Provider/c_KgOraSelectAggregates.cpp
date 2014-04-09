@@ -125,49 +125,11 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
     int geom_sqlcol_index;
     FdoPtr<FdoStringCollection> sqlcols = FdoStringCollection::Create();
     
-    
     c_KgOraSridDesc orasrid;
     m_Connection->GetOracleSridDesc(classdef,orasrid);
-    /*
-    if( !m_PropertyNames.p || (m_PropertyNames->GetCount()==0) )
-    {
-      FdoPtr<FdoPropertyDefinition> propdef;        
-      FdoPtr<FdoPropertyDefinitionCollection> propcol = classdef->GetProperties();
-      int count = propcol->GetCount();
-      for( int ind = 0; ind < count; ind++ )
-      {
-        propdef = propcol->GetItem(ind);
-        FdoString* propname = propdef->GetName();
-              
-        if( propdef->GetPropertyType() == FdoPropertyType_GeometricProperty )
-        {
-          FdoGeometricPropertyDefinition* geomprop = (FdoGeometricPropertyDefinition*)propdef.p;
-          
-          m_Connection->GetOracleSridDesc(geomprop,orasrid);
-          
-          
-        }
-      }
-    }
-    else
-    {
-      int propcount = -1; 
-      if( m_PropertyNames.p )
-        propcount = m_PropertyNames->GetCount();
-        
-      FdoPtr<FdoIdentifier> ident = m_PropertyNames->GetItem(0);
-      //ident->
-      FdoComputedIdentifier *compident = dynamic_cast<FdoComputedIdentifier*>(ident.p);
-      if( compident )
-      {
-        FdoString * pstr = compident->ToString();
-        FdoString * pstr2 = compident->ToString();
-      }
-    }
-    */
     
     FdoStringP sdespatialextent_columnname;
-    c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+    c_KgOraFilterProcessor fproc(m_Connection,schemadesc,classdef,orasrid);
     std::wstring sqlstr = CreateSqlString(fproc,geom_sqlcol_index,sqlcols,sdespatialextent_columnname);
     
     D_KGORA_ELOG_WRITE3("c_KgOraSelectAggregates%d::Execute class_name = '%s' PropCount=%d",m_Connection->m_ConnNo,(const char*)FdoStringP(class_name),propcount);
@@ -189,7 +151,7 @@ FdoIDataReader* c_KgOraSelectAggregates::Execute ()
       //occi_stm->setPrefetchRowCount(400);
       //occi_stm->setPrefetchMemorySize(64*1024);
       
-      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+      fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm);
       
       if( phys_class && phys_class->GetIsSdeClass() )
         oci_stm->ExecuteSelectAndDefine(4);
@@ -267,8 +229,7 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
     FdoStringP sdegeom_fultablename = phys_class->GetSdeGeometryTableName();
     FdoStringP sde_featurekey_column = phys_class->GetSdeFeatureKeyColumn();
     
-    c_KgOraSridDesc orasrid;
-    m_Connection->GetOracleSridDesc(classdef,orasrid);
+    
     
     // Define properties to be included in SELECT statement 
     FdoPtr<FdoPropertyDefinition> propdef;
@@ -282,7 +243,9 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
     if( m_PropertyNames && (m_PropertyNames->GetCount() > 0))
     {
       c_FilterStringBuffer strbuff;
-      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classid,orasrid,0);
+      c_KgOraSridDesc orasrid;
+      m_Connection->GetOracleSridDesc(classdef,orasrid);
+      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classdef,orasrid,0);
       
       // Now, I need to check for special case of SpatialExtent function.
       // This is necessary because Autodesk MAP 3D is calling SpatialExtent function to get extent of all class
@@ -338,6 +301,11 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
         }
         
         // standard case: It is not SDE class 
+        c_KgOraSridDesc orasrid;
+        if( m_Connection->GetOracleSridDesc(classdef,ident->GetName(),orasrid) )
+        {
+          expproc.SetOracleSrid(orasrid);
+        }
         ident->Process(&expproc);
         
         if( expproc.GetUsedConstantSpatialExtent() )
@@ -548,12 +516,18 @@ std::wstring c_KgOraSelectAggregates::CreateSqlString(c_KgOraFilterProcessor& Fi
       FdoStringP sql_groupby_columns;
       c_FilterStringBuffer strbuff;
       
-      
-      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classid,orasrid,0);
+      c_KgOraSridDesc orasrid;
+      m_Connection->GetOracleSridDesc(classdef,orasrid);
+      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classdef,orasrid,0);
       int count = m_Grouping->GetCount();
       for( int ind = 0; ind < count; ind++ )
       {
         FdoPtr<FdoIdentifier> ident = m_Grouping->GetItem(ind);
+        c_KgOraSridDesc orasrid;
+        if( m_Connection->GetOracleSridDesc(classdef,ident->GetName(),orasrid) )
+        {
+          expproc.SetOracleSrid(orasrid);
+        }
         ident->Process(&expproc);
         
         if( ind > 0 )

@@ -263,10 +263,10 @@ c_SDO_GEOMETRY* c_Ora_API2::CreateOptimizedRect(c_Oci_Connection*Con,bool IsGeod
 }//end of c_Ora_API2::CreateOptimizedRect
 
 
-long c_Ora_API2::GetSrid(c_Oci_Connection*Conn,const wchar_t* CoordSysName)
+int c_Ora_API2::GetSrid(c_Oci_Connection*Conn,const wchar_t* CoordSysName)
 {
   c_Oci_Statement* oci_stm=NULL;
-  long srid = 0;
+  int srid = 0;
 
   oci_stm = Conn->CreateStatement();  
   
@@ -296,7 +296,7 @@ long c_Ora_API2::GetSrid(c_Oci_Connection*Conn,const wchar_t* CoordSysName)
 }//end of c_Ora_API2::GetSrid
 
 
-bool c_Ora_API2::GetCoordinateSystemWkt(c_Oci_Connection*Conn,long Srid,std::wstring& Wkt)
+bool c_Ora_API2::GetCoordinateSystemWkt(c_Oci_Connection*Conn,int Srid,std::wstring& Wkt)
 {
   c_Oci_Statement* oci_stm=NULL;
   
@@ -307,7 +307,7 @@ bool c_Ora_API2::GetCoordinateSystemWkt(c_Oci_Connection*Conn,long Srid,std::wst
   sqlstr = L" select WKTEXT,CS_NAME,SRID from MDSYS.cs_srs where SRID = :1";
   
   oci_stm->Prepare(sqlstr.c_str());
-  oci_stm->BindLong(1,&Srid);
+  oci_stm->BindInt(1,&Srid);
   
   oci_stm->ExecuteSelectAndDefine();
   
@@ -328,11 +328,11 @@ bool c_Ora_API2::GetCoordinateSystemWkt(c_Oci_Connection*Conn,long Srid,std::wst
   
 }//end of c_Ora_API2::GetCoordinateSystemWkt
 
-long c_Ora_API2::GetSequenceNextVal(c_Oci_Connection*Conn,const wchar_t* SequenceName)
+FdoInt64 c_Ora_API2::GetSequenceNextVal(c_Oci_Connection*Conn,const wchar_t* SequenceName)
 {
   c_Oci_Statement* oci_stm=NULL;
   
-  long nextval = 0;
+  FdoInt64 nextval = 0;
 
   oci_stm = Conn->CreateStatement();  
   
@@ -349,7 +349,7 @@ long c_Ora_API2::GetSequenceNextVal(c_Oci_Connection*Conn,const wchar_t* Sequenc
   {
     if( !oci_stm->IsColumnNull(1) )
     {
-      nextval = oci_stm->GetInteger(1);
+      nextval = oci_stm->GetInt64(1);
     }      
   }
   
@@ -398,18 +398,18 @@ try
       {
         if( !oci_stm->IsColumnNull(1) )
         {
-          long currval;
+          FdoInt64 currval;
           
-          currval = oci_stm->GetLong(1);
+          currval = oci_stm->GetInt64(1);
           
           
           
-          long inc;
+          FdoInt64 inc;
           inc = maxid -  currval;
           // now calculate increment
-          if( (long)inc > 0 )
+          if( inc > 0 )
           {
-            FdoStringP buff = FdoStringP::Format(L"%ld",inc);
+            FdoStringP buff = FdoStringP::Format(L"%lld",inc);
             std::wstring incstr = (FdoString*)buff;
            
             sql = L"ALTER SEQUENCE " + strseq + L" INCREMENT BY " + incstr + L" MINVALUE 0";  
@@ -582,3 +582,47 @@ int c_Ora_API2::GetTablePkeyColumns(c_Oci_Connection * OciConn,const wchar_t* Ow
         
   return numcols;
 }//end of SdoGeom->GetTablePkeyColumns
+
+
+
+bool c_Ora_API2::IsTableVersioned(c_Oci_Connection*OciConn,const wchar_t* Owner,const wchar_t* TableName,std::wstring& PhysicalTable)
+{
+
+  bool isver=false;
+  c_Oci_Statement *oci_stm = NULL;
+try
+{
+
+    oci_stm = OciConn->CreateStatement(); 
+
+
+    oci_stm->Prepare(L"SELECT DBMS_WM.GetPhysicalTableName(:1, :2) FROM DUAL");
+      
+
+    oci_stm->BindString(1,Owner);
+    oci_stm->BindString(2,TableName);
+
+    oci_stm->ExecuteSelectAndDefine();
+    //ResultSet * rs = stm->executeQuery();
+    if( oci_stm->ReadNext() )
+    {
+      PhysicalTable=oci_stm->GetString(1);
+      
+      isver = PhysicalTable.compare(TableName) != 0; // ce imena nista enaka potem je tabela versionirana
+    }
+
+    OciConn->TerminateStatement (oci_stm);
+
+    return isver;
+  }
+  catch(c_Oci_Exception* ex )
+  {
+    if( oci_stm )
+    {    
+      OciConn->TerminateStatement(oci_stm);  
+    }    
+  }  
+
+  return false;
+
+}//end of c_Ora_API2::GetSrid

@@ -69,38 +69,48 @@ FdoClassDefinition* c_KgOraFeatureReader::GetClassDefinition()
     {
       if( m_Props && (m_Props->GetCount() > 0 ) )
       {
-        FdoClassDefinition* newclass = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_ClassDef);
-        if( newclass )
+        if( m_ChangedClassDef.p )
         {
-          FdoPtr<FdoPropertyDefinitionCollection> ids = newclass->GetProperties();
-          long count = ids->GetCount();
-          long ind =0;
-          while(ind<count)
-          {
-            FdoPtr<FdoPropertyDefinition> classprop = ids->GetItem(ind);
-            bool found=false;
-            for(long ind2 =0;ind2<m_Props->GetCount();ind2++)
-            {
-              FdoPtr<FdoIdentifier> prop2 = m_Props->GetItem(ind2);
-              if( wcscmp(classprop->GetName(),prop2->GetName()) == 0 )
-              {
-                found=true;
-                break;
-              }
-            }
-            if( !found )
-            {
-              ids->RemoveAt(ind);
-              count = ids->GetCount();
-            }
-            else
-            {
-              ind++;
-            }                          
-          }
+          return FDO_SAFE_ADDREF(m_ChangedClassDef.p);
         }
+        else
+        {
         
-        return newclass;
+          c_KgOraDescribeSchemaCommand::g_DeepCopyMutex.Enter();
+          m_ChangedClassDef = FdoCommonSchemaUtil::DeepCopyFdoClassDefinition(m_ClassDef);
+          c_KgOraDescribeSchemaCommand::g_DeepCopyMutex.Leave();
+          if( m_ChangedClassDef.p )
+          {
+            FdoPtr<FdoPropertyDefinitionCollection> ids = m_ChangedClassDef->GetProperties();
+            long count = ids->GetCount();
+            long ind =0;
+            while(ind<count)
+            {
+              FdoPtr<FdoPropertyDefinition> classprop = ids->GetItem(ind);
+              bool found=false;
+              for(long ind2 =0;ind2<m_Props->GetCount();ind2++)
+              {
+                FdoPtr<FdoIdentifier> prop2 = m_Props->GetItem(ind2);
+                if( wcscmp(classprop->GetName(),prop2->GetName()) == 0 )
+                {
+                  found=true;
+                  break;
+                }
+              }
+              if( !found )
+              {
+                ids->RemoveAt(ind);
+                count = ids->GetCount();
+              }
+              else
+              {
+                ind++;
+              }                          
+            }
+          }
+          
+          return FDO_SAFE_ADDREF(m_ChangedClassDef.p);
+        }
       }
       else
       {

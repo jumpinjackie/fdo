@@ -187,8 +187,8 @@ public:
   /*******************************************************************************
   **                        PUBLIC GLOBALS
   *******************************************************************************/
-  static OCIEnv 		*m_OciHpEnvironment;                       /* OCI general handles */
-  static OCIError 	*m_OciHpError;
+  static OCIEnv 		*g_OciHpEnvironment;                       /* OCI general handles */
+  static OCIError 	*g_OciHpError;
   //static OCICPool   *m_OciHpPool;
  
   

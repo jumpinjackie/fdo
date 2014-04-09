@@ -110,6 +110,8 @@
         FdoIdentifierCollection* m_Props;
         
         FdoPtr<FdoClassDefinition> m_ClassDef;
+        
+        FdoPtr<FdoClassDefinition> m_ChangedClassDef; // class def with changed proeprties if neede
             
         
 };

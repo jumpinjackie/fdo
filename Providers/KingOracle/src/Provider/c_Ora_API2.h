@@ -41,16 +41,18 @@ public:
   
   static c_SDO_GEOMETRY* CreateOptimizedRect(c_Oci_Connection*Con,bool IsGeodeticCS,long OraSrid,double MinX,double MinY,double MaxX,double MaxY);
 
-  static long GetSrid(c_Oci_Connection* Conn,const wchar_t* CoordSysName);
-  static long GetSequenceNextVal(c_Oci_Connection*Conn,const wchar_t* SequenceName);
+  static int GetSrid(c_Oci_Connection* Conn,const wchar_t* CoordSysName);
+  static FdoInt64 GetSequenceNextVal(c_Oci_Connection*Conn,const wchar_t* SequenceName);
   static bool ResetSequence(c_Oci_Connection*Conn,const wchar_t* SequenceName,const wchar_t* FullTableName,const wchar_t* ColumnName);
   static bool GetOracleVersion(c_Oci_Connection*Conn,int& MainVersion,int& SubVersion);
   
   static bool IsGeodeticCoordSystem(const wchar_t* CoordSysWkt);
 
-  static bool GetCoordinateSystemWkt(c_Oci_Connection*Conn,long Srid,std::wstring& Wkt);
+  static bool GetCoordinateSystemWkt(c_Oci_Connection*Conn,int Srid,std::wstring& Wkt);
   static int GetTablePkeyColumns(c_Oci_Connection * OciConn,const wchar_t* Owner, const wchar_t* TableName,std::vector<std::wstring>& ColNames);
   
+  
+  static bool IsTableVersioned(c_Oci_Connection*OciConn,const wchar_t* Owner,const wchar_t* TableName,std::wstring& PhysicalTable);
 };
 
 #endif

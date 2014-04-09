@@ -65,7 +65,7 @@ FdoInt32 c_KgOraDelete::Execute()
   
   // process filter
   const wchar_t* filtertext=NULL;
-  c_KgOraFilterProcessor fproc(m_Connection->GetOracleMainVersion(),schemadesc,classid,orasrid);
+  c_KgOraFilterProcessor fproc(m_Connection,schemadesc,classdef,orasrid);
   if( m_Filter )
   {      
     m_Filter->Process( &fproc );
@@ -95,7 +95,7 @@ FdoInt32 c_KgOraDelete::Execute()
     
     oci_stm->Prepare(sqlstr.GetString());
     
-    fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+    fproc.GetExpressionProcessor().ApplySqlParameters(oci_stm);
     
 
     delete_num = oci_stm->ExecuteNonQuery();

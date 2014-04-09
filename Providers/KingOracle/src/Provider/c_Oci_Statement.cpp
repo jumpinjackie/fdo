@@ -238,7 +238,7 @@ int c_Oci_Statement::GetColumnPrecision(int ColumnNumber)
                
   
      /// Retrieve the column width in bytes 
-  ub4 col_precision;     
+  ub4 col_precision=0;     
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
              (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
              (OCIError *) m_OciConn->m_OciHpError  ));    
@@ -255,7 +255,7 @@ int c_Oci_Statement::GetColumnScale(int ColumnNumber)
                
   
      /// Retrieve the column width in bytes 
-  ub4 col_scale;     
+  ub4 col_scale=0;     
   m_OciConn->OciCheckError(OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
              (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
              (OCIError *) m_OciConn->m_OciHpError  ));    
@@ -502,21 +502,27 @@ int c_Oci_Statement::GetInteger( int ColNumber )
   
   int data;
   
+  //m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
+  //      (uword)sizeof(int),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
+  
   m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
-        (uword)sizeof(int),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
+        (uword)sizeof(int),OCI_NUMBER_SIGNED,(dvoid *)&data));
   
   return data;
 }
-long c_Oci_Statement::GetLong( int ColNumber )
+FdoInt64 c_Oci_Statement::GetInt64( int ColNumber )
 {
   c_Oci_ColumnData*coldata;
   if( ColNumber<=0 || ColNumber>m_ColumnDataSize ) throw new c_Oci_Exception(0,0,L"c_Oci_Statement:: Invalid ColumnNumber");
   coldata = m_ColumnDataPtrArray[ColNumber-1];
   
-  long data;
+  FdoInt64 data;
+  
+  //m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
+  //      (uword)sizeof(long),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
   
   m_OciConn->OciCheckError( OCINumberToInt(m_OciConn->m_OciHpError, coldata->GetOciNumber(), 
-        (uword)sizeof(long),OCI_NUMBER_UNSIGNED,(dvoid *)&data));
+        (uword)sizeof(FdoInt64),OCI_NUMBER_SIGNED,(dvoid *)&data));
   
   return data;
 }
@@ -685,33 +691,33 @@ void c_Oci_Statement::BindIntValue( const wchar_t* Name,int  Value )
 
 }//end of c_Oci_Statement::BindIntValue
 
-void c_Oci_Statement::BindLong( int ColNumber,long* ValuePtr )
+void c_Oci_Statement::BindInt64( int ColNumber,FdoInt64* ValuePtr )
 {
-  Bind(ColNumber,ValuePtr,sizeof(long),SQLT_INT);
+  Bind(ColNumber,ValuePtr,sizeof(FdoInt64),SQLT_INT);
 }
-void c_Oci_Statement::BindLongValue( int ColNumber,long  Value )
+void c_Oci_Statement::BindInt64Value( int ColNumber,FdoInt64  Value )
 {
    c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
     m_VectorBindValue.push_back(newbuffer);
     
-    BindLong(ColNumber,&newbuffer->m_Long);  
+    BindInt64(ColNumber,&newbuffer->m_Int64);  
  
 
-}//end of c_Oci_Statement::BindLongValue
+}//end of c_Oci_Statement::BindInt64Value
 
-void c_Oci_Statement::BindLong( const wchar_t* Name,long* ValuePtr )
+void c_Oci_Statement::BindInt64( const wchar_t* Name,FdoInt64* ValuePtr )
 {
-  Bind(Name,ValuePtr,sizeof(long),SQLT_INT);
+  Bind(Name,ValuePtr,sizeof(FdoInt64),SQLT_INT);
 }
-void c_Oci_Statement::BindLongValue( const wchar_t* Name,long  Value )
+void c_Oci_Statement::BindInt64Value( const wchar_t* Name,FdoInt64  Value )
 {
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
   m_VectorBindValue.push_back(newbuffer);
 
-  BindLong(Name,&newbuffer->m_Long);  
+  BindInt64(Name,&newbuffer->m_Int64);  
 
 
-}//end of c_Oci_Statement::BindLongValue
+}//end of c_Oci_Statement::BindInt64
 
 
 
@@ -868,10 +874,10 @@ void c_Oci_Statement::BindDateValue( const wchar_t* Name,OCIDate Value )
 
 }//end of c_Oci_Statement::BindDateValue
 
-void c_Oci_Statement::BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr )
+void c_Oci_Statement::BindSdoGeomNoNull( int ColNumber,c_SDO_GEOMETRY* ValuePtr )
 {
   OCIBind  *bnd1p; 
-  //if( ValuePtr )
+  if( ValuePtr )
   {
     
     m_OciConn->OciCheckError( OCIBindByPos(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError, 
@@ -881,12 +887,15 @@ void c_Oci_Statement::BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr )
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
               m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0));               
   }
-  
+  else
+  {
+   
+  }
 }
-void c_Oci_Statement::BindSdoGeom( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr )
+void c_Oci_Statement::BindSdoGeomNoNull( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr )
 {
   OCIBind  *bnd1p; 
-  //if( ValuePtr )
+  if( ValuePtr )
   {
 
     m_OciConn->OciCheckError( OCIBindByName(m_OciHpStm, &bnd1p, m_OciConn->m_OciHpError 
@@ -896,20 +905,32 @@ void c_Oci_Statement::BindSdoGeom( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr 
     m_OciConn->OciCheckError( OCIBindObject(bnd1p, m_OciConn->m_OciHpError, 
       m_OciConn->m_OciType_SdoGeometry,  (void**)&ValuePtr->m_SdoGeom,0,(void**)&ValuePtr->m_SdoGeomInd,0));               
   }
+  else
+  {
+  
+  }
 
 }
 
 void c_Oci_Statement::BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value )
 {
+  if( !Value )
+  {
+    Value = c_SDO_GEOMETRY::CreateNull(m_OciConn);
+  }
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
   m_VectorBindValue.push_back(newbuffer);  
-  BindSdoGeom(ColNumber,newbuffer->m_SdoGeom);  
+  BindSdoGeomNoNull(ColNumber,newbuffer->m_SdoGeom);  
 }
 void c_Oci_Statement::BindSdoGeomValue( const wchar_t* Name,c_SDO_GEOMETRY* Value )
 {
+  if( !Value )
+  {
+    Value = c_SDO_GEOMETRY::CreateNull(m_OciConn);
+  }
   c_BindValueBuffer* newbuffer = new c_BindValueBuffer(Value);
   m_VectorBindValue.push_back(newbuffer);  
-  BindSdoGeom(Name,newbuffer->m_SdoGeom);  
+  BindSdoGeomNoNull(Name,newbuffer->m_SdoGeom);  
 }
 
 void c_Oci_Statement::BindSdoDimElement( int ColNumber,c_SDO_DIM_ELEMENT* ValuePtr )

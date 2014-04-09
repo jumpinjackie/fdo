@@ -8,7 +8,7 @@
 //#include "c_FdoOra_API2.h"
 #include "ut_OCI.h"
 
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ut_OCI);
@@ -437,7 +437,7 @@ void ut_OCI::OCI_DescribeScema()
     c_OCI_API::OciInit();
     c_Oci_Connection* ociconn = OCI_CreateConnection();
 
-    FdoPtr<c_KgOraSchemaDesc> schema = c_FdoOra_API2::DescribeSchema(ociconn,L"UNITTEST",L"UNITTEST",NULL,NULL);
+    FdoPtr<c_KgOraSchemaDesc> schema = c_FdoOra_API3::DescribeSchema(ociconn,L"UNITTEST",L"UNITTEST",NULL,NULL);
 
     c_OCI_API::CloseConnection(ociconn);
     
@@ -475,8 +475,8 @@ void ut_OCI::OCI_Test_c_Ora_Api()
     }
 
 
-    long val1 = c_Ora_API2::GetSequenceNextVal(ociconn,L"TEST1_FDOSEQ");
-    long val2 = c_Ora_API2::GetSequenceNextVal(ociconn,L"TEST1_FDOSEQ");
+    FdoInt64 val1 = c_Ora_API2::GetSequenceNextVal(ociconn,L"TEST1_FDOSEQ");
+    FdoInt64 val2 = c_Ora_API2::GetSequenceNextVal(ociconn,L"TEST1_FDOSEQ");
     
     if( val2 != (val1+1) )
     {
@@ -1193,7 +1193,7 @@ void ut_OCI::OCI_TestSpeed_DescribeScema()
     
     clock_t elog_t1=clock();
     
-    FdoPtr<c_KgOraSchemaDesc> schema = c_FdoOra_API2::DescribeSchema(ociconn,L"UNITTEST",L"UNITTEST",NULL,NULL);
+    FdoPtr<c_KgOraSchemaDesc> schema = c_FdoOra_API3::DescribeSchema(ociconn,L"UNITTEST",L"UNITTEST",NULL,NULL);
 
     
     clock_t elog_t2=clock();

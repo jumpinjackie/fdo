@@ -21,7 +21,7 @@
 #include "c_KgOraSridDesc.h"
 #include "c_KgOraSpatialContext.h"
 #include "c_KgOraSchemaDesc.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_Ora_API2.h"
 #include "KgOraProvider.h"
 
@@ -58,16 +58,130 @@ class c_Timer
 
 
 
-c_FdoOra_API2::c_FdoOra_API2(void)
+class c_MapOraNameToFdoClass
+{
+public:
+  struct s_data
+  {
+    s_data(const std::wstring& OraOwner,const std::wstring& OraTable,const std::wstring& OraGeomColumn,const std::wstring& OverFdoClassName
+              ,FdoClassDefinition* ClassDef,FdoKgOraClassDefinition* KgOraClassDef,const std::vector<std::wstring>& OverridePrimaryColumns
+              ,const std::wstring& spatialowner,const std::wstring& spatialtable // used to connect to xxx_sdo_geom_metada to read srid
+              )
+    { 
+      keyname=OraOwner;
+      keyname.append(OraTable);
+      keyname.append(OraGeomColumn);
+      keyname.append(OverFdoClassName);
+      
+      fdoclass=ClassDef;kgoraclass=KgOraClassDef; 
+      overprimary = OverridePrimaryColumns; 
+      
+      spatial_owner = spatialowner;
+      spatial_table = spatialtable;
+    }
+    std::wstring keyname;  
+    FdoClassDefinition* fdoclass;   // no ref count
+    FdoKgOraClassDefinition* kgoraclass;  // no ref count
+
+    std::vector<std::wstring> overprimary; // this one if set from meta view; applyied t to class
+
+    std::vector<std::wstring> primarycolumns; // her areread from sql; colect them together; and  after finish reading apply to class
+    
+    std::wstring spatial_owner;  // used to connect to xxx_sdo_geom_metada to read srid
+    std::wstring spatial_table;
+  };
+  
+public:
+  c_MapOraNameToFdoClass()
+  {
+    m_LastFound=NULL;
+  }  
+public:
+  s_data* FindClassDef(const std::wstring& OraOwner,const std::wstring& OraTable,const std::wstring& OraGeomColumn,const std::wstring& OverFdoClassName) // no ref count
+  {
+    if( OraOwner.empty() || OraTable.empty() )
+      return false;
+    
+    std::wstring keyname = OraOwner;
+    keyname.append(OraTable);
+    keyname.append(OraGeomColumn);
+    keyname.append(OverFdoClassName);
+      
+    if( keyname.compare(m_LasTriedName) == 0 && m_LastFound )
+    {
+      return m_LastFound;
+    }
+    m_LasTriedName = keyname;
+    m_LastFound=NULL; 
+    t_datavector::iterator itr = m_DataVector.begin();
+    while(itr != m_DataVector.end())
+    {
+      if( itr->keyname.compare(keyname)==0 )
+      {
+        m_LastFound=&*itr;
+        
+        return m_LastFound;
+      }
+      itr++;
+    }
+    
+    return m_LastFound;
+  }
+  
+  void Add(const std::wstring& OraOwner,const std::wstring& OraTableName,const std::wstring& OraGeomName,const std::wstring& OverFdoClassName
+        
+          ,FdoClassDefinition* ClassDef,FdoKgOraClassDefinition* KgOraClassDef,const std::vector<std::wstring>& OverridePrimeryColumns // no ref count
+          ,const std::wstring& spatial_owner,const std::wstring& spatial_table // used to connect to xxx_sdo_geom_metada to read srid
+          )
+  {
+    m_DataVector.push_back(s_data(OraOwner,OraTableName,OraGeomName,OverFdoClassName,ClassDef,KgOraClassDef,OverridePrimeryColumns,spatial_owner,spatial_table));
+  }
+
+  void SetKgOraSpatialContextCollection( c_KgOraSpatialContextCollection* SC_Collection )
+  {
+    m_SC_Collection=SC_Collection;
+  }
+  c_KgOraSpatialContextCollection* GetKgOraSpatialContextCollection( )
+  {
+    return m_SC_Collection;
+  }
+
+  int GetCount()
+  {
+    return m_DataVector.size();
+  }
+
+  c_MapOraNameToFdoClass::s_data* Get( int ind )
+  {
+    return &m_DataVector.at(ind);
+  }
+
+
+
+
+
+protected:
+  std::wstring m_LasTriedName;  
+  s_data* m_LastFound;
+  
+  c_KgOraSpatialContextCollection* m_SC_Collection;
+  
+  
+  typedef std::vector<s_data> t_datavector;
+  t_datavector m_DataVector;
+};
+
+
+c_FdoOra_API3::c_FdoOra_API3(void)
 {
 }
 
-c_FdoOra_API2::~c_FdoOra_API2(void)
+c_FdoOra_API3::~c_FdoOra_API3(void)
 {
 }
 
 
-bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale,int Length,FdoDataType & FdoType)
+bool c_FdoOra_API3::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale,int Length,FdoDataType & FdoType)
 {
   bool isfdotype=true;
   switch( OCiDataType )
@@ -79,7 +193,7 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale
     
     case OCI_TYPECODE_NUMBER:  // NUMBER
     case OCI_TYPECODE_DECIMAL:  // NUMBER
-      if( Scale <= 0 ) 
+      if( Scale <= 0 && Precision>=1 ) 
       {
         if( Precision <= 4 )
         {
@@ -94,22 +208,21 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale
           else
           {
             if( Precision <= 19 ) // this is deliberately to be 19 so it stay as integer (not decimal)
-                                  // even 19 places can exceed int64
+              // even 19 places can exceed int64
             {
               FdoType = FdoDataType_Int64;  
             }
             else
             {
-              //FdoType = FdoDataType_Decimal;  
-              
-              FdoType = FdoDataType_Int64;  
+              FdoType = FdoDataType_Double;  
             }
-          
+
           }
-          
+
         }
       }
-      else FdoType = FdoDataType_Decimal;
+      else FdoType = FdoDataType_Double;
+      
     break;
     
     case OCI_TYPECODE_CHAR: // char
@@ -164,10 +277,10 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(ub2 OCiDataType,int Precision,int Scale
   #endif
   
   return isfdotype;
-}//end of c_FdoOra_API2::OraTypeToFdoDataType
+}//end of c_FdoOra_API3::OraTypeToFdoDataType
 
 /*
-bool c_FdoOra_API2::FdoDataTypeToOraDataType(FdoDataType DataType,oracle::occi::Type& OraType)
+bool c_FdoOra_API3::FdoDataTypeToOraDataType(FdoDataType DataType,oracle::occi::Type& OraType)
 {
   switch( DataType )
   {
@@ -242,13 +355,13 @@ bool c_FdoOra_API2::FdoDataTypeToOraDataType(FdoDataType DataType,oracle::occi::
   }
  
   return true;
-}//end of c_FdoOra_API2::FdoDataTypeToOraDataType
+}//end of c_FdoOra_API3::FdoDataTypeToOraDataType
 */
 
 
 
 
-bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlParamNum,FdoDataValue* DataValue)
+bool c_FdoOra_API3::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlParamNum,FdoDataValue* DataValue)
 {
   
   switch( DataValue->GetDataType() )
@@ -443,9 +556,9 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,int SqlPa
   }
  
   return true;
-}//end of c_FdoOra_API2::SetOracleStatementData
+}//end of c_FdoOra_API3::SetOracleStatementData
 
-bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,const wchar_t*SqlParamName,FdoDataValue* DataValue)
+bool c_FdoOra_API3::SetOracleStatementData(c_Oci_Statement*  Statement,const wchar_t*SqlParamName,FdoDataValue* DataValue)
 {
 
   switch( DataValue->GetDataType() )
@@ -640,9 +753,9 @@ bool c_FdoOra_API2::SetOracleStatementData(c_Oci_Statement*  Statement,const wch
   }
 
   return true;
-}//end of c_FdoOra_API2::SetOracleStatementData
+}//end of c_FdoOra_API3::SetOracleStatementData
 
-bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int Scale,int Length,FdoDataType & FdoType)
+bool c_FdoOra_API3::OraTypeToFdoDataType(const char* OraType,int Precision,int Scale,int Length,FdoDataType & FdoType)
 {
   
   bool isfdotype=false;
@@ -659,7 +772,7 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int S
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"NUMBER") == 0 )
   {            
-    if( Scale <= 0 ) 
+    if( Scale <= 0 && Precision>=1 ) 
     {
       if( Precision <= 4 )
       {
@@ -680,14 +793,14 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int S
           }
           else
           {
-            FdoType = FdoDataType_Decimal;  
+            FdoType = FdoDataType_Double;  
           }
 
         }
 
       }
     }
-    else FdoType = FdoDataType_Decimal;
+    else FdoType = FdoDataType_Double;
     isfdotype=true;
   } else
   if( FdoCommonOSUtil::stricmp(OraType,"CHAR") == 0 )
@@ -730,174 +843,398 @@ bool c_FdoOra_API2::OraTypeToFdoDataType(const char* OraType,int Precision,int S
   #endif
   
   return isfdotype;
-}//end of c_FdoOra_API2::OraTypeToFdoDataType
+}//end of c_FdoOra_API3::OraTypeToFdoDataType
 
-
-/* 
-  Utility function to create property definitions from table columns 
-*/
-bool c_FdoOra_API2::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection,c_KgOraSpatialContextCollection* SC_Collection)
-{
-  OCIParam *parmh = (OCIParam *) 0;         /* parameter handle */
-  OCIParam *collsthd = (OCIParam *) 0;      /* handle to list of columns */
-  OCIParam *colhd = (OCIParam *) 0;         /* column handle */
-  OCIDescribe *dschp = (OCIDescribe *)0;      /* describe handle */
-
-try
+bool c_FdoOra_API3::OraTypeToFdoDataType(const wchar_t* OraType,int Precision,int Scale,int Length,FdoDataType & FdoType)
 {
 
-  OCIHandleAlloc((dvoid *)OciConn->m_OciHpEnvironment, (dvoid **)&dschp,
-    (ub4)OCI_HTYPE_DESCRIBE, (size_t)0, (dvoid **)0);
+  bool isfdotype=false;
 
-  /* get the describe handle for the table */
-  std::wstring fullname(Schema);
-  fullname.append(L".");
-  fullname.append(TableName);
-  //int namelen = strlen(fullname.c_str());
-  
-  int status = OCIDescribeAny(OciConn->m_OciHpServiceContext, OciConn->m_OciHpError, (dvoid *)fullname.c_str(), wcslen(fullname.c_str())*sizeof(wchar_t), OCI_OTYPE_NAME, 0,
-    OCI_PTYPE_TABLE, dschp);
-    
-  if( status != OCI_SUCCESS )
+  if( FdoCommonOSUtil::wcsicmp(OraType,L"VARCHAR2") == 0  || FdoCommonOSUtil::wcsicmp(OraType,L"VARCHAR") == 0 || FdoCommonOSUtil::wcsicmp(OraType,L"NVARCHAR") == 0 || FdoCommonOSUtil::wcsicmp(OraType,L"NVARCHAR2") == 0)
   {
-    int status =  OCIDescribeAny(OciConn->m_OciHpServiceContext, OciConn->m_OciHpError, (dvoid *)fullname.c_str(), wcslen(fullname.c_str())*sizeof(wchar_t), OCI_OTYPE_NAME, 0,
-    OCI_PTYPE_VIEW, dschp);
-    
-    if( status != OCI_SUCCESS )
-    {
-      return false;
-    }
-  }
-    
-
-  /* get the parameter handle */
-  OciConn->OciCheckError(OCIAttrGet((dvoid *)dschp, OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0,
-    OCI_ATTR_PARAM, OciConn->m_OciHpError));
-    
-
-  /* The type information of the object, in this case, OCI_PTYPE_TABLE,
-  is obtained from the parameter descriptor returned by the OCIAttrGet(). */
-  /* get the number of columns in the table */
-  int numcols = 0;
-  OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&numcols, (ub4 *)0,
-    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError));
-    
-
-  /* get the handle to the column list of the table */
-  OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&collsthd, (ub4 *)0,
-    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA);
-    
-
-  /* go through the column list and retrieve the data-type of each column,
-  and then recursively describe column types. */
-  
-  for (int i = 1; i <= numcols; i++)
-  {
-    /* get parameter for column i */
-    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i));
-      
-
-    ub2 col_type;
-      OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_type, (ub4 *)0,
-      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError));
-
-    /* for example, get datatype for ith column */
-    wchar_t *col_name=NULL;
-    int col_name_len=0;
-    OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_name, (ub4 *)&col_name_len,
-      OCI_ATTR_NAME, OciConn->m_OciHpError));
-    
-    // Retrieve the column type name attribute 
-    wchar_t* col_type_name=NULL;
-    int col_type_name_len = 0;
-    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
-      (OCIError *) OciConn->m_OciHpError ));
-
-    /* Retrieve the length semantics for the column */
-    ub4 char_semantics = 0;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
-      (OCIError *) OciConn->m_OciHpError);
-
-    ub4 col_width = 0;
-    if (char_semantics)
-      /* Retrieve the column width in characters */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
-    else
-      /* Retrieve the column width in bytes */
-      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
-      (OCIError *) OciConn->m_OciHpError);
-      
-    // Retrieve the column precision
-    ub1 col_precision;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
-      (OCIError *) OciConn->m_OciHpError);
-      
-    // Retrieve the column size
-    ub1 col_scale;
-    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
-      (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
-      (OCIError *) OciConn->m_OciHpError);
-      
-    FdoDataType fdotype;      
-    bool isfdotype = c_FdoOra_API2::OraTypeToFdoDataType(col_type,col_precision,col_scale,col_width,fdotype);
-
-    if( isfdotype )
-    {            
-      
-      FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(col_name, L"");
-      dpd->SetDataType(fdotype);
-      dpd->SetLength(col_width);
-      dpd->SetPrecision(col_precision);
-      dpd->SetScale(col_scale);
-
-      PropCollection->Add(dpd);
-    }  
-    else
-    {
-    // perhaps it is geometry
-      if( col_type_name && wcscmp(col_type_name,L"SDO_GEOMETRY") == 0 )
-      {
-        FdoPtr<FdoPropertyDefinition> f = PropCollection->FindItem(col_name);
-        if( !f.p )
+    FdoType = FdoDataType_String;      
+    isfdotype=true;
+  } else
+      if( FdoCommonOSUtil::wcsicmp(OraType,L"NUMBER") == 0 || FdoCommonOSUtil::wcsicmp(OraType,L"DECIMAL") == 0 )
+      {            
+        if( Scale <= 0 && Precision>=1 ) 
         {
-          FdoPtr<c_KgOraSpatialContext> spcontext  = CreateSpatialContext(OciConn,Schema,TableName,col_name,SC_Collection);
-          FdoPtr<FdoGeometricPropertyDefinition> geomprop = FdoGeometricPropertyDefinition::Create(col_name,L"");
-          
-          if( spcontext.p )
+          if( Precision <= 4 )
           {
-            geomprop->SetSpatialContextAssociation(spcontext->GetName());
+            FdoType = FdoDataType_Int16;  
           }
-          PropCollection->Add(geomprop);
+          else 
+          {
+            if( Precision <= 9 )
+            {
+              FdoType = FdoDataType_Int32;  
+            }
+            else
+            {
+              if( Precision <= 19 ) // this is deliberately to be 19 so it stay as integer (not decimal)
+                // even 19 places can exceed int64
+              {
+                FdoType = FdoDataType_Int64;  
+              }
+              else
+              {
+                FdoType = FdoDataType_Double;  
+              }
+
+            }
+
+          }
         }
-        
-        
-      }
+        else FdoType = FdoDataType_Double;
+        isfdotype=true;
+      } else
+        if( FdoCommonOSUtil::wcsicmp(OraType,L"CHAR") == 0 )
+        {            
+          if( Length==1 ) FdoType = FdoDataType_Byte;
+          else FdoType = FdoDataType_String;
+          isfdotype=true;
+        } else
+        if( FdoCommonOSUtil::wcsicmp(OraType,L"INTEGER") == 0 )
+        {            
+          FdoType = FdoDataType_Int64;          
+        } else
+          if( FdoCommonOSUtil::wcsicmp(OraType,L"BINARY_FLOAT") == 0 )
+          {            
+            FdoType = FdoDataType_Single;    
+            isfdotype=true;
+          } else
+            if( FdoCommonOSUtil::wcsicmp(OraType,L"BINARY_DOUBLE") == 0 || (FdoCommonOSUtil::wcsicmp(OraType,L"DOUBLE") == 0) || (FdoCommonOSUtil::wcsicmp(OraType,L"FLOAT") == 0) )
+            {            
+              FdoType = FdoDataType_Double;    
+              isfdotype=true;
+            } else
+              if( FdoCommonOSUtil::wcsicmp(OraType,L"DATE") == 0 )
+              {            
+                FdoType = FdoDataType_DateTime;    
+                isfdotype=true;
+              } else
+                if( FdoCommonOSUtil::wcsicmp(OraType,L"BLOB") == 0 )
+                {            
+                  FdoType = FdoDataType_BLOB;    
+                  isfdotype=true;
+                } else
+                  if( FdoCommonOSUtil::wcsicmp(OraType,L"CLOB") == 0 )
+                  {            
+                    FdoType = FdoDataType_CLOB;    
+                    isfdotype=true;
+                  }  
+
+#ifdef _DEBUG
+                  if( !isfdotype ) 
+                  {
+                    isfdotype =isfdotype;
+                  }
+#endif
+
+                  return isfdotype;
+}//end of c_FdoOra_API3::OraTypeToFdoDataType
+
+bool c_FdoOra_API3::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*SqlColumns,bool BindOwner,const wchar_t* OraOwner
+                                        ,c_MapOraNameToFdoClass& MapOraToClass)
+{
+
+  int numcols=0;
+
+  c_Oci_Statement *stm = OciConn->CreateStatement(); 
+
+
+  if( BindOwner )
+  {
+    stm->Prepare(SqlColumns);
+
+    stm->BindString(1,OraOwner);
+    
+  }
+  else
+  {
+    stm->Prepare(SqlColumns);
+  }
+  
+  
+  c_MapOraNameToFdoClass::s_data * mapdata;
+  FdoClassDefinition* classdef;
+  //FdoKgOraClassDefinition* kgoraclassdef;
+  
+  std::wstring strnullable;
+  stm->ExecuteSelectAndDefine();
+  //ResultSet * rs = stm->executeQuery();
+  while( stm->ReadNext() )
+  {
+    //L" select a.owner, a.table_name, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale "    
+    std::wstring oraowner;
+    if( !stm->IsColumnNull(1) )
+     oraowner = stm->GetString(1);
+    else
+      oraowner=OraOwner ? OraOwner : L"";
+    
+    
+    if( !oraowner.empty() && !stm->IsColumnNull(2) && !stm->IsColumnNull(5) )
+    {      
       
+      std::wstring oratable = stm->GetString(2);
+      std::wstring orageom = stm->IsColumnNull(3) ? L"" : stm->GetString(3);
+      std::wstring fdoclassname = stm->IsColumnNull(4) ? L"" : stm->GetString(4);
+      
+      
+      
+      mapdata = MapOraToClass.FindClassDef(oraowner,oratable,orageom,fdoclassname);
+      if( mapdata )
+      {
+        classdef = mapdata->fdoclass;
+        FdoPtr<FdoPropertyDefinitionCollection> propscoll = classdef->GetProperties();
+        
+        if( !stm->IsColumnNull(5) )
+        {
+          std::wstring columnname = stm->GetString(5);
+          
+          bool isfdotype=false;
+          FdoDataType fdotype;
+          
+         FdoInt32 length=0,precision=0,scale=0;
+
+          // length          
+          if( !stm->IsColumnNull(7) )          
+          {
+            length = stm->GetInteger(7);
+          }
+          else length = 0;
+
+          // precision          
+          if( !stm->IsColumnNull(8) )          
+          {
+            precision = stm->GetInteger(8);
+          }
+          else precision = 0;
+
+          // scale   
+          if( !stm->IsColumnNull(9) )          
+          {
+            scale = stm->GetInteger(9);
+          }
+          else 
+          {
+            scale = -1; // not null because if 0 then it wil become integer but should be decimal withundefined scale
+          }
+
+          // nullable
+          bool isnullable=true;
+          if( !stm->IsColumnNull(10) )          
+          {
+            strnullable = stm->GetString(10);
+            if( !strnullable.empty() && strnullable.at(0)==L'N' )
+              isnullable=false;
+          }
+          
+
+          // data type
+          if( !stm->IsColumnNull(6) )
+          {
+            wstring datatype = stm->GetString(6);
+            
+
+            isfdotype = OraTypeToFdoDataType(datatype.c_str(),precision,scale,length,fdotype);
+
+            if( isfdotype )
+            {            
+              try
+              {
+              
+                FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(columnname.c_str(), L"");
+                dpd->SetDataType(fdotype);
+                dpd->SetLength(length);
+                dpd->SetPrecision(precision);
+                dpd->SetScale(scale);
+                dpd->SetNullable(isnullable);
+
+                propscoll->Add(dpd);
+              }
+              catch (FdoException* exp)
+              {
+                FdoStringP fstr = exp->GetExceptionMessage();
+                D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL.Error : '%s'",(const char*)fstr);      
+                exp->Release();
+              }
+            }
+            else
+            {
+              // perhaps it is geometry
+              if( wcscmp(datatype.c_str(),L"SDO_GEOMETRY") == 0 )
+              {
+                FdoPtr<FdoPropertyDefinition> f = propscoll->FindItem(columnname.c_str());
+                if( !f.p )
+                {
+                  try
+                  {
+                    FdoPtr<c_KgOraSpatialContext> spcontext;
+                    
+                    std::wstring sowner,stable;
+                    sowner = mapdata->spatial_owner;
+                    if( sowner.empty() )
+                      sowner = oraowner;
+                    stable = mapdata->spatial_table;
+                    if( stable.empty() )
+                      stable = oratable;
+                    
+                    
+                    bool isz,ism;  
+                    spcontext = CreateSpatialContext(OciConn,sowner.c_str(),stable.c_str(),columnname.c_str(),MapOraToClass.GetKgOraSpatialContextCollection(),isz,ism);
+                    FdoPtr<FdoGeometricPropertyDefinition> geomprop = FdoGeometricPropertyDefinition::Create(columnname.c_str(),L"");
+                    geomprop->SetHasElevation(isz);
+                    geomprop->SetHasMeasure(ism);
+
+                    if( spcontext.p )
+                    {
+                      geomprop->SetSpatialContextAssociation(spcontext->GetName());
+                    }
+                    propscoll->Add(geomprop);
+                  }
+                  catch (FdoException* exp)
+                  {
+                    exp->Release();
+                  }
+                }
+
+
+              }
+            }
+          }
+        }
+      }
+    }
+    numcols++;
+  }
+
+  OciConn->TerminateStatement (stm);
+
+  return numcols;
+
+    
+}//end of c_FdoOra_API3::DescribeTableProperties
+
+
+bool c_FdoOra_API3::DescribeTablePrimaryKey(c_Oci_Connection * OciConn,const wchar_t*SqlPkey,bool BindOwner,const wchar_t* OraOwner
+                                            ,c_MapOraNameToFdoClass& MapOraToClass)
+{
+
+  int numcols=0;
+
+  
+// go read columns for primary key
+if( SqlPkey && *SqlPkey )
+{
+  c_Oci_Statement *stm = OciConn->CreateStatement(); 
+  if( BindOwner )
+  {
+    stm->Prepare(SqlPkey);
+
+    stm->BindString(1,OraOwner);
+
+  }
+  else
+  {
+    stm->Prepare(SqlPkey);
+  }
+
+  std::wstring fulltable;
+  FdoClassDefinition* classdef;
+  FdoKgOraClassDefinition* kgoraclassdef;
+
+  std::vector<std::wstring> primarycols;
+  std::wstring strnullable;
+  stm->ExecuteSelectAndDefine();
+  //ResultSet * rs = stm->executeQuery();
+  while( stm->ReadNext() )
+  {
+    std::wstring oraowner;
+    if( !stm->IsColumnNull(1) )
+      oraowner = stm->GetString(1);
+    else
+      oraowner=OraOwner ? OraOwner : L"";
+      
+    //L" select a.owner, a.table_name, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale "    
+    if( !oraowner.empty() && !stm->IsColumnNull(2) && !stm->IsColumnNull(5)  )
+    {      
+      std::wstring oratable = stm->GetString(2);
+      std::wstring orageom = stm->IsColumnNull(3) ? L"" : stm->GetString(3);
+      std::wstring fdoclassname = stm->IsColumnNull(4) ? L"" : stm->GetString(4);
+      
+      fulltable  = oraowner;  
+      fulltable.append(L".");
+      fulltable.append(oratable);
+      
+      std::wstring geomcolumn = stm->GetString(3);
+
+      std::wstring pkcolumn = stm->GetString(5);
+      c_MapOraNameToFdoClass::s_data *sdata = MapOraToClass.FindClassDef(oraowner,oratable,orageom,fdoclassname);
+      if( sdata )
+      {
+        sdata->primarycolumns.push_back(pkcolumn);        
+      }
+    }
+    numcols++;
+  }
+
+  OciConn->TerminateStatement (stm);
+}
+
+  // now walk throu classes and applied found primary key collumns or ones which ahve been overried in KingFdoClass table
+  int cnt = MapOraToClass.GetCount();
+  for(int ind=0;ind<cnt;ind++)
+  {
+    c_MapOraNameToFdoClass::s_data* mapdata = MapOraToClass.Get(ind);
+    
+    std::vector<std::wstring> *pkcols=NULL;
+    if( mapdata && mapdata->overprimary.size()>0 )
+    {
+      pkcols = &mapdata->overprimary;
+    }
+    else
+    {
+      if( mapdata && mapdata->primarycolumns.size()>0 )
+      {
+        pkcols = &mapdata->primarycolumns;
+      }
+    }
+    
+    if( pkcols && pkcols->size() > 0 )
+    {
+      FdoPtr<FdoPropertyDefinitionCollection> fdoprops = mapdata->fdoclass->GetProperties();
+      bool isidentity_int=true;
+      std::vector<std::wstring>::iterator iter = pkcols->begin();
+      for ( iter = pkcols->begin( ) ; iter != pkcols->end( ) ; iter++ )
+      {
+        FdoStringP gstr = iter->c_str();
+        FdoPtr<FdoDataPropertyDefinition> entid = dynamic_cast<FdoDataPropertyDefinition*>(fdoprops->FindItem(gstr));
+        if( entid.p )
+        {            
+          entid->SetNullable(false);
+          FdoPtr<FdoDataPropertyDefinitionCollection> ic = mapdata->fdoclass->GetIdentityProperties();
+          ic->Add( entid );
+
+          FdoDataType datatype = entid->GetDataType();
+          if( (datatype == FdoDataType_Int16) || (datatype == FdoDataType_Int32) || (datatype == FdoDataType_Int64) )
+          {
+
+          }
+          else
+          {
+            isidentity_int = false;
+          }
+        }  
+      }
     }    
   }
 
-  if (dschp)
-    OCIHandleFree((dvoid *) dschp, OCI_HTYPE_DESCRIBE);
+  return numcols;
 
 
-    
-}
-catch(c_Oci_Exception* exc)
-{
-  if (dschp)
-    OCIHandleFree((dvoid *) dschp, OCI_HTYPE_DESCRIBE);
-  FdoStringP gstr = exc->GetErrorText();
-  delete exc;
-  throw FdoException::Create( gstr );
-}
-  return true;
-}//end of c_FdoOra_API2::DescribeTableProperties
+}//end of c_FdoOra_API3::DescribeTablePrimaryKey
+
 
 
 
@@ -912,7 +1249,7 @@ where a.srid = b.srid (+) and a.owner = :1 ;
 //FdoPtr<FdoFeatureSchemaCollection> g_FeatureSchemas(NULL);
 //FdoPtr<FdoKgOraPhysicalSchemaMapping>  g_PhysicalSchemaMapping(NULL);
 
-c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema
+c_KgOraSchemaDesc* c_FdoOra_API3::DescribeSchema(c_Oci_Connection* OciConn,const wchar_t* ConnectionOraSchema,const wchar_t* UseOraSchema
                            ,const wchar_t* KingFdoViews,const wchar_t* SdeSchema)
 {
       
@@ -948,7 +1285,7 @@ c_KgOraSchemaDesc* c_FdoOra_API2::DescribeSchema(c_Oci_Connection* OciConn,const
     FdoPtr<FdoKgOraClassCollection> phys_classes = phschema->GetClasses();
     
     bool bind_owner = false;
-    c_FdoOra_API2::DescribeSchemaSDE(OciConn,UseOraSchema, classes,phys_classes,sc_collection,aliasnum);
+    c_FdoOra_API3::DescribeSchemaSDE(OciConn,UseOraSchema, classes,phys_classes,sc_collection,aliasnum);
   }
 }
 
@@ -986,7 +1323,7 @@ if( OciConn->IsSdoTypes() )
     );
     */
     
-    std::wstring sqlquery ;
+    std::wstring sqlquery,sqlquery_columns,sqlquery_pkey ;
     int mainversion,subversion;
     c_Ora_API2::GetOracleVersion(OciConn,mainversion,subversion);
     
@@ -1021,13 +1358,26 @@ if( OciConn->IsSdoTypes() )
         */
         sqlquery = \
         L" select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
-        L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+        L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
         L" from all_sdo_geom_metadata a "
         L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         L" LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
         L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
         L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') ORDER BY a.owner, a.table_name ";
         
+        sqlquery_columns = \
+          L" select a.owner, a.table_name,a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+          L" from all_sdo_geom_metadata a "
+          L" LEFT JOIN all_tab_cols b ON a.owner = b.owner and a.table_name = b.table_name WHERE b.hidden_column='NO'";
+          
+          
+
+        sqlquery_pkey = L"SELECT a.owner, a.table_name, a.column_name,NULL, cols.column_name"
+          L" FROM all_sdo_geom_metadata a,all_constraints cons, all_cons_columns cols"
+          L" WHERE cons.table_name = a.table_name and cons.owner = a.owner"
+          L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner"
+          L" ORDER BY a.owner, a.table_name";
+          
        
       }
       else
@@ -1055,13 +1405,24 @@ if( OciConn->IsSdoTypes() )
         */
         sqlquery=\
         L" select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
-        L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+        L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
         L" from all_sdo_geom_metadata a "
         L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
         L" LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name "
         L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
         L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') order by a.owner, a.table_name";
         
+        sqlquery_columns = \
+          L" select a.owner, a.table_name,a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+          L" from all_sdo_geom_metadata a "
+          L" LEFT JOIN all_tab_cols b ON a.owner = b.owner and a.table_name = b.table_name WHERE b.hidden_column='NO'";
+          
+        sqlquery_pkey = L"SELECT a.owner, a.table_name,a.column_name,NULL, cols.column_name"
+          L" FROM all_sdo_geom_metadata a,all_constraints cons, all_cons_columns cols"
+          L" WHERE cons.table_name = a.table_name and cons.owner = a.owner"
+          L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner"
+          L" ORDER BY a.owner, a.table_name";          
+          
         isoracle9=true;
       }
       
@@ -1098,24 +1459,47 @@ if( OciConn->IsSdoTypes() )
         {
           sqlquery=\
           L" select NULL, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
-          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
           L" from user_sdo_geom_metadata a "
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN user_SDO_INDEX_INFO c ON  a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN user_SDO_INDEX_METADATA d ON c.index_name = d.sdo_index_name "
           L" LEFT JOIN user_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') order by a.table_name";
+          
+          sqlquery_columns = \
+            L" select NULL, a.table_name, a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+            L" from user_sdo_geom_metadata a "
+            L" LEFT JOIN user_tab_cols b ON a.table_name = b.table_name WHERE b.hidden_column='NO'";
+            
+          sqlquery_pkey = L"SELECT NULL, a.table_name, a.column_name,NULL, cols.column_name"
+            L" FROM user_sdo_geom_metadata a,user_constraints cons, user_cons_columns cols"
+            L" WHERE cons.table_name = a.table_name "
+            L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner"
+            L" ORDER BY a.table_name";            
         }
         else
         {
           sqlquery=\
           L" select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
-          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
           L" from all_sdo_geom_metadata a "
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN ALL_SDO_INDEX_INFO c ON  a.owner = c.table_owner and a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN ALL_SDO_INDEX_METADATA d ON c.sdo_index_owner = d.sdo_index_owner and c.index_name = d.sdo_index_name "
           L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
           L" where a.owner = :1 order by a.owner, a.table_name";
+          
+          sqlquery_columns = \
+            L" select a.owner, a.table_name,a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+            L" from all_sdo_geom_metadata a "
+            L" LEFT JOIN all_tab_cols b ON a.owner = b.owner and a.table_name = b.table_name "
+            L" where a.owner = :1 AND b.hidden_column='NO'";
+            
+          sqlquery_pkey = L"SELECT a.owner, a.table_name, a.column_name,NULL, cols.column_name"
+            L" FROM all_sdo_geom_metadata a,all_constraints cons, all_cons_columns cols"
+            L" WHERE a.owner=:1 and cons.table_name = a.table_name and cons.owner = a.owner"
+            L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner"
+            L" ORDER BY a.owner, a.table_name";  
           
           bind_owner = true;
         }
@@ -1154,20 +1538,31 @@ if( OciConn->IsSdoTypes() )
         {
           sqlquery=\
           L" select NULL, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
-          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
           L" from user_sdo_geom_metadata a "
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN user_SDO_INDEX_INFO c ON a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
           L" LEFT JOIN user_SDO_INDEX_METADATA d ON c.index_name = d.sdo_index_name "
-          L" LEFT JOIN user_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') order by a.table_name";
+          L" LEFT JOIN user_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "; // order by a.table_name";
           
+          sqlquery_columns = \
+            L" select NULL, a.table_name,a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+            L" from user_sdo_geom_metadata a "
+            L" LEFT JOIN user_tab_cols b ON a.table_name = b.table_name WHERE b.hidden_column='NO' ";
+            
+          sqlquery_pkey = L"SELECT NULL, a.table_name,a.column_name,NULL, cols.column_name"
+            L" FROM user_sdo_geom_metadata a,user_constraints cons, user_cons_columns cols"
+            L" WHERE cons.table_name = a.table_name "
+            L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner";
+            //L" ORDER BY a.table_name"; 
+            
           bind_owner = false;
         }
         else
         {
           sqlquery=\
           L" select a.owner, a.table_name, a.column_name, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
-          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12 "
+          L" ,NULL o1 ,NULL o2 ,NULL o3 ,NULL o4 ,NULL o5 ,NULL o6 ,NULL o7 ,NULL o8 ,NULL o9 ,NULL o10, NULL o111 ,NULL o12, NULL o13, NULL o14 "
           L" from all_sdo_geom_metadata a "
           L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
           L" LEFT JOIN ALL_SDO_INDEX_INFO c ON a.table_name = c.table_name and a.COLUMN_NAME = c.COLUMN_NAME  "
@@ -1175,6 +1570,18 @@ if( OciConn->IsSdoTypes() )
           L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
           L" where a.owner = :1 order by a.owner, a.table_name";
           
+          sqlquery_columns = \
+            L" select a.owner, a.table_name,a.column_name,NULL, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable "
+            L" from all_sdo_geom_metadata a "
+            L" LEFT JOIN all_tab_cols b ON a.owner = b.owner and a.table_name = b.table_name "
+            L" where a.owner = :1 AND b.hidden_column='NO'";
+            
+          sqlquery_pkey = L"SELECT a.owner, a.table_name,a.column_name,NULL, cols.column_name"
+            L" FROM all_sdo_geom_metadata a,all_constraints cons, all_cons_columns cols"
+            L" WHERE a.owner=:1 and cons.table_name = a.table_name and cons.owner = a.owner"
+            L" AND cons.constraint_type = 'P' AND cons.constraint_name = cols.constraint_name AND cons.owner = cols.owner"
+            L" ORDER BY a.owner, a.table_name";  
+            
           bind_owner = true;
         }
         isoracle9=true;
@@ -1188,7 +1595,7 @@ if( OciConn->IsSdoTypes() )
       if(false)
     #endif
     {
-      c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlquery.c_str(),bind_owner,ConnectionOraSchema,UseOraSchema,classes,phys_classes,sc_collection,aliasnum,isoracle9);
+      c_FdoOra_API3::DescribeSchemaSQL(OciConn,sqlquery.c_str(),sqlquery_columns.c_str(),sqlquery_pkey.c_str(),bind_owner,ConnectionOraSchema,UseOraSchema,classes,phys_classes,sc_collection,aliasnum,isoracle9);
     }
     
     
@@ -1239,7 +1646,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
     
     int mainversion,subversion;
     c_Ora_API2::GetOracleVersion(OciConn,mainversion,subversion);
-    std::wstring sqlstr;
+    std::wstring sqlstr,sqlstr_columns,sqlstr_pkey;
     
     // For FDO classes created from FDO View Table (king metadata table)
     // Oracle Schema connection parameter is irrelevant and not used
@@ -1247,13 +1654,15 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
     {
       if( mainversion >= 10 )
       {
-        std::wstring sqljoin;
+        std::wstring sqlfrom,sqljoin;
         
-        sqlstr = L" select k.fdo_ora_owner, k.fdo_ora_name, k.fdo_ora_geomcolumn, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
+        sqlfrom = L" select k.fdo_ora_owner, k.fdo_ora_name, k.fdo_ora_geomcolumn, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, d.SDO_ROOT_MBR  "
             L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
-            L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
+            L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ,k.FDO_SPATIALTABLE_OWNER ,k.FDO_SPATIALTABLE_NAME ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP fromtable = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        
+        sqlfrom = sqlfrom + (FdoString*)fromtable;
         
         sqljoin = L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -1262,21 +1671,29 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
+        sqlstr = sqlfrom + sqljoin;
         
+        // columns
+        sqlstr_columns = L" select k.fdo_ora_owner, k.fdo_ora_name,k.fdo_ora_geomcolumn, k.fdo_class_name, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable ";        
+        sqlstr_columns.append((FdoString*)fromtable);          
+        sqlstr_columns.append(L" LEFT JOIN all_tab_cols b ON k.fdo_ora_owner = b.owner and k.fdo_ora_name = b.table_name AND b.hidden_column='NO'  ");
        
        
+       // pkey query
+        sqlstr_pkey.clear(); // pkeys are read from main table
         
       }
       else
       {
-        std::wstring sqljoin;
+        std::wstring sqlfrom,sqljoin;
         
-        sqlstr = L" select k.fdo_ora_owner, k.fdo_ora_name, k.fdo_ora_geomcolumn, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
+        sqlfrom = L" select k.fdo_ora_owner, k.fdo_ora_name, k.fdo_ora_geomcolumn, a.srid, a.diminfo, b.CS_NAME, b.WKTEXT, c.index_name, d.sdo_layer_gtype, s.sequence_name, NULL SDO_ROOT_MBR "
               L" ,k.fdo_class_name, k.fdo_srid, k.fdo_diminfo, k.fdo_cs_name, k.fdo_wktext, k.fdo_layer_gtype, k.fdo_sequence_name, k.fdo_identity, k.fdo_sdo_root_mbr "
-              L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ";
+              L" ,k.fdo_point_x_column ,k.fdo_point_y_column ,k.fdo_point_z_column ,k.FDO_SPATIALTABLE_OWNER ,k.FDO_SPATIALTABLE_NAME  ";
         
-        FdoStringP sqlfrom = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        FdoStringP fromtable = FdoStringP::Format(L" FROM %s k ", KingFdoViews);
+        
+        sqlfrom = sqlfrom + (FdoString*)fromtable;
         
         sqljoin =  L" LEFT JOIN all_sdo_geom_metadata a ON  UPPER(k.FDO_SPATIALTABLE_OWNER) = a.owner and UPPER(k.FDO_SPATIALTABLE_NAME) = a.table_name and UPPER(k.FDO_SPATIALTABLE_GEOMCOLUMN) = a.column_name "
             L" LEFT JOIN MDSYS.CS_SRS b ON  a.srid = b.srid "
@@ -1285,15 +1702,22 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
             L" LEFT JOIN all_sequences s on s.sequence_name = CONCAT(a.table_name,'_FDOSEQ') "
             L" order by k.fdo_ora_owner, k.fdo_ora_name ";
         
-        sqlstr = sqlstr + (FdoString*)sqlfrom + sqljoin;
+        sqlstr = sqlfrom + sqljoin;
         
-      
+        // columns
+        sqlstr_columns = L" select k.fdo_ora_owner, k.fdo_ora_name, k.fdo_ora_geomcolumn,k.fdo_class_name, b.column_name, b.data_type, b.data_length, b.data_precision, b.data_scale, b.nullable ";        
+        sqlstr_columns.append((FdoString*)fromtable);          
+        sqlstr_columns.append(L" LEFT JOIN all_tab_cols b ON k.fdo_ora_owner = b.owner and k.fdo_ora_name = b.table_name AND b.hidden_column='NO'");
+
+
+        // pkey query
+        sqlstr_pkey.clear(); // pkeys are read from main table
       
       }
     }
     
       
-    c_FdoOra_API2::DescribeSchemaSQL(OciConn,sqlstr.c_str(),false,ConnectionOraSchema,NULL, classes,phys_classes,sc_collection,aliasnum,isoracle9);
+    c_FdoOra_API3::DescribeSchemaSQL(OciConn,sqlstr.c_str(),sqlstr_columns.c_str(),sqlstr_pkey.c_str(),false,ConnectionOraSchema,NULL, classes,phys_classes,sc_collection,aliasnum,isoracle9);
     
     
   }
@@ -1326,7 +1750,7 @@ if( OciConn->IsSdoTypes() && KingFdoViews && *KingFdoViews )
 
 
 /*
-void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t*SqlString,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
+void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t*SqlString,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
                                       ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9)
 {
   clock_t elog_t1=clock();
@@ -1463,7 +1887,9 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t*S
 
 
  // Test for coordinate system if exists and 
-c_KgOraSpatialContext* c_FdoOra_API2::CreateSpatialContext(c_Oci_Connection * OciConn,const wchar_t* Owner,const wchar_t* Table,const wchar_t* GeometryColumn,c_KgOraSpatialContextCollection* SC_Collection)
+c_KgOraSpatialContext* c_FdoOra_API3::CreateSpatialContext(c_Oci_Connection * OciConn,const wchar_t* Owner,const wchar_t* Table,const wchar_t* GeometryColumn
+      ,c_KgOraSpatialContextCollection* SC_Collection
+      ,bool& IsZ,bool& IsM)
 {
   std::wstring sqlstring;
   c_Oci_Statement * stm=NULL;
@@ -1482,6 +1908,7 @@ try
   
   stm->ExecuteSelectAndDefine();
   
+  IsZ=IsM=false;
   
   if( !stm->ReadNext() )
   {
@@ -1493,7 +1920,7 @@ try
     std::wstring ora_coord_sys_name,ora_coord_sys_wktext;
     
     bool ora_srid_isnull;
-    long ora_srid;
+    int ora_srid;
     ora_srid_isnull = stm->IsColumnNull(1);
     if( !ora_srid_isnull ) ora_srid = stm->GetInteger(1);
     else ora_srid = 0;
@@ -1504,6 +1931,24 @@ try
     {
       ora_dimlist = stm->GetSdoDimArray(2);
       //oracle::occi::getVector(occi_rs,5,ora_dimlist);
+      // set if Class has Z or M coordinate values
+      if( ora_dimlist.GetSize() >2 )
+      {
+        if( ora_dimlist.GetSize() == 3 )
+        {
+          c_SDO_DIM_ELEMENT dimelem = ora_dimlist.GetDimElement(2);
+          std::wstring dimname;
+          if( !dimelem.IsNullDimName() && (FdoCommonOSUtil::wcsicmp(dimelem.GetDimName(),L"M") == 0) )
+            IsM = true;
+          else
+            IsZ = true;  
+        }
+        else
+        {
+          IsZ = true;
+          IsM = true;
+        }
+      }
     }
 
     ora_coord_sys_name = stm->IsColumnNull(3) ? L"" : stm->GetString(3);
@@ -1558,7 +2003,7 @@ catch(c_Oci_Exception* ex)
 {
   FdoStringP gstr = ex->GetErrorText();
 #ifdef _KGORA_EXTENDED_LOG  
-  D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
+  D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
 #endif
   delete ex;
   if( stm )
@@ -1572,10 +2017,12 @@ catch(c_Oci_Exception* ex)
   
   OciConn->TerminateStatement(stm);
   return FDO_SAFE_ADDREF(spatial_context.p);
-}// end of c_FdoOra_API2::CreateSpatialContext
+}// end of c_FdoOra_API3::CreateSpatialContext
 
 
-void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* SqlString,bool BindOwner
+void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
+            ,const wchar_t* SqlTable,const wchar_t* SqlColumns,const wchar_t* SqlPkey
+            ,bool BindOwner
             ,const wchar_t* ConnectionOraSchema,const wchar_t* Owner
             ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
             ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum,bool IsOracle9      )
@@ -1584,12 +2031,15 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
   double time_total_columns=0.0,time_total_pkeys=0.0;
   int class_count=0;
   int rec_count=0;
+  c_MapOraNameToFdoClass maporatoclass;
+  maporatoclass.SetKgOraSpatialContextCollection(SC_Collection);
+  
   try
   {
     // Query Oracle for geometry tables 
 
     stm = OciConn->CreateStatement();
-    stm->Prepare(SqlString);
+    stm->Prepare(SqlTable);
     if( BindOwner && Owner )
     {
       stm->BindString(1,Owner);
@@ -1612,27 +2062,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     std::wstring override_coord_sys_name,override_coord_sys_wktext,override_layer_gtype;
     std::wstring override_point_x_col,override_point_y_col,override_point_z_col;
    
-   /*
-     
-    if( IsOracle9 )
-    {
-      occi_rs->setMaxColumnSize(11,512);
-    }      
-    occi_rs->setMaxColumnSize(12,512); 
-    occi_rs->setMaxColumnSize(13,512);
-    occi_rs->setMaxColumnSize(14,512);
-    occi_rs->setMaxColumnSize(15,512);
-    occi_rs->setMaxColumnSize(16,512);
-    occi_rs->setMaxColumnSize(17,512);
-    occi_rs->setMaxColumnSize(18,512);
-    occi_rs->setMaxColumnSize(19,512);
-    occi_rs->setMaxColumnSize(20,512);
-    occi_rs->setMaxColumnSize(21,512);
-    occi_rs->setMaxColumnSize(22,512);
-    occi_rs->setMaxColumnSize(23,512);
-    */
-    
-    
+    std::wstring override_spatial_owner,override_spatial_table;
     
     #ifdef _DEBUG
     c_Timer time_full;
@@ -1736,6 +2166,10 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
       override_point_z_col = stm->IsColumnNull(23) ? L"" : stm->GetString(23); //23. FDO_POINT_Z_COLUMN (varchar2, null ) if 3d point then it is defined
       
       
+      // fdo class from MYFDOCLASS can be based on view (on top of spatial table) and then i need spatial table owner and name to be able to 
+      // read spatial metada (user/all_sdo_geom_metadata) info for additional geometry fields in table
+      override_spatial_owner = stm->IsColumnNull(24) ? L"" : stm->GetString(24);
+      override_spatial_table = stm->IsColumnNull(25) ? L"" : stm->GetString(25);
       
       
       c_KgOraSridDesc orasriddesc;
@@ -1870,28 +2304,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
         
         spatial_context->ExpandExtent( env );
       }
-      
-      
-      // Delete ora objects as there are not needed any more
-      
-      
-      /*
-      for( int i=0;i<ora_dimlist.size();i++)
-      {
-        if( ora_dimlist[i] ) delete ora_dimlist[i];
-      }
-      ora_dimlist.clear();
-      
-      if(override_mbr )
-      {
-        delete override_mbr;
-      }
-      for( int i=0;i<override_dimlist.size();i++)
-      {
-        if( override_dimlist[i] ) delete override_dimlist[i];
-      }
-      override_dimlist.clear();
-      */
+
       
       if( ora_tableowner.length() > 0 )
         ora_fullname = ora_tableowner + L"." + ora_tablename;
@@ -2064,7 +2477,7 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
           }
         }
     ////////////////////////////////////////////////////////////////////////////////////////////
-    //  Add other non-geometry sttributes from table  
+    //  Add other non-geometry attributes from table  
     //////////////////////////////////////////////////////////////////////////////////////////// 
     
         // Because there could be table names in sdo_geom_metadata which doesn't exists as tables or views
@@ -2072,97 +2485,24 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
         bool table_exists=false;
         
 
-        #ifdef _DEBUG
-           c_Timer time_columns;
-           time_columns.Start();
-        #endif
+       
         
-        
-        table_exists = DescribeTableProperties(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pdc,SC_Collection);
-        
-        
-        #ifdef _DEBUG
-          time_total_columns += time_columns.Stop();
-        #endif        
-                
-                
-    ////////////////////////////////////////////////////////////////////////////////////////////
-    //  Check for primary keys
-    //////////////////////////////////////////////////////////////////////////////////////////// 
-        std::vector<std::wstring> pcols;
-        #ifdef _DEBUG
-          c_Timer time_pkeys;
-          time_pkeys.Start();
-        #endif
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //  Set Oracle Sequence
+        ////////////////////////////////////////////////////////////////////////////////////////////  
+        // If primary ky is one int column and if there is sequence TableName_FDOSEQ
+        // then this sequence will be use to populate identity id during inserts
+        std::wstring comb_sequence_name;        
+        comb_sequence_name = ora_sequence_name;
+        if( override_sequence_name.length() > 0 ) comb_sequence_name = override_sequence_name;
 
-        // ckeck for user defined column for identity
-        // if defined use it - if not look for primary keys on table
-        if( override_identity.length() > 0 )
+        if( (comb_sequence_name.length()>0) )
         {
-        // transfering from string to FdoStrinCollection and then back to string
-        // this was written in a hurry - could be better
-          FdoPtr<FdoStringCollection> strcol = FdoStringCollection::Create(override_identity.c_str(),L",");
-          long cnt = strcol->GetCount();
-          for(long ind=0;ind<cnt;ind++)
-          {
-            FdoStringP fdostr = strcol->GetString(ind);
-            std::wstring ss;
-            ss = fdostr;
-            pcols.push_back(ss);
-          }     
-        }
-        else
-        {
-          //if( BindOwner )
-          if( FdoCommonOSUtil::wcsicmp(ConnectionOraSchema, ora_tableowner.c_str()) != 0 )          
-            c_OCI_API::GetTablePkeyColumns(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pcols);
-          else
-            c_OCI_API::GetTablePkeyColumns(OciConn,NULL,ora_tablename.c_str(),pcols);
-        }
-        if( pcols.size() > 0 )
-        {
-          bool isidentity_int=true;
-          std::vector<std::wstring>::iterator iter = pcols.begin();
-          for ( iter = pcols.begin( ) ; iter != pcols.end( ) ; iter++ )
-          {
-            FdoStringP gstr = iter->c_str();
-            FdoPtr<FdoDataPropertyDefinition> entid = dynamic_cast<FdoDataPropertyDefinition*>(pdc->FindItem(gstr));
-            if( entid.p )
-            {            
-              entid->SetNullable(false);
-              FdoPtr<FdoDataPropertyDefinitionCollection> ic = fc->GetIdentityProperties();
-              ic->Add( entid );
-              
-              FdoDataType datatype = entid->GetDataType();
-              if( (datatype == FdoDataType_Int16) || (datatype == FdoDataType_Int32) || (datatype == FdoDataType_Int64) )
-              {
-                
-              }
-              else
-              {
-                isidentity_int = false;
-              }
-            }  
-          }
-        #ifdef _DEBUG
-          time_total_pkeys += time_pkeys.Stop();
-        #endif
-       ////////////////////////////////////////////////////////////////////////////////////////////
-       //  Set Oracle Sequence
-       ////////////////////////////////////////////////////////////////////////////////////////////  
-         // If primary ky is one int column and if there is sequence TableName_FDOSEQ
-         // then this sequence will be use to populate identity id during inserts
-          std::wstring comb_sequence_name;        
-          comb_sequence_name = ora_sequence_name;
-          if( override_sequence_name.length() > 0 ) comb_sequence_name = override_sequence_name;
-          
-          if( (pcols.size() == 1) && (isidentity_int = true) && (comb_sequence_name.length()>0) )
-          {
-            FdoStringP fdostr = comb_sequence_name.c_str();
-            phys_class->SetUseSequenceForIdentity(fdostr);
-          }          
-        }
-        else
+          FdoStringP fdostr = comb_sequence_name.c_str();
+          phys_class->SetUseSequenceForIdentity(fdostr);
+        }          
+        
+        /*else
         {  
                                                           
           FdoPtr<FdoDataPropertyDefinition> entid = dynamic_cast<FdoDataPropertyDefinition*>(pdc->FindItem(L"ENTITYID"));
@@ -2171,10 +2511,28 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
             FdoPtr<FdoDataPropertyDefinitionCollection> ic = fc->GetIdentityProperties();
             ic->Add( entid );
           }      
-        }
+        }*/
         
         FdoClasses->Add(fc);
         PhysClasses->Add( phys_class );
+        
+        std::vector<std::wstring> override_primarycolumns;
+        if( override_identity.length() > 0 )
+        {
+          // transfering from string to FdoStrinCollection and then back to string
+          // this was written in a hurry - could be better
+          FdoPtr<FdoStringCollection> strcol = FdoStringCollection::Create(override_identity.c_str(),L",");
+          long cnt = strcol->GetCount();
+          for(long ind=0;ind<cnt;ind++)
+          {
+            std::wstring ss = strcol->GetString(ind);
+            override_primarycolumns.push_back(ss);
+          }     
+        }
+        
+        // map oracle owner.table.geomcolumn (fdo_overriden_class_name ) to generated geometry
+        maporatoclass.Add(ora_tableowner,ora_tablename,ora_geom_colname,override_fdo_classname
+                          ,fc,phys_class,override_primarycolumns,override_spatial_owner,override_spatial_table);
       }
       
       if(ora_mbr )
@@ -2190,14 +2548,40 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     
     class_count = FdoClasses->GetCount();
     
-    OciConn->TerminateStatement(stm);
     
+    
+    // table describe
+    {
+      #ifdef _DEBUG
+            c_Timer time_columns;
+            time_columns.Start();
+      #endif
+            DescribeTableProperties(OciConn,SqlColumns, BindOwner,Owner ,maporatoclass);
+      #ifdef _DEBUG
+            time_total_columns += time_columns.Stop();
+      #endif        
+    }
+  // primary key describe
+    {
+    
+      std::vector<std::wstring> pcols;
+      #ifdef _DEBUG
+        c_Timer time_pkeys;
+        time_pkeys.Start();
+      #endif
+      DescribeTablePrimaryKey(OciConn,SqlPkey,BindOwner,Owner,maporatoclass);
+    #ifdef _DEBUG
+      time_total_pkeys += time_pkeys.Stop();
+    #endif        
+    }
+    
+    OciConn->TerminateStatement(stm);
   }
   catch(c_Oci_Exception* ex)
   {
     FdoStringP gstr = ex->GetErrorText();
      #ifdef _KGORA_EXTENDED_LOG  
-      D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
+      D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
      #endif
     delete ex;
     if( stm )
@@ -2208,9 +2592,9 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     
     throw FdoException::Create( gstr );
   }
-}//end of c_FdoOra_API2::DescribeSchemaSQL
+}//end of c_FdoOra_API3::DescribeSchemaSQL
 
-void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* Owner
+void c_FdoOra_API3::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* Owner
                                       ,FdoClassCollection* FdoClasses,FdoKgOraClassCollection* PhysClasses
                                       ,c_KgOraSpatialContextCollection* SC_Collection,long& AliasNum )
 {
@@ -2243,7 +2627,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
 	// 1SPATIAL START
 	#ifdef _KGORA_EXTENDED_LOG 
 		FdoStringP szSQLQuery = sqlquery.c_str();
-		D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSDE.Execute SQL: '%s'",(const char*)szSQLQuery);        
+		D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSDE.Execute SQL: '%s'",(const char*)szSQLQuery);        
 	#endif
 	// 1SPATIAL END
 
@@ -2604,7 +2988,7 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
   {
     FdoStringP gstr = ex->GetErrorText();
 #ifdef _KGORA_EXTENDED_LOG  
-    D_KGORA_ELOG_WRITE1("c_FdoOra_API2::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
+    D_KGORA_ELOG_WRITE1("c_FdoOra_API3::DescribeSchemaSQL.Error : '%s'",(const char*)gstr);      
 #endif
     delete ex;
     if( stm )
@@ -2615,10 +2999,10 @@ void c_FdoOra_API2::DescribeSchemaSDE(c_Oci_Connection * OciConn,const wchar_t* 
 
     throw FdoException::Create( gstr );
   }
-}//end of c_FdoOra_API2::DescribeSchemaSDE
+}//end of c_FdoOra_API3::DescribeSchemaSDE
 
 
-bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoStringP& OraType)
+bool c_FdoOra_API3::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,FdoStringP& OraType)
 {
   switch( Property->GetPropertyType() )
   {
@@ -2728,10 +3112,10 @@ bool c_FdoOra_API2::FdoPropertyToOraDataType(FdoPropertyDefinition* Property,Fdo
   
   
   return true;
-}//end of c_FdoOra_API2::FdoPropertyToOraDataType
+}//end of c_FdoOra_API3::FdoPropertyToOraDataType
 
 
-bool c_FdoOra_API2::CheckIfVersionedTableName(c_Oci_Connection * OciConn,const std::wstring& Owner,const std::wstring& ora_tablename,std::wstring& orig_tablename)
+bool c_FdoOra_API3::CheckIfVersionedTableName(c_Oci_Connection * OciConn,const std::wstring& Owner,const std::wstring& ora_tablename,std::wstring& orig_tablename)
 {
   orig_tablename = ora_tablename;
   
@@ -2752,3 +3136,172 @@ bool c_FdoOra_API2::CheckIfVersionedTableName(c_Oci_Connection * OciConn,const s
   }
   return false;
 }//end of 
+
+/* 
+  Utility function to create property definitions from table columns 
+*/
+bool c_FdoOra_API3::DescribeTableProperties(c_Oci_Connection * OciConn,const wchar_t*Schema,const wchar_t*TableName,FdoPropertyDefinitionCollection* PropCollection,c_KgOraSpatialContextCollection* SC_Collection)
+{
+  OCIParam *parmh = (OCIParam *) 0;         /* parameter handle */
+  OCIParam *collsthd = (OCIParam *) 0;      /* handle to list of columns */
+  OCIParam *colhd = (OCIParam *) 0;         /* column handle */
+  OCIDescribe *dschp = (OCIDescribe *)0;      /* describe handle */
+
+try
+{
+
+  OCIHandleAlloc((dvoid *)OciConn->m_OciHpEnvironment, (dvoid **)&dschp,
+    (ub4)OCI_HTYPE_DESCRIBE, (size_t)0, (dvoid **)0);
+
+  /* get the describe handle for the table */
+  std::wstring fullname(Schema);
+  fullname.append(L".");
+  fullname.append(TableName);
+  //int namelen = strlen(fullname.c_str());
+  
+  int status = OCIDescribeAny(OciConn->m_OciHpServiceContext, OciConn->m_OciHpError, (dvoid *)fullname.c_str(), wcslen(fullname.c_str())*sizeof(wchar_t), OCI_OTYPE_NAME, 0,
+    OCI_PTYPE_TABLE, dschp);
+    
+  if( status != OCI_SUCCESS )
+  {
+    int status =  OCIDescribeAny(OciConn->m_OciHpServiceContext, OciConn->m_OciHpError, (dvoid *)fullname.c_str(), wcslen(fullname.c_str())*sizeof(wchar_t), OCI_OTYPE_NAME, 0,
+    OCI_PTYPE_VIEW, dschp);
+    
+    if( status != OCI_SUCCESS )
+    {
+      return false;
+    }
+  }
+    
+
+  /* get the parameter handle */
+  OciConn->OciCheckError(OCIAttrGet((dvoid *)dschp, OCI_HTYPE_DESCRIBE, (dvoid *)&parmh, (ub4 *)0,
+    OCI_ATTR_PARAM, OciConn->m_OciHpError));
+    
+
+  /* The type information of the object, in this case, OCI_PTYPE_TABLE,
+  is obtained from the parameter descriptor returned by the OCIAttrGet(). */
+  /* get the number of columns in the table */
+  int numcols = 0;
+  OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&numcols, (ub4 *)0,
+    OCI_ATTR_NUM_COLS, OciConn->m_OciHpError));
+    
+
+  /* get the handle to the column list of the table */
+  OciConn->OciCheckError(OCIAttrGet((dvoid *)parmh, OCI_DTYPE_PARAM, (dvoid *)&collsthd, (ub4 *)0,
+    OCI_ATTR_LIST_COLUMNS, OciConn->m_OciHpError)==OCI_NO_DATA);
+    
+
+  /* go through the column list and retrieve the data-type of each column,
+  and then recursively describe column types. */
+  
+  for (int i = 1; i <= numcols; i++)
+  {
+    /* get parameter for column i */
+    OciConn->OciCheckError(OCIParamGet((dvoid *)collsthd, OCI_DTYPE_PARAM, OciConn->m_OciHpError, (dvoid **)&colhd, (ub4)i));
+      
+
+    ub2 col_type;
+      OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_type, (ub4 *)0,
+      OCI_ATTR_DATA_TYPE, OciConn->m_OciHpError));
+
+    /* for example, get datatype for ith column */
+    wchar_t *col_name=NULL;
+    int col_name_len=0;
+    OciConn->OciCheckError(OCIAttrGet((dvoid *)colhd, OCI_DTYPE_PARAM, (dvoid *)&col_name, (ub4 *)&col_name_len,
+      OCI_ATTR_NAME, OciConn->m_OciHpError));
+    
+    // Retrieve the column type name attribute 
+    wchar_t* col_type_name=NULL;
+    int col_type_name_len = 0;
+    OciConn->OciCheckError(OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid**) &col_type_name, (ub4 *) &col_type_name_len, (ub4) OCI_ATTR_TYPE_NAME,
+      (OCIError *) OciConn->m_OciHpError ));
+
+    /* Retrieve the length semantics for the column */
+    ub4 char_semantics = 0;
+    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid*) &char_semantics,(ub4 *) 0, (ub4) OCI_ATTR_CHAR_USED,
+      (OCIError *) OciConn->m_OciHpError);
+
+    ub4 col_width = 0;
+    if (char_semantics)
+      /* Retrieve the column width in characters */
+      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid*) &col_width, (ub4 *) 0, (ub4) OCI_ATTR_CHAR_SIZE,
+      (OCIError *) OciConn->m_OciHpError);
+    else
+      /* Retrieve the column width in bytes */
+      OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid*) &col_width,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
+      (OCIError *) OciConn->m_OciHpError);
+      
+    // Retrieve the column precision
+    ub1 col_precision=0;
+    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid*) &col_precision,(ub4 *) 0, (ub4) OCI_ATTR_PRECISION,
+      (OCIError *) OciConn->m_OciHpError);
+      
+    // Retrieve the column size
+    ub1 col_scale=0;
+    OCIAttrGet((dvoid*) colhd, (ub4) OCI_DTYPE_PARAM,
+      (dvoid*) &col_scale,(ub4 *) 0, (ub4) OCI_ATTR_SCALE,
+      (OCIError *) OciConn->m_OciHpError);
+      
+    FdoDataType fdotype;      
+    bool isfdotype = c_FdoOra_API3::OraTypeToFdoDataType(col_type,col_precision,col_scale,col_width,fdotype);
+
+    if( isfdotype )
+    {            
+      
+      FdoPtr<FdoDataPropertyDefinition> dpd = FdoDataPropertyDefinition::Create(col_name, L"");
+      dpd->SetDataType(fdotype);
+      dpd->SetLength(col_width);
+      dpd->SetPrecision(col_precision);
+      dpd->SetScale(col_scale);
+
+      PropCollection->Add(dpd);
+    }  
+    else
+    {
+    // perhaps it is geometry
+      if( col_type_name && wcscmp(col_type_name,L"SDO_GEOMETRY") == 0 )
+      {
+        FdoPtr<FdoPropertyDefinition> f = PropCollection->FindItem(col_name);
+        if( !f.p )
+        {
+          bool isz,ism;
+          FdoPtr<c_KgOraSpatialContext> spcontext  = CreateSpatialContext(OciConn,Schema,TableName,col_name,SC_Collection,isz,ism);
+          FdoPtr<FdoGeometricPropertyDefinition> geomprop = FdoGeometricPropertyDefinition::Create(col_name,L"");
+          geomprop->SetHasElevation(isz);
+          geomprop->SetHasMeasure(ism);
+          if( spcontext.p )
+          {
+            geomprop->SetSpatialContextAssociation(spcontext->GetName());
+          }
+          PropCollection->Add(geomprop);
+        }
+        
+        
+      }
+      
+    }    
+  }
+
+  if (dschp)
+    OCIHandleFree((dvoid *) dschp, OCI_HTYPE_DESCRIBE);
+
+
+    
+}
+catch(c_Oci_Exception* exc)
+{
+  if (dschp)
+    OCIHandleFree((dvoid *) dschp, OCI_HTYPE_DESCRIBE);
+  FdoStringP gstr = exc->GetErrorText();
+  delete exc;
+  throw FdoException::Create( gstr );
+}
+  return true;
+}//end of c_FdoOra_API3::DescribeTableProperties
+

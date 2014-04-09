@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_Ora_API2.h"
 
 c_KgOraCreateSpatialContext::c_KgOraCreateSpatialContext(c_KgOraConnection *Conn)

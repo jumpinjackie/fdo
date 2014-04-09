@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE32)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
@@ -68,7 +68,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE32)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win32\debug;..\..\..\..\Utilities\Common\lib\win32\debug;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
@@ -128,7 +128,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE64)\include&quot;"
 				PreprocessorDefinitions="WIN32;_WIN64;_DEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				GeneratePreprocessedFile="0"
 				MinimalRebuild="true"
@@ -151,7 +151,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE64)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\lib\win64\debug;..\..\..\..\Utilities\Common\lib\win64\debug;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
@@ -209,7 +209,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE32)\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
@@ -230,7 +230,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE32)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\;&quot;..\..\lib\Win32\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
@@ -289,7 +289,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE)\include&quot;"
+				AdditionalIncludeDirectories=".\;..\..\inc;..\..\..\..\FDO\Unmanaged\inc;..\..\..\..\Utilities\Common\inc;..\..\..\..\Fdo\Unmanaged\inc\fdo\Expression;&quot;$(FDOORACLE64)\include&quot;"
 				PreprocessorDefinitions="_WIN32;_WIN64;NDEBUG;_WINDOWS;_USRDLL;FDOKGORA_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_FDO_3_2;_FDO_3_5;_CRT_NON_CONFORMING_SWPRINTFS"
 				RuntimeLibrary="2"
 				TreatWChar_tAsBuiltInType="true"
@@ -310,7 +310,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalDependencies="oci.lib FDO.lib FDOCommon.lib FDOGeometry.lib FDOSpatial.lib FDONls.lib ProvidersCommon.lib KingOracleOverrides.lib"
-				AdditionalLibraryDirectories="&quot;$(FDOORACLE)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win64\Release\;..\..\..\..\Utilities\Common\Lib\Win64\Release\;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="&quot;$(FDOORACLE64)\lib\msvc&quot;;..\..\..\..\Fdo\Unmanaged\Lib\Win64\Release\;..\..\..\..\Utilities\Common\Lib\Win64\Release\;&quot;..\..\lib\Win64\$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
 				RandomizedBaseAddress="1"
@@ -1320,6 +1320,14 @@
 		</File>
 		<File
 			RelativePath=".\c_FdoOra_API2.h"
+			>
+		</File>
+		<File
+			RelativePath=".\c_FdoOra_API3.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\c_FdoOra_API3.h"
 			>
 		</File>
 		<File

@@ -78,6 +78,7 @@ class c_KgOraSpatialContextCollection : public FdoNamedCollection<c_KgOraSpatial
 public:
     c_KgOraSpatialContextCollection(void) {}
 
+    c_KgOraSpatialContext* GetDefaultSpatialContext();
     virtual ~c_KgOraSpatialContextCollection() {}
 
     virtual void Dispose() 
