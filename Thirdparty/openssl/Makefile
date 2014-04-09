@@ -4,7 +4,7 @@
 ## Makefile for OpenSSL
 ##
 
-VERSION=1.0.1e
+VERSION=1.0.1g
 MAJOR=1
 MINOR=0.1
 SHLIB_VERSION_NUMBER=1.0.0
@@ -12,9 +12,9 @@ SHLIB_VERSION_HISTORY=
 SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
 SHLIB_EXT=
-PLATFORM=dist
-OPTIONS= no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-store no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=dist
+PLATFORM=VC-WIN32
+OPTIONS= no-asm no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-store no-zlib no-zlib-dynamic
+CONFIGURE_ARGS=no-asm VC-WIN32
 SHLIB_TARGET=
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
@@ -59,17 +59,17 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= cc
-CFLAG= -O
+CC= cl
+CFLAG= -DOPENSSL_THREADS  -DDSO_WIN32 -W3 -Gs0 -GF -Gy -nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -D_CRT_SECURE_NO_DEPRECATE
 DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_STORE
 PEX_LIBS= 
 EX_LIBS= 
 EXE_EXT= 
 ARFLAGS= 
 AR= ar $(ARFLAGS) r
-RANLIB= /usr/bin/ranlib
+RANLIB= true
 NM= nm
-PERL= /usr/bin/perl
+PERL= perl
 TAR= tar
 TARFLAGS= --no-recursion --record-size=10240
 MAKEDEPPROG=makedepend
@@ -103,7 +103,7 @@ WP_ASM_OBJ= wp_block.o
 CMLL_ENC= camellia.o cmll_misc.o cmll_cbc.o
 MODES_ASM_OBJ= 
 ENGINES_ASM_OBJ= 
-PERLASM_SCHEME= 
+PERLASM_SCHEME= win32n
 
 # KRB5 stuff
 KRB5_INCLUDES=
@@ -304,7 +304,8 @@ libcrypto$(SHLIB_EXT): libcrypto.a fips_premain_dso$(EXE_EXT)
 			FIPSLD_CC="$(CC)"; CC=$(FIPSDIR)/bin/fipsld; \
 			export CC FIPSLD_CC FIPSLD_LIBCRYPTO; \
 		fi; \
-		$(MAKE) -e SHLIBDIRS=crypto build-shared; \
+		$(MAKE) -e SHLIBDIRS=crypto  CC="$${CC:-$(CC)}" build-shared && \
+		(touch -c fips_premain_dso$(EXE_EXT) || :); \
 	else \
 		echo "There's no support for shared libraries on this platform" >&2; \
 		exit 1; \
