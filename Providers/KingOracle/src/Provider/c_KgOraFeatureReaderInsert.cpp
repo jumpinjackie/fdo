@@ -347,11 +347,14 @@ bool c_KgOraFeatureReaderInsert::IsNull( const wchar_t *PropName )
     if( m_IsFirstReadNext || m_FeatureValues == NULL )
       throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::IsNull End of recordset!" );
 
+   
     try
     {
-        propval =  m_FeatureValues->GetItem( PropName );
-        if( propval == NULL )
-            throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::IsNull Property not found!" );
+        propval =  m_FeatureValues->FindItem( PropName );
+        if( propval.p == NULL )
+        {
+          return true;
+        }
     }
     catch( FdoException *e )
     {
@@ -359,13 +362,24 @@ bool c_KgOraFeatureReaderInsert::IsNull( const wchar_t *PropName )
         throw FdoCommandException::Create( L"c_KgOraFeatureReaderInsert::IsNull Property not found!" );
     }
 
-    FdoPtr<FdoValueExpression> val = propval->GetValue();
-    
+    // if not value in list for that proeprty name - consider as it is NULL value
+    FdoPtr<FdoValueExpression> val = propval->GetValue();    
     if( val.p == NULL )
         return true;
 
+    if( val->GetExpressionType() == FdoExpressionItemType_DataValue )
+    {
+      FdoDataValue* dataval = (FdoDataValue*)val.p;
+      return dataval->IsNull();
+    }
     
-    return false;
+    if( val->GetExpressionType() == FdoExpressionItemType_GeometryValue)
+    {
+      FdoGeometryValue* dataval = (FdoGeometryValue*)val.p;
+      return dataval->IsNull();
+    }
+        
+    return true;
 }
 
 

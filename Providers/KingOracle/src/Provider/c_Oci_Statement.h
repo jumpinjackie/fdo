@@ -43,7 +43,7 @@ public:
   c_BindValueBuffer(double Val) { m_String=NULL;m_SdoGeom=NULL; m_Double=Val; }
   c_BindValueBuffer(OCIDate Val) { m_String=NULL;m_SdoGeom=NULL; m_Date=Val; }
   c_BindValueBuffer(OCINumber Val) { m_String=NULL;m_SdoGeom=NULL; m_OciNumber=Val; }
-  c_BindValueBuffer(long Val) { m_String=NULL;m_SdoGeom=NULL; m_Long=Val; }
+  c_BindValueBuffer(FdoInt64 Val) { m_String=NULL;m_SdoGeom=NULL; m_Int64=Val; }
   c_BindValueBuffer(int Val) { m_String=NULL;m_SdoGeom=NULL; m_Int=Val; }
   c_BindValueBuffer(const wchar_t*Val) { m_String=NULL;m_SdoGeom=NULL; m_String=FdoCommonOSUtil::wcsdup((wchar_t*)Val); }
   c_BindValueBuffer(c_SDO_GEOMETRY*Val) { m_String=NULL;m_SdoGeom=NULL; m_SdoGeom=Val; }
@@ -55,7 +55,7 @@ public:
     double m_Double;
     OCIDate m_Date;
     OCINumber m_OciNumber;
-    long m_Long;
+    FdoInt64 m_Int64;
     int m_Int;
     
   };
@@ -100,10 +100,10 @@ class c_Oci_Statement
     void BindIntValue( int ColNumber,int Value );
     void BindIntValue( const wchar_t* Name,int Value );
 
-    void BindLong( int ColNumber,long* ValuePtr );
-    void BindLong( const wchar_t* Name,long* ValuePtr );
-    void BindLongValue( int ColNumber,long Value );
-    void BindLongValue( const wchar_t* Name,long Value );
+    void BindInt64( int ColNumber,FdoInt64* ValuePtr );
+    void BindInt64( const wchar_t* Name,FdoInt64* ValuePtr );
+    void BindInt64Value( int ColNumber,FdoInt64 Value );
+    void BindInt64Value( const wchar_t* Name,FdoInt64 Value );
 
     void BindOciNumber( int ColNumber,OCINumber* ValuePtr );
     void BindOciNumber( const wchar_t* Name,OCINumber* ValuePtr );
@@ -123,8 +123,8 @@ class c_Oci_Statement
     void BindDateValue( int ColNumber,OCIDate Value );
     void BindDateValue( const wchar_t* Name,OCIDate Value );
 
-    void BindSdoGeom( int ColNumber,c_SDO_GEOMETRY* ValuePtr ); // pointer will not be deleted, caller is responsible for pointer
-    void BindSdoGeom( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr );
+    void BindSdoGeomNoNull( int ColNumber,c_SDO_GEOMETRY* ValuePtr ); // pointer will not be deleted, caller is responsible for pointer
+    void BindSdoGeomNoNull( const wchar_t* Name,c_SDO_GEOMETRY* ValuePtr );
     void BindSdoGeomValue( int ColNumber,c_SDO_GEOMETRY* Value ); // pointer will be deleted by statement
     void BindSdoGeomValue( const wchar_t* Name,c_SDO_GEOMETRY* Value );
 
@@ -156,7 +156,7 @@ class c_Oci_Statement
     bool IsColumnNull(int ColNumber);
     
     int GetInteger(int ColNumber);
-    long GetLong( int ColNumber );
+    FdoInt64 GetInt64( int ColNumber );
     double GetDouble(int ColNumber);
     OCIDate* GetOciDate(int ColNumber);
     const wchar_t* GetString( int ColNumber );

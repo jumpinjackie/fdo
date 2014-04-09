@@ -48,31 +48,25 @@
 
 
 
-c_KgOraFilterProcessor::c_KgOraFilterProcessor(int OracleMainVersion,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoIdentifier* ClassId,const c_KgOraSridDesc& OraSridDesc)
-  : m_ExpressionProcessor( &m_StringBuff,KgOraSchemaDesc,ClassId,OraSridDesc ) // they will share same string buffer
+c_KgOraFilterProcessor::c_KgOraFilterProcessor(c_KgOraConnection* KgOraConn,c_KgOraSchemaDesc *KgOraSchemaDesc,FdoClassDefinition* ClassDef,const c_KgOraSridDesc& OraSrid)
+  : m_ExpressionProcessor( &m_StringBuff,KgOraSchemaDesc,ClassDef,OraSrid ) // they will share same string buffer
 {
-  m_OracleMainVersion = OracleMainVersion;
+  m_KgOraConn=KgOraConn;
+  
   m_KgOraSchemaDesc = KgOraSchemaDesc;
   FDO_SAFE_ADDREF(m_KgOraSchemaDesc.p);
   
-  m_ClassId = ClassId;
-  FDO_SAFE_ADDREF(m_ClassId.p);
   
-  if( m_KgOraSchemaDesc.p && m_ClassId.p )
+  m_ClassDef = FDO_SAFE_ADDREF(ClassDef);
+  
+  FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping;
+  FdoPtr<FdoKgOraClassDefinition> phys_class;
+  if( KgOraSchemaDesc && ClassDef )
   {
-    FdoPtr<FdoKgOraPhysicalSchemaMapping> phschemamapping = m_KgOraSchemaDesc->GetPhysicalSchemaMapping();
-    m_ClassDef = phschemamapping->FindByClassName( m_ClassId->GetName() );
-    
-    /*
-    if( phys_class && phys_class->GetIsPointGeometry() )
-    {      
-      AppendString( phys_class->GetOraTableAlias() );
-      AppendString( "." );
-    }
-    */
+    phschemamapping = KgOraSchemaDesc->GetPhysicalSchemaMapping();
+    m_phys_class = phschemamapping->FindByClassName( ClassDef->GetName() );
+
   }
-  
-  m_OraSridDesc = OraSridDesc;
   
 }
 
@@ -86,10 +80,16 @@ void c_KgOraFilterProcessor::ProcessFilter(FdoFilter* Filter)
   Filter->Process(this);
 }//end of c_KgOraFilterProcessor::ProcessFilter
 
-void c_KgOraFilterProcessor::ProcessExpresion( FdoExpression* Expr,bool IsSpatialCondition,bool IsEnvelopeIntersect)
+void c_KgOraFilterProcessor::ProcessGeomExpresion( FdoExpression* Expr,c_KgOraSridDesc& OraSrid)
 {  
-  Expr->Process( &m_ExpressionProcessor );
-   
+  m_ExpressionProcessor.SetOracleSrid(OraSrid);
+  Expr->Process( &m_ExpressionProcessor );   
+}
+
+void c_KgOraFilterProcessor::ProcessExpresion( FdoExpression* Expr )
+{  
+  //m_ExpressionProcessor.SetOracleSrid(OraSrid);
+  Expr->Process( &m_ExpressionProcessor );   
 }
 
 
@@ -256,8 +256,11 @@ FdoPtr<FdoIdentifier> geomprop = Filter.GetPropertyName();
 
 FdoPtr<FdoExpression> geomexp = Filter.GetGeometry();
 
+c_KgOraSridDesc orasrid;
+m_KgOraConn->GetOracleSridDesc(m_ClassDef,geomprop->GetName(),orasrid);
+
 // If class is from SDE then need to apply only primary check of min max
-if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
+if( m_phys_class.p && m_phys_class->GetIsSdeClass() )
 {
   FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
   if (geomval)
@@ -293,21 +296,21 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     double maxy = envelope->GetMaxY();
     
     // convert min max to sde integers
-    minx = (minx - m_OraSridDesc.m_SDE_FalseX) * m_OraSridDesc.m_SDE_XYUnit;
-    maxx = (maxx - m_OraSridDesc.m_SDE_FalseX) * m_OraSridDesc.m_SDE_XYUnit;
+    minx = (minx - orasrid.m_SDE_FalseX) * orasrid.m_SDE_XYUnit;
+    maxx = (maxx - orasrid.m_SDE_FalseX) * orasrid.m_SDE_XYUnit;
     
-    miny = (miny - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
-    maxy = (maxy - m_OraSridDesc.m_SDE_FalseY) * m_OraSridDesc.m_SDE_XYUnit;
+    miny = (miny - orasrid.m_SDE_FalseY) * orasrid.m_SDE_XYUnit;
+    maxy = (maxy - orasrid.m_SDE_FalseY) * orasrid.m_SDE_XYUnit;
 
 	// 1SPATIAL START
 	// for index
-	double gxmin = floor( minx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
-	double gxmax = floor( maxx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
-	double gymin = floor( miny / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
-	double gymax = floor( maxy / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize1()));
+	double gxmin = floor( minx / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize1()));
+	double gxmax = floor( maxx / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize1()));
+	double gymin = floor( miny / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize1()));
+	double gymax = floor( maxy / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize1()));
 	// 1SPATIAL END
 
-    wstring indexname = m_ClassDef->GetSdeIndexTableName();
+    wstring indexname = m_phys_class->GetSdeIndexTableName();
     indexname += L"_IX1";
     
     
@@ -326,12 +329,12 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
     
       	// 1SPATIAL START
       	FdoStringP szORFilter;
-    	if (m_ClassDef->GetSdeGSize2() > 0)
+    	if (m_phys_class->GetSdeGSize2() > 0)
       	{
-        		double gxmin2 = 16777216 + floor( minx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
-        		double gxmax2 = 16777216 + floor( maxx / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
-        		double gymin2 = 16777216 + floor( miny / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
-        		double gymax2 = 16777216 + floor( maxy / (m_OraSridDesc.m_SDE_XYUnit * m_ClassDef->GetSdeGSize2()));
+        		double gxmin2 = 16777216 + floor( minx / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize2()));
+        		double gxmax2 = 16777216 + floor( maxx / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize2()));
+        		double gymin2 = 16777216 + floor( miny / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize2()));
+        		double gymax2 = 16777216 + floor( maxy / (orasrid.m_SDE_XYUnit * m_phys_class->GetSdeGSize2()));
         
           		FdoPtr<FdoDoubleValue> fval_gxmin2 = FdoDoubleValue::Create(gxmin2);
         		FdoStringP param_gxmin2 = m_ExpressionProcessor.PushParameter(*fval_gxmin2);
@@ -347,7 +350,7 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
         
           		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= %s  AND  SP_.gx <= %s  AND  SP_.gy >= %s AND SP_.gy <= %s  /* GSize2=%.0lf */) "
           										,(const wchar_t*)param_gxmin2,(const wchar_t*)param_gxmax2,(const wchar_t*)param_gymin2,(const wchar_t*)param_gymax2
-          										, m_ClassDef->GetSdeGSize2() );
+          										, m_phys_class->GetSdeGSize2() );
         
           //		szORFilter = FdoStringP::Format(L" OR  (SP_.gx >= %.0lf  AND  SP_.gx <= %.0lf  AND  SP_.gy >= %.0lf AND SP_.gy <= %.0lf "
           //										L" /* minx2=%.0lf  m_OraSridDesc.m_SDE_XYUnit=%.0lf  RES=%.0lf  GSize2=%.0lf */ "
@@ -389,13 +392,13 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
         // 1SPATIAL END
         L" AND SP_.eminx <= %s AND SP_.eminy <= %s AND"
         L" SP_.emaxx >= %s AND SP_.emaxy >= %s) S_",
-        		indexname.c_str(),(const wchar_t*)m_ClassDef->GetSdeIndexTableName()
+        		indexname.c_str(),(const wchar_t*)m_phys_class->GetSdeIndexTableName()
         		// 1SPATIAL START
                 // ,maxx,maxy,minx,miny
         		// ,minx,maxx,miny,maxy,maxx,maxy,minx,miny
         		,(const wchar_t*)param_gxmin,(const wchar_t*)param_gxmax,(const wchar_t*)param_gymin,(const wchar_t*)param_gymax
-        		,m_OraSridDesc.m_SDE_XYUnit,m_ClassDef->GetSdeGSize1()
-        		,m_ClassDef->GetSdeGSize2()
+        		,orasrid.m_SDE_XYUnit,m_phys_class->GetSdeGSize1()
+        		,m_phys_class->GetSdeGSize2()
         		,(const wchar_t*)szORFilter
         		,(const wchar_t*)param_maxx,(const wchar_t*)param_maxy,(const wchar_t*)param_minx,(const wchar_t*)param_miny
         		// 1SPATIAL END
@@ -405,7 +408,7 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
 
 
     // this goes into WHERE part of SQL
-    sbuff = FdoStringP::Format(L"S_.sp_fid = %s.fid",m_ClassDef->GetSdeGeomTableAlias());
+    sbuff = FdoStringP::Format(L"S_.sp_fid = %s.fid",m_phys_class->GetSdeGeomTableAlias());
     m_SDE_WhereSpatialIndex = sbuff;
     
     AppendString(L"1=1"); // just to satisfy boolean operator. Spatial condition can be combined with other filters and 
@@ -451,14 +454,23 @@ if( m_ClassDef.p && m_ClassDef->GetIsSdeClass() )
   return;
 }
 
+
+
+FdoPtr<FdoPropertyDefinitionCollection> props = m_ClassDef->GetProperties();
+FdoPtr<FdoPropertyDefinition>  propdef = props->FindItem(geomprop->GetName());
+if( propdef.p && propdef->GetPropertyType()==FdoPropertyType_GeometricProperty )
+{
+  FdoGeometricPropertyDefinition* geompropdef = (FdoGeometricPropertyDefinition*)propdef.p;
+}
+
 switch( Filter.GetOperation() )
 {
   case FdoSpatialOperations_EnvelopeIntersects:
   {
-    if( m_ClassDef.p &&  m_ClassDef->GetIsPointGeometry() )
+    if( m_phys_class.p &&  m_phys_class->GetIsPointGeometry() )
     {
-      FdoStringP str_xcol =  m_ClassDef->GetPointXOraColumn();
-      FdoStringP str_ycol =  m_ClassDef->GetPointYOraColumn();
+      FdoStringP str_xcol =  m_phys_class->GetPointXOraColumn();
+      FdoStringP str_ycol =  m_phys_class->GetPointYOraColumn();
       
       FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
       if (geomval)
@@ -512,7 +524,7 @@ switch( Filter.GetOperation() )
      
       AppendString(D_FILTER_OPEN_PARENTH);
       AppendString(L"SDO_FILTER(");
-      ProcessExpresion( geomprop );
+      ProcessGeomExpresion( geomprop,orasrid );
       AppendString(L",");
       
       FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
@@ -522,10 +534,10 @@ switch( Filter.GetOperation() )
       }
       else
       {
-        ProcessExpresion( geomexp,true );
+        ProcessGeomExpresion( geomexp,orasrid );
       }
          
-      if( m_OracleMainVersion < 10 )
+      if( m_KgOraConn->GetOracleMainVersion() < 10 )
       {
         AppendString(L",'querytype = WINDOW')='TRUE'");
       }
@@ -540,10 +552,10 @@ switch( Filter.GetOperation() )
   break;
   case FdoSpatialOperations_Intersects:
   {
-    if( m_ClassDef.p &&  m_ClassDef->GetIsPointGeometry() )
+    if( m_phys_class.p &&  m_phys_class->GetIsPointGeometry() )
     {
-      FdoStringP str_xcol =  m_ClassDef->GetPointXOraColumn();
-      FdoStringP str_ycol =  m_ClassDef->GetPointYOraColumn();
+      FdoStringP str_xcol =  m_phys_class->GetPointXOraColumn();
+      FdoStringP str_ycol =  m_phys_class->GetPointYOraColumn();
       
       FdoGeometryValue* geomval = dynamic_cast<FdoGeometryValue*>(geomexp.p);
       if (geomval)
@@ -597,7 +609,7 @@ switch( Filter.GetOperation() )
       AppendString(D_FILTER_OPEN_PARENTH);
 
 	    
-      if( m_OracleMainVersion >= 10 )
+      if( m_KgOraConn->GetOracleMainVersion() >= 10 )
       {
         
         AppendString(L"SDO_ANYINTERACT(");
@@ -608,13 +620,13 @@ switch( Filter.GetOperation() )
       }
       
 	  
-      ProcessExpresion( geomprop );
+      ProcessGeomExpresion( geomprop,orasrid );
       AppendString(L",");
       
-      ProcessExpresion( geomexp,true );
+      ProcessGeomExpresion( geomexp,orasrid);
       
       
-      if( m_OracleMainVersion >= 10 )
+      if( m_KgOraConn->GetOracleMainVersion() >= 10 )
       {
         AppendString(L")='TRUE'");
       }
@@ -637,9 +649,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=CONTAINS')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -651,9 +663,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=OVERLAPBDYDISJOINT')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -663,9 +675,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=ANYINTERACT')='FALSE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -676,9 +688,9 @@ switch( Filter.GetOperation() )
     {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=OVERLAPBDYINTERSECT')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -690,9 +702,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=TOUCH')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -704,9 +716,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=COVERS')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -718,9 +730,9 @@ switch( Filter.GetOperation() )
   {
     AppendString(D_FILTER_OPEN_PARENTH);
     AppendString(L"SDO_RELATE(");
-    ProcessExpresion( geomprop );
+    ProcessGeomExpresion( geomprop,orasrid );
     AppendString(L",");
-    ProcessExpresion( geomexp,true );
+    ProcessGeomExpresion( geomexp,orasrid );
     AppendString(L",'mask=COVERDBY')='TRUE'");
     AppendString(D_FILTER_CLOSE_PARENTH);
   }
@@ -732,9 +744,9 @@ switch( Filter.GetOperation() )
   {
       AppendString(D_FILTER_OPEN_PARENTH);
       AppendString(L"SDO_RELATE(");
-      ProcessExpresion( geomprop );
+      ProcessGeomExpresion( geomprop,orasrid );
       AppendString(L",");
-      ProcessExpresion( geomexp,true );
+      ProcessGeomExpresion( geomexp,orasrid );
       AppendString(L",'mask=INSIDE')='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
@@ -748,9 +760,9 @@ switch( Filter.GetOperation() )
     {
       AppendString(D_FILTER_OPEN_PARENTH);
       AppendString(L"SDO_RELATE(");
-      ProcessExpresion( geomprop );
+      ProcessGeomExpresion( geomprop,orasrid );
       AppendString(L",");
-      ProcessExpresion( geomexp,true );
+      ProcessGeomExpresion( geomexp,orasrid );
       AppendString(L",'mask=EQUAL')='TRUE'");
       AppendString(D_FILTER_CLOSE_PARENTH);
     }
@@ -767,6 +779,9 @@ void c_KgOraFilterProcessor::ProcessDistanceCondition(FdoDistanceCondition& Filt
 {
 FdoPtr<FdoIdentifier> geomprop = Filter.GetPropertyName();
 
+c_KgOraSridDesc orasrid;
+m_KgOraConn->GetOracleSridDesc(m_ClassDef,geomprop->GetName(),orasrid);
+
 FdoPtr<FdoExpression> geomval = Filter.GetGeometry();
 double dist = Filter.GetDistance();
 switch( Filter.GetOperation() )
@@ -779,7 +794,7 @@ switch( Filter.GetOperation() )
     AppendString(L"SDO_WITHIN_DISTANCE(");
     ProcessExpresion( geomprop );
     AppendString(L",");
-    ProcessExpresion( geomval );
+    ProcessGeomExpresion( geomval,orasrid );
     FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
     AppendString((FdoString*)tmpbuff);
     AppendString(L")='TRUE'");
@@ -792,7 +807,7 @@ switch( Filter.GetOperation() )
     AppendString(L"SDO_WITHIN_DISTANCE(");
     ProcessExpresion( geomprop );
     AppendString(L",");
-    ProcessExpresion( geomval );
+    ProcessGeomExpresion( geomval,orasrid );
     FdoStringP tmpbuff = FdoStringP::Format(L",'distance=%.6lf'",dist);
     AppendString((FdoString*)tmpbuff);
     AppendString(L")='FALSE'");

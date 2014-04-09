@@ -19,7 +19,7 @@
 
 #include "c_OCI_API.h"
 #include "c_Ora_API2.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_KgOraSchemaDesc.h"
 #include "c_KgOraSchemaPool.h"
 #include "c_LogAPI.h"
@@ -31,6 +31,7 @@
 
 #include <../Message/KgOraMessageStatic.h>
 #include <../Message/inc/KgOraMessage.h>
+#include "c_FdoOra_API3.h"
 
 #ifdef _WIN32
 
@@ -38,7 +39,11 @@ static wchar_t g_AppFileName[MAX_PATH];
 static wchar_t g_HomeDir[MAX_PATH];
 wchar_t g_LogFileName[MAX_PATH];
 
-#define D_ENABLE_SCHEMA_POOL 1
+//#ifdef _DEBUG
+//  #define D_ENABLE_SCHEMA_POOL 1
+//#else
+//  #define D_ENABLE_SCHEMA_POOL 1
+//#endif
 
 //wchar_t g_WcharBuff1024[1024+1];
 
@@ -158,8 +163,7 @@ FdoIConnectionCapabilities* c_KgOraConnection::GetConnectionCapabilities ()
 /// <returns>Returns schema capabilities</returns> 
 FdoISchemaCapabilities* c_KgOraConnection::GetSchemaCapabilities ()
 {
-  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetSchemaCapabilities");
-  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetSchemaCapabilities",m_ConnNo);
+  // D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetSchemaCapabilities",m_ConnNo);
     return (new c_KgOraSchemaCapabilities ());
 }
 
@@ -167,7 +171,7 @@ FdoISchemaCapabilities* c_KgOraConnection::GetSchemaCapabilities ()
 /// <returns>Returns the command capabilities</returns> 
 FdoICommandCapabilities* c_KgOraConnection::GetCommandCapabilities ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetCommandCapabilities");
+  // D_KGORA_ELOG_WRITE1("c_KgOraConnection::GetCommandCapabilities",m_ConnNo);
     return (new c_KgOraCommandCapabilities ());
 }
 
@@ -175,7 +179,7 @@ FdoICommandCapabilities* c_KgOraConnection::GetCommandCapabilities ()
 /// <returns>Returns the filter capabilities</returns> 
 FdoIFilterCapabilities* c_KgOraConnection::GetFilterCapabilities ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetFilterCapabilities");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetFilterCapabilities");
     return (new c_KgOraFilterCapabilities ());
 }
 
@@ -183,7 +187,7 @@ FdoIFilterCapabilities* c_KgOraConnection::GetFilterCapabilities ()
 /// <returns>Returns the expression capabilities</returns> 
 FdoIExpressionCapabilities* c_KgOraConnection::GetExpressionCapabilities ()
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetExpressionCapabilities");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetExpressionCapabilities");
     return (new c_KgOraExpressionCapabilities ());
 }
 
@@ -191,7 +195,7 @@ FdoIExpressionCapabilities* c_KgOraConnection::GetExpressionCapabilities ()
 /// <returns>Returns the raster capabilities</returns> 
 FdoIRasterCapabilities* c_KgOraConnection::GetRasterCapabilities (void)
 {
-  D_KGORA_ELOG_WRITE("c_KgOraConnection::GetRasterCapabilities");
+  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetRasterCapabilities");
     return (new c_KgOraRasterCapabilities ());
 }
 
@@ -215,8 +219,8 @@ FdoIGeometryCapabilities* c_KgOraConnection::GetGeometryCapabilities()
 /// <returns>Returns the connection string</returns> 
 FdoString* c_KgOraConnection::GetConnectionString ()
 {
-  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionString");
-  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionString",m_ConnNo);
+  
+  // D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionString",m_ConnNo);
     return (m_ConnectionString);
 }
 
@@ -246,8 +250,8 @@ void c_KgOraConnection::SetConnectionString (FdoString* value)
 /// <returns>Returns the connection info</returns> 
 FdoIConnectionInfo* c_KgOraConnection::GetConnectionInfo ()
 {
-  //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionInfo ");
-  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionInfo",m_ConnNo);
+  
+  // D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionInfo",m_ConnNo);
     if( m_ConnectionInfo == NULL )
         m_ConnectionInfo = new c_KgOraConnectionInfo ( this );
     return FDO_SAFE_ADDREF(m_ConnectionInfo.p);
@@ -258,7 +262,7 @@ FdoIConnectionInfo* c_KgOraConnection::GetConnectionInfo ()
 FdoConnectionState c_KgOraConnection::GetConnectionState ()
 {
   //D_KGORA_ELOG_WRITE("c_KgOraConnection::GetConnectionState ");
-  D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionState",m_ConnNo);
+  //D_KGORA_ELOG_WRITE1("c_KgOraConnection%d::GetConnectionState",m_ConnNo);
     return (m_ConnectionState);
 }
 
@@ -617,16 +621,52 @@ c_KgOraSpatialContextCollection* c_KgOraConnection::GetSpatialContexts ( bool bD
 }
 
 
-bool c_KgOraConnection::GetOracleSridDesc(FdoGeometricPropertyDefinition* GeomProp,c_KgOraSridDesc& OraSridDesc)
+bool c_KgOraConnection::GetOracleSridDesc(FdoGeometricPropertyDefinition* GeomProp,c_KgOraSridDesc& OraSrid)
 {
   FdoString *csname = GeomProp->GetSpatialContextAssociation();
+  if( !csname )
+    return false;
+    
   FdoPtr<c_KgOraSpatialContextCollection> sccol = GetSpatialContexts();
   
   FdoPtr<c_KgOraSpatialContext> sc = sccol->FindItem(csname);
   
-  if( !sc.p ) return false;
+  if( !sc.p ) 
+  {
+    // Now test if
+    FdoStringP name = csname;
+    FdoStringP temp = name.Mid(0,10);
+    if( (temp.ICompare("OracleSrid") == 0) )
+    {
+      FdoStringP temp = name.Mid(10,name.GetLength()-10);
+      OraSrid.m_OraSrid = temp.ToLong();
+
+
+      FdoStringP wkt =  sc->GetCoordinateSystemWkt();        
+      OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+    }
+    else
+    {
+      FdoStringP name = sc->GetCoordinateSystem();
+      FdoStringP temp = name.Mid(0,10);
+      if( (temp.ICompare("OracleSrid") == 0) )
+      {
+        FdoStringP temp = name.Mid(10,name.GetLength()-10);
+        OraSrid.m_OraSrid = temp.ToLong();
+
+        FdoStringP wkt =  sc->GetCoordinateSystemWkt();                   
+        OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+  else
+    OraSrid = sc->GetOraSridDesc();
   
-  OraSridDesc = sc->GetOraSridDesc();
+  
   return true;
   
 }//end of c_KgOraConnection::GetOracleSridDesc
@@ -644,52 +684,22 @@ bool c_KgOraConnection::GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSr
   
   if( !geomprop.p ) return false;
   
-  
-  FdoString *csname = geomprop->GetSpatialContextAssociation();
-  FdoPtr<c_KgOraSpatialContextCollection> sccol = GetSpatialContexts();
-  
-  
-  
-    
-  FdoPtr<c_KgOraSpatialContext> sc = sccol->FindItem(csname);
-  
-  if( !sc.p ) 
-  {
-    // Now test if
-    FdoStringP name = csname;
-    FdoStringP temp = name.Mid(0,10);
-    if( (temp.ICompare("OracleSrid") == 0) )
-    {
-      FdoStringP temp = name.Mid(10,name.GetLength()-10);
-      OraSrid.m_OraSrid = temp.ToLong();
-      
-         
-      FdoStringP wkt =  sc->GetCoordinateSystemWkt();        
-      OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
-    }
-    else
-    {
-      FdoStringP name = sc->GetCoordinateSystem();
-      FdoStringP temp = name.Mid(0,10);
-      if( (temp.ICompare("OracleSrid") == 0) )
-      {
-        FdoStringP temp = name.Mid(10,name.GetLength()-10);
-        OraSrid.m_OraSrid = temp.ToLong();
-           
-        FdoStringP wkt =  sc->GetCoordinateSystemWkt();                   
-        OraSrid.m_IsGeodetic = c_Ora_API2::IsGeodeticCoordSystem(wkt); // TODO: it should return real value
-      }
-      else
-      {
-        return false;
-      }
-    }
-  }
-  else
-    OraSrid = sc->GetOraSridDesc();
-  return true;
+  return GetOracleSridDesc(geomprop,OraSrid);
   
 }//end of c_KgOraConnection::GetOracleSrid
+
+bool c_KgOraConnection::GetOracleSridDesc( FdoClassDefinition* ClassDef,FdoString* PropName,c_KgOraSridDesc& OraSrid )
+{
+  FdoPtr<FdoPropertyDefinitionCollection> props = ClassDef->GetProperties();
+  FdoPtr<FdoPropertyDefinition> prop = props->FindItem(PropName);
+  if( prop.p && prop->GetPropertyType()==FdoPropertyType_GeometricProperty )
+  {
+    FdoGeometricPropertyDefinition* geompropdef = (FdoGeometricPropertyDefinition*)prop.p;
+    return GetOracleSridDesc(geompropdef,OraSrid);
+  }
+  
+  return false;
+}//end of c_KgOraConnection::GetOracleSridDesc
 
 c_Oci_Statement* c_KgOraConnection::OCI_CreateStatement()
 {
@@ -729,11 +739,11 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
   // Bug is in MgServerGetFeatures::SerializeToXml(FdoClassDefinition* classDef) which will remove class from schema 
   // and move class to temporary schema to be serialized.
   // Problem also could happen when provider enables multiple commands per connection or when schemas are shared across connections (schema pooling).
-  #ifdef false // D_ENABLE_SCHEMA_POOL
+  #ifdef D_ENABLE_SCHEMA_POOL  // - disabled again - it seems problems with FindClass in multithread; I have enabled again schema for use provider in geosx
     m_SchemaDesc = c_KgOraSchemaPool::GetSchemaData(this);
     if( !m_SchemaDesc.p )
     {
-      m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str()
+      m_SchemaDesc = c_FdoOra_API3::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str()
                       ,m_FdoViewsTable.c_str(),m_SdeSchema.c_str());
       if( m_SchemaDesc.p )
       {
@@ -741,8 +751,8 @@ c_KgOraSchemaDesc* c_KgOraConnection::GetSchemaDesc()
       }
     }
   
-  #else
-    m_SchemaDesc = c_FdoOra_API2::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str(),m_SdeSchema.c_str());
+  #else    
+    m_SchemaDesc = c_FdoOra_API3::DescribeSchema(this->GetOciConnection(),m_OraConnectionUserName.c_str(),m_OraSchemaName.c_str(),m_FdoViewsTable.c_str(),m_SdeSchema.c_str());
   #endif
   }
   return FDO_SAFE_ADDREF(m_SchemaDesc.p);

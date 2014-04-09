@@ -17,6 +17,8 @@ public:
   static FdoIConnection* OpenNanaimoConnection_10_2();
   static FdoIConnection* OpenUnitTestConn_10_2_SDE();
   static FdoIConnection* OpenUnitTestConnection_Elektro();
+  
+  static FdoIConnection* OpenUnitTestConnection_DeeoAmazon();
 };
 
 #endif

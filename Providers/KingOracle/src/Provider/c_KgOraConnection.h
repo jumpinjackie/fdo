@@ -246,6 +246,7 @@ public:
     
     bool GetOracleSridDesc(FdoGeometricPropertyDefinition* GeomProp,c_KgOraSridDesc& OraSridDesc);
     bool GetOracleSridDesc(FdoClassDefinition* ClassDef,c_KgOraSridDesc& OraSrid);
+    bool GetOracleSridDesc(FdoClassDefinition* ClassDef,FdoString* PropName,c_KgOraSridDesc& OraSrid);
     
     int GetOracleMainVersion() { return m_OracleMainVersion; };
 	  int GetOracleSubVersion() { return m_OracleSubVersion; }

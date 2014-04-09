@@ -70,7 +70,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win32\Debug\;..\..\..\..\Utilities\Common\Lib\Win32\Debug\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -156,7 +155,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
-				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win64\Debug\;..\..\..\..\Utilities\Common\Lib\Win64\Debug\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -245,7 +243,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
-				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win32\Release\;..\..\..\..\Utilities\Common\Lib\Win32\Release\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
@@ -337,7 +334,6 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="FDO.lib FDOCommon.lib ProvidersCommon.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
-				LinkIncremental="0"
 				AdditionalLibraryDirectories="..\..\..\..\Fdo\Unmanaged\Lib\Win64\Release\;..\..\..\..\Utilities\Common\Lib\Win64\Release\"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"

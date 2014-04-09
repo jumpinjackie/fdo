@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 #include "c_KgOraSQLCommand.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 
 
 c_KgOraSQLCommand::c_KgOraSQLCommand(c_KgOraConnection* Connection) : c_KgOraFdoCommand<FdoISQLCommand>(Connection)
@@ -87,7 +87,7 @@ FdoInt32 c_KgOraSQLCommand::ExecuteNonQuery()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API2::SetOracleStatementData(oci_stm,ind+1, dataval);
+          c_FdoOra_API3::SetOracleStatementData(oci_stm,ind+1, dataval);
         }
       }
     }
@@ -142,7 +142,7 @@ FdoISQLDataReader* c_KgOraSQLCommand::ExecuteReader()
         FdoDataValue* dataval = dynamic_cast<FdoDataValue*>(lval.p);
         if( dataval )
         {    
-          c_FdoOra_API2::SetOracleStatementData(oci_stm,ind+1, dataval);
+          c_FdoOra_API3::SetOracleStatementData(oci_stm,ind+1, dataval);
         }
       }
     }
