@@ -803,8 +803,8 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
@@ -818,8 +818,8 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
@@ -833,8 +833,8 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win32\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
@@ -848,8 +848,8 @@ copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\VC9\Debug\XalanMessages_1_11D.dll
 copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_thread-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_date_time-vc110-mt-gd-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-1_54.dll $(OutDir)
-copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_system-vc110-mt-gd-1_54.dll $(OutDir)
+copy $(FDOTHIRDPARTY)\boost\stage\win64\debug\lib\boost_chrono-vc110-mt-gd-1_54.dll $(OutDir)
 copy $(FDOGDAL)\bin\win64\debug\gdal110.dll $(OutDir)
 echo "delete me please"&gt;$(OutDir)CopyThirdparty.ilk
 </Command>
