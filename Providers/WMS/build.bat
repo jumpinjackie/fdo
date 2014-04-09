@@ -71,6 +71,7 @@ goto custom_error
 SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
 if "%2"=="debug" SET TYPEBUILDPATH=dbg
+if "%2"=="debug" SET TYPEBUILDTHRPATH=-gd
 if "%2"=="debug" goto next_param
 goto custom_error
 
@@ -161,10 +162,10 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WmsProvider.pdb" "%FDOBINPATH%"
 copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.dll" "%FDOBINPATH%"
 copy /y "Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.WMS.Overrides.pdb" "%FDOBINPATH%"
 copy /y "Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\WMSOverrides.lib" "%FDOLIBPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
 
 echo copy header files
 xcopy /S /C /Q /R /Y Inc\WMS\*.h "%FDOINCPATH%\WMS\"
