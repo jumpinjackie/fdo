@@ -33,7 +33,6 @@ class WmsTestSelect : public WmsTests
 #ifdef _FDO_RUN_INTERNAL_TEST		
     CPPUNIT_TEST (testServer1);
     CPPUNIT_TEST (testNestedClip);
-    CPPUNIT_TEST (testGetBounds);
 #if 0
     // NOTE: disabled because the server cannot connect
     CPPUNIT_TEST (testHttpBasicAuthentification);
@@ -51,6 +50,7 @@ class WmsTestSelect : public WmsTests
 
 #if 0
     // NOTE: need to replace server http://wms.jpl.nasa.gov/wms.cgi
+    CPPUNIT_TEST (testGetBounds);
     CPPUNIT_TEST (testMultiLayers);
     CPPUNIT_TEST (testNASAServer);
     CPPUNIT_TEST (testNASAServer2);
