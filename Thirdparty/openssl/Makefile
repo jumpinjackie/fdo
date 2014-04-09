@@ -270,7 +270,8 @@ reflect:
 	@[ -n "$(THIS)" ] && $(CLEARENV) && $(MAKE) $(THIS) -e $(BUILDENV)
 
 sub_all: build_all
-build_all: build_libs build_apps build_tests build_tools
+#build_all: build_libs build_apps build_tests build_tools
+build_all: build_libs build_apps build_tools
 
 build_libs: build_crypto build_ssl build_engines
 
