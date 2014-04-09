@@ -68,7 +68,9 @@ goto custom_error
 
 :get_conf 
 SET TYPEBUILD=%2
+if "%2"=="release" SET TYPEBUILDTHRPATH=
 if "%2"=="release" goto next_param
+if "%2"=="debug" SET TYPEBUILDTHRPATH=-gd
 if "%2"=="debug" goto next_param
 goto custom_error
 
@@ -149,11 +151,13 @@ copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSProvider.pdb" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.dll" "%FDOBINPATH%"
 copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\WFSMessage.pdb" "%FDOBINPATH%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.dll" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.pdb" "%FDOBINPATH%"
+copy /y "%FDOUTILITIES%\ExpressionEngine\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\ExpressionEngine.lib" "%FDOLIBPATH%"
 echo copy header files
 
 :generate_docs
