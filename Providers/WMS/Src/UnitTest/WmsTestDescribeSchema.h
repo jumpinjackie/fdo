@@ -32,7 +32,6 @@ class WmsTestDescribeSchema : public WmsTests
 	CPPUNIT_TEST (testServer1);			// TODO: might need to replace server
 	CPPUNIT_TEST (testInheritance1);	// TODO: might need to replace server
 	CPPUNIT_TEST (testServer5);
-	CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testKortPlandk);
 
 #if 0
@@ -42,6 +41,7 @@ class WmsTestDescribeSchema : public WmsTests
     CPPUNIT_TEST (testServer3);
 	CPPUNIT_TEST (testServer4);
     CPPUNIT_TEST (testLibCwms);
+	CPPUNIT_TEST (testCeoware2);
 #endif 
 
 	CPPUNIT_TEST_SUITE_END ();
