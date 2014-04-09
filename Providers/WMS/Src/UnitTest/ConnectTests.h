@@ -29,7 +29,6 @@ class ConnectTests :  public WmsTests
 {
     CPPUNIT_TEST_SUITE (ConnectTests);
     CPPUNIT_TEST (TestConnection1);
-    CPPUNIT_TEST (TestConnection2);
     CPPUNIT_TEST (TestConnection4);
     CPPUNIT_TEST (TestConnection5);
     CPPUNIT_TEST (TestConnection6);
@@ -41,6 +40,7 @@ class ConnectTests :  public WmsTests
     CPPUNIT_TEST (TestConnection13);    // TODO: might need to replace server
 
 #if 0
+    CPPUNIT_TEST (TestConnection2);     // TODO: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
     // NOTE: disabled because the server cannot connect
     CPPUNIT_TEST (TestConnection3);
     CPPUNIT_TEST (TestConnection11);

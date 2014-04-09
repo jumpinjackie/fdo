@@ -28,31 +28,35 @@
 
 class WmsTestSelect : public WmsTests
 {
-	CPPUNIT_TEST_SUITE (WmsTestSelect);
+    CPPUNIT_TEST_SUITE (WmsTestSelect);
 
 #ifdef _FDO_RUN_INTERNAL_TEST		
-	CPPUNIT_TEST (testServer1);
-	CPPUNIT_TEST (testNestedClip);
-	CPPUNIT_TEST (testGetBounds);
+    CPPUNIT_TEST (testServer1);
+    CPPUNIT_TEST (testNestedClip);
+    CPPUNIT_TEST (testGetBounds);
 #if 0
     // NOTE: disabled because the server cannot connect
-	CPPUNIT_TEST (testHttpBasicAuthentification);
+    CPPUNIT_TEST (testHttpBasicAuthentification);
 #endif
 #endif
 
     CPPUNIT_TEST (testURLEcoding);
     CPPUNIT_TEST (testServer2);
-	CPPUNIT_TEST (testServer3);
-	CPPUNIT_TEST (testServer4);
+    CPPUNIT_TEST (testServer3);
+    CPPUNIT_TEST (testServer4);
     CPPUNIT_TEST (testResample);
     CPPUNIT_TEST (testClip);
     CPPUNIT_TEST (testDefaultHeight);
     CPPUNIT_TEST (testNASAServer);			// TODO: might need to replace server
-    CPPUNIT_TEST (testNASAServer2);			// TODO: might need to replace server
     CPPUNIT_TEST (testCubeServer);
     CPPUNIT_TEST (testMultiLayers);			// TODO: might need to replace server
 
 #if 0
+    // NOTE: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
+    CPPUNIT_TEST (testNASAServer2);			
+    CPPUNIT_TEST (testNASAServerDefaultOverrides);
+    CPPUNIT_TEST (testSelectSpatialExtents);
+
     // NOTE: disabled because the server cannot connect
     CPPUNIT_TEST (testDefect786029);
     CPPUNIT_TEST (testIntegraphWorld);
@@ -65,44 +69,42 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testLinuxgurrl); 
 #endif
 
-    CPPUNIT_TEST (testSelectSpatialExtents);
     CPPUNIT_TEST (testNS_TOPO_1000);
     CPPUNIT_TEST (testNS_CRS);
     CPPUNIT_TEST (testMapConnect_SDE);
     CPPUNIT_TEST (testNS_TOPO_5000);
-    CPPUNIT_TEST (testNASAServerDefaultOverrides);
     CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);
     CPPUNIT_TEST (testStoboWms);			// TODO: might need to replace server
     CPPUNIT_TEST (testOpenmaps);			// TODO: might need to replace server
-    CPPUNIT_TEST (testquestionmarkend);     // TODO: might need to replace server
+    CPPUNIT_TEST (testquestionmarkend);                 // TODO: might need to replace server
 
-	CPPUNIT_TEST_SUITE_END ();
+    CPPUNIT_TEST_SUITE_END ();
 
 private:
     void ExecuteSelectServer(FdoString* server, FdoString* classname);
 
 public:
-	WmsTestSelect(void);
-	virtual ~WmsTestSelect(void);
+    WmsTestSelect(void);
+    virtual ~WmsTestSelect(void);
 
-	void _setUp () {}
-	void _tearDown () {}
-	void testServer1 ();
-	void testNestedClip ();
+    void _setUp () {}
+    void _tearDown () {}
+    void testServer1 ();
+    void testNestedClip ();
     void testGetBounds ();
-	void testHttpBasicAuthentification ();
-	void testServer2 ();
-	void testResample ();
-	void testClip ();
-	void testDefaultHeight ();
-	void testNASAServer ();
-	void testNASAServer2 ();
-	void testIntegraphWorld ();
+    void testHttpBasicAuthentification ();
+    void testServer2 ();
+    void testResample ();
+    void testClip ();
+    void testDefaultHeight ();
+    void testNASAServer ();
+    void testNASAServer2 ();
+    void testIntegraphWorld ();
     void testCubeServer ();
     void testMultiLayers ();
-	void testTerraService ();
+    void testTerraService ();
     void testDefect786029 ();
     void testEusoils ();
     void testEusoilsPesera();
@@ -120,12 +122,12 @@ public:
     void testLibcwms ();
     void testStoboWms ();
     void testLinuxgurrl ();
-	void testOpenmaps ();
+    void testOpenmaps ();
     void testquestionmarkend ();
     void testURLEcoding ();
-	//test 1.3.0 version server with axis issue
-	void testServer3();
-	void testServer4();
+    //test 1.3.0 version server with axis issue
+    void testServer3();
+    void testServer4();
 };
 
 #endif//FDOWMSTESTSELECT_H

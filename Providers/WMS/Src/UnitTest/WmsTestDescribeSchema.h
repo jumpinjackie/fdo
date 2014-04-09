@@ -31,14 +31,13 @@ class WmsTestDescribeSchema : public WmsTests
 
 	CPPUNIT_TEST (testServer1);			// TODO: might need to replace server
 	CPPUNIT_TEST (testInheritance1);	// TODO: might need to replace server
-
-	CPPUNIT_TEST (testServer2);
 	CPPUNIT_TEST (testServer5);
 	CPPUNIT_TEST (testCeoware2);
     CPPUNIT_TEST (testKortPlandk);
-	CPPUNIT_TEST (testSchemaMapping);
 
 #if 0
+	CPPUNIT_TEST (testServer2);         // TODO: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
+	CPPUNIT_TEST (testSchemaMapping);
 	// These servers cannot connect any more
     CPPUNIT_TEST (testServer3);
 	CPPUNIT_TEST (testServer4);
