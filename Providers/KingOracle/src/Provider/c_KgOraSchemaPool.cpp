@@ -18,7 +18,7 @@
 #include "c_KgOraSchemaPool.h"
 
   
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 
 vector<t_SchemaPoolDesc> c_KgOraSchemaPool::g_SchemaPoolDesc;
 

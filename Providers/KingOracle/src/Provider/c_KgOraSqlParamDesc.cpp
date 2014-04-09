@@ -20,7 +20,7 @@
 #include "c_FilterStringBuffer.h"
 #include "c_FgfToSdoGeom.h"
 #include "c_Ora_API2.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_KgOraSqlParamDesc.h"
 
 c_KgOraSqlParamDesc::c_KgOraSqlParamDesc() 
@@ -38,7 +38,7 @@ c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoString* UserName)
   m_ParamType=e_UserParam;m_UserParamName=UserName; 
 }
 
-c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoByteArray* Geom) 
+c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoByteArray* Geom,const c_KgOraSridDesc& Srid) 
 { 
   m_ParamType=e_Uknown;
   m_ParamGeometry=NULL; 
@@ -49,6 +49,7 @@ c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoByteArray* Geom)
   m_ParamGeometry=Geom; 
   
   Geom->AddRef();
+  m_OracleSrid=Srid;
 }
 
 c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoDataValue* DataValue) 
@@ -63,7 +64,7 @@ c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(FdoDataValue* DataValue)
   
   m_ParamDataValue->AddRef();
 }
-c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(long Srid,double MinX,double MinY,double MaxX,double MaxY) 
+c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(const c_KgOraSridDesc& Srid,double MinX,double MinY,double MaxX,double MaxY) 
 { 
   m_ParamType=e_Uknown;
   m_ParamGeometry=NULL; 
@@ -76,6 +77,7 @@ c_KgOraSqlParamDesc::c_KgOraSqlParamDesc(long Srid,double MinX,double MinY,doubl
   m_OptimizedRect.m_MaxX=MaxX;
   m_OptimizedRect.m_MaxY=MaxY;
   
+  m_OracleSrid=Srid;
   
   
 }
@@ -106,13 +108,13 @@ FdoByteArray* c_KgOraSqlParamDesc::GetGeometry() const
 { 
   return m_ParamGeometry; 
 }
-void c_KgOraSqlParamDesc::SetGeometry(FdoByteArray* Geom) 
+void c_KgOraSqlParamDesc::SetGeometry(FdoByteArray* Geom,const c_KgOraSridDesc& Srid) 
 { 
   SetNull();
   
   m_ParamType=e_Geometry;
   m_ParamGeometry =  Geom; 
-  
+  m_OracleSrid=Srid;
   if(m_ParamGeometry) m_ParamGeometry->AddRef();
 }
   
@@ -136,7 +138,7 @@ void c_KgOraSqlParamDesc::SetUserParamName(FdoString* Name)
   m_UserParamName =  Name; 
 }
 
-void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,int SqlParamNum) 
+void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,int SqlParamNum) 
 { 
   switch( m_ParamType )
   {
@@ -149,14 +151,17 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
         
         c_FgfToSdoGeom fgftosdo;
         
-        if( fgftosdo.ToSdoGeom((int*)m_ParamGeometry->GetData(),OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
+        
+        
+        
+        if( fgftosdo.ToSdoGeom((int*)m_ParamGeometry->GetData(),m_OracleSrid.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
         {
           OraStm->BindSdoGeomValue(SqlParamNum,sdogeom);  
         }
         else
         {
           delete sdogeom;
-          OraStm->BindSdoGeom(SqlParamNum,NULL);  
+          OraStm->BindSdoGeomValue(SqlParamNum,NULL);  
         }
       
         #ifdef _KGORA_EXTENDED_LOG
@@ -170,7 +175,8 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
       }
       else
       {
-        OraStm->BindSdoGeom( SqlParamNum,NULL );
+        
+        OraStm->BindSdoGeomValue( SqlParamNum,NULL);
         #ifdef _KGORA_EXTENDED_LOG
         {
         D_KGORA_ELOG_WRITE1("SQL Param %d Geometry=NULL",SqlParamNum);
@@ -182,7 +188,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
     break;
     case e_OptimizedRect:
     {
-      c_SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(OraStm->m_OciConn,IsGeodeticCS,OraSrid,m_OptimizedRect.m_MinX,m_OptimizedRect.m_MinY,m_OptimizedRect.m_MaxX,m_OptimizedRect.m_MaxY);
+      c_SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(OraStm->m_OciConn,m_OracleSrid.m_IsGeodetic,m_OracleSrid.m_OraSrid,m_OptimizedRect.m_MinX,m_OptimizedRect.m_MinY,m_OptimizedRect.m_MaxX,m_OptimizedRect.m_MaxY);
       OraStm->BindSdoGeomValue(SqlParamNum,sdorect);   
       #ifdef _KGORA_EXTENDED_LOG
         {
@@ -198,7 +204,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
     {
       
       
-      if( c_FdoOra_API2::SetOracleStatementData(OraStm,SqlParamNum,m_ParamDataValue) )
+      if( c_FdoOra_API3::SetOracleStatementData(OraStm,SqlParamNum,m_ParamDataValue) )
       {
       }
       
@@ -214,7 +220,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
   }
 }//end of  c_KgOraSqlParamDesc::ApplySqlParameters
 
-void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,const wchar_t* SqlParamName) 
+void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,const wchar_t* SqlParamName) 
 { 
   switch( m_ParamType )
   {
@@ -227,14 +233,14 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
 
         c_FgfToSdoGeom fgftosdo;
 
-        if( fgftosdo.ToSdoGeom((int*)m_ParamGeometry->GetData(),OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
+        if( fgftosdo.ToSdoGeom((int*)m_ParamGeometry->GetData(),m_OracleSrid.m_OraSrid,sdogeom) == c_FgfToSdoGeom::e_Ok )
         {
           OraStm->BindSdoGeomValue(SqlParamName,sdogeom);  
         }
         else
         {
           delete sdogeom;
-          OraStm->BindSdoGeom(SqlParamName,NULL);  
+          OraStm->BindSdoGeomValue(SqlParamName,NULL);  
         }
 
 #ifdef _KGORA_EXTENDED_LOG
@@ -250,7 +256,8 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
       }
       else
       {
-        OraStm->BindSdoGeom( SqlParamName,NULL );
+        
+        OraStm->BindSdoGeomValue( SqlParamName,NULL );
 #ifdef _KGORA_EXTENDED_LOG
         {
           FdoStringP sval(SqlParamName); 
@@ -263,7 +270,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
     break;
   case e_OptimizedRect:
     {
-      c_SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(OraStm->m_OciConn,IsGeodeticCS,OraSrid,m_OptimizedRect.m_MinX,m_OptimizedRect.m_MinY,m_OptimizedRect.m_MaxX,m_OptimizedRect.m_MaxY);
+      c_SDO_GEOMETRY *sdorect = c_Ora_API2::CreateOptimizedRect(OraStm->m_OciConn,m_OracleSrid.m_IsGeodetic,m_OracleSrid.m_OraSrid,m_OptimizedRect.m_MinX,m_OptimizedRect.m_MinY,m_OptimizedRect.m_MaxX,m_OptimizedRect.m_MaxY);
       OraStm->BindSdoGeomValue(SqlParamName,sdorect);   
 #ifdef _KGORA_EXTENDED_LOG
       {
@@ -280,7 +287,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
     {
 
 
-      if( c_FdoOra_API2::SetOracleStatementData(OraStm,SqlParamName,m_ParamDataValue) )
+      if( c_FdoOra_API3::SetOracleStatementData(OraStm,SqlParamName,m_ParamDataValue) )
       {
       }
 
@@ -288,7 +295,7 @@ void c_KgOraSqlParamDesc::ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeode
       {
         FdoStringP sval(SqlParamName); 
         FdoStringP fdostr = m_ParamDataValue->ToString();
-        D_KGORA_ELOG_WRITE2("SQL Param %s Data='%s'",(const char*)SqlParamName,(const char*)fdostr);
+        D_KGORA_ELOG_WRITE2("SQL Param %s Data='%s'",(const char*)sval,(const char*)fdostr);
 
       }
 #endif

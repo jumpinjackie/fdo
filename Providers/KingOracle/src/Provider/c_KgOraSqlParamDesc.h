@@ -38,9 +38,9 @@ public:
 public:
   c_KgOraSqlParamDesc();
   c_KgOraSqlParamDesc(FdoString* UserName);
-  c_KgOraSqlParamDesc(FdoByteArray* Geom);
+  c_KgOraSqlParamDesc(FdoByteArray* Geom,const c_KgOraSridDesc& Srid );
   c_KgOraSqlParamDesc(FdoDataValue* DataValue) ;
-  c_KgOraSqlParamDesc(long Srid,double MinX,double MinY,double MaxX,double MaxY);
+  c_KgOraSqlParamDesc(const c_KgOraSridDesc& Srid,double MinX,double MinY,double MaxX,double MaxY);
   
   ~c_KgOraSqlParamDesc();
 
@@ -51,6 +51,7 @@ protected:
     FdoStringP m_UserParamName;
     //c_SDO_GEOMETRY* m_ParamGeometry;
     FdoByteArray* m_ParamGeometry;
+    c_KgOraSridDesc m_OracleSrid;
     FdoDataValue *m_ParamDataValue;
     t_OptimizedRect m_OptimizedRect;
     
@@ -60,15 +61,15 @@ public:
   //c_SDO_GEOMETRY* GetGeometry() const;
   //void SetGeometry(c_SDO_GEOMETRY* Geom);
   FdoByteArray* GetGeometry() const;
-  void SetGeometry(FdoByteArray* Geom);
+  void SetGeometry(FdoByteArray* Geom,const c_KgOraSridDesc& Srid);
   
   void SetDataValue(FdoDataValue* DataValue);
   
   FdoString* GetUserParamName() const;
   void SetUserParamName(FdoString* Name);
    
-  void ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,int SqlParamNum);
-  void ApplySqlParameter(c_Oci_Statement* OraStm,bool IsGeodeticCS,long OraSrid,const wchar_t* SqlParamName);
+  void ApplySqlParameter(c_Oci_Statement* OraStm,int SqlParamNum);
+  void ApplySqlParameter(c_Oci_Statement* OraStm,const wchar_t* SqlParamName);
 protected:
   void SetNull();  
     

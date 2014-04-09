@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 #include "c_KgOraSQLDataReader.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 
 c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
                         ,c_Oci_Statement* OciStatement )
@@ -52,7 +52,7 @@ c_KgOraSQLDataReader::c_KgOraSQLDataReader(c_KgOraConnection * Connection
     int oraprecision = OciStatement->GetColumnPrecision(ind+1); //m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
     FdoDataType fdotype;
-    if( c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype) )
+    if( c_FdoOra_API3::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype) )
     {  
       m_SqlColumns->Add(cname);
       m_SqlColIndex.push_back(ind);
@@ -154,7 +154,7 @@ FdoDataType c_KgOraSQLDataReader::GetColumnType(FdoString* ColumnName)
   int oraprecision = m_OciStatement->GetColumnPrecision(ind+1); // m_MetaData[ind].getInt(oracle::occi::MetaData::ATTR_SCALE);
 
   FdoDataType fdotype;
-  c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
+  c_FdoOra_API3::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
   
   return fdotype;
   
@@ -295,7 +295,7 @@ FdoByte  c_KgOraSQLDataReader::GetByte(FdoString* ColumnName)
   if( ind >= 0 )
   {
     //long val = m_OcciResultSet->getInt(ind+1);    
-    return m_OciStatement->GetLong(ind+1);
+    return m_OciStatement->GetInt64(ind+1);
   }
   
     throw FdoCommandException::Create(L"Int64");

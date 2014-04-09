@@ -20,7 +20,7 @@
 #include <time.h>
 
 #include "c_KgOraDataReader.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_SdoGeomToAGF2.h"
 #include "c_LogAPI.h"
 
@@ -81,7 +81,7 @@ FdoDataType c_KgOraDataReader::GetDataType( FdoString* PropertyName )
   int oraprecision = m_OciStatement->GetColumnPrecision(ind);
 
   FdoDataType fdotype;
-  c_FdoOra_API2::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
+  c_FdoOra_API3::OraTypeToFdoDataType(dtype,oraprecision,orascale,length,fdotype);
   
   return fdotype;
 }

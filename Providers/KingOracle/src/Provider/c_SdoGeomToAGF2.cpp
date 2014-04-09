@@ -48,12 +48,12 @@ int c_SdoGeomToAGF2::GetSdoElemInfo(int Index)
   OCINumber *oci_number;
   int val;
   
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCICollGetElem(c_OCI_API::m_OciHpEnvironment, c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCICollGetElem(c_OCI_API::g_OciHpEnvironment, c_OCI_API::g_OciHpError, 
     (OCIColl *)(m_SdoGeom->sdo_elem_info), 
     (sb4)(Index), 
     (boolean *)&exists, 
     (dvoid **)&oci_number, (dvoid **)0));
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCINumberToInt(c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToInt(c_OCI_API::g_OciHpError, 
     oci_number, 
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
     (dvoid *)&val));
@@ -65,7 +65,7 @@ int c_SdoGeomToAGF2::GetSdoOrdinatesSize()
 {
   int size;
   
-  OCICollSize(c_OCI_API::m_OciHpEnvironment,c_OCI_API::m_OciHpError,m_SdoGeom->sdo_ordinates,&size);
+  OCICollSize(c_OCI_API::g_OciHpEnvironment,c_OCI_API::g_OciHpError,m_SdoGeom->sdo_ordinates,&size);
   
   
 
@@ -76,7 +76,7 @@ double c_SdoGeomToAGF2::GetSdoPointX()
 {
   double val;
 
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCINumberToReal(c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.x, 
     (uword)sizeof(double), (dvoid *)&val));
   return val;    
@@ -85,7 +85,7 @@ double c_SdoGeomToAGF2::GetSdoPointY()
 {
   double val;
 
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCINumberToReal(c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.y, 
     (uword)sizeof(double), (dvoid *)&val));
   return val;    
@@ -94,7 +94,7 @@ double c_SdoGeomToAGF2::GetSdoPointZ()
 {
   double val;
 
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCINumberToReal(c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     &m_SdoGeom->sdo_point.z, 
     (uword)sizeof(double), (dvoid *)&val));
   return val;    
@@ -106,12 +106,12 @@ double c_SdoGeomToAGF2::GetSdoOrdinate(int Index)
   OCINumber *oci_number;
   double val;
 
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCICollGetElem(c_OCI_API::m_OciHpEnvironment, c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCICollGetElem(c_OCI_API::g_OciHpEnvironment, c_OCI_API::g_OciHpError, 
     (OCIColl *)(m_SdoGeom->sdo_ordinates), 
     (sb4)(Index), 
     (boolean *)&exists, 
     (dvoid **)&oci_number, (dvoid **)0));
-  c_OCI_API::OciCheckError(c_OCI_API::m_OciHpError, OCINumberToReal(c_OCI_API::m_OciHpError, 
+  c_OCI_API::OciCheckError(c_OCI_API::g_OciHpError, OCINumberToReal(c_OCI_API::g_OciHpError, 
     oci_number, 
     (uword)sizeof(double), (dvoid *)&val));
 
@@ -127,17 +127,23 @@ int c_SdoGeomToAGF2::ToAGF()
   
   
   //m_ElemInfoSize = m_SdoGeom->getSdo_elem_info().size();
-  OCICollSize(c_OCI_API::m_OciHpEnvironment,c_OCI_API::m_OciHpError,m_SdoGeom->sdo_elem_info,&m_ElemInfoSize); 
+  if( m_SdoGeomInd->sdo_elem_info != OCI_IND_NULL )
+    OCICollSize(c_OCI_API::g_OciHpEnvironment,c_OCI_API::g_OciHpError,m_SdoGeom->sdo_elem_info,&m_ElemInfoSize); 
+  else
+    m_ElemInfoSize = 0;
   
   //m_OrdinatesSize = m_SdoGeom->getSdo_ordinates().size();
-  OCICollSize(c_OCI_API::m_OciHpEnvironment,c_OCI_API::m_OciHpError,m_SdoGeom->sdo_ordinates,&m_OrdinatesSize);
+  if( m_SdoGeomInd->sdo_ordinates != OCI_IND_NULL )
+    OCICollSize(c_OCI_API::g_OciHpEnvironment,c_OCI_API::g_OciHpError,m_SdoGeom->sdo_ordinates,&m_OrdinatesSize);
+  else
+    m_OrdinatesSize=0;
   
   //if( m_SdoGeom->getSdo_gtype().isNull() ) return 0;
   if( m_SdoGeomInd->sdo_gtype == OCI_IND_NULL ) return 0;
   
   //int ora_gtype = ((int)m_SdoGeom->getSdo_gtype()) % 100;
   int sdo_gtype;
-  c_OCI_API::OciCheckError( c_OCI_API::m_OciHpError, OCINumberToInt(c_OCI_API::m_OciHpError, &(m_SdoGeom->sdo_gtype),
+  c_OCI_API::OciCheckError( c_OCI_API::g_OciHpError, OCINumberToInt(c_OCI_API::g_OciHpError, &(m_SdoGeom->sdo_gtype),
     (uword)sizeof(int), OCI_NUMBER_SIGNED,
     (dvoid *)&sdo_gtype));
     

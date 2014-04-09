@@ -20,6 +20,9 @@
 #include "c_LogAPI.h"
 #include "c_KgOraSchemaPool.h"
 
+
+FdoCommonThreadMutex c_KgOraDescribeSchemaCommand::g_DeepCopyMutex;
+
 c_KgOraDescribeSchemaCommand::c_KgOraDescribeSchemaCommand (c_KgOraConnection* Connection) 
     
 {
@@ -121,7 +124,9 @@ FdoFeatureSchemaCollection* c_KgOraDescribeSchemaCommand::Execute ()
     // If I create a copy and for every request return copy than it is OK.
     // and some other callers (FME) may change it and that is nt ok for us then
     
-    FdoFeatureSchemaCollection* ret2 = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(ret);
+    g_DeepCopyMutex.Enter();
+    FdoFeatureSchemaCollection* ret2 = FdoCommonSchemaUtil::DeepCopyFdoFeatureSchemas(ret); // deep copy is not thread safe
+    g_DeepCopyMutex.Leave();
     return ret2;  
     
     //return FDO_SAFE_ADDREF(ret.p);

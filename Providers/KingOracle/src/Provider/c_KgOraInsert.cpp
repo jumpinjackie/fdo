@@ -16,7 +16,7 @@
 */
 #include "stdafx.h"
 #include "c_KgOraInsert.h"
-#include "c_FdoOra_API2.h"
+#include "c_FdoOra_API3.h"
 #include "c_Ora_API2.h"
 #include "c_FgfToSdoGeom.h"
 
@@ -227,12 +227,14 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
     
   // then process thos values which    
     c_FilterStringBuffer strbuff;
-    c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid);
+    c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classdef,orasrid);
     
     
     FdoStringP colnames;
     FdoStringP colvalues;
     FdoStringP sep;
+    
+    
     
     count = batch_propvalcol->GetCount();
     for(unsigned int ind=0;ind<count;ind++)
@@ -246,6 +248,10 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       FdoPtr<FdoValueExpression> expr = propval->GetValue();
       
       strbuff.ClearBuffer();
+      if( m_Connection->GetOracleSridDesc(classdef, propid->GetName(),orasrid ) )
+      {
+        expproc.SetOracleSrid(orasrid);
+      }
       expr->Process( &expproc );
       
       colvalues += sep + strbuff.GetString();
@@ -279,15 +285,15 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       {
         // do aply of literal values
         // this apply witll skip parameter values
-        expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+        expproc.ApplySqlParameters(oci_stm);
         
         // now i need to aply batch values
         int ora_batch_parameter = 1; // number of parameter in oracle sql statament 
         if( added_new_batch_parameter_for_sequence_identity )
         {
-          long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
-          FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
-          c_FdoOra_API2::SetOracleStatementData( oci_stm,ora_batch_parameter,dataval);
+          FdoInt64 seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
+          FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt64)seqval);
+          c_FdoOra_API3::SetOracleStatementData( oci_stm,ora_batch_parameter,dataval);
           ora_batch_parameter++;
         }
         
@@ -312,18 +318,18 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
               {
                 if( dataval->IsNull() )
                 {                
-                  long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
-                  FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt32)seqval);
-                  c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
+                  FdoInt64 seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
+                  FdoPtr<FdoDataValue> dataval = FdoDataValue::Create((FdoInt64)seqval);
+                  c_FdoOra_API3::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
                 }
                 else
                 {
-                  c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
+                  c_FdoOra_API3::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
                 }
               }
               else
               {
-                c_FdoOra_API2::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
+                c_FdoOra_API3::SetOracleStatementData(oci_stm,ora_batch_parameter,dataval);
               }
             }
             else
@@ -380,7 +386,25 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       throw FdoCommandException::Create( gstr );    
     }
     
-    return new c_KgOraFeatureReaderInsert(m_PropertyValues,classdef);
+    
+    // copy id values only - beacue others like geomtry cant be read from c_KgOraFeatureReaderInsert
+    FdoPtr<FdoClass> insclass = FdoClass::Create(L"idvaluse",L"");
+    FdoPtr<FdoPropertyDefinitionCollection> insclass_pdef = insclass->GetProperties();
+    FdoPtr<FdoPropertyValueCollection> idvalues = FdoPropertyValueCollection::Create();
+    FdoPtr<FdoDataPropertyDefinitionCollection> idprops = classdef->GetIdentityProperties();
+    for(int id=0;id<idprops->GetCount();id++)
+    {
+      FdoPtr<FdoDataPropertyDefinition> prop = idprops->GetItem(id);
+      FdoPtr<FdoPropertyValue> propval = m_PropertyValues->FindItem(prop->GetName());
+      if( propval.p )
+      {
+        idvalues->Add(propval);
+        FdoPtr<FdoDataPropertyDefinition> propcopy = FdoCommonSchemaUtil::DeepCopyFdoDataPropertyDefinition(prop);
+        insclass_pdef->Add(propcopy);
+      }
+    }
+    
+    return new c_KgOraFeatureReaderInsert(idvalues,insclass);
   }
   else
   {
@@ -388,7 +412,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
     if( m_PropertyValues.p )
     {
       c_FilterStringBuffer strbuff;
-      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,m_ClassId,orasrid,0);
+      c_KgOraExpressionProcessor expproc(&strbuff,schemadesc,classdef,orasrid,0);
         
       FdoStringP colnames;
       FdoStringP colvalues;
@@ -413,8 +437,8 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
           FdoPtr<FdoIdentifier> propid = propval->GetName();
           if( wcscmp(propid->GetName(),ident_for_seq->GetName()) == 0 )
           {
-            long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
-            FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
+            FdoInt64 seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
+            FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt64)seqval);
             propval->SetValue(newval);
             found_identity = true;
             break;
@@ -424,8 +448,8 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         if( !found_identity )
         {
           
-          long seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
-          FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt32)seqval);
+          FdoInt64 seqval = c_Ora_API2::GetSequenceNextVal(m_Connection->GetOciConnection(),seqname);
+          FdoPtr<FdoDataValue> newval = FdoDataValue::Create((FdoInt64)seqval);
           
           FdoPtr<FdoPropertyValue> propval = FdoPropertyValue::Create(ident_for_seq->GetName(),newval);
           m_PropertyValues->Insert(0,propval);
@@ -474,6 +498,11 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         if( !prop_in_seq )
         {
           strbuff.ClearBuffer();
+          c_KgOraSridDesc orasrid;
+          if( m_Connection->GetOracleSridDesc(classdef,propid->GetName(),orasrid) )
+          {
+            expproc.SetOracleSrid(orasrid);
+          }
           expr->Process( &expproc );
           colvalues += sep + strbuff.GetString();              
         }
@@ -504,7 +533,7 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
         
         oci_stm->Prepare(sqlstr.GetString());
         
-        expproc.ApplySqlParameters(oci_stm,orasrid.m_IsGeodetic,orasrid.m_OraSrid);
+        expproc.ApplySqlParameters(oci_stm);
         
 
         int update_num = oci_stm->ExecuteNonQuery();
@@ -525,7 +554,28 @@ FdoIFeatureReader* c_KgOraInsert::Execute()
       }
 
       
-      return new c_KgOraFeatureReaderInsert(m_PropertyValues,classdef);
+      // copy id values only - beacue others like geomtry cant be read from c_KgOraFeatureReaderInsert
+      FdoPtr<FdoClass> insclass = FdoClass::Create(L"idvaluse",L"");
+      FdoPtr<FdoPropertyDefinitionCollection> insclass_pdef = insclass->GetProperties();
+      FdoPtr<FdoPropertyValueCollection> idvalues = FdoPropertyValueCollection::Create();
+      FdoPtr<FdoDataPropertyDefinitionCollection> idprops = classdef->GetIdentityProperties();
+      for(int id=0;id<idprops->GetCount();id++)
+      {
+        FdoPtr<FdoDataPropertyDefinition> prop = idprops->GetItem(id);
+        FdoPtr<FdoPropertyValue> propval = m_PropertyValues->FindItem(prop->GetName());
+        if( propval.p )
+        {
+          idvalues->Add(propval);
+          FdoPtr<FdoDataPropertyDefinition> propcopy = FdoCommonSchemaUtil::DeepCopyFdoDataPropertyDefinition(prop);
+          insclass_pdef->Add(propcopy);
+        }
+        
+        
+      }
+
+      return new c_KgOraFeatureReaderInsert(idvalues,insclass);
+      
+      
       
     }
   }

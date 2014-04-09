@@ -28,7 +28,10 @@ protected:
   FdoPtr<c_KgOraConnection> m_KgOraConnection;
   FdoStringP m_SchemaName;
   FdoStringCollection* m_ClassNames;
-
+  
+public:  
+  static	FdoCommonThreadMutex g_DeepCopyMutex;
+  
 private:
    
     // Constructs an instance of a DescribeSchema command using the given connection.

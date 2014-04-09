@@ -29,8 +29,8 @@
 
 //#define USE_OCII_CONNECTION_POOLING
 
-OCIEnv 		*c_OCI_API::m_OciHpEnvironment=NULL;                       /* OCI general handles */
-OCIError 	*c_OCI_API::m_OciHpError=NULL;
+OCIEnv 		*c_OCI_API::g_OciHpEnvironment=NULL;                       /* OCI general handles */
+OCIError 	*c_OCI_API::g_OciHpError=NULL;
 
 c_OCI_API::c_OCI_API(void)
 {
@@ -130,12 +130,12 @@ static ub4 conIncr = 1;
 
 void c_OCI_API::OciInit()
 {
-  if(!m_OciHpEnvironment) 
+  if(!g_OciHpEnvironment) 
     //OCIEnvNlsCreate (&m_OciHpEnvironment, OCI_THREADED | OCI_OBJECT, (dvoid *)0,  NULL, NULL, NULL, 0, (dvoid **)0,OCI_UTF16ID,OCI_UTF16ID);
-    OCIEnvNlsCreate (&m_OciHpEnvironment, OCI_THREADED | OCI_OBJECT, (dvoid *)0,  NULL, NULL, NULL, 0, (dvoid **)0,OCI_UTF16ID,OCI_UTF16ID);
+    OCIEnvNlsCreate (&g_OciHpEnvironment, OCI_THREADED | OCI_OBJECT, (dvoid *)0,  NULL, NULL, NULL, 0, (dvoid **)0,OCI_UTF16ID,OCI_UTF16ID);
 
-  if( !m_OciHpError ) 
-    OCIHandleAlloc((dvoid *) m_OciHpEnvironment, (dvoid **) &m_OciHpError, OCI_HTYPE_ERROR,(size_t) 0, (dvoid **) 0);
+  if( !g_OciHpError ) 
+    OCIHandleAlloc((dvoid *) g_OciHpEnvironment, (dvoid **) &g_OciHpError, OCI_HTYPE_ERROR,(size_t) 0, (dvoid **) 0);
 
 /*
   (void) OCIHandleAlloc((dvoid *) m_OciHpEnvironment, (dvoid **) &m_OciHpPool, OCI_HTYPE_CPOOL,
@@ -163,8 +163,8 @@ void c_OCI_API::OciTerminate()
 {
   
 
-  if( !m_OciHpError ) OCIHandleFree((dvoid *)m_OciHpError, OCI_HTYPE_ERROR);
-  if( !m_OciHpEnvironment ) OCIHandleFree((dvoid *)m_OciHpEnvironment, OCI_HTYPE_ENV);
+  if( !g_OciHpError ) OCIHandleFree((dvoid *)g_OciHpError, OCI_HTYPE_ERROR);
+  if( !g_OciHpEnvironment ) OCIHandleFree((dvoid *)g_OciHpEnvironment, OCI_HTYPE_ENV);
   
 
   /*
@@ -191,7 +191,7 @@ void c_OCI_API::OciTerminate()
 
 bool c_OCI_API::IsInit() 
 { 
-  return m_OciHpEnvironment != NULL; 
+  return g_OciHpEnvironment != NULL; 
   
 }
 
@@ -201,8 +201,24 @@ bool c_OCI_API::IsInit()
 
 c_Oci_Connection* c_OCI_API::CreateConnection(const wchar_t*User,const wchar_t*Password,const wchar_t* DbLink)
 {
-  
-  c_Oci_Connection* newconn = new c_Oci_Connection(m_OciHpEnvironment,m_OciHpError);
+  OCIEnv 		*ocienv=NULL;  
+  sword status;   
+  status = OCIEnvNlsCreate (&ocienv, OCI_THREADED | OCI_OBJECT, (dvoid *)0,  NULL, NULL, NULL, 0, (dvoid **)0,OCI_UTF16ID,OCI_UTF16ID);
+  if( status  != OCI_SUCCESS )
+  {
+    c_Oci_Exception *ociexc = new c_Oci_Exception(status,0,L"OCIEnvNlsCreate Unable to Create Environment");    
+    throw ociexc;
+  }
+
+  OCIError 	*ocierror=NULL;
+  status = OCIHandleAlloc((dvoid *) ocienv, (dvoid **) &ocierror, OCI_HTYPE_ERROR,(size_t) 0, (dvoid **) 0);
+  if( status  != OCI_SUCCESS )
+  {
+    c_Oci_Exception *ociexc = new c_Oci_Exception(status,0,L"OCIHandleAlloc Unable to Create OCIError");    
+    throw ociexc;
+  }
+
+  c_Oci_Connection* newconn = new c_Oci_Connection(ocienv,ocierror);
 
 try
 {
