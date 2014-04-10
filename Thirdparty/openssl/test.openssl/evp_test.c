@@ -1,0 +1,1 @@
+/* Written by Ben Laurie, 2001 */
