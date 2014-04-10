@@ -31,6 +31,7 @@
 
 //#define D_TEST_SHEMASPEED
 
+#ifdef _WIN32
 class c_Timer
 {
   public:
@@ -55,7 +56,7 @@ class c_Timer
   protected:    
     LARGE_INTEGER frequency;LARGE_INTEGER t1,t2;double elapsedtime;
 };
-
+#endif
 
 
 class c_MapOraNameToFdoClass
@@ -2064,10 +2065,12 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
    
     std::wstring override_spatial_owner,override_spatial_table;
     
-    #ifdef _DEBUG
+#ifdef _WIN32
+#ifdef _DEBUG
     c_Timer time_full;
     time_full.Start();
-    #endif
+#endif
+#endif
     
     
     while( stm->ReadNext() )
@@ -2541,10 +2544,14 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
     }
     
     
-    #ifdef _DEBUG
+#ifdef _WIN32
+#ifdef _DEBUG
+
         time_full.Stop();
         printf(" Describe: %.4lf (cols: %.4lf , pkeys: %.2lf) ",time_full.GetElapsedTime(),time_total_columns,time_total_pkeys);
-    #endif
+
+#endif
+#endif
     
     class_count = FdoClasses->GetCount();
     
@@ -2552,27 +2559,49 @@ void c_FdoOra_API3::DescribeSchemaSQL(c_Oci_Connection * OciConn
     
     // table describe
     {
-      #ifdef _DEBUG
+#ifdef _WIN32
+#ifdef _DEBUG
+
             c_Timer time_columns;
             time_columns.Start();
-      #endif
+
+#endif
+#endif
+
             DescribeTableProperties(OciConn,SqlColumns, BindOwner,Owner ,maporatoclass);
-      #ifdef _DEBUG
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
             time_total_columns += time_columns.Stop();
-      #endif        
+
+#endif        
+#endif        
     }
   // primary key describe
     {
     
       std::vector<std::wstring> pcols;
-      #ifdef _DEBUG
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
         c_Timer time_pkeys;
         time_pkeys.Start();
-      #endif
+
+#endif
+#endif
+
       DescribeTablePrimaryKey(OciConn,SqlPkey,BindOwner,Owner,maporatoclass);
-    #ifdef _DEBUG
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
       time_total_pkeys += time_pkeys.Stop();
-    #endif        
+
+#endif        
+#endif        
+
     }
     
     OciConn->TerminateStatement(stm);
