@@ -31,6 +31,7 @@
 
 //#define D_TEST_SHEMASPEED
 
+#ifdef _WIN32
 class c_Timer
 {
   public:
@@ -55,7 +56,7 @@ class c_Timer
   protected:    
     LARGE_INTEGER frequency;LARGE_INTEGER t1,t2;double elapsedtime;
 };
-
+#endif
 
 
 c_FdoOra_API2::c_FdoOra_API2(void)
@@ -1634,11 +1635,14 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     
     
     
-    #ifdef _DEBUG
+#ifdef _WIN32
+#ifdef _DEBUG
+
     c_Timer time_full;
     time_full.Start();
-    #endif
-    
+
+#endif
+#endif    
     
     while( stm->ReadNext() )
     {
@@ -2071,29 +2075,39 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
         // catch erro returned
         bool table_exists=false;
         
+#ifdef _WIN32
+#ifdef _DEBUG
 
-        #ifdef _DEBUG
            c_Timer time_columns;
            time_columns.Start();
-        #endif
-        
+
+#endif
+#endif        
         
         table_exists = DescribeTableProperties(OciConn,ora_tableowner.c_str(),ora_tablename.c_str(),pdc,SC_Collection);
         
-        
-        #ifdef _DEBUG
+#ifdef _WIN32
+#ifdef _DEBUG
+
           time_total_columns += time_columns.Stop();
-        #endif        
+
+#endif
+#endif        
                 
                 
     ////////////////////////////////////////////////////////////////////////////////////////////
     //  Check for primary keys
     //////////////////////////////////////////////////////////////////////////////////////////// 
         std::vector<std::wstring> pcols;
-        #ifdef _DEBUG
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
           c_Timer time_pkeys;
           time_pkeys.Start();
-        #endif
+
+#endif
+#endif
 
         // ckeck for user defined column for identity
         // if defined use it - if not look for primary keys on table
@@ -2144,9 +2158,15 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
               }
             }  
           }
-        #ifdef _DEBUG
+
+#ifdef _WIN32
+#ifdef _DEBUG
+
           time_total_pkeys += time_pkeys.Stop();
-        #endif
+
+#endif
+#endif
+
        ////////////////////////////////////////////////////////////////////////////////////////////
        //  Set Oracle Sequence
        ////////////////////////////////////////////////////////////////////////////////////////////  
@@ -2183,11 +2203,15 @@ void c_FdoOra_API2::DescribeSchemaSQL(c_Oci_Connection * OciConn,const wchar_t* 
     }
     
     
-    #ifdef _DEBUG
-        time_full.Stop();
-        printf(" Describe: %.4lf (cols: %.4lf , pkeys: %.2lf) ",time_full.GetElapsedTime(),time_total_columns,time_total_pkeys);
-    #endif
+#ifdef _WIN32
+#ifdef _DEBUG
     
+    time_full.Stop();
+    printf(" Describe: %.4lf (cols: %.4lf , pkeys: %.2lf) ",time_full.GetElapsedTime(),time_total_columns,time_total_pkeys);
+
+#endif
+#endif
+
     class_count = FdoClasses->GetCount();
     
     OciConn->TerminateStatement(stm);

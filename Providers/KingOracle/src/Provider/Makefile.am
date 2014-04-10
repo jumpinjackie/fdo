@@ -22,6 +22,7 @@ EXTRA_DIST = KingOracleProvider.vcproj KgOraProvider.rc resource.h
 noinst_LTLIBRARIES = libKingOracleProviderSrc.la
 
 libKingOracleProviderSrc_la_SOURCES = \
+c_FdoOra_API3.cpp \
 c_FdoOra_API2.cpp \
 c_KgOraRasterCapabilities.cpp \
 c_FgfToSdoGeom.cpp \
