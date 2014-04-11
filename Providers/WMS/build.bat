@@ -31,6 +31,7 @@ SET FDOLIBPATH=%cd%\Fdo\Lib
 SET FDODOCPATH=%cd%\Fdo\Docs
 SET DOCENABLE=skip
 SET FDOERROR=0
+SET TYPEBUILDTHRPATH=
 
 REM If you want to build 64-bit with Visual C++ 2010 Express, you will need to
 REM install the Windows SDK v7.1. In addition, you need to override the default
