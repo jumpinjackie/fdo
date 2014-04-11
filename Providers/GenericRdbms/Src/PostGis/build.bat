@@ -29,6 +29,7 @@ SET FDOLIBPATH=\Fdo\Lib
 SET FDODOCPATH=\Fdo\Docs
 SET DOCENABLE=skip
 SET FDOERROR=0
+SET TYPEBUILDTHRPATH=
 
 REM If you want to build 64-bit with Visual C++ 2010 Express, you will need to
 REM install the Windows SDK v7.1. In addition, you need to override the default
@@ -68,6 +69,7 @@ goto custom_error
 :get_conf 
 SET TYPEBUILD=%2
 if "%2"=="release" goto next_param
+if "%2"=="debug" SET TYPEBUILDTHRPATH=-gd
 if "%2"=="debug" goto next_param
 goto custom_error
 
@@ -164,10 +166,10 @@ copy /y "..\..\Lib\%INTERMEDIATEDIR%\%TYPEBUILD%\PostgreSQLOverrides.lib" "%FDOL
 copy /y "..\..\com\fdosys_sys.sql" "%FDOBINPATH%\com"
 copy /y "..\..\com\fdo_sys_idx.sql" "%FDOBINPATH%\com"
 copy /y "..\..\com\fdo_sys.sql" "%FDOBINPATH%\com"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
-copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILDTHR%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATHTHR%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_thread-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_date_time-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_system-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
+copy /y "%FDOTHIRDPARTY%\boost\stage\%INTERMEDIATEDIR%\%TYPEBUILD%\lib\boost_chrono-%VC_COMPILER%-mt%TYPEBUILDTHRPATH%-1_54.dll" "%FDOBINPATH%"
 
 rem copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.PostgreSQL.Overrides.dll" "%FDOBINPATH%"
 rem copy /y "..\..\Managed\Bin\%INTERMEDIATEMANAGEDDIR%\OSGeo.FDO.Providers.PostgreSQL.Overrides.pdb" "%FDOBINPATH%"
