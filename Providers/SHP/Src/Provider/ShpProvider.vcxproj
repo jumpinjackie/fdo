@@ -226,6 +226,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ShpGetClassNamesCommand.h" />
+    <ClInclude Include="ShpGetSchemaNamesCommand.h" />
     <ClInclude Include="ShpProvider.h" />
     <ClInclude Include="ShpReader.h" />
     <ClInclude Include="stdafx.h" />
@@ -275,6 +277,8 @@
     <ClInclude Include="ShpPhysicalSchema.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ShpGetClassNamesCommand.cpp" />
+    <ClCompile Include="ShpGetSchemaNamesCommand.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
