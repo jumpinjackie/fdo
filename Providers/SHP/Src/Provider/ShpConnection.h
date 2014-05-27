@@ -98,6 +98,11 @@ protected:
      */
     bool mConfigured;
 
+    /**
+     * Schema names
+     */
+    FdoPtr<FdoStringCollection> mSchemaNames;
+
 private:
 
 	/// <summary>Sets the connection paths
@@ -106,6 +111,14 @@ private:
 	/// <returns>Returns nothing</returns> 
 	void InitConnectionPaths();
 
+    FdoStringCollection* GetFileNames(bool bNameWithoutExtensionOnly = false);
+
+    static void GetFileNameWithoutExtension(FdoString* path, FdoStringP& name);
+
+    bool mRequestForSchemaMade; //A single-use flag to control the flag below
+    bool mPartialSchema;
+    void FlagPartialSchema(bool flag);
+    
 public:
     ShpConnection (void);
     virtual ~ShpConnection(void);
@@ -224,10 +237,10 @@ public:
     // Non-published schema management APIs:
     ////////////////////////////////////////////////////////////////////////
 
-    ShpLpFeatureSchemaCollection* GetLpSchemas(void);
+    ShpLpFeatureSchemaCollection* GetLpSchemas(FdoStringCollection* classNames = NULL);
     ShpLpFeatureSchemaCollection* GetLpSchema(const wchar_t *logicalSchemaName);
 
-    ShpPhysicalSchema* GetPhysicalSchema(void);
+    ShpPhysicalSchema* GetPhysicalSchema(FdoStringCollection* classNames = NULL);
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -254,7 +267,10 @@ public:
     bool IsConfigured (); // true if SetConfiguration() was done by the client
 	void SetLastEditedFileSet( ShpFileSet *fileset ) { mLastEditedFileSet = fileset; };
 	ShpFileSet *GetLastEditedFileSet() { return mLastEditedFileSet; };
-	void AddPhysicalShapefileNames (FdoStringsP& physicalShapefileNames);
+	void AddPhysicalShapefileNames (FdoStringsP& physicalShapefileNames, bool bNameWithoutExtensionOnly = false);
+
+    FdoStringCollection* GetClassNames();
+    FdoStringCollection* GetSchemaNames();
 };
 
 #endif // SHPCONNECTION_H

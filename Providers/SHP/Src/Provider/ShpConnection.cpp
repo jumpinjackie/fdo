@@ -109,6 +109,8 @@ ShpConnection::ShpConnection (void) :
     mConnectionState(FdoConnectionState_Closed),
     mSpatialContextColl (new ShpSpatialContextCollection ()),
     mConfigured (false),
+    mRequestForSchemaMade (false),
+    mPartialSchema (false),
     mLastEditedFileSet(NULL)
 {
     // Create the default SC
@@ -456,6 +458,9 @@ void ShpConnection::Close ()
     mConfigSchemaMappings = NULL;
     mConfigured = false;
 
+    mRequestForSchemaMade = false;
+    mPartialSchema = false;
+
     mFile = L"";
     mDirectory = L"";
     
@@ -495,6 +500,12 @@ FdoICommand* ShpConnection::CreateCommand (FdoInt32 commandType)
             break;
         case FdoCommandType_SelectAggregates:
             ret = new ShpSelectAggregates (this);
+            break;
+        case FdoCommandType_GetSchemaNames:
+            ret = new ShpGetSchemaNamesCommand (this);
+            break;
+        case FdoCommandType_GetClassNames:
+            ret = new ShpGetClassNamesCommand (this);
             break;
         case FdoCommandType_DescribeSchema:
             ret = new ShpDescribeSchemaCommand (this);
@@ -896,7 +907,7 @@ FdoString* ShpConnection::GetTemporary ()
     return (mTemporary == L"" ? NULL : (FdoString*)mTemporary);
 }
 
-void ShpConnection::AddPhysicalShapefileNames(FdoStringsP& physicalShapefileNames)
+void ShpConnection::AddPhysicalShapefileNames(FdoStringsP& physicalShapefileNames, bool bNameWithoutExtensionOnly)
 {
     if (NULL != mConfigSchemaMappings)
     {
@@ -920,10 +931,17 @@ void ShpConnection::AddPhysicalShapefileNames(FdoStringsP& physicalShapefileName
                     FdoString * pActualName = classMapping->GetShapeFile ();
                     if (pActualName == NULL || wcslen (pActualName) == 0)
                     {
-                        // Create a shape name for the classes from schema.xml which doesn't have shape file.
-                        pNameFile = GetDirectory ();
-                        pNameFile += classMapping->GetName ();
-                        pNameFile += L".shp";
+                        if (bNameWithoutExtensionOnly)
+                        {
+                            pNameFile = classMapping->GetName ();
+                        }
+                        else
+                        {
+                            // Create a shape name for the classes from schema.xml which doesn't have shape file.
+                            pNameFile = GetDirectory ();
+                            pNameFile += classMapping->GetName ();
+                            pNameFile += L".shp";
+                        }
                     }
                     else
                     {
@@ -943,86 +961,76 @@ void ShpConnection::AddPhysicalShapefileNames(FdoStringsP& physicalShapefileName
                             pNameFile = pActualName;
                     }
 
-                    FdoString* base = ShpFileSet::CreateBaseName (pNameFile);
-                    if (-1 == physicalShapefileNames->IndexOf (base))
-                        physicalShapefileNames->Add (base);
-                    delete[] base;
+                    if (bNameWithoutExtensionOnly)
+                    {
+                        FdoStringP name;
+                        GetFileNameWithoutExtension(pNameFile, name);
+                        if (-1 == physicalShapefileNames->IndexOf (name))
+                            physicalShapefileNames->Add (name);
+                    }
+                    else
+                    {
+                        FdoString* base = ShpFileSet::CreateBaseName (pNameFile);
+                        if (-1 == physicalShapefileNames->IndexOf (base))
+                            physicalShapefileNames->Add (base);
+                        delete[] base;
+                    }
                 }
             }
         }
     }
 }
 
-ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
+void ShpConnection::GetFileNameWithoutExtension(FdoString* path, FdoStringP& name)
+{
+    std::wstring wPath = path;
+    std::wstring::size_type delimPos = wPath.find_last_of(FILE_PATH_DELIMITER);
+    std::wstring::size_type dotPos = wPath.find_last_of(L'.');
+
+    if (delimPos == std::wstring::npos) //File name or extensionless file
+    {
+        if (dotPos == std::wstring::npos) //Extensionless file
+            name = wPath.c_str();
+        else
+            name = wPath.substr(0, dotPos).c_str();
+    }
+    else //Path with one or more directory names
+    {
+        if (dotPos == std::wstring::npos) //Extensionless file
+            name = wPath.substr(delimPos+1).c_str();
+        else
+            name = wPath.substr(delimPos+1, dotPos - delimPos - 1).c_str();
+    }
+}
+
+ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(FdoStringCollection* classNames)
 {
     if (mPhysicalSchema == NULL)
     {
         mPhysicalSchema = new ShpPhysicalSchema(GetTemporary());
 
         // Get a list of all referenced shapefiles:
-        FdoStringsP         physicalShapefileNames = FdoStringCollection::Create();
-        if (IsConfigured ())  // Get the shapefiles from the overrides
-        {
-            AddPhysicalShapefileNames(physicalShapefileNames);
-        }
-        else  // Get the shapefiles from the specified directory or file
-        {
-            if (GetFile() != NULL)
-            {
-                FdoString* base = ShpFileSet::CreateBaseName (GetFile ());
-                physicalShapefileNames->Add (base);
-                delete[] base;
-            }
-            else if (GetDirectory() != NULL)
-            {
-                bool bSchemaExist = false;
-                // if the schema.xml file exists, set it as the configuration
-                if (!IsConfigured () && (NULL == GetFile ()))
-                {
-                    wchar_t* config = (wchar_t*)alloca (sizeof (wchar_t) *(wcslen (GetDirectory ()) + wcslen (DEFAULT_SCHEMA_XML) + 1));
-                    wcscpy (config, GetDirectory ());
-                    wcscat (config, DEFAULT_SCHEMA_XML);
-                    bSchemaExist = FdoCommonFile::FileExists (config);
-                }
-
-                if (bSchemaExist)
-                {
-                    AddPhysicalShapefileNames(physicalShapefileNames);
-                }
-                else
-                {
-                    FdoPtr<FdoStringCollection> files = FdoStringCollection::Create();
-                    FdoCommonFile::GetAllFiles (GetDirectory (), files);
-                    int count = (int)files->GetCount ();
-                    size_t ext1_len = ELEMENTS(SHP_EXTENSION) - 1;
-                    size_t ext2_len = ELEMENTS(DBF_EXTENSION) - 1;
-                    for (int i = 0; i < count; i++)
-                    {
-                        const wchar_t* name;
-                        size_t length;
-                        std::wstring path;
-                        FdoString* base;
-                        
-                        name = files->GetString(i);
-                        length = wcslen (name);
-                        if (((ext1_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext1_len]), SHP_EXTENSION)))
-                            || ((ext2_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext2_len]), DBF_EXTENSION))))
-                        {
-                            path = GetDirectory ();
-                            path += name;
-                            base = ShpFileSet::CreateBaseName (path.c_str ());
-                            if (-1 == physicalShapefileNames->IndexOf (base))
-                                physicalShapefileNames->Add (base);
-                            delete[] base;
-                        }
-                    }
-                }
-            }
-        }
-
-
-        // Create one 'default' physical schema if there are physical files or no overrides:
+        FdoStringsP         physicalShapefileNames = GetFileNames();
         FdoInt32 count = physicalShapefileNames->GetCount ();
+
+        if (NULL != classNames)
+        {
+            //Reduce the shapefile list to only the ones in this list
+            for (FdoInt32 i = count - 1; i >= 0; i--)
+            {
+                FdoPtr<FdoStringElement> stringElement = physicalShapefileNames->GetItem(i);
+                FdoStringP physicalShapefileName = stringElement->GetString();
+                FdoStringP name;
+                GetFileNameWithoutExtension(physicalShapefileName, name);
+                if (classNames->IndexOf(name) < 0)
+                {
+                    physicalShapefileNames->RemoveAt(i);
+                }
+            }
+        }
+
+        count = physicalShapefileNames->GetCount ();
+        // Create one 'default' physical schema if there are physical files or no overrides:
         if ((0 < count) || (mConfigSchemaMappings == NULL))
         {
             // Add all the shapefiles to the physical schema:
@@ -1081,11 +1089,176 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(void)
     return FDO_SAFE_ADDREF(mPhysicalSchema.p);
 }
 
-ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(void)
+FdoStringCollection* ShpConnection::GetClassNames()
 {
+    FdoPtr<FdoStringCollection> fileNames = GetFileNames(true);
+    
+    //While these file names *are* the class names, we need to prepend schema name to
+    //fully qualify them.
+    FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+
+    FdoInt32 fCount = fileNames->GetCount();
+    for (FdoInt32 i = 0; i < fCount; i++)
+    {
+        FdoPtr<FdoStringElement> fName = fileNames->GetItem(i);
+        FdoStringP clsName = L"Default:";
+        clsName += fName->GetString();
+        
+        classNames->Add(clsName);
+    }
+
+    return classNames.Detach();
+}
+
+FdoStringCollection* ShpConnection::GetFileNames(bool bNameWithoutExtensionOnly)
+{
+    FdoStringsP physicalShapefileNames = FdoStringCollection::Create();
+    if (IsConfigured ())  // Get the shapefiles from the overrides
+    {
+        AddPhysicalShapefileNames(physicalShapefileNames, bNameWithoutExtensionOnly);
+    }
+    else  // Get the shapefiles from the specified directory or file
+    {
+        if (GetFile() != NULL)
+        {
+            if (bNameWithoutExtensionOnly)
+            {
+                FdoStringP name;
+                GetFileNameWithoutExtension(GetFile(), name);
+                physicalShapefileNames->Add (name);
+            }
+            else
+            {
+                FdoString* base = ShpFileSet::CreateBaseName (GetFile ());
+                physicalShapefileNames->Add (base);
+                delete[] base;
+            }
+        }
+        else if (GetDirectory() != NULL)
+        {
+            bool bSchemaExist = false;
+            // if the schema.xml file exists, set it as the configuration
+            if (!IsConfigured () && (NULL == GetFile ()))
+            {
+                wchar_t* config = (wchar_t*)alloca (sizeof (wchar_t) *(wcslen (GetDirectory ()) + wcslen (DEFAULT_SCHEMA_XML) + 1));
+                wcscpy (config, GetDirectory ());
+                wcscat (config, DEFAULT_SCHEMA_XML);
+                bSchemaExist = FdoCommonFile::FileExists (config);
+            }
+
+            if (bSchemaExist)
+            {
+                AddPhysicalShapefileNames(physicalShapefileNames, bNameWithoutExtensionOnly);
+            }
+            else
+            {
+                FdoPtr<FdoStringCollection> files = FdoStringCollection::Create();
+                FdoCommonFile::GetAllFiles (GetDirectory (), files);
+                int count = (int)files->GetCount ();
+                size_t ext1_len = ELEMENTS(SHP_EXTENSION) - 1;
+                size_t ext2_len = ELEMENTS(DBF_EXTENSION) - 1;
+                for (int i = 0; i < count; i++)
+                {
+                    const wchar_t* name;
+                    size_t length;
+                    std::wstring path;
+                    FdoString* base;
+                        
+                    name = files->GetString(i);
+                    length = wcslen (name);
+                    if (((ext1_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext1_len]), SHP_EXTENSION)))
+                        || ((ext2_len < length) && (0 == FdoCommonOSUtil::wcsicmp (&(name[length - ext2_len]), DBF_EXTENSION))))
+                    {
+                        path = GetDirectory ();
+                        path += name;
+
+                        if (bNameWithoutExtensionOnly)
+                        {
+                            FdoStringP fname;
+                            GetFileNameWithoutExtension(path.c_str(), fname);
+                            if (-1 == physicalShapefileNames->IndexOf (fname))
+                                physicalShapefileNames->Add (fname);
+                        }
+                        else
+                        {
+                            base = ShpFileSet::CreateBaseName (path.c_str ());
+                            if (-1 == physicalShapefileNames->IndexOf (base))
+                                physicalShapefileNames->Add (base);
+                            delete[] base;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return physicalShapefileNames.Detach();
+}
+
+FdoStringCollection* ShpConnection::GetSchemaNames()
+{
+    if (NULL == mSchemaNames.p)
+    {
+        mSchemaNames = FdoStringCollection::Create();
+        mSchemaNames->Add(L"Default");
+    }
+    return FDO_SAFE_ADDREF(mSchemaNames.p);
+}
+
+void ShpConnection::FlagPartialSchema(bool bPartial) 
+{ 
+    //Don't flag partial schema if last request was for a full schema
+    //Basically a full request will negate any invalidation attempts until the
+    //connection is closed
+    if (mRequestForSchemaMade && !mPartialSchema && bPartial) {
+        //printf("Block setting of partial flag because cached schema is full\n");
+        mPartialSchema = false;
+        return;
+    }
+
+    mRequestForSchemaMade = true;
+    mPartialSchema = bPartial; 
+    //printf("Cached schema is partial: %s\n", (bPartial ? "true" : "false"));
+}
+
+ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(FdoStringCollection* classNames)
+{
+    //See if invalidation is required
+    //TODO: We could obviously fine-grain the update of this cached schema instead of wiping
+    //out the whole thing
+
+    //Case 1: Full schema request and we previously cached a partial schema
+    if (NULL != mLpSchemas && mPartialSchema && NULL == classNames)
+    {
+        //printf("!!INVALIDATE CACHE (Full schema request with cached partial schema)!!\n");
+        mLpSchemas = NULL;
+        mPhysicalSchema = NULL; //So GetPhysicalSchema() below won't return a cached copy
+    }
+
+    //Case 2: Cached partial schema and we're doing another partial request where a requested
+    //class name is not present in the cached copy
+    if (NULL != mLpSchemas && NULL != classNames)
+    {
+        FdoPtr<ShpLpFeatureSchema> lpSchema = mLpSchemas->GetItem(0);
+        FdoPtr<ShpLpClassDefinitionCollection> lpClasses = lpSchema->GetLpClasses();
+        FdoInt32 clsCount = classNames->GetCount();
+        for (FdoInt32 i = 0; i < clsCount; i++)
+        {
+            FdoPtr<FdoStringElement> clsName = classNames->GetItem(i);
+            FdoStringP className = clsName->GetString();
+            if (lpClasses->IndexOf(className) < 0)
+            {
+                //printf("!!INVALIDATE CACHE (Partial schema doesn't fully contain requested list)!!\n");
+                mLpSchemas = NULL;
+                mPhysicalSchema = NULL; //So GetPhysicalSchema() below won't return a cached copy
+                break;
+            }
+        }
+    }
+
     if (mLpSchemas == NULL)
     {
-        FdoPtr<ShpPhysicalSchema> pPhysicalSchema = GetPhysicalSchema ();
+        FdoPtr<ShpPhysicalSchema> pPhysicalSchema = GetPhysicalSchema (classNames);
         mLpSchemas = new ShpLpFeatureSchemaCollection(
             this,
             pPhysicalSchema,

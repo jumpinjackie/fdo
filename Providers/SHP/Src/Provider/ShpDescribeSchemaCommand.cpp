@@ -81,9 +81,7 @@ FdoStringCollection* ShpDescribeSchemaCommand::GetClassNames()
 /// <returns>Returns nothing</returns>
 void ShpDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
 {
-    // Do nothing.
-    // This method is not implemented.  DescribeSchema command
-    // will describe all classes.
+    mClassNames = FDO_SAFE_ADDREF(value);
 }
 
 /// <summary>Executes the DescribeSchema command and returns a 
@@ -98,7 +96,10 @@ FdoFeatureSchemaCollection* ShpDescribeSchemaCommand::Execute ()
 
     // Get the Logical schema collection:
     FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
-    FdoPtr<ShpLpFeatureSchemaCollection> lpSchemas = shpConn->GetLpSchemas();
+    FdoPtr<ShpLpFeatureSchemaCollection> lpSchemas = shpConn->GetLpSchemas(mClassNames);
+    bool bPartial = (NULL != mClassNames);
+    // Flag partial/full state so subsequent requests know if invalidation of cached schemas is required
+    shpConn->FlagPartialSchema(bPartial);
     if (lpSchemas != NULL)
     {
         FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = lpSchemas->GetLogicalSchemas();
@@ -121,6 +122,26 @@ FdoFeatureSchemaCollection* ShpDescribeSchemaCommand::Execute ()
             throw FdoException::Create(NlsMsgGet(SHP_SCHEMA_NOT_FOUND, "Schema '%1$ls' not found.", (FdoString*)mSchemaName));
         else
             ret = FdoFeatureSchemaCollection::Create (NULL);
+
+    //shpConn->GetLpSchemas() may return a cached copy. If the previous request was for a full schema and this one is partial
+    //we need to whittle down the list of class definitions to match. If we're whittling down, it's a clone we're whittling
+    //down, so no side-effects here.
+    if (ret->GetCount() > 0 && NULL != mClassNames && mClassNames->GetCount() > 0)
+    {
+        FdoPtr<FdoFeatureSchema> schema = ret->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = schema->GetClasses();
+
+        for (FdoInt32 i = classes->GetCount() - 1; i >= 0; i--)
+        {
+            FdoPtr<FdoClassDefinition> clsDef = classes->GetItem(i);
+            FdoString* clsName = clsDef->GetName();
+            if (mClassNames->IndexOf(clsName) < 0)
+            {
+                //This class definition is not in the list of requested classes. Remove it.
+                classes->RemoveAt(i);
+            }
+        }
+    }
 
     return FDO_SAFE_ADDREF(ret.p);
 }

@@ -293,6 +293,232 @@ void SchemaTests::describe_bogus ()
     }
 }
 
+void SchemaTests::describe_with_hint()
+{
+    //Choose the "chunkiest" test data set that should show clear differences in describe perf numbers
+    mConnection->Close ();
+#ifdef _WIN32
+    mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION5);
+#else
+    mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION5);
+#endif
+    ShpTests::sLocation = LOCATION5;
+    CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+    clock_t full_start;
+    clock_t full_finish;
+
+    clock_t partial_start;
+    clock_t partial_finish;
+
+    try 
+    {
+        //Use the full schema description as a baseline for comparison
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        
+        printf("== Describe full schema\n");
+
+        full_start = clock();
+        FdoPtr<FdoFeatureSchemaCollection> fullSchemas = describe->Execute();
+        full_finish = clock();
+        
+        FdoPtr<FdoFeatureSchema> theFullSchema = fullSchemas->GetItem(0);
+        FdoPtr<FdoClassCollection> fullClasses = theFullSchema->GetClasses();
+
+        printf("Close/Re-open connection\n");
+        //Clear out whatever cached data for the connection
+        mConnection->Close ();
+        CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+        printf("== Describe schema with hint (Parcels)\n");
+
+        //Re-try with hint
+        FdoPtr<FdoIDescribeSchema> describePartial = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        FdoPtr<FdoStringCollection> classNames = FdoStringCollection::Create();
+        classNames->Add(L"Parcels");
+        describePartial->SetClassNames(classNames);
+        
+        partial_start = clock();
+        FdoPtr<FdoFeatureSchemaCollection> partialSchemas = describePartial->Execute();
+        partial_finish = clock();
+
+        FdoPtr<FdoFeatureSchema> thePartialSchema = partialSchemas->GetItem(0);
+        FdoPtr<FdoClassCollection> partialClasses = thePartialSchema->GetClasses();
+
+        printf("Full Describe: %dms, Hinted Describe (Parcels): %dms\n", (full_finish - full_start)/(CLOCKS_PER_SEC/1000), (partial_finish - partial_start)/(CLOCKS_PER_SEC/1000));
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to only have 1 class", partialClasses->GetCount() == 1);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to only have Parcels class", partialClasses->IndexOf(L"Parcels") >= 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to be different from full describe", partialClasses->GetCount() != fullClasses->GetCount());
+
+        printf("== Describe schema with hint (CityLimits, HydrographicPolygons)\n");
+
+        //Re-try with different hint, to see if internally cached data will stay relevant
+        describePartial = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        classNames = FdoStringCollection::Create();
+        classNames->Add(L"CityLimits");
+        classNames->Add(L"HydrographicPolygons");
+        describePartial->SetClassNames(classNames);
+        
+        partial_start = clock();
+        partialSchemas = describePartial->Execute();
+        partial_finish = clock();
+
+        thePartialSchema = partialSchemas->GetItem(0);
+        partialClasses = thePartialSchema->GetClasses();
+
+        printf("Full Describe: %dms, Hinted Describe (HydrographicPolygons, CityLimits): %dms\n", (full_finish - full_start)/(CLOCKS_PER_SEC/1000), (partial_finish - partial_start)/(CLOCKS_PER_SEC/1000));
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to only have 2 classes", partialClasses->GetCount() == 2);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to not have Parcels class", partialClasses->IndexOf(L"Parcels") < 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to have CityLimits class", partialClasses->IndexOf(L"CityLimits") >= 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to have HydrographicPolygons class", partialClasses->IndexOf(L"HydrographicPolygons") >= 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to be different from full describe", partialClasses->GetCount() != fullClasses->GetCount());
+
+        printf("== Describe full schema\n");
+
+        //Now do a full describe again, to make sure whatever internally cached data are updated/invalidated properly
+        describePartial = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        partialSchemas = describePartial->Execute();
+        thePartialSchema = partialSchemas->GetItem(0);
+        partialClasses = thePartialSchema->GetClasses();
+
+        CPPUNIT_ASSERT_MESSAGE("Expected full describe (after partial describes) to be same size as full describe", partialClasses->GetCount() == fullClasses->GetCount());
+
+        printf("== Describe schema with hint (Parcels)\n");
+
+        //Re-try with hint, to exercise a partial request with a full cached copy
+        describePartial = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        classNames = FdoStringCollection::Create();
+        classNames->Add(L"Parcels");
+        describePartial->SetClassNames(classNames);
+        
+        partial_start = clock();
+        partialSchemas = describePartial->Execute();
+        partial_finish = clock();
+
+        thePartialSchema = partialSchemas->GetItem(0);
+        partialClasses = thePartialSchema->GetClasses();
+
+        printf("Full Describe: %dms, Hinted Describe (Parcels): %dms\n", (full_finish - full_start)/(CLOCKS_PER_SEC/1000), (partial_finish - partial_start)/(CLOCKS_PER_SEC/1000));
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to only have 1 class", partialClasses->GetCount() == 1);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to only have Parcels class", partialClasses->IndexOf(L"Parcels") >= 0);
+        CPPUNIT_ASSERT_MESSAGE("Expected hinted describe to be different from full describe", partialClasses->GetCount() != fullClasses->GetCount());
+
+        printf("== Describe full schema (cached)\n");
+        //Now do a full describe again, to make sure we're hitting the cached copy (which is a full one)
+        describePartial = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        
+        partial_start = clock();
+        partialSchemas = describePartial->Execute();
+        partial_finish = clock();
+        
+        thePartialSchema = partialSchemas->GetItem(0);
+        partialClasses = thePartialSchema->GetClasses();
+
+        printf("Full Describe: %dms, Cached Describe: %dms\n", (full_finish - full_start)/(CLOCKS_PER_SEC/1000), (partial_finish - partial_start)/(CLOCKS_PER_SEC/1000));
+        CPPUNIT_ASSERT_MESSAGE("Expected full describe (after partial describes) to be same size as full describe", partialClasses->GetCount() == fullClasses->GetCount());
+    }
+    catch (FdoException* ge) 
+    {
+        TestCommonFail (ge);
+    }
+}
+
+void SchemaTests::get_schema_names()
+{
+    try 
+    {
+        FdoPtr<FdoIGetSchemaNames> cmd = (FdoIGetSchemaNames*)mConnection->CreateCommand(FdoCommandType_GetSchemaNames);
+        FdoPtr<FdoStringCollection> schemaNames = cmd->Execute();
+        CPPUNIT_ASSERT_MESSAGE("Expect collection of size 1", schemaNames->GetCount() == 1);
+        FdoPtr<FdoStringElement> name = schemaNames->GetItem(0);
+        CPPUNIT_ASSERT_MESSAGE("Expect schema name of 'Default'", wcscmp(name->GetString(), L"Default") == 0);
+    }
+    catch (FdoException* ge) 
+    {
+        TestCommonFail (ge);
+    }
+}
+
+void SchemaTests::get_class_names()
+{
+    //Choose the "chunkiest" test data set that should show clear differences in describe perf numbers
+    mConnection->Close ();
+#ifdef _WIN32
+    mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION5);
+#else
+    mConnection->SetConnectionString (L"DefaultFileLocation=" LOCATION5);
+#endif
+    ShpTests::sLocation = LOCATION5;
+    CPPUNIT_ASSERT_MESSAGE ("connection state not open", FdoConnectionState_Open == mConnection->Open ());
+
+    clock_t full_start;
+    clock_t full_finish;
+
+    clock_t partial_start;
+    clock_t partial_finish;
+
+    FdoPtr<FdoIGetClassNames> cmd;
+    FdoPtr<FdoStringCollection> classNames;
+    try 
+    {
+        cmd = (FdoIGetClassNames*)mConnection->CreateCommand(FdoCommandType_GetClassNames);
+        partial_start = clock();
+        classNames = cmd->Execute();
+        partial_finish = clock();
+        
+        //Use the full schema description as a baseline for comparison
+        FdoPtr<FdoIDescribeSchema> describe = (FdoIDescribeSchema*)mConnection->CreateCommand (FdoCommandType_DescribeSchema);
+        full_start = clock();
+        FdoPtr<FdoFeatureSchemaCollection> schemas = describe->Execute();
+        full_finish = clock();
+
+        printf("Full Describe: %dms, Partial Describe: %dms\n", (full_finish - full_start)/(CLOCKS_PER_SEC/1000), (partial_finish - partial_start)/(CLOCKS_PER_SEC/1000));
+
+        FdoPtr<FdoFeatureSchema> theSchema = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = theSchema->GetClasses();
+
+        CPPUNIT_ASSERT_MESSAGE("Expected class name list to be same size as class collection", classNames->GetCount() == classes->GetCount());
+        for (FdoInt32 i = 0; i < classNames->GetCount(); i++)
+        {
+            FdoPtr<FdoStringElement> clsName = classNames->GetItem(i);
+            FdoStringP qClsName = (FdoString*)clsName->GetString();
+            FdoStringP klassName = qClsName.Right(L":");
+            printf("Checking class name: %S\n", (FdoString*)klassName);
+            CPPUNIT_ASSERT_MESSAGE("Expected class name to exist", classes->IndexOf(klassName) >= 0);
+        }
+
+        //Re-run with a schema name specified
+        cmd->SetSchemaName(L"Default");
+        classNames = cmd->Execute();
+
+        CPPUNIT_ASSERT_MESSAGE("Expected class name list to be same size as class collection", classNames->GetCount() == classes->GetCount());
+        for (FdoInt32 i = 0; i < classNames->GetCount(); i++)
+        {
+            FdoPtr<FdoStringElement> clsName = classNames->GetItem(i);
+            FdoStringP qClsName = (FdoString*)clsName->GetString();
+            FdoStringP klassName = qClsName.Right(L":");
+            CPPUNIT_ASSERT_MESSAGE("Expected class name to exist", classes->IndexOf(klassName) >= 0);
+        }
+    }
+    catch (FdoException* ge) 
+    {
+        TestCommonFail (ge);
+    }
+    catch (...)
+    {
+        CPPUNIT_FAIL ("non-FdoException");
+    }
+
+    try {
+        cmd->SetSchemaName(L"bogus");
+        classNames = cmd->Execute();
+        CPPUNIT_FAIL("Expected FdoException thrown on bad schema name");
+    }
+    catch (FdoException* ex) {
+        FDO_SAFE_RELEASE(ex);
+    }
+}
+
 /* Test basic apply operation. */
 void SchemaTests::apply ()
 {
