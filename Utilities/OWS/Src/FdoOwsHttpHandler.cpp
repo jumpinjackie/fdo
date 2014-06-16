@@ -500,6 +500,10 @@ void FdoOwsHttpHandler::Proc()
             if (rv != CURLE_OK) break;
         }
 
+        // set SSL options
+        rv = curl_easy_setopt(curlHandle, CURLOPT_SSLVERSION, 1);
+        if (rv != CURLE_OK) break;
+
         // Sets the timeout value. libcurl supports two kinds of timeout.
         // One is for "connection" timeout, the other is for "transfer" timeout.        
         // Option "CURLOPT_CONNECTIONTIMEOUT" is limitted to connection phase. 
