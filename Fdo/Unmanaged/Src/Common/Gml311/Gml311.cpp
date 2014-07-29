@@ -19,6 +19,7 @@
 
 const FdoStringP FdoGml311::mCurveProperty(	L"CurveProperty", true );
 const FdoStringP FdoGml311::mSurfaceProperty(L"SurfaceProperty", true );
+const FdoStringP FdoGml311::mMultiSurfaceProperty(L"MultiSurfaceProperty", true );
 
 const FdoStringP FdoGml311::mGeometryArrayProperty(L"GeometryArrayProperty", true );
 const FdoStringP FdoGml311::mPointArrayProperty(L"PointArrayProperty", true );

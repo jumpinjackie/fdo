@@ -126,6 +126,7 @@ namespace FdoWfsGlobals
 
     static FdoString* Dot                               = L"-dot-";
 
+    static FdoString* CommaEncoding                     = L"%2C";
 }
 
 #endif
