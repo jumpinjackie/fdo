@@ -34,6 +34,7 @@ public:
 	//GML 3 new elements
 	FDO_API_COMMON static const FdoStringP mCurveProperty;
 	FDO_API_COMMON static const FdoStringP mSurfaceProperty;
+    FDO_API_COMMON static const FdoStringP mMultiSurfaceProperty;
 
 	FDO_API_COMMON static const FdoStringP mGeometryArrayProperty;
 	FDO_API_COMMON static const FdoStringP mPointArrayProperty;
