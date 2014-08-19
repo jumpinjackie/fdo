@@ -28,6 +28,7 @@ static const char* geometryBasic2d3[] = {
 "	For conditions, see OGC Software Notice http://www.opengeospatial.org/about/?page=ipr</documentation>",
 "	</annotation>",
 "	<include schemaLocation=\"geometryBasic0d1d.xsd\"/>",
+"	<include schemaLocation=\"geometryAggregates.xsd\"/>",
 "	<!-- =========================================================== -->",
 "	<!-- primitive geometry objects (2-dimensional) -->",
 "	<!-- =========================================================== -->",
