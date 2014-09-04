@@ -19,8 +19,47 @@ AUTOMAKE_OPTIONS = foreign
 
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = Src
+EXTRA_DIST = \
+  build.bat \
+  build_linux.sh
 
-DIST_SUBDIRS = Src
+lib_LTLIBRARIES = libOGRProvider.la
 
-EXTRA_DIST = build_linux.sh build.bat
+##building libOGRProvider.so
+libOGRProvider_la_SOURCES = \
+  OgrFdoUtil.cpp \
+  OgrProvider.cpp \
+  ProjConverter.cpp
+
+noinst_HEADERS = $(libOGRProvider_la_SOURCES) \
+  resource.h \
+  stdafx.h \
+  ProjConverter.h \
+  OgrProvider.h \
+  OgrFdoUtil.h
+
+libOGRProvider_la_LIBADD =  \
+  ../../Fdo/Unmanaged/Src/libFDO.la \
+  ../../Utilities/Common/libProvidersCommon.la \
+ -lgdal  
+
+libOGRProvider_la_LDFLAGS = \
+  -shared \
+  -release $(VERSION) \
+  -L$(FDOGDAL)/lib \
+  -L../../Thirdparty/gdal/lib
+
+INCLUDES = \
+  -I../../Fdo/Unmanaged/Inc \
+  -I../../Utilities/Common/Inc \
+  -I$(FDOGDAL)/include \
+  -I$(FDOGDAL)/ogr \
+  -I$(FDOGDAL)/ogr/ogrsf_frmts \
+  -I$(FDOGDAL)/port \
+  -I../../Thirdparty/gdal/include \
+  -I../../Thirdparty/gdal/ogr \
+  -I../../Thirdparty/gdal/ogr/ogrsf_frmts \
+  -I../../Thirdparty/gdal/port
+
+CXXFLAGS = @CXXFLAGS@ -D__USE_GNU -DLINUX -DLINUX_IA32
+
