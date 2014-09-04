@@ -90,16 +90,17 @@ if "%TYPEACTION%"=="clean" goto start_exbuild
 if not exist "%FDOINSPATH%" mkdir "%FDOINSPATH%"
 if not exist "%FDOBINPATH%" mkdir "%FDOBINPATH%"
 
-if "%TYPEBUILD%"=="debug" SET INTERMEDIATEDIR=Debug
-if "%TYPEBUILD%"=="release" SET INTERMEDIATEDIR=Release
-if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR=%INTERMEDIATEDIR%64
+if "%TYPEPLATFORM%"=="Win32" SET INTERMEDIATEDIR="Win32"
+if "%TYPEPLATFORM%"=="x64" SET INTERMEDIATEDIR="Win64"
 
 :start_exbuild
 if "%TYPEACTION%"=="clean" SET MSACTION=Clean
 if "%TYPEACTION%"=="install" goto install_files_ogr
 
 echo %MSACTION% %TYPEBUILD% OGR Provider Dlls
+pushd Src
 msbuild OGRProvider%VCBEXTENSION%.sln /t:%MSACTION% /p:Configuration=%TYPEBUILD% /p:Platform=%TYPEPLATFORM% %EXTRA_MSBUILD_PROPERTIES% /nologo /consoleloggerparameters:NoSummary /maxcpucount:4
+popd
 SET FDOERROR=%errorlevel%
 if "%FDOERROR%"=="1" goto error
 if "%TYPEACTION%"=="clean" goto end
@@ -107,8 +108,8 @@ if "%TYPEACTION%"=="build" goto end
 
 :install_files_ogr
 echo Copy %TYPEBUILD% OGR Provider Output Files
-copy /y "%INTERMEDIATEDIR%\OGRProvider.dll" "%FDOBINPATH%"
-copy /y "%INTERMEDIATEDIR%\OGRProvider.pdb" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OGRProvider.dll" "%FDOBINPATH%"
+copy /y "Bin\%INTERMEDIATEDIR%\%TYPEBUILD%\OGRProvider.pdb" "%FDOBINPATH%"
 
 :end
 echo End OGR %MSACTION%
