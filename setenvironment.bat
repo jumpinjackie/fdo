@@ -69,11 +69,11 @@ if "%PARAM1%" == ""		goto setfdovariables_x86
 if "%PARAM1%" == "x86"	goto setfdovariables_x86
 
 :setfdovariables_x64
-if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle_x64\instantclient\11.2\sdk
+if not exist "%FDOORACLE%" SET FDOORACLE=D:\fdo_rdbms_thirdparty\oracle_x64\instantclient\11.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
 if not exist "%FDOORACLE%" SET FDOORACLE=
 
-if not exist "%FDOMYSQL%" SET FDOMYSQL=%FDOTHIRDPARTY%\mysql_x64
+if not exist "%FDOMYSQL%" SET FDOMYSQL=D:\fdo_rdbms_thirdparty\mysql_x64
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 if not exist "%FDOMYSQL%" SET FDOMYSQL=
 
@@ -82,11 +82,11 @@ if not exist "%SDEHOME%" SET SDEHOME=%FDOTHIRDPARTY%\ESRI\ArcSDEClient931\Win64
 goto contsetfdovariables
 
 :setfdovariables_x86
-if not exist "%FDOORACLE%" SET FDOORACLE=%FDOTHIRDPARTY%\oracle\instant_client\11.2\sdk
+if not exist "%FDOORACLE%" SET FDOORACLE=D:\fdo_rdbms_thirdparty\oracle\instant_client\11.2\sdk
 if not exist "%FDOORACLE%" echo OPTIONAL FDO environment variable FDOORACLE is not set
 if not exist "%FDOORACLE%" SET FDOORACLE=
 
-if not exist "%FDOMYSQL%" SET FDOMYSQL=%FDOTHIRDPARTY%\mysql
+if not exist "%FDOMYSQL%" SET FDOMYSQL=D:\fdo_rdbms_thirdparty\mysql
 if not exist "%FDOMYSQL%" echo OPTIONAL FDO environment variable FDOMYSQL is not set
 if not exist "%FDOMYSQL%" SET FDOMYSQL=
 
@@ -97,7 +97,7 @@ if not exist "%FDOGDAL%" SET FDOGDAL=%FDOTHIRDPARTY%\gdal
 if not exist "%FDOGDAL%" echo OPTIONAL FDO environment variable FDOGDAL is not set
 if not exist "%FDOGDAL%" SET FDOGDAL=
 
-if not exist "%FDOPOSTGRESQL%" SET FDOPOSTGRESQL=%FDOTHIRDPARTY%\pgsql
+if not exist "%FDOPOSTGRESQL%" SET FDOPOSTGRESQL=D:\fdo_rdbms_thirdparty\pgsql
 if not exist "%FDOPOSTGRESQL%" echo OPTIONAL FDO environment variable FDOPOSTGRESQL is not set
 if not exist "%FDOPOSTGRESQL%" SET FDOPOSTGRESQL=
 
