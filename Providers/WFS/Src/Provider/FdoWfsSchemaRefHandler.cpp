@@ -63,7 +63,7 @@ FdoXmlSaxHandler* FdoWfsSchemaRefHandler::XmlStartElement(
                     // Find "TYPENAME=" in the location string.
                     FdoStringP delimiterTypeName = FdoWfsGlobals::TYPENAME;
                     delimiterTypeName += FdoWfsGlobals::Equal;
-                    std::wstring tempLocation = location.Upper();
+                    std::wstring tempLocation = (FdoString*)location.Upper();
                     std::wstring::size_type pos = tempLocation.find(delimiterTypeName);
 
                     // Get the base Url and type names.
