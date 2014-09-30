@@ -702,7 +702,6 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
         }
         if (lstNames.size() != 0)
         {
-            CriticalSectionHolder cs (&m_csMd);
             SltMetadata::BuildMetadataInfo(this, &lstNames);
             for(size_t i = 0; i < lstNames.size(); i++)
             {
@@ -738,9 +737,9 @@ FdoFeatureSchemaCollection* SltConnection::DescribeSchema(FdoStringCollection* c
     FdoPtr<FdoFeatureSchema> schema = FdoFeatureSchema::Create(L"Default", L"");
     m_pSchema->Add(schema.p);
     FdoPtr<FdoClassCollection> classes = schema->GetClasses();
-
-    CriticalSectionHolder cs (&m_csMd);
+    
     SltMetadata::BuildMetadataInfo(this);
+    CriticalSectionHolder cs (&m_csMd);
     for (MetadataCache::iterator iter = m_mNameToMetadata.begin(); iter != m_mNameToMetadata.end(); iter++)
     {
         SltMetadata* md = iter->second;
