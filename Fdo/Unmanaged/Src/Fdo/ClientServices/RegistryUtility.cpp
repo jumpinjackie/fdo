@@ -414,7 +414,7 @@ void FdoRegistryUtility::GetProviderCollection(std::vector<FdoProvider*> &provid
 
                 DOMNode *featureProvider = featureProviders->item(i);
                 short type = featureProvider->getNodeType();
-                if (type != DOMNode::TEXT_NODE)
+                if (type != DOMNode::TEXT_NODE && type != DOMNode::COMMENT_NODE)
                 {
                     tmp = XMLString::transcode(root->getNodeName());
                     if (strcmp(tmp, c_featureProviderRegistryName.c_str()) == 0)
