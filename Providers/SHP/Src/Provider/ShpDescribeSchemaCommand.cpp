@@ -33,6 +33,7 @@ ShpDescribeSchemaCommand::ShpDescribeSchemaCommand (FdoIConnection *connection) 
 
 ShpDescribeSchemaCommand::~ShpDescribeSchemaCommand (void)
 {
+    FDO_SAFE_RELEASE(mClassNames);
 }
 
 /** Do not implement the assignment operator. **/
@@ -67,7 +68,7 @@ void ShpDescribeSchemaCommand::SetSchemaName (const wchar_t* value)
 /// <returns>Returns the collection of class names</returns>
 FdoStringCollection* ShpDescribeSchemaCommand::GetClassNames()
 {
-    return mClassNames;
+    return FDO_SAFE_ADDREF(mClassNames);
 }
 
 /// <summary>Sets the name of the classes to retrieve. This is optional, if not
@@ -81,6 +82,7 @@ FdoStringCollection* ShpDescribeSchemaCommand::GetClassNames()
 /// <returns>Returns nothing</returns>
 void ShpDescribeSchemaCommand::SetClassNames(FdoStringCollection* value)
 {
+    FDO_SAFE_RELEASE(mClassNames);
     mClassNames = FDO_SAFE_ADDREF(value);
 }
 
@@ -96,10 +98,25 @@ FdoFeatureSchemaCollection* ShpDescribeSchemaCommand::Execute ()
 
     // Get the Logical schema collection:
     FdoPtr<ShpConnection> shpConn = (ShpConnection*)GetConnection ();
-    FdoPtr<ShpLpFeatureSchemaCollection> lpSchemas = shpConn->GetLpSchemas(mClassNames);
-    bool bPartial = (NULL != mClassNames);
-    // Flag partial/full state so subsequent requests know if invalidation of cached schemas is required
-    shpConn->FlagPartialSchema(bPartial);
+
+    FdoPtr<FdoStringCollection> clsNames = NULL;
+    if (NULL != mClassNames)
+    {
+        int cnt = mClassNames->GetCount();
+        clsNames = FdoStringCollection::Create();
+        for (int i = 0; i < cnt; i++)
+        {
+            FdoString* clsName = mClassNames->GetString(i);
+            FdoStringP name = clsName;
+            if (name.Contains(L":"))
+            {
+                name = name.Right(L":");
+            }
+            clsNames->Add(name);
+        }
+    }
+
+    FdoPtr<ShpLpFeatureSchemaCollection> lpSchemas = shpConn->GetLpSchemas(clsNames);
     if (lpSchemas != NULL)
     {
         FdoPtr<FdoFeatureSchemaCollection> logicalSchemas = lpSchemas->GetLogicalSchemas();
@@ -126,7 +143,7 @@ FdoFeatureSchemaCollection* ShpDescribeSchemaCommand::Execute ()
     //shpConn->GetLpSchemas() may return a cached copy. If the previous request was for a full schema and this one is partial
     //we need to whittle down the list of class definitions to match. If we're whittling down, it's a clone we're whittling
     //down, so no side-effects here.
-    if (ret->GetCount() > 0 && NULL != mClassNames && mClassNames->GetCount() > 0)
+    if (ret->GetCount() > 0 && NULL != clsNames && clsNames->GetCount() > 0)
     {
         FdoPtr<FdoFeatureSchema> schema = ret->GetItem(0);
         FdoPtr<FdoClassCollection> classes = schema->GetClasses();
@@ -135,7 +152,7 @@ FdoFeatureSchemaCollection* ShpDescribeSchemaCommand::Execute ()
         {
             FdoPtr<FdoClassDefinition> clsDef = classes->GetItem(i);
             FdoString* clsName = clsDef->GetName();
-            if (mClassNames->IndexOf(clsName) < 0)
+            if (clsNames->IndexOf(clsName) < 0)
             {
                 //This class definition is not in the list of requested classes. Remove it.
                 classes->RemoveAt(i);

@@ -1202,7 +1202,7 @@ FdoStringCollection* ShpConnection::GetSchemaNames()
         mSchemaNames = FdoStringCollection::Create();
         mSchemaNames->Add(L"Default");
     }
-    return FDO_SAFE_ADDREF(mSchemaNames.p);
+    return mSchemaNames.Detach();
 }
 
 void ShpConnection::FlagPartialSchema(bool bPartial) 
@@ -1269,6 +1269,10 @@ ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(FdoStringCollection* c
         // TODO: this may need to be done elsewhere, when the configuration file handling is in place:
         //TODO:FdoSdpSchemaUtil::SetSpatialContextAssociations(this, m_Connection->GetSpatialContext());
     }
+
+    bool bPartial = (NULL != classNames);
+    // Flag partial/full state so subsequent requests know if invalidation of cached schemas is required
+    FlagPartialSchema(bPartial);
 
     return FDO_SAFE_ADDREF(mLpSchemas.p);
 }
