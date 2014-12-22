@@ -19,7 +19,7 @@ rem
 
 SET FDOTARZIPFOLDERRTB=OpenSource_FDO
 SET FDOTARGETFOLDER=OpenSource
-SET FDOBUILDNUMBERRTB=L00X
+SET FDOBUILDNUMBERRTB=M00X
 SET FDOSOURCEZIP=%cd%
 SET FDOERRORMESSAGE=
 
@@ -90,44 +90,44 @@ goto study_params
 	for /F %%f in (%FDOSOURCEZIP%\release.txt) do SET FDOBUILDNUMBERRTB=%%f
 	
 :start_copy
-   copy /Y "%FDOSOURCEZIP%\fdo-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoshp-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdosdf-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdowfs-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdowms-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoarcsde-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdordbms-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdogdal-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdoogr-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdokingoracle-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
-   copy /Y "%FDOSOURCEZIP%\fdosqlite-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdo-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoshp-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdosdf-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdowfs-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdowms-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoarcsde-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdordbms-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdogdal-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdoogr-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdokingoracle-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
+   copy /Y "%FDOSOURCEZIP%\fdosqlite-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" "%FDOTARGETFOLDER%"
    
 :start_unzip
    echo *start unzip files
    pushd "%FDOTARGETFOLDER%"
-   7z x -ry "fdo-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoshp-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdosdf-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdowfs-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdowms-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoarcsde-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdordbms-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdogdal-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdoogr-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdokingoracle-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
-   7z x -ry "fdosqlite-3.9.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdo-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoshp-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdosdf-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdowfs-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdowms-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoarcsde-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdordbms-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdogdal-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdoogr-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdokingoracle-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
+   7z x -ry "fdosqlite-4.0.0_%FDOBUILDNUMBERRTB%.tar.gz" >>nul
    
-   7z x -ry "fdo-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoshp-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdosdf-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdowfs-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdowms-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoarcsde-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdordbms-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdogdal-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdoogr-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdokingoracle-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
-   7z x -ry "fdosqlite-3.9.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdo-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoshp-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdosdf-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdowfs-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdowms-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoarcsde-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdordbms-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdogdal-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdoogr-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdokingoracle-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
+   7z x -ry "fdosqlite-4.0.0_%FDOBUILDNUMBERRTB%.tar" >>nul
    
    del /Q /F "*.tar"
    echo unzip files done...
