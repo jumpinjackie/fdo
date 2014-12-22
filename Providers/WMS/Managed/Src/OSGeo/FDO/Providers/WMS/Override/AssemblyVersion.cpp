@@ -34,4 +34,4 @@ using namespace System::Security::Permissions;
 // by using the '*' as shown below:
 //
 
-[assembly:AssemblyVersion("3.8.1.0")];
+[assembly:AssemblyVersion("4.0.0.0")];
