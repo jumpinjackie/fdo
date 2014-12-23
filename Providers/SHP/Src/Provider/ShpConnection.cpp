@@ -1086,7 +1086,7 @@ ShpPhysicalSchema* ShpConnection::GetPhysicalSchema(FdoStringCollection* classNa
     }
 
     // Return the singleton physical schema:
-    return FDO_SAFE_ADDREF(mPhysicalSchema.p);
+    return mPhysicalSchema.Detach();
 }
 
 FdoStringCollection* ShpConnection::GetClassNames()
@@ -1231,8 +1231,8 @@ ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(FdoStringCollection* c
     if (NULL != mLpSchemas && mPartialSchema && NULL == classNames)
     {
         //printf("!!INVALIDATE CACHE (Full schema request with cached partial schema)!!\n");
-        mLpSchemas = NULL;
-        mPhysicalSchema = NULL; //So GetPhysicalSchema() below won't return a cached copy
+        FDO_SAFE_RELEASE(mLpSchemas.p)
+        FDO_SAFE_RELEASE(mPhysicalSchema.p);
     }
 
     //Case 2: Cached partial schema and we're doing another partial request where a requested
@@ -1249,8 +1249,8 @@ ShpLpFeatureSchemaCollection* ShpConnection::GetLpSchemas(FdoStringCollection* c
             if (lpClasses->IndexOf(className) < 0)
             {
                 //printf("!!INVALIDATE CACHE (Partial schema doesn't fully contain requested list)!!\n");
-                mLpSchemas = NULL;
-                mPhysicalSchema = NULL; //So GetPhysicalSchema() below won't return a cached copy
+                FDO_SAFE_RELEASE(mLpSchemas.p)
+                FDO_SAFE_RELEASE(mPhysicalSchema.p);
                 break;
             }
         }
