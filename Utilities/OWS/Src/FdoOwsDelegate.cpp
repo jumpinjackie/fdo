@@ -58,7 +58,7 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
     
     // We wont modify the URL from the GetCapabilities response directly
     FdoStringP url = m_defaultUrl;
-
+	
     // If possible, try and resolve the URL address
     if (m_requestMetadatas != NULL || m_operationMetadatas != NULL)
     {
@@ -133,6 +133,7 @@ FdoOwsResponse* FdoOwsDelegate::Invoke(FdoOwsRequest* request)
             url = FdoStringP::Format(L"%ls?%ls", (FdoString*)urlbase, (FdoString*)encodedParams);
         }
     }
+	request->SetUrl(url);
 
     // encode request
     FdoStringP requestString;
