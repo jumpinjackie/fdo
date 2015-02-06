@@ -30,6 +30,7 @@ protected:
     FdoStringP m_service;
     FdoStringP m_request;
     FdoStringP m_version;
+	FdoStringP m_url;
     bool m_addVersionToRequest;
 
 protected:
@@ -43,6 +44,7 @@ public:
     FDOOWS_API virtual FdoStringP EncodeKVP();
     FDOOWS_API void SetRequest (FdoString* request);
     FDOOWS_API FdoString* GetRequest ();
+	FDOOWS_API void SetUrl(FdoString* url);
 
     FDOOWS_API static FdoStringP UrlEscape(FdoString* urlPart);
 

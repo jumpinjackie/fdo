@@ -55,6 +55,11 @@ FdoString* FdoOwsRequest::GetRequest ()
     return (FdoString*)m_request;
 }
 
+void FdoOwsRequest::SetUrl(FdoString* url)
+{
+	m_url = url;
+}
+
 // IEncodable implementation
 FdoStringP FdoOwsRequest::EncodeKVP()
 {
@@ -64,18 +69,26 @@ FdoStringP FdoOwsRequest::EncodeKVP()
     {
         ret += FdoOwsGlobals::version;
         ret += FdoOwsGlobals::Equal;
-        ret += m_version;
-        ret += FdoOwsGlobals::And;
+        ret += m_version;        
     }
 
-    ret += FdoOwsGlobals::service;
-    ret += FdoOwsGlobals::Equal;
-    ret += m_service;
-
-    ret += FdoOwsGlobals::And;
-    ret += FdoOwsGlobals::REQUEST;
-    ret += FdoOwsGlobals::Equal;
-    ret += m_request;
+	FdoStringP serviceParam = FdoOwsGlobals::service;
+    serviceParam += FdoOwsGlobals::Equal;
+    serviceParam += m_service;
+	if (!m_url.Lower().Contains(serviceParam.Lower()))
+	{
+		ret += FdoOwsGlobals::And;
+		ret += serviceParam;		
+	}	
+    
+	FdoStringP requestParam = FdoOwsGlobals::REQUEST;
+	requestParam += FdoOwsGlobals::Equal;
+    requestParam += m_request;
+	if (!m_url.Lower().Contains(requestParam.Lower()))
+	{
+		ret += FdoOwsGlobals::And;
+		ret += requestParam;
+	}
 
     return ret;
 }
