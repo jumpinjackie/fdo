@@ -137,7 +137,7 @@ mkdir -p lib/linux
 
 chmod a+x ./config
 
-./config
+./config no-asm no-ssl3
 if [ "$?" -ne 0 ] ; then
   exit 1
 fi
