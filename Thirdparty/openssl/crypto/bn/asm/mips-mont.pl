@@ -350,8 +350,7 @@ $code.=<<___;
 	addu	$i,$BNSZ
 	sltu	$t0,$i,$num
 	bnez	$t0,.Louter
-
-
+
 	.set	noreorder
 	$PTR_ADD $tj,$sp,$num	# &tp[num]
 	move	$tp,$sp
