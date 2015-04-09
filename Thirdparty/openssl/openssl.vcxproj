@@ -68,19 +68,24 @@
   <PropertyGroup>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">mkdir lib\Debug
-perl Configure no-asm VC-WIN32
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+mkdir lib\Debug
+perl Configure no-asm no-ssl3 VC-WIN32
 call ms\do_ms debug
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">mkdir lib\Debug
-perl Configure no-asm VC-WIN32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug
+    </NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+mkdir lib\Debug
+perl Configure no-asm no-ssl3 VC-WIN32
 call ms\do_ms debug
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">call del /F /S /Q inc32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug
+    </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+call del /F /S /Q inc32
 call del /F /S /Q tmp32
 call del /F /S /Q lib\Debug
 call del /F /S /Q obj
-</NMakeCleanCommandLine>
+    </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
@@ -89,18 +94,24 @@ call del /F /S /Q obj
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mkdir lib\Debug64
-perl Configure no-asm VC-WIN64A
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+mkdir lib\Debug64
+perl Configure no-asm no-ssl3 VC-WIN64A
 call ms\do_win64a debug64
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mkdir lib\Debug64
-perl Configure no-asm VC-WIN64A
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64
+    </NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+mkdir lib\Debug64
+perl Configure no-asm no-ssl3 VC-WIN64A
 call ms\do_win64a debug64
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">call del /F /S /Q inc32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Debug64
+    </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+call del /F /S /Q inc32
 call del /F /S /Q tmp32
 call del /F /S /Q lib\Debug64
-call del /F /S /Q obj</NMakeCleanCommandLine>
+call del /F /S /Q obj
+    </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
@@ -109,18 +120,24 @@ call del /F /S /Q obj</NMakeCleanCommandLine>
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">mkdir lib\Release
-perl Configure no-asm VC-WIN32
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+mkdir lib\Release
+perl Configure no-asm no-ssl3 VC-WIN32
 call ms\do_ms
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">mkdir lib\Release
-perl Configure no-asm VC-WIN32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release
+    </NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+mkdir lib\Release
+perl Configure no-asm no-ssl3 VC-WIN32
 call ms\do_ms
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">call del /F /S /Q inc32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release
+    </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+call del /F /S /Q inc32
 call del /F /S /Q tmp32
 call del /F /S /Q lib\Release
-call del /F /S /Q obj</NMakeCleanCommandLine>
+call del /F /S /Q obj
+    </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
@@ -129,18 +146,24 @@ call del /F /S /Q obj</NMakeCleanCommandLine>
     <NMakeForcedUsingAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(NMakeForcedUsingAssemblies)</NMakeForcedUsingAssemblies>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\</IntDir>
-    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mkdir lib\Release64
-perl Configure no-asm VC-WIN64A
+    <NMakeBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+mkdir lib\Release64
+perl Configure no-asm no-ssl3 VC-WIN64A
 call ms\do_win64a
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mkdir lib\Release64
-perl Configure no-asm VC-WIN64A
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64
+    </NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+mkdir lib\Release64
+perl Configure no-asm no-ssl3 VC-WIN64A
 call ms\do_win64a
-nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">call del /F /S /Q inc32
+nmake -f "ms\nt.mak" /NOLOGO OUT_D=lib\Release64
+    </NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+call del /F /S /Q inc32
 call del /F /S /Q tmp32
 call del /F /S /Q lib\Release64
-call del /F /S /Q obj</NMakeCleanCommandLine>
+call del /F /S /Q obj
+    </NMakeCleanCommandLine>
     <NMakeOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">openssl</NMakeOutput>
     <NMakePreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeIncludeSearchPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
