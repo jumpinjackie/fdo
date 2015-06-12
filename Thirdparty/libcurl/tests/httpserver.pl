@@ -36,7 +36,6 @@ use serverhelp qw(
 
 my $verbose = 0;     # set to 1 for debugging
 my $port = 8990;     # just a default
-my $unix_socket;     # location to place a listening Unix socket
 my $ipvnum = 4;      # default IP version of http server
 my $idnum = 1;       # dafault http server instance number
 my $proto = 'http';  # protocol the http server speaks
@@ -74,13 +73,6 @@ while(@ARGV) {
     }
     elsif($ARGV[0] eq '--ipv6') {
         $ipvnum = 6;
-    }
-    elsif($ARGV[0] eq '--unix-socket') {
-        $ipvnum = 'unix';
-        if($ARGV[1]) {
-            $unix_socket = $ARGV[1];
-            shift @ARGV;
-        }
     }
     elsif($ARGV[0] eq '--gopher') {
         $gopher = 1;
@@ -125,12 +117,7 @@ if(!$logfile) {
 $flags .= "--pidfile \"$pidfile\" --logfile \"$logfile\" ";
 $flags .= "--gopher " if($gopher);
 $flags .= "--connect $connect " if($connect);
-if($ipvnum eq 'unix') {
-    $flags .= "--unix-socket '$unix_socket' ";
-} else {
-    $flags .= "--ipv$ipvnum --port $port ";
-}
-$flags .= "--srcdir \"$srcdir\"";
+$flags .= "--ipv$ipvnum --port $port --srcdir \"$srcdir\"";
 
 if($verbose) {
     print STDERR "RUN: server/sws $flags\n";

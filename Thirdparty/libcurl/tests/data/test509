@@ -1,9 +1,4 @@
 <testcase>
-<info>
-<keywords>
-memory callbacks
-</keywords>
-</info>
 #
 # Server-side
 <reply>
@@ -14,9 +9,6 @@ memory callbacks
 <server>
 none
 </server>
-<features>
-http
-</features>
 # tool is what to use instead of 'curl'
 <tool>
 lib509
@@ -33,7 +25,7 @@ nothing
 #
 # Verify data after the test has been "shot"
 <verify>
-<stdout>
+<stdout mode="text">
 seen custom_calloc()
 seen custom_malloc()
 seen custom_realloc()

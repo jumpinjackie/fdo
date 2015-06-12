@@ -873,7 +873,6 @@ daniel
 http
 </server>
 <features>
-!SSPI
 crypto
 </features>
  <name>

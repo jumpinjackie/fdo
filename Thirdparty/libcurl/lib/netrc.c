@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -31,11 +31,13 @@
 
 #include "strequal.h"
 #include "strtok.h"
-#include "rawstr.h"
-#include "curl_printf.h"
-
-/* The last #include files should be: */
 #include "curl_memory.h"
+#include "rawstr.h"
+
+#define _MPRINTF_REPLACE /* use our functions only */
+#include <curl/mprintf.h>
+
+/* The last #include file should be: */
 #include "memdebug.h"
 
 /* Get user and password from .netrc when given a machine name */
@@ -48,18 +50,17 @@ enum host_lookup_state {
 
 /*
  * @unittest: 1304
- *
- * *loginp and *passwordp MUST be allocated if they aren't NULL when passed
- * in.
  */
 int Curl_parsenetrc(const char *host,
-                    char **loginp,
-                    char **passwordp,
+                    char *login,
+                    char *password,
                     char *netrcfile)
 {
   FILE *file;
   int retcode=1;
-  int specific_login = (*loginp && **loginp != 0);
+  int specific_login = (login[0] != 0);
+  char *home = NULL;
+  bool home_alloc = FALSE;
   bool netrc_alloc = FALSE;
   enum host_lookup_state state=NOTHING;
 
@@ -70,23 +71,10 @@ int Curl_parsenetrc(const char *host,
 #define NETRC DOT_CHAR "netrc"
 
   if(!netrcfile) {
-    bool home_alloc = FALSE;
-    char *home = curl_getenv("HOME"); /* portable environment reader */
+    home = curl_getenv("HOME"); /* portable environment reader */
     if(home) {
       home_alloc = TRUE;
-#if defined(HAVE_GETPWUID_R) && defined(HAVE_GETEUID)
-    }
-    else {
-      struct passwd pw, *pw_res;
-      char pwbuf[1024];
-      if(!getpwuid_r(geteuid(), &pw, pwbuf, sizeof(pwbuf), &pw_res)
-         && pw_res) {
-        home = strdup(pw.pw_dir);
-        if(!home)
-          return CURLE_OUT_OF_MEMORY;
-        home_alloc = TRUE;
-      }
-#elif defined(HAVE_GETPWUID) && defined(HAVE_GETEUID)
+#if defined(HAVE_GETPWUID) && defined(HAVE_GETEUID)
     }
     else {
       struct passwd *pw;
@@ -98,20 +86,18 @@ int Curl_parsenetrc(const char *host,
     }
 
     if(!home)
-      return retcode; /* no home directory found (or possibly out of memory) */
+      return -1;
 
     netrcfile = curl_maprintf("%s%s%s", home, DIR_CHAR, NETRC);
-    if(home_alloc)
-      free(home);
     if(!netrcfile) {
+      if(home_alloc)
+        free(home);
       return -1;
     }
     netrc_alloc = TRUE;
   }
 
   file = fopen(netrcfile, "r");
-  if(netrc_alloc)
-    free(netrcfile);
   if(file) {
     char *tok;
     char *tok_buf;
@@ -123,7 +109,7 @@ int Curl_parsenetrc(const char *host,
       tok=strtok_r(netrcbuffer, " \t\n", &tok_buf);
       while(!done && tok) {
 
-        if((*loginp && **loginp) && (*passwordp && **passwordp)) {
+        if(login[0] && password[0]) {
           done=TRUE;
           break;
         }
@@ -152,26 +138,16 @@ int Curl_parsenetrc(const char *host,
           /* we are now parsing sub-keywords concerning "our" host */
           if(state_login) {
             if(specific_login) {
-              state_our_login = Curl_raw_equal(*loginp, tok);
+              state_our_login = Curl_raw_equal(login, tok);
             }
             else {
-              free(*loginp);
-              *loginp = strdup(tok);
-              if(!*loginp) {
-                retcode = -1; /* allocation failed */
-                goto out;
-              }
+              strncpy(login, tok, LOGINSIZE-1);
             }
             state_login=0;
           }
           else if(state_password) {
             if(state_our_login || !specific_login) {
-              free(*passwordp);
-              *passwordp = strdup(tok);
-              if(!*passwordp) {
-                retcode = -1; /* allocation failed */
-                goto out;
-              }
+              strncpy(password, tok, PASSWORDSIZE-1);
             }
             state_password=0;
           }
@@ -191,9 +167,13 @@ int Curl_parsenetrc(const char *host,
       } /* while(tok) */
     } /* while fgets() */
 
-    out:
     fclose(file);
   }
+
+  if(home_alloc)
+    free(home);
+  if(netrc_alloc)
+    free(netrcfile);
 
   return retcode;
 }

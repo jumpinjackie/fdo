@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -262,8 +262,7 @@ char **__crt0_glob_function(char *arg)
  * HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\SafeProcessSearchMode
  */
 
-CURLcode FindWin32CACert(struct OperationConfig *config,
-                         const char *bundle_file)
+CURLcode FindWin32CACert(struct Configurable *config, const char *bundle_file)
 {
   CURLcode result = CURLE_OK;
 
@@ -297,3 +296,4 @@ CURLcode FindWin32CACert(struct OperationConfig *config,
 #endif /* WIN32 */
 
 #endif /* MSDOS || WIN32 */
+

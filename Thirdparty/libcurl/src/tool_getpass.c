@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -52,9 +52,9 @@
 #  endif
 #endif
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
+#define _MPRINTF_REPLACE
+#include <curl/mprintf.h>
+
 #include "tool_getpass.h"
 
 #include "memdebug.h" /* keep this as LAST include */
@@ -117,7 +117,7 @@ char *getpass_r(const char *prompt, char *buffer, size_t buflen)
       if(buffer[i] == '\b')
         /* remove this letter and if this is not the first key, remove the
            previous one as well */
-        i = i - (i >= 1 ? 2 : 1);
+        i = i - (i >= 1) ? 2 : 1;
   }
 #ifndef __SYMBIAN32__
   /* since echo is disabled, print a newline */
@@ -229,7 +229,7 @@ char *getpass_r(const char *prompt, /* prompt to display */
   bool disabled;
   int fd = open("/dev/tty", O_RDONLY);
   if(-1 == fd)
-    fd = STDIN_FILENO; /* use stdin if the tty couldn't be used */
+    fd = 1; /* use stdin if the tty couldn't be used */
 
   disabled = ttyecho(FALSE, fd); /* disable terminal echo */
 
@@ -246,7 +246,7 @@ char *getpass_r(const char *prompt, /* prompt to display */
     (void)ttyecho(TRUE, fd); /* enable echo */
   }
 
-  if(STDIN_FILENO != fd)
+  if(1 != fd)
     close(fd);
 
   return password; /* return pointer to buffer */

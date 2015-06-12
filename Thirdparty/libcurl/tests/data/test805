@@ -2,7 +2,6 @@
 <info>
 <keywords>
 IMAP
-Clear Text
 APPEND
 UPLOAD
 </keywords>
@@ -20,10 +19,10 @@ UPLOAD
 imap
 </server>
  <name>
-IMAP APPEND message
+IMAP APPEND
  </name>
  <command>
-imap://%HOSTIP:%IMAPPORT/805 -T log/upload805 -u user:secret
+-u user:secret -T log/upload805 'imap://%HOSTIP:%IMAPPORT/805'
 </command>
 <file name="log/upload805">
 Date: Mon, 7 Feb 1994 21:52:25 -0800 (PST)

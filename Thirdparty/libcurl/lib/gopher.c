@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -36,6 +36,10 @@
 #include "select.h"
 #include "url.h"
 #include "warnless.h"
+
+#define _MPRINTF_REPLACE /* use our functions only */
+#include <curl/mprintf.h>
+
 #include "curl_memory.h"
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -117,10 +121,10 @@ static CURLcode gopher_do(struct connectdata *conn, bool *done)
 
   for(;;) {
     result = Curl_write(conn, sockfd, sel, k, &amount);
-    if(!result) { /* Which may not have written it all! */
+    if(CURLE_OK == result) { /* Which may not have written it all! */
       result = Curl_client_write(conn, CLIENTWRITE_HEADER, sel, amount);
       if(result) {
-        free(sel_org);
+        Curl_safefree(sel_org);
         return result;
       }
       k -= amount;
@@ -130,7 +134,7 @@ static CURLcode gopher_do(struct connectdata *conn, bool *done)
     }
     else {
       failf(data, "Failed sending Gopher request");
-      free(sel_org);
+      Curl_safefree(sel_org);
       return result;
     }
     /* Don't busyloop. The entire loop thing is a work-around as it causes a
@@ -145,12 +149,12 @@ static CURLcode gopher_do(struct connectdata *conn, bool *done)
     Curl_socket_ready(CURL_SOCKET_BAD, sockfd, 100);
   }
 
-  free(sel_org);
+  Curl_safefree(sel_org);
 
   /* We can use Curl_sendf to send the terminal \r\n relatively safely and
      save allocing another string/doing another _write loop. */
   result = Curl_sendf(sockfd, conn, "\r\n");
-  if(result) {
+  if(result != CURLE_OK) {
     failf(data, "Failed sending Gopher request");
     return result;
   }

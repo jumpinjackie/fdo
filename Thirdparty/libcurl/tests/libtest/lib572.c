@@ -28,6 +28,8 @@
 #include <fcntl.h>
 #endif
 
+#include <curl/mprintf.h>
+
 #include "memdebug.h"
 
 /* build request url */
@@ -165,7 +167,8 @@ test_cleanup:
   if(paramsf)
     fclose(paramsf);
 
-  free(stream_uri);
+  if(stream_uri)
+    free(stream_uri);
 
   if(custom_headers)
     curl_slist_free_all(custom_headers);

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -27,14 +27,16 @@
 
 #include <curl/curl.h>
 
+#include "curl_memory.h"
 #include "urldata.h"
 #include "warnless.h"
 #include "non-ascii.h"
 #include "escape.h"
-#include "curl_printf.h"
 
-/* The last #include files should be: */
-#include "curl_memory.h"
+#define _MPRINTF_REPLACE /* use our functions only */
+#include <curl/mprintf.h>
+
+/* The last #include file should be: */
 #include "memdebug.h"
 
 /* Portable character check (remember EBCDIC). Do not use isalnum() because
@@ -85,7 +87,7 @@ char *curl_easy_escape(CURL *handle, const char *string, int inlength)
   size_t newlen = alloc;
   size_t strindex=0;
   size_t length;
-  CURLcode result;
+  CURLcode res;
 
   ns = malloc(alloc);
   if(!ns)
@@ -113,8 +115,8 @@ char *curl_easy_escape(CURL *handle, const char *string, int inlength)
         }
       }
 
-      result = Curl_convert_to_network(handle, &in, 1);
-      if(result) {
+      res = Curl_convert_to_network(handle, &in, 1);
+      if(res) {
         /* Curl_convert_to_network calls failf if unsuccessful */
         free(ns);
         return NULL;
@@ -150,7 +152,7 @@ CURLcode Curl_urldecode(struct SessionHandle *data,
   unsigned char in;
   size_t strindex=0;
   unsigned long hex;
-  CURLcode result;
+  CURLcode res;
 
   if(!ns)
     return CURLE_OUT_OF_MEMORY;
@@ -170,17 +172,16 @@ CURLcode Curl_urldecode(struct SessionHandle *data,
 
       in = curlx_ultouc(hex); /* this long is never bigger than 255 anyway */
 
-      result = Curl_convert_from_network(data, &in, 1);
-      if(result) {
+      res = Curl_convert_from_network(data, &in, 1);
+      if(res) {
         /* Curl_convert_from_network calls failf if unsuccessful */
         free(ns);
-        return result;
+        return res;
       }
 
       string+=2;
       alloc-=2;
     }
-
     if(reject_ctrl && (in < 0x20)) {
       free(ns);
       return CURLE_URL_MALFORMAT;
@@ -195,8 +196,9 @@ CURLcode Curl_urldecode(struct SessionHandle *data,
     /* store output size */
     *olen = strindex;
 
-  /* store output string */
-  *ostring = ns;
+  if(ostring)
+    /* store output string */
+    *ostring = ns;
 
   return CURLE_OK;
 }
@@ -227,5 +229,6 @@ char *curl_easy_unescape(CURL *handle, const char *string, int length,
    the library's memory system */
 void curl_free(void *p)
 {
-  free(p);
+  if(p)
+    free(p);
 }

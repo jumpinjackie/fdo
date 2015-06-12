@@ -73,13 +73,13 @@ partial body
 </strip>
 <protocol>
 GET /want/1117 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
 Range: bytes=10-22
+Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
 GET /wantmore/11170001 HTTP/1.1
-Host: %HOSTIP:%HTTPPORT
 Range: bytes=10-22
+Host: %HOSTIP:%HTTPPORT
 Accept: */*
 
 </protocol>

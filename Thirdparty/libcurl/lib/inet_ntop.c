@@ -32,7 +32,8 @@
 #include <arpa/inet.h>
 #endif
 
-#include "curl_printf.h"
+#define _MPRINTF_REPLACE /* use our functions only */
+#include <curl/mprintf.h>
 
 #include "inet_ntop.h"
 

@@ -2,7 +2,6 @@
 <info>
 <keywords>
 POP3
-Clear Text
 RETR
 </keywords>
 </info>
@@ -28,7 +27,7 @@ body
 pop3
 </server>
  <name>
-POP3 RETR message
+POP3 RETR
  </name>
  <command>
 pop3://%HOSTIP:%POP3PORT/850 -u user:secret

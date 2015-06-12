@@ -36,7 +36,7 @@ int test(char *URL)
   int i;
   char target_url[256];
   char dnsentry[256];
-  struct curl_slist *slist = NULL, *slist2;
+  struct curl_slist *slist = NULL;
   char *port = libtest_arg3;
   char *address = libtest_arg2;
 
@@ -46,12 +46,7 @@ int test(char *URL)
   for(i=0; i < NUM_URLS; i++) {
     sprintf(dnsentry, "server%d.example.com:%s:%s", i + 1, port, address);
     printf("%s\n", dnsentry);
-    slist2 = curl_slist_append(slist, dnsentry);
-    if(!slist2) {
-      fprintf(stderr, "curl_slist_append() failed\n");
-      goto test_cleanup;
-    }
-    slist = slist2;
+    slist = curl_slist_append(slist, dnsentry);
   }
 
   start_test_timing();
@@ -68,7 +63,7 @@ int test(char *URL)
 
   easy_setopt(curl, CURLOPT_RESOLVE, slist);
 
-  easy_setopt(curl, CURLOPT_MAXCONNECTS, 3L);
+  easy_setopt(curl, CURLOPT_MAXCONNECTS, 3);
 
   /* get NUM_HANDLES easy handles */
   for(i=0; i < NUM_URLS; i++) {

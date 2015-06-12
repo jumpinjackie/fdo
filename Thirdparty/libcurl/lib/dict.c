@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -57,6 +57,10 @@
 #include "strequal.h"
 #include "dict.h"
 #include "rawstr.h"
+
+#define _MPRINTF_REPLACE /* use our functions only */
+#include <curl/mprintf.h>
+
 #include "curl_memory.h"
 /* The last #include file should be: */
 #include "memdebug.h"
@@ -97,7 +101,7 @@ static char *unescape_word(struct SessionHandle *data, const char *inputbuff)
   char *dictp;
   char *ptr;
   int len;
-  char ch;
+  char byte;
   int olen=0;
 
   newp = curl_easy_unescape(data, inputbuff, 0, &len);
@@ -109,17 +113,18 @@ static char *unescape_word(struct SessionHandle *data, const char *inputbuff)
     /* According to RFC2229 section 2.2, these letters need to be escaped with
        \[letter] */
     for(ptr = newp;
-        (ch = *ptr) != 0;
+        (byte = *ptr) != 0;
         ptr++) {
-      if((ch <= 32) || (ch == 127) ||
-          (ch == '\'') || (ch == '\"') || (ch == '\\')) {
+      if((byte <= 32) || (byte == 127) ||
+          (byte == '\'') || (byte == '\"') || (byte == '\\')) {
         dictp[olen++] = '\\';
       }
-      dictp[olen++] = ch;
+      dictp[olen++] = byte;
     }
     dictp[olen]=0;
+
+    free(newp);
   }
-  free(newp);
   return dictp;
 }
 

@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -22,15 +22,7 @@
 #include "test.h"
 
 #ifdef HAVE_LOCALE_H
-#  include <locale.h> /* for setlocale() */
-#endif
-
-#ifdef HAVE_IO_H
-#  include <io.h> /* for setmode() */
-#endif
-
-#ifdef HAVE_FCNTL_H
-#  include <fcntl.h> /* for setmode() */
+#include <locale.h> /* for setlocale() */
 #endif
 
 #ifdef CURLDEBUG
@@ -57,15 +49,6 @@ int select_wrapper(int nfds, fd_set *rd, fd_set *wr, fd_set *exc,
   }
 #endif
   return select(nfds, rd, wr, exc, tv);
-}
-
-void wait_ms(int ms)
-{
-  struct timeval t;
-  t.tv_sec = ms/1000;
-  ms -= (int)t.tv_sec * 1000;
-  t.tv_usec = ms * 1000;
-  select_wrapper(0, NULL, NULL , NULL, &t);
 }
 
 char *libtest_arg2=NULL;
@@ -111,31 +94,9 @@ static void memory_tracking_init(void)
 #  define memory_tracking_init() Curl_nop_stmt
 #endif
 
-/* returns a hexdump in a static memory area */
-char *hexdump(unsigned char *buffer, size_t len)
-{
-  static char dump[200*3+1];
-  char *p = dump;
-  size_t i;
-  if(len > 200)
-    return NULL;
-  for(i=0; i<len; i++, p += 3)
-    snprintf(p, 4, "%02x ", buffer[i]);
-  return dump;
-}
-
-
 int main(int argc, char **argv)
 {
   char *URL;
-
-#ifdef O_BINARY
-#  ifdef __HIGHC__
-  _setmode(stdout, O_BINARY);
-#  else
-  setmode(fileno(stdout), O_BINARY);
-#  endif
-#endif
 
   memory_tracking_init();
 

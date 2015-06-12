@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2014, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -22,9 +22,6 @@
  *
  ***************************************************************************/
 #include "tool_setup.h"
-
-struct GlobalConfig;
-struct OperationConfig;
 
 /* returns 1 for success, 0 otherwise (we use OpenSSL *_Init fncs directly) */
 typedef int (* Curl_digest_init_func)(void *context);
@@ -104,7 +101,7 @@ extern const digest_params SHA256_DIGEST_PARAMS[1];
  * Counts the resource in the metalinkfile.
  */
 int count_next_metalink_resource(metalinkfile *mlfile);
-void clean_metalink(struct OperationConfig *config);
+void clean_metalink(struct Configurable *config);
 
 /*
  * Performs final parse operation and extracts information from
@@ -116,7 +113,7 @@ void clean_metalink(struct OperationConfig *config);
  * -1: Parsing failed; or no file is found
  * -2: Parsing succeeded with some warnings.
  */
-int parse_metalink(struct OperationConfig *config, struct OutStruct *outs,
+int parse_metalink(struct Configurable *config, struct OutStruct *outs,
                    const char *metalink_url);
 
 /*
@@ -145,7 +142,7 @@ int check_metalink_content_type(const char *content_type);
  *   No checksum in Metalink supported, hash algorithm not available, or
  *   Metalink does not contain checksum.
  */
-int metalink_check_hash(struct GlobalConfig *config,
+int metalink_check_hash(struct Configurable *config,
                         metalinkfile *mlfile,
                         const char *filename);
 
@@ -157,7 +154,7 @@ void metalink_cleanup(void);
 #else /* USE_METALINK */
 
 #define count_next_metalink_resource(x)  0
-#define clean_metalink(x)  (void)x
+#define clean_metalink(x)  Curl_nop_stmt
 
 /* metalink_cleanup() takes no arguments */
 #define metalink_cleanup() Curl_nop_stmt
