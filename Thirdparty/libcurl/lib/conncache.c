@@ -6,7 +6,7 @@
  *                             \___|\___/|_| \_\_____|
  *
  * Copyright (C) 2012, Linus Nielsen Feltzing, <linus@haxx.se>
- * Copyright (C) 2012 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2012 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -73,10 +73,12 @@ void Curl_conncache_destroy(struct conncache *connc)
   }
 }
 
-struct connectbundle *Curl_conncache_find_bundle(struct conncache *connc,
-                                                 char *hostname)
+struct connectbundle *Curl_conncache_find_bundle(struct connectdata *conn,
+                                                 struct conncache *connc)
 {
   struct connectbundle *bundle = NULL;
+
+  char *hostname = conn->bits.proxy?conn->proxy.name:conn->host.name;
 
   if(connc)
     bundle = Curl_hash_pick(connc->hash, hostname, strlen(hostname)+1);
@@ -127,15 +129,15 @@ CURLcode Curl_conncache_add_conn(struct conncache *connc,
   struct connectbundle *new_bundle = NULL;
   struct SessionHandle *data = conn->data;
 
-  bundle = Curl_conncache_find_bundle(data->state.conn_cache,
-                                      conn->host.name);
+  bundle = Curl_conncache_find_bundle(conn, data->state.conn_cache);
   if(!bundle) {
+    char *hostname = conn->bits.proxy?conn->proxy.name:conn->host.name;
+
     result = Curl_bundle_create(data, &new_bundle);
-    if(result != CURLE_OK)
+    if(result)
       return result;
 
-    if(!conncache_add_bundle(data->state.conn_cache,
-                             conn->host.name, new_bundle)) {
+    if(!conncache_add_bundle(data->state.conn_cache, hostname, new_bundle)) {
       Curl_bundle_destroy(new_bundle);
       return CURLE_OUT_OF_MEMORY;
     }
@@ -143,13 +145,18 @@ CURLcode Curl_conncache_add_conn(struct conncache *connc,
   }
 
   result = Curl_bundle_add_conn(bundle, conn);
-  if(result != CURLE_OK) {
+  if(result) {
     if(new_bundle)
       conncache_remove_bundle(data->state.conn_cache, new_bundle);
     return result;
   }
 
+  conn->connection_id = connc->next_connection_id++;
   connc->num_connections++;
+
+  DEBUGF(infof(conn->data, "Added connection %ld. "
+               "The cache now contains %" CURL_FORMAT_CURL_OFF_TU " members\n",
+               conn->connection_id, (curl_off_t) connc->num_connections));
 
   return CURLE_OK;
 }
@@ -166,10 +173,14 @@ void Curl_conncache_remove_conn(struct conncache *connc,
     if(bundle->num_connections == 0) {
       conncache_remove_bundle(connc, bundle);
     }
-    connc->num_connections--;
 
-    DEBUGF(infof(conn->data, "The cache now contains %d members\n",
-                 connc->num_connections));
+    if(connc) {
+      connc->num_connections--;
+
+      DEBUGF(infof(conn->data, "The cache now contains %"
+                   CURL_FORMAT_CURL_OFF_TU " members\n",
+                   (curl_off_t) connc->num_connections));
+    }
   }
 }
 
@@ -195,22 +206,20 @@ void Curl_conncache_foreach(struct conncache *connc,
   he = Curl_hash_next_element(&iter);
   while(he) {
     struct connectbundle *bundle;
-    struct connectdata *conn;
 
     bundle = he->ptr;
+    he = Curl_hash_next_element(&iter);
 
     curr = bundle->conn_list->head;
     while(curr) {
       /* Yes, we need to update curr before calling func(), because func()
          might decide to remove the connection */
-      conn = curr->ptr;
+      struct connectdata *conn = curr->ptr;
       curr = curr->next;
 
       if(1 == func(conn, param))
         return;
     }
-
-    he = Curl_hash_next_element(&iter);
   }
 }
 
@@ -220,7 +229,6 @@ struct connectdata *
 Curl_conncache_find_first_connection(struct conncache *connc)
 {
   struct curl_hash_iterator iter;
-  struct curl_llist_element *curr;
   struct curl_hash_element *he;
   struct connectbundle *bundle;
 
@@ -228,6 +236,7 @@ Curl_conncache_find_first_connection(struct conncache *connc)
 
   he = Curl_hash_next_element(&iter);
   while(he) {
+    struct curl_llist_element *curr;
     bundle = he->ptr;
 
     curr = bundle->conn_list->head;

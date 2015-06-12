@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -36,8 +36,6 @@
 #ifdef HAVE_FCNTL_H
 #  include <fcntl.h>
 #endif
-
-#include <curl/mprintf.h>
 
 #include "warnless.h"
 #include "memdebug.h"
@@ -135,7 +133,7 @@ int test(char *URL)
   stream_uri = NULL;
 
   test_setopt(curl, CURLOPT_INTERLEAVEFUNCTION, rtp_write);
-  test_setopt(curl, CURLOPT_TIMEOUT, 3);
+  test_setopt(curl, CURLOPT_TIMEOUT, 3L);
   test_setopt(curl, CURLOPT_VERBOSE, 1L);
   test_setopt(curl, CURLOPT_WRITEDATA, protofile);
 
@@ -197,9 +195,7 @@ int test(char *URL)
   }
 
 test_cleanup:
-
-  if(stream_uri)
-    free(stream_uri);
+  free(stream_uri);
 
   if(protofile)
     fclose(protofile);

@@ -37,7 +37,6 @@
 #include "hash.h"
 #include "hostip.h"
 
-#include "curl_memory.h"
 #include "memdebug.h" /* LAST include file */
 
 static struct SessionHandle *data;
@@ -66,9 +65,7 @@ static void unit_stop( void )
     Curl_freeaddrinfo(data_node->addr);
     free(data_node);
   }
-  if (data_key)
-    free(data_key);
-
+  free(data_key);
   Curl_hash_destroy(hp);
 
   curl_easy_cleanup(data);
@@ -131,6 +128,7 @@ UNITTEST_START
     abort_unless(rc == CURLE_OK, "data node creation failed");
     key_len = strlen(data_key);
 
+    data_node->inuse = 1; /* hash will hold the reference */
     nodep = Curl_hash_add(hp, data_key, key_len+1, data_node);
     abort_unless(nodep, "insertion into hash failed");
     /* Freeing will now be done by Curl_hash_destroy */
