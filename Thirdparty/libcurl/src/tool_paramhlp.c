@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -33,10 +33,11 @@
 #include "tool_homedir.h"
 #include "tool_msgs.h"
 #include "tool_paramhlp.h"
+#include "tool_version.h"
 
 #include "memdebug.h" /* keep this as LAST include */
 
-struct getout *new_getout(struct Configurable *config)
+struct getout *new_getout(struct OperationConfig *config)
 {
   struct getout *node = calloc(1, sizeof(struct getout));
   struct getout *last = config->url_last;
@@ -178,9 +179,55 @@ ParameterError str2num(long *val, const char *str)
 
 ParameterError str2unum(long *val, const char *str)
 {
-  if(str[0]=='-')
-    return PARAM_NEGATIVE_NUMERIC; /* badness */
-  return str2num(val, str);
+  ParameterError result = str2num(val, str);
+  if(result != PARAM_OK)
+    return result;
+  if(*val < 0)
+    return PARAM_NEGATIVE_NUMERIC;
+
+  return PARAM_OK;
+}
+
+/*
+ * Parse the string and write the double in the given address. Return PARAM_OK
+ * on success, otherwise a parameter specific error enum.
+ *
+ * Since this function gets called with the 'nextarg' pointer from within the
+ * getparameter a lot, we must check it for NULL before accessing the str
+ * data.
+ */
+
+ParameterError str2double(double *val, const char *str)
+{
+  if(str) {
+    char *endptr;
+    double num = strtod(str, &endptr);
+    if((endptr != str) && (endptr == str + strlen(str))) {
+      *val = num;
+      return PARAM_OK;  /* Ok */
+    }
+  }
+  return PARAM_BAD_NUMERIC; /* badness */
+}
+
+/*
+ * Parse the string and write the double in the given address. Return PARAM_OK
+ * on success, otherwise a parameter error enum. ONLY ACCEPTS POSITIVE NUMBERS!
+ *
+ * Since this function gets called with the 'nextarg' pointer from within the
+ * getparameter a lot, we must check it for NULL before accessing the str
+ * data.
+ */
+
+ParameterError str2udouble(double *val, const char *str)
+{
+  ParameterError result = str2double(val, str);
+  if(result != PARAM_OK)
+    return result;
+  if(*val < 0)
+    return PARAM_NEGATIVE_NUMERIC;
+
+  return PARAM_OK;
 }
 
 /*
@@ -194,7 +241,7 @@ ParameterError str2unum(long *val, const char *str)
  * data.
  */
 
-long proto2num(struct Configurable *config, long *val, const char *str)
+long proto2num(struct OperationConfig *config, long *val, const char *str)
 {
   char *buffer;
   const char *sep = ",";
@@ -225,6 +272,8 @@ long proto2num(struct Configurable *config, long *val, const char *str)
     { "smtps", CURLPROTO_SMTPS },
     { "rtsp", CURLPROTO_RTSP },
     { "gopher", CURLPROTO_GOPHER },
+    { "smb", CURLPROTO_SMB },
+    { "smbs", CURLPROTO_SMBS },
     { NULL, 0 }
   };
 
@@ -282,7 +331,7 @@ long proto2num(struct Configurable *config, long *val, const char *str)
          if no protocols are allowed */
       if(action == set)
         *val = 0;
-      warnf(config, "unrecognized protocol '%s'\n", token);
+      warnf(config->global, "unrecognized protocol '%s'\n", token);
     }
   }
   Curl_safefree(buffer);
@@ -319,14 +368,16 @@ ParameterError str2offset(curl_off_t *val, const char *str)
   return PARAM_BAD_NUMERIC;
 }
 
-ParameterError checkpasswd(const char *kind, /* for what purpose */
-                           char **userpwd)   /* pointer to allocated string */
+static CURLcode checkpasswd(const char *kind, /* for what purpose */
+                            const size_t i,   /* operation index */
+                            const bool last,  /* TRUE if last operation */
+                            char **userpwd)   /* pointer to allocated string */
 {
   char *psep;
   char *osep;
 
   if(!*userpwd)
-    return PARAM_OK;
+    return CURLE_OK;
 
   /* Attempt to find the password separator */
   psep = strchr(*userpwd, ':');
@@ -346,9 +397,15 @@ ParameterError checkpasswd(const char *kind, /* for what purpose */
       *osep = '\0';
 
     /* build a nice-looking prompt */
-    curlx_msnprintf(prompt, sizeof(prompt),
-                    "Enter %s password for user '%s':",
-                    kind, *userpwd);
+    if(!i && last)
+      curlx_msnprintf(prompt, sizeof(prompt),
+                      "Enter %s password for user '%s':",
+                      kind, *userpwd);
+    else
+      curlx_msnprintf(prompt, sizeof(prompt),
+                      "Enter %s password for user '%s' on URL #%"
+                      CURL_FORMAT_CURL_OFF_TU ":",
+                      kind, *userpwd, i + 1);
 
     /* get password */
     getpass_r(prompt, passwd, sizeof(passwd));
@@ -362,14 +419,15 @@ ParameterError checkpasswd(const char *kind, /* for what purpose */
                       passwdlen + 1 + /* an extra for the colon */
                       userlen + 1);   /* an extra for the zero */
     if(!passptr)
-      return PARAM_NO_MEM;
+      return CURLE_OUT_OF_MEMORY;
 
     /* append the password separated with a colon */
     passptr[userlen] = ':';
     memcpy(&passptr[userlen+1], passwd, passwdlen+1);
     *userpwd = passptr;
   }
-  return PARAM_OK;
+
+  return CURLE_OK;
 }
 
 ParameterError add2list(struct curl_slist **list, const char *ptr)
@@ -383,7 +441,7 @@ ParameterError add2list(struct curl_slist **list, const char *ptr)
   return PARAM_OK;
 }
 
-int ftpfilemethod(struct Configurable *config, const char *str)
+int ftpfilemethod(struct OperationConfig *config, const char *str)
 {
   if(curlx_raw_equal("singlecwd", str))
     return CURLFTPMETHOD_SINGLECWD;
@@ -391,21 +449,27 @@ int ftpfilemethod(struct Configurable *config, const char *str)
     return CURLFTPMETHOD_NOCWD;
   if(curlx_raw_equal("multicwd", str))
     return CURLFTPMETHOD_MULTICWD;
-  warnf(config, "unrecognized ftp file method '%s', using default\n", str);
+
+  warnf(config->global, "unrecognized ftp file method '%s', using default\n",
+        str);
+
   return CURLFTPMETHOD_MULTICWD;
 }
 
-int ftpcccmethod(struct Configurable *config, const char *str)
+int ftpcccmethod(struct OperationConfig *config, const char *str)
 {
   if(curlx_raw_equal("passive", str))
     return CURLFTPSSL_CCC_PASSIVE;
   if(curlx_raw_equal("active", str))
     return CURLFTPSSL_CCC_ACTIVE;
-  warnf(config, "unrecognized ftp CCC method '%s', using default\n", str);
+
+  warnf(config->global, "unrecognized ftp CCC method '%s', using default\n",
+        str);
+
   return CURLFTPSSL_CCC_PASSIVE;
 }
 
-long delegation(struct Configurable *config, char *str)
+long delegation(struct OperationConfig *config, char *str)
 {
   if(curlx_raw_equal("none", str))
     return CURLGSSAPI_DELEGATION_NONE;
@@ -413,7 +477,48 @@ long delegation(struct Configurable *config, char *str)
     return CURLGSSAPI_DELEGATION_POLICY_FLAG;
   if(curlx_raw_equal("always", str))
     return CURLGSSAPI_DELEGATION_FLAG;
-  warnf(config, "unrecognized delegation method '%s', using none\n", str);
+
+  warnf(config->global, "unrecognized delegation method '%s', using none\n",
+        str);
+
   return CURLGSSAPI_DELEGATION_NONE;
 }
 
+/*
+ * my_useragent: returns allocated string with default user agent
+ */
+static char *my_useragent(void)
+{
+  return strdup(CURL_NAME "/" CURL_VERSION);
+}
+
+CURLcode get_args(struct OperationConfig *config, const size_t i)
+{
+  CURLcode result = CURLE_OK;
+  bool last = (config->next ? FALSE : TRUE);
+
+  /* Check we have a password for the given host user */
+  if(config->userpwd && !config->xoauth2_bearer) {
+    result = checkpasswd("host", i, last, &config->userpwd);
+    if(result)
+      return result;
+  }
+
+  /* Check we have a password for the given proxy user */
+  if(config->proxyuserpwd) {
+    result = checkpasswd("proxy", i, last, &config->proxyuserpwd);
+    if(result)
+      return result;
+  }
+
+  /* Check we have a user agent */
+  if(!config->useragent) {
+    config->useragent = my_useragent();
+    if(!config->useragent) {
+      helpf(config->global->errors, "out of memory\n");
+      result = CURLE_OUT_OF_MEMORY;
+    }
+  }
+
+  return result;
+}

@@ -6,6 +6,7 @@
  *                             \___|\___/|_| \_\_____|
  *
  * Copyright (C) 2013, Linus Nielsen Feltzing, <linus@haxx.se>
+ * Copyright (C) 2013-2015, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -48,15 +49,13 @@ static void site_blacklist_llist_dtor(void *user, void *element)
   (void)user;
 
   Curl_safefree(entry->hostname);
-  Curl_safefree(entry);
+  free(entry);
 }
 
 static void server_blacklist_llist_dtor(void *user, void *element)
 {
-  char *server_name = element;
   (void)user;
-
-  Curl_safefree(server_name);
+  free(element);
 }
 
 bool Curl_pipeline_penalized(struct SessionHandle *data,
@@ -84,9 +83,10 @@ bool Curl_pipeline_penalized(struct SessionHandle *data,
        (curl_off_t)conn->chunk.datasize > chunk_penalty_size)
       penalized = TRUE;
 
-    infof(data, "Conn: %d (%p) Receive pipe weight: (%d/%d), penalized: %d\n",
-          conn->connection_id, conn, recv_size,
-          conn->chunk.datasize, penalized);
+    infof(data, "Conn: %ld (%p) Receive pipe weight: (%"
+          CURL_FORMAT_CURL_OFF_T "/%zu), penalized: %s\n",
+          conn->connection_id, (void *)conn, recv_size,
+          conn->chunk.datasize, penalized?"TRUE":"FALSE");
     return penalized;
   }
   return FALSE;
@@ -97,28 +97,23 @@ CURLcode Curl_add_handle_to_pipeline(struct SessionHandle *handle,
 {
   struct curl_llist_element *sendhead = conn->send_pipe->head;
   struct curl_llist *pipeline;
-  CURLcode rc;
+  CURLcode result;
 
   pipeline = conn->send_pipe;
 
-  infof(conn->data, "Adding handle: conn: %p\n", conn);
-  infof(conn->data, "Adding handle: send: %d\n", conn->send_pipe->size);
-  infof(conn->data, "Adding handle: recv: %d\n", conn->recv_pipe->size);
-  rc = Curl_addHandleToPipeline(handle, pipeline);
+  result = Curl_addHandleToPipeline(handle, pipeline);
 
   if(pipeline == conn->send_pipe && sendhead != conn->send_pipe->head) {
     /* this is a new one as head, expire it */
     conn->writechannel_inuse = FALSE; /* not in use yet */
-#ifdef DEBUGBUILD
-    infof(conn->data, "%p is at send pipe head!\n",
-          conn->send_pipe->head->ptr);
-#endif
     Curl_expire(conn->send_pipe->head->ptr, 1);
   }
 
+#if 0 /* enable for pipeline debugging */
   print_pipeline(conn);
+#endif
 
-  return rc;
+  return result;
 }
 
 /* Move this transfer from the sending list to the receiving list.
@@ -144,7 +139,7 @@ void Curl_move_handle_from_send_to_recv_pipe(struct SessionHandle *handle,
         conn->writechannel_inuse = FALSE; /* not used now */
 #ifdef DEBUGBUILD
         infof(conn->data, "%p is at send pipe head B!\n",
-              conn->send_pipe->head->ptr);
+              (void *)conn->send_pipe->head->ptr);
 #endif
         Curl_expire(conn->send_pipe->head->ptr, 1);
       }
@@ -204,11 +199,18 @@ CURLMcode Curl_pipeline_set_site_blacklist(char **sites,
       char *port;
       struct site_blacklist_entry *entry;
 
-      entry = malloc(sizeof(struct site_blacklist_entry));
-
       hostname = strdup(*sites);
-      if(!hostname)
+      if(!hostname) {
+        Curl_llist_destroy(new_list, NULL);
         return CURLM_OUT_OF_MEMORY;
+      }
+
+      entry = malloc(sizeof(struct site_blacklist_entry));
+      if(!entry) {
+        free(hostname);
+        Curl_llist_destroy(new_list, NULL);
+        return CURLM_OUT_OF_MEMORY;
+      }
 
       port = strchr(hostname, ':');
       if(port) {
@@ -223,8 +225,11 @@ CURLMcode Curl_pipeline_set_site_blacklist(char **sites,
 
       entry->hostname = hostname;
 
-      if(!Curl_llist_insert_next(new_list, new_list->tail, entry))
+      if(!Curl_llist_insert_next(new_list, new_list->tail, entry)) {
+        site_blacklist_llist_dtor(NULL, entry);
+        Curl_llist_destroy(new_list, NULL);
         return CURLM_OUT_OF_MEMORY;
+      }
 
       sites++;
     }
@@ -244,7 +249,7 @@ CURLMcode Curl_pipeline_set_site_blacklist(char **sites,
 bool Curl_pipeline_server_blacklisted(struct SessionHandle *handle,
                                       char *server_name)
 {
-  if(handle->multi) {
+  if(handle->multi && server_name) {
     struct curl_llist *blacklist =
       Curl_multi_pipelining_server_bl(handle->multi);
 
@@ -265,7 +270,7 @@ bool Curl_pipeline_server_blacklisted(struct SessionHandle *handle,
       }
     }
 
-    infof(handle, "Server %s is not blacklisted\n", server_name);
+    DEBUGF(infof(handle, "Server %s is not blacklisted\n", server_name));
   }
   return FALSE;
 }
@@ -307,7 +312,7 @@ CURLMcode Curl_pipeline_set_server_blacklist(char **servers,
   return CURLM_OK;
 }
 
-
+#if 0
 void print_pipeline(struct connectdata *conn)
 {
   struct curl_llist_element *curr;
@@ -320,12 +325,14 @@ void print_pipeline(struct connectdata *conn)
     curr = cb_ptr->conn_list->head;
     while(curr) {
       conn = curr->ptr;
-      infof(data, "- Conn %d (%p) send_pipe: %d, recv_pipe: %d\n",
+      infof(data, "- Conn %ld (%p) send_pipe: %zu, recv_pipe: %zu\n",
             conn->connection_id,
-            conn,
+            (void *)conn,
             conn->send_pipe->size,
             conn->recv_pipe->size);
       curr = curr->next;
     }
   }
 }
+
+#endif
