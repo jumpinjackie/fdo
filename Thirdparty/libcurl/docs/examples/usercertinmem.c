@@ -22,9 +22,8 @@
 /* Example using an in memory PEM user certificate and RSA key to retrieve an
  * https page.
  * Written by Ishan SinghLevett, based on Theo Borm's cacertinmem.c.
- * Note that to maintain simplicity this example does not use a CA certificate 
- * for peer verification.  However, some form of peer verification
- * must be used in real circumstances when a secure connection is required.
+ * Note this example does not use a CA certificate, however one should be used
+ * if you want a properly secure connection
  */
 
 #include <openssl/ssl.h>
@@ -153,18 +152,6 @@ static CURLcode sslctx_function(CURL *curl, void *sslctx, void *parm)
     printf("Use Key failed\n");
   }
 
-  /* free resources that have been allocated by openssl functions */
-  if (bio)
-    BIO_free(bio);
-
-  if (kbio)
-    BIO_free(kbio);
-
-  if (rsa)
-    RSA_free(rsa);
-
-  if (cert)
-    X509_free(cert);
 
   /* all set to go */
   return CURLE_OK ;
@@ -184,7 +171,7 @@ int main(void)
   rv = curl_easy_setopt(ch,CURLOPT_WRITEFUNCTION, *writefunction);
   rv = curl_easy_setopt(ch,CURLOPT_WRITEDATA, stdout);
   rv = curl_easy_setopt(ch,CURLOPT_HEADERFUNCTION, *writefunction);
-  rv = curl_easy_setopt(ch,CURLOPT_HEADERDATA, stderr);
+  rv = curl_easy_setopt(ch,CURLOPT_WRITEHEADER, stderr);
   rv = curl_easy_setopt(ch,CURLOPT_SSLCERTTYPE,"PEM");
 
   /* both VERIFYPEER and VERIFYHOST are set to 0 in this case because there is

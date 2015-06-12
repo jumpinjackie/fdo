@@ -2,7 +2,6 @@
 <info>
 <keywords>
 IMAP
-Clear Text
 EXAMINE
 CUSTOMREQUEST
 </keywords>
@@ -29,10 +28,10 @@ CUSTOMREQUEST
 imap
 </server>
  <name>
-IMAP EXAMINE mailbox (CUSTOMREQUEST)
+IMAP EXAMINE (CUSTOMREQUEST)
  </name>
  <command>
-imap://%HOSTIP:%IMAPPORT -u user:secret -X 'EXAMINE 808'
+'imap://%HOSTIP:%IMAPPORT' -u user:secret -X 'EXAMINE 808'
 </command>
 </client>
 

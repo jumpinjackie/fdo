@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2013, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -69,7 +69,7 @@
 /* #undef CURL_EXTERN_SYMBOL */
 
 /* Use Windows LDAP implementation */
-/* #undef USE_WIN32_LDAP */
+/* #undef CURL_LDAP_WIN */
 
 /* your Entropy Gathering Daemon socket pathname */
 /* #undef EGD_SOCKET */
@@ -260,8 +260,7 @@
 /* Define to 1 if you have the IoctlSocket camel case function. */
 /* #undef HAVE_IOCTLSOCKET_CAMEL */
 
-/* Define to 1 if you have a working IoctlSocket camel case FIONBIO
-   function. */
+/* Define to 1 if you have a working IoctlSocket camel case FIONBIO function. */
 /* #undef HAVE_IOCTLSOCKET_CAMEL_FIONBIO */
 
 /* Define to 1 if you have the <io.h> header file. */
@@ -481,6 +480,9 @@
 /* Define to 1 if you have the `socket' function. */
 #define HAVE_SOCKET 1
 
+/* Define this if you have the SPNEGO library fbopenssl */
+/* #undef HAVE_SPNEGO */
+
 /* Define to 1 if you have the `SSL_get_shutdown' function. */
 /*#define HAVE_SSL_GET_SHUTDOWN 1*/
 
@@ -657,8 +659,7 @@
 /*#define PACKAGE "curl"*/
 
 /* Define to the address where bug reports for this package should be sent. */
-/*#define PACKAGE_BUGREPORT \
-  "a suitable curl mailing list => http://curl.haxx.se/mail/"*/
+/*#define PACKAGE_BUGREPORT "a suitable curl mailing list => http://curl.haxx.se/mail/"*/
 
 /* Define to the full name of this package. */
 /*#define PACKAGE_NAME "curl"*/
@@ -806,6 +807,12 @@
 /* Enable appropriate header only when zlib support is enabled */
 #ifdef HAVE_LIBZ
 #define HAVE_ZLIB_H 1
+#endif
+
+/* Enable appropriate definitions only when OpenSSL support is enabled */
+#ifdef USE_SSLEAY
+/* if OpenSSL is in use */
+#define USE_OPENSSL
 #endif
 
 #endif /* HEADER_CURL_CONFIG_SYMBIAN_H */

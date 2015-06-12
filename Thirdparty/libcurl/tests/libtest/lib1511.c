@@ -21,55 +21,53 @@
  ***************************************************************************/
 #include "test.h"
 
+#include "testtrace.h"
 #include "memdebug.h"
 
 int test(char *URL)
 {
+  int i = -1;
   long unmet;
+  CURLcode res = 0;
   CURL* curl = NULL;
-  int res = 0;
 
   global_init(CURL_GLOBAL_ALL);
-
   easy_init(curl);
 
   easy_setopt(curl, CURLOPT_URL, URL);
   easy_setopt(curl, CURLOPT_HEADER, 1L);
-  easy_setopt(curl, CURLOPT_TIMECONDITION, (long)CURL_TIMECOND_IFMODSINCE);
+  easy_setopt(curl, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
 
   /* TIMEVALUE in the future */
-  easy_setopt(curl, CURLOPT_TIMEVALUE, 1566210680L);
+  easy_setopt(curl, CURLOPT_TIMEVALUE, 1566210680);
 
   res = curl_easy_perform(curl);
-  if(res)
+  if(res != CURLE_OK)
     goto test_cleanup;
 
   curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
-  if(unmet != 1L) {
-    res = TEST_ERR_FAILURE; /* not correct */
+  if(unmet != 1)
     goto test_cleanup;
-  }
 
   /* TIMEVALUE in the past */
-  easy_setopt(curl, CURLOPT_TIMEVALUE, 1L);
+  easy_setopt(curl, CURLOPT_TIMEVALUE, 1);
 
   res = curl_easy_perform(curl);
-  if(res)
+  if (res != CURLE_OK)
     goto test_cleanup;
 
   curl_easy_getinfo(curl, CURLINFO_CONDITION_UNMET, &unmet);
-  if(unmet != 0L) {
-    res = TEST_ERR_FAILURE; /* not correct */
+  if(unmet != 0)
     goto test_cleanup;
-  }
 
-  res = TEST_ERR_SUCCESS; /* this is where we should be */
+  i = 0;
 
 test_cleanup:
+  if(res)
+    i = res;
 
-  /* always cleanup */
   curl_easy_cleanup(curl);
   curl_global_cleanup();
 
-  return res;
+  return i; /* return the final return code */
 }

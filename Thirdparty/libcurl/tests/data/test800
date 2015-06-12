@@ -2,7 +2,6 @@
 <info>
 <keywords>
 IMAP
-Clear Text
 FETCH
 </keywords>
 </info>
@@ -28,7 +27,7 @@ body
 imap
 </server>
  <name>
-IMAP FETCH message
+IMAP FETCH
  </name>
  <command>
 'imap://%HOSTIP:%IMAPPORT/800/;UID=1' -u user:secret

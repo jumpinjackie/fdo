@@ -5,7 +5,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -154,20 +154,18 @@ CURLcode easysrc_perform(void)
 
   CHKRET(easysrc_add(&easysrc_code, ""));
   CHKRET(easysrc_add(&easysrc_code, "ret = curl_easy_perform(hnd);"));
-  CHKRET(easysrc_add(&easysrc_code, ""));
-
   return CURLE_OK;
 }
 
 CURLcode easysrc_cleanup(void)
 {
+  CHKRET(easysrc_add(&easysrc_code, ""));
   CHKRET(easysrc_add(&easysrc_code, "curl_easy_cleanup(hnd);"));
   CHKRET(easysrc_add(&easysrc_code, "hnd = NULL;"));
-
   return CURLE_OK;
 }
 
-void dumpeasysrc(struct GlobalConfig *config)
+void dumpeasysrc(struct Configurable *config)
 {
   struct curl_slist *ptr;
   char *o = config->libcurl;

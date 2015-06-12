@@ -43,6 +43,7 @@ CFLAGS_CURL += -w
 # use SSL
 # (overrides Curl's lib/config-tpf.h file)
 CFLAGS_CURL += -DUSE_OPENSSL
+CFLAGS_CURL += -DUSE_SSLEAY
 
 # disable all protocols except FTP and HTTP
 # (overrides Curl's lib/config-tpf.h file)

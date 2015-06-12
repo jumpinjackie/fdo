@@ -83,7 +83,8 @@ int test(char *URL)
 test_cleanup:
 
    curl_slist_free_all(slist);
-   free(newURL);
+   if(newURL)
+     free(newURL);
    curl_easy_cleanup(curl);
    curl_global_cleanup();
 

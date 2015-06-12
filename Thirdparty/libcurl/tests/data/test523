@@ -51,13 +51,13 @@ http://www.example.com:999/523 http://%HOSTIP:%HTTPPORT
 </strip>
 <protocol>
 GET HTTP://www.example.com:19999/523 HTTP/1.1
-Host: www.example.com:19999
 Authorization: Basic eHh4Onl5eQ==
+Host: www.example.com:19999
 Accept: */*
 Proxy-Connection: Keep-Alive
 
 </protocol>
-<stdout>
+<stdout mode="text">
 hello
 </stdout>
 </verify>

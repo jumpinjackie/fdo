@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "curl_memory.h"
 #include "memdebug.h" /* LAST include file */
 
 static CURLcode unit_setup(void)

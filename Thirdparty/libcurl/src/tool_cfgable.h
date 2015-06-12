@@ -7,7 +7,7 @@
  *                            | (__| |_| |  _ <| |___
  *                             \___|\___/|_| \_\_____|
  *
- * Copyright (C) 1998 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 1998 - 2012, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * This software is licensed as described in the file COPYING, which
  * you should have received as part of this distribution. The terms
@@ -27,10 +27,8 @@
 
 #include "tool_metalink.h"
 
-struct GlobalConfig;
-
-struct OperationConfig {
-  CURL *easy;               /* A copy of the handle from GlobalConfig */
+struct Configurable {
+  CURL *easy;               /* once we have one, we keep it here */
   bool remote_time;
   char *random_file;
   char *egd_file;
@@ -55,8 +53,8 @@ struct OperationConfig {
   char *postfields;
   curl_off_t postfieldsize;
   char *referer;
-  double timeout;
-  double connecttimeout;
+  long timeout;
+  long connecttimeout;
   long maxredirs;
   curl_off_t max_filesize;
   char *headerfile;
@@ -68,12 +66,10 @@ struct OperationConfig {
   char *range;
   long low_speed_limit;
   long low_speed_time;
-  char *dns_servers;   /* dot notation: 1.1.1.1;2.2.2.2 */
-  char *dns_interface; /* interface name */
-  char *dns_ipv4_addr; /* dot notation */
-  char *dns_ipv6_addr; /* dot notation */
+  int showerror; /* -1 == unset, default => show errors
+                    0 => -s is used to NOT show errors
+                    1 => -S has been used to show errors */
   char *userpwd;
-  char *login_options;
   char *tls_username;
   char *tls_password;
   char *tls_authtype;
@@ -87,6 +83,7 @@ struct OperationConfig {
   bool sasl_ir;             /* Enable/disable SASL initial response */
   bool proxytunnel;
   bool ftp_append;          /* APPE on ftp */
+  bool mute;                /* don't show messages, --silent given */
   bool use_ascii;           /* select ascii or text transfer */
   bool autoreferer;         /* automatically set referer */
   bool failonerror;         /* fail on (HTTP) errors */
@@ -100,6 +97,8 @@ struct OperationConfig {
   bool netrc_opt;
   bool netrc;
   char *netrc_file;
+  bool noprogress;          /* don't show progress meter, --silent given */
+  bool isatty;              /* updated internally only if output is a tty */
   struct getout *url_list;  /* point to the first node */
   struct getout *url_last;  /* point to the last/current node */
   struct getout *url_get;   /* point to the node to fill in URL */
@@ -110,23 +109,28 @@ struct OperationConfig {
   char *cacert;
   char *capath;
   char *crlfile;
-  char *pinnedpubkey;
   char *key;
   char *key_type;
   char *key_passwd;
   char *pubkey;
   char *hostpubmd5;
   char *engine;
+  bool list_engines;
   bool crlf;
   char *customrequest;
   char *krblevel;
+  char *trace_dump;         /* file to dump the network trace to, or NULL */
+  FILE *trace_stream;
+  bool trace_fopened;
+  trace tracetype;
+  bool tracetime;           /* include timestamp? */
   long httpversion;
+  int progressmode;         /* CURL_PROGRESS_BAR or CURL_PROGRESS_STATS */
   bool nobuffer;
   bool readbusy;            /* set when reading input returns EAGAIN */
   bool globoff;
   bool use_httpget;
   bool insecure_ok;         /* set TRUE to allow insecure SSL connects */
-  bool verifystatus;
   bool create_dirs;
   bool ftp_create_dirs;
   bool ftp_skip_ip;
@@ -137,6 +141,8 @@ struct OperationConfig {
   bool proxyanyauth;
   char *writeout;           /* %-styled format string to output */
   bool writeenv;            /* write results to environment, if available */
+  FILE *errors;             /* errors stream, defaults to stderr */
+  bool errors_fopened;      /* whether errors stream isn't stderr */
   struct curl_slist *quote;
   struct curl_slist *postquote;
   struct curl_slist *prequote;
@@ -145,7 +151,6 @@ struct OperationConfig {
   curl_TimeCond timecond;
   time_t condtime;
   struct curl_slist *headers;
-  struct curl_slist *proxyheaders;
   struct curl_httppost *httppost;
   struct curl_httppost *last_post;
   struct curl_slist *telnet_options;
@@ -181,6 +186,7 @@ struct OperationConfig {
   bool ignorecl;            /* --ignore-content-length */
   bool disable_sessionid;
 
+  char *libcurl;            /* output libcurl code to this file name */
   bool raw;
   bool post301;
   bool post302;
@@ -199,44 +205,9 @@ struct OperationConfig {
   bool use_metalink;        /* process given URLs as metalink XML file */
   metalinkfile *metalinkfile_list; /* point to the first node */
   metalinkfile *metalinkfile_last; /* point to the last/current node */
-#ifdef CURLDEBUG
-  bool test_event_based;
-#endif
-  char *xoauth2_bearer;           /* XOAUTH2 bearer token */
-  bool nonpn;                     /* enable/disable TLS NPN extension */
-  bool noalpn;                    /* enable/disable TLS ALPN extension */
-  char *unix_socket_path;         /* path to Unix domain socket */
-  bool falsestart;
-  bool path_as_is;
-  struct GlobalConfig *global;
-  struct OperationConfig *prev;
-  struct OperationConfig *next;   /* Always last in the struct */
-};
+}; /* struct Configurable */
 
-struct GlobalConfig {
-  CURL *easy;                     /* Once we have one, we keep it here */
-  int showerror;                  /* -1 == unset, default => show errors
-                                      0 => -s is used to NOT show errors
-                                      1 => -S has been used to show errors */
-  bool mute;                      /* don't show messages, --silent given */
-  bool noprogress;                /* don't show progress bar --silent given */
-  bool isatty;                    /* Updated internally if output is a tty */
-  FILE *errors;                   /* Error stream, defaults to stderr */
-  bool errors_fopened;            /* Whether error stream isn't stderr */
-  char *trace_dump;               /* file to dump the network trace to */
-  FILE *trace_stream;
-  bool trace_fopened;
-  trace tracetype;
-  bool tracetime;                 /* include timestamp? */
-  int progressmode;               /* CURL_PROGRESS_BAR / CURL_PROGRESS_STATS */
-  char *libcurl;                  /* Output libcurl code to this file name */
-
-  struct OperationConfig *first;
-  struct OperationConfig *current;
-  struct OperationConfig *last;   /* Always last in the struct */
-};
-
-void config_init(struct OperationConfig *config);
-void config_free(struct OperationConfig *config);
+void free_config_fields(struct Configurable *config);
 
 #endif /* HEADER_CURL_TOOL_CFGABLE_H */
+

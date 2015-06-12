@@ -2,7 +2,6 @@
 <info>
 <keywords>
 IMAP
-Clear Text
 LIST
 </keywords>
 </info>
@@ -24,10 +23,10 @@ LIST
 imap
 </server>
  <name>
-IMAP LIST mailbox
+IMAP LIST
  </name>
  <command>
-imap://%HOSTIP:%IMAPPORT/806 -u user:secret
+-u user:secret 'imap://%HOSTIP:%IMAPPORT/806/'
 </command>
 </client>
 

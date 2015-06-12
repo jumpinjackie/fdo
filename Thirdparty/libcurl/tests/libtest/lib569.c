@@ -20,6 +20,9 @@
  *
  ***************************************************************************/
 #include "test.h"
+
+#include <curl/mprintf.h>
+
 #include "memdebug.h"
 
 /* build request url */
@@ -115,7 +118,9 @@ test_cleanup:
   if(idfile)
     fclose(idfile);
 
-  free(stream_uri);
+  if(stream_uri)
+    free(stream_uri);
+
   curl_easy_cleanup(curl);
   curl_global_cleanup();
 

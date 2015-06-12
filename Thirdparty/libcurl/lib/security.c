@@ -10,7 +10,7 @@
  * Copyright (c) 1998, 1999 Kungliga Tekniska Högskolan
  * (Royal Institute of Technology, Stockholm, Sweden).
  *
- * Copyright (C) 2001 - 2015, Daniel Stenberg, <daniel@haxx.se>, et al.
+ * Copyright (C) 2001 - 2011, Daniel Stenberg, <daniel@haxx.se>, et al.
  *
  * All rights reserved.
  *
@@ -44,7 +44,7 @@
 #include "curl_setup.h"
 
 #ifndef CURL_DISABLE_FTP
-#ifdef HAVE_GSSAPI
+#if defined(HAVE_KRB4) || defined(HAVE_GSSAPI)
 
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
@@ -57,7 +57,7 @@
 #include "urldata.h"
 #include "curl_base64.h"
 #include "curl_memory.h"
-#include "curl_sec.h"
+#include "krb4.h"
 #include "ftp.h"
 #include "sendf.h"
 #include "rawstr.h"
@@ -110,8 +110,11 @@ static char level_to_char(int level) {
 }
 
 static const struct Curl_sec_client_mech * const mechs[] = {
-#ifdef HAVE_GSSAPI
+#if defined(HAVE_GSSAPI)
   &Curl_krb5_client_mech,
+#endif
+#if defined(HAVE_KRB4)
+  &Curl_krb4_client_mech,
 #endif
   NULL
 };
@@ -121,7 +124,7 @@ static const struct Curl_sec_client_mech * const mechs[] = {
 static int ftp_send_command(struct connectdata *conn, const char *message, ...)
 {
   int ftp_code;
-  ssize_t nread=0;
+  ssize_t nread;
   va_list args;
   char print_buffer[50];
 
@@ -129,11 +132,11 @@ static int ftp_send_command(struct connectdata *conn, const char *message, ...)
   vsnprintf(print_buffer, sizeof(print_buffer), message, args);
   va_end(args);
 
-  if(Curl_ftpsendf(conn, print_buffer)) {
+  if(Curl_ftpsendf(conn, print_buffer) != CURLE_OK) {
     ftp_code = -1;
   }
   else {
-    if(Curl_GetFTPResponse(&nread, conn, &ftp_code))
+    if(Curl_GetFTPResponse(&nread, conn, &ftp_code) != CURLE_OK)
       ftp_code = -1;
   }
 
@@ -147,20 +150,20 @@ static CURLcode
 socket_read(curl_socket_t fd, void *to, size_t len)
 {
   char *to_p = to;
-  CURLcode result;
+  CURLcode code;
   ssize_t nread;
 
   while(len > 0) {
-    result = Curl_read_plain(fd, to_p, len, &nread);
-    if(!result) {
+    code = Curl_read_plain(fd, to_p, len, &nread);
+    if(code == CURLE_OK) {
       len -= nread;
       to_p += nread;
     }
     else {
       /* FIXME: We are doing a busy wait */
-      if(result == CURLE_AGAIN)
+      if(code == CURLE_AGAIN)
         continue;
-      return result;
+      return code;
     }
   }
   return CURLE_OK;
@@ -175,20 +178,20 @@ socket_write(struct connectdata *conn, curl_socket_t fd, const void *to,
              size_t len)
 {
   const char *to_p = to;
-  CURLcode result;
+  CURLcode code;
   ssize_t written;
 
   while(len > 0) {
-    result = Curl_write_plain(conn, fd, to_p, len, &written);
-    if(!result) {
+    code = Curl_write_plain(conn, fd, to_p, len, &written);
+    if(code == CURLE_OK) {
       len -= written;
       to_p += written;
     }
     else {
       /* FIXME: We are doing a busy wait */
-      if(result == CURLE_AGAIN)
+      if(code == CURLE_AGAIN)
         continue;
-      return result;
+      return code;
     }
   }
   return CURLE_OK;
@@ -196,15 +199,15 @@ socket_write(struct connectdata *conn, curl_socket_t fd, const void *to,
 
 static CURLcode read_data(struct connectdata *conn,
                           curl_socket_t fd,
-                          struct krb5buffer *buf)
+                          struct krb4buffer *buf)
 {
   int len;
   void* tmp;
-  CURLcode result;
+  CURLcode ret;
 
-  result = socket_read(fd, &len, sizeof(len));
-  if(result)
-    return result;
+  ret = socket_read(fd, &len, sizeof(len));
+  if(ret != CURLE_OK)
+    return ret;
 
   len = ntohl(len);
   tmp = realloc(buf->data, len);
@@ -212,9 +215,9 @@ static CURLcode read_data(struct connectdata *conn,
     return CURLE_OUT_OF_MEMORY;
 
   buf->data = tmp;
-  result = socket_read(fd, buf->data, len);
-  if(result)
-    return result;
+  ret = socket_read(fd, buf->data, len);
+  if(ret != CURLE_OK)
+    return ret;
   buf->size = conn->mech->decode(conn->app_data, buf->data, len,
                                  conn->data_prot, conn);
   buf->index = 0;
@@ -222,7 +225,7 @@ static CURLcode read_data(struct connectdata *conn,
 }
 
 static size_t
-buffer_read(struct krb5buffer *buf, void *data, size_t len)
+buffer_read(struct krb4buffer *buf, void *data, size_t len)
 {
   if(buf->size - buf->index < len)
     len = buf->size - buf->index;
@@ -256,7 +259,7 @@ static ssize_t sec_recv(struct connectdata *conn, int sockindex,
   buffer += bytes_read;
 
   while(len > 0) {
-    if(read_data(conn, fd, &conn->in_buffer))
+    if(read_data(conn, fd, &conn->in_buffer) != CURLE_OK)
       return -1;
     if(conn->in_buffer.size == 0) {
       if(bytes_read > 0)
@@ -295,7 +298,7 @@ static void do_sec_send(struct connectdata *conn, curl_socket_t fd,
       prot_level = conn->command_prot;
   }
   bytes = conn->mech->encode(conn->app_data, from, length, prot_level,
-                             (void**)&buffer);
+                             (void**)&buffer, conn);
   if(!buffer || bytes <= 0)
     return; /* error */
 
@@ -332,6 +335,7 @@ static void do_sec_send(struct connectdata *conn, curl_socket_t fd,
 static ssize_t sec_write(struct connectdata *conn, curl_socket_t fd,
                          const char *buffer, size_t length)
 {
+  /* FIXME: Check for overflow */
   ssize_t tx = 0, len = conn->buffer_size;
 
   len -= conn->mech->overhead(conn->app_data, conn->data_prot,
@@ -339,9 +343,10 @@ static ssize_t sec_write(struct connectdata *conn, curl_socket_t fd,
   if(len <= 0)
     len = length;
   while(length) {
-    if(length < (size_t)len)
+    if(len >= 0 || length < (size_t)len) {
+      /* FIXME: Check for overflow. */
       len = length;
-
+    }
     do_sec_send(conn, fd, buffer, curlx_sztosi(len));
     length -= len;
     buffer += len;
@@ -400,7 +405,7 @@ int Curl_sec_read_msg(struct connectdata *conn, char *buffer,
     ret_code = 0;
   else {
     /* Check for error? */
-    (void)sscanf(buf, "%d", &ret_code);
+    sscanf(buf, "%d", &ret_code);
   }
 
   if(buf[decoded_len - 1] == '\n')
@@ -493,7 +498,7 @@ static CURLcode choose_mech(struct connectdata *conn)
     /* We have no mechanism with a NULL name but keep this check */
     DEBUGASSERT(mech_name != NULL);
     if(mech_name == NULL) {
-      infof(data, "Skipping mechanism with empty name (%p)\n", (void *)mech);
+      infof(data, "Skipping mechanism with empty name (%p)\n", mech);
       continue;
     }
     tmp_allocation = realloc(conn->app_data, (*mech)->size);
@@ -562,7 +567,7 @@ static CURLcode choose_mech(struct connectdata *conn)
     break;
   }
 
-  return *mech != NULL ? CURLE_OK : CURLE_FAILED_INIT;
+  return mech != NULL ? CURLE_OK : CURLE_FAILED_INIT;
 }
 
 CURLcode
@@ -577,8 +582,10 @@ Curl_sec_end(struct connectdata *conn)
 {
   if(conn->mech != NULL && conn->mech->end)
     conn->mech->end(conn->app_data);
-  free(conn->app_data);
-  conn->app_data = NULL;
+  if(conn->app_data) {
+    free(conn->app_data);
+    conn->app_data = NULL;
+  }
   if(conn->in_buffer.data) {
     free(conn->in_buffer.data);
     conn->in_buffer.data = NULL;
@@ -592,6 +599,6 @@ Curl_sec_end(struct connectdata *conn)
   conn->mech = NULL;
 }
 
-#endif /* HAVE_GSSAPI */
+#endif /* HAVE_KRB4 || HAVE_GSSAPI */
 
 #endif /* CURL_DISABLE_FTP */

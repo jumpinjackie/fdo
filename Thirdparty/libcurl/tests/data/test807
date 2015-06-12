@@ -2,8 +2,7 @@
 <info>
 <keywords>
 IMAP
-Clear Text
-LSUB
+STORE
 CUSTOMREQUEST
 </keywords>
 </info>
@@ -12,9 +11,7 @@ CUSTOMREQUEST
 # Server-side
 <reply>
 <data>
-* LSUB () "/" /807/blurdybloop
-* LSUB (\Noselect) "/" /807/foo
-* LSUB () "/" /807/foo/bar
+* 123 FETCH (FLAGS (\Seen \Deleted))
 </data>
 </reply>
 
@@ -25,10 +22,10 @@ CUSTOMREQUEST
 imap
 </server>
  <name>
-IMAP LSUB mailbox
+IMAP STORE (CUSTOMREQUEST)
  </name>
  <command>
-imap://%HOSTIP:%IMAPPORT -u user:secret -X 'LSUB "807" *'
+-u user:secret -X 'STORE 123 +Flags \Deleted' 'imap://%HOSTIP:%IMAPPORT/807'
 </command>
 </client>
 
@@ -38,8 +35,9 @@ imap://%HOSTIP:%IMAPPORT -u user:secret -X 'LSUB "807" *'
 <protocol>
 A001 CAPABILITY
 A002 LOGIN user secret
-A003 LSUB "807" *
-A004 LOGOUT
+A003 SELECT 807
+A004 STORE 123 +Flags \Deleted
+A005 LOGOUT
 </protocol>
 </verify>
 </testcase>
