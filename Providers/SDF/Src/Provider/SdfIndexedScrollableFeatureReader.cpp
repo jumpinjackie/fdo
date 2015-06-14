@@ -89,7 +89,7 @@ bool SdfIndexedScrollableFeatureReader::ReadNext()
 	m_CurrentIndex++;
 	if( m_CurrentIndex >= m_TableSize )
 	{
-		m_CurrentIndex = -1;
+		//m_CurrentIndex = -1; //not reset to beginning as next ReadNext() should still return false.
 		return false;
 	}
 
