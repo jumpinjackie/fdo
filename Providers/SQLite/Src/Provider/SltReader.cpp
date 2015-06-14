@@ -182,6 +182,10 @@ m_canAddSelectProps(false)
     m_sql.Append(sql);
     m_pStmt = m_connection->GetCachedParsedStatement(m_sql.Data());
     InitPropIndex(m_pStmt);
+	if (m_nTotalProps == 0)
+	{
+		m_nTotalProps = sqlite3_column_count(m_pStmt);
+	}
 }
 
 //constructor tailored for an FDO Select command -- in cases where the
