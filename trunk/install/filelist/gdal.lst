@@ -1,0 +1,17 @@
+./include/GdalFile/GdalFile/FdoGrfpProvider.h
+./include/GdalFile/GdalFile/Override/FdoGrfpClassDefinition.h
+./include/GdalFile/GdalFile/Override/FdoGrfpOverrides.h
+./include/GdalFile/GdalFile/Override/FdoGrfpPhysicalSchemaMapping.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterBandDefinition.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterDefinition.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterFeatureDefinition.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterGeoreferenceLocation.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterImageDefinition.h
+./include/GdalFile/GdalFile/Override/FdoGrfpRasterLocation.h
+./lib/libGRFPOverrides-3.5.0.so
+./lib/libGRFPOverrides.la
+./lib/libGRFPOverrides.so
+./lib/libGRFPProvider-3.5.0.so
+./lib/libGRFPProvider.la
+./lib/libGRFPProvider.so
+./nls/GRFPMessage.cat

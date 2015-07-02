@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>OTL 4.0, OTL stream pooling</TITLE>
+   <META NAME="Author" CONTENT="Sergei Kuchin">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.03Gold (Win95; I) [Netscape]">
+   <META NAME="KeyWords" CONTENT="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+</HEAD>
+<BODY>
+
+<H1>OTL 4.0, OTL stream pooling</H1>
+
+<P>OTL stream pooling is a new mechanism which allows to turn inefficently
+managed otl_stream's into something of a greater value as far as performance
+is concerned. Instances of otl_stream variables get saved in a stream pool,
+when they get closed, for further reuse in the program. Typically, the
+program may have a handful of otl_stream variables, defined locally in
+functions. The streams get instantiated and closed all over again, especially
+when functions get called repeatedly. </P>
+
+<P>Each instantiation of a stream triggers re-parsing of the stream's SQL
+statement on the database back end. It is a relatively expensive operation.
+The stream pooling mechanism alleviates that burden and simplifies coding
+techniques. </P>
+
+<P>When a stream variable gets closed, the actual instance of the otl_stream
+gets saved in the stream pool. Then if there is a request to a similar
+OTL stream, the OTL stream instance can be assigned to the otl_stream variable,
+which, may be, in its turn, either a local [in function] variable, or allocated
+in the heap. The <I>similarity</I> of the streams is defined as <I>stream
+buffer size</I> + <I>SQL statement text</I>, meaning that streams with
+the same SQL statements and buffer sizes will be saved in the same bucket
+in the stream pool. </P>
+
+<P>Say, three instances of <I>similar</I> streams of &lt;buf_size1+SQLStm1&gt;
+were allocated and then all of them were closed. The pool will have one
+entry point for all the three and the actual bodies of the instances will
+be placed in the same bucket (see the diagram below). After that, the functions,
+in which the streams had been created, get called on the second iteration
+of a loop, and the corresponding otl_stream variables get instantiated
+again. The second time around, the instances of the similar streams, which
+were previously saved in the pool, will be pulled out of the pool and re-assigned
+to the variables, until the variables get closed again.</P>
+
+<P>In some cases, an instance of a stream, if it is, say, used only once,
+can bypass the pool and be destroyed without saving it in the pool. The
+otl_stream::<A HREF="otl3_stream_class.htm#close">close</A>() function
+has extended functionality to allow the developer to do that.</P>
+
+<P>If the stream pooling is undesirable, then the OTL code, which implements
+the pooling, can be turned off (not turned on at all). This is controlled
+by a conditional compilation <A HREF="otl3_compile.htm#OTL_STREAM_POOLING_ON">directive</A>,
+since OTL is a C++ template as well as macro library with a lot of conditional
+compilation directives in it, for efficient code generation.</P>
+
+<P>The stream pool has a fixed maximum size, that can be changed by the
+otl_connect::<A HREF="otl3_connect_class.htm#set_stream_pool_size">set_stream_pool_size</A>()
+function. And, as it already should be obvious from the description above,
+the stream pool is a property of the <A HREF="otl3_connect_class.htm">otl_connect</A>
+object. </P>
+
+<P>The implementation of the stream pool was made with the help of STL
+containers, maps and vectors in particular. Therefore, #define <A HREF="otl3_compile.htm#OTL_STL">OTL_STL</A>
+needs to be enabled in order to turn on the OTL code in the STL compliance
+mode.</P>
+
+<P>From the statistic that I (<A HREF="resume.htm">Sergei Kuchin</A>) was
+able to gather, the stream pooling has very little overhead (2-4%), compared
+to the use of otl_stream's, which are kept open always, and don't get closed.
+This is due to the fact that the std::map&lt;&gt;, as an STL&nbsp;data
+container, is performant enough.</P>
+
+<P><IMG SRC="pool.gif" HEIGHT=664 WIDTH=795><BR>
+
+<HR WIDTH="100%"></P>
+
+<CENTER><PRE><A HREF="home.htm">Go Home</A> </PRE></CENTER>
+
+<P>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <A HREF="mailto:skuchin@ispwest.com">skuchin@ispwest.com</A>,
+<A HREF="mailto:skuchin@gmail.com">skuchin@gmail.com</A>. <SCRIPT Language="JavaScript"><!-- hide from oldgmailsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i> Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100+".");
+ //-->
+ </SCRIPT></P>
+
+<P><I>Permission to use, copy, modify and redistribute this document for
+any purpose is hereby granted without fee, provided that the above copyright
+notice appear in all copies. </I></P>
+
+</BODY>
+</HTML>

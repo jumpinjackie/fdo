@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+   <TITLE>OTL 4.0, Constant SQL statements</TITLE>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Sergei Kuchin">
+   <META NAME="GENERATOR" CONTENT="Mozilla/3.03Gold (Win95; I) [Netscape]">
+   <META NAME="KeyWords" CONTENT="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+</HEAD>
+<BODY>
+
+<H1 ALIGN=CENTER>OTL 4.0, Constant SQL statements</H1>
+
+<H1><A NAME="otl_constant_sql"></A>Constant SQL statements</H1>
+
+<P>A SQL statement / PL/SQL block / stored procedure call is considered
+to be constant if it does not have any bind variables. OTL 4.0 has a static
+(in class) function to execute constant statements. </P>
+
+<P><B><FONT SIZE=+1>Examples (Oracle)</FONT></B> </P>
+
+<PRE>&nbsp; otl_cursor::direct_exec
+&nbsp;&nbsp; (db, // <A HREF="otl3_connect_class.htm">connect</A> object
+&nbsp;&nbsp;&nbsp; &quot;create table test_tab(f1 number, f2 varchar2(30))&quot;
+&nbsp;&nbsp;&nbsp; );&nbsp; // create table</PRE>
+
+<PRE>&nbsp; otl_cursor::direct_exec
+&nbsp;&nbsp; (db, // <A HREF="otl3_connect_class.htm">connect</A> object
+&nbsp;&nbsp;&nbsp; &quot;drop table test_tab&quot;, // SQL statement or PL/SQL block
+&nbsp;&nbsp;&nbsp; <A HREF="otl3_exception_class.htm#enum">otl_exception::disabled</A> // disable OTL exceptions,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // in other words, ignore any
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // database error
+&nbsp;&nbsp; ); // drop table</PRE>
+
+<P><B><FONT SIZE=+1>Examples (ODBC, DB2-CLI)</FONT></B> </P>
+
+<PRE>&nbsp; otl_cursor::direct_exec
+&nbsp;&nbsp; (db, // <A HREF="otl3_connect_class.htm">connect</A> object
+&nbsp;&nbsp;&nbsp; &quot;create table test_tab(f1 numeric, f2 varchar(30))&quot;
+&nbsp;&nbsp;&nbsp; );&nbsp; // create table</PRE>
+
+<PRE>&nbsp; otl_cursor::direct_exec
+&nbsp;&nbsp; (db, // <A HREF="otl3_connect_class.htm">connect</A> object
+&nbsp;&nbsp;&nbsp; &quot;drop table test_tab&quot;, // SQL statement or stored procedure call
+&nbsp;&nbsp;&nbsp; <A HREF="otl3_exception_class.htm#enum">otl_exception::disabled</A> // disable OTL exceptions,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // in other words, ignore any
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // database error
+&nbsp;&nbsp; ); // drop table</PRE>
+
+<P>otl_cursor is one of the OTL 4.0 internal classes. It is not recommended
+to use the OTL 4.0 low level classes and functions except for the <I>direct_exec()</I>
+because it is a special case and it will not be discontinued in the future
+releases of the OTL. </P>
+
+<P>The direct_exec() function may return the following values of the <I>long
+int </I>datatype: </P>
+
+<UL>
+<LI><B>-1</B>, if otl_exceptions are disabled (the second parameter is
+set to otl_exception::disabled) and the underlying API returns an error.</LI>
+
+<LI><B>&gt;=0</B>, if the SQL command to be executed is finished succesfully.
+Actually, the function returns the <I>ROWS PROCESSED COUNT&nbsp; </I>(RPC)in
+case of INSERT, UPDATE or DELETE statements.</LI>
+</UL>
+
+<P>Here is an example of the direct_exec(), returning a row processed count:
+<BR>
+&nbsp; </P>
+
+<PRE>&nbsp; long rpc=otl_cursor::direct_exec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (db, // <A HREF="otl3_connect_class.htm">connect</A> object
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;delete from test_tab where f1&gt;=95&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );&nbsp;
+
+&nbsp; cout&lt;&lt;&quot;Rows deleted: &quot;&lt;&lt;rpc&lt;&lt;endl;</PRE>
+
+<P>&nbsp; </P>
+
+<P>&nbsp; <BR>
+&nbsp; <BR>
+&nbsp; <BR>
+&nbsp; </P>
+
+<CENTER><P>
+<HR WIDTH="100%"></P></CENTER>
+
+<CENTER><P><A HREF="otl3_value.htm">Prev</A> <A HREF="otl3_examples.htm">Next</A><A HREF="otl3.htm">Contents</A><A HREF="home.htm">Go
+Home</A> </P></CENTER>
+
+<P>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <A HREF="mailto:skuchin@ispwest.com">skuchin@ispwest.com</A>,
+<A HREF="mailto:skuchin@gmail.com">skuchin@gmail.com</A>.<SCRIPT Language="JavaScript"><!-- hide from oldgmailsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i> Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100+".");
+ //-->
+ </SCRIPT></P>
+
+<P><I>Permission to use, copy, modify and redistribute this document for
+any purpose is hereby granted without fee, provided that the above copyright
+notice appear in all copies.</I> </P>
+
+</BODY>
+</HTML>

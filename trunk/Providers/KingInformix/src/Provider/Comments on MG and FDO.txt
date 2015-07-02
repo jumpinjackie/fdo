@@ -1,0 +1,31 @@
+7. 8.11.2006
+   Ordering options is just one in select ASC or desc
+  but we can send multiple identifiers so it needs to chaneg so you can send
+   for every identifier if it is ASC or desc
+
+6. 4.11.2006
+   I wan't to develop generic provider to count access to data and allow / disallow users to acces some data or some
+   area of data.
+
+5. 3.11.2006
+   I am missing SRID in FGF. Optimse FGF very unoptimised 
+   ( for example in multipoint every point has gtype and dimensionality)
+   
+4. 3.11.2006
+	DataReaders exepts only name of column (string) as parameter, slow, we need to access using index.
+	
+3. 21.10.2006
+    Fdo Connection pooling is implementined in Mapguide.
+    Shouldn't be implemented in FDO, so every client can profit on it?
+
+2. 11.10.2006
+
+	In Filter spatial condition spatial operator is enumerator so only can be defined as one type og operator.
+	vcovers, intersect, etc..
+	Oracle allows them to be combined coverd + touch etc..
+	Allow this in FDO ?
+    
+
+1.  4.10.2006
+    Extend FDO and MG to support coordinate transformation inside rdbms like oracle.
+    NOw coord transformation is done inside MG server using proj4 ( MG OS ) or mentor (MG ent )
