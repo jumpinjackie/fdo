@@ -5,6 +5,9 @@
 extern "C" {
 #endif
 /* OpenSSL was configured with the following options: */
+#ifndef OPENSSL_SYSNAME_WIN64A
+# define OPENSSL_SYSNAME_WIN64A
+#endif
 #ifndef OPENSSL_DOING_MAKEDEPEND
 
 
@@ -20,6 +23,9 @@ extern "C" {
 #ifndef OPENSSL_NO_KRB5
 # define OPENSSL_NO_KRB5
 #endif
+#ifndef OPENSSL_NO_LIBUNBOUND
+# define OPENSSL_NO_LIBUNBOUND
+#endif
 #ifndef OPENSSL_NO_MD2
 # define OPENSSL_NO_MD2
 #endif
@@ -31,6 +37,9 @@ extern "C" {
 #endif
 #ifndef OPENSSL_NO_SCTP
 # define OPENSSL_NO_SCTP
+#endif
+#ifndef OPENSSL_NO_SSL_TRACE
+# define OPENSSL_NO_SSL_TRACE
 #endif
 #ifndef OPENSSL_NO_SSL3
 # define OPENSSL_NO_SSL3
@@ -50,9 +59,6 @@ extern "C" {
 #ifndef OPENSSL_NO_ASM
 # define OPENSSL_NO_ASM
 #endif
-#ifndef OPENSSL_NO_DYNAMIC_ENGINE
-# define OPENSSL_NO_DYNAMIC_ENGINE
-#endif
 
 /* The OPENSSL_NO_* macros are also defined as NO_* if the application
    asks for it.  This is a transient feature that is provided for those
@@ -71,6 +77,9 @@ extern "C" {
 # if defined(OPENSSL_NO_KRB5) && !defined(NO_KRB5)
 #  define NO_KRB5
 # endif
+# if defined(OPENSSL_NO_LIBUNBOUND) && !defined(NO_LIBUNBOUND)
+#  define NO_LIBUNBOUND
+# endif
 # if defined(OPENSSL_NO_MD2) && !defined(NO_MD2)
 #  define NO_MD2
 # endif
@@ -82,6 +91,9 @@ extern "C" {
 # endif
 # if defined(OPENSSL_NO_SCTP) && !defined(NO_SCTP)
 #  define NO_SCTP
+# endif
+# if defined(OPENSSL_NO_SSL_TRACE) && !defined(NO_SSL_TRACE)
+#  define NO_SSL_TRACE
 # endif
 # if defined(OPENSSL_NO_SSL3) && !defined(NO_SSL3)
 #  define NO_SSL3
@@ -110,6 +122,7 @@ extern "C" {
 #define OPENSSL_UNISTD <unistd.h>
 
 #undef OPENSSL_EXPORT_VAR_AS_FUNCTION
+#define OPENSSL_EXPORT_VAR_AS_FUNCTION
 
 #if defined(HEADER_IDEA_H) && !defined(IDEA_INT)
 #define IDEA_INT unsigned int
@@ -140,7 +153,7 @@ extern "C" {
  * This enables code handling data aligned at natural CPU word
  * boundary. See crypto/rc4/rc4_enc.c for further details.
  */
-#define RC4_CHUNK unsigned long
+#define RC4_CHUNK unsigned long long
 #endif
 #endif
 
@@ -159,8 +172,8 @@ extern "C" {
 /* Should we define BN_DIV2W here? */
 
 /* Only one for the following should be defined */
-#define SIXTY_FOUR_BIT_LONG
-#undef SIXTY_FOUR_BIT
+#undef SIXTY_FOUR_BIT_LONG
+#define SIXTY_FOUR_BIT
 #undef THIRTY_TWO_BIT
 #endif
 
@@ -203,7 +216,7 @@ YOU SHOULD NOT HAVE BOTH DES_RISC1 AND DES_RISC2 DEFINED!!!!!
 /* Unroll the inner loop, this sometimes helps, sometimes hinders.
  * Very mucy CPU dependant */
 #ifndef DES_UNROLL
-#define DES_UNROLL
+#undef DES_UNROLL
 #endif
 
 /* These default values were supplied by

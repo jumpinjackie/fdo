@@ -4,18 +4,18 @@
 ## Makefile for OpenSSL
 ##
 
-VERSION=1.0.1m
+VERSION=1.0.2a
 MAJOR=1
-MINOR=0.1
+MINOR=0.2
 SHLIB_VERSION_NUMBER=1.0.0
 SHLIB_VERSION_HISTORY=
 SHLIB_MAJOR=1
 SHLIB_MINOR=0.0
-SHLIB_EXT=.so.$(SHLIB_MAJOR).$(SHLIB_MINOR)
-PLATFORM=linux-x86_64
-OPTIONS= no-asm no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-ssl3 no-store no-unit-test no-zlib no-zlib-dynamic static-engine
-CONFIGURE_ARGS=linux-x86_64 no-asm no-ssl3
-SHLIB_TARGET=linux-shared
+SHLIB_EXT=
+PLATFORM=VC-WIN64A
+OPTIONS= no-asm no-ec_nistp_64_gcc_128 no-gmp no-jpake no-krb5 no-libunbound no-md2 no-rc5 no-rfc3779 no-sctp no-shared no-ssl-trace no-ssl3 no-store no-unit-test no-zlib no-zlib-dynamic
+CONFIGURE_ARGS=no-asm no-ssl3 VC-WIN64A
+SHLIB_TARGET=
 
 # HERE indicates where this Makefile lives.  This can be used to indicate
 # where sub-Makefiles are expected to be.  Currently has very limited usage,
@@ -59,20 +59,20 @@ OPENSSLDIR=/usr/local/ssl
 # equal 4.
 # PKCS1_CHECK - pkcs1 tests.
 
-CC= gcc
-CFLAG= -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -m64 -DL_ENDIAN -O3 -Wall
-DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SSL3 -DOPENSSL_NO_STORE -DOPENSSL_NO_UNIT_TEST
+CC= cl
+CFLAG= -DOPENSSL_THREADS  -DDSO_WIN32 -W3 -Gs0 -Gy -nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DUNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE
+DEPFLAG= -DOPENSSL_NO_EC_NISTP_64_GCC_128 -DOPENSSL_NO_GMP -DOPENSSL_NO_JPAKE -DOPENSSL_NO_LIBUNBOUND -DOPENSSL_NO_MD2 -DOPENSSL_NO_RC5 -DOPENSSL_NO_RFC3779 -DOPENSSL_NO_SCTP -DOPENSSL_NO_SSL_TRACE -DOPENSSL_NO_SSL3 -DOPENSSL_NO_STORE -DOPENSSL_NO_UNIT_TEST
 PEX_LIBS= 
-EX_LIBS= -ldl
+EX_LIBS= 
 EXE_EXT= 
 ARFLAGS= 
 AR= ar $(ARFLAGS) r
-RANLIB= /usr/bin/ranlib
+RANLIB= true
 NM= nm
-PERL= /usr/bin/perl
+PERL= perl
 TAR= tar
-TARFLAGS= --no-recursion --record-size=10240
-MAKEDEPPROG= gcc
+TARFLAGS= --no-recursion
+MAKEDEPPROG=makedepend
 LIBDIR=lib
 
 # We let the C compiler driver to take care of .s files. This is done in
@@ -90,6 +90,7 @@ PROCESSOR=
 # CPUID module collects small commonly used assembler snippets
 CPUID_OBJ= mem_clr.o
 BN_ASM= bn_asm.o
+EC_ASM= 
 DES_ENC= des_enc.o fcrypt_b.o
 AES_ENC= aes_core.o aes_cbc.o
 BF_ENC= bf_enc.o
@@ -103,7 +104,7 @@ WP_ASM_OBJ= wp_block.o
 CMLL_ENC= camellia.o cmll_misc.o cmll_cbc.o
 MODES_ASM_OBJ= 
 ENGINES_ASM_OBJ= 
-PERLASM_SCHEME= elf
+PERLASM_SCHEME= auto
 
 # KRB5 stuff
 KRB5_INCLUDES=
@@ -175,8 +176,8 @@ LIBS=   libcrypto.a libssl.a
 SHARED_CRYPTO=libcrypto$(SHLIB_EXT)
 SHARED_SSL=libssl$(SHLIB_EXT)
 SHARED_LIBS=
-SHARED_LIBS_LINK_EXTS=.so.$(SHLIB_MAJOR) .so
-SHARED_LDFLAGS=-m64
+SHARED_LIBS_LINK_EXTS=
+SHARED_LDFLAGS=
 
 GENERAL=        Makefile
 BASENAME=       openssl
@@ -223,8 +224,8 @@ BUILDENV=	PLATFORM='$(PLATFORM)' PROCESSOR='$(PROCESSOR)' \
 		EXE_EXT='$(EXE_EXT)' SHARED_LIBS='$(SHARED_LIBS)'	\
 		SHLIB_EXT='$(SHLIB_EXT)' SHLIB_TARGET='$(SHLIB_TARGET)'	\
 		PEX_LIBS='$(PEX_LIBS)' EX_LIBS='$(EX_LIBS)'	\
-		CPUID_OBJ='$(CPUID_OBJ)'			\
-		BN_ASM='$(BN_ASM)' DES_ENC='$(DES_ENC)' 	\
+		CPUID_OBJ='$(CPUID_OBJ)' BN_ASM='$(BN_ASM)'	\
+		EC_ASM='$(EC_ASM)' DES_ENC='$(DES_ENC)' 	\
 		AES_ENC='$(AES_ENC)' CMLL_ENC='$(CMLL_ENC)'	\
 		BF_ENC='$(BF_ENC)' CAST_ENC='$(CAST_ENC)'	\
 		RC4_ENC='$(RC4_ENC)' RC5_ENC='$(RC5_ENC)'	\
@@ -328,7 +329,7 @@ clean-shared:
 			done; \
 		fi; \
 		( set -x; rm -f lib$$i$(SHLIB_EXT) ); \
-		if [ "$(PLATFORM)" = "Cygwin" ]; then \
+		if expr "$(PLATFORM)" : "Cygwin" >/dev/null; then \
 			( set -x; rm -f cyg$$i$(SHLIB_EXT) lib$$i$(SHLIB_EXT).a ); \
 		fi; \
 	done
@@ -377,11 +378,11 @@ libssl.pc: Makefile
 	    echo 'libdir=$${exec_prefix}/$(LIBDIR)'; \
 	    echo 'includedir=$${prefix}/include'; \
 	    echo ''; \
-	    echo 'Name: OpenSSL'; \
+	    echo 'Name: OpenSSL-libssl'; \
 	    echo 'Description: Secure Sockets Layer and cryptography libraries'; \
 	    echo 'Version: '$(VERSION); \
-	    echo 'Requires: '; \
-	    echo 'Libs: -L$${libdir} -lssl -lcrypto'; \
+	    echo 'Requires.private: libcrypto'; \
+	    echo 'Libs: -L$${libdir} -lssl'; \
 	    echo 'Libs.private: $(EX_LIBS)'; \
 	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > libssl.pc
 
@@ -394,10 +395,7 @@ openssl.pc: Makefile
 	    echo 'Name: OpenSSL'; \
 	    echo 'Description: Secure Sockets Layer and cryptography libraries and tools'; \
 	    echo 'Version: '$(VERSION); \
-	    echo 'Requires: '; \
-	    echo 'Libs: -L$${libdir} -lssl -lcrypto'; \
-	    echo 'Libs.private: $(EX_LIBS)'; \
-	    echo 'Cflags: -I$${includedir} $(KRB5_INCLUDES)' ) > openssl.pc
+	    echo 'Requires: libssl libcrypto' ) > openssl.pc
 
 Makefile: Makefile.org Configure config
 	@echo "Makefile is older than Makefile.org, Configure or config."
@@ -573,17 +571,17 @@ install_sw:
 		do \
 			if [ -f "$$i" -o -f "$$i.a" ]; then \
 			(       echo installing $$i; \
-				if [ "$(PLATFORM)" != "Cygwin" ]; then \
-					cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
-					chmod 555 $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
-					mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i; \
-				else \
+				if expr "$(PLATFORM)" : "Cygwin" >/dev/null; then \
 					c=`echo $$i | sed 's/^lib\(.*\)\.dll\.a/cyg\1-$(SHLIB_VERSION_NUMBER).dll/'`; \
 					cp $$c $(INSTALL_PREFIX)$(INSTALLTOP)/bin/$$c.new; \
 					chmod 755 $(INSTALL_PREFIX)$(INSTALLTOP)/bin/$$c.new; \
 					mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/bin/$$c.new $(INSTALL_PREFIX)$(INSTALLTOP)/bin/$$c; \
 					cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
 					chmod 644 $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
+					mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i; \
+				else \
+					cp $$i $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
+					chmod 555 $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new; \
 					mv -f $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i.new $(INSTALL_PREFIX)$(INSTALLTOP)/$(LIBDIR)/$$i; \
 				fi ); \
 				if expr $(PLATFORM) : 'mingw' > /dev/null; then \
@@ -617,6 +615,10 @@ install_sw:
 
 install_html_docs:
 	here="`pwd`"; \
+	filecase=; \
+	case "$(PLATFORM)" in DJGPP|Cygwin*|mingw*|darwin*-*-cc) \
+		filecase=-i; \
+	esac; \
 	for subdir in apps crypto ssl; do \
 		mkdir -p $(INSTALL_PREFIX)$(HTMLDIR)/$$subdir; \
 		for i in doc/$$subdir/*.pod; do \
@@ -645,9 +647,9 @@ install_docs:
 	@pod2man="`cd ./util; ./pod2mantest $(PERL)`"; \
 	here="`pwd`"; \
 	filecase=; \
-	if [ "$(PLATFORM)" = "DJGPP" -o "$(PLATFORM)" = "Cygwin" -o "$(PLATFORM)" = "mingw" ]; then \
+	case "$(PLATFORM)" in DJGPP|Cygwin*|mingw*|darwin*-*-cc) \
 		filecase=-i; \
-	fi; \
+	esac; \
 	set -e; for i in doc/apps/*.pod; do \
 		fn=`basename $$i .pod`; \
 		sec=`$(PERL) util/extract-section.pl 1 < $$i`; \
