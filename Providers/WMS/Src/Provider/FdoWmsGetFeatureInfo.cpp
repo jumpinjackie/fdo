@@ -23,6 +23,9 @@
 #include "FdoWmsRequestMetadata.h"
 #include "FdoWmsDelegate.h"
 
+#include "WMS/FdoWmsCommandType.h"
+#include "WMS/IGetFeatureInfoFormats.h"
+
 
 FdoWmsGetFeatureInfo::FdoWmsGetFeatureInfo(FdoIConnection *connection) :
 	FdoWmsCommand<FdoWmsIGetFeatureInfo> (connection), mFeatureCount(1)
@@ -400,19 +403,11 @@ FdoString* FdoWmsGetFeatureInfo::_getOriginalLayerName (FdoString* mangledLayerN
 // Get the first feature info format in the capabilities document as the default one.
 FdoString* FdoWmsGetFeatureInfo::_getDefaultFeatureInfoFormat()
 {
-    FdoString* ret = NULL;
+	FdoString* ret = NULL;
 
-    FdoWmsServiceMetadataP metadata = mConnection->GetWmsServiceMetadata ();
-    FdoPtr<FdoWmsCapabilities> capa = static_cast<FdoWmsCapabilities *> (metadata->GetCapabilities ());
-    FdoPtr<FdoOwsRequestMetadataCollection> reqMetadatas = capa->GetRequestMetadatas ();
-
-    FdoPtr<FdoOwsRequestMetadata> reqMetadata = reqMetadatas->FindItem (FdoWmsXmlGlobals::WmsGetFeatureInfoRequest);
-    if (reqMetadata == NULL) {
-        throw FdoCommandException::Create (NlsMsgGet (FDOWMS_12006_GETFEATUREINFO_NOT_SUPPORTED, "The WMS GetFeatInfo request is not supported."));
-    }
-
-    FdoWmsRequestMetadata* getFeatureInfoMetadata = static_cast<FdoWmsRequestMetadata*>(reqMetadata.p);
-    FdoStringsP featInfoFormats = getFeatureInfoMetadata->GetFormats ();
+	// Get available formats
+	FdoPtr<FdoWmsIGetFeatureInfoFormats> cmdGetFeatureInfoFormats = static_cast<FdoWmsIGetFeatureInfoFormats*> (mConnection->CreateCommand(FdoWmsCommandType_GetFeatureInfoFormats));
+    FdoStringsP featInfoFormats = cmdGetFeatureInfoFormats->Execute ();
 
     // Get the first format as the default one.
     if (featInfoFormats != NULL && featInfoFormats->GetCount() > 0)

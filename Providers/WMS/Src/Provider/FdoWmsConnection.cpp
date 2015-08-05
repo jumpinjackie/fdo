@@ -45,6 +45,7 @@
 #include "FdoWmsGetFeatureClassStyles.h"
 #include "FdoWmsGetFeatureClassCRSNames.h"
 #include "FdoWmsGetFeatureInfo.h"
+#include "FdoWmsGetFeatureInfoFormats.h"
 #include "FdoWmsUtils.h"
 #include "FdoWmsXmlGlobals.h"
 #include "FdoWmsRequestMetadata.h"
@@ -539,6 +540,9 @@ FdoICommand* FdoWmsConnection::CreateCommand (FdoInt32 commandType)
             break;
         case FdoWmsCommandType_GetFeatureInfo:
             ret = new FdoWmsGetFeatureInfo(this);
+            break;
+		case FdoWmsCommandType_GetFeatureInfoFormats:
+            ret = new FdoWmsGetFeatureInfoFormats(this);
             break;
         default:
             throw FdoCommandException::Create (NlsMsgGet(FDOWMS_CONNECTION_COMMAND_NOT_SUPPORTED, "The command %1$d is not supported.", (int)commandType));
