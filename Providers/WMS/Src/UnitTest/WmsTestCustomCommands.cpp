@@ -22,6 +22,8 @@
 #include "WMS/IGetImageFormats.h"
 #include "WMS/IGetFeatureClassStyles.h"
 #include "WMS/IGetFeatureClassCRSNames.h"
+#include "WMS/IGetFeatureInfo.h"
+#include "WMS/IGetFeatureInfoFormats.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( WmsTestCustomCommands );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( WmsTestCustomCommands, "WmsTestCustomCommands");
@@ -140,13 +142,13 @@ void WmsTestCustomCommands::testGetFeatureCRSNames ()
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap");
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=https://mapsengine.google.com/12700653833057327143-17379123781214007005-4/wms/?");
         connection->SetConnectionString((FdoString*)sServer);
         FdoConnectionState state = connection->Open ();
         
         //test for get CRS command
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
-        cmdGLCRS->SetFeatureClassName(L"drainage");
+        cmdGLCRS->SetFeatureClassName(L"12700653833057327143-17379123781214007005-4");
         FdoStringsP crsNames = cmdGLCRS->Execute();
         CPPUNIT_ASSERT(crsNames->GetCount() == 2);
 #ifdef _DEBUG
@@ -215,5 +217,82 @@ void WmsTestCustomCommands::testInvalidParamForCRS ()
     {
         e->Release();
 		connection->Close ();
+    }
+}
+
+void WmsTestCustomCommands::testGetFeatureInfo ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+		FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www.geosignal.org/cgi-bin/wmsmap?");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+
+		// Parameters
+		FdoSize resolutionX = 1420;
+		FdoSize resolutionY = 998;
+		FdoPtr<FdoFgfGeometryFactory> pGeometryFactory = FdoFgfGeometryFactory::GetInstance();
+		FdoPtr<FdoIDirectPosition> pPosition = pGeometryFactory->CreatePositionXY(940, 179);
+		FdoPtr<FdoIEnvelope> pBoundingBox = pGeometryFactory->CreateEnvelopeXY(4.663093,49.958461,4.909094,50.131303);
+		FdoPtr<FdoIdentifier> pFeatureClassId = FdoIdentifier::Create(L"Communes");
+
+		// Do first a map request to fill up the required cache
+		FdoPtr<FdoISelect> cmd = static_cast<FdoISelect *> (connection->CreateCommand (FdoCommandType_Select));
+		cmd->SetFeatureClassName (pFeatureClassId);
+	    FdoPtr<FdoIFeatureReader> featReader = cmd->Execute ();
+
+        //test GetFeatureInfo command
+        FdoPtr<FdoWmsIGetFeatureInfo> cmdGetFeatureInfo = static_cast<FdoWmsIGetFeatureInfo*> (connection->CreateCommand(FdoWmsCommandType_GetFeatureInfo));
+		cmdGetFeatureInfo->SetWidth(resolutionX);
+		cmdGetFeatureInfo->SetHeight(resolutionY);
+		cmdGetFeatureInfo->SetBoundingBox(pBoundingBox);
+		cmdGetFeatureInfo->SetPosition(pPosition);
+		cmdGetFeatureInfo->SetFeatureClassName(pFeatureClassId);
+		cmdGetFeatureInfo->SetOutputFormat(L"text/plain");
+		FdoPtr<FdoIoStream> stream = cmdGetFeatureInfo->Execute ();
+
+		// Verify the stream
+		const FdoSize bytesToRead = 1024;
+		unsigned char buffer[bytesToRead];
+		memset(buffer, '\0', bytesToRead);
+		FdoSize bytesRead = stream->Read(buffer, bytesToRead);
+        CPPUNIT_ASSERT(bytesRead >= 1);
+
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
+    }
+}
+
+void WmsTestCustomCommands::testGetFeatureInfoFormats ()
+{
+    try
+    {
+        FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
+
+		FdoStringP sServer = FdoStringP::Format(L"FeatureServer=https://mapsengine.google.com/12700653833057327143-17379123781214007005-4/wms/?");
+        connection->SetConnectionString((FdoString*)sServer);
+        FdoConnectionState state = connection->Open ();
+        
+        //test for formats command
+        FdoPtr<FdoWmsIGetFeatureInfoFormats> cmdGetFeatureInfoFormats = static_cast<FdoWmsIGetFeatureInfoFormats*> (connection->CreateCommand(FdoWmsCommandType_GetFeatureInfoFormats));
+        FdoStringsP formats = cmdGetFeatureInfoFormats->Execute ();
+        CPPUNIT_ASSERT(formats->GetCount() >= 1);
+#ifdef _DEBUG
+		wprintf (L"FeatureInfo format test\n");
+		for (int i = 0; i < formats->GetCount(); ++i)
+		{
+			wprintf (L"FeatureInfo format: %ls\n", formats->GetString(i));
+		}
+#endif
+        connection->Close ();
+    }
+    catch (FdoException* e)
+    {
+        fail(e);
     }
 }

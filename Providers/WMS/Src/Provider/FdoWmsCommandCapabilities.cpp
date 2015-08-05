@@ -47,7 +47,9 @@ FdoInt32* FdoWmsCommandCapabilities::GetCommands (FdoInt32& size)
         FdoCommandType_SelectAggregates,
 		FdoWmsCommandType_GetImageFormats,
 		FdoWmsCommandType_GetFeatureClassStyles,
-		FdoWmsCommandType_GetFeatureClassCRSNames
+		FdoWmsCommandType_GetFeatureClassCRSNames,
+		FdoWmsCommandType_GetFeatureInfo,
+		FdoWmsCommandType_GetFeatureInfoFormats,
     //  FdoCommandType_ActivateSpatialContext
     };
 
