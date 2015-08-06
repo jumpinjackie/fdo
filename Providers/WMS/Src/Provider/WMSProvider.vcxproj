@@ -222,10 +222,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Inc\WMS\IGetFeatureInfo.h" />
+    <ClInclude Include="..\..\Inc\WMS\IGetFeatureInfoFormats.h" />
     <ClInclude Include="FdoWmsCommand.h" />
     <ClInclude Include="..\..\Inc\WMS\FdoWmsCommandType.h" />
     <ClInclude Include="FdoWmsEnvelope.h" />
     <ClInclude Include="FdoWmsGetFeatureInfo.h" />
+    <ClInclude Include="FdoWmsGetFeatureInfoFormats.h" />
     <ClInclude Include="FdoWmsGetFeatureInfoRequest.h" />
     <ClInclude Include="FdoWmsGlobals.h" />
     <ClInclude Include="FdoWmsReader.h" />
@@ -283,6 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FdoWmsGetFeatureInfo.cpp" />
+    <ClCompile Include="FdoWmsGetFeatureInfoFormats.cpp" />
     <ClCompile Include="FdoWmsGetFeatureInfoRequest.cpp" />
     <ClCompile Include="FdoWmsUtils.cpp" />
     <ClCompile Include="stdafx.cpp">

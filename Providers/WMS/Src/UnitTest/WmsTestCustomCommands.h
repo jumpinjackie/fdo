@@ -40,6 +40,8 @@ class WmsTestCustomCommands : public WmsTests
     CPPUNIT_TEST (testSpacialFeatureClassName);
 	CPPUNIT_TEST (testInvalidParamForStyle);
 	CPPUNIT_TEST (testInvalidParamForCRS);
+	CPPUNIT_TEST (testGetFeatureInfo);
+	CPPUNIT_TEST (testGetFeatureInfoFormats);
 
 	CPPUNIT_TEST_SUITE_END ();
 
@@ -58,6 +60,8 @@ public:
     void testSpacialFeatureClassName();
 	void testInvalidParamForStyle ();
 	void testInvalidParamForCRS ();
+	void testGetFeatureInfo ();
+	void testGetFeatureInfoFormats ();
 };
 
 #endif//FDOWmsTestCustomCommands_H
