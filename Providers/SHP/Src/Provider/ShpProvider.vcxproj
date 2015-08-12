@@ -22,28 +22,28 @@
     <ProjectName>SHPProvider</ProjectName>
     <ProjectGuid>{4164FE65-7AB4-45D0-8975-70465E0248A5}</ProjectGuid>
     <RootNamespace>ShpProvider</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -108,6 +108,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Zm117 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -145,6 +146,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Zm117 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
@@ -175,6 +177,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Zm117 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONLS.lib;ProvidersCommon.lib;SHPRead.lib;SHPOverrides.lib;SHPSpatialIndex.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -207,6 +210,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>-Zm117 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>FDO.lib;FDOCommon.lib;FDOGeometry.lib;FDOSpatial.lib;FDONLS.lib;ProvidersCommon.lib;SHPRead.lib;SHPOverrides.lib;SHPSpatialIndex.lib;Advapi32.lib;ExpressionEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
