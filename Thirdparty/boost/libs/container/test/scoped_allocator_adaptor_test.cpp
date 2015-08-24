@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2011-2012. Distributed under the Boost
+// (C) Copyright Ion Gaztanaga 2011-2013. Distributed under the Boost
 // Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -9,16 +9,19 @@
 //////////////////////////////////////////////////////////////////////////////
 #include <boost/container/detail/config_begin.hpp>
 #include <boost/container/scoped_allocator_fwd.hpp>
-#include <boost/container/detail/utilities.hpp>
-#include <cstddef>
+
+// container/detail
 #include <boost/container/detail/mpl.hpp>
-#include <boost/move/utility.hpp>
-#include <boost/type_traits/integral_constant.hpp>
+// move
+#include <boost/move/utility_core.hpp>
+#include <boost/move/adl_move_swap.hpp>
+// std
 #include <memory>
+#include <cstddef>
 
 using namespace boost::container;
 
-template<class T, unsigned int Id, bool Propagate = false>
+template<class T, unsigned int Id, bool HasTrueTypes = false>
 class test_allocator
 {
    BOOST_COPYABLE_AND_MOVABLE(test_allocator)
@@ -27,55 +30,68 @@ class test_allocator
    template<class U>
    struct rebind
    {
-      typedef test_allocator<U, Id, Propagate> other;
+      typedef test_allocator<U, Id, HasTrueTypes> other;
    };
 
-   typedef container_detail::bool_<Propagate>  propagate_on_container_copy_assignment;
-   typedef container_detail::bool_<Propagate>  propagate_on_container_move_assignment;
-   typedef container_detail::bool_<Propagate>  propagate_on_container_swap;
+   typedef container_detail::bool_<HasTrueTypes>  propagate_on_container_copy_assignment;
+   typedef container_detail::bool_<HasTrueTypes>  propagate_on_container_move_assignment;
+   typedef container_detail::bool_<HasTrueTypes>  propagate_on_container_swap;
+   typedef container_detail::bool_<HasTrueTypes>  is_always_equal;
    typedef T value_type;
 
    test_allocator()
+      : m_move_contructed(false), m_move_assigned(false)
    {}
 
    test_allocator(const test_allocator&)
+      : m_move_contructed(false), m_move_assigned(false)
    {}
 
    test_allocator(BOOST_RV_REF(test_allocator) )
+      : m_move_contructed(true), m_move_assigned(false)
    {}
 
    template<class U>
-   test_allocator(BOOST_RV_REF_BEG test_allocator<U, Id, Propagate> BOOST_RV_REF_END)
+   test_allocator(BOOST_RV_REF_BEG test_allocator<U, Id, HasTrueTypes> BOOST_RV_REF_END)
+      : m_move_contructed(true), m_move_assigned(false)
    {}
 
    template<class U>
-   test_allocator(const test_allocator<U, Id, Propagate> &)
+   test_allocator(const test_allocator<U, Id, HasTrueTypes> &)
    {}
 
    test_allocator & operator=(BOOST_COPY_ASSIGN_REF(test_allocator))
-   {  return *this;  }
+   {
+      return *this;
+   }
 
    test_allocator & operator=(BOOST_RV_REF(test_allocator))
-   {  return *this;  }
+   {
+      m_move_assigned = true;
+      return *this;
+   }
 
    std::size_t max_size() const
-   {  return std::size_t(Id);  }
+   {  return std::size_t(-1);  }
 
    T* allocate(std::size_t n)
    {  return (T*)::new char[n*sizeof(T)];  }
 
    void deallocate(T*p, std::size_t)
    {  delete []static_cast<char*>(static_cast<void*>(p));  }
+
+   bool m_move_contructed;
+   bool m_move_assigned;
 };
 
-template <class T1, class T2, unsigned int Id, bool Propagate>
-bool operator==( const test_allocator<T1, Id, Propagate>&
-               , const test_allocator<T2, Id, Propagate>&)
+template <class T1, class T2, unsigned int Id, bool HasTrueTypes>
+bool operator==( const test_allocator<T1, Id, HasTrueTypes>&
+               , const test_allocator<T2, Id, HasTrueTypes>&)
 {  return true;   }
 
-template <class T1, class T2, unsigned int Id, bool Propagate>
-bool operator!=( const test_allocator<T1, Id, Propagate>&
-               , const test_allocator<T2, Id, Propagate>&)
+template <class T1, class T2, unsigned int Id, bool HasTrueTypes>
+bool operator!=( const test_allocator<T1, Id, HasTrueTypes>&
+               , const test_allocator<T2, Id, HasTrueTypes>&)
 {  return false;   }
 
 
@@ -103,7 +119,7 @@ enum ConstructionTypeEnum
 {
    ConstructiblePrefix,
    ConstructibleSuffix,
-   NotUsesAllocator,
+   NotUsesAllocator
 };
 
 //This base class provices types for
@@ -225,21 +241,22 @@ namespace container {
 template<unsigned int AllocatorTag>
 struct constructible_with_allocator_prefix
    < ::mark_on_scoped_allocation<ConstructiblePrefix, AllocatorTag> >
-   : ::boost::true_type
-{};
+{
+   static const bool value = true;
+};
 
 template<unsigned int AllocatorTag>
 struct constructible_with_allocator_suffix
    < ::mark_on_scoped_allocation<ConstructibleSuffix, AllocatorTag> >
-   : ::boost::true_type
-{};
+{
+   static const bool value = true;
+};
 
 }  //namespace container {
 }  //namespace boost {
 
 
 #include <boost/container/scoped_allocator.hpp>
-#include <boost/type_traits/is_same.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/container/vector.hpp>
 #include <boost/container/detail/pair.hpp>
@@ -252,14 +269,13 @@ int main()
    typedef test_allocator<tagged_integer<1>, 1>   InnerAlloc1;
    typedef test_allocator<tagged_integer<2>, 2>   InnerAlloc2;
    typedef test_allocator<tagged_integer<1>, 11>  Inner11IdAlloc1;
-   typedef test_allocator<tagged_integer<1>, 12>  Inner12IdAlloc2;
 
-   typedef test_allocator<tagged_integer<0>, 0, false>      OuterAllocFalsePropagate;
-   typedef test_allocator<tagged_integer<0>, 0, true>       OuterAllocTruePropagate;
-   typedef test_allocator<tagged_integer<1>, 1, false>      InnerAlloc1FalsePropagate;
-   typedef test_allocator<tagged_integer<1>, 1, true>       InnerAlloc1TruePropagate;
-   typedef test_allocator<tagged_integer<2>, 2, false>      InnerAlloc2FalsePropagate;
-   typedef test_allocator<tagged_integer<2>, 2, true>       InnerAlloc2TruePropagate;
+   typedef test_allocator<tagged_integer<0>, 0, false>      OuterAllocFalseHasTrueTypes;
+   typedef test_allocator<tagged_integer<0>, 0, true>       OuterAllocTrueHasTrueTypes;
+   typedef test_allocator<tagged_integer<1>, 1, false>      InnerAlloc1FalseHasTrueTypes;
+   typedef test_allocator<tagged_integer<1>, 1, true>       InnerAlloc1TrueHasTrueTypes;
+   typedef test_allocator<tagged_integer<2>, 2, false>      InnerAlloc2FalseHasTrueTypes;
+   typedef test_allocator<tagged_integer<2>, 2, true>       InnerAlloc2TrueHasTrueTypes;
 
    //
    typedef scoped_allocator_adaptor< OuterAlloc  >          Scoped0Inner;
@@ -277,11 +293,6 @@ int main()
          <Outer10IdAlloc, Inner11IdAlloc1>
       , InnerAlloc1
       >                                                     ScopedScoped1Inner;
-   typedef scoped_allocator_adaptor
-      < scoped_allocator_adaptor
-         <Outer10IdAlloc, Inner11IdAlloc1, Inner12IdAlloc2>
-      , InnerAlloc1, InnerAlloc2
-      >                                                     ScopedScoped2Inner;
    typedef scoped_allocator_adaptor< Rebound9OuterAlloc  >  Rebound9Scoped0Inner;
    typedef scoped_allocator_adaptor< Rebound9OuterAlloc
                                    , InnerAlloc1 >          Rebound9Scoped1Inner;
@@ -369,40 +380,40 @@ int main()
 
    {
       //Propagation test
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate  >  Scoped0InnerF;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate  >   Scoped0InnerT;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1FalsePropagate >  Scoped1InnerFF;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1TruePropagate >   Scoped1InnerFT;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1FalsePropagate >  Scoped1InnerTF;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1TruePropagate >   Scoped1InnerTT;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1FalsePropagate
-                                    , InnerAlloc2FalsePropagate >  Scoped2InnerFFF;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1FalsePropagate
-                                    , InnerAlloc2TruePropagate >  Scoped2InnerFFT;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1TruePropagate
-                                    , InnerAlloc2FalsePropagate >  Scoped2InnerFTF;
-      typedef scoped_allocator_adaptor< OuterAllocFalsePropagate
-                                    , InnerAlloc1TruePropagate
-                                    , InnerAlloc2TruePropagate >  Scoped2InnerFTT;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1FalsePropagate
-                                    , InnerAlloc2FalsePropagate >  Scoped2InnerTFF;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1FalsePropagate
-                                    , InnerAlloc2TruePropagate >  Scoped2InnerTFT;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1TruePropagate
-                                    , InnerAlloc2FalsePropagate >  Scoped2InnerTTF;
-      typedef scoped_allocator_adaptor< OuterAllocTruePropagate
-                                    , InnerAlloc1TruePropagate
-                                    , InnerAlloc2TruePropagate >  Scoped2InnerTTT;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes  >  Scoped0InnerF;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes  >   Scoped0InnerT;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes >  Scoped1InnerFF;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes >   Scoped1InnerFT;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes >  Scoped1InnerTF;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes >   Scoped1InnerTT;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes
+                                    , InnerAlloc2FalseHasTrueTypes >  Scoped2InnerFFF;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes
+                                    , InnerAlloc2TrueHasTrueTypes >  Scoped2InnerFFT;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes
+                                    , InnerAlloc2FalseHasTrueTypes >  Scoped2InnerFTF;
+      typedef scoped_allocator_adaptor< OuterAllocFalseHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes
+                                    , InnerAlloc2TrueHasTrueTypes >  Scoped2InnerFTT;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes
+                                    , InnerAlloc2FalseHasTrueTypes >  Scoped2InnerTFF;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1FalseHasTrueTypes
+                                    , InnerAlloc2TrueHasTrueTypes >  Scoped2InnerTFT;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes
+                                    , InnerAlloc2FalseHasTrueTypes >  Scoped2InnerTTF;
+      typedef scoped_allocator_adaptor< OuterAllocTrueHasTrueTypes
+                                    , InnerAlloc1TrueHasTrueTypes
+                                    , InnerAlloc2TrueHasTrueTypes >  Scoped2InnerTTT;
 
       //propagate_on_container_copy_assignment
       //0 inner
@@ -460,6 +471,24 @@ int main()
       BOOST_STATIC_ASSERT((  Scoped2InnerTFT::propagate_on_container_swap::value ));
       BOOST_STATIC_ASSERT((  Scoped2InnerTTF::propagate_on_container_swap::value ));
       BOOST_STATIC_ASSERT((  Scoped2InnerTTT::propagate_on_container_swap::value ));
+      //is_always_equal
+      //0 inner
+      BOOST_STATIC_ASSERT(( !Scoped0InnerF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT((  Scoped0InnerT::is_always_equal::value ));
+      //1 inner
+      BOOST_STATIC_ASSERT(( !Scoped1InnerFF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped1InnerFT::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped1InnerTF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT((  Scoped1InnerTT::is_always_equal::value ));
+      //2 inner
+      BOOST_STATIC_ASSERT(( !Scoped2InnerFFF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerFFT::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerFTF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerFTT::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerTFF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerTFT::is_always_equal::value ));
+      BOOST_STATIC_ASSERT(( !Scoped2InnerTTF::is_always_equal::value ));
+      BOOST_STATIC_ASSERT((  Scoped2InnerTTT::is_always_equal::value ));
    }
 
    //Default constructor
@@ -470,8 +499,8 @@ int main()
       {
          Scoped0Inner s0i2;
          Scoped1Inner s1i2;
-         boost::container::swap_dispatch(s0i, s0i2);
-         boost::container::swap_dispatch(s1i, s1i2);
+         boost::adl_move_swap(s0i, s0i2);
+         boost::adl_move_swap(s1i, s1i2);
       }
    }
 
@@ -479,6 +508,64 @@ int main()
    {
       Scoped0Inner s0i;
       Scoped1Inner s1i;
+   }
+
+   //Copy constructor/assignment
+   {
+      Scoped0Inner s0i;
+      Scoped1Inner s1i;
+      Scoped2Inner s2i;
+
+      Scoped0Inner s0i_b(s0i);
+      Scoped1Inner s1i_b(s1i);
+      Scoped2Inner s2i_b(s2i);
+
+      if(!(s0i == s0i_b) ||
+         !(s1i == s1i_b) ||
+         !(s2i == s2i_b)
+         ){
+         return 1;
+      }
+
+      s0i_b = s0i;
+      s1i_b = s1i;
+      s2i_b = s2i;
+
+      if(!(s0i == s0i_b) ||
+         !(s1i == s1i_b) ||
+         !(s2i == s2i_b)
+         ){
+         return 1;
+      }
+   }
+
+   //Copy/move constructor/assignment
+   {
+      Scoped0Inner s0i;
+      Scoped1Inner s1i;
+      Scoped2Inner s2i;
+
+      Scoped0Inner s0i_b(::boost::move(s0i));
+      Scoped1Inner s1i_b(::boost::move(s1i));
+      Scoped2Inner s2i_b(::boost::move(s2i));
+
+      if(!(s0i_b.outer_allocator().m_move_contructed) ||
+         !(s1i_b.outer_allocator().m_move_contructed) ||
+         !(s2i_b.outer_allocator().m_move_contructed)
+         ){
+         return 1;
+      }
+
+      s0i_b = ::boost::move(s0i);
+      s1i_b = ::boost::move(s1i);
+      s2i_b = ::boost::move(s2i);
+
+      if(!(s0i_b.outer_allocator().m_move_assigned) ||
+         !(s1i_b.outer_allocator().m_move_assigned) ||
+         !(s2i_b.outer_allocator().m_move_assigned)
+         ){
+         return 1;
+      }
    }
 
    //inner_allocator()
@@ -659,7 +746,7 @@ int main()
    }
 
    {
-      vector<int, scoped_allocator_adaptor< test_allocator<int, 0> > > dummy; 
+      vector<int, scoped_allocator_adaptor< test_allocator<int, 0> > > dummy;
       dummy.push_back(0);
    }
 
@@ -880,7 +967,7 @@ int main()
       }
 
       //////////////////////////////////////////////////////////////////////////////////
-      //Now test recursive OuterAllocator types (OuterAllocator is an scoped_allocator)
+      //Now test recursive OuterAllocator types (OuterAllocator is a scoped_allocator)
       //////////////////////////////////////////////////////////////////////////////////
 
       ////////////////////////////////////////////////////////////
@@ -1102,17 +1189,8 @@ int main()
          using boost::container::container_detail::pair;
          typedef test_allocator< pair< tagged_integer<0>
                                , tagged_integer<0> >, 0> OuterPairAlloc;
-         typedef test_allocator< pair< tagged_integer<1>
-                               , tagged_integer<1> >, 1> InnerPairAlloc1;
-         typedef test_allocator< pair< tagged_integer<2>
-                               , tagged_integer<2> >, 2> InnerPairAlloc2;
          //
          typedef scoped_allocator_adaptor < OuterPairAlloc  >  ScopedPair0Inner;
-         typedef scoped_allocator_adaptor < OuterPairAlloc
-                                          , InnerPairAlloc1 >  ScopedPair1Inner;
-         typedef scoped_allocator_adaptor < OuterPairAlloc
-                                          , InnerPairAlloc1
-                                          , InnerPairAlloc2 >  ScopedPair2Inner;
 
          ScopedPair0Inner s0i;
          //Check construction with 0 user arguments
