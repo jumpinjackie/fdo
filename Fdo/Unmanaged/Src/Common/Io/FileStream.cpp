@@ -401,10 +401,8 @@ void FdoIoFileStream::InitFileStatus()
 	//  which gives only the status of the file on the disc but not the real time opened mode
 	// This is different to the previous FILE property "_flag",
 	//  which is not available anymore since c++ v140
-	if (fileStat.st_mode & S_IREAD)
-		mbCanRead = true;
-	if (fileStat.st_mode & S_IWRITE)
-		mbCanWrite = true;
+	mbCanRead = (fileStat.st_mode & S_IREAD) != 0;
+	mbCanWrite = (fileStat.st_mode & S_IWRITE) != 0;
 
     //File is contextual only if it is a regular file.
     mbHasContext = ( (fileStat.st_mode & _S_IFREG) != 0 ); 
