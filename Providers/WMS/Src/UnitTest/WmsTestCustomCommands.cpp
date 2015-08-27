@@ -142,13 +142,13 @@ void WmsTestCustomCommands::testGetFeatureCRSNames ()
     {
         FdoPtr<FdoIConnection> connection = WmsTests::GetConnection ();
 
-        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=https://mapsengine.google.com/12700653833057327143-17379123781214007005-4/wms/?");
+        FdoStringP sServer = FdoStringP::Format(L"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap");
         connection->SetConnectionString((FdoString*)sServer);
         FdoConnectionState state = connection->Open ();
         
         //test for get CRS command
         FdoPtr<FdoWmsIGetFeatureClassCRSNames> cmdGLCRS = static_cast<FdoWmsIGetFeatureClassCRSNames *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassCRSNames));
-        cmdGLCRS->SetFeatureClassName(L"12700653833057327143-17379123781214007005-4");
+        cmdGLCRS->SetFeatureClassName(L"drainage");
         FdoStringsP crsNames = cmdGLCRS->Execute();
         CPPUNIT_ASSERT(crsNames->GetCount() == 2);
 #ifdef _DEBUG
