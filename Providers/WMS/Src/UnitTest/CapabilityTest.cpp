@@ -77,7 +77,7 @@ void CapabilityTest::TestCapabilities ()
         FdoPtr<FdoICommandCapabilities> commandCapabilities = connection->GetCommandCapabilities();
 
         FdoInt32 *commands = commandCapabilities->GetCommands(size);
-        CPPUNIT_ASSERT(size == 8);
+        CPPUNIT_ASSERT(size == 10);
         CPPUNIT_ASSERT(commands != NULL);
         CPPUNIT_ASSERT(commands[0] == FdoCommandType_Select);
         CPPUNIT_ASSERT(commands[1] == FdoCommandType_DescribeSchema);
@@ -87,6 +87,8 @@ void CapabilityTest::TestCapabilities ()
         CPPUNIT_ASSERT(commands[5] == FdoWmsCommandType_GetImageFormats);
         CPPUNIT_ASSERT(commands[6] == FdoWmsCommandType_GetFeatureClassStyles);
         CPPUNIT_ASSERT(commands[7] == FdoWmsCommandType_GetFeatureClassCRSNames);
+		CPPUNIT_ASSERT(commands[8] == FdoWmsCommandType_GetFeatureInfo);
+		CPPUNIT_ASSERT(commands[9] == FdoWmsCommandType_GetFeatureInfoFormats);
 
         bool supportsParameters = commandCapabilities->SupportsParameters();
         CPPUNIT_ASSERT(supportsParameters == false);
