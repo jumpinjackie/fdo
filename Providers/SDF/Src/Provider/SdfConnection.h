@@ -230,10 +230,10 @@ private:
     //hash_map is non-standard so they haven't bothered implementing
     //it for pointers -- see beginning of this file for implementation
     //of hash for void*
-    stdext::hash_map<void*, void*> m_hRTrees;    
-    stdext::hash_map<void*, void*> m_hPropertyIndices;
-    stdext::hash_map<void*, void*> m_hDataDbs;
-    stdext::hash_map<void*, void*> m_hKeyDbs;
+	std::unordered_map<void*, void*> m_hRTrees;
+	std::unordered_map<void*, void*> m_hPropertyIndices;
+	std::unordered_map<void*, void*> m_hDataDbs;
+	std::unordered_map<void*, void*> m_hKeyDbs;
 
 	static bool m_bInitFunctions;
 	void InitFunctions();

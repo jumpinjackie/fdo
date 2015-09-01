@@ -80,9 +80,9 @@ private:
 
     SdfConnection* mSdfConnection;
 
-    stdext::hash_map<void*, void*> m_hDelRTrees;    
-    stdext::hash_map<void*, void*> m_hDelDataDbs;
-    stdext::hash_map<void*, void*> m_hDelKeyDbs;
+	std::unordered_map<void*, void*> m_hDelRTrees;
+	std::unordered_map<void*, void*> m_hDelDataDbs;
+	std::unordered_map<void*, void*> m_hDelKeyDbs;
 
     TableReformattersP mTableReformatters;
 };

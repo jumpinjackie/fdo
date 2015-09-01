@@ -254,7 +254,7 @@ void SdfSchemaMergeContext::PostAcceptChanges()
 
 void SdfSchemaMergeContext::PostUpdatePhysical()
 {
-    stdext::hash_map<void*, void*>::iterator dblist;
+	std::unordered_map<void*, void*>::iterator dblist;
     
     // Drop each data, rtree and key table gathered in the PreUpdatePhysical step. 
 

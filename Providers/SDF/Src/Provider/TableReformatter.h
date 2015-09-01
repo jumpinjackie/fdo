@@ -107,7 +107,7 @@ private:
 
     FdoInt32 mState;
 
-    stdext::hash_map<void*, void*> m_newPropertyIndexes;
+	std::unordered_map<void*, void*> m_newPropertyIndexes;
 };
 
 /// \brief

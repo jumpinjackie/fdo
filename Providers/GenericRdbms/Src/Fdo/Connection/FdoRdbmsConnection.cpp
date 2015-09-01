@@ -238,8 +238,7 @@ FdoConnectionState FdoRdbmsConnection::DbiOpen(bool skipPending)
 {
     FdoConnectionState theState;
 #ifdef _WIN32
-    wchar_t errorMessage[1024];
-    errorMessage[0] = L'';
+    wchar_t errorMessage[1024] = L"";
     __try
     {
 #endif

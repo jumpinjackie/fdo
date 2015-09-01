@@ -41,8 +41,8 @@ MessageTest::~MessageTest(void)
 
 void MessageTest::RunTest ()
 {
-	wchar_t *name = L"\x00e6"L"aOP\x00e7\x00c6";
-    wchar_t firstMsg[] = L"Property '\x00e6"L"aOP\x00e7\x00c6' not found ";
+	wchar_t *name = L"\x00e6" L"aOP\x00e7\x00c6";
+    wchar_t firstMsg[] = L"Property '\x00e6" L"aOP\x00e7\x00c6' not found ";
     wchar_t secondMsg[] = L"No current database is open; cannot begin transaction '1234' . ";
     
 	const wchar_t *msg = FdoCommonNlsUtil::NLSGetMessage( FDORDBMS_56, "Property '%1$ls' not found",rdbi_cat, name );

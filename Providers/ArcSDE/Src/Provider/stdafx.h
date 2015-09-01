@@ -67,7 +67,6 @@
 #endif
 
 #ifdef WIN32
-#include <hash_map>
 #include <functional>
 #else
 #include <ext/hash_map>

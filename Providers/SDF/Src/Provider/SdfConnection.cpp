@@ -777,7 +777,7 @@ void SdfConnection::DestroyDatabases()
 
     //iterate over hashmap and close Data databases here..
     //stdext::hash_map<FdoClassDefinition*, DataDb*>::iterator dblist;
-    stdext::hash_map<void*, void*>::iterator dblist;
+	std::unordered_map<void*, void*>::iterator dblist;
     
     for (dblist = m_hDataDbs.begin(); dblist != m_hDataDbs.end(); dblist++)
     {
@@ -798,7 +798,7 @@ void SdfConnection::DestroyDatabases()
 
     //iterate over hashmap and close Key databases here..
     //stdext::hash_map<FdoClassDefinition*, KeyDb*>::iterator keylist;
-    stdext::hash_map<void*, void*>::iterator keylist;
+	std::unordered_map<void*, void*>::iterator keylist;
     
     for (keylist = m_hKeyDbs.begin(); keylist != m_hKeyDbs.end(); keylist++)
     {
@@ -819,7 +819,7 @@ void SdfConnection::DestroyDatabases()
     
     //iterate over hashmap and close R-Tree databases 
     //stdext::hash_map<FdoClassDefinition*, SdfRTree*>::iterator treelist;
-    stdext::hash_map<void*, void*>::iterator treelist;
+	std::unordered_map<void*, void*>::iterator treelist;
 
     
     for (treelist = m_hRTrees.begin(); treelist != m_hRTrees.end(); treelist++)
@@ -841,7 +841,7 @@ void SdfConnection::DestroyDatabases()
     
     //iterate over hashmap and tear down property indices
     //stdext::hash_map<FdoClassDefinition*, PropertyIndex*>::iterator indexlist;
-    stdext::hash_map<void*, void*>::iterator indexlist;
+	std::unordered_map<void*, void*>::iterator indexlist;
     
     for (indexlist = m_hPropertyIndices.begin(); 
         indexlist != m_hPropertyIndices.end(); indexlist++)
@@ -1053,7 +1053,7 @@ FdoByteArray* SdfConnection::GetDataExtents()
 {
     Bounds ret; //initialize to undefined bounds
 
-    stdext::hash_map<void*, void*>::iterator iter;
+	std::unordered_map<void*, void*>::iterator iter;
 
     //add up bounds for all R-Trees
     for (iter = m_hRTrees.begin();iter != m_hRTrees.end(); iter++)
@@ -1150,7 +1150,7 @@ SdfSchemaMergeContext* SdfConnection::CreateMergeContext(
 
 void SdfConnection::Flush()
 {
-    stdext::hash_map<void*, void*>::iterator dblist;
+	std::unordered_map<void*, void*>::iterator dblist;
     for (dblist = m_hDataDbs.begin(); dblist != m_hDataDbs.end(); dblist++)
     {
         FdoPtr<FdoClassDefinition> base = ((FdoClassDefinition*)dblist->first)->GetBaseClass();
