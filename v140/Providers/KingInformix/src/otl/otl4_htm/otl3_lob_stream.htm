@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="Sergei Kuchin">
+  <meta name="GENERATOR"
+ content="Mozilla/4.77 [en] (Win95; U) [Netscape]">
+  <meta name="KeyWords"
+ content="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+  <title>OTL 4.0, OTL LOB stream class</title>
+</head>
+<body>
+<center>
+<h1>OTL 4.0, OTL LOB stream class</h1>
+</center>
+<h1>
+<a name="otl_lob_stream"></a>OTL LOB stream class</h1>
+This class is used for reading / writing Large Objects (Oracle 8(i)'s
+[N]CLOBs/BLOBs,
+DB2's CLOBs/BLOBs, MS SQL Server's TEXT/IMAGE, MySQL's
+LONGTEXTs/LONGBLOBs,
+Sybase's (via ODBC) TEXTs/IMAGEs) in the stream mode. The stream mode
+allows
+an unlimited number of bytes to be read/written, regardless of the
+buffer
+size.
+<p>otl_lob_stream does not have any specific constructor by which an
+actual
+instance of otl_lob_stream can be created. Instead, the stream gets
+initialized
+by <a href="otl3_stream_class.htm#stream_write_lob">writing</a> / <a
+ href="otl3_stream_class.htm#stream_read_lob">reading</a>
+an otl_lob_stream variable to / from the otl_stream.
+</p>
+<p>Potentially, the otl_lob_stream class may raise an <a
+ href="otl3_exc_list.htm">OTL
+defined exception</a>.
+</p>
+<pre><font size="+2">class otl_lob_stream {<br>public:</font></pre>
+<ul>
+  <li> <a name="set_len"></a>Set the total number of bytes (or Unicode
+characters)
+to be written to the otl_lob_stream. In other words, set the total size
+of the LOB. The total length of the LOB normally needs to set before
+the first LOB chunk should be written into the otl_lob_stream. <br>
+    <br>
+However, OTL 4.0.138 and higher does not require that. OTL/ODBC/DB2-CLI
+completely relaxes that requirement. OTL/OCI8i/9i/10g does not require
+that, if the last LOB chunk / piece in the sequence is indicated
+through
+a call&nbsp; to otl_long_string::<a
+ href="otl3_long_string.htm#set_last_piece">set_last_piece</a>(true).<br>
+  </li>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; void set_len(const int alen);<br></pre>
+<ul>
+  <li><a name="WRITE_STRING"></a>Write the whole CLOB&nbsp; / TEXT /
+etc. into the stream.</li>
+</ul>
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;
+otl_lob_stream&amp; operator&lt;&lt;(const std::string&amp; s);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // when <a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a> is defined and <a
+ href="otl3_compile.htm#OTL_UNICODE">OTL_UNICODE</a> is not defined<br>
+</span><span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;
+otl_lob_stream&amp; operator&lt;&lt;(const ACE_TString&amp; s);</span><span
+ style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // when <a
+ href="otl3_compile.htm#OTL_ACE">OTL_ACE</a> is defined and <a
+ href="otl3_compile.htm#OTL_UNICODE">OTL_UNICODE</a> is not defined</span>
+<ul>
+  <li><a name="READ_STRING"></a>Read the whole CLOB / TEXT / etc. from
+the stream into a string<br>
+  </li>
+</ul>
+<span style="font-family: monospace;">
+&nbsp;&nbsp;&nbsp;&nbsp; otl_lob_stream&amp;
+operator&gt;&gt;(std::string&amp; s);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // when <a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a> is defined and <a
+ href="otl3_compile.htm#OTL_UNICODE">OTL_UNICODE</a> is not defined<br>
+</span><span style="font-family: monospace;">
+&nbsp;&nbsp;&nbsp;&nbsp; otl_lob_stream&amp;
+operator&gt;&gt;(ACE_TString&amp; s);</span><span
+ style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // when <a
+ href="otl3_compile.htm#OTL_ACE">OTL_ACE</a> is defined and <a
+ href="otl3_compile.htm#OTL_UNICODE">OTL_UNICODE</a> is not defined<br>
+<br>
+&nbsp;&nbsp; &nbsp; <a name="SET_STRING_BUFFER"></a>void
+setStringBuffer(const int chunk_size);</span><br>
+<span style="font-family: monospace;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// sets an internal buffer of "chunk_size" to help reduce<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the number of calls to
+string::operator +=() in <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the operators &gt;&gt;() above.
+The bigger the buffer, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the fewer the calls to the +=()
+to concatenate chunks<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // of the CLOB value to the output
+string.</span><br>
+<ul>
+  <li> <a name="write"></a>Write a chunk of the LOB&nbsp; into the
+stream.</li>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; otl_lob_stream&amp; operator&lt;&lt;(const otl_long_string&amp; s);<br><br>&nbsp;&nbsp;&nbsp;&nbsp; otl_lob_stream&amp; operator&lt;&lt;(const <a
+ href="otl3_long_string.htm#otl_long_unicode_string">otl_long_unicode_string</a>&amp; s);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // In case if #define OTL_UNICODE is enabled</pre>
+<ul>
+  <li> <a name="read"></a>Read a chunk of LOB from the stream.</li>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp; otl_lob_stream&amp; operator&gt;&gt;(otl_long_string&amp; s);<br><br>&nbsp;&nbsp;&nbsp; otl_lob_stream&amp; operator&gt;&gt;(<a
+ href="otl3_long_string.htm#otl_long_unicode_string">otl_long_unicode_string</a>&amp; s);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // In case if #define OTL_UNICODE is enabled</pre>
+<ul>
+  <li>Get the length of the LOB to be read in bytes, or in Unicode
+characters..
+In OTL/OCI8/8i/9i, the actual length of the LOB is available
+immediately
+after the intialization of the stream. In OTL/ODBC and OTL/DB2-CLI, the
+function returns 0 before the first chunk of the LOB is read, and it
+returns
+the actual length of the LOB after the&nbsp; first chunk of the LOB is
+read.</li>
+  <p><br>
+This difference is due to the differences in behavior of&nbsp; the
+underlying database APIs. So, for writing portable [across multiple
+databases]
+code, it is recommended to use this function carefully.</p>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; int len(void);</pre>
+<ul>
+  <li> <a name="eof"></a>Check the stream for "end-of-file" condition</li>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; int eof(void);</pre>
+<ul>
+  <li> <a name="close"></a>Close the stream.</li>
+</ul>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; void close(void);</pre>
+<pre><font size="+2">}; // end of otl_lob_stream</font></pre>
+The ODBC as well as DB2 CLI standards recommend to put LOBs at the end
+of&nbsp; INSERT/SELECT statements. For example:
+<p>&nbsp;&nbsp;&nbsp; INSERT INTO my_tab (f1,f2,f3_lob,f4_lob)...
+<br>
+&nbsp;&nbsp; SELECT f1,f2,f3_lob,f4_lob FROM my_tab...
+</p>
+<p>The recommendation applies especially in the case of piece-wise data
+operations, that is, in the OTL LOB stream mode. At the same time, the
+standards say that it is up to the ODBC drivers/database APIs to either
+enforce or not to enforce that rule.the LOB's part of OCI8 in Oracle
+does
+not require that kind of thing, so it is really up to the developer to
+decide what to do. However, the general recommendation for writing
+portable
+code, that uses the LOB stream mode, would be to put LOBs at the end of
+the column lists in INSERT or SELECT statements.
+</p>
+<p>In order to use the otl_lob_stream class for OTL/ODBC and
+OTL/DB2-CLI,
+a call to otl_stream::<a
+ href="otl3_stream_class.htm#set_lob_stream_mode">set_lob_stream_mode</a>()
+is required.
+</p>
+<p>Also, see example <a href="otl3_ex56.htm">56</a>, <a
+ href="otl3_ex57.htm">57</a>,
+<a href="otl3_ex122.htm">122</a>,
+<a href="otl3_ex123.htm">123</a>,
+<a href="otl3_ex124.htm">124</a>,
+<a href="otl3_ex125.htm">125</a>,
+<a href="otl3_ex126.htm">126</a>,
+<a href="otl3_ex127.htm">127</a>,
+<a href="otl3_ex128.htm">128</a>,
+<a href="otl3_ex129.htm">129.</a>
+</p>
+<p></p>
+<hr width="100%">
+<center>
+<p><a href="otl3_pl_tab.htm">Prev</a> <a href="otl3_iterators.htm">Next</a><a
+ href="otl3.htm">Contents</a><a href="home.htm">Go
+Home</a></p>
+</center>
+<p>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <a
+ href="mailto:skuchin@ispwest.com">skuchin@ispwest.com</a>,
+<a href="mailto:skuchin@gmail.com">skuchin@gmail.com
+<script language="JavaScript"><!-- hide from oldgmailsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i> Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100+".");
+ //-->
+ </script></a>.
+</p>
+<p><i>Permission to use, copy, modify and redistribute this document
+for
+any purpose is hereby granted without fee, provided that the above
+copyright
+notice appear in all copies.</i>
+</p>
+</body>
+</html>
