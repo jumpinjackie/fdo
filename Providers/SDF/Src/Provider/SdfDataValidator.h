@@ -19,7 +19,7 @@
 
 class SdfConnection;
 
-typedef enum SdfDataValidationType
+enum SdfDataValidationType
 {
 	SdfDataValidationType_None		      = 0x00,
     SdfDataValidationType_Association     = 0x01,

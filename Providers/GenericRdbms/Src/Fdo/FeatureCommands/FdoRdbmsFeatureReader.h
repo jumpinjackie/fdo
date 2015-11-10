@@ -125,7 +125,7 @@ public:
                 val->value = new wchar_t[val->len];
             }
         }
-        wcscpy(val->value, value );
+        wcscpy_s(val->value, val->len, value );
         colValue = val->value;
         return colValue;
     }

@@ -23,7 +23,7 @@ class FdoCommonBinaryReader;
 #include "../ExpressionEngine.h"
 
 
-typedef enum FdoCommonExpressionType
+enum FdoCommonExpressionType
 {
     FdoCommonExpressionType_Constant     = 1,  // one value per row, same for all rows  (e.g. "1+2")
     FdoCommonExpressionType_PerRow       = 2,  // one value per row, can change per row  (e.g. "A+B")
