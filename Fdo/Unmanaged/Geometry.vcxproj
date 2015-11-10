@@ -23,7 +23,7 @@
     <RootNamespace>Geometry</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>FDOGeometry</ProjectName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

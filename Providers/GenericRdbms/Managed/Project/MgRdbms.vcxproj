@@ -22,7 +22,7 @@
     <ProjectGuid>{D672727A-C93B-42CB-9B06-7A1638EFA7E4}</ProjectGuid>
     <RootNamespace>Rdbms</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ProjectName>OSGeo.FDO.Providers.Rdbms</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

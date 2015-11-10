@@ -22,7 +22,7 @@
     <ProjectName>GRFPOverrides</ProjectName>
     <ProjectGuid>{0A982097-4896-4F2B-81EC-43100004311D}</ProjectGuid>
     <RootNamespace>RFPOverrides</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

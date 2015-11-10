@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D9AD28EF-3123-4F79-A938-A07D75E82F63}</ProjectGuid>
     <RootNamespace>MgSpatial</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>OSGeo.FDO.Spatial</ProjectName>
   </PropertyGroup>

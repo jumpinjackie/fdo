@@ -96,7 +96,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(FDO)\Unmanaged\inc;$(FDO)\Unmanaged;$(FDOTHIRDPARTY)\cppunit\include;$(FDOUTILITIES)\SchemaMgr\inc;$(FDOUTILITIES)\Common\inc;..\LockManager;..\LongTransactionManager;..\Gdbi;..\..\inc;..\..;..\Fdo\Connection;..\Fdo\SpatialContext;..\Fdo\Other;..\Fdo\FeatureCommands;../;Common;$(FDOUTILITIES)\TestCommon\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;RDBI_STATIC;_CRT_SECURE_NO_DEPRECATE;__CPPUNIT_MFC_APP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>

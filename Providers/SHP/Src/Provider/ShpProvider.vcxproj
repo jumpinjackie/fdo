@@ -22,7 +22,7 @@
     <ProjectName>SHPProvider</ProjectName>
     <ProjectGuid>{4164FE65-7AB4-45D0-8975-70465E0248A5}</ProjectGuid>
     <RootNamespace>ShpProvider</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

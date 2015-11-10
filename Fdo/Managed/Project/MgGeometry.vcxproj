@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{00D27054-5167-4B39-BD0C-BC5D518E4E95}</ProjectGuid>
     <RootNamespace>MgGeometry</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>OSGeo.FDO.Geometry</ProjectName>
   </PropertyGroup>

@@ -38,7 +38,7 @@
     <ProjectGuid>{D3EADA85-50F9-4A1D-A2F7-18612358B436}</ProjectGuid>
     <RootNamespace>MsgCreator</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug with ICU|Win32'" Label="Configuration">

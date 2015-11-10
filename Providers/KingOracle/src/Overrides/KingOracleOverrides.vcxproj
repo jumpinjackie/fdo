@@ -54,7 +54,7 @@
     <ProjectGuid>{5B5F49A3-7760-4171-9F3C-47BB775EC4FE}</ProjectGuid>
     <RootNamespace>KingOracleOverrides</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_FDO_3_5|Win32'" Label="Configuration">

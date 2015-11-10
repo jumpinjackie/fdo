@@ -22,7 +22,7 @@
     <ProjectName>SHPMessage</ProjectName>
     <ProjectGuid>{EFE86138-FF68-4ACD-8BAC-0D2A97AF0B95}</ProjectGuid>
     <RootNamespace>ShpMessage</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

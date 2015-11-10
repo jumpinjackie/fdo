@@ -22,7 +22,7 @@
     <ProjectGuid>{DD12E36F-088F-4FFD-8919-D6A787139844}</ProjectGuid>
     <RootNamespace>PostGISSchemaMgr</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

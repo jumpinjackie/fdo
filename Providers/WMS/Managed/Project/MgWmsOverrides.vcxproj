@@ -22,7 +22,7 @@
     <ProjectName>OSGeo.FDO.Providers.WMS.Overrides</ProjectName>
     <ProjectGuid>{3A11B933-EE17-4076-AE14-262AC11D6906}</ProjectGuid>
     <RootNamespace>WmsOverrides</RootNamespace>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

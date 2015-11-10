@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>RdbmsMsg</ProjectName>
     <ProjectGuid>{9BF08D0E-CD3B-4687-86E2-6DB8270E94E9}</ProjectGuid>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <RootNamespace>fdordbmsmsg</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
