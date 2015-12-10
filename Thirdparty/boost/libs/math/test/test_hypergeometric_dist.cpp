@@ -147,7 +147,6 @@ void do_test_hypergeometric(const T& data, const char* type_name, const char* te
    (void)test_name;
 
 #if !defined(TEST_QUANT) || (TEST_QUANT == 0)
-   typedef typename T::value_type row_type;
    typedef Real                   value_type;
 
    typedef value_type (*pg)(value_type, value_type, value_type, value_type);
@@ -207,7 +206,6 @@ void do_test_hypergeometric(const T& data, const char* type_name, const char* te
 template <class Real, class T>
 void do_test_hypergeometric_quantile(const T& data, const char* type_name, const char* test_name)
 {
-   typedef typename T::value_type row_type;
    typedef Real                   value_type;
 
    std::cout << "Checking quantiles with " << test_name << " with type " << type_name
@@ -226,7 +224,7 @@ void do_test_hypergeometric_quantile(const T& data, const char* type_name, const
          value_type cp = data[i][5];
          value_type ccp = data[i][6];
          //
-         // A bit of warning supression:
+         // A bit of warning suppression:
          //
          (void)x;
          (void)n;
@@ -337,7 +335,7 @@ void test_spot(unsigned x, unsigned n, unsigned r, unsigned N,
                RealType p, RealType cp, RealType ccp, RealType tol)
 {
    //
-   // A bit of warning supression:
+   // A bit of warning suppression:
    //
    (void)x;
    (void)n;

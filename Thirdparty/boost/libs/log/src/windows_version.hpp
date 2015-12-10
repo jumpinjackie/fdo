@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -10,7 +10,7 @@
  * \date   07.03.2009
  *
  * \brief  This header is the Boost.Log library implementation, see the library documentation
- *         at http://www.boost.org/libs/log/doc/log.html.
+ *         at http://www.boost.org/doc/libs/release/libs/log/doc/html/index.html.
  */
 
 #ifndef BOOST_LOG_WINDOWS_VERSION_HPP_INCLUDED_
@@ -26,10 +26,13 @@
 #define _WIN32_WINNT 0x0600 // _WIN32_WINNT_LONGHORN
 #endif
 
-#else
+#elif !defined(_WIN32_WINNT)
 
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500 // _WIN32_WINNT_WIN2K
+// Use the default WinAPI version
+#include <boost/detail/winapi/config.hpp>
+
+#if !defined(_WIN32_WINNT)
+#define _WIN32_WINNT BOOST_USE_WINAPI_VERSION
 #endif
 
 #endif // BOOST_LOG_USE_WINNT6_API
