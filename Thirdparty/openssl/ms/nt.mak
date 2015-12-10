@@ -16,9 +16,9 @@ INSTALLTOP=\usr\local\ssl
 OPENSSLDIR=\usr\local\ssl
 
 # Set your compiler options
-PLATFORM=VC-WIN32
+PLATFORM=VC-WIN64A
 CC=cl
-CFLAG= /MT /Ox /O2 /Ob2 -DOPENSSL_THREADS  -DDSO_WIN32 -W3 -Gs0 -GF -Gy -nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -D_CRT_SECURE_NO_DEPRECATE -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_SSL3 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_JPAKE -DOPENSSL_NO_DYNAMIC_ENGINE    
+CFLAG= /MT /Ox -DOPENSSL_THREADS  -DDSO_WIN32 -W3 -Gs0 -Gy -nologo -DOPENSSL_SYSNAME_WIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN -DUNICODE -D_UNICODE -D_CRT_SECURE_NO_DEPRECATE -DOPENSSL_NO_RC5 -DOPENSSL_NO_MD2 -DOPENSSL_NO_SSL3 -DOPENSSL_NO_KRB5 -DOPENSSL_NO_JPAKE -DOPENSSL_NO_DYNAMIC_ENGINE    
 APP_CFLAG= /Zi /Fd$(TMP_D)/app
 LIB_CFLAG=/Zl /Zi /Fd$(TMP_D)/lib
 SHLIB_CFLAG=
@@ -50,7 +50,7 @@ RANLIB=
 MKDIR=$(PERL) util/mkdir-p.pl
 MKLIB=lib /nologo
 MLFLAGS=
-ASM=ml /nologo /Cp /coff /c /Cx /Zi
+ASM=ml64 /c /Cp /Cx /Zi
 
 # FIPS validated module and support file locations
 
@@ -1362,7 +1362,7 @@ $(OBJ_D)\mem_dbg.obj: $(SRC_D)\crypto\mem_dbg.c
 	$(CC) /Fo$(OBJ_D)\mem_dbg.obj  $(LIB_CFLAGS) -c $(SRC_D)\crypto\mem_dbg.c
 
 $(OBJ_D)\cversion.obj: $(SRC_D)\crypto\cversion.c
-	$(CC) /Fo$(OBJ_D)\cversion.obj  $(LIB_CFLAGS) -DMK1MF_BUILD -DMK1MF_PLATFORM_VC_WIN32 -c $(SRC_D)\crypto\cversion.c
+	$(CC) /Fo$(OBJ_D)\cversion.obj  $(LIB_CFLAGS) -DMK1MF_BUILD -DMK1MF_PLATFORM_VC_WIN64A -c $(SRC_D)\crypto\cversion.c
 
 $(OBJ_D)\ex_data.obj: $(SRC_D)\crypto\ex_data.c
 	$(CC) /Fo$(OBJ_D)\ex_data.obj  $(LIB_CFLAGS) -c $(SRC_D)\crypto\ex_data.c
