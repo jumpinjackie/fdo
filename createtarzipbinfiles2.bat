@@ -226,10 +226,10 @@ if "%FDOCOREENABLE%"=="no" goto start_zip_shp
    copy "%FDOROOT%\Bin\xerces-c_3_1.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\Xalan-C_1_11.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\XalanMessages_1_11.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_date_time-vc110-mt-1_54.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_thread-vc110-mt-1_54.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_system-vc110-mt-1_54.dll" %FDOZIPTEMP%\Bin\
-   copy "%FDOROOT%\Bin\boost_chrono-vc110-mt-1_54.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\boost_date_time-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\boost_thread-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\boost_system-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
+   copy "%FDOROOT%\Bin\boost_chrono-vc140-mt-1_59.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\gdal110.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOMessage.dll" %FDOZIPTEMP%\Bin\
    copy "%FDOROOT%\Bin\FDOCommon.dll" %FDOZIPTEMP%\Bin\
