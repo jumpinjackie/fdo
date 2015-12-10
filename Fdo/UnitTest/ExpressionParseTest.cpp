@@ -138,13 +138,8 @@ void ExpressionParseTest::testExpressions()
 	//ParseExpression(L"“a", L"a");
 	//ParseExpression(L"‘a", L"'a'");
 	ParseExpression(L"12345678901234567");
-#ifdef _WIN32
-	ParseExpression(L"123456789012345678901", 
-        L"1.23456789012346e+020");
-#else
 	ParseExpression(L"123456789012345678901", 
         L"1.23456789012346e+20");
-#endif
 	ParseExpression(L"1.2e13", 
         L"12000000000000");
 	ParseExpression(L"-2 --2 +2 ++2", 
@@ -177,11 +172,7 @@ void ExpressionParseTest::testExpressions()
 	ParseExpression(L"\"Pipes . state\"");
 	ParseExpression(L"\"%one two thre#EE\"");
 	ParseExpression(L"'%one two thre#EE'");
-#ifdef _WIN32
-    ParseExpression(L"2.3e400", L"1.#INF");
-#else
     ParseExpression(L"2.3e400", L"inf");
-#endif
 	ParseExpression(L"(2+3)*12");
 	ParseExpression(L"sqrt(144)+(12-32/12)", 
         L"sqrt(144)+12-32/12");

@@ -396,11 +396,13 @@ void FdoIoFileStream::InitFileStatus()
             FdoException::NLSGetMessage(FDO_NLSID(FDO_24_STREAMBADFP)));
 
 #ifdef _WIN32
-    struct _iobuf *bufP = mFp;
-
     // Figure out read/write capabilities
-    mbCanRead = (bufP->_flag & (_IOREAD|_IORW)) != 0;
-    mbCanWrite = (bufP->_flag & (_IOWRT|_IORW)) != 0;
+	// try with fstat.st_mode, 
+	//  which gives only the status of the file on the disc but not the real time opened mode
+	// This is different to the previous FILE property "_flag",
+	//  which is not available anymore since c++ v140
+	mbCanRead = (fileStat.st_mode & S_IREAD) != 0;
+	mbCanWrite = (fileStat.st_mode & S_IWRITE) != 0;
 
     //File is contextual only if it is a regular file.
     mbHasContext = ( (fileStat.st_mode & _S_IFREG) != 0 ); 
