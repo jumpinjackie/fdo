@@ -21,6 +21,7 @@
 
 #include <float.h>
 #include <memory.h>
+#include <algorithm>
 
 //Higly recommended to use 2D float bounding boxes
 //for the spatial index.

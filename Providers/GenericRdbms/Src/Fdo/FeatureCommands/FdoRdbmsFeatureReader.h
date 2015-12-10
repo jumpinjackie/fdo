@@ -125,7 +125,11 @@ public:
                 val->value = new wchar_t[val->len];
             }
         }
-        wcscpy(val->value, value );
+#ifdef _WIN32
+        wcscpy_s(val->value, val->len, value );
+#else
+		wcscpy(val->value, value);
+#endif
         colValue = val->value;
         return colValue;
     }

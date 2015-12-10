@@ -28,25 +28,25 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -106,11 +106,11 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm141 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm180 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\Common\Lib\Win32\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;$(FDOUTILITIES)\TestCommon\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -139,11 +139,11 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm153 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm180 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunitd.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\Common\Lib\Win64\Debug;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;$(FDOUTILITIES)\TestCommon\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -165,10 +165,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm132 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm180 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\Common\Lib\Win32\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win32;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;$(FDOUTILITIES)\TestCommon\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -189,10 +189,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Pch.h</PrecompiledHeaderFile>
       <DisableSpecificWarnings>4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalOptions>/Zm142 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Zm180 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;ODBCCP32.Lib;FDONLS.lib;Rdbi.lib;ODBCDriver.lib;cppunit.lib;FDO.lib;FDOCommon.lib;FDOGeometry.lib;gdbi.lib;geometry_fgf.lib;ProvidersCommon.lib;grdschemamgr.lib;rdbmsoverrides.lib;schemamgr_lpnew.lib;schemamgr_phnew.lib;schemamgrnew.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;OdbcSchemaMgr.lib;ODBCOverrides.lib;util.lib;FdoGeneric.lib;Advapi32.lib;User32.lib;TestCommon.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\Common\Lib\Win64\Release;$(FDOTHIRDPARTY)\cppunit\lib\Win64;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;$(FDOUTILITIES)\TestCommon\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>

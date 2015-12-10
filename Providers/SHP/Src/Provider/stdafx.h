@@ -21,7 +21,7 @@
 //defines that helps us use hash_map (and similar STL classes) in the same way 
 //under Linux and Windows.
 #ifdef WIN32
-#include <hash_map>
+#include <unordered_map>
 #include <functional>
 #else
 #include <ext/hash_map>

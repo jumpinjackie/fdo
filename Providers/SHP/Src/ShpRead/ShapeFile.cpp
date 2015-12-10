@@ -25,6 +25,7 @@
 #include "ShapeIndex.h"
 
 #include <limits>
+#include <algorithm>
 using namespace std;
 #undef min
 #undef max

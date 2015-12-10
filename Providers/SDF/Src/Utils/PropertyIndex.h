@@ -19,7 +19,6 @@
 //defines that helps us use hash_map in the same way 
 //under Linux and Windows.
 #ifdef WIN32
-#include <hash_map>
 #else
 #include <ext/hash_map>
 namespace stdext = ::__gnu_cxx;

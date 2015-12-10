@@ -19,6 +19,15 @@
 
 #include "TableReformatter.h"
 
+// Use different implementations of the hashmap for Windows and Linux
+// On Windows stdext::hash_map is depricated since VS 2015
+#ifdef _WIN32
+typedef std::unordered_map<void*, void*>		HASHMAP;
+#else
+typedef stdext::hash_map<void*, void*>			HASHMAP;
+#endif
+typedef HASHMAP::iterator						HASHMAP_ITER;
+
 class SdfConnection;
 
 class SdfSchemaMergeContext : public FdoSchemaMergeContext
@@ -80,9 +89,9 @@ private:
 
     SdfConnection* mSdfConnection;
 
-    stdext::hash_map<void*, void*> m_hDelRTrees;    
-    stdext::hash_map<void*, void*> m_hDelDataDbs;
-    stdext::hash_map<void*, void*> m_hDelKeyDbs;
+	HASHMAP m_hDelRTrees;
+	HASHMAP m_hDelDataDbs;
+	HASHMAP m_hDelKeyDbs;
 
     TableReformattersP mTableReformatters;
 };
