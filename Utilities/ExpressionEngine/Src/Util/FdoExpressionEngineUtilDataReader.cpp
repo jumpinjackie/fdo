@@ -63,7 +63,7 @@ public:
 
 
 #ifdef _WIN32
-typedef stdext::hash_map<FdoByteArray*, FdoByteArray*, my_hash_compare >                    HASHMAP;
+typedef std::unordered_map<FdoByteArray*, FdoByteArray*, my_hash_compare>                   HASHMAP;
 #else // _WIN32
 typedef stdext::hash_map<FdoByteArray*, FdoByteArray*, my_hash_compare, my_hash_compare >   HASHMAP;
 #endif // _WIN32
