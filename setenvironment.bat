@@ -30,13 +30,13 @@ if "%1" == "x86_ia64"  goto setvcvarsall
 goto usage
 
 :setvcvarsall
-rem VS 2012 will be default from now
-SET VCBEXTENSION=_vs12
-SET VC_COMPILER=vc110
-SET ACTIVENAMECHECK="Microsoft Visual Studio 11"
-SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 11.0\VC"
+rem VS 2015 will be default from now
+SET VCBEXTENSION=_vs15
+SET VC_COMPILER=vc140
+SET ACTIVENAMECHECK="Microsoft Visual Studio 15"
+SET ACTIVEPATHCHECK="C:\Program Files\Microsoft Visual Studio 14.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
-SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC"
+SET ACTIVEPATHCHECK="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC"
 if exist %ACTIVEPATHCHECK% goto VSExist
 
 goto error
@@ -146,7 +146,7 @@ echo where [option] is: x86 ^| x64 ^| ia64 ^| amd64 ^| x86_amd64 ^| x86_ia64 ^
 echo:
 echo For example:
 echo     %0 x64
-echo VS 2012 will be the default VC compiler
+echo VS 2015 will be the default VC compiler
 exit /B 1
 
 :end
