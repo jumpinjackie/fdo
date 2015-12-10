@@ -249,8 +249,12 @@ void FdoIoTest::testFileRead()
             bFailed = true;
             e->Release();
         }
+
+// Windows files are always readable!!
+#ifndef _WIN32
         if ( !bFailed ) 
-            CPPUNIT_FAIL( "Reading from write-only file should have failed." );
+			CPPUNIT_FAIL( "Reading from write-only file should have failed." );
+#endif
 
 
     }
@@ -310,10 +314,10 @@ void FdoIoTest::testFileWrite()
 // The exception message has no file information in release mode.That means there is no ')' in release mode .
 #ifdef _DEBUG
             FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' ) + 2;
-            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to unwritable stream. ") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to writable stream, only -1 bytes were written. ") == 0 );
 #else
 			FdoString* pMessage = e->GetExceptionMessage();
-            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to unwritable stream. ") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to writable stream, only -1 bytes were written. ") == 0 );
 #endif
 #endif
             bFailed = true;
@@ -357,10 +361,10 @@ void FdoIoTest::testFileWrite()
 // The exception message has no file information in release mode.That means there is no ')' in release mode .
 #ifdef _DEBUG
             FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' ) + 2;
-            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to unwritable stream. ") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to writable stream, only -1 bytes were written. ") == 0 );
 #else
 			FdoString* pMessage = e->GetExceptionMessage();
-            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to unwritable stream. ") == 0 );
+            FDO_CPPUNIT_ASSERT( wcscmp(pMessage, L"Cannot write 5 bytes to writable stream, only -1 bytes were written. ") == 0 );
 #endif
 #endif
             bFailed = true;
@@ -518,11 +522,22 @@ void FdoIoTest::testFileCapabilities()
 
         fileStream = FdoIoFileStream::Create( L"testFile.txt", L"r" );
         FDO_CPPUNIT_ASSERT( fileStream->CanRead() == true );
+#ifndef _WIN32
+// Since Windows VC140 API, it's not possible to get the readable/writable attribute from the FileHandle like the file was open
+// It uses the attributes from the file on disc.
+// In this case the file in Windows was open as readonly, but as long as the file is not really write protected one can write to the file
         FDO_CPPUNIT_ASSERT( fileStream->CanWrite() == false );
+#endif
         FDO_CPPUNIT_ASSERT( fileStream->HasContext() == true );
 
         fileStream = FdoIoFileStream::Create( L"testFileWrite.txt", L"w" );
+
+#ifndef _WIN32
+// Since Windows VC140 API, it's not possible to get the readable/writable attribute from the FileHandle like the file was open
+// It uses the attributes from the file on disc.
+// In this case the file was open in write only mode, but files are always readable on Windows.
         FDO_CPPUNIT_ASSERT( fileStream->CanRead() == false );
+#endif
         FDO_CPPUNIT_ASSERT( fileStream->CanWrite() == true );
         FDO_CPPUNIT_ASSERT( fileStream->HasContext() == true );
 
