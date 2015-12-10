@@ -29,22 +29,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -113,7 +113,7 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ODBCProvider.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Lib\Win32\Debug;$(FDO)\Unmanaged\Lib\Win32\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -154,7 +154,7 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>/fixed:no %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ODBCProvider.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Lib\Win64\Debug;$(FDO)\Unmanaged\Lib\Win64\Debug;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Debug;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -190,7 +190,7 @@
       <Command>if not exist ..\..\Lib\Win32\Release mkdir ..\..\Lib\Win32\Release</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ODBCProvider.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Lib\Win32\Release;$(FDO)\Unmanaged\Lib\Win32\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win32\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win32\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -233,7 +233,7 @@
       <Command>if not exist ..\..\Lib\Win64\Release mkdir ..\..\Lib\Win64\Release</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FdoGeneric.lib;Rdbi.lib;odbcDriver.lib;OdbcSchemaMgr.lib;odbc32.lib;FDO.lib;FDOGeometry.lib;FDOCommon.lib;FDOSpatial.lib;SchemaMgr_OVNew.lib;Advapi32.lib;ExpressionEngine.lib;geometry_fgf.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)ODBCProvider.dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\Lib\Win64\Release;$(FDO)\Unmanaged\Lib\Win64\Release;$(FDOUTILITIES)\SchemaMgr\Lib\Win64\Release;$(FDOUTILITIES)\ExpressionEngine\Lib\Win64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>

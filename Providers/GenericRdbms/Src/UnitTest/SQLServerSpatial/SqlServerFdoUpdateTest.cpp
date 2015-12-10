@@ -973,7 +973,8 @@ void SqlServerFdoUpdateTest::SelectGeogSpatialError( FdoPtr<FdoIConnection> conn
         FDO_SAFE_RELEASE(ex);
     }
 
-    CPPUNIT_ASSERT( !succeeded );
+	// SQL Server Spatial 2012 can use FdoSpatialOperations_Inside spatial operator in filter with geodetic coordinate system
+    CPPUNIT_ASSERT( succeeded );
 
 }
 

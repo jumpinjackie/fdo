@@ -20,6 +20,7 @@
 #define SLTSTRINGUTIL_H
 
 #include "SltConversionUtils.h"
+#include <algorithm>
 
 //Maintains a list of strings, using minimal number of memory allocations.
 //Used to build up SQL query strings.

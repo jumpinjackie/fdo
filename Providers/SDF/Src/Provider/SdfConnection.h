@@ -25,6 +25,15 @@
 #include "SdfSchemaMergeContext.h"
 #include <FdoCommonThreadMutex.h>
 
+// Use different implementations of the hashmap for Windows and Linux
+// On Windows stdext::hash_map is depricated since VS 2015
+#ifdef _WIN32
+typedef std::unordered_map<void*, void*>		HASHMAP;
+#else
+typedef stdext::hash_map<void*, void*>	HASHMAP;
+#endif
+typedef HASHMAP::iterator				HASHMAP_ITER;
+
 //forward declare
 class SdfConnectionInfo;
 class PropertyIndex;
@@ -230,10 +239,10 @@ private:
     //hash_map is non-standard so they haven't bothered implementing
     //it for pointers -- see beginning of this file for implementation
     //of hash for void*
-    stdext::hash_map<void*, void*> m_hRTrees;    
-    stdext::hash_map<void*, void*> m_hPropertyIndices;
-    stdext::hash_map<void*, void*> m_hDataDbs;
-    stdext::hash_map<void*, void*> m_hKeyDbs;
+	HASHMAP m_hRTrees;
+	HASHMAP m_hPropertyIndices;
+	HASHMAP m_hDataDbs;
+	HASHMAP m_hKeyDbs;
 
 	static bool m_bInitFunctions;
 	void InitFunctions();

@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <process.h>
 #include <Inc/debugext.h>
+#include <FdoLimits.h>		// Replacement for limits.h, which does not contains PATH_MAX in c++ v140
+
 
 static  int      Strace_line = 0;
 
@@ -51,7 +53,6 @@ static void output_message(
     double child_utime,
     double child_stime
     );
-
 
 int debug_trace(
     char    *msg,
