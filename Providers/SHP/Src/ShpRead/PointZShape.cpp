@@ -23,7 +23,7 @@
 
 PointZShape::PointZShape (int nRecordNumber, void* pMemory, bool bOverlay, BoundingBoxEx *box, bool has_m) :
     PointMShape (nRecordNumber, pMemory, bOverlay, (char*)pMemory + superclass::GetSize (), box),
-    mZData ((char*)pMemory + superclass::superclass::GetSize ()),
+    mZData ((char*)pMemory + PointShape::GetSize ()),
     mHasM (has_m)
 {
     if (!bOverlay)
