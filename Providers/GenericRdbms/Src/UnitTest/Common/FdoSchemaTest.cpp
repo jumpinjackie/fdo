@@ -335,7 +335,7 @@ void FdoSchemaTest::OverrideXmlAllTest()
 		UnitTestUtil::CheckOutput( "SchemaOverrideAll2_master.txt", UnitTestUtil::GetOutputFileName( L"SchemaOverrideAll2.xml" ) );
 
         // Test Navigating through the RDBMS API.
-        FdoRdbmsOvSchemaMappingP mapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem( L"Autodesk.Oracle.4.0", L"Acad " );
+        FdoRdbmsOvSchemaMappingP mapping = (FdoRdbmsOvPhysicalSchemaMapping*) mappings->GetItem( L"Autodesk.Oracle.4.1", L"Acad " );
     	CPPUNIT_ASSERT( mapping != NULL );
         FdoRdbmsOvReadOnlyClassesP classes = mapping->GetClasses();
         CPPUNIT_ASSERT( classes->GetCount() == 2 );

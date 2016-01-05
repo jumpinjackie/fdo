@@ -1,6 +1,6 @@
 #!/bin/bash
 REVISION=`svn info .. | perl revnum.pl`
-FDOBUILD=4.0.0
+FDOBUILD=4.1.0
 FDOINST=/usr/local/fdo-${FDOBUILD}
 
 verifylib()

@@ -109,7 +109,7 @@
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -753,7 +753,7 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -1486,7 +1486,7 @@ PROJCS["Equal-Area Projection (Australia)", GEOGCS [ "WGS 84", DATUM ["WGS 84", 
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -1620,7 +1620,7 @@ PROJCS["Quebec MTM Zone 4 (NAD 83)", GEOGCS ["NAD 83 (Continental US)", DATUM ["
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -1687,7 +1687,7 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -1754,7 +1754,7 @@ PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD
 <gml:srsName>
 UTM Zone 4 (NAD 27 for Alaska)</gml:srsName>
 <fdo:WKT>
-PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
+PROJCS["UTM Zone 4 (NAD 27 for Alaska)", GEOGCS [ "NAD 27 (Alaska)", DATUM ["NAD 27 (Alaska)", SPHEROID ["Clarke 1866", 6378206.4.1, 294.9786982]], PRIMEM [ "Greenwich", 0.000000 ], UNIT ["Decimal Degree", 0.01745329251994330]], PROJECTION ["Transverse Mercator"], PARAMETER ["Scale_Factor", 0.999600], PARAMETER ["Central_Meridian", -159.000000], PARAMETER ["False_Easting", 500000.000000], UNIT ["Meter", 1.000000000000]]</fdo:WKT>
 </fdo:WKTCRS>
 </gml:baseCRS>
 </xs:element>
@@ -2120,7 +2120,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </xs:complexContent>
 </xs:complexType>
 </xs:schema>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.0" name="Schema_GH">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.1.0" name="Schema_GH">
 <complexType name="TABLE5Type">
 <Table pkeyName="PK_GH_TABLE5" name="GH_TABLE5"/>
 <element name="ID">
@@ -2263,7 +2263,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.0" name="Schema_AB">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.1.0" name="Schema_AB">
 <complexType name="TABLE1Type">
 <Table pkeyName="PK_AB_TABLE1" name="AB_TABLE1"/>
 <element name="ID">
@@ -2355,7 +2355,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.0" name="Schema_CD">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.1.0" name="Schema_CD">
 <complexType name="CD_TABLE1Type">
 <Table pkeyName="PK_CD_TABLE1" name="CD_TABLE1"/>
 <element name="ID">
@@ -2426,7 +2426,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.0" name="Schema_EF">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" provider="Autodesk.Oracle.4.1.0" name="Schema_EF">
 <complexType name="TABLE1Type">
 <Table pkeyName="PK_EF_TABLE1" name="EF_TABLE1"/>
 <element name="ID">
@@ -2467,7 +2467,7 @@ GEOGCS [ "Longitude / Latitude (NAD 83) Datum 33", DATUM ["GRS 80", SPHEROID ["G
 </element>
 </complexType>
 </SchemaMapping>
-<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" owner="(user)_SCHEMA_MGR_F" provider="Autodesk.Oracle.4.0" name="Schema_KL">
+<SchemaMapping xmlns="http://www.autodesk.com/isd/fdo/OracleProvider" xmlns:rdb="http://fdordbms.osgeo.org/schemas" owner="(user)_SCHEMA_MGR_F" provider="Autodesk.Oracle.4.1.0" name="Schema_KL">
 <complexType name="KL_TABLE1Type">
 <Table pkeyName="PK_KL_TABLE1" name="KL_TABLE1"/>
 <element name="ID">
