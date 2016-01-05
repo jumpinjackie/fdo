@@ -170,7 +170,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -214,7 +214,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug91Only|Win32'">
@@ -255,7 +255,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release91Only|Win32'">
@@ -299,7 +299,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug92Only|Win32'">
@@ -340,7 +340,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release92Only|Win32'">
@@ -384,7 +384,7 @@
     </Link>
     <PostBuildEvent>
       <Message>Versioning ArcSDEProvider91.dll</Message>
-      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.0.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
+      <Command>$(FDOTHIRDPARTY)\util\stampver\StampVer.exe -v"..\..\SubDoc\Providers.version" -f"4.1.0.0%PROVIDERS_VERSION%" $(OutDir)ArcSDEProvider91.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -22,4 +22,4 @@
 
 static SqlServerConnectionUtil pSqlServerConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pSqlServerConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.SQLServerSpatial.4.0";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.SQLServerSpatial.4.1";
