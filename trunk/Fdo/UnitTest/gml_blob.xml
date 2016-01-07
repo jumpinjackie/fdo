@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<wfs:FeatureCollection   xmlns:bsc="http://www.bsc-eoc.org/bsc"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:NAME>Digges Sound</bsc:NAME>
+        <bsc:binData>QW4gaW5mZXN0YXRpb24gb2YgbG9jdXN0cyB0aGF0IGRlY2ltYXRl
+ZCBjcm9wcywgdGhlIHdvcnN0IGRyb3VnaHQgaW4gMTUgeWVhcnMsIGFuZCBOaWdlc
+idzIGdvdmVybm1lbnQga2VlcGluZyBncmFpbiBwcmljZXMgdG9vIGhpZ2ggZm9yIH
+RvbyBsb25nIGhhdmUgbm93IGNhdXNlZCBhIHJlZ2lvbiBpbiB0aGUgYnJpbmsgb2Y
+gYSBjcmlzaXMu</bsc:binData>
+      </bsc:IBA>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:NAME>Cape Searle</bsc:NAME>
+        <bsc:binData>SXQgd2FzIGEgY3Jpc2lzLWluLXRoZS1tYWtpbmcgdGhhdCBzaG91b
+GQgaGF2ZSBiZWVuIGF2ZXJ0ZWQsIHNheXMgTWFyayBNYWxsb2NoIEJyb3duLCBjaGl
+lZiBvZiBzdGFmZiB0byB0aGUgVS5OLiBzZWNyZXRhcnktZ2VuZXJhbC4gIldoYXQga
+XMgaGFwcGVuaW5nIHdhcyBsYXJnZWx5IGZvcmVzZWVhYmxlIGFzIGVhcmx5IGFzIE5
+vdmVtYmVyLCIgaGUgc2F5cy4=</bsc:binData>
+      </bsc:IBA>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+

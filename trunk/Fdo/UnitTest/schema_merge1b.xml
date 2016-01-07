@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:fdo="http://fdo.osgeo.org/schemas">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/_x32--x20-Reference-x20-Schema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:_x32--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x32--x20-Reference-x20-Schema" xmlns:_x31--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x31--x20-Reference-x20-Schema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType name="Object-x20-Property-x20-Class" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="Prop-x20-1" type="xs:double">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:element name="Reference-x20-NewClass" type="_x32--x20-Reference-x20-Schema:Reference-x20-NewClass" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-NewClassKey">
+<xs:selector xpath=".//Reference-x20-NewClass"/>
+<xs:field xpath="NewProp-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-NewClass" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="_x31--x20-Reference-x20-Schema:Reference-x20-Class">
+<xs:sequence>
+<xs:element name="Prop-x20-2" type="fdo:int64">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Object-x20-Property-x20-2" type="_x31--x20-Reference-x20-Schema:Object-x20-Property-x20-Class" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/_x31--x20-Reference-x20-Schema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:_x31--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x31--x20-Reference-x20-Schema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="Reference-x20-Class" type="_x31--x20-Reference-x20-Schema:Reference-x20-Class" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-ClassKey">
+<xs:selector xpath=".//Reference-x20-Class"/>
+<xs:field xpath="NewProp-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-Class" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="gml:AbstractFeatureType">
+<xs:sequence>
+<xs:element name="NewProp-x20-1" type="fdo:int64">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/_x33--x20-Reference-x20-Schema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:_x33--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x33--x20-Reference-x20-Schema" xmlns:_x32--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x32--x20-Reference-x20-Schema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="Reference-x20-Class" type="_x33--x20-Reference-x20-Schema:Reference-x20-Class" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-ClassKey">
+<xs:selector xpath=".//Reference-x20-Class"/>
+<xs:field xpath="NewProp-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-Class" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="_x32--x20-Reference-x20-Schema:Reference-x20-NewClass">
+<xs:sequence>
+<xs:element name="Prop-x20-3" type="fdo:int64">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Object-x20-Property-x20-3" type="_x32--x20-Reference-x20-Schema:Object-x20-Property-x20-Class" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="Prop-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/_x35--x20-Reference-x20-Schema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:_x35--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x35--x20-Reference-x20-Schema" xmlns:_x34--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x34--x20-Reference-x20-Schema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:element name="Reference-x20-NewClass" type="_x35--x20-Reference-x20-Schema:Reference-x20-NewClass" abstract="false" substitutionGroup="gml:_Feature">
+<xs:key name="Reference-x20-NewClassKey">
+<xs:selector xpath=".//Reference-x20-NewClass"/>
+<xs:field xpath="NewProp-x20-1"/>
+</xs:key>
+</xs:element>
+<xs:complexType name="Reference-x20-NewClass" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexContent>
+<xs:extension base="_x34--x20-Reference-x20-Schema:Reference-x20-Class">
+<xs:sequence>
+<xs:element name="Prop-x20-5" type="fdo:int64">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+<xs:element name="Object-x20-Property-x20-5" type="_x34--x20-Reference-x20-Schema:Object-x20-Property-x20-NewClass" minOccurs="0" maxOccurs="unbounded" fdo:identityProperty="NewProp-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+</xs:element>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/_x34--x20-Reference-x20-Schema" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:_x34--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x34--x20-Reference-x20-Schema" xmlns:_x33--x20-Reference-x20-Schema="http://fdo.osgeo.org/schemas/feature/_x33--x20-Reference-x20-Schema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:complexType name="Object-x20-Property-x20-NewClass" abstract="false">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:sequence>
+<xs:element name="NewProp-x20-1">
+<xs:annotation>
+<xs:documentation/>
+</xs:annotation>
+<xs:simpleType>
+<xs:restriction base="xs:decimal">
+<xs:totalDigits value="10"/>
+<xs:fractionDigits value="2"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</DataStore>
+

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS gml:id="SC_0">
+<gml:srsName>
+SC_0</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+100000.000000 1000000.000000</gml:pos>
+<gml:pos>
+200000.000000 1100000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://www.nexturl.com/crs/#Quebec-x20-MTM-x20-Zone-x20-8-x20--x28-NAD83-x29-"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Subway-x20-Map">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:SCExtentType>
+dynamic</fdo:SCExtentType>
+<fdo:XYTolerance>
+0.100000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.010000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+Diagram of subway stops</gml:remarks>
+<gml:srsName>
+Subway Map</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+15000.000000 10000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS>
+<fdo:WKTCRS gml:id="Non-Earth-x20--x28-Meter-x29-">
+<gml:srsName>
+Non-Earth (Meter)</gml:srsName>
+<fdo:WKT>
+LOCAL_CS [ &quot;Non-Earth (Meter)&quot;, LOCAL_DATUM [&quot;Local Datum&quot;, 0], UNIT [&quot;Meter&quot;, 1.0], AXIS [&quot;X&quot;, EAST], AXIS[&quot;Y&quot;, NORTH]]</fdo:WKT>
+</fdo:WKTCRS>
+</gml:baseCRS>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+<gml:DerivedCRS gml:id="Default-x20-Rectangular">
+<gml:srsName>
+Default Rectangular</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+1000.000000 1000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://fdo.osgeo.org/crs#default_cartesian"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+</fdo:DataStore>

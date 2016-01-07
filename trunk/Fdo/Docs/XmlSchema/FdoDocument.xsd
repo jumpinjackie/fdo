@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://fdo.osgeo.org/schemas" targetNamespace="http://fdo.osgeo.org/schemas" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="XmlSchema/XmlSchema.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/coordinateReferenceSystems.xsd"/>
+	<xs:import namespace="http://www.opengis.net/gml" schemaLocation="Gml/feature.xsd"/>
+	<xs:include schemaLocation="FDOOverride.xsd"/>
+	<!-- 
+	     FDO XML document format. An FDO XML document can contain a mixture of Feature Schemas ( in GML Schema form ),
+	     Schema Override sets, and Spatial Contexts.
+	-->
+	<xs:element name="DataStore" type="DataStoreType" substitutionGroup="AbstractDataStore">
+		<xs:annotation>
+			<xs:documentation>Root element for documents containing multiple Feature Schemas or Schema Overrides.</xs:documentation>
+			<xs:documentation>Documents containing a single Feature Schema are proper XML Schemas and have xs:schema as their root instead of DataStore.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="DataStoreType">
+		<xs:complexContent>
+			<xs:extension base="AbstractDataStoreType">
+				<xs:choice maxOccurs="unbounded">
+					<xs:element ref="xs:schema">
+						<xs:annotation>
+							<xs:documentation>An embedded GML 3.0 Schema</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="PhysicalSchemaMapping">
+						<xs:annotation>
+							<xs:documentation>A Schema Override set.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="gml:DerivedCRS">
+						<xs:annotation>
+							<xs:documentation>A Spatial Context definition.</xs:documentation>
+							<xs:documentation>An FDO Spatial Context is serialized as a GML Coordinate Reference System</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element ref="gml:_FeatureCollection">
+						<xs:annotation>
+							<xs:documentation>A collection of FDO Features</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,12 @@
+Name=Autodesk.Oracle.3.2
+Service=r10103.amer.ads.autodesk.com
+Username=t_camed
+Password=test
+Datastore=ogc980461
+SchemaDefFileName=OGC98046r1.schema
+SchemaInsertFileName=OGC98046r1.insert
+SchemaDeleteFileName=OGC98046r1.delete
+GeneratedXmlSchemaFileName=oracleFeatureSchemaCollection.xml
+EditedXmlSchemaName=OGC980461FS
+EditedXmlSchemaFileName=Ogc98046FeatureSchema.xsd
+
