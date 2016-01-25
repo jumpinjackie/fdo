@@ -50,7 +50,7 @@
 #include <algorithm>
 
 #ifdef _WIN32
-#include <unordered_map>
+#include <map>
 #else
 #include <ext/hash_map>
 namespace stdext = ::__gnu_cxx;

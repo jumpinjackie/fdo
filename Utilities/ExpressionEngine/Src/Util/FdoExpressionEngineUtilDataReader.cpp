@@ -62,8 +62,12 @@ public:
 };
 
 
+// use different implementations for Windows and Linux
+// With Windows VS 2015 stdext::hash_map is not supported anymore
+// Use std::map over std::unordered_map (like recommended) as inserting duplicated FdoByteArrays as key is not working as expected
+//  duplicated keys can be inserted. std:map works as expected. Important for the method "PerformDistinct()" from below.
 #ifdef _WIN32
-typedef std::unordered_map<FdoByteArray*, FdoByteArray*, my_hash_compare>                   HASHMAP;
+typedef std::map<FdoByteArray*, FdoByteArray*, my_hash_compare>								HASHMAP;
 #else // _WIN32
 typedef stdext::hash_map<FdoByteArray*, FdoByteArray*, my_hash_compare, my_hash_compare >   HASHMAP;
 #endif // _WIN32
