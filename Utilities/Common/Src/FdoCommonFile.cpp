@@ -889,8 +889,12 @@ void FdoCommonFile::GetAllFiles (const wchar_t* path, FdoStringCollection* files
     if (-1L != (handle = _wfindfirst (pattern, &file )))
     {
         do 
-            if (0 != file.size)
-                files->Add (file.name);
+			if (!(file.attrib & _A_SUBDIR))
+			{
+				// It's not a subdir so add to the list
+				// Even when the file size is 0 
+				files->Add(file.name);
+			}
         while (0 == _wfindnext (handle, &file));
         _findclose (handle);
     }
