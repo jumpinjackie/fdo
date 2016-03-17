@@ -77,7 +77,10 @@ FdoStringP FdoOwsRequest::EncodeKVP()
     serviceParam += m_service;
 	if (!m_url.Lower().Contains(serviceParam.Lower()))
 	{
-		ret += FdoOwsGlobals::And;
+		if (ret.GetLength() != 0)
+		{
+			ret += FdoOwsGlobals::And;
+		}
 		ret += serviceParam;		
 	}	
     
@@ -86,7 +89,10 @@ FdoStringP FdoOwsRequest::EncodeKVP()
     requestParam += m_request;
 	if (!m_url.Lower().Contains(requestParam.Lower()))
 	{
-		ret += FdoOwsGlobals::And;
+		if (ret.GetLength() != 0)
+		{
+			ret += FdoOwsGlobals::And;
+		}
 		ret += requestParam;
 	}
 
