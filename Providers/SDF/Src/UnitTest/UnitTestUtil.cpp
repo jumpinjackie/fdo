@@ -268,6 +268,10 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
 
                 case 2: // end state
                     // print rest of message
+					if (FdoStringP(pMessage).GetLength() > 0 && FdoStringP(pMessage).Mid(0, 1) == L" ")
+					{
+						pMessage += 1; // remove prefix blank character
+					}
                     fprintf( fp, "%ls\n", pMessage );
                     done = true;
                     break;
@@ -275,6 +279,10 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                 case 3: // found '( ... .cpp ... )'
                     // Get part to the left of '( ... .cpp ... )' and print it
                     subStr = FdoStringP(pMessage).Mid(0, nextPos - pMessage);
+					if (subStr.GetLength() > 0 && subStr.Mid(0, 1) == L" ")
+					{
+						subStr = subStr.Mid(1, subStr.GetLength() - 1); // remove prefix blank character
+					}
                     fprintf( fp, "%ls", (FdoString*) subStr );
 
                     // Move current ptr to right of '( ... .cpp ... )'
@@ -295,6 +303,10 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
 #endif
         }
         else {
+			if (FdoStringP(pMessage).GetLength() > 0 && FdoStringP(pMessage).Mid(0, 1) == L" ")
+			{
+				pMessage += 1; // remove prefix blank character
+			}
             fprintf( fp, "%ls\n", pMessage );
         }
 
