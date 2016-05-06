@@ -774,8 +774,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
     FdoPtr<FdoIdentifierCollection> ids;
     FdoPtr<FdoExpression> expr;
     FdoPtr<FdoComputedIdentifier> cid;
-    int count;
-    FdoPtr<FdoIConnection> conn = FDO_SAFE_ADDREF(mConnection.p);
+    int count;    
 
     try
     {
@@ -784,7 +783,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
         FdoString *schemaName = L"MySchema";
         create_schema(schemaName, className, FdoGeometricType_Curve, false, false, true);
 
-        FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(conn->CreateCommand(FdoCommandType_SelectAggregates));
+        FdoPtr<FdoISelectAggregates> advsel = (FdoISelectAggregates*)(mConnection->CreateCommand(FdoCommandType_SelectAggregates));
 
         advsel->SetFeatureClassName(L"MyClass");
         
@@ -921,13 +920,19 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
         // Create new empty SHP file :
         ////////////////////////////////////////////////////////////////////////////////////
 
+		mConnection->Close();
+		FDO_SAFE_RELEASE(mConnection.p);
+		mConnection = ShpTests::GetConnection();
+		mConnection->SetConnectionString(L"DefaultFileLocation=" LOCATION);
+		CPPUNIT_ASSERT_MESSAGE("connection state not open", FdoConnectionState_Open == mConnection->Open());
+
         create_schema(schemaName, className, FdoGeometricType_Curve, false, false, false);
 
 
         // Test the optimized case (no filter, no rows of data):
         ////////////////////////////////////////////////////////////////////////////////////
 
-        selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+        selAggr = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
         selAggr->SetFeatureClassName(L"MyClass");
         ids = selAggr->GetPropertyNames();
 
@@ -955,7 +960,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
         clock_t finish;
         FdoPtr<FdoIFeatureReader> featRdr;
 
-        FdoPtr<FdoIInsert> ins = (FdoIInsert*)conn->CreateCommand(FdoCommandType_Insert);
+        FdoPtr<FdoIInsert> ins = (FdoIInsert*)mConnection->CreateCommand(FdoCommandType_Insert);
         ins->SetFeatureClassName(L"MyClass");
         FdoPtr<FdoPropertyValueCollection> propVals = ins->GetPropertyValues();
         FdoPtr<FdoFgfGeometryFactory> fgf = FdoFgfGeometryFactory::GetInstance();
@@ -977,7 +982,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
         // Test the optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
         ////////////////////////////////////////////////////////////////////////////////////
 
-        selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+        selAggr = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
         selAggr->SetFeatureClassName(L"MyClass");
         ids = selAggr->GetPropertyNames();
 
@@ -1004,7 +1009,7 @@ void SelectAggregatesTests::selectAggregatesSpatialExtentsTest()
         // Test the non-optimized case for performance (no filter, PERF_TEST_NUM_ROWS rows of data):
         ////////////////////////////////////////////////////////////////////////////////////
 
-        selAggr = (FdoISelectAggregates*)conn->CreateCommand(FdoCommandType_SelectAggregates);
+        selAggr = (FdoISelectAggregates*)mConnection->CreateCommand(FdoCommandType_SelectAggregates);
         selAggr->SetFeatureClassName(L"MyClass");
         selAggr->SetFilter(L"FeatId > -1");
         ids = selAggr->GetPropertyNames();
