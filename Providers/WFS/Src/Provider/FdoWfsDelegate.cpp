@@ -151,7 +151,7 @@ FdoIFeatureReader* FdoWfsDelegate::GetFeature(FdoFeatureSchemaCollection* schema
 
 FdoIoStream* FdoWfsDelegate::preProcessStream(FdoIoStream *stream, FdoWfsCancelExecutationHander handler, void* handleData)
 {
-	FdoIoFileStreamP tempStream= FdoIoFileStream::Create( L"temp_stream.xml", L"w+" );
+	FdoIoMemoryStreamP tempStream = FdoIoMemoryStream::Create();
 	
 	FdoByte buffer[4096];
 	bool bCanceled = false;
