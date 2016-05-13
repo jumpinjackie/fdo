@@ -22,7 +22,7 @@
     <ProjectGuid>{E6D26911-DC22-4031-A247-93282AF16A99}</ProjectGuid>
     <RootNamespace>MgOdbcOverrides</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ProjectName>OSGeo.FDO.Providers.ODBC.Overrides</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

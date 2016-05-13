@@ -22,7 +22,7 @@
     <ProjectGuid>{F160F339-08CD-495A-A6F1-805AB54E679E}</ProjectGuid>
     <RootNamespace>SQLServerSpatialOverrides</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

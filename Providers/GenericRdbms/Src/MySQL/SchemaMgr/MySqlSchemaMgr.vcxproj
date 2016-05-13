@@ -22,7 +22,7 @@
     <ProjectGuid>{C4BAD553-2752-4D33-8505-8332781E27E0}</ProjectGuid>
     <RootNamespace>MySqlSchemaMgr</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

@@ -22,7 +22,7 @@
     <ProjectGuid>{DFC59C58-1267-42A0-A8EE-4E4FC19040B7}</ProjectGuid>
     <RootNamespace>MySql</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ProjectName>MySQLProvider</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

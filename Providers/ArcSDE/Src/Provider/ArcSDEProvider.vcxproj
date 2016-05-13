@@ -54,7 +54,7 @@
     <ProjectName>ArcSDEProvider</ProjectName>
     <ProjectGuid>{6C04EF62-A3C2-4C4C-9BAB-30BE6AFC5762}</ProjectGuid>
     <RootNamespace>ArcSDEProvider</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

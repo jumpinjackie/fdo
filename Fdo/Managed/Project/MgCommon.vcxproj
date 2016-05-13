@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ABE63099-2E2A-4DE7-888B-95BCC247E8EE}</ProjectGuid>
     <RootNamespace>MgCommon</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <ProjectName>OSGeo.FDO.Common</ProjectName>
   </PropertyGroup>
