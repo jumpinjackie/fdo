@@ -30,7 +30,7 @@
     <ProjectName>ProvidersCommon</ProjectName>
     <ProjectGuid>{9037A345-04EB-418C-98D0-3D5B19FC9D55}</ProjectGuid>
     <RootNamespace>FdoCommon</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>

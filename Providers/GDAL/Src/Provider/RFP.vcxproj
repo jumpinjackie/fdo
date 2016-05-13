@@ -22,7 +22,7 @@
     <ProjectName>GRFPProvider</ProjectName>
     <ProjectGuid>{29B27872-1EF9-4E49-A0FA-E8F75076D8D2}</ProjectGuid>
     <RootNamespace>RFPProvider</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

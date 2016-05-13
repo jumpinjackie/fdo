@@ -22,7 +22,7 @@
     <ProjectGuid>{C7C93492-5656-42D9-A576-67C1CA628AF5}</ProjectGuid>
     <RootNamespace>PostGISOverrides</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <ProjectName>PostgreSQLOverrides</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

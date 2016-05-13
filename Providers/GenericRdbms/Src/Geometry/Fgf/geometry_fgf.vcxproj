@@ -22,7 +22,7 @@
     <ProjectName>geometry_fgf</ProjectName>
     <ProjectGuid>{29CDD5C2-B733-4B6A-B92A-FD3DCD0D57B5}</ProjectGuid>
     <RootNamespace>geometry_fgf_lib</RootNamespace>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
