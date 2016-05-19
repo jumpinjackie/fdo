@@ -122,7 +122,7 @@ namespace Fdo_Test
 			ParseExpression("\"Pipes . state\"");
 			ParseExpression("\"%one two thre#EE\"");
 			ParseExpression("'%one two thre#EE'");	
-			ParseExpression("2.3e400", "1.#INF");
+			ParseExpression("2.3e400", "inf");
 			ParseExpression("(2+3)*12");
 			ParseExpression("sqrt(144)+(12-32/12)", "sqrt(144)+12-32/12");			
 			ParseExpression("( Width*Height ) AS Area");
