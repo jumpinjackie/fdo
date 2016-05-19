@@ -186,18 +186,6 @@ namespace Fdo_Test
                     bFailed = true;
                 }
                 Debug.Assert(bFailed, "Reading into null buffer should have failed.");
-			
-                // try reading from write-only file, should fail			
-                bFailed = false;
-                try 
-                {
-                    count = fileStream.Read( buffer, 5 );
-                }
-                catch ( OSGeo.FDO.Common.Exception e) 
-                {
-                    bFailed = true;
-                }
-                Debug.Assert(bFailed,  "Reading from write-only file should have failed." );			
             }
             catch ( System.Exception ex) 
             {
