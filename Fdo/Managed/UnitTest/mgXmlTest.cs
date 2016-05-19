@@ -265,27 +265,27 @@ namespace Fdo_Test
                          
                 name1 = " Abc#defg$$";
                 name2 = writer.EncodeName(name1);
-                Debug.Assert( name2 == "-x20-Abc-x23-defg-x24--x24-" );
+                Debug.Assert( name2 == "_x20-Abc-x23-defg-x24--x24-");
                 Debug.Assert( name1 == reader.DecodeName(name2) );
                                 
                 name1 = " Abc#defg hij";
                 name2 = writer.EncodeName(name1);
-                Debug.Assert( name2 == "-x20-Abc-x23-defg-x20-hij" );
+                Debug.Assert( name2 == "_x20-Abc-x23-defg-x20-hij");
                 Debug.Assert( name1 == reader.DecodeName(name2) );
                                 
                 name1 = "--abc-def---ghi--";
                 name2 = writer.EncodeName(name1);
-                Debug.Assert( name2 == "--abc-def---ghi--" );
+                Debug.Assert( name2 == "_x2d--abc-def---ghi--");
                 Debug.Assert( name1 == reader.DecodeName(name2) );
                                 
                 name1 = "--abc-x20-def-x23--x24-ghi--";
                 name2 = writer.EncodeName(name1);
-                Debug.Assert( name2 == "--abc-x2d-x20-def-x2d-x23--x2d-x24-ghi--" );
+                Debug.Assert( name2 == "_x2d--abc-x2d-x20-def-x2d-x23--x2d-x24-ghi--");
                 Debug.Assert( name1 == reader.DecodeName(name2) );
                         
                 name1 = "-xab";
                 name2 = writer.EncodeName(name1);
-                Debug.Assert( name2 == "-x2d-xab" );
+                Debug.Assert( name2 == "_x2d-xab");
                 Debug.Assert( name1 == reader.DecodeName(name2) );
             }
             catch (OSGeo.FDO.Common.Exception)
