@@ -130,7 +130,6 @@ namespace Fdo_Test
                         IoTest.testFileOpen();
                         IoTest.testFileRead();
                         IoTest.testFileWrite();
-                        IoTest.testFileCapabilities();
                         IoTest.testMemoryStream();
                         //IoTest.testLargeFile();  //fail also in unmanaged code
 

@@ -288,48 +288,7 @@ namespace Fdo_Test
             //Console.WriteLine("finish mgIoTest.testFileWrite");
             
         }     
-			
-        public void testFileCapabilities()
-        {
-            Console.WriteLine("start mgIoTest.testFileCapabilities");
-
-            try 
-            {
-                IoFileStream fileStream;
- 
-                fileStream = new IoFileStream("c:\\testFile.txt", "r" );
-                Debug.Assert( fileStream.CanRead == true );
-                Debug.Assert( fileStream.CanWrite == false );
-                Debug.Assert( fileStream.HasContext == true );
-        
-                fileStream = new IoFileStream( "c:\\testFileWrite.txt", "w" );
-                Debug.Assert( fileStream.CanRead == false );
-                Debug.Assert( fileStream.CanWrite == true );
-                Debug.Assert( fileStream.HasContext == true );
-        
-                fileStream = new IoFileStream( "c:\\testFile.txt", "r+" );
-                Debug.Assert( fileStream.CanRead == true );
-                Debug.Assert( fileStream.CanWrite == true );
-                Debug.Assert( fileStream.HasContext == true );
-        
-                fileStream = new IoFileStream( "c:\\testFile.txt", "w+" );
-                Debug.Assert( fileStream.CanRead == true );
-                Debug.Assert( fileStream.CanWrite == true );
-                Debug.Assert( fileStream.HasContext == true );        
-            }
-            catch ( OSGeo.FDO.Common.Exception e ) 
-            {
-                Debug.Assert(false, e.Message);
-            }
-            catch(System.Exception e)
-            {
-                Debug.Assert(false, e.Message);
-            }
-                                           	
-            //Console.WriteLine("finish mgIoTest.testFileCapabilities");
-            
-        }
-        
+		
         public void testMemoryStream()
         {
             Console.WriteLine("start mgIoTest.testMemoryStream");
