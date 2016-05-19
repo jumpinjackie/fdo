@@ -44,7 +44,8 @@ namespace Fdo_Test
                 IoMemoryStream stream = new IoMemoryStream();
                 IoMemoryStream stream2 = new IoMemoryStream();
 
-                XmlSpatialContextWriter writer = new XmlSpatialContextWriter( new XmlWriter(stream) );        
+                XmlWriter xmlWriter = new XmlWriter(stream);
+                XmlSpatialContextWriter writer = new XmlSpatialContextWriter( xmlWriter );        
 
                 // Try to write nameless spatial context (should fail)
                 bool bFailed = false;
@@ -92,7 +93,8 @@ namespace Fdo_Test
                 writer.ExtentType = SpatialContextExtentType.SpatialContextExtentType_Dynamic;
                 writer.XYTolerance = 0.1;
                 writer.ZTolerance = 0.01;
-                writer.WriteSpatialContext();        
+                writer.WriteSpatialContext();
+                xmlWriter.Close();     
                 writer.Dispose();
                 stream.Reset();
                 stream2.Reset();
@@ -117,7 +119,8 @@ namespace Fdo_Test
 
                 // This next test writes an XML document with a single spatial context.
 
-                writer = new XmlSpatialContextWriter( new XmlWriter(stream), new XmlSpatialContextFlags("www.ttc.ca" ));
+                xmlWriter = new XmlWriter(stream);
+                writer = new XmlSpatialContextWriter(xmlWriter , new XmlSpatialContextFlags("www.ttc.ca" ));
 
                 writer.Name = "Subway Map";
                 writer.Description ="Diagram of subway stops";
@@ -129,6 +132,8 @@ namespace Fdo_Test
                 writer.ZTolerance = 0.01;
 
                 writer.WriteSpatialContext();
+
+                xmlWriter.Close();
                 writer = null;
 
                 stream.Reset();
