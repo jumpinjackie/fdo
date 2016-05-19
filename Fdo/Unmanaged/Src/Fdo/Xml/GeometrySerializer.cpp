@@ -144,6 +144,9 @@ void FdoGML212GeometrySerializer::SerializeGeometry(FdoIGeometry* geometry, FdoX
         break;
 
     case FdoGeometryType_CurveString:
+        SerializeCurveString((FdoICurveString*)geometry, writer, transform);
+        break;
+
     case FdoGeometryType_CurvePolygon:
     case FdoGeometryType_MultiCurveString:
     case FdoGeometryType_MultiCurvePolygon:
@@ -244,7 +247,33 @@ void FdoGML212GeometrySerializer::SerializeLinearRing(FdoILinearRing* linearRing
 
 void FdoGML212GeometrySerializer::SerializeCurveString(FdoICurveString* curveString, FdoXmlWriter* writer, FdoCoordinateSystemTransform *transform)
 {
-    throw FdoException::Create(L"Unsupported geometry types");
+    writer->WriteStartElement(L"gml:LineString");
+    writer->WriteStartElement(L"gml:coordinates");
+
+    FdoInt32 cnt = curveString->GetCount();
+    // The coordinates are separated by a blank(" ").
+    if (cnt > 0)
+    {
+        FdoPtr<FdoICurveSegmentAbstract> curve = curveString->GetItem(0);
+        FdoPtr<FdoIDirectPosition> startPos = curve->GetStartPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(startPos, transform));
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoIDirectPosition> endPos = curve->GetEndPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(endPos, transform));
+    }
+    for (FdoInt32 i=1; i<cnt; i++)
+    {
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoICurveSegmentAbstract> curve = curveString->GetItem(i);
+        FdoPtr<FdoIDirectPosition> startPos = curve->GetStartPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(startPos, transform));
+        writer->WriteCharacters(L" ");
+        FdoPtr<FdoIDirectPosition> endPos = curve->GetEndPosition();
+        writer->WriteCharacters(GetDirectPositionCoordinates(endPos, transform));		
+    }
+
+    writer->WriteEndElement();
+    writer->WriteEndElement();
 }
 
 void FdoGML212GeometrySerializer::SerializePolygon(FdoIPolygon* polygon, FdoXmlWriter* writer, FdoString* srsName, FdoCoordinateSystemTransform *transform)
