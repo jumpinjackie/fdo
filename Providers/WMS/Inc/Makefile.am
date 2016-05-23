@@ -24,6 +24,7 @@ EXTRA_DIST = \
    WMS/IGetFeatureClassStyles.h \
    WMS/IGetImageFormats.h \
    WMS/IGetFeatureInfo.h \
+   WMS/IGetFeatureInfoFormats.h \
    WMS/Override/FdoWmsOvClassCollection.h \
    WMS/Override/FdoWmsOvClassDefinition.h \
    WMS/Override/FdoWmsOvFormatType.h \

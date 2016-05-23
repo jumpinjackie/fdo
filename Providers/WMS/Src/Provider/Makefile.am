@@ -65,6 +65,7 @@ libWMSProviderSrc_la_SOURCES = \
   FdoWmsGetFeatureClassStyles.cpp \
   FdoWmsGetImageFormats.cpp \
   FdoWmsGetFeatureInfo.cpp \
+  FdoWmsGetFeatureInfoFormats.cpp \
   FdoWmsGetFeatureInfoRequest.cpp 
 
 noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
@@ -121,6 +122,7 @@ noinst_HEADERS = $(libWMSProviderSrc_la_SOURCES) \
   FdoWmsGetFeatureClassStyles.h \
   FdoWmsGetImageFormats.h \
   FdoWmsGetFeatureInfo.h \
+  FdoWmsGetFeatureInfoFormats.h \
   FdoWmsGetFeatureInfoRequest.h 
 
 libWMSProviderSrc_la_LDFLAGS =
