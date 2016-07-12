@@ -87,6 +87,7 @@ namespace FdoWfsGlobals
     static FdoString* WFS                               = L"WFS";
     static FdoString* WfsVersion                        = L"1.0.0";
     static FdoString* WfsVersion110                     = L"1.1.0";
+	static FdoString* WfsVersion200						= L"2.0.0";
 
     static FdoString* DescribeFeatureType               = L"DescribeFeatureType";
     static FdoString* GetFeature                        = L"GetFeature";

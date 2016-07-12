@@ -49,6 +49,35 @@
 #include "Gml311/units3.h"
 #include "Gml311/valueObjects3.h"
 
+#include "Gml321/feature321.h"
+#include "Gml321/basicTypes321.h"
+#include "Gml321/coordinateOperations321.h"
+#include "Gml321/coordinateReferenceSystems321.h"
+#include "Gml321/coordinateSystems321.h"
+#include "Gml321/coverage321.h"
+#include "Gml321/datums321.h"
+#include "Gml321/deprecatedTypes321.h"
+#include "Gml321/dictionary321.h"
+#include "Gml321/direction321.h"
+#include "Gml321/dynamicFeature321.h"
+#include "Gml321/geometryAggregates321.h"
+#include "Gml321/geometryBasic0d1d321.h"
+#include "Gml321/geometryBasic2d321.h"
+#include "Gml321/geometryComplexes321.h"
+#include "Gml321/geometryPrimitives321.h"
+#include "Gml321/gml321.h"
+#include "Gml321/gmlBase321.h"
+#include "Gml321/grids321.h"
+#include "Gml321/measures321.h"
+#include "Gml321/observation321.h"
+#include "Gml321/referenceSystems321.h"
+#include "Gml321/temporal321.h"
+#include "Gml321/temporalReferenceSystems321.h"
+#include "Gml321/temporalTopology321.h"
+#include "Gml321/topology321.h"
+#include "Gml321/units321.h"
+#include "Gml321/valueObjects321.h"
+
 FdoWfsSchemaMerger::FdoWfsSchemaMerger()
 {
     m_FeatureLoaded = false;
@@ -69,7 +98,7 @@ FdoWfsSchemaMerger::FdoWfsSchemaMerger(FdoString* version)
     m_copier = NULL;
 	m_version = version;
 	
-	// add the GML3 basic schemas
+	// add the GML3.1.1 basic schemas
 	if (wcscmp(m_version,FdoWfsGlobals::WfsVersion110) == 0)
 	{
 		m_Gml311[L"feature.xsd"] = (char**)feature3;
@@ -95,6 +124,37 @@ FdoWfsSchemaMerger::FdoWfsSchemaMerger(FdoString* version)
 		m_Gml311[L"units.xsd"] = (char**)units3;
 		m_Gml311[L"valueObjects.xsd"] = (char**)valueObjects3;
 	}
+	else if (wcscmp(m_version, FdoWfsGlobals::WfsVersion200) == 0) // add the GML3.2.1 basic schemas
+	{
+		m_Gml321[L"feature.xsd"] = (char**)feature321;
+		m_Gml321[L"basicTypes.xsd"] = (char**)basicTypes321;
+		m_Gml321[L"coordinateOperations.xsd"] = (char**)coordinateOperations321;
+		m_Gml321[L"coordinateReferenceSystems.xsd"] = (char**)coordinateReferenceSystems321;
+		m_Gml321[L"coordinateSystems.xsd"] = (char**)coordinateSystems321;
+		m_Gml321[L"coverage.xsd"] = (char**)coverage321;
+		m_Gml321[L"datums.xsd"] = (char**)datums321;
+		m_Gml321[L"deprecatedTypes.xsd"] = (char**)deprecatedTypes321;
+		m_Gml321[L"dictionary.xsd"] = (char**)dictionary321;
+		m_Gml321[L"direction.xsd"] = (char**)direction321;
+		m_Gml321[L"dynamicFeature.xsd"] = (char**)dynamicFeature321;
+		m_Gml321[L"geometryAggregates.xsd"] = (char**)geometryAggregates321;
+		m_Gml321[L"geometryBasic0d1d.xsd"] = (char**)geometryBasic0d1d321;
+		m_Gml321[L"geometryBasic2d.xsd"] = (char**)geometryBasic2d321;
+		m_Gml321[L"geometryComplexes.xsd"] = (char**)geometryComplexes321;
+		m_Gml321[L"geometryPrimitives.xsd"] = (char**)geometryPrimitives321;
+		m_Gml321[L"gml.xsd"] = (char**)gml321;
+		m_Gml321[L"gmlBase.xsd"] = (char**)gmlBase321;
+		m_Gml321[L"grids.xsd"] = (char**)grids321;
+		m_Gml321[L"measures.xsd"] = (char**)measures321;
+		m_Gml321[L"observation.xsd"] = (char**)observation321;
+		m_Gml321[L"referenceSystems.xsd"] = (char**)referenceSystems321;
+		m_Gml321[L"temporal.xsd"] = (char**)temporal321;
+		m_Gml321[L"temporalReferenceSystems.xsd"] = (char**)temporalReferenceSystems321;
+		m_Gml321[L"temporalTopology.xsd"] = (char**)temporalTopology321;
+		m_Gml321[L"topology.xsd"] = (char**)topology321;
+		m_Gml321[L"units.xsd"] = (char**)units321;
+		m_Gml321[L"valueObjects.xsd"] = (char**)valueObjects321;
+	}
 }
 
 
@@ -102,6 +162,8 @@ FdoWfsSchemaMerger::~FdoWfsSchemaMerger()
 {
 	if (!m_Gml311.empty())
 		m_Gml311.clear();
+	if (!m_Gml321.empty())
+		m_Gml321.clear();
 }
 
 FdoIoStream* FdoWfsSchemaMerger::MergeSchema(FdoIoStream* schema, FdoString* schemaLocation, FdoString* uri)
@@ -201,6 +263,22 @@ void FdoWfsSchemaMerger::_mergeSchema(FdoIoStream* schema, FdoString* schemaLoca
 						FdoStringP name = this->_getXSDName(fullLocation);
 						std::map<FdoStringP,char** >::iterator iter = m_Gml311.find(name);
 						if(iter != m_Gml311.end())
+							xmlSchema = iter->second;
+					}
+				}
+				else if (wcscmp(m_version, FdoWfsGlobals::WfsVersion200) == 0) //2.0.0 version, use GML 3.2.1
+				{
+					// don't need to merge the unneeded parts
+					if (fullLocation.Contains(L"dynamicFeature.xsd") || fullLocation.Contains(L"coverage.xsd") ||
+						fullLocation.Contains(L"xml.xsd") || fullLocation.Contains(L"xlink.xsd") || 
+						fullLocation.Contains(L"gmd.xsd"))
+						continue;
+					else // found in the m_Gml321 map
+					{
+						//get the xsd name
+						FdoStringP name = this->_getXSDName(fullLocation);
+						std::map<FdoStringP, char** >::iterator iter = m_Gml321.find(name);
+						if (iter != m_Gml321.end())
 							xmlSchema = iter->second;
 					}
 				}

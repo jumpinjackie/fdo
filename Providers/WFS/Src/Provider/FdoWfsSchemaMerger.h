@@ -37,6 +37,7 @@ private:
     bool m_XlinksLoaded;
 	FdoStringP m_version;
 	std::map<FdoStringP,char** > m_Gml311;
+	std::map<FdoStringP,char** > m_Gml321;
 
 public:
     FdoWfsSchemaMerger();
