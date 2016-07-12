@@ -200,9 +200,9 @@ static const char* coordinateSystems321[] = {
 	"		</sequence>",
 	"		<attributeGroup ref=\"gml:AssociationAttributeGroup\"/>",
 	"	</complexType>",
-	/*"	<element name=\"LinearCS\" type=\"gml:LinearCSType\" substitutionGroup=\"gml:AbstractCoordinateSystem\">",
+	"	<element name=\"LinearCS\" type=\"gml:LinearCSType\" substitutionGroup=\"gml:AbstractCoordinateSystem\">",
 	"		<annotation>",
-	"			<documentation>gml:LinearCS is a one-dimensional coordinate system that consists of the points that lie on the single axis described. The associated coordinate is the distance – with or without offset – from the specified datum to the point along the axis. A LinearCS shall have one gml:axis property element.</documentation>",
+	"			<documentation>gml:LinearCS is a one-dimensional coordinate system that consists of the points that lie on the single axis described. The associated coordinate is the distance with or without offset from the specified datum to the point along the axis. A LinearCS shall have one gml:axis property element.</documentation>",
 	"		</annotation>",
 	"	</element>",
 	"	<complexType name=\"LinearCSType\">",
@@ -313,7 +313,7 @@ static const char* coordinateSystems321[] = {
 	"			<element ref=\"gml:AffineCS\"/>",
 	"		</sequence>",
 	"		<attributeGroup ref=\"gml:AssociationAttributeGroup\"/>",
-	"	</complexType>",*/
+	"	</complexType>",
 	"</schema>",
 	NULL
 };
