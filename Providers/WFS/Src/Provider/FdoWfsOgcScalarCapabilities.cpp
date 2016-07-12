@@ -63,7 +63,7 @@ FdoXmlSaxHandler* FdoWfsOgcScalarCapabilities::XmlStartElement(
                     myContext->SetStateScalar_Capabilities(1);
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::Arithmetic_Operators) == 0)
                     myContext->SetStateScalar_Capabilities(2);
-                // For WFS 1.1
+                // For WFS 1.1 and 2.0.0
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::LogicalOperators) == 0)
                     m_logicalOperators = true;
                 else if (FdoCommonOSUtil::wcsicmp(name, FdoWfsGlobals::ComparisonOperators) == 0)
