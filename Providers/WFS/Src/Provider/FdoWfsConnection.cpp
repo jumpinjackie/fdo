@@ -352,7 +352,10 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
             FdoPtr<FdoXmlSchemaMapping> mapping = static_cast<FdoXmlSchemaMapping*>(mappings->GetItem(FdoXml::mGmlProviderName, schema->GetName()));
             
             // Doing #1
-            if (wcscmp(schema->GetName(), FdoWfsGlobals::GMLSchemaName) == 0 ||
+			//WFS 2.0.0 geometry property's class parent is gml, for example http://hazards.fema.gov/gis/nfhl/services/public/NFHL/MapServer/WFSServer?version=2.0.0&service=WFS&REQUEST=DescribeFeatureType
+			//<ElementMapping name="SHAPE" gmlLocalName="SHAPE" classSchema="gml" className="MultiSurfaceProperty"/>
+			//<ObjectProperty name = "SHAPE" classSchema = "gml" class = "MultiSurfaceProperty" objectType = "value" / >
+            if ((wcscmp(version, FdoWfsGlobals::WfsVersion200) != 0 && wcscmp(schema->GetName(), FdoWfsGlobals::GMLSchemaName) == 0) ||
                 wcscmp(schema->GetName(), FdoWfsGlobals::XLinkSchemaName) == 0)
             {
                 // remove schema from schema collection and from schema mapping
@@ -503,7 +506,10 @@ FdoFeatureSchemaCollection* FdoWfsConnection::GetSchemas()
                                 }
                             }
                             // in case no property found or the parent is from gml schema remove the property (gml schema was removed)
-                            if (objPropsCount == 0 || (pObjParent != NULL && wcscmp(pObjParent->GetName(), FdoWfsGlobals::GMLSchemaName) == 0))
+							//WFS 2.0.0 geometry property's class parent is gml, for example http://hazards.fema.gov/gis/nfhl/services/public/NFHL/MapServer/WFSServer?version=2.0.0&service=WFS&REQUEST=DescribeFeatureType
+							//<ElementMapping name="SHAPE" gmlLocalName="SHAPE" classSchema="gml" className="MultiSurfaceProperty"/>
+							//<ObjectProperty name = "SHAPE" classSchema = "gml" class = "MultiSurfaceProperty" objectType = "value" / >							
+                            if (objPropsCount == 0 || (wcscmp(version, FdoWfsGlobals::WfsVersion200) != 0 && pObjParent != NULL && wcscmp(pObjParent->GetName(), FdoWfsGlobals::GMLSchemaName) == 0))
                             {
                                 for (int m = elements->GetCount() - 1; m >= 0; m--)
                                 {
