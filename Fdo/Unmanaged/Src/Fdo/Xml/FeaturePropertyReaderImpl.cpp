@@ -600,7 +600,7 @@ bool FdoXmlFeaturePropertyReaderImpl::isTypeOf(FdoString* elementName, FdoString
                 FdoPtr<FdoXmlLpClassDefinition> classDef = element->GetClassDefinition();
                 if (classDef != NULL) {
                     FdoPtr<FdoXmlClassMapping> classMapping = classDef->GetClassMapping();
-                    if (classMapping != NULL && wcscmp(classMapping->GetWkBaseName(), type) == 0) 
+                    if (classMapping != NULL && (wcscmp(classMapping->GetWkBaseName(), type) == 0 || wcscmp(classMapping->GetWkBaseName(), L"") == 0/*WFS 2.0.0 WkBaseName is empty*/))
                         rv = true;
                 }
             }
@@ -621,7 +621,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
             {
                 // first check the predefined elements
                 // then find in the schema mappings
-                if ((wcscmp(elementUri, L"http://www.opengis.net/wfs") == 0 &&
+                if (((wcscmp(elementUri, L"http://www.opengis.net/wfs") == 0 || wcscmp(elementUri, L"http://www.opengis.net/wfs/2.0") == 0) &&
                     wcscmp(elementName, L"FeatureCollection") == 0) ||
                     isTypeOf(elementName, elementUri, FdoGml212::mAbstractFeatureCollection, false))
                     rv = GmlBaseType_FeatureCollection;
@@ -630,12 +630,12 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
         case ParsingState_FeatureCollection:
             {
                 // similar as above
-                if ((wcscmp(elementUri, FdoXml::mGmlUri) == 0 
-                     && (wcscmp(elementName, L"featureMember") == 0 || wcscmp(elementName, L"featureMembers") == 0))
-                    || isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation, false))
+                if (((wcscmp(elementUri, FdoXml::mGmlUri) == 0 || wcscmp(elementUri, FdoXml::mGmlUri32) == 0)
+                     && (wcscmp(elementName, L"featureMember") == 0 || wcscmp(elementName, L"featureMembers") == 0 || wcscmp(elementName, L"member") == 0))
+                    || (wcscmp(elementName, L"boundedBy") != 0 && isTypeOf(elementName, elementUri, FdoGml212::mFeatureAssociation, false)))
                     rv = GmlBaseType_FeatureAssociation;
-                else if (wcscmp(elementUri, FdoXml::mGmlUri) == 0 &&
-                    wcscmp(elementName, L"boundedBy") == 0)
+                else if ((wcscmp(elementUri, FdoXml::mGmlUri) == 0)
+					&& wcscmp(elementName, L"boundedBy") == 0)
                     rv = GmlBaseType_BoundingShape;
 
                 break;
@@ -656,7 +656,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
         case ParsingState_GenericComplexType:
             {
                 // first try gml well known properties
-                if (wcscmp(elementUri, FdoXml::mGmlUri) == 0) {
+                if (wcscmp(elementUri, FdoXml::mGmlUri) == 0 || wcscmp(elementUri, FdoXml::mGmlUri32) == 0) {
                     m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_Unknown;
                     if (wcscmp(elementName, L"boundedBy") == 0)
                     {

@@ -36,12 +36,14 @@ public:
 	FDO_API_COMMON static const FdoStringP mXlinkUri;		// "http://www.w3.org/1999/xlink"
 	FDO_API_COMMON static const FdoStringP mGmlNs;			// "gml"
 	FDO_API_COMMON static const FdoStringP mGmlUri;		// "http://www.opengis.net/gml"
+	FDO_API_COMMON static const FdoStringP mGmlUri32;	// "http://www.opengis.net/gml/3.2"
 	FDO_API_COMMON static const FdoStringP mFdoNs;			// "fdo"
 	FDO_API_COMMON static const FdoStringP mFdoUri;		// "http://fdo.osgeo.org/schemas"
 	FDO_API_COMMON static const FdoStringP mFdsNs;			// "fds"
 	FDO_API_COMMON static const FdoStringP mFdsUri;		// "http://fdo.osgeo.org/schemas/fds"
 	FDO_API_COMMON static const FdoStringP mWfsNs;			// "wfs"
 	FDO_API_COMMON static const FdoStringP mWfsUri;		// "http://www.opengis.net/wfs"
+	FDO_API_COMMON static const FdoStringP mWfsUri20;	// "http://www.opengis.net/wfs/2.0"
 
     /// default FDO XML document root element.
 
@@ -55,6 +57,7 @@ public:
 
     FDO_API_COMMON static const FdoStringP mFeatureCollectionName;     // "FeatureCollection"
     FDO_API_COMMON static const FdoStringP mFeatureMemberName;         // "featureMember" 
+	FDO_API_COMMON static const FdoStringP mFeatureMemberName20;       // "member" 
 };
 
 #endif

@@ -179,7 +179,7 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
     // Given the current state, find the transition for the current element.
     // The first element must be gml:DerivedCRS.
     //
-    if ( (mState != 0) || (wcscmp( uri, FdoXml::mGmlUri)) == 0 ) {
+    if ( (mState != 0) || (wcscmp( uri, FdoXml::mGmlUri) == 0 || wcscmp(uri, FdoXml::mGmlUri32) == 0)) {
         for ( i = 0; parseStates[i].currentState != -3; i++ ) {
             if ( (parseStates[i].currentState == mState) &&
                 (parseStates[i].isStart == isStart) &&
@@ -351,6 +351,10 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
     case 2:
         // Get the gml:id
         attr = atts->FindItem( FdoXml::mGmlUri + L":id" );
+		if (!attr)
+		{
+			attr = atts->FindItem(FdoXml::mGmlUri32 + L":id");
+		}
 
         if ( attr ) {
             mID = DecodeName( attr->GetValue(), reader );
@@ -726,6 +730,10 @@ FdoXmlSaxHandler* FdoXmlSCReadHandler::doTransition(
 
         // Get the gml:id
         attr = atts->FindItem( FdoXml::mGmlUri + L":id" );
+		if (!attr)		
+		{
+			attr = atts->FindItem(FdoXml::mGmlUri32 + L":id");
+		}
 
         if ( attr ) {
             mCsysID = DecodeName( attr->GetValue(), reader );

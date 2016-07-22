@@ -27,12 +27,14 @@ const FdoStringP FdoXml::mXlinkNs(	 L"xlink", true );
 const FdoStringP FdoXml::mXlinkUri(	 L"http://www.w3.org/1999/xlink", true );
 const FdoStringP FdoXml::mGmlNs(	 L"gml", true ); 
 const FdoStringP FdoXml::mGmlUri(	 L"http://www.opengis.net/gml", true );
+const FdoStringP FdoXml::mGmlUri32(	 L"http://www.opengis.net/gml/3.2", true);
 const FdoStringP FdoXml::mFdoNs(	 L"fdo", true );
 const FdoStringP FdoXml::mFdoUri(	 L"http://fdo.osgeo.org/schemas", true );
 const FdoStringP FdoXml::mFdsNs(	 L"fds", true );
 const FdoStringP FdoXml::mFdsUri(	 L"http://fdo.osgeo.org/schemas/fds", true );
 const FdoStringP FdoXml::mWfsNs(	 L"wfs", true );
 const FdoStringP FdoXml::mWfsUri(	 L"http://www.opengis.net/wfs", true );
+const FdoStringP FdoXml::mWfsUri20(	 L"http://www.opengis.net/wfs/2.0", true);
  
 const FdoStringP FdoXml::mDefaultRoot(L"fdo:DataStore", true);
 
@@ -40,4 +42,5 @@ const FdoStringP FdoXml::mGmlProviderName( L"OSGeo.GML.1.0", true );
 
 const FdoStringP FdoXml::mFeatureCollectionName(L"FeatureCollection", true);
 const FdoStringP FdoXml::mFeatureMemberName(L"featureMember", true);
+const FdoStringP FdoXml::mFeatureMemberName20(L"member", true);
 
