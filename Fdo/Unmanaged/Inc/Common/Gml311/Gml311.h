@@ -41,6 +41,7 @@ public:
 	FDO_API_COMMON static const FdoStringP mCurveArrayProperty;
 	FDO_API_COMMON static const FdoStringP mSurfaceArrayProperty;
 
+	FDO_API_COMMON static const FdoStringP mMultiCurveProperty;
 };
 
 #endif
