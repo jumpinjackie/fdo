@@ -26,3 +26,4 @@ const FdoStringP FdoGml311::mPointArrayProperty(L"PointArrayProperty", true );
 const FdoStringP FdoGml311::mCurveArrayProperty(L"CurveArrayProperty", true );
 const FdoStringP FdoGml311::mSurfaceArrayProperty(L"SurfaceArrayProperty", true );
 
+const FdoStringP FdoGml311::mMultiCurveProperty(L"MultiCurveProperty", true);

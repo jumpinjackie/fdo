@@ -745,7 +745,7 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                         m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiPoint;
                         rv = GmlBaseType_GmlDirectGeometry;
                     }
-                    else if (wcscmp(elementName, L"MultiLineString") == 0)
+                    else if (wcscmp(elementName, L"MultiLineString") == 0 || wcscmp(elementName, L"MultiCurve") == 0)
                     {
                         m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiLineString;
                         rv = GmlBaseType_GmlDirectGeometry;
@@ -813,7 +813,8 @@ FdoXmlFeaturePropertyReaderImpl::GmlBaseType FdoXmlFeaturePropertyReaderImpl::ge
                                     rv = GmlBaseType_GeometryAssociation;
                                 }
                                 else if (wcscmp(wkBaseName, FdoGml212::mMultiLineStringProperty) == 0 ||
-									wcscmp(wkBaseName,FdoGml311::mCurveArrayProperty) == 0)
+									wcscmp(wkBaseName,FdoGml311::mCurveArrayProperty) == 0 ||
+									wcscmp(wkBaseName, FdoGml311::mMultiCurveProperty) == 0)
                                 {
                                     m_activeGmlGeometryType = FdoXmlGeometryHandler::GmlGeometryType_MultiLineString;
                                     rv = GmlBaseType_GeometryAssociation;
