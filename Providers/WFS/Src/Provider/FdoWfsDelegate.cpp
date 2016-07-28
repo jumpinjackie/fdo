@@ -68,6 +68,30 @@ FdoFeatureSchemaCollection* FdoWfsDelegate::DescribeFeatureType(FdoStringCollect
     // now we should merge stream and all its referenced schema
 	FdoWfsSchemaMerger merger(version);
     stream = merger.MergeSchema(stream, GetUrl(), L"");
+
+	// WFS 2.0.0 uses xmlns:gml="http://www.opengis.net/gml/3.2", causing style sheet transform fail to recognize geometry types.
+	// Solution is to replace by xmlns:gml="http://www.opengis.net/gml".
+	if (wcscmp(version, FdoWfsGlobals::WfsVersion200) == 0)
+	{
+		FdoStringP text = L"";		
+		FdoByte buffer[4097];
+		const int readSize = sizeof(buffer) / sizeof(FdoByte) - 1;
+		do
+		{
+			FdoSize cntRead = stream->Read(buffer, readSize);
+			if (cntRead == 0)
+				break;		
+			buffer[cntRead] = '\0';
+			text += FdoStringP((const char*)buffer);			
+		} while (true);
+		text = text.Replace(L"/gml/3.2", L"/gml");
+		FdoPtr<FdoIoMemoryStream> tempStream = FdoIoMemoryStream::Create();
+		tempStream->Write((FdoByte*)(const char*)text, strlen((const char*)text));
+		stream->Reset();
+		tempStream->Reset();
+		stream = tempStream;
+	}
+
     FdoPtr<FdoFeatureSchemaCollection> schemas = FdoFeatureSchemaCollection::Create(NULL);
     FdoPtr<FdoXmlFlags> flags = FdoXmlFlags::Create(FdoWfsGlobals::fdo_customer, FdoXmlFlags::ErrorLevel_VeryLow);
     flags->SetSchemaNameAsPrefix(true);
