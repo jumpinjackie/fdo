@@ -1,0 +1,25 @@
+/*! \page page1 CHM Usage Notes
+The CHM has been created from .NET managed C++ header files using doxygen.
+\section interfaces Interface Classes
+\par
+In general an interface class name is prefixed by a capital I and does not end with 'Imp'. Those classes whose names are prefixed with a capital I and end with 'Imp' inherit from the interface class with the related name. For example, OSGeo::FDO::Commands::Locking::IAcquireLock is the name of an interface class, and OSGeo::FDO::Commands::Locking::IAcquireLockImp is the name of an implementation class which inherits from IAcquireLock.
+\par
+In the table of contents click Modules, click Interfaces and then click Classes to see the list of all of the interface classes.
+\par
+In the table of contents click Modules, click a namespace node and then click Interfaces to see the list of interfaces belonging to that namespace.
+\note
+To see the description of the interface class methods click on the inherited by link and on the page describing the implementation class scroll to the bottom.
+\section impclasses Implementation Classes
+\par
+Click on 'Class List' to see the list of implementation classes.
+\note
+You will also see the interface classes there as well.
+\section enums Enumerations
+\par
+In the table of contents click Modules, click Enums and click Enumerations to see the list of all of the enumerations.
+\par
+In the table of contents click Modules, click a namespace node and then click Enumerations to see the list of enumerations belonging to that namespace.
+\section namespaces Namespaces
+\par
+Click 'Namespace List' to see the list of namespaces and then click a namespace name to see a list of classes and interfaces contained in that namespace.
+*/
