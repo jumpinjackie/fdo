@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<fdo:DataStore xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:fds="http://fdo.osgeo.org/schemas/fds">
+<gml:DerivedCRS gml:id="Subway-x20-Map">
+<gml:metaDataProperty>
+<gml:GenericMetaData>
+<fdo:SCExtentType>
+dynamic</fdo:SCExtentType>
+<fdo:XYTolerance>
+0.100000</fdo:XYTolerance>
+<fdo:ZTolerance>
+0.010000</fdo:ZTolerance>
+</gml:GenericMetaData>
+</gml:metaDataProperty>
+<gml:remarks>
+Diagram of subway stops</gml:remarks>
+<gml:srsName>
+Subway Map</gml:srsName>
+<gml:validArea>
+<gml:boundingBox>
+<gml:pos>
+0.000000 0.000000</gml:pos>
+<gml:pos>
+15000.000000 10000.000000</gml:pos>
+</gml:boundingBox>
+</gml:validArea>
+<gml:baseCRS xlink:href="http://www.nexturl.com/crs/#Non-Earth-x20--x28-Meter-x29-"/>
+<gml:definedByConversion xlink:href="http://fdo.osgeo.org/coord_conversions#identity"/>
+<gml:derivedCRSType codeSpace="http://fdo.osgeo.org/crs_types">
+geographic</gml:derivedCRSType>
+<gml:usesCS xlink:href="http://fdo.osgeo.org/cs#default_cartesian"/>
+</gml:DerivedCRS>
+</fdo:DataStore>
