@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Sample configuration file for Raster File Provider DataStore that contains satellite photos -->
+<DataStore xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://fdo.osgeo.org/schemas" xsi:schemaLocation="http://fdo.osgeo.org/schemas
+ FdoDocument.xsd">
+	<!-- spatial context for an area of interest -->
+	<gml:DerivedCRS gml:id="area1">
+		<!-- remarks contain spatial context description -->
+		<gml:remarks>Spatial context for Area 1</gml:remarks>
+		<!-- srsName contains spatial context name -->
+		<gml:srsName>area1</gml:srsName>
+		<!-- BaseCRS defines the coordinate system name, which is "utm_zone1" in this case. 
+		     The CRS is assumed to be a well-known CRS and this file does not define it -->
+		<gml:validArea>
+			<!-- GML allows polygon areas but only rectangular areas valid for FDO 
+			     Spatial Context extents -->
+			<gml:boundingBox>
+				<gml:pos>200000 1000000</gml:pos>
+				<gml:pos>300000 1100000</gml:pos>
+			</gml:boundingBox>
+		</gml:validArea>
+		<gml:baseCRS xlink:href="http://www.mysurvey.com/coord_ref_systems#utm_zone1" />
+		<!-- DefinedByConversion defines the coordinate conversion from the base CRS to this CRS.
+		     This would always be an identity transformation since Spatial Contexts don't define any
+		-->
+		<gml:definedByConversion xlink:href="http://www.mysurvey.com/coord_conversions#identity" />
+		<!-- ValidArea defines the spatial context extents. -->
+		<gml:derivedCRSType codeSpace="todo">geographic</gml:derivedCRSType>
+		<!-- UsesCS defines the Coordinate System for this Coordinate Reference system. For FDO, this 
+		  would be the same as the Coordinate System for the BaseCRS. 
+		-->
+		<gml:usesCS xlink:href="http://www.mysurvey.com/coord_systems#default" />
+	</gml:DerivedCRS>
+	<!-- Photo Feature Schema -->
+	<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://fdo.osgeo.org/schemas/feature/photos" xmlns:fdo="http://fdo.osgeo.org/schemas" xmlns:photos="http://fdo.osgeo.org/schemas/feature/photos" elementFormDefault="qualified" attributeFormDefault="unqualified">
+		<!-- Only one class (Photo). The following element specifies the identityProperties -->
+		<xs:element name="Photo" type="photos:PhotoType" abstract="false" substitutionGroup="gml:_Feature">
+			<xs:key name="PhotoKey">
+				<xs:selector xpath=".//Photo" />
+				<xs:field xpath="Id" />
+			</xs:key>
+		</xs:element>
+		<!-- Photo class definition -->
+		<xs:complexType name="PhotoType" abstract="false">
+			<xs:complexContent>
+				<!-- following extension defines Photo as a raster coverage class -->
+				<xs:extension base="gml:AbstractFeatureType">
+					<xs:sequence>
+						<!-- Photo properties.  -->
+						<xs:element name="Id">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="256" />
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+						<!-- Property containing raster images -->
+						<xs:element name="Image" type="fdo:RasterPropertyType" fdo:defaultImageXSize="1895" fdo:defaultImageYSize="1068">
+							<xs:annotation>
+								<xs:appinfo source="http://fdo.osgeo.org/schemas">
+									<fdo:DefaultDataModel organization="Row" bitsPerPixel="32" tileSizeX="128" tileSizeY="128" />
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:schema>
+	<!-- Schema Overrides for Photos Feature Schema -->
+	<SchemaMapping name="photos" provider="OSGeo.Gdal.3.3" xmlns="http://fdogrfp.osgeo.org/schemas/" xsi:schemaLocation="http://fdogrfp.osgeo.org/schemas/
+		FdoGrfpConfig.xsd">
+	>
+		<!-- Schema Overrides for Photo Feature Class -->
+		<complexType name="PhotoType">
+			<!-- Soundings kept in SNDG table and geometry columns are overridden -->
+			<RasterDefinition name="photos">
+				<Location name="../../TestData/DTED">
+				        <Feature name="n46_dt0">
+				                 <Band name="n46_dt0" number="1">
+					               <Image name="n46.dt0">
+						              <Georeference>
+                     				                <InsertionPointX>200000.000000</InsertionPointX>
+                                                                <InsertionPointY>1000000.000000</InsertionPointY>
+                                                                <ResolutionX>1</ResolutionX>
+                                                                <ResolutionY>1</ResolutionY>
+                                                                <RotationX>0</RotationX>
+                                                                <RotationY>0</RotationY>
+                     				              </Georeference>
+                     				       </Image>
+                                                 </Band>
+                                                 <Band name="n46_dt1" number="2">
+					               <Image name="n46.dt1">
+						              <Georeference>
+                     				                <InsertionPointX>200000.000000</InsertionPointX>
+                                                                <InsertionPointY>1000000.000000</InsertionPointY>
+                                                                <ResolutionX>1</ResolutionX>
+                                                                <ResolutionY>1</ResolutionY>
+                                                                <RotationX>0</RotationX>
+                                                                <RotationY>0</RotationY>
+                     				              </Georeference>
+                     				       </Image>
+                                                 </Band>
+                                                 <Band name="n40_dt2" number="3">
+					               <Image name="n40.dt2">
+						              <Georeference>
+                     				                <InsertionPointX>200000.000000</InsertionPointX>
+                                                                <InsertionPointY>1000000.000000</InsertionPointY>
+                                                                <ResolutionX>1</ResolutionX>
+                                                                <ResolutionY>1</ResolutionY>
+                                                                <RotationX>0</RotationX>
+                                                                <RotationY>0</RotationY>
+                     				              </Georeference>
+                     				       </Image>
+                                                 </Band>
+				        </Feature>
+				</Location>
+			</RasterDefinition>
+		</complexType>
+	</SchemaMapping>
+</DataStore>

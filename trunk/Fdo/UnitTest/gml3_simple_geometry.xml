@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This Web Feature Server is a component of CubeWerx Suite 4.12.6. -->
+<wfs:FeatureCollection xmlns="http://www.cubewerx.com/cw"
+  xmlns:cw="http://www.cubewerx.com/cw"
+  xmlns:iso19112="http://www.isotc211.org/19112"
+  xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.isotc211.org/19112 http://frameworkwfs.usgs.gov/framework/wfs/wfs.cgi?DATASTORE=GNIS&amp;service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;outputFormat=GML3&amp;typeName=SI_LOCATIONINSTANCE  http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/3.1.1/base/feature.xsd http://www.w3.org/1999/xlink ">
+  <gml:boundedBy>
+    <gml:Envelope srsName="EPSG::4326">
+      <gml:lowerCorner>-14.3658333 -170.8380556</gml:lowerCorner>
+      <gml:upperCorner>-14.3277778 -170.775</gml:upperCorner>
+    </gml:Envelope>
+  </gml:boundedBy>
+  <gml:featureMember>
+    <iso19112:SI_LocationInstance
+      gml:id="CWFID.SI_LOCATIONINSTANCE.0.3.146DC13AEBBA79D81F20020000">
+      <iso19112:geographicIdentifier>2414249</iso19112:geographicIdentifier>
+      <iso19112:alternativeGeographicIdentifier>Village of Se'etaga</iso19112:alternativeGeographicIdentifier>
+      <iso19112:geographicExtentString>395611</iso19112:geographicExtentString>
+      <iso19112:administrator>USGS</iso19112:administrator>
+      <gml:pointProperty>
+        <gml:Point srsName="EPSG:4326">
+          <gml:pos>-170.8154422 -14.3575337</gml:pos>
+        </gml:Point>
+      </gml:pointProperty>
+      <gml:curveProperty>
+        <gml:LineString srsName="EPSG:4326">
+          <gml:posList>-160.230234 21.87064403 -160.22929 21.87069903 -160.227474 21.87080403 -160.227439 21.86885203 -160.225335 21.86891603 -160.225266 21.86722003 -160.224406 21.86724603</gml:posList>
+        </gml:LineString>
+      </gml:curveProperty>
+      <iso19112:locationType_Name>Civil</iso19112:locationType_Name>
+    </iso19112:SI_LocationInstance>
+  </gml:featureMember>
+  <gml:featureMember>
+    <iso19112:SI_LocationInstance
+      gml:id="CWFID.SI_LOCATIONINSTANCE.0.12.146DC15FA952C4B81F20020000">
+      <iso19112:geographicIdentifier>1966568</iso19112:geographicIdentifier>
+      <iso19112:alternativeGeographicIdentifier>Palagi Beach</iso19112:alternativeGeographicIdentifier>
+      <iso19112:geographicExtentString>395611</iso19112:geographicExtentString>
+      <iso19112:administrator>USGS</iso19112:administrator>
+      <gml:pointProperty>
+        <gml:Point srsName="EPSG:4326">
+          <gml:pos>-170.8380556 -14.3286111</gml:pos>
+        </gml:Point>
+      </gml:pointProperty>
+      <gml:curveProperty>
+      <gml:LineString srsName="EPSG:4326">
+        <gml:posList>-160.230234 21.87064403 -160.22929 21.87069903 -160.227474 21.87080403 -160.227439 21.86885203 -160.225335 21.86891603 -160.225266 21.86722003 -160.224406 21.86724603</gml:posList>
+      </gml:LineString>
+        </gml:curveProperty>
+      <iso19112:locationType_Name>Beach</iso19112:locationType_Name>
+    </iso19112:SI_LocationInstance>
+  </gml:featureMember>
+</wfs:FeatureCollection>

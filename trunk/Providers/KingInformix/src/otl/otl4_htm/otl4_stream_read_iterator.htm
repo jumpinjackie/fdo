@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="Author" content="Sergei Kuchin">
+  <meta name="GENERATOR"
+ content="Mozilla/4.75 [en] (Win98; U) [Netscape]">
+  <meta name="KeyWords"
+ content="OTL, Oracle, ODBC, DB2, CLI, database API, C++, Template Library">
+  <title>OTL 4.0, OTL stream read iterator</title>
+</head>
+<body>
+<center>
+<h1>OTL 4.0, OTL stream read iterator<br>
+</h1>
+</center>
+<h1>
+OTL stream read iterator<br>
+</h1>
+This template class extends the OTL stream interface with more
+JDBC-like, conventional <span style="font-style: italic;">getter</span>
+functions. <br>
+<pre><font size="+2">template&lt;typename OTLStream, <br>         typename OTLException<br></font>#if !defined(<a
+ href="otl3_compile.htm#OTL_ORA7">OTL_ORA7</a>) <br>  // when any flavor of OTL but OTL_ORA7 is defined:<br>  // OTL_ORA8, OTL_ORA8I, OTL_ORA9I, OTL_ORA10G,<br>  // OTL_ORA10G_R2, OTL_ODBC, OTL_DB2_CLI<br><font
+ size="+2">         ,typename OTLLobStream<br></font>#endif<br><font
+ size="+2">        &gt;<br>class otl_stream_read_iterator{<br>public:</font></pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp; otl_stream_read_iterator(); // default constructor<br>&nbsp;&nbsp;&nbsp;&nbsp; ~otl_stream_read_iterator(); // destructor<br><br>&nbsp;&nbsp;&nbsp;&nbsp; otl_stream_read_iterator(OTLStream&amp; s); <br>        // general-purpose constructor, attaches to <a
+ href="otl3_stream_class.htm">otl_stream</a> s<br>&nbsp;&nbsp;&nbsp;&nbsp; <a
+ name="attach"></a>void attach(OTLStream&amp; s); // attaches to <a
+ href="otl3_stream_class.htm">otl_stream</a> s<br>     <a name="detach"></a>void detach(void); // detaches from the otl_stream<br>     <br>     <a
+ name="next_row"></a>bool next_row(void); <br>      // reads the next row, returns true if the row was successfully fetched, <br>      // false on the end-of-fetch-sequence.<br><br>     <a
+ name="describe"></a>const <a href="otl3_stream_class.htm#otl_var_desc">otl_var_desc</a>* describe(int&amp; var_desc_len); <br>       // describes the output structure of the attached <a
+ href="otl3_stream_class.htm">otl_</a><a href="otl3_stream_class.htm">stream</a>.<br>       // var_desc_len is the total number of elements<br>       // in the output structure of the attached otl_stream.<br>       // The same information can be obtained via <br>       // otl_stream::<a
+ href="otl3_stream_class.htm#describe_out_vars">describe_out_vars</a>(), which<br>       // this object is attached to.<br>     <br>  // JDBC-like <span
+ style="font-style: italic;">getter</span> functions.<br>  // pos is 1,2,... as in JDBC getXXX functions<br>     void get(const int pos, char&amp; c); // gets a char<br>     void get(const int pos, unsigned char&amp; c); // gets an unsigned char<br>     void get(const int pos, char* s); // gets a null terminated char string<br>     void get(const int pos, unsigned char* s); // gets a null terminated unsigned char string<br>     void get(const int pos, int&amp; n); // gets a signed 32-bit int<br>     void get(const int pos, unsigned int&amp; n); // gets a unsigned 32-bit int<br>     void get(const int pos, short int&amp; n); // gets a signed 16-bit int<br>     void get(const int pos, long int&amp; n); // gets a signed long 32-bit  int <br>     void get(const int pos, float&amp; n); // gets a 4-byte floating point<br>     void get(const int pos, double&amp; n); // gets an 8-byte floating point<br>     void get(const int pos, <a
+ href="otl3_compile.htm#OTL_BIGINT">OTL_BIGINT</a>&amp; n); // gets a signed 64-bit int<br>     void get(const int pos, OTL_STRING_CONTAINER&amp; s); <br>      // gets an std::string if #define <a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a> is enabled.<br>      // gets an std::string if #define <a
+ href="otl3_compile.htm#OTL_STLPORT">OTL_STLPORT</a> is enabled.<br>      // gets an ACE_TString if #define <a
+ href="otl3_compile.htm#OTL_ACE">OTL_ACE</a> is enabled.<br>      // VARCHAR, CHAR, LONG, TEXT, and CLOB values can be read by this function. <br>      // gets a <a
+ href="otl3_compile.htm#OTL_USER_DEFINED_STRING_CLASS_ON">USER_DEFINED_STRING_CLASS</a> instance if #define<br>      // <a
+ href="otl3_compile.htm#OTL_USER_DEFINED_STRING_CLASS_ON">OTL_USER_DEFINED_STRING_CLASS_ON</a> is enabled.<br><br>     void get(const int pos, <a
+ href="otl3_long_string.htm">otl_long_string</a>&amp; s); // gets an otl_long_string<br>     void get(const int pos, <a
+ href="otl3_long_string.htm">otl_long_string</a>*&amp; s); <br>       // gets a pointer to otl_long_string. This is more optimal than the previous<br>       // function, especially in the case of a large string.<br><br>#if !defined(<a
+ href="otl3_compile.htm#OTL_ORA7">OTL_ORA7</a>) <br>  // when any flavor of OTL but OTL_ORA7 is defined:<br>  // OTL_ORA8, OTL_ORA8I, OTL_ORA9I, OTL_ORA10G,<br>  // OTL_ORA10G_R2, OTL_ODBC, OTL_DB2_CLI<br><br>     <a
+ name="get_lob_stream_ptr"></a>void get(const int pos, <a
+ href="otl3_lob_stream.htm">otl_lob_stream</a>*&amp; s); <br>       // gets a pointer to otl_lob_stream. This function can be used if the otl_stream<br>       // that the read iterator is attached to is in the <a
+ href="otl3_stream_class.htm#set_lob_stream_mode">LOB stream mode</a>.<br><br>#endif<br><br>     void get(const int pos, <a
+ href="otl3_stream_class.htm#otl_datetime">otl_datetime</a>&amp; s); // gets an otl_datetime<br><br>     <a
+ name="is_null"></a>bool is_null(const int pos); <br>      // returns true if the value at position "pos" is NULL. <br>      // Otherwise, returns false.<br><br>#if defined(<a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a>) || defined(<a
+ href="otl3_compile.htm#OTL_STLPORT">OTL_STLPORT</a>) || defined(<a
+ href="otl3_compile.htm#OTL_ACE">OTL_ACE</a>)<br><br><a
+ name="get_by_name"></a>// The following functions are available <br>// only when #define <a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a> or <a
+ href="otl3_compile.htm#OTL_STLPORT">OTL_STLPORT</a> or <a
+ href="otl3_compile.htm#OTL_ACE">OTL_ACE</a> is enabled.<br><br><a
+ name="get_by_name_functions"></a>// JDBC-like <span
+ style="font-style: italic;">getter</span> (by name) functions.<br>  // var_name is a variable / column name from the list that can be retrieved by a call<br>  // to the <a
+ href="#describe">describe</a>() function of this class. All variable names are case insensitive.<br>     void get(const char* var_name, char&amp; c); // gets a char<br>     void get(const char* var_name, unsigned char&amp; c); // gets an unsigned char<br>     void get(const char* var_name, char* s); // gets a null terminated char string<br>     void get(const char* var_name, unsigned char* s); // gets a null terminated unsigned char string<br>     void get(const char* var_name, int&amp; n); // gets a signed 32-bit int<br>     void get(const char* var_name, unsigned int&amp; n); // gets a unsigned 32-bit int<br>     void get(const char* var_name, short int&amp; n); // gets a signed 16-bit int<br>     void get(const char* var_name, long int&amp; n); // gets a signed long 32-bit  int <br>     void get(const char* var_name, float&amp; n); // gets a 4-byte floating point<br>     void get(const char* var_name, double&amp; n); // gets an 8-byte floating point<br>     void get(const char* var_name, <a
+ href="otl3_compile.htm#OTL_BIGINT">OTL_BIGINT</a>&amp; n); // gets a signed 64-bit int<br>     void get(const char* var_name, OTL_STRING_CONTAINER&amp; s); <br>      // gets an std::string if #define <a
+ href="otl3_compile.htm#OTL_STL">OTL_STL</a> is enabled.<br>      // VARCHAR, CHAR, LONG, TEXT, and CLOB values can be read by this function. <br><br>     void get(const char* var_name, <a
+ href="otl3_long_string.htm">otl_long_string</a>&amp; s); // gets an otl_long_string<br>     void get(const char* var_name, <a
+ href="otl3_long_string.htm">otl_long_string</a>*&amp; s); <br>       // gets a pointer to otl_long_string. This is more optimal than the previous<br>       // function, especially in the case of a large string.<br><br>#if !defined(<a
+ href="otl3_compile.htm#OTL_ORA7">OTL_ORA7</a>)<br>  // when any flavor of OTL but OTL_ORA7 is defined:<br>  // OTL_ORA8, OTL_ORA8I, OTL_ORA9I, OTL_ORA10G,<br>  // OTL_ORA10G_R2, OTL_ODBC, OTL_DB2_CLI<br><br>     void get(const char* var_name, <a
+ href="otl3_lob_stream.htm">otl_lob_stream</a>*&amp; s); <br>       // gets a pointer to otl_lob_stream. This function can be used if the otl_stream<br>       // that the read iterator is attached to is in the <a
+ href="otl3_stream_class.htm#set_lob_stream_mode">LOB stream mode</a>.<br><br>#endif<br><br>     void get(const char* var_name, <a
+ href="otl3_stream_class.htm#otl_datetime">otl_datetime</a>&amp; s); // gets an otl_datetime<br><br>  <a
+ name="is_null_by_name"></a>bool is_null(const char* pos); <br>      // returns true if the value of the "var_name" variable is NULL. <br>      // Otherwise, returns false.<br>#endif<br></pre>
+<pre><font size="+2">}; // end of otl_stream_read_iterator</font></pre>
+<hr width="100%">
+<center>
+<p><a href="otl3_iterators.htm">Prev</a> <a href="otl3_const_sql.htm">Next</a><a
+ href="otl3.htm">Contents</a><a href="home.htm">Go
+Home</a></p>
+</center>
+<p>Copyright &copy; 1996, 2007, Sergei Kuchin, email: <a
+ href="mailto:skuchin@ispwest.com">skuchin@ispwest.com</a>,
+<a href="mailto:skuchin@gmail.com">skuchin@gmail.com
+<script language="JavaScript"><!-- hide from old browsers
+ var modDate = new Date(document.lastModified)
+ document.write("<i> Last Updated:</i> " + (modDate.getMonth()+1) + "/" + 
+                modDate.getDate() + "/" + "0"+(modDate.getYear())%100+".");
+ //-->
+ </script></a>.
+</p>
+<p><i>Permission to use, copy, modify and redistribute this document
+for
+any purpose is hereby granted without fee, provided that the above
+copyright
+notice appear in all copies.</i>
+</p>
+</body>
+</html>

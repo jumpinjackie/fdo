@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<wfs:FeatureCollection xmlns:bsc="http://www.bsc-eoc.org/bsc" xmlns:wfs="http://www.opengis.net/wfs" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<gml:boundedBy>
+		<gml:Box srsName="EPSG:4326">
+			<gml:coordinates>
+      			-141.237629,41.035100 -52.540657,78.105913
+      		</gml:coordinates>
+		</gml:Box>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<bsc:IBA>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:4326">
+					<gml:coord><gml:X>-77.768674</gml:X><gml:Y>62.405510</gml:Y></gml:coord>
+					<gml:coord><gml:X>-76.865336</gml:X><gml:Y>62.580432</gml:Y></gml:coord>
+				</gml:Box>
+			</gml:boundedBy>
+			<bsc:SITEID>NU001</bsc:SITEID>
+
+			<gml:pointProperty>
+				<gml:Point>
+					<gml:coord><gml:X>-77.768674</gml:X><gml:Y>62.463976</gml:Y><gml:Z>62.463976</gml:Z></gml:coord>
+				</gml:Point>
+			</gml:pointProperty>
+
+			<bsc:NAME>Digges Sound</bsc:NAME>
+
+			<gml:lineStringProperty>
+				<gml:LineString>
+					<gml:coordinates>
+          				-77.730316,62.444783 -77.768674,62.463976 -77.763471,62.481493 -77.742587,62.495028 -77.651652,62.524109 -77.579393,62.550166 -77.524814,62.562756 -77.441443,62.580432 -77.380500,62.578855 -77.277540,62.565803 -77.205524,62.556275 -77.143260,62.549974 -77.033839,62.542262 -76.971316,62.539786 -76.932795,62.544958 -76.894162,62.536783 -76.875762,62.513570 -76.865336,62.504755 -76.866047,62.485112 -76.881553,62.472410 -76.920695,62.456001 -76.964582,62.450585 -76.992677,62.449935 -77.102773,62.450917 -77.182819,62.452243 -77.245887,62.448314 -77.318906,62.443704 -77.327750,62.441426 -77.374623,62.434317 -77.412908,62.425574 -77.466576,62.412444 -77.496264,62.405510 -77.551665,62.406850 -77.633496,62.425863 -77.671911,62.434286
+          			</gml:coordinates>
+				</gml:LineString>
+			</gml:lineStringProperty>
+
+			<bsc:LINK>http://www.bsc-eoc.org/iba/site.jsp?siteID=NU001</bsc:LINK>
+		</bsc:IBA>
+	</gml:featureMember>
+	<gml:featureMember>
+		<bsc:IBA>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:4326">
+					<gml:coordinates>
+        			-62.590780,67.183106 -62.385504,67.257191
+        		</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<gml:pointProperty>
+				<gml:Point>
+					<gml:coordinates>
+								-77.768674,62.463976,1.4
+							</gml:coordinates>
+				</gml:Point>
+			</gml:pointProperty>
+			<bsc:SITEID>NU003</bsc:SITEID>
+			<gml:lineStringProperty>
+				<gml:LineString>
+					<gml:coordinates>
+          				-77.730316,62.444783 -77.768674,62.463976 -77.763471,62.481493 -77.742587,62.495028 -77.651652,62.524109 -77.579393,62.550166 -77.524814,62.562756 -77.441443,62.580432 -77.380500,62.578855 -77.277540,62.565803 -77.205524,62.556275 -77.143260,62.549974 -77.033839,62.542262 -76.971316,62.539786 -76.932795,62.544958 -76.894162,62.536783 -76.875762,62.513570 -76.865336,62.504755 -76.866047,62.485112 -76.881553,62.472410 -76.920695,62.456001 -76.964582,62.450585 -76.992677,62.449935 -77.102773,62.450917 -77.182819,62.452243 -77.245887,62.448314 -77.318906,62.443704 -77.327750,62.441426 -77.374623,62.434317 -77.412908,62.425574 -77.466576,62.412444 -77.496264,62.405510 -77.551665,62.406850 -77.633496,62.425863 -77.671911,62.434286
+          			</gml:coordinates>
+				</gml:LineString>
+			</gml:lineStringProperty>
+			<bsc:NAME>Cape Searle</bsc:NAME>
+			
+			<bsc:LINK>http://www.bsc-eoc.org/iba/site.jsp?siteID=NU003</bsc:LINK>
+		</bsc:IBA>
+	</gml:featureMember>
+</wfs:FeatureCollection>

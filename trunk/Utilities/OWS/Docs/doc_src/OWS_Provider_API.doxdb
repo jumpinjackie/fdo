@@ -1,0 +1,2216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectdatabase version="4">
+  <linkdatabase>
+    <link topicid="!!CLASSES" displaystring="">
+      <target id="pdf">pdf://4@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="!!OVERLOADED_FdoRfpClassCollection_FdoRfpClassCollection" displaystring="">
+      <target id="pdf">pdf://12@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="!!OVERLOADED_FdoRfpRasterImageCollection_FdoRfpRasterImageCollection" displaystring="">
+      <target id="pdf">pdf://68@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="!!OVERLOADED_FdoRfpRasterLocationCollection_FdoRfpRasterLocationCollection" displaystring="">
+      <target id="pdf">pdf://97@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="!!SYMREF" displaystring="">
+      <target id="pdf">pdf://3@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="!!TYPES" displaystring="">
+      <target id="pdf">pdf://99@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoOwsCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::~FdoOwsCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__~FdoOwsCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__~FdoOwsCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::BaseType" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__BaseType.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::Create" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__Create.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::FdoOwsCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__FdoOwsCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__FdoOwsCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::GetRequestMetadatas@const" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__GetRequestMetadatas@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__GetRequestMetadatas@const.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::OnCreateRequestMetadata@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__OnCreateRequestMetadata@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__OnCreateRequestMetadata@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilities::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilities__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilities__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsCapabilitiesP" displaystring="">
+      <target id="html">../HTML/FdoOwsCapabilitiesP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsCapabilitiesP.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::~FdoOwsDelegate" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__~FdoOwsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__~FdoOwsDelegate.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::FdoOwsDelegate" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__FdoOwsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__FdoOwsDelegate.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::FdoOwsDelegate@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__FdoOwsDelegate@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__FdoOwsDelegate@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::GetPassword@const" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__GetPassword@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__GetPassword@const.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::GetUrl@const" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__GetUrl@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__GetUrl@const.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::GetUserName@const" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__GetUserName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__GetUserName@const.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::Invoke@FdoOwsRequest*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__Invoke@FdoOwsRequest_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__Invoke@FdoOwsRequest_.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::SetPassword@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__SetPassword@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__SetPassword@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::SetRequestMetadatas@FdoOwsRequestMetadataCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__SetRequestMetadatas@FdoOwsRequestMetadataCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__SetRequestMetadatas@FdoOwsRequestMetadataCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::SetUrl@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__SetUrl@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__SetUrl@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsDelegate::SetUserName@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsDelegate__SetUserName@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsDelegate__SetUserName@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::~FdoOwsGetCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__~FdoOwsGetCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__~FdoOwsGetCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::AddAcceptFormat@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__AddAcceptFormat@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__AddAcceptFormat@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::AddAcceptVersion@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__AddAcceptVersion@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__AddAcceptVersion@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::AddSection@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__AddSection@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__AddSection@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::Create@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__Create@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__Create@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::EncodeKVP" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__EncodeKVP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__EncodeKVP.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::EncodeXml" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__EncodeXml.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__EncodeXml.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::FdoOwsGetCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__FdoOwsGetCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__FdoOwsGetCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::FdoOwsGetCapabilities@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__FdoOwsGetCapabilities@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__FdoOwsGetCapabilities@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilities::SetUpdateSequence@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilities__SetUpdateSequence@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilities__SetUpdateSequence@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsGetCapabilitiesP" displaystring="">
+      <target id="html">../HTML/FdoOwsGetCapabilitiesP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsGetCapabilitiesP.html</target>
+    </link>
+    <link topicid="FdoOwsIEncodable" displaystring="">
+      <target id="html">../HTML/FdoOwsIEncodable.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIEncodable.html</target>
+    </link>
+    <link topicid="FdoOwsIEncodable::EncodeKVP" displaystring="">
+      <target id="html">../HTML/FdoOwsIEncodable__EncodeKVP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIEncodable__EncodeKVP.html</target>
+    </link>
+    <link topicid="FdoOwsIEncodable::EncodeXml" displaystring="">
+      <target id="html">../HTML/FdoOwsIEncodable__EncodeXml.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIEncodable__EncodeXml.html</target>
+    </link>
+    <link topicid="FdoOwsIEncodableP" displaystring="">
+      <target id="html">../HTML/FdoOwsIEncodableP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIEncodableP.html</target>
+    </link>
+    <link topicid="FdoOwsIHttpHandler" displaystring="">
+      <target id="html">../HTML/FdoOwsIHttpHandler.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIHttpHandler.html</target>
+    </link>
+    <link topicid="FdoOwsIHttpHandler::Create@const char*@bool@const char*@const char*@const char*" displaystring="">
+      <target id="html">../HTML/FdoOwsIHttpHandler__Create@const_char_@bool@const_char_@const_char_@const_char_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIHttpHandler__Create@const_char_@bool@const_char_@const_char_@const_char_.html</target>
+    </link>
+    <link topicid="FdoOwsIHttpHandler::GetMIMEType" displaystring="">
+      <target id="html">../HTML/FdoOwsIHttpHandler__GetMIMEType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIHttpHandler__GetMIMEType.html</target>
+    </link>
+    <link topicid="FdoOwsIHttpHandler::Perform" displaystring="">
+      <target id="html">../HTML/FdoOwsIHttpHandler__Perform.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsIHttpHandler__Perform.html</target>
+    </link>
+    <link topicid="FdoOwsMIMEType" displaystring="">
+      <target id="html">../HTML/FdoOwsMIMEType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsMIMEType.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::AddRef" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__AddRef.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__AddRef.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::Create" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__Create.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::FdoOwsOgcFilterSerializer" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__FdoOwsOgcFilterSerializer.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__FdoOwsOgcFilterSerializer.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::GetPrefix" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__GetPrefix.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__GetPrefix.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::GetSrsName" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__GetSrsName.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__GetSrsName.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::GetXmlWriter" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__GetXmlWriter.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__GetXmlWriter.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessBinaryExpression@FdoBinaryExpression&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessBinaryExpression@FdoBinaryExpression_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessBinaryExpression@FdoBinaryExpression_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessBinaryLogicalOperator@FdoBinaryLogicalOperator&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessBinaryLogicalOperator@FdoBinaryLogicalOperator_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessBinaryLogicalOperator@FdoBinaryLogicalOperator_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessBLOBValue@FdoBLOBValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessBLOBValue@FdoBLOBValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessBLOBValue@FdoBLOBValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessBooleanValue@FdoBooleanValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessBooleanValue@FdoBooleanValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessBooleanValue@FdoBooleanValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessByteValue@FdoByteValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessByteValue@FdoByteValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessByteValue@FdoByteValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessCLOBValue@FdoCLOBValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessCLOBValue@FdoCLOBValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessCLOBValue@FdoCLOBValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessComparisonCondition@FdoComparisonCondition&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessComparisonCondition@FdoComparisonCondition_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessComparisonCondition@FdoComparisonCondition_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessComputedIdentifier@FdoComputedIdentifier&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessComputedIdentifier@FdoComputedIdentifier_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessComputedIdentifier@FdoComputedIdentifier_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessDateTimeValue@FdoDateTimeValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessDateTimeValue@FdoDateTimeValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessDateTimeValue@FdoDateTimeValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessDecimalValue@FdoDecimalValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessDecimalValue@FdoDecimalValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessDecimalValue@FdoDecimalValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessDistanceCondition@FdoDistanceCondition&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessDistanceCondition@FdoDistanceCondition_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessDistanceCondition@FdoDistanceCondition_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessDoubleValue@FdoDoubleValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessDoubleValue@FdoDoubleValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessDoubleValue@FdoDoubleValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessFunction@FdoFunction&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessFunction@FdoFunction_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessFunction@FdoFunction_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessGeometryValue@FdoGeometryValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessGeometryValue@FdoGeometryValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessGeometryValue@FdoGeometryValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessIdentifier@FdoIdentifier&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessIdentifier@FdoIdentifier_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessIdentifier@FdoIdentifier_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessInCondition@FdoInCondition&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessInCondition@FdoInCondition_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessInCondition@FdoInCondition_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessInt16Value@FdoInt16Value&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessInt16Value@FdoInt16Value_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessInt16Value@FdoInt16Value_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessInt32Value@FdoInt32Value&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessInt32Value@FdoInt32Value_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessInt32Value@FdoInt32Value_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessInt64Value@FdoInt64Value&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessInt64Value@FdoInt64Value_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessInt64Value@FdoInt64Value_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessNullCondition@FdoNullCondition&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessNullCondition@FdoNullCondition_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessNullCondition@FdoNullCondition_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessParameter@FdoParameter&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessParameter@FdoParameter_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessParameter@FdoParameter_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessSingleValue@FdoSingleValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessSingleValue@FdoSingleValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessSingleValue@FdoSingleValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessSpatialCondition@FdoSpatialCondition&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessSpatialCondition@FdoSpatialCondition_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessSpatialCondition@FdoSpatialCondition_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessStringValue@FdoStringValue&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessStringValue@FdoStringValue_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessStringValue@FdoStringValue_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessUnaryExpression@FdoUnaryExpression&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessUnaryExpression@FdoUnaryExpression_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessUnaryExpression@FdoUnaryExpression_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::ProcessUnaryLogicalOperator@FdoUnaryLogicalOperator&amp;" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__ProcessUnaryLogicalOperator@FdoUnaryLogicalOperator_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__ProcessUnaryLogicalOperator@FdoUnaryLogicalOperator_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::Release" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__Release.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__Release.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::Serialize@FdoFilter*" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__Serialize@FdoFilter_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__Serialize@FdoFilter_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::Serialize@FdoFilter*@GisXmlWriter*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__Serialize@FdoFilter_@GisXmlWriter_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__Serialize@FdoFilter_@GisXmlWriter_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::SetPrefix@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__SetPrefix@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__SetPrefix@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::SetSrsName@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__SetSrsName@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__SetSrsName@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsOgcFilterSerializer::SetXmlWriter@GisXmlWriter*" displaystring="">
+      <target id="html">../HTML/FdoOwsOgcFilterSerializer__SetXmlWriter@GisXmlWriter_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsOgcFilterSerializer__SetXmlWriter@GisXmlWriter_.html</target>
+    </link>
+    <link topicid="FdoOwsRequest" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::~FdoOwsRequest" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__~FdoOwsRequest.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__~FdoOwsRequest.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::FdoOwsRequest" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__FdoOwsRequest.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__FdoOwsRequest.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::FdoOwsRequest::EncodeKVP" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__FdoOwsRequest__EncodeKVP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__FdoOwsRequest__EncodeKVP.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::FdoOwsRequest@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__FdoOwsRequest@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__FdoOwsRequest@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::m_request" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__m_request.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__m_request.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::m_service" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__m_service.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__m_service.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::m_version" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__m_version.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__m_version.html</target>
+    </link>
+    <link topicid="FdoOwsRequest::SetVersion@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequest__SetVersion@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequest__SetVersion@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::~FdoOwsRequestMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__~FdoOwsRequestMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__~FdoOwsRequestMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::BaseType" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__BaseType.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::CanSetName" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__CanSetName.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__CanSetName.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::Create@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__Create@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__Create@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::FdoOwsRequestMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__FdoOwsRequestMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__FdoOwsRequestMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::FdoOwsRequestMetadata@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__FdoOwsRequestMetadata@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__FdoOwsRequestMetadata@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::GetHttpGetUrls" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__GetHttpGetUrls.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__GetHttpGetUrls.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::GetHttpPostUrls" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__GetHttpPostUrls.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__GetHttpPostUrls.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::GetName" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__GetName.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__GetName.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadata::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataCollection" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataCollection.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataCollection::~FdoOwsRequestMetadataCollection" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataCollection__~FdoOwsRequestMetadataCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataCollection__~FdoOwsRequestMetadataCollection.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataCollection::Create" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataCollection__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataCollection__Create.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataCollection::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataCollection__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataCollection__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataCollection::FdoOwsRequestMetadataCollection" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataCollection__FdoOwsRequestMetadataCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataCollection__FdoOwsRequestMetadataCollection.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadataP" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadataP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadataP.html</target>
+    </link>
+    <link topicid="FdoOwsRequestMetadatasP" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestMetadatasP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestMetadatasP.html</target>
+    </link>
+    <link topicid="FdoOwsRequestP" displaystring="">
+      <target id="html">../HTML/FdoOwsRequestP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsRequestP.html</target>
+    </link>
+    <link topicid="FdoOwsResponse" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::~FdoOwsResponse" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__~FdoOwsResponse.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__~FdoOwsResponse.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::Create@FdoOwsMIMEType@GisIoStream*" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__Create@FdoOwsMIMEType@GisIoStream_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__Create@FdoOwsMIMEType@GisIoStream_.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::FdoOwsResponse" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__FdoOwsResponse.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__FdoOwsResponse.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::FdoOwsResponse@FdoOwsMIMEType@GisIoStream*" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__FdoOwsResponse@FdoOwsMIMEType@GisIoStream_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__FdoOwsResponse@FdoOwsMIMEType@GisIoStream_.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::GetMIMEType" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__GetMIMEType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__GetMIMEType.html</target>
+    </link>
+    <link topicid="FdoOwsResponse::GetStream" displaystring="">
+      <target id="html">../HTML/FdoOwsResponse__GetStream.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponse__GetStream.html</target>
+    </link>
+    <link topicid="FdoOwsResponseP" displaystring="">
+      <target id="html">../HTML/FdoOwsResponseP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsResponseP.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::~FdoOwsServiceIdentification" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__~FdoOwsServiceIdentification.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__~FdoOwsServiceIdentification.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::BaseType" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__BaseType.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::Create" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__Create.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::FdoOwsServiceIdentification" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__FdoOwsServiceIdentification.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__FdoOwsServiceIdentification.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetAbstract@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetAbstract@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetAbstract@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetAccessConstrains@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetAccessConstrains@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetAccessConstrains@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetFees@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetFees@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetFees@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetKeywords@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetKeywords@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetKeywords@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetName@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetName@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetTitle@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetTitle@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetTitle@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::GetUrl@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__GetUrl@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__GetUrl@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentification::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentification__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentification__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsServiceIdentificationP" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceIdentificationP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceIdentificationP.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::~FdoOwsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__~FdoOwsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__~FdoOwsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::BaseType" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__BaseType.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::Create" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__Create.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::Dispose" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__Dispose.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::FdoOwsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__FdoOwsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__FdoOwsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::GetCapabilities@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__GetCapabilities@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__GetCapabilities@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::GetSaxContext" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__GetSaxContext.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__GetSaxContext.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::GetServiceIdentification@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__GetServiceIdentification@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__GetServiceIdentification@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::GetUpdateSequence@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__GetUpdateSequence@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__GetUpdateSequence@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::GetVersion@const" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__GetVersion@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__GetVersion@const.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::OnCreateCapabilities" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__OnCreateCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__OnCreateCapabilities.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::OnCreateServiceIdentification" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__OnCreateServiceIdentification.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__OnCreateServiceIdentification.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadata::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoOwsServiceMetadataP" displaystring="">
+      <target id="html">../HTML/FdoOwsServiceMetadataP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsServiceMetadataP.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::ExceptionReportCharDataHandler" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__ExceptionReportCharDataHandler.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__ExceptionReportCharDataHandler.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::FdoOwsXmlSaxContext@GisXmlReader*" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__FdoOwsXmlSaxContext@GisXmlReader_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__FdoOwsXmlSaxContext@GisXmlReader_.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::ServiceIdCharDataHandler" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__ServiceIdCharDataHandler.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__ServiceIdCharDataHandler.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetExceptionReportCharDataHandler@GisXmlCharDataHandler*" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetExceptionReportCharDataHandler@GisXmlCharDataHandler_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetExceptionReportCharDataHandler@GisXmlCharDataHandler_.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetServiceIdCharDataHandler@GisXmlCharDataHandler*" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetServiceIdCharDataHandler@GisXmlCharDataHandler_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetServiceIdCharDataHandler@GisXmlCharDataHandler_.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetStateCapability@int" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetStateCapability@int.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetStateCapability@int.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetStateExceptionReport@int" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetStateExceptionReport@int.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetStateExceptionReport@int.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetStateRequestMetadata@int" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetStateRequestMetadata@int.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetStateRequestMetadata@int.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::SetStateServiceMetadata@int" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__SetStateServiceMetadata@int.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__SetStateServiceMetadata@int.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::StateCapability@const" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__StateCapability@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__StateCapability@const.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::StateExceptionReport@const" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__StateExceptionReport@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__StateExceptionReport@const.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::StateRequestMetadata@const" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__StateRequestMetadata@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__StateRequestMetadata@const.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContext::StateServiceMetadata@const" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContext__StateServiceMetadata@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContext__StateServiceMetadata@const.html</target>
+    </link>
+    <link topicid="FdoOwsXmlSaxContextP" displaystring="">
+      <target id="html">../HTML/FdoOwsXmlSaxContextP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoOwsXmlSaxContextP.html</target>
+    </link>
+    <link topicid="FdoRfpClassCollection" displaystring="">
+      <target id="pdf">pdf://5@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassCollection::~FdoRfpClassCollection@void" displaystring="">
+      <target id="pdf">pdf://7@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassCollection::Create@FdoRfpPhysicalSchemaMapping *" displaystring="">
+      <target id="pdf">pdf://8@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassCollection::Dispose" displaystring="">
+      <target id="pdf">pdf://9@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassCollection::FdoRfpClassCollection" displaystring="">
+      <target id="pdf">pdf://10@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassCollection::FdoRfpClassCollection@FdoRfpPhysicalSchemaMapping *" displaystring="">
+      <target id="pdf">pdf://13@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition" displaystring="">
+      <target id="pdf">pdf://6@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::_writeXml@GisXmlWriter*@const FdoXmlFlags*" displaystring="">
+      <target id="pdf">pdf://14@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::~FdoRfpClassDefinition@void" displaystring="">
+      <target id="pdf">pdf://15@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::BaseType" displaystring="">
+      <target id="pdf">pdf://24@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::Create" displaystring="">
+      <target id="pdf">pdf://16@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::Dispose@void" displaystring="">
+      <target id="pdf">pdf://17@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::FdoRfpClassDefinition@void" displaystring="">
+      <target id="pdf">pdf://18@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::GetRasterDefinition" displaystring="">
+      <target id="pdf">pdf://19@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://20@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::SetRasterDefinition@FdoRfpRasterDefinition*" displaystring="">
+      <target id="pdf">pdf://21@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="pdf">pdf://22@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinition::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://23@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassDefinitionP" displaystring="">
+      <target id="pdf">pdf://100@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpClassesP" displaystring="">
+      <target id="pdf">pdf://101@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping" displaystring="">
+      <target id="pdf">pdf://11@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::_writeXml@GisXmlWriter*@const FdoXmlFlags*" displaystring="">
+      <target id="pdf">pdf://26@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::~FdoRfpPhysicalSchemaMapping@void" displaystring="">
+      <target id="pdf">pdf://27@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::BaseType" displaystring="">
+      <target id="pdf">pdf://36@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::Create" displaystring="">
+      <target id="pdf">pdf://28@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::Dispose@void" displaystring="">
+      <target id="pdf">pdf://29@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::FdoRfpPhysicalSchemaMapping@void" displaystring="">
+      <target id="pdf">pdf://30@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::GetClasses" displaystring="">
+      <target id="pdf">pdf://31@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::GetProvider" displaystring="">
+      <target id="pdf">pdf://32@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://33@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="pdf">pdf://34@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMapping::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://35@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpPhysicalSchemaMappingP" displaystring="">
+      <target id="pdf">pdf://102@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition" displaystring="">
+      <target id="pdf">pdf://25@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::_writeXml@GisXmlWriter*@const FdoXmlFlags*" displaystring="">
+      <target id="pdf">pdf://38@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::~FdoRfpRasterDefinition@void" displaystring="">
+      <target id="pdf">pdf://39@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::BaseType" displaystring="">
+      <target id="pdf">pdf://47@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::Create" displaystring="">
+      <target id="pdf">pdf://40@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::Dispose@void" displaystring="">
+      <target id="pdf">pdf://41@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::FdoRfpRasterDefinition@void" displaystring="">
+      <target id="pdf">pdf://42@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::friend class FdoRfpClassDefinition" displaystring="">
+      <target id="pdf">pdf://37@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::GetLocations" displaystring="">
+      <target id="pdf">pdf://43@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://44@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="pdf">pdf://45@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinition::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://46@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterDefinitionP" displaystring="">
+      <target id="pdf">pdf://103@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents" displaystring="">
+      <target id="pdf">pdf://49@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::~FdoRfpRasterExtents@void" displaystring="">
+      <target id="pdf">pdf://50@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::Create" displaystring="">
+      <target id="pdf">pdf://51@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::FdoRfpRasterExtents@void" displaystring="">
+      <target id="pdf">pdf://52@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::GetMaxX@const" displaystring="">
+      <target id="pdf">pdf://53@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::GetMaxY@const" displaystring="">
+      <target id="pdf">pdf://54@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::GetMinX@const" displaystring="">
+      <target id="pdf">pdf://55@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::GetMinY@const" displaystring="">
+      <target id="pdf">pdf://56@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::SetMaxX@double" displaystring="">
+      <target id="pdf">pdf://57@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::SetMaxY@double" displaystring="">
+      <target id="pdf">pdf://58@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::SetMinX@double" displaystring="">
+      <target id="pdf">pdf://59@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtents::SetMinY@double" displaystring="">
+      <target id="pdf">pdf://60@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterExtentsP" displaystring="">
+      <target id="pdf">pdf://104@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection" displaystring="">
+      <target id="pdf">pdf://61@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection::~FdoRfpRasterImageCollection@void" displaystring="">
+      <target id="pdf">pdf://63@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection::Create@FdoRfpRasterLocation *" displaystring="">
+      <target id="pdf">pdf://64@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection::Dispose" displaystring="">
+      <target id="pdf">pdf://65@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection::FdoRfpRasterImageCollection" displaystring="">
+      <target id="pdf">pdf://66@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageCollection::FdoRfpRasterImageCollection@FdoRfpRasterLocation *" displaystring="">
+      <target id="pdf">pdf://69@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition" displaystring="">
+      <target id="pdf">pdf://62@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::_writeXml@GisXmlWriter*@const FdoXmlFlags*" displaystring="">
+      <target id="pdf">pdf://70@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::~FdoRfpRasterImageDefinition@void" displaystring="">
+      <target id="pdf">pdf://71@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::BaseType" displaystring="">
+      <target id="pdf">pdf://81@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::Create" displaystring="">
+      <target id="pdf">pdf://72@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::Dispose@void" displaystring="">
+      <target id="pdf">pdf://73@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::FdoRfpRasterImageDefinition@void" displaystring="">
+      <target id="pdf">pdf://74@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::GetExtents" displaystring="">
+      <target id="pdf">pdf://75@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://76@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::SetExtents@FdoRfpRasterExtents*" displaystring="">
+      <target id="pdf">pdf://77@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::XmlCharacters@GisXmlSaxContext*@GisString*" displaystring="">
+      <target id="pdf">pdf://78@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="pdf">pdf://79@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinition::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://80@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImageDefinitionP" displaystring="">
+      <target id="pdf">pdf://105@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterImagesP" displaystring="">
+      <target id="pdf">pdf://106@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation" displaystring="">
+      <target id="pdf">pdf://67@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::_writeXml@GisXmlWriter*@const FdoXmlFlags*" displaystring="">
+      <target id="pdf">pdf://82@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::~FdoRfpRasterLocation@void" displaystring="">
+      <target id="pdf">pdf://83@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::BaseType" displaystring="">
+      <target id="pdf">pdf://92@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::Create" displaystring="">
+      <target id="pdf">pdf://84@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::Dispose@void" displaystring="">
+      <target id="pdf">pdf://85@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::FdoRfpRasterLocation@void" displaystring="">
+      <target id="pdf">pdf://86@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::GetImageCatalogue" displaystring="">
+      <target id="pdf">pdf://87@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://88@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::SetImageCatalogue@FdoRfpRasterImageCollection*" displaystring="">
+      <target id="pdf">pdf://89@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="pdf">pdf://90@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocation::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="pdf">pdf://91@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection" displaystring="">
+      <target id="pdf">pdf://48@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection::~FdoRfpRasterLocationCollection@void" displaystring="">
+      <target id="pdf">pdf://93@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection::Create@FdoRfpRasterDefinition *" displaystring="">
+      <target id="pdf">pdf://94@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection::Dispose" displaystring="">
+      <target id="pdf">pdf://95@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection::FdoRfpRasterLocationCollection" displaystring="">
+      <target id="pdf">pdf://96@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationCollection::FdoRfpRasterLocationCollection@FdoRfpRasterDefinition *" displaystring="">
+      <target id="pdf">pdf://98@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationP" displaystring="">
+      <target id="pdf">pdf://107@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoRfpRasterLocationsP" displaystring="">
+      <target id="pdf">pdf://108@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::~FdoWmsBoundingBox@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__~FdoWmsBoundingBox@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__~FdoWmsBoundingBox@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::FdoWmsBoundingBox@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__FdoWmsBoundingBox@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__FdoWmsBoundingBox@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetCRS@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetCRS@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetCRS@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetMaxX@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetMaxX@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetMaxX@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetMaxY@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetMaxY@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetMaxY@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetMinX@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetMinX@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetMinX@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetMinY@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetMinY@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetMinY@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetResX@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetResX@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetResX@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::GetResY@const" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__GetResY@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__GetResY@const.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetCRS@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetCRS@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetCRS@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetMaxX@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetMaxX@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetMaxX@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetMaxY@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetMaxY@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetMaxY@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetMinX@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetMinX@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetMinX@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetMinY@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetMinY@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetMinY@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetResX@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetResX@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetResX@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::SetResY@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__SetResY@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__SetResY@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBox::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBox__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBox__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollection" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollection.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollection::~FdoWmsBoundingBoxCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollection__~FdoWmsBoundingBoxCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollection__~FdoWmsBoundingBoxCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollection::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollection__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollection__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollection::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollection__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollection__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollection::FdoWmsBoundingBoxCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollection__FdoWmsBoundingBoxCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollection__FdoWmsBoundingBoxCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxCollectionP" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxCollectionP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxCollectionP.html</target>
+    </link>
+    <link topicid="FdoWmsBoundingBoxP" displaystring="">
+      <target id="html">../HTML/FdoWmsBoundingBoxP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsBoundingBoxP.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::~FdoWmsCapabilities@void" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__~FdoWmsCapabilities@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__~FdoWmsCapabilities@void.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::Create" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__Create.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::FdoWmsCapabilities@void" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__FdoWmsCapabilities@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__FdoWmsCapabilities@void.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::GetLayers@const" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__GetLayers@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__GetLayers@const.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilities::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilities__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilities__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsCapabilitiesP" displaystring="">
+      <target id="html">../HTML/FdoWmsCapabilitiesP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsCapabilitiesP.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::~FdoWmsDelegate" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__~FdoWmsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__~FdoWmsDelegate.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::Create@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__Create@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__Create@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::FdoWmsDelegate" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__FdoWmsDelegate.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__FdoWmsDelegate.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::FdoWmsDelegate@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__FdoWmsDelegate@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__FdoWmsDelegate@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDelegate::GetServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegate__GetServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegate__GetServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoWmsDelegateP" displaystring="">
+      <target id="html">../HTML/FdoWmsDelegateP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDelegateP.html</target>
+    </link>
+    <link topicid="FdoWmsDimension" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::~FdoWmsDimension@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__~FdoWmsDimension@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__~FdoWmsDimension@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::CanSetName@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__CanSetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__CanSetName@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::FdoWmsDimension@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__FdoWmsDimension@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__FdoWmsDimension@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetCurrent@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetCurrent@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetCurrent@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetDefault@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetDefault@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetDefault@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetMultipleValues@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetMultipleValues@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetMultipleValues@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetName@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetName@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetNearestValue@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetNearestValue@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetNearestValue@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetUnits@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetUnits@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetUnits@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::GetUnitSymbol@const" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__GetUnitSymbol@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__GetUnitSymbol@const.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetCurrent@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetCurrent@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetCurrent@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetDefault@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetDefault@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetDefault@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetMultipleValues@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetMultipleValues@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetMultipleValues@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetName@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetName@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetName@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetNearestValue@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetNearestValue@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetNearestValue@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetUnits@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetUnits@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetUnits@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::SetUnitSymbol@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__SetUnitSymbol@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__SetUnitSymbol@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsDimension::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsDimension__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimension__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollection" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollection.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollection::~FdoWmsDimensionCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollection__~FdoWmsDimensionCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollection__~FdoWmsDimensionCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollection::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollection__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollection__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollection::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollection__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollection__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollection::FdoWmsDimensionCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollection__FdoWmsDimensionCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollection__FdoWmsDimensionCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionCollectionP" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionCollectionP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionCollectionP.html</target>
+    </link>
+    <link topicid="FdoWmsDimensionP" displaystring="">
+      <target id="html">../HTML/FdoWmsDimensionP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsDimensionP.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::~FdoWmsGeographicBoundingBox@void" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__~FdoWmsGeographicBoundingBox@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__~FdoWmsGeographicBoundingBox@void.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::FdoWmsGeographicBoundingBox@void" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__FdoWmsGeographicBoundingBox@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__FdoWmsGeographicBoundingBox@void.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::GetEastBoundLongitude@const" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__GetEastBoundLongitude@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__GetEastBoundLongitude@const.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::GetNorthBoundLatitude@const" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__GetNorthBoundLatitude@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__GetNorthBoundLatitude@const.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::GetSouthBoundLatitude@const" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__GetSouthBoundLatitude@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__GetSouthBoundLatitude@const.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::GetWestBoundLongitude@const" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__GetWestBoundLongitude@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__GetWestBoundLongitude@const.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::SetEastBoundLongitude@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__SetEastBoundLongitude@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__SetEastBoundLongitude@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::SetNorthBoundLatitude@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__SetNorthBoundLatitude@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__SetNorthBoundLatitude@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::SetSouthBoundLatitude@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__SetSouthBoundLatitude@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__SetSouthBoundLatitude@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::SetWestBoundLongitude@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__SetWestBoundLongitude@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__SetWestBoundLongitude@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBox::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBox__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBox__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsGeographicBoundingBoxP" displaystring="">
+      <target id="html">../HTML/FdoWmsGeographicBoundingBoxP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsGeographicBoundingBoxP.html</target>
+    </link>
+    <link topicid="FdoWmsLayer" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::~FdoWmsLayer@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__~FdoWmsLayer@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__~FdoWmsLayer@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::FdoWmsLayer@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__FdoWmsLayer@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__FdoWmsLayer@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetAbstract@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetAbstract@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetAbstract@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetBoundingBoxes@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetBoundingBoxes@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetBoundingBoxes@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetCoordinateReferenceSystems@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetCoordinateReferenceSystems@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetCoordinateReferenceSystems@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetDimensions@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetDimensions@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetDimensions@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetFixedHeight@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetFixedHeight@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetFixedHeight@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetFixedWidth@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetFixedWidth@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetFixedWidth@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetGeographicBoundingBox@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetGeographicBoundingBox@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetGeographicBoundingBox@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetKeyordList@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetKeyordList@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetKeyordList@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetLayers@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetLayers@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetLayers@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetMaxScaleDemoninator@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetMaxScaleDemoninator@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetMaxScaleDemoninator@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetMinScaleDemoninator@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetMinScaleDemoninator@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetMinScaleDemoninator@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetName@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetName@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetNoSubsets@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetNoSubsets@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetNoSubsets@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetOpaque@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetOpaque@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetOpaque@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetQueryable@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetQueryable@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetQueryable@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetStyles@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetStyles@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetStyles@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::GetTitle@const" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__GetTitle@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__GetTitle@const.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetAbstract@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetAbstract@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetAbstract@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetFixedHeight@GisInt32" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetFixedHeight@GisInt32.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetFixedHeight@GisInt32.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetFixedWidth@GisInt32" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetFixedWidth@GisInt32.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetFixedWidth@GisInt32.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetGeographicBoundingBox@FdoWmsGeographicBoundingBox*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetGeographicBoundingBox@FdoWmsGeographicBoundingBox_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetGeographicBoundingBox@FdoWmsGeographicBoundingBox_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetMaxScaleDemoninator@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetMaxScaleDemoninator@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetMaxScaleDemoninator@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetMinScaleDemoninator@GisDouble" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetMinScaleDemoninator@GisDouble.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetMinScaleDemoninator@GisDouble.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetName@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetName@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetName@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetNoSubsets@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetNoSubsets@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetNoSubsets@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetOpaque@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetOpaque@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetOpaque@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetQueryable@GisBoolean" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetQueryable@GisBoolean.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetQueryable@GisBoolean.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::SetTitle@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__SetTitle@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__SetTitle@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsLayer::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsLayer__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayer__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollection" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollection.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollection::~FdoWmsLayerCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollection__~FdoWmsLayerCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollection__~FdoWmsLayerCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollection::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollection__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollection__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollection::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollection__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollection__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollection::FdoWmsLayerCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollection__FdoWmsLayerCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollection__FdoWmsLayerCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsLayerCollectionP" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerCollectionP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerCollectionP.html</target>
+    </link>
+    <link topicid="FdoWmsLayerP" displaystring="">
+      <target id="html">../HTML/FdoWmsLayerP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsLayerP.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::~FdoWmsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__~FdoWmsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__~FdoWmsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::Create" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__Create.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__Create.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::FdoWmsServiceMetadata" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__FdoWmsServiceMetadata.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__FdoWmsServiceMetadata.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::GetCapabilities@const" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__GetCapabilities@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__GetCapabilities@const.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::OnCreateCapabilities" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__OnCreateCapabilities.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__OnCreateCapabilities.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadata::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadata__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsServiceMetadataP" displaystring="">
+      <target id="html">../HTML/FdoWmsServiceMetadataP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsServiceMetadataP.html</target>
+    </link>
+    <link topicid="FdoWmsStyle" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::~FdoWmsStyle@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__~FdoWmsStyle@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__~FdoWmsStyle@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::BaseType" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__BaseType.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__BaseType.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::CanSetName@const" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__CanSetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__CanSetName@const.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::FdoWmsStyle@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__FdoWmsStyle@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__FdoWmsStyle@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::GetAbstract@const" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__GetAbstract@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__GetAbstract@const.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::GetName@const" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__GetName@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__GetName@const.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::GetTitle@const" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__GetTitle@const.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__GetTitle@const.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::InitFromXml@GisXmlSaxContext*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__InitFromXml@GisXmlSaxContext_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::SetAbstract@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__SetAbstract@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__SetAbstract@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::SetName@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__SetName@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__SetName@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::SetTitle@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__SetTitle@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__SetTitle@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::XmlEndElement@GisXmlSaxContext*@GisString*@GisString*@GisString*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__XmlEndElement@GisXmlSaxContext_@GisString_@GisString_@GisString_.html</target>
+    </link>
+    <link topicid="FdoWmsStyle::XmlStartElement@GisXmlSaxContext*@GisString*@GisString*@GisString*@GisXmlAttributeCollection*" displaystring="">
+      <target id="html">../HTML/FdoWmsStyle__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyle__XmlStartElement@GisXmlSaxContext_@GisString_@GisString_@GisString_@GisXmlAttributeCollection_.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollection" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollection.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollection.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollection::~FdoWmsStyleCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollection__~FdoWmsStyleCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollection__~FdoWmsStyleCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollection::Create@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollection__Create@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollection__Create@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollection::Dispose" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollection__Dispose.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollection__Dispose.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollection::FdoWmsStyleCollection@void" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollection__FdoWmsStyleCollection@void.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollection__FdoWmsStyleCollection@void.html</target>
+    </link>
+    <link topicid="FdoWmsStyleCollectionP" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleCollectionP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleCollectionP.html</target>
+    </link>
+    <link topicid="FdoWmsStyleP" displaystring="">
+      <target id="html">../HTML/FdoWmsStyleP.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/FdoWmsStyleP.html</target>
+    </link>
+    <link topicid="index" displaystring="">
+      <target id="html">../HTML/index1.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/index1.html</target>
+      <target id="pdf">pdf://1@RasterFile_Provider_API.pdf</target>
+    </link>
+    <link topicid="OWS Global Class Hierarchy" displaystring="">
+      <target id="html">../HTML/OWS_Global_Class_Hierarchy.html</target>
+      <target id="htmlhelp">mk:@MSITStore:OWS_Provider_API.chm::/OWS_Global_Class_Hierarchy.html</target>
+    </link>
+    <link topicid="Raster File Global Class Hierarchy" displaystring="">
+      <target id="pdf">pdf://2@RasterFile_Provider_API.pdf</target>
+    </link>
+  </linkdatabase>
+  <classinformation>
+    <class name="FdoOwsCapabilities" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <field name="m_requests"></field>
+      <method name="~FdoOwsCapabilities"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsCapabilities"></method>
+      <method name="GetRequestMetadatas"></method>
+      <method name="InitFromXml"></method>
+      <method name="OnCreateRequestMetadata"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoOwsDelegate" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="m_defaultUrl"></field>
+      <field name="m_passwd"></field>
+      <field name="m_requestMetadatas"></field>
+      <field name="m_urlResolver"></field>
+      <field name="m_userName"></field>
+      <method name="~FdoOwsDelegate"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsDelegate"></method>
+      <method name="FdoOwsDelegate"></method>
+      <method name="GetPassword"></method>
+      <method name="GetUrl"></method>
+      <method name="GetUserName"></method>
+      <method name="Invoke"></method>
+      <method name="SetPassword"></method>
+      <method name="SetRequestMetadatas"></method>
+      <method name="SetUrl"></method>
+      <method name="SetUserName"></method>
+    </class>
+    <class name="FdoOwsGetCapabilities" language="1" type="0">
+      <ancestor name="FdoOwsRequest"></ancestor>
+      <field name="m_acceptFormats"></field>
+      <field name="m_acceptVersions"></field>
+      <field name="m_sections"></field>
+      <field name="m_updateSequence"></field>
+      <method name="~FdoOwsGetCapabilities"></method>
+      <method name="AddAcceptFormat"></method>
+      <method name="AddAcceptVersion"></method>
+      <method name="AddSection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="EncodeKVP"></method>
+      <method name="EncodeXml"></method>
+      <method name="FdoOwsGetCapabilities"></method>
+      <method name="FdoOwsGetCapabilities"></method>
+      <method name="SetUpdateSequence"></method>
+    </class>
+    <class name="FdoOwsIEncodable" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <method name="EncodeKVP"></method>
+      <method name="EncodeXml"></method>
+    </class>
+    <class name="FdoOwsIHttpHandler" language="1" type="0">
+      <ancestor name="GisIoStream"></ancestor>
+      <method name="Create"></method>
+      <method name="GetMIMEType"></method>
+      <method name="Perform"></method>
+    </class>
+    <class name="FdoOwsMIMEType" language="1" type="7">
+      <field name="FdoOwsMIMEType_application_x_cubestor_wkb"></field>
+      <field name="FdoOwsMIMEType_image_gif"></field>
+      <field name="FdoOwsMIMEType_image_jpeg"></field>
+      <field name="FdoOwsMIMEType_image_png"></field>
+      <field name="FdoOwsMIMEType_image_ppm"></field>
+      <field name="FdoOwsMIMEType_image_tiff"></field>
+      <field name="FdoOwsMIMEType_text_xml"></field>
+      <field name="FdoOwsMIMEType_unknown"></field>
+    </class>
+    <class name="FdoOwsOgcFilterSerializer" language="1" type="0">
+      <ancestor name="FdoIFilterProcessor"></ancestor>
+      <ancestor name="FdoIExpressionProcessor"></ancestor>
+      <field name="mPrefix"></field>
+      <field name="mSrsName"></field>
+      <field name="mWriter"></field>
+      <method name="_serializeNameValuePair"></method>
+      <method name="_validate"></method>
+      <method name="AddRef"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsOgcFilterSerializer"></method>
+      <method name="GetPrefix"></method>
+      <method name="GetSrsName"></method>
+      <method name="GetXmlWriter"></method>
+      <method name="ProcessBinaryExpression"></method>
+      <method name="ProcessBinaryLogicalOperator"></method>
+      <method name="ProcessBLOBValue"></method>
+      <method name="ProcessBooleanValue"></method>
+      <method name="ProcessByteValue"></method>
+      <method name="ProcessCLOBValue"></method>
+      <method name="ProcessComparisonCondition"></method>
+      <method name="ProcessComputedIdentifier"></method>
+      <method name="ProcessDateTimeValue"></method>
+      <method name="ProcessDecimalValue"></method>
+      <method name="ProcessDistanceCondition"></method>
+      <method name="ProcessDoubleValue"></method>
+      <method name="ProcessFunction"></method>
+      <method name="ProcessGeometryValue"></method>
+      <method name="ProcessIdentifier"></method>
+      <method name="ProcessInCondition"></method>
+      <method name="ProcessInt16Value"></method>
+      <method name="ProcessInt32Value"></method>
+      <method name="ProcessInt64Value"></method>
+      <method name="ProcessNullCondition"></method>
+      <method name="ProcessParameter"></method>
+      <method name="ProcessSingleValue"></method>
+      <method name="ProcessSpatialCondition"></method>
+      <method name="ProcessStringValue"></method>
+      <method name="ProcessUnaryExpression"></method>
+      <method name="ProcessUnaryLogicalOperator"></method>
+      <method name="Release"></method>
+      <method name="Serialize"></method>
+      <method name="Serialize"></method>
+      <method name="SetPrefix"></method>
+      <method name="SetSrsName"></method>
+      <method name="SetXmlWriter"></method>
+    </class>
+    <class name="FdoOwsRequest" language="1" type="0">
+      <ancestor name="FdoOwsIEncodable"></ancestor>
+      <field name="m_request"></field>
+      <field name="m_service"></field>
+      <field name="m_version"></field>
+      <method name="~FdoOwsRequest"></method>
+      <method name="FdoOwsRequest"></method>
+      <method name="FdoOwsRequest"></method>
+      <method name="FdoOwsRequest::EncodeKVP"></method>
+      <method name="SetVersion"></method>
+    </class>
+    <class name="FdoOwsRequestMetadata" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <field name="m_httpGetURLs"></field>
+      <field name="m_httpPostURLs"></field>
+      <field name="m_httpURLs"></field>
+      <field name="m_name"></field>
+      <method name="~FdoOwsRequestMetadata"></method>
+      <method name="CanSetName"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsRequestMetadata"></method>
+      <method name="FdoOwsRequestMetadata"></method>
+      <method name="GetHttpGetUrls"></method>
+      <method name="GetHttpPostUrls"></method>
+      <method name="GetName"></method>
+      <method name="InitFromXml"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoOwsRequestMetadataCollection" language="1" type="0">
+      <ancestor name="GisNamedCollection"></ancestor>
+      <method name="~FdoOwsRequestMetadataCollection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsRequestMetadataCollection"></method>
+    </class>
+    <class name="FdoOwsResponse" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="m_mimeType"></field>
+      <field name="m_stream"></field>
+      <method name="~FdoOwsResponse"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsResponse"></method>
+      <method name="FdoOwsResponse"></method>
+      <method name="GetMIMEType"></method>
+      <method name="GetStream"></method>
+    </class>
+    <class name="FdoOwsServiceIdentification" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <field name="m_abstract"></field>
+      <field name="m_accessConstrains"></field>
+      <field name="m_fees"></field>
+      <field name="m_keywords"></field>
+      <field name="m_name"></field>
+      <field name="m_title"></field>
+      <field name="m_url"></field>
+      <method name="~FdoOwsServiceIdentification"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsServiceIdentification"></method>
+      <method name="GetAbstract"></method>
+      <method name="GetAccessConstrains"></method>
+      <method name="GetFees"></method>
+      <method name="GetKeywords"></method>
+      <method name="GetName"></method>
+      <method name="GetTitle"></method>
+      <method name="GetUrl"></method>
+      <method name="InitFromXml"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoOwsServiceMetadata" language="1" type="0">
+      <ancestor name="GisIDisposable"></ancestor>
+      <ancestor name="FdoXmlDeserializable"></ancestor>
+      <field name="m_capabilities"></field>
+      <field name="m_serviceId"></field>
+      <field name="m_updateSequence"></field>
+      <field name="m_version"></field>
+      <method name="~FdoOwsServiceMetadata"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoOwsServiceMetadata"></method>
+      <method name="GetCapabilities"></method>
+      <method name="GetSaxContext"></method>
+      <method name="GetServiceIdentification"></method>
+      <method name="GetUpdateSequence"></method>
+      <method name="GetVersion"></method>
+      <method name="OnCreateCapabilities"></method>
+      <method name="OnCreateServiceIdentification"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoOwsXmlSaxContext" language="1" type="0">
+      <ancestor name="GisXmlSaxContext"></ancestor>
+      <field name="m_exceptionReportCharDataHandler"></field>
+      <field name="m_serviceIdCharDataHandler"></field>
+      <field name="m_stateCapability"></field>
+      <field name="m_stateExceptionReport"></field>
+      <field name="m_stateRequestMetadata"></field>
+      <field name="m_stateServiceMetadata"></field>
+      <method name="ExceptionReportCharDataHandler"></method>
+      <method name="FdoOwsXmlSaxContext"></method>
+      <method name="ServiceIdCharDataHandler"></method>
+      <method name="SetExceptionReportCharDataHandler"></method>
+      <method name="SetServiceIdCharDataHandler"></method>
+      <method name="SetStateCapability"></method>
+      <method name="SetStateExceptionReport"></method>
+      <method name="SetStateRequestMetadata"></method>
+      <method name="SetStateServiceMetadata"></method>
+      <method name="StateCapability"></method>
+      <method name="StateExceptionReport"></method>
+      <method name="StateRequestMetadata"></method>
+      <method name="StateServiceMetadata"></method>
+    </class>
+    <class name="FdoWmsBoundingBox" language="1" type="0">
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="mCRS"></field>
+      <field name="mMaxX"></field>
+      <field name="mMaxY"></field>
+      <field name="mMinX"></field>
+      <field name="mMinY"></field>
+      <field name="mResX"></field>
+      <field name="mResY"></field>
+      <method name="~FdoWmsBoundingBox"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsBoundingBox"></method>
+      <method name="GetCRS"></method>
+      <method name="GetMaxX"></method>
+      <method name="GetMaxY"></method>
+      <method name="GetMinX"></method>
+      <method name="GetMinY"></method>
+      <method name="GetResX"></method>
+      <method name="GetResY"></method>
+      <method name="InitFromXml"></method>
+      <method name="SetCRS"></method>
+      <method name="SetMaxX"></method>
+      <method name="SetMaxY"></method>
+      <method name="SetMinX"></method>
+      <method name="SetMinY"></method>
+      <method name="SetResX"></method>
+      <method name="SetResY"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsBoundingBoxCollection" language="1" type="0">
+      <ancestor name="GisCollection"></ancestor>
+      <method name="~FdoWmsBoundingBoxCollection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsBoundingBoxCollection"></method>
+    </class>
+    <class name="FdoWmsCapabilities" language="1" type="0">
+      <ancestor name="FdoOwsCapabilities"></ancestor>
+      <field name="mLayers"></field>
+      <method name="~FdoWmsCapabilities"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsCapabilities"></method>
+      <method name="GetLayers"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsDelegate" language="1" type="0">
+      <ancestor name="FdoOwsDelegate"></ancestor>
+      <method name="~FdoWmsDelegate"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsDelegate"></method>
+      <method name="FdoWmsDelegate"></method>
+      <method name="GetServiceMetadata"></method>
+    </class>
+    <class name="FdoWmsDimension" language="1" type="0">
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="mCurrent"></field>
+      <field name="mDefault"></field>
+      <field name="mMultipleValues"></field>
+      <field name="mName"></field>
+      <field name="mNearestValue"></field>
+      <field name="mUnits"></field>
+      <field name="mUnitSymbol"></field>
+      <field name="mXmlContentHandler"></field>
+      <method name="~FdoWmsDimension"></method>
+      <method name="CanSetName"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsDimension"></method>
+      <method name="GetCurrent"></method>
+      <method name="GetDefault"></method>
+      <method name="GetMultipleValues"></method>
+      <method name="GetName"></method>
+      <method name="GetNearestValue"></method>
+      <method name="GetUnits"></method>
+      <method name="GetUnitSymbol"></method>
+      <method name="InitFromXml"></method>
+      <method name="SetCurrent"></method>
+      <method name="SetDefault"></method>
+      <method name="SetMultipleValues"></method>
+      <method name="SetName"></method>
+      <method name="SetNearestValue"></method>
+      <method name="SetUnits"></method>
+      <method name="SetUnitSymbol"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsDimensionCollection" language="1" type="0">
+      <ancestor name="GisNamedCollection"></ancestor>
+      <method name="~FdoWmsDimensionCollection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsDimensionCollection"></method>
+    </class>
+    <class name="FdoWmsGeographicBoundingBox" language="1" type="0">
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="mEastBoundLongitude"></field>
+      <field name="mNorthBoundLatitude"></field>
+      <field name="mSouthBoundLatitude"></field>
+      <field name="mWestBoundLongitude"></field>
+      <field name="mXmlContentHandler"></field>
+      <method name="~FdoWmsGeographicBoundingBox"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsGeographicBoundingBox"></method>
+      <method name="GetEastBoundLongitude"></method>
+      <method name="GetNorthBoundLatitude"></method>
+      <method name="GetSouthBoundLatitude"></method>
+      <method name="GetWestBoundLongitude"></method>
+      <method name="InitFromXml"></method>
+      <method name="SetEastBoundLongitude"></method>
+      <method name="SetNorthBoundLatitude"></method>
+      <method name="SetSouthBoundLatitude"></method>
+      <method name="SetWestBoundLongitude"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsLayer" language="1" type="0">
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="mAbstract"></field>
+      <field name="mBoundingBoxes"></field>
+      <field name="mChildLayers"></field>
+      <field name="mCoordinateReferenceSystems"></field>
+      <field name="mDimensions"></field>
+      <field name="mFixedHeight"></field>
+      <field name="mFixedWidth"></field>
+      <field name="mGeographicBoundingBox"></field>
+      <field name="mKeywordList"></field>
+      <field name="mMaxScaleDenominator"></field>
+      <field name="mMinScaleDenominator"></field>
+      <field name="mName"></field>
+      <field name="mNoSubsets"></field>
+      <field name="mOpaque"></field>
+      <field name="mQueryable"></field>
+      <field name="mStyles"></field>
+      <field name="mTitle"></field>
+      <field name="mXmlContentHandler"></field>
+      <method name="~FdoWmsLayer"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsLayer"></method>
+      <method name="GetAbstract"></method>
+      <method name="GetBoundingBoxes"></method>
+      <method name="GetCoordinateReferenceSystems"></method>
+      <method name="GetDimensions"></method>
+      <method name="GetFixedHeight"></method>
+      <method name="GetFixedWidth"></method>
+      <method name="GetGeographicBoundingBox"></method>
+      <method name="GetKeyordList"></method>
+      <method name="GetLayers"></method>
+      <method name="GetMaxScaleDemoninator"></method>
+      <method name="GetMinScaleDemoninator"></method>
+      <method name="GetName"></method>
+      <method name="GetNoSubsets"></method>
+      <method name="GetOpaque"></method>
+      <method name="GetQueryable"></method>
+      <method name="GetStyles"></method>
+      <method name="GetTitle"></method>
+      <method name="InitFromXml"></method>
+      <method name="SetAbstract"></method>
+      <method name="SetFixedHeight"></method>
+      <method name="SetFixedWidth"></method>
+      <method name="SetGeographicBoundingBox"></method>
+      <method name="SetMaxScaleDemoninator"></method>
+      <method name="SetMinScaleDemoninator"></method>
+      <method name="SetName"></method>
+      <method name="SetNoSubsets"></method>
+      <method name="SetOpaque"></method>
+      <method name="SetQueryable"></method>
+      <method name="SetTitle"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsLayerCollection" language="1" type="0">
+      <ancestor name="GisCollection"></ancestor>
+      <method name="~FdoWmsLayerCollection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsLayerCollection"></method>
+    </class>
+    <class name="FdoWmsServiceMetadata" language="1" type="0">
+      <ancestor name="FdoOwsServiceMetadata"></ancestor>
+      <field name="m_capabilities"></field>
+      <method name="~FdoWmsServiceMetadata"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsServiceMetadata"></method>
+      <method name="GetCapabilities"></method>
+      <method name="OnCreateCapabilities"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsStyle" language="1" type="0">
+      <ancestor name="GisXmlSaxHandler"></ancestor>
+      <ancestor name="GisIDisposable"></ancestor>
+      <field name="mAbstract"></field>
+      <field name="mName"></field>
+      <field name="mTitle"></field>
+      <field name="mXmlContentHandler"></field>
+      <method name="~FdoWmsStyle"></method>
+      <method name="CanSetName"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsStyle"></method>
+      <method name="GetAbstract"></method>
+      <method name="GetName"></method>
+      <method name="GetTitle"></method>
+      <method name="InitFromXml"></method>
+      <method name="SetAbstract"></method>
+      <method name="SetName"></method>
+      <method name="SetTitle"></method>
+      <method name="XmlEndElement"></method>
+      <method name="XmlStartElement"></method>
+      <type name="BaseType"></type>
+    </class>
+    <class name="FdoWmsStyleCollection" language="1" type="0">
+      <ancestor name="GisNamedCollection"></ancestor>
+      <method name="~FdoWmsStyleCollection"></method>
+      <method name="Create"></method>
+      <method name="Dispose"></method>
+      <method name="FdoWmsStyleCollection"></method>
+    </class>
+  </classinformation>
+</projectdatabase>
