@@ -1,8 +1,0 @@
- Schema LT has errors; cannot apply it 
- Table {USER_DS}_APPLY_LT.DELSTATUS1 has rows; cannot add non nullable column NEWNUMBER to it 
- Column {USER_DS}_APPLY_LT.DELSTATUS1.LTLOCK1 has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_APPLY_LT.CIRCLE_LT1.VERSION1 has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_APPLY_LT.CIRCLE_LT1.NEXTVER1 has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_APPLY_LT.CIRCLE_LT1.REVISIONNUMBER has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_APPLY_LT.CIRCLE_LT1.CLASSID has conditional rows or rows with non-null values, cannot delete its property 
- Cannot delete table "{USER_DS}_APPLY_LT"."CIRCLE_LT1" because it has rows 

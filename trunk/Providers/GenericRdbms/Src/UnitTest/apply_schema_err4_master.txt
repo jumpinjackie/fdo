@@ -1,2 +1,0 @@
- Schema Non Existent has errors; cannot apply it 
- Schema Non Existent does not exist; cannot modify it 

@@ -1,8 +1,0 @@
- Schema Land has errors; cannot apply it 
- Column {USER_DS}_apply_schema.public.parcel_person.parcel_pin has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_apply_schema.public.parcel_person.parcel_province has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_apply_schema.public.parcel_person.last name has conditional rows or rows with non-null values, cannot delete its property 
- Column {USER_DS}_apply_schema.public.parcel_person.first name has conditional rows or rows with non-null values, cannot delete its property 
- Cannot delete table "public"."parcel_person" because it has rows 
- Cannot delete geometric property 'Land:Parcel.Grading'; it is the geometry property for class 'Land:Parcel' 
- Column {USER_DS}_apply_schema.public.driveway.pav'd has conditional rows or rows with non-null values, cannot delete its property 
