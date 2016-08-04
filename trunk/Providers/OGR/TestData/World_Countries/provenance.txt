@@ -1,1 +1,0 @@
-This dataset was converted from Providers/SHP/TestData/World_Countries/World_Countries.shp via ogr2ogr

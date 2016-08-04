@@ -1,1 +1,0 @@
-gcc -DLINUX -g -I. args.c msf.c msg.c main.c -o mkcatdefs

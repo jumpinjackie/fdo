@@ -1,6 +1,0 @@
-add_subdirectory( Message )
-add_subdirectory( Overrides )
-add_subdirectory( ShpRead )
-add_subdirectory( ShpSpatialIndex )
-add_subdirectory( Provider )
-add_subdirectory( UnitTest )

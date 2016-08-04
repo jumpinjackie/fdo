@@ -1,9 +1,0 @@
- Schema Electric'l has errors; cannot apply it 
- Property Electric'l:Dry Transformer.Geometry redefines the characteristics of base property Electric'l:Transformer.Geometry 
- Property Electric'l:Dry Transformer.graphic redefines the characteristics of base property Electric'l:ElectricDevice.graphic 
- Class 'Electric'l:Transformer', for object property 'Electric'l:Dry Transformer.graphic', is not an FdoClass 
- Cannot change ordering for object property Electric'l:Maint History.work items 
- Cannot change identity properties for class Electric'l:Customer from (First Name, Last Name) to (Last Name); identity property change is not supported 
- Table {USER_DS}_apply_schema.public.conductor has rows; cannot add non nullable column conductivity to it 
- Column {USER_DS}_apply_schema.public.conductor.underground has conditional rows or rows with non-null values, cannot delete its property 
- Cannot change type of class Electric'l:'Address from Class to Feature 
