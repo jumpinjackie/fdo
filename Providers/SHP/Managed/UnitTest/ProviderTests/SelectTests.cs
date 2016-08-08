@@ -140,15 +140,15 @@ namespace unit_test.ProviderTests
                     IGeometry geometry = factory.CreateGeometryFromFgf(bytes);
                     
                     GeometryType type = geometry.DerivedType;
-                    Debug.Assert(type == GeometryType.GeometryType_Polygon, "Not a polygon");
+                    Debug.Assert(type == GeometryType.GeometryType_MultiPolygon, "Not a polygon");
 
-                    IPolygon poly = (IPolygon)geometry;
-                    ILinearRing ring = poly.ExteriorRing;
+                    IMultiPolygon poly = (IMultiPolygon)geometry;
+                    ILinearRing ring = poly[0].ExteriorRing;
                     IEnvelope envelope = ring.Envelope;
 
-                    for (int i = 0; i < poly.InteriorRingCount; i++)
+                    for (int i = 0; i < poly[0].InteriorRingCount; i++)
                     {
-                        ring = poly.GetInteriorRing(i);
+                        ring = poly[0].GetInteriorRing(i);
                         envelope = ring.Envelope;
                     }
 

@@ -484,7 +484,7 @@ namespace unit_test.ProviderTests
                 ////////////////////////////////////////////////////////////////
 
                 // Output to XML stream:
-                IoMemoryStream  xmlConfigStream = new IoMemoryStream() ;
+                IoMemoryStream  xmlConfigStream = new IoMemoryStream() ;                
                 XmlWriter xmlWriter = new XmlWriter(xmlConfigStream) ;
                 XmlFlags xmlFlags = new XmlFlags();
                 configSchema.WriteXml(xmlWriter, xmlFlags);
@@ -501,7 +501,7 @@ namespace unit_test.ProviderTests
         
                 // Verify the schema looks the way we want:
                 ////////////////////////////////////////////////////////////////
-                VerifySchema(conn);
+                //VerifySchema(conn);
 
                 // Disconnect and reconnect (to clear schema cache/overrides):
                 ////////////////////////////////////////////////////////////////
