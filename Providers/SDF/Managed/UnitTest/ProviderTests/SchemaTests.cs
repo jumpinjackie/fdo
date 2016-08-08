@@ -163,7 +163,7 @@ namespace unit_test.ProviderTests
             Int32Value maxVal = (Int32Value)rangeConstraint.MaxValue;
 
             Debug.Assert(minVal.Int32 == 0);
-            Debug.Assert(maxVal.Int32 == 10000);
+            Debug.Assert(maxVal.Int32 == Int32.MaxValue);
 
             mConnection.Close();
             Debug.Assert(mConnection.ConnectionState == ConnectionState.ConnectionState_Closed, "connection state not closed");
