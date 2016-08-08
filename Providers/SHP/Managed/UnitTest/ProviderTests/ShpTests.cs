@@ -411,7 +411,7 @@ namespace unit_test.ProviderTests
                         IMultiPolygon mpoly = (IMultiPolygon)geom;
                         for (int i = 0; i < mpoly.Count; i++)
                         {
-                            IPolygon poly = mpoly.get_Item(i);
+                            IPolygon poly = mpoly[i];
                             ILinearRing extRing = poly.ExteriorRing;
                             double area = SpatialUtility.ComputeLinearRingArea(extRing);
                             double length = SpatialUtility.ComputeLinearRingLength(extRing);
