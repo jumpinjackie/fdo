@@ -46,8 +46,8 @@ namespace unit_test.ProviderTests
             try
             {
                 IConnectionManager connectionManager = FeatureAccessManager.GetConnectionManager();
-                IConnection mConnection = connectionManager.CreateConnection("OSGeo.WMS.3.3");
-                mConnection.ConnectionString = @"FeatureServer=http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
+                IConnection mConnection = connectionManager.CreateConnection("OSGeo.WMS");
+                mConnection.ConnectionString = @"FeatureServer=http://mapconnect.ga.gov.au/wmsconnector/com.esri.wms.Esrimap?Servicename=GDA94_MapConnect_SDE_250kmap_WMS";
 
                 // connect state testing before connection openning
                 Debug.Assert(mConnection.ConnectionState == ConnectionState.ConnectionState_Closed, "connection state not closed");
@@ -64,7 +64,7 @@ namespace unit_test.ProviderTests
 
                 for (int i = 0; i < strColl.Count; i++)
                 {
-                    OSGeo.FDO.Common.StringElement strElem = strColl.get_Item(i);
+                    OSGeo.FDO.Common.StringElement strElem = strColl[i];
                     string strVal = strElem.String;
                     Console.WriteLine(strVal);
                 }
