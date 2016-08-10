@@ -30,22 +30,24 @@ class WmsTestSelect : public WmsTests
 {
     CPPUNIT_TEST_SUITE (WmsTestSelect);
 
-#ifdef _FDO_RUN_INTERNAL_TEST		
-    CPPUNIT_TEST (testServer1);
-    CPPUNIT_TEST (testNestedClip);
+#ifdef _FDO_RUN_INTERNAL_TEST    
+    
 #if 0
     // NOTE: disabled because the server cannot connect
+	CPPUNIT_TEST(testServer1);
+	CPPUNIT_TEST(testNestedClip);
     CPPUNIT_TEST (testHttpBasicAuthentification);
-#endif
-#endif
+	CPPUNIT_TEST(testURLEcoding);
+	CPPUNIT_TEST(testServer2);
+	CPPUNIT_TEST(testResample);
+	CPPUNIT_TEST(testClip);
+	CPPUNIT_TEST(testDefaultHeight);
 
-    CPPUNIT_TEST (testURLEcoding);
-    CPPUNIT_TEST (testServer2);
+#endif
+#endif
+	
     CPPUNIT_TEST (testServer3);
-    CPPUNIT_TEST (testServer4);
-    CPPUNIT_TEST (testResample);
-    CPPUNIT_TEST (testClip);
-    CPPUNIT_TEST (testDefaultHeight);
+    CPPUNIT_TEST (testServer4);            
     CPPUNIT_TEST (testCubeServer);
 
 #if 0
@@ -68,11 +70,11 @@ class WmsTestSelect : public WmsTests
     CPPUNIT_TEST (testLibcwms);
     CPPUNIT_TEST (testLinuxgurrl); 
     CPPUNIT_TEST (testCeoware2);
+	CPPUNIT_TEST(testMapConnect_SDE);
 #endif
 
     CPPUNIT_TEST (testNS_TOPO_1000);
-    CPPUNIT_TEST (testNS_CRS);
-    CPPUNIT_TEST (testMapConnect_SDE);
+    CPPUNIT_TEST (testNS_CRS);    
     CPPUNIT_TEST (testNS_TOPO_5000);
     CPPUNIT_TEST (testLioib);
     CPPUNIT_TEST (testKortPlandk);

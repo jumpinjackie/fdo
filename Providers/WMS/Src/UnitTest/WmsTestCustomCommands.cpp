@@ -109,7 +109,7 @@ void WmsTestCustomCommands::testSpacialFeatureClassName ()
         FdoPtr<FdoWmsIGetFeatureClassStyles> cmdGLS = static_cast<FdoWmsIGetFeatureClassStyles *> (connection->CreateCommand(FdoWmsCommandType_GetFeatureClassStyles));
         cmdGLS->SetFeatureClassName(L"Foundation coastl_1m"); // layer name is Foundation.barrierl_1m
         FdoStringsP styles = cmdGLS->Execute();
-        CPPUNIT_ASSERT(styles->GetCount() == 1);
+        CPPUNIT_ASSERT(styles->GetCount() == 2);
 #ifdef _DEBUG
 		for (int i = 0; i < styles->GetCount(); ++i)
 		{
