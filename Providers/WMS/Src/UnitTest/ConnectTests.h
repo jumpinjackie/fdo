@@ -29,21 +29,21 @@ class ConnectTests :  public WmsTests
 {
     CPPUNIT_TEST_SUITE (ConnectTests);
     CPPUNIT_TEST (TestConnection1);
-    CPPUNIT_TEST (TestConnection4);
-    CPPUNIT_TEST (TestConnection5);
+    CPPUNIT_TEST (TestConnection4);    
     CPPUNIT_TEST (TestConnection6);
-    CPPUNIT_TEST (TestConnection7);		// TODO: might need to replace server
-    CPPUNIT_TEST (TestConnection8);    
+    CPPUNIT_TEST (TestConnection7);		// TODO: might need to replace server        
     CPPUNIT_TEST (TestConnection9);
-    CPPUNIT_TEST (TestConnection10);
-    CPPUNIT_TEST (TestConnection12);
+    CPPUNIT_TEST (TestConnection10);    
     CPPUNIT_TEST (TestConnection13);    // TODO: might need to replace server
 
 #if 0
     CPPUNIT_TEST (TestConnection2);     // TODO: might need to replace server http://wms.jpl.nasa.gov/wms.cgi
     // NOTE: disabled because the server cannot connect
     CPPUNIT_TEST (TestConnection3);
+	CPPUNIT_TEST(TestConnection5);
+	CPPUNIT_TEST(TestConnection8);
     CPPUNIT_TEST (TestConnection11);
+	CPPUNIT_TEST(TestConnection12);
     // NOTE: disabled because the server respond with page not found
     CPPUNIT_TEST (TestConnection14);
     // NOTE: Currently the provider does not support "transfer" timeout. 
