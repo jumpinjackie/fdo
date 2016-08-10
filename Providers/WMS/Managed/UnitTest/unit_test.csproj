@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,7 +14,24 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OSGeo.FDO, Version=3.3.8078.0, Culture=neutral, processorArchitecture=x86">
@@ -68,6 +88,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderTests\CommandTests.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -92,20 +122,20 @@
       Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.dll .\
       Copy ..\..\..\..\..\..\Providers\WMS\Bin\Win32\Debug\WMSOverrides.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_3_1.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xml-xerces\c\Build\Win32\VC9\Release\xerces-c_3_1.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\Xalan-C_1_11.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\Xalan-C_1_11D.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\Xalan-C_1_11D.pdb .\
 
-      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Release\XalanMessages_1_11.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\XalanMessages_1_11D.dll .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\XalanMessages_1_11D.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc100-mt-gd-1_54.pdb .\
-
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.dll .\
-      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc100-mt-gd-1_54.pdb .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_date_time-vc140-mt-gd-1_59.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_thread-vc140-mt-gd-1_59.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_system-vc140-mt-gd-1_59.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_chrono-vc140-mt-gd-1_59.dll .\
+      Copy $(FDOTHIRDPARTY)\boost\stage\win32\debug\lib\boost_program_options-vc140-mt-gd-1_59.dll .\
 
       Copy $(FDOTHIRDPARTY)\gdal\bin\win32\debug\gdal110.dll .\
 
@@ -118,6 +148,6 @@
       Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
 
       Copy  ..\..\..\..\..\..\Providers\WMS\Managed\UnitTest\*.xml .\
-    </PreBuildEvent>
+</PreBuildEvent>
   </PropertyGroup>
 </Project>
