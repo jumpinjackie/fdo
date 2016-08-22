@@ -898,7 +898,7 @@ geometricTypes="7" geometryTypes="126912" hasElevation="False" hasMeasure="False
 </table>
 </tables>
 <error >
-Cannot set Feature Class Electric'l:Pole geometry to non-existent property Geometry </error>
+(Src\Sm\Lp\FeatureClass.cpp: 347) Cannot set Feature Class Electric'l:Pole geometry to non-existent property Geometry </error>
 </class>
 <class xsi:type="Class" name="Street" description=""
  baseClass="" abstract="False"
