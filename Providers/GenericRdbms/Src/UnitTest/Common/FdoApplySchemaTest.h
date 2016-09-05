@@ -32,8 +32,8 @@ class FdoApplySchemaTest : public CppUnit::TestCase
 {
   CPPUNIT_TEST_SUITE( FdoApplySchemaTest );
   CPPUNIT_TEST( TestSchema );
-  CPPUNIT_TEST( TestOverrides );
-  CPPUNIT_TEST( TestOverrideDefaults );
+  //CPPUNIT_TEST( TestOverrides );
+  //CPPUNIT_TEST( TestOverrideDefaults );
   CPPUNIT_TEST( TestOverrideErrors );
   CPPUNIT_TEST( TestLT );
   CPPUNIT_TEST( TestConfigDoc );
