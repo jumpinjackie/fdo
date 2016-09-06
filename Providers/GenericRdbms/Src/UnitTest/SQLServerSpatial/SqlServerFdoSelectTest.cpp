@@ -486,7 +486,7 @@ void SqlServerFdoSelectTest::SpatialGeogSchema( FdoIConnection* connection )
     props->Add( geomProp );
 
     geomProp = FdoGeometricPropertyDefinition::Create( L"Geog", L"" );
-    geomProp->SetSpatialContextAssociation(L"geogSC");
+    geomProp->SetSpatialContextAssociation(L"projSC");
     props->Add( geomProp );
     cmd->SetFeatureSchema( schema );
     cmd->Execute();
