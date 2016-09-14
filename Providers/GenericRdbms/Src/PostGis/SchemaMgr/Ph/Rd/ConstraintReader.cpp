@@ -171,18 +171,23 @@ FdoStringP FdoSmPhRdPostGisConstraintReader::GetString( FdoStringP tableName, Fd
                 // lose a left bracket after replacement
                 extraBrackets = 1;
 
-            fieldValue = defValue.Replace(L"= ANY ((ARRAY[",L"IN (");
+            fieldValue = defValue;
+            // handle check clause like '10'::integer. Need to remove the "'".
+            if (fieldValue.Contains(L"::bigint") || fieldValue.Contains(L"::integer"))
+                fieldValue = fieldValue.Replace(L"'", L"");
+            fieldValue = fieldValue.Replace(L"= ANY ((ARRAY[",L"IN (");
             fieldValue = fieldValue.Replace(L"= ANY (ARRAY[",L"IN (");
             fieldValue = fieldValue.Replace(L"::text[]",L"");
             fieldValue = fieldValue.Replace(L"::text",L"");
             fieldValue = fieldValue.Replace(L"::bigint",L"");
+            fieldValue = fieldValue.Replace(L"::integer", L"");
             fieldValue = fieldValue.Replace(L"::numeric",L"");
             fieldValue = fieldValue.Replace(L"::real",L"");
             fieldValue = fieldValue.Replace(L"::date",L"");
             fieldValue = fieldValue.Replace(L"::timestamp without time zone",L"");
             fieldValue = fieldValue.Replace(L"]",L")"); 
             fieldValue = fieldValue.Replace(L"double precision",L"");
-            fieldValue = fieldValue.Replace(L"character varying",L"");           
+            fieldValue = fieldValue.Replace(L"character varying",L"");
             fieldValue = fieldValue.Replace(L"::",L" ");
 
             if ( extraBrackets > 0 ) 
