@@ -1,0 +1,84 @@
+Error reading schema 'unsupported' from XML, xs:schema/@attributeFormDefault value 'qualified' not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/@elementFormDefault value 'unqualified' not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'blockDefault' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'finalDefault' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'include' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'import' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'simpleType' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'group' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'redefine' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'notation' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'xml:lang' in xs:schema not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'source' in xs:schema/xs:annotation/xs:documentation not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'xml:lang' in xs:schema/xs:annotation/xs:documentation not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:annotation/xs:appinfo/@source value 'http://www.autodesk.com' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'badinfo' in xs:schema/xs:annotation/xs:appinfo not supported by FDO. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement] type is from a different schema: 'http://www.w3.org/2001/XMLSchema'. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement] type must be 'BadElementType' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:element[@name=BadElement]/xs:unique[@name=BadElementAKey] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:element[@name=BadElement]/xs:unique[@name=BadElementAKey]/xs:field not supported by FDO. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=BadElement2] type must be 'BadElement2Type' when error level is high. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=CrossSchema] type is from a different schema: 'http://fdo.osgeo.org/schemas/feature/other'. 
+Error reading schema 'unsupported' from XML, global element xs:schema/xs:element[@name=ReferenceClass] type must be 'ReferenceClassType' when error level is high. 
+Error reading schema 'unsupported' from XML, attribute 'default' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:element[@name=ReferenceClass]/xs:key[@name=ReferenceClassKey] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:element[@name=ReferenceClass]/xs:key[@name=ReferenceClassKey]/xs:field not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'block' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'final' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'fixed' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'form' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'nillable' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'id' in xs:schema/xs:element[@name=ReferenceClass] not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=BadWithSimpleContent]/@mixed value 'true' not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'block' in xs:schema/xs:complexType[@name=BadWithSimpleContent] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'final' in xs:schema/xs:complexType[@name=BadWithSimpleContent] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'simpleContent' in xs:schema/xs:complexType[@name=BadWithSimpleContent] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadWithSimpleContent] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, attribute 'id' in xs:schema/xs:complexType[@name=BadWithSimpleContent] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadWithGroup] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'group' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'anyAttribute' in xs:schema/xs:complexType[@name=BadWithGroup] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadWithAll] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'all' in xs:schema/xs:complexType[@name=BadWithAll] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadWithChoice] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'choice' in xs:schema/xs:complexType[@name=BadWithChoice] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=ReferenceClass] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, abstract setting for  'xs:schema/xs:complexType[@name=ReferenceClass]' differs from that of its global element 'xs:schema/xs:element[@name=ReferenceClass]. 
+Error reading schema 'unsupported' from XML, attribute 'ref' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@ref=BadElement] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'complexType' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=Prop2] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'ref' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@ref=gml:_Geometry] not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'ref' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=Prop6] not supported by FDO. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=BadCount]/@maxOccurs value '5' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'maxLength' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction[base=xs:decimal] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'union' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
+Error reading schema 'unsupported' from XML, attribute 'final' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'list' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'pattern' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=DataProp]/xs:simpleType/xs:restriction not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'totalDigits' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=stringProp]/xs:simpleType/xs:restriction[base=xs:string] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'fractionDigits' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=stringProp]/xs:simpleType/xs:restriction[base=xs:string] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'maxLength' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=otherProp]/xs:simpleType/xs:restriction[base=xs:double] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'totalDigits' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=otherProp]/xs:simpleType/xs:restriction[base=xs:double] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'fractionDigits' in xs:schema/xs:complexType[@name=ReferenceClass]/xs:sequence/xs:element[@name=otherProp]/xs:simpleType/xs:restriction[base=xs:double] not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadSubClass] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/@mixed value 'true' not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/xs:extension/xs:sequence/xs:element[@name=assoc_prop]/xs:keyref[@name=assoc_prop] not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/xs:extension/xs:sequence/xs:element[@name=assoc_prop]/xs:keyref[@name=assoc_prop]/xs:selector not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'annotation' in xs:schema/xs:complexType[@name=BadSubClass]/xs:complexContent/xs:extension/xs:sequence/xs:element[@name=assoc_prop]/xs:keyref[@name=assoc_prop]/xs:selector/xs:field not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadSubClassWithGroup] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'group' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attributeGroup' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'attribute' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, element 'anyAttribute' in xs:schema/xs:complexType[@name=BadSubClassWithGroup]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadSubClassWithAll] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'all' in xs:schema/xs:complexType[@name=BadSubClassWithAll]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=BadSubClassWithChoice] name must end with 'Type' when error level is high. 
+Error reading schema 'unsupported' from XML, element 'choice' in xs:schema/xs:complexType[@name=BadSubClassWithChoice]/xs:complexContent/xs:extension not supported by FDO. 
+Error reading schema 'unsupported' from XML, complexType xs:schema/xs:complexType[@name=Type] name must end with 'Type' when error level is high. 

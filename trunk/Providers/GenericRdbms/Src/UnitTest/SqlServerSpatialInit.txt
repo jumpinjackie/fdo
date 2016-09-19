@@ -1,0 +1,1 @@
+provider=SQLServerSpatial;service=cng016546b;username=sa;password=Sql2016!;clean=true;

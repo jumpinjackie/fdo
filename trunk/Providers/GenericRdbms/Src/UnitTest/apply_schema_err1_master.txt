@@ -1,0 +1,2 @@
+ Schema Electric'l has errors; cannot apply it 
+ Cannot add schema Electric'l to database; it already exists 

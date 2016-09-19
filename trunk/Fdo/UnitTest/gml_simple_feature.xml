@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<wfs:FeatureCollection   xmlns:bsc="http://www.bsc-eoc.org/bsc"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:SITEID>NU001</bsc:SITEID>
+        <bsc:NAME>Digges Sound</bsc:NAME>
+        <bsc:LINK>http://www.bsc-eoc.org/iba/site.jsp?siteID=NU001</bsc:LINK>
+        <bsc:DATE.CREATED>2002-12-12</bsc:DATE.CREATED>
+      </bsc:IBA>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:SITEID>NU003</bsc:SITEID>
+        <bsc:NAME>Cape Searle</bsc:NAME>
+        <bsc:LINK>http://www.bsc-eoc.org/iba/site.jsp?siteID=NU003</bsc:LINK>
+        <bsc:DATE.CREATED>2002-12-12 19:19:19</bsc:DATE.CREATED>
+      </bsc:IBA>
+    </gml:featureMember>
+    <gml:featureMember>
+      <bsc:IBA>
+        <bsc:SITEID>NU003</bsc:SITEID>
+        <bsc:NAME>Cape Searle</bsc:NAME>
+        <bsc:LINK>http://www.bsc-eoc.org/iba/site.jsp?siteID=NU003</bsc:LINK>
+        <bsc:DATE.CREATED>19:19:19</bsc:DATE.CREATED>
+      </bsc:IBA>
+    </gml:featureMember>
+</wfs:FeatureCollection>
+
