@@ -1,0 +1,11 @@
+CASE = SAME
+MAPFILE = RegisterMappings.cpp
+MAPFUNC = RegisterMappings
+
+TYPE MDSYS.SDO_GEOMETRY AS SDO_GEOMETRY
+  VERSION = "$8.0"
+  HFILE = demo.h
+
+TYPE MDSYS.SDO_POINT_TYPE AS SDO_POINT_TYPE
+  VERSION = "$8.0"
+  HFILE = demo.h

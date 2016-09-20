@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<link href="styles/projectcontent.css" rel="stylesheet" type="text/css">
+	<title>FDO Open Source - Feature Descriptions</title>
+</head>
+<body>
+	<h1>FDO Open Source - Feature Descriptions</h1>
+	<p>This page describes the features referenced in the <a href="OSFeatureMatrix.html">feature matrix</a> page.</p>
+<table border="1" rules="all">
+<thead>
+<tr>
+	<th>Feature</th>
+	<th>Description</th>
+</tr>
+</thead>
+<tbody>
+	<tr>
+		<td colspan="2"><strong>Commands</strong></td>
+	</tr>
+	<tr>
+		<td>Connection</td>
+		<td>Connect to a data store.</td>
+	</tr>
+	<tr>
+		<td>Capabilities</td>
+		<td>Obtain information programmatically about the features that a provider supports and does not support.</td>
+	</tr>
+	<tr>
+		<td>Datastore</td>
+		<td>Create, destroy, and list data stores.</td>
+	</tr>
+	<tr>
+		<td>Describe Schema</td>
+		<td>Get a feature schema from a data store.</td>
+	</tr>
+	<tr>
+		<td>Apply Schema</td>
+		<td>Create a feature schema in a data store.</td>
+	</tr>
+	<tr>
+		<td>Spatial Context</td>
+		<td>Manage the properties required for the storage and manipulation of geometric data.</td>
+	</tr>
+	<tr>
+		<td>Select</td>
+		<td>Use the FDO filter and expression language to select a set of features from a data store.</td>
+	</tr>
+	<tr>
+		<td>Select Aggregates</td>
+		<td>Selects groups of features from the data store and applies filters to each of the groups.</td>
+	</tr>
+	<tr>
+		<td>Insert</td>
+		<td>Create an instantiation of a feature schema class and add it to the data store.</td>
+	</tr>
+	<tr>
+		<td>Update</td>
+		<td>Modify a feature in the data store.</td>
+	</tr>
+	<tr>
+		<td>Delete</td>
+		<td>Delete a feature from the data store.</td>
+	</tr>
+	<tr>
+		<td>SQL Command</td>
+		<td>Supports the execution of a SQL statement against an underlying RDBMS. Two execute methods are provided to distinguish between statements that return table data versus those that execute non query type operations. </td>
+	</tr>
+	<tr>
+		<td>Transactions</td>
+		<td>Supports transaction processing (begin, commit, rollback).</td>
+	</tr>
+	<tr>
+		<td>Locking</td>
+		<td>Persistent and transaction locks are supported. A persistent lock is applied, if a user requires exclusive access to an object for an extended period of time (for example, for multiple sessions). In contrast, a transaction lock is applied if exclusive access to an object is required for the duration of a transaction only. Such a transaction could cover the time required to change an object.</td>
+	</tr>
+	<tr>
+		<td>Long Transactions</td>
+		<td>Group conditional changes to one or more objects. A root long transaction represents permanent data. A descendent of a root long transaction represents revisions to objects where the revisions do not involve permanent changes to those objects.</td>
+	</tr>
+	<tr>
+		<td colspan="2"><strong>Schema Capabilities</strong></td>
+	</tr>
+	<tr>
+		<td>Schema Overrides</td>
+		<td>This allows FDO applications to customize the mappings between Feature (logical) Schemas and the Physical Schema of the Provider data store. Schema Mappings will be customized through Schema Override sets. Each Feature Schema may have a number of associated sets, one per FDO Provider that the Feature Schema might be applied against.</td>
+	</tr>
+	<tr>
+		<td>Foreign Schemas</td>
+		<td>Access data stored in schemas created by third-party applications. </td>
+	</tr>
+	<tr>
+		<td>Associations</td>
+		<td>Describes a relationship between classes. The association has properties that describe the linkage between the classes being associated. The linkage can be one-to-one or many-to-many.</td>
+	</tr>
+	<tr>
+		<td>Data Property Constraints</td>
+		<td>Specify that a property or list of properties taken together have unique values for all objects of that class in a data store. A unique constraint that is based on a list of two or more properties is called a composite unique constraint. This constraint type applies to all data property types except for Boolean, BLOB, and CLOB. A Boolean property can be included if it is part of a composite unique constraint.</td>
+	</tr>
+	<tr>
+		<td>Inheritance</td>
+		<td>Supports feature class hierarchies.</td>
+	</tr>
+	<tr>
+		<td>Object Properties</td>
+		<td>Supports class properties whose type is a class.</td>
+	</tr>
+	<tr>
+		<td colspan="2"><strong>Setup and Tools</strong></td>
+	</tr>
+	<tr>
+		<td>Feature Schema Serialization</td>
+		<td>Read and write Feature Schema, Schema Overrides and Spatial Context information using an OGC GML format.</td>
+	</tr>
+	<tr>
+		<td>Feature Data Serialization</td>
+		<td>Read and write feature data using an OGC GML format.</td>
+	</tr>
+	<tr>
+		<td>XML Configuration</td>
+		<td>Supports provider-specific configuration.</td>
+	</tr>
+	<!--
+	<tr>
+		<td>User Admin Tool</td>
+		<td>Add, drop, grant privileges to, and remove privileges from, a user.</td>
+	</tr>
+	<tr>
+		<td>Bulk Copy</td>
+		<td>Used to copy data from one FDO data store to another FDO data store.</td>
+	</tr>
+	-->
+</tbody>
+</table>
+</body>
+</html>

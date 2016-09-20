@@ -1,0 +1,72 @@
+##
+## Copyright (C) 2004-2006  Autodesk, Inc.
+## 
+## This library is free software; you can redistribute it and/or
+## modify it under the terms of version 2.1 of the GNU Lesser
+## General Public License as published by the Free Software Foundation.
+## 
+## This library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## Lesser General Public License for more details.
+## 
+## You should have received a copy of the GNU Lesser General Public
+## License along with this library; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+##
+
+s/y.tab.c/yyExpression.cpp/g
+/^# *line/s/\\/\\\\/g
+/^# *line/b
+s/#ifndef YYTOKENTYPE/#if 0 /g
+s/yy/fdo_expression_yy/g
+s/YY/FDO_EXPRESSION_YY/g
+s/getenv()/getenv(const char*)/g
+s/^char \*gettxt /static char \*gettxt/
+
+s/yyparse ()/yyparse(FdoParse* pParse)/g
+s/yyparse (void)/yyparse(FdoParse* pParse)/g
+
+s/yylex ()/yylex(pParse)/
+
+/int fdo_expression_yynerrs/D
+/int fdo_expression_yydebug/D
+/int fdo_expression_yyerrflag/D
+/int fdo_expression_yychar/D
+/^short \*fdo_expression_yyssp/D
+
+#Delete lines like --- short yyssa[YYINITDEPTH];
+/fdo_expression_yyssa\[/D
+
+#Delete lines like --- register short *yyssp;
+/register short \*fdo_expression_yyssp;/D
+
+#Delete lines like --- YYSTYPE yyvsa[YYINITDEPTH];
+/fdo_expression_yyvsa\[/D
+
+#Delete lines like --- register YYSTYPE *yyvsp;
+/register FDO_EXPRESSION_YYSTYPE \*fdo_expression_yyvsp;/D
+
+#Replace fdo_expression_yyssa with pParse->fdo_expression_yyss
+s/fdo_expression_yyssa/pParse->fdo_expression_yyss/g
+
+#Replace fdo_expression_yyvsa with pParse->fdo_expression_yyvs
+s/fdo_expression_yyvsa/pParse->fdo_expression_yyvs/g
+
+s/fdo_expression_yynerrs/pParse->fdo_expression_yynerrs/g
+s/fdo_expression_yydebug/pParse->fdo_expression_yydebug/g
+s/fdo_expression_yyerrflag/pParse->fdo_expression_yyerrflag/g
+s/fdo_expression_yychar/pParse->fdo_expression_yychar/g
+s/fdo_expression_yyssp/pParse->fdo_expression_yyssp/g
+s/typedef union _FDO_EXPRESSION_YYSTYPE/#if 0/g
+s/} FDO_EXPRESSION_YYSTYPE;/ /g
+/FDO_EXPRESSION_YYSTYPE fdo_expression_yyval;/D
+/FDO_EXPRESSION_YYSTYPE fdo_expression_yylval;/D
+s/fdo_expression_yyvsp/pParse->fdo_expression_yyvsp/g
+s/fdo_expression_yyval/pParse->fdo_expression_yyval/g
+s/fdo_expression_yylval/pParse->fdo_expression_yylval/g
+s/fdo_expression_yylineno/pParse->fdo_expression_yylineno/g
+s/fdo_expression_yyerror (/fdo_expression_yyerror(pParse,/g
+
+#Remove redundant changes for fdo_expression_yyvaluep
+s/pParse->fdo_expression_yyvaluep/fdo_expression_yyvaluep/g

@@ -1,0 +1,10 @@
+.deps
+.libs
+autogen.sh
+autom4te.cache
+config.log
+config.guess
+config.sub
+ltmain.sh
+Makefile
+Makefile.in

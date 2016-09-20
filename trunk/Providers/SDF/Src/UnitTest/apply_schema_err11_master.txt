@@ -1,0 +1,1 @@
+ Data Property DefaultError:BadDateFormat.InstallDate default value '01/01/2006' is not an FDO datetime; must be "TIMESTAMP 'YYYY-MM-DD HH24:MI:SS'", "DATE 'YYYY-MM-DD'" or "TIME 'HH24:MM:SS'" 
