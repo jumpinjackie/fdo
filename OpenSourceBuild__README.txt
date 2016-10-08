@@ -615,6 +615,8 @@ II. Build Notes
   
      To install Doxygen, refer to: http://www.stack.nl/~dimitri/doxygen/
      
+     Ensure that you are using doxygen 1.8.0 or later.
+     
      The FDO Doxygen documentation generation process will also use the "dot" 
      tool from graphviz to generate more advanced diagrams and graphs. 
      Graphviz is an "open-sourced", cross-platform graph drawing toolkit from 
