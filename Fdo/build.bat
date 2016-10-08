@@ -210,10 +210,10 @@ if exist ..\DocResources\comment.js copy ..\DocResources\comment.js Docs\HTML\FD
 if exist Docs\FDO_API.chm attrib -r Docs\FDO_API.chm
 if exist Docs\FDO_API_managed.chm attrib -r Docs\FDO_API_managed.chm
 pushd Docs\doc_src
-doxygen Doxyfile_FDOunmanaged
 doxygen Doxyfile_FDOunmanaged_CHM
-doxygen Doxyfile_FDOmanaged
+doxygen Doxyfile_FDOunmanaged
 doxygen Doxyfile_FDOmanaged_CHM
+doxygen Doxyfile_FDOmanaged
 popd
 
 :install_docs
