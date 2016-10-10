@@ -172,6 +172,7 @@ if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs
 if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\WFS
 if exist Docs\WFS_Provider_API.chm attrib -r Docs\WFS_Provider_API.chm
 pushd Docs\doc_src
+doxygen Doxyfile_WFS_CHM
 doxygen Doxyfile_WFS
 popd
 

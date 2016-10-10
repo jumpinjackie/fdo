@@ -183,6 +183,7 @@ if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs
 if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\ArcSDE
 if exist Docs\ArcSDE_Provider_API.chm attrib -r Docs\ArcSDE_Provider_API.chm
 pushd Docs\doc_src
+doxygen Doxyfile_ArcSDE_CHM
 doxygen Doxyfile_ArcSDE
 popd
 
