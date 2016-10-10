@@ -190,7 +190,9 @@ if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs
 if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\SHP_managed
 if exist Docs\SHP_Provider_API_managed.chm attrib -r Docs\SHP_Provider_API_managed.chm
 pushd Docs\doc_src
+doxygen Doxyfile_SHP_CHM
 doxygen Doxyfile_SHP
+doxygen Doxyfile_SHP_managed_CHM
 doxygen Doxyfile_SHP_managed
 popd
 
