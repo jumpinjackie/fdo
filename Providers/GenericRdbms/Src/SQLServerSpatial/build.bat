@@ -198,7 +198,9 @@ if exist ..\..\DocResources\comment.htm copy ..\..\DocResources\comment.htm Docs
 if exist ..\..\DocResources\comment.js copy ..\..\DocResources\comment.js Docs\HTML\SQLServer
 if exist Docs\SQLServerSpatial_Provider_API_managed.chm attrib -r Docs\SQLServerSpatial_Provider_API_managed.chm
 pushd Docs\doc_src
+doxygen Doxyfile_SQLServerSpatial_CHM
 doxygen Doxyfile_SQLServerSpatial
+doxygen Doxyfile_SQLServerSpatial_managed_CHM
 doxygen Doxyfile_SQLServerSpatial_managed
 popd
 popd
