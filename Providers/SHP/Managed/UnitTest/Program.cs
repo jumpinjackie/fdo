@@ -41,8 +41,8 @@ namespace unit_test
             suite.AddTest(new ConnectTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
             suite.AddTest(new BigPerformanceTests(new ShpTestProvider()));
             suite.AddTest(new DeleteTests(new ShpTestProvider()));
-            suite.AddTest(new SelectTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
-            suite.AddTest(new FilterTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
+            //suite.AddTest(new SelectTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
+            //suite.AddTest(new FilterTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
             suite.AddTest(new SpatialFilterTests(new ShpTestProvider(@"..\..\..\..\TestData\Ontario\")));
             suite.AddTest(new PerformanceTests(new ShpTestProvider(@"..\..\..\..\TestData\Florida\")));
             suite.AddTest(new SelectAggregatesTests(new ShpTestProvider(@"..\..\..\..\TestData\Testing\")));

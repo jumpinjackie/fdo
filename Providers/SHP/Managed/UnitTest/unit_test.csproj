@@ -41,7 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,28 +50,27 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OSGeo.FDO, Version=3.2.6195.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.dll</HintPath>
+    <Reference Include="OSGeo.FDO">
+      <HintPath>..\..\..\..\Fdo\Managed\Bin\Win64\Debug\OSGeo.FDO.dll</HintPath>
     </Reference>
-    <Reference Include="OSGeo.FDO.Common, Version=3.2.6195.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.Common.dll</HintPath>
+      <HintPath>..\..\..\..\Fdo\Managed\Bin\Win64\Debug\OSGeo.FDO.Common.dll</HintPath>
     </Reference>
-    <Reference Include="OSGeo.FDO.Geometry, Version=3.2.6195.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO.Geometry">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.Geometry.dll</HintPath>
+      <HintPath>..\..\..\..\Fdo\Managed\Bin\Win64\Debug\OSGeo.FDO.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="OSGeo.FDO.Providers.SHP.Overrides, Version=3.2.6195.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO.Providers.SHP.Overrides">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\debug\OSGeo.FDO.Providers.SHP.Overrides.dll</HintPath>
+      <HintPath>..\Bin\Debug64\OSGeo.FDO.Providers.SHP.Overrides.dll</HintPath>
     </Reference>
-    <Reference Include="OSGeo.FDO.Spatial, Version=3.2.6195.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OSGeo.FDO.Spatial">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Fdo\Managed\bin\win32\debug\OSGeo.FDO.Spatial.dll</HintPath>
+      <HintPath>..\..\..\..\Fdo\Managed\Bin\Win64\Debug\OSGeo.FDO.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -119,39 +118,39 @@
   -->
   <PropertyGroup>
     <PreBuildEvent>
-      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.dll .\
-      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.dll .\
-      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.dll .\
-      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.dll .\
-      Copy $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.dll .\
+      Copy $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.dll .\
 
-      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\SHPProvider.dll .\
-      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\SHPProvider.pdb .\
+      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win64\Debug\SHPProvider.dll .\
+      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win64\Debug\SHPProvider.pdb .\
 
-      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\ShpMessage.dll .\
+      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win64\Debug\ShpMessage.dll .\
 
-      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\ShpOverrides.dll .\
-      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win32\Debug\ShpOverrides.pdb .\
+      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win64\Debug\ShpOverrides.dll .\
+      Copy ..\..\..\..\..\..\Providers\SHP\Bin\Win64\Debug\ShpOverrides.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win32\VC9\Debug\xerces-c_3_1D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xerces\Build\Win64\VC9\Debug\xerces-c_3_1D.pdb .\
 
-      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\Xalan-C_1_11D.dll .\
-      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\Xalan-C_1_11D.pdb .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\Xalan-C_1_11D.dll .\
+      Copy $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\Xalan-C_1_11D.pdb .\
 
-      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\XalanMessages_1_11D.dll .\
-      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win32\vc9\Debug\XalanMessages_1_11D.pdb .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\XalanMessages_1_11D.dll .\
+      Copy  $(FDOTHIRDPARTY)\apache\xalan\Build\Win64\vc9\Debug\XalanMessages_1_11D.pdb .\
 
-      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDO.pdb .\
-      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOMessage.pdb .\
-      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOCommon.pdb .\
-      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOGeometry.pdb .\
-      Copy  $(FDO)\Unmanaged\Bin\Win32\Debug\FDOSpatial.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win64\Debug\FDO.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win64\Debug\FDOMessage.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win64\Debug\FDOCommon.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win64\Debug\FDOGeometry.pdb .\
+      Copy  $(FDO)\Unmanaged\Bin\Win64\Debug\FDOSpatial.pdb .\
 
       Copy  ..\..\..\..\..\..\Providers\SHP\Managed\UnitTest\*.xml .\
 
-      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.dll .\
-      Copy $(FDOUTILITIES)\ExpressionEngine\bin\win32\debug\ExpressionEngine.pdb .\
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\Win64\debug\ExpressionEngine.dll .\
+      Copy $(FDOUTILITIES)\ExpressionEngine\bin\Win64\debug\ExpressionEngine.pdb .\
 
 </PreBuildEvent>
   </PropertyGroup>
