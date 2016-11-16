@@ -36,8 +36,7 @@ class WmsTestCustomCommands : public WmsTests
 	
     CPPUNIT_TEST (testSpacialFeatureClassName);
 	CPPUNIT_TEST (testInvalidParamForStyle);
-	CPPUNIT_TEST (testInvalidParamForCRS);
-	CPPUNIT_TEST (testGetFeatureInfo);	
+	CPPUNIT_TEST (testInvalidParamForCRS);		
 
 #if 0
 	// NOTE: disabled because the server cannot connect
@@ -45,6 +44,7 @@ class WmsTestCustomCommands : public WmsTests
 	CPPUNIT_TEST(testGetFeatureStyles);
 	CPPUNIT_TEST(testGetFeatureCRSNames);
 	CPPUNIT_TEST(testGetFeatureInfoFormats);
+	CPPUNIT_TEST(testGetFeatureInfo);
 
 #endif
 
