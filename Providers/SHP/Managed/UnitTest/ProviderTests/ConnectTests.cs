@@ -250,7 +250,7 @@ namespace unit_test.ProviderTests
                 FeatureSchema schema = schemas[0];
                 Debug.Assert(schema.Name == "Default", "Expecting 'Default' schema");
                 ClassCollection classes = schema.Classes;
-                Debug.Assert(classes.Count == 6, "Expecting 6 classes");
+                Debug.Assert(classes.Count == 4, "Expecting 4 classes");
 
                 mConnection.Close();
                 Debug.Assert(mConnection.ConnectionState == ConnectionState.ConnectionState_Closed, "connection state not closed");
