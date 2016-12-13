@@ -4,7 +4,7 @@
 BUILDDIR=`pwd`
 BUILDLIST=${BUILDDIR}/filelist
 FDOBUILD=${BUILDDIR}/..
-FDOTARGET=/usr/local/fdo-4.1.0
+FDOTARGET=/usr/local/fdo-4.2.0
 
 # Clean original directory tree
 #
