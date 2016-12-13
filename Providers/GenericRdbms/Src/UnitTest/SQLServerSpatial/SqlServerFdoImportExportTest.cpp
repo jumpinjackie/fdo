@@ -33,7 +33,7 @@ void SqlServerFdoImportExportTest::set_provider()
 void SqlServerFdoImportExportTest::AddMapping( FdoXmlWriter* writer, FdoString* name, FdoInt32 providerVersion )
 {
     _addMapping( writer, name, 
-        (providerVersion == 3) ? L"OSGeo.SQLServerSpatial.4.1" :
+        (providerVersion == 3) ? L"OSGeo.SQLServerSpatial.4.2" :
         ((providerVersion == 2) ? L"OSGeo.SQLServerSpatial.2.1" : L"Autodesk.SQLServer.1.9"),
         L"http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" );
 }
@@ -43,7 +43,7 @@ FdoStringP SqlServerFdoImportExportTest::OverrideBend( FdoString* inFile )
     FdoStringP outFile = UnitTestUtil::GetOutputFileName( inFile);
 
     _overrideBend( inFile, outFile,
-        L"OSGeo.SQLServer.4.1",
+        L"OSGeo.SQLServer.4.2",
         L"http://www.autodesk.com/isd/fdo/SQLServerSpatialProvider" );
 
     return outFile;

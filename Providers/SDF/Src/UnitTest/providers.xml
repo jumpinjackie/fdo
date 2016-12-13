@@ -5,8 +5,8 @@
     <DisplayName>OSGeo FDO Provider for SDF</DisplayName>
     <Description>FDO Provider for SDF</Description>
     <IsManaged>False</IsManaged>
-    <Version>4.1.0.0</Version>
-    <FeatureDataObjectsVersion>4.1.0.0</FeatureDataObjectsVersion>
+    <Version>4.2.0.0</Version>
+    <FeatureDataObjectsVersion>4.2.0.0</FeatureDataObjectsVersion>
     <LibraryPath>.\SDFProvider.dll</LibraryPath>
   </FeatureProvider>
 </FeatureProviderRegistry>

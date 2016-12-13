@@ -22,7 +22,7 @@ TYPEBUILD=release
 TYPEARCHITECTURE=32
 TYPECONFIGURE=configure
 BUILDDOCS=no
-PREFIXVAL=/usr/local/fdo-4.1.0
+PREFIXVAL=/usr/local/fdo-4.2.0
 
 ### study parameters ###
 while test $# -gt 0

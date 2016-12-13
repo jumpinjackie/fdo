@@ -21,7 +21,7 @@ TYPEACTION=buildinstall
 TYPEBUILD=release
 TYPECONFIGURE=configure
 TYPEARCHITECTURE=32
-PREFIXVAL=/usr/local/fdo-4.1.0
+PREFIXVAL=/usr/local/fdo-4.2.0
 
 DEFMODIFY=no
 ALLENABLE=yes

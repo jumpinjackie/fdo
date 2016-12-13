@@ -2,7 +2,7 @@
 
 BUILDDIR=`pwd`
 FDOBUILD=/root/fdo
-FDOTARGET=/usr/fdo-4.1
+FDOTARGET=/usr/fdo-4.2
 
 pushd $FDOBUILD
 source ./setenvironment.sh

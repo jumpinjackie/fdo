@@ -36,7 +36,7 @@
 
 static PostGisConnectionUtil pPostGisConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pPostGisConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.PostgreSQL.4.1";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.PostgreSQL.4.2";
 
 void ForceLinuxLink()
 {

@@ -49,7 +49,7 @@
 
 static MySqlConnectionUtil pMySqlConnectionUtil;
 ConnectionUtil* UnitTestUtil::InfoUtilConnection = &pMySqlConnectionUtil;
-FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.MySQL.4.1";
+FdoString *UnitTestUtil::ActiveProviderName = L"OSGeo.MySQL.4.2";
 
 void ForceLinuxLink()
 {
