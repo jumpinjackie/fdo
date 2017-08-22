@@ -501,7 +501,7 @@ void FdoOwsHttpHandler::Proc()
         }
 
         // set SSL options
-        rv = curl_easy_setopt(curlHandle, CURLOPT_SSLVERSION, 1);
+        rv = curl_easy_setopt(curlHandle, CURLOPT_SSLVERSION, CURL_SSLVERSION_DEFAULT);
         if (rv != CURLE_OK) break;
 
         // Sets the timeout value. libcurl supports two kinds of timeout.
