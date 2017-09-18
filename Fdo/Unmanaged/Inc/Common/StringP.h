@@ -378,6 +378,14 @@ public:
 	FDO_API_COMMON long ToLong() const;
 
     /// \brief
+    /// Converts this string to a int64 integer.
+    /// 
+    /// \return
+    /// Returns the int64 integer (0 if the string is not numeric).
+    /// 
+    FDO_API_COMMON FdoInt64 ToInt64() const;
+
+    /// \brief
     /// Converts this string to a double precision number.
     /// 
     /// \return
