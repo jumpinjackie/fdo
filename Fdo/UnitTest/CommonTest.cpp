@@ -379,6 +379,15 @@ void CommonTest::testString()
     s1 = L"\\0Xff";
 	CPPUNIT_ASSERT( s1.ToLong() == 255 );
 
+    s1 = L"2555555556";
+    CPPUNIT_ASSERT(s1.ToLong() == 2147483647);
+
+    s1 = L"2555555556";
+    CPPUNIT_ASSERT(s1.ToInt64() == 2555555556);
+
+    s1 = L"0x7ffffffff";
+    CPPUNIT_ASSERT(s1.ToInt64() == 34359738367);
+
     wchar_t* blueString = L"Blue";
     s1 = FdoStringP( blueString, true );
     s1 = (FdoString*) s1;

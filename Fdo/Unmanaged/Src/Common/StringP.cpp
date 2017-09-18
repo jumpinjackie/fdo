@@ -465,6 +465,35 @@ long FdoStringP::ToLong() const
     return outVal;
 }
 
+FdoInt64 FdoStringP::ToInt64() const
+{
+    FdoInt64 outVal = 0;
+
+    // Try converting with assumption that string is in decimal format.
+    // Performancewise, this function favours decimal strings over hexadecimal strings.
+#ifdef _WIN32
+    outVal = _wtoi64(mwString);
+#else
+    outVal = wcstoll(mwString, NULL, 10);
+#endif
+
+    // Check if string is hexadecimal. For performance, skip check for "0x" if decimal
+    // conversion was successful.
+    if ((outVal == 0) && (wcscmp(mwString, L"0") != 0) && (Contains(L"0x") || Contains(L"0X"))) {
+        FdoString* str = mwString;
+
+        // Reliant and earlier versions of FDO serialized byte values as "\0x...". Support
+        // these strings by skipping over any leading \.
+        if (str[0] == '\\')
+            str++;
+
+        // Do conversion from hex string.
+        swscanf(str, L"%llx", &outVal);
+    }
+
+    return outVal;
+}
+
 FdoDouble FdoStringP::ToDouble() const
 {
 #ifdef _WIN32
