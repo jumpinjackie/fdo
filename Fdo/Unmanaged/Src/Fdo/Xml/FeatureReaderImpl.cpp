@@ -234,7 +234,7 @@ FdoInt32 FdoXmlFeatureReaderImpl::GetInt32(FdoString* propertyName)
 FdoInt64 FdoXmlFeatureReaderImpl::GetInt64(FdoString* propertyName) 
 {
     FdoStringP rv(GetString(propertyName));
-    return (FdoInt64)rv.ToLong();
+    return rv.ToInt64();
 }
 
 float FdoXmlFeatureReaderImpl::GetSingle(FdoString* propertyName) 
