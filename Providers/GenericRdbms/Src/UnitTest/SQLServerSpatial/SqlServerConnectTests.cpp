@@ -42,7 +42,18 @@ int SqlServerConnectTests::do_rdbi_init (rdbi_context_def** rdbi_context)
 
 int SqlServerConnectTests::do_rdbi_connect (rdbi_context_def* rdbi_context, int& id)
 {
-    FdoStringP odbcConnectString = FdoStringP::Format(L"DRIVER={%ls};MARS_Connection=yes;Trusted_Connection=yes;SERVER=%ls", (FdoString*)SqlServerConnectionUtil::GetNativeClient(), (FdoString*)(UnitTestUtil::GetEnviron("service")));
+#ifdef SQL_SERVER_XPLAT
+    //SQL Server 2017 for Linux obviously doesn't support integrated windows authentication, so use Uid/Pwd
+    FdoStringP odbcConnectString = FdoStringP::Format(L"DRIVER={%ls};MARS_Connection=yes;Uid=%ls;Pwd=%ls;SERVER=%ls",
+#else
+    FdoStringP odbcConnectString = FdoStringP::Format(L"DRIVER={%ls};MARS_Connection=yes;Trusted_Connection=yes;SERVER=%ls",
+#endif
+        (FdoString*)SqlServerConnectionUtil::GetNativeClient(), 
+#ifdef SQL_SERVER_XPLAT
+        (FdoString*)(UnitTestUtil::GetEnviron("username")),
+        (FdoString*)(UnitTestUtil::GetEnviron("password")),
+#endif
+        (FdoString*)(UnitTestUtil::GetEnviron("service")));
     if (rdbi_context->dispatch.capabilities.supports_unicode == 1)
     {
         return (rdbi_connectW (
