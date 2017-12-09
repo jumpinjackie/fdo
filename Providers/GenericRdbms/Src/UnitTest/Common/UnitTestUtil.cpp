@@ -1310,7 +1310,7 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                     fprintf( fp, "%ls", (FdoString*) subStr );
 
                     // Move current ptr to right of '( ... .cpp ... )'
-                    pMessage = nextPos3 + 1;
+                    pMessage = nextPos3 + 2; //2 spaces as there is a space between the ')' and the message
                     state = 0;
                     break;
 
@@ -1323,12 +1323,11 @@ void UnitTestUtil::PrintException( FdoException* e, FILE* fp, FdoBoolean stripLi
                 }
             }
 #else
-        message = message.Mid(0, message.GetLength() - 1);
         pMessage = message;
-		fprintf( fp, " %ls \n", pMessage );
+		fprintf( fp, "%ls\n", pMessage );
 #endif
 #else
-		fprintf( fp, " %ls \n", pMessage );
+		fprintf( fp, "%ls\n", pMessage );
 #endif
         }
         else {
