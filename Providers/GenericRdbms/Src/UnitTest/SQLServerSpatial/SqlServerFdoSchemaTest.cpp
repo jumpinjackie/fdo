@@ -126,3 +126,51 @@ void SqlServerFdoSchemaTest::SQLServerOverridesTest()
     CPPUNIT_ASSERT_MESSAGE("Data property column formula override incorrect", 0==wcscmp(dataColOverridesFromXML->GetFormula(), dataColOverrides->GetFormula()));
 
 }
+
+void SqlServerFdoSchemaTest::TestDateColumn()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_datecolumn"))
+            UnitTestUtil::DropDb(L"_datecolumn");
+        UnitTestUtil::CreateDB(false, false, L"_datecolumn", 0, false, false);
+
+        connection = UnitTestUtil::GetConnection(L"_datecolumn");
+
+        FdoStringP sql = L"CREATE TABLE dbo.Test (\n";
+        sql += L"    ID int IDENTITY(1, 1) NOT NULL,\n";
+        sql += L"    RecordDate date\n";
+        sql += L");";
+        
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        FdoPtr<FdoIDescribeSchema> cmdDescribe = (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDescribe->Execute();
+        FdoPtr<FdoFeatureSchema> sDbo = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = sDbo->GetClasses();
+        FdoPtr<FdoClassDefinition> klass = classes->GetItem(0);
+        
+        FdoPtr<FdoPropertyDefinitionCollection> props = klass->GetProperties();
+        FdoInt32 idx = props->IndexOf(L"RecordDate");
+        CPPUNIT_ASSERT(idx >= 0);
+        FdoPtr<FdoPropertyDefinition> invValue = props->GetItem(idx);
+        CPPUNIT_ASSERT(invValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoDataPropertyDefinition * dp = (FdoDataPropertyDefinition*)invValue.p;
+
+        connection->Close();
+    }
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        if (connection)
+            connection->Close();
+        TestCommonFail(exp);
+    }
+    catch (...)
+    {
+        if (connection) connection->Close();
+        throw;
+    }
+}
