@@ -28,7 +28,7 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( SqlServerFdoSchemaTest, "FdoSchemaTest");
 
 void SqlServerFdoSchemaTest::set_provider()
 {
-	UnitTestUtil::SetProvider( "SQLServerSpatial" );
+    UnitTestUtil::SetProvider( "SQLServerSpatial" );
 }
 
 void SqlServerFdoSchemaTest::SQLServerOverridesTest()
@@ -127,6 +127,59 @@ void SqlServerFdoSchemaTest::SQLServerOverridesTest()
 
 }
 
+void SqlServerFdoSchemaTest::TestReadOnlyComputedColumn()
+{
+    FdoPtr<FdoIConnection> connection;
+    try
+    {
+        printf(" >>> ... creating test database \n");
+        if (UnitTestUtil::DatastoreExists(L"_rocomputed"))
+            UnitTestUtil::DropDb(L"_rocomputed");
+
+        UnitTestUtil::CreateDB(false, false, L"_rocomputed", 0, false, false);
+
+        // Connect and create the test schema.
+        connection = UnitTestUtil::GetConnection(L"_rocomputed");
+
+        // Create our user if it doesn't exist and map it to this database
+        printf(" >>> ... creating table \n");
+
+        FdoStringP sql = L"CREATE TABLE dbo.Products (\n";
+        sql += L"    ProductID int IDENTITY(1, 1) NOT NULL,\n";
+        sql += L"    QtyAvailable smallint,\n";
+        sql += L"    UnitPrice money,\n";
+        sql += L"    InventoryValue AS QtyAvailable * UnitPrice\n";
+        sql += L");";
+
+        UnitTestUtil::Sql2Db(sql, connection);
+
+        FdoPtr<FdoIDescribeSchema> cmdDescribe = (FdoIDescribeSchema*)connection->CreateCommand(FdoCommandType_DescribeSchema);
+        FdoPtr<FdoFeatureSchemaCollection> schemas = cmdDescribe->Execute();
+        FdoPtr<FdoFeatureSchema> sDbo = schemas->GetItem(0);
+        FdoPtr<FdoClassCollection> classes = sDbo->GetClasses();
+        FdoPtr<FdoClassDefinition> klass = classes->GetItem(0);
+
+        FdoPtr<FdoPropertyDefinitionCollection> props = klass->GetProperties();
+        FdoPtr<FdoPropertyDefinition> invValue = props->FindItem(L"InventoryValue");
+        CPPUNIT_ASSERT(invValue->GetPropertyType() == FdoPropertyType_DataProperty);
+        FdoDataPropertyDefinition* dp = (FdoDataPropertyDefinition*)invValue.p;
+        CPPUNIT_ASSERT(dp->GetReadOnly());
+
+        connection->Close();
+    }
+    catch (FdoException *exp)
+    {
+        printf(" >>> Exception: %ls\n", exp->GetExceptionMessage());
+        if (connection)
+            connection->Close();
+        TestCommonFail(exp);
+    }
+    catch (...)
+    {
+        if (connection) connection->Close();
+        throw;
+    }
+}
 void SqlServerFdoSchemaTest::TestDateColumn()
 {
     FdoPtr<FdoIConnection> connection;
