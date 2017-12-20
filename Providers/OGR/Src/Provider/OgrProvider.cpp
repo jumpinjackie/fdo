@@ -770,7 +770,7 @@ FdoIFeatureReader* OgrConnection::Insert(FdoIdentifier* fcname, FdoPropertyValue
         throw FdoCommandException::Create(L"Current OGR connection does not support insert.");
 
     //create the new feature
-    OGRFeature* feature = new OGRFeature(layer->GetLayerDefn());
+    OGRFeature* feature = OGRFeature::CreateFeature(layer->GetLayerDefn());
     long fid = OGRNullFID;
     feature->SetFID(fid);
 
