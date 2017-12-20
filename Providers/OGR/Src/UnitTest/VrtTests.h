@@ -11,6 +11,9 @@ class VrtTests : public CppUnit::TestCase
     CPPUNIT_TEST(TestCase_DescribeInvalid2);
     CPPUNIT_TEST(TestCase_DescribeInvalid3);
     CPPUNIT_TEST(TestCase_DescribeSchema);
+    CPPUNIT_TEST(TestCase_DescribePolySql);
+    CPPUNIT_TEST(TestCase_SelectPolySql);
+    CPPUNIT_TEST(TestCase_SelectPolySqlExplicitProps);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -22,6 +25,9 @@ public:
     void TestCase_DescribeInvalid2();
     void TestCase_DescribeInvalid3();
     void TestCase_DescribeSchema();
+    void TestCase_DescribePolySql();
+    void TestCase_SelectPolySql();
+    void TestCase_SelectPolySqlExplicitProps();
 };
 
 #endif //VRT_TESTS_H

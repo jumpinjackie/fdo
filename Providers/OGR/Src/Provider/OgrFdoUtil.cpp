@@ -101,6 +101,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
         OGRFieldDefn* field = fdefn->GetFieldDefn(j);
         const char* name = field->GetNameRef();
         std::wstring wname = A2W_SLOW(name);
+        dot2tilde(wname);
 #if DEBUG
         printf("Attribute : %s\n", name);
 #endif
@@ -143,6 +144,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
     const char* geomname = layer->GetGeometryColumn();
     if (*geomname == 0) geomname = PROP_GEOMETRY;
     std::wstring wgeomname = A2W_SLOW(geomname);
+    dot2tilde(wgeomname);
 
     //check if property is on the optional requested property list
     FdoPtr<FdoIdentifier> found = (requestedProps) ? requestedProps->FindItem(wgeomname.c_str()) : NULL;
@@ -189,6 +191,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
     const char* idname = layer->GetFIDColumn();
     if (*idname == 0) idname = PROP_FID;
     std::wstring widname = A2W_SLOW(idname);
+    dot2tilde(widname);
 #if DEBUG
     printf ("Identity column : %s\n", idname);
 #endif
