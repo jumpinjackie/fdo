@@ -16,6 +16,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //  
 
+// Macro to throw the given FDO exception type with the GDAL/OGR error if CPLGetLastErrorMsg() returns a non-empty string
+#define CHECK_CPL_ERROR(FdoExceptionType) \
+    do { \
+        const char* cplErr = CPLGetLastErrorMsg(); \
+        if (cplErr && strlen(cplErr) > 0) \
+        { \
+            std::string err; \
+            err.append(cplErr); \
+            throw FdoExceptionType::Create(A2W_SLOW(err.c_str()).c_str()); \
+        } \
+    } while(0)
+
 class OGRLayer;
 class OgrConnection;
 

@@ -44,6 +44,8 @@
 
 #include <ogrsf_frmts.h>
 
+#define PROP_GEOMETRY       "GEOMETRY"
+#define PROP_FID            "FID"
 
 #define W2A_PROPNAME(x)  \
     size_t wlen = wcslen(x); \

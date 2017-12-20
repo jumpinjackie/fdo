@@ -48,6 +48,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OGRLayer* layer, FdoIdentifierColle
 FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer* layer, FdoIdentifierCollection* requestedProps)
 {
     OGRFeatureDefn* fdefn = layer->GetLayerDefn();
+    CHECK_CPL_ERROR(FdoSchemaException);
 
     const char* name = fdefn->GetName();
     std::wstring wname = A2W_SLOW(name);
@@ -140,7 +141,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
 
     //add geometry property -- this code assumes there is one
     const char* geomname = layer->GetGeometryColumn();
-    if (*geomname == 0) geomname = "GEOMETRY";
+    if (*geomname == 0) geomname = PROP_GEOMETRY;
     std::wstring wgeomname = A2W_SLOW(geomname);
 
     //check if property is on the optional requested property list
@@ -186,7 +187,7 @@ FdoClassDefinition* OgrFdoUtil::ConvertClass(OgrConnection* connection, OGRLayer
 
     //identity property
     const char* idname = layer->GetFIDColumn();
-    if (*idname == 0) idname = "FID";
+    if (*idname == 0) idname = PROP_FID;
     std::wstring widname = A2W_SLOW(idname);
 #if DEBUG
     printf ("Identity column : %s\n", idname);
@@ -239,7 +240,7 @@ void OgrFdoUtil::ConvertFeature(FdoPropertyValueCollection* src, OGRFeature* dst
         W2A_PROPNAME(propName);
 
         const char* geomname = layer->GetGeometryColumn();
-        if (*geomname == 0) geomname = "GEOMETRY";
+        if (*geomname == 0) geomname = PROP_GEOMETRY;
 
         FdoPtr<FdoValueExpression> value = pv->GetValue();
 

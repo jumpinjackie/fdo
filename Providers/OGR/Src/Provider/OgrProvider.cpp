@@ -31,6 +31,9 @@
 #include "Util/FdoExpressionEngineUtilDataReader.h"
 #include "Util/FdoExpressionEngineUtilFeatureReader.h"
 
+#define ENSURE_OPEN_CONNECTION() \
+    if (GetConnectionState() != FdoConnectionState_Open) throw FdoConnectionException::Create(L"Connection not open")
+
 #define PROP_NAME_DATASOURCE L"DataSource"
 #define PROP_NAME_READONLY   L"ReadOnly"
 #define RDONLY_FALSE         L"FALSE"
@@ -357,8 +360,7 @@ FdoString* OgrConnection::GetLocalizedName(FdoString* name)
 //corresponding FDO schema
 FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     if (!m_pSchema)
     {
@@ -372,7 +374,7 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
             FdoPtr<FdoClassCollection> classes = schema->GetClasses();
             
             int count = m_poDS->GetLayerCount();
-            
+            CHECK_CPL_ERROR(FdoSchemaException);
             for (int i=0; i<count; i++)
             {
                 OGRLayer* layer = m_poDS->GetLayer(i);
@@ -388,16 +390,14 @@ FdoFeatureSchemaCollection* OgrConnection::DescribeSchema()
 
 FdoISpatialContextReader* OgrConnection::GetSpatialContexts()
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     return new OgrSpatialContextReader(this);
 }
 
 FdoIFeatureReader* OgrConnection::Select(FdoIdentifier* fcname, FdoFilter* filter, FdoIdentifierCollection* props)
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     bool bbox = false;
     FdoString* fc = fcname->GetName();
@@ -508,8 +508,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
                                                 FdoFilter* groupFilter,
                                                 FdoIdentifierCollection* grouping)
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     FdoString* fc = fcname->GetName();
     std::string mbfc = W2A_SLOW(fc);
@@ -532,7 +531,10 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
         printf (" select distinct: %s\n", sql);
 #endif
         OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
-        
+        if (NULL == lr)
+        {
+            CHECK_CPL_ERROR(FdoCommandException);
+        }
         return new OgrDataReader(this, lr, NULL); 
     }
     else
@@ -571,27 +573,37 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
                 //Convert count() to count(*) as this is what OGR can handle
                 std::string mbexprs;
                 FdoPtr<FdoExpressionCollection> args = func->GetArguments();
-                if (args->GetCount() == 0)
+                FdoInt32 argCount = args->GetCount();
+                if (argCount == 0)
                 {
                     mbexprs = "COUNT(*)";
                 }
-
-                //General case -- convert expression to string and hope GDAL gets it
-                if (!mbexprs.length())
+                else if (argCount == 1) //We'll also permit count(expr) if expr is an identifier
                 {
-                    FdoString* exprs = expr->ToString();
-                    mbexprs = W2A_SLOW(exprs);
+                    FdoPtr<FdoExpression> firstArg = args->GetItem(0);
+                    if (firstArg->GetExpressionType() == FdoExpressionItemType_Identifier)
+                    {
+                        FdoIdentifier* ident = static_cast<FdoIdentifier*>(firstArg.p);
+                        mbexprs = "COUNT(";
+                        mbexprs += W2A_SLOW(ident->GetName());
+                        mbexprs += ")";
+                    }
                 }
         
-                char sql[512];
-        
-                sprintf(sql, "SELECT %s FROM '%s'", mbexprs.c_str(), mbfc.c_str());
-        #if DEBUG
-                printf (" select distinct: %s\n", sql);
-        #endif
-                OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
-                if (NULL != lr) //In the event of a bogus COUNT() expression
-                    return new OgrDataReader(this, lr, properties); 
+                if (!mbexprs.empty())
+                {
+                    char sql[512];
+
+                    sprintf(sql, "SELECT %s FROM '%s'", mbexprs.c_str(), mbfc.c_str());
+#if DEBUG
+                    printf(" select distinct: %s\n", sql);
+#endif
+                    OGRLayer* lr = m_poDS->ExecuteSQL(sql, NULL, NULL);
+                    if (NULL != lr) //In the event of a bogus COUNT() expression
+                        return new OgrDataReader(this, lr, properties);
+
+                    CHECK_CPL_ERROR(FdoCommandException);
+                }
             }
         }
     }
@@ -670,8 +682,7 @@ FdoIDataReader* OgrConnection::SelectAggregates(FdoIdentifier* fcname,
 
 FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoPropertyValueCollection* propvals)
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     FdoString* fc = fcname->GetName();
     std::string mbfc = W2A_SLOW(fc);
@@ -711,8 +722,7 @@ FdoInt32 OgrConnection::Update(FdoIdentifier* fcname, FdoFilter* filter, FdoProp
 
 FdoInt32 OgrConnection::Delete(FdoIdentifier* fcname, FdoFilter* filter)
 {
-    if (GetConnectionState() != FdoConnectionState_Open)
-        throw FdoConnectionException::Create(L"Connection not open");
+    ENSURE_OPEN_CONNECTION();
 
     FdoString* fc = fcname->GetName();
     std::string mbfc = W2A_SLOW(fc);
@@ -1033,7 +1043,7 @@ FdoInt32 OgrFeatureReader::GetInt32(FdoString* propertyName)
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
-    if ((*id == 0 && strcmp("FID", mbpropertyName) == 0)
+    if ((*id == 0 && strcmp(PROP_FID, mbpropertyName) == 0)
          || strcmp(id, mbpropertyName) == 0)
         return m_poFeature->GetFID();
      
@@ -1075,13 +1085,13 @@ bool OgrFeatureReader::IsNull(FdoString* propertyName)
     
     //check if we are asked for ID property
     const char* id = m_poLayer->GetFIDColumn();
-    if ((*id == 0 && strcmp("FID", mbpropertyName) == 0)
+    if ((*id == 0 && strcmp(PROP_FID, mbpropertyName) == 0)
          || strcmp(id, mbpropertyName) == 0)
         return false;
 
     //check if it is the geom property
     const char* geom = m_poLayer->GetGeometryColumn();
-    if ((*geom == 0 && strcmp("GEOMETRY", mbpropertyName) == 0)
+    if ((*geom == 0 && strcmp(PROP_GEOMETRY, mbpropertyName) == 0)
          || strcmp(geom, mbpropertyName) == 0)
         return m_poFeature->GetGeometryRef()==NULL;
     
