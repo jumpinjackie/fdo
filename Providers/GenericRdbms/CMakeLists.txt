@@ -24,10 +24,14 @@ include_directories(
 
 add_definitions( ${ODBC_DEFINITIONS} )
 
-
 add_subdirectory( Nls )
 add_subdirectory( Src )
 add_subdirectory( Inc )
 add_subdirectory( com )
 add_subdirectory( Docs )
 
+# NOTE: Doesn't include ExtendedCoordSys.txt, but that's okay as SQL Server Spatial provider is
+# not currently built for Linux
+install (DIRECTORY com/ 
+	DESTINATION lib/com 
+	FILES_MATCHING PATTERN "*.sql")
