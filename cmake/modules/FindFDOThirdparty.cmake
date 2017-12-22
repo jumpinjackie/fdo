@@ -105,7 +105,7 @@ mark_as_advanced( SQLITE_INCLUDE_DIR SQLITE_DIR )
 # Check for Boost or ThirdParty
 if( NOT INTERNAL_BOOST )
 	set (Boost_USE_MULTITHREADED ON) # be specific, we're after -mt versions of boost libs
-	find_package( Boost COMPONENTS thread date_time REQUIRED )
+	find_package( Boost COMPONENTS thread date_time chrono system program_options REQUIRED )
 else( NOT INTERNAL_BOOST )
 	set( LOCAL_BOOST TRUE )
 	set( Boost_INCLUDE_DIRS ${FDOTHIRDPARTY}/boost/ )
@@ -120,6 +120,9 @@ else( NOT INTERNAL_BOOST )
 	# but it still gives us /usr/lib. So set these directly
 	set (Boost_THREAD_LIBRARY ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi/libboost_thread.a )
 	set (Boost_DATE_TIME_LIBRARY ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi/libboost_date_time.a )
+	set (Boost_SYSTEM_LIBRARY ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi/libboost_system.a )
+	set (Boost_CHRONO_LIBRARY ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi/libboost_chrono.a )
+	set (Boost_PROGRAM_OPTIONS_LIBRARY ${FDOTHIRDPARTY}/boost/bin.v2/libs/thread/build/gcc-${gcc_compiler_version}/release/link-static/threading-multi/libboost_program_options.a )
 	set (Boost_THREAD_FOUND TRUE)
 	set (Boost_DATE_TIME_FOUND TRUE)
 	mark_as_advanced ( Boost_INCLUDE_DIRS Boost_THREAD_LIBRARY Boost_DATE_TIME_LIBRARY )

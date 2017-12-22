@@ -52,6 +52,7 @@ set( WMSProvider_SRCS
    FdoWmsGetImageFormats.cpp
    FdoWmsGetFeatureInfo.cpp
    FdoWmsGetFeatureInfoRequest.cpp
+   FdoWmsGetFeatureInfoFormats.cpp
 )
 
 add_library( WMSProvider-${FDO_VERSION} SHARED ${WMSProvider_SRCS} )

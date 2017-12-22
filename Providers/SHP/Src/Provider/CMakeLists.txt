@@ -49,6 +49,8 @@ set( SHPProvider_SRCS
    ShpScrollableFeatureReader.cpp
    ShpCompareHandler.cpp
    ShpImpExtendedSelect.cpp
+   ShpGetClassNamesCommand.cpp
+   ShpGetSchemaNamesCommand.cpp
 )
 
 add_library( SHPProvider-${FDO_VERSION} SHARED ${SHPProvider_SRCS} )
