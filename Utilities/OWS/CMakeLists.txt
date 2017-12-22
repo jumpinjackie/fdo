@@ -30,8 +30,8 @@ set( FdoOwsSrc_SRCS
     Src/FdoOwsGeographicBoundingBox.cpp
     Src/FdoOwsGeographicBoundingBoxCollection.cpp
     Src/FdoOwsOgcGeometrySerializer.cpp
-	Src/FdoOwsOperationsMetadata.cpp
-	Src/FdoOwsServiceProvider.cpp
+    Src/FdoOwsOperationsMetadata.cpp
+    Src/FdoOwsServiceProvider.cpp
 )
 
 
@@ -45,27 +45,18 @@ endif( NOT LOCAL_BOOST )
 
 add_library( FdoOws-${FDO_VERSION} SHARED ${FdoOws_LIB_SRCS} )
 
-if( LOCAL_OPENSSL )
 target_link_libraries( FdoOws-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ProvidersCommon
-	${Boost_THREAD_LIBRARY}
-	${CURL_LIBRARIES}
-	${OPENSSL_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	pthread
- )
-else ( LOCAL_OPENSSL )
-target_link_libraries( FdoOws-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ProvidersCommon
-	${Boost_THREAD_LIBRARY}
-	${CURL_LIBRARIES}
-	${OPENSSL_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	pthread
- )
-endif ( LOCAL_OPENSSL )
+    FDO-${FDO_VERSION}
+    ProvidersCommon
+    ${Boost_THREAD_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${CURL_LIBRARIES}
+    ${OPENSSL_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+    pthread
+)
 
 install( TARGETS FdoOws-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 
