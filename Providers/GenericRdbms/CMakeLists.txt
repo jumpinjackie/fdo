@@ -33,5 +33,5 @@ add_subdirectory( Docs )
 # NOTE: Doesn't include ExtendedCoordSys.txt, but that's okay as SQL Server Spatial provider is
 # not currently built for Linux
 install (DIRECTORY com/ 
-	DESTINATION lib/com 
+	DESTINATION ${LIB_INSTALL_DIR}/com 
 	FILES_MATCHING PATTERN "*.sql")
