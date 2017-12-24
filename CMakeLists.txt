@@ -7,8 +7,8 @@ cmake_policy( SET CMP0005 OLD )
 
 # Look first in internal modules
 set(CMAKE_MODULE_PATH 
-	${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+    )
 
 # Make CPack available to easy generate binary packages
 include(CPack)
@@ -21,10 +21,13 @@ set ( FDO_VERSION_RELEASE 0 )
 set ( FDO_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}" )
 set ( FDO_DISTRIBUTION_TEXT "Self compiled sources" CACHE STRING "Indicate compilation origin" )
 
+macro(install_symlink filepath sympath)
+    install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${filepath} ${sympath})")
+    install(CODE "message(\"-- Created symlink: ${sympath} -> ${filepath}\")")
+endmacro(install_symlink)
 
 # Override install directory to match what the automake build does (/usr/local, rather than /usr/local/lib)
 set( INSTALL_PREFIX "/usr/local/fdo-${FDO_VERSION}" )
-
 
 # FDO Build Directories
 set( FDO ${CMAKE_CURRENT_SOURCE_DIR}/Fdo )
@@ -32,20 +35,20 @@ set( FDOTHIRDPARTY ${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty )
 set( FDOUTILITIES ${CMAKE_CURRENT_SOURCE_DIR}/Utilities )
 
 if( UNIX )
-	add_definitions( -DFULLPROTO -fPIC -DPIC )
+    add_definitions( -DFULLPROTO -fPIC -DPIC )
 endif( UNIX )
 
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
-	add_definitions( -DLINUX -DLINUX_IA32 -pthread )
+    add_definitions( -DLINUX -DLINUX_IA32 -pthread )
 endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	add_definitions( -D__USE_GNU -Wno-deprecated )
-	set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
-	if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-		set ( CMAKE_CXX_FLAGS "-m64" )
-	else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-		set ( CMAKE_CXX_FLAGS "-m32" )
+    add_definitions( -D__USE_GNU -Wno-deprecated )
+    set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
+    if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        set ( CMAKE_CXX_FLAGS "-m64" )
+    else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+        set ( CMAKE_CXX_FLAGS "-m32" )
   endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 

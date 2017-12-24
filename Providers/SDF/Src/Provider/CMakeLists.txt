@@ -1,13 +1,13 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UNMANAGED_NLS_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../Utils
-	${UTILITIES_SQLITEINTERFACE_INCLUDE_DIR}
-	${UTILITIES_EXPRESSION_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UNMANAGED_NLS_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../Utils
+    ${UTILITIES_SQLITEINTERFACE_INCLUDE_DIR}
+    ${UTILITIES_EXPRESSION_INCLUDE_DIR}
+    )
 
 set( SDFProvider_SRCS
    RTree.cpp
@@ -64,27 +64,27 @@ set( SDFProvider_SRCS
 add_library( SDFProvider-${FDO_VERSION} SHARED ${SDFProvider_SRCS} )
 
 target_link_libraries( SDFProvider-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ExpressionEngine-${FDO_VERSION}
- )
+    FDO-${FDO_VERSION}
+    ExpressionEngine-${FDO_VERSION}
+)
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SDFProvider-${FDO_VERSION}
-		-Wl,-whole-archive
-    	ProvidersCommon
-		SDFUtils	
-		SQLiteInterface
-		sqlite3fdo
-		-Wl,-no-whole-archive
-		)
+    target_link_libraries( SDFProvider-${FDO_VERSION}
+        -Wl,-whole-archive
+        ProvidersCommon
+        SDFUtils	
+        SQLiteInterface
+        sqlite3fdo
+        -Wl,-no-whole-archive
+        )
 else( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SDFProvider-${FDO_VERSION}
-    	ProvidersCommon
-		SDFUtils	
-		SQLiteInterface
-		sqlite3fdo
-		)
+    target_link_libraries( SDFProvider-${FDO_VERSION}
+        ProvidersCommon
+        SDFUtils	
+        SQLiteInterface
+        sqlite3fdo
+        )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 install( TARGETS SDFProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider.so )

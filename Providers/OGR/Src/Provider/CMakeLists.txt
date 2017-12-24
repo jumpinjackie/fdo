@@ -1,11 +1,11 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${UTILITIES_EXPRESSION_INCLUDE_DIR}
-	${GDAL_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${UTILITIES_EXPRESSION_INCLUDE_DIR}
+    ${GDAL_INCLUDE_DIR}
+    )
 
 set( OGRProvider_SRCS
     OgrFdoUtil.cpp
@@ -18,10 +18,11 @@ set( OGRProvider_SRCS
 add_library( OGRProvider-${FDO_VERSION} SHARED ${OGRProvider_SRCS} )
 
 target_link_libraries( OGRProvider-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ExpressionEngine-${FDO_VERSION}
-	ProvidersCommon
-	${GDAL_LIBRARY}
- )
+    FDO-${FDO_VERSION}
+    ExpressionEngine-${FDO_VERSION}
+    ProvidersCommon
+    ${GDAL_LIBRARY}
+)
 
 install( TARGETS OGRProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOGRProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOGRProvider.so )

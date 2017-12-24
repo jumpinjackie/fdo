@@ -1,11 +1,11 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	${UTILITIES_OWS_INCLUDE_DIR}
-	${GDAL_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+    ${UTILITIES_OWS_INCLUDE_DIR}
+    ${GDAL_INCLUDE_DIR}
+    )
 
 set( WMSProvider_SRCS
    FdoWmsCommandCapabilities.cpp
@@ -58,12 +58,13 @@ set( WMSProvider_SRCS
 add_library( WMSProvider-${FDO_VERSION} SHARED ${WMSProvider_SRCS} )
 
 target_link_libraries( WMSProvider-${FDO_VERSION}
-	FDO-${FDO_VERSION}
-	ProvidersCommon
-	FdoOws-${FDO_VERSION}
-	WMSOverrides-${FDO_VERSION}
-	${GDAL_LIBRARY}
-	pthread
- )
+    FDO-${FDO_VERSION}
+    ProvidersCommon
+    FdoOws-${FDO_VERSION}
+    WMSOverrides-${FDO_VERSION}
+    ${GDAL_LIBRARY}
+    pthread
+)
 
 install( TARGETS WMSProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider.so )
