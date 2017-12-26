@@ -69,7 +69,7 @@ GDALDataset* FdoWmsRasterGdal::_getDataset() {
         // GDAL as a virtual mem file
         char vfileName[64];
         sprintf(vfileName, "/vsimem/%d", (FdoSize)this);
-        FILE *fp = VSIFileFromMemBuffer(vfileName, m_rasterBuffer, m_rasterBufferSize, FALSE );
+        VSILFILE *fp = VSIFileFromMemBuffer(vfileName, m_rasterBuffer, m_rasterBufferSize, FALSE );
         if( fp == NULL )
             throw FdoException::Create(FdoException::NLSGetMessage(FDO_57_UNEXPECTEDERROR, "Unexpected error encountered."));
         VSIFCloseL( fp );

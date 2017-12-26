@@ -174,7 +174,7 @@ FdoConnectionState OgrConnection::Open()
     delete tmp;
     
 #if DEBUG
-    printf ("Attempt OGR connect to %s \n", mbtmp);
+    printf ("Attempt OGR connect to %s \n", mbtmp.c_str());
     printf ("ReadOnly %d\n", (int)readonly);
 #endif
     
