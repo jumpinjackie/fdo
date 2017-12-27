@@ -27,9 +27,9 @@ set_target_properties( OGRUnitTest
     PROPERTIES OUTPUT_NAME UnitTest )
 
 target_link_libraries( OGRUnitTest
-    OGRProvider-${FDO_VERSION}
+    OGRProvider${FDO_VERSION_SUFFIX}
     TestCommon
     ProvidersCommon
     ${CPPUNIT_LIBRARIES}
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
 )

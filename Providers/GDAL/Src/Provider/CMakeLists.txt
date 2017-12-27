@@ -50,14 +50,14 @@ set( GRFPProvider_SRCS
    stdafx.cpp
 )
 
-add_library( GRFPProvider-${FDO_VERSION} SHARED ${GRFPProvider_SRCS} )
+add_library( GRFPProvider${FDO_VERSION_SUFFIX} SHARED ${GRFPProvider_SRCS} )
 
-target_link_libraries( GRFPProvider-${FDO_VERSION}
-    GRFPOverrides-${FDO_VERSION}
+target_link_libraries( GRFPProvider${FDO_VERSION_SUFFIX}
+    GRFPOverrides${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
     ${GDAL_LIBRARY}
 )
 
-install( TARGETS GRFPProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider.so )
+install( TARGETS GRFPProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider.so )

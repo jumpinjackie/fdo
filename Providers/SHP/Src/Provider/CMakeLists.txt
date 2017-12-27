@@ -53,30 +53,30 @@ set( SHPProvider_SRCS
    ShpGetSchemaNamesCommand.cpp
 )
 
-add_library( SHPProvider-${FDO_VERSION} SHARED ${SHPProvider_SRCS} )
+add_library( SHPProvider${FDO_VERSION_SUFFIX} SHARED ${SHPProvider_SRCS} )
 
-target_link_libraries( SHPProvider-${FDO_VERSION}
-    SHPOverrides-${FDO_VERSION}
-    FDO-${FDO_VERSION}
+target_link_libraries( SHPProvider${FDO_VERSION_SUFFIX}
+    SHPOverrides${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    ExpressionEngine-${FDO_VERSION}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SHPProvider-${FDO_VERSION}
+    target_link_libraries( SHPProvider${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         SHPRead
         SHPSpatialIndex
         -Wl,-no-whole-archive
         )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SHPProvider-${FDO_VERSION}
+    target_link_libraries( SHPProvider${FDO_VERSION_SUFFIX}
         SHPRead
         SHPSpatialIndex
         )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-add_dependencies( SHPProvider-${FDO_VERSION} ShpMessage )
+add_dependencies( SHPProvider${FDO_VERSION_SUFFIX} ShpMessage )
 
-install( TARGETS SHPProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider.so )
+install( TARGETS SHPProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider.so )

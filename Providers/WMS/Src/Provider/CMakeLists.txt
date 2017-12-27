@@ -55,16 +55,16 @@ set( WMSProvider_SRCS
    FdoWmsGetFeatureInfoFormats.cpp
 )
 
-add_library( WMSProvider-${FDO_VERSION} SHARED ${WMSProvider_SRCS} )
+add_library( WMSProvider${FDO_VERSION_SUFFIX} SHARED ${WMSProvider_SRCS} )
 
-target_link_libraries( WMSProvider-${FDO_VERSION}
-    FDO-${FDO_VERSION}
+target_link_libraries( WMSProvider${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    FdoOws-${FDO_VERSION}
-    WMSOverrides-${FDO_VERSION}
+    FdoOws${FDO_VERSION_SUFFIX}
+    WMSOverrides${FDO_VERSION_SUFFIX}
     ${GDAL_LIBRARY}
     pthread
 )
 
-install( TARGETS WMSProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider.so )
+install( TARGETS WMSProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider.so )

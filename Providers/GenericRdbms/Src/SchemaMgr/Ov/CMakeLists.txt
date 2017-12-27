@@ -22,25 +22,25 @@ set( SchemaMgr_OV_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( SchemaMgr_OV-${FDO_VERSION} SHARED ${SchemaMgr_OV_LIB_SRCS} )
-add_dependencies( SchemaMgr_OV-${FDO_VERSION} fdordbmsmsg )
+add_library( SchemaMgr_OV${FDO_VERSION_SUFFIX} SHARED ${SchemaMgr_OV_LIB_SRCS} )
+add_dependencies( SchemaMgr_OV${FDO_VERSION_SUFFIX} fdordbmsmsg )
 
-target_link_libraries( SchemaMgr_OV-${FDO_VERSION} 
-	FDO-${FDO_VERSION} 
+target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX} 
+	FDO${FDO_VERSION_SUFFIX} 
 	)
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SchemaMgr_OV-${FDO_VERSION}
+	target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX}
 		-Wl,-whole-archive
 		SmOverrides
 		-Wl,-no-whole-archive
 		)
 else( CMAKE_COMPILER_IS_GNUCXX )
-	target_link_libraries( SchemaMgr_OV-${FDO_VERSION}
+	target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX}
 		-Wl,-whole-archive
 		SmOverrides
 		)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-install( TARGETS SchemaMgr_OV-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS SchemaMgr_OV${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
 

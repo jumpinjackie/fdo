@@ -284,19 +284,19 @@ set( FDO_SRCS
     ${FDONLS_SRCS}
     )
 
-add_library( FDO-${FDO_VERSION} SHARED ${FDO_SRCS} )
-add_dependencies( FDO-${FDO_VERSION}
+add_library( FDO${FDO_VERSION_SUFFIX} SHARED ${FDO_SRCS} )
+add_dependencies( FDO${FDO_VERSION_SUFFIX}
     McToMsf 
     FDOMessage 
     SchemaFromInternal 
     ProcessedFiles )
 
-target_link_libraries( FDO-${FDO_VERSION}
+target_link_libraries( FDO${FDO_VERSION_SUFFIX}
     ${XALANC_LIBRARIES}
     ${XERCESC_LIBRARIES}
     pthread
     dl
     )
 
-install( TARGETS FDO-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO.so )
+install( TARGETS FDO${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO.so )

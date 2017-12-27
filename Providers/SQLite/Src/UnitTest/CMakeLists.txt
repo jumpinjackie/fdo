@@ -32,9 +32,9 @@ set_target_properties( SQLiteUnitTest
 
 target_link_libraries( SQLiteUnitTest
     TestCommon
-    ExpressionEngine-${FDO_VERSION}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
     ${CPPUNIT_LIBRARIES}
     dl
 )

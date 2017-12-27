@@ -28,11 +28,11 @@ set_target_properties( WMSUnitTest
     PROPERTIES OUTPUT_NAME UnitTest )
 
 target_link_libraries( WMSUnitTest
-    WMSProvider-${FDO_VERSION}
-    WMSOverrides-${FDO_VERSION}
+    WMSProvider${FDO_VERSION_SUFFIX}
+    WMSOverrides${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${CPPUNIT_LIBRARIES}
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
     pthread_nonshared
     pthread
 )

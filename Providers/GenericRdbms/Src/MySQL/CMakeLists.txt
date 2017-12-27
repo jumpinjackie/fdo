@@ -9,10 +9,10 @@ set( FdoMySQL_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( FdoMySQL-${FDO_VERSION} SHARED ${FdoMySQL_LIB_SRCS} )
+add_library( FdoMySQL${FDO_VERSION_SUFFIX} SHARED ${FdoMySQL_LIB_SRCS} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoMySQL-${FDO_VERSION}
+    target_link_libraries( FdoMySQL${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         FdoRdbms
         rdbi
@@ -37,7 +37,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
         -Wl,-no-whole-archive
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoMySQL-${FDO_VERSION}
+    target_link_libraries( FdoMySQL${FDO_VERSION_SUFFIX}
         FdoRdbms
         rdbi
         mysqldr
@@ -61,13 +61,13 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-target_link_libraries( FdoMySQL-${FDO_VERSION}
+target_link_libraries( FdoMySQL${FDO_VERSION_SUFFIX}
     ${MYSQL_LIBRARIES}
     ${ZLIB_LIBRARIES}
-    FDO-${FDO_VERSION}
-    ExpressionEngine-${FDO_VERSION}
-    SchemaMgr_OV-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
+    SchemaMgr_OV${FDO_VERSION_SUFFIX}
 )
 
-install( TARGETS FdoMySQL-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoMySQL-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoMySQL.so )
+install( TARGETS FdoMySQL${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoMySQL${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoMySQL.so )

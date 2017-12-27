@@ -43,10 +43,10 @@ if( NOT LOCAL_BOOST )
 	link_directories( ${Boost_LIBRARY_DIRS} )
 endif( NOT LOCAL_BOOST )
 
-add_library( FdoOws-${FDO_VERSION} SHARED ${FdoOws_LIB_SRCS} )
+add_library( FdoOws${FDO_VERSION_SUFFIX} SHARED ${FdoOws_LIB_SRCS} )
 
-target_link_libraries( FdoOws-${FDO_VERSION}
-    FDO-${FDO_VERSION}
+target_link_libraries( FdoOws${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${Boost_THREAD_LIBRARY}
     ${Boost_SYSTEM_LIBRARY}
@@ -58,5 +58,5 @@ target_link_libraries( FdoOws-${FDO_VERSION}
     pthread
 )
 
-install( TARGETS FdoOws-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
+install( TARGETS FdoOws${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
 

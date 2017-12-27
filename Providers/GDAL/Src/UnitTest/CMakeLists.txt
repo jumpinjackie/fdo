@@ -44,10 +44,10 @@ set_target_properties( GDALUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )
 
 target_link_libraries( GDALUnitTest
-    GRFPOverrides-${FDO_VERSION}
+    GRFPOverrides${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${CPPUNIT_LIBRARIES}
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
 )
 
 # Ensure test data is copied to where the unit test binary is generated

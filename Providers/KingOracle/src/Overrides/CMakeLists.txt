@@ -15,10 +15,10 @@ set (KingOracleOverridesSrc_SRCS
     FdoKgOraPropertyDefinition.cpp
 )
 
-add_library( KingOracleOverridesSrc-${FDO_VERSION} SHARED ${KingOracleOverridesSrc_SRCS} )
-add_dependencies( KingOracleOverridesSrc-${FDO_VERSION} KgOraMessage )
+add_library( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} SHARED ${KingOracleOverridesSrc_SRCS} )
+add_dependencies( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} KgOraMessage )
 
-target_link_libraries( KingOracleOverridesSrc-${FDO_VERSION} 
-    FDO-${FDO_VERSION}
+target_link_libraries( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} 
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
 )

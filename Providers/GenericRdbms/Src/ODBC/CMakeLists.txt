@@ -11,10 +11,10 @@ set( FdoODBC_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( FdoODBC-${FDO_VERSION} SHARED ${FdoODBC_LIB_SRCS} )
+add_library( FdoODBC${FDO_VERSION_SUFFIX} SHARED ${FdoODBC_LIB_SRCS} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoODBC-${FDO_VERSION}
+    target_link_libraries( FdoODBC${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         genericrdbms_util
         rdbi
@@ -39,7 +39,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
         -Wl,-no-whole-archive
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoODBC-${FDO_VERSION}
+    target_link_libraries( FdoODBC${FDO_VERSION_SUFFIX}
         FdoRdbms
         FdoRdbmsODBC_Fdo
         FdoRdbmsODBC_SchemaMgr_Lp
@@ -62,16 +62,16 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-target_link_libraries( FdoODBC-${FDO_VERSION}
+target_link_libraries( FdoODBC${FDO_VERSION_SUFFIX}
     ${ODBC_LIBRARY}
     ${ODBCINST_LIBRARY}
-    FDO-${FDO_VERSION}
-    ExpressionEngine-${FDO_VERSION}
-    SchemaMgr_OV-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
+    SchemaMgr_OV${FDO_VERSION_SUFFIX}
     rdbi
     Gdbi
     FdoRdbms
 )
 
-install( TARGETS FdoODBC-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoODBC-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoODBC.so )
+install( TARGETS FdoODBC${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoODBC${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoODBC.so )

@@ -61,15 +61,15 @@ set( SDFProvider_SRCS
    SDF.cpp
 )
 
-add_library( SDFProvider-${FDO_VERSION} SHARED ${SDFProvider_SRCS} )
+add_library( SDFProvider${FDO_VERSION_SUFFIX} SHARED ${SDFProvider_SRCS} )
 
-target_link_libraries( SDFProvider-${FDO_VERSION}
-    FDO-${FDO_VERSION}
-    ExpressionEngine-${FDO_VERSION}
+target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SDFProvider-${FDO_VERSION}
+    target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         ProvidersCommon
         SDFUtils	
@@ -78,7 +78,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
         -Wl,-no-whole-archive
         )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SDFProvider-${FDO_VERSION}
+    target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
         ProvidersCommon
         SDFUtils	
         SQLiteInterface
@@ -86,5 +86,5 @@ else( CMAKE_COMPILER_IS_GNUCXX )
         )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-install( TARGETS SDFProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider.so )
+install( TARGETS SDFProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSDFProvider.so )

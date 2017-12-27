@@ -39,7 +39,7 @@ endif( LOCAL_CPPUNIT )
 
 target_link_libraries( UnitTest
     cppunit
-    FDO-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
     dl
 )
 

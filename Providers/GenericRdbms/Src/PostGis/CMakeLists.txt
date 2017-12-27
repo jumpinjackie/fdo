@@ -9,10 +9,10 @@ set( FdoPostGis_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( FdoPostgreSQL-${FDO_VERSION} SHARED ${FdoPostGis_LIB_SRCS} )
+add_library( FdoPostgreSQL${FDO_VERSION_SUFFIX} SHARED ${FdoPostGis_LIB_SRCS} )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
+    target_link_libraries( FdoPostgreSQL${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         FdoRdbms
         rdbi
@@ -35,7 +35,7 @@ if( CMAKE_COMPILER_IS_GNUCXX )
         -Wl,-no-whole-archive
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
+    target_link_libraries( FdoPostgreSQL${FDO_VERSION_SUFFIX}
         FdoRdbms
         rdbi
         postgisdr
@@ -57,15 +57,15 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-target_link_libraries( FdoPostgreSQL-${FDO_VERSION}
+target_link_libraries( FdoPostgreSQL${FDO_VERSION_SUFFIX}
     ${POSTGRESQL_LIBRARIES}
     ${ZLIB_LIBRARIES}
-    FDO-${FDO_VERSION}
-    ExpressionEngine-${FDO_VERSION}
+    FDO${FDO_VERSION_SUFFIX}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    SchemaMgr_OV-${FDO_VERSION}
+    SchemaMgr_OV${FDO_VERSION_SUFFIX}
     SchemaMgr
 )
 
-install( TARGETS FdoPostgreSQL-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoPostgreSQL-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoPostgreSQL.so )
+install( TARGETS FdoPostgreSQL${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoPostgreSQL${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFdoPostgreSQL.so )

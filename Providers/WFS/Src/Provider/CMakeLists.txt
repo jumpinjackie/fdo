@@ -43,16 +43,16 @@ set( WFSProvider_SRCS
     FdoWfsSpatialExtentsAggregateReader.cpp
 )
 
-add_library( WFSProvider-${FDO_VERSION} SHARED ${WFSProvider_SRCS} )
-add_dependencies( WFSProvider-${FDO_VERSION} WFSMessage )
+add_library( WFSProvider${FDO_VERSION_SUFFIX} SHARED ${WFSProvider_SRCS} )
+add_dependencies( WFSProvider${FDO_VERSION_SUFFIX} WFSMessage )
 
-target_link_libraries( WFSProvider-${FDO_VERSION}
-    FDO-${FDO_VERSION}
+target_link_libraries( WFSProvider${FDO_VERSION_SUFFIX}
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
-    ExpressionEngine-${FDO_VERSION}
-    FdoOws-${FDO_VERSION}
+    ExpressionEngine${FDO_VERSION_SUFFIX}
+    FdoOws${FDO_VERSION_SUFFIX}
     pthread
 )
 
-install( TARGETS WFSProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider.so )
+install( TARGETS WFSProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider.so )

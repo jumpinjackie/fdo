@@ -64,15 +64,15 @@ if( UNIX )
     add_definitions(-D_FDO_3_2 -D_FDO_3_5)
 endif( UNIX )
 
-add_library( KingOracleProvider-${FDO_VERSION} SHARED ${KingOracleProvider_SRCS} )
-add_dependencies( KingOracleProvider-${FDO_VERSION} KgOraMessage )
+add_library( KingOracleProvider${FDO_VERSION_SUFFIX} SHARED ${KingOracleProvider_SRCS} )
+add_dependencies( KingOracleProvider${FDO_VERSION_SUFFIX} KgOraMessage )
 
-target_link_libraries( KingOracleProvider-${FDO_VERSION} 
-    KingOracleOverridesSrc-${FDO_VERSION}    
-    FDO-${FDO_VERSION}
+target_link_libraries( KingOracleProvider${FDO_VERSION_SUFFIX} 
+    KingOracleOverridesSrc${FDO_VERSION_SUFFIX}    
+    FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${ORACLE_LIBRARIES}
 )
 
-install( TARGETS KingOracleProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider.so )
+install( TARGETS KingOracleProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider.so )

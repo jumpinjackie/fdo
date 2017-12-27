@@ -80,12 +80,12 @@ set( ExpressionEngine_LIB_SRCS
    stdafx.cpp
 )
 
-add_library( ExpressionEngine-${FDO_VERSION} SHARED ${ExpressionEngine_LIB_SRCS} )
+add_library( ExpressionEngine${FDO_VERSION_SUFFIX} SHARED ${ExpressionEngine_LIB_SRCS} )
 
-target_link_libraries( ExpressionEngine-${FDO_VERSION}
-	FDO-${FDO_VERSION}
+target_link_libraries( ExpressionEngine${FDO_VERSION_SUFFIX}
+	FDO${FDO_VERSION_SUFFIX}
 	ProvidersCommon
  )
 
-install( TARGETS ExpressionEngine-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libExpressionEngine-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libExpressionEngine.so )
+install( TARGETS ExpressionEngine${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libExpressionEngine${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libExpressionEngine.so )

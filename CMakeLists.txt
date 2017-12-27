@@ -20,6 +20,7 @@ set ( FDO_VERSION_MINOR 2 )
 set ( FDO_VERSION_RELEASE 0 )
 set ( FDO_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}" )
 set ( FDO_DISTRIBUTION_TEXT "Self compiled sources" CACHE STRING "Indicate compilation origin" )
+set ( FDO_VERSION_SUFFIX "-${FDO_VERSION}")
 
 macro(install_symlink filepath sympath)
     install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${filepath} ${sympath})")
