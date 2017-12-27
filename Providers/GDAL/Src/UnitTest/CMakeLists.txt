@@ -38,33 +38,6 @@ set( GDALUnitTest_SRCS
     RfpTestSpatialQuery.cpp
 )
 
-set (GDALUnitTest_FIXTURES
-    RfpNoConfigTest.cpp
-    RfpNoConfigTest2.cpp
-    RfpOverridesSerializeTest.cpp
-    RfpRasterConversion.cpp
-    RfpTestExample1.cpp
-    RfpTestGeotiff.cpp
-    RfpTestGetRaster.cpp
-    RfpTestMosaic.cpp
-    RfpTestResample.cpp
-    RfpTestSpatialContext.cpp
-    RfpTestThorough.cpp
-    RfpUnitTest.cpp
-    UnitTest.cpp
-    UnitTestLinux.cpp
-    RfpTestMrSID.cpp
-    RfpTestBand.cpp
-    RfpTestJp2.cpp
-    RfpTestEcw.cpp
-    RfpTestDem.cpp
-    RfpTestBandConfig.cpp
-    RfpTestPng.cpp
-    RfpTestJpg.cpp
-    RfpTestAAIGrid.cpp
-    RfpTestSpatialQuery.cpp
-)
-
 add_executable( GDALUnitTest ${GDALUnitTest_SRCS} )
 
 set_target_properties( GDALUnitTest
@@ -84,10 +57,3 @@ file(GLOB UnitTestGDAL_TESTDATA
 file(COPY ${UnitTestGDAL_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
-
-# Register fixtures for CTest execution
-foreach(test ${GDALUnitTest_FIXTURES})
-    get_filename_component(TestName ${test} NAME_WE)
-    message("  ######  adding GDAL Provider unit test fixture ${TestName} (${test})")
-    add_test(NAME UnitTestGDAL_${TestName} COMMAND UnitTest ${TestName})
-endforeach(test)

@@ -66,19 +66,3 @@ file(GLOB UnitTestSHP_TESTDATA
 file(COPY ${UnitTestSHP_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
-
-# It so happens that by convention all unit test implementation sources end with "Test"
-# and the cppunit host executable can selectively run certain test fixtures by passing the
-# name of the fixtures to run, which happens to be the same name as the source file, making
-# CTest integration really simple.
-#
-# The only annoyance is that the true test case count is not shown in CTest as it counts
-# based on the number of add_test() calls we make (ie. The number of fixtures discovered and
-# registered)
-foreach(test ${UnitTest_SRCS})
-    if (test MATCHES "Test[s]*.cpp$")
-        get_filename_component(TestName ${test} NAME_WE)
-        message("  ######  adding SHP Provider unit test fixture ${TestName} (${test})")
-        add_test(NAME UnitTestSHP_${TestName} COMMAND UnitTest ${TestName})
-    endif (test MATCHES "Test[s]*.cpp$")
-endforeach(test)

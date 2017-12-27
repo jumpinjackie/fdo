@@ -23,17 +23,6 @@ set( UnitTest_SRCS
    WmsTestCustomCommands.cpp
 )
 
-set( UnitTest_FIXTURES
-   WmsTests.cpp
-   ConnectTests.cpp
-   CapabilityTest.cpp
-   OverridesTest.cpp
-   WmsTestSelect.cpp
-   WmsTestDescribeSchema.cpp
-   WmsTestSpatialContexts.cpp
-   WmsTestCustomCommands.cpp
-)
-
 add_executable( WMSUnitTest ${UnitTest_SRCS} )
 set_target_properties( WMSUnitTest 
     PROPERTIES OUTPUT_NAME UnitTest )
@@ -56,10 +45,3 @@ file(GLOB UnitTestWMS_TESTDATA
 file(COPY ${UnitTestWMS_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
-
-# Register known fixtures for execution
-foreach(test ${UnitTest_FIXTURES})
-    get_filename_component(TestName ${test} NAME_WE)
-    message("  ######  adding WMS Provider unit test fixture ${TestName} (${test})")
-    add_test(NAME UnitTestSDF_${TestName} COMMAND UnitTest ${TestName})
-endforeach(test)
