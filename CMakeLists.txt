@@ -45,7 +45,7 @@ endif (CMAKE_SYSTEM_NAME MATCHES Linux)
 message(STATUS "CMake Build Type is: ${CMAKE_BUILD_TYPE}")
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    add_definitions( -D__USE_GNU -Wno-deprecated )
+    add_definitions( -D__USE_GNU -Wno-write-strings -Wno-deprecated )
     set ( CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -lc ${CMAKE_SHARED_LINKER_FLAGS}")
     if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
         set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64" )
