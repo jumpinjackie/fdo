@@ -76,7 +76,7 @@ else( CMAKE_COMPILER_IS_GNUCXX )
         )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-add_dependencies( SHPProvider-${FDO_VERSION} SHPMessage )
+add_dependencies( SHPProvider-${FDO_VERSION} ShpMessage )
 
 install( TARGETS SHPProvider-${FDO_VERSION} DESTINATION ${LIB_INSTALL_DIR} )
 install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider-${FDO_VERSION}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPProvider.so )

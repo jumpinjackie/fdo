@@ -22,3 +22,4 @@ set( SDFUtils_STAT_SRCS
 )
 
 add_library( SDFUtils STATIC ${SDFUtils_STAT_SRCS} )
+add_dependencies( SDFUtils SDFMessage )
