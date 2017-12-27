@@ -12,35 +12,29 @@ include_directories(
 # that are failing to build here
 #
 # Error is basically of the form: ‘CppUnit::TestFixture’ is an inaccessible base of $CLASSNAME
-set( SDFUnitTest_SRCS
+set( SQLiteUnitTest_SRCS
     UnitTest.cpp
     glibpatch.cpp
-    MasterTest.cpp
-    ApplySchemaTest.cpp
-    AssociationSchemaTest.cpp
-    AssociationInsertTest.cpp
-    AssociationSelectTest.cpp
-    AssociationUpdateTest.cpp
-    AssociationDeleteTest.cpp
-    ConnectionInfoTest.cpp
-    #ConstraintsTest.cpp
-    ExtendedSelectTest.cpp
     FdoExpressionFunctionTest.cpp
     FdoMultiThreadTest.cpp
-    #InsertTest.cpp
+    InsertTest.cpp
     SelectTest.cpp
-    SchemaTest.cpp
     SpatialContextTest.cpp
+    SQLCmdTest.cpp
+    TransactionTest.cpp
     UnitTestUtil.cpp
-    UserFunctionsTest.cpp
+    ApplySchemaTest.cpp
+    #ConstraintsTest.cpp
+    DeleteTest.cpp
+    ReaderTest.cpp
 )
 
-add_executable( SDFUnitTest ${SDFUnitTest_SRCS} )
+add_executable( SQLiteUnitTest ${SQLiteUnitTest_SRCS} )
 
-set_target_properties( SDFUnitTest
+set_target_properties( SQLiteUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )
 
-target_link_libraries( SDFUnitTest
+target_link_libraries( SQLiteUnitTest
     TestCommon
     ExpressionEngine-${FDO_VERSION}
     ProvidersCommon
@@ -50,11 +44,11 @@ target_link_libraries( SDFUnitTest
 )
 
 # Ensure test data is copied to where the unit test binary is generated
-file(GLOB UnitTestSDF_TESTDATA
+file(GLOB UnitTestSQLite_TESTDATA
     "*.txt"
     "*.xml"
 )
-file(COPY ${UnitTestSDF_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${UnitTestSQLite_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # Remove providers.xml from output as that is windows-only
 file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
 
@@ -69,7 +63,7 @@ file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/providers.xml")
 foreach(test ${SDFUnitTest_SRCS})
     if (test MATCHES "Test.cpp$")
         get_filename_component(TestName ${test} NAME_WE)
-        message("  ######  adding SDF Provider unit test fixture ${TestName} (${test})")
+        message("  ######  adding SQLite Provider unit test fixture ${TestName} (${test})")
         add_test(NAME UnitTestSDF_${TestName} COMMAND UnitTest ${TestName})
     endif (test MATCHES "Test.cpp$")
 endforeach(test)

@@ -10,6 +10,8 @@ set(CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
     )
 
+enable_testing()
+
 # Make CPack available to easy generate binary packages
 include(CPack)
 
