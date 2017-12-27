@@ -2,9 +2,9 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${CMAKE_CURRENT_SOURCE_DIR}/../../inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../Message/Inc
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/Inc
+    ${CMAKE_CURRENT_BINARY_DIR}/..
     ${UNMANAGED_INCLUDE_DIR}
     ${UTILITIES_COMMON_INCLUDE_DIR}
     ${ORACLE_INCLUDES}
@@ -65,6 +65,7 @@ if( UNIX )
 endif( UNIX )
 
 add_library( KingOracleProvider-${FDO_VERSION} SHARED ${KingOracleProvider_SRCS} )
+add_dependencies( KingOracleProvider-${FDO_VERSION} KgOraMessage )
 
 target_link_libraries( KingOracleProvider-${FDO_VERSION} 
     KingOracleOverridesSrc-${FDO_VERSION}    

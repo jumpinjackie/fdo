@@ -26,7 +26,7 @@
 #define DBG(x)        //x
 #define DBG_MAX(x)        //x
 
-class ConstraintsTest : TestCommonConstraints
+class ConstraintsTest : public TestCommonConstraints
 {
     CPPUNIT_TEST_SUB_SUITE( ConstraintsTest, TestCommonConstraints );
     CPPUNIT_TEST_SUITE_END();

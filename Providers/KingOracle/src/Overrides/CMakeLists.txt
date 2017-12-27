@@ -16,6 +16,7 @@ set (KingOracleOverridesSrc_SRCS
 )
 
 add_library( KingOracleOverridesSrc-${FDO_VERSION} SHARED ${KingOracleOverridesSrc_SRCS} )
+add_dependencies( KingOracleOverridesSrc-${FDO_VERSION} KgOraMessage )
 
 target_link_libraries( KingOracleOverridesSrc-${FDO_VERSION} 
     FDO-${FDO_VERSION}

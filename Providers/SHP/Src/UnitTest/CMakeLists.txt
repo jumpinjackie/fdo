@@ -13,10 +13,6 @@ include_directories(
 
 add_definitions( -D__STDC_LIMIT_MACROS )
 
-# FIXME: Commented out sources files are direct subclasses of TestCommon implementations
-# that are failing to build here
-#
-# Error is basically of the form: ‘CppUnit::TestFixture’ is an inaccessible base of $CLASSNAME
 set( UnitTest_SRCS
     UnitTest.cpp
     glibpatch.cpp
@@ -28,7 +24,7 @@ set( UnitTest_SRCS
     SelectTests.cpp
     SelectAggregatesTests.cpp
     InsertTests.cpp
-    # InsertTests2.cpp
+    InsertTests2.cpp
     DeleteTests.cpp
     SchemaTests.cpp
     OverridesTest.cpp

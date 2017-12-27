@@ -8,10 +8,6 @@ include_directories(
     ${CPPUNIT_INCLUDE_DIR}
 )
 
-# FIXME: Commented out sources files are direct subclasses of TestCommon implementations
-# that are failing to build here
-#
-# Error is basically of the form: ‘CppUnit::TestFixture’ is an inaccessible base of $CLASSNAME
 set( SDFUnitTest_SRCS
     UnitTest.cpp
     glibpatch.cpp
@@ -23,11 +19,11 @@ set( SDFUnitTest_SRCS
     AssociationUpdateTest.cpp
     AssociationDeleteTest.cpp
     ConnectionInfoTest.cpp
-    #ConstraintsTest.cpp
+    ConstraintsTest.cpp
     ExtendedSelectTest.cpp
     FdoExpressionFunctionTest.cpp
     FdoMultiThreadTest.cpp
-    #InsertTest.cpp
+    InsertTest.cpp
     SelectTest.cpp
     SchemaTest.cpp
     SpatialContextTest.cpp

@@ -1,10 +1,10 @@
 include_directories(  ${CMAKE_CURRENT_BINARY_DIR}/Inc )
 
 file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../../nls/linux/en_US )
-file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Inc )
+file( MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/inc )
 
 set( catalog "KgOraMessage" )
-set( messagefile "${CMAKE_CURRENT_BINARY_DIR}/Inc/${catalog}.h" )
+set( messagefile "${CMAKE_CURRENT_BINARY_DIR}/inc/${catalog}.h" )
 
 get_target_property( MCTOMSF_EXE McToMsf LOCATION )
 get_target_property( MKCATDEFS_EXE mkcatdefs LOCATION )
