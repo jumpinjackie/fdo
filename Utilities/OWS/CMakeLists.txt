@@ -1,16 +1,16 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/Inc
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Inc
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+)
 
 if( LOCAL_BOOST )
-	include_directories( ${FDOTHIRDPARTY}/boost )
+    include_directories( ${FDOTHIRDPARTY}/boost )
 endif( LOCAL_BOOST )
 
 if( LOCAL_CURL )
-	include_directories( ${FDOTHIRDPARTY}/libcurl/include )
+    include_directories( ${FDOTHIRDPARTY}/libcurl/include )
 endif( LOCAL_CURL )
 
 set( FdoOwsSrc_SRCS
@@ -36,16 +36,16 @@ set( FdoOwsSrc_SRCS
 
 
 set( FdoOws_LIB_SRCS
-	${FdoOwsSrc_SRCS}
+    ${FdoOwsSrc_SRCS}
 )
 
 if( NOT LOCAL_BOOST )
-	link_directories( ${Boost_LIBRARY_DIRS} )
+    link_directories( ${Boost_LIBRARY_DIRS} )
 endif( NOT LOCAL_BOOST )
 
-add_library( FdoOws${FDO_VERSION_SUFFIX} SHARED ${FdoOws_LIB_SRCS} )
+add_library( OWS${FDO_VERSION_SUFFIX} SHARED ${FdoOws_LIB_SRCS} )
 
-target_link_libraries( FdoOws${FDO_VERSION_SUFFIX}
+target_link_libraries( OWS${FDO_VERSION_SUFFIX}
     FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${Boost_THREAD_LIBRARY}
@@ -58,5 +58,5 @@ target_link_libraries( FdoOws${FDO_VERSION_SUFFIX}
     pthread
 )
 
-install( TARGETS FdoOws${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-
+install( TARGETS OWS${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOWS${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOWS.so )

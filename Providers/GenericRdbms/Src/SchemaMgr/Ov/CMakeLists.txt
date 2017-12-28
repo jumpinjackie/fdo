@@ -1,6 +1,6 @@
 include_directories( BEFORE	${CMAKE_CURRENT_SOURCE_DIR} )
 
-set( SchemaMgr_OV_LIB_SRCS
+set( RdbmsOverrides_SRCS
     RdbmsOvAssociationPropertyDefinition.cpp
     RdbmsOvClassCollection.cpp
     RdbmsOvClassDefinition.cpp
@@ -22,22 +22,25 @@ set( SchemaMgr_OV_LIB_SRCS
     stdafx.cpp
 )
 
-add_library( SchemaMgr_OV${FDO_VERSION_SUFFIX} STATIC ${SchemaMgr_OV_LIB_SRCS} )
-add_dependencies( SchemaMgr_OV${FDO_VERSION_SUFFIX} fdordbmsmsg )
+add_library( RdbmsOverrides${FDO_VERSION_SUFFIX} SHARED ${RdbmsOverrides_SRCS} )
+add_dependencies( RdbmsOverrides${FDO_VERSION_SUFFIX} fdordbmsmsg )
 
-target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX} 
+target_link_libraries( RdbmsOverrides${FDO_VERSION_SUFFIX} 
     FDO${FDO_VERSION_SUFFIX} 
 )
 
 if( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX}
+    target_link_libraries( RdbmsOverrides${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         SmOverrides
         -Wl,-no-whole-archive
     )
 else( CMAKE_COMPILER_IS_GNUCXX )
-    target_link_libraries( SchemaMgr_OV${FDO_VERSION_SUFFIX}
+    target_link_libraries( RdbmsOverrides${FDO_VERSION_SUFFIX}
         -Wl,-whole-archive
         SmOverrides
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
+
+install( TARGETS RdbmsOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libRdbmsOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libRdbmsOverrides.so )

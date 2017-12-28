@@ -81,7 +81,9 @@ add_subdirectory( Utilities )
 # Ex. -DWITH_GDAL
 macro_optional_add_subdirectory( Providers )
 
-install(FILES providers.xml DESTINATION ${LIB_INSTALL_DIR} )
+install(FILES providers.cmake.linux.xml DESTINATION ${LIB_INSTALL_DIR} )
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E copy \"${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/providers.cmake.linux.xml\" \"${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/providers.xml\")")
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -E remove \"${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/providers.cmake.linux.xml\")")
 configure_file( cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY )
 # Install the global template, not the internal one used for whole source build
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules )

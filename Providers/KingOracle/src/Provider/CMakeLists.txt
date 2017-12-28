@@ -68,7 +68,7 @@ add_library( KingOracleProvider${FDO_VERSION_SUFFIX} SHARED ${KingOracleProvider
 add_dependencies( KingOracleProvider${FDO_VERSION_SUFFIX} KgOraMessage )
 
 target_link_libraries( KingOracleProvider${FDO_VERSION_SUFFIX} 
-    KingOracleOverridesSrc${FDO_VERSION_SUFFIX}    
+    KingOracleOverrides${FDO_VERSION_SUFFIX}    
     FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ${ORACLE_LIBRARIES}

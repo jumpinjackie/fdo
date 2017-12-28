@@ -6,7 +6,7 @@ include_directories(
     ${UTILITIES_COMMON_INCLUDE_DIR}
     ${UTILITIES_OWS_INCLUDE_DIR}
     ${UTILITIES_EXPRESSION_INCLUDE_DIR}
-    )
+)
 
 set( WFSProvider_SRCS
     FdoWfsCommandCapabilities.cpp
@@ -50,7 +50,7 @@ target_link_libraries( WFSProvider${FDO_VERSION_SUFFIX}
     FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
     ExpressionEngine${FDO_VERSION_SUFFIX}
-    FdoOws${FDO_VERSION_SUFFIX}
+    OWS${FDO_VERSION_SUFFIX}
     pthread
 )
 

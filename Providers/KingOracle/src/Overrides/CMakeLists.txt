@@ -15,10 +15,13 @@ set (KingOracleOverridesSrc_SRCS
     FdoKgOraPropertyDefinition.cpp
 )
 
-add_library( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} SHARED ${KingOracleOverridesSrc_SRCS} )
-add_dependencies( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} KgOraMessage )
+add_library( KingOracleOverrides${FDO_VERSION_SUFFIX} SHARED ${KingOracleOverridesSrc_SRCS} )
+add_dependencies( KingOracleOverrides${FDO_VERSION_SUFFIX} KgOraMessage )
 
-target_link_libraries( KingOracleOverridesSrc${FDO_VERSION_SUFFIX} 
+target_link_libraries( KingOracleOverrides${FDO_VERSION_SUFFIX} 
     FDO${FDO_VERSION_SUFFIX}
     ProvidersCommon
 )
+
+install( TARGETS KingOracleOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleOverrides.so )

@@ -1,28 +1,28 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${UNMANAGED_INCLUDE_DIR}
-	${UTILITIES_COMMON_INCLUDE_DIR}
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${UNMANAGED_INCLUDE_DIR}
+    ${UTILITIES_COMMON_INCLUDE_DIR}
+)
 
 set( WMSOverrides_SRCS
-   FdoWmsOvPhysicalSchemaMapping.cpp
-   FdoWmsOvClassCollection.cpp
-   FdoWmsOvClassDefinition.cpp
-   FdoWmsOvLayerCollection.cpp
-   FdoWmsOvLayerDefinition.cpp
-   FdoWmsOvStyleDefinition.cpp
-   FdoWmsOvRasterDefinition.cpp
-   FdoWmsOverrides.cpp
+    FdoWmsOvPhysicalSchemaMapping.cpp
+    FdoWmsOvClassCollection.cpp
+    FdoWmsOvClassDefinition.cpp
+    FdoWmsOvLayerCollection.cpp
+    FdoWmsOvLayerDefinition.cpp
+    FdoWmsOvStyleDefinition.cpp
+    FdoWmsOvRasterDefinition.cpp
+    FdoWmsOverrides.cpp
 )
 
 add_library( WMSOverrides${FDO_VERSION_SUFFIX} SHARED ${WMSOverrides_SRCS} )
 
 target_link_libraries( WMSOverrides${FDO_VERSION_SUFFIX}
-	ProvidersCommon
-	FDO${FDO_VERSION_SUFFIX}
- )
+    ProvidersCommon
+    FDO${FDO_VERSION_SUFFIX}
+)
 
 add_dependencies( WMSOverrides${FDO_VERSION_SUFFIX} FdoWmsMessage )
 
 install( TARGETS WMSOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSOverrides.so )
