@@ -26,7 +26,7 @@ set( SQLiteUnitTest_SRCS
 )
 
 add_executable( SQLiteUnitTest ${SQLiteUnitTest_SRCS} )
-
+add_sanitizers( SQLiteUnitTest )
 set_target_properties( SQLiteUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )
 

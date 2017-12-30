@@ -24,6 +24,7 @@ set( UnitTest_SRCS
 )
 
 add_executable( WMSUnitTest ${UnitTest_SRCS} )
+add_sanitizers( WMSUnitTest )
 set_target_properties( WMSUnitTest 
     PROPERTIES OUTPUT_NAME UnitTest )
 

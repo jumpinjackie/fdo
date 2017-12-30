@@ -40,7 +40,7 @@ set( UnitTest_SRCS
 )
 
 add_executable( SHPUnitTest ${UnitTest_SRCS} )
-
+add_sanitizers( SHPUnitTest )
 set_target_properties( SHPUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )
 

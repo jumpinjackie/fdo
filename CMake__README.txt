@@ -98,6 +98,13 @@ IV. Debug mode
 
     This will set up necessary debug-only compiler flags. The value for this setting is case-sensitive
 
+    If your compiler is gcc 4.8 or higher you can also compile with Address Sanitizer (ASAN) support by passing in:
+    
+        -DSANITIZE_ADDRESS=ON
+
+    If compiling in debug mode, it is also recommended to compile with ASAN support if your compiler supports it as this
+    can detect a certain class of errors and bugs without needing to use an external tool like valgrind
+
 V.  Compiling Providers
     Providers can be called directly from cmake commandline, no need to compile separated anymore if you
     are doing in source build

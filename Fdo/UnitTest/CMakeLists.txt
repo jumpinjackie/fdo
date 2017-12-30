@@ -31,6 +31,7 @@ set( UnitTest_SRCS
 link_directories( ${CPPUNIT_LIBRARY_DIR} )
 
 add_executable( UnitTest ${UnitTest_SRCS} )
+add_sanitizers( UnitTest )
 add_dependencies( UnitTest FDOMessage )
 
 if( LOCAL_CPPUNIT )

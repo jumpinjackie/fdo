@@ -32,7 +32,7 @@ set( SDFUnitTest_SRCS
 )
 
 add_executable( SDFUnitTest ${SDFUnitTest_SRCS} )
-
+add_sanitizers( SDFUnitTest )
 set_target_properties( SDFUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )
 

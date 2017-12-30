@@ -126,25 +126,26 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     endif (CMAKE_BUILD_TYPE MATCHES Debug)
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-find_package( FDOThirdparty REQUIRED )
-find_package( FDOInternal REQUIRED )
+find_package(Sanitizers)
+find_package(FDOThirdparty REQUIRED)
+find_package(FDOInternal REQUIRED)
 
 # Check Python
-find_package( PythonLibs REQUIRED )
+find_package(PythonLibs REQUIRED)
 
-add_subdirectory( Thirdparty )
-add_subdirectory( Fdo )
-add_subdirectory( Utilities )
+add_subdirectory(Thirdparty)
+add_subdirectory(Fdo)
+add_subdirectory(Utilities)
 
 # Providers compiled internally are optional and is not added if
 # Providers directory not exists
 # Correct syntax is: -DWITH_<provider>
 # Ex. -DWITH_GDAL
-macro_optional_add_subdirectory( Providers )
+macro_optional_add_subdirectory(Providers)
 
 # Copy providers.cmake.linux.xml to our build staging area as providers.xml so it can be installed from there
 execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/providers.cmake.linux.xml ${CMAKE_CURRENT_BINARY_DIR}/providers.xml)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/providers.xml DESTINATION ${LIB_INSTALL_DIR} )
-configure_file( cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/providers.xml DESTINATION ${LIB_INSTALL_DIR})
+configure_file(cmake/modules/FindFDO.cmake.tmpl ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake @ONLY)
 # Install the global template, not the internal one used for whole source build
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/cmake/modules/FindFDO.cmake DESTINATION ${CMAKE_ROOT}/Modules)

@@ -39,6 +39,7 @@ set( GDALUnitTest_SRCS
 )
 
 add_executable( GDALUnitTest ${GDALUnitTest_SRCS} )
+add_sanitizers( GDALUnitTest )
 
 set_target_properties( GDALUnitTest
     PROPERTIES OUTPUT_NAME "UnitTest" )

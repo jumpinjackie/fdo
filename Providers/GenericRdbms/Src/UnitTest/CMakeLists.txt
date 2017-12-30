@@ -1,11 +1,11 @@
 include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${MYSQL_INCLUDE_DIR}
-	Common
-	MySql
-	Odbc
-	PostGis
-	)
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${MYSQL_INCLUDE_DIR}
+    Common
+    MySql
+    Odbc
+    PostGis
+    )
 
 add_subdirectory( Common )
 add_subdirectory( Odbc )
@@ -19,31 +19,34 @@ set( UnitTestMySql_SRCS
 )
 
 add_executable( UnitTestMySql ${UnitTestMySql_SRCS} )
+add_sanitizers( UnitTestMySql )
 
 target_link_libraries( UnitTestMySql
-	xalan-c
-	xalanMsg
-	xerces-c
-	${ZLIB_LIBRARIES}
-	${MYSQL_LIBRARIES}
-	)
+    xalan-c
+    xalanMsg
+    xerces-c
+    ${ZLIB_LIBRARIES}
+    ${MYSQL_LIBRARIES}
+)
 
 set( UnitTestOdbc_SRCS
-   OdbcTestRegister.cpp
+    OdbcTestRegister.cpp
 )
 
 add_executable( UnitTestOdbc ${UnitTestOdbc_SRCS} )
+add_sanitizers( UnitTestOdbc )
 
-target_link_libraries( UnitTestOdbc
-	)
+target_link_libraries( UnitTestOdbc 
+)
 
 set( UnitTestPostGis_SRCS
-   PostGisTestRegister.cpp
+    PostGisTestRegister.cpp
 )
 
 add_executable( UnitTestPostGis ${UnitTestPostGis_SRCS} )
+add_sanitizers( UnitTestPostGis )
 
 target_link_libraries( UnitTestPostGis
-	)
+)
 
 

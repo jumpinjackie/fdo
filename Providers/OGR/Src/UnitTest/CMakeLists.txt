@@ -23,6 +23,7 @@ set( UnitTest_SRCS
 )
 
 add_executable( OGRUnitTest ${UnitTest_SRCS} )
+add_sanitizers( OGRUnitTest )
 set_target_properties( OGRUnitTest 
     PROPERTIES OUTPUT_NAME UnitTest )
 
