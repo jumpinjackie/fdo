@@ -19,4 +19,4 @@ target_link_libraries(ODBCOverrides${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
 )
 install( TARGETS ODBCOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCOverrides.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCOverrides${FDO_VERSION_SUFFIX}.so libODBCOverrides.so )

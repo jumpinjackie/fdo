@@ -28,4 +28,4 @@ target_link_libraries(MySQLOverrides${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
 )
 install( TARGETS MySQLOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLOverrides.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLOverrides${FDO_VERSION_SUFFIX}.so libMySQLOverrides.so )

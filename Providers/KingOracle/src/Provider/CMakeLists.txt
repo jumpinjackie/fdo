@@ -75,4 +75,4 @@ target_link_libraries( KingOracleProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS KingOracleProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleProvider${FDO_VERSION_SUFFIX}.so libKingOracleProvider.so )

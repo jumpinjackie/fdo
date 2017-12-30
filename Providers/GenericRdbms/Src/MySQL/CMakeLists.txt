@@ -69,4 +69,4 @@ target_link_libraries( MySQLProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS MySQLProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libMySQLProvider${FDO_VERSION_SUFFIX}.so libMySQLProvider.so )

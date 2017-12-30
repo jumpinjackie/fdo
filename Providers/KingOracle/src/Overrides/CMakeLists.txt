@@ -24,4 +24,4 @@ target_link_libraries( KingOracleOverrides${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS KingOracleOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleOverrides${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleOverrides.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libKingOracleOverrides${FDO_VERSION_SUFFIX}.so libKingOracleOverrides.so )

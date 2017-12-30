@@ -25,4 +25,4 @@ target_link_libraries( OGRProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS OGRProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOGRProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOGRProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libOGRProvider${FDO_VERSION_SUFFIX}.so libOGRProvider.so )

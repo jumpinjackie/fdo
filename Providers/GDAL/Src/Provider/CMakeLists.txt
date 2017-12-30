@@ -60,4 +60,4 @@ target_link_libraries( GRFPProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS GRFPProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPProvider${FDO_VERSION_SUFFIX}.so libGRFPProvider.so )

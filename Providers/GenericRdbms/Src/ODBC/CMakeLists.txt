@@ -73,4 +73,4 @@ target_link_libraries( ODBCProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS ODBCProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libODBCProvider${FDO_VERSION_SUFFIX}.so libODBCProvider.so )

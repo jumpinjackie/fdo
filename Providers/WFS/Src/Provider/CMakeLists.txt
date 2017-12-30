@@ -55,4 +55,4 @@ target_link_libraries( WFSProvider${FDO_VERSION_SUFFIX}
 )
 
 install( TARGETS WFSProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider${FDO_VERSION_SUFFIX}.so ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider.so )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWFSProvider${FDO_VERSION_SUFFIX}.so libWFSProvider.so )
