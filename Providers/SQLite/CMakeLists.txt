@@ -1,5 +1,7 @@
 project(fdosqlite)
 
+set(FDO_COMPONENT "fdo-sqlite")
+
 if( NOT FDO_CORE_BUILD )
     find_package( FDO REQUIRED )
 endif( NOT FDO_CORE_BUILD )

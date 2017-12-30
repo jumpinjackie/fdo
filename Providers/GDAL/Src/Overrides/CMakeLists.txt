@@ -27,5 +27,5 @@ target_link_libraries( GRFPOverrides${FDO_VERSION_SUFFIX}
 
 add_dependencies( GRFPOverrides${FDO_VERSION_SUFFIX} GRFPMessage )
 
-install( TARGETS GRFPOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPOverrides${FDO_VERSION_SUFFIX}.so libGRFPOverrides.so )
+install( TARGETS GRFPOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libGRFPOverrides${FDO_VERSION_SUFFIX}.so libGRFPOverrides.so ${FDO_COMPONENT} )

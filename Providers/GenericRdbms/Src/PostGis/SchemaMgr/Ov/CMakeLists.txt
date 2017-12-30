@@ -27,5 +27,5 @@ target_link_libraries(PostgreSQLOverrides${FDO_VERSION_SUFFIX}
     FDO${FDO_VERSION_SUFFIX}
     RdbmsOverrides${FDO_VERSION_SUFFIX}
 )
-install( TARGETS PostgreSQLOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libPostgreSQLOverrides${FDO_VERSION_SUFFIX}.so libPostgreSQLOverrides.so )
+install( TARGETS PostgreSQLOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libPostgreSQLOverrides${FDO_VERSION_SUFFIX}.so libPostgreSQLOverrides.so ${FDO_COMPONENT} )

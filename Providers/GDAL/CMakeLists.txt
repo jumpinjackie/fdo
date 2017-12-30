@@ -1,5 +1,7 @@
 project(fdogdal)
 
+set(FDO_COMPONENT "fdo-gdal")
+
 if( NOT INTERNAL_GDAL )
     find_package( GDAL REQUIRED )
 endif( NOT INTERNAL_GDAL )

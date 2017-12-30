@@ -66,5 +66,5 @@ target_link_libraries( WMSProvider${FDO_VERSION_SUFFIX}
     pthread
 )
 
-install( TARGETS WMSProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider${FDO_VERSION_SUFFIX}.so libWMSProvider.so )
+install( TARGETS WMSProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSProvider${FDO_VERSION_SUFFIX}.so libWMSProvider.so ${FDO_COMPONENT} )

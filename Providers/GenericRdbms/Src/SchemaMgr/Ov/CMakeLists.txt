@@ -42,5 +42,5 @@ else( CMAKE_COMPILER_IS_GNUCXX )
     )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
-install( TARGETS RdbmsOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libRdbmsOverrides${FDO_VERSION_SUFFIX}.so libRdbmsOverrides.so )
+install( TARGETS RdbmsOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libRdbmsOverrides${FDO_VERSION_SUFFIX}.so libRdbmsOverrides.so ${FDO_COMPONENT} )

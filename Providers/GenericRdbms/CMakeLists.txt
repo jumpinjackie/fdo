@@ -1,9 +1,8 @@
 project(fdogenericrdbms)
 
-# Look first in internal modules
-set( CMAKE_MODULE_PATH 
-    ${CMAKE_MODULE_PATH}
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+# TODO: Eventually we should split this into its respective ODBC, MySQL, PostgreSQL, ... sub-components
+# but for now (just like our existing build system) this will remain a monolithic component group
+set(FDO_COMPONENT "fdo-rdbms")
 
 find_package( MySQL REQUIRED )
 find_package( UnixODBC REQUIRED )

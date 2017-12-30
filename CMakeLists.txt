@@ -45,28 +45,47 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License_README.txt"
 set(CPACK_PACKAGE_VERSION_MAJOR "${FDO_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${FDO_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${FDO_VERSION_RELEASE}")
+set(CPACK_PACKAGE_VERSION "${FDO_VERSION_MAJOR}.${FDO_VERSION_MINOR}.${FDO_VERSION_RELEASE}.${FDO_REV}")
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
+
+# Collect distro name for so we know how to name these packages
+# NOTE: This uses lsb_release to detect the name, so this tool must already be installed first
+execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/tools/getdistro.sh OUTPUT_VARIABLE DISTRO)
+message(STATUS "Detected Distro: ${DISTRO}")
+if(FDO_CPU EQUAL 64)
+    set(CPACK_SYSTEM_NAME "${DISTRO}-amd64")
+else(FDO_CPU EQUAL 64)
+    set(CPACK_SYSTEM_NAME "${DISTRO}-i386")
+endif(FDO_CPU EQUAL 64)
+message(STATUS "CPack system name: ${CPACK_SYSTEM_NAME}")
 
 # Default to plain tarballs for packaging
 if (NOT CPACK_GENERATOR)
     set(CPACK_GENERATOR "TGZ")
 endif (NOT CPACK_GENERATOR)
+message(STATUS "Using CPack generator: ${CPACK_GENERATOR}")
 
-set(CPACK_MONOLITHIC_INSTALL 1)
+# If making tarballs, force monolithic packaging
+if (CPACK_GENERATOR MATCHES "TGZ")
+    set(CPACK_MONOLITHIC_INSTALL 1)
+else (CPACK_GENERATOR MATCHES "TGZ")
+    set(CPACK_MONOLITHIC_INSTALL 0)
+endif (CPACK_GENERATOR MATCHES "TGZ")
+message(STATUS "CPack monolithic install: ${CPACK_MONOLITHIC_INSTALL}")
+
+# For monolithic packages, 
 if (CPACK_MONOLITHIC_INSTALL)
-    execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/cmake/tools/getdistro.sh OUTPUT_VARIABLE DISTRO)
-    message (STATUS "Detected Distro: ${DISTRO}")
-    set (CPACK_PACKAGE_FILE_NAME "fdosdk-${DISTRO}-${FDO_VERSION}.${FDO_REV}")
+    set (CPACK_PACKAGE_FILE_NAME "fdosdk-${FDO_VERSION}.${FDO_REV}-${CPACK_SYSTEM_NAME}")
 endif (CPACK_MONOLITHIC_INSTALL)
 
 # Make CPack available to easy generate binary packages
 include(CPack)
 
 # Some helper macros
-macro(install_symlink target linkname)
+macro(install_symlink target linkname component)
     # The link target doesn't have to exist at this point in time, the symlink will be valid at install time
     execute_process(COMMAND ln -sf ${target} ${CMAKE_CURRENT_BINARY_DIR}/${linkname})
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${linkname} DESTINATION ${LIB_INSTALL_DIR})
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${linkname} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${component})
 endmacro(install_symlink)
 
 # Override install directory to match what the automake build does (/usr/local, rather than /usr/local/lib)

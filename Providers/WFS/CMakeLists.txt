@@ -1,5 +1,7 @@
 project(fdowfs)
 
+set(FDO_COMPONENT "fdo-wfs")
+
 if( NOT FDO_CORE_BUILD )
     find_package( FDO REQUIRED )
 endif( NOT FDO_CORE_BUILD )

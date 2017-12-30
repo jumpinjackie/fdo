@@ -3,9 +3,10 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-INSTALL(
+install(
     DIRECTORY WMS
     DESTINATION include
+    COMPONENT ${FDO_COMPONENT}
     PATTERN *.h
     PATTERN .svn EXCLUDE
 )

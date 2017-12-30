@@ -24,5 +24,5 @@ target_link_libraries( WMSOverrides${FDO_VERSION_SUFFIX}
 
 add_dependencies( WMSOverrides${FDO_VERSION_SUFFIX} FdoWmsMessage )
 
-install( TARGETS WMSOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSOverrides${FDO_VERSION_SUFFIX}.so libWMSOverrides.so )
+install( TARGETS WMSOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libWMSOverrides${FDO_VERSION_SUFFIX}.so libWMSOverrides.so ${FDO_COMPONENT} )

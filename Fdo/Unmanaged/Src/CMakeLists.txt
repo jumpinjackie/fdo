@@ -1,14 +1,14 @@
 include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/Common
-        ${CMAKE_CURRENT_SOURCE_DIR}/Spatial
-        ${CMAKE_CURRENT_SOURCE_DIR}/Nls
-        ${CMAKE_CURRENT_SOURCE_DIR}/Geometry
-        ${CMAKE_CURRENT_BINARY_DIR}/Message
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Common
+    ${CMAKE_CURRENT_SOURCE_DIR}/Spatial
+    ${CMAKE_CURRENT_SOURCE_DIR}/Nls
+    ${CMAKE_CURRENT_SOURCE_DIR}/Geometry
+    ${CMAKE_CURRENT_BINARY_DIR}/Message
     ${XERCESC_INCLUDE_DIR}
     ${XALANC_INCLUDE_DIR}
-        )
+)
     
 if( UNIX )
     add_definitions( -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -DENABLE_BINRELOC )
@@ -282,21 +282,22 @@ set( FDO_SRCS
     ${FDOSpatial_SRCS}
     ${FDOGeometry_SRCS}
     ${FDONLS_SRCS}
-    )
+)
 
 add_library( FDO${FDO_VERSION_SUFFIX} SHARED ${FDO_SRCS} )
 add_dependencies( FDO${FDO_VERSION_SUFFIX}
     McToMsf 
     FDOMessage 
     SchemaFromInternal 
-    ProcessedFiles )
+    ProcessedFiles
+)
 
 target_link_libraries( FDO${FDO_VERSION_SUFFIX}
     ${XALANC_LIBRARIES}
     ${XERCESC_LIBRARIES}
     pthread
     dl
-    )
+)
 
-install( TARGETS FDO${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO${FDO_VERSION_SUFFIX}.so libFDO.so )
+install( TARGETS FDO${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT})
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libFDO${FDO_VERSION_SUFFIX}.so libFDO.so ${FDO_COMPONENT} )

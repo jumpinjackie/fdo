@@ -5,6 +5,7 @@ include_directories(
 install(
     DIRECTORY KingOracle
     DESTINATION include
+    COMPONENT ${FDO_COMPONENT}
     PATTERN *.h
     PATTERN .svn EXCLUDE
 )

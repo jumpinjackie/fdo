@@ -1,5 +1,7 @@
 project(fdowms)
 
+set(FDO_COMPONENT "fdo-wms")
+
 if( NOT FDO_CORE_BUILD )
     find_package( FDO REQUIRED )
 endif( NOT FDO_CORE_BUILD )

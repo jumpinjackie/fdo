@@ -66,5 +66,5 @@ target_link_libraries( PostgreSQLProvider${FDO_VERSION_SUFFIX}
     SchemaMgr
 )
 
-install( TARGETS PostgreSQLProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libPostgreSQLProvider${FDO_VERSION_SUFFIX}.so libPostgreSQLProvider.so )
+install( TARGETS PostgreSQLProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libPostgreSQLProvider${FDO_VERSION_SUFFIX}.so libPostgreSQLProvider.so ${FDO_COMPONENT} )

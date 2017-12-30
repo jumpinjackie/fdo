@@ -1,5 +1,7 @@
 project(fdokingoracle)
 
+set(FDO_COMPONENT "fdo-kingoracle")
+
 find_package( Oracle REQUIRED CLNTSH OCCI OCIEI )
 
 if( NOT FDO_CORE_BUILD )

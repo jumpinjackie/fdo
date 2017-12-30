@@ -21,5 +21,5 @@ target_link_libraries( SHPOverrides${FDO_VERSION_SUFFIX}
 )
 add_dependencies( SHPOverrides${FDO_VERSION_SUFFIX} ShpMessage )
 
-install( TARGETS SHPOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} )
-install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPOverrides${FDO_VERSION_SUFFIX}.so libSHPOverrides.so )
+install( TARGETS SHPOverrides${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
+install_symlink( ${CMAKE_INSTALL_PREFIX}/${LIB_INSTALL_DIR}/libSHPOverrides${FDO_VERSION_SUFFIX}.so libSHPOverrides.so ${FDO_COMPONENT} )
