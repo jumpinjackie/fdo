@@ -300,7 +300,7 @@ void DataTypeTests::roundtrip_insert (
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -438,7 +438,7 @@ void DataTypeTests::roundtrip_update (
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {

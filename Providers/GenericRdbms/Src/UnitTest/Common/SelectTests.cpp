@@ -197,7 +197,7 @@ void SelectTests::ddl ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -281,7 +281,7 @@ void SelectTests::define ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -374,7 +374,7 @@ void SelectTests::bind ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -718,7 +718,7 @@ void SelectTests::describe ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {

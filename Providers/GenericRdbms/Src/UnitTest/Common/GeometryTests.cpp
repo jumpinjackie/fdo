@@ -423,7 +423,7 @@ void GeometryTests::ddl ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -520,7 +520,7 @@ void GeometryTests::define ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
@@ -625,7 +625,7 @@ void GeometryTests::bind ()
         strcat (message, msg);
         if (-1 != cursor)
             rdbi_fre_cursor (mRdbiContext, cursor);
-        throw CppUnit::Exception (message);
+        THROW_CPPUNIT_EXCEPTION(message);
     }
     catch (...)
     {
