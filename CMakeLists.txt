@@ -15,6 +15,8 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif (NOT CMAKE_BUILD_TYPE)
 
+message(STATUS "CMake Build Type is: ${CMAKE_BUILD_TYPE}")
+
 # Determine bitness
 if ((NOT FDO_CPU EQUAL 32) AND (NOT FDO_CPU EQUAL 64))
     message(STATUS "FDO_CPU not defined, determining what we're building for based on system bitness")
@@ -78,6 +80,10 @@ if (CPACK_MONOLITHIC_INSTALL)
     set (CPACK_PACKAGE_FILE_NAME "fdosdk-${FDO_VERSION}.${FDO_REV}-${CPACK_SYSTEM_NAME}")
 endif (CPACK_MONOLITHIC_INSTALL)
 
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    message(STATUS "Binaries will be stripped as part of packaging")
+endif (CMAKE_BUILD_TYPE MATCHES Release)
+
 # Make CPack available to easy generate binary packages
 include(CPack)
 
@@ -103,8 +109,6 @@ endif( UNIX )
 if (CMAKE_SYSTEM_NAME MATCHES Linux)
     add_definitions( -DLINUX -DLINUX_IA32 -pthread )
 endif (CMAKE_SYSTEM_NAME MATCHES Linux)
-
-message(STATUS "CMake Build Type is: ${CMAKE_BUILD_TYPE}")
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions( -D__USE_GNU -Wno-write-strings -Wno-deprecated )
