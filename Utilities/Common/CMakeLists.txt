@@ -34,7 +34,7 @@ set( ProvidersCommon_SRCS
 )
 
 add_library( ProvidersCommon STATIC ${ProvidersCommon_SRCS} )
-add_dependencies( ProvidersCommon FDO FDOMessage )
+add_dependencies( ProvidersCommon FDO${FDO_VERSION_SUFFIX} FDOMessage )
 target_link_libraries( ProvidersCommon 
     FDO${FDO_VERSION_SUFFIX}
 )
