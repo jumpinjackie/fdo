@@ -2548,7 +2548,7 @@ void MasterTest::testSpecialClassNames()
     char* mbsPath = new char[len+1];
     wcstombs(mbsPath, DEST_PATH2, len+1);
     unlink( mbsPath );
-    delete mbsPath;
+    delete[] mbsPath;
 #endif
     try
     {
