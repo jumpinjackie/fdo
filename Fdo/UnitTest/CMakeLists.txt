@@ -59,5 +59,6 @@ target_link_libraries( UnitTest
 file(GLOB UnitTestFdo_TESTDATA
     "*.txt"
     "*.xml"
+    "*.xsd"
 )
 file(COPY ${UnitTestFdo_TESTDATA} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
