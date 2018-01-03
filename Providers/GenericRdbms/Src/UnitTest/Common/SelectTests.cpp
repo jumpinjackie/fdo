@@ -23,6 +23,7 @@
 #define DB_SUFFIX L"_rdbitest"
 
 SelectTests::SelectTests (void)
+    : mRdbiContext(NULL)
 {
 }
 
@@ -42,22 +43,22 @@ void SelectTests::setUp ()
         FdoStringP userPassword = UnitTestUtil::GetEnviron("password");
         if (!bDatastoreCreated)
         {
-	        try
+            try
             {
-		        FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
+                FdoStringP userConnectString = UnitTestUtil::GetConnectionString(Connection_NoDatastore);
                 FdoPtr<FdoIConnection> connection = UnitTestUtil::GetProviderConnectionObject();
                 connection->SetConnectionString( userConnectString );
                 connection->Open();
-		        FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
-		        FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
-		        dictionary->SetProperty( L"DataStore",  dataStoreName);
-		        pDelCmd->Execute();
-		        connection->Close();
+                FdoPtr<FdoIDestroyDataStore> pDelCmd = (FdoIDestroyDataStore*)connection->CreateCommand( FdoCommandType_DestroyDataStore );
+                FdoPtr<FdoIDataStorePropertyDictionary> dictionary = pDelCmd->GetDataStoreProperties();
+                dictionary->SetProperty( L"DataStore",  dataStoreName);
+                pDelCmd->Execute();
+                connection->Close();
             }
             catch( FdoException* exc) { exc->Release(); }
             catch(...) { }
 
-	        UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
+            UnitTestUtil::CreateDB(false, false, DB_SUFFIX);
             bDatastoreCreated = true;
         }
 
@@ -88,26 +89,32 @@ void SelectTests::setUp ()
 
 void SelectTests::tearDown ()
 {
-    try
+    if (mRdbiContext)
     {
         try
         {
-            CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            try
+            {
+                CPPUNIT_ASSERT_MESSAGE ("rdbi_disconnect failed", RDBI_SUCCESS == rdbi_disconnect (mRdbiContext));
+            }
+            catch (CppUnit::Exception exception)
+            {
+                rdbi_term (&mRdbiContext);
+                throw exception;
+            }
+            CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
+            mRdbiContext = NULL;
         }
         catch (CppUnit::Exception exception)
         {
-            rdbi_term (&mRdbiContext);
+            mRdbiContext = NULL;
             throw exception;
         }
-        CPPUNIT_ASSERT_MESSAGE ("rdbi_term failed", RDBI_SUCCESS == rdbi_term (&mRdbiContext));
-    }
-    catch (CppUnit::Exception exception)
-    {
-        throw exception;
-    }
-    catch (...)
-    {
-        CPPUNIT_FAIL ("unexpected exception encountered");
+        catch (...)
+        {
+            mRdbiContext = NULL;
+            CPPUNIT_FAIL ("unexpected exception encountered");
+        }
     }
 }
 
@@ -185,13 +192,13 @@ void SelectTests::ddl ()
     }
     catch (CppUnit::Exception exception)
     {
-		const char *msg = exception.what ();
+        const char *msg = exception.what ();
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
@@ -273,9 +280,9 @@ void SelectTests::define ()
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
@@ -366,9 +373,9 @@ void SelectTests::bind ()
         char message[RDBI_MSG_SIZE];
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
@@ -400,7 +407,7 @@ void SelectTests::describe ()
 #ifdef _WIN32
     LONGLONG phone;
 #else
-	int64_t phone;	
+    int64_t phone;	
 #endif
     struct tm bday;
     char *p;
@@ -710,9 +717,9 @@ void SelectTests::describe ()
         memset( (void*) message, 0, (size_t) RDBI_MSG_SIZE );
         rdbi_get_msg (mRdbiContext);
 #ifdef _WIN32
-		WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
+        WideCharToMultiByte ( CP_THREAD_ACP, 0, mRdbiContext->last_error_msg, (int)wcslen(mRdbiContext->last_error_msg), message, RDBI_MSG_SIZE, NULL,  NULL);
 #else
-		wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
+        wcstombs ( message, mRdbiContext->last_error_msg, RDBI_MSG_SIZE);
 #endif
         strcat (message, ": ");
         strcat (message, msg);
