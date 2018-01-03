@@ -171,7 +171,7 @@ FdoConnectionState OgrConnection::Open()
 
     std::string mbtmp = W2A_SLOW(tmp);
 
-    delete tmp;
+    delete[] tmp;
     
 #if DEBUG
     printf ("Attempt OGR connect to %s \n", mbtmp.c_str());

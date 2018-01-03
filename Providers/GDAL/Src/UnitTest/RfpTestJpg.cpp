@@ -93,7 +93,7 @@ void RfpTestJpg::testLoad()
             reader->Skip(bytesTile * (numTileCols - 1));
         }
         
-        delete buffer;
+        delete[] buffer;
         count++;
     }
 
@@ -160,7 +160,7 @@ void RfpTestJpg::testSpecialCharacters()
                 reader->Skip(bytesTile * (numTileCols - 1));
             }
             
-            delete buffer;
+            delete[] buffer;
             count++;
         }
 

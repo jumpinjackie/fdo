@@ -67,7 +67,7 @@ void RfpTestGetRaster::testGetRasterTileByTile()
                 FdoInt32 countToRead = tileWidth * tileHeight * 3;
                 FdoByte* data = new FdoByte[countToRead];
                 CPPUNIT_ASSERT(reader->ReadNext(data, 0, countToRead) == countToRead);
-                delete data;
+                delete[] data;
             }
 
     }
@@ -317,7 +317,7 @@ void RfpTestGetRaster::testGetClippedAndScaledRaster()
     nRead = reader->ReadNext(buff, 0, 1);
     CPPUNIT_ASSERT(nRead == 0);
 
-    delete buff;
+    delete[] buff;
 
     // only contains one record
     CPPUNIT_ASSERT(featureReader->ReadNext() == false);
