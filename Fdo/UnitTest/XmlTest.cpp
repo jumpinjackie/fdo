@@ -21,6 +21,19 @@
 //#define DEBUG_DETAIL  1
 #endif
 
+// There is a defect in Xalan that will result in a segfault 
+//
+// https://issues.apache.org/jira/browse/XALANC-751
+// https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=718303
+//
+// This is a guard around the bits of unit testing code that triggers this problem.
+// 
+// If you are building against a version of Xalan known to have this problem, define
+// HAS_XALANC_751_BUG as part of the C++ preprocessor flags
+#ifdef HAS_XALANC_751_BUG
+#define XALANC_751_BUG 1
+#endif
+
 static char* pXmlIn = 
 "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\
 <DataSet>\
@@ -264,8 +277,9 @@ void XmlTest::testXsl()
             FdoXmlWriterP( FdoXmlWriter::Create(outStream, false) )
         );
 
-// Temporary disable the next two tests on Windows
-#ifndef _WIN32
+// Temporary disable the next two if we know we're building against a copy of xalan with the
+// segfaulting bug
+#ifndef XALANC_751_BUG
         bFailed = false;
         try {
            tfmr->Transform();   
@@ -274,13 +288,15 @@ void XmlTest::testXsl()
 #ifdef _WIN32
 // The exception message has no file information in release mode.That means there is no ')' in release mode . 
 #ifdef _DEBUG
-            FdoString* pMessage = wcschr( e->GetExceptionMessage(), ')' ) + 2;
-            FDO_CPPUNIT_ASSERT( wcsncmp(pMessage, L"XSLTProcessorException: 'xsl:variable' has an invalid 'junk' attribute (sheet, line 1, column 225) ",100) == 0 );
+            FdoStringP pMessage = wcschr(e->GetExceptionMessage(), ')') + 2;
 #else
-			FdoString* pMessage = e->GetExceptionMessage();
-            FDO_CPPUNIT_ASSERT( wcsncmp(pMessage, L"XSLTProcessorException: 'xsl:variable' has an invalid 'junk' attribute (sheet, line 1, column 225) ",100) == 0 );
+            FdoStringP pMessage = e->GetExceptionMessage();
 #endif
-            
+            //Strip file URI
+            FdoStringP leftPart = pMessage.Left(L"file:///");
+            FdoStringP rightPart = pMessage.Right(L"Fdo/UnitTest/");
+            FdoStringP combined = leftPart + rightPart;
+            FDO_CPPUNIT_ASSERT(wcsncmp((FdoString*)combined, L"XSLTProcessorException: 'xsl:variable' has an invalid 'junk' attribute. (Occurred in entity 'sheet', at line 1, column 225.) ", 100) == 0);
 #endif
             bFailed = true;
             e->Release();

@@ -28,6 +28,17 @@ set( UnitTest_SRCS
     GmlWriteTest.cpp
 )
 
+# HACK: Workaround a bug in system-installed xalan
+#
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=718303
+# https://issues.apache.org/jira/browse/XALANC-751
+#
+# TODO: We ideally should version check known distros that have
+# the fix. Also if/when we merge the fix into our internal copy
+# of xalan, we should also check if we're building against system
+# or internal copy of xalan
+add_definitions(-DHAS_XALANC_751_BUG)
+
 link_directories( ${CPPUNIT_LIBRARY_DIR} )
 
 add_executable( UnitTest ${UnitTest_SRCS} )
