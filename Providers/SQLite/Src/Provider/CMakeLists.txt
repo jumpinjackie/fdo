@@ -3,7 +3,7 @@ include_directories (
     ${UNMANAGED_INCLUDE_DIR}
     ${UTILITIES_COMMON_INCLUDE_DIR}
     ${UTILITIES_EXPRESSION_INCLUDE_DIR}
-    ) 
+) 
 
 set( SQLiteProvider_SRCS
     SltConversionUtils.cpp
@@ -18,7 +18,7 @@ set( SQLiteProvider_SRCS
     SQLiteSchemaMergeContext.cpp
     SltBLOBStreamReader.cpp
     SltTransaction.cpp
-    ) 
+) 
 
 if( UNIX )
     add_definitions(-msse -msse2 -mmmx -DSQLITE_OMIT_AUTHORIZATION -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE -D_FILE_OFFSET_BITS=64)
@@ -34,6 +34,7 @@ target_link_libraries ( SQLiteProvider${FDO_VERSION_SUFFIX}
 
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( SQLiteProvider${FDO_VERSION_SUFFIX}
+        -Wl,-Bsymbolic
         -Wl,-whole-archive
         SQLiteSpatialIndex 
         sqlitefdoprovider3

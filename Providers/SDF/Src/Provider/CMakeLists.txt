@@ -70,20 +70,21 @@ target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
 
 if( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
+        -Wl,-Bsymbolic
         -Wl,-whole-archive
         ProvidersCommon
         SDFUtils	
         SQLiteInterface
         sqlite3fdo
         -Wl,-no-whole-archive
-        )
+    )
 else( CMAKE_COMPILER_IS_GNUCXX )
     target_link_libraries( SDFProvider${FDO_VERSION_SUFFIX}
         ProvidersCommon
         SDFUtils	
         SQLiteInterface
         sqlite3fdo
-        )
+    )
 endif( CMAKE_COMPILER_IS_GNUCXX )
 
 install( TARGETS SDFProvider${FDO_VERSION_SUFFIX} DESTINATION ${LIB_INSTALL_DIR} COMPONENT ${FDO_COMPONENT} )
