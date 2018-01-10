@@ -197,7 +197,7 @@ FdoString* FdoException::NLSGetMessage(FdoInt32 msgNum, const char* defMsg, cons
 #ifdef _WIN32
     _snwprintf(pBuffer, sizeBuffers - 1, L"(%S: %i) %s", file, line, pMsg);
 #else
-    swprintf(pBuffer, sizeBuffers - 1, L"(%S: %i) %S", file, line, pMsg);
+    swprintf(pBuffer, sizeBuffers - 1, L"(%s: %i) %S", file, line, pMsg);
 #endif
     pBuffer[sizeBuffers - 1] = 0;
     return pBuffer;
